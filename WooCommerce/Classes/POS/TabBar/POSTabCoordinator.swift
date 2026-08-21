@@ -42,6 +42,7 @@ final class POSTabCoordinator {
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
     private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
+    private let httpsConfigurationNoticeProvider: () -> POSHTTPSConfigurationNotice?
 
     private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
 
@@ -119,7 +120,8 @@ final class POSTabCoordinator {
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          eligibilityChecker: POSEntryPointEligibilityCheckerProtocol,
-         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?) {
+         localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?,
+         httpsConfigurationNoticeProvider: @escaping () -> POSHTTPSConfigurationNotice? = { nil }) {
         self.siteID = siteID
         self.storesManager = storesManager
         self.defaultSitePublisher = storesManager.sessionManager.defaultSitePublisher
@@ -137,6 +139,7 @@ final class POSTabCoordinator {
         self.pushNotesManager = pushNotesManager
         self.eligibilityChecker = eligibilityChecker
         self.localCatalogEligibilityService = localCatalogEligibilityService
+        self.httpsConfigurationNoticeProvider = httpsConfigurationNoticeProvider
 
         tabContainerController.wrappedController = POSTabViewController()
     }
@@ -191,6 +194,7 @@ private extension POSTabCoordinator {
     }
 
     func presentPOSView(siteID: Int64) {
+        let httpsConfigurationNotice = httpsConfigurationNoticeProvider()
         let hostingController = UIHostingController(
             rootView: POSPresentationRootView(posView: nil)
         )
@@ -402,6 +406,7 @@ private extension POSTabCoordinator {
                     receiptPrinter: receiptPrinter,
                     staffSettingsService: staffSettingsService,
                     services: serviceAdaptor,
+                    httpsConfigurationNotice: httpsConfigurationNotice,
                     itemProvider: itemProvider
                 )
 

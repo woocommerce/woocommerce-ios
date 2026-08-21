@@ -11,6 +11,7 @@
 - [*] POS: When the store rejects a refund because the order changed, for example another register refunded part of it, the refund screen now offers to reload the remaining items instead of a retry that cannot succeed. [https://github.com/woocommerce/woocommerce-ios/pull/17732]
 - [Internal] POS: every POS analytics event now carries device_type (phone/tablet) and entry_point (pos_tab or auto_reopen), so POS usage can be split by form factor and merchant-opened sessions separated from POS-lock cold-launch restores. [https://github.com/woocommerce/woocommerce-ios/pull/17705]
 - [*] Settings: All retained application logs can now be shared together as a ZIP file. [https://github.com/woocommerce/woocommerce-ios/pull/17714]
+- [*] Added a warning when a store is configured with an HTTP URL, with guidance for setting it up to use HTTPS. [https://github.com/woocommerce/woocommerce-ios/pull/17735]
 - [*] Fixed a crash that could occur while checking iOS age-range compliance. [https://github.com/woocommerce/woocommerce-ios/pull/17661]
 - [*] Dashboard: Performance stats now remain visible when the selected dates have no revenue. [https://github.com/woocommerce/woocommerce-ios/pull/17717]
 - [*] Google Ads: Fixed the dashboard campaign card failing to show existing campaign performance data. [https://github.com/woocommerce/woocommerce-ios/pull/17706]

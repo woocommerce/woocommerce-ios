@@ -112,7 +112,8 @@ extension WooAnalytics {
         guard userHasOptedIn == true else {
             return
         }
-        let properties = combinedProperties(from: error, with: passedProperties)
+        let siteEnrichedProperties = siteEnrichedPropertiesIfNeeded(for: eventName, properties: passedProperties)
+        let properties = combinedProperties(from: error, with: siteEnrichedProperties)
         if let properties {
             analyticsProvider.track(eventName, withProperties: properties)
         } else {
@@ -235,6 +236,16 @@ fileprivate extension Analytics {
         updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
         updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion
         return updatedProperties
+    }
+
+    /// Callers outside the app target (the Yosemite data layer) can only reach the `String`-named `track`,
+    /// which used to skip enrichment and drop `store_id` from those events. Enrichment is idempotent, so
+    /// re-running it for callers that already enriched is harmless.
+    func siteEnrichedPropertiesIfNeeded(for eventName: String, properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
+        guard let stat = WooAnalyticsStat(rawValue: eventName), stat.shouldSendSiteProperties else {
+            return properties
+        }
+        return appendSiteProperties(to: properties)
     }
 }
 

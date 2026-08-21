@@ -184,7 +184,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
     }
 
     private func trackElapsedTimeFromOrderSyncToCardReady() {
-        let elapsedTime = cardReaderReady - orderSync
+        let elapsedTime = calculateElapsedTimeInSeconds(from: orderSync, to: cardReaderReady)
         analytics.track(event: .PointOfSale.cardReaderReadyForCardPayment(waitingTime: elapsedTime))
     }
 }
@@ -202,6 +202,15 @@ private extension POSCollectOrderPaymentAnalyticsAdaptor {
 
         let end = currentTimestamp()
         return floor((end - start) * 1000)
+    }
+
+    /// Both markers are Unix timestamps: subtracting an unset one reports the wall clock as if it were a duration.
+    func calculateElapsedTimeInSeconds(from start: Double, to end: Double) -> Double {
+        guard start > 0, end > 0 else {
+            return 0
+        }
+
+        return end - start
     }
 
     private func resetProcessingPaymentTracking() {

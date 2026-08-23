@@ -120,8 +120,9 @@ enum SiteCredentialLoginError: LocalizedError {
 /// - Preflight the configured login entry and verify one eligible WordPress login form.
 /// - Post to that transaction's form action with the exact rest nonce endpoint as the redirect target.
 /// - Prevent the HTTP stack from automatically following that redirect.
-/// - Accept only the expected nonce or configured admin redirect, then ignore it and issue an explicit nonce GET using the same private session.
+/// - Accept only the expected nonce or configured admin redirect as login-success evidence, but never follow it.
 /// - Optionally prove the admin dashboard from its independently derived URL.
+/// - Issue an explicit nonce GET using the same private session.
 /// Ref: pe5sF9-1iQ-p2
 ///
 final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
@@ -352,7 +353,7 @@ private extension SiteCredentialLoginUseCase {
     }
 
     func getRequest(url: URL) -> URLRequest {
-        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 8)
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData)
         request.httpMethod = "GET"
         request.setValue(UserAgent.defaultUserAgent, forHTTPHeaderField: "User-Agent")
         return request

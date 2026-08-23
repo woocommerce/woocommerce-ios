@@ -147,6 +147,8 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
             session.receivedRequests.last?.value(forHTTPHeaderField: "User-Agent"),
             UserAgent.defaultUserAgent
         )
+        let defaultTimeoutInterval = URLRequest(url: try XCTUnwrap(URL(string: siteURL))).timeoutInterval
+        XCTAssertEqual(session.receivedRequests.map(\.timeoutInterval), [defaultTimeoutInterval, defaultTimeoutInterval])
     }
 
     func test_handleLogin_when_loginRedirectLocation_is_subdirectoryRestNonce_then_nonceRequestSucceeds() async {

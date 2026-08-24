@@ -26,6 +26,20 @@ final class ProductsSplitViewCoordinator: NSObject {
     private let splitViewController: UISplitViewController
     private let primaryNavigationController: UINavigationController
     private let secondaryNavigationController: UINavigationController
+    private lazy var swipeBackVetoHandler = ProductsSwipeBackVetoGestureRecognizerDelegate(
+        isCollapsed: { [weak self] in
+            self?.splitViewController.isCollapsed == true
+        },
+        shouldPopOnSwipeBack: { [weak self] in
+            self?.secondaryNavigationController.shouldPopOnSwipeBack() ?? true
+        }
+    )
+    private lazy var swipeBackVetoGestureRecognizer: UIScreenEdgePanGestureRecognizer = {
+        let gestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleVetoedSwipeBack))
+        gestureRecognizer.edges = .left
+        gestureRecognizer.delegate = swipeBackVetoHandler
+        return gestureRecognizer
+    }()
     private lazy var productsViewController = ProductsViewController(siteID: siteID,
                                                                      selectedProduct: selectedProduct,
                                                                      navigateToContent: showFromProductList)
@@ -269,6 +283,10 @@ private extension ProductsSplitViewCoordinator {
 
         primaryNavigationController.delegate = self
         secondaryNavigationController.delegate = self
+
+        splitViewController.view.addGestureRecognizer(swipeBackVetoGestureRecognizer)
+        primaryNavigationController.interactivePopGestureRecognizer?.require(toFail: swipeBackVetoGestureRecognizer)
+        secondaryNavigationController.interactivePopGestureRecognizer?.require(toFail: swipeBackVetoGestureRecognizer)
     }
 
     func autoSelectProductOnInitialDataLoad() {
@@ -284,6 +302,26 @@ private extension ProductsSplitViewCoordinator {
                 self?.productsViewController.selectFirstProductIfAvailable()
             }
             .store(in: &subscriptions)
+    }
+}
+
+private extension ProductsSplitViewCoordinator {
+    @objc private func handleVetoedSwipeBack(_ gestureRecognizer: UIScreenEdgePanGestureRecognizer) {
+        // Recognizing the gesture is sufficient: native pop recognizers are required to wait for this one to fail.
+    }
+}
+
+final class ProductsSwipeBackVetoGestureRecognizerDelegate: NSObject, UIGestureRecognizerDelegate {
+    private let isCollapsed: () -> Bool
+    private let shouldPopOnSwipeBack: () -> Bool
+
+    init(isCollapsed: @escaping () -> Bool, shouldPopOnSwipeBack: @escaping () -> Bool) {
+        self.isCollapsed = isCollapsed
+        self.shouldPopOnSwipeBack = shouldPopOnSwipeBack
+    }
+
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        isCollapsed() && shouldPopOnSwipeBack() == false
     }
 }
 

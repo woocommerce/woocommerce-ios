@@ -35,6 +35,27 @@ struct WooNavigationControllerTests {
         #expect(navigationController.visibilityUpdates.first?.animated == false)
     }
 
+    @Test func test_did_show_view_controller_then_posts_navigation_notification() {
+        // Given
+        let connectivityObserver = MockConnectivityObserver()
+        let sut = WooNavigationControllerDelegate(connectivityObserver: connectivityObserver)
+        let navigationController = StableNavigationController()
+        let viewController = UIViewController()
+        var notifiedNavigationController: UINavigationController?
+        let observer = NotificationCenter.default.addObserver(forName: .wooNavigationControllerDidShowViewController,
+                                                              object: navigationController,
+                                                              queue: nil) { notification in
+            notifiedNavigationController = notification.object as? UINavigationController
+        }
+        defer { NotificationCenter.default.removeObserver(observer) }
+
+        // When
+        sut.navigationController(navigationController, didShow: viewController, animated: false)
+
+        // Then
+        #expect(notifiedNavigationController === navigationController)
+    }
+
     @Test func test_connectivity_change_when_current_controller_is_visible_and_top_then_updates_offline_banner() {
         // Given
         let connectivityObserver = MockConnectivityObserver()

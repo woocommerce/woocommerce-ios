@@ -1379,6 +1379,7 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleRefundProcessingFailed = "refund_processing_failed"
     case pointOfSaleRefundFlowAborted = "refund_flow_aborted"
     case pointOfSaleRefundSelectAllTapped = "refund_select_all_tapped"
+    case pointOfSaleRefundServerFlowUnavailable = "refund_server_flow_unavailable"
     case pointOfSaleLocalCatalogDownloadingScreenShown = "local_catalog_downloading_screen_shown"
     case pointOfSaleLocalCatalogDownloadingScreenExitPosTapped = "local_catalog_downloading_screen_exit_pos_tapped"
     case pointOfSaleSplashScreenErrorShown = "splash_screen_error_shown"

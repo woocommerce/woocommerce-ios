@@ -3,7 +3,7 @@
 
 25.6
 -----
-
+- [*] Payments: Update card reader's statement descriptor validation rules [https://github.com/woocommerce/woocommerce-ios/pull/17751]
 
 25.5
 -----

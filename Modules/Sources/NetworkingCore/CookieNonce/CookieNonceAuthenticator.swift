@@ -71,7 +71,14 @@ private extension CookieNonceAuthenticator {
         }
         Task(priority: .medium) {
             do {
-                try await handleSiteCredentialLogin(session: session)
+                do {
+                    try await handleSiteCredentialLogin(session: session)
+                } catch {
+                    // Wrap raw transport/validation errors (e.g. a host whose wp-login.php responds
+                    // with HTTP 401 instead of the standard 200 + login form) so they go through
+                    // the handled invalidation path below.
+                    throw CookieNonceAuthenticator.Error.postLoginFailed(error)
+                }
                 let page = try await handleNonceRetrieval(request: nonceRequest, session: session)
                 guard let nonce = readNonceFromAjaxAction(html: page) else {
                     throw CookieNonceAuthenticator.Error.missingNonce
@@ -83,9 +90,11 @@ private extension CookieNonceAuthenticator {
             } catch {
                 DDLogError("⛔️ Cookie nonce authenticator failed with uncaught error: \(error)")
 
-                //  Complete the pending requests without retrying. This informs the clients waiting for response about the failure.
-                //
-                completeRequests(false)
+                // Invalidate the login sequence so the authenticator state is reset and the pending
+                // requests are completed. Calling only `completeRequests(false)` here would leave
+                // `isAuthenticating` set forever, making every subsequent 401 on this session enqueue
+                // a retry completion that nothing drains — an infinite hang (WOOMOB-3866).
+                invalidateLoginSequence(error: .unknown(error))
             }
         }
     }
@@ -129,7 +138,9 @@ private extension CookieNonceAuthenticator {
     func invalidateLoginSequence(error: Error) {
         var allowRetry = false
         if case .postLoginFailed(let originalError) = error {
-            let nsError = originalError as NSError
+            // The login request fails with an `AFError` wrapping the transport error,
+            // so unwrap it before checking for the connectivity failure.
+            let nsError = (originalError.asAFError?.underlyingError ?? originalError) as NSError
             if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorNotConnectedToInternet {
                 allowRetry = true
             }

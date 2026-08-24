@@ -131,12 +131,16 @@ private extension CookieNonceAuthenticator {
     }
 
     func invalidateLoginSequence(error: Error) {
-        var allowRetry = false
-        if case .postLoginFailed(let originalError) = error {
-            let nsError = (originalError.asAFError?.underlyingError ?? originalError) as NSError
-            if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorNotConnectedToInternet {
-                allowRetry = true
-            }
+        let allowRetry: Bool
+        switch error {
+        case .postLoginFailed, .unknown:
+            // The sequence ended without a verdict on the credentials (transport failure,
+            // unexpected response, ...) — a later attempt may succeed, so keep retrying allowed.
+            allowRetry = true
+        case .invalidNewPostURL, .missingNonce:
+            // Definitive outcomes for this configuration — retrying with the same
+            // credentials cannot succeed.
+            allowRetry = false
         }
         state.invalidate(allowRetry: allowRetry)
         DDLogInfo("Aborting Cookie+Nonce login sequence for \(loginURL)")

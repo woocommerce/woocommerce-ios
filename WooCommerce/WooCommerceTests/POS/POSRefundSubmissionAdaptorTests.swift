@@ -45,6 +45,8 @@ struct POSRefundSubmissionAdaptorTests {
         #expect(reviewData.formattedItemsSubtotal == "$27.00")
         #expect(reviewData.formattedTax == "$2.43")
         #expect(reviewData.formattedRefundTotal == "$29.43")
+        // and the flow reported in analytics matches the path actually taken
+        #expect(reviewData.calculationFlow == .serverComputed)
 
         // When submitting
         try await sut.adaptor.submitRefund(for: posOrder(),
@@ -73,6 +75,8 @@ struct POSRefundSubmissionAdaptorTests {
         #expect(reviewData.formattedItemsSubtotal == "$10.00")
         #expect(reviewData.formattedTax == "$1.00")
         #expect(reviewData.formattedRefundTotal == "$11.00")
+        // and the flow reported in analytics matches the path actually taken
+        #expect(reviewData.calculationFlow == .local)
 
         // When submitting
         try await sut.adaptor.submitRefund(for: posOrder(),
@@ -372,7 +376,8 @@ private extension POSRefundSubmissionAdaptorTests {
                                                                                                featureFlagService: flags,
                                                                                                availabilityCache: availabilityCache,
                                                                                                minimumWooVersion: "11.1.0"),
-                                                           availabilityCache: availabilityCache)
+                                                           availabilityCache: availabilityCache,
+                                                           analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()))
 
         let orderService = MockPOSOrderService()
         orderService.orderToReturn = suppliedOrder ?? order(quantity: orderQuantity)

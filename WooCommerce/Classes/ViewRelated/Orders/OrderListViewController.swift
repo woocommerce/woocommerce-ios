@@ -208,15 +208,19 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
 
-        // Fix any incomplete animation of the refresh control
-        // when switching tabs mid-animation
-        refreshControl.resetAnimation(in: tableView)
-
         // Fix any _incomplete_ animation if the orders were deleted and refetched from
         // a different location (or Orders tab).
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Do not carry an active refresh animation across tab or navigation transitions.
+        // The underlying synchronization continues and updates the list when it completes.
+        refreshControl.endRefreshing()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -375,7 +379,6 @@ private extension OrderListViewController {
             return
         }
 
-        setContentScrollView(tableView, for: .bottom)
         view.pinSubviewBottomToBottomAnchorReplacingSafeArea(tableView)
     }
 

@@ -3,6 +3,7 @@
 
 25.6
 -----
+- [*] Fixed an infinite spinner on site credential login when the site rejects the wp-login.php request (e.g. hosts with captcha/security plugins). An error alert is now shown instead. [https://github.com/woocommerce/woocommerce-ios/pull/17752]
 
 
 25.5

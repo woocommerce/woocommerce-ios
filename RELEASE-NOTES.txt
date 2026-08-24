@@ -3,6 +3,7 @@
 
 25.6
 -----
+- [*] Analytics Hub: Fixed the interactive swipe-back gesture not working when opened from the Dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17755]
 
 
 25.5

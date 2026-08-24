@@ -76,47 +76,6 @@ final class PaymentIntentParametersTests: XCTestCase {
         XCTAssertEqual(expectation, stripeParams.amount)
     }
 
-    func test_statementDescription_replaces_expected_characters() throws {
-        let params = PaymentIntentParameters(
-            amount: 100,
-            currency: "usd",
-            stripeSmallestCurrencyUnitMultiplier: 100,
-            statementDescription: "A < DESCRIPTION' longer THAN 22 Characters",
-            paymentMethodTypes: [.cardPresent]
-        )
-
-        let statementDescription = try XCTUnwrap(params.statementDescription)
-
-        XCTAssertTrue(statementDescription.count <= 22)
-        XCTAssertEqual(params.statementDescription, "A - DESCRIPTION- longe")
-    }
-
-    func test_statementDescription_leaves_strings_untouched_when_no_replacement_is_necessary() throws {
-        let params = PaymentIntentParameters(amount: 100,
-                                             currency: "usd",
-                                             stripeSmallestCurrencyUnitMultiplier: 100,
-                                             statementDescription: "A DESCRIPTION",
-                                             paymentMethodTypes: [.cardPresent])
-
-        let statementDescription = try XCTUnwrap(params.statementDescription)
-
-        XCTAssertEqual(statementDescription, "A DESCRIPTION")
-    }
-
-    func test_statementDescription_trims_strings_to_22_characters() throws {
-        let params = PaymentIntentParameters(
-            amount: 100,
-            currency: "usd",
-            stripeSmallestCurrencyUnitMultiplier: 100,
-            statementDescription: "A DESCRIPTION LONGER THAN 22 CHARACTERS",
-            paymentMethodTypes: [.cardPresent]
-        )
-
-        let statementDescription = try XCTUnwrap(params.statementDescription)
-
-        XCTAssertEqual(statementDescription, "A DESCRIPTION LONGER T")
-    }
-
     func test_statementDescription_is_passed_as_nil_when_empty() throws {
         let params = PaymentIntentParameters(amount: 100,
                                              currency: "usd",

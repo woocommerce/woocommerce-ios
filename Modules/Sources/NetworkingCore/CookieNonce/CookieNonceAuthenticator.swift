@@ -86,9 +86,6 @@ private extension CookieNonceAuthenticator {
                 invalidateLoginSequence(error: error)
             } catch {
                 DDLogError("⛔️ Cookie nonce authenticator failed with uncaught error: \(error)")
-
-                // Invalidating (rather than only completing the pending requests) resets the
-                // authenticating state so subsequent requests cannot hang forever (WOOMOB-3866).
                 invalidateLoginSequence(error: .unknown(error))
             }
         }
@@ -134,12 +131,8 @@ private extension CookieNonceAuthenticator {
         let allowRetry: Bool
         switch error {
         case .postLoginFailed, .unknown:
-            // The sequence ended without a verdict on the credentials (transport failure,
-            // unexpected response, ...) — a later attempt may succeed, so keep retrying allowed.
             allowRetry = true
         case .invalidNewPostURL, .missingNonce:
-            // Definitive outcomes for this configuration — retrying with the same
-            // credentials cannot succeed.
             allowRetry = false
         }
         state.invalidate(allowRetry: allowRetry)

@@ -4,9 +4,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, labeled, unlabeled]
 
-env:
-  CONFIGURE_ENCRYPTION_KEY: ${{ secrets.CONFIGURE_ENCRYPTION_KEY }}
-
 jobs:
   build:
     name: Build Application
@@ -30,11 +27,15 @@ jobs:
     - name: Compile the App
       run: bundle exec fastlane build_screenshots
 
+    # upload-artifact drops symlinks and executable bits, which corrupts the `.app`/`.xctest`
+    # bundles and makes the test bundle fail to load in the capture job. Tar preserves both.
     - name: Archive Build Products
+      run: tar -cf build-products.tar -C DerivedData/Build/Products Debug-iphonesimulator
+    - name: Upload Build Products
       uses: actions/upload-artifact@v4
       with:
         name: screenshot-build-products
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/
+        path: build-products.tar
         retention-days: 1
 
   capture:
@@ -43,6 +44,9 @@ jobs:
     runs-on: macos-latest
 
     strategy:
+      # Don't let one locale's flaky accessibility-hierarchy timeout cancel the other locales'
+      # screenshots (see the note on `number_of_retries` in the Fastfile).
+      fail-fast: false
       matrix:
         language: [ar-SA, de-DE, en-US, es-ES, fr-FR, he, id, it, ja, ko, nl-NL, pt-BR, ru, sv, tr, zh-Hans, zh-Hant]
         mode: [dark, light]
@@ -53,14 +57,14 @@ jobs:
       with:
         bundler-cache: true
 
-    - name: Install Fastlane Dependencies
-      run: bundle exec fastlane run configure_apply
-
     - name: Download Build Products
       uses: actions/download-artifact@v4
       with:
         name: screenshot-build-products
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/
+    - name: Extract Build Products
+      run: |
+        mkdir -p DerivedData/Build/Products
+        tar -xf build-products.tar -C DerivedData/Build/Products
 
     - name: Generate Screenshots
       run: |
@@ -71,7 +75,9 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: "screenshot-log-${{ matrix.language }}-${{ matrix.mode }}"
-        path: fastlane/logs
+        path: |
+          fastlane/logs
+          fastlane/screenshots/test_output
 
     - name: Archive Generated Screenshots
       uses: actions/upload-artifact@v4
@@ -117,9 +123,6 @@ jobs:
         uses: ruby/setup-ruby@v1
         with:
           bundler-cache: true
-
-      - name: Install Fastlane Dependencies
-        run: bundle exec fastlane run configure_apply
 
       - name: Download Generated Screenshots
         uses: actions/download-artifact@v4

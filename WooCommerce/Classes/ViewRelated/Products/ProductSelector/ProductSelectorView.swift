@@ -170,8 +170,13 @@ struct ProductSelectorView: View {
                 .background(Color(.listForeground(modal: false)).ignoresSafeArea())
 
             case .empty:
-                EmptyState(title: Localization.emptyStateMessage, image: .productBlouseImage)
-                    .frame(maxHeight: .infinity)
+                // A scroll view here mirrors the results case: it absorbs all vertical compression when
+                // the keyboard shows, so the fixed-height header rows never overflow into the navigation bar.
+                ScrollView {
+                    EmptyState(title: Localization.emptyStateMessage, image: .productBlouseImage)
+                        .frame(maxWidth: .infinity)
+                        .containerRelativeFrame(.vertical)
+                }
             case .loading:
                 List(viewModel.ghostRows) { rowViewModel in
                     ProductRow(viewModel: rowViewModel)

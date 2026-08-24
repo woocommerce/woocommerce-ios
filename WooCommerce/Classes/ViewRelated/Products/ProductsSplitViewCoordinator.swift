@@ -1,4 +1,5 @@
 import Combine
+import CocoaLumberjackSwift
 import UIKit
 import Yosemite
 
@@ -26,14 +27,9 @@ final class ProductsSplitViewCoordinator: NSObject {
     private let splitViewController: UISplitViewController
     private let primaryNavigationController: UINavigationController
     private let secondaryNavigationController: UINavigationController
-    private lazy var swipeBackVetoHandler = ProductsSwipeBackVetoGestureRecognizerDelegate(
-        isCollapsed: { [weak self] in
-            self?.splitViewController.isCollapsed == true
-        },
-        shouldPopOnSwipeBack: { [weak self] in
-            self?.secondaryNavigationController.shouldPopOnSwipeBack() ?? true
-        }
-    )
+    private lazy var swipeBackVetoHandler = ProductsSwipeBackVetoGestureRecognizerDelegate { [weak self] in
+        self?.secondaryNavigationController.shouldPopOnSwipeBack() ?? true
+    }
     private lazy var swipeBackVetoGestureRecognizer: UIScreenEdgePanGestureRecognizer = {
         let gestureRecognizer = UIScreenEdgePanGestureRecognizer(target: self, action: #selector(handleVetoedSwipeBack))
         gestureRecognizer.edges = .left
@@ -81,6 +77,8 @@ final class ProductsSplitViewCoordinator: NSObject {
     }
 
     func refreshExpandedLayoutIfNeeded() {
+        refreshSwipeBackVetoRelationships(reason: "layout")
+
         guard !splitViewController.isCollapsed else {
             return
         }
@@ -284,9 +282,20 @@ private extension ProductsSplitViewCoordinator {
         primaryNavigationController.delegate = self
         secondaryNavigationController.delegate = self
 
-        splitViewController.view.addGestureRecognizer(swipeBackVetoGestureRecognizer)
-        primaryNavigationController.interactivePopGestureRecognizer?.require(toFail: swipeBackVetoGestureRecognizer)
-        secondaryNavigationController.interactivePopGestureRecognizer?.require(toFail: swipeBackVetoGestureRecognizer)
+        secondaryNavigationController.view.addGestureRecognizer(swipeBackVetoGestureRecognizer)
+        refreshSwipeBackVetoRelationships(reason: "configuration")
+    }
+
+    func refreshSwipeBackVetoRelationships(reason: String) {
+        let primaryGesture = primaryNavigationController.interactivePopGestureRecognizer
+        let secondaryGesture = secondaryNavigationController.interactivePopGestureRecognizer
+        primaryGesture?.require(toFail: swipeBackVetoGestureRecognizer)
+        secondaryGesture?.require(toFail: swipeBackVetoGestureRecognizer)
+        DDLogDebug("[WOOMOB-3789] veto refresh reason=\(reason) collapsed=\(splitViewController.isCollapsed) " +
+                   "displayMode=\(splitViewController.displayMode.rawValue) " +
+                   "primary=\(String(describing: primaryGesture.map(ObjectIdentifier.init))) " +
+                   "secondary=\(String(describing: secondaryGesture.map(ObjectIdentifier.init))) " +
+                   "vetoView=\(String(describing: swipeBackVetoGestureRecognizer.view.map(ObjectIdentifier.init)))")
     }
 
     func autoSelectProductOnInitialDataLoad() {
@@ -312,21 +321,28 @@ private extension ProductsSplitViewCoordinator {
 }
 
 final class ProductsSwipeBackVetoGestureRecognizerDelegate: NSObject, UIGestureRecognizerDelegate {
-    private let isCollapsed: () -> Bool
     private let shouldPopOnSwipeBack: () -> Bool
 
-    init(isCollapsed: @escaping () -> Bool, shouldPopOnSwipeBack: @escaping () -> Bool) {
-        self.isCollapsed = isCollapsed
+    init(shouldPopOnSwipeBack: @escaping () -> Bool) {
         self.shouldPopOnSwipeBack = shouldPopOnSwipeBack
     }
 
     func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
-        isCollapsed() && shouldPopOnSwipeBack() == false
+        let shouldPop = shouldPopOnSwipeBack()
+        DDLogDebug("[WOOMOB-3789] veto asked gesture=\(ObjectIdentifier(gestureRecognizer)) " +
+                   "view=\(String(describing: gestureRecognizer.view.map(ObjectIdentifier.init))) shouldPop=\(shouldPop)")
+        return shouldPop == false
     }
 }
 
 extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        // Collapsing the split view and updating its navigation stacks can replace or reconfigure the native pop recognizers.
+        // Re-establish the dependency after UIKit has finished processing the navigation transition.
+        DispatchQueue.main.async { [weak self] in
+            self?.refreshSwipeBackVetoRelationships(reason: "didShow \(type(of: viewController))")
+        }
+
         if didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController, animated: animated) {
             let dismissedProduct = productShownInSecondaryContent()
             DispatchQueue.main.async { [weak self] in

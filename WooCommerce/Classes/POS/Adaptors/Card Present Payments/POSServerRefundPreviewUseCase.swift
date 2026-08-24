@@ -32,13 +32,16 @@ final class POSServerRefundPreviewUseCase {
     private let refundService: RefundServiceProtocol
     private let flowResolver: POSRefundFlowResolver
     private let availabilityCache: ServerRefundAvailabilityCache
+    private let analytics: Analytics
 
     init(refundService: RefundServiceProtocol,
          flowResolver: POSRefundFlowResolver,
-         availabilityCache: ServerRefundAvailabilityCache) {
+         availabilityCache: ServerRefundAvailabilityCache,
+         analytics: Analytics) {
         self.refundService = refundService
         self.flowResolver = flowResolver
         self.availabilityCache = availabilityCache
+        self.analytics = analytics
     }
 
     func previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundPreviewLineItem]) async -> Result {
@@ -58,6 +61,10 @@ final class POSServerRefundPreviewUseCase {
             if isRouteNotRegistered(error) {
                 DDLogInfo("ℹ️ POS refund preview route not registered on site \(siteID); falling back to local calculation")
                 availabilityCache.markUnavailable(siteID: siteID)
+                // Reported once per site per app session, not once per refund: the cache
+                // short-circuits the resolver for the rest of the session, so this counts stores
+                // that fell back rather than the refunds they made afterwards.
+                analytics.track(event: .PointOfSale.refundServerFlowUnavailable())
                 return .fallbackToLocal
             }
             if let rejection = RefundAPIError(error) {

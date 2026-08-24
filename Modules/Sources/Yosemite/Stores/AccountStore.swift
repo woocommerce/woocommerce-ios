@@ -187,6 +187,7 @@ private extension AccountStore {
                 switch result {
                 case .success(let sites):
                     let containsJCPSites = sites.contains(where: { $0.isJetpackCPConnected })
+                    sites.forEach { self?.persistHTTPSConfigurationRequirement(from: $0) }
                     self?.upsertStoredSitesInBackground(readOnlySites: sites, selectedSiteID: selectedSiteID) {
                         onCompletion(.success(containsJCPSites))
                     }
@@ -194,6 +195,13 @@ private extension AccountStore {
                     onCompletion(.failure(error))
                 }
             }.store(in: &cancellables)
+    }
+
+    func persistHTTPSConfigurationRequirement(from site: Site) {
+        guard let required = site.wasURLNormalizedToHTTPS else {
+            return
+        }
+        dispatcher.dispatch(AppSettingsAction.setHTTPSConfigurationUpdateRequired(siteID: site.siteID, required: required))
     }
 
     /// Loads the site plan for the default site.

@@ -321,6 +321,7 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleRefundProcessingFailed,
             WooAnalyticsStat.pointOfSaleRefundFlowAborted,
             WooAnalyticsStat.pointOfSaleRefundSelectAllTapped,
+            WooAnalyticsStat.pointOfSaleRefundServerFlowUnavailable,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedScreenShown,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped,

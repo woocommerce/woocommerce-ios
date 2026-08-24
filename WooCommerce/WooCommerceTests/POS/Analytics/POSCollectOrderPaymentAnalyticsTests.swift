@@ -209,6 +209,23 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("waiting_time", in: "reader_ready_for_card_payment") == "3.0")
     }
 
+    @Test func test_track_card_reader_ready_when_order_sync_never_succeeded_then_reports_zero_waiting_time() {
+        // Given
+        let clock = TestClock()
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US),
+                                                         currentTimestamp: { clock.now })
+
+        // When
+        clock.now = 1_786_307_015 // customer interaction started (resets the order sync marker)
+        sut.trackCustomerInteractionStarted()
+        clock.now = 1_786_307_018 // reader ready before any order sync
+        sut.trackCardReaderReady()
+
+        // Then
+        #expect(property("waiting_time", in: "reader_ready_for_card_payment") == "0.0")
+    }
+
     @Test func test_track_successful_cash_payment_when_customer_interaction_started_then_reports_correct_elapsed_milliseconds() {
         // Given
         let clock = TestClock()

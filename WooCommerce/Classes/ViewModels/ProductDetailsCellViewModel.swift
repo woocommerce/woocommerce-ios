@@ -142,10 +142,11 @@ struct ProductDetailsCellViewModel {
     init(refundedItem: OrderItemRefund,
          currency: String,
          formatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         product: OrderDetailsProduct? = nil) {
+         product: OrderDetailsProduct? = nil,
+         imageURL: URL? = nil) {
         self.init(currency: currency,
                   currencyFormatter: formatter,
-                  imageURL: product?.imageURL,
+                  imageURL: imageURL ?? product?.imageURL,
                   name: refundedItem.name,
                   positiveQuantity: abs(refundedItem.quantity),
                   total: formatter.convertToDecimal(refundedItem.total) ?? NSDecimalNumber.zero,

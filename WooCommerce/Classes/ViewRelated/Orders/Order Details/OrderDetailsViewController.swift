@@ -34,6 +34,8 @@ final class OrderDetailsViewController: UIViewController {
     ///
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
+        refreshControl.isEnabled = false
+        refreshControl.isHidden = true
         refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
         return refreshControl
     }()
@@ -104,10 +106,8 @@ final class OrderDetailsViewController: UIViewController {
                 self?.topLoaderView.isHidden = true
             }
 
-            /// We add the refresh control to the tableview just after the `topLoaderView` disappear for the first time.
-            if self?.tableView.refreshControl == nil {
-                self?.tableView.refreshControl = self?.refreshControl
-            }
+            self?.refreshControl.isHidden = false
+            self?.refreshControl.isEnabled = true
         }
     }
 
@@ -141,6 +141,7 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
+        tableView.refreshControl = refreshControl
 
         tableView.dataSource = viewModel.dataSource
         tableView.accessibilityIdentifier = "order-details-table-view"
@@ -358,7 +359,6 @@ private extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
         ServiceLocator.analytics.track(.orderDetailPulledToRefresh)
-        refreshControl.beginRefreshing()
         syncEverything { [weak self] in
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             self?.refreshControl.endRefreshing()
@@ -571,6 +571,16 @@ private extension OrderDetailsViewController {
     }
 
     func issueRefundWasPressed() {
+        if let eligibilityFailure = viewModel.order.refundEligibilityFailure {
+            let alertController = UIAlertController(title: eligibilityFailure.title,
+                                                    message: eligibilityFailure.localizedDescription,
+                                                    preferredStyle: .alert)
+            alertController.addAction(UIAlertAction(title: eligibilityFailure.dismissButtonTitle,
+                                                    style: .default))
+            present(alertController, animated: true)
+            return
+        }
+
         let issueRefundCoordinatingController = IssueRefundCoordinatingController(order: viewModel.order, refunds: viewModel.refunds)
         present(issueRefundCoordinatingController, animated: true)
     }

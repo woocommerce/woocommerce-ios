@@ -92,15 +92,14 @@ struct ProductSelectorView: View {
     /// non-default filter, so the row stays minimal during browsing while still being discoverable
     /// once the merchant engages with search.
     private var shouldShowProductSearchFilter: Bool {
-        guard !isHeaderCollapsedForKeyboard else {
-            return false
-        }
-        return searchHeaderisBeingEdited || viewModel.searchTerm.isNotEmpty || viewModel.productSearchFilter != .all
+        searchHeaderisBeingEdited || viewModel.searchTerm.isNotEmpty || viewModel.productSearchFilter != .all
     }
 
+    /// In vertically compact environments the picker sits inline with the search field to trade
+    /// unavailable height for the abundant width, so the search row never grows to two rows there.
     private var productSelectorHeaderSearchRowHeight: CGFloat {
         let rowHeight = Constants.minimumRowHeight * scale
-        return shouldShowProductSearchFilter ? rowHeight * 2 : rowHeight
+        return shouldShowProductSearchFilter && verticalSizeClass != .compact ? rowHeight * 2 : rowHeight
     }
 
     /// In vertically compact environments the keyboard covers the multi-selection button, so it is
@@ -109,7 +108,7 @@ struct ProductSelectorView: View {
         guard configuration.multipleSelectionEnabled && viewModel.syncApproach == .onButtonTap else {
             return false
         }
-        return !(verticalSizeClass == .compact && searchHeaderisBeingEdited)
+        return !isHeaderCollapsedForKeyboard
     }
 
     var body: some View {
@@ -373,15 +372,27 @@ private extension ProductSelectorView {
     }
 
     @ViewBuilder private var productSelectorHeaderSearchRow: some View {
-        // Stacked layout on every size class — mirrors the Products tab search structurally and
-        // gives the picker enough room to render as a full-width segmented control when visible.
-        VStack(spacing: 0) {
-            searchHeader
-            if shouldShowProductSearchFilter {
-                productSearchFilterPicker
-                    .padding(.horizontal, Constants.defaultPadding)
-                    .padding(.bottom, Constants.productSearchFilterBottomPadding)
-                    .transition(.opacity)
+        Group {
+            if verticalSizeClass == .compact {
+                HStack(spacing: 0) {
+                    searchHeader
+                    if shouldShowProductSearchFilter {
+                        productSearchFilterPicker
+                            .frame(width: Constants.inlineSearchFilterWidth)
+                            .padding(.trailing, Constants.defaultPadding)
+                            .transition(.opacity)
+                    }
+                }
+            } else {
+                VStack(spacing: 0) {
+                    searchHeader
+                    if shouldShowProductSearchFilter {
+                        productSearchFilterPicker
+                            .padding(.horizontal, Constants.defaultPadding)
+                            .padding(.bottom, Constants.productSearchFilterBottomPadding)
+                            .transition(.opacity)
+                    }
+                }
             }
         }
         .frame(height: productSelectorHeaderSearchRowHeight)
@@ -442,6 +453,7 @@ private extension ProductSelectorView {
         static let defaultPadding: CGFloat = 16
         static let minimumRowHeight: CGFloat = 48
         static let productSearchFilterBottomPadding: CGFloat = 8
+        static let inlineSearchFilterWidth: CGFloat = 250
         static let headerSearchRowWidth: CGFloat = 450
         static let doneButtonAccessibilityIdentifier: String = "product-multiple-selection-done-button"
         static let productRowAccessibilityIdentifier: String = "product-item"

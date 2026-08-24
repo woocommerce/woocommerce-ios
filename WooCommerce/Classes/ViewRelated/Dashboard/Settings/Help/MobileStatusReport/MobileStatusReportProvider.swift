@@ -51,7 +51,7 @@ final class MobileStatusReportProvider: MobileStatusReportProviding {
     /// tests can exercise the degradation without waiting out the production value.
     private let dispatchTimeout: TimeInterval
 
-    nonisolated init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
+    init(systemSnapshot: @escaping () async -> MobileStatusReportSystemSnapshot = { await .current() },
                      pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                      stores: StoresManager = ServiceLocator.stores,
                      storageManager: StorageManagerType = ServiceLocator.storageManager,

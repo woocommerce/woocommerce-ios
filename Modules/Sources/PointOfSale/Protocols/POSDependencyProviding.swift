@@ -47,6 +47,7 @@ public protocol POSExternalNavigationProviding {
 /// This is used as a workaround to enable POS modularization without requiring a larger refactoring effort
 ///
 public protocol POSExternalViewProviding {
+    @MainActor
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
     func createCouponCreationView(discountType: CouponDiscountType,
                                   showTypeSelection: Binding<Bool>,

@@ -71,11 +71,7 @@ private extension CookieNonceAuthenticator {
         }
         Task(priority: .medium) {
             do {
-                do {
-                    try await handleSiteCredentialLogin(session: session)
-                } catch {
-                    throw CookieNonceAuthenticator.Error.postLoginFailed(error)
-                }
+                try await handleSiteCredentialLogin(session: session)
                 let page = try await handleNonceRetrieval(request: nonceRequest, session: session)
                 guard let nonce = readNonceFromAjaxAction(html: page) else {
                     throw CookieNonceAuthenticator.Error.missingNonce
@@ -98,7 +94,7 @@ private extension CookieNonceAuthenticator {
                 .validate()
                 .response { response in
                     if let error = response.error {
-                        continuation.resume(throwing: error)
+                        continuation.resume(throwing: CookieNonceAuthenticator.Error.postLoginFailed(error))
                     } else {
                         continuation.resume(returning: ())
                     }

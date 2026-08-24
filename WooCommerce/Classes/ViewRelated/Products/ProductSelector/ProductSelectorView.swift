@@ -376,28 +376,24 @@ private extension ProductSelectorView {
         .background(Color(.listForeground(modal: false)))
     }
 
+    // The search field keeps a single structural position across size class changes so it is not
+    // recreated on rotation, which would drop keyboard focus and skip the editing-ended callback.
     @ViewBuilder private var productSelectorHeaderSearchRow: some View {
-        Group {
-            if verticalSizeClass == .compact {
-                HStack(spacing: 0) {
-                    searchHeader
-                    if shouldShowProductSearchFilter {
-                        productSearchFilterPicker
-                            .frame(width: Constants.inlineSearchFilterWidth)
-                            .padding(.trailing, Constants.defaultPadding)
-                            .transition(.opacity)
-                    }
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                searchHeader
+                if verticalSizeClass == .compact && shouldShowProductSearchFilter {
+                    productSearchFilterPicker
+                        .frame(width: Constants.inlineSearchFilterWidth)
+                        .padding(.trailing, Constants.defaultPadding)
+                        .transition(.opacity)
                 }
-            } else {
-                VStack(spacing: 0) {
-                    searchHeader
-                    if shouldShowProductSearchFilter {
-                        productSearchFilterPicker
-                            .padding(.horizontal, Constants.defaultPadding)
-                            .padding(.bottom, Constants.productSearchFilterBottomPadding)
-                            .transition(.opacity)
-                    }
-                }
+            }
+            if verticalSizeClass != .compact && shouldShowProductSearchFilter {
+                productSearchFilterPicker
+                    .padding(.horizontal, Constants.defaultPadding)
+                    .padding(.bottom, Constants.productSearchFilterBottomPadding)
+                    .transition(.opacity)
             }
         }
         .frame(height: productSelectorHeaderSearchRowHeight)

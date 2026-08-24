@@ -144,6 +144,19 @@ extension XCUIElement {
         XCTAssertTrue(try verifyElementOnCell(parent: matching, child: cellIdentifier), "Element does not exist on cell!")
     }
 
+    /// Asserts that a cell identified by `cellIdentifier` has a `staticText` child whose label contains `substring`.
+    /// Use this when the label is a composed detail line (e.g. "On back order • $150.00") and only one part of it is under test.
+    public func assertStaticText(containing substring: String, existsOnCellWithIdentifier cellIdentifier: String) {
+        let cellPredicate = NSPredicate(format: "identifier == %@", cellIdentifier)
+        let labelPredicate = NSPredicate(format: "label CONTAINS[c] %@", substring)
+        let staticText = XCUIApplication().tables.cells.matching(cellPredicate)
+            .children(matching: .staticText)
+            .element(matching: labelPredicate)
+            .firstMatch
+
+        XCTAssertTrue(staticText.exists, "No static text containing '\(substring)' found on cell '\(cellIdentifier)'!")
+    }
+
     func verifyLabelContains(substring firstSubstring: String, and secondSubstring: String) throws -> Bool {
         let firstPredicate = NSPredicate(format: "label CONTAINS[c] %@", firstSubstring)
         let secondPredicate = NSPredicate(format: "label CONTAINS[c] %@", secondSubstring)

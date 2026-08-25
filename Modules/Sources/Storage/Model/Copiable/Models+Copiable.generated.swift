@@ -135,7 +135,6 @@ extension Storage.GeneralStoreSettings {
         firstPOSCatalogSyncDate: NullableCopiableProp<Date> = .copy,
         syncPOSCatalogOverCellular: CopiableProp<Bool> = .copy,
         posCatalogFileBlockedByHostAt: NullableCopiableProp<Date> = .copy,
-        lastSunsetWarningDismissedDate: NullableCopiableProp<Date> = .copy,
         requiresHTTPSConfigurationUpdate: NullableCopiableProp<Bool> = .copy,
         lastHTTPSConfigurationWarningDismissedDate: NullableCopiableProp<Date> = .copy
     ) -> Storage.GeneralStoreSettings {
@@ -165,7 +164,6 @@ extension Storage.GeneralStoreSettings {
         let firstPOSCatalogSyncDate = firstPOSCatalogSyncDate ?? self.firstPOSCatalogSyncDate
         let syncPOSCatalogOverCellular = syncPOSCatalogOverCellular ?? self.syncPOSCatalogOverCellular
         let posCatalogFileBlockedByHostAt = posCatalogFileBlockedByHostAt ?? self.posCatalogFileBlockedByHostAt
-        let lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate ?? self.lastSunsetWarningDismissedDate
         let requiresHTTPSConfigurationUpdate = requiresHTTPSConfigurationUpdate ?? self.requiresHTTPSConfigurationUpdate
         let lastHTTPSConfigurationWarningDismissedDate = lastHTTPSConfigurationWarningDismissedDate ?? self.lastHTTPSConfigurationWarningDismissedDate
 
@@ -196,7 +194,6 @@ extension Storage.GeneralStoreSettings {
             firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
             syncPOSCatalogOverCellular: syncPOSCatalogOverCellular,
             posCatalogFileBlockedByHostAt: posCatalogFileBlockedByHostAt,
-            lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
             requiresHTTPSConfigurationUpdate: requiresHTTPSConfigurationUpdate,
             lastHTTPSConfigurationWarningDismissedDate: lastHTTPSConfigurationWarningDismissedDate
         )

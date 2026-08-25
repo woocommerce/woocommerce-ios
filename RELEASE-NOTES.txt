@@ -4,7 +4,7 @@
 25.6
 -----
 - [Internal] POS: Refund submission events now use the POS Tracks prefix when issued from POS. [https://github.com/woocommerce/woocommerce-ios/pull/17744]
-- [*] Order creation: the Add Shipping button now stays above the keyboard after returning from the shipping method picker.
+- [*] Order creation: the Add Shipping button now stays above the keyboard after returning from the shipping method picker. [https://github.com/woocommerce/woocommerce-ios/pull/17767]
 
 25.5
 -----

@@ -27,6 +27,29 @@ struct ProductsSplitViewCoordinatorTests {
     }
 
     @Test
+    func test_navigationController_didShow_productSearch_in_collapsed_layout_then_hides_primary_navigation_bar_synchronously() throws {
+        // Given
+        let splitViewController = CollapsedSplitViewController(style: .doubleColumn)
+        let (sut, primaryNavigationController, _) = try makeSUT(splitViewController: splitViewController)
+        let command = ProductSearchUICommand(siteID: 123,
+                                             isSearchProductsBySKUEnabled: false,
+                                             onProductSelection: { _ in },
+                                             onCancel: {})
+        let searchViewController = SearchViewController(storeID: 123,
+                                                        command: command,
+                                                        cellType: ProductsTabProductTableViewCell.self,
+                                                        cellSeparator: .none)
+        primaryNavigationController.setViewControllers([searchViewController], animated: false)
+        primaryNavigationController.setNavigationBarHidden(false, animated: false)
+
+        // When
+        sut.navigationController(primaryNavigationController, didShow: searchViewController, animated: true)
+
+        // Then
+        #expect(primaryNavigationController.navigationBar.isHidden)
+    }
+
+    @Test
     func test_navigationController_didShow_productList_then_shows_primary_navigation_bar() throws {
         // Given
         let (sut, primaryNavigationController, _) = try makeSUT()
@@ -55,12 +78,17 @@ struct ProductsSplitViewCoordinatorTests {
 }
 
 private extension ProductsSplitViewCoordinatorTests {
-    func makeSUT() throws -> (ProductsSplitViewCoordinator, UINavigationController, UINavigationController) {
-        let splitViewController = UISplitViewController(style: .doubleColumn)
+    func makeSUT(
+        splitViewController: UISplitViewController = UISplitViewController(style: .doubleColumn)
+    ) throws -> (ProductsSplitViewCoordinator, UINavigationController, UINavigationController) {
         let sut = ProductsSplitViewCoordinator(siteID: 123, splitViewController: splitViewController)
         sut.start()
         let primaryNavigationController = try #require(splitViewController.viewController(for: .primary) as? UINavigationController)
         let secondaryNavigationController = try #require(splitViewController.viewController(for: .secondary) as? UINavigationController)
         return (sut, primaryNavigationController, secondaryNavigationController)
     }
+}
+
+private final class CollapsedSplitViewController: UISplitViewController {
+    override var isCollapsed: Bool { true }
 }

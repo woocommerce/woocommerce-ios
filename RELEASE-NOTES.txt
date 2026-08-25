@@ -3,6 +3,7 @@
 
 25.6
 -----
+- [*] Orders: show a warning on the order list when the store's currency couldn't be loaded, instead of silently showing amounts as USD. [https://github.com/woocommerce/woocommerce-ios/pull/PR_NUMBER]
 
 
 25.5

@@ -154,13 +154,14 @@ final class SiteCredentialsViewController: LoginViewController {
     /// and chooses which element to focus on at the beginning.
     ///
     private func configureForAccessibility() {
-        view.accessibilityElements = [
-            usernameField as Any,
-            tableView as Any,
-            submitButton as Any
-        ]
-
+        updateAccessibilityElements()
         UIAccessibility.post(notification: .screenChanged, argument: usernameField)
+    }
+
+    private func updateAccessibilityElements() {
+        let visibleInputField = recoveryEndpoint == nil ? usernameField : recoveryURLField
+        let elements: [UIView?] = [visibleInputField, tableView, submitButton]
+        view.accessibilityElements = elements.compactMap { $0 }
     }
 
     /// Sets the view's state to loading or not loading.
@@ -191,6 +192,7 @@ final class SiteCredentialsViewController: LoginViewController {
             shouldChangeVoiceOverFocus = moveVoiceOverFocus
             loadRows()
             tableView.reloadData()
+            updateAccessibilityElements()
         }
     }
 
@@ -368,6 +370,7 @@ private extension SiteCredentialsViewController {
 
         // Save a reference to the textField so it can becomeFirstResponder.
         usernameField = cell.textField
+        updateAccessibilityElements()
         cell.textField.delegate = self
 
         cell.onChangeSelectionHandler = { [weak self] textfield in
@@ -446,6 +449,7 @@ private extension SiteCredentialsViewController {
         cell.onChangeSelectionHandler = nil
         cell.configure(withStyle: .url, placeholder: placeholder, text: recoveryDraft)
         recoveryURLField = cell.textField
+        updateAccessibilityElements()
         cell.textField.delegate = self
         cell.textField.isEnabled = !isAuthenticatingSiteCredentials
         cell.textField.accessibilityLabel = placeholder
@@ -676,6 +680,7 @@ private extension SiteCredentialsViewController {
         loadRows()
         tableView.reloadData()
         tableView.layoutIfNeeded()
+        updateAccessibilityElements()
         let focus: Any? = if focusingError, let errorIndex = rows.firstIndex(of: .recoveryError) {
             tableView.cellForRow(at: IndexPath(row: errorIndex, section: 0)) ?? tableView
         } else if recoveryEndpoint == nil {

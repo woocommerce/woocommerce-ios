@@ -953,6 +953,58 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.isEmpty)
     }
 
+    func test_authenticate_site_credentials_when_network_failure_surfaces_recovery_then_does_not_track_login_failure() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        let manager = AuthenticationManager(
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider),
+            siteCredentialLoginUseCaseFactory: { _, _, _ in useCase }
+        )
+
+        // When
+        manager.authenticateSiteCredentials(
+            credentials: siteCredentials(),
+            loginURL: nil,
+            adminURL: nil,
+            endpointUnderVerification: nil,
+            onLoading: { _ in },
+            onSuccess: { _ in XCTFail("Expected endpoint recovery") },
+            onRecovery: { _ in },
+            onFailure: { _, _, _, _ in XCTFail("Expected endpoint recovery") }
+        )
+        useCase.fail(with: .inaccessibleLoginPage, loginEntryVerified: false)
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsFailed.rawValue))
+    }
+
+    func test_authenticate_site_credentials_when_genuine_failure_occurs_then_tracks_login_failure() {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        let manager = AuthenticationManager(
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider),
+            siteCredentialLoginUseCaseFactory: { _, _, _ in useCase }
+        )
+
+        // When
+        manager.authenticateSiteCredentials(
+            credentials: siteCredentials(),
+            loginURL: nil,
+            adminURL: nil,
+            endpointUnderVerification: nil,
+            onLoading: { _ in },
+            onSuccess: { _ in XCTFail("Expected failure") },
+            onRecovery: { _ in XCTFail("Expected failure") },
+            onFailure: { _, _, _, _ in }
+        )
+        useCase.fail(with: .invalidCredentials, loginEntryVerified: true)
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsFailed.rawValue))
+    }
+
     func test_authenticate_site_credentials_when_login_retry_is_missing_then_recovers_not_found_after_loading_starts() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1172,17 +1224,38 @@ final class AuthenticationManagerTests: XCTestCase {
         try assertCenteredFancyAlertPresented(by: presenter)
     }
 
-    func test_present_site_credential_browser_alternative_presents_application_password_tutorial() {
+    func test_present_site_credential_browser_alternative_presents_tutorial_without_tracking_invalid_login_page() {
         // Given
         let presenter = UIViewController()
         navigationController.setViewControllers([presenter], animated: false)
-        let manager = AuthenticationManager()
+        let analyticsProvider = MockAnalyticsProvider()
+        let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
 
         // When
         manager.presentSiteCredentialBrowserAlternative(for: "https://example.com", in: presenter)
 
         // Then
         XCTAssertTrue(navigationController.topViewController is ApplicationPasswordTutorialViewController)
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsInvalidLoginPageDetected.rawValue))
+    }
+
+    func test_handle_site_credential_login_failure_when_invalid_login_page_is_detected_then_tracks_detection() {
+        // Given
+        let presenter = UIViewController()
+        navigationController.setViewControllers([presenter], animated: false)
+        let analyticsProvider = MockAnalyticsProvider()
+        let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: analyticsProvider))
+
+        // When
+        manager.handleSiteCredentialLoginFailure(
+            error: SiteCredentialLoginError.inaccessibleLoginPage,
+            for: "https://example.com",
+            in: presenter
+        )
+
+        // Then
+        XCTAssertTrue(navigationController.topViewController is ApplicationPasswordTutorialViewController)
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsInvalidLoginPageDetected.rawValue))
     }
 
     func test_legacy_site_credential_login_failure_presents_centered_fancy_alert() throws {

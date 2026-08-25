@@ -75,6 +75,7 @@ struct ShippingLineSelectionDetails: View {
                 .padding()
                 .background(Color(.systemBackground))
             })
+            .manuallyAvoidingKeyboard()
             .navigationTitle(Localization.shipping)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {

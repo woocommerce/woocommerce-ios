@@ -6,6 +6,17 @@ fi
 
 "$(dirname "${BASH_SOURCE[0]}")/shared-set-up.sh"
 
+SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.json"
+
+echo "--- :closed_lock_with_key: Installing Secrets"
+bundle exec fastlane run configure_apply
+
+echo "--- :closed_lock_with_key: Validating credential keys"
+"$(dirname "${BASH_SOURCE[0]}")/validate-credentials.sh"
+
+# Shared Build products must not embed production secrets.
+rm -f "${SECRETS_PATH}"
+
 echo "--- :hammer_and_wrench: Building"
 bundle exec fastlane build_for_testing
 

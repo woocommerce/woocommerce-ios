@@ -26,7 +26,7 @@ final class ProductsSplitViewCoordinator: NSObject {
     private let splitViewController: UISplitViewController
     private let primaryNavigationController: UINavigationController
     private let secondaryNavigationController: UINavigationController
-    private var swipeBackVetoAllowedStartRegion: CGRect?
+    private var swipeBackVetoAllowedStartRegion = CGRect.zero
     private lazy var swipeBackVetoGestureRecognizer: UIPanGestureRecognizer = {
         let gestureRecognizer = UIPanGestureRecognizer(target: nil, action: nil)
         gestureRecognizer.delegate = self
@@ -305,8 +305,8 @@ private extension ProductsSplitViewCoordinator {
     func refreshSwipeBackVetoRelationships() {
         let usesExpandedRegularLayout = splitViewController.isCollapsed == false &&
             splitViewController.traitCollection.horizontalSizeClass == .regular
-        // iPad content-pop gestures can begin throughout the visible detail, while its physical screen edge is reserved for
-        // window resizing. In an expanded layout, limit the veto to the detail frame so product-list gestures remain untouched.
+        // Content-pop gestures can begin throughout the visible detail on iPad and iOS 26. In an expanded layout, limit the
+        // veto to the detail frame so product-list gestures remain untouched.
         if usesExpandedRegularLayout {
             swipeBackVetoAllowedStartRegion = secondaryNavigationController.view.convert(
                 secondaryNavigationController.view.bounds,
@@ -314,8 +314,13 @@ private extension ProductsSplitViewCoordinator {
             )
         } else if splitViewController.traitCollection.userInterfaceIdiom == .pad {
             swipeBackVetoAllowedStartRegion = splitViewController.view.bounds
+        } else if #available(iOS 26.0, *) {
+            swipeBackVetoAllowedStartRegion = splitViewController.view.bounds
         } else {
-            swipeBackVetoAllowedStartRegion = nil
+            let bounds = splitViewController.view.bounds
+            let originX = splitViewController.view.effectiveUserInterfaceLayoutDirection == .rightToLeft ?
+                bounds.maxX - 44 : bounds.minX
+            swipeBackVetoAllowedStartRegion = CGRect(x: originX, y: bounds.minY, width: 44, height: bounds.height)
         }
         let primaryGesture = primaryNavigationController.interactivePopGestureRecognizer
         let secondaryGesture = secondaryNavigationController.interactivePopGestureRecognizer
@@ -382,20 +387,11 @@ extension ProductsSplitViewCoordinator: UIGestureRecognizerDelegate {
 
         let location = swipeBackVetoGestureRecognizer.location(in: view)
         let startLocation = CGPoint(x: location.x - translation.x, y: location.y - translation.y)
-        guard canVetoSwipeBack(startingAt: startLocation, in: view) else {
+        guard swipeBackVetoAllowedStartRegion.contains(startLocation) else {
             return false
         }
 
         return secondaryNavigationController.shouldPopOnSwipeBack() == false
-    }
-
-    private func canVetoSwipeBack(startingAt location: CGPoint, in view: UIView) -> Bool {
-        if let swipeBackVetoAllowedStartRegion {
-            return swipeBackVetoAllowedStartRegion.contains(location)
-        }
-        let distanceFromBackEdge = view.effectiveUserInterfaceLayoutDirection == .rightToLeft ?
-            view.bounds.maxX - location.x : location.x - view.bounds.minX
-        return distanceFromBackEdge <= 44
     }
 }
 

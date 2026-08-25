@@ -23,6 +23,12 @@ enum SettingsUpdateSource {
 protocol SelectedSiteSettingsProtocol {
     var settingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never> { get }
     var siteSettings: [SiteSetting] { get }
+
+    /// Whether the store's currency has been resolved from synced general site settings.
+    ///
+    /// `false` means the general site-settings sync never provided a currency, so currency-dependent
+    /// formatting is silently falling back to defaults (USD). See WOOMOB-3897.
+    var isStoreCurrencyResolved: Bool { get }
     func refresh()
 }
 
@@ -46,6 +52,13 @@ final class SelectedSiteSettings: NSObject, SelectedSiteSettingsProtocol {
     }()
 
     public private(set) var siteSettings: [Yosemite.SiteSetting] = []
+
+    /// `true` when the synced general settings include the store currency; `false` when it's missing
+    /// (sync failed / never happened) and currency formatting is falling back to defaults.
+    ///
+    var isStoreCurrencyResolved: Bool {
+        siteSettings.contains { $0.settingID == CurrencySettings.Constants.currencyCodeKey }
+    }
 
     init(stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.stores = stores

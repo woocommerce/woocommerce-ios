@@ -321,6 +321,7 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleRefundProcessingFailed,
             WooAnalyticsStat.pointOfSaleRefundFlowAborted,
             WooAnalyticsStat.pointOfSaleRefundSelectAllTapped,
+            WooAnalyticsStat.pointOfSaleRefundServerFlowUnavailable,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedScreenShown,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped,
@@ -367,6 +368,14 @@ private extension TracksProvider {
             WooAnalyticsStat.collectPaymentFailed,
             WooAnalyticsStat.collectPaymentSuccess,
             WooAnalyticsStat.collectInteracPaymentSuccess,
+
+            // Refunds
+            WooAnalyticsStat.refundCreate,
+            WooAnalyticsStat.refundCreateSuccess,
+            WooAnalyticsStat.refundCreateFailed,
+            WooAnalyticsStat.interacRefundSuccess,
+            WooAnalyticsStat.interacRefundFailed,
+            WooAnalyticsStat.interacRefundCanceled,
 
             // Coupons
             WooAnalyticsStat.couponSettingEnabled,

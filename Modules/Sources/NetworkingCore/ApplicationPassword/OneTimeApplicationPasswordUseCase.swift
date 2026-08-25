@@ -36,7 +36,7 @@ public final class OneTimeApplicationPasswordUseCase: ApplicationPasswordUseCase
             storage.saveApplicationPassword(applicationPassword)
         }
         self.applicationPassword = storage.applicationPassword
-        self.siteAddress = siteAddress
+        self.siteAddress = siteAddress.normalizedToHTTPS()
         self.session = session
         if let discovery {
             self.discovery = discovery
@@ -123,7 +123,7 @@ private extension OneTimeApplicationPasswordUseCase {
     }
 
     func restAPIURL(for path: String, discoveredRoot: String?) -> URL? {
-        let root = discoveredRoot ?? WordPressAPIDiscovery.defaultRESTAPIRootURL(for: siteAddress)
+        let root = (discoveredRoot ?? WordPressAPIDiscovery.defaultRESTAPIRootURL(for: siteAddress)).normalizedToHTTPS()
         return URL(string: root + path)
     }
 

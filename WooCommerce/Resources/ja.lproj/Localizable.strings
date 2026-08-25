@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-07-28 09:57:19+0000 */
+/* Translation-Revision-Date: 2026-08-12 09:57:41+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -2169,7 +2169,6 @@ which should be translated separately and considered part of this sentence. */
    Dismiss the media picking action sheet
    Dismiss the shipment tracking action sheet
    Label for the banner Dismiss button
-   The title of the button to dismiss the banner on the products tab
    Title of the button to dismiss the banner notice in the add-ons view
    Title of the dismiss action button on the coupon list screen */
 "Dismiss" = "非表示";
@@ -3038,10 +3037,9 @@ which should be translated separately and considered part of this sentence. */
 /* Order gift card error notice title when the gift card is invalid. */
 "Gift card is not applied" = "ギフトカードが適用されていません";
 
-/* The title of the button to give feedback about products beta features on the banner on the products tab
-   Title of the button to give feedback about the add-ons feature
+/* Title of the button to give feedback about the add-ons feature
    Title of the feedback action button on the coupon list screen
-   Title on the navigation bar for the products feedback survey */
+   Title on the navigation bar for feedback surveys */
 "Give feedback" = "フィードバックを残す";
 
 /* Subtitle of the store onboarding task to get paid. */
@@ -4199,9 +4197,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Subtitle of analytics as part of Jetpack benefits. */
 "New analytics views, let you see visitors, reports and more." = "新しいアナリティクスビューでは、訪問者やレポートなどを確認できます。";
-
-/* The title of the top banner on the Products tab. */
-"New features available!" = "新機能を利用できます。";
 
 /* Rich order notification text, will read as: New order for MyCustom store */
 "New order for" = "新しい注文:";
@@ -14217,6 +14212,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* Mark favorite button title in Edit Product More Options Action Sheet */
 "productFormViewController.markAsFavorite" = "お気に入りに登録";
+
+/* Button that cancels product duplication and keeps unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.cancel" = "キャンセル";
+
+/* Destructive button that confirms duplication using the last saved product version. */
+"productFormViewController.productDuplicationConfirmation.confirm" = "破棄して複製";
+
+/* Message explaining that product duplication uses the last saved version instead of unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.message" = "未保存の変更は失われます。 複製には最終保存版が使用されます。";
+
+/* Title of the confirmation alert shown before duplicating a product with unsaved changes. */
+"productFormViewController.productDuplicationConfirmation.title" = "変更を破棄して複製しますか ?";
 
 /* Button on the alert when there is an error saving a product. Tapping the button should cancel the saving. */
 "productFormViewController.productSavingError.cancel" = "キャンセル";

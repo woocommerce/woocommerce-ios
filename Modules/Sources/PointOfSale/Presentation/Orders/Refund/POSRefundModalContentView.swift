@@ -404,10 +404,10 @@ struct POSRefundModalContentView: View {
 
     @MainActor
     private func processRefund(reviewData: POSRefundReviewData) async {
-        analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingStarted())
+        analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingStarted(flow: reviewData.calculationFlow))
         do {
             try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
-            analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingSuccess())
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingSuccess(flow: reviewData.calculationFlow))
             refundSubmissionModel.reset()
             modalState = .success(reviewData)
             onRefundSuccess?()
@@ -421,7 +421,8 @@ struct POSRefundModalContentView: View {
                 return
             }
             DDLogError("⛔️ Failed to process POS refund: \(error)")
-            analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingFailed(error: error))
+            analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingFailed(error: error,
+                                                                                       flow: reviewData.calculationFlow))
             onRefundFailure?(error)
             refundSubmissionModel.reset()
             let rejection = error as? RefundAPIError

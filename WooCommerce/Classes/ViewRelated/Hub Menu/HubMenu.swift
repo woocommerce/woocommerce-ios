@@ -13,12 +13,18 @@ struct HubMenu: View {
     /// Set from the hosting controller to open Google Ads campaigns.
     var googleAdsCampaignHandler: () -> Void = {}
 
+    var httpsConfigurationHelpHandler: () -> Void = {}
+
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
 
-    init(viewModel: HubMenuViewModel) {
+    @ObservedObject private var httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel
+
+    init(viewModel: HubMenuViewModel,
+         httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel) {
         self.viewModel = viewModel
+        self.httpsConfigurationWarningViewModel = httpsConfigurationWarningViewModel
     }
 
     var body: some View {
@@ -26,6 +32,14 @@ struct HubMenu: View {
             /// TODO: switch to `navigationDestination(item:destination)`
             /// when we drop support for iOS 16.
             menuList
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    if httpsConfigurationWarningViewModel.isVisible {
+                        HTTPSConfigurationWarningBanner(
+                            onAction: httpsConfigurationHelpHandler,
+                            onDismiss: httpsConfigurationWarningViewModel.dismiss
+                        )
+                    }
+                }
                 .navigationDestination(for: HubMenuNavigationDestination.self) { destination in
                     detailView(destination: destination)
                 }
@@ -383,17 +397,21 @@ private extension HubMenu {
 
 struct HubMenu_Previews: PreviewProvider {
     static var previews: some View {
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()),
+                httpsConfigurationWarningViewModel: .init())
             .environment(\.colorScheme, .light)
 
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()),
+                httpsConfigurationWarningViewModel: .init())
             .environment(\.colorScheme, .dark)
 
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()),
+                httpsConfigurationWarningViewModel: .init())
             .previewLayout(.fixed(width: 312, height: 528))
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
 
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()),
+                httpsConfigurationWarningViewModel: .init())
             .previewLayout(.fixed(width: 1024, height: 768))
     }
 }

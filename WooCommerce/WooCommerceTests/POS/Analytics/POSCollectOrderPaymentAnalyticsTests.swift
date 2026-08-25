@@ -1,6 +1,7 @@
 @testable import WooCommerce
 import protocol WooFoundation.Analytics
 import struct Yosemite.CardPresentPaymentsConfiguration
+import enum Yosemite.CardReaderServiceError
 import typealias Yosemite.PaymentIntent
 import enum WooFoundation.CountryCode
 import Foundation
@@ -209,6 +210,23 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("waiting_time", in: "reader_ready_for_card_payment") == "3.0")
     }
 
+    @Test func test_track_card_reader_ready_when_order_sync_never_succeeded_then_reports_zero_waiting_time() {
+        // Given
+        let clock = TestClock()
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US),
+                                                         currentTimestamp: { clock.now })
+
+        // When
+        clock.now = 1_786_307_015 // customer interaction started (resets the order sync marker)
+        sut.trackCustomerInteractionStarted()
+        clock.now = 1_786_307_018 // reader ready before any order sync
+        sut.trackCardReaderReady()
+
+        // Then
+        #expect(property("waiting_time", in: "reader_ready_for_card_payment") == "0.0")
+    }
+
     @Test func test_track_successful_cash_payment_when_customer_interaction_started_then_reports_correct_elapsed_milliseconds() {
         // Given
         let clock = TestClock()
@@ -250,6 +268,32 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(trackedEvent != nil)
         #expect(trackedEvent?.error is TestError)
         #expect(expectedProperties.allSatisfy { trackedEvent?.properties.keys.contains($0) == true })
+    }
+
+    @Test func test_track_payment_failure_when_error_carries_interac_payment_method_then_reports_payment_method_type() {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .CA))
+        let error = CardReaderServiceError.paymentCaptureWithPaymentMethod(underlyingError: .paymentDeclinedByCardReader,
+                                                                          paymentMethod: .interacPresent(details: .fake()))
+
+        // When
+        sut.trackPaymentFailure(with: error)
+
+        // Then
+        #expect(property("payment_method_type", in: "card_present_collect_payment_failed") == "card_interac")
+    }
+
+    @Test func test_track_payment_failure_when_error_carries_no_payment_method_then_omits_payment_method_type() {
+        // Given
+        let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
+                                                         configuration: CardPresentPaymentsConfiguration(country: .US))
+
+        // When
+        sut.trackPaymentFailure(with: TestError())
+
+        // Then
+        #expect(property("payment_method_type", in: "card_present_collect_payment_failed") == nil)
     }
 
     @Test func test_track_payment_cancelation_then_tracks_event_with_cancellation_source() {

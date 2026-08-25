@@ -34,10 +34,11 @@ final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayou
             DDLogError("## Notification with [\(String(describing: notification.noteID))] lacks its OrderID!")
             return
         }
+        let notificationSiteID = notification.resolvedSiteID()
 
         // workaround - delay to ensure the transition to the secondary column works after switching stores
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [self] in
-            presentDetails(for: Int64(orderID), siteID: notification.siteID, note: notification.note)
+            presentDetails(for: Int64(orderID), siteID: notificationSiteID, note: notification.note)
         }
     }
 

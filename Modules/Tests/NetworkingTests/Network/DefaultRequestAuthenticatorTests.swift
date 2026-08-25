@@ -57,6 +57,23 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         XCTAssertTrue(authorizationValue.hasPrefix("Basic"))
     }
 
+    func test_authenticatedRequest_attaches_application_password_when_http_site_url_is_normalized_to_https() throws {
+        // Given
+        let siteURL = "http://test.com/"
+        let credentials: Credentials = .applicationPassword(username: "admin", password: "supersecret", siteAddress: siteURL)
+        let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
+        let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
+        let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: .mark1, method: .get, path: "test")
+
+        // When
+        let request = try restRequest.asURLRequest()
+        let updatedRequest = try authenticator.authenticate(request)
+
+        // Then
+        XCTAssertEqual(updatedRequest.url?.scheme, "https")
+        XCTAssertTrue(try XCTUnwrap(updatedRequest.value(forHTTPHeaderField: "Authorization")).hasPrefix("Basic"))
+    }
+
     func test_authenticatedRequest_returns_REST_request_with_authorization_header_if_authenticated_with_application_password() throws {
         // Given
         let siteURL = "https://test.com/"

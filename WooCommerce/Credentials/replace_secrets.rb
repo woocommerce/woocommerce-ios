@@ -12,9 +12,11 @@
 require 'json'
 require 'optparse'
 
+# Interpolates `%{key}` placeholders in a template using a JSON secrets file.
 class ReplaceSecrets
   class Error < StandardError; end
 
+  # Raised when the template references a key absent from the secrets JSON.
   class MissingKeysError < Error
     attr_reader :keys
 
@@ -71,12 +73,11 @@ if $PROGRAM_NAME == __FILE__
 
   %i[secrets input].each do |parameter|
     filename = options[parameter]
+    next if filename && File.exist?(filename)
 
-    if filename.nil? || File.exist?(filename) == false
-      warn "error: Missing or invalid --#{parameter} argument"
-      warn optparse
-      exit 1
-    end
+    warn "error: Missing or invalid --#{parameter} argument"
+    warn optparse
+    exit 1
   end
 
   begin

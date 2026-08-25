@@ -12,6 +12,8 @@ require 'open3'
 require 'tempfile'
 require_relative 'replace_secrets'
 
+# Unit tests for ReplaceSecrets.
+# rubocop:disable Style/FormatStringToken -- templates under test use %{key} placeholders
 class ReplaceSecretsTest < Minitest::Test
   SCRIPT = File.expand_path('replace_secrets.rb', __dir__)
 
@@ -129,3 +131,4 @@ class ReplaceSecretsTest < Minitest::Test
     end
   end
 end
+# rubocop:enable Style/FormatStringToken

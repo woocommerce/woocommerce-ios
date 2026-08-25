@@ -3,9 +3,10 @@
 source 'https://rubygems.org'
 
 group :screenshots, optional: true do
-  # Capped below 7: the wpmreleasetoolkit PromoScreenshots helper still targets
-  # rmagick 5.x and breaks on 7. See AINFRA-2482.
-  gem 'rmagick', '>= 4.1', '< 7'
+  # Needed by `create_promo_screenshots`. Floor: 4.x fails to load on Ruby 3.4 because it uses
+  # `observer`, dropped from the default gems. Ceiling: the wpmreleasetoolkit PromoScreenshots
+  # helper breaks on 7. See AINFRA-2482.
+  gem 'rmagick', '~> 6.0'
 end
 
 gem 'danger-dangermattic', '~> 1.4'

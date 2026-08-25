@@ -328,11 +328,39 @@ final class SiteStoreTests: XCTestCase {
 
     // MARK: - `syncSiteByDomain`
 
-   func test_syncSiteByDomain_returns_site_on_success() {
+   func test_syncSite_returns_URL_normalization_state_on_success() throws {
+       // Given
+       let siteID: Int64 = 123
+       let site = Site.fake().copy(siteID: siteID, wasURLNormalizedToHTTPS: .some(true))
+       remote.whenLoadingSite(thenReturn: .success(site))
+       let mockProcessor = MockActionsProcessor()
+       dispatcher.register(processor: mockProcessor, for: AppSettingsAction.self)
+
+       // When
+       let result = waitFor { promise in
+           self.store.onAction(SiteAction.syncSite(siteID: siteID, completion: { result in
+               promise(result)
+           }))
+       }
+
+       // Then
+       XCTAssertEqual(try result.get().wasURLNormalizedToHTTPS, true)
+       let action = try XCTUnwrap(mockProcessor.receivedActions.first as? AppSettingsAction)
+       guard case let .setHTTPSConfigurationUpdateRequired(persistedSiteID, required) = action else {
+           return XCTFail("Expected HTTPS configuration requirement action")
+       }
+       XCTAssertEqual(persistedSiteID, siteID)
+       XCTAssertTrue(required)
+   }
+
+   func test_syncSiteByDomain_returns_site_and_URL_normalization_state_on_success() throws {
        // Given
        let siteID: Int64 = 123
        let domain = "example.com"
-       let site = Site.fake().copy(siteID: siteID, name: "Miffy", url: "https://\(domain)")
+       let site = Site.fake().copy(siteID: siteID,
+                                   name: "Miffy",
+                                   url: "https://\(domain)",
+                                   wasURLNormalizedToHTTPS: .some(true))
        remote.whenLoadingSite(thenReturn: .success(site))
 
        // When
@@ -344,6 +372,7 @@ final class SiteStoreTests: XCTestCase {
 
        // Then
        XCTAssertTrue(result.isSuccess)
+       XCTAssertEqual(try result.get().wasURLNormalizedToHTTPS, true)
        let loadedSite = viewStorage.loadSite(siteID: siteID)
        XCTAssertEqual(loadedSite?.name, "Miffy")
    }

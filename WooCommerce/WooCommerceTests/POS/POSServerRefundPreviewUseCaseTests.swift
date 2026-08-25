@@ -215,6 +215,62 @@ struct POSServerRefundPreviewUseCaseTests {
         #expect(isError(result))
         #expect(cache.isAvailable(siteID: siteID) == nil)
     }
+
+    @Test func previewRefund_when_route_missing_then_reports_the_fallback() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let (sut, _, _) = makeSUT(cachedWooVersion: Versions.minimum,
+                                  previewResult: .failure(DotcomError.noRestRoute()),
+                                  analyticsProvider: analyticsProvider)
+
+        // When
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then
+        #expect(analyticsProvider.receivedEvents.filter { $0 == "refund_server_flow_unavailable" }.count == 1)
+    }
+
+    @Test func previewRefund_when_the_route_is_missing_on_a_second_refund_then_reports_the_fallback_once() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let (sut, _, _) = makeSUT(cachedWooVersion: Versions.minimum,
+                                  previewResult: .failure(DotcomError.noRestRoute()),
+                                  analyticsProvider: analyticsProvider)
+
+        // When refunding twice on the same site
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then the event counts the store that fell back, not the refunds made afterwards:
+        // the cache short-circuits the resolver, so the second refund never probes the route.
+        #expect(analyticsProvider.receivedEvents.filter { $0 == "refund_server_flow_unavailable" }.count == 1)
+    }
+
+    @Test func previewRefund_when_the_site_is_not_eligible_then_reports_no_fallback() async {
+        // Given a store below the minimum version, which never probes the route
+        let analyticsProvider = MockAnalyticsProvider()
+        let (sut, _, _) = makeSUT(cachedWooVersion: Versions.belowMinimum,
+                                  previewResult: .failure(DotcomError.noRestRoute()),
+                                  analyticsProvider: analyticsProvider)
+
+        // When
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then
+        #expect(analyticsProvider.receivedEvents.contains("refund_server_flow_unavailable") == false)
+    }
+
+    @Test func previewRefund_when_preview_succeeds_then_reports_no_fallback() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let (sut, _, _) = makeSUT(previewResult: .success(preview()), analyticsProvider: analyticsProvider)
+
+        // When
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then
+        #expect(analyticsProvider.receivedEvents.contains("refund_server_flow_unavailable") == false)
+    }
 }
 
 private extension POSServerRefundPreviewUseCaseTests {
@@ -230,7 +286,8 @@ private extension POSServerRefundPreviewUseCaseTests {
     func makeSUT(flagEnabled: Bool = true,
                  cachedWooVersion: String? = Versions.minimum,
                  cache: ServerRefundAvailabilityCache? = nil,
-                 previewResult: Swift.Result<RefundPreview, Error>? = nil)
+                 previewResult: Swift.Result<RefundPreview, Error>? = nil,
+                 analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider())
     -> (POSServerRefundPreviewUseCase, MockRefundService, MockStoresManager) {
         // Resolved in the (main-actor) test body rather than as a default argument: the cache's
         // initializer is main-actor-isolated, and default arguments are evaluated nonisolated.
@@ -247,7 +304,8 @@ private extension POSServerRefundPreviewUseCaseTests {
                                                                                     featureFlagService: flags,
                                                                                     availabilityCache: cache,
                                                                                     minimumWooVersion: Versions.minimum),
-                                                availabilityCache: cache)
+                                                availabilityCache: cache,
+                                                analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         return (sut, service, stores)
     }
 

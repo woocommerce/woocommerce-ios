@@ -57,6 +57,7 @@ public struct PointOfSaleEntryPointView: View {
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
     private let receiptPrinter: ReceiptPrinterServiceProtocol?
+    private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -91,6 +92,7 @@ public struct PointOfSaleEntryPointView: View {
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          staffSettingsService: POSStaffSettingsService? = nil,
          services: POSDependencyProviding,
+         httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
         self._accessSession = State(initialValue: POSAccessSessionFactory.make(
@@ -187,12 +189,13 @@ public struct PointOfSaleEntryPointView: View {
         self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
         self.preferredConnectionMethod = preferredConnectionMethod
         self.receiptPrinter = receiptPrinter
+        self.httpsConfigurationNotice = httpsConfigurationNotice
     }
 
     public var body: some View {
         Group {
             if let posModel {
-                PointOfSaleDashboardView()
+                PointOfSaleDashboardView(httpsConfigurationNotice: httpsConfigurationNotice)
                     .environment(posModel)
                     .environment(posModel.paymentModel)
                     .posAutoLockActivityTracking(

@@ -148,7 +148,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                               context: context,
                               preparation: preparation,
                               selectedItems: selectedItems,
-                              reason: reason)
+                              reason: reason,
+                              calculationFlow: .serverComputed)
         case .fallbackToLocal:
             serverPreviewTotals[selectionKey] = nil
             let components = refundMapping.refundComponents(from: selectedItems, context: context)
@@ -159,7 +160,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                               context: context,
                               preparation: preparation,
                               selectedItems: selectedItems,
-                              reason: reason)
+                              reason: reason,
+                              calculationFlow: .local)
         case .rejected(let rejection):
             // The server rejected this selection with an actionable code; the typed rejection
             // carries the cashier-facing copy shown inline on the selection step.
@@ -177,7 +179,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                             context: POSRefundSubmissionMapping.PreparedRefundContext,
                             preparation: POSRefundPreparation,
                             selectedItems: [POSRefundSelectableItem],
-                            reason: String?) -> POSRefundReviewData {
+                            reason: String?,
+                            calculationFlow: POSRefundReviewData.CalculationFlow) -> POSRefundReviewData {
         POSRefundReviewData(itemsCount: selectedItems.count,
                             formattedItemsSubtotal: currencyFormatter.formatAmount(subtotal, with: context.order.currency) ?? "",
                             formattedTax: currencyFormatter.formatAmount(tax, with: context.order.currency) ?? "",
@@ -185,7 +188,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                             paymentMethodDescription: preparation.paymentMethodDescription,
                             customerEmail: preparation.customerEmail,
                             refundReason: reason,
-                            isFullRefund: selectedItems.count == preparation.selectableItems.count)
+                            isFullRefund: selectedItems.count == preparation.selectableItems.count,
+                            calculationFlow: calculationFlow)
     }
 
     func submitRefund(for order: POSOrder,

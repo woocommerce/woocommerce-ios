@@ -37,18 +37,28 @@ public enum RefundAPIError: Error, Equatable {
     /// carry one of the mapped codes. `rest_no_route` is deliberately not mapped so the
     /// route-availability fallback keeps working unchanged.
     public init?(_ error: Error) {
-        let code: String?
-        if let dotcomError = error as? DotcomError, case .unknown(let errorCode, _, _) = dotcomError {
-            code = errorCode
-        } else if let networkError = error as? NetworkError {
-            code = networkError.errorCode
-        } else {
-            code = nil
-        }
-        guard let code, let rejection = Self.rejectionsByCode[code] else {
+        guard let code = Self.restErrorCode(from: error), let rejection = Self.rejectionsByCode[code] else {
             return nil
         }
         self = rejection
+    }
+
+    /// The REST error code the refund endpoints returned, in either shape they carry it.
+    /// Exposed because callers that report the raw code — analytics distinguishing a deterministic
+    /// server rejection from a transport failure — must read it from the same place the typed
+    /// mapping above does, including codes this enum deliberately leaves unmapped.
+    public static func restErrorCode(from error: Error) -> String? {
+        switch error {
+        case let error as DotcomError:
+            guard case let .unknown(code, _, _) = error else {
+                return nil
+            }
+            return code
+        case let error as NetworkError:
+            return error.errorCode
+        default:
+            return nil
+        }
     }
 
     private static let rejectionsByCode: [String: RefundAPIError] = [
@@ -87,9 +97,9 @@ extension RefundAPIError: LocalizedError {
             comment: "Error shown when a refund is rejected because the selected quantity exceeds what is still refundable for an item."
         )
         static let lineItemAlreadyRefunded = NSLocalizedString(
-            "refundAPIError.lineItemAlreadyRefunded",
-            value: "This item has already been fully refunded.",
-            comment: "Error shown when a refund is rejected because the selected item is already fully refunded."
+            "refundAPIError.selectedItemAlreadyRefunded",
+            value: "One of the selected items has already been fully refunded.",
+            comment: "Error shown when a refund is rejected because one of the selected items is already fully refunded."
         )
         static let orderNotRefundable = NSLocalizedString(
             "refundAPIError.orderNotRefundable",

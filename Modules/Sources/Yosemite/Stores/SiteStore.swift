@@ -110,10 +110,12 @@ private extension SiteStore {
         Task { @MainActor in
             do {
                 let site = try await remote.loadSite(siteID: siteID)
+                persistHTTPSConfigurationRequirement(from: site)
                 await upsertStoredSiteInBackground(readOnlySite: site)
-                guard let syncedSite = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
+                guard let storedSite = storageManager.viewStorage.loadSite(siteID: siteID)?.toReadOnly() else {
                     return completion(.failure(SynchronizeSiteError.unknownSite))
                 }
+                let syncedSite = storedSite.copy(wasURLNormalizedToHTTPS: .some(site.wasURLNormalizedToHTTPS))
                 completion(.success(syncedSite))
             } catch {
                 completion(.failure(error))
@@ -125,10 +127,12 @@ private extension SiteStore {
         Task { @MainActor in
             do {
                 let site = try await remote.loadSite(domain: domain)
+                persistHTTPSConfigurationRequirement(from: site)
                 await upsertStoredSiteInBackground(readOnlySite: site)
-                guard let syncedSite = storageManager.viewStorage.loadSite(siteID: site.siteID)?.toReadOnly() else {
+                guard let storedSite = storageManager.viewStorage.loadSite(siteID: site.siteID)?.toReadOnly() else {
                     return completion(.failure(SynchronizeSiteError.unknownSite))
                 }
+                let syncedSite = storedSite.copy(wasURLNormalizedToHTTPS: .some(site.wasURLNormalizedToHTTPS))
                 completion(.success(syncedSite))
             } catch {
                 completion(.failure(error))
@@ -162,6 +166,13 @@ private extension SiteStore {
 }
 
 private extension SiteStore {
+    func persistHTTPSConfigurationRequirement(from site: Site) {
+        guard let required = site.wasURLNormalizedToHTTPS else {
+            return
+        }
+        dispatcher.dispatch(AppSettingsAction.setHTTPSConfigurationUpdateRequired(siteID: site.siteID, required: required))
+    }
+
     func upsertStoredSiteInBackground(readOnlySite: Networking.Site) async {
         await withCheckedContinuation { continuation in
             storageManager.performAndSave({ derivedStorage in

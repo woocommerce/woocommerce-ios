@@ -26,9 +26,15 @@ final class ProductsSplitViewCoordinator: NSObject {
     private let splitViewController: UISplitViewController
     private let primaryNavigationController: UINavigationController
     private let secondaryNavigationController: UINavigationController
-    private lazy var swipeBackVetoGestureRecognizer = ProductsSwipeBackVetoGestureRecognizer { [weak self] in
-        self?.secondaryNavigationController.shouldPopOnSwipeBack() == false
-    }
+    private var swipeBackVetoAllowedStartRegion: CGRect?
+    private lazy var swipeBackVetoGestureRecognizer: UIPanGestureRecognizer = {
+        let gestureRecognizer = UIPanGestureRecognizer(target: nil, action: nil)
+        gestureRecognizer.delegate = self
+        gestureRecognizer.maximumNumberOfTouches = 1
+        gestureRecognizer.cancelsTouchesInView = true
+        gestureRecognizer.delaysTouchesEnded = true
+        return gestureRecognizer
+    }()
     private lazy var productsViewController = ProductsViewController(siteID: siteID,
                                                                      selectedProduct: selectedProduct,
                                                                      navigateToContent: showFromProductList)
@@ -302,14 +308,14 @@ private extension ProductsSplitViewCoordinator {
         // iPad content-pop gestures can begin throughout the visible detail, while its physical screen edge is reserved for
         // window resizing. In an expanded layout, limit the veto to the detail frame so product-list gestures remain untouched.
         if usesExpandedRegularLayout {
-            swipeBackVetoGestureRecognizer.allowedStartRegion = secondaryNavigationController.view.convert(
+            swipeBackVetoAllowedStartRegion = secondaryNavigationController.view.convert(
                 secondaryNavigationController.view.bounds,
                 to: splitViewController.view
             )
         } else if splitViewController.traitCollection.userInterfaceIdiom == .pad {
-            swipeBackVetoGestureRecognizer.allowedStartRegion = splitViewController.view.bounds
+            swipeBackVetoAllowedStartRegion = splitViewController.view.bounds
         } else {
-            swipeBackVetoGestureRecognizer.allowedStartRegion = nil
+            swipeBackVetoAllowedStartRegion = nil
         }
         let primaryGesture = primaryNavigationController.interactivePopGestureRecognizer
         let secondaryGesture = secondaryNavigationController.interactivePopGestureRecognizer
@@ -359,94 +365,33 @@ final class ProductsSecondaryStackRestorationPolicy {
     }
 }
 
-final class ProductsSwipeBackVetoGestureRecognizer: UIGestureRecognizer {
-    /// When nil, recognition is limited to the standard 44-point back edge.
-    var allowedStartRegion: CGRect?
+extension ProductsSplitViewCoordinator: UIGestureRecognizerDelegate {
+    func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer === swipeBackVetoGestureRecognizer,
+              let view = gestureRecognizer.view else {
+            return true
+        }
 
-    private let shouldVetoSwipeBack: () -> Bool
-    private var initialLocation: CGPoint?
+        let translation = swipeBackVetoGestureRecognizer.translation(in: view)
+        let velocity = swipeBackVetoGestureRecognizer.velocity(in: view)
+        let direction = translation == .zero ? velocity : translation
+        let backTranslation = view.effectiveUserInterfaceLayoutDirection == .rightToLeft ? -direction.x : direction.x
+        guard backTranslation > abs(direction.y) else {
+            return false
+        }
 
-    init(shouldVetoSwipeBack: @escaping () -> Bool) {
-        self.shouldVetoSwipeBack = shouldVetoSwipeBack
-        super.init(target: nil, action: nil)
-        cancelsTouchesInView = true
-        delaysTouchesEnded = true
+        let location = swipeBackVetoGestureRecognizer.location(in: view)
+        let startLocation = CGPoint(x: location.x - translation.x, y: location.y - translation.y)
+        guard canVetoSwipeBack(startingAt: startLocation, in: view) else {
+            return false
+        }
+
+        return secondaryNavigationController.shouldPopOnSwipeBack() == false
     }
 
-    override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        guard let touch = touches.first else {
-            state = .failed
-            return
-        }
-
-        guard let view else {
-            state = .failed
-            return
-        }
-        let location = touch.location(in: view)
-        guard canStart(at: location, in: view) else {
-            state = .failed
-            return
-        }
-        initialLocation = location
-    }
-
-    override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
-        guard state == .possible,
-              let touch = touches.first,
-              let view,
-              let initialLocation else {
-            return
-        }
-
-        let location = touch.location(in: view)
-        let translationX = location.x - initialLocation.x
-        let translationY = location.y - initialLocation.y
-        guard hypot(translationX, translationY) >= 10 else {
-            return
-        }
-
-        let backTranslation = view.effectiveUserInterfaceLayoutDirection == .rightToLeft ? -translationX : translationX
-        guard backTranslation > abs(translationY) else {
-            state = .failed
-            return
-        }
-        attemptVeto()
-    }
-
-    override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
-        if state == .began || state == .changed {
-            state = .ended
-        } else if state == .possible {
-            state = .failed
-        }
-    }
-
-    override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
-        if state == .began || state == .changed {
-            state = .cancelled
-        } else if state == .possible {
-            state = .failed
-        }
-    }
-
-    override func reset() {
-        super.reset()
-        initialLocation = nil
-    }
-
-    private func attemptVeto() {
-        guard shouldVetoSwipeBack() else {
-            state = .failed
-            return
-        }
-
-        state = .began
-    }
-
-    private func canStart(at location: CGPoint, in view: UIView) -> Bool {
-        if let allowedStartRegion {
-            return allowedStartRegion.contains(location)
+    private func canVetoSwipeBack(startingAt location: CGPoint, in view: UIView) -> Bool {
+        if let swipeBackVetoAllowedStartRegion {
+            return swipeBackVetoAllowedStartRegion.contains(location)
         }
         let distanceFromBackEdge = view.effectiveUserInterfaceLayoutDirection == .rightToLeft ?
             view.bounds.maxX - location.x : location.x - view.bounds.minX

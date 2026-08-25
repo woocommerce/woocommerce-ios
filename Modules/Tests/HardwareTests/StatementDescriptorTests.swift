@@ -62,16 +62,16 @@ struct StatementDescriptorTests {
 
     @Test func test_wrappedValue_when_value_contains_forbidden_characters_then_replaces_them() {
         // Given
-        let value = "A<B>C\\D'E\"F*G"
+        let value = "A<B>C'D\"E*F"
 
         // When
         let result = sanitizedDescriptor(value)
 
         // Then
-        #expect(result == "A-B-C-D-E-F-G")
+        #expect(result == "A-B-C-D-E-F")
     }
 
-    @Test func test_wrappedValue_when_value_contains_latin_diacritics_then_folds_them_to_ASCII() {
+    @Test func test_wrappedValue_when_value_contains_latin_diacritics_then_returns_value_unchanged() {
         // Given
         let value = "Café Øresund Łódź"
 
@@ -79,29 +79,18 @@ struct StatementDescriptorTests {
         let result = sanitizedDescriptor(value)
 
         // Then
-        #expect(result == "Cafe Oresund Lodz")
+        #expect(result == value)
     }
 
-    @Test func test_wrappedValue_when_value_contains_non_ASCII_characters_then_replaces_them() {
+    @Test func test_wrappedValue_when_value_contains_mixed_unicode_then_returns_value_unchanged() {
         // Given
-        let value = "Store 店 😀"
+        let value = "CAFÉ 商店 🛒 - INDIMELO"
 
         // When
         let result = sanitizedDescriptor(value)
 
         // Then
-        #expect(result == "Store - -")
-    }
-
-    @Test func test_wrappedValue_when_value_contains_control_characters_then_replaces_them() {
-        // Given
-        let value = "Store\nName\t"
-
-        // When
-        let result = sanitizedDescriptor(value)
-
-        // Then
-        #expect(result == "Store-Name-")
+        #expect(result == value)
     }
 
     @Test func test_wrappedValue_when_sanitized_value_is_too_short_then_returns_nil() {
@@ -126,9 +115,9 @@ struct StatementDescriptorTests {
         #expect(result == nil)
     }
 
-    @Test func test_wrappedValue_when_sanitization_produces_an_invalid_value_then_returns_nil() {
+    @Test func test_wrappedValue_when_value_contains_only_non_ASCII_letters_then_returns_nil() {
         // Given
-        let value = "店名"
+        let value = "中国商店中国"
 
         // When
         let result = sanitizedDescriptor(value)

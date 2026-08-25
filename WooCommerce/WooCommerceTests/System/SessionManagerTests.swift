@@ -678,6 +678,44 @@ final class SessionManagerTests: XCTestCase {
         XCTAssertEqual(capturedEndpoints, endpoints)
     }
 
+    func test_delete_application_password_with_explicit_endpoints_after_credentials_change_then_injects_captured_endpoints() throws {
+        // Given
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+        let sut = SessionManager(
+            defaults: defaults,
+            keychainServiceName: UUID().uuidString,
+            wordPressOrgApplicationPasswordUseCaseFactory: { _, _, _, endpoints in
+                capturedEndpoints = endpoints
+                return MockDeletionApplicationPasswordUseCase()
+            }
+        )
+        let credentials: Credentials = .wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        sut.defaultCredentials = credentials
+        try sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        sut.defaultCredentials = .wpcom(username: "wpcom-user", authToken: "token", siteAddress: "https://example.com")
+        XCTAssertNil(sut.cookieNonceAuthenticationEndpoints(for: credentials))
+
+        // When
+        sut.deleteApplicationPassword(
+            using: credentials,
+            cookieNonceAuthenticationEndpoints: endpoints,
+            locally: false
+        )
+
+        // Then
+        XCTAssertEqual(capturedEndpoints, endpoints)
+    }
+
     /// Verifies that WPCOM credentials are returned for already installed and logged in versions which don't have type stored in user defaults
     ///
     func test_already_installed_version_without_authentication_type_saved_returns_WPCOM_credentials() throws {

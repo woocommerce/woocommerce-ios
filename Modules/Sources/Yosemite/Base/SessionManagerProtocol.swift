@@ -68,11 +68,18 @@ public protocol SessionManagerProtocol {
 
     /// Deletes application password
     ///
-    func deleteApplicationPassword(using credentials: Credentials?, locally: Bool)
+    func deleteApplicationPassword(using credentials: Credentials?,
+                                   cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?,
+                                   locally: Bool)
 }
 
 /// Helper methods
 public extension SessionManagerProtocol {
+    /// Deletes an application password using persisted cookie-nonce endpoints when available.
+    func deleteApplicationPassword(using credentials: Credentials?, locally: Bool) {
+        deleteApplicationPassword(using: credentials, cookieNonceAuthenticationEndpoints: nil, locally: locally)
+    }
+
     /// Let the session manager figure out the credentials by itself
     func deleteApplicationPassword(locally: Bool) {
         deleteApplicationPassword(using: nil, locally: locally)

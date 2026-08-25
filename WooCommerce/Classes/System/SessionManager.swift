@@ -303,14 +303,16 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Deletes application password
     ///
-    func deleteApplicationPassword(using creds: Credentials?, locally: Bool) {
+    func deleteApplicationPassword(using creds: Credentials?,
+                                   cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?,
+                                   locally: Bool) {
         let useCase: ApplicationPasswordUseCase? = credentialsQueue.sync {
             guard let credentials = creds ?? loadCredentials() else {
                 return nil
             }
             switch credentials {
             case let .wporg(username, password, siteAddress):
-                let authenticationEndpoints = cookieNonceAuthenticationEndpoints(for: credentials)
+                let authenticationEndpoints = cookieNonceAuthenticationEndpoints ?? self.cookieNonceAuthenticationEndpoints(for: credentials)
                 return try? wordPressOrgApplicationPasswordUseCaseFactory(
                     username,
                     password,

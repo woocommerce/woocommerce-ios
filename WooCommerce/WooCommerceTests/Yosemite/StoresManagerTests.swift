@@ -785,7 +785,9 @@ final class MockSessionManager: SessionManagerProtocol {
         // Do nothing
     }
 
-    func deleteApplicationPassword(using credentials: Credentials?, locally: Bool) {
+    func deleteApplicationPassword(using credentials: Credentials?,
+                                   cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?,
+                                   locally: Bool) {
         deleteApplicationPasswordInvoked = true
         deleteApplicationPasswordLocally = locally
     }

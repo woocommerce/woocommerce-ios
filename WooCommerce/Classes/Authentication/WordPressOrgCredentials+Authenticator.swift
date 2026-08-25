@@ -2,7 +2,7 @@ import Foundation
 import WordPressAuthenticator
 import struct NetworkingCore.CookieNonceAuthenticationEndpoints
 
-/// Extension to create cookie nonce authenticator from WP.org credentials.
+/// Authentication endpoints and URL strings derived from WP.org credentials.
 ///
 extension WordPressOrgCredentials {
     var loginURL: String {

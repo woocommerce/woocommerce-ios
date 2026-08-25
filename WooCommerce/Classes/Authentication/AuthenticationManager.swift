@@ -22,6 +22,11 @@ import struct NetworkingCore.WordPressAPIDiscovery
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
 class AuthenticationManager: Authentication {
+    typealias SiteCredentialLoginUseCaseFactory = (
+        _ siteURL: String,
+        _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?
+    ) -> SiteCredentialLoginProtocol
+
     typealias ApplicationPasswordUseCaseFactory = (
         _ username: String,
         _ password: String,
@@ -37,6 +42,10 @@ class AuthenticationManager: Authentication {
             siteAddress: siteAddress,
             authenticationEndpoints: authenticationEndpoints
         )
+    }
+
+    static let defaultSiteCredentialLoginUseCaseFactory: SiteCredentialLoginUseCaseFactory = { siteURL, authenticationEndpoints in
+        SiteCredentialLoginUseCase(siteURL: siteURL, endpoints: authenticationEndpoints)
     }
 
     var displayAuthenticatorIfLoggedOut: (() -> UINavigationController?)?
@@ -75,7 +84,7 @@ class AuthenticationManager: Authentication {
     private var postSiteCredentialLoginChecker: PostSiteCredentialLoginChecker?
 
     /// Keeps a reference to the use case
-    private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
+    private var siteCredentialLoginUseCase: SiteCredentialLoginProtocol?
 
     /// Keeps a reference to the QR-login coordinator while the flow is active.
     private var qrLoginCoordinator: QRLoginCoordinator?
@@ -88,6 +97,10 @@ class AuthenticationManager: Authentication {
 
     private let userDefaults: UserDefaults
 
+    private let runtimeCookieJar: HTTPCookieStorage
+
+    private let siteCredentialLoginUseCaseFactory: SiteCredentialLoginUseCaseFactory
+
     private let applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory
 
     init(stores: StoresManager = ServiceLocator.stores,
@@ -97,6 +110,9 @@ class AuthenticationManager: Authentication {
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
          userDefaults: UserDefaults = .standard,
          qrLoginAvailability: QRLoginAvailabilityProvider = QRLoginAvailability(),
+         runtimeCookieJar: HTTPCookieStorage = .shared,
+         siteCredentialLoginUseCaseFactory: @escaping SiteCredentialLoginUseCaseFactory
+             = AuthenticationManager.defaultSiteCredentialLoginUseCaseFactory,
          applicationPasswordUseCaseFactory: @escaping ApplicationPasswordUseCaseFactory
              = AuthenticationManager.defaultApplicationPasswordUseCaseFactory) {
         self.stores = stores
@@ -106,6 +122,8 @@ class AuthenticationManager: Authentication {
         self.switchStoreUseCase = switchStoreUseCase
         self.userDefaults = userDefaults
         self.qrLoginAvailability = qrLoginAvailability
+        self.runtimeCookieJar = runtimeCookieJar
+        self.siteCredentialLoginUseCaseFactory = siteCredentialLoginUseCaseFactory
         self.applicationPasswordUseCaseFactory = applicationPasswordUseCaseFactory
     }
 
@@ -561,7 +579,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping  (Error, Bool) -> Void) {
-        let useCase = SiteCredentialLoginUseCase(siteURL: credentials.siteURL)
+        let useCase = siteCredentialLoginUseCaseFactory(credentials.siteURL, credentials.authenticationEndpoints)
         useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error in
             guard let self else { return }
             onLoading(false)
@@ -826,7 +844,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 // MARK: - Application password
 extension AuthenticationManager {
     func makeApplicationPasswordUseCase(for credentials: WordPressOrgCredentials) throws -> ApplicationPasswordUseCase {
-        try applicationPasswordUseCaseFactory(
+        if let siteURL = URL(string: credentials.siteURL) {
+            runtimeCookieJar.removeCookies(forHostOf: siteURL)
+        }
+        return try applicationPasswordUseCaseFactory(
             credentials.username,
             credentials.password,
             credentials.siteURL,

@@ -222,15 +222,6 @@ private extension POSTabCoordinator {
                 isLocalCatalogEligible = false
             }
 
-            let sunsetWarningChecker = POSSunsetWarningChecker(
-                systemStatusService: POSSystemStatusService(
-                    credentials: credentials,
-                    selectedSite: defaultSitePublisher,
-                    appPasswordSupportState: isAppPasswordSupported,
-                    storageManager: storageManager
-                )
-            )
-
             let serviceAdaptor = POSServiceLocatorAdaptor()
             let collectPaymentAnalyticsAdaptor = POSCollectOrderPaymentAnalyticsAdaptor(analytics: serviceAdaptor.analytics)
 
@@ -400,7 +391,6 @@ private extension POSTabCoordinator {
                     catalogSyncCoordinator: catalogSyncCoordinator,
                     isLocalCatalogEligible: isLocalCatalogEligible,
                     receiptSettingsAdminURL: receiptSettingsAdminURL,
-                    sunsetWarningChecker: sunsetWarningChecker,
                     tapToPayAvailabilityChecker: tapToPayAvailabilityChecker,
                     preferredConnectionMethod: preferredConnectionMethod,
                     staffFetcher: staffFetcher,

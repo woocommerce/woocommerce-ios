@@ -25,7 +25,9 @@ public final class WordPressOrgNetwork: Network {
     private let requestConverter: RequestConverter
 
     private lazy var alamofireSession: Alamofire.Session = {
-        makeSession(configuration: .default)
+        let configuration = URLSessionConfiguration.default
+        configuration.httpCookieStorage = URLSessionConfiguration.ephemeral.httpCookieStorage
+        return makeSession(configuration: configuration)
     }()
 
     public var session: URLSession { alamofireSession.session }

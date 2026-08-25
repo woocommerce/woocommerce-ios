@@ -33,8 +33,7 @@ private extension StatementDescriptor {
             .joined(separator: Constants.replacement)
             .prefix(Constants.maxLength))
 
-        guard truncatedValue.count >= Constants.minLength,
-              truncatedValue.contains(where: \.isASCIILetter) else {
+        guard truncatedValue.count >= Constants.minLength else {
             return nil
         }
 
@@ -46,15 +45,5 @@ private extension StatementDescriptor {
         static let replacement = "-"
         static let minLength = 5
         static let maxLength = 22
-    }
-}
-
-private extension Character {
-    var isASCIILetter: Bool {
-        guard unicodeScalars.count == 1,
-              let value = unicodeScalars.first?.value else {
-            return false
-        }
-        return (65...90).contains(value) || (97...122).contains(value)
     }
 }

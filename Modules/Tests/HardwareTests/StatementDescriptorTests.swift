@@ -103,28 +103,6 @@ struct StatementDescriptorTests {
         // Then
         #expect(result == nil)
     }
-
-    @Test func test_wrappedValue_when_value_does_not_contain_a_letter_then_returns_nil() {
-        // Given
-        let value = "12345"
-
-        // When
-        let result = sanitizedDescriptor(value)
-
-        // Then
-        #expect(result == nil)
-    }
-
-    @Test func test_wrappedValue_when_value_contains_only_non_ASCII_letters_then_returns_nil() {
-        // Given
-        let value = "中国商店中国"
-
-        // When
-        let result = sanitizedDescriptor(value)
-
-        // Then
-        #expect(result == nil)
-    }
 }
 
 private extension StatementDescriptorTests {

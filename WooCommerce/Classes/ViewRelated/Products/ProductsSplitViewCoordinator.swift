@@ -1,5 +1,4 @@
 import Combine
-import CocoaLumberjackSwift
 import UIKit
 import Yosemite
 
@@ -27,23 +26,29 @@ final class ProductsSplitViewCoordinator: NSObject {
     private let splitViewController: UISplitViewController
     private let primaryNavigationController: UINavigationController
     private let secondaryNavigationController: UINavigationController
+    private var activeSwipeBackVetoCount = 0
     private lazy var swipeBackVetoPolicy = ProductsSwipeBackVetoPolicy { [weak self] in
-        self?.secondaryNavigationController.shouldPopOnSwipeBack() == false
+        guard let self else { return false }
+        return activeSwipeBackVetoCount > 0 || secondaryNavigationController.shouldPopOnSwipeBack() == false
     }
-    private lazy var swipeBackVetoGestureRecognizer = ProductsSwipeBackVetoGestureRecognizer(
-        policy: swipeBackVetoPolicy,
-        onVeto: { [weak self] in
-            self?.beginVetoingSwipeBack()
-        },
-        onVetoFinished: { [weak self] in
-            self?.finishVetoingSwipeBack()
-        }
-    )
+    private lazy var swipeBackVetoGestureRecognizer = makeSwipeBackVetoGestureRecognizer()
     private lazy var productsViewController = ProductsViewController(siteID: siteID,
                                                                      selectedProduct: selectedProduct,
                                                                      navigateToContent: showFromProductList)
     private let secondaryStackRestorationPolicy = ProductsSecondaryStackRestorationPolicy()
     private var vetoedSwipeCompetingPanGestures: [UIPanGestureRecognizer] = []
+
+    private func makeSwipeBackVetoGestureRecognizer() -> ProductsSwipeBackVetoGestureRecognizer {
+        ProductsSwipeBackVetoGestureRecognizer(
+            policy: swipeBackVetoPolicy,
+            onVeto: { [weak self] in
+                self?.beginVetoingSwipeBack()
+            },
+            onVetoFinished: { [weak self] in
+                self?.finishVetoingSwipeBack()
+            }
+        )
+    }
 
     private var addProductCoordinator: AddProductCoordinator?
 
@@ -82,7 +87,7 @@ final class ProductsSplitViewCoordinator: NSObject {
     }
 
     func refreshExpandedLayoutIfNeeded() {
-        refreshSwipeBackVetoRelationships(reason: "layout")
+        refreshSwipeBackVetoRelationships()
 
         guard !splitViewController.isCollapsed else {
             return
@@ -90,19 +95,20 @@ final class ProductsSplitViewCoordinator: NSObject {
         didExpand()
     }
 
-    func prepareForLayoutTransition() {
+    func prepareForLayoutTransition() -> UUID {
         secondaryStackRestorationPolicy.prepareForTransition(currentStack: secondaryNavigationController.viewControllers)
     }
 
-    func completeLayoutTransition() {
+    func completeLayoutTransition(_ transitionID: UUID) {
         guard let stackToRestore = secondaryStackRestorationPolicy.stackToRestore(
+            for: transitionID,
             currentStack: secondaryNavigationController.viewControllers
         ) else {
             return
         }
 
         secondaryNavigationController.setViewControllers(stackToRestore, animated: false)
-        refreshSwipeBackVetoRelationships(reason: "layout transition completed")
+        refreshSwipeBackVetoRelationships()
     }
 
     func startProductCreation() {
@@ -302,20 +308,36 @@ private extension ProductsSplitViewCoordinator {
         primaryNavigationController.delegate = self
         secondaryNavigationController.delegate = self
 
-        secondaryNavigationController.view.addGestureRecognizer(swipeBackVetoGestureRecognizer)
-        refreshSwipeBackVetoRelationships(reason: "configuration")
+        splitViewController.view.addGestureRecognizer(swipeBackVetoGestureRecognizer)
+        refreshSwipeBackVetoRelationships()
     }
 
-    func refreshSwipeBackVetoRelationships(reason: String) {
+    func refreshSwipeBackVetoRelationships() {
+        let usesExpandedRegularLayout = splitViewController.isCollapsed == false &&
+            splitViewController.traitCollection.horizontalSizeClass == .regular
+        // iPad content-pop gestures can begin throughout the visible detail, while its physical screen edge is reserved for
+        // window resizing. In an expanded layout, limit the veto to the detail frame so product-list gestures remain untouched.
+        if usesExpandedRegularLayout {
+            swipeBackVetoGestureRecognizer.allowedStartRegion = secondaryNavigationController.view.convert(
+                secondaryNavigationController.view.bounds,
+                to: splitViewController.view
+            )
+        } else if splitViewController.traitCollection.userInterfaceIdiom == .pad {
+            swipeBackVetoGestureRecognizer.allowedStartRegion = splitViewController.view.bounds
+        } else {
+            swipeBackVetoGestureRecognizer.allowedStartRegion = nil
+        }
         let primaryGesture = primaryNavigationController.interactivePopGestureRecognizer
         let secondaryGesture = secondaryNavigationController.interactivePopGestureRecognizer
+        primaryGesture?.delegate = primaryNavigationController
+        secondaryGesture?.delegate = secondaryNavigationController
         primaryGesture?.require(toFail: swipeBackVetoGestureRecognizer)
         secondaryGesture?.require(toFail: swipeBackVetoGestureRecognizer)
-        DDLogDebug("[WOOMOB-3789] veto refresh reason=\(reason) collapsed=\(splitViewController.isCollapsed) " +
-                   "displayMode=\(splitViewController.displayMode.rawValue) " +
-                   "primary=\(String(describing: primaryGesture.map(ObjectIdentifier.init))) " +
-                   "secondary=\(String(describing: secondaryGesture.map(ObjectIdentifier.init))) " +
-                   "vetoView=\(String(describing: swipeBackVetoGestureRecognizer.view.map(ObjectIdentifier.init)))")
+
+        if #available(iOS 26.0, *) {
+            primaryNavigationController.interactiveContentPopGestureRecognizer?.require(toFail: swipeBackVetoGestureRecognizer)
+            secondaryNavigationController.interactiveContentPopGestureRecognizer?.require(toFail: swipeBackVetoGestureRecognizer)
+        }
     }
 
     func autoSelectProductOnInitialDataLoad() {
@@ -336,15 +358,26 @@ private extension ProductsSplitViewCoordinator {
 
 private extension ProductsSplitViewCoordinator {
     func beginVetoingSwipeBack() {
-        vetoedSwipeCompetingPanGestures = splitViewController.view.allDescendantGestureRecognizers
-            .compactMap { $0 as? UIPanGestureRecognizer }
-        vetoedSwipeCompetingPanGestures.forEach { $0.isEnabled = false }
+        if activeSwipeBackVetoCount == 0 {
+            vetoedSwipeCompetingPanGestures = splitViewController.view.allDescendantGestureRecognizers
+                .compactMap { $0 as? UIPanGestureRecognizer }
+                .filter(\.isEnabled)
+            vetoedSwipeCompetingPanGestures.forEach { $0.isEnabled = false }
+        }
+        activeSwipeBackVetoCount += 1
     }
 
     func finishVetoingSwipeBack() {
+        guard activeSwipeBackVetoCount > 0 else {
+            return
+        }
+        activeSwipeBackVetoCount -= 1
+        guard activeSwipeBackVetoCount == 0 else {
+            return
+        }
         vetoedSwipeCompetingPanGestures.forEach { $0.isEnabled = true }
         vetoedSwipeCompetingPanGestures = []
-        refreshSwipeBackVetoRelationships(reason: "veto finished")
+        refreshSwipeBackVetoRelationships()
     }
 }
 
@@ -367,18 +400,18 @@ final class ProductsSwipeBackVetoPolicy {
 }
 
 final class ProductsSecondaryStackRestorationPolicy {
-    private var stackBeforeTransition: [UIViewController]?
+    private var stacksBeforeTransition: [UUID: [UIViewController]] = [:]
 
-    func prepareForTransition(currentStack: [UIViewController]) {
-        stackBeforeTransition = currentStack
+    func prepareForTransition(currentStack: [UIViewController]) -> UUID {
+        let transitionID = UUID()
+        stacksBeforeTransition[transitionID] = currentStack
+        return transitionID
     }
 
-    func stackToRestore(currentStack: [UIViewController]) -> [UIViewController]? {
-        defer {
-            stackBeforeTransition = nil
-        }
-        guard let stackBeforeTransition,
-              currentStack != stackBeforeTransition else {
+    func stackToRestore(for transitionID: UUID, currentStack: [UIViewController]) -> [UIViewController]? {
+        guard let stackBeforeTransition = stacksBeforeTransition.removeValue(forKey: transitionID),
+              currentStack.count < stackBeforeTransition.count,
+              zip(currentStack, stackBeforeTransition).allSatisfy({ current, previous in current === previous }) else {
             return nil
         }
         return stackBeforeTransition
@@ -386,16 +419,18 @@ final class ProductsSecondaryStackRestorationPolicy {
 }
 
 final class ProductsSwipeBackVetoGestureRecognizer: UIGestureRecognizer {
-    private let edgeWidth: CGFloat
+    /// When nil, recognition is limited to the standard 44-point back edge.
+    var allowedStartRegion: CGRect?
+
     private let policy: ProductsSwipeBackVetoPolicy
     private let onVeto: () -> Void
     private let onVetoFinished: () -> Void
+    private var isVetoActive = false
+    private var initialLocation: CGPoint?
 
-    init(edgeWidth: CGFloat = 44,
-         policy: ProductsSwipeBackVetoPolicy,
+    init(policy: ProductsSwipeBackVetoPolicy,
          onVeto: @escaping () -> Void,
          onVetoFinished: @escaping () -> Void) {
-        self.edgeWidth = edgeWidth
         self.policy = policy
         self.onVeto = onVeto
         self.onVetoFinished = onVetoFinished
@@ -405,43 +440,104 @@ final class ProductsSwipeBackVetoGestureRecognizer: UIGestureRecognizer {
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
-        guard let touch = touches.first,
-              touch.location(in: view).x <= edgeWidth,
-              policy.shouldVeto() else {
+        guard let touch = touches.first else {
             state = .failed
             return
         }
 
-        DDLogDebug("[WOOMOB-3789] vetoed at edge touch")
-        state = .began
-        onVeto()
+        guard let view else {
+            state = .failed
+            return
+        }
+        let location = touch.location(in: view)
+        guard canStart(at: location, in: view) else {
+            state = .failed
+            return
+        }
+        initialLocation = location
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
-        // Once begun, recognizing the touch is sufficient to prevent the native pop gestures.
+        guard state == .possible,
+              let touch = touches.first,
+              let view,
+              let initialLocation else {
+            return
+        }
+
+        let location = touch.location(in: view)
+        let translationX = location.x - initialLocation.x
+        let translationY = location.y - initialLocation.y
+        guard hypot(translationX, translationY) >= 10 else {
+            return
+        }
+
+        let backTranslation = view.effectiveUserInterfaceLayoutDirection == .rightToLeft ? -translationX : translationX
+        guard backTranslation > abs(translationY) else {
+            state = .failed
+            return
+        }
+        attemptVeto()
     }
 
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         if state == .began || state == .changed {
             state = .ended
-            onVetoFinished()
+            finishVetoIfNeeded()
+        } else if state == .possible {
+            state = .failed
         }
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
         if state == .began || state == .changed {
             state = .cancelled
-            onVetoFinished()
+            finishVetoIfNeeded()
+        } else if state == .possible {
+            state = .failed
         }
+    }
+
+    override func reset() {
+        super.reset()
+        initialLocation = nil
+        finishVetoIfNeeded()
+    }
+
+    private func attemptVeto() {
+        guard policy.shouldVeto() else {
+            state = .failed
+            return
+        }
+
+        state = .began
+        isVetoActive = true
+        onVeto()
+    }
+
+    private func canStart(at location: CGPoint, in view: UIView) -> Bool {
+        if let allowedStartRegion {
+            return allowedStartRegion.contains(location)
+        }
+        let distanceFromBackEdge = view.effectiveUserInterfaceLayoutDirection == .rightToLeft ?
+            view.bounds.maxX - location.x : location.x - view.bounds.minX
+        return distanceFromBackEdge <= 44
+    }
+
+    private func finishVetoIfNeeded() {
+        guard isVetoActive else {
+            return
+        }
+        isVetoActive = false
+        onVetoFinished()
     }
 }
 
 extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        // Collapsing the split view and updating its navigation stacks can replace or reconfigure the native pop recognizers.
-        // Re-establish the dependency after UIKit has finished processing the navigation transition.
+        // Split-view stack updates can replace the native pop recognizers, so restore the dependency after navigation settles.
         DispatchQueue.main.async { [weak self] in
-            self?.refreshSwipeBackVetoRelationships(reason: "didShow \(type(of: viewController))")
+            self?.refreshSwipeBackVetoRelationships()
         }
 
         if didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController, animated: animated) {

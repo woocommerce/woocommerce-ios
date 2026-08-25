@@ -39,9 +39,9 @@ final class ProductsSplitViewWrapperController: UIViewController, UsesCompactLay
     override func viewWillTransition(to size: CGSize, with transitionCoordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: transitionCoordinator)
 
-        coordinator.prepareForLayoutTransition()
+        let transitionID = coordinator.prepareForLayoutTransition()
         transitionCoordinator.animate(alongsideTransition: nil) { [weak self] _ in
-            self?.coordinator.completeLayoutTransition()
+            self?.coordinator.completeLayoutTransition(transitionID)
         }
     }
 

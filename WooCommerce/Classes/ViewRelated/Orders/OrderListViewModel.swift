@@ -6,7 +6,6 @@ import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
-import WooFoundationCore
 
 /// ViewModel for `OrderListViewController`.
 ///
@@ -94,16 +93,15 @@ final class OrderListViewModel {
 
     /// Set when sync fails, and used to display the corresponding error loading data banner
     ///
-    @Published var dataLoadingError: Error? = nil
+    @Published var dataLoadingError: Error? = nil {
+        didSet { updateTopBanner() }
+    }
 
     /// Determines what top banner should be shown
     ///
     @Published private(set) var topBanner: TopBanner = .none
 
-    /// Emits `true` while a store-currency re-sync (triggered from the warning banner) is in flight,
-    /// so the banner is hidden until the refresh completes.
-    ///
-    private let isRefreshingStoreCurrencySubject = CurrentValueSubject<Bool, Never>(false)
+    private var siteSettingsSubscription: AnyCancellable?
 
     init(siteID: Int64,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
@@ -309,33 +307,41 @@ private extension OrderListViewModel {
 // MARK: - Banners
 
 extension OrderListViewModel {
-    /// Drives the top banner. The order list header is a single slot: a data-loading error takes precedence,
-    /// then the currency warning (unless a re-sync is in flight, in which case the banner is hidden).
+    /// Sets up the header banner. The header has a single banner slot, fed by two independent inputs: the orders
+    /// load error (`dataLoadingError`, via its `didSet`) and the store-currency state (site settings, via the sink
+    /// below). Both call `updateTopBanner()`, which owns the precedence between them.
     ///
     private func bindTopBannerState() {
-        let isUsingFallbackCurrency = selectedSiteSettings.settingsStream
-            .map { !$0.settings.contains { $0.settingID == CurrencySettings.Constants.currencyCodeKey } }
-            .prepend(false)
-            .removeDuplicates()
-
-        Publishers.CombineLatest3($dataLoadingError, isUsingFallbackCurrency, isRefreshingStoreCurrencySubject)
-            .map { loadingError, isUsingFallbackCurrency, isRefreshingCurrency -> TopBanner in
-                if let error = loadingError {
-                    return .error(error)
-                }
-                if isUsingFallbackCurrency && !isRefreshingCurrency {
-                    return .currencyUnavailable
-                }
-                return .none
+        siteSettingsSubscription = selectedSiteSettings.settingsStream
+            .sink { [weak self] _ in
+                self?.updateTopBanner()
             }
-            .assign(to: &$topBanner)
+        updateTopBanner()
     }
 
-    /// Re-syncs general site settings so the store currency can be resolved. The banner is hidden while the
-    /// sync is in flight and re-appears if the currency still isn't available afterwards.
+    /// Resolves the header's single banner slot: a data-loading error takes precedence over the currency warning.
+    ///
+    private func updateTopBanner() {
+        let banner: TopBanner
+        if let dataLoadingError {
+            banner = .error(dataLoadingError)
+        } else if selectedSiteSettings.isUsingFallbackCurrency {
+            banner = .currencyUnavailable
+        } else {
+            banner = .none
+        }
+
+        if banner != topBanner {
+            topBanner = banner
+        }
+    }
+
+    /// Re-syncs general site settings so the store currency can be resolved. The banner is hidden immediately;
+    /// once the sync completes, `settingsStream` re-emits and the banner re-appears if the currency is still
+    /// unavailable.
     ///
     func retryStoreCurrencySync() {
-        isRefreshingStoreCurrencySubject.send(true)
+        topBanner = .none
 
         let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
             guard let self else { return }
@@ -343,7 +349,6 @@ extension OrderListViewModel {
                 DDLogError("⛔️ Retrying store currency sync failed for siteID \(self.siteID): \(error)")
             }
             self.selectedSiteSettings.refresh()
-            self.isRefreshingStoreCurrencySubject.send(false)
         }
         stores.dispatch(action)
     }

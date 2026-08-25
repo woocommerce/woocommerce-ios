@@ -75,16 +75,31 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     func refreshRefundableItems() async -> StartRefundFlowResult {
         refreshRefundableItemsCallCount += 1
-        let previousSelection = Set(refundSelectableItems.filter { $0.isSelected }.map(\.id))
+        // Mirrors the production restore: by unit count per line item, not by row id.
+        let selected = refundSelectableItems.filter { $0.isSelected }
+        var remainingUnits = selected
+            .filter { !$0.isLumpSum }
+            .reduce(into: [Int64: Int]()) { counts, item in
+                counts[item.itemID, default: 0] += 1
+            }
+        let selectedLumpSumIDs = Set(selected.filter(\.isLumpSum).map(\.itemID))
+
         if let stubRefreshedRefundSelectableItems {
             refundSelectableItems = stubRefreshedRefundSelectableItems
         }
-        if refundSelectableItems.contains(where: { previousSelection.contains($0.id) }) {
-            for index in refundSelectableItems.indices {
-                refundSelectableItems[index].isSelected = previousSelection.contains(refundSelectableItems[index].id)
+
+        for index in refundSelectableItems.indices {
+            let item = refundSelectableItems[index]
+            if item.isLumpSum {
+                refundSelectableItems[index].isSelected = selectedLumpSumIDs.contains(item.itemID)
+            } else if let unitsLeft = remainingUnits[item.itemID], unitsLeft > 0 {
+                remainingUnits[item.itemID] = unitsLeft - 1
+                refundSelectableItems[index].isSelected = true
+            } else {
+                refundSelectableItems[index].isSelected = false
             }
         }
-        hasModifiedRefundSelection = false
+        hasModifiedRefundSelection = refundSelectableItems.contains { !$0.isSelected }
         return stubStartRefundFlowResult
     }
 

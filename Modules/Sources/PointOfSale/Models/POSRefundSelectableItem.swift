@@ -17,7 +17,10 @@ public struct POSRefundSelectableItem: Identifiable, Equatable {
     public let isLumpSum: Bool
     var isSelected: Bool
 
-    /// Unique identifier for the selectable item (combines itemID and index for multiple units)
+    /// Unique identifier for the selectable item: `"<itemID>-<unit index within the line>"` for a
+    /// line item unit, `"fee-<feeID>"` for a lump sum. The index is positional over what is still
+    /// refundable, so it is renumbered whenever the line gets shorter — do not treat it as a stable
+    /// per-unit identity across a reload. Matches the Android POS scheme.
     public let id: String
 
     public init(itemID: Int64,
@@ -41,7 +44,7 @@ public struct POSRefundSelectableItem: Identifiable, Equatable {
         self.attributes = attributes
         self.isLumpSum = isLumpSum
         self.isSelected = isSelected
-        self.id = "\(itemID)-\(index)"
+        self.id = isLumpSum ? "fee-\(itemID)" : "\(itemID)-\(index)"
     }
 
     /// Creates a selectable item from a POSOrderItem.

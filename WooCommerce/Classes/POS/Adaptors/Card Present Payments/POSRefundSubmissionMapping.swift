@@ -36,7 +36,6 @@ struct POSRefundSubmissionMapping {
     func makeSelectableItems(refundableItems: [RefundableOrderItem],
                              fees: [OrderFeeLine],
                              currency: String) -> [POSRefundSelectableItem] {
-        var index = 0
         var selectableItems: [POSRefundSelectableItem] = []
 
         for refundableItem in refundableItems {
@@ -45,7 +44,9 @@ struct POSRefundSubmissionMapping {
             let totalTax = currencyFormatter.convertToDecimal(item.totalTax) as Decimal? ?? .zero
             let formattedPrice = currencyFormatter.formatAmount(item.price, with: currency) ?? ""
 
-            for _ in 0..<refundableItem.quantity {
+            // Numbered per line item, not across the list: a line that gets shorter must not shift
+            // the ids of the lines after it.
+            for unitIndex in 0..<refundableItem.quantity {
                 selectableItems.append(POSRefundSelectableItem(
                     itemID: item.itemID,
                     name: item.name,
@@ -56,8 +57,7 @@ struct POSRefundSubmissionMapping {
                     formattedPrice: formattedPrice,
                     attributes: item.attributes,
                     isSelected: true,
-                    index: index))
-                index += 1
+                    index: unitIndex))
             }
         }
 
@@ -75,8 +75,7 @@ struct POSRefundSubmissionMapping {
                 attributes: fee.attributes,
                 isLumpSum: true,
                 isSelected: true,
-                index: index))
-            index += 1
+                index: 0))
         }
 
         return selectableItems

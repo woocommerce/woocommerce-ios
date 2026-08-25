@@ -1216,6 +1216,121 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func refreshRefundableItems_when_a_unit_of_the_line_is_refunded_elsewhere_then_the_selected_count_is_kept() async throws {
+        // Given three units of one line, with only the last one selected
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 3, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 0)
+        sut.toggleRefundItemSelection(at: 1)
+
+        // When another register refunds one unit, so the reload renumbers the survivors from zero
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -1, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+        let result = await sut.refreshRefundableItems()
+
+        // Then one unit is still selected — not the two the default selection would have given
+        #expect(result == .hasItemsToRefund)
+        #expect(sut.refundSelectableItems.count == 2)
+        #expect(sut.refundSelectableItems.filter { $0.isSelected }.count == 1)
+    }
+
+    @MainActor
+    @Test func refreshRefundableItems_when_an_earlier_line_shrinks_then_the_later_line_selection_survives() async throws {
+        // Given a selection of one unit on the second line only
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00"),
+            makePOSOrderItem(itemID: 2, quantity: 2, price: 5.00, formattedPrice: "$5.00")
+        ])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 0)
+        sut.toggleRefundItemSelection(at: 1)
+        sut.toggleRefundItemSelection(at: 2)
+
+        // When a unit of the first line is refunded elsewhere
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -1, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+        _ = await sut.refreshRefundableItems()
+
+        // Then the second line keeps its one selected unit
+        let selected = sut.refundSelectableItems.filter { $0.isSelected }
+        #expect(selected.count == 1)
+        #expect(selected.first?.itemID == 2)
+    }
+
+    @MainActor
+    @Test func refreshRefundableItems_when_the_selected_line_is_fully_refunded_elsewhere_then_nothing_is_selected() async throws {
+        // Given only the first line selected
+        let order = makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00"),
+            makePOSOrderItem(itemID: 2, quantity: 1, price: 5.00, formattedPrice: "$5.00")
+        ])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 1)
+
+        // When that line is fully refunded elsewhere
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -1, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+        _ = await sut.refreshRefundableItems()
+
+        // Then nothing is selected, rather than the remaining line the cashier never chose
+        #expect(sut.refundSelectableItems.count == 1)
+        #expect(sut.refundSelectableItems.contains { $0.isSelected } == false)
+    }
+
+    @MainActor
+    @Test func refreshRefundableItems_then_keeps_the_lump_sum_selection() async throws {
+        // Given a fee and one of two units selected
+        let order = makeOrder(
+            lineItems: [makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")],
+            customAmounts: [makePOSOrderCustomAmount(id: 777, name: "Discount Fee", total: 10, totalTax: 0)]
+        )
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 1)
+
+        // When a unit of the line is refunded elsewhere
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -1, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+        _ = await sut.refreshRefundableItems()
+
+        // Then the fee is still selected alongside the surviving unit
+        let selected = sut.refundSelectableItems.filter { $0.isSelected }
+        #expect(selected.count == 2)
+        #expect(selected.contains { $0.isLumpSum && $0.itemID == 777 })
+    }
+
+    @MainActor
+    @Test func refreshRefundableItems_when_a_partial_selection_is_restored_then_it_stays_marked_as_modified() async throws {
+        // Given a partial selection. `startRefundFlow()` clears the modified flag, so without the
+        // restoration setting it back, switching orders would drop the selection with no prompt.
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 3, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 0)
+
+        // When
+        _ = await sut.refreshRefundableItems()
+
+        // Then
+        #expect(sut.hasModifiedRefundSelection)
+    }
+
+    @MainActor
     @Test func refreshRefundableItems_when_a_preview_error_is_shown_then_it_is_cleared() async throws {
         // Given a rejected preview
         let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])

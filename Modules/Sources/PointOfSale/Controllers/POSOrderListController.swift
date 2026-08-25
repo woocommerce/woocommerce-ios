@@ -109,6 +109,27 @@ private enum POSOrderRefundDetailsState {
     }
 }
 
+/// The cashier's refund selection in a form that survives a reload of the refundable items.
+///
+/// Unit rows have no stable identity — `POSRefundSelectableItem.id` encodes the unit's position
+/// within what is still refundable — so the selection is preserved as a count per line item plus the
+/// selected lump-sum ids. Line items and lump sums are kept apart so a fee id cannot be read as a
+/// line item id.
+private struct RefundSelectionSnapshot {
+    let unitCountsByItemID: [Int64: Int]
+    let selectedLumpSumIDs: Set<Int64>
+
+    init(_ items: [POSRefundSelectableItem]) {
+        let selected = items.filter { $0.isSelected }
+        unitCountsByItemID = selected
+            .filter { !$0.isLumpSum }
+            .reduce(into: [Int64: Int]()) { counts, item in
+                counts[item.itemID, default: 0] += 1
+            }
+        selectedLumpSumIDs = Set(selected.filter(\.isLumpSum).map(\.itemID))
+    }
+}
+
 enum RefundActionAvailability {
     case unknown
     case available
@@ -462,21 +483,39 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
 
     /// Reloads the refundable items after the store rejected a preview or a create because the
     /// order changed since the flow was opened, for example when another register refunded part of
-    /// it. Items the store has since refunded are gone from the reloaded list, so the previous
-    /// selection is intersected with it; when nothing is left of it the default selection applies.
+    /// it. The selection is restored by unit count rather than by row id: `POSRefundSelectableItem.id`
+    /// is positional over what is still refundable, so the reload — which only happens because the
+    /// list got shorter — renumbers it. Only the count per `itemID` reaches the store anyway, see
+    /// `POSRefundSubmissionMapping.refundComponents`.
+    ///
+    /// A selection that no longer matches anything leaves every row deselected rather than falling
+    /// back to the default all-selected list: the cashier picks again instead of confirming items
+    /// they never chose.
     @MainActor
     func refreshRefundableItems() async -> StartRefundFlowResult {
-        let previousSelection = Set(refundSelectableItems.filter { $0.isSelected }.map(\.id))
+        let snapshot = RefundSelectionSnapshot(refundSelectableItems)
         let result = await startRefundFlow()
 
-        guard case .hasItemsToRefund = result,
-              refundSelectableItems.contains(where: { previousSelection.contains($0.id) }) else {
+        guard case .hasItemsToRefund = result else {
             return result
         }
 
+        var remainingUnits = snapshot.unitCountsByItemID
         for index in refundSelectableItems.indices {
-            refundSelectableItems[index].isSelected = previousSelection.contains(refundSelectableItems[index].id)
+            let item = refundSelectableItems[index]
+            if item.isLumpSum {
+                refundSelectableItems[index].isSelected = snapshot.selectedLumpSumIDs.contains(item.itemID)
+            } else if let unitsLeft = remainingUnits[item.itemID], unitsLeft > 0 {
+                remainingUnits[item.itemID] = unitsLeft - 1
+                refundSelectableItems[index].isSelected = true
+            } else {
+                refundSelectableItems[index].isSelected = false
+            }
         }
+
+        // `startRefundFlow()` cleared this for a fresh flow. The restored selection is the
+        // cashier's, so keep the "Cancel this refund?" prompt honest about it.
+        hasModifiedRefundSelection = refundSelectableItems.contains { !$0.isSelected }
         return result
     }
 

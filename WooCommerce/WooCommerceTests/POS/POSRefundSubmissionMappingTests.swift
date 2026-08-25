@@ -151,6 +151,21 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
         XCTAssertEqual(selectableItems[2].totalTax, NSDecimalNumber(string: "0.35").decimalValue)
     }
 
+    func test_makeSelectableItems_numbers_units_per_line_item_and_prefixes_fee_ids() {
+        // Units are numbered within their own line, so a line that gets shorter cannot shift the
+        // ids of the lines after it. Fees are keyed by fee id alone, keeping the two id spaces apart.
+        let first = orderItem(itemID: 10, name: "Coffee", quantity: 2, price: 4, total: "8.00", totalTax: "0.80")
+        let second = orderItem(itemID: 20, name: "Tea", quantity: 2, price: 3, total: "6.00", totalTax: "0.60")
+        let fee = orderFee(feeID: 200, name: "Service", total: "3.50", totalTax: "0.35")
+
+        let selectableItems = sut.makeSelectableItems(refundableItems: [RefundableOrderItem(item: first, quantity: 2),
+                                                                        RefundableOrderItem(item: second, quantity: 2)],
+                                                      fees: [fee],
+                                                      currency: "USD")
+
+        XCTAssertEqual(selectableItems.map(\.id), ["10-0", "10-1", "20-0", "20-1", "fee-200"])
+    }
+
     func test_refundPreviewLineItems_maps_products_to_quantities_and_fees_to_tax_inclusive_totals() {
         // Given
         let item1 = orderItem(itemID: 10, quantity: 3)

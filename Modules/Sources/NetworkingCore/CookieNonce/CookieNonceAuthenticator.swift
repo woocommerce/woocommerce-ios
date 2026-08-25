@@ -144,9 +144,7 @@ private extension CookieNonceAuthenticator {
                 continue
             }
             let documentURL = response.http.url ?? requestURL
-            guard let html = String(data: response.data, encoding: .utf8) else {
-                throw Error.authenticationFailed(.invalidResponse)
-            }
+            let html = try decodeHTML(response)
             if endpoints.isAuthenticatedDashboardHTML(html) {
                 return .authenticated(documentURL)
             }
@@ -176,9 +174,7 @@ private extension CookieNonceAuthenticator {
             }
             return nonceURL
         }
-        guard let html = String(data: response.data, encoding: .utf8) else {
-            throw Error.authenticationFailed(.invalidResponse)
-        }
+        let html = try decodeHTML(response)
         throw Error.authenticationFailed(
             CookieNonceAuthenticationRules.credentialFailure(
                 in: html,
@@ -210,6 +206,19 @@ private extension CookieNonceAuthenticator {
                         continuation.resume(throwing: Error.authenticationFailed(.invalidResponse))
                     }
                 }
+        }
+    }
+
+    func decodeHTML(_ response: (data: Data, http: HTTPURLResponse)) throws -> String {
+        do {
+            return try StringResponseSerializer().serialize(
+                request: nil,
+                response: response.http,
+                data: response.data,
+                error: nil
+            )
+        } catch {
+            throw Error.authenticationFailed(.invalidResponse)
         }
     }
 
@@ -245,6 +254,7 @@ private extension CookieNonceAuthenticator {
     }
 
     func invalidateLoginSequence(error: Error) {
+        DDLogError("⛔️ Cookie nonce authentication failed for \(endpoints.loginEntryURL): \(error)")
         var allowRetry = false
         if case .postLoginFailed(let originalError) = error {
             allowRetry = Self.isOfflineError(originalError)

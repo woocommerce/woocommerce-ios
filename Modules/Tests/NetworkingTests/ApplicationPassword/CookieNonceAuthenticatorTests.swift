@@ -41,6 +41,37 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         )
     }
 
+    func test_wordpress_org_network_uses_cookie_storage_isolated_from_shared_and_other_networks() throws {
+        // Given
+        let cookieName = "stale-wordpress-session-\(UUID().uuidString)"
+        let staleCookie = try XCTUnwrap(HTTPCookie(properties: [
+            .domain: "example.com",
+            .path: "/",
+            .name: cookieName,
+            .value: "wrong-user"
+        ]))
+        HTTPCookieStorage.shared.setCookie(staleCookie)
+        defer { HTTPCookieStorage.shared.deleteCookie(staleCookie) }
+        let endpoints = try CookieNonceAuthenticationEndpoints(siteURL: siteURL)
+        let configuration = CookieNonceAuthenticatorConfiguration(
+            username: sampleUser,
+            password: samplePassword,
+            endpoints: endpoints
+        )
+
+        // When
+        let firstNetwork = WordPressOrgNetwork(configuration: configuration, siteAddress: siteURL.absoluteString)
+        let secondNetwork = WordPressOrgNetwork(configuration: configuration, siteAddress: siteURL.absoluteString)
+        let firstStorage = try XCTUnwrap(firstNetwork.session.configuration.httpCookieStorage)
+        let secondStorage = try XCTUnwrap(secondNetwork.session.configuration.httpCookieStorage)
+
+        // Then
+        XCTAssertFalse(firstStorage === HTTPCookieStorage.shared)
+        XCTAssertFalse(firstStorage === secondStorage)
+        XCTAssertFalse(firstStorage.cookies(for: siteURL)?.contains { $0.name == cookieName } == true)
+        XCTAssertTrue(HTTPCookieStorage.shared.cookies(for: siteURL)?.contains { $0.name == cookieName } == true)
+    }
+
     func test_cookie_nonce_authenticator_encode_parameters_correctly() throws {
         // Given
         let endpoints = try CookieNonceAuthenticationEndpoints(
@@ -261,6 +292,67 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         let requests = CookieNonceAuthenticationURLProtocol.receivedRequests
         XCTAssertEqual(requests.compactMap(\.httpMethod), ["GET", "GET"])
         XCTAssertEqual(requests.compactMap(\.url), [loginURL, nonceURL])
+    }
+
+    func test_authenticate_when_preflight_uses_iso_8859_1_then_decodes_login_form() async throws {
+        // Given
+        let authenticator = try stubbedAuthenticator()
+        let submissionURL = try XCTUnwrap(URL(string: "https://example.com/custom-submit"))
+        let nonceURL = try XCTUnwrap(URL(string: "https://example.com/wp-admin/admin-ajax.php?action=rest-nonce"))
+        let html = loginForm(action: submissionURL.absoluteString) + "<p>café</p>"
+        let data = try XCTUnwrap(html.data(using: .isoLatin1))
+        CookieNonceAuthenticationURLProtocol.stub(
+            method: "GET",
+            url: loginURL,
+            headers: ["Content-Type": "text/html; charset=iso-8859-1"],
+            data: data
+        )
+        CookieNonceAuthenticationURLProtocol.stub(
+            method: "POST",
+            url: submissionURL,
+            statusCode: 302,
+            headers: ["Location": nonceURL.absoluteString]
+        )
+        CookieNonceAuthenticationURLProtocol.stub(method: "GET", url: nonceURL, data: Data("freshnonce".utf8))
+
+        // When
+        let nonce = try await authenticator.authenticate(session: makeSession())
+
+        // Then
+        XCTAssertEqual(nonce, "freshnonce")
+        XCTAssertEqual(
+            CookieNonceAuthenticationURLProtocol.receivedRequests.compactMap(\.url),
+            [loginURL, submissionURL, nonceURL]
+        )
+    }
+
+    func test_authenticate_when_credential_failure_uses_iso_8859_1_then_classifies_response() async throws {
+        // Given
+        let authenticator = try stubbedAuthenticator()
+        let html = "<div id=\"login_error\">Mot de passe incorrect : café</div>" +
+            "<script>document.querySelector('form').classList.add('shake')</script>"
+        let data = try XCTUnwrap(html.data(using: .isoLatin1))
+        CookieNonceAuthenticationURLProtocol.stub(
+            method: "GET",
+            url: loginURL,
+            data: Data(loginForm(action: "/wp-login.php").utf8)
+        )
+        CookieNonceAuthenticationURLProtocol.stub(
+            method: "POST",
+            url: loginURL,
+            headers: ["Content-Type": "text/html; charset=iso-8859-1"],
+            data: data
+        )
+
+        // When / Then
+        do {
+            _ = try await authenticator.authenticate(session: makeSession())
+            XCTFail("Expected invalid credentials")
+        } catch CookieNonceAuthenticator.Error.authenticationFailed(.invalidCredentials) {
+            XCTAssertEqual(CookieNonceAuthenticationURLProtocol.receivedRequests.compactMap(\.url), [loginURL, loginURL])
+        } catch {
+            XCTFail("Unexpected error: \(error)")
+        }
     }
 
     func test_authenticate_when_preflight_has_fourth_redirect_then_rejects_without_contacting_target() async throws {

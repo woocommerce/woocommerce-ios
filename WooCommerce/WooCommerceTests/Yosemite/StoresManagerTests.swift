@@ -509,6 +509,49 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(sessionManager.cookieNonceAuthenticationEndpointCredentials, sessionManager.defaultCredentials)
     }
 
+    func test_site_endpoint_overlay_when_site_is_default_port_HTTPS_promotion_then_replaces_login_and_admin_urls() throws {
+        // Given
+        let credentialSiteAddress = "http://example.com:80/store/"
+        let site = Site.fake().copy(
+            siteID: WooConstants.placeholderStoreID,
+            url: "https://example.com/store",
+            adminURL: "https://example.com/store/wp-admin/",
+            loginURL: "https://example.com/store/wp-login.php"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: credentialSiteAddress)),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/store/hidden-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/store/hidden-admin/"))
+        )
+        let (sut, _) = makeStoresManager(
+            credentials: .wporg(username: "merchant", password: "secret", siteAddress: credentialSiteAddress),
+            endpoints: endpoints
+        )
+
+        // When
+        let result = sut.siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
+
+        // Then
+        XCTAssertEqual(result, site.copy(adminURL: endpoints.adminBaseURL.absoluteString, loginURL: endpoints.loginEntryURL.absoluteString))
+    }
+
+    func test_site_endpoint_overlay_when_non_default_port_changes_scheme_then_leaves_site_unchanged() throws {
+        // Given
+        let credentialSiteAddress = "http://example.com:8080/store"
+        let site = Site.fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://example.com:8080/store")
+        let endpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: credentialSiteAddress)
+        let (sut, _) = makeStoresManager(
+            credentials: .wporg(username: "merchant", password: "secret", siteAddress: credentialSiteAddress),
+            endpoints: endpoints
+        )
+
+        // When
+        let result = sut.siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
+
+        // Then
+        XCTAssertEqual(result, site)
+    }
+
     func test_site_endpoint_overlay_when_site_has_positive_id_then_leaves_site_unchanged() throws {
         // Given
         let site = Site.fake().copy(siteID: 42, url: "https://example.com")

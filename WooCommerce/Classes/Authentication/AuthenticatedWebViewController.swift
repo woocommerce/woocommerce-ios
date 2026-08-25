@@ -340,10 +340,12 @@ private extension AuthenticatedWebViewController {
         }
     }
 
-    func finishSiteCredentialAuthentication() {
+    func finishSiteCredentialAuthentication(preservingExpectedCancellation: Bool = false) {
         siteCredentialNavigationGate = nil
         siteCredentialNavigation = nil
-        siteCredentialNavigationExpectedToCancel = nil
+        if preservingExpectedCancellation == false {
+            siteCredentialNavigationExpectedToCancel = nil
+        }
         siteCredentialReplacementLoadID = nil
     }
 
@@ -351,7 +353,8 @@ private extension AuthenticatedWebViewController {
         guard siteCredentialNavigationGate != nil else {
             return
         }
-        cancelSiteCredentialAuthentication()
+        finishSiteCredentialAuthentication()
+        webView.stopLoading()
         if let initialURL = viewModel.initialURL {
             loadContent(url: initialURL)
         }
@@ -361,7 +364,8 @@ private extension AuthenticatedWebViewController {
         guard siteCredentialNavigationGate != nil else {
             return
         }
-        finishSiteCredentialAuthentication()
+        siteCredentialNavigationExpectedToCancel = siteCredentialNavigation
+        finishSiteCredentialAuthentication(preservingExpectedCancellation: true)
         webView.stopLoading()
     }
 }
@@ -387,7 +391,7 @@ extension AuthenticatedWebViewController {
             scheduleSiteCredentialReplacementLoad(destinationURL)
             return .cancel
         case .cancelAndFinish:
-            failSiteCredentialAuthenticationAndLoadInitialURL()
+            scheduleSiteCredentialFallbackLoad()
             return .cancel
         }
     }
@@ -408,33 +412,50 @@ extension AuthenticatedWebViewController {
         case .allowContinuation:
             return .allow
         case .allowAndFinish(let destinationURL):
-            finishSiteCredentialAuthentication()
             if viewModel.initialURL == destinationURL {
+                finishSiteCredentialAuthentication()
                 return .allow
             }
-            webView.stopLoading()
-            if let initialURL = viewModel.initialURL {
-                loadContent(url: initialURL)
-            }
+            scheduleSiteCredentialFallbackLoad()
             return .cancel
         case .cancelAndFinish:
-            failSiteCredentialAuthenticationAndLoadInitialURL()
+            scheduleSiteCredentialFallbackLoad()
             return .cancel
         }
     }
 
-    private func scheduleSiteCredentialReplacementLoad(_ destinationURL: URL) {
+    private func scheduleSiteCredentialFallbackLoad() {
+        guard let initialURL = viewModel.initialURL else {
+            siteCredentialNavigationExpectedToCancel = siteCredentialNavigation
+            finishSiteCredentialAuthentication(preservingExpectedCancellation: true)
+            return
+        }
+        scheduleSiteCredentialReplacementLoad(initialURL, purpose: .finishAuthentication)
+    }
+
+    private func scheduleSiteCredentialReplacementLoad(
+        _ destinationURL: URL,
+        purpose: SiteCredentialReplacementPurpose = .continueAuthentication
+    ) {
         siteCredentialNavigationExpectedToCancel = siteCredentialNavigation
         let loadID = UUID()
         siteCredentialReplacementLoadID = loadID
         siteCredentialReplacementScheduler { [weak self] in
             guard let self,
-                  self.siteCredentialNavigationGate != nil,
                   self.siteCredentialReplacementLoadID == loadID else {
                 return
             }
-            self.siteCredentialReplacementLoadID = nil
-            self.siteCredentialNavigation = self.webView.load(URLRequest(url: destinationURL))
+            switch purpose {
+            case .continueAuthentication:
+                guard self.siteCredentialNavigationGate != nil else {
+                    return
+                }
+                self.siteCredentialReplacementLoadID = nil
+                self.siteCredentialNavigation = self.webView.load(URLRequest(url: destinationURL))
+            case .finishAuthentication:
+                self.finishSiteCredentialAuthentication(preservingExpectedCancellation: true)
+                self.loadContent(url: destinationURL)
+            }
         }
     }
 
@@ -548,6 +569,11 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
 private enum WebKitError {
     /// WebKit's internal policy-change interruption is not exposed through `WKError.Code`.
     static let frameLoadInterruptedByPolicyChange = 102
+}
+
+private enum SiteCredentialReplacementPurpose {
+    case continueAuthentication
+    case finishAuthentication
 }
 
 extension AuthenticatedWebViewController: WKUIDelegate {

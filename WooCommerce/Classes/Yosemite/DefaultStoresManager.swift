@@ -541,8 +541,10 @@ class DefaultStoresManager: StoresManager {
         do {
             let credentialIdentity = try CookieNonceAuthenticationEndpoints(siteURL: credentialURL)
             let siteIdentity = try CookieNonceAuthenticationEndpoints(siteURL: siteURL)
+            let siteIdentityMatchesEndpoints = siteIdentity.siteURL == endpoints.siteURL ||
+                isDefaultPortHTTPSPromotion(from: endpoints.siteURL, to: siteIdentity.siteURL)
             guard credentialIdentity.siteURL == endpoints.siteURL,
-                  siteIdentity.siteURL == endpoints.siteURL else {
+                  siteIdentityMatchesEndpoints else {
                 return site
             }
             return site.copy(
@@ -552,6 +554,19 @@ class DefaultStoresManager: StoresManager {
         } catch {
             return site
         }
+    }
+
+    /// WordPress may report an HTTPS canonical URL after credentials and endpoints were verified against HTTP.
+    /// This mirrors the endpoint policy's only supported cross-scheme identity change: default-port HTTP to HTTPS.
+    private func isDefaultPortHTTPSPromotion(from source: URL, to destination: URL) -> Bool {
+        guard source.scheme == "http",
+              destination.scheme == "https",
+              var promotedSource = URLComponents(url: source, resolvingAgainstBaseURL: false),
+              promotedSource.port == nil else {
+            return false
+        }
+        promotedSource.scheme = "https"
+        return promotedSource.url == destination
     }
 }
 

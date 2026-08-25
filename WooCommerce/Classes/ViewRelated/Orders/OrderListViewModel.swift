@@ -6,6 +6,7 @@ import Yosemite
 import class AutomatticTracks.CrashLogging
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
+import WooFoundationCore
 
 /// ViewModel for `OrderListViewController`.
 ///
@@ -19,6 +20,7 @@ final class OrderListViewModel {
     private let notificationCenter: NotificationCenter
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
     private let featureFlagService: FeatureFlagService
+    private let selectedSiteSettings: SelectedSiteSettingsProtocol
 
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
@@ -107,7 +109,8 @@ final class OrderListViewModel {
          notificationCenter: NotificationCenter = .default,
          pushNotificationSyncInterval: DispatchQueue.SchedulerTimeType.Stride = .seconds(1),
          filters: FilterOrderListViewModel.Filters?,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+         selectedSiteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings) {
         self.siteID = siteID
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.stores = stores
@@ -118,6 +121,7 @@ final class OrderListViewModel {
         self.pushNotificationSyncInterval = pushNotificationSyncInterval
         self.filters = filters
         self.featureFlagService = featureFlagService
+        self.selectedSiteSettings = selectedSiteSettings
         self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
                                                                             query: Self.createQuery(siteID: siteID,
                                                                                                     filters: filters))
@@ -300,16 +304,29 @@ private extension OrderListViewModel {
 // MARK: - Banners
 
 extension OrderListViewModel {
-    /// Figures out if should show a data loading error as top banner based on the view model internal state.
+    /// Figures out which top banner should be shown based on the view model internal state.
+    ///
+    /// The order list header is a single slot, so at most one banner shows at a time. When both signals are
+    /// active, a data-loading error (the whole list failed to sync) takes precedence over the currency warning.
     ///
     private func bindTopBannerState() {
-        $dataLoadingError
-            .map { loadingError -> TopBanner in
+        // `true` while the store currency is known; `false` when the general settings sync never provided it
+        // and amounts are falling back to defaults (USD). `prepend(true)` avoids flashing the warning before
+        // the first settings emission; the real state arrives via `settingsStream` (a replaying subject).
+        let isCurrencyResolved = selectedSiteSettings.settingsStream
+            .map { $0.settings.contains { $0.settingID == CurrencySettings.Constants.currencyCodeKey } }
+            .prepend(true)
+            .removeDuplicates()
+
+        Publishers.CombineLatest($dataLoadingError, isCurrencyResolved)
+            .map { loadingError, isCurrencyResolved -> TopBanner in
                 if let error = loadingError {
                     return .error(error)
-                } else {
-                    return .none
                 }
+                if isCurrencyResolved == false {
+                    return .currencyUnavailable
+                }
+                return .none
             }
             .assign(to: &$topBanner)
     }
@@ -359,11 +376,14 @@ extension OrderListViewModel {
     ///
     enum TopBanner: Equatable {
         case error(Error)
+        /// The store currency couldn't be loaded, so amounts may be shown in the wrong currency.
+        case currencyUnavailable
         case none
 
         static func ==(lhs: TopBanner, rhs: TopBanner) -> Bool {
             switch (lhs, rhs) {
             case (.error, .error),
+                (.currencyUnavailable, .currencyUnavailable),
                 (.none, .none):
                 return true
             default:

@@ -6,6 +6,7 @@ import KeychainAccess
 import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
+import struct Networking.ApplicationPasswordUseCaseFactory
 import class Kingfisher.ImageCache
 import class Networking.AlamofireNetwork
 
@@ -35,13 +36,6 @@ private extension UserDefaults {
 /// SessionManager provides persistent storage for Session-Y Properties.
 ///
 final class SessionManager: SessionManagerProtocol {
-    typealias WordPressOrgApplicationPasswordUseCaseFactory = (
-        _ username: String,
-        _ password: String,
-        _ siteAddress: String,
-        _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?
-    ) throws -> ApplicationPasswordUseCase
-
     /// Standard Session Manager
     ///
     static var standard: SessionManager {
@@ -60,7 +54,7 @@ final class SessionManager: SessionManagerProtocol {
     ///
     private let imageCache: ImageCache
 
-    private let wordPressOrgApplicationPasswordUseCaseFactory: WordPressOrgApplicationPasswordUseCaseFactory
+    private let applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory
 
     /// Persists the non-secret cookie-nonce endpoint configuration alongside the session.
     ///
@@ -239,19 +233,12 @@ final class SessionManager: SessionManagerProtocol {
     init(defaults: UserDefaults,
          keychainServiceName: String,
          imageCache: ImageCache = ImageCache.default,
-         wordPressOrgApplicationPasswordUseCaseFactory: @escaping WordPressOrgApplicationPasswordUseCaseFactory = {
-             try DefaultApplicationPasswordUseCase(
-                 username: $0,
-                 password: $1,
-                 siteAddress: $2,
-                 authenticationEndpoints: $3
-             )
-         }) {
+         applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory = .init()) {
         self.defaults = defaults
         self.cookieNonceEndpointStore = CookieNonceAuthenticationEndpointStore(userDefaults: defaults)
         self.keychain = Keychain(service: keychainServiceName).accessibility(.afterFirstUnlock)
         self.imageCache = imageCache
-        self.wordPressOrgApplicationPasswordUseCaseFactory = wordPressOrgApplicationPasswordUseCaseFactory
+        self.applicationPasswordUseCaseFactory = applicationPasswordUseCaseFactory
 
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
 
@@ -313,11 +300,11 @@ final class SessionManager: SessionManagerProtocol {
             switch credentials {
             case let .wporg(username, password, siteAddress):
                 let authenticationEndpoints = cookieNonceAuthenticationEndpoints ?? self.cookieNonceAuthenticationEndpoints(for: credentials)
-                return try? wordPressOrgApplicationPasswordUseCaseFactory(
-                    username,
-                    password,
-                    siteAddress,
-                    authenticationEndpoints
+                return try? applicationPasswordUseCaseFactory.makeForWordPressOrg(
+                    username: username,
+                    password: password,
+                    siteAddress: siteAddress,
+                    authenticationEndpoints: authenticationEndpoints
                 )
             case let .applicationPassword(_, _, siteAddress):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)

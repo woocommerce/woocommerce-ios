@@ -376,10 +376,10 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let sessionManager = SessionManager(
             defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
             keychainServiceName: UUID().uuidString,
-            wordPressOrgApplicationPasswordUseCaseFactory: { _, _, _, endpoints in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, endpoints in
                 capturedEndpoints = endpoints
                 return MockJetpackSetupApplicationPasswordUseCase()
-            }
+            })
         )
         defer { sessionManager.reset() }
         let previousCredentials = Credentials.wporg(

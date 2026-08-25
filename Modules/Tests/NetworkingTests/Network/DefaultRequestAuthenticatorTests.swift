@@ -26,13 +26,13 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         _ = DefaultRequestAuthenticator(
             credentials: credentials,
             cookieNonceAuthenticationEndpoints: endpoints,
-            wordPressOrgApplicationPasswordUseCaseFactory: { username, password, siteAddress, endpoints in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { username, password, siteAddress, endpoints in
                 capturedUsername = username
                 capturedPassword = password
                 capturedSiteAddress = siteAddress
                 capturedEndpoints = endpoints
                 return MockApplicationPasswordUseCase()
-            }
+            })
         )
 
         // Then

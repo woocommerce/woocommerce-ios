@@ -12,7 +12,7 @@ import struct Networking.Settings
 import protocol Storage.StorageManagerType
 import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
-import class Networking.DefaultApplicationPasswordUseCase
+import struct Networking.ApplicationPasswordUseCaseFactory
 import protocol Experiments.ABTestVariationProvider
 import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
@@ -25,23 +25,6 @@ class AuthenticationManager: Authentication {
         _ siteURL: String,
         _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?
     ) -> SiteCredentialLoginProtocol
-
-    typealias ApplicationPasswordUseCaseFactory = (
-        _ username: String,
-        _ password: String,
-        _ siteAddress: String,
-        _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?
-    ) throws -> ApplicationPasswordUseCase
-
-    static let defaultApplicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory = {
-        username, password, siteAddress, authenticationEndpoints in
-        try DefaultApplicationPasswordUseCase(
-            username: username,
-            password: password,
-            siteAddress: siteAddress,
-            authenticationEndpoints: authenticationEndpoints
-        )
-    }
 
     static let defaultSiteCredentialLoginUseCaseFactory: SiteCredentialLoginUseCaseFactory = { siteURL, authenticationEndpoints in
         SiteCredentialLoginUseCase(siteURL: siteURL, endpoints: authenticationEndpoints)
@@ -112,8 +95,7 @@ class AuthenticationManager: Authentication {
          runtimeCookieJar: HTTPCookieStorage = .shared,
          siteCredentialLoginUseCaseFactory: @escaping SiteCredentialLoginUseCaseFactory
              = AuthenticationManager.defaultSiteCredentialLoginUseCaseFactory,
-         applicationPasswordUseCaseFactory: @escaping ApplicationPasswordUseCaseFactory
-             = AuthenticationManager.defaultApplicationPasswordUseCaseFactory) {
+         applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory = .init()) {
         self.stores = stores
         self.storageManager = storageManager
         self.analytics = analytics
@@ -847,11 +829,11 @@ extension AuthenticationManager {
         if let siteURL = URL(string: credentials.siteURL) {
             runtimeCookieJar.removeCookies(forHostOf: siteURL)
         }
-        return try applicationPasswordUseCaseFactory(
-            credentials.username,
-            credentials.password,
-            credentials.siteURL,
-            credentials.authenticationEndpoints
+        return try applicationPasswordUseCaseFactory.makeForWordPressOrg(
+            username: credentials.username,
+            password: credentials.password,
+            siteAddress: credentials.siteURL,
+            authenticationEndpoints: credentials.authenticationEndpoints
         )
     }
 

@@ -376,6 +376,10 @@ extension ProductsSplitViewCoordinator: UIGestureRecognizerDelegate {
               let view = gestureRecognizer.view else {
             return true
         }
+        guard secondaryNavigationController.viewControllers.count > 1 ||
+                splitViewController.isCollapsed && primaryNavigationController.viewControllers.count > 1 else {
+            return false
+        }
 
         let translation = swipeBackVetoGestureRecognizer.translation(in: view)
         let velocity = swipeBackVetoGestureRecognizer.velocity(in: view)

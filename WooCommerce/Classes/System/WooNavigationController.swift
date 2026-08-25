@@ -29,7 +29,6 @@ class WooNavigationController: UINavigationController {
     override func viewDidLoad() {
         super.viewDidLoad()
         super.delegate = navigationDelegate
-        interactivePopGestureRecognizer?.delegate = self
     }
 
     /// Sets the status bar of the pushed view to white.

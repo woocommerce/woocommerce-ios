@@ -160,11 +160,6 @@ extension UIViewController: @retroactive UIGestureRecognizerDelegate {
     }
 
     func handleSwipeBackGesture() {
-        guard let navigationController,
-              !(navigationController is WooNavigationController) else {
-            return
-        }
-
-        navigationController.interactivePopGestureRecognizer?.delegate = self
+        navigationController?.interactivePopGestureRecognizer?.delegate = self
     }
 }

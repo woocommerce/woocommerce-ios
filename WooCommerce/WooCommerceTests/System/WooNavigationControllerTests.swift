@@ -109,7 +109,7 @@ struct WooNavigationControllerTests {
         #expect(viewController.additionalSafeAreaInsets == .zero)
     }
 
-    @Test func test_view_did_load_then_navigation_controller_owns_interactive_pop_gesture() {
+    @Test func test_view_did_load_then_navigation_controller_does_not_replace_interactive_pop_gesture_delegate() {
         // Given
         let sut = StableNavigationController(rootViewController: UIViewController())
 
@@ -117,7 +117,7 @@ struct WooNavigationControllerTests {
         sut.loadViewIfNeeded()
 
         // Then
-        #expect(sut.interactivePopGestureRecognizer?.delegate === sut)
+        #expect(sut.interactivePopGestureRecognizer?.delegate !== sut)
     }
 
     @Test func test_interactive_pop_gesture_when_navigation_controller_is_at_root_then_does_not_begin() throws {
@@ -161,7 +161,7 @@ struct WooNavigationControllerTests {
         #expect(shouldBegin == false)
     }
 
-    @Test func test_handle_swipe_back_gesture_then_navigation_controller_remains_gesture_delegate() {
+    @Test func test_handle_swipe_back_gesture_then_view_controller_becomes_gesture_delegate() {
         // Given
         let viewController = UIViewController()
         let navigationController = StableNavigationController(rootViewController: UIViewController())
@@ -172,7 +172,7 @@ struct WooNavigationControllerTests {
         viewController.handleSwipeBackGesture()
 
         // Then
-        #expect(navigationController.interactivePopGestureRecognizer?.delegate === navigationController)
+        #expect(navigationController.interactivePopGestureRecognizer?.delegate === viewController)
     }
 }
 

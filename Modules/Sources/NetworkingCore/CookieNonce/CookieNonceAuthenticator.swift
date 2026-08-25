@@ -235,7 +235,7 @@ private extension CookieNonceAuthenticator {
     }
 
     func getRequest(url: URL) -> URLRequest {
-        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData, timeoutInterval: 8)
+        var request = URLRequest(url: url, cachePolicy: .reloadIgnoringLocalCacheData)
         request.httpMethod = HTTPMethod.get.rawValue
         return request
     }

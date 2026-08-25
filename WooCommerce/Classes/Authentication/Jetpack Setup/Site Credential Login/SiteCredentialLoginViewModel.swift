@@ -140,7 +140,21 @@ private extension SiteCredentialLoginViewModel {
 
     func clearCookies(for siteURL: String) {
         guard let url = URL(string: siteURL) else { return }
-        cookieJar.cookies(for: url)?.forEach { cookieJar.deleteCookie($0) }
+        cookieJar.removeCookies(forHostOf: url)
+    }
+}
+
+extension HTTPCookieStorage {
+    func removeCookies(forHostOf url: URL) {
+        guard let siteHost = url.host?.lowercased() else { return }
+        cookies?.forEach { cookie in
+            let cookieDomain = cookie.domain
+                .trimmingCharacters(in: CharacterSet(charactersIn: "."))
+                .lowercased()
+            if siteHost == cookieDomain || siteHost.hasSuffix(".\(cookieDomain)") {
+                deleteCookie(cookie)
+            }
+        }
     }
 }
 

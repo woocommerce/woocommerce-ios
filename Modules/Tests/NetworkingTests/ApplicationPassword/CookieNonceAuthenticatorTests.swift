@@ -4,6 +4,8 @@ import XCTest
 @testable import Networking
 @testable import NetworkingCore
 
+private let cookieNonceLoopbackCookiePrefix = "woocommerce_cookie_nonce_test_"
+
 @MainActor
 final class CookieNonceAuthenticatorTests: XCTestCase {
 
@@ -16,6 +18,9 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
 
     override func tearDown() {
         CookieNonceAuthenticationURLProtocol.reset()
+        HTTPCookieStorage.shared.cookies?
+            .filter { $0.name.hasPrefix(cookieNonceLoopbackCookiePrefix) }
+            .forEach { HTTPCookieStorage.shared.deleteCookie($0) }
         super.tearDown()
     }
 
@@ -44,17 +49,8 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         XCTAssertTrue(sourceSession.sessionConfiguration.urlCredentialStorage === URLCredentialStorage.shared)
     }
 
-    func test_wordpress_org_network_uses_cookie_storage_isolated_from_shared_and_other_networks() throws {
+    func test_wordpress_org_network_uses_shared_cookie_storage() throws {
         // Given
-        let cookieName = "stale-wordpress-session-\(UUID().uuidString)"
-        let staleCookie = try XCTUnwrap(HTTPCookie(properties: [
-            .domain: "example.com",
-            .path: "/",
-            .name: cookieName,
-            .value: "wrong-user"
-        ]))
-        HTTPCookieStorage.shared.setCookie(staleCookie)
-        defer { HTTPCookieStorage.shared.deleteCookie(staleCookie) }
         let endpoints = try CookieNonceAuthenticationEndpoints(siteURL: siteURL)
         let configuration = CookieNonceAuthenticatorConfiguration(
             username: sampleUser,
@@ -69,10 +65,8 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         let secondStorage = try XCTUnwrap(secondNetwork.session.configuration.httpCookieStorage)
 
         // Then
-        XCTAssertFalse(firstStorage === HTTPCookieStorage.shared)
-        XCTAssertFalse(firstStorage === secondStorage)
-        XCTAssertFalse(firstStorage.cookies(for: siteURL)?.contains { $0.name == cookieName } == true)
-        XCTAssertTrue(HTTPCookieStorage.shared.cookies(for: siteURL)?.contains { $0.name == cookieName } == true)
+        XCTAssertTrue(firstStorage === HTTPCookieStorage.shared)
+        XCTAssertTrue(firstStorage === secondStorage)
     }
 
     func test_cookie_nonce_authenticator_encode_parameters_correctly() throws {
@@ -168,6 +162,11 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         let requests = CookieNonceAuthenticationURLProtocol.receivedRequests
         XCTAssertEqual(requests.compactMap(\.httpMethod), ["GET", "POST", "GET"])
         XCTAssertEqual(requests.compactMap(\.url), [loginURL, submissionURL, nonceURL])
+        let defaultTimeoutInterval = URLRequest(url: loginURL).timeoutInterval
+        XCTAssertEqual(
+            requests.filter { $0.httpMethod == "GET" }.map(\.timeoutInterval),
+            [defaultTimeoutInterval, defaultTimeoutInterval]
+        )
         let bodyData = try XCTUnwrap(requests[1].httpBody)
         let body = try XCTUnwrap(String(data: bodyData, encoding: .utf8))
         XCTAssertTrue(body.contains("redirect_to=https://example.com/wp-admin/admin-ajax.php?action%3Drest-nonce"))
@@ -521,6 +520,40 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         XCTAssertTrue(trace.nonceCookie?.contains(scenario.loginCookie) == true)
         XCTAssertEqual(trace.successfulProtectedNonce, "freshnonce")
         XCTAssertTrue(trace.successfulProtectedCookie?.contains(scenario.loginCookie) == true)
+    }
+
+    func test_wordpress_org_network_when_second_network_uses_authenticated_shared_cookie_then_does_not_post_credentials_again() async throws {
+        // Given
+        let scenario = CookieNonceLoopbackScenario(requiredInitialProtectedRequests: 1)
+        let server = try CookieNonceLoopbackServer(handler: scenario.response)
+        defer { server.stop() }
+        let siteURL = server.siteURL
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: siteURL,
+            loginEntryURL: siteURL.appendingPathComponent("custom-entry"),
+            adminBaseURL: siteURL.appendingPathComponent("private-admin", isDirectory: true)
+        )
+        let configuration = CookieNonceAuthenticatorConfiguration(
+            username: sampleUser,
+            password: samplePassword,
+            endpoints: endpoints
+        )
+        let firstNetwork = WordPressOrgNetwork(configuration: configuration, siteAddress: siteURL.absoluteString)
+        let secondNetwork = WordPressOrgNetwork(configuration: configuration, siteAddress: siteURL.absoluteString)
+        let request = URLRequest(url: siteURL.appendingPathComponent("wp-json/protected"))
+
+        // When
+        let firstData = try await firstNetwork.responseData(for: request)
+        let secondData = try await secondNetwork.responseData(for: request)
+
+        // Then
+        XCTAssertEqual(String(data: firstData, encoding: .utf8), "success")
+        XCTAssertEqual(String(data: secondData, encoding: .utf8), "success")
+        let trace = scenario.trace
+        XCTAssertEqual(trace.loginEntryRequestCount, 2)
+        XCTAssertEqual(trace.credentialRequestCount, 1)
+        XCTAssertEqual(trace.nonceRequestCount, 2)
+        XCTAssertEqual(trace.successfulProtectedRequestCount, 2)
     }
 
     func test_wordpress_org_network_when_preflight_requires_Basic_auth_then_does_not_use_cached_credential_or_post_site_credentials() async throws {
@@ -976,8 +1009,8 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
         self.successfulProtectedBody = successfulProtectedBody
     }
 
-    var preflightCookie: String { "preflight=\(token)" }
-    var loginCookie: String { "wordpress_logged_in=\(token)" }
+    var preflightCookie: String { "\(cookieNonceLoopbackCookiePrefix)preflight_\(token)=present" }
+    var loginCookie: String { "\(cookieNonceLoopbackCookiePrefix)logged_in_\(token)=present" }
 
     var trace: Trace {
         lock.withTestLock {
@@ -1008,6 +1041,9 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
             lock.withTestLock {
                 loginEntryRequestCount += 1
                 loginEntryAuthorizationHeader = request.headers["authorization"]
+            }
+            if request.headers["cookie"]?.contains(loginCookie) == true {
+                return .init(statusCode: 200, body: Data(authenticatedDashboard.utf8))
             }
             if let preflightBasicCredential,
                request.headers["authorization"] != preflightBasicCredential.authorizationHeader {
@@ -1091,6 +1127,10 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
         "<form id=\"loginform\" name=\"loginform\" method=\"post\" action=\"/custom-submit\">" +
             "<input name=\"log\" id=\"user_login\" type=\"text\">" +
             "<input name=\"pwd\" id=\"user_pass\" type=\"password\"></form>"
+    }
+
+    private var authenticatedDashboard: String {
+        "<body class=\"wp-core-ui index-php wp-admin\"><div id=\"dashboard-widgets-wrap\"></div></body>"
     }
 }
 

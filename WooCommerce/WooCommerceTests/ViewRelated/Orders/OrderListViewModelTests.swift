@@ -4,7 +4,6 @@ import YosemiteTestHelpers
 import Yosemite
 import Storage
 import Combine
-import WooFoundation
 
 /// Tests for `OrderListViewModel`.
 ///
@@ -457,22 +456,9 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssert(viewModel.topBanner == .currencyUnavailable)
     }
 
-    /// Builds a `MockSelectedSiteSettings` whose settings stream resolves (or not) the store currency,
-    /// by including (or omitting) the `woocommerce_currency` general setting.
-    ///
     private func makeSelectedSiteSettings(currencyResolved: Bool) -> MockSelectedSiteSettings {
         let mock = MockSelectedSiteSettings()
-        let settings: [Yosemite.SiteSetting] = currencyResolved
-            ? [Yosemite.SiteSetting(siteID: siteID,
-                                    settingID: CurrencySettings.Constants.currencyCodeKey,
-                                    label: "",
-                                    settingDescription: "",
-                                    value: "USD",
-                                    settingGroupKey: "general")]
-            : []
-        mock.siteSettings = settings
         mock.isUsingFallbackCurrency = !currencyResolved
-        mock.mockSettingsStream = Just((siteID: siteID, settings: settings, source: SettingsUpdateSource.initialLoad)).eraseToAnyPublisher()
         return mock
     }
 

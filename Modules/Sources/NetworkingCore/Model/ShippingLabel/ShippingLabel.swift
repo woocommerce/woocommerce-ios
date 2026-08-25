@@ -136,7 +136,7 @@ extension ShippingLabel: Decodable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let shippingLabelID = try container.decode(Int64.self, forKey: .shippingLabelID)
-        let carrierID = try container.decodeIfPresent(String.self, forKey: .carrierID) ?? "" // not available for non-purchased labels
+        let carrierID = try container.decode(String.self, forKey: .carrierID)
 
         /// `id` can be returned from the API as a string number or integer 0.
         /// Using alternative type integer to support decoding both types.

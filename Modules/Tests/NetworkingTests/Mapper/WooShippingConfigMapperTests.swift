@@ -67,15 +67,11 @@ final class WooShippingConfigMapperTests: XCTestCase {
 
         // Then
         let labels = try XCTUnwrap(config.shippingLabelData?.currentOrderLabels)
-        XCTAssertEqual(labels.count, 2)
+        XCTAssertEqual(labels.count, 1)
 
         let purchasedLabel = try XCTUnwrap(labels.first(where: { $0.shippingLabelID == 4871 }))
         XCTAssertEqual(purchasedLabel.carrierID, "usps")
         XCTAssertEqual(purchasedLabel.status, .purchased)
-
-        let inProgressLabel = try XCTUnwrap(labels.first(where: { $0.shippingLabelID == 4872 }))
-        XCTAssertEqual(inProgressLabel.carrierID, "")
-        XCTAssertEqual(inProgressLabel.status, .purchaseInProgress)
 
         let shipment = try XCTUnwrap(config.shipments.first)
         XCTAssertEqual(shipment.shippingLabel?.shippingLabelID, purchasedLabel.shippingLabelID)

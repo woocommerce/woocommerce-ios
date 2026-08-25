@@ -131,10 +131,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var topBannerView: UIView?
 
-    /// Prevents stacking store-currency re-sync requests while one is already in flight.
-    ///
-    private var isRetryingStoreCurrencySync = false
-
     /// Callback closure when an order is selected
     private let switchDetailsHandler: SelectOrderDetails
 
@@ -979,46 +975,22 @@ private extension OrderListViewController {
     ///
     func setCurrencyUnavailableTopBanner() {
         let retryAction = TopBannerViewModel.ActionButton(title: Localization.currencyUnavailableRetry) { [weak self] _ in
-            self?.retryStoreCurrencySync()
+            self?.viewModel.retryStoreCurrencySync()
         }
-        let viewModel = TopBannerViewModel(title: Localization.currencyUnavailableTitle,
-                                           infoText: Localization.currencyUnavailableInfo,
-                                           icon: .infoOutlineImage,
-                                           isExpanded: true,
-                                           shouldResizeInfo: false,
-                                           topButton: .chevron(handler: { [weak self] in
-                                               self?.tableView.updateHeaderHeight()
-                                           }),
-                                           actionButtons: [retryAction],
-                                           type: .warning)
-        let banner = TopBannerView(viewModel: viewModel)
+        let bannerViewModel = TopBannerViewModel(title: Localization.currencyUnavailableTitle,
+                                                 infoText: Localization.currencyUnavailableInfo,
+                                                 icon: .infoOutlineImage,
+                                                 isExpanded: true,
+                                                 shouldResizeInfo: false,
+                                                 topButton: .chevron(handler: { [weak self] in
+                                                     self?.tableView.updateHeaderHeight()
+                                                 }),
+                                                 actionButtons: [retryAction],
+                                                 type: .warning)
+        let banner = TopBannerView(viewModel: bannerViewModel)
         banner.translatesAutoresizingMaskIntoConstraints = false
         topBannerView = banner
         showTopBannerView()
-    }
-
-    /// Re-triggers the general site settings sync so the store currency can be resolved. On success the settings
-    /// stream re-emits and the banner is hidden automatically; on failure the banner stays and an error notice shows.
-    ///
-    func retryStoreCurrencySync() {
-        guard !isRetryingStoreCurrencySync else {
-            return
-        }
-        isRetryingStoreCurrencySync = true
-
-        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
-            guard let self else { return }
-            self.isRetryingStoreCurrencySync = false
-
-            // Re-apply any newly stored settings so the currency (and the banner) update.
-            ServiceLocator.selectedSiteSettings.refresh()
-
-            if let error {
-                DDLogError("⛔️ Retrying store currency sync failed for siteID \(self.siteID): \(error)")
-                self.showErrorNotice(Notice(title: Localization.currencyUnavailableRetryFailure, feedbackType: .error), in: self)
-            }
-        }
-        stores.dispatch(action)
     }
 
     func allViewModels() -> [OrderDetailsViewModel] {
@@ -1071,12 +1043,6 @@ private extension OrderListViewController {
             "orderList.currencyUnavailable.banner.retry",
             value: "Retry",
             comment: "Title of the button to retry loading the store's currency on the Orders list warning banner."
-        )
-
-        static let currencyUnavailableRetryFailure = NSLocalizedString(
-            "orderList.currencyUnavailable.retryFailure.notice",
-            value: "We still couldn't load your store's currency. Please try again later.",
-            comment: "Notice shown when retrying to load the store's currency from the Orders list fails again."
         )
 
         static let shareFeedbackButton = NSLocalizedString("Share feedback",

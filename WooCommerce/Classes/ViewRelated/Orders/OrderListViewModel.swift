@@ -100,6 +100,11 @@ final class OrderListViewModel {
     ///
     @Published private(set) var topBanner: TopBanner = .none
 
+    /// Emits `true` while a store-currency re-sync (triggered from the warning banner) is in flight,
+    /// so the banner is hidden until the refresh completes.
+    ///
+    private let isRefreshingStoreCurrencySubject = CurrentValueSubject<Bool, Never>(false)
+
     init(siteID: Int64,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          stores: StoresManager = ServiceLocator.stores,
@@ -304,31 +309,43 @@ private extension OrderListViewModel {
 // MARK: - Banners
 
 extension OrderListViewModel {
-    /// Figures out which top banner should be shown based on the view model internal state.
-    ///
-    /// The order list header is a single slot, so at most one banner shows at a time. When both signals are
-    /// active, a data-loading error (the whole list failed to sync) takes precedence over the currency warning.
+    /// Drives the top banner. The order list header is a single slot: a data-loading error takes precedence,
+    /// then the currency warning (unless a re-sync is in flight, in which case the banner is hidden).
     ///
     private func bindTopBannerState() {
-        // `true` while the store currency is known; `false` when the general settings sync never provided it
-        // and amounts are falling back to defaults (USD). `prepend(true)` avoids flashing the warning before
-        // the first settings emission; the real state arrives via `settingsStream` (a replaying subject).
-        let isCurrencyResolved = selectedSiteSettings.settingsStream
-            .map { $0.settings.contains { $0.settingID == CurrencySettings.Constants.currencyCodeKey } }
-            .prepend(true)
+        let isUsingFallbackCurrency = selectedSiteSettings.settingsStream
+            .map { !$0.settings.contains { $0.settingID == CurrencySettings.Constants.currencyCodeKey } }
+            .prepend(false)
             .removeDuplicates()
 
-        Publishers.CombineLatest($dataLoadingError, isCurrencyResolved)
-            .map { loadingError, isCurrencyResolved -> TopBanner in
+        Publishers.CombineLatest3($dataLoadingError, isUsingFallbackCurrency, isRefreshingStoreCurrencySubject)
+            .map { loadingError, isUsingFallbackCurrency, isRefreshingCurrency -> TopBanner in
                 if let error = loadingError {
                     return .error(error)
                 }
-                if isCurrencyResolved == false {
+                if isUsingFallbackCurrency && !isRefreshingCurrency {
                     return .currencyUnavailable
                 }
                 return .none
             }
             .assign(to: &$topBanner)
+    }
+
+    /// Re-syncs general site settings so the store currency can be resolved. The banner is hidden while the
+    /// sync is in flight and re-appears if the currency still isn't available afterwards.
+    ///
+    func retryStoreCurrencySync() {
+        isRefreshingStoreCurrencySubject.send(true)
+
+        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
+            guard let self else { return }
+            if let error {
+                DDLogError("⛔️ Retrying store currency sync failed for siteID \(self.siteID): \(error)")
+            }
+            self.selectedSiteSettings.refresh()
+            self.isRefreshingStoreCurrencySubject.send(false)
+        }
+        stores.dispatch(action)
     }
 }
 
@@ -376,7 +393,6 @@ extension OrderListViewModel {
     ///
     enum TopBanner: Equatable {
         case error(Error)
-        /// The store currency couldn't be loaded, so amounts may be shown in the wrong currency.
         case currencyUnavailable
         case none
 

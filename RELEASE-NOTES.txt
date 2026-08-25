@@ -4,6 +4,7 @@
 25.6
 -----
 - [Internal] POS: Refund submission events now use the POS Tracks prefix when issued from POS. [https://github.com/woocommerce/woocommerce-ios/pull/17744]
+- [Internal] POS: Removed the WooCommerce 10.5.0 sunset warning banner that promised an August 1st requirement that is not enforced. [https://github.com/woocommerce/woocommerce-ios/pull/PR_NUMBER]
 
 25.5
 -----

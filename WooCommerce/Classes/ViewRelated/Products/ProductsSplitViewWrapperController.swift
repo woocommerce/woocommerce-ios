@@ -39,6 +39,7 @@ final class ProductsSplitViewWrapperController: UIViewController, UsesCompactLay
     override func viewWillTransition(to size: CGSize, with transitionCoordinator: UIViewControllerTransitionCoordinator) {
         super.viewWillTransition(to: size, with: transitionCoordinator)
 
+        // Split-view transitions can drop pushed product screens and their swipe-veto relationships, so preserve the secondary stack.
         let transitionID = coordinator.prepareForLayoutTransition()
         transitionCoordinator.animate(alongsideTransition: nil) { [weak self] _ in
             self?.coordinator.completeLayoutTransition(transitionID)

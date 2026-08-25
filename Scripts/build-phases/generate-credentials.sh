@@ -56,9 +56,17 @@ else
       rbenv rehash
     fi
 
+    CREDENTIALS_TMP="$(mktemp)"
+    trap 'rm -f "${CREDENTIALS_TMP}"' EXIT
+
+    if ! ruby "${SCRIPT_PATH}" -i "${CREDS_INPUT_PATH}" -s "${SECRETS_PATH}" > "${CREDENTIALS_TMP}"; then
+        echo "error: Failed to generate credentials from ${SECRETS_PATH}" >&2
+        exit 1
+    fi
+
     for OUTPUT_PATH in "${OUTPUT_PATHS[@]}"; do
         echo ">> Generating Credentials ${OUTPUT_PATH}"
-        ruby "${SCRIPT_PATH}" -i "${CREDS_INPUT_PATH}" -s "${SECRETS_PATH}" > "${OUTPUT_PATH}"
+        cp "${CREDENTIALS_TMP}" "${OUTPUT_PATH}"
     done
 
 fi

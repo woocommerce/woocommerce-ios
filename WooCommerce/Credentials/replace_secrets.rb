@@ -12,56 +12,80 @@
 require 'json'
 require 'optparse'
 
-## Parse Input Parameters
-##
-options = {}
+class ReplaceSecrets
+  class Error < StandardError; end
 
-optparse = OptionParser.new do |opts|
-  opts.on('-s', '--secrets file', 'Secrets filename (must be in JSON format!)') do |secrets|
-    options[:secrets] = secrets
-  end
+  class MissingKeysError < Error
+    attr_reader :keys
 
-  opts.on('-i', '--input file', 'Input filename') do |input|
-    options[:input] = input
-  end
-end
-
-optparse.parse!
-
-## Validate Parameters
-##
-%i[secrets input].each do |parameter|
-  filename = options[parameter]
-
-  if filename.nil? == true || File.exist?(filename) == false
-    puts optparse
-    exit
-  end
-end
-
-## Loads the Secrets at the specified Path. This must be a JSON Valid file!
-##
-def load(secrets_path)
-  raw_secrets = File.read(secrets_path)
-  output = JSON.parse(raw_secrets, symbolize_names: true)
-  output[:timestamp] = Time.now.strftime('%b %d, %Y at %H:%M:%S')
-
-  output
-end
-
-## Loads the Template at the specified path, and applies Placeholder Replacement OP's, with the secrets
-## located at a given path.
-##
-def process(template_path, secrets_path)
-  secrets = load(secrets_path)
-
-  File.open(template_path, 'r') do |template|
-    template.each_line do |line|
-      puts line % secrets
+    def initialize(keys)
+      @keys = keys
+      super("Missing secret key(s): #{keys.join(', ')}")
     end
   end
+
+  PLACEHOLDER = /%\{(\w+)\}/
+
+  def self.load_secrets(secrets_path)
+    raw_secrets = File.read(secrets_path)
+    output = JSON.parse(raw_secrets, symbolize_names: true)
+    output[:timestamp] = Time.now.strftime('%b %d, %Y at %H:%M:%S')
+    output
+  end
+
+  def self.interpolate(template, secrets)
+    missing = []
+    result = template.gsub(PLACEHOLDER) do |match|
+      key = Regexp.last_match(1).to_sym
+      if secrets.key?(key)
+        secrets[key].to_s
+      else
+        missing << key
+        match
+      end
+    end
+    raise MissingKeysError, missing.uniq if missing.any?
+
+    result
+  end
+
+  def self.process(template_path, secrets_path)
+    interpolate(File.read(template_path), load_secrets(secrets_path))
+  end
 end
 
-## Main!
-##
-process(options[:input], options[:secrets])
+if $PROGRAM_NAME == __FILE__
+  options = {}
+
+  optparse = OptionParser.new do |opts|
+    opts.on('-s', '--secrets file', 'Secrets filename (must be in JSON format!)') do |secrets|
+      options[:secrets] = secrets
+    end
+
+    opts.on('-i', '--input file', 'Input filename') do |input|
+      options[:input] = input
+    end
+  end
+
+  optparse.parse!
+
+  %i[secrets input].each do |parameter|
+    filename = options[parameter]
+
+    if filename.nil? || File.exist?(filename) == false
+      warn "error: Missing or invalid --#{parameter} argument"
+      warn optparse
+      exit 1
+    end
+  end
+
+  begin
+    print ReplaceSecrets.process(options[:input], options[:secrets])
+  rescue ReplaceSecrets::MissingKeysError => e
+    warn "error: #{e.message} (required by #{options[:input]})"
+    exit 1
+  rescue JSON::ParserError => e
+    warn "error: Secrets file is not valid JSON: #{e.message}"
+    exit 1
+  end
+end

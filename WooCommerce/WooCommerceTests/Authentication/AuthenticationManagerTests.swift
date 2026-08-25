@@ -79,13 +79,13 @@ final class AuthenticationManagerTests: XCTestCase {
         var capturedSiteAddress: String?
         var capturedEndpoints: CookieNonceAuthenticationEndpoints?
         let manager = AuthenticationManager(
-            applicationPasswordUseCaseFactory: { username, password, siteAddress, endpoints in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { username, password, siteAddress, endpoints in
                 capturedUsername = username
                 capturedPassword = password
                 capturedSiteAddress = siteAddress
                 capturedEndpoints = endpoints
                 return MockAuthenticationManagerApplicationPasswordUseCase()
-            }
+            })
         )
 
         // When
@@ -152,10 +152,10 @@ final class AuthenticationManagerTests: XCTestCase {
         )
         var capturedEndpoints: CookieNonceAuthenticationEndpoints?
         let manager = AuthenticationManager(
-            applicationPasswordUseCaseFactory: { _, _, _, endpoints in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, endpoints in
                 capturedEndpoints = endpoints
                 return MockAuthenticationManagerApplicationPasswordUseCase()
-            }
+            })
         )
 
         // When
@@ -261,9 +261,9 @@ final class AuthenticationManagerTests: XCTestCase {
             )
             let manager = AuthenticationManager(
                 stores: stores,
-                applicationPasswordUseCaseFactory: { _, _, _, _ in
+                applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, _ in
                     MockAuthenticationManagerApplicationPasswordUseCase(applicationPassword: applicationPassword)
-                }
+                })
             )
             let wporg = WordPressOrgCredentials(
                 username: "merchant",
@@ -331,10 +331,10 @@ final class AuthenticationManagerTests: XCTestCase {
         var cookieNamesDuringConstruction = Set<String>()
         let manager = AuthenticationManager(
             runtimeCookieJar: runtimeCookieJar,
-            applicationPasswordUseCaseFactory: { _, _, _, _ in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, _ in
                 cookieNamesDuringConstruction = Set(runtimeCookieJar.cookies?.map(\.name) ?? [])
                 return MockAuthenticationManagerApplicationPasswordUseCase()
-            }
+            })
         )
 
         // When

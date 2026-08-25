@@ -45,13 +45,6 @@ protocol RequestAuthenticator {
 /// Authenticates request
 ///
 public struct DefaultRequestAuthenticator: RequestAuthenticator {
-    typealias WordPressOrgApplicationPasswordUseCaseFactory = (
-        _ username: String,
-        _ password: String,
-        _ siteAddress: String,
-        _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?
-    ) throws -> ApplicationPasswordUseCase
-
     /// Credentials to authenticate the URLRequest
     ///
     let credentials: Credentials?
@@ -73,14 +66,7 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
          selectedSite: JetpackSite? = nil,
          cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
          applicationPasswordUseCase: ApplicationPasswordUseCase? = nil,
-         wordPressOrgApplicationPasswordUseCaseFactory: @escaping WordPressOrgApplicationPasswordUseCaseFactory = {
-             try DefaultApplicationPasswordUseCase(
-                 username: $0,
-                 password: $1,
-                 siteAddress: $2,
-                 authenticationEndpoints: $3
-             )
-         },
+         applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory = .init(),
          network: Network? = nil) {
         self.credentials = credentials
 
@@ -90,11 +76,11 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
             }
             switch credentials {
             case let .some(.wporg(username, password, siteAddress)):
-                return try? wordPressOrgApplicationPasswordUseCaseFactory(
-                    username,
-                    password,
-                    siteAddress,
-                    cookieNonceAuthenticationEndpoints
+                return try? applicationPasswordUseCaseFactory.makeForWordPressOrg(
+                    username: username,
+                    password: password,
+                    siteAddress: siteAddress,
+                    authenticationEndpoints: cookieNonceAuthenticationEndpoints
                 )
             case .some(.applicationPassword(_, _, let siteAddress)):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)

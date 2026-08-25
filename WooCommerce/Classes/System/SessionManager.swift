@@ -336,10 +336,12 @@ private extension SessionManager {
     /// Keeps the persisted endpoints only while they belong to the credentials being stored.
     ///
     func retainCookieNonceAuthenticationEndpoints(for credentials: Credentials?) {
-        let isOwnedByNewCredentials = credentials.flatMap { cookieNonceAuthenticationEndpoints(for: $0) } != nil
-        if isOwnedByNewCredentials == false {
+        guard let credentials,
+              let identity = cookieNonceIdentity(for: credentials) else {
             removeAllCookieNonceAuthenticationEndpoints()
+            return
         }
+        cookieNonceEndpointStore.removeUnlessOwned(siteURL: identity.siteURL, username: identity.username)
     }
 
     func cookieNonceIdentity(for credentials: Credentials) -> (siteURL: String, username: String)? {

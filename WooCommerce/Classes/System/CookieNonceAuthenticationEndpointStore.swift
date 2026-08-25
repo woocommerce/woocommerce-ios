@@ -49,6 +49,16 @@ struct CookieNonceAuthenticationEndpointStore {
         }
     }
 
+    /// Removes a record that does not belong to the identity without allowing another store operation between validation and removal.
+    func removeUnlessOwned(siteURL: String, username: String) {
+        withLock {
+            guard endpointsUnlocked(siteURL: siteURL, username: username) == nil else {
+                return
+            }
+            removeUnlocked()
+        }
+    }
+
     func remove(siteURL: String, username: String) throws {
         try withLock {
             guard let ownedData = userDefaults.data(forKey: UserDefaults.Key.cookieNonceAuthenticationEndpoints.rawValue),

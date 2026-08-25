@@ -56,7 +56,9 @@ public struct MockSessionManager: SessionManagerProtocol {
     }
 
     /// periphery: ignore
-    public func deleteApplicationPassword(using credentials: Credentials?, locally: Bool) {
+    public func deleteApplicationPassword(using credentials: Credentials?,
+                                          cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?,
+                                          locally: Bool) {
         // Do nothing
     }
 }

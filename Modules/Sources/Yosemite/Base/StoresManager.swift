@@ -113,11 +113,3 @@ public protocol StoresManager {
     ///
     func shouldAuthenticateAdminPage(for site: Site) -> Bool
 }
-
-public extension StoresManager {
-    @discardableResult
-    func authenticate(credentials: Credentials,
-                      cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
-        authenticate(credentials: credentials)
-    }
-}

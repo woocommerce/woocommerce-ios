@@ -1,6 +1,8 @@
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
+import protocol Networking.ApplicationPasswordUseCase
+import enum Networking.NetworkError
 import WordPressAuthenticator
 
 final class JetpackSetupCoordinatorTests: XCTestCase {
@@ -367,6 +369,107 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let loginViewController = navigationController.topmostPresentedViewController as! LoginNavigationController
         XCTAssertTrue(loginViewController.topViewController is WPComMagicLinkHostingController)
     }
+
+    func test_authenticateUserAndRefreshSite_when_wporg_endpoints_exist_then_uses_them_to_delete_application_password() throws {
+        // Given
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString,
+            wordPressOrgApplicationPasswordUseCaseFactory: { _, _, _, endpoints in
+                capturedEndpoints = endpoints
+                return MockJetpackSetupApplicationPasswordUseCase()
+            }
+        )
+        defer { sessionManager.reset() }
+        let previousCredentials = Credentials.wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        sessionManager.defaultCredentials = previousCredentials
+        try sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: previousCredentials)
+        let syncedSite = Site.fake().copy(siteID: 123, url: "https://example.com")
+        let stores = MockJetpackSetupStoresManager(sessionManager: sessionManager, siteSyncResult: .success(syncedSite))
+        let coordinator = JetpackSetupCoordinator(
+            site: syncedSite,
+            rootViewController: navigationController,
+            stores: stores
+        )
+        // When
+        try completeJetpackSetup(coordinator)
+
+        // Then
+        waitUntil {
+            capturedEndpoints != nil
+        }
+        XCTAssertEqual(capturedEndpoints, endpoints)
+    }
+
+    func test_authenticateUserAndRefreshSite_when_sync_fails_and_user_cancels_then_restores_wporg_endpoints() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        defer { sessionManager.reset() }
+        let previousCredentials = Credentials.wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        sessionManager.defaultCredentials = previousCredentials
+        try sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: previousCredentials)
+        let site = Site.fake().copy(siteID: 123, url: "https://example.com")
+        let stores = MockJetpackSetupStoresManager(
+            sessionManager: sessionManager,
+            siteSyncResult: .failure(TestError.siteSynchronization)
+        )
+        let coordinator = JetpackSetupCoordinator(
+            site: site,
+            rootViewController: navigationController,
+            stores: stores
+        )
+        // When
+        try completeJetpackSetup(coordinator)
+        waitUntil {
+            self.navigationController.topmostPresentedViewController is UIAlertController
+        }
+        let alert = try XCTUnwrap(navigationController.topmostPresentedViewController as? UIAlertController)
+        alert.tapButton(atIndex: 1)
+
+        // Then
+        XCTAssertEqual(sessionManager.defaultCredentials, previousCredentials)
+        XCTAssertEqual(sessionManager.cookieNonceAuthenticationEndpoints(for: previousCredentials), endpoints)
+        XCTAssertEqual(stores.authenticatedCookieNonceAuthenticationEndpoints, endpoints)
+    }
+
+    private func completeJetpackSetup(_ coordinator: JetpackSetupCoordinator) throws {
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login?token=test"))
+        XCTAssertTrue(coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme))
+        waitUntil {
+            (self.navigationController.topmostPresentedViewController as? UINavigationController)?.topViewController
+                is JetpackSetupHostingController
+        }
+        let setupNavigationController = try XCTUnwrap(
+            navigationController.topmostPresentedViewController as? UINavigationController
+        )
+        let setupViewController = try XCTUnwrap(setupNavigationController.topViewController as? JetpackSetupHostingController)
+        let viewModel = try XCTUnwrap(
+            Mirror(reflecting: setupViewController).descendant("viewModel") as? JetpackSetupViewModel
+        )
+        viewModel.navigateToStore()
+    }
 }
 
 private extension MockStoresManager {
@@ -382,4 +485,76 @@ private extension MockStoresManager {
             }
         }
     }
+}
+
+private final class MockJetpackSetupStoresManager: DefaultStoresManager {
+    private let siteSyncResult: Result<Site, Error>
+    private(set) var authenticatedCookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?
+
+    init(sessionManager: SessionManager, siteSyncResult: Result<Site, Error>) {
+        self.siteSyncResult = siteSyncResult
+        super.init(sessionManager: sessionManager)
+    }
+
+    override func dispatch(_ action: Action) {
+        if let action = action as? JetpackConnectionAction {
+            switch action {
+            case let .loadWPComAccount(_, onCompletion):
+                onCompletion(Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil))
+            case let .fetchJetpackConnectionData(_, completion):
+                completion(.failure(NetworkError.notFound()))
+            default:
+                break
+            }
+            return
+        }
+        if let action = action as? SiteAction {
+            switch action {
+            case let .syncSiteByDomain(_, completion):
+                completion(siteSyncResult)
+            default:
+                break
+            }
+        }
+    }
+
+    @discardableResult
+    override func authenticate(credentials: Credentials,
+                               cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
+        authenticatedCookieNonceAuthenticationEndpoints = cookieNonceAuthenticationEndpoints
+        return super.authenticate(
+            credentials: credentials,
+            cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints
+        )
+    }
+
+    @discardableResult
+    override func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
+        onCompletion?()
+        return self
+    }
+
+    override func updateDefaultStore(storeID: Int64) { }
+
+    override func updateDefaultStore(_ site: Site) { }
+
+    override func listenToWPCOMInvalidWPCOMTokenNotification() { }
+
+    override func listenToUnknownBlogNotification() { }
+}
+
+private final class MockJetpackSetupApplicationPasswordUseCase: ApplicationPasswordUseCase {
+    var applicationPassword: ApplicationPassword? { nil }
+    var canRegenerateApplicationPassword: Bool { false }
+
+    func generateNewPassword() async throws -> ApplicationPassword {
+        throw TestError.applicationPasswordGeneration
+    }
+
+    func deletePassword(locally: Bool) async throws { }
+}
+
+private enum TestError: Error {
+    case applicationPasswordGeneration
+    case siteSynchronization
 }

@@ -127,7 +127,6 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
             throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
         }
 
-        self.authenticationEndpoints = resolvedEndpoints
         self.authenticationType = .wporg(username: username, password: password, siteAddress: siteAddress)
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.applicationPasswordName = Self.createPasswordName()

@@ -9,9 +9,10 @@ import enum NetworkingCore.NetworkError
 /// Requests a server-calculated refund preview when the site is eligible for the
 /// server-computed flow, falling back to local calculations otherwise.
 ///
-/// The preview doubles as the availability probe: a success marks the site available in the
-/// `ServerRefundAvailabilityCache` (the precondition for sending a `compute_totals` create),
-/// while a 404 `rest_no_route` marks it unavailable and falls back without surfacing an error.
+/// The preview doubles as the availability probe. A success marks the site available in the
+/// `ServerRefundAvailabilityCache` and returns a total, which `POSRefundSubmissionAdaptor` stores
+/// per selection. That stored total, not the cache, admits a `compute_totals` create. A 404
+/// `rest_no_route` marks the site unavailable and falls back without surfacing an error.
 ///
 @MainActor
 final class POSServerRefundPreviewUseCase {

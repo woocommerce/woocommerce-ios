@@ -96,6 +96,7 @@ final class CookieNonceAuthenticator: RequestInterceptor {
         let sourceConfiguration = session.sessionConfiguration
         let configuration = sourceConfiguration.copy() as? URLSessionConfiguration ?? .ephemeral
         configuration.httpCookieStorage = sourceConfiguration.httpCookieStorage
+        configuration.urlCredentialStorage = nil
         configuration.protocolClasses = []
         return configuration
     }

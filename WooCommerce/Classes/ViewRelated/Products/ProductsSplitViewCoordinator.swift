@@ -26,29 +26,13 @@ final class ProductsSplitViewCoordinator: NSObject {
     private let splitViewController: UISplitViewController
     private let primaryNavigationController: UINavigationController
     private let secondaryNavigationController: UINavigationController
-    private var activeSwipeBackVetoCount = 0
-    private lazy var swipeBackVetoPolicy = ProductsSwipeBackVetoPolicy { [weak self] in
-        guard let self else { return false }
-        return activeSwipeBackVetoCount > 0 || secondaryNavigationController.shouldPopOnSwipeBack() == false
+    private lazy var swipeBackVetoGestureRecognizer = ProductsSwipeBackVetoGestureRecognizer { [weak self] in
+        self?.secondaryNavigationController.shouldPopOnSwipeBack() == false
     }
-    private lazy var swipeBackVetoGestureRecognizer = makeSwipeBackVetoGestureRecognizer()
     private lazy var productsViewController = ProductsViewController(siteID: siteID,
                                                                      selectedProduct: selectedProduct,
                                                                      navigateToContent: showFromProductList)
     private let secondaryStackRestorationPolicy = ProductsSecondaryStackRestorationPolicy()
-    private var vetoedSwipeCompetingPanGestures: [UIPanGestureRecognizer] = []
-
-    private func makeSwipeBackVetoGestureRecognizer() -> ProductsSwipeBackVetoGestureRecognizer {
-        ProductsSwipeBackVetoGestureRecognizer(
-            policy: swipeBackVetoPolicy,
-            onVeto: { [weak self] in
-                self?.beginVetoingSwipeBack()
-            },
-            onVetoFinished: { [weak self] in
-                self?.finishVetoingSwipeBack()
-            }
-        )
-    }
 
     private var addProductCoordinator: AddProductCoordinator?
 
@@ -356,49 +340,6 @@ private extension ProductsSplitViewCoordinator {
     }
 }
 
-private extension ProductsSplitViewCoordinator {
-    func beginVetoingSwipeBack() {
-        if activeSwipeBackVetoCount == 0 {
-            vetoedSwipeCompetingPanGestures = splitViewController.view.allDescendantGestureRecognizers
-                .compactMap { $0 as? UIPanGestureRecognizer }
-                .filter(\.isEnabled)
-            vetoedSwipeCompetingPanGestures.forEach { $0.isEnabled = false }
-        }
-        activeSwipeBackVetoCount += 1
-    }
-
-    func finishVetoingSwipeBack() {
-        guard activeSwipeBackVetoCount > 0 else {
-            return
-        }
-        activeSwipeBackVetoCount -= 1
-        guard activeSwipeBackVetoCount == 0 else {
-            return
-        }
-        vetoedSwipeCompetingPanGestures.forEach { $0.isEnabled = true }
-        vetoedSwipeCompetingPanGestures = []
-        refreshSwipeBackVetoRelationships()
-    }
-}
-
-private extension UIView {
-    var allDescendantGestureRecognizers: [UIGestureRecognizer] {
-        (gestureRecognizers ?? []) + subviews.flatMap(\.allDescendantGestureRecognizers)
-    }
-}
-
-final class ProductsSwipeBackVetoPolicy {
-    private let shouldVetoSwipeBack: () -> Bool
-
-    init(shouldVetoSwipeBack: @escaping () -> Bool) {
-        self.shouldVetoSwipeBack = shouldVetoSwipeBack
-    }
-
-    func shouldVeto() -> Bool {
-        shouldVetoSwipeBack()
-    }
-}
-
 final class ProductsSecondaryStackRestorationPolicy {
     private var stacksBeforeTransition: [UUID: [UIViewController]] = [:]
 
@@ -422,18 +363,11 @@ final class ProductsSwipeBackVetoGestureRecognizer: UIGestureRecognizer {
     /// When nil, recognition is limited to the standard 44-point back edge.
     var allowedStartRegion: CGRect?
 
-    private let policy: ProductsSwipeBackVetoPolicy
-    private let onVeto: () -> Void
-    private let onVetoFinished: () -> Void
-    private var isVetoActive = false
+    private let shouldVetoSwipeBack: () -> Bool
     private var initialLocation: CGPoint?
 
-    init(policy: ProductsSwipeBackVetoPolicy,
-         onVeto: @escaping () -> Void,
-         onVetoFinished: @escaping () -> Void) {
-        self.policy = policy
-        self.onVeto = onVeto
-        self.onVetoFinished = onVetoFinished
+    init(shouldVetoSwipeBack: @escaping () -> Bool) {
+        self.shouldVetoSwipeBack = shouldVetoSwipeBack
         super.init(target: nil, action: nil)
         cancelsTouchesInView = true
         delaysTouchesEnded = true
@@ -483,7 +417,6 @@ final class ProductsSwipeBackVetoGestureRecognizer: UIGestureRecognizer {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         if state == .began || state == .changed {
             state = .ended
-            finishVetoIfNeeded()
         } else if state == .possible {
             state = .failed
         }
@@ -492,7 +425,6 @@ final class ProductsSwipeBackVetoGestureRecognizer: UIGestureRecognizer {
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
         if state == .began || state == .changed {
             state = .cancelled
-            finishVetoIfNeeded()
         } else if state == .possible {
             state = .failed
         }
@@ -501,18 +433,15 @@ final class ProductsSwipeBackVetoGestureRecognizer: UIGestureRecognizer {
     override func reset() {
         super.reset()
         initialLocation = nil
-        finishVetoIfNeeded()
     }
 
     private func attemptVeto() {
-        guard policy.shouldVeto() else {
+        guard shouldVetoSwipeBack() else {
             state = .failed
             return
         }
 
         state = .began
-        isVetoActive = true
-        onVeto()
     }
 
     private func canStart(at location: CGPoint, in view: UIView) -> Bool {
@@ -522,14 +451,6 @@ final class ProductsSwipeBackVetoGestureRecognizer: UIGestureRecognizer {
         let distanceFromBackEdge = view.effectiveUserInterfaceLayoutDirection == .rightToLeft ?
             view.bounds.maxX - location.x : location.x - view.bounds.minX
         return distanceFromBackEdge <= 44
-    }
-
-    private func finishVetoIfNeeded() {
-        guard isVetoActive else {
-            return
-        }
-        isVetoActive = false
-        onVetoFinished()
     }
 }
 

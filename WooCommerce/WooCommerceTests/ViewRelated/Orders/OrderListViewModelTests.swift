@@ -4,6 +4,7 @@ import YosemiteTestHelpers
 import Yosemite
 import Storage
 import Combine
+import WooFoundation
 
 /// Tests for `OrderListViewModel`.
 ///
@@ -346,7 +347,8 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           filters: nil)
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadFeedbackVisibility(_, onCompletion):
@@ -369,13 +371,80 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           filters: nil)
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
 
         // When
         viewModel.activate()
         viewModel.dataLoadingError = expectedError
 
         XCTAssert(viewModel.topBanner == .error(expectedError))
+    }
+
+    func test_topBanner_when_store_currency_is_unresolved_and_no_loading_error_then_shows_currencyUnavailable() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+
+        // When
+        viewModel.activate()
+
+        // Then
+        XCTAssert(viewModel.topBanner == .currencyUnavailable)
+    }
+
+    func test_topBanner_when_store_currency_is_resolved_then_does_not_show_currencyUnavailable() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
+
+        // When
+        viewModel.activate()
+
+        // Then
+        XCTAssert(viewModel.topBanner == .none)
+    }
+
+    func test_topBanner_when_loading_error_and_currency_is_unresolved_then_error_takes_precedence() {
+        // Given
+        let expectedError = MockError()
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+
+        // When
+        viewModel.activate()
+        viewModel.dataLoadingError = expectedError
+
+        // Then — a data-loading error wins over the currency warning
+        XCTAssert(viewModel.topBanner == .error(expectedError))
+    }
+
+    /// Builds a `MockSelectedSiteSettings` whose settings stream resolves (or not) the store currency,
+    /// by including (or omitting) the `woocommerce_currency` general setting.
+    ///
+    private func makeSelectedSiteSettings(currencyResolved: Bool) -> MockSelectedSiteSettings {
+        let mock = MockSelectedSiteSettings()
+        let settings: [Yosemite.SiteSetting] = currencyResolved
+            ? [Yosemite.SiteSetting(siteID: siteID,
+                                    settingID: CurrencySettings.Constants.currencyCodeKey,
+                                    label: "",
+                                    settingDescription: "",
+                                    value: "USD",
+                                    settingGroupKey: "general")]
+            : []
+        mock.siteSettings = settings
+        mock.isStoreCurrencyResolved = currencyResolved
+        mock.mockSettingsStream = Just((siteID: siteID, settings: settings, source: SettingsUpdateSource.initialLoad)).eraseToAnyPublisher()
+        return mock
     }
 
     // MARK: - Filters Applied

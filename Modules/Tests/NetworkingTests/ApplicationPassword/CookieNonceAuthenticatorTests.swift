@@ -26,6 +26,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         sourceConfiguration.timeoutIntervalForRequest = 17
         sourceConfiguration.protocolClasses = [CookieNonceAuthenticationURLProtocol.self]
         sourceConfiguration.httpCookieStorage = cookieStorage
+        sourceConfiguration.urlCredentialStorage = URLCredentialStorage.shared
         let sourceSession = Session(configuration: sourceConfiguration)
 
         // When
@@ -34,11 +35,13 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         // Then
         XCTAssertTrue(configuration.protocolClasses?.isEmpty == true)
         XCTAssertTrue(configuration.httpCookieStorage === cookieStorage)
+        XCTAssertNil(configuration.urlCredentialStorage)
         XCTAssertEqual(configuration.timeoutIntervalForRequest, 17)
         XCTAssertEqual(
             sourceSession.sessionConfiguration.protocolClasses?.map { ObjectIdentifier($0) },
             [ObjectIdentifier(CookieNonceAuthenticationURLProtocol.self)]
         )
+        XCTAssertTrue(sourceSession.sessionConfiguration.urlCredentialStorage === URLCredentialStorage.shared)
     }
 
     func test_wordpress_org_network_uses_cookie_storage_isolated_from_shared_and_other_networks() throws {
@@ -520,6 +523,71 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         XCTAssertTrue(trace.successfulProtectedCookie?.contains(scenario.loginCookie) == true)
     }
 
+    func test_wordpress_org_network_when_preflight_requires_Basic_auth_then_does_not_use_cached_credential_or_post_site_credentials() async throws {
+        // Given
+        let cachedCredential = CookieNonceLoopbackScenario.BasicCredential(
+            username: "cached-user",
+            password: "cached-password",
+            realm: "cached-credential-\(UUID().uuidString)"
+        )
+        let scenario = CookieNonceLoopbackScenario(
+            requiredInitialProtectedRequests: 1,
+            preflightBasicCredential: cachedCredential
+        )
+        let server = try CookieNonceLoopbackServer(handler: scenario.response)
+        defer { server.stop() }
+        let siteURL = server.siteURL
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: siteURL,
+            loginEntryURL: siteURL.appendingPathComponent("custom-entry"),
+            adminBaseURL: siteURL.appendingPathComponent("private-admin", isDirectory: true)
+        )
+        let network = WordPressOrgNetwork(
+            configuration: CookieNonceAuthenticatorConfiguration(
+                username: sampleUser,
+                password: samplePassword,
+                endpoints: endpoints
+            ),
+            siteAddress: siteURL.absoluteString
+        )
+        let credentialStorage = try XCTUnwrap(network.session.configuration.urlCredentialStorage)
+        let protectionSpace = URLProtectionSpace(
+            host: try XCTUnwrap(siteURL.host),
+            port: try XCTUnwrap(siteURL.port),
+            protocol: siteURL.scheme,
+            realm: cachedCredential.realm,
+            authenticationMethod: NSURLAuthenticationMethodHTTPBasic
+        )
+        let credential = URLCredential(
+            user: cachedCredential.username,
+            password: cachedCredential.password,
+            persistence: .forSession
+        )
+        credentialStorage.setDefaultCredential(credential, for: protectionSpace)
+        defer { credentialStorage.remove(credential, for: protectionSpace) }
+        XCTAssertTrue(credentialStorage === URLCredentialStorage.shared)
+        XCTAssertEqual(credentialStorage.defaultCredential(for: protectionSpace)?.user, cachedCredential.username)
+        let request = URLRequest(url: siteURL.appendingPathComponent("wp-json/protected"))
+
+        // When
+        do {
+            _ = try await network.responseData(for: request)
+            XCTFail("Expected the protected request to remain unauthorized")
+        } catch {
+            guard case .responseValidationFailed(reason: .unacceptableStatusCode(code: 401)) = error as? AFError else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+        }
+
+        // Then
+        let trace = scenario.trace
+        XCTAssertEqual(trace.protectedRequestCount, 1)
+        XCTAssertEqual(trace.loginEntryRequestCount, 2)
+        XCTAssertNil(trace.loginEntryAuthorizationHeader)
+        XCTAssertEqual(trace.credentialRequestCount, 0)
+        XCTAssertEqual(trace.nonceRequestCount, 0)
+    }
+
     func test_wordpress_org_network_when_credentials_redirect_to_admin_base_then_fetches_nonce_without_following_redirect() async throws {
         // Given
         let scenario = CookieNonceLoopbackScenario(
@@ -842,9 +910,21 @@ private extension NSLock {
 }
 
 private final class CookieNonceLoopbackScenario: @unchecked Sendable {
+    struct BasicCredential {
+        let username: String
+        let password: String
+        let realm: String
+
+        var authorizationHeader: String {
+            let value = Data("\(username):\(password)".utf8).base64EncodedString()
+            return "Basic \(value)"
+        }
+    }
+
     struct Trace {
         let protectedRequestCount: Int
         let loginEntryRequestCount: Int
+        let loginEntryAuthorizationHeader: String?
         let credentialRequestCount: Int
         let nonceRequestCount: Int
         let successfulProtectedRequestCount: Int
@@ -859,6 +939,7 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
     private let lock = NSLock()
     private let token = UUID().uuidString
     private let requiredInitialProtectedRequests: Int
+    private let preflightBasicCredential: BasicCredential?
     private let credentialRedirectStatusCode: Int?
     private let credentialRedirectsToAdminBase: Bool
     private let protectedMethod: String
@@ -866,6 +947,7 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
     private let successfulProtectedBody: Data
     private var protectedRequestCount = 0
     private var loginEntryRequestCount = 0
+    private var loginEntryAuthorizationHeader: String?
     private var credentialRequestCount = 0
     private var nonceRequestCount = 0
     private var successfulProtectedRequestCount = 0
@@ -878,6 +960,7 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
 
     init(
         requiredInitialProtectedRequests: Int,
+        preflightBasicCredential: BasicCredential? = nil,
         credentialRedirectStatusCode: Int? = nil,
         credentialRedirectsToAdminBase: Bool = false,
         protectedMethod: String = "GET",
@@ -885,6 +968,7 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
         successfulProtectedBody: Data = Data("success".utf8)
     ) {
         self.requiredInitialProtectedRequests = requiredInitialProtectedRequests
+        self.preflightBasicCredential = preflightBasicCredential
         self.credentialRedirectStatusCode = credentialRedirectStatusCode
         self.credentialRedirectsToAdminBase = credentialRedirectsToAdminBase
         self.protectedMethod = protectedMethod
@@ -900,6 +984,7 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
             Trace(
                 protectedRequestCount: protectedRequestCount,
                 loginEntryRequestCount: loginEntryRequestCount,
+                loginEntryAuthorizationHeader: loginEntryAuthorizationHeader,
                 credentialRequestCount: credentialRequestCount,
                 nonceRequestCount: nonceRequestCount,
                 successfulProtectedRequestCount: successfulProtectedRequestCount,
@@ -920,7 +1005,17 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
         switch (request.method, request.target) {
         case ("GET", "/custom-entry"):
             waitForInitialProtectedRequests()
-            lock.withTestLock { loginEntryRequestCount += 1 }
+            lock.withTestLock {
+                loginEntryRequestCount += 1
+                loginEntryAuthorizationHeader = request.headers["authorization"]
+            }
+            if let preflightBasicCredential,
+               request.headers["authorization"] != preflightBasicCredential.authorizationHeader {
+                return .init(
+                    statusCode: 401,
+                    headers: ["WWW-Authenticate": "Basic realm=\"\(preflightBasicCredential.realm)\""]
+                )
+            }
             return .init(
                 statusCode: 200,
                 headers: ["Set-Cookie": "\(preflightCookie); Path=/"],

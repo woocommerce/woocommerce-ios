@@ -5,6 +5,7 @@
 -----
 - [*] Orders: show a warning on the order list when the store's currency couldn't be loaded, instead of silently showing amounts as USD. [https://github.com/woocommerce/woocommerce-ios/pull/17761]
 
+- [Internal] POS: Refund submission events now use the POS Tracks prefix when issued from POS. [https://github.com/woocommerce/woocommerce-ios/pull/17744]
 
 25.5
 -----

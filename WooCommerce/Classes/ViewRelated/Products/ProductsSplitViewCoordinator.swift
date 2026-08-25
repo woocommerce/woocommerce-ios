@@ -32,14 +32,18 @@ final class ProductsSplitViewCoordinator: NSObject {
     }
     private lazy var swipeBackVetoGestureRecognizer = ProductsSwipeBackVetoGestureRecognizer(
         policy: swipeBackVetoPolicy,
-        onVeto: { [weak self] gestureRecognizer in
-            self?.handleVetoedSwipeBack(gestureRecognizer)
+        onVeto: { [weak self] in
+            self?.beginVetoingSwipeBack()
+        },
+        onVetoFinished: { [weak self] in
+            self?.finishVetoingSwipeBack()
         }
     )
     private lazy var productsViewController = ProductsViewController(siteID: siteID,
                                                                      selectedProduct: selectedProduct,
                                                                      navigateToContent: showFromProductList)
     private let secondaryStackRestorationPolicy = ProductsSecondaryStackRestorationPolicy()
+    private var vetoedSwipeCompetingPanGestures: [UIPanGestureRecognizer] = []
 
     private var addProductCoordinator: AddProductCoordinator?
 
@@ -331,23 +335,16 @@ private extension ProductsSplitViewCoordinator {
 }
 
 private extension ProductsSplitViewCoordinator {
-    func handleVetoedSwipeBack(_ gestureRecognizer: ProductsSwipeBackVetoGestureRecognizer) {
-        let competingPanGestures = splitViewController.view.allDescendantGestureRecognizers
+    func beginVetoingSwipeBack() {
+        vetoedSwipeCompetingPanGestures = splitViewController.view.allDescendantGestureRecognizers
             .compactMap { $0 as? UIPanGestureRecognizer }
-            .filter { $0 !== gestureRecognizer }
-        competingPanGestures.forEach { $0.isEnabled = false }
-        gestureRecognizer.isEnabled = false
+        vetoedSwipeCompetingPanGestures.forEach { $0.isEnabled = false }
+    }
 
-        // Presenting the discard sheet interrupts the touch sequence. Reset every recognizer explicitly so the
-        // veto is ready for the next swipe and UIKit cannot complete the current pop while the alert is appearing.
-        DispatchQueue.main.async { [weak self] in
-            guard let self else {
-                return
-            }
-            gestureRecognizer.isEnabled = true
-            competingPanGestures.forEach { $0.isEnabled = true }
-            self.refreshSwipeBackVetoRelationships(reason: "veto reset")
-        }
+    func finishVetoingSwipeBack() {
+        vetoedSwipeCompetingPanGestures.forEach { $0.isEnabled = true }
+        vetoedSwipeCompetingPanGestures = []
+        refreshSwipeBackVetoRelationships(reason: "veto finished")
     }
 }
 
@@ -391,15 +388,20 @@ final class ProductsSecondaryStackRestorationPolicy {
 final class ProductsSwipeBackVetoGestureRecognizer: UIGestureRecognizer {
     private let edgeWidth: CGFloat
     private let policy: ProductsSwipeBackVetoPolicy
-    private let onVeto: (ProductsSwipeBackVetoGestureRecognizer) -> Void
+    private let onVeto: () -> Void
+    private let onVetoFinished: () -> Void
 
     init(edgeWidth: CGFloat = 44,
          policy: ProductsSwipeBackVetoPolicy,
-         onVeto: @escaping (ProductsSwipeBackVetoGestureRecognizer) -> Void) {
+         onVeto: @escaping () -> Void,
+         onVetoFinished: @escaping () -> Void) {
         self.edgeWidth = edgeWidth
         self.policy = policy
         self.onVeto = onVeto
+        self.onVetoFinished = onVetoFinished
         super.init(target: nil, action: nil)
+        cancelsTouchesInView = true
+        delaysTouchesEnded = true
     }
 
     override func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -412,7 +414,7 @@ final class ProductsSwipeBackVetoGestureRecognizer: UIGestureRecognizer {
 
         DDLogDebug("[WOOMOB-3789] vetoed at edge touch")
         state = .began
-        onVeto(self)
+        onVeto()
     }
 
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent) {
@@ -422,12 +424,14 @@ final class ProductsSwipeBackVetoGestureRecognizer: UIGestureRecognizer {
     override func touchesEnded(_ touches: Set<UITouch>, with event: UIEvent) {
         if state == .began || state == .changed {
             state = .ended
+            onVetoFinished()
         }
     }
 
     override func touchesCancelled(_ touches: Set<UITouch>, with event: UIEvent) {
         if state == .began || state == .changed {
             state = .cancelled
+            onVetoFinished()
         }
     }
 }

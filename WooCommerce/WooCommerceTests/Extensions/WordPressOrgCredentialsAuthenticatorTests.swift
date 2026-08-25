@@ -348,11 +348,21 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
 
     func test_controller_boundary_rewrites_preserved_post_and_finishes_only_after_exact_2xx_response() throws {
         // Given
-        let harness = try makeAuthenticatedControllerHarness()
+        var scheduledWork: [() -> Void] = []
+        let harness = try makeAuthenticatedControllerHarness { work in
+            scheduledWork.append(work)
+        }
         defer { harness.cleanup() }
-        let (sut, webView, endpoints, initialURL) = (harness.controller, harness.webView, harness.endpoints, harness.initialURL)
+        let (sut, webView, endpoints, initialURL, viewModel) = (
+            harness.controller,
+            harness.webView,
+            harness.endpoints,
+            harness.initialURL,
+            harness.viewModel
+        )
         sut.loadViewIfNeeded()
         let credentialRequest = try XCTUnwrap(webView.loadedRequests.first)
+        let credentialNavigation = try XCTUnwrap(webView.loadedNavigations.first)
         XCTAssertEqual(
             sut.decideSiteCredentialNavigation(for: credentialRequest, isMainFrame: true, shouldPerformDownload: false),
             .allow
@@ -368,7 +378,12 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
             isMainFrame: true,
             shouldPerformDownload: false
         )
+        XCTAssertEqual(webView.loadedRequests.map(\.url), [credentialRequest.url])
+        XCTAssertEqual(scheduledWork.count, 1)
+        scheduledWork.removeFirst()()
+        sut.webView(webView, didFailProvisionalNavigation: credentialNavigation, withError: URLError(.cancelled))
         let cleanGet = try XCTUnwrap(webView.loadedRequests.last)
+        let cleanGetNavigation = try XCTUnwrap(webView.loadedNavigations.last)
         let cleanGetPolicy = sut.decideSiteCredentialNavigation(for: cleanGet, isMainFrame: true, shouldPerformDownload: false)
         let response = try XCTUnwrap(HTTPURLResponse(url: nonceURL, statusCode: 200, httpVersion: nil, headerFields: nil))
         let responsePolicy = sut.decideSiteCredentialNavigation(
@@ -376,6 +391,10 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
             isMainFrame: true,
             canShowMIMEType: true
         )
+        XCTAssertEqual(webView.loadedRequests.map(\.url), [credentialRequest.url, nonceURL])
+        XCTAssertEqual(scheduledWork.count, 1)
+        scheduledWork.removeFirst()()
+        sut.webView(webView, didFailProvisionalNavigation: cleanGetNavigation, withError: URLError(.cancelled))
 
         // Then
         XCTAssertEqual(preservedPolicy, .cancel)
@@ -385,9 +404,90 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         XCTAssertEqual(cleanGetPolicy, .allow)
         XCTAssertEqual(responsePolicy, .cancel)
         XCTAssertEqual(webView.loadedRequests.last?.url, initialURL)
+        XCTAssertTrue(viewModel.provisionalNavigationErrors.isEmpty)
         XCTAssertNil(
             sut.decideSiteCredentialNavigation(for: URLRequest(url: initialURL), isMainFrame: true, shouldPerformDownload: false)
         )
+    }
+
+    func test_rejected_navigation_action_defers_fallback_and_suppresses_policy_cancellation() throws {
+        // Given
+        var scheduledWork: [() -> Void] = []
+        let harness = try makeAuthenticatedControllerHarness { work in
+            scheduledWork.append(work)
+        }
+        defer { harness.cleanup() }
+        let (sut, webView, initialURL, viewModel) = (
+            harness.controller,
+            harness.webView,
+            harness.initialURL,
+            harness.viewModel
+        )
+        sut.loadViewIfNeeded()
+        let credentialRequest = try XCTUnwrap(webView.loadedRequests.first)
+        let credentialNavigation = try XCTUnwrap(webView.loadedNavigations.first)
+        XCTAssertEqual(
+            sut.decideSiteCredentialNavigation(for: credentialRequest, isMainFrame: true, shouldPerformDownload: false),
+            .allow
+        )
+        let attackerURL = try XCTUnwrap(URL(string: "https://attacker.example/collect"))
+
+        // When
+        let policy = sut.decideSiteCredentialNavigation(
+            for: URLRequest(url: attackerURL),
+            isMainFrame: true,
+            shouldPerformDownload: false
+        )
+
+        // Then
+        XCTAssertEqual(policy, .cancel)
+        XCTAssertEqual(webView.loadedRequests.map(\.url), [credentialRequest.url])
+        XCTAssertEqual(scheduledWork.count, 1)
+        scheduledWork.removeFirst()()
+        sut.webView(webView, didFailProvisionalNavigation: credentialNavigation, withError: URLError(.cancelled))
+        XCTAssertEqual(webView.loadedRequests.map(\.url), [credentialRequest.url, initialURL])
+        XCTAssertTrue(viewModel.provisionalNavigationErrors.isEmpty)
+    }
+
+    func test_rejected_navigation_response_defers_fallback_and_suppresses_policy_cancellation() throws {
+        // Given
+        var scheduledWork: [() -> Void] = []
+        let harness = try makeAuthenticatedControllerHarness { work in
+            scheduledWork.append(work)
+        }
+        defer { harness.cleanup() }
+        let (sut, webView, initialURL, viewModel) = (
+            harness.controller,
+            harness.webView,
+            harness.initialURL,
+            harness.viewModel
+        )
+        sut.loadViewIfNeeded()
+        let credentialRequest = try XCTUnwrap(webView.loadedRequests.first)
+        let credentialNavigation = try XCTUnwrap(webView.loadedNavigations.first)
+        XCTAssertEqual(
+            sut.decideSiteCredentialNavigation(for: credentialRequest, isMainFrame: true, shouldPerformDownload: false),
+            .allow
+        )
+        let rejectedResponse = try XCTUnwrap(
+            HTTPURLResponse(url: try XCTUnwrap(credentialRequest.url), statusCode: 200, httpVersion: nil, headerFields: nil)
+        )
+
+        // When
+        let policy = sut.decideSiteCredentialNavigation(
+            for: rejectedResponse,
+            isMainFrame: true,
+            canShowMIMEType: true
+        )
+
+        // Then
+        XCTAssertEqual(policy, .cancel)
+        XCTAssertEqual(webView.loadedRequests.map(\.url), [credentialRequest.url])
+        XCTAssertEqual(scheduledWork.count, 1)
+        scheduledWork.removeFirst()()
+        sut.webView(webView, didFailProvisionalNavigation: credentialNavigation, withError: URLError(.cancelled))
+        XCTAssertEqual(webView.loadedRequests.map(\.url), [credentialRequest.url, initialURL])
+        XCTAssertTrue(viewModel.provisionalNavigationErrors.isEmpty)
     }
 
     func test_policy_cancellation_does_not_supersede_scheduled_clean_get_but_clean_get_failure_falls_back_once() throws {
@@ -511,13 +611,16 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
             harness.initialURL
         )
         sut.loadViewIfNeeded()
+        let credentialNavigation = try XCTUnwrap(webView.loadedNavigations.first)
 
         // When
         viewModel.reloadWebview()
+        sut.webView(webView, didFailProvisionalNavigation: credentialNavigation, withError: URLError(.cancelled))
 
         // Then
         XCTAssertEqual(webView.stopLoadingCallCount, 1)
         XCTAssertEqual(webView.loadedRequests.last?.url, initialURL)
+        XCTAssertTrue(viewModel.provisionalNavigationErrors.isEmpty)
         XCTAssertNil(
             sut.decideSiteCredentialNavigation(for: URLRequest(url: initialURL), isMainFrame: true, shouldPerformDownload: false)
         )
@@ -626,7 +729,9 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         return (try WKWebView().authenticateForWPOrg(with: credentials, authenticationEndpoints: endpoints), endpoints)
     }
 
-    private func makeAuthenticatedControllerHarness() throws -> (
+    private func makeAuthenticatedControllerHarness(
+        siteCredentialReplacementScheduler: @escaping (@escaping () -> Void) -> Void = { $0() }
+    ) throws -> (
         controller: AuthenticatedWebViewController,
         webView: RecordingWKWebView,
         endpoints: CookieNonceAuthenticationEndpoints,
@@ -650,7 +755,7 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
             viewModel: viewModel,
             extraCredentials: nil,
             webView: webView,
-            siteCredentialReplacementScheduler: { $0() }
+            siteCredentialReplacementScheduler: siteCredentialReplacementScheduler
         )
         return (controller, webView, endpoints, initialURL, viewModel, { defaults.removePersistentDomain(forName: suiteName) })
     }

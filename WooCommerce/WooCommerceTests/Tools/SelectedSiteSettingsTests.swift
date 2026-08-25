@@ -11,7 +11,7 @@ import WooFoundation
 struct SelectedSiteSettingsTests {
     private let siteID: Int64 = 1_234
 
-    @Test func isStoreCurrencyResolved_is_true_when_the_currency_setting_is_stored() {
+    @Test func isUsingFallbackCurrency_is_false_when_the_currency_setting_is_stored() {
         // Given
         let storageManager = MockStorageManager()
         let stores = makeStores()
@@ -21,10 +21,10 @@ struct SelectedSiteSettingsTests {
         let sut = SelectedSiteSettings(stores: stores, storageManager: storageManager)
 
         // Then
-        #expect(sut.isStoreCurrencyResolved == true)
+        #expect(sut.isUsingFallbackCurrency == false)
     }
 
-    @Test func isStoreCurrencyResolved_is_false_when_the_currency_setting_is_missing() {
+    @Test func isUsingFallbackCurrency_is_true_when_the_currency_setting_is_missing() {
         // Given — no general settings stored (e.g. the settings sync failed)
         let storageManager = MockStorageManager()
         let stores = makeStores()
@@ -33,7 +33,7 @@ struct SelectedSiteSettingsTests {
         let sut = SelectedSiteSettings(stores: stores, storageManager: storageManager)
 
         // Then
-        #expect(sut.isStoreCurrencyResolved == false)
+        #expect(sut.isUsingFallbackCurrency == true)
     }
 }
 

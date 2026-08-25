@@ -5,7 +5,7 @@ import Combine
 final class MockSelectedSiteSettings: SelectedSiteSettingsProtocol {
     var mockSettingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never>?
     var siteSettings: [SiteSetting] = []
-    var isStoreCurrencyResolved: Bool = true
+    var isUsingFallbackCurrency: Bool = false
 
     var settingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never> {
         return mockSettingsStream ?? Empty().eraseToAnyPublisher()

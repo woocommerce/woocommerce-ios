@@ -428,6 +428,35 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssert(viewModel.topBanner == .error(expectedError))
     }
 
+    func test_retryStoreCurrencySync_hides_the_banner_while_refreshing_then_reshows_it_when_currency_is_still_unavailable() {
+        // Given — the store currency is unavailable, so the banner is showing
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+        var capturedCompletion: ((Error?) -> Void)?
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .synchronizeGeneralSiteSettings(_, onCompletion) = action {
+                capturedCompletion = onCompletion
+            }
+        }
+        viewModel.activate()
+        XCTAssert(viewModel.topBanner == .currencyUnavailable)
+
+        // When — the re-sync starts
+        viewModel.retryStoreCurrencySync()
+
+        // Then — the banner is hidden while the sync is in flight
+        XCTAssert(viewModel.topBanner == .none)
+
+        // When — the sync completes but the currency is still unavailable
+        capturedCompletion?(nil)
+
+        // Then — the banner is shown again
+        XCTAssert(viewModel.topBanner == .currencyUnavailable)
+    }
+
     /// Builds a `MockSelectedSiteSettings` whose settings stream resolves (or not) the store currency,
     /// by including (or omitting) the `woocommerce_currency` general setting.
     ///
@@ -442,7 +471,7 @@ final class OrderListViewModelTests: XCTestCase {
                                     settingGroupKey: "general")]
             : []
         mock.siteSettings = settings
-        mock.isStoreCurrencyResolved = currencyResolved
+        mock.isUsingFallbackCurrency = !currencyResolved
         mock.mockSettingsStream = Just((siteID: siteID, settings: settings, source: SettingsUpdateSource.initialLoad)).eraseToAnyPublisher()
         return mock
     }

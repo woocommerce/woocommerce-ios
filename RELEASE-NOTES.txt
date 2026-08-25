@@ -4,6 +4,7 @@
 25.6
 -----
 - [Internal] POS: Refund submission events now use the POS Tracks prefix when issued from POS. [https://github.com/woocommerce/woocommerce-ios/pull/17744]
+- [*] Order Details: Orders paid offline can now be refunded from the app, matching the behavior on the web. [https://github.com/woocommerce/woocommerce-ios/pull/17764]
 
 25.5
 -----

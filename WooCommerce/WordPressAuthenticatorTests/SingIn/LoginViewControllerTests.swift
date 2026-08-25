@@ -158,6 +158,37 @@ class LoginViewControllerTests: XCTestCase {
         )
     }
 
+    func test_site_credentials_controller_when_recovery_is_toggled_then_accessibility_elements_follow_visible_field() throws {
+        // Given
+        let delegate = WordPressAuthenticatorDelegateSpy()
+        delegate.siteCredentialRecoveries = [.login(draftURL: "https://example.com/wp-login.php", error: nil)]
+        let controller = try makeSiteCredentialsController(delegate: delegate)
+        let credentialCells = try renderedCells(in: controller)
+        let originalUsernameField = try XCTUnwrap((credentialCells[1] as? TextFieldTableViewCell)?.textField)
+        var accessibilityElements = try XCTUnwrap(controller.view.accessibilityElements as? [UIView])
+        XCTAssertTrue(accessibilityElements.first === originalUsernameField)
+
+        // When
+        try tapContinue(in: controller)
+
+        // Then
+        let recoveryCells = try renderedCells(in: controller)
+        let recoveryURLField = try XCTUnwrap((recoveryCells[2] as? TextFieldTableViewCell)?.textField)
+        accessibilityElements = try XCTUnwrap(controller.view.accessibilityElements as? [UIView])
+        XCTAssertTrue(accessibilityElements.first === recoveryURLField)
+        XCTAssertFalse(accessibilityElements.contains { $0 === originalUsernameField })
+
+        // When
+        try XCTUnwrap((recoveryCells[4] as? TextLinkButtonTableViewCell)?.actionHandler)()
+
+        // Then
+        let restoredCredentialCells = try renderedCells(in: controller)
+        let restoredUsernameField = try XCTUnwrap((restoredCredentialCells[1] as? TextFieldTableViewCell)?.textField)
+        accessibilityElements = try XCTUnwrap(controller.view.accessibilityElements as? [UIView])
+        XCTAssertTrue(accessibilityElements.first === restoredUsernameField)
+        XCTAssertEqual(accessibilityElements.count, 3)
+    }
+
     func test_site_credentials_controller_when_recovery_has_generic_failure_then_keeps_explicit_browser_action_only() throws {
         // Given
         let delegate = WordPressAuthenticatorDelegateSpy()

@@ -307,6 +307,58 @@ struct CookieNonceAuthenticationEndpointStoreTests {
         )
     }
 
+    @Test func test_removeUnlessOwned_when_replacement_save_starts_after_ownership_check_then_serializes_and_preserves_replacement() throws {
+        // Given
+        let defaults = try #require(BlockingRemovalUserDefaults(suiteName: UUID().uuidString))
+        defer { clear(defaults) }
+        let removingStore = CookieNonceAuthenticationEndpointStore(userDefaults: defaults)
+        let replacementStore = CookieNonceAuthenticationEndpointStore(userDefaults: defaults)
+        let staleEndpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: #require(URL(string: "https://stale.example")),
+            loginEntryURL: #require(URL(string: "https://stale.example/custom-login"))
+        )
+        let replacementEndpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: #require(URL(string: "https://replacement.example")),
+            loginEntryURL: #require(URL(string: "https://replacement.example/custom-login"))
+        )
+        try removingStore.save(staleEndpoints, siteURL: "https://stale.example", username: "stale")
+        defaults.pauseNextEndpointRemoval = true
+        let replacementResult = LockedOperationResult()
+        let removalFinished = DispatchSemaphore(value: 0)
+        let replacementStarted = DispatchSemaphore(value: 0)
+        let replacementFinished = DispatchSemaphore(value: 0)
+
+        // When
+        DispatchQueue.global().async {
+            removingStore.removeUnlessOwned(siteURL: "https://incoming.example", username: "incoming")
+            removalFinished.signal()
+        }
+        // Reaching `removeObject` proves ownership validation has completed while the shared lock remains held.
+        #expect(defaults.removalReached.wait(timeout: .now() + 5) == .success)
+        DispatchQueue.global().async {
+            replacementStarted.signal()
+            replacementResult.set(Result {
+                try replacementStore.save(
+                    replacementEndpoints,
+                    siteURL: "https://replacement.example",
+                    username: "replacement"
+                )
+            })
+            replacementFinished.signal()
+        }
+        #expect(replacementStarted.wait(timeout: .now() + 5) == .success)
+
+        // Then
+        #expect(replacementFinished.wait(timeout: .now() + 0.1) == .timedOut)
+        defaults.continueRemoval.signal()
+        #expect(removalFinished.wait(timeout: .now() + 5) == .success)
+        #expect(replacementFinished.wait(timeout: .now() + 5) == .success)
+        #expect(replacementResult.succeeded)
+        #expect(
+            replacementStore.endpoints(siteURL: "https://replacement.example", username: "replacement") == replacementEndpoints
+        )
+    }
+
     @Test func test_save_rollback_when_replacement_save_starts_immediately_before_cleanup_then_serializes_and_preserves_replacement() throws {
         // Given
         let defaults = try #require(BlockingRemovalUserDefaults(suiteName: UUID().uuidString))

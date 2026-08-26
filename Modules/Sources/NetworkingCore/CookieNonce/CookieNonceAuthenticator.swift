@@ -124,12 +124,11 @@ private extension CookieNonceAuthenticator {
     }
 
     func invalidateLoginSequence(error: Error) {
-        let allowRetry: Bool
-        switch error {
+        let allowRetry = switch error {
         case .postLoginFailed, .unknown:
-            allowRetry = true
+            true
         case .invalidNewPostURL, .missingNonce:
-            allowRetry = false
+            false
         }
         state.invalidate(allowRetry: allowRetry)
         DDLogInfo("Aborting Cookie+Nonce login sequence for \(loginURL)")

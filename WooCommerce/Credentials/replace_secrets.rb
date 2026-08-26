@@ -55,9 +55,9 @@ class ReplaceSecrets
     interpolate(File.read(template_path), load_secrets(secrets_path))
   end
 
-  # Clang diagnostic so Xcode and xcpretty surface the message.
+  # Clang diagnostic (`file:line:column: error:`) so Xcode's issue navigator shows the message.
   def self.xcode_error(path, message)
-    "#{path}:1: error: #{message}"
+    "#{path}:1:1: error: #{message}"
   end
 end
 

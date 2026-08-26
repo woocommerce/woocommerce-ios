@@ -85,7 +85,7 @@ class ReplaceSecretsTest < Minitest::Test
 
       refute status.success?
       assert_empty stdout
-      assert_equal "#{input}:1: error: Missing secret key(s): missing_key\n", stderr
+      assert_equal "#{input}:1:1: error: Missing secret key(s): missing_key\n", stderr
     end
   end
 
@@ -96,7 +96,7 @@ class ReplaceSecretsTest < Minitest::Test
 
       refute status.success?
       assert_empty stdout
-      assert_match(/:1: error: Missing or invalid --secrets argument/, stderr)
+      assert_match(/:1:1: error: Missing or invalid --secrets argument/, stderr)
     end
   end
 
@@ -107,7 +107,7 @@ class ReplaceSecretsTest < Minitest::Test
 
       refute status.success?
       assert_empty stdout
-      assert_match(/#{Regexp.escape(secrets)}:1: error: Secrets file is not valid JSON:/, stderr)
+      assert_match(/#{Regexp.escape(secrets)}:1:1: error: Secrets file is not valid JSON:/, stderr)
     end
   end
 
@@ -116,7 +116,7 @@ class ReplaceSecretsTest < Minitest::Test
 
     refute status.success?
     assert_empty stdout
-    assert_match(/:1: error: Missing or invalid --secrets argument/, stderr)
+    assert_match(/:1:1: error: Missing or invalid --secrets argument/, stderr)
   end
 
   private

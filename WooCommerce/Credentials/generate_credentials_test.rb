@@ -31,7 +31,7 @@ class GenerateCredentialsTest < Minitest::Test
       stdout, stderr, status = Open3.capture3(environment, SCRIPT)
 
       refute status.success?
-      diagnostic = "#{TEMPLATE}:1: error: Missing secret key(s): dotcom_secret"
+      diagnostic = "#{TEMPLATE}:1:1: error: Missing secret key(s): dotcom_secret"
       assert_match(/#{Regexp.escape(diagnostic)}/, stderr)
       assert_match(/#{Regexp.escape(diagnostic)}/, stdout)
       generated_contents = outputs.map { |output| File.read(output) }

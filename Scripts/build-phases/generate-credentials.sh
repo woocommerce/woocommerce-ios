@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-if [[ $ACTION == 'indexbuild' ]]; then
+if [[ ${ACTION:-} == 'indexbuild' ]]; then
   echo "ℹ️: Skipping code generation in 'indexbuild' build. See https://github.com/mac-cain13/R.swift/issues/719#issuecomment-937733804 for more info."
   exit 0
 fi
@@ -12,11 +12,11 @@ CREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl
 CREDS_TEMPLATE_PATH=${SOURCE_ROOT}/Credentials/Templates/ApiCredentials-Template.swift
 SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.json"
 
-# Clang diagnostic on stdout and stderr: Xcode and xcpretty ignore a bare `error:`.
+# file:line:column so Xcode's issue navigator shows the message, not just PhaseScriptExecution.
 xcode_error() {
     local file="$1"
     local message="$2"
-    local diagnostic="${file}:1: error: ${message}"
+    local diagnostic="${file}:1:1: error: ${message}"
     echo "${diagnostic}" >&2
     echo "${diagnostic}"
 }
@@ -71,8 +71,12 @@ else
 
     if ! ruby "${SCRIPT_PATH}" -i "${CREDS_INPUT_PATH}" -s "${SECRETS_PATH}" \
         > "${CREDENTIALS_TMP}" 2> "${CREDENTIALS_ERR}"; then
-        cat "${CREDENTIALS_ERR}" >&2
-        cat "${CREDENTIALS_ERR}"
+        if grep -q ': error:' "${CREDENTIALS_ERR}"; then
+            cat "${CREDENTIALS_ERR}" >&2
+            cat "${CREDENTIALS_ERR}"
+        else
+            xcode_error "${CREDS_INPUT_PATH}" "$(tr '\n' ' ' < "${CREDENTIALS_ERR}")"
+        fi
         exit 1
     fi
 

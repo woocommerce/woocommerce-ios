@@ -105,16 +105,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogStaleWarningDismissed, properties: [:])
         }
 
-        // MARK: - Sunset Warning Events
-
-        public static func sunsetWarningShown() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSunsetWarningShown, properties: [:])
-        }
-
-        public static func sunsetWarningDismissed() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSunsetWarningDismissed, properties: [:])
-        }
-
         // MARK: - Core Sync Events
 
         public static func syncStarted(syncType: String,

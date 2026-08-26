@@ -53,7 +53,6 @@ public struct PointOfSaleEntryPointView: View {
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
     private let cartProductObserver: POSCartProductObserving?
     private let isLocalCatalogEligible: Bool
-    private let sunsetWarningChecker: POSSunsetWarningChecking?
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
     private let receiptPrinter: ReceiptPrinterServiceProtocol?
@@ -85,7 +84,6 @@ public struct PointOfSaleEntryPointView: View {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
          receiptSettingsAdminURL: String,
-         sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          staffFetcher: POSStaffFetching,
@@ -185,7 +183,6 @@ public struct PointOfSaleEntryPointView: View {
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
-        self.sunsetWarningChecker = sunsetWarningChecker
         self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
         self.preferredConnectionMethod = preferredConnectionMethod
         self.receiptPrinter = receiptPrinter
@@ -230,7 +227,6 @@ public struct PointOfSaleEntryPointView: View {
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 cartProductObserver: cartProductObserver,
                 isLocalCatalogEligible: isLocalCatalogEligible,
-                sunsetWarningChecker: sunsetWarningChecker,
                 tapToPayAvailabilityController: tapToPayAvailabilityChecker.map { checker in
                     POSTapToPayAvailabilityController(availabilityChecker: checker,
                                                       analytics: services.analytics)

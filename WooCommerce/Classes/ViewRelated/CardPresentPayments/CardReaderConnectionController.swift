@@ -360,10 +360,20 @@ private extension CardReaderConnectionController {
                 ///
                 self.foundReaders = cardReaders
 
-                let discoveredReaderIDs = Set(cardReaders.map({ $0.id }))
-                if discoveredReaderIDs != self.trackedReaderIDs {
-                    self.trackedReaderIDs = discoveredReaderIDs
-                    self.analyticsTracker.readersDiscovered(count: cardReaders.count)
+                /// Only report discovery while the merchant is still in the discovery flow.
+                /// This callback keeps firing after they cancel and after we start connecting,
+                /// and those late calls are ignored below, so reporting them would count
+                /// discoveries the flow never acted on.
+                ///
+                switch self.state {
+                case .searching, .foundReader, .foundSeveralReaders:
+                    let discoveredReaderIDs = Set(cardReaders.map({ $0.id }))
+                    if discoveredReaderIDs != self.trackedReaderIDs {
+                        self.trackedReaderIDs = discoveredReaderIDs
+                        self.analyticsTracker.readersDiscovered(count: cardReaders.count)
+                    }
+                default:
+                    break
                 }
 
                 self.updateShowSeveralFoundReaders()

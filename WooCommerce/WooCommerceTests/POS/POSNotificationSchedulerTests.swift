@@ -5,6 +5,9 @@ import UserNotifications
 
 @MainActor
 struct POSNotificationSchedulerTests {
+    private static let siteID: Int64 = 123
+    private static let storeUUID = "8363cd24-2501-463f-b21b-649315a0d507"
+    private static let storeURL = "https://example.com"
     private let mockFeatureFlagService: MockFeatureFlagService
     private let mockPushNotesManager: MockPushNotificationsManager
     private let mockStores: MockStoresManager
@@ -12,7 +15,10 @@ struct POSNotificationSchedulerTests {
     init() async throws {
         mockFeatureFlagService = MockFeatureFlagService()
         mockPushNotesManager = MockPushNotificationsManager()
-        mockStores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let site = Site.fake().copy(siteID: Self.siteID, url: Self.storeURL)
+        mockStores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                       defaultSite: site,
+                                                                       defaultStoreUUID: Self.storeUUID))
     }
 
     @Test func scheduleLocalNotificationIfEligible_when_country_is_US_then_notification_is_scheduled() async throws {
@@ -143,7 +149,7 @@ struct POSNotificationSchedulerTests {
 
         #expect(notification.scenario == .pointOfSalePotentialMerchant)
         #expect(notification.userInfo[LocalNotification.UserInfoKey.surveyURL] as? String ==
-                LocalNotification.SurveyURL.pointOfSalePotentialMerchant)
+                taggedSurveyURL(for: LocalNotification.SurveyURL.pointOfSalePotentialMerchant).absoluteString)
         #expect(trigger.timeInterval == 60)
         #expect(trigger.repeats == false)
     }
@@ -173,9 +179,66 @@ struct POSNotificationSchedulerTests {
 
         #expect(notification.scenario == .pointOfSaleCurrentMerchant)
         #expect(notification.userInfo[LocalNotification.UserInfoKey.surveyURL] as? String ==
-                LocalNotification.SurveyURL.pointOfSaleCurrentMerchant)
+                taggedSurveyURL(for: LocalNotification.SurveyURL.pointOfSaleCurrentMerchant).absoluteString)
         #expect(trigger.timeInterval == 300)
         #expect(trigger.repeats == false)
+    }
+
+    @Test func scheduleLocalNotificationIfEligible_when_store_metadata_is_available_then_tags_survey_URL() async throws {
+        // Given
+        let siteSettings = sampleSiteSettings(countryCode: "US")
+        setupMockStores()
+
+        let scheduler = POSNotificationScheduler(
+            stores: mockStores,
+            siteSettings: siteSettings,
+            featureFlagService: mockFeatureFlagService,
+            pushNotificationsManager: mockPushNotesManager
+        )
+
+        // When
+        await scheduler.scheduleLocalNotificationIfEligible(for: .potentialMerchant)
+
+        // Then
+        let notification = try #require(mockPushNotesManager.requestedLocalNotifications.first)
+        let surveyURL = try #require(notification.userInfo[LocalNotification.UserInfoKey.surveyURL] as? String)
+        let components = try #require(URLComponents(string: surveyURL))
+        let queryItems = try #require(components.queryItems)
+
+        #expect(queryItems.first(where: { $0.name == "woo-mobile-platform" })?.value == "ios")
+        #expect(queryItems.first(where: { $0.name == "app-version" })?.value == Bundle.main.bundleVersion())
+        #expect(queryItems.first(where: { $0.name == "site-id" })?.value == "\(Self.siteID)")
+        #expect(queryItems.first(where: { $0.name == "store-id" })?.value == Self.storeUUID)
+        #expect(queryItems.first(where: { $0.name == "store-url" })?.value == Self.storeURL)
+    }
+
+    @Test func scheduleLocalNotificationIfEligible_when_store_metadata_is_unavailable_then_tags_platform_and_app_version() async throws {
+        // Given
+        let siteSettings = sampleSiteSettings(countryCode: "US")
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        setupMockStores(stores: stores)
+
+        let scheduler = POSNotificationScheduler(
+            stores: stores,
+            siteSettings: siteSettings,
+            featureFlagService: mockFeatureFlagService,
+            pushNotificationsManager: mockPushNotesManager
+        )
+
+        // When
+        await scheduler.scheduleLocalNotificationIfEligible(for: .potentialMerchant)
+
+        // Then
+        let notification = try #require(mockPushNotesManager.requestedLocalNotifications.first)
+        let surveyURL = try #require(notification.userInfo[LocalNotification.UserInfoKey.surveyURL] as? String)
+        let components = try #require(URLComponents(string: surveyURL))
+        let queryItems = try #require(components.queryItems)
+
+        #expect(queryItems.first(where: { $0.name == "woo-mobile-platform" })?.value == "ios")
+        #expect(queryItems.first(where: { $0.name == "app-version" })?.value == Bundle.main.bundleVersion())
+        #expect(queryItems.contains(where: { $0.name == "site-id" }) == false)
+        #expect(queryItems.contains(where: { $0.name == "store-id" }) == false)
+        #expect(queryItems.contains(where: { $0.name == "store-url" }) == false)
     }
 
     @Test func scheduleLocalNotificationIfEligible_when_eligible_then_notification_manager_receives_correct_notification() async throws {
@@ -318,10 +381,19 @@ struct POSNotificationSchedulerTests {
         ]
     }
 
-    private func setupMockStores(isPotentialMerchantScheduled: Bool = false,
+    private func taggedSurveyURL(for surveyURL: String) -> URL {
+        URL(string: surveyURL)!
+            .tagPlatform("ios")
+            .tagAppVersion(Bundle.main.bundleVersion())
+            .tagSiteInfo(siteID: Self.siteID, storeUUID: Self.storeUUID, storeURL: Self.storeURL)
+    }
+
+    private func setupMockStores(stores: MockStoresManager? = nil,
+                                  isPotentialMerchantScheduled: Bool = false,
                                   isCurrentMerchantScheduled: Bool = false,
                                   hasPOSBeenOpened: Bool = false) {
-        mockStores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+        let stores = stores ?? mockStores
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case .getPOSSurveyPotentialMerchantNotificationScheduled(let onCompletion):
                 onCompletion(isPotentialMerchantScheduled)

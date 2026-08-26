@@ -252,13 +252,6 @@ struct ItemListView: View {
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
 
-            if posModel.showSunsetWarning {
-                sunsetWarningBanner
-                    .padding(.horizontal, POSPadding.medium)
-                    .padding(.vertical, POSPadding.medium)
-                    .transition(.move(edge: .top).combined(with: .opacity))
-            }
-
             // Stale sync warning banner
             if posModel.showStaleSyncWarning {
                 staleSyncWarningBanner
@@ -303,7 +296,6 @@ struct ItemListView: View {
         }
         .task {
             await posModel.checkStaleSyncStatus()
-            await posModel.checkSunsetWarningStatus()
         }
     }
 
@@ -329,22 +321,6 @@ struct ItemListView: View {
                     .foregroundColor(Color.posOnAlertLowest)
             }
         }
-    }
-
-    @ViewBuilder
-    private var sunsetWarningBanner: some View {
-        POSNoticeView(
-            title: Localization.sunsetWarningTitle,
-            icon: Image(systemName: "info.circle"),
-            onDismiss: {
-                analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningDismissed())
-                withAnimation {
-                    posModel.dismissSunsetWarning()
-                }
-            }, content: {
-                Text(Localization.sunsetWarningDescription)
-                    .font(POSFontStyle.posBodyMediumRegular())
-            })
     }
 
     @ViewBuilder
@@ -649,18 +625,6 @@ private extension ItemListView {
             value: "Creating coupons requires approval",
             comment: "Message shown in the manager-override PIN prompt when a staff member without the "
                 + "create-coupons permission tries to create a coupon."
-        )
-
-        static let sunsetWarningTitle = NSLocalizedString(
-            "pos.itemlistview.sunsetWarning.title",
-            value: "Update WooCommerce Soon",
-            comment: "Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it"
-        )
-
-        static let sunsetWarningDescription = NSLocalizedString(
-            "pos.itemlistview.sunsetWarning.description",
-            value: "Starting August 1st, point of sale will require WooCommerce 10.5.0 or later. Update to ensure uninterrupted access.",
-            comment: "Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it"
         )
 
         static let staleSyncWarningTitle = NSLocalizedString(

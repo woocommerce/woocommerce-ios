@@ -135,6 +135,9 @@ private extension HubMenu {
             switch destination {
             case .settings:
                 ViewControllerContainer(SettingsViewController())
+                    // SwiftUI would otherwise size the representable to the safe area, hard-clipping
+                    // the list above the iOS 26 floating tab bar.
+                    .ignoresSafeArea(.container, edges: .bottom)
                     .navigationTitle(HubMenuViewModel.Localization.settings)
             case .payments:
                 paymentsView

@@ -8,6 +8,7 @@
 - [*] Settings: Fixed the bottom of the settings list being cut off behind the tab bar on iOS 26. [https://github.com/woocommerce/woocommerce-ios/pull/17765]
 - [Internal] POS: Refund submission events now use the POS Tracks prefix when issued from POS. [https://github.com/woocommerce/woocommerce-ios/pull/17744]
 - [Internal] POS: Removed the WooCommerce 10.5.0 sunset warning banner that promised an August 1st requirement that is not enforced. [https://github.com/woocommerce/woocommerce-ios/pull/17763]
+- [Internal] Payments: Re-added the card reader discovery and connection Tracks events that were dropped in a 2021 refactor, for parity with Android. [PR_URL]
 - [*] Order Creation: Scanning a subscription or bookable product now explains why it can't be added to an order instead of adding it. [https://github.com/woocommerce/woocommerce-ios/pull/17710]
 
 25.5

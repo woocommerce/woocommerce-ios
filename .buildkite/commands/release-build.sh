@@ -9,9 +9,6 @@ brew install ghostscript
 echo "--- :closed_lock_with_key: Installing Secrets"
 bundle exec fastlane run configure_apply
 
-echo "--- :closed_lock_with_key: Validating credential keys"
-"$(dirname "${BASH_SOURCE[0]}")/validate-credentials.sh"
-
 echo "--- :hammer_and_wrench: Building"
 bundle exec fastlane build_and_upload_to_app_store_connect \
   skip_confirm:true \

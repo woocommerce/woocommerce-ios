@@ -1922,7 +1922,63 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Then
         XCTAssertEqual(viewModel.filterListViewModel.criteria.stockStatus, .inStock)
     }
-}
+
+    // MARK: - Products unsupported in order creation
+
+    func test_productRow_when_source_is_orderForm_and_product_is_subscription_then_selectedState_is_unsupported() {
+        // Given
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.subscription.rawValue, purchasable: true))
+
+        // When
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.first?.selectedState,
+                       .unsupported(reason: "Subscription products are not supported for order creation"))
+    }
+
+    func test_productRow_when_source_is_orderForm_and_product_is_bookable_then_selectedState_is_unsupported() {
+        // Given
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.booking.rawValue, purchasable: true))
+
+        // When
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.first?.selectedState,
+                       .unsupported(reason: "Bookable products are not supported for order creation"))
+    }
+
+    func test_productRow_when_source_is_orderForm_and_product_is_legacyBooking_then_selectedState_is_unsupported() {
+        // Given
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.legacyBooking.rawValue, purchasable: true))
+
+        // When
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.first?.selectedState,
+                       .unsupported(reason: "Bookable products are not supported for order creation"))
+    }
+
+    func test_productRow_when_source_is_not_orderForm_and_product_is_subscription_then_selectedState_is_notSelected() {
+        // Given
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.subscription.rawValue, purchasable: true))
+
+        // When
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .couponForm,
+                                                 storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.first?.selectedState, .notSelected)
+    }}
 
 // MARK: - Utils
 private extension ProductSelectorViewModelTests {

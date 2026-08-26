@@ -238,7 +238,6 @@ struct POSPreviewHelpers {
         siteID: Int64 = 1,
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
         isLocalCatalogEligible: Bool = false,
-        sunsetWarningChecker: POSSunsetWarningChecking? = nil,
         receiptPrinter: ReceiptPrinterServiceProtocol? = nil
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
@@ -259,7 +258,6 @@ struct POSPreviewHelpers {
             siteID: siteID,
             catalogSyncCoordinator: catalogSyncCoordinator,
             isLocalCatalogEligible: isLocalCatalogEligible,
-            sunsetWarningChecker: sunsetWarningChecker,
             receiptPrinter: receiptPrinter
         )
     }

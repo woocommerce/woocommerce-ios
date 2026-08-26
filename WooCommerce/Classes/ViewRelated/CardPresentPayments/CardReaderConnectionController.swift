@@ -513,7 +513,15 @@ private extension CardReaderConnectionController {
                     return
                 }
                 self.candidateReader = self.getFoundReaderByID(readerID: readerID)
-                self.analyticsTracker.connectionTapped(cardReaderModel: self.candidateReader?.readerType.model)
+
+                /// Only report the tap when we actually found the reader behind the tapped ID.
+                /// Without a candidate, `onConnectToReader` returns without connecting, so
+                /// reporting it would count a connection attempt that never starts.
+                ///
+                if let candidateReader = self.candidateReader {
+                    self.analyticsTracker.connectionTapped(cardReaderModel: candidateReader.readerType.model)
+                }
+
                 self.state = .requestLocationPermission
             },
             cancelSearch: { [weak self] in

@@ -104,6 +104,11 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     ///
     private var skippedReaderIDs: [String]
 
+    /// IDs of the readers we have already reported as discovered during the current search.
+    /// The discovery callback fires repeatedly, so this keeps us to one event per change of the found set.
+    ///
+    private var trackedReaderIDs: Set<String> = []
+
     /// The reader we want the user to consider connecting to
     ///
     private var candidateReader: CardReader?
@@ -308,6 +313,7 @@ private extension CardReaderConnectionController {
         ///
         foundReaders = []
         skippedReaderIDs = []
+        trackedReaderIDs = []
         candidateReader = nil
         showSeveralFoundReaders = false
 
@@ -353,6 +359,13 @@ private extension CardReaderConnectionController {
                 /// and prune skipped ones
                 ///
                 self.foundReaders = cardReaders
+
+                let discoveredReaderIDs = Set(cardReaders.map({ $0.id }))
+                if discoveredReaderIDs != self.trackedReaderIDs {
+                    self.trackedReaderIDs = discoveredReaderIDs
+                    self.analyticsTracker.readersDiscovered(count: cardReaders.count)
+                }
+
                 self.updateShowSeveralFoundReaders()
                 self.pruneSkippedReaders()
 
@@ -463,6 +476,7 @@ private extension CardReaderConnectionController {
             viewModel: alertsProvider.foundReader(
                 name: candidateReader.id,
                 connect: {
+                    self.analyticsTracker.connectionTapped(cardReaderModel: candidateReader.readerType.model)
                     self.state = .requestLocationPermission
                 },
                 continueSearch: {
@@ -487,6 +501,7 @@ private extension CardReaderConnectionController {
                     return
                 }
                 self.candidateReader = self.getFoundReaderByID(readerID: readerID)
+                self.analyticsTracker.connectionTapped(cardReaderModel: self.candidateReader?.readerType.model)
                 self.state = .requestLocationPermission
             },
             cancelSearch: { [weak self] in

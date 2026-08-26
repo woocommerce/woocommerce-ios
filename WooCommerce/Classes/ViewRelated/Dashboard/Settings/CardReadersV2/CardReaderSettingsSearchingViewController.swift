@@ -44,6 +44,13 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
 
     private func configureView() {
         rootView.connectClickAction = { [weak self] in
+            /// Tracked here rather than in `CardReaderConnectionController` because this is the only
+            /// merchant-initiated entry point to discovery. The controller is also driven by payment
+            /// preflight, Tap to Pay reconnection and refunds, and `ConnectionType.userInitiated`
+            /// does not separate those from this tap. Tracking it there would inflate the event well
+            /// beyond the equivalent on Android.
+            ///
+            self?.viewModel.cardReaderConnectionAnalyticsTracker.discoveryTapped()
             self?.searchAndConnect()
         }
         rootView.showURL = { [weak self] url in

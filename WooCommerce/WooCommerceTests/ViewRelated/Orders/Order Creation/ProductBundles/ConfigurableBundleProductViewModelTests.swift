@@ -367,7 +367,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         ])
         // Product defaults can be absent even though the bundle response contains the inherited effective defaults.
         let variableProduct = createVariableProductWithTwoAttributes(productID: 2).copy(defaultAttributes: [])
-        mockProductsRetrieval(result: .success((products: [variableProduct], hasNextPage: false)))
+        mockProductsRetrieval(result: .success([variableProduct]))
         mockVariationsRetrieval(result: .success([
             .fake().copy(productVariationID: 11,
                          attributes: [.init(id: 0, name: "Flavor", option: "Pineapple"), .init(id: 0, name: "Color", option: "Indigo")],
@@ -398,7 +398,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                 .init(attributeID: 0, name: "Flavor", option: "Pineapple"),
                 .init(attributeID: 0, name: "Color", option: "Indigo")
             ])
-        mockProductsRetrieval(result: .success((products: [variableProduct], hasNextPage: false)))
+        mockProductsRetrieval(result: .success([variableProduct]))
         mockVariationsRetrieval(result: .success([
             .fake().copy(productVariationID: 10,
                          attributes: [.init(id: 0, name: "Flavor", option: "Blackberry"), .init(id: 0, name: "Color", option: "Indigo")],
@@ -439,7 +439,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                 .init(attributeID: 0, name: "Flavor", option: "Pineapple"),
                 .init(attributeID: 0, name: "Color", option: "Indigo")
             ])
-        mockProductsRetrieval(result: .success((products: [variableProduct], hasNextPage: false)))
+        mockProductsRetrieval(result: .success([variableProduct]))
         mockVariationsRetrieval(result: .success([
             .fake().copy(productVariationID: 10,
                          attributes: [.init(id: 0, name: "Flavor", option: "Blackberry"), .init(id: 0, name: "Color", option: "Indigo")],
@@ -479,7 +479,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             ])
         let matchingAttributes: [ProductVariationAttribute] = [.init(id: 0, name: "Flavor", option: "Pineapple"),
                                                                .init(id: 0, name: "Color", option: "Indigo")]
-        mockProductsRetrieval(result: .success((products: [variableProduct], hasNextPage: false)))
+        mockProductsRetrieval(result: .success([variableProduct]))
         mockVariationsRetrieval(result: .success([
             // Matches the defaults but is not in the allowed variations.
             .fake().copy(productVariationID: 10, attributes: matchingAttributes, purchasable: true),
@@ -512,7 +512,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .copy(defaultAttributes: [
                 .init(attributeID: 0, name: "Flavor", option: "Pineapple")
             ])
-        mockProductsRetrieval(result: .success((products: [variableProduct], hasNextPage: false)))
+        mockProductsRetrieval(result: .success([variableProduct]))
 
         // When
         let viewModel = ConfigurableBundleProductViewModel(product: product,
@@ -539,7 +539,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                 .init(attributeID: 0, name: "Flavor", option: "Pineapple"),
                 .init(attributeID: 0, name: "Color", option: "Indigo")
             ])
-        mockProductsRetrieval(result: .success((products: [variableProduct], hasNextPage: false)))
+        mockProductsRetrieval(result: .success([variableProduct]))
         mockVariationsRetrieval(result: .failure(NSError(domain: "", code: 0, userInfo: nil)))
 
         // When
@@ -566,7 +566,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                 .init(attributeID: 0, name: "Flavor", option: "Pineapple"),
                 .init(attributeID: 0, name: "Color", option: "Indigo")
             ])
-        mockProductsRetrieval(result: .success((products: [variableProduct], hasNextPage: false)))
+        mockProductsRetrieval(result: .success([variableProduct]))
         // No variations retrieval is mocked: dispatching it would hang the load and time out the test.
 
         // When

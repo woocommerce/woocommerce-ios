@@ -4,10 +4,17 @@
 25.6
 -----
 - [*] Analytics Hub: Fixed the interactive swipe-back gesture not working when opened from the Dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17755]
-
+- [*] Fixed an infinite spinner on site credential login when the site rejects the wp-login.php request (e.g. hosts with captcha/security plugins). An error alert is now shown instead. [https://github.com/woocommerce/woocommerce-ios/pull/17752]
+- [*] Payments: Update card reader's statement descriptor validation rules [https://github.com/woocommerce/woocommerce-ios/pull/17751]
+- [*] Settings: Fixed the bottom of the settings list being cut off behind the tab bar on iOS 26. [https://github.com/woocommerce/woocommerce-ios/pull/17765]
+- [Internal] POS: Refund submission events now use the POS Tracks prefix when issued from POS. [https://github.com/woocommerce/woocommerce-ios/pull/17744]
+- [Internal] POS: Removed the WooCommerce 10.5.0 sunset warning banner that promised an August 1st requirement that is not enforced. [https://github.com/woocommerce/woocommerce-ios/pull/17763]
+- [*] Order Creation: Scanning a subscription or bookable product now explains why it can't be added to an order instead of adding it. [https://github.com/woocommerce/woocommerce-ios/pull/17710]
 
 25.5
 -----
+- [*] Order Creation: Scanning a subscription or bookable product now explains why it can't be added to an order instead of adding it.
+- [*] Order Creation: Bundles containing a subscription or bookable product can no longer be added to an order. [https://github.com/woocommerce/woocommerce-ios/pull/17712]
 - [*] Orders: Fixed new orders not appearing automatically after push notifications when logged in with site credentials. [https://github.com/woocommerce/woocommerce-ios/pull/17736]
 - [*] Fixed in-app notices appearing too far above the keyboard or tab bar on iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17743]
 - [Internal] POS: Fixed `waiting_time` reporting a Unix timestamp instead of an elapsed duration, restored site properties (`store_id`, `blog_id`, `site_url`) on events tracked by raw name, and added a `search_method` discriminator to the remote search event. [https://github.com/woocommerce/woocommerce-ios/pull/17731]

@@ -78,14 +78,14 @@ class ReplaceSecretsTest < Minitest::Test
     end
   end
 
-  def test_cli_exits_nonzero_on_missing_key_with_xcode_error_prefix
+  def test_cli_exits_nonzero_on_missing_key_with_xcode_diagnostic
     with_files(template: '%{missing_key}',
                secrets: { 'dotcom_app_id' => 'abc' }) do |input, secrets|
       stdout, stderr, status = Open3.capture3('ruby', SCRIPT, '-i', input, '-s', secrets)
 
       refute status.success?
       assert_empty stdout
-      assert_match(/^error: Missing secret key\(s\): missing_key \(required by /, stderr)
+      assert_equal "#{input}:1: error: Missing secret key(s): missing_key\n", stderr
     end
   end
 
@@ -96,7 +96,7 @@ class ReplaceSecretsTest < Minitest::Test
 
       refute status.success?
       assert_empty stdout
-      assert_match(/^error: Missing or invalid --secrets argument/, stderr)
+      assert_match(/:1: error: Missing or invalid --secrets argument/, stderr)
     end
   end
 
@@ -107,7 +107,7 @@ class ReplaceSecretsTest < Minitest::Test
 
       refute status.success?
       assert_empty stdout
-      assert_match(/^error: Secrets file is not valid JSON:/, stderr)
+      assert_match(/#{Regexp.escape(secrets)}:1: error: Secrets file is not valid JSON:/, stderr)
     end
   end
 
@@ -116,7 +116,7 @@ class ReplaceSecretsTest < Minitest::Test
 
     refute status.success?
     assert_empty stdout
-    assert_match(/^error: Missing or invalid --secrets argument/, stderr)
+    assert_match(/:1: error: Missing or invalid --secrets argument/, stderr)
   end
 
   private

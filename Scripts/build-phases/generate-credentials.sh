@@ -12,11 +12,20 @@ CREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl
 CREDS_TEMPLATE_PATH=${SOURCE_ROOT}/Credentials/Templates/ApiCredentials-Template.swift
 SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.json"
 
+# Clang diagnostic on stdout and stderr: Xcode and xcpretty ignore a bare `error:`.
+xcode_error() {
+    local file="$1"
+    local message="$2"
+    local diagnostic="${file}:1: error: ${message}"
+    echo "${diagnostic}" >&2
+    echo "${diagnostic}"
+}
+
 ## Collect output paths from the per-target build phase's `outputPaths`.
 ## Xcode exposes them as SCRIPT_OUTPUT_FILE_N (with SCRIPT_OUTPUT_FILE_COUNT).
 ##
 if [[ -z "${SCRIPT_OUTPUT_FILE_COUNT:-}" || "${SCRIPT_OUTPUT_FILE_COUNT}" -lt 1 ]]; then
-    echo "error: generate-credentials.sh expects at least one output file declared via the build phase's outputPaths." >&2
+    xcode_error "${BASH_SOURCE[0]}" "generate-credentials.sh expects at least one output file declared via the build phase's outputPaths."
     exit 1
 fi
 
@@ -57,10 +66,13 @@ else
     fi
 
     CREDENTIALS_TMP="$(mktemp)"
-    trap 'rm -f "${CREDENTIALS_TMP}"' EXIT
+    CREDENTIALS_ERR="$(mktemp)"
+    trap 'rm -f "${CREDENTIALS_TMP}" "${CREDENTIALS_ERR}"' EXIT
 
-    if ! ruby "${SCRIPT_PATH}" -i "${CREDS_INPUT_PATH}" -s "${SECRETS_PATH}" > "${CREDENTIALS_TMP}"; then
-        echo "error: Failed to generate credentials from ${SECRETS_PATH}" >&2
+    if ! ruby "${SCRIPT_PATH}" -i "${CREDS_INPUT_PATH}" -s "${SECRETS_PATH}" \
+        > "${CREDENTIALS_TMP}" 2> "${CREDENTIALS_ERR}"; then
+        cat "${CREDENTIALS_ERR}" >&2
+        cat "${CREDENTIALS_ERR}"
         exit 1
     fi
 

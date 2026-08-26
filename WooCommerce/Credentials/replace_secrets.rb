@@ -54,6 +54,11 @@ class ReplaceSecrets
   def self.process(template_path, secrets_path)
     interpolate(File.read(template_path), load_secrets(secrets_path))
   end
+
+  # Clang diagnostic so Xcode and xcpretty surface the message.
+  def self.xcode_error(path, message)
+    "#{path}:1: error: #{message}"
+  end
 end
 
 if $PROGRAM_NAME == __FILE__
@@ -75,7 +80,7 @@ if $PROGRAM_NAME == __FILE__
     filename = options[parameter]
     next if filename && File.exist?(filename)
 
-    warn "error: Missing or invalid --#{parameter} argument"
+    warn ReplaceSecrets.xcode_error($PROGRAM_NAME, "Missing or invalid --#{parameter} argument")
     warn optparse
     exit 1
   end
@@ -83,10 +88,10 @@ if $PROGRAM_NAME == __FILE__
   begin
     print ReplaceSecrets.process(options[:input], options[:secrets])
   rescue ReplaceSecrets::MissingKeysError => e
-    warn "error: #{e.message} (required by #{options[:input]})"
+    warn ReplaceSecrets.xcode_error(options[:input], e.message)
     exit 1
   rescue JSON::ParserError => e
-    warn "error: Secrets file is not valid JSON: #{e.message}"
+    warn ReplaceSecrets.xcode_error(options[:secrets], "Secrets file is not valid JSON: #{e.message}")
     exit 1
   end
 end

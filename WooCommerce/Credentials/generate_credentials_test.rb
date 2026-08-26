@@ -28,10 +28,12 @@ class GenerateCredentialsTest < Minitest::Test
     secrets.delete('dotcom_secret')
 
     with_generation_files(secrets: secrets, contents: %w[first second]) do |environment, outputs|
-      _stdout, stderr, status = Open3.capture3(environment, SCRIPT)
+      stdout, stderr, status = Open3.capture3(environment, SCRIPT)
 
       refute status.success?
-      assert_match(/Missing secret key\(s\): dotcom_secret/, stderr)
+      diagnostic = "#{TEMPLATE}:1: error: Missing secret key(s): dotcom_secret"
+      assert_match(/#{Regexp.escape(diagnostic)}/, stderr)
+      assert_match(/#{Regexp.escape(diagnostic)}/, stdout)
       generated_contents = outputs.map { |output| File.read(output) }
       assert_equal %w[first second], generated_contents
     end

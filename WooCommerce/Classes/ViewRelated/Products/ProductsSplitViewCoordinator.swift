@@ -290,15 +290,15 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController, animated: animated) {
             let dismissedProduct = productShownInSecondaryContent()
+            reconcilePrimaryNavigationBarVisibility(afterShowing: viewController, in: navigationController)
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
                 clearSecondaryContentIfStillShowingProductListInCollapsedMode(dismissedProduct: dismissedProduct)
-                updatePrimaryNavigationBarVisibility(for: viewController, in: navigationController, animated: false)
             }
             return
         }
 
-        updatePrimaryNavigationBarVisibility(for: viewController, in: navigationController, animated: false)
+        reconcilePrimaryNavigationBarVisibility(afterShowing: viewController, in: navigationController)
 
         // The goal here is to detect when the user pops a view controller in the secondary navigation stack like from tapping the back button,
         // so that the secondary content types state can be updated accordingly.
@@ -312,7 +312,7 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
         }
     }
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
-        updatePrimaryNavigationBarVisibility(for: viewController, in: navigationController, animated: animated)
+        requestPrimaryNavigationBarVisibility(for: viewController, in: navigationController, animated: animated)
 
         if let tabNavigationController = navigationController as? WooTabNavigationController {
             tabNavigationController.navigationController(navigationController, willShow: viewController, animated: animated)
@@ -324,15 +324,30 @@ private extension ProductsSplitViewCoordinator {
     /// The split-view coordinator owns these updates because, in a collapsed layout, UIKit temporarily wraps the secondary
     /// navigation stack in the primary one. Updating from the search view controller's lifecycle can force layout while
     /// navigation items are changing owners. Updating in `willShow` lets UIKit animate the bar with the transition, while
-    /// the guarded `didShow` update reconciles the final state after cancellations or split-view column changes.
-    func updatePrimaryNavigationBarVisibility(for viewController: UIViewController,
-                                              in navigationController: UINavigationController,
-                                              animated: Bool) {
+    /// the `didShow` update reconciles its actual presentation after interactive or split-view transitions.
+    func requestPrimaryNavigationBarVisibility(for viewController: UIViewController,
+                                               in navigationController: UINavigationController,
+                                               animated: Bool) {
         guard navigationController == primaryNavigationController else {
             return
         }
         let isShowingProductSearch = viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
         primaryNavigationController.setNavigationBarHiddenIfNeeded(isShowingProductSearch, animated: animated)
+    }
+
+    /// An interactive transition can finish with `isNavigationBarHidden` already set to the requested value while the bar's
+    /// presentation is still visible. Compare the actual bar after `didShow` so that state is corrected only when necessary.
+    func reconcilePrimaryNavigationBarVisibility(afterShowing viewController: UIViewController,
+                                                 in navigationController: UINavigationController) {
+        guard navigationController == primaryNavigationController else {
+            return
+        }
+        let shouldHideNavigationBar = viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
+        guard primaryNavigationController.navigationBar.isHidden != shouldHideNavigationBar else {
+            return
+        }
+        primaryNavigationController.navigationBar.layer.removeAllAnimations()
+        primaryNavigationController.navigationBar.isHidden = shouldHideNavigationBar
     }
 
     /// In the collapsed mode, the secondary navigation controller is added to the primary navigation stack and the primary navigation stack is shown.

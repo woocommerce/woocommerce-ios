@@ -64,6 +64,32 @@ struct ProductsSplitViewCoordinatorTests {
     }
 
     @Test
+    func test_navigationController_didShow_productSearch_when_animated_bar_is_still_visible_then_hides_it_immediately() throws {
+        // Given
+        let splitViewController = CollapsedSplitViewController(style: .doubleColumn)
+        let (sut, primaryNavigationController, _) = try makeSUT(splitViewController: splitViewController)
+        let command = ProductSearchUICommand(siteID: 123,
+                                             isSearchProductsBySKUEnabled: false,
+                                             onProductSelection: { _ in },
+                                             onCancel: {})
+        let searchViewController = SearchViewController(storeID: 123,
+                                                        command: command,
+                                                        cellType: ProductsTabProductTableViewCell.self,
+                                                        cellSeparator: .none)
+        primaryNavigationController.setViewControllers([searchViewController], animated: false)
+        primaryNavigationController.setNavigationBarHidden(false, animated: false)
+        sut.navigationController(primaryNavigationController, willShow: searchViewController, animated: true)
+        #expect(primaryNavigationController.isNavigationBarHidden)
+        #expect(primaryNavigationController.navigationBar.isHidden == false)
+
+        // When
+        sut.navigationController(primaryNavigationController, didShow: searchViewController, animated: true)
+
+        // Then
+        #expect(primaryNavigationController.navigationBar.isHidden)
+    }
+
+    @Test
     func test_navigationController_didShow_productList_then_shows_primary_navigation_bar() throws {
         // Given
         let (sut, primaryNavigationController, _) = try makeSUT()

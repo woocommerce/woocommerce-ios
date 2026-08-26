@@ -1,8 +1,8 @@
 #!/bin/bash -eu
 
-# Runs pure-Ruby Minitest files for Fastlane helpers and credentials
-# interpolation. The tests have no Fastlane runtime dependency, so they're
-# cheap to run (<1s total) on the linter queue.
+# Runs pure-Ruby Minitest files automation tooling.
+# The tests have no fastlane runtime dependency, so they're
+# cheap to run on the linter queue.
 #
 # Skip behavior:
 # - On PR builds: skip when none of the tested paths have changed.

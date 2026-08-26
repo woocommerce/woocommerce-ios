@@ -292,8 +292,7 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
             let dismissedProduct = productShownInSecondaryContent()
             reconcilePrimaryNavigationBarVisibility(afterShowing: viewController, in: navigationController)
             DispatchQueue.main.async { [weak self] in
-                guard let self else { return }
-                clearSecondaryContentIfStillShowingProductListInCollapsedMode(dismissedProduct: dismissedProduct)
+                self?.clearSecondaryContentIfStillShowingProductListInCollapsedMode(dismissedProduct: dismissedProduct)
             }
             return
         }

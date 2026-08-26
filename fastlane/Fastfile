@@ -873,8 +873,6 @@ platform :ios do
   lane :build_and_upload_to_app_store_connect do |options|
     # Verify that there's nothing in progress in the working copy
     ensure_git_status_clean unless is_ci
-    # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-    xcversion
 
     ensure_sentry_installed
 
@@ -948,7 +946,6 @@ platform :ios do
   desc 'Builds and uploads a prototype build (Enterprise distribution)'
   lane :build_and_upload_prototype_build do
     ensure_sentry_installed
-    xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
 
     build_for_prototype_build
 
@@ -1013,8 +1010,6 @@ platform :ios do
 
   desc 'Build for Testing'
   lane :build_for_testing do |device: nil, ios_version: nil| # with nil, Fastlane will find the first best compatible match
-    xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-
     run_tests(
       workspace: WORKSPACE_PATH,
       scheme: TEST_SCHEME,
@@ -1059,9 +1054,6 @@ platform :ios do
   ########################################################################
   desc 'Build Screenshots'
   lane :build_screenshots do
-    # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-    xcversion
-
     scan(
       workspace: WORKSPACE_PATH,
       scheme: SCREENSHOTS_SCHEME,
@@ -1072,9 +1064,6 @@ platform :ios do
 
   desc 'Take Screenshots'
   lane :take_screenshots do |options|
-    # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-    xcversion
-
     # By default, clear previous screenshots
     languages = IOS_LOCALES
 
@@ -1175,8 +1164,6 @@ platform :ios do
 
   desc 'Create Screenshot Summary'
   lane :create_screenshot_summary do
-    # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-    xcversion
     fastlane_require 'snapshot'
 
     # Provide enough information to bootstrap the configuration and generate the HTML report

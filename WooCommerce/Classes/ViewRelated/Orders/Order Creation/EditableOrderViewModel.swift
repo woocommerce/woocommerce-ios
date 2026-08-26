@@ -1662,6 +1662,12 @@ private extension EditableOrderViewModel {
             return
         }
 
+        // The selector greys these products out, but a scan never passes through it.
+        if case let .product(product) = item, let restriction = ProductRestriction.restriction(for: product) {
+            autodismissableNotice = Notice(title: restriction.reason)
+            return
+        }
+
         // When a scanned product is a bundle product, the bundle configuration view is shown first.
         if case let .product(product) = item, product.productType == .bundle {
             configurableScannedProductViewModel = .init(product: product,

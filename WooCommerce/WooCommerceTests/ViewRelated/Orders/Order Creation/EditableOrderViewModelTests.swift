@@ -2594,6 +2594,56 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(item.productID, sampleProductID)
     }
 
+    func test_addScannedProductToOrder_when_product_is_a_subscription_then_it_is_not_added_and_a_notice_explains_why() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID,
+                                          productID: sampleProductID,
+                                          productTypeKey: ProductType.subscription.rawValue,
+                                          purchasable: true)
+        mockScannedProductRetrieval(product)
+
+        // When
+        scanBarcode(on: viewModel)
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+        XCTAssertEqual(viewModel.autodismissableNotice?.title, "Subscription products are not supported for order creation")
+    }
+
+    func test_addScannedProductToOrder_when_product_is_bookable_then_it_is_not_added_and_a_notice_explains_why() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID,
+                                          productID: sampleProductID,
+                                          productTypeKey: ProductType.booking.rawValue,
+                                          purchasable: true)
+        mockScannedProductRetrieval(product)
+
+        // When
+        scanBarcode(on: viewModel)
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+        XCTAssertEqual(viewModel.autodismissableNotice?.title, "Bookable products are not supported for order creation")
+    }
+
+    func test_order_creation_when_initialItem_is_a_subscription_then_it_is_not_added_to_the_order() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID,
+                                          productID: sampleProductID,
+                                          productTypeKey: ProductType.subscription.rawValue,
+                                          purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               initialItem: .product(product))
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+    }
+
     func test_order_creation_when_initialItem_is_not_nil_and_product_exists_then_product_is_added_to_the_order() {
         // Given, When
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
@@ -3831,6 +3881,30 @@ private extension EditableOrderViewModelTests {
                        country: "US",
                        phone: "333-333-3333",
                        email: "")
+    }
+}
+
+// MARK: - Barcode scanning helpers
+private extension EditableOrderViewModelTests {
+    /// Stubs the SKU lookup so that scanning any barcode resolves to the given product.
+    func mockScannedProductRetrieval(_ product: Product) {
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            switch action {
+            case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, onCompletion):
+                onCompletion(.success((.product(product), .SKU)))
+            default:
+                break
+            }
+        })
+    }
+
+    func scanBarcode(on viewModel: EditableOrderViewModel) {
+        waitFor { promise in
+            viewModel.addScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "existingSKU", symbology: BarcodeSymbology.ean8),
+                                               onCompletion: { _ in promise(()) },
+                                               onRetryRequested: {})
+        }
     }
 }
 

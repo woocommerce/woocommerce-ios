@@ -18,8 +18,8 @@ final class ProductSearchUICommand: SearchUICommand {
 
     let cancelButtonAccessibilityIdentifier = "product-search-screen-cancel-button"
 
-    /// The split-view coordinator owns the primary navigation bar because it knows when UIKit has finished transferring
-    /// navigation items between the primary and secondary navigation controllers in a collapsed layout.
+    /// The split-view coordinator owns the primary navigation bar because it can coordinate visibility with the collapsed
+    /// split-view transition that presents the secondary navigation controller from the primary navigation stack.
     let hideNavigationBar = false
 
     var reloadUIRequests: AnyPublisher<Void, Never> {

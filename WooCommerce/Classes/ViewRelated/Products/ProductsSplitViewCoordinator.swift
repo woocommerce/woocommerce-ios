@@ -322,9 +322,8 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
 
 private extension ProductsSplitViewCoordinator {
     /// The split-view coordinator owns these updates because, in a collapsed layout, UIKit temporarily wraps the secondary
-    /// navigation stack in the primary one. Updating from the search view controller's lifecycle can force layout while
-    /// navigation items are changing owners. Updating in `willShow` lets UIKit animate the bar with the transition, while
-    /// the `didShow` update reconciles its actual presentation after interactive or split-view transitions.
+    /// navigation controller in the primary navigation stack. Updating from the search view controller's lifecycle can
+    /// force layout while the product detail item still belongs to the secondary bar.
     func requestPrimaryNavigationBarVisibility(for viewController: UIViewController,
                                                in navigationController: UINavigationController,
                                                animated: Bool) {
@@ -332,6 +331,22 @@ private extension ProductsSplitViewCoordinator {
             return
         }
         let isShowingProductSearch = viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
+
+        // UIKit does not scrub a navigation-bar visibility animation with an interactive pop. Starting that animation in
+        // `willShow` can therefore leave the product detail bar visible briefly after the swipe finishes. Wait until UIKit
+        // knows whether the gesture will finish or cancel, then hide the bar immediately only for a completed pop.
+        if isShowingProductSearch,
+           let transitionCoordinator = navigationController.transitionCoordinator,
+           transitionCoordinator.isInteractive {
+            transitionCoordinator.notifyWhenInteractionChanges { [weak self] context in
+                guard !context.isCancelled else {
+                    return
+                }
+                self?.primaryNavigationController.setNavigationBarHiddenIfNeeded(true, animated: false)
+            }
+            return
+        }
+
         primaryNavigationController.setNavigationBarHiddenIfNeeded(isShowingProductSearch, animated: animated)
     }
 

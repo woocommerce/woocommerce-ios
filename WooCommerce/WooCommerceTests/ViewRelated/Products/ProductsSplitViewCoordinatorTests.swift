@@ -27,7 +27,7 @@ struct ProductsSplitViewCoordinatorTests {
     }
 
     @Test
-    func test_navigationController_didShow_productSearch_in_collapsed_layout_then_hides_primary_navigation_bar_synchronously() throws {
+    func test_navigationController_willShow_productSearch_in_collapsed_layout_then_hides_primary_navigation_bar_for_transition() throws {
         // Given
         let splitViewController = CollapsedSplitViewController(style: .doubleColumn)
         let (sut, primaryNavigationController, _) = try makeSUT(splitViewController: splitViewController)
@@ -43,10 +43,24 @@ struct ProductsSplitViewCoordinatorTests {
         primaryNavigationController.setNavigationBarHidden(false, animated: false)
 
         // When
-        sut.navigationController(primaryNavigationController, didShow: searchViewController, animated: true)
+        sut.navigationController(primaryNavigationController, willShow: searchViewController, animated: true)
 
         // Then
-        #expect(primaryNavigationController.navigationBar.isHidden)
+        #expect(primaryNavigationController.isNavigationBarHidden)
+    }
+
+    @Test
+    func test_navigationController_willShow_secondary_content_in_collapsed_layout_then_shows_primary_navigation_bar_for_transition() throws {
+        // Given
+        let splitViewController = CollapsedSplitViewController(style: .doubleColumn)
+        let (sut, primaryNavigationController, _) = try makeSUT(splitViewController: splitViewController)
+        primaryNavigationController.setNavigationBarHidden(true, animated: false)
+
+        // When
+        sut.navigationController(primaryNavigationController, willShow: UIViewController(), animated: true)
+
+        // Then
+        #expect(primaryNavigationController.isNavigationBarHidden == false)
     }
 
     @Test

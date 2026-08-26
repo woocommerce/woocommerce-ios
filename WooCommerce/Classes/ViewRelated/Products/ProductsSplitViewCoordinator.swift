@@ -290,15 +290,15 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
         if didNavigateFromTheLastSecondaryViewControllerToProductListInCollapsedMode(navigationController, didShow: viewController, animated: animated) {
             let dismissedProduct = productShownInSecondaryContent()
-            updatePrimaryNavigationBarVisibility(afterShowing: viewController, in: navigationController)
             DispatchQueue.main.async { [weak self] in
                 guard let self else { return }
                 clearSecondaryContentIfStillShowingProductListInCollapsedMode(dismissedProduct: dismissedProduct)
+                updatePrimaryNavigationBarVisibility(for: viewController, in: navigationController, animated: false)
             }
             return
         }
 
-        updatePrimaryNavigationBarVisibility(afterShowing: viewController, in: navigationController)
+        updatePrimaryNavigationBarVisibility(for: viewController, in: navigationController, animated: false)
 
         // The goal here is to detect when the user pops a view controller in the secondary navigation stack like from tapping the back button,
         // so that the secondary content types state can be updated accordingly.
@@ -312,6 +312,8 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
         }
     }
     func navigationController(_ navigationController: UINavigationController, willShow viewController: UIViewController, animated: Bool) {
+        updatePrimaryNavigationBarVisibility(for: viewController, in: navigationController, animated: animated)
+
         if let tabNavigationController = navigationController as? WooTabNavigationController {
             tabNavigationController.navigationController(navigationController, willShow: viewController, animated: animated)
         }
@@ -319,15 +321,18 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
 }
 
 private extension ProductsSplitViewCoordinator {
-    /// Updates the primary navigation bar only after its navigation controller has finished showing a view controller.
-    /// In a collapsed layout, UIKit temporarily wraps the secondary navigation stack in the primary one. Updating the bar
-    /// from the search view controller's lifecycle can force layout while navigation items are still changing owners.
-    func updatePrimaryNavigationBarVisibility(afterShowing viewController: UIViewController, in navigationController: UINavigationController) {
+    /// The split-view coordinator owns these updates because, in a collapsed layout, UIKit temporarily wraps the secondary
+    /// navigation stack in the primary one. Updating from the search view controller's lifecycle can force layout while
+    /// navigation items are changing owners. Updating in `willShow` lets UIKit animate the bar with the transition, while
+    /// the guarded `didShow` update reconciles the final state after cancellations or split-view column changes.
+    func updatePrimaryNavigationBarVisibility(for viewController: UIViewController,
+                                              in navigationController: UINavigationController,
+                                              animated: Bool) {
         guard navigationController == primaryNavigationController else {
             return
         }
         let isShowingProductSearch = viewController is SearchViewController<ProductsTabProductTableViewCell, ProductSearchUICommand>
-        primaryNavigationController.setNavigationBarHiddenIfNeeded(isShowingProductSearch, animated: false)
+        primaryNavigationController.setNavigationBarHiddenIfNeeded(isShowingProductSearch, animated: animated)
     }
 
     /// In the collapsed mode, the secondary navigation controller is added to the primary navigation stack and the primary navigation stack is shown.

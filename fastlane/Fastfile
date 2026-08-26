@@ -871,13 +871,10 @@ platform :ios do
   #####################################################################################
   desc 'Builds and uploads for distribution to the App Store'
   lane :build_and_upload_to_app_store_connect do |options|
-    unless options[:skip_prechecks]
-      # Verify that there's nothing in progress in the working copy
-      ensure_git_status_clean unless is_ci
-
-      ios_build_preflight(derived_data_path: DERIVED_DATA_DIR)
-      xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
-    end
+    # Verify that there's nothing in progress in the working copy
+    ensure_git_status_clean unless is_ci
+    # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
+    xcversion
 
     ensure_sentry_installed
 

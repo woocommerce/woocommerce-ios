@@ -561,11 +561,14 @@ extension POSPaymentModel {
     }
 
     func connectCardReader() {
+        guard connectCardReaderTask == nil else { return }
+
         /// The merchant is starting reader discovery here, not picking a discovered reader.
         /// The tap on a specific found reader is tracked by `CardReaderConnectionController`.
+        /// Tracked after the guard so a tap that is ignored because a connection is already
+        /// in flight does not report a discovery that never started.
         ///
         analytics.track(.cardReaderDiscoveryTapped)
-        guard connectCardReaderTask == nil else { return }
         connectCardReaderTask = Task { @MainActor [weak self] in
             defer { self?.connectCardReaderTask = nil }
             do {

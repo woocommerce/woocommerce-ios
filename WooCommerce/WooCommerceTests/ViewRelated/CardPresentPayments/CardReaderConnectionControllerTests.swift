@@ -176,6 +176,128 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         assertEqual(MockCardReader.bbposChipper2XBT(), reader)
     }
 
+    func test_connecting_to_an_unknown_reader_tracks_connection_tapped_and_not_auto_connection_started() {
+        // Given
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [MockCardReader.bbposChipper2XBT()],
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
+        )
+
+        let controller = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            storageManager: storageManager,
+            stores: mockStoresManager,
+            knownReaderProvider: MockKnownReaderProvider(knownReader: nil),
+            alertsPresenter: MockCardPresentPaymentAlertsPresenter(),
+            alertsProvider: MockCardReaderSettingsAlerts(mode: .connectFoundReader),
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics),
+            locationService: locationService
+        )
+
+        // When
+        let _: CardReaderConnectionResult = waitFor { promise in
+            controller.searchAndConnect() { result in
+                if case .success(let connectionResult) = result {
+                    promise(connectionResult)
+                }
+            }
+        }
+
+        // Then
+        XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderConnectionTapped.rawValue))
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderAutoConnectionStarted.rawValue))
+    }
+
+    func test_connecting_to_a_known_reader_tracks_auto_connection_started_and_not_connection_tapped() {
+        // Given
+        let knownReader = MockCardReader.bbposChipper2XBT()
+
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [knownReader],
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
+        )
+
+        let controller = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            storageManager: storageManager,
+            stores: mockStoresManager,
+            knownReaderProvider: MockKnownReaderProvider(knownReader: knownReader.id),
+            alertsPresenter: MockCardPresentPaymentAlertsPresenter(),
+            alertsProvider: MockCardReaderSettingsAlerts(mode: .connectFoundReader),
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics),
+            locationService: locationService
+        )
+
+        // When
+        let _: CardReaderConnectionResult = waitFor { promise in
+            controller.searchAndConnect() { result in
+                if case .success(let connectionResult) = result {
+                    promise(connectionResult)
+                }
+            }
+        }
+
+        // Then
+        XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderAutoConnectionStarted.rawValue))
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderConnectionTapped.rawValue))
+    }
+
+    func test_readers_discovered_is_tracked_only_when_the_set_of_discovered_readers_changes() {
+        // Given
+        let readerA = MockCardReader.bbposChipper2XBT()
+        let readerB = MockCardReader.wisePad3()
+
+        let mockStoresManager = MockCardPresentPaymentsStoresManager(
+            connectedReaders: [],
+            discoveredReaders: [],
+            sessionManager: SessionManager.testingInstance,
+            storageManager: storageManager
+        )
+        mockStoresManager.shouldHoldDiscovery = true
+
+        let controller = CardReaderConnectionController(
+            forSiteID: sampleSiteID,
+            storageManager: storageManager,
+            stores: mockStoresManager,
+            knownReaderProvider: MockKnownReaderProvider(knownReader: nil),
+            alertsPresenter: MockCardPresentPaymentAlertsPresenter(),
+            alertsProvider: MockCardReaderSettingsAlerts(mode: .cancelFoundReader),
+            configuration: Mocks.configuration,
+            analyticsTracker: .init(configuration: Mocks.configuration,
+                                    siteID: sampleSiteID,
+                                    connectionType: .userInitiated,
+                                    stores: mockStoresManager,
+                                    analytics: analytics),
+            locationService: locationService
+        )
+        controller.searchAndConnect() { _ in }
+
+        // When
+        mockStoresManager.emitHeldDiscovery(with: [readerA])
+        mockStoresManager.emitHeldDiscovery(with: [readerA])
+        mockStoresManager.emitHeldDiscovery(with: [readerA, readerB])
+
+        // Then
+        let discoveredEvents = analyticsProvider.receivedEvents.filter {
+            $0 == WooAnalyticsStat.cardReaderDiscoveryReaderDiscovered.rawValue
+        }
+        XCTAssertEqual(discoveredEvents.count, 2, "Expected one event for the first reader and one for the changed set")
+    }
+
     func test_searching_error_presents_error_to_user_and_completes_with_failure() {
         // Given
         let expectation = self.expectation(description: #function)

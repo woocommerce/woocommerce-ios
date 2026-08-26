@@ -238,7 +238,6 @@ struct POSPreviewHelpers {
         siteID: Int64 = 1,
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
         isLocalCatalogEligible: Bool = false,
-        sunsetWarningChecker: POSSunsetWarningChecking? = nil,
         receiptPrinter: ReceiptPrinterServiceProtocol? = nil
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
@@ -259,7 +258,6 @@ struct POSPreviewHelpers {
             siteID: siteID,
             catalogSyncCoordinator: catalogSyncCoordinator,
             isLocalCatalogEligible: isLocalCatalogEligible,
-            sunsetWarningChecker: sunsetWarningChecker,
             receiptPrinter: receiptPrinter
         )
     }
@@ -549,6 +547,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
     func startRefundFlow() async -> StartRefundFlowResult { .hasItemsToRefund }
+    func refreshRefundableItems() async -> StartRefundFlowResult { .hasItemsToRefund }
     func toggleRefundItemSelection(at index: Int) {}
     func clearRefundSelection() {}
     func toggleAllRefundItemsSelection() {}

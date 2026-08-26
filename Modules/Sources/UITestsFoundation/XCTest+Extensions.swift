@@ -132,16 +132,33 @@ extension XCUIElement {
         XCTAssertEqual(try! getStaticTextVisibilityCount(textToFind: textToFind), expectedCount)
     }
 
-    // Parent element is accessibilityIdentifier, child element is staticText
-    func verifyElementOnCell(parent: String, child: String) throws -> Bool {
-        let parentPredicate = NSPredicate(format: "identifier == %@", parent)
-        let childPredicate = NSPredicate(format: "label ==[c] %@", child)
+    /// Looks for a `staticText` child of the cell with the given accessibility identifier, whose label satisfies `labelPredicate`.
+    /// Note: the lookup always starts from the application, not from the receiver.
+    func verifyStaticTextOnCell(cellIdentifier: String, labelPredicate: NSPredicate) -> Bool {
+        let cellPredicate = NSPredicate(format: "identifier == %@", cellIdentifier)
 
-        return XCUIApplication().tables.cells.matching(parentPredicate).children(matching: .staticText).element(matching: childPredicate).firstMatch.exists
+        return XCUIApplication().tables.cells.matching(cellPredicate)
+            .children(matching: .staticText)
+            .element(matching: labelPredicate)
+            .firstMatch
+            .exists
     }
 
-    public func assertElement(matching: String, existsOnCellWithIdentifier cellIdentifier: String) {
-        XCTAssertTrue(try verifyElementOnCell(parent: matching, child: cellIdentifier), "Element does not exist on cell!")
+    /// Asserts that a cell identified by `cellIdentifier` has a `staticText` child whose label is exactly `label`.
+    public func assertStaticText(withLabel label: String, existsOnCellWithIdentifier cellIdentifier: String) {
+        let labelPredicate = NSPredicate(format: "label ==[c] %@", label)
+
+        XCTAssertTrue(verifyStaticTextOnCell(cellIdentifier: cellIdentifier, labelPredicate: labelPredicate),
+                      "No static text labeled '\(label)' found on cell '\(cellIdentifier)'!")
+    }
+
+    /// Asserts that a cell identified by `cellIdentifier` has a `staticText` child whose label contains `substring`.
+    /// Use this when the label is a composed detail line (e.g. "On back order • $150.00") and only one part of it is under test.
+    public func assertStaticText(containing substring: String, existsOnCellWithIdentifier cellIdentifier: String) {
+        let labelPredicate = NSPredicate(format: "label CONTAINS[c] %@", substring)
+
+        XCTAssertTrue(verifyStaticTextOnCell(cellIdentifier: cellIdentifier, labelPredicate: labelPredicate),
+                      "No static text containing '\(substring)' found on cell '\(cellIdentifier)'!")
     }
 
     func verifyLabelContains(substring firstSubstring: String, and secondSubstring: String) throws -> Bool {

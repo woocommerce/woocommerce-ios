@@ -53,10 +53,10 @@ public struct PointOfSaleEntryPointView: View {
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
     private let cartProductObserver: POSCartProductObserving?
     private let isLocalCatalogEligible: Bool
-    private let sunsetWarningChecker: POSSunsetWarningChecking?
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
     private let receiptPrinter: ReceiptPrinterServiceProtocol?
+    private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
 
     /// periphery: ignore - public in preparation of move to POS module
     public init(siteID: Int64,
@@ -84,13 +84,13 @@ public struct PointOfSaleEntryPointView: View {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?,
          isLocalCatalogEligible: Bool,
          receiptSettingsAdminURL: String,
-         sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          staffFetcher: POSStaffFetching,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          staffSettingsService: POSStaffSettingsService? = nil,
          services: POSDependencyProviding,
+         httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
          itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
         self._accessSession = State(initialValue: POSAccessSessionFactory.make(
@@ -183,16 +183,16 @@ public struct PointOfSaleEntryPointView: View {
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.isLocalCatalogEligible = isLocalCatalogEligible
-        self.sunsetWarningChecker = sunsetWarningChecker
         self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
         self.preferredConnectionMethod = preferredConnectionMethod
         self.receiptPrinter = receiptPrinter
+        self.httpsConfigurationNotice = httpsConfigurationNotice
     }
 
     public var body: some View {
         Group {
             if let posModel {
-                PointOfSaleDashboardView()
+                PointOfSaleDashboardView(httpsConfigurationNotice: httpsConfigurationNotice)
                     .environment(posModel)
                     .environment(posModel.paymentModel)
                     .posAutoLockActivityTracking(
@@ -227,7 +227,6 @@ public struct PointOfSaleEntryPointView: View {
                 catalogSyncCoordinator: catalogSyncCoordinator,
                 cartProductObserver: cartProductObserver,
                 isLocalCatalogEligible: isLocalCatalogEligible,
-                sunsetWarningChecker: sunsetWarningChecker,
                 tapToPayAvailabilityController: tapToPayAvailabilityChecker.map { checker in
                     POSTapToPayAvailabilityController(availabilityChecker: checker,
                                                       analytics: services.analytics)

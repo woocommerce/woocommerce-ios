@@ -6,6 +6,7 @@
 - [*] Fixed an infinite spinner on site credential login when the site rejects the wp-login.php request (e.g. hosts with captcha/security plugins). An error alert is now shown instead. [https://github.com/woocommerce/woocommerce-ios/pull/17752]
 - [*] Payments: Update card reader's statement descriptor validation rules [https://github.com/woocommerce/woocommerce-ios/pull/17751]
 - [Internal] POS: Refund submission events now use the POS Tracks prefix when issued from POS. [https://github.com/woocommerce/woocommerce-ios/pull/17744]
+- [Internal] POS: Removed the WooCommerce 10.5.0 sunset warning banner that promised an August 1st requirement that is not enforced. [https://github.com/woocommerce/woocommerce-ios/pull/17763]
 
 25.5
 -----

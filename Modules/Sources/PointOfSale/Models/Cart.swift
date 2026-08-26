@@ -11,6 +11,9 @@ struct Cart {
     var customAmounts: [POSCustomAmount] = []
 
     var accessibilityFocusedItemID: UUID? = nil
+    /// The cart row created by the latest barcode scan. A new ID is assigned for every scan,
+    /// including repeated scans of the same barcode and scans that produce an error row.
+    var latestScannedItemID: UUID? = nil
 }
 
 protocol CartItem {
@@ -130,14 +133,14 @@ extension Cart {
         }
     }
 
-    private func createPurchasableItem(from posItem: POSItem) -> Cart.PurchasableItem? {
+    private func createPurchasableItem(from posItem: POSItem, id: UUID = UUID()) -> Cart.PurchasableItem? {
         switch posItem {
         case .simpleProduct(let simpleProduct):
-            return PurchasableItem(id: UUID(), item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
+            return PurchasableItem(id: id, item: simpleProduct, title: simpleProduct.name, subtitle: nil, quantity: 1)
         case .variation(let variation):
-            return PurchasableItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
+            return PurchasableItem(id: id, item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
         case .searchResultVariation(let variation, _):
-            return PurchasableItem(id: UUID(), item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
+            return PurchasableItem(id: id, item: variation, title: variation.parentProductName, subtitle: variation.name, quantity: 1)
         case .variableParentProduct, .coupon:
             return nil
         }
@@ -147,6 +150,7 @@ extension Cart {
         let id = UUID()
         let loadingItem = PurchasableItem.loading(id: id)
         purchasableItems.insert(loadingItem, at: purchasableItems.startIndex)
+        latestScannedItemID = id
         return loadingItem
     }
 
@@ -154,7 +158,7 @@ extension Cart {
     mutating func updateLoadingItem(id: UUID, with posItem: POSItem) -> Cart.PurchasableItem? {
         guard let index = purchasableItems.firstIndex(where: { $0.id == id }) else { return nil }
 
-        if let productItem = createPurchasableItem(from: posItem) {
+        if let productItem = createPurchasableItem(from: posItem, id: id) {
             purchasableItems[index] = productItem
             return productItem
         } else {

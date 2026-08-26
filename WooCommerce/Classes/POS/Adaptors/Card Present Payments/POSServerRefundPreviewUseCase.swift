@@ -9,9 +9,10 @@ import enum NetworkingCore.NetworkError
 /// Requests a server-calculated refund preview when the site is eligible for the
 /// server-computed flow, falling back to local calculations otherwise.
 ///
-/// The preview doubles as the availability probe: a success marks the site available in the
-/// `ServerRefundAvailabilityCache` (the precondition for sending a `compute_totals` create),
-/// while a 404 `rest_no_route` marks it unavailable and falls back without surfacing an error.
+/// The preview doubles as the availability probe. A success marks the site available in the
+/// `ServerRefundAvailabilityCache` and returns a total, which `POSRefundSubmissionAdaptor` stores
+/// per selection. That stored total, not the cache, admits a `compute_totals` create. A 404
+/// `rest_no_route` marks the site unavailable and falls back without surfacing an error.
 ///
 @MainActor
 final class POSServerRefundPreviewUseCase {
@@ -19,22 +20,29 @@ final class POSServerRefundPreviewUseCase {
     enum Result {
         case serverCalculated(RefundPreview)
         case fallbackToLocal
-        /// The preview failed for a reason other than route availability: a transport failure,
-        /// or a server error. The error is carried so the cause is attributable in logs rather
-        /// than collapsing every failure into one indistinguishable state.
+        /// The server rejected the requested refund with an actionable code (for example the
+        /// order changed since the screen was loaded); the rejection carries cashier-facing copy.
+        case rejected(RefundAPIError)
+        /// The preview failed for a reason with no cashier-facing mapping: a transport failure, or
+        /// a server error whose code we do not recognise. The error is carried so the cause is
+        /// attributable in logs rather than collapsing every failure into one indistinguishable
+        /// state.
         case error(Error)
     }
 
     private let refundService: RefundServiceProtocol
     private let flowResolver: POSRefundFlowResolver
     private let availabilityCache: ServerRefundAvailabilityCache
+    private let analytics: Analytics
 
     init(refundService: RefundServiceProtocol,
          flowResolver: POSRefundFlowResolver,
-         availabilityCache: ServerRefundAvailabilityCache) {
+         availabilityCache: ServerRefundAvailabilityCache,
+         analytics: Analytics) {
         self.refundService = refundService
         self.flowResolver = flowResolver
         self.availabilityCache = availabilityCache
+        self.analytics = analytics
     }
 
     func previewRefund(siteID: Int64, orderID: Int64, lineItems: [RefundPreviewLineItem]) async -> Result {
@@ -54,7 +62,15 @@ final class POSServerRefundPreviewUseCase {
             if isRouteNotRegistered(error) {
                 DDLogInfo("ℹ️ POS refund preview route not registered on site \(siteID); falling back to local calculation")
                 availabilityCache.markUnavailable(siteID: siteID)
+                // Reported once per site per app session, not once per refund: the cache
+                // short-circuits the resolver for the rest of the session, so this counts stores
+                // that fell back rather than the refunds they made afterwards.
+                analytics.track(event: .PointOfSale.refundServerFlowUnavailable())
                 return .fallbackToLocal
+            }
+            if let rejection = RefundAPIError(error) {
+                DDLogWarn("POS refund preview rejected for order \(orderID): \(rejection)")
+                return .rejected(rejection)
             }
             DDLogError("⛔️ POS refund preview failed for order \(orderID): \(error)")
             return .error(error)
@@ -81,6 +97,8 @@ extension POSServerRefundPreviewUseCase.Result: Equatable {
             return lhsPreview == rhsPreview
         case (.fallbackToLocal, .fallbackToLocal):
             return true
+        case let (.rejected(lhsRejection), .rejected(rhsRejection)):
+            return lhsRejection == rhsRejection
         case (.error, .error):
             return true
         default:

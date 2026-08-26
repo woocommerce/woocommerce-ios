@@ -3,6 +3,7 @@ import TestKit
 import Foundation
 @testable import PointOfSale
 import enum Yosemite.POSOrderListServiceError
+import enum Yosemite.RefundAPIError
 import struct NetworkingCore.Order
 import Observation
 import struct Yosemite.POSOrder
@@ -1147,7 +1148,7 @@ final class POSOrderListControllerTests {
 
         // Then the failure is returned and the inline-error state is published for the sheet
         #expect(failedResult == .previewError)
-        #expect(sut.refundReviewPreparationState == .previewError)
+        #expect(sut.refundReviewPreparationState == .previewError())
 
         // When the failure is resolved and the user retries
         refundSubmissionProcessor.prepareReviewDataErrorToThrow = nil
@@ -1158,6 +1159,76 @@ final class POSOrderListControllerTests {
             Issue.record("Expected .ready after retry, got \(recoveredResult)")
             return
         }
+        #expect(sut.refundReviewPreparationState == .idle)
+    }
+
+    @MainActor
+    @Test func prepareRefundReview_when_processor_throws_typed_rejection_then_state_carries_its_message() async throws {
+        // Given the preview was rejected with an actionable code (e.g. the order changed since loading)
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        refundSubmissionProcessor.prepareReviewDataErrorToThrow = RefundAPIError.quantityExceedsRefundable
+
+        // When
+        let result = await awaitReviewPreparation(sut)
+
+        // Then the inline-error state carries the rejection's cashier-facing copy, and offers the
+        // item reload rather than a retry that would be rejected the same way
+        #expect(result == .previewError)
+        #expect(sut.refundReviewPreparationState == .previewError(
+            message: RefundAPIError.quantityExceedsRefundable.localizedDescription,
+            recovery: .refreshItems
+        ))
+    }
+
+    @MainActor
+    @Test func prepareRefundReview_when_order_is_not_refundable_then_flow_ends_on_the_terminal_state() async throws {
+        // Given the store reports the order as having nothing refundable left
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        refundSubmissionProcessor.prepareReviewDataErrorToThrow = RefundAPIError.orderNotRefundable
+
+        // When
+        let result = await awaitReviewPreparation(sut)
+
+        // Then there is no selection to recover to, so the caller is told to end the flow
+        #expect(result == .nothingToRefund)
+        #expect(sut.refundReviewPreparationState == .idle)
+    }
+
+    @MainActor
+    @Test func refreshRefundableItems_then_keeps_the_selection_that_is_still_refundable() async throws {
+        // Given two refundable units, with only the first one selected
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 1)
+        let selectedIDs = Set(sut.refundSelectableItems.filter { $0.isSelected }.map(\.id))
+
+        // When
+        let result = await sut.refreshRefundableItems()
+
+        // Then
+        #expect(result == .hasItemsToRefund)
+        #expect(Set(sut.refundSelectableItems.filter { $0.isSelected }.map(\.id)) == selectedIDs)
+    }
+
+    @MainActor
+    @Test func refreshRefundableItems_when_a_preview_error_is_shown_then_it_is_cleared() async throws {
+        // Given a rejected preview
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        refundSubmissionProcessor.prepareReviewDataErrorToThrow = RefundAPIError.lineItemAlreadyRefunded
+        _ = await awaitReviewPreparation(sut)
+
+        // When the cashier reloads the refundable items
+        refundSubmissionProcessor.prepareReviewDataErrorToThrow = nil
+        _ = await sut.refreshRefundableItems()
+
+        // Then the selection step is back to a clean state
         #expect(sut.refundReviewPreparationState == .idle)
     }
 
@@ -2226,7 +2297,8 @@ private final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcess
             paymentMethodDescription: preparation.paymentMethodDescription,
             customerEmail: preparation.customerEmail,
             refundReason: reason,
-            isFullRefund: selectedItems.count == preparation.selectableItems.count
+            isFullRefund: selectedItems.count == preparation.selectableItems.count,
+            calculationFlow: .local
         )
     }
 

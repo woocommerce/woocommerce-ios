@@ -70,6 +70,24 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
         return stubStartRefundFlowResult
     }
 
+    private(set) var refreshRefundableItemsCallCount = 0
+    var stubRefreshedRefundSelectableItems: [POSRefundSelectableItem]?
+
+    func refreshRefundableItems() async -> StartRefundFlowResult {
+        refreshRefundableItemsCallCount += 1
+        let previousSelection = Set(refundSelectableItems.filter { $0.isSelected }.map(\.id))
+        if let stubRefreshedRefundSelectableItems {
+            refundSelectableItems = stubRefreshedRefundSelectableItems
+        }
+        if refundSelectableItems.contains(where: { previousSelection.contains($0.id) }) {
+            for index in refundSelectableItems.indices {
+                refundSelectableItems[index].isSelected = previousSelection.contains(refundSelectableItems[index].id)
+            }
+        }
+        hasModifiedRefundSelection = false
+        return stubStartRefundFlowResult
+    }
+
     func toggleRefundItemSelection(at index: Int) {
         guard refundSelectableItems.indices.contains(index) else { return }
         refundSelectableItems[index].isSelected.toggle()
@@ -114,7 +132,8 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
             paymentMethodDescription: "Via payment card",
             customerEmail: nil,
             refundReason: nil,
-            isFullRefund: selectedItems.count == refundSelectableItems.count
+            isFullRefund: selectedItems.count == refundSelectableItems.count,
+            calculationFlow: .local
         ))
     }
 

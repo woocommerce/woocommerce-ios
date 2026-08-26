@@ -82,10 +82,7 @@ private extension CookieNonceAuthenticator {
                 invalidateLoginSequence(error: error)
             } catch {
                 DDLogError("⛔️ Cookie nonce authenticator failed with uncaught error: \(error)")
-
-                //  Complete the pending requests without retrying. This informs the clients waiting for response about the failure.
-                //
-                completeRequests(false)
+                invalidateLoginSequence(error: .unknown(error))
             }
         }
     }
@@ -97,7 +94,7 @@ private extension CookieNonceAuthenticator {
                 .validate()
                 .response { response in
                     if let error = response.error {
-                        continuation.resume(throwing: error)
+                        continuation.resume(throwing: CookieNonceAuthenticator.Error.postLoginFailed(error))
                     } else {
                         continuation.resume(returning: ())
                     }
@@ -127,12 +124,11 @@ private extension CookieNonceAuthenticator {
     }
 
     func invalidateLoginSequence(error: Error) {
-        var allowRetry = false
-        if case .postLoginFailed(let originalError) = error {
-            let nsError = originalError as NSError
-            if nsError.domain == NSURLErrorDomain, nsError.code == NSURLErrorNotConnectedToInternet {
-                allowRetry = true
-            }
+        let allowRetry = switch error {
+        case .postLoginFailed, .unknown:
+            true
+        case .invalidNewPostURL, .missingNonce:
+            false
         }
         state.invalidate(allowRetry: allowRetry)
         DDLogInfo("Aborting Cookie+Nonce login sequence for \(loginURL)")

@@ -444,17 +444,20 @@ private extension RefundSubmissionUseCase {
             if let error {
                 DDLogError("Error creating refund: \(refund)\nWith Error: \(error)")
                 self.trackCreateRefundRequestFailed(error: error)
+                // Surfaces server rejections with actionable codes (e.g. `refund_exceeds_remaining`)
+                // as typed errors carrying user-facing copy; other errors stay unchanged.
+                if let rejection = RefundAPIError(error) {
+                    return onCompletion(.failure(rejection))
+                }
                 return onCompletion(.failure(error))
             }
 
-            guard let refundData else {
+            guard refundData != nil else {
                 DDLogError("Error creating refund: \(refund)\nWith Error: missing created refund response")
                 self.trackCreateRefundRequestFailed(error: RefundSubmissionUseCaseSubmissionError.missingCreatedRefund)
                 return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.missingCreatedRefund))
             }
 
-            // Workaround for https://github.com/woocommerce/woocommerce/issues/33389. This can be removed when the related API issue is fixed
-            self.retrieveUpdatedRefundData(refund: refundData)
             onCompletion(.success(()))
             self.trackCreateRefundRequestSuccess()
         }
@@ -469,33 +472,25 @@ private extension RefundSubmissionUseCase {
                                             onCompletion: @escaping (Result<Void, Error>) -> Void) async {
         trackCreateRefundRequest()
         do {
-            let createdRefund = try await refundService.createRefund(siteID: details.order.siteID,
-                                                                     orderID: details.order.orderID,
-                                                                     reason: refund.reason,
-                                                                     automaticRefund: refund.createAutomated ?? false,
-                                                                     restockItems: true,
-                                                                     amountOverride: nil,
-                                                                     lineItems: lineItems)
-            retrieveUpdatedRefundData(refund: createdRefund)
+            _ = try await refundService.createRefund(siteID: details.order.siteID,
+                                                     orderID: details.order.orderID,
+                                                     reason: refund.reason,
+                                                     automaticRefund: refund.createAutomated ?? false,
+                                                     restockItems: true,
+                                                     amountOverride: nil,
+                                                     lineItems: lineItems)
             onCompletion(.success(()))
             trackCreateRefundRequestSuccess()
         } catch {
             DDLogError("Error creating server-computed refund: \(refund)\nWith Error: \(error)")
             trackCreateRefundRequestFailed(error: error)
+            // Surfaces server rejections with actionable codes (e.g. `refund_exceeds_remaining`)
+            // as typed errors carrying user-facing copy; other errors stay unchanged.
+            if let rejection = RefundAPIError(error) {
+                return onCompletion(.failure(rejection))
+            }
             onCompletion(.failure(error))
         }
-    }
-
-    /// Retrieves the up-to-date refund data
-    /// - Parameters:
-    ///   - refund: the refund to retrieve details from.
-    private func retrieveUpdatedRefundData(refund: Refund) {
-        let action = RefundAction.retrieveRefund(siteID: details.order.siteID, orderID: details.order.orderID, refundID: refund.refundID) { _, error in
-                if let error {
-                    DDLogError("Error retrieving refund: \(String(describing: refund))\nWith Error: \(error)")
-                }
-            }
-            stores.dispatch(action)
     }
 }
 

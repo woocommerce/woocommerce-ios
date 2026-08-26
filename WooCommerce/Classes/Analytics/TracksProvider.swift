@@ -334,6 +334,7 @@ private extension TracksProvider {
             WooAnalyticsStat.cardReaderDiscoveryTapped,
             WooAnalyticsStat.cardReaderDiscoveryReaderDiscovered,
             WooAnalyticsStat.cardReaderConnectionTapped,
+            WooAnalyticsStat.cardReaderAutoConnectionStarted,
             WooAnalyticsStat.cardReaderDiscoveryFailed,
             WooAnalyticsStat.cardReaderConnectionFailed,
             WooAnalyticsStat.cardReaderConnectionSuccess,

@@ -395,6 +395,7 @@ private extension CardReaderConnectionController {
                     if !didAutoAdvance {
                         didAutoAdvance = true
                         self.candidateReader = foundKnownReader
+                        self.analyticsTracker.autoConnectionStarted(cardReaderModel: foundKnownReader.readerType.model)
                         self.state = .requestLocationPermission
                         return
                     }
@@ -435,6 +436,7 @@ private extension CardReaderConnectionController {
         /// (unknown) reader, auto-connect to that known reader
         if let foundKnownReader = self.getFoundKnownReader() {
             self.candidateReader = foundKnownReader
+            self.analyticsTracker.autoConnectionStarted(cardReaderModel: foundKnownReader.readerType.model)
             self.state = .requestLocationPermission
             return
         }

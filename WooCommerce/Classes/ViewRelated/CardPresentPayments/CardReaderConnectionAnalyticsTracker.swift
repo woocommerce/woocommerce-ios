@@ -163,6 +163,16 @@ final class CardReaderConnectionAnalyticsTracker {
                                         connectionType: connectionType.rawValue))
     }
 
+    /// Called when we begin connecting to a known reader automatically, rather than the merchant
+    /// picking it. The model is passed in for the same reason as `connectionTapped`.
+    ///
+    func autoConnectionStarted(cardReaderModel: String?) {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments
+            .cardReaderAutoConnectionStarted(forGatewayID: gatewayID,
+                                             countryCode: countryCode,
+                                             cardReaderModel: cardReaderModel))
+    }
+
     func discoveryFailed(error: Error) {
         analytics.track(
             event: WooAnalyticsEvent.InPersonPayments.cardReaderDiscoveryFailed(

@@ -1636,6 +1636,26 @@ extension WooAnalyticsEvent {
             )
         }
 
+        /// Tracked when we start connecting to a known reader automatically, without the merchant
+        /// picking it from the discovered readers.
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///
+        static func cardReaderAutoConnectionStarted(forGatewayID: String?,
+                                                    countryCode: CountryCode,
+                                                    cardReaderModel: String?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderAutoConnectionStarted,
+                              properties: [
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID)
+                              ]
+            )
+        }
+
         /// Tracked when card reader discovery fails
         ///
         /// - Parameters:

@@ -345,6 +345,7 @@ public enum WooAnalyticsStat: String {
     case cardReaderDiscoveryTapped = "card_reader_discovery_tapped"
     case cardReaderDiscoveryReaderDiscovered = "card_reader_discovery_reader_discovered"
     case cardReaderConnectionTapped = "card_reader_connection_tapped"
+    case cardReaderAutoConnectionStarted = "card_reader_auto_connection_started"
     case cardReaderDiscoveryFailed = "card_reader_discovery_failed"
     case cardReaderConnectionFailed = "card_reader_connection_failed"
     case cardReaderConnectionSuccess = "card_reader_connection_success"

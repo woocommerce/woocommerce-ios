@@ -335,6 +335,11 @@ private extension ProductsSplitViewCoordinator {
         // UIKit does not scrub a navigation-bar visibility animation with an interactive pop. Starting that animation in
         // `willShow` can therefore leave the product detail bar visible briefly after the swipe finishes. Wait until UIKit
         // knows whether the gesture will finish or cancel, then hide the bar immediately only for a completed pop.
+        //
+        // IMPORTANT: This intentionally leaves navigation-bar-sized space above Product Search briefly after a back swipe.
+        // Do not remove that gap by hiding the bar or forcing Search to lay out earlier in the transition. In a collapsed
+        // split view, the product detail navigation item can still belong to the secondary navigation bar at that point.
+        // Forcing the primary bar to lay it out caused NSInternalInconsistencyException crashes (Sentry issue 7669931391).
         if isShowingProductSearch,
            let transitionCoordinator = navigationController.transitionCoordinator,
            transitionCoordinator.isInteractive {

@@ -136,6 +136,33 @@ final class CardReaderConnectionAnalyticsTracker {
                                             connectionType: connectionType.rawValue))
     }
 
+    /// Called when the user taps to begin searching for a card reader.
+    func discoveryTapped() {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments
+            .cardReaderDiscoveryTapped(forGatewayID: gatewayID,
+                                       countryCode: countryCode))
+    }
+
+    /// Called when the set of readers discovered during a search changes.
+    func readersDiscovered(count: Int) {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments
+            .cardReaderDiscoveryReaderDiscovered(forGatewayID: gatewayID,
+                                                 readerCount: count,
+                                                 countryCode: countryCode))
+    }
+
+    /// Called when the user taps to connect to a specific discovered reader.
+    /// The model is passed in because the candidate reader is not set on this tracker until the
+    /// connection attempt itself begins, which happens after this tap.
+    ///
+    func connectionTapped(cardReaderModel: String?) {
+        analytics.track(event: WooAnalyticsEvent.InPersonPayments
+            .cardReaderConnectionTapped(forGatewayID: gatewayID,
+                                        countryCode: countryCode,
+                                        cardReaderModel: cardReaderModel,
+                                        connectionType: connectionType.rawValue))
+    }
+
     func discoveryFailed(error: Error) {
         analytics.track(
             event: WooAnalyticsEvent.InPersonPayments.cardReaderDiscoveryFailed(

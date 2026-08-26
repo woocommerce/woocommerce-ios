@@ -1481,6 +1481,7 @@ extension WooAnalyticsEvent {
             static let millisecondsSinceCardCollectPaymentFlow = "milliseconds_since_card_collect_payment_flow"
             static let siteID = "site_id"
             static let connectionType = "connection_type"
+            static let readerCount = "reader_count"
             static let receiptSource = "source"
         }
 
@@ -1570,6 +1571,62 @@ extension WooAnalyticsEvent {
                                                   forGatewayID: String?, countryCode: CountryCode,
                                                   connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .cardReaderAutomaticDisconnect,
+                              properties: [
+                                Keys.cardReaderModel: readerModel(for: cardReaderModel),
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID),
+                                Keys.connectionType: connectionType
+                              ]
+            )
+        }
+
+        /// Tracked when the merchant taps to begin searching for a card reader.
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderDiscoveryTapped(forGatewayID: String?,
+                                              countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderDiscoveryTapped,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID)
+                              ]
+            )
+        }
+
+        /// Tracked when the set of card readers found during a search changes.
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - readerCount: the number of readers currently discovered.
+        ///   - countryCode: the country code of the store.
+        ///
+        static func cardReaderDiscoveryReaderDiscovered(forGatewayID: String?,
+                                                        readerCount: Int,
+                                                        countryCode: CountryCode) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderDiscoveryReaderDiscovered,
+                              properties: [
+                                Keys.countryCode: countryCode.rawValue,
+                                Keys.gatewayID: safeGatewayID(for: forGatewayID),
+                                Keys.readerCount: readerCount
+                              ]
+            )
+        }
+
+        /// Tracked when the merchant taps to connect to a discovered card reader.
+        ///
+        /// - Parameters:
+        ///   - forGatewayID: the plugin (e.g. "woocommerce-payments" or "woocommerce-gateway-stripe") to be included in the event properties in Tracks.
+        ///   - countryCode: the country code of the store.
+        ///   - cardReaderModel: the model type of the card reader.
+        ///
+        static func cardReaderConnectionTapped(forGatewayID: String?,
+                                               countryCode: CountryCode,
+                                               cardReaderModel: String?,
+                                               connectionType: String) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .cardReaderConnectionTapped,
                               properties: [
                                 Keys.cardReaderModel: readerModel(for: cardReaderModel),
                                 Keys.countryCode: countryCode.rawValue,

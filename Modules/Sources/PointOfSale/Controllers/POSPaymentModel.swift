@@ -561,7 +561,7 @@ extension POSPaymentModel {
     }
 
     func connectCardReader() {
-        analytics.track(.pointOfSaleCardReaderConnectionTapped)
+        analytics.track(.cardReaderConnectionTapped)
         guard connectCardReaderTask == nil else { return }
         connectCardReaderTask = Task { @MainActor [weak self] in
             defer { self?.connectCardReaderTask = nil }

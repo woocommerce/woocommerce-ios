@@ -1,5 +1,6 @@
 import Experiments
 import Foundation
+import os
 import WordPressShared
 import Yosemite
 import struct Storage.GeneralAppSettingsStorage
@@ -509,20 +510,24 @@ private extension MobileStatusReportProvider {
     /// drops actions for stores it does not run (`AppSettingsStore` among them), and no completion ever comes.
     /// After `dispatchTimeout` the value degrades to `fallback` — a field reading "not set" is recoverable, a
     /// report that never finishes while a merchant files a ticket is not.
-    func awaitedDispatch<Value>(fallback: Value,
-                                _ makeAction: (@escaping (Value) -> Void) -> Action) async -> Value {
+    func awaitedDispatch<Value: Sendable>(fallback: Value,
+                                          _ makeAction: (@escaping @Sendable (Value) -> Void) -> Action) async -> Value {
         await withCheckedContinuation { continuation in
-            var resumed = false
-            let resumeOnce: (Value) -> Void = { value in
-                guard !resumed else { return }
-                resumed = true
+            // The completion and the timeout race to resume, and a store is free to answer from any thread, so
+            // the flag deciding which of them wins is held under a lock rather than hopped onto one queue.
+            let hasResumed = OSAllocatedUnfairLock(initialState: false)
+            let resumeOnce: @Sendable (Value) -> Void = { value in
+                let isFirstToResume = hasResumed.withLock { resumed -> Bool in
+                    guard !resumed else {
+                        return false
+                    }
+                    resumed = true
+                    return true
+                }
+                guard isFirstToResume else { return }
                 continuation.resume(returning: value)
             }
-            stores.dispatch(makeAction { value in
-                // Stores answer these inline on the main queue today; the hop keeps `resumed` main-only if one
-                // ever answers from elsewhere.
-                DispatchQueue.main.async { resumeOnce(value) }
-            })
+            stores.dispatch(makeAction(resumeOnce))
             DispatchQueue.main.asyncAfter(deadline: .now() + dispatchTimeout) { resumeOnce(fallback) }
         }
     }

@@ -92,6 +92,7 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(cart.purchasableItems.count == 1)
+            #expect(cart.latestScannedItemID == loadingItem.id)
             let item = try #require(cart.purchasableItems.first)
             #expect(item.id == loadingItem.id)
             guard case .loading = item.state else {
@@ -111,6 +112,7 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(cart.purchasableItems.count == 1)
             let item = try #require(cart.purchasableItems.first)
+            #expect(item.id == loadingItem.id)
             guard case .loaded(let loadedItem) = item.state else {
                 throw CartTestError.unexpectedItemStateInCart
             }
@@ -1326,6 +1328,99 @@ struct PointOfSaleAggregateModelTests {
                 sut.barcodeScanned(.success("123456"))
             }
         }
+
+        @Test func barcodeScanned_when_scan_succeeds_then_updates_latest_scanned_item_id() async {
+            // Given
+            let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
+            #expect(sut.cart.latestScannedItemID == nil)
+
+            // When
+            await waitForScannedItemChange(on: sut) {
+                sut.barcodeScanned(.success("123456"))
+            }
+
+            // Then
+            #expect(sut.cart.latestScannedItemID != nil)
+        }
+
+        @Test func barcodeScanned_when_parse_fails_then_updates_latest_scanned_item_id() async {
+            // Given
+            let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
+            #expect(sut.cart.latestScannedItemID == nil)
+
+            // When
+            await waitForScannedItemChange(on: sut) {
+                sut.barcodeScanned(.failure(.scanTooShort(barcode: "1")))
+            }
+
+            // Then
+            #expect(sut.cart.latestScannedItemID != nil)
+        }
+
+        @Test func barcodeScanned_when_scanned_twice_then_sets_distinct_latest_scanned_item_ids() async {
+            // Given
+            let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
+
+            // When: two scans of the same barcode.
+            await waitForScannedItemChange(on: sut) {
+                sut.barcodeScanned(.success("123456"))
+            }
+            let firstScannedItemID = sut.cart.latestScannedItemID
+            await waitForScannedItemChange(on: sut) {
+                sut.barcodeScanned(.success("123456"))
+            }
+            let secondScannedItemID = sut.cart.latestScannedItemID
+
+            // Then
+            #expect(firstScannedItemID != nil)
+            #expect(secondScannedItemID != nil)
+            #expect(firstScannedItemID != secondScannedItemID)
+        }
+
+        @Test func barcodeScanned_when_lookup_fails_then_preserves_latest_scanned_item_id() async {
+            // Given
+            let soundPlayer = MockPointOfSaleSoundPlayer()
+            let barcodeScanService = MockPointOfSaleBarcodeScanService()
+            barcodeScanService.errorToThrow = .notFound(scannedCode: "123456")
+            let sut = makePointOfSaleAggregateModel(
+                barcodeScanService: barcodeScanService,
+                soundPlayer: soundPlayer)
+
+            // When: capture the loading item's ID, then wait for the failed lookup to complete
+            // (the failure sound is the last step of that path).
+            var loadingItemID: UUID?
+            await fireOnce { fire in
+                withObservationTracking {
+                    _ = sut.cart.latestScannedItemID
+                } onChange: {
+                    Task { @MainActor in
+                        loadingItemID = sut.cart.latestScannedItemID
+                    }
+                }
+                soundPlayer.onPlaySound = { _ in
+                    fire()
+                }
+                sut.barcodeScanned(.success("123456"))
+            }
+
+            // Then
+            #expect(loadingItemID != nil)
+            #expect(sut.cart.latestScannedItemID == loadingItemID)
+        }
+
+        private func waitForScannedItemChange(on sut: PointOfSaleAggregateModel, when action: () -> Void) async {
+            await withCheckedContinuation { continuation in
+                withObservationTracking {
+                    _ = sut.cart.latestScannedItemID
+                } onChange: {
+                    Task { @MainActor in
+                        // Task needed because onChange fires with willSet semantics.
+                        continuation.resume()
+                    }
+                }
+                action()
+            }
+        }
     }
 
     @MainActor struct PriceChangeDetectionTests {
@@ -1495,113 +1590,6 @@ struct PointOfSaleAggregateModelTests {
         }
     }
 
-    @MainActor struct SunsetWarningTests {
-        @Test func showSunsetWarning_defaults_to_false() {
-            // Given
-            let sut = makePointOfSaleAggregateModel()
-
-            // Then
-            #expect(sut.showSunsetWarning == false)
-        }
-
-        @Test func checkSunsetWarningStatus_when_checker_returns_true_then_showSunsetWarning_is_true() async {
-            // Given
-            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
-            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
-
-            // When
-            await sut.checkSunsetWarningStatus()
-
-            // Then
-            #expect(sut.showSunsetWarning == true)
-        }
-
-        @Test func checkSunsetWarningStatus_when_checker_returns_false_then_showSunsetWarning_is_false() async {
-            // Given
-            let analytics = MockPOSAnalytics()
-            let checker = MockPOSSunsetWarningChecker(shouldShow: false)
-            let sut = makePointOfSaleAggregateModel(analytics: analytics, sunsetWarningChecker: checker)
-
-            // When
-            await sut.checkSunsetWarningStatus()
-
-            // Then
-            #expect(sut.showSunsetWarning == false)
-            let shownEvents = analytics.events.filter {
-                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown.rawValue
-            }
-            #expect(shownEvents.isEmpty)
-        }
-
-        @Test func dismissSunsetWarning_sets_showSunsetWarning_to_false_and_records_dismissal() async {
-            // Given
-            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
-            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
-            await sut.checkSunsetWarningStatus()
-            #expect(sut.showSunsetWarning == true)
-
-            // When
-            sut.dismissSunsetWarning()
-
-            // Then
-            #expect(sut.showSunsetWarning == false)
-            #expect(checker.recordDismissalCalled == true)
-        }
-
-        @Test func checkSunsetWarningStatus_when_called_twice_then_tracks_shown_event_once() async {
-            // Given
-            let analytics = MockPOSAnalytics()
-            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
-            let sut = makePointOfSaleAggregateModel(analytics: analytics, sunsetWarningChecker: checker)
-
-            // When - both tab views drive this check; it must only track once
-            await sut.checkSunsetWarningStatus()
-            await sut.checkSunsetWarningStatus()
-
-            // Then
-            let shownEvents = analytics.events.filter {
-                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown.rawValue
-            }
-            #expect(shownEvents.count == 1)
-        }
-
-        @Test func checkSunsetWarningStatus_when_called_concurrently_then_tracks_shown_event_once() async {
-            // Given
-            let analytics = MockPOSAnalytics()
-            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
-            let sut = makePointOfSaleAggregateModel(analytics: analytics, sunsetWarningChecker: checker)
-
-            // When - both tab views drive this check concurrently; it must only track once
-            async let firstCheck: Void = sut.checkSunsetWarningStatus()
-            async let secondCheck: Void = sut.checkSunsetWarningStatus()
-            _ = await (firstCheck, secondCheck)
-
-            // Then
-            let shownEvents = analytics.events.filter {
-                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown.rawValue
-            }
-            #expect(shownEvents.count == 1)
-        }
-
-        @Test func checkSunsetWarningStatus_when_dismissed_and_reshown_then_tracks_again() async {
-            // Given
-            let analytics = MockPOSAnalytics()
-            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
-            let sut = makePointOfSaleAggregateModel(analytics: analytics, sunsetWarningChecker: checker)
-
-            // When - shown, dismissed, then shown again
-            await sut.checkSunsetWarningStatus()
-            sut.dismissSunsetWarning()
-            await sut.checkSunsetWarningStatus()
-
-            // Then - each transition into shown tracks once
-            let shownEvents = analytics.events.filter {
-                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown.rawValue
-            }
-            #expect(shownEvents.count == 2)
-        }
-    }
-
     @MainActor struct ReceiptPrinterTests {
         @Test func receiptPrinter_is_nil_by_default() async {
             // Given, When
@@ -1726,7 +1714,6 @@ private func makePointOfSaleAggregateModel(
     siteID: Int64 = 123,
     catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
     isLocalCatalogEligible: Bool = false,
-    sunsetWarningChecker: POSSunsetWarningChecking? = nil,
     receiptPrinter: ReceiptPrinterServiceProtocol? = nil
 ) -> PointOfSaleAggregateModel {
     PointOfSaleAggregateModel(
@@ -1749,7 +1736,6 @@ private func makePointOfSaleAggregateModel(
         siteID: siteID,
         catalogSyncCoordinator: catalogSyncCoordinator,
         isLocalCatalogEligible: isLocalCatalogEligible,
-        sunsetWarningChecker: sunsetWarningChecker,
         receiptPrinter: receiptPrinter
     )
 }

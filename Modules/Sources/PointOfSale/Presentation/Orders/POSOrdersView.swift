@@ -41,10 +41,9 @@ struct POSOrdersView: View {
                     isPresented = false
                 }
                 .environment(orderListModel)
-            } detail: { selection, detailNavigationPath in
+            } detail: { selection, _ in
                 POSOrderDetailsView(
                     order: selection,
-                    detailNavigationPath: detailNavigationPath,
                     activeRefundSelectionOrderID: $activeRefundSelectionOrderID,
                     onBack: {
                         selectOrder(nil)

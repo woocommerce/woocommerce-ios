@@ -8,14 +8,9 @@ import struct Yosemite.POSRefundItem
 import enum Yosemite.OrderStatusEnum
 import typealias Yosemite.OrderItemAttribute
 
-private enum POSOrderDetailsNavigationDestination: Hashable {
-    case refundSelection
-}
-
 struct POSOrderDetailsView: View {
     let order: POSOrder
     let onBack: () -> Void
-    @Binding private var detailNavigationPath: NavigationPath
     @Binding private var activeRefundSelectionOrderID: Int64?
     @State var autoStartNextRefundFlow: Bool = false
     var onRefundSuccess: (() -> Void)? = nil
@@ -44,7 +39,6 @@ struct POSOrderDetailsView: View {
 
     init(
         order: POSOrder,
-        detailNavigationPath: Binding<NavigationPath> = .constant(NavigationPath()),
         activeRefundSelectionOrderID: Binding<Int64?> = .constant(nil),
         onBack: @escaping () -> Void,
         autoStartNextRefundFlow: Bool = false,
@@ -53,7 +47,6 @@ struct POSOrderDetailsView: View {
     ) {
         self.order = order
         self.onBack = onBack
-        self._detailNavigationPath = detailNavigationPath
         self._activeRefundSelectionOrderID = activeRefundSelectionOrderID
         self._autoStartNextRefundFlow = State(initialValue: autoStartNextRefundFlow)
         self.onRefundSuccess = onRefundSuccess
@@ -65,59 +58,69 @@ struct POSOrderDetailsView: View {
         // refreshes refund details. Prefer the controller's live `selectedOrder` so the view
         // re-renders when refunds are loaded or the order is refetched after a refund.
         let order = orderListModel.ordersController.selectedOrder ?? self.order
-        VStack(spacing: POSSpacing.none) {
-            POSPageHeaderView(
-                title: POSOrderListView.Localization.orderTitle(order.number),
-                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
-                trailingContent: {
-                    actionsSection(setup: availableActionsSetup)
-                },
-                bottomContent: {
-                    headerBottomContent(for: order)
-                }
-            )
-            .posHeaderBackButtonPadding(POSPadding.none)
-            .fixedSize(horizontal: false, vertical: true)
-            .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
-
-            ScrollView {
-                VStack(alignment: .leading, spacing: POSSpacing.medium) {
-                    switch orderListModel.ordersController.orderDetailsItemsState {
-                    case .loading(let rowCount):
-                        ghostItemsSection(rowCount: rowCount)
-                        ghostRefundedProductsSection
-
-                    case .loaded(let lineItems, let customAmounts, let refundedItems):
-                        if !lineItems.isEmpty || !customAmounts.isEmpty {
-                            itemsSection(products: lineItems, customAmounts: customAmounts)
-                        }
-                        if !refundedItems.isEmpty {
-                            refundedProductsSection(refundedItems)
-                        }
+        ZStack {
+            VStack(spacing: POSSpacing.none) {
+                POSPageHeaderView(
+                    title: POSOrderListView.Localization.orderTitle(order.number),
+                    backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
+                    trailingContent: {
+                        actionsSection(setup: availableActionsSetup)
+                    },
+                    bottomContent: {
+                        headerBottomContent(for: order)
                     }
-                    POSTotalsSectionView(
-                        sectionTitle: Localization.totalsTitle,
-                        subtotalLabel: Localization.itemsLabel,
-                        subtotalAmount: order.formattedSubtotal,
-                        discountAmount: order.formattedDiscountTotal,
-                        taxAmount: order.formattedTotalTax,
-                        totalAmount: order.formattedTotal,
-                        paidAmount: order.formattedPaymentTotal,
-                        paymentMethodTitle: order.paymentMethodTitle,
-                        refunds: order.refunds,
-                        netAmount: order.formattedNetAmount,
-                        siteTimezone: siteTimezone,
-                        isLoadingRefundDetails: orderListModel.ordersController.isLoadingOrderRefunds,
-                        selectedRefundForDetail: $selectedRefundForDetail
-                    )
+                )
+                .posHeaderBackButtonPadding(POSPadding.none)
+                .fixedSize(horizontal: false, vertical: true)
+                .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
+
+                ScrollView {
+                    VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                        switch orderListModel.ordersController.orderDetailsItemsState {
+                        case .loading(let rowCount):
+                            ghostItemsSection(rowCount: rowCount)
+                            ghostRefundedProductsSection
+
+                        case .loaded(let lineItems, let customAmounts, let refundedItems):
+                            if !lineItems.isEmpty || !customAmounts.isEmpty {
+                                itemsSection(products: lineItems, customAmounts: customAmounts)
+                            }
+                            if !refundedItems.isEmpty {
+                                refundedProductsSection(refundedItems)
+                            }
+                        }
+                        POSTotalsSectionView(
+                            sectionTitle: Localization.totalsTitle,
+                            subtotalLabel: Localization.itemsLabel,
+                            subtotalAmount: order.formattedSubtotal,
+                            discountAmount: order.formattedDiscountTotal,
+                            taxAmount: order.formattedTotalTax,
+                            totalAmount: order.formattedTotal,
+                            paidAmount: order.formattedPaymentTotal,
+                            paymentMethodTitle: order.paymentMethodTitle,
+                            refunds: order.refunds,
+                            netAmount: order.formattedNetAmount,
+                            siteTimezone: siteTimezone,
+                            isLoadingRefundDetails: orderListModel.ordersController.isLoadingOrderRefunds,
+                            selectedRefundForDetail: $selectedRefundForDetail
+                        )
+                    }
+                    .padding(.top, POSPadding.xSmall)
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.bottom, POSPadding.medium)
                 }
-                .padding(.top, POSPadding.xSmall)
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.medium)
+            }
+            .allowsHitTesting(refundSelectionState == nil)
+            .accessibilityHidden(refundSelectionState != nil)
+
+            if let refundSelectionState {
+                refundSelectionView(state: refundSelectionState)
+                    .transition(.move(edge: .trailing))
+                    .zIndex(1)
             }
         }
+        .animation(.snappy, value: refundSelectionState != nil)
         .background(Color.posSurface)
-        .navigationBarHidden(true)
         .posModal(item: $selectedRefundForDetail) { refund in
             let sortedRefunds = order.refunds.sorted(by: { $0.refundID < $1.refundID })
             let index = (sortedRefunds.firstIndex(where: { $0.refundID == refund.refundID }) ?? 0) + 1
@@ -127,24 +130,6 @@ struct POSOrderDetailsView: View {
                 paymentMethodDescription: Localization.viaPaymentMethod(order.paymentMethodTitle),
                 onClose: { selectedRefundForDetail = nil }
             )
-        }
-        .navigationDestination(for: POSOrderDetailsNavigationDestination.self) { destination in
-            switch destination {
-            case .refundSelection:
-                if let refundSelectionState {
-                    POSRefundSelectionFlowView(
-                        state: refundSelectionState,
-                        errorStrings: refundErrorStrings,
-                        onDismiss: { dismissRefundFlow() },
-                        onRetryLoading: { initiateRefundFlow() },
-                        onRetryPreparation: {
-                            self.refundSelectionState = .itemSelection
-                        },
-                        onContinue: { navigateToRefundReview() },
-                        onRefreshItems: { refreshRefundSelection() }
-                    )
-                }
-            }
         }
         .posFullScreenCover(isPresented: isRefundModalPresented) {
             if let state = refundModalState {
@@ -707,7 +692,6 @@ private extension POSOrderDetailsView {
             return
         }
         activeRefundSelectionOrderID = order.id
-        detailNavigationPath.append(POSOrderDetailsNavigationDestination.refundSelection)
     }
 
     func dismissRefundSelectionIfNeeded() {
@@ -715,9 +699,20 @@ private extension POSOrderDetailsView {
             return
         }
         activeRefundSelectionOrderID = nil
-        if !detailNavigationPath.isEmpty {
-            detailNavigationPath.removeLast()
-        }
+    }
+
+    func refundSelectionView(state: RefundSelectionState) -> some View {
+        POSRefundSelectionFlowView(
+            state: state,
+            errorStrings: refundErrorStrings,
+            onDismiss: { dismissRefundFlow() },
+            onRetryLoading: { initiateRefundFlow() },
+            onRetryPreparation: {
+                refundSelectionState = .itemSelection
+            },
+            onContinue: { navigateToRefundReview() },
+            onRefreshItems: { refreshRefundSelection() }
+        )
     }
 
     var refundErrorStrings: POSRefundErrorStrings {

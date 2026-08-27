@@ -2,20 +2,22 @@ import SwiftUI
 
 /// Shared policy for POS leading-edge back gestures.
 struct POSEdgeSwipePolicy {
+    /// How far in from the leading edge a drag may start and still count as an edge swipe.
     static let activationWidth: CGFloat = 24
     static let minimumDragDistance: CGFloat = 8
     static let completionThreshold: CGFloat = 0.35
+    /// Used when the container has not reported a width yet. Without it the threshold would be
+    /// zero, and a strict comparison against zero never completes however far the merchant swipes.
+    static let fallbackCompletionDistance: CGFloat = 60
 
     let layoutDirection: LayoutDirection
 
-    var edgeAlignment: Alignment {
-        layoutDirection == .leftToRight ? .leading : .trailing
-    }
-
+    /// `1` when a back swipe travels in the positive x direction, `-1` when it travels the other way.
     var direction: CGFloat {
-        layoutDirection == .leftToRight ? 1 : -1
+        layoutDirection == .rightToLeft ? -1 : 1
     }
 
+    /// Restates a horizontal translation as distance travelled *towards back*, whichever way that is.
     func normalized(_ horizontalTranslation: CGFloat) -> CGFloat {
         horizontalTranslation * direction
     }
@@ -24,10 +26,26 @@ struct POSEdgeSwipePolicy {
         min(max(normalized(horizontalTranslation), 0), totalWidth)
     }
 
+    func startsAtLeadingEdge(_ xPosition: CGFloat, totalWidth: CGFloat) -> Bool {
+        layoutDirection == .rightToLeft
+            ? xPosition >= totalWidth - Self.activationWidth
+            : xPosition <= Self.activationWidth
+    }
+
+    /// Rejects a drag that is mostly vertical, so a scroll that begins near the edge and wanders
+    /// sideways does not read as a back swipe.
+    func isPredominantlyHorizontal(_ translation: CGSize) -> Bool {
+        abs(translation.width) > abs(translation.height)
+    }
+
     func shouldComplete(translation: CGFloat, predictedEndTranslation: CGFloat, totalWidth: CGFloat) -> Bool {
         let current = normalized(translation)
         let projected = normalized(predictedEndTranslation)
-        return max(projected, current) > totalWidth * Self.completionThreshold
+        return max(projected, current) > completionDistance(totalWidth: totalWidth)
+    }
+
+    func completionDistance(totalWidth: CGFloat) -> CGFloat {
+        totalWidth > 0 ? totalWidth * Self.completionThreshold : Self.fallbackCompletionDistance
     }
 }
 
@@ -38,45 +56,48 @@ struct POSEdgeSwipePolicy {
 /// destination cannot reveal content owned by another container. Moving only the destination
 /// exposes that container's empty background.
 ///
-/// Use native interactive pop for genuine `NavigationStack` pushes and a container-owned
-/// transition, such as `POSNavigationSplitView`, when both screens are available to render.
+/// Native interactive pop is not an alternative: POS hides the navigation bar on every screen,
+/// which switches off UIKit's `interactivePopGestureRecognizer`. Where one container owns both
+/// screens — as `POSNavigationSplitView` does — prefer its transition, which does track the finger.
+///
+/// The gesture attaches to the content rather than to an overlay strip. An overlay that is
+/// hit-testable enough to receive a drag also becomes the hit target for taps, which would kill
+/// every tap along the leading edge; `simultaneousGesture` recognizes alongside the content's own
+/// gestures instead of competing with them. Attaching to the content also keeps the modifier
+/// layout-neutral, which matters because several callers apply it to intrinsically sized cards.
 private struct POSEdgeSwipeBackAction: ViewModifier {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.layoutDirection) private var layoutDirection
+    @State private var totalWidth: CGFloat = 0
 
     let isEnabled: Bool
     let onBack: (() -> Void)?
 
     func body(content: Content) -> some View {
-        GeometryReader { geometry in
-            ZStack(alignment: policy.edgeAlignment) {
-                content
+        content
+            .onGeometryChange(for: CGFloat.self, of: { $0.size.width }) { totalWidth = $0 }
+            .simultaneousGesture(backGesture, isEnabled: isActive)
+    }
 
-                if isEnabled, horizontalSizeClass == .compact {
-                    Color.clear
-                        .contentShape(Rectangle())
-                        .frame(width: POSEdgeSwipePolicy.activationWidth)
-                        .frame(maxHeight: .infinity)
-                        .gesture(backGesture(totalWidth: geometry.size.width))
-                        .accessibilityHidden(true)
-                }
-            }
-        }
+    private var isActive: Bool {
+        isEnabled && horizontalSizeClass == .compact
     }
 
     private var policy: POSEdgeSwipePolicy {
         POSEdgeSwipePolicy(layoutDirection: layoutDirection)
     }
 
-    private func backGesture(totalWidth: CGFloat) -> some Gesture {
+    private var backGesture: some Gesture {
         DragGesture(minimumDistance: POSEdgeSwipePolicy.minimumDragDistance)
             .onEnded { value in
-                guard policy.shouldComplete(
-                    translation: value.translation.width,
-                    predictedEndTranslation: value.predictedEndTranslation.width,
-                    totalWidth: totalWidth
-                ) else {
+                guard policy.startsAtLeadingEdge(value.startLocation.x, totalWidth: totalWidth),
+                      policy.isPredominantlyHorizontal(value.translation),
+                      policy.shouldComplete(
+                        translation: value.translation.width,
+                        predictedEndTranslation: value.predictedEndTranslation.width,
+                        totalWidth: totalWidth
+                      ) else {
                     return
                 }
 

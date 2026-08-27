@@ -67,7 +67,8 @@ struct POSNavigationDestinationScanToPayView: View {
 /// alert. Hosting it inside the `NavigationStack` gives us:
 ///
 /// - the same in-pane navigation pattern as cash and scan-to-pay (no special-case modifier)
-/// - "back" semantics for free (chevron-back, edge swipe)
+/// - the same "back" affordances as cash and scan-to-pay: a chevron-back, plus the module's own
+///   `posEdgeSwipeBackAction`, since a hidden navigation bar rules out UIKit's interactive pop
 /// - the same `navigationPath`-based check used to hide floating dashboard controls
 /// - no modal-stack optics (no "sheet → alert" chain, no auto-dismiss binding hack)
 ///

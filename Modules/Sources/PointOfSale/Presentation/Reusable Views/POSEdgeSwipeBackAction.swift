@@ -20,6 +20,10 @@ struct POSEdgeSwipePolicy {
     /// Used when the container has not reported a width yet. Without it the threshold would be
     /// zero, and a strict comparison against zero never completes however far the merchant swipes.
     static let fallbackCompletionDistance: CGFloat = 60
+    /// How far the outgoing screen travels, as a fraction of the incoming screen's travel. UIKit
+    /// moves the screen being left by roughly a third of the width, so it drifts under the arriving
+    /// screen rather than sliding away with it.
+    static let outgoingParallaxFraction: CGFloat = 0.3
 
     let layoutDirection: LayoutDirection
 
@@ -57,6 +61,28 @@ struct POSEdgeSwipePolicy {
 
     func completionDistance(totalWidth: CGFloat) -> CGFloat {
         totalWidth > 0 ? totalWidth * Self.completionThreshold : Self.fallbackCompletionDistance
+    }
+
+    // MARK: - Container-owned transition
+
+    /// How far the incoming screen has travelled: `1` when it fully covers the outgoing screen,
+    /// `0` when the outgoing screen is fully back.
+    func incomingProgress(dragTranslation: CGFloat, totalWidth: CGFloat) -> CGFloat {
+        guard totalWidth > 0 else { return 1 }
+        return 1 - min(max(dragTranslation / totalWidth, 0), 1)
+    }
+
+    /// Moves a container holding both screens side by side, so the incoming one arrives from the
+    /// trailing edge and covers the full width.
+    func incomingOffset(progress: CGFloat, totalWidth: CGFloat) -> CGFloat {
+        -progress * totalWidth * direction
+    }
+
+    /// Cancels most of the container's travel for the outgoing screen, leaving it the parallax
+    /// fraction. Without this the two screens move as one sheet, which reads as the outgoing screen
+    /// being dragged in from the side rather than revealed underneath.
+    func outgoingParallaxOffset(progress: CGFloat, totalWidth: CGFloat) -> CGFloat {
+        progress * totalWidth * (1 - Self.outgoingParallaxFraction) * direction
     }
 }
 

@@ -88,19 +88,24 @@ final class ProductsSplitViewCoordinator: NSObject {
         didExpand()
     }
 
+    /// Snapshots the secondary content so a layout transition that drops pushed screens can be undone.
+    ///
+    /// This tracks content rather than the secondary navigation controller's own stack, because a collapse
+    /// legitimately empties that stack by transferring the content into the primary one. Comparing raw stacks
+    /// would read the transfer as a drop and reinstate the content in both columns.
     func prepareForLayoutTransition() -> UUID {
-        secondaryStackRestorationPolicy.prepareForTransition(currentStack: secondaryNavigationController.viewControllers)
+        secondaryStackRestorationPolicy.prepareForTransition(currentStack: navigationStack.contentViewControllers)
     }
 
     func completeLayoutTransition(_ transitionID: UUID) {
         guard let stackToRestore = secondaryStackRestorationPolicy.stackToRestore(
             for: transitionID,
-            currentStack: secondaryNavigationController.viewControllers
+            currentStack: navigationStack.contentViewControllers
         ) else {
             return
         }
 
-        secondaryNavigationController.setViewControllers(stackToRestore, animated: false)
+        navigationStack.setContentViewControllers(stackToRestore, showsInCollapsedLayout: contentTypes.last != .empty)
         refreshSwipeBackVetoRelationships()
     }
 
@@ -421,7 +426,15 @@ extension ProductsSplitViewCoordinator: UIGestureRecognizerDelegate {
             return false
         }
 
-        return secondaryNavigationController.shouldPopOnSwipeBack() == false
+        return contentRefusesSwipeBack()
+    }
+
+    /// Whether the top content screen refuses a swipe back, e.g. a product form holding unsaved changes.
+    ///
+    /// Asks the content view controller rather than the secondary navigation controller, because in a collapsed
+    /// layout the content lives in the primary stack and the secondary controller has no top view controller.
+    func contentRefusesSwipeBack() -> Bool {
+        navigationStack.topContentViewController?.shouldPopOnSwipeBack() == false
     }
 }
 

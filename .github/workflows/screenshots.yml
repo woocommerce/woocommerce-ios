@@ -12,7 +12,7 @@ jobs:
       github.event.pull_request.head.repo.fork != true &&
       contains(github.event.pull_request.labels.*.name, 'generate screenshots')
     runs-on: macos-latest
-    timeout-minutes: 25
+    timeout-minutes: 60
 
     steps:
     - name: "Check out Project"
@@ -43,7 +43,7 @@ jobs:
     name: Capture
     needs: build
     runs-on: macos-latest
-    timeout-minutes: 110
+    timeout-minutes: 120
 
     strategy:
       # Don't let one locale's flaky accessibility-hierarchy timeout cancel the other locales'
@@ -91,7 +91,7 @@ jobs:
     name: "Process Screenshots"
     needs: capture
     runs-on: macos-latest
-    timeout-minutes: 20
+    timeout-minutes: 30
     permissions:
       # Push the generated-screenshots branch
       contents: write

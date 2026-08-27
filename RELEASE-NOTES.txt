@@ -3,6 +3,7 @@
 
 25.6
 -----
+- [*] Products: Fixed a crash on iOS 26 when rapidly reopening the "View product in store" sheet or other modals from the product details screen. [https://github.com/woocommerce/woocommerce-ios/pull/17776]
 - [*] Orders: Product search results in the order form are now scrollable and selectable on iPhone in landscape. [https://github.com/woocommerce/woocommerce-ios/pull/17693]
 - [*] Fixed the swipe-back gesture sometimes failing when returning from detail screens. [https://github.com/woocommerce/woocommerce-ios/pull/17749]
 - [*] Analytics Hub: Fixed the interactive swipe-back gesture not working when opened from the Dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17755]

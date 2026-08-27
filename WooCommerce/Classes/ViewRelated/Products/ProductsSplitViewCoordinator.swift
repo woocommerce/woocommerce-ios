@@ -77,6 +77,17 @@ final class ProductsSplitViewCoordinator: NSObject {
         productsViewController.startProductCreation()
     }
 
+    /// Returns the primary column to the product list when the user cancels Product Search.
+    ///
+    /// Replacing the navigation stack is not an animated transition, so UIKit is not guaranteed to send a
+    /// `willShow`/`didShow` pair to this delegate. The navigation bar that Product Search hid is restored here
+    /// rather than through those callbacks. Both calls are idempotent, so nothing breaks if UIKit does deliver them.
+    func cancelProductSearch() {
+        primaryNavigationController.viewControllers = [productsViewController]
+        requestPrimaryNavigationBarVisibility(for: productsViewController, in: primaryNavigationController, animated: false)
+        reconcilePrimaryNavigationBarVisibility(afterShowing: productsViewController, in: primaryNavigationController)
+    }
+
     /// Returns the product form of the given product ID being displayed on the secondary column if available.
     func currentProductForm(for productID: Int64) -> ProductFormViewController<ProductFormViewModel>? {
         if let contentType = contentTypes.last,
@@ -99,8 +110,7 @@ private extension ProductsSplitViewCoordinator {
                 let searchCommand = ProductSearchUICommand(siteID: siteID, onProductSelection: { [weak self] product in
                     self?.showProductFormIfNoUnsavedChanges(product: product)
                 }, onCancel: { [weak self] in
-                    guard let self else { return }
-                    primaryNavigationController.viewControllers = [productsViewController]
+                    self?.cancelProductSearch()
                 })
                 let searchViewController = SearchViewController(storeID: siteID,
                                                                 command: searchCommand,

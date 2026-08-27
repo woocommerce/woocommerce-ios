@@ -11,7 +11,6 @@ import enum Yosemite.CardReaderServiceError
 import enum Yosemite.PaymentMethod
 import enum Yosemite.RefundAPIError
 import struct WooFoundation.WooAnalyticsEvent
-import protocol WooFoundation.WooAnalyticsEventPropertyType
 
 extension WooAnalyticsEvent {
     public enum PointOfSale {

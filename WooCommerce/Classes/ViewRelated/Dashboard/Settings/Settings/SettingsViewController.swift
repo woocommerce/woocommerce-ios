@@ -65,6 +65,7 @@ final class SettingsViewController: UIViewController {
         configureNavigation()
         configureMainView()
         configureTableView()
+        configureLiquidGlassTabBarUnderlap()
         configureTableViewFooter()
         registerTableViewCells()
         viewModel.onViewDidLoad()
@@ -101,6 +102,17 @@ private extension SettingsViewController {
 
         tableView.dataSource = self
         tableView.delegate = self
+    }
+
+    func configureLiquidGlassTabBarUnderlap() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        // Pairs with `.ignoresSafeArea` in `HubMenu.detailView` — either alone leaves the list clipped
+        // above the floating tab bar instead of scrolling under it.
+        setContentScrollView(tableView, for: .bottom)
+        view.pinSubviewBottomToBottomAnchorReplacingSafeArea(tableView)
     }
 
     func configureTableViewFooter() {

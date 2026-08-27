@@ -75,6 +75,7 @@ summary outside the repository.
 Only the Core owner edits `.maestro/subflows/`. Shared names are:
 
 - `paste_into_focused_field.yaml`
+- `open_site_address_login.yaml`
 - `login.yaml`
 - `ensure_logged_in.yaml`
 - `navigate_to_dashboard.yaml`

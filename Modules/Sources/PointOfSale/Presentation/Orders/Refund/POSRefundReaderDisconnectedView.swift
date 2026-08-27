@@ -33,6 +33,7 @@ struct POSRefundReaderDisconnectedView: View {
         }
         .background(Color.posSurfaceBright)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
+        .posEdgeSwipeBackAction(onBack: onBack)
     }
 }
 

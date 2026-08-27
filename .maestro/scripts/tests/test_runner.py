@@ -386,6 +386,48 @@ class RunnerTests(unittest.TestCase):
         values.pop("MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL")
         RUNNER.validate_environment([flow], values, seed=False)
 
+    def test_wordpress_dot_com_not_woo_store_requires_explicit_wpcom_credentials(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "login_not_woo_store.yaml"
+        values = {
+            "MAESTRO_WOO_NOT_A_WOO_STORE_URL": "https://not-woo.wordpress.com/",
+            "MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_USERNAME": "site-admin",
+            "MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD": "site-password",
+        }
+
+        with self.assertRaisesRegex(SystemExit, "requires WP.com email and password"):
+            RUNNER.validate_environment([flow], values, seed=False)
+
+    def test_not_woo_store_runtime_environment_includes_explicit_wpcom_fallback(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "login_not_woo_store.yaml"
+
+        names = RUNNER.runtime_environment_names([flow], seed=False)
+
+        self.assertTrue(RUNNER.NOT_WOO_STORE_WPCOM_FALLBACK.issubset(names))
+
+        environment = RUNNER.maestro_process_environment(
+            {
+                "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL": "wpcom-user",
+                "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD": "wpcom-password",
+            },
+            names,
+            "run-1",
+        )
+        self.assertEqual("wpcom-user", environment["MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL"])
+        self.assertEqual("wpcom-password", environment["MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD"])
+
+    def test_no_jetpack_wp_admin_url_is_normalized_for_the_flow(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "login_no_jetpack.yaml"
+        values = {
+            "MAESTRO_WOO_NO_JETPACK_SITE_URL": "https://shop.example.com/subdir/wp-admin/?source=jn",
+        }
+
+        resolved = RUNNER.normalized_flow_environment([flow], values)
+
+        self.assertEqual(
+            "https://shop.example.com/subdir/",
+            resolved["MAESTRO_WOO_NO_JETPACK_SITE_URL"],
+        )
+
     def test_derived_lab_store_host_is_not_required_from_the_environment(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             flow = Path(directory) / "flow.yaml"

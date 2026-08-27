@@ -34,8 +34,10 @@ MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL
 ```
 
 `MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL` and
-`MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD` are an optional fallback pair.
-Set both when the fixture can route through WP.com, or leave both blank.
+`MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD` are required for wordpress.com-hosted
+fixtures and optional for self-hosted fixtures. Set both or leave both blank.
+The runner removes a trailing `/wp-admin` or `/wp-admin/` from the no-Jetpack
+site URL before passing it to the app.
 
 `MAESTRO_WOO_CONSUMER_KEY` and `MAESTRO_WOO_CONSUMER_SECRET` are optional and
 are validated only when explicit REST seeding or cleanup is requested. Local

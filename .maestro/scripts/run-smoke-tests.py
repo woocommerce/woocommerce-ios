@@ -20,7 +20,7 @@ import time
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import urlsplit, urlunsplit
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -33,6 +33,7 @@ LINT_ENV = SCRIPT_DIR / "lint-env.py"
 CHECK_TOOLCHAIN = SCRIPT_DIR / "check-toolchain.py"
 OUTPUT_DEFAULT = Path.home() / "woocommerce-maestro-output"
 NOT_WOO_STORE_FLOW = "login_not_woo_store.yaml"
+NO_JETPACK_FLOW = "login_no_jetpack.yaml"
 NOT_WOO_STORE_WPCOM_FALLBACK = {
     "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL",
     "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD",
@@ -338,8 +339,39 @@ def validate_environment(flows: list[Path], values: dict[str, str], *, seed: boo
         raise SystemExit("Missing environment required by selected flows: " + ", ".join(missing))
     if any(flow.name == NOT_WOO_STORE_FLOW for flow in flows):
         configured_fallback = [bool(values.get(name)) for name in NOT_WOO_STORE_WPCOM_FALLBACK]
-        if any(configured_fallback) and not all(configured_fallback):
+        not_woo_host = normalized_store_host(values.get("MAESTRO_WOO_NOT_A_WOO_STORE_URL", ""))
+        if not_woo_host == "wordpress.com" or not_woo_host.endswith(".wordpress.com"):
+            if not all(configured_fallback):
+                raise SystemExit(
+                    "WordPress.com-hosted not-Woo-store fixture requires WP.com email and password"
+                )
+        elif any(configured_fallback) and not all(configured_fallback):
             raise SystemExit("Not-Woo-store WP.com fallback requires both email and password, or neither")
+
+
+def site_url_without_wp_admin(value: str) -> str:
+    parsed = urlsplit(value)
+    path = parsed.path.rstrip("/")
+    if not path.endswith("/wp-admin"):
+        return value
+    site_path = path.removesuffix("wp-admin")
+    return urlunsplit(parsed._replace(path=site_path, query="", fragment=""))
+
+
+def normalized_flow_environment(flows: list[Path], values: dict[str, str]) -> dict[str, str]:
+    normalized = dict(values)
+    if any(flow.name == NO_JETPACK_FLOW for flow in flows):
+        name = "MAESTRO_WOO_NO_JETPACK_SITE_URL"
+        if value := normalized.get(name):
+            normalized[name] = site_url_without_wp_admin(value)
+    return normalized
+
+
+def runtime_environment_names(flows: list[Path], *, seed: bool) -> set[str]:
+    names = required_environment(flows, seed=seed)
+    if any(flow.name == NOT_WOO_STORE_FLOW for flow in flows):
+        names.update(NOT_WOO_STORE_WPCOM_FALLBACK)
+    return names
 
 
 def normalized_store_host(value: str) -> str:
@@ -633,6 +665,7 @@ def main() -> int:
     (output / "logs").mkdir()
 
     validate_environment(flows, values, seed=args.seed)
+    values = normalized_flow_environment(flows, values)
     simulator = resolve_simulator(args.device, family)
     run(["xcrun", "simctl", "install", simulator["udid"], str(app)])
     summary = {
@@ -652,7 +685,7 @@ def main() -> int:
         run([sys.executable, str(seed), "--mode", "seed", "--run-id", run_id, "--manifest", str(output / "run-manifest.json")], env=values)
 
     attempts: list[Attempt] = []
-    required_names = required_environment(flows, seed=args.seed)
+    required_names = runtime_environment_names(flows, seed=args.seed)
     env_args = maestro_env_args(app_id, run_id)
     maestro_environment = maestro_process_environment(values, required_names, run_id)
     total_runs = len(flows) * repeat

@@ -2,8 +2,19 @@ import SwiftUI
 
 /// Shared policy for POS leading-edge back gestures.
 struct POSEdgeSwipePolicy {
-    /// How far in from the leading edge a drag may start and still count as an edge swipe.
-    static let activationWidth: CGFloat = 24
+    /// How far in from the leading edge a drag may start and still count as a back swipe.
+    ///
+    /// iOS 26 dropped the edge requirement for its own back gesture — a swipe can begin anywhere.
+    /// POS cannot follow that yet: this is a `simultaneousGesture`, which recognises alongside
+    /// whatever else claims the touch and has no way to yield to a horizontal scroll view the way
+    /// UIKit's recognizer does. An unrestricted swipe would both scroll and navigate on the header
+    /// scroller (`POSPageHeaderView`) and the search-history chips (`POSPreSearchView`), which sit
+    /// on the very screens this is enabled for. Matching iOS 26 properly needs a UIKit gesture that
+    /// can `require(toFail:)` those recognizers.
+    ///
+    /// A touch-target's width rather than the old hairline, so the region is reachable without
+    /// reaching so far in that the scrollers become hard to use.
+    static let activationWidth: CGFloat = 44
     static let minimumDragDistance: CGFloat = 8
     static let completionThreshold: CGFloat = 0.35
     /// Used when the container has not reported a width yet. Without it the threshold would be

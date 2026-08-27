@@ -9,16 +9,20 @@ import SwiftUI
 /// presented sheets, @Environment objects) when horizontalSizeClass flickers during background transitions.
 struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: View, SelectionValue: Hashable & Identifiable>: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.layoutDirection) private var layoutDirection
     @Binding private var selection: SelectionValue?
     @State private var detailNavigationPath = NavigationPath()
+    @State private var compactBackDragOffset: CGFloat = 0
 
     private let sidebar: (Binding<SelectionValue?>) -> Sidebar
     private let detail: (SelectionValue, Binding<NavigationPath>) -> Detail
     private let detailPlaceholderView: () -> DetailPlaceholder
     private let setDefaultValue: (() -> Void)?
+    private let isCompactBackGestureEnabled: Bool
 
     init(
         selection: Binding<SelectionValue?> = .constant(nil),
+        isCompactBackGestureEnabled: Bool = true,
         @ViewBuilder sidebar: @escaping (Binding<SelectionValue?>) -> Sidebar,
         @ViewBuilder detail: @escaping (SelectionValue, Binding<NavigationPath>) -> Detail,
         @ViewBuilder detailPlaceholderView: @escaping () -> DetailPlaceholder,
@@ -29,6 +33,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
         self.detail = detail
         self.detailPlaceholderView = detailPlaceholderView
         self.setDefaultValue = setDefaultValue
+        self.isCompactBackGestureEnabled = isCompactBackGestureEnabled
     }
 
     private var isRegular: Bool {
@@ -70,7 +75,14 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                 }
                 .frame(width: detailWidth(for: geometry.size.width))
             }
-            .offset(x: compactOffset(for: geometry.size.width))
+            .offset(x: compactOffset(for: geometry.size.width) + compactBackDragOffset)
+            .simultaneousGesture(
+                compactBackGesture(
+                    totalWidth: geometry.size.width,
+                    globalFrame: geometry.frame(in: .global)
+                ),
+                isEnabled: isCompactBackGestureActive
+            )
         }
         .animation(.default, value: selection != nil)
         .onAppear {
@@ -101,7 +113,65 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
 
     private func compactOffset(for totalWidth: CGFloat) -> CGFloat {
         guard !isRegular, selection != nil else { return 0 }
-        return -totalWidth
+        return -totalWidth * edgeSwipePolicy.direction
+    }
+
+    private var isCompactBackGestureActive: Bool {
+        !isRegular && selection != nil && detailNavigationPath.isEmpty && isCompactBackGestureEnabled
+    }
+
+    private func compactBackGesture(totalWidth: CGFloat, globalFrame: CGRect) -> some Gesture {
+        DragGesture(
+            minimumDistance: POSEdgeSwipePolicy.minimumDragDistance,
+            coordinateSpace: .global
+        )
+        .onChanged { value in
+            guard startsAtLeadingEdge(value.startLocation.x, globalFrame: globalFrame) else { return }
+            compactBackDragOffset = edgeSwipePolicy.clampedTranslation(
+                value.translation.width,
+                totalWidth: totalWidth
+            ) * edgeSwipePolicy.direction
+        }
+        .onEnded { value in
+            guard startsAtLeadingEdge(value.startLocation.x, globalFrame: globalFrame) else { return }
+            let shouldNavigateBack = edgeSwipePolicy.shouldComplete(
+                translation: value.translation.width,
+                predictedEndTranslation: value.predictedEndTranslation.width,
+                totalWidth: totalWidth
+            )
+
+            if shouldNavigateBack {
+                withAnimation(.snappy, completionCriteria: .logicallyComplete) {
+                    compactBackDragOffset = totalWidth * edgeSwipePolicy.direction
+                } completion: {
+                    var transaction = Transaction(animation: nil)
+                    transaction.disablesAnimations = true
+                    withTransaction(transaction) {
+                        selection = nil
+                        compactBackDragOffset = 0
+                    }
+                }
+            } else {
+                withAnimation(.snappy) {
+                    compactBackDragOffset = 0
+                }
+            }
+        }
+    }
+
+    private var edgeSwipePolicy: POSEdgeSwipePolicy {
+        POSEdgeSwipePolicy(layoutDirection: layoutDirection)
+    }
+
+    private func startsAtLeadingEdge(_ xPosition: CGFloat, globalFrame: CGRect) -> Bool {
+        switch layoutDirection {
+        case .leftToRight:
+            xPosition <= globalFrame.minX + POSEdgeSwipePolicy.activationWidth
+        case .rightToLeft:
+            xPosition >= globalFrame.maxX - POSEdgeSwipePolicy.activationWidth
+        @unknown default:
+            xPosition <= globalFrame.minX + POSEdgeSwipePolicy.activationWidth
+        }
     }
 }
 

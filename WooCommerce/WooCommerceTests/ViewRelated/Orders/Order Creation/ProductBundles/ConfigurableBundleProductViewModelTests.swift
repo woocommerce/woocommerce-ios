@@ -31,7 +31,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(bundledItemID: 1, productID: 2, isOptional: false)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
@@ -69,7 +69,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(bundledItemID: 2, productID: 3, isOptional: false)
         ])
         let productsFromRetrieval = [1, 2, 3].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
@@ -106,7 +106,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(bundledItemID: 2, productID: 3, defaultQuantity: 3, isOptional: false)
         ])
         let productsFromRetrieval = [1, 2, 3].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
@@ -130,7 +130,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 3, isOptional: false)
         ])
         let productsFromRetrieval = [1, 2, 3].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
@@ -163,7 +163,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
@@ -220,7 +220,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             viewModel.loadProductsErrorMessage != nil
         }
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
         viewModel.retry()
 
         // Then
@@ -235,7 +235,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         var configurationsFromOnConfigure: [BundledProductConfiguration] = []
         let viewModel = ConfigurableBundleProductViewModel(product: product,
@@ -271,7 +271,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            // The bundle is not new when there are non-empty child items.
@@ -297,7 +297,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2, minQuantity: 2, maxQuantity: 8, defaultQuantity: 6)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         var configurationsFromOnConfigure: [BundledProductConfiguration] = []
         let viewModel = ConfigurableBundleProductViewModel(product: product,
@@ -328,7 +328,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         // When
         let viewModel = ConfigurableBundleProductViewModel(product: product,
@@ -351,6 +351,238 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         XCTAssertEqual(bundleItemViewModel.quantity, 3)
     }
 
+    // MARK: - Default variation pre-selection
+
+    func test_bundleItemViewModels_preselect_variation_using_effective_bundle_defaults_when_bundle_item_does_not_override() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundledItems: [
+            .fake().copy(bundledItemID: 1,
+                         productID: 2,
+                         overridesDefaultVariationAttributes: false,
+                         defaultVariationAttributes: [
+                            .init(id: 1, name: "Flavor", option: "pineapple"),
+                            .init(id: 2, name: "Color", option: "indigo")
+                         ],
+                         pricedIndividually: false)
+        ])
+        // Product defaults can be absent even though the bundle response contains the inherited effective defaults.
+        let variableProduct = createVariableProductWithTwoAttributes(productID: 2).copy(defaultAttributes: [])
+        mockProductsRetrieval(result: .success([variableProduct]))
+        mockVariationsRetrieval(result: .success([
+            .fake().copy(productVariationID: 11,
+                         attributes: [.init(id: 0, name: "Flavor", option: "Pineapple"), .init(id: 0, name: "Color", option: "Indigo")],
+                         purchasable: false)
+        ]))
+
+        // When
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: stores,
+                                                           onConfigure: { _ in })
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        // Then
+        let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
+        XCTAssertEqual(bundleItemViewModel.selectedVariation?.variationID, 11)
+    }
+
+    func test_bundleItemViewModels_preselect_variation_matching_product_default_attributes_when_bundle_item_does_not_override() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundledItems: [
+            .fake().copy(bundledItemID: 1, productID: 2, overridesDefaultVariationAttributes: false)
+        ])
+        let variableProduct = createVariableProductWithTwoAttributes(productID: 2)
+            .copy(defaultAttributes: [
+                .init(attributeID: 0, name: "Flavor", option: "Pineapple"),
+                .init(attributeID: 0, name: "Color", option: "Indigo")
+            ])
+        mockProductsRetrieval(result: .success([variableProduct]))
+        mockVariationsRetrieval(result: .success([
+            .fake().copy(productVariationID: 10,
+                         attributes: [.init(id: 0, name: "Flavor", option: "Blackberry"), .init(id: 0, name: "Color", option: "Indigo")],
+                         purchasable: true),
+            .fake().copy(productVariationID: 11,
+                         attributes: [.init(id: 0, name: "Flavor", option: "Pineapple"), .init(id: 0, name: "Color", option: "Indigo")],
+                         purchasable: true)
+        ]))
+
+        // When
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: stores,
+                                                           onConfigure: { _ in })
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        // Then
+        let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
+        XCTAssertEqual(bundleItemViewModel.selectedVariation?.variationID, 11)
+    }
+
+    func test_bundleItemViewModels_preselect_variation_matching_bundle_item_override_attributes() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundledItems: [
+            .fake().copy(bundledItemID: 1,
+                         productID: 2,
+                         overridesDefaultVariationAttributes: true,
+                         defaultVariationAttributes: [
+                            .init(id: 0, name: "Flavor", option: "Blackberry"),
+                            .init(id: 0, name: "Color", option: "Indigo")
+                         ])
+        ])
+        // The product-level defaults point to a different variation, and should be ignored given the override.
+        let variableProduct = createVariableProductWithTwoAttributes(productID: 2)
+            .copy(defaultAttributes: [
+                .init(attributeID: 0, name: "Flavor", option: "Pineapple"),
+                .init(attributeID: 0, name: "Color", option: "Indigo")
+            ])
+        mockProductsRetrieval(result: .success([variableProduct]))
+        mockVariationsRetrieval(result: .success([
+            .fake().copy(productVariationID: 10,
+                         attributes: [.init(id: 0, name: "Flavor", option: "Blackberry"), .init(id: 0, name: "Color", option: "Indigo")],
+                         purchasable: true),
+            .fake().copy(productVariationID: 11,
+                         attributes: [.init(id: 0, name: "Flavor", option: "Pineapple"), .init(id: 0, name: "Color", option: "Indigo")],
+                         purchasable: true)
+        ]))
+
+        // When
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: stores,
+                                                           onConfigure: { _ in })
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        // Then
+        let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
+        XCTAssertEqual(bundleItemViewModel.selectedVariation?.variationID, 10)
+    }
+
+    func test_bundleItemViewModels_preselect_variation_respects_allowedVariations_and_purchasability() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundledItems: [
+            .fake().copy(bundledItemID: 1,
+                         productID: 2,
+                         overridesVariations: true,
+                         allowedVariations: [11, 12],
+                         pricedIndividually: true)
+        ])
+        let variableProduct = createVariableProductWithTwoAttributes(productID: 2)
+            .copy(defaultAttributes: [
+                .init(attributeID: 0, name: "Flavor", option: "Pineapple"),
+                .init(attributeID: 0, name: "Color", option: "Indigo")
+            ])
+        let matchingAttributes: [ProductVariationAttribute] = [.init(id: 0, name: "Flavor", option: "Pineapple"),
+                                                               .init(id: 0, name: "Color", option: "Indigo")]
+        mockProductsRetrieval(result: .success([variableProduct]))
+        mockVariationsRetrieval(result: .success([
+            // Matches the defaults but is not in the allowed variations.
+            .fake().copy(productVariationID: 10, attributes: matchingAttributes, purchasable: true),
+            // Matches the defaults and is allowed, but not purchasable.
+            .fake().copy(productVariationID: 11, attributes: matchingAttributes, purchasable: false),
+            .fake().copy(productVariationID: 12, attributes: matchingAttributes, purchasable: true)
+        ]))
+
+        // When
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: stores,
+                                                           onConfigure: { _ in })
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        // Then
+        let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
+        XCTAssertEqual(bundleItemViewModel.selectedVariation?.variationID, 12)
+    }
+
+    func test_bundleItemViewModels_do_not_preselect_variation_when_default_attributes_are_partial() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundledItems: [
+            .fake().copy(bundledItemID: 1, productID: 2)
+        ])
+        // Defaults only cover one of the two variation attributes: no variation fetch, no pre-selection.
+        let variableProduct = createVariableProductWithTwoAttributes(productID: 2)
+            .copy(defaultAttributes: [
+                .init(attributeID: 0, name: "Flavor", option: "Pineapple")
+            ])
+        mockProductsRetrieval(result: .success([variableProduct]))
+
+        // When
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: stores,
+                                                           onConfigure: { _ in })
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        // Then
+        let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
+        XCTAssertNil(bundleItemViewModel.selectedVariation)
+        // The partial default still prefills the picker settings once a variation is selected manually.
+    }
+
+    func test_bundleItemViewModels_do_not_preselect_variation_when_variations_retrieval_fails() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundledItems: [
+            .fake().copy(bundledItemID: 1, productID: 2)
+        ])
+        let variableProduct = createVariableProductWithTwoAttributes(productID: 2)
+            .copy(defaultAttributes: [
+                .init(attributeID: 0, name: "Flavor", option: "Pineapple"),
+                .init(attributeID: 0, name: "Color", option: "Indigo")
+            ])
+        mockProductsRetrieval(result: .success([variableProduct]))
+        mockVariationsRetrieval(result: .failure(NSError(domain: "", code: 0, userInfo: nil)))
+
+        // When
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [],
+                                                           stores: stores,
+                                                           onConfigure: { _ in })
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        // Then
+        let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
+        XCTAssertNil(bundleItemViewModel.selectedVariation)
+    }
+
+    func test_bundleItemViewModels_do_not_preselect_variation_when_child_order_item_exists() throws {
+        // Given
+        let product = Product.fake().copy(productID: 1, bundledItems: [
+            .fake().copy(bundledItemID: 1, productID: 2)
+        ])
+        let variableProduct = createVariableProductWithTwoAttributes(productID: 2)
+            .copy(defaultAttributes: [
+                .init(attributeID: 0, name: "Flavor", option: "Pineapple"),
+                .init(attributeID: 0, name: "Color", option: "Indigo")
+            ])
+        mockProductsRetrieval(result: .success([variableProduct]))
+        // No variations retrieval is mocked: dispatching it would hang the load and time out the test.
+
+        // When
+        let viewModel = ConfigurableBundleProductViewModel(product: product,
+                                                           childItems: [.fake().copy(productID: 2, variationID: 55)],
+                                                           stores: stores,
+                                                           onConfigure: { _ in })
+        waitUntil {
+            viewModel.bundleItemViewModels.isNotEmpty
+        }
+
+        // Then the existing order item's variation is kept.
+        let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
+        XCTAssertEqual(bundleItemViewModel.selectedVariation?.variationID, 55)
+    }
+
     // MARK: - Analytics
 
     func test_configure_tracks_orderFormBundleProductConfigurationSaveTapped_event() throws {
@@ -359,7 +591,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2)
         ])
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
-        mockProductsRetrieval(result: .success((products: productsFromRetrieval, hasNextPage: false)))
+        mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
@@ -376,14 +608,34 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 }
 
 private extension ConfigurableBundleProductViewModelTests {
-    func mockProductsRetrieval(result: Result<(products: [Product], hasNextPage: Bool), Error>) {
+    func mockProductsRetrieval(result: Result<[Product], Error>) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
-                case let .retrieveProducts(_, _, _, _, onCompletion):
+                case let .retrieveProductsIfNeeded(_, _, onCompletion):
                     onCompletion(result)
                 default:
                     XCTFail("Unexpected action: \(action)")
             }
         }
+    }
+
+    func mockVariationsRetrieval(result: Result<[ProductVariation], Error>) {
+        stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
+            switch action {
+                case let .synchronizeAllProductVariations(_, _, onCompletion):
+                    onCompletion(result)
+                default:
+                    XCTFail("Unexpected action: \(action)")
+            }
+        }
+    }
+
+    func createVariableProductWithTwoAttributes(productID: Int64) -> Product {
+        Product.fake().copy(productID: productID,
+                            productTypeKey: ProductType.variable.rawValue,
+                            attributes: [
+                                .fake().copy(name: "Flavor", variation: true, options: ["Pineapple", "Blackberry"]),
+                                .fake().copy(name: "Color", variation: true, options: ["Indigo", "Orange"])
+                            ])
     }
 }

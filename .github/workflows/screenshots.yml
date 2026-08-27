@@ -4,9 +4,6 @@ on:
   pull_request:
     types: [opened, synchronize, reopened, labeled, unlabeled]
 
-env:
-  CONFIGURE_ENCRYPTION_KEY: ${{ secrets.CONFIGURE_ENCRYPTION_KEY }}
-
 jobs:
   build:
     name: Build Application
@@ -18,9 +15,9 @@ jobs:
 
     steps:
     - name: "Check out Project"
-      uses: actions/checkout@v4
+      uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
     - name: "Set up Ruby"
-      uses: ruby/setup-ruby@v1
+      uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
       with:
         bundler-cache: true
 
@@ -30,11 +27,15 @@ jobs:
     - name: Compile the App
       run: bundle exec fastlane build_screenshots
 
+    # upload-artifact drops symlinks and executable bits, which corrupts the `.app`/`.xctest`
+    # bundles and makes the test bundle fail to load in the capture job. Tar preserves both.
     - name: Archive Build Products
-      uses: actions/upload-artifact@v4
+      run: tar -cf build-products.tar -C DerivedData/Build/Products Debug-iphonesimulator
+    - name: Upload Build Products
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: screenshot-build-products
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/
+        path: build-products.tar
         retention-days: 1
 
   capture:
@@ -43,24 +44,27 @@ jobs:
     runs-on: macos-latest
 
     strategy:
+      # Don't let one locale's flaky accessibility-hierarchy timeout cancel the other locales'
+      # screenshots (see the note on `number_of_retries` in the Fastfile).
+      fail-fast: false
       matrix:
         language: [ar-SA, de-DE, en-US, es-ES, fr-FR, he, id, it, ja, ko, nl-NL, pt-BR, ru, sv, tr, zh-Hans, zh-Hant]
         mode: [dark, light]
     steps:
-    - uses: actions/checkout@v4
+    - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
     - name: "Set up Ruby"
-      uses: ruby/setup-ruby@v1
+      uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
       with:
         bundler-cache: true
 
-    - name: Install Fastlane Dependencies
-      run: bundle exec fastlane run configure_apply
-
     - name: Download Build Products
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
       with:
         name: screenshot-build-products
-        path: fastlane/DerivedData/Build/Products/Debug-iphonesimulator/
+    - name: Extract Build Products
+      run: |
+        mkdir -p DerivedData/Build/Products
+        tar -xf build-products.tar -C DerivedData/Build/Products
 
     - name: Generate Screenshots
       run: |
@@ -68,13 +72,15 @@ jobs:
 
     - name: Store Logs
       if: always()
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: "screenshot-log-${{ matrix.language }}-${{ matrix.mode }}"
-        path: fastlane/logs
+        path: |
+          fastlane/logs
+          fastlane/screenshots/test_output
 
     - name: Archive Generated Screenshots
-      uses: actions/upload-artifact@v4
+      uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
       with:
         name: "screenshots-${{ matrix.language }}-${{ matrix.mode }}"
         path: fastlane/screenshots/
@@ -93,7 +99,7 @@ jobs:
       BUNDLE_WITH: screenshots
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
           # Checkout the PR branch directly (not the merge commit) so we can push back to it
           ref: ${{ github.head_ref }}
@@ -114,15 +120,12 @@ jobs:
           brew install automattic/build-tools/drawText
 
       - name: "Set up Ruby"
-        uses: ruby/setup-ruby@v1
+        uses: ruby/setup-ruby@95ef2b042f9d7a56d8268cba8559e2842e2ad01b # v1
         with:
           bundler-cache: true
 
-      - name: Install Fastlane Dependencies
-        run: bundle exec fastlane run configure_apply
-
       - name: Download Generated Screenshots
-        uses: actions/download-artifact@v4
+        uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
         with:
           pattern: "screenshots-*"
           path: fastlane/screenshots/
@@ -133,13 +136,13 @@ jobs:
           bundle exec fastlane create_screenshot_summary
 
       - name: Upload Screenshot Summary
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: screenshot-summary
           path: fastlane/screenshots/screenshots.html
 
       - name: Archive Raw Screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: raw-screenshots
           path: fastlane/screenshots
@@ -154,7 +157,7 @@ jobs:
           bundle exec fastlane create_promo_screenshots force:true commit:true
 
       - name: Archive Promo Screenshots
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: promo-screenshots
           path: fastlane/promo_screenshots

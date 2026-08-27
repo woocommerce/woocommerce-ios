@@ -11,6 +11,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAccessSession) private var session
+    @EnvironmentObject private var modalManager: POSModalManager
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -23,6 +24,12 @@ struct PointOfSaleDashboardView: View {
     @State private var floatingSize: CGSize = .zero
     @State private var floatingControlSuppressed: Bool = false
     @State private var phoneShowingCart: Bool = false
+    @State private var phoneCartPresentationDetent: PresentationDetent = .medium
+    private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
+
+    init(httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil) {
+        self.httpsConfigurationNotice = httpsConfigurationNotice
+    }
 
     /// Tracks Dynamic Type scaling for the phone overflow menu chip so it grows in sync with
     /// the adjacent `POSPageHeaderActionButton` (search) at large content sizes. Same 1.0…1.2x
@@ -68,7 +75,7 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         @Bindable var posModel = posModel
-        ZStack(alignment: .bottomLeading) {
+        Group {
             switch viewState {
             case .loading(let catalogSyncState):
                 PointOfSaleLoadingView(
@@ -107,7 +114,11 @@ struct PointOfSaleDashboardView: View {
                 contentView
                     .accessibilitySortPriority(2)
             }
-
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Anchor the controls to stable dashboard bounds. The product-list banner can briefly
+        // report its own ideal height while POS is being presented, which must not drive this position.
+        .overlay(alignment: .bottomLeading) {
             POSFloatingControlView(onExitSelected: requestExitPermission,
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
@@ -118,7 +129,8 @@ struct PointOfSaleDashboardView: View {
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
             .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
-
+        }
+        .overlay {
             POSConnectivityView()
         }
         .environment(\.floatingControlAreaSize,
@@ -131,6 +143,10 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut, value: viewState == .loading())
         .background(Color.posSurface)
         .navigationBarBackButtonHidden(true)
+        // Applied before the posModal/posRootModal modifiers so only the dashboard content
+        // ignores the iOS 26 container insets — the modal overlay must keep the top safe
+        // area, or full-screen phone modals lay out underneath the status bar.
+        .ignoresSafeArea(dashboardIgnoredSafeAreaRegions)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }) { factory in
@@ -182,7 +198,6 @@ struct PointOfSaleDashboardView: View {
             guard case .eligible = newValue, oldValue != newValue else { return }
             loadItemsWhenEligible()
         }
-        .ignoresSafeArea(dashboardIgnoredSafeAreaRegions)
         .onAppear {
             trackTimeForInitialLoadingState()
             loadItemsWhenEligible()
@@ -227,6 +242,7 @@ struct PointOfSaleDashboardView: View {
                     ItemListView(
                         selectedItemListType: $viewStateCoordinator.selectedItemListType,
                         searchTerm: $viewStateCoordinator.searchTerm,
+                        httpsConfigurationNotice: httpsConfigurationNotice,
                         phoneHeaderAccessoryBuilder: { context in
                             AnyView(phoneOverflowMenu(
                                 canCreateCoupon: context.canCreateCoupon,
@@ -279,9 +295,19 @@ struct PointOfSaleDashboardView: View {
                 phoneShowingCart = false
             }
         }
+        .onChange(of: posModel.cart.latestScannedItemID) { _, itemID in
+            // Auto-opens the cart sheet on scan
+            guard itemID != nil,
+                  PointOfSaleDashboardViewHelper.shouldAutoOpenCartOnScan(isPhoneLayout: isPhoneLayout,
+                                                                          orderStage: posModel.orderStage) else {
+                return
+            }
+            phoneCartPresentationDetent = .large
+            phoneShowingCart = true
+        }
         .posSheet(isPresented: $phoneShowingCart) {
             phoneCartSheetView
-                .presentationDetents([.medium, .large])
+                .presentationDetents([.medium, .large], selection: $phoneCartPresentationDetent)
                 .presentationDragIndicator(.visible)
         }
         // Phone-only covers presented at the dashboard level:
@@ -411,6 +437,7 @@ struct PointOfSaleDashboardView: View {
 
     private var phoneCartButton: some View {
         Button {
+            phoneCartPresentationDetent = .medium
             phoneShowingCart = true
         } label: {
             Text(String(format: Localization.phoneCart, phoneCartItemsCount))
@@ -455,6 +482,12 @@ struct PointOfSaleDashboardView: View {
         }
         return cart
             .background(Color.posSurface)
+            // Keep scanning available while the cart sheet is open: ItemListView's scanner is
+            // gated off whenever a POSSheetManager sheet is presented (this one included), so
+            // without this a scan with the sheet open would silently do nothing.
+            .barcodeScanning(enabled: Binding(get: { !modalManager.isPresented }, set: { _ in })) { result in
+                posModel.barcodeScanned(result)
+            }
     }
 
     private var tabletContentView: some View {
@@ -469,7 +502,8 @@ struct PointOfSaleDashboardView: View {
 
             HStack(spacing: POSSpacing.none) {
                 ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
-                             searchTerm: $viewStateCoordinator.searchTerm)
+                             searchTerm: $viewStateCoordinator.searchTerm,
+                             httpsConfigurationNotice: httpsConfigurationNotice)
                     .frame(width: productsWidth)
                     .accessibilitySortPriority(posModel.orderStage == .building ? 2 : 0)
                     .allowsHitTesting(posModel.orderStage == .building)

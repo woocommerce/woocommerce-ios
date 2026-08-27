@@ -2435,6 +2435,8 @@ private extension PushNotificationsManagerTests {
             case .isRemoteFeatureFlagEnabled(_, _, _, let completion):
                 completion(isEnabled)
                 onCompletion?()
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
     }

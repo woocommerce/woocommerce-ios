@@ -220,6 +220,7 @@ public struct RESTRequest: Request {
         }
         let components = rootComponents
             .compactMap { $0 }
+            .map { $0.normalizedToHTTPS() }
             .map { $0.trimSlashes() }
             .filter { $0.isEmpty == false }
         let url = try components.joined(separator: "/").asURL()

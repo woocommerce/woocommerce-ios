@@ -14,6 +14,8 @@ struct ItemListView: View {
 
     @Binding var selectedItemListType: ItemListType
     @Binding var searchTerm: String
+    @State private var showsHTTPSConfigurationNotice: Bool
+    private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
     /// Optional builder rendered in the trailing slot of the items list header when not searching.
     /// The dashboard uses this to fold the "create coupon" entry into its overflow menu when the
     /// merchant is on the Coupons tab, without leaking ItemListView's internal state.
@@ -21,9 +23,12 @@ struct ItemListView: View {
 
     init(selectedItemListType: Binding<ItemListType>,
          searchTerm: Binding<String>,
+         httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
          phoneHeaderAccessoryBuilder: ((PhoneHeaderAccessoryContext) -> AnyView)? = nil) {
         self._selectedItemListType = selectedItemListType
         self._searchTerm = searchTerm
+        self.httpsConfigurationNotice = httpsConfigurationNotice
+        self._showsHTTPSConfigurationNotice = State(initialValue: httpsConfigurationNotice != nil)
         self.phoneHeaderAccessoryBuilder = phoneHeaderAccessoryBuilder
     }
 
@@ -238,8 +243,10 @@ struct ItemListView: View {
     @ViewBuilder
     private func listView(itemListType: ItemListType) -> some View {
         VStack(spacing: 0) {
-            if posModel.showSunsetWarning {
-                sunsetWarningBanner
+            if itemListType.itemType == .product,
+               let httpsConfigurationNotice,
+               showsHTTPSConfigurationNotice {
+                httpsConfigurationWarningBanner(httpsConfigurationNotice)
                     .padding(.horizontal, POSPadding.medium)
                     .padding(.vertical, POSPadding.medium)
                     .transition(.move(edge: .top).combined(with: .opacity))
@@ -289,24 +296,31 @@ struct ItemListView: View {
         }
         .task {
             await posModel.checkStaleSyncStatus()
-            await posModel.checkSunsetWarningStatus()
         }
     }
 
     @ViewBuilder
-    private var sunsetWarningBanner: some View {
+    private func httpsConfigurationWarningBanner(_ notice: POSHTTPSConfigurationNotice) -> some View {
         POSNoticeView(
-            title: Localization.sunsetWarningTitle,
+            title: notice.title,
             icon: Image(systemName: "info.circle"),
+            style: .alertLowest,
             onDismiss: {
-                analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningDismissed())
+                notice.onDismiss()
                 withAnimation {
-                    posModel.dismissSunsetWarning()
+                    showsHTTPSConfigurationNotice = false
                 }
-            }, content: {
-                Text(Localization.sunsetWarningDescription)
-                    .font(POSFontStyle.posBodyMediumRegular())
-            })
+            },
+            onTap: notice.onAction
+        ) {
+            VStack(alignment: .leading, spacing: POSSpacing.small) {
+                Text(notice.message)
+                    .font(.posBodyMediumRegular())
+                Text(notice.actionTitle)
+                    .font(.posBodySmallBold())
+                    .foregroundColor(Color.posOnAlertLowest)
+            }
+        }
     }
 
     @ViewBuilder
@@ -611,18 +625,6 @@ private extension ItemListView {
             value: "Creating coupons requires approval",
             comment: "Message shown in the manager-override PIN prompt when a staff member without the "
                 + "create-coupons permission tries to create a coupon."
-        )
-
-        static let sunsetWarningTitle = NSLocalizedString(
-            "pos.itemlistview.sunsetWarning.title",
-            value: "Update WooCommerce Soon",
-            comment: "Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it"
-        )
-
-        static let sunsetWarningDescription = NSLocalizedString(
-            "pos.itemlistview.sunsetWarning.description",
-            value: "Starting August 1st, point of sale will require WooCommerce 10.5.0 or later. Update to ensure uninterrupted access.",
-            comment: "Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it"
         )
 
         static let staleSyncWarningTitle = NSLocalizedString(

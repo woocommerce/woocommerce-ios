@@ -16,6 +16,7 @@ final class EditableOrderViewModel: ObservableObject {
     let siteID: Int64
     private let stores: StoresManager
     private let storageManager: StorageManagerType
+    private let orderCurrencySettings: CurrencySettings
     private let currencyFormatter: CurrencyFormatter
     private let featureFlagService: FeatureFlagService
     private let permissionChecker: CaptureDevicePermissionChecker
@@ -451,7 +452,11 @@ final class EditableOrderViewModel: ObservableObject {
 
     private let barcodeScannerItemFinder: BarcodeScannerItemFinder
 
+    private let bundleChecker: UnsupportedBundledProductChecker
+
     private let quantityDebounceDuration: Double
+
+    private let requestCurrency: String?
 
     @MainActor
     init(siteID: Int64,
@@ -459,6 +464,7 @@ final class EditableOrderViewModel: ObservableObject {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         requestCurrency: String? = nil,
          analytics: Analytics = ServiceLocator.analytics,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
@@ -467,13 +473,30 @@ final class EditableOrderViewModel: ObservableObject {
          initialItem: OrderBaseItem? = nil,
          initialCustomer: (id: Int64, billing: Address?, shipping: Address?)? = nil,
          quantityDebounceDuration: Double = Constants.quantityDebounceDuration) {
+        let orderCurrencySettings: CurrencySettings = {
+            guard let requestCurrency,
+                  let currencyCode = CurrencyCode(caseInsensitiveRawValue: requestCurrency) else {
+                return currencySettings
+            }
+            return CurrencySettings(currencyCode: currencyCode,
+                                    currencyPosition: currencySettings.currencyPosition,
+                                    thousandSeparator: currencySettings.groupingSeparator,
+                                    decimalSeparator: currencySettings.decimalSeparator,
+                                    numberOfDecimals: currencySettings.fractionDigits)
+        }()
         self.siteID = siteID
         self.flow = flow
         self.stores = stores
         self.storageManager = storageManager
-        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
+        self.requestCurrency = requestCurrency
+        self.orderCurrencySettings = orderCurrencySettings
+        self.currencyFormatter = CurrencyFormatter(currencySettings: orderCurrencySettings)
         self.analytics = analytics
-        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID, flow: flow, stores: stores, currencySettings: currencySettings)
+        self.orderSynchronizer = RemoteOrderSynchronizer(siteID: siteID,
+                                                         flow: flow,
+                                                         stores: stores,
+                                                         currencySettings: orderCurrencySettings,
+                                                         requestCurrency: requestCurrency)
         self.featureFlagService = featureFlagService
         self.orderDurationRecorder = orderDurationRecorder
         self.permissionChecker = permissionChecker
@@ -481,8 +504,9 @@ final class EditableOrderViewModel: ObservableObject {
         self.initialItem = initialItem
         self.initialCustomer = initialCustomer
         self.barcodeScannerItemFinder = BarcodeScannerItemFinder(stores: stores)
+        self.bundleChecker = UnsupportedBundledProductChecker(stores: stores)
         self.quantityDebounceDuration = quantityDebounceDuration
-        self.customAmountsSectionViewModel = OrderCustomAmountsSectionViewModel(currencySettings: currencySettings)
+        self.customAmountsSectionViewModel = OrderCustomAmountsSectionViewModel(currencySettings: orderCurrencySettings)
 
         // Set a temporary initial view model, as a workaround to avoid making it optional.
         // Needs to be reset before the view model is used.
@@ -491,7 +515,10 @@ final class EditableOrderViewModel: ObservableObject {
                                                                    onAddressUpdate: nil)
         self.addressFormViewModel = addressFormViewModel
 
-        self.shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: siteID, flow: flow, orderSynchronizer: orderSynchronizer)
+        self.shippingLineViewModel = EditableOrderShippingLineViewModel(siteID: siteID,
+                                                                        flow: flow,
+                                                                        orderSynchronizer: orderSynchronizer,
+                                                                        currencySettings: orderCurrencySettings)
         self.couponLineViewModel = EditableOrderCouponLineViewModel(orderSynchronizer: orderSynchronizer)
 
         configureDisabledState()
@@ -592,7 +619,8 @@ final class EditableOrderViewModel: ObservableObject {
                                   name: rowViewModel.productRow.name,
                                   totalPricePreDiscount: orderItem.subtotal,
                                   priceSummary: rowViewModel.productRow.priceSummaryViewModel,
-                                  discountConfiguration: addProductDiscountConfiguration(on: orderItem))
+                                  discountConfiguration: addProductDiscountConfiguration(on: orderItem),
+                                  currencySettings: orderCurrencySettings)
     }
 
     /// Removes an item from the order.
@@ -681,6 +709,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   stockQuantity: variation.stockQuantity,
                                                                   manageStock: variation.manageStock,
                                                                   stepperViewModel: stepperViewModel,
+                                                                  currencyFormatter: currencyFormatter,
                                                                   analytics: analytics)
             return CollapsibleProductCardViewModel(productRow: rowViewModel, childProductRows: [])
         } else if let product = allProducts.first(where: { $0.productID == item.productID }) {
@@ -724,6 +753,7 @@ final class EditableOrderViewModel: ObservableObject {
                                                                   stockQuantity: product.stockQuantity,
                                                                   manageStock: product.manageStock,
                                                                   stepperViewModel: stepperViewModel,
+                                                                  currencyFormatter: currencyFormatter,
                                                                   analytics: analytics,
                                                                   configure: { [weak self] in
                 guard let self else { return }
@@ -1029,6 +1059,7 @@ final class EditableOrderViewModel: ObservableObject {
         }
 
         let viewModel = AddCustomAmountViewModel(inputType: addCustomAmountInputType(from: option ?? .fixedAmount),
+                                                 storeCurrencySettings: orderCurrencySettings,
                                                  onCustomAmountDeleted: { [weak self] feeID in
             self?.analytics.track(.orderCreationRemoveCustomAmountTapped)
 
@@ -1634,17 +1665,30 @@ private extension EditableOrderViewModel {
             return
         }
 
-        // When a scanned product is a bundle product, the bundle configuration view is shown first.
+        // The selector greys these products out, but a scan never passes through it.
+        if case let .product(product) = item, let restriction = ProductRestriction.restriction(for: product) {
+            autodismissableNotice = Notice(title: restriction.reason)
+            return
+        }
+
+        // A scanned bundle opens its configuration screen, but only once it's known to be sellable:
+        // opening a form the merchant could never submit is worse than refusing up front.
         if case let .product(product) = item, product.productType == .bundle {
-            configurableScannedProductViewModel = .init(product: product,
-                                                 orderItem: nil,
-                                                 childItems: [],
-                                                 onConfigure: { [weak self] configuration in
+            autodismissableNotice = Notice(title: Localization.checkingBundledProductsNoticeTitle)
+
+            Task { @MainActor [weak self] in
                 guard let self else { return }
-                self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
-                self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
-                self.configurableScannedProductViewModel = nil
-            })
+
+                switch await bundleChecker.check(bundle: product) {
+                case .supported:
+                    autodismissableNotice = nil
+                    showBundleConfiguration(for: product)
+                case let .unsupported(restriction):
+                    autodismissableNotice = Notice(title: restriction.bundleReason)
+                case .unknown:
+                    autodismissableNotice = Notice(title: Localization.cannotCheckBundledProductsNoticeTitle)
+                }
+            }
             return
         }
 
@@ -1666,6 +1710,18 @@ private extension EditableOrderViewModel {
         // Increase quantity if exists
         let match = productRows.first(where: { $0.productRow.productOrVariationID == item.itemID })
         match?.productRow.stepperViewModel.incrementQuantity()
+    }
+
+    func showBundleConfiguration(for product: Product) {
+        configurableScannedProductViewModel = .init(product: product,
+                                                    orderItem: nil,
+                                                    childItems: [],
+                                                    onConfigure: { [weak self] configuration in
+            guard let self else { return }
+            self.saveBundleConfigurationFromProductSelector(product: product, bundleConfiguration: configuration)
+            self.syncOrderItems(products: self.selectedProducts, variations: self.selectedProductVariations)
+            self.configurableScannedProductViewModel = nil
+        })
     }
 
     /// If given initial customer data on initialization, updates the Order with the customer data.
@@ -1910,6 +1966,7 @@ private extension EditableOrderViewModel {
                 return ProductSelectorViewModel(
                     siteID: siteID,
                     source: .orderForm(flow: flow.analyticsFlow),
+                    currency: requestCurrency,
                     selectedItemIDs: selectedProductsAndVariationsIDs,
                     purchasableItemsOnly: true,
                     storageManager: storageManager,
@@ -2543,6 +2600,14 @@ private extension EditableOrderViewModel {
         static let customAmountDefaultName = NSLocalizedString("editableOrderViewModel.customAmountDefaultName",
                                                                value: "Custom Amount",
                                                                comment: "Default name when the custom amount does not have a name in order creation.")
+        static let checkingBundledProductsNoticeTitle = NSLocalizedString(
+            "order.bundle.checkingBundledProducts.notice.title",
+            value: "Checking the bundled products…",
+            comment: "Title of a notice shown while the products inside a scanned bundle are loaded.")
+        static let cannotCheckBundledProductsNoticeTitle = NSLocalizedString(
+            "order.bundle.cannotCheckBundledProducts.notice.title",
+            value: "Cannot check the bundled products. Please try again.",
+            comment: "Shown when a bundle's products could not be loaded, so the app cannot tell whether it can be added.")
         static let parentProductScannedNoticeTitle = NSLocalizedString(
             "order.barcode.scan.parent.product.notice.title",
             value: "You cannot add a variable product directly.",

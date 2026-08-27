@@ -15,10 +15,11 @@ final class MockRefundService: RefundServiceProtocol {
     // Spy properties for verification
     private(set) var previewRefundCallCount = 0
     private(set) var spyCreateRefundRestockItems: Bool?
+    private(set) var spyCreateRefundAmount: String??
 
     func previewRefund(siteID: Int64,
                        orderID: Int64,
-                       lineItems: [RefundV4LineItem]) async throws -> RefundPreview {
+                       lineItems: [RefundPreviewLineItem]) async throws -> RefundPreview {
         previewRefundCallCount += 1
         switch previewRefundResult {
         case .success(let preview):
@@ -35,8 +36,10 @@ final class MockRefundService: RefundServiceProtocol {
                       reason: String,
                       automaticRefund: Bool,
                       restockItems: Bool,
-                      lineItems: [RefundV4LineItem]) async throws -> Refund {
+                      amountOverride: String?,
+                      lineItems: [ComputedRefundLineItem]) async throws -> Refund {
         spyCreateRefundRestockItems = restockItems
+        spyCreateRefundAmount = amountOverride
         switch createRefundResult {
         case .success(let refund):
             return refund

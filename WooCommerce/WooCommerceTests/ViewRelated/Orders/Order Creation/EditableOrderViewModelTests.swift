@@ -62,6 +62,176 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.flow, .editing(initialOrder: order))
     }
 
+    func test_editing_with_request_currency_uses_transient_currency_products_in_selector() throws {
+        // Given
+        let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, currency: "EUR")
+        let currencySettings = CurrencySettings(currencyCode: .USD,
+                                                currencyPosition: .left,
+                                                thousandSeparator: ",",
+                                                decimalSeparator: ".",
+                                                numberOfDecimals: 2)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               currencySettings: currencySettings,
+                                               requestCurrency: "EUR")
+        let product = Product.fake().copy(siteID: sampleSiteID,
+                                          productID: sampleProductID,
+                                          price: "12",
+                                          purchasable: true)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .retrieveProductsTransiently(_, currency, _, _, _, _, _, _, _, _, _, onCompletion) = action else {
+                return XCTFail("Expected transient product retrieval")
+            }
+            XCTAssertEqual(currency, "EUR")
+            onCompletion(.success(([product], false)))
+        }
+
+        // When
+        viewModel.toggleProductSelectorVisibility()
+        let productSelector = try XCTUnwrap(viewModel.productSelectorViewModel)
+        productSelector.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(productSelector.productsSectionViewModels.flatMap(\.productRows).first?.priceLabel, "€12.00")
+    }
+
+    func test_createProductRowViewModel_when_request_currency_is_configured_then_formats_product_row_with_request_currency() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, price: "8")
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               currencySettings: .init(currencyCode: .USD,
+                                                                       currencyPosition: .left,
+                                                                       thousandSeparator: ",",
+                                                                       decimalSeparator: ".",
+                                                                       numberOfDecimals: 2),
+                                               requestCurrency: "EUR")
+        let orderItem = OrderItem.fake().copy(productID: product.productID, quantity: 2, price: 8, subtotal: "16")
+
+        // When
+        let productRow = viewModel.createProductRowViewModel(for: orderItem)
+
+        // Then
+        XCTAssertEqual(productRow?.productRow.priceSummaryViewModel.priceQuantityLine, "2 × €8.00")
+        XCTAssertEqual(productRow?.productRow.priceSummaryViewModel.priceBeforeDiscountsLabel, "€16.00")
+    }
+
+    func test_createProductRowViewModel_when_request_currency_is_configured_then_formats_variation_row_with_request_currency() {
+        // Given
+        let variationID: Int64 = 33
+        let product = Product.fake().copy(siteID: sampleSiteID,
+                                          productID: sampleProductID,
+                                          productTypeKey: ProductType.variable.rawValue,
+                                          variations: [variationID])
+        let variation = ProductVariation.fake().copy(siteID: sampleSiteID,
+                                                      productID: sampleProductID,
+                                                      productVariationID: variationID,
+                                                      price: "8")
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        storageManager.insertSampleProductVariation(readOnlyProductVariation: variation, on: product)
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               currencySettings: .init(currencyCode: .USD,
+                                                                       currencyPosition: .left,
+                                                                       thousandSeparator: ",",
+                                                                       decimalSeparator: ".",
+                                                                       numberOfDecimals: 2),
+                                               requestCurrency: "EUR")
+        let orderItem = OrderItem.fake().copy(productID: product.productID,
+                                              variationID: variation.productVariationID,
+                                              quantity: 2,
+                                              price: 8,
+                                              subtotal: "16")
+
+        // When
+        let productRow = viewModel.createProductRowViewModel(for: orderItem)
+
+        // Then
+        XCTAssertEqual(productRow?.productRow.priceSummaryViewModel.priceQuantityLine, "2 × €8.00")
+        XCTAssertEqual(productRow?.productRow.priceSummaryViewModel.priceBeforeDiscountsLabel, "€16.00")
+    }
+
+    func test_addCustomAmountViewModel_when_request_currency_is_configured_then_formats_placeholder_with_request_currency() throws {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               currencySettings: .init(currencyCode: .USD,
+                                                                       currencyPosition: .left,
+                                                                       thousandSeparator: ",",
+                                                                       decimalSeparator: ".",
+                                                                       numberOfDecimals: 2),
+                                               requestCurrency: "EUR")
+
+        // When
+        let customAmountViewModel = viewModel.addCustomAmountViewModel(with: .fixedAmount)
+
+        // Then
+        let amountViewModel = try XCTUnwrap(customAmountViewModel.formattableAmountTextFieldViewModel)
+        XCTAssertEqual(amountViewModel.formattedAmount, "€0.00")
+    }
+
+    func test_addShippingLine_when_request_currency_is_configured_then_formats_placeholder_with_request_currency() throws {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               currencySettings: .init(currencyCode: .USD,
+                                                                       currencyPosition: .left,
+                                                                       thousandSeparator: ",",
+                                                                       decimalSeparator: ".",
+                                                                       numberOfDecimals: 2),
+                                               requestCurrency: "EUR")
+
+        // When
+        viewModel.shippingLineViewModel.addShippingLine()
+
+        // Then
+        let shippingDetails = try XCTUnwrap(viewModel.shippingLineViewModel.shippingLineDetails)
+        XCTAssertEqual(shippingDetails.formattableAmountViewModel.formattedAmount, "€0.00")
+    }
+
+    func test_setDiscountViewModel_when_request_currency_is_configured_then_formats_discount_fields_with_request_currency() throws {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID,
+                                          productID: sampleProductID,
+                                          price: "10",
+                                          purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        let item = OrderItem.fake().copy(itemID: 17,
+                                         productID: sampleProductID,
+                                         quantity: 1,
+                                         price: 10,
+                                         subtotal: "10",
+                                         total: "10")
+        let order = Order.fake().copy(siteID: sampleSiteID, currency: "EUR", items: [item])
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               flow: .editing(initialOrder: order),
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               currencySettings: .init(currencyCode: .USD,
+                                                                       currencyPosition: .left,
+                                                                       thousandSeparator: ",",
+                                                                       decimalSeparator: ".",
+                                                                       numberOfDecimals: 2),
+                                               requestCurrency: "EUR")
+
+        // When
+        viewModel.setDiscountViewModel(item.itemID)
+        let discountDetails = try XCTUnwrap(viewModel.discountViewModel?.discountDetailsViewModel)
+        discountDetails.updateAmount("2")
+
+        // Then
+        XCTAssertEqual(discountDetails.currencySymbol, "€")
+        XCTAssertEqual(discountDetails.signedFinalAmountString, "-€2.00")
+        XCTAssertEqual(discountDetails.formattedPriceAfterDiscount, "€8.00")
+    }
+
     // MARK: - Navigation
 
     func test_edition_view_model_has_no_navigation_done_button() {
@@ -2424,6 +2594,125 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(item.productID, sampleProductID)
     }
 
+    func test_addScannedProductToOrder_when_product_is_a_subscription_then_it_is_not_added_and_a_notice_explains_why() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID,
+                                          productID: sampleProductID,
+                                          productTypeKey: ProductType.subscription.rawValue,
+                                          purchasable: true)
+        mockScannedProductRetrieval(product)
+
+        // When
+        scanBarcode(on: viewModel)
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+        XCTAssertEqual(viewModel.autodismissableNotice?.title, "Subscription products are not supported for order creation")
+    }
+
+    func test_addScannedProductToOrder_when_product_is_bookable_then_it_is_not_added_and_a_notice_explains_why() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID,
+                                          productID: sampleProductID,
+                                          productTypeKey: ProductType.booking.rawValue,
+                                          purchasable: true)
+        mockScannedProductRetrieval(product)
+
+        // When
+        scanBarcode(on: viewModel)
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+        XCTAssertEqual(viewModel.autodismissableNotice?.title, "Bookable products are not supported for order creation")
+    }
+
+    func test_addScannedProductToOrder_when_bundle_holds_a_subscription_child_then_configuration_screen_does_not_open() {
+        // Given
+        let subscriptionChild = Product.fake().copy(siteID: sampleSiteID,
+                                                    productID: 77,
+                                                    productTypeKey: ProductType.subscription.rawValue,
+                                                    purchasable: true)
+        let bundle = Product.fake().copy(siteID: sampleSiteID,
+                                         productID: sampleProductID,
+                                         productTypeKey: ProductType.bundle.rawValue,
+                                         purchasable: true,
+                                         bundledItems: [.fake().copy(bundledItemID: 1, productID: subscriptionChild.productID)])
+        mockScannedProductRetrieval(bundle, bundledChildren: [subscriptionChild])
+
+        // When
+        scanBarcode(on: viewModel)
+
+        // Then
+        // The bundle's children are resolved before the configuration screen is offered, so wait for the answer.
+        waitUntil { [weak self] in
+            self?.viewModel.autodismissableNotice != nil
+        }
+        XCTAssertEqual(viewModel.autodismissableNotice?.title,
+                       "Bundles with subscription products are not supported")
+        XCTAssertNil(viewModel.configurableScannedProductViewModel)
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+    }
+
+    func test_addScannedProductToOrder_when_bundle_holds_only_supported_children_then_configuration_screen_opens() {
+        // Given
+        let child = Product.fake().copy(siteID: sampleSiteID, productID: 77, purchasable: true)
+        let bundle = Product.fake().copy(siteID: sampleSiteID,
+                                         productID: sampleProductID,
+                                         productTypeKey: ProductType.bundle.rawValue,
+                                         purchasable: true,
+                                         bundledItems: [.fake().copy(bundledItemID: 1, productID: child.productID)])
+        mockScannedProductRetrieval(bundle, bundledChildren: [child])
+
+        // When
+        scanBarcode(on: viewModel)
+
+        // Then
+        waitUntil { [weak self] in
+            self?.viewModel.configurableScannedProductViewModel != nil
+        }
+        XCTAssertNil(viewModel.autodismissableNotice)
+    }
+
+    func test_addScannedProductToOrder_when_bundle_children_cannot_be_loaded_then_configuration_screen_does_not_open() {
+        // Given
+        let bundle = Product.fake().copy(siteID: sampleSiteID,
+                                         productID: sampleProductID,
+                                         productTypeKey: ProductType.bundle.rawValue,
+                                         purchasable: true,
+                                         bundledItems: [.fake().copy(bundledItemID: 1, productID: 77)])
+        // The child lookup returns nothing, so whether the bundle holds an unsupported product is unknowable.
+        mockScannedProductRetrieval(bundle, bundledChildren: [])
+
+        // When
+        scanBarcode(on: viewModel)
+
+        // Then
+        waitUntil { [weak self] in
+            self?.viewModel.autodismissableNotice != nil
+        }
+        XCTAssertEqual(viewModel.autodismissableNotice?.title, "Cannot check the bundled products. Please try again.")
+        XCTAssertNil(viewModel.configurableScannedProductViewModel)
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+    }
+
+    func test_order_creation_when_initialItem_is_a_subscription_then_it_is_not_added_to_the_order() {
+        // Given
+        let product = Product.fake().copy(siteID: sampleSiteID,
+                                          productID: sampleProductID,
+                                          productTypeKey: ProductType.subscription.rawValue,
+                                          purchasable: true)
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+
+        // When
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               initialItem: .product(product))
+
+        // Then
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+    }
+
     func test_order_creation_when_initialItem_is_not_nil_and_product_exists_then_product_is_added_to_the_order() {
         // Given, When
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
@@ -2476,13 +2765,25 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_when_initialItem_is_bundle_product_it_sets_configurableScannedProductViewModel_without_order_items() throws {
         // Given
-        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 1, bundleItems: [.fake()])
+        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 1, bundleItems: [.fake().copy(productID: 2)])
+        let child = Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true)
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            if case let .retrieveProductsIfNeeded(_, _, onCompletion) = action {
+                onCompletion(.success([child]))
+            }
+        })
 
         // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialItem: .product(bundleProduct))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               initialItem: .product(bundleProduct))
 
         // Then
-        XCTAssertNotNil(viewModel.configurableScannedProductViewModel)
+        // The bundle's children are resolved before the configuration screen is offered, so wait for the answer.
+        waitUntil {
+            viewModel.configurableScannedProductViewModel != nil
+        }
         XCTAssertEqual(viewModel.currentOrderItems.count, 0)
     }
 
@@ -3568,7 +3869,11 @@ private extension EditableOrderViewModelTests {
             .first(where: { $0.productOrVariationID == productID }))
         bundleProductRow.configure?()
 
-        // Then the configurable product view model becomes non-nil
+        // Then the configurable product view model becomes non-nil, once the bundle's contents have been
+        // checked for products which cannot be added to an order.
+        waitUntil {
+            viewModel.productToConfigureViewModel != nil
+        }
         let configurableProductViewModel = try XCTUnwrap(viewModel.productToConfigureViewModel)
 
         // When saving the bundle configuration of the bundle product
@@ -3619,6 +3924,14 @@ private extension EditableOrderViewModelTests {
                                                 productTypeKey: ProductType.bundle.rawValue,
                                                 purchasable: true,
                                                 bundledItems: bundleItems)
+        // A bundle's contents are resolved before it can be added to an order, so the children have to
+        // resolve to products which carry no restriction.
+        let children = bundleItems.map { Product.fake().copy(siteID: siteID, productID: $0.productID, purchasable: true) }
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            if case let .retrieveProductsIfNeeded(_, _, onCompletion) = action {
+                onCompletion(.success(children))
+            }
+        })
         storageManager.performAndSave({ storage in
             let storageProduct = storage.insertNewObject(ofType: StorageProduct.self)
             storageProduct.update(with: bundleProduct)
@@ -3661,6 +3974,33 @@ private extension EditableOrderViewModelTests {
                        country: "US",
                        phone: "333-333-3333",
                        email: "")
+    }
+}
+
+// MARK: - Barcode scanning helpers
+private extension EditableOrderViewModelTests {
+    /// Stubs the SKU lookup so that scanning any barcode resolves to the given product, and the bundled
+    /// product lookup so that the product's children resolve to `bundledChildren`.
+    func mockScannedProductRetrieval(_ product: Product, bundledChildren: [Product] = []) {
+        storageManager.insertSampleProduct(readOnlyProduct: product)
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            switch action {
+            case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, onCompletion):
+                onCompletion(.success((.product(product), .SKU)))
+            case let .retrieveProductsIfNeeded(_, _, onCompletion):
+                onCompletion(.success(bundledChildren))
+            default:
+                break
+            }
+        })
+    }
+
+    func scanBarcode(on viewModel: EditableOrderViewModel) {
+        waitFor { promise in
+            viewModel.addScannedProductToOrder(barcode: ScannedBarcode(payloadStringValue: "existingSKU", symbology: BarcodeSymbology.ean8),
+                                               onCompletion: { _ in promise(()) },
+                                               onRetryRequested: {})
+        }
     }
 }
 

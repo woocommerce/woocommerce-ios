@@ -484,9 +484,14 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
     /// Reloads the refundable items after the store rejected a preview or a create because the
     /// order changed since the flow was opened, for example when another register refunded part of
     /// it. The selection is restored by unit count rather than by row id: `POSRefundSelectableItem.id`
-    /// is positional over what is still refundable, so the reload — which only happens because the
-    /// list got shorter — renumbers it. Only the count per `itemID` reaches the store anyway, see
+    /// is positional over what is still refundable, so a reload that returns a shorter list
+    /// renumbers it. Only the count per `itemID` reaches the store anyway, see
     /// `POSRefundSubmissionMapping.refundComponents`.
+    ///
+    /// The reloaded list is not always shorter. `RefundAPIError.refundExceedsRemaining` is an
+    /// order-level amount check and also maps to `.refreshItems`, and nothing here models the
+    /// order's remaining refundable amount, so that rejection can return the same list. The restore
+    /// then reproduces the same selection, which is what the cashier still has on screen.
     ///
     /// A selection that no longer matches anything leaves every row deselected rather than falling
     /// back to the default all-selected list: the cashier picks again instead of confirming items
@@ -513,8 +518,12 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
             }
         }
 
-        // `startRefundFlow()` cleared this for a fresh flow. The restored selection is the
-        // cashier's, so keep the "Cancel this refund?" prompt honest about it.
+        // `startRefundFlow()` cleared this for a fresh flow, so the restored selection has to set it
+        // back or switching orders drops the cashier's choice without the "Cancel this refund?"
+        // prompt. Here the flag means "differs from the default all-selected list", where the two
+        // toggles below mean "the cashier interacted". The two disagree only when the restore
+        // selects every row, and that state is the one `startRefundFlow()` just produced, so no
+        // choice of the cashier's is lost when the prompt does not appear.
         hasModifiedRefundSelection = refundSelectableItems.contains { !$0.isSelected }
         return result
     }

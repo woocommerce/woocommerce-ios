@@ -4,7 +4,7 @@
 25.6
 -----
 - [Internal] POS: Refund submission events now use the POS Tracks prefix when issued from POS. [https://github.com/woocommerce/woocommerce-ios/pull/17744]
-- [*] POS: Reloading the remaining items after the store rejects a refund now keeps the number of units you had selected, instead of selecting everything that is left.
+- [*] POS: Reloading the remaining items after the store rejects a refund now keeps the number of units you had selected, instead of selecting everything that is left. [https://github.com/woocommerce/woocommerce-ios/pull/17771]
 
 25.5
 -----

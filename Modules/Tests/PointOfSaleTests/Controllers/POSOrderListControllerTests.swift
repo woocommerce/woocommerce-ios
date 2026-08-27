@@ -1330,6 +1330,62 @@ final class POSOrderListControllerTests {
         #expect(sut.hasModifiedRefundSelection)
     }
 
+    /// Pins intended behaviour rather than guarding a regression: the old id-based restore also ended
+    /// up with the single survivor selected, by falling back to the default list.
+    @MainActor
+    @Test func refreshRefundableItems_when_fewer_units_survive_than_were_selected_then_the_count_is_capped() async throws {
+        // Given two of three units selected
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 3, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 0)
+
+        // When two units are refunded elsewhere, leaving fewer than were selected
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -2, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+        _ = await sut.refreshRefundableItems()
+
+        // Then the surplus is dropped, and the restored list matches a fresh flow so it is not marked modified
+        #expect(sut.refundSelectableItems.count == 1)
+        #expect(sut.refundSelectableItems.filter { $0.isSelected }.count == 1)
+        #expect(sut.hasModifiedRefundSelection == false)
+    }
+
+    /// A line item id and a fee id are drawn from different tables on the store, so they can coincide.
+    /// The restore keeps them apart by `isLumpSum`; this pins that it does. The line that shrinks is a
+    /// third one, because `MockPOSRefundSubmissionProcessor` drops a custom amount whose id matches a
+    /// refunded line item id and the fee row would not come back at all.
+    @MainActor
+    @Test func refreshRefundableItems_when_a_fee_shares_an_id_with_a_line_item_then_only_the_fee_is_restored() async throws {
+        // Given a line item and a custom amount that share the id 200, with only the fee selected
+        let order = makeOrder(
+            lineItems: [makePOSOrderItem(itemID: 200, quantity: 2, price: 10.00, formattedPrice: "$10.00"),
+                        makePOSOrderItem(itemID: 300, quantity: 1, price: 5.00, formattedPrice: "$5.00")],
+            customAmounts: [makePOSOrderCustomAmount(id: 200, name: "Discount Fee", total: 10, totalTax: 0)]
+        )
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 0)
+        sut.toggleRefundItemSelection(at: 1)
+        sut.toggleRefundItemSelection(at: 2)
+
+        // When the other line is refunded elsewhere, so the list reloads
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 300, quantity: -1, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+        _ = await sut.refreshRefundableItems()
+
+        // Then the fee's id is not read as a unit count for the line that shares it
+        let selected = sut.refundSelectableItems.filter { $0.isSelected }
+        #expect(selected.count == 1)
+        #expect(selected.first?.isLumpSum == true)
+    }
+
     @MainActor
     @Test func refreshRefundableItems_when_a_preview_error_is_shown_then_it_is_cleared() async throws {
         // Given a rejected preview

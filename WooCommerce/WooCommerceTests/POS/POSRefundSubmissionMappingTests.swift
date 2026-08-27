@@ -166,6 +166,23 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
         XCTAssertEqual(selectableItems.map(\.id), ["10-0", "10-1", "20-0", "20-1", "fee-200"])
     }
 
+    func test_makeSelectableItems_gives_every_row_a_distinct_id() {
+        // Every fee is built with the same index, so a fee id is unique only because the fee line id
+        // is. `SelectionKey` in POSRefundSubmissionAdaptor is a Set of these ids and would silently
+        // collapse a duplicate, so the uniqueness is worth asserting rather than assuming.
+        let item = orderItem(itemID: 30, name: "Cake", quantity: 3, price: 2, total: "6.00", totalTax: "0.60")
+        let firstFee = orderFee(feeID: 30, name: "Service", total: "3.50", totalTax: "0.35")
+        let secondFee = orderFee(feeID: 31, name: "Delivery", total: "2.00", totalTax: "0.20")
+
+        let selectableItems = sut.makeSelectableItems(refundableItems: [RefundableOrderItem(item: item, quantity: 3)],
+                                                      fees: [firstFee, secondFee],
+                                                      currency: "USD")
+
+        let ids = selectableItems.map(\.id)
+        XCTAssertEqual(ids, ["30-0", "30-1", "30-2", "fee-30", "fee-31"])
+        XCTAssertEqual(Set(ids).count, ids.count)
+    }
+
     func test_refundPreviewLineItems_maps_products_to_quantities_and_fees_to_tax_inclusive_totals() {
         // Given
         let item1 = orderItem(itemID: 10, quantity: 3)

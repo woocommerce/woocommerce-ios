@@ -3,7 +3,7 @@ import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderItem
 import typealias Yosemite.OrderItemAttribute
 
-public struct POSRefundSelectableItem: Identifiable, Equatable {
+public struct POSRefundSelectableItem: Equatable {
     public let itemID: Int64
     let name: String
     let imageSrc: String?
@@ -20,8 +20,20 @@ public struct POSRefundSelectableItem: Identifiable, Equatable {
     /// Unique identifier for the selectable item: `"<itemID>-<unit index within the line>"` for a
     /// line item unit, `"fee-<feeID>"` for a lump sum. The index is positional over what is still
     /// refundable, so it is renumbered whenever the line gets shorter — do not treat it as a stable
-    /// per-unit identity across a reload. Matches the Android POS scheme.
+    /// per-unit identity across a reload. Read by `SelectionKey` in `POSRefundSubmissionAdaptor`,
+    /// which needs the ids to be unique within one list. Android builds the same two shapes with an
+    /// underscore: `fee_$orderItemId` and `${orderItemId}_$rowIndex`.
     public let id: String
+
+    /// The two id namespaces, in one place. Every initialiser below routes through these, so a row
+    /// built by a test carries the same id as the one the app target builds for the same unit.
+    private static func unitID(itemID: Int64, unitIndex: Int) -> String {
+        "\(itemID)-\(unitIndex)"
+    }
+
+    private static func lumpSumID(feeID: Int64) -> String {
+        "fee-\(feeID)"
+    }
 
     public init(itemID: Int64,
                 name: String,
@@ -44,7 +56,7 @@ public struct POSRefundSelectableItem: Identifiable, Equatable {
         self.attributes = attributes
         self.isLumpSum = isLumpSum
         self.isSelected = isSelected
-        self.id = isLumpSum ? "fee-\(itemID)" : "\(itemID)-\(index)"
+        self.id = isLumpSum ? Self.lumpSumID(feeID: itemID) : Self.unitID(itemID: itemID, unitIndex: index)
     }
 
     /// Creates a selectable item from a POSOrderItem.
@@ -60,7 +72,7 @@ public struct POSRefundSelectableItem: Identifiable, Equatable {
         self.attributes = orderItem.attributes
         self.isLumpSum = false
         self.isSelected = isSelected
-        self.id = "\(orderItem.itemID)-\(index)"
+        self.id = Self.unitID(itemID: orderItem.itemID, unitIndex: index)
     }
 
     /// Creates a selectable item from a POSOrderCustomAmount (a fee line on the order).
@@ -78,6 +90,6 @@ public struct POSRefundSelectableItem: Identifiable, Equatable {
         self.attributes = []
         self.isLumpSum = true
         self.isSelected = isSelected
-        self.id = "fee-\(customAmount.id)"
+        self.id = Self.lumpSumID(feeID: customAmount.id)
     }
 }

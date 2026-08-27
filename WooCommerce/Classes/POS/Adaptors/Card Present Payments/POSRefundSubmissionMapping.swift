@@ -46,6 +46,13 @@ struct POSRefundSubmissionMapping {
 
             // Numbered per line item, not across the list: a line that gets shorter must not shift
             // the ids of the lines after it.
+            //
+            // The old running counter made the ids unique on its own. These borrow uniqueness from
+            // `itemID`, which holds because `itemID` is the order line-item id and `refundableItems`
+            // carries at most one entry per line (`OrderRefundsOptionsDeterminer` compact-maps over
+            // `order.items`). That invariant is load-bearing outside this file: `SelectionKey` in
+            // `POSRefundSubmissionAdaptor` is a `Set` of these ids, so two rows sharing one would
+            // collapse the key and let a total previewed for one selection be read back for another.
             for unitIndex in 0..<refundableItem.quantity {
                 selectableItems.append(POSRefundSelectableItem(
                     itemID: item.itemID,

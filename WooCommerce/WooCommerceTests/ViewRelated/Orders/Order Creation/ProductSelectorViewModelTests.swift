@@ -1663,6 +1663,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Given
         let bundleProduct = createAndInsertBundleProduct(bundleItems: [.fake()])
         let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
+        // The bundle's contents are checked before its configuration screen is offered.
+        mockBundledProductsRetrieval([Product.fake().copy(siteID: sampleSiteID, purchasable: true)])
 
         // When
         let productToConfigure: Yosemite.Product = try waitFor { promise in
@@ -1967,6 +1969,79 @@ final class ProductSelectorViewModelTests: XCTestCase {
                        .unsupported(reason: "Bookable products are not supported for order creation"))
     }
 
+    // MARK: - Bundles holding an unsupported product
+
+    func test_configuring_a_bundle_when_it_holds_a_subscription_child_then_the_configuration_is_not_opened() throws {
+        // Given
+        insertBundle(productID: 1, childID: 2)
+        mockBundledProductsRetrieval([Product.fake().copy(siteID: sampleSiteID,
+                                                          productID: 2,
+                                                          productTypeKey: ProductType.subscription.rawValue)])
+        var configuredProduct: Yosemite.Product?
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 onProductSelectionStateChanged: { _, _ in },
+                                                 onConfigureProductRow: { configuredProduct = $0 })
+
+        // When
+        try XCTUnwrap(viewModel.productRows.first?.configure)()
+
+        // Then
+        waitUntil {
+            viewModel.notice != nil
+        }
+        XCTAssertEqual(viewModel.notice?.title, "Bundles with subscription products are not supported")
+        XCTAssertNil(configuredProduct)
+    }
+
+    func test_configuring_a_bundle_when_its_children_cannot_be_loaded_then_the_configuration_is_not_opened() throws {
+        // Given
+        insertBundle(productID: 1, childID: 2)
+        // The child lookup returns nothing, so whether the bundle holds an unsupported product is unknowable.
+        mockBundledProductsRetrieval([])
+        var configuredProduct: Yosemite.Product?
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 onProductSelectionStateChanged: { _, _ in },
+                                                 onConfigureProductRow: { configuredProduct = $0 })
+
+        // When
+        try XCTUnwrap(viewModel.productRows.first?.configure)()
+
+        // Then
+        waitUntil {
+            viewModel.notice != nil
+        }
+        XCTAssertEqual(viewModel.notice?.title, "Cannot check the bundled products. Please try again.")
+        XCTAssertNil(configuredProduct)
+    }
+
+    func test_configuring_a_bundle_when_it_holds_only_supported_children_then_the_configuration_is_opened() throws {
+        // Given
+        insertBundle(productID: 1, childID: 2)
+        mockBundledProductsRetrieval([Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true)])
+        var configuredProduct: Yosemite.Product?
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 onProductSelectionStateChanged: { _, _ in },
+                                                 onConfigureProductRow: { configuredProduct = $0 })
+
+        // When
+        try XCTUnwrap(viewModel.productRows.first?.configure)()
+
+        // Then
+        waitUntil {
+            configuredProduct != nil
+        }
+        XCTAssertNil(viewModel.notice)
+    }
+
     func test_productRow_when_source_is_not_orderForm_and_product_is_subscription_then_selectedState_is_notSelected() {
         // Given
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.subscription.rawValue, purchasable: true))
@@ -1978,7 +2053,46 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.productRows.first?.selectedState, .notSelected)
-    }}
+    }
+}
+
+// MARK: - Bundle utils
+private extension ProductSelectorViewModelTests {
+    /// Inserts a purchasable bundle product holding a single child.
+    ///
+    /// The bundled items have to be inserted as storage objects of their own: `StorageProduct.update(with:)`
+    /// does not carry them over, and a bundle which reads back with no children is treated as having nothing
+    /// to check.
+    @discardableResult
+    func insertBundle(productID: Int64, childID: Int64) -> Yosemite.Product {
+        let bundleItem = ProductBundleItem.fake().copy(bundledItemID: childID, productID: childID)
+        let bundle = Product.fake().copy(siteID: sampleSiteID,
+                                         productID: productID,
+                                         productTypeKey: ProductType.bundle.rawValue,
+                                         purchasable: true,
+                                         bundledItems: [bundleItem])
+        storageManager.performAndSave({ storage in
+            let storageProduct = storage.insertNewObject(ofType: StorageProduct.self)
+            storageProduct.update(with: bundle)
+
+            let storageBundleItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
+            storageBundleItem.update(with: bundleItem)
+            storageBundleItem.product = storageProduct
+        }, completion: {}, on: .main)
+
+        return bundle
+    }
+
+    /// Stubs the bundled product lookup so a bundle's children resolve to `children`.
+    func mockBundledProductsRetrieval(_ children: [Yosemite.Product]) {
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .retrieveProductsIfNeeded(_, _, onCompletion) = action else {
+                return
+            }
+            onCompletion(.success(children))
+        }
+    }
+}
 
 // MARK: - Utils
 private extension ProductSelectorViewModelTests {

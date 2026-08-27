@@ -2626,6 +2626,75 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.autodismissableNotice?.title, "Bookable products are not supported for order creation")
     }
 
+    func test_addScannedProductToOrder_when_bundle_holds_a_subscription_child_then_configuration_screen_does_not_open() {
+        // Given
+        let subscriptionChild = Product.fake().copy(siteID: sampleSiteID,
+                                                    productID: 77,
+                                                    productTypeKey: ProductType.subscription.rawValue,
+                                                    purchasable: true)
+        let bundle = Product.fake().copy(siteID: sampleSiteID,
+                                         productID: sampleProductID,
+                                         productTypeKey: ProductType.bundle.rawValue,
+                                         purchasable: true,
+                                         bundledItems: [.fake().copy(bundledItemID: 1, productID: subscriptionChild.productID)])
+        mockScannedProductRetrieval(bundle, bundledChildren: [subscriptionChild])
+
+        // When
+        scanBarcode(on: viewModel)
+
+        // Then
+        // The bundle's children are resolved before the configuration screen is offered, so wait for the answer.
+        waitUntil { [weak self] in
+            self?.viewModel.autodismissableNotice != nil
+        }
+        XCTAssertEqual(viewModel.autodismissableNotice?.title,
+                       "Bundles with subscription products are not supported")
+        XCTAssertNil(viewModel.configurableScannedProductViewModel)
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+    }
+
+    func test_addScannedProductToOrder_when_bundle_holds_only_supported_children_then_configuration_screen_opens() {
+        // Given
+        let child = Product.fake().copy(siteID: sampleSiteID, productID: 77, purchasable: true)
+        let bundle = Product.fake().copy(siteID: sampleSiteID,
+                                         productID: sampleProductID,
+                                         productTypeKey: ProductType.bundle.rawValue,
+                                         purchasable: true,
+                                         bundledItems: [.fake().copy(bundledItemID: 1, productID: child.productID)])
+        mockScannedProductRetrieval(bundle, bundledChildren: [child])
+
+        // When
+        scanBarcode(on: viewModel)
+
+        // Then
+        waitUntil { [weak self] in
+            self?.viewModel.configurableScannedProductViewModel != nil
+        }
+        XCTAssertNil(viewModel.autodismissableNotice)
+    }
+
+    func test_addScannedProductToOrder_when_bundle_children_cannot_be_loaded_then_configuration_screen_does_not_open() {
+        // Given
+        let bundle = Product.fake().copy(siteID: sampleSiteID,
+                                         productID: sampleProductID,
+                                         productTypeKey: ProductType.bundle.rawValue,
+                                         purchasable: true,
+                                         bundledItems: [.fake().copy(bundledItemID: 1, productID: 77)])
+        // The child lookup returns nothing, so whether the bundle holds an unsupported product is unknowable.
+        mockScannedProductRetrieval(bundle, bundledChildren: [])
+
+        // When
+        scanBarcode(on: viewModel)
+
+        // Then
+        waitUntil { [weak self] in
+            self?.viewModel.autodismissableNotice != nil
+        }
+        XCTAssertEqual(viewModel.autodismissableNotice?.title, "Cannot check the bundled products. Please try again.")
+        XCTAssertNil(viewModel.configurableScannedProductViewModel)
+        XCTAssertEqual(viewModel.currentOrderItems.count, 0)
+    }
+
     func test_order_creation_when_initialItem_is_a_subscription_then_it_is_not_added_to_the_order() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID,
@@ -2696,13 +2765,25 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     func test_when_initialItem_is_bundle_product_it_sets_configurableScannedProductViewModel_without_order_items() throws {
         // Given
-        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 1, bundleItems: [.fake()])
+        let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 1, bundleItems: [.fake().copy(productID: 2)])
+        let child = Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true)
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            if case let .retrieveProductsIfNeeded(_, _, onCompletion) = action {
+                onCompletion(.success([child]))
+            }
+        })
 
         // When
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, initialItem: .product(bundleProduct))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               stores: stores,
+                                               storageManager: storageManager,
+                                               initialItem: .product(bundleProduct))
 
         // Then
-        XCTAssertNotNil(viewModel.configurableScannedProductViewModel)
+        // The bundle's children are resolved before the configuration screen is offered, so wait for the answer.
+        waitUntil {
+            viewModel.configurableScannedProductViewModel != nil
+        }
         XCTAssertEqual(viewModel.currentOrderItems.count, 0)
     }
 
@@ -3788,7 +3869,11 @@ private extension EditableOrderViewModelTests {
             .first(where: { $0.productOrVariationID == productID }))
         bundleProductRow.configure?()
 
-        // Then the configurable product view model becomes non-nil
+        // Then the configurable product view model becomes non-nil, once the bundle's contents have been
+        // checked for products which cannot be added to an order.
+        waitUntil {
+            viewModel.productToConfigureViewModel != nil
+        }
         let configurableProductViewModel = try XCTUnwrap(viewModel.productToConfigureViewModel)
 
         // When saving the bundle configuration of the bundle product
@@ -3839,6 +3924,14 @@ private extension EditableOrderViewModelTests {
                                                 productTypeKey: ProductType.bundle.rawValue,
                                                 purchasable: true,
                                                 bundledItems: bundleItems)
+        // A bundle's contents are resolved before it can be added to an order, so the children have to
+        // resolve to products which carry no restriction.
+        let children = bundleItems.map { Product.fake().copy(siteID: siteID, productID: $0.productID, purchasable: true) }
+        stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
+            if case let .retrieveProductsIfNeeded(_, _, onCompletion) = action {
+                onCompletion(.success(children))
+            }
+        })
         storageManager.performAndSave({ storage in
             let storageProduct = storage.insertNewObject(ofType: StorageProduct.self)
             storageProduct.update(with: bundleProduct)
@@ -3886,13 +3979,16 @@ private extension EditableOrderViewModelTests {
 
 // MARK: - Barcode scanning helpers
 private extension EditableOrderViewModelTests {
-    /// Stubs the SKU lookup so that scanning any barcode resolves to the given product.
-    func mockScannedProductRetrieval(_ product: Product) {
+    /// Stubs the SKU lookup so that scanning any barcode resolves to the given product, and the bundled
+    /// product lookup so that the product's children resolve to `bundledChildren`.
+    func mockScannedProductRetrieval(_ product: Product, bundledChildren: [Product] = []) {
         storageManager.insertSampleProduct(readOnlyProduct: product)
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in
             switch action {
             case let .retrieveFirstPurchasableItemMatchFromIdentifier(_, _, onCompletion):
                 onCompletion(.success((.product(product), .SKU)))
+            case let .retrieveProductsIfNeeded(_, _, onCompletion):
+                onCompletion(.success(bundledChildren))
             default:
                 break
             }

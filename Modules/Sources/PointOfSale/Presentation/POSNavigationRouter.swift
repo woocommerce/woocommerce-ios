@@ -94,12 +94,7 @@ struct POSNavigationDestinationMarkAsPaidView: View {
                     }
                 }
             },
-            onCancel: {
-                Task { @MainActor in
-                    await paymentModel.cancelMarkAsPaidPayment()
-                    router.pop()
-                }
-            }
+            onCancel: cancelMarkAsPaidPayment
         )
         .toolbar(.hidden, for: .navigationBar)
         // Fill the right pane so the visual transition reads as "totals → confirmation → totals"
@@ -109,6 +104,17 @@ struct POSNavigationDestinationMarkAsPaidView: View {
         // Asks the dashboard to hide the floating control overlay (`…` menu, reader chip)
         // so the merchant can focus on the confirmation step without distractions.
         .posHidesFloatingControl()
+        .posEdgeSwipeBackAction(
+            isEnabled: paymentModel.paymentState.markAsPaid != .processing,
+            onBack: cancelMarkAsPaidPayment
+        )
+    }
+
+    private func cancelMarkAsPaidPayment() {
+        Task { @MainActor in
+            await paymentModel.cancelMarkAsPaidPayment()
+            router.pop()
+        }
     }
 
     private enum Localization {
@@ -132,6 +138,7 @@ struct POSNavigationDestinationEmailReceiptView: View {
             try await paymentModel.sendReceipt(to: email)
         }
         .toolbar(.hidden, for: .navigationBar)
+        .posEdgeSwipeBackAction(onBack: { router.pop() })
     }
 }
 

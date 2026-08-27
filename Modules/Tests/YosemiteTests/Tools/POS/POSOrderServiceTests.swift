@@ -375,7 +375,7 @@ struct POSOrderServiceTests {
         let updatedOrder = try #require(mockOrdersRemote.spyUpdatePOSOrder)
         #expect(updatedOrder.status == .completed)
         #expect(updatedOrder.paymentMethodID == "other")
-        #expect(updatedOrder.paymentMethodTitle == "Mark order as paid")
+        #expect(updatedOrder.paymentMethodTitle == "Order marked as paid")
 
         let fields = try #require(mockOrdersRemote.spyUpdatePOSOrderFields)
         #expect(fields.contains(.status))

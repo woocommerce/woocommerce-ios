@@ -468,7 +468,7 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.addOrderNoteWasCalled == true)
         #expect(mockOrderService.spyAddOrderNoteOrderID == 123)
         #expect(mockOrderService.spyAddOrderNoteIsCustomerNote == false)
-        #expect(mockOrderService.spyAddOrderNoteText == "Customer paid via Scan to Pay")
+        #expect(mockOrderService.spyAddOrderNoteText == "Paid via Scan to Pay")
         #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
         #expect(mockOrderService.spyRecordScanToPayPaymentMethodOrder?.orderID == 123)
     }

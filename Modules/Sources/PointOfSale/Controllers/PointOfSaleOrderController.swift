@@ -48,7 +48,7 @@ protocol PointOfSaleOrderControllerProtocol {
     ///   Maria"). When non-nil/non-empty it is appended to the order as a private note via
     ///   `addOrderNote`, separately from the order completion call.
     func markOrderAsPaidManually(note: String?) async throws
-    /// Adds the "Customer paid via Scan to Pay" note to the cached order so the merchant has
+    /// Adds the "Paid via Scan to Pay" note to the cached order so the merchant has
     /// an audit trail in WP-Admin even if the gateway webhook hasn't flipped the status yet.
     func confirmScanToPayPayment() async throws
     /// Records Scan to Pay as the cached order's visible payment method title.
@@ -246,8 +246,8 @@ protocol PointOfSaleOrderControllerProtocol {
 private extension PointOfSaleOrderController {
     enum Localization {
         static let scanToPayNote = NSLocalizedString(
-            "pointOfSale.scanToPay.orderNote",
-            value: "Customer paid via Scan to Pay",
+            "pointOfSale.scanToPay.orderNote.1",
+            value: "Paid via Scan to Pay",
             comment: "Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale."
         )
     }

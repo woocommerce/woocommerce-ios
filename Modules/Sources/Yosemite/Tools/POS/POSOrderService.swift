@@ -395,7 +395,7 @@ private extension POSOrderService {
         )
         static let manualPaymentMethodTitle = NSLocalizedString(
             "pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle.1",
-            value: "Mark order as paid",
+            value: "Order marked as paid",
             comment: "Title for the payment method used when manually marking an order as paid in Point of Sale."
         )
         static let scanToPayPaymentMethodTitle = NSLocalizedString(

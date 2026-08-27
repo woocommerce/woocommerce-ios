@@ -4,6 +4,7 @@
 25.6
 -----
 - [*] Shipping Labels: Fixed purchased labels disappearing when an unfinished label has no carrier information. [https://github.com/woocommerce/woocommerce-ios/pull/17766]
+- [*] Orders: Totals for orders in a currency other than the store default now show the currency code (e.g. "$10.00 CAD"), so orders that share the "$" symbol are no longer ambiguous. [https://github.com/woocommerce/woocommerce-ios/pull/17758]
 - [*] Fixed an infinite spinner on site credential login when the site rejects the wp-login.php request (e.g. hosts with captcha/security plugins). An error alert is now shown instead. [https://github.com/woocommerce/woocommerce-ios/pull/17752]
 - [*] Payments: Update card reader's statement descriptor validation rules [https://github.com/woocommerce/woocommerce-ios/pull/17751]
 - [*] Settings: Fixed the bottom of the settings list being cut off behind the tab bar on iOS 26. [https://github.com/woocommerce/woocommerce-ios/pull/17765]

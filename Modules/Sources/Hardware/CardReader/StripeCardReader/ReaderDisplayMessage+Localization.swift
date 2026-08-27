@@ -40,9 +40,9 @@ extension ReaderDisplayMessage {
             "Insert Or Swipe Card",
             comment: "Message from the in-person payment card reader prompting user to insert or swipe their card")
         static let multipleContactlessCards = NSLocalizedString(
-            "Multiple Contactless Cards Detected",
-            comment: "Message from the in-person payment card reader when payment could not be taken because " +
-            "multiple cards were detected")
+            "cardPresentPayment.reader.multipleContactlessCardsDetected",
+            value: "Multiple cards detected. Try again with a single card.",
+            comment: "Message from the in-person payment card reader when payment could not be taken because multiple cards were detected")
         static let removeCard = NSLocalizedString(
             "Remove Card",
             comment: "Message from the in-person payment card reader prompting user to remove their card")

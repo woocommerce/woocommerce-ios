@@ -39,13 +39,15 @@ final class CardPresentRefundOrchestrator {
 
         /// Refunds payment in-person with a card reader.
         let refundParameters = RefundParameters(chargeId: charge.id, amount: amount, currency: charge.currency)
+        let readerEventFilter = CardReaderEventPresentationFilter()
         let refundAction = CardPresentPaymentAction.refundPayment(parameters: refundParameters,
                                                                   onCardReaderMessage: { event in
+            guard let event = readerEventFilter.filter(event) else { return }
             switch event {
             case .waitingForInput(let inputMethods):
                 onWaitingForInput(inputMethods)
             case .displayMessage(let message):
-                onDisplayMessage(message)
+                onDisplayMessage(message.text)
             case .removeCardRequested(let message):
                 onDisplayMessage(message)
             case .cardInserted:
@@ -57,6 +59,7 @@ final class CardPresentRefundOrchestrator {
             }
         }, onCompletion: { [weak self] result in
             guard let self else { return }
+            readerEventFilter.reset()
             self.allowPassPresentation()
             onProcessingMessage()
             onCompletion(result)

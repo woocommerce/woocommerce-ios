@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-08-11 13:59:04+0000 */
+/* Translation-Revision-Date: 2026-08-24 14:58:19+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -8555,6 +8555,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "Icon";
 
+/* Button that exports all retained application logs as a ZIP file. */
+"applicationLog.exportAllLogs" = "Alle Protokolle exportieren";
+
+/* Message of an alert shown when application logs could not be exported. */
+"applicationLog.exportError.message" = "Bitte versuche es erneut.";
+
+/* Button that dismisses the application log export error alert. */
+"applicationLog.exportError.ok" = "OK";
+
+/* Title of an alert shown when application logs could not be exported. */
+"applicationLog.exportError.title" = "Protokoll-Export nicht möglich";
+
 /* Placeholder text for the search field on the application log detail screen. */
 "applicationLogDetail.searchPrompt" = "Protokolle durchsuchen";
 
@@ -9763,6 +9775,21 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "cardPresentPayment.settingsWebView.title" = "WooCommerce-Einstellungen";
 
+/* VoiceOver summary confirming that a Tap to Pay payment was canceled without charging the customer. */
+"cardPresentPayment.tapToPay.paymentCancelled.accessibilityLabel" = "Zahlung storniert. Es wurde keine Zahlung geleistet. Das „Tap to Pay“-Häkchen und der Signalton dienten nur der Bestätigung, dass die Karte gelesen wurde.";
+
+/* Explains that Apple's Tap to Pay success feedback did not mean the canceled payment was completed. */
+"cardPresentPayment.tapToPay.paymentCancelled.cardReadExplanation" = "Das „Tap to Pay“-Häkchen und der Signalton dienten nur der Bestätigung, dass die Karte gelesen wurde.";
+
+/* Button dismissing confirmation of a canceled Tap to Pay payment. */
+"cardPresentPayment.tapToPay.paymentCancelled.done" = "Fertig";
+
+/* Message confirming that a canceled Tap to Pay payment did not charge the customer. */
+"cardPresentPayment.tapToPay.paymentCancelled.noPaymentTaken" = "Es wurde keine Zahlung geleistet.";
+
+/* Title confirming that a Tap to Pay payment was canceled in WooCommerce. */
+"cardPresentPayment.tapToPay.paymentCancelled.title" = "Zahlung storniert";
+
 /* Error message when the Stripe account has overdue requirements, explaining that the merchant can skip and continue taking payments, with a caution that some transactions may be declined if the account is actually blocked. */
 "cardPresentPayments.onboarding.stripeAccountOverdue.message" = "Du hast mindestens eine überfällige Anforderung. Du kannst sie überspringen und weiterhin Zahlungen empfangen, aber wenn die Anforderung dein Konto blockiert, können Transaktionen abgelehnt werden, bis du sie löst.";
 
@@ -10059,6 +10086,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssuesMessage" = "Wenn deine Daten immer noch nicht geladen werden, wende dich an unser Support-Team, um Unterstützung zu erhalten.";
+
+/* Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. */
+"couponCardView.appliedAccessibilityValue" = "Angewendet";
 
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "Abgelaufen am %@";
@@ -10796,6 +10826,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when online PIN is not supported in offline mode. */
 "hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "Die Online-PIN-Methode wird im Offline-Modus nicht unterstützt. Versuche es mit einer anderen Karte.";
 
+/* Error message when the payment intent has no id, so the payment cannot be processed. */
+"hardware.cardReader.underlyingError.paymentIntentIdMissing" = "Diese Zahlung konnte nicht abgeschlossen werden, da keine Zahlungs-ID gefunden wurde.";
+
 /* Error message when a payment times out while waiting for a card to be tapped/inserted/swiped. */
 "hardware.cardReader.underlyingError.paymentMethodCollectionTimedOut" = "Es wurde keine Karte innerhalb des Zeitlimits vorgelegt.";
 
@@ -10835,11 +10868,29 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for Contact Support */
 "helpAndSupport.contactSupport.subtitle" = "Hilfe bei Problemen mit der App oder dem Shop erhalten";
 
+/* Description of the mobile status report on Help screen */
+"helpAndSupport.mobileStatusReport.description" = "App-, Geräte- und Shop-Informationen aus dieser App";
+
+/* View mobile status report cell title on Help screen */
+"helpAndSupport.mobileStatusReport.title" = "Statusbericht für Mobilgeräte";
+
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "Teste, ob deine Website mit der App funktioniert";
 
 /* Title for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.title" = "Website-Kompatibilität prüfen";
+
+/* Accessibility label for dismissing the HTTPS configuration warning. */
+"https-configuration-warning.dismiss" = "Schließen";
+
+/* Message in a persistent warning explaining that a merchant should configure their store address to use HTTPS. */
+"https-configuration-warning.https-supported-message" = "Dein Shop unterstützt HTTPS, aber die Shop-Adresse ist für die Verwendung von HTTP konfiguriert. Aktualisiere sie auf HTTPS, um deinen Shop zu schützen und Verbindungsprobleme zu vermeiden.";
+
+/* Button title that opens documentation about configuring HTTPS for a WooCommerce store. */
+"https-configuration-warning.learn-more" = "Weitere Informationen";
+
+/* Title of a persistent warning shown when a store reports an HTTP site address. */
+"https-configuration-warning.title" = "Shop absichern mit HTTPS";
 
 /* Title of the Bookings menu in the hub menu */
 "hubMenu.bookings" = "Buchungen";
@@ -10898,10 +10949,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay In Person payment gateway. */
 "inPersonPayments.cashOnDelivery.notSetUp.title" = "Möchtest du „Persönliche Zahlung“ zu deinem Web-Bezahlvorgang hinzufügen?";
 
+/* Error message when a Card Present Payments extension is not activated,
+shown to users who cannot activate it themselves. %1$@ is the extension name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"inPersonPaymentsPluginNotActivated.messageForNonAdministrator" = "Die %1$@-Erweiterung ist für deinen Shop installiert aber nicht aktiviert. Bitte einen Shop-Administrator, sie zu aktivieren, um persönliche Zahlungen zu erhalten.";
+
 /* Error message when WooPayments is not installed
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
 "inPersonPaymentsPluginNotInstalled.message" = "Bitte installiere die kostenlose WooPayments-Erweiterung in deinem Shop, um persönliche Zahlungen entgegenzunehmen.";
+
+/* Error message when WooPayments is not installed, shown to users who cannot install it themselves.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"inPersonPaymentsPluginNotInstalled.messageForNonAdministrator" = "Du benötigst die kostenlose WooCommerce Payments-Erweiterung in deinem Store, um persönliche Zahlungen entgegenzunehmen. Bitte einen Shop-Administrator, sie zu installieren.";
 
 /* Title for the error screen when WooPayments is not installed */
 "inPersonPaymentsPluginNotInstalled.title" = "WooPayments installieren";
@@ -11118,8 +11180,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the accessibility action to open the learn more screen, showing information about adding Pay in Person to their checkout. */
 "menu.payments.payInPerson.learnMore.link.accessibilityAction" = "Weitere Informationen";
 
+/* Cancel button of the confirmation alert shown when the merchant toggles the Pay In Person checkout payment option in the Payments menu. Tapping it leaves the payment method unchanged. */
+"menu.payments.payInPerson.toggle.confirmation.cancelButton" = "Abbrechen";
+
+/* Confirmation button of the alert shown when the merchant turns off the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.disableConfirmation.confirmButton" = "Deaktivieren";
+
+/* Message of the confirmation alert shown when the merchant turns off the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.disableConfirmation.message" = "Dadurch wird die Zahlungsmethode „Per Nachnahme“ beim Bezahlen in deinem Shop deaktiviert, sodass Kunden sie nicht auswählen können.";
+
+/* Title of the confirmation alert shown when the merchant turns off the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.disableConfirmation.title" = "„Persönliche Zahlung“ deaktivieren?";
+
 /* Error displayed when the attempt to disable a Pay In Person checkout payment option fails */
 "menu.payments.payInPerson.toggle.disableFailureNotice.title" = "Persönliche Zahlung konnte nicht deaktiviert werden. Bitte versuche es später erneut.";
+
+/* Confirmation button of the alert shown when the merchant turns on the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.enableConfirmation.confirmButton" = "Aktivieren";
+
+/* Message of the confirmation alert shown when the merchant turns on the Pay In Person checkout payment option and the payment method already has the default Pay in Person title */
+"menu.payments.payInPerson.toggle.enableConfirmation.message" = "Dadurch wird beim Bezahlen in deinem Shop die Zahlungsmethode „Per Nachnahme“ aktiviert.";
+
+/* Message of the confirmation alert shown when the merchant turns on the Pay In Person checkout payment option and the payment method has a custom title which will be replaced. %1$@ is a placeholder for the payment method's current customer-facing title, e.g. \"Cash on delivery\". %2$@ is a placeholder for the title it will be renamed to, e.g. \"Pay in Person\". */
+"menu.payments.payInPerson.toggle.enableConfirmation.messageRenameWithTitles" = "Dadurch wird die Zahlungsmethode „Per Nachnahme“ beim Bezahlen in deinem Shop aktiviert und für deine Kunden von „%1$@“ in „%2$@“ umbenannt, auch wenn sie auf deiner Website bezahlen.";
+
+/* Title of the confirmation alert shown when the merchant turns on the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.enableConfirmation.title" = "„Persönliche Zahlung“ aktivieren?";
 
 /* Error displayed when the attempt to enable a Pay In Person checkout payment option fails */
 "menu.payments.payInPerson.toggle.enableFailureNotice.title" = "Persönliche Zahlung konnte nicht aktiviert werden. Bitte versuche es später erneut.";
@@ -11153,6 +11239,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the section related to Woo Payments Payouts/Balances. */
 "menu.payments.wooPaymentsPayouts.section.title" = "WooPayments-Guthaben";
+
+/* Toast message shown after tapping Copy on the Mobile Status Report screen */
+"mobileStatusReportView.copiedToClipboard" = "Bericht zum Mobilgeräte-Status in die Zwischenablage kopiert";
+
+/* Navigation title of the mobile status report screen */
+"mobileStatusReportView.title" = "Statusbericht für Mobilgeräte";
 
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "Monat";
@@ -11527,6 +11619,15 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "Individueller Betrag";
 
+/* Button dismissing the error shown when a gift-card order cannot be refunded in the app */
+"orderDetails.issueRefund.giftCardUnsupported.alert.dismissButton" = "OK";
+
+/* Message explaining why an order paid with a gift card must be refunded from the store admin */
+"orderDetails.issueRefund.giftCardUnsupported.alert.message" = "Diese Bestellung wurde mit einer Geschenkkarte bezahlt. Mit dieser Rückerstattung wird das Geschenkkartenguthaben nicht wiederhergestellt. Für eine korrekte Abwicklung der Rückerstattung bearbeite sie bitte über den Shop-Administrator im Web.";
+
+/* Title shown when a merchant tries to refund an order paid with a gift card */
+"orderDetails.issueRefund.giftCardUnsupported.alert.title" = "Rückerstattung von deinem Shop-Administrator";
+
 /* Title in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.campaign" = "Kampagne";
 
@@ -11881,6 +11982,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "pointOfSale.cardPresent.modalScanningForReader.title" = "Suche nach Kartenlesegerät";
 
+/* Button dismissing the Tap to Pay payment cancellation confirmation in Point of Sale */
+"pointOfSale.cardPresent.paymentCancellationConfirmation.done.button.title" = "Fertig";
+
+/* Explains that Tap to Pay card reading succeeded but the payment was canceled in Point of Sale */
+"pointOfSale.cardPresent.paymentCancellationConfirmation.message" = "Es wurde keine Zahlung geleistet. Das „Tap to Pay“-Häkchen und der Signalton dienten nur der Bestätigung, dass die Karte gelesen wurde.";
+
+/* Title confirming that a Tap to Pay payment was canceled in Point of Sale */
+"pointOfSale.cardPresent.paymentCancellationConfirmation.title" = "Zahlung storniert";
+
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "Neue Bestellung";
 
@@ -12219,6 +12329,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "Gutschein nicht angewendet";
+
+/* Note shown on a custom amount row in the Point of Sale cart at checkout when a coupon is applied, since coupons never discount custom amounts. */
+"pointOfSale.customAmountRow.discountNotApplied" = "Rabatt nicht angewendet";
 
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "Erneute Verbindung abbrechen";
@@ -12913,6 +13026,9 @@ which should be translated separately and considered part of this sentence. */
 /* A title for the view that selects the type of coupon to create */
 "pos.couponCreationSheet.selectCoupon.title" = "Gutschein erstellen";
 
+/* Button on the exit Point of Sale modal that dismisses it without exiting Point of Sale. */
+"pos.exitPOSModal.cancelButton" = "Abbrechen";
+
 /* Accessibility label for the button to close the exit Point of Sale modal alert. */
 "pos.exitPOSModal.closeButton.accessibilityLabel" = "Schließen";
 
@@ -13541,6 +13657,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry fetching the server-calculated refund total on the refund item-selection step */
 "pos.refundItemsSelectionView.retryButton" = "Erneut versuchen";
 
+/* Button to reload the refundable items after the store rejected the refund because the order changed */
+"pos.refundItemsSelectionView.reviewRemainingItemsButton" = "Verbleibende Artikel überprüfen";
+
 /* Accessibility label for the select-all checkbox in the refund items selection modal */
 "pos.refundItemsSelectionView.selectAll.accessibilityLabel" = "Alle Elemente aus- oder abwählen";
 
@@ -13564,6 +13683,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown when POS cannot confirm whether a card-present refund was recorded successfully. */
 "pos.refundModalContentView.cardPresentCreateError.title" = "Rückerstattung konnte nicht bestätigt werden";
+
+/* Button to reload the refundable items after the store rejected the refund because the order changed */
+"pos.refundModalContentView.reviewRemainingItemsButton" = "Verbleibende Artikel überprüfen";
 
 /* Accessibility label for the back button on the nothing to refund screen */
 "pos.refundNothingToRefundView.backButton.accessibilityLabel" = "Zurück";
@@ -14366,8 +14488,14 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for the stock items with no items sold on the Stock section on the My Store screen. */
 "productStockDashboardCard.item.subtitle.zero" = "Kein Artikel in den letzten 30 Tagen verkauft";
 
+/* Time when the Stock dashboard card was last updated */
+"productStockDashboardCard.lastUpdated" = "Zuletzt aktualisiert: %1$@";
+
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.products" = "Produkte";
+
+/* Message on the Stock dashboard card when a refresh fails; includes the last updated time */
+"productStockDashboardCard.refreshFailed" = "Aktualisierung fehlgeschlagen ・ Zuletzt aktualisiert: %1$@";
 
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.status" = "Status";
@@ -14738,6 +14866,24 @@ which should be translated separately and considered part of this sentence. */
 /* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123 on MyStoreName' */
 "receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName" = "%1$@: Beleg für Bestellung #%2$@ bei %3$@";
 
+/* Error shown when a refund is rejected because the refund amount is not valid. */
+"refundAPIError.invalidRefundAmount" = "Der Erstattungsbetrag ist nicht gültig.";
+
+/* Error shown when a refund is rejected because the order status does not allow refunds or nothing refundable remains. */
+"refundAPIError.orderNotRefundable" = "Diese Bestellung kann nicht rückerstattet werden.";
+
+/* Error shown when a refund is rejected because the selected quantity exceeds what is still refundable for an item. */
+"refundAPIError.quantityExceedsRefundable" = "Die ausgewählte Menge ist größer als die verbleibende Menge, die zurückerstattet werden muss.";
+
+/* Error shown when a refund is rejected because the requested total exceeds the order's remaining refundable amount. */
+"refundAPIError.refundExceedsRemaining" = "Der rückerstattete Betrag ist höher als der verbleibende Rückerstattungsbetrag für diese Bestellung.";
+
+/* Error shown when a refund is rejected because the requested amount exceeds what is left to refund on an item. */
+"refundAPIError.refundTotalExceedsLine" = "Der rückerstattete Betrag ist höher als der verbleibende Rückerstattungsbetrag für diesen Artikel.";
+
+/* Error shown when a refund is rejected because one of the selected items is already fully refunded. */
+"refundAPIError.selectedItemAlreadyRefunded" = "Einer der ausgewählten Artikel wurde bereits vollständig rückerstattet.";
+
 /* Title on the refund screen that lists the custom amounts total cost */
 "refundCustomAmountsDetails.totalTitle" = "Rückerstattung der individuellen Beträge";
 
@@ -14972,6 +15118,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver value announced for an unselected checkbox. */
 "storeCheckbox.accessibilityValue.unchecked" = "Nicht aktiviert";
+
+/* Default accessibility label for dismissing a store notice banner. */
+"storeNoticeBanner.dismiss.accessibilityLabel" = "Schließen";
 
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "Alle %1$d Aufgaben anzeigen";

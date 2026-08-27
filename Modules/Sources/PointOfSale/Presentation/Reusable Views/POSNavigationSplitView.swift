@@ -15,6 +15,10 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     /// Distance the in-progress back drag has travelled towards the sidebar, always positive
     /// however the layout runs. Zero whenever no drag is in flight.
     @State private var dragTranslation: CGFloat = 0
+    @State private var dragPhase: DragPhase = .idle
+    /// Resets itself when the drag ends *or is cancelled*, which is the only signal a cancelled
+    /// drag gives us. See `DragPhase`.
+    @GestureState private var isDragActive = false
 
     private let sidebar: (Binding<SelectionValue?>) -> Sidebar
     private let detail: (SelectionValue, Binding<NavigationPath>) -> Detail
@@ -105,14 +109,25 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
             }
             .offset(x: edgeSwipePolicy.incomingOffset(progress: progress, totalWidth: totalWidth))
             .simultaneousGesture(
-                compactBackGesture(
-                    totalWidth: totalWidth,
-                    globalFrame: geometry.frame(in: .global)
-                ),
+                compactBackGesture(totalWidth: totalWidth),
                 isEnabled: isCompactBackGestureActive
             )
         }
+        // Anchors the gesture's coordinates to this view rather than to the window. `.global` is
+        // only the same thing as "this split view" when the window fills the screen, which is why
+        // measuring the edge against it worked on a phone and failed in a collapsed iPad window.
+        .coordinateSpace(.named(Constants.coordinateSpaceName))
         .animation(Constants.paneTransition, value: selection != nil)
+        .onChange(of: isDragActive) { _, isActive in
+            // A cancelled drag delivers no `onEnded`, so nothing else will put the panes back.
+            // Still `.dragging` here means `onEnded` never ran and this is that case; any other
+            // phase means it did run and has already decided what happens next.
+            guard !isActive, dragPhase == .dragging else { return }
+            dragPhase = .idle
+            withAnimation(Constants.paneTransition) {
+                dragTranslation = 0
+            }
+        }
         .onAppear {
             if isRegular, selection == nil {
                 setDefaultValue?()
@@ -167,27 +182,43 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
         .allowsHitTesting(false)
     }
 
+    /// Where a back drag is in its life cycle.
+    ///
+    /// `onEnded` is not guaranteed to arrive: a drag that is cancelled rather than ended delivers
+    /// no callback at all. Tracking the phase lets a cancelled drag be told apart from one that
+    /// `onEnded` has already taken responsibility for, so the panes are never left stranded
+    /// part-way across.
+    private enum DragPhase {
+        case idle
+        case dragging
+        case completing
+    }
+
     private var isCompactBackGestureActive: Bool {
         !isRegular && selection != nil && detailNavigationPath.isEmpty && isCompactBackGestureEnabled
     }
 
-    private func compactBackGesture(totalWidth: CGFloat, globalFrame: CGRect) -> some Gesture {
+    private func compactBackGesture(totalWidth: CGFloat) -> some Gesture {
         DragGesture(
             minimumDistance: POSEdgeSwipePolicy.minimumDragDistance,
-            coordinateSpace: .global
+            coordinateSpace: .named(Constants.coordinateSpaceName)
         )
+        .updating($isDragActive) { _, isActive, _ in
+            isActive = true
+        }
         .onChanged { value in
-            guard startsAtLeadingEdge(value.startLocation.x, globalFrame: globalFrame),
+            guard edgeSwipePolicy.startsAtLeadingEdge(value.startLocation.x, totalWidth: totalWidth),
                   edgeSwipePolicy.isPredominantlyHorizontal(value.translation) else {
                 return
             }
+            dragPhase = .dragging
             dragTranslation = edgeSwipePolicy.clampedTranslation(
                 value.translation.width,
                 totalWidth: totalWidth
             )
         }
         .onEnded { value in
-            guard startsAtLeadingEdge(value.startLocation.x, globalFrame: globalFrame) else { return }
+            guard edgeSwipePolicy.startsAtLeadingEdge(value.startLocation.x, totalWidth: totalWidth) else { return }
             let shouldNavigateBack = edgeSwipePolicy.isPredominantlyHorizontal(value.translation)
                 && edgeSwipePolicy.shouldComplete(
                     translation: value.translation.width,
@@ -196,6 +227,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                 )
 
             if shouldNavigateBack {
+                dragPhase = .completing
                 withAnimation(Constants.paneTransition, completionCriteria: .logicallyComplete) {
                     dragTranslation = totalWidth
                 } completion: {
@@ -208,8 +240,10 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                         selection = nil
                         dragTranslation = 0
                     }
+                    dragPhase = .idle
                 }
             } else {
+                dragPhase = .idle
                 withAnimation(Constants.paneTransition) {
                     dragTranslation = 0
                 }
@@ -220,15 +254,12 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     private var edgeSwipePolicy: POSEdgeSwipePolicy {
         POSEdgeSwipePolicy(layoutDirection: layoutDirection)
     }
-
-    /// The gesture tracks in global space, because the container it is attached to is itself
-    /// offset. Rebase onto the container before asking the policy about the edge.
-    private func startsAtLeadingEdge(_ xPosition: CGFloat, globalFrame: CGRect) -> Bool {
-        edgeSwipePolicy.startsAtLeadingEdge(xPosition - globalFrame.minX, totalWidth: globalFrame.width)
-    }
 }
 
 private enum Constants {
+    /// Names this split view's own coordinate space, so the back gesture can measure the leading
+    /// edge against the view it belongs to instead of against the window.
+    static let coordinateSpaceName = "POSNavigationSplitView"
     static let sidebarWidthFraction: CGFloat = 0.35
     static let sidebarDimOpacity: CGFloat = 0.12
     static let leadingEdgeShadowWidth: CGFloat = 12

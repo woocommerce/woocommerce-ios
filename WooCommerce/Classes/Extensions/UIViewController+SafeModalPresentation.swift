@@ -9,22 +9,20 @@ import UIKit
 /// re-triggers of the same user intent, so dropping the duplicate presentation is the safe response.
 ///
 extension UIViewController {
-    /// Presents the given view controller only when no other modal is attached to this presenter.
-    /// The presentation is dropped otherwise.
+    /// Presents the given view controller only when no other modal is attached to this presenter —
+    /// including one still mid-transition. The presentation is dropped otherwise.
     ///
-    /// A `UIAlertController` that is already being dismissed does not block the presentation, so
-    /// that presenting from an alert action handler keeps working regardless of whether UIKit
-    /// invokes the handler during or after the alert's dismissal.
+    /// Presenting from a `UIAlertController` action handler is compatible with this guard: UIKit
+    /// invokes action handlers after the alert's dismissal completes, when `presentedViewController`
+    /// is already `nil`.
     ///
     func presentIfIdle(_ viewControllerToPresent: UIViewController,
                        animated: Bool = true,
                        completion: (() -> Void)? = nil) {
-        if let presented = presentedViewController {
-            guard presented is UIAlertController, presented.isBeingDismissed else {
-                DDLogWarn("⚠️ Dropped modal presentation of \(type(of: viewControllerToPresent)): " +
-                          "already presenting \(type(of: presented))")
-                return
-            }
+        guard presentedViewController == nil else {
+            DDLogWarn("⚠️ Dropped modal presentation of \(type(of: viewControllerToPresent)): " +
+                      "already presenting \(type(of: presentedViewController!))")
+            return
         }
         present(viewControllerToPresent, animated: animated, completion: completion)
     }

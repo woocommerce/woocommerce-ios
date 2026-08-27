@@ -58,7 +58,7 @@ struct UIViewControllerSafeModalPresentationTests {
     }
 
     @Test
-    func presentIfIdle_when_an_alert_is_being_dismissed_then_presents() {
+    func presentIfIdle_when_an_alert_is_being_dismissed_then_drops_the_presentation() {
         // Given
         let presenter = PresenterSpy()
         presenter.presentedViewControllerStub = DismissingAlertControllerStub(title: nil, message: nil, preferredStyle: .alert)
@@ -68,8 +68,7 @@ struct UIViewControllerSafeModalPresentationTests {
         presenter.presentIfIdle(modal, animated: false)
 
         // Then
-        #expect(presenter.presentCalls.count == 1)
-        #expect(presenter.presentCalls.first === modal)
+        #expect(presenter.presentCalls.isEmpty)
     }
 
     // MARK: dismissPresentedIfNeeded

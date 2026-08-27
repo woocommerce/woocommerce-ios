@@ -362,7 +362,12 @@ struct POSPaymentLoadingView: View {
                     .accessibilityFocused($isMessageFocused)
                     .matchedGeometryEffect(id: animation.messageTransitionId, in: animation.namespace, properties: .position)
             }
-            .transaction { $0.animation = nil }
+            // Swapping the strings as the flow advances should be instant rather than cross-faded.
+            // Keyed on the strings themselves so it suppresses only that: a bare `transaction` here
+            // strips the animation from every transaction reaching this subtree, including an
+            // ancestor's insertion transition, which left the text snapping to its final position
+            // while the screen behind it was still moving in.
+            .transaction(value: [title, message]) { $0.animation = nil }
         }
         .multilineTextAlignment(.center)
         .onAppear {

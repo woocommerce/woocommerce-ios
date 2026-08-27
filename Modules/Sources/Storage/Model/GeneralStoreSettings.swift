@@ -112,11 +112,6 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var posCatalogFileBlockedByHostAt: Date?
 
-    /// The last time the sunset warning banner was dismissed for this store.
-    /// Used to throttle the banner to once every 14 days.
-    ///
-    public var lastSunsetWarningDismissedDate: Date?
-
     /// Whether the site last reported an HTTP URL that the app had to normalize to HTTPS.
     public var requiresHTTPSConfigurationUpdate: Bool?
 
@@ -149,7 +144,6 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 firstPOSCatalogSyncDate: Date? = nil,
                 syncPOSCatalogOverCellular: Bool = true,
                 posCatalogFileBlockedByHostAt: Date? = nil,
-                lastSunsetWarningDismissedDate: Date? = nil,
                 requiresHTTPSConfigurationUpdate: Bool? = nil,
                 lastHTTPSConfigurationWarningDismissedDate: Date? = nil) {
         self.storeID = storeID
@@ -178,7 +172,6 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.firstPOSCatalogSyncDate = firstPOSCatalogSyncDate
         self.syncPOSCatalogOverCellular = syncPOSCatalogOverCellular
         self.posCatalogFileBlockedByHostAt = posCatalogFileBlockedByHostAt
-        self.lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate
         self.requiresHTTPSConfigurationUpdate = requiresHTTPSConfigurationUpdate
         self.lastHTTPSConfigurationWarningDismissedDate = lastHTTPSConfigurationWarningDismissedDate
     }
@@ -208,7 +201,6 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              lastPOSOpenedDate: lastPOSOpenedDate,
                              firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
                              posCatalogFileBlockedByHostAt: posCatalogFileBlockedByHostAt,
-                             lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
                              requiresHTTPSConfigurationUpdate: requiresHTTPSConfigurationUpdate,
                              lastHTTPSConfigurationWarningDismissedDate: lastHTTPSConfigurationWarningDismissedDate)
     }
@@ -251,7 +243,6 @@ extension GeneralStoreSettings {
         self.firstPOSCatalogSyncDate = try container.decodeIfPresent(Date.self, forKey: .firstPOSCatalogSyncDate)
         self.syncPOSCatalogOverCellular = try container.decodeIfPresent(Bool.self, forKey: .syncPOSCatalogOverCellular) ?? true
         self.posCatalogFileBlockedByHostAt = try container.decodeIfPresent(Date.self, forKey: .posCatalogFileBlockedByHostAt)
-        self.lastSunsetWarningDismissedDate = try container.decodeIfPresent(Date.self, forKey: .lastSunsetWarningDismissedDate)
         self.requiresHTTPSConfigurationUpdate = try container.decodeIfPresent(Bool.self, forKey: .requiresHTTPSConfigurationUpdate)
         self.lastHTTPSConfigurationWarningDismissedDate = try container.decodeIfPresent(Date.self,
                                                                                           forKey: .lastHTTPSConfigurationWarningDismissedDate)

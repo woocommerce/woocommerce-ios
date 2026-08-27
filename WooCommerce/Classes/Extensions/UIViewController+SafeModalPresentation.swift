@@ -10,7 +10,8 @@ import UIKit
 ///
 extension UIViewController {
     /// Presents the given view controller only when no other modal is attached to this presenter —
-    /// including one still mid-transition. The presentation is dropped otherwise.
+    /// including one still mid-transition. The presentation is dropped otherwise, in which case
+    /// `completion` is never called.
     ///
     /// Presenting from a `UIAlertController` action handler is compatible with this guard: UIKit
     /// invokes action handlers after the alert's dismissal completes, when `presentedViewController`
@@ -19,15 +20,17 @@ extension UIViewController {
     func presentIfIdle(_ viewControllerToPresent: UIViewController,
                        animated: Bool = true,
                        completion: (() -> Void)? = nil) {
-        guard presentedViewController == nil else {
+        if let presented = presentedViewController {
             DDLogWarn("⚠️ Dropped modal presentation of \(type(of: viewControllerToPresent)): " +
-                      "already presenting \(type(of: presentedViewController!))")
+                      "already presenting \(type(of: presented))")
             return
         }
         present(viewControllerToPresent, animated: animated, completion: completion)
     }
 
     /// Dismisses the currently presented view controller unless a dismissal is already in flight.
+    /// When there is nothing to dismiss, or the dismissal is already in flight, `completion` is
+    /// never called.
     ///
     func dismissPresentedIfNeeded(animated: Bool = true, completion: (() -> Void)? = nil) {
         guard let presented = presentedViewController, !presented.isBeingDismissed else {

@@ -1069,11 +1069,18 @@ private extension ProductFormViewController {
                 DDLogError("⛔️ Error updating Product: \(error)")
 
                 // Dismisses the in-progress UI then presents the error alert.
-                self?.navigationController?.dismiss(animated: true) {
+                // On the retry path no in-progress UI is shown, and `dismiss` does not call its
+                // completion when there is nothing to dismiss — so present the alert directly instead.
+                let presentErrorAlert: () -> Void = {
                     self?.displayProductSavingErrorAlert(error: error, onRetry: {
                         self?.saveProductRemotely(status: status, onCompletion: onCompletion)
                     })
                     onCompletion(.failure(error))
+                }
+                if let navigationController = self?.navigationController, navigationController.presentedViewController != nil {
+                    navigationController.dismiss(animated: true, completion: presentErrorAlert)
+                } else {
+                    presentErrorAlert()
                 }
             case .success:
                 // Presents the confirmation alert
@@ -1093,7 +1100,9 @@ private extension ProductFormViewController {
 
                 // Dismisses the in-progress UI, deferring the completion until the dismissal finishes
                 // so that completion handlers can present another modal safely (WOOMOB-3923).
-                if let navigationController = self?.navigationController {
+                // On the retry path no in-progress UI is shown, and `dismiss` does not call its
+                // completion when there is nothing to dismiss — so complete directly instead.
+                if let navigationController = self?.navigationController, navigationController.presentedViewController != nil {
                     navigationController.dismiss(animated: true) {
                         onCompletion(.success(()))
                     }

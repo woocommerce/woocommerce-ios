@@ -58,10 +58,10 @@ struct UIViewControllerSafeModalPresentationTests {
     }
 
     @Test
-    func presentIfIdle_when_an_alert_is_being_dismissed_then_drops_the_presentation() {
+    func presentIfIdle_when_a_modal_is_being_dismissed_then_drops_the_presentation() {
         // Given
         let presenter = PresenterSpy()
-        presenter.presentedViewControllerStub = DismissingAlertControllerStub(title: nil, message: nil, preferredStyle: .alert)
+        presenter.presentedViewControllerStub = DismissingViewControllerStub()
 
         // When
         let modal = UIViewController()
@@ -105,13 +105,14 @@ struct UIViewControllerSafeModalPresentationTests {
     func dismissPresentedIfNeeded_when_dismissal_is_in_flight_then_does_not_dismiss_again() {
         // Given
         let presenter = PresenterSpy()
-        presenter.presentedViewControllerStub = DismissingAlertControllerStub(title: nil, message: nil, preferredStyle: .alert)
+        let presented = DismissingViewControllerStub()
+        presenter.presentedViewControllerStub = presented
 
         // When
         presenter.dismissPresentedIfNeeded(animated: false)
 
         // Then
-        #expect(presenter.dismissCallCount == 0)
+        #expect(presented.dismissCallCount == 0)
     }
 }
 
@@ -153,9 +154,9 @@ private final class PresenterSpy: UIViewController {
     }
 }
 
-/// An alert that reports an in-flight dismissal. `dismissCallCount` is tracked on the alert
-/// because `dismissPresentedIfNeeded` dismisses the presented controller directly.
-private final class DismissingAlertControllerStub: UIAlertController {
+/// A view controller that reports an in-flight dismissal. `dismissCallCount` is tracked on the
+/// presented controller because `dismissPresentedIfNeeded` dismisses it directly.
+private final class DismissingViewControllerStub: UIViewController {
     private(set) var dismissCallCount = 0
 
     override var isBeingDismissed: Bool {
@@ -164,11 +165,5 @@ private final class DismissingAlertControllerStub: UIAlertController {
 
     override func dismiss(animated flag: Bool, completion: (() -> Void)? = nil) {
         dismissCallCount += 1
-    }
-}
-
-private extension PresenterSpy {
-    var dismissCallCount: Int {
-        (presentedViewControllerStub as? DismissingAlertControllerStub)?.dismissCallCount ?? 0
     }
 }

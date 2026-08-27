@@ -284,8 +284,13 @@ struct ProductSelectorView: View {
                            viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
 
+                ProgressView()
+                    .renderedIf(rowViewModel.selectedState == .verifying)
+
                 ConfigurationIndicator()
-                    .renderedIf(rowViewModel.isConfigurable && configuration.treatsAllProductsAsSimple == false)
+                    .renderedIf(rowViewModel.isConfigurable
+                                && configuration.treatsAllProductsAsSimple == false
+                                && rowViewModel.selectedState != .verifying)
                     .onAppear {
                         guard !hasTrackedBundleProductConfigureCTAShownEvent else {
                             return
@@ -300,6 +305,10 @@ struct ProductSelectorView: View {
                     }
             }
             .onTapGesture {
+                guard rowViewModel.selectedState != .verifying else {
+                    return
+                }
+
                 if let configure = rowViewModel.configure, rowViewModel.isConfigurable,
                    configuration.treatsAllProductsAsSimple == false {
                     configure()

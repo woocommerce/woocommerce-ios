@@ -265,12 +265,18 @@ final class OrdersRootViewController: UIViewController {
             self?.handleScannedBarcode(scannedBarcode) { [weak self] result in
                 guard let self else { return }
                 switch result {
-                case let .success(product):
-                    self.analytics.track(event: .Orders.orderProductAdd(flow: .creation,
-                                                                                         source: .orderList,
-                                                                                         addedVia: .scanning,
-                                                                                         includesBundleProductConfiguration: false))
-                    self.presentOrderCreationFlowWithScannedProduct(product)
+                case let .success(item):
+                    // The scanner never passes through the selector, so refuse restricted products
+                    // here and explain why on the order list, rather than opening an empty order.
+                    if case let .product(product) = item, let restriction = ProductRestriction.restriction(for: product) {
+                        self.displayRestrictedScannedProductNotice(restriction)
+                    } else {
+                        self.analytics.track(event: .Orders.orderProductAdd(flow: .creation,
+                                                                            source: .orderList,
+                                                                            addedVia: .scanning,
+                                                                            includesBundleProductConfiguration: false))
+                        self.presentOrderCreationFlowWithScannedProduct(item)
+                    }
                 case let .failure(error):
                     self.displayScannedProductErrorNotice(error, code: scannedBarcode)
                 }
@@ -306,6 +312,13 @@ final class OrdersRootViewController: UIViewController {
             self?.presentOrderCreationFlowByProductScanning()
         }
 
+        ordersViewController.showErrorNotice(notice, in: self)
+    }
+
+    /// Presents a notice on the order list when a scanned product cannot be added to an order.
+    ///
+    private func displayRestrictedScannedProductNotice(_ restriction: ProductRestriction) {
+        let notice = Notice(title: restriction.reason)
         ordersViewController.showErrorNotice(notice, in: self)
     }
 

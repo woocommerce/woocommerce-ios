@@ -104,6 +104,32 @@ struct ProductsSplitViewCoordinatorTests {
     }
 
     @Test
+    func test_hidePrimaryNavigationBarWhenInteractionCompletes_when_swipe_completes_then_hides_the_bar() throws {
+        // Given
+        let (sut, primaryNavigationController, _) = try makeSUT()
+        primaryNavigationController.setNavigationBarHidden(false, animated: false)
+
+        // When
+        sut.hidePrimaryNavigationBarWhenInteractionCompletes(isCancelled: false)
+
+        // Then
+        #expect(primaryNavigationController.isNavigationBarHidden)
+    }
+
+    @Test
+    func test_hidePrimaryNavigationBarWhenInteractionCompletes_when_swipe_is_cancelled_then_leaves_the_bar_visible() throws {
+        // Given
+        let (sut, primaryNavigationController, _) = try makeSUT()
+        primaryNavigationController.setNavigationBarHidden(false, animated: false)
+
+        // When
+        sut.hidePrimaryNavigationBarWhenInteractionCompletes(isCancelled: true)
+
+        // Then
+        #expect(primaryNavigationController.isNavigationBarHidden == false)
+    }
+
+    @Test
     func test_cancelProductSearch_when_navigation_bar_is_hidden_then_restores_it() throws {
         // Given
         let (sut, primaryNavigationController, _) = try makeSUT()

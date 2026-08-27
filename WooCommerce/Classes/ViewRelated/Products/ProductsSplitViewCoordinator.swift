@@ -88,6 +88,17 @@ final class ProductsSplitViewCoordinator: NSObject {
         reconcilePrimaryNavigationBarVisibility(afterShowing: productsViewController, in: primaryNavigationController)
     }
 
+    /// Hides the primary navigation bar once an interactive pop back to Product Search commits.
+    ///
+    /// A cancelled gesture leaves the bar alone, because Product Detail stays on screen and keeps needing it.
+    /// Extracted from the transition coordinator callback so the completed and cancelled cases can be tested.
+    func hidePrimaryNavigationBarWhenInteractionCompletes(isCancelled: Bool) {
+        guard !isCancelled else {
+            return
+        }
+        primaryNavigationController.setNavigationBarHiddenIfNeeded(true, animated: false)
+    }
+
     /// Returns the product form of the given product ID being displayed on the secondary column if available.
     func currentProductForm(for productID: Int64) -> ProductFormViewController<ProductFormViewModel>? {
         if let contentType = contentTypes.last,
@@ -353,10 +364,7 @@ private extension ProductsSplitViewCoordinator {
            let transitionCoordinator = navigationController.transitionCoordinator,
            transitionCoordinator.isInteractive {
             transitionCoordinator.notifyWhenInteractionChanges { [weak self] context in
-                guard !context.isCancelled else {
-                    return
-                }
-                self?.primaryNavigationController.setNavigationBarHiddenIfNeeded(true, animated: false)
+                self?.hidePrimaryNavigationBarWhenInteractionCompletes(isCancelled: context.isCancelled)
             }
             return
         }

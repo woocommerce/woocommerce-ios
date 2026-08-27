@@ -3,6 +3,7 @@
 
 25.6
 -----
+- [*] Orders: Product search results in the order form are now scrollable and selectable on iPhone in landscape. [https://github.com/woocommerce/woocommerce-ios/pull/17693]
 - [*] Fixed the swipe-back gesture sometimes failing when returning from detail screens. [https://github.com/woocommerce/woocommerce-ios/pull/17749]
 - [*] Analytics Hub: Fixed the interactive swipe-back gesture not working when opened from the Dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17755]
 - [*] Orders: Totals for orders in a currency other than the store default now show the currency code (e.g. "$10.00 CAD"), so orders that share the "$" symbol are no longer ambiguous. [https://github.com/woocommerce/woocommerce-ios/pull/17758]

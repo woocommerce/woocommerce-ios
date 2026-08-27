@@ -372,6 +372,7 @@ private struct POSSettingsDetailPage<Content: View>: View {
         }
         .background(backgroundColor)
         .navigationBarBackButtonHidden(true)
+        .posEdgeSwipeBackAction(onBack: onBack)
     }
 }
 

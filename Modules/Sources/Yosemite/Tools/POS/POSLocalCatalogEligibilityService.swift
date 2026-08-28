@@ -46,7 +46,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         guard await betaFeatureToggleProvider() else {
             // If the user changes the toggle, we should respond to that immediately, ignoring the cache. It's cheap to check.
             DDLogInfo("📋 POSLocalCatalogEligibilityService: Local catalog beta toggle disabled for site \(siteID)")
-            return .ineligible(reason: .featureFlagDisabled)
+            return .ineligible(reason: .betaFeatureDisabled)
         }
 
         if let cached = eligibilityStates[siteID] {
@@ -115,12 +115,12 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             return state
         }
 
-        let (isRemoteEnabled, isBetaToggleEnabled) = await featureFlagSettings()
+        let (isRemoteEnabled, isBetaToggleEnabled) = await betaFeatureAvailability()
         guard isRemoteEnabled, isBetaToggleEnabled else {
-            let state = POSLocalCatalogEligibilityState.ineligible(reason: .featureFlagDisabled)
+            let state = POSLocalCatalogEligibilityState.ineligible(reason: .betaFeatureDisabled)
             eligibilityStates[siteID] = state
-            DDLogInfo("📋 POSLocalCatalogEligibilityService: Local catalog feature flags disabled for site \(siteID) " +
-                      "(remote: \(isRemoteEnabled), betaToggle: \(isBetaToggleEnabled))")
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: Local catalog disabled for site \(siteID) " +
+                      "(remote flag: \(isRemoteEnabled), beta toggle: \(isBetaToggleEnabled))")
             return state
         }
 
@@ -175,12 +175,12 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
 
     /// Whether the local catalog feature is enabled based on locally available signals only.
     public func isLocalCatalogFeatureEnabled() async -> Bool {
-        let (isRemoteEnabled, isBetaToggleEnabled) = await featureFlagSettings()
+        let (isRemoteEnabled, isBetaToggleEnabled) = await betaFeatureAvailability()
         return isRemoteEnabled && isBetaToggleEnabled
     }
 
-    private func featureFlagSettings() async -> (Bool, Bool) {
-        // Check feature flags - remote flag and beta toggle must both be enabled
+    private func betaFeatureAvailability() async -> (Bool, Bool) {
+        // The remote feature flag and the user-facing beta toggle must both be enabled
         let isRemoteEnabled = await isRemoteCatalogFeatureFlagEnabled()
         let isBetaToggleEnabled = await betaFeatureToggleProvider()
         return (isRemoteEnabled, isBetaToggleEnabled)

@@ -222,8 +222,8 @@ struct POSLocalCatalogEligibilityServiceTests {
             return
         }
 
-        guard case .featureFlagDisabled = reason else {
-            Issue.record("Expected featureFlagDisabled reason")
+        guard case .betaFeatureDisabled = reason else {
+            Issue.record("Expected betaFeatureDisabled reason")
             return
         }
 
@@ -262,8 +262,8 @@ struct POSLocalCatalogEligibilityServiceTests {
             return
         }
 
-        guard case .featureFlagDisabled = reason else {
-            Issue.record("Expected featureFlagDisabled reason")
+        guard case .betaFeatureDisabled = reason else {
+            Issue.record("Expected betaFeatureDisabled reason")
             return
         }
     }
@@ -371,7 +371,7 @@ struct POSLocalCatalogEligibilityServiceTests {
     @Test("POSLocalCatalogIneligibleReason skipReason returns correct analytics string")
     func testSkipReasonReturnsCorrectAnalyticsString() {
         #expect(POSLocalCatalogIneligibleReason.posTabNotEligible.skipReason == "pos_not_eligible")
-        #expect(POSLocalCatalogIneligibleReason.featureFlagDisabled.skipReason == "feature_flag_disabled")
+        #expect(POSLocalCatalogIneligibleReason.betaFeatureDisabled.skipReason == "feature_flag_disabled")
         #expect(POSLocalCatalogIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "10.5.0").skipReason == "unsupported_woocommerce_version")
         #expect(POSLocalCatalogIneligibleReason.catalogSizeCheckFailed(underlyingError: "error").skipReason == "catalog_size_check_failed")
     }

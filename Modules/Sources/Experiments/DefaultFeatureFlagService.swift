@@ -13,8 +13,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .searchProductsBySKU:
-            return true
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,

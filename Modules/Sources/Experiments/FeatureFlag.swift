@@ -26,10 +26,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case updateOrderOptimistically
 
-    /// Enables searching products by partial SKU for WC version 6.6+.
-    ///
-    case searchProductsBySKU
-
     /// Enables Tap to Pay on iPhone flow in In-Person Payments, on eligible devices.
     /// This flag needs to be retained, as we cannot enable TTPoI on the Enterprise certificate,
     /// so `.alpha` builds must be excluded.

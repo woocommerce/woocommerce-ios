@@ -115,10 +115,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case scanToUpdateInventory
 
-    /// Displays the Products tab in a split view
-    ///
-    case splitViewInProductsTab
-
     /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale

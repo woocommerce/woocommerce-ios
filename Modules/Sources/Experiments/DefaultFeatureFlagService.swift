@@ -45,8 +45,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .scanToUpdateInventory:
             return true
-        case .splitViewInProductsTab:
-            return true
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .googleAdsCampaignCreationOnWebView:

@@ -167,10 +167,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case ciabBookings
 
-    /// Enables using the catalog API endpoint for Point of Sale catalog full sync
-    ///
-    case pointOfSaleCatalogAPI
-
     /// Enables POS staff roles and permissions (PIN access, lock screen, capability-based gating)
     ///
     case pointOfSaleRoles

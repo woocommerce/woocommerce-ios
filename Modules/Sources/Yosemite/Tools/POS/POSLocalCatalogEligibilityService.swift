@@ -4,8 +4,6 @@ import WooFoundationCore
 
 public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
     private let systemStatusService: POSSystemStatusServiceProtocol
-    private let isLocalCatalogFeatureFlagEnabled: Bool
-    private let isCatalogAPIFeatureFlagEnabled: Bool
     private let remoteFeatureFlagProvider: @Sendable () async -> Bool
     private let betaFeatureToggleProvider: @Sendable () async -> Bool
     private let syncStatusChecker: POSCatalogSyncStatusCheckerProtocol?
@@ -22,22 +20,17 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     /// Initialize eligibility service
     /// - Parameters:
     ///   - systemStatusService: Service to check WooCommerce plugin version
-    ///   - isLocalCatalogFeatureFlagEnabled: Whether the local catalog feature flag is enabled
     ///   - remoteFeatureFlagProvider: Async closure that fetches the remote feature flag value
     ///   - betaFeatureToggleProvider: Async closure that fetches the beta feature toggle value from app settings
     ///   - syncStatusChecker: Checks whether a full catalog sync completed for a site.
     ///     Used to keep the local catalog usable when remote eligibility checks fail (e.g. offline).
     public init(
         systemStatusService: POSSystemStatusServiceProtocol,
-        isLocalCatalogFeatureFlagEnabled: Bool,
-        isCatalogAPIFeatureFlagEnabled: Bool = false,
         remoteFeatureFlagProvider: @escaping @Sendable () async -> Bool,
         betaFeatureToggleProvider: @escaping @Sendable () async -> Bool,
         syncStatusChecker: POSCatalogSyncStatusCheckerProtocol? = nil
     ) {
         self.systemStatusService = systemStatusService
-        self.isLocalCatalogFeatureFlagEnabled = isLocalCatalogFeatureFlagEnabled
-        self.isCatalogAPIFeatureFlagEnabled = isCatalogAPIFeatureFlagEnabled
         self.remoteFeatureFlagProvider = remoteFeatureFlagProvider
         self.betaFeatureToggleProvider = betaFeatureToggleProvider
         self.syncStatusChecker = syncStatusChecker
@@ -122,12 +115,12 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             return state
         }
 
-        let (isLocalCatalogFeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled) = await featureFlagSettings()
-        guard isLocalCatalogFeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled else {
+        let (isRemoteEnabled, isBetaToggleEnabled) = await featureFlagSettings()
+        guard isRemoteEnabled, isBetaToggleEnabled else {
             let state = POSLocalCatalogEligibilityState.ineligible(reason: .featureFlagDisabled)
             eligibilityStates[siteID] = state
             DDLogInfo("📋 POSLocalCatalogEligibilityService: Local catalog feature flags disabled for site \(siteID) " +
-                      "(local: \(isLocalCatalogFeatureFlagEnabled), remote: \(isRemoteEnabled), betaToggle: \(isBetaToggleEnabled))")
+                      "(remote: \(isRemoteEnabled), betaToggle: \(isBetaToggleEnabled))")
             return state
         }
 
@@ -182,15 +175,15 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
 
     /// Whether the local catalog feature is enabled based on locally available signals only.
     public func isLocalCatalogFeatureEnabled() async -> Bool {
-        let (isLocalEnabled, isRemoteEnabled, isBetaToggleEnabled) = await featureFlagSettings()
-        return isLocalEnabled && isRemoteEnabled && isBetaToggleEnabled
+        let (isRemoteEnabled, isBetaToggleEnabled) = await featureFlagSettings()
+        return isRemoteEnabled && isBetaToggleEnabled
     }
 
-    private func featureFlagSettings() async -> (Bool, Bool, Bool) {
-        // Check feature flags - local, remote, and beta toggle must all be enabled
+    private func featureFlagSettings() async -> (Bool, Bool) {
+        // Check feature flags - remote flag and beta toggle must both be enabled
         let isRemoteEnabled = await isRemoteCatalogFeatureFlagEnabled()
         let isBetaToggleEnabled = await betaFeatureToggleProvider()
-        return (isLocalCatalogFeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled)
+        return (isRemoteEnabled, isBetaToggleEnabled)
     }
 }
 

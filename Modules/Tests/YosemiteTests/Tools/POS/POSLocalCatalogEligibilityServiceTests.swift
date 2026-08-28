@@ -19,14 +19,12 @@ struct POSLocalCatalogEligibilityServiceTests {
 
     private func makeService(
         systemStatusService: MockPOSSystemStatusService,
-        isLocalCatalogFeatureFlagEnabled: Bool = true,
         remoteFeatureFlagProvider: (@Sendable () async -> Bool)? = nil,
         betaFeatureToggleProvider: (@Sendable () async -> Bool)? = nil,
         syncStatusChecker: POSCatalogSyncStatusCheckerProtocol? = nil
     ) -> POSLocalCatalogEligibilityService {
         POSLocalCatalogEligibilityService(
             systemStatusService: systemStatusService,
-            isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
             remoteFeatureFlagProvider: remoteFeatureFlagProvider ?? makeRemoteFeatureFlagProvider(),
             betaFeatureToggleProvider: betaFeatureToggleProvider ?? makeBetaFeatureToggleProvider(),
             syncStatusChecker: syncStatusChecker

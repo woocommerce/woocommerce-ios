@@ -483,6 +483,8 @@ public enum WooAnalyticsStat: String {
     case ordersListLoadError = "orders_list_load_error"
     case ordersListAutomaticTimeoutRetry = "orders_list_automatic_timeout_retry"
     case ordersListTopBannerTroubleshootTapped = "orders_list_top_banner_troubleshoot_tapped"
+    case ordersListCurrencyUnavailableBannerShown = "orders_list_currency_unavailable_banner_shown"
+    case ordersListCurrencyUnavailableBannerRetryTapped = "orders_list_currency_unavailable_banner_retry_tapped"
     case orderProductAdd = "order_product_add"
     case orderProductQuantityChange = "order_product_quantity_change"
     case orderProductRemove = "order_product_remove"

@@ -333,6 +333,9 @@ extension OrderListViewModel {
 
         if banner != topBanner {
             topBanner = banner
+            if banner == .currencyUnavailable {
+                analytics.track(.ordersListCurrencyUnavailableBannerShown)
+            }
         }
     }
 
@@ -341,6 +344,7 @@ extension OrderListViewModel {
     /// unavailable.
     ///
     func retryStoreCurrencySync() {
+        analytics.track(.ordersListCurrencyUnavailableBannerRetryTapped)
         topBanner = .none
 
         let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in

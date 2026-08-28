@@ -456,6 +456,55 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssert(viewModel.topBanner == .currencyUnavailable)
     }
 
+    func test_currencyUnavailable_banner_shown_event_is_tracked_when_the_banner_appears() {
+        // Given — the store currency is unavailable
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+
+        // When
+        viewModel.activate()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == "orders_list_currency_unavailable_banner_shown" }.count, 1)
+    }
+
+    func test_currencyUnavailable_banner_shown_event_is_not_tracked_when_currency_is_resolved() {
+        // Given — the store currency is available, so no banner
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
+
+        // When
+        viewModel.activate()
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("orders_list_currency_unavailable_banner_shown"))
+    }
+
+    func test_retryStoreCurrencySync_tracks_the_retry_tapped_event() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+        viewModel.activate()
+
+        // When
+        viewModel.retryStoreCurrencySync()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("orders_list_currency_unavailable_banner_retry_tapped"))
+    }
+
     func test_topBanner_when_a_different_sync_error_occurs_then_the_error_banner_is_re_emitted() {
         // Given — currency resolved so only the loading error can drive the banner
         let viewModel = OrderListViewModel(siteID: siteID,

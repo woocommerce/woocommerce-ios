@@ -4,6 +4,7 @@
 25.6
 -----
 - [*] Shipping Labels: Fixed purchased labels disappearing when an unfinished label has no carrier information. [https://github.com/woocommerce/woocommerce-ios/pull/17766]
+- [*] POS: On iPhone, you can now swipe from the left edge to go back, across search, checkout, the payment screens, refunds and hardware settings. [https://github.com/woocommerce/woocommerce-ios/pull/17789]
 - [***] POS: On stores running WooCommerce 11.1.0 or newer, refund totals are now calculated by the store instead of on the device. [https://github.com/woocommerce/woocommerce-ios/pull/17741]
 - [*] Orders: Product search results in the order form are now scrollable and selectable on iPhone in landscape. [https://github.com/woocommerce/woocommerce-ios/pull/17693]
 - [*] Fixed the swipe-back gesture sometimes failing when returning from detail screens. [https://github.com/woocommerce/woocommerce-ios/pull/17749]

@@ -35,11 +35,11 @@ final class POSTests: XCTestCase {
     ]
 
     // The UI-test card payment mock starts disconnected so POS exposes the Card reader CTA.
+    // Tap to Pay stays unavailable on simulators (no TTP hardware support), so the CTA is the
+    // Bluetooth card reader path.
     private static let simulatedReaderLaunchArguments = [
         "use-mocked-card-present-payment",
-        "-simulate-stripe-card-reader",
-        "-com.woocommerce.featureflag.override.pointOfSaleTapToPay",
-        "NO"
+        "-simulate-stripe-card-reader"
     ]
 
     override func setUpWithError() throws {

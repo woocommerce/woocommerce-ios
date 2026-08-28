@@ -41,43 +41,10 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
         .simple(duration: 150 * NSEC_PER_MSEC, loadingDelayThreshold: 300 * NSEC_PER_MSEC)
     }
 
+    /// Local search answers through `fetchMixedItems`, so the service never asks this strategy for products only.
+    /// Goes away with the rest of the two-path contract in WOOMOB-3967.
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        let startTime = Date()
-
-        // Get total count and persisted products in one transaction
-        let (persistedProducts, totalCount) = try await grdbManager.databaseConnection.read { db in
-            let totalCount = try PersistedProduct
-                .posProductSearch(siteID: siteID, searchTerm: searchTerm)
-                .fetchCount(db)
-
-            let offset = (pageNumber - 1) * pageSize
-            let persistedProducts = try PersistedProduct
-                .posProductSearch(siteID: siteID, searchTerm: searchTerm)
-                .limit(pageSize, offset: offset)
-                .fetchAll(db)
-
-            return (persistedProducts, totalCount)
-        }
-
-        // Convert to POSProduct outside the read transaction
-        // toPOSProduct(db:) starts its own transaction, so we can't call it inside another transaction
-        let products = try persistedProducts.map { persistedProduct in
-            try persistedProduct.toPOSProduct(db: grdbManager.databaseConnection)
-        }
-
-        let hasMorePages = (pageNumber * pageSize) < totalCount
-
-        if pageNumber == 1 {
-            let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
-            analytics.trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
-                                                           totalItems: totalCount,
-                                                           searchMethod: .like,
-                                                           source: .product)
-        }
-
-        return PagedItems(items: products,
-                         hasMorePages: hasMorePages,
-                         totalItems: totalCount)
+        PagedItems(items: [], hasMorePages: false, totalItems: 0)
     }
 
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {

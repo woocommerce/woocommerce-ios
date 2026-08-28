@@ -139,10 +139,8 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             return state
         }
 
-        // Check WooCommerce version:
-        // - Paginated sync requires 10.3.0+
-        // - Catalog API requires 10.5.0+,
-        let minimumVersion = isCatalogAPIFeatureFlagEnabled ? Constants.wcPluginMinimumVersionForCatalogAPI : Constants.wcPluginMinimumVersionForLocalCatalog
+        // Check WooCommerce version: local catalog requires 10.5.0+ (Catalog API)
+        let minimumVersion = Constants.wcPluginMinimumVersionForLocalCatalog
         do {
             let pluginInfo = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
 
@@ -269,7 +267,6 @@ public extension POSLocalCatalogEligibilityService {
 private extension POSLocalCatalogEligibilityService {
     enum Constants {
         static let defaultCatalogSizeLimit = 1000
-        static let wcPluginMinimumVersionForLocalCatalog = "10.3.0-beta"
-        static let wcPluginMinimumVersionForCatalogAPI = "10.5.0"
+        static let wcPluginMinimumVersionForLocalCatalog = "10.5.0"
     }
 }

@@ -572,8 +572,8 @@ struct POSLocalCatalogEligibilityServiceTests {
     @Test("WooCommerce version eligibility",
           arguments: [
             ("10.2.0", true, false, 0),         // Below minimum
-            ("10.3.0-beta", true, true, 1),     // At minimum (beta)
-            ("10.3.0", true, true, 1),          // At minimum (stable)
+            ("10.4.0", true, false, 0),         // Below minimum
+            ("10.5.0", true, true, 1),          // At minimum
             ("11.0.0", true, true, 1),          // Above minimum
           ])
     func testWooCommerceVersionEligibility(
@@ -627,7 +627,7 @@ struct POSLocalCatalogEligibilityServiceTests {
                 Issue.record("Expected unsupportedWooCommerceVersion reason for version \(version)")
                 return
             }
-            #expect(minimumVersion == "10.3.0-beta")
+            #expect(minimumVersion == "10.5.0")
         }
         #expect(sizeChecker.checkCatalogSizeCallCount == expectedSizeCheckCount)
     }
@@ -650,8 +650,8 @@ struct POSLocalCatalogEligibilityServiceTests {
                 siteID: siteID,
                 plugin: "woocommerce/woocommerce.php",
                 name: "WooCommerce",
-                version: "10.3.0",
-                versionLatest: "10.3.0",
+                version: "10.5.0",
+                versionLatest: "10.5.0",
                 url: "https://woocommerce.com",
                 authorName: "WooCommerce",
                 authorUrl: "https://woocommerce.com",
@@ -808,8 +808,8 @@ struct POSLocalCatalogEligibilityServiceTests {
         #expect(sizeChecker.checkCatalogSizeCallCount == 1)
     }
 
-    @Test("Paginated sync requires WC 10.3+")
-    func test_usesCatalogAPI_false_when_version_below_10_3_then_ineligible() async throws {
+    @Test("Paginated sync requires WC 10.5+")
+    func test_usesCatalogAPI_false_when_version_below_10_5_then_ineligible() async throws {
         // Given
         let sizeChecker = MockPOSCatalogSizeChecker(
             sizeToReturn: .success(POSCatalogSize(productCount: 500, variationCount: 400))
@@ -817,7 +817,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let systemStatusService = MockPOSSystemStatusService(
             pluginInfoToReturn: .success(
                 POSPluginAndFeatureInfo(
-                    wcPlugin: makeSystemPlugin(version: "10.2.0"),
+                    wcPlugin: makeSystemPlugin(version: "10.4.0"),
                     featureValue: true
                 )
             )
@@ -845,7 +845,7 @@ struct POSLocalCatalogEligibilityServiceTests {
             Issue.record("Expected unsupportedWooCommerceVersion reason")
             return
         }
-        #expect(minimumVersion == "10.3.0-beta")
+        #expect(minimumVersion == "10.5.0")
         #expect(sizeChecker.checkCatalogSizeCallCount == 0)
     }
 

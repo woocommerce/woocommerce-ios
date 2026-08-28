@@ -24,11 +24,9 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     private let detail: (SelectionValue, Binding<NavigationPath>) -> Detail
     private let detailPlaceholderView: () -> DetailPlaceholder
     private let setDefaultValue: (() -> Void)?
-    private let isCompactBackGestureEnabled: Bool
 
     init(
         selection: Binding<SelectionValue?> = .constant(nil),
-        isCompactBackGestureEnabled: Bool = true,
         @ViewBuilder sidebar: @escaping (Binding<SelectionValue?>) -> Sidebar,
         @ViewBuilder detail: @escaping (SelectionValue, Binding<NavigationPath>) -> Detail,
         @ViewBuilder detailPlaceholderView: @escaping () -> DetailPlaceholder,
@@ -39,7 +37,6 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
         self.detail = detail
         self.detailPlaceholderView = detailPlaceholderView
         self.setDefaultValue = setDefaultValue
-        self.isCompactBackGestureEnabled = isCompactBackGestureEnabled
     }
 
     private var isRegular: Bool {
@@ -195,7 +192,9 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     }
 
     private var isCompactBackGestureActive: Bool {
-        !isRegular && selection != nil && detailNavigationPath.isEmpty && isCompactBackGestureEnabled
+        // A non-empty detail path means a sub-screen is pushed and owns its own back affordance,
+        // so the container must not also swipe the whole pane away.
+        !isRegular && selection != nil && detailNavigationPath.isEmpty
     }
 
     private func compactBackGesture(totalWidth: CGFloat) -> some Gesture {

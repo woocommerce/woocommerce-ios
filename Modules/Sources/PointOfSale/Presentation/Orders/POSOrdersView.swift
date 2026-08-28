@@ -29,13 +29,10 @@ struct POSOrdersView: View {
         case (.empty, false):
             emptyView()
         default:
-            POSNavigationSplitView(
-                selection: Binding(
-                    get: { orderListModel.ordersController.selectedOrder },
-                    set: { selectOrder($0) }
-                ),
-                isCompactBackGestureEnabled: activeRefundSelectionOrderID == nil
-            ) { _ in
+            POSNavigationSplitView(selection: Binding(
+                get: { orderListModel.ordersController.selectedOrder },
+                set: { selectOrder($0) }
+            )) { _ in
                 POSOrderListView(
                     isSearching: $isSearching,
                     searchTerm: $searchTerm,

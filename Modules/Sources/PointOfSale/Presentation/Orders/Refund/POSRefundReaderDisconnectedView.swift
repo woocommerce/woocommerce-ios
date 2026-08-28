@@ -41,7 +41,7 @@ private extension POSRefundReaderDisconnectedView {
     var headerView: some View {
         HStack {
             Button(action: onBack) {
-                Text(Image(systemName: "chevron.left"))
+                Text(Image(systemName: "chevron.backward"))
                     .font(.posButtonSymbolLarge)
             }
             .accessibilityLabel(Localization.backButtonAccessibilityLabel)

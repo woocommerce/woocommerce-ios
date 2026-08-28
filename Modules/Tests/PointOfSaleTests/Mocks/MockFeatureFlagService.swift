@@ -8,7 +8,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
     var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
     var isPointOfSaleEnabled: Bool
-    var blazeCampaignObjective: Bool
     var hideSitesInStorePicker: Bool
     var backgroundProductImageUpload: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
@@ -20,7 +19,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
-         blazeCampaignObjective: Bool = false,
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false) {
@@ -30,7 +28,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
-        self.blazeCampaignObjective = blazeCampaignObjective
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
@@ -56,8 +53,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
             return isScanToUpdateInventoryEnabled
         case .pointOfSale:
             return isPointOfSaleEnabled
-        case .blazeCampaignObjective:
-            return blazeCampaignObjective
         case .hideSitesInStorePicker:
             return hideSitesInStorePicker
         case .backgroundProductImageUpload:

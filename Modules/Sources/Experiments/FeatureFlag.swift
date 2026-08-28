@@ -95,10 +95,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSale
 
-    /// Enables selecting objectives during Blaze campaign creation.
-    ///
-    case blazeCampaignObjective
-
     /// Supports hiding sites from the store picker
     ///
     case hideSitesInStorePicker

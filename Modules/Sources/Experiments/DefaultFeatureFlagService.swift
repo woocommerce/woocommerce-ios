@@ -35,8 +35,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .blazeCampaignObjective:
-            return true
         case .hideSitesInStorePicker:
             return true
         case .filterHistoryOnOrderAndProductLists:

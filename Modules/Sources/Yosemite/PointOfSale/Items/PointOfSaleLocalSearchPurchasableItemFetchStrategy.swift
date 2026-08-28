@@ -7,7 +7,7 @@ import struct Storage.PersistedProductVariation
 import protocol Networking.ProductVariationsRemoteProtocol
 
 /// Fetch strategy for searching products in the local GRDB catalog.
-/// Uses FTS5 full-text search when enabled, otherwise falls back to LIKE-based queries.
+/// Uses FTS5 full-text search.
 struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     private let siteID: Int64
     private let searchTerm: String
@@ -17,7 +17,6 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
     private let itemMapper: PointOfSaleItemMapperProtocol
     private let analytics: POSItemFetchAnalyticsTracking
     private let pageSize: Int
-    private let isFTSSearchEnabled: Bool
 
     init(siteID: Int64,
          searchTerm: String,
@@ -25,8 +24,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
          variationsRemote: ProductVariationsRemoteProtocol,
          itemMapper: PointOfSaleItemMapperProtocol,
          analytics: POSItemFetchAnalyticsTracking,
-         pageSize: Int = 25,
-         isFTSSearchEnabled: Bool = true) {
+         pageSize: Int = 25) {
         self.siteID = siteID
         self.searchTerm = searchTerm
         self.grdbManager = grdbManager
@@ -34,7 +32,6 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
         self.itemMapper = itemMapper
         self.analytics = analytics
         self.pageSize = pageSize
-        self.isFTSSearchEnabled = isFTSSearchEnabled
     }
 
     var debounceStrategy: SearchDebounceStrategy {
@@ -112,9 +109,6 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
     }
 
     func fetchMixedItems(pageNumber: Int) async throws -> PagedItems<POSItem>? {
-        // When FTS is disabled, return nil to fall back to LIKE-based fetchProducts()
-        guard isFTSSearchEnabled else { return nil }
-
         let startTime = Date()
         let offset = (pageNumber - 1) * pageSize
 

@@ -3,21 +3,32 @@ import Foundation
 @testable import Yosemite
 
 final class MockPointOfSalePurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
-    var fetchProductsCalled = false
-    var spyFetchProductsPageNumber: Int?
+    var fetchItemsCalled = false
+    var spyFetchItemsPageNumber: Int?
     var mockPagedProductsResult: Result<PagedItems<POSProduct>, Error>?
+    var mockPagedItemsResult: Result<PagedItems<POSItem>, Error>?
     var mockPagedVariationsResult: Result<PagedItems<POSProductVariation>, Error>?
 
-    func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        fetchProductsCalled = true
-        spyFetchProductsPageNumber = pageNumber
+    func fetchItems(pageNumber: Int) async throws -> POSItemFetchResult {
+        fetchItemsCalled = true
+        spyFetchItemsPageNumber = pageNumber
+
+        if let mockPagedItemsResult {
+            switch mockPagedItemsResult {
+            case .success(let mockPagedItems):
+                return .items(mockPagedItems)
+            case .failure(let error):
+                throw error
+            }
+        }
+
         switch mockPagedProductsResult {
         case .success(let mockPagedProducts):
-            return mockPagedProducts
+            return .products(mockPagedProducts)
         case .failure(let error):
             throw error
         case .none:
-            return PagedItems<POSProduct>(items: [], hasMorePages: false, totalItems: nil)
+            return .products(PagedItems<POSProduct>(items: [], hasMorePages: false, totalItems: nil))
         }
     }
 

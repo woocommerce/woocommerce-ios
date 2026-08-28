@@ -69,7 +69,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
                          totalItems: totalCount)
     }
 
-    func fetchMixedItems(pageNumber: Int) async throws -> PagedItems<POSItem>? {
+    func fetchItems(pageNumber: Int) async throws -> POSItemFetchResult {
         let startTime = Date()
         let offset = (pageNumber - 1) * pageSize
 
@@ -96,7 +96,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
                                                            source: .purchasableItems)
         }
 
-        return PagedItems(items: items, hasMorePages: hasMorePages, totalItems: totalCount)
+        return .items(PagedItems(items: items, hasMorePages: hasMorePages, totalItems: totalCount))
     }
 
     private func hydrateSearchResults(_ searchResults: [POSSearchIndex]) async throws -> [POSItem] {

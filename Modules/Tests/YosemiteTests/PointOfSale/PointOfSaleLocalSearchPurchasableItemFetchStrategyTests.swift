@@ -27,8 +27,8 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
 
     // MARK: - Search Functionality Tests
 
-    @Test("fetchMixedItems returns matching products")
-    func test_fetchMixedItems_returns_matching_products() async throws {
+    @Test("fetchItems returns matching products")
+    func test_fetchItems_returns_matching_products() async throws {
         // Given
         try await insertProduct(makeProduct(id: 1, name: "Test Product"))
         try await insertProduct(makeProduct(id: 2, name: "Another Product"))
@@ -36,7 +36,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
         let strategy = makeStrategy()
 
         // When
-        let result = try #require(await strategy.fetchMixedItems(pageNumber: 1))
+        let result = try #require(await strategy.fetchItems(pageNumber: 1).items)
 
         // Then
         #expect(result.totalItems == 1)
@@ -49,8 +49,8 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
         #expect(product.name == "Test Product")
     }
 
-    @Test("fetchMixedItems searches by SKU")
-    func test_fetchMixedItems_searches_by_sku() async throws {
+    @Test("fetchItems searches by SKU")
+    func test_fetchItems_searches_by_sku() async throws {
         // Given
         try await insertProduct(makeProduct(id: 1, name: "Product A", sku: "TEST-SKU-123"))
         try await insertProduct(makeProduct(id: 2, name: "Product B", sku: "OTHER-SKU-456"))
@@ -58,15 +58,15 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
         let strategy = makeStrategy(searchTerm: "TEST-SKU")
 
         // When
-        let result = try #require(await strategy.fetchMixedItems(pageNumber: 1))
+        let result = try #require(await strategy.fetchItems(pageNumber: 1).items)
 
         // Then
         #expect(result.items.map(\.id) == [POSItemIdentifier(underlyingType: .product, itemID: 1)])
         #expect(result.totalItems == 1)
     }
 
-    @Test("fetchMixedItems searches by global unique ID")
-    func test_fetchMixedItems_searches_by_global_unique_id() async throws {
+    @Test("fetchItems searches by global unique ID")
+    func test_fetchItems_searches_by_global_unique_id() async throws {
         // Given
         try await insertProduct(makeProduct(id: 1, name: "Product A", globalUniqueID: "12345678"))
         try await insertProduct(makeProduct(id: 2, name: "Product B", globalUniqueID: "87654321"))
@@ -74,15 +74,15 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
         let strategy = makeStrategy(searchTerm: "12345678")
 
         // When
-        let result = try #require(await strategy.fetchMixedItems(pageNumber: 1))
+        let result = try #require(await strategy.fetchItems(pageNumber: 1).items)
 
         // Then
         #expect(result.items.map(\.id) == [POSItemIdentifier(underlyingType: .product, itemID: 1)])
         #expect(result.totalItems == 1)
     }
 
-    @Test("fetchMixedItems returns variations with their parent product")
-    func test_fetchMixedItems_returns_variations_with_parent_product() async throws {
+    @Test("fetchItems returns variations with their parent product")
+    func test_fetchItems_returns_variations_with_parent_product() async throws {
         // Given
         let parentProductID: Int64 = 100
         try await insertProduct(makeProduct(id: parentProductID, name: "Test Shirt", productTypeKey: "variable"))
@@ -91,7 +91,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
         let strategy = makeStrategy(searchTerm: "TEST-RED")
 
         // When
-        let result = try #require(await strategy.fetchMixedItems(pageNumber: 1))
+        let result = try #require(await strategy.fetchItems(pageNumber: 1).items)
 
         // Then
         #expect(result.totalItems == 1)
@@ -105,15 +105,15 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
         #expect(parentProduct.name == "Test Shirt")
     }
 
-    @Test("fetchMixedItems returns empty result when no matches")
-    func test_fetchMixedItems_returns_empty_when_no_matches() async throws {
+    @Test("fetchItems returns empty result when no matches")
+    func test_fetchItems_returns_empty_when_no_matches() async throws {
         // Given
         try await insertProduct(makeProduct(id: 1, name: "Another Product"))
         try await rebuildSearchIndex()
         let strategy = makeStrategy()
 
         // When
-        let result = try #require(await strategy.fetchMixedItems(pageNumber: 1))
+        let result = try #require(await strategy.fetchItems(pageNumber: 1).items)
 
         // Then
         #expect(result.items.isEmpty)
@@ -121,8 +121,8 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
         #expect(result.hasMorePages == false)
     }
 
-    @Test("fetchMixedItems handles pagination correctly")
-    func test_fetchMixedItems_handles_pagination_correctly() async throws {
+    @Test("fetchItems handles pagination correctly")
+    func test_fetchItems_handles_pagination_correctly() async throws {
         // Given - insert 30 products
         for index in 1...30 {
             try await insertProduct(makeProduct(id: Int64(index), name: "Test Product \(index)"))
@@ -131,10 +131,10 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
         let strategy = makeStrategy(pageSize: 10)
 
         // When
-        let page1 = try #require(await strategy.fetchMixedItems(pageNumber: 1))
-        let page2 = try #require(await strategy.fetchMixedItems(pageNumber: 2))
-        let page3 = try #require(await strategy.fetchMixedItems(pageNumber: 3))
-        let page4 = try #require(await strategy.fetchMixedItems(pageNumber: 4))
+        let page1 = try #require(await strategy.fetchItems(pageNumber: 1).items)
+        let page2 = try #require(await strategy.fetchItems(pageNumber: 2).items)
+        let page3 = try #require(await strategy.fetchItems(pageNumber: 3).items)
+        let page4 = try #require(await strategy.fetchItems(pageNumber: 4).items)
 
         // Then
         #expect(page1.items.count == 10)
@@ -154,8 +154,8 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
         #expect(page4.totalItems == 30)
     }
 
-    @Test("fetchMixedItems only returns items from the specified site")
-    func test_fetchMixedItems_respects_site_isolation() async throws {
+    @Test("fetchItems only returns items from the specified site")
+    func test_fetchItems_respects_site_isolation() async throws {
         // Given
         let otherSiteID: Int64 = 456
         try await grdbManager.databaseConnection.write { db in
@@ -168,22 +168,22 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
         let strategy = makeStrategy()
 
         // When
-        let result = try #require(await strategy.fetchMixedItems(pageNumber: 1))
+        let result = try #require(await strategy.fetchItems(pageNumber: 1).items)
 
         // Then
         #expect(result.items.map(\.id) == [POSItemIdentifier(underlyingType: .product, itemID: 1)])
         #expect(result.totalItems == 1)
     }
 
-    @Test("fetchMixedItems tracks the FTS search method on the first page")
-    func test_fetchMixedItems_tracks_fts_search_method() async throws {
+    @Test("fetchItems tracks the FTS search method on the first page")
+    func test_fetchItems_tracks_fts_search_method() async throws {
         // Given
         try await insertProduct(makeProduct(id: 1, name: "Test Product"))
         try await rebuildSearchIndex()
         let strategy = makeStrategy()
 
         // When
-        _ = try await strategy.fetchMixedItems(pageNumber: 1)
+        _ = try await strategy.fetchItems(pageNumber: 1)
 
         // Then
         #expect(mockAnalytics.spyLocalSearchMethod == .fts)

@@ -21,8 +21,8 @@ struct PointOfSalePopularPurchasableItemFetchStrategyTests {
         )
     }
 
-    @Test("fetchProducts always returns hasMorePages false so we only show the first page")
-    func test_fetchProducts_always_returns_hasMorePages_false() async throws {
+    @Test("fetchItems always returns hasMorePages false so we only show the first page")
+    func test_fetchItems_always_returns_hasMorePages_false() async throws {
         // Given
         let products = [
             POSProduct.fake().copy(siteID: siteID, productID: 1),
@@ -32,7 +32,7 @@ struct PointOfSalePopularPurchasableItemFetchStrategyTests {
         productsRemote.whenLoadingPopularProductsForPointOfSale(siteID: siteID, thenReturn: .success(pagedProducts))
 
         // When
-        let result = try await sut.fetchProducts(pageNumber: 1)
+        let result = try #require(await sut.fetchItems(pageNumber: 1).products)
 
         // Then
         #expect(result.hasMorePages == false)
@@ -41,8 +41,8 @@ struct PointOfSalePopularPurchasableItemFetchStrategyTests {
         #expect(result.items[1].productID == 2)
     }
 
-    @Test("fetchProducts uses provided page size")
-    func test_fetchProducts_uses_provided_page_size() async throws {
+    @Test("fetchItems uses provided page size")
+    func test_fetchItems_uses_provided_page_size() async throws {
         // Given
         let products = [
             POSProduct.fake().copy(siteID: siteID, productID: 1),
@@ -52,7 +52,7 @@ struct PointOfSalePopularPurchasableItemFetchStrategyTests {
         productsRemote.whenLoadingPopularProductsForPointOfSale(siteID: siteID, thenReturn: .success(pagedProducts))
 
         // When
-        _ = try await sut.fetchProducts(pageNumber: 1)
+        _ = try await sut.fetchItems(pageNumber: 1)
 
         // Then
         #expect(productsRemote.lastRequestedPageSize == pageSize)

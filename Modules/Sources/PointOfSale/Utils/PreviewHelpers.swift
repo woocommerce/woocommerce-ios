@@ -4,6 +4,7 @@ import Foundation
 import WooFoundation
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
+import enum Yosemite.POSItemFetchResult
 import struct Yosemite.POSSimpleProduct
 import protocol Yosemite.POSOrderableItem
 import protocol Yosemite.OrderSyncProductTypeProtocol
@@ -104,8 +105,8 @@ final class PointOfSalePreviewItemService: PointOfSaleItemServiceProtocol {
 }
 
 struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
-    func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        return .init(items: [], hasMorePages: true, totalItems: nil)
+    func fetchItems(pageNumber: Int) async throws -> POSItemFetchResult {
+        return .products(.init(items: [], hasMorePages: true, totalItems: nil))
     }
 
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {

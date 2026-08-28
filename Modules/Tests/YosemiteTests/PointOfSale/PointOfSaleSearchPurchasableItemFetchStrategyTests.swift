@@ -9,7 +9,7 @@ struct PointOfSaleSearchPurchasableItemFetchStrategyTests {
     private let variationsRemote = MockProductVariationsRemote()
     private let mockAnalytics = MockPOSItemFetchAnalyticsTracking()
 
-    @Test func fetchProducts_tracks_analytics_for_first_page() async throws {
+    @Test func fetchItems_tracks_analytics_for_first_page() async throws {
         // Given
         let strategy = PointOfSaleSearchPurchasableItemFetchStrategy(
             siteID: siteID,
@@ -25,14 +25,14 @@ struct PointOfSaleSearchPurchasableItemFetchStrategyTests {
                                                                                       totalItems: expectedTotalItems)))
 
         // When
-        _ = try await strategy.fetchProducts(pageNumber: 1)
+        _ = try await strategy.fetchItems(pageNumber: 1)
 
         // Then
         #expect(mockAnalytics.spyMillisecondsSinceRequestSent == 0) // We can't test exact timing
         #expect(mockAnalytics.spySearchTotalItems == expectedTotalItems)
     }
 
-    @Test func fetchProducts_does_not_track_analytics_for_subsequent_pages() async throws {
+    @Test func fetchItems_does_not_track_analytics_for_subsequent_pages() async throws {
         // Given
         let strategy = PointOfSaleSearchPurchasableItemFetchStrategy(
             siteID: siteID,
@@ -47,7 +47,7 @@ struct PointOfSaleSearchPurchasableItemFetchStrategyTests {
                                                                                       totalItems: 10)))
 
         // When
-        _ = try await strategy.fetchProducts(pageNumber: 2)
+        _ = try await strategy.fetchItems(pageNumber: 2)
 
         // Then
         #expect(mockAnalytics.spyMillisecondsSinceRequestSent == nil)

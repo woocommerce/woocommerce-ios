@@ -127,10 +127,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case googleAdsCampaignCreationOnWebView
 
-    /// Supports evergreen campaigns for Blaze
-    ///
-    case blazeEvergreenCampaigns
-
     /// Enables revamped shipping label flow for Woo Shipping extension
     ///
     case revampedShippingLabelCreation

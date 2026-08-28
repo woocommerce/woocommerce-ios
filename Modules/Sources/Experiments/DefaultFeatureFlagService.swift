@@ -9,8 +9,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .inbox:
             return true
-        case .showInboxCTA:
-            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .searchProductsBySKU:

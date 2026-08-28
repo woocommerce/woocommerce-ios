@@ -4,7 +4,6 @@ import protocol PointOfSale.POSFeatureFlagProviding
 
 final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding {
     var isInboxOn: Bool
-    var isShowInboxCTAEnabled: Bool
     var isUpdateOrderOptimisticallyOn: Bool
     var isSupportRequestEnabled: Bool
     var jetpackSetupWithApplicationPassword: Bool
@@ -24,7 +23,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var smarterNotifications: Bool
 
     init(isInboxOn: Bool = false,
-         isShowInboxCTAEnabled: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          isSupportRequestEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
@@ -42,7 +40,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          selfDrivenPushToken: Bool = false,
          smarterNotifications: Bool = false) {
         self.isInboxOn = isInboxOn
-        self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
@@ -71,8 +68,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         switch featureFlag {
         case .inbox:
             return isInboxOn
-        case .showInboxCTA:
-            return isShowInboxCTAEnabled
         case .updateOrderOptimistically:
             return isUpdateOrderOptimisticallyOn
         case .supportRequests:

@@ -11,7 +11,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
     var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
     var isPointOfSaleEnabled: Bool
-    var googleAdsCampaignCreationOnWebView: Bool
     var blazeCampaignObjective: Bool
     var revampedShippingLabelCreation: Bool
     var hideSitesInStorePicker: Bool
@@ -28,7 +27,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
-         googleAdsCampaignCreationOnWebView: Bool = false,
          blazeCampaignObjective: Bool = false,
          revampedShippingLabelCreation: Bool = false,
          hideSitesInStorePicker: Bool = false,
@@ -43,7 +41,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
-        self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
         self.blazeCampaignObjective = blazeCampaignObjective
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
         self.hideSitesInStorePicker = hideSitesInStorePicker
@@ -77,8 +74,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
             return isScanToUpdateInventoryEnabled
         case .pointOfSale:
             return isPointOfSaleEnabled
-        case .googleAdsCampaignCreationOnWebView:
-            return googleAdsCampaignCreationOnWebView
         case .blazeCampaignObjective:
             return blazeCampaignObjective
         case .revampedShippingLabelCreation:

@@ -49,8 +49,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .googleAdsCampaignCreationOnWebView:
-            return true
         case .revampedShippingLabelCreation:
             return true
         case .blazeCampaignObjective:

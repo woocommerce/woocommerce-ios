@@ -123,10 +123,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSale
 
-    /// Enables Google ads campaign creation on web view
-    ///
-    case googleAdsCampaignCreationOnWebView
-
     /// Enables revamped shipping label flow for Woo Shipping extension
     ///
     case revampedShippingLabelCreation

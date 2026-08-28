@@ -3,7 +3,11 @@ import protocol Networking.ProductsRemoteProtocol
 import protocol Networking.ProductVariationsRemoteProtocol
 
 public protocol PointOfSalePurchasableItemFetchStrategy {
+    /// Fetches products only, which the service maps to POSItems.
+    /// Strategies that return products and variations together implement `fetchMixedItems` instead.
+    /// Default implementation returns an empty page.
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct>
+
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
 
     /// Fetches mixed POSItem results (products and variations together).
@@ -25,6 +29,11 @@ public extension PointOfSalePurchasableItemFetchStrategy {
     /// Default implementation returns nil, indicating the service should use fetchProducts instead.
     func fetchMixedItems(pageNumber: Int) async throws -> PagedItems<POSItem>? {
         nil
+    }
+
+    /// Default implementation returns an empty page, for strategies that serve every result through `fetchMixedItems`.
+    func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
+        PagedItems(items: [], hasMorePages: false, totalItems: 0)
     }
 }
 

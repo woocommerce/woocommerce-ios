@@ -41,7 +41,7 @@ public enum CustomerAction: Action {
                                  pageSize: Int,
                                  onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Searches for Customers by keyword. Currently, only searches by name.
+    /// Searches for Customers by keyword, restricted to the fields covered by the given filter.
     ///
     ///- `siteID`: The site for which we will perform the search.
     ///- `pageNumber`: The number of the page you want to load.

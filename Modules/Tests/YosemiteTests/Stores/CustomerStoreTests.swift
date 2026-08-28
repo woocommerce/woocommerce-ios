@@ -198,6 +198,50 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(storedCustomerSearchResults?.customers?.count, 4)
     }
 
+    func test_searchCustomers_when_loading_a_second_page_then_appends_to_the_first_and_keeps_guests_separate() {
+        // Given
+        let pagedNetwork = MockNetwork(useResponseQueue: true)
+        let pagedStore = CustomerStore(
+            dispatcher: dispatcher,
+            storageManager: storageManager,
+            network: pagedNetwork,
+            customerRemote: CustomerRemote(network: pagedNetwork),
+            searchRemote: WCAnalyticsCustomerRemote(network: pagedNetwork)
+        )
+        pagedNetwork.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
+        pagedNetwork.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers-page-2")
+
+        // When
+        for pageNumber in 1...2 {
+            () = waitFor { promise in
+                let action = CustomerAction.searchCustomers(siteID: self.dummySiteID,
+                                                            pageNumber: pageNumber,
+                                                            pageSize: 4,
+                                                            orderby: .name,
+                                                            order: .asc,
+                                                            keyword: self.dummyKeyword,
+                                                            filter: .name) { _ in
+                    promise(())
+                }
+                pagedStore.onAction(action)
+            }
+        }
+
+        // Then
+        // Only page 1 resets the stored customers, so the 2 from page 2 are added to the 4 from page 1.
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 6)
+
+        // Guests share customerID 0, so each one is stored as its own row rather than overwriting the previous.
+        let guests = viewStorage.allObjects(ofType: Storage.Customer.self,
+                                            matching: NSPredicate(format: "siteID == %lld AND customerID == 0", dummySiteID),
+                                            sortedBy: nil)
+        XCTAssertEqual(guests.count, 2)
+        XCTAssertEqual(Set(guests.compactMap { $0.firstName }), ["Matt", "Jane"])
+
+        let storedCustomerSearchResults = viewStorage.loadCustomerSearchResult(siteID: dummySiteID, keyword: dummyKeyword)
+        XCTAssertEqual(storedCustomerSearchResults?.customers?.count, 6)
+    }
+
     func test_retrieveCustomer_upserts_the_returned_Customer() {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers/25", filename: "customer")

@@ -1,5 +1,4 @@
 import Yosemite
-import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
 import Combine
 import Foundation
@@ -67,7 +66,6 @@ final class ProductSelectorViewModel: ObservableObject {
     ///
     private let analytics: Analytics
 
-    private let featureFlagService: FeatureFlagService
 
     /// Store for publishers subscriptions
     ///
@@ -258,7 +256,6 @@ final class ProductSelectorViewModel: ObservableObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
          toggleAllVariationsOnSelection: Bool = true,
          topProductsProvider: ProductSelectorTopProductsProviderProtocol? = nil,
@@ -282,7 +279,6 @@ final class ProductSelectorViewModel: ObservableObject {
         self.storageManager = storageManager
         self.stores = stores
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.toggleAllVariationsOnSelection = toggleAllVariationsOnSelection
         self.onProductSelectionStateChanged = onProductSelectionStateChanged
         self.onVariationSelectionStateChanged = onVariationSelectionStateChanged
@@ -1075,7 +1071,6 @@ private extension ProductSelectorViewModel {
             return ProductRowViewModel(product: product,
                                        selectedState: selectedState,
                                        currency: currency,
-                                       featureFlagService: featureFlagService,
                                        configure: configure)
         }
     }

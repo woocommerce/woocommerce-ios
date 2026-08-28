@@ -103,10 +103,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case giftCardInOrderForm
 
-    /// Enables bundle product configuration support in order creation/editing.
-    ///
-    case productBundlesInOrderForm
-
     /// Enables the custom login UI when user enters an existing email address during account creation.
     ///
     case customLoginUIForAccountCreation

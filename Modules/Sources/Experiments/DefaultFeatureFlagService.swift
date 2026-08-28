@@ -7,8 +7,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         let buildConfig = BuildConfiguration.current
 
         switch featureFlag {
-        case .inbox:
-            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .searchProductsBySKU:

@@ -14,10 +14,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case reviews
 
-    /// Displays the Inbox option under the Hub Menu and the Dynamic Dashboard
-    ///
-    case inbox
-
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically

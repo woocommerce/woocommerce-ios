@@ -3,9 +3,7 @@ import Alamofire
 import WooFoundationCore
 
 public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
-    private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
     private let systemStatusService: POSSystemStatusServiceProtocol
-    private let catalogSizeLimit: Int
     private let isLocalCatalogFeatureFlagEnabled: Bool
     private let isCatalogAPIFeatureFlagEnabled: Bool
     private let remoteFeatureFlagProvider: @Sendable () async -> Bool
@@ -23,32 +21,26 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
 
     /// Initialize eligibility service
     /// - Parameters:
-    ///   - catalogSizeChecker: Service to check catalog size for sites
     ///   - systemStatusService: Service to check WooCommerce plugin version
     ///   - isLocalCatalogFeatureFlagEnabled: Whether the local catalog feature flag is enabled
     ///   - remoteFeatureFlagProvider: Async closure that fetches the remote feature flag value
     ///   - betaFeatureToggleProvider: Async closure that fetches the beta feature toggle value from app settings
     ///   - syncStatusChecker: Checks whether a full catalog sync completed for a site.
     ///     Used to keep the local catalog usable when remote eligibility checks fail (e.g. offline).
-    ///   - catalogSizeLimit: Maximum allowed catalog size (products + variations)
     public init(
-        catalogSizeChecker: POSCatalogSizeCheckerProtocol,
         systemStatusService: POSSystemStatusServiceProtocol,
         isLocalCatalogFeatureFlagEnabled: Bool,
         isCatalogAPIFeatureFlagEnabled: Bool = false,
         remoteFeatureFlagProvider: @escaping @Sendable () async -> Bool,
         betaFeatureToggleProvider: @escaping @Sendable () async -> Bool,
-        syncStatusChecker: POSCatalogSyncStatusCheckerProtocol? = nil,
-        catalogSizeLimit: Int? = nil
+        syncStatusChecker: POSCatalogSyncStatusCheckerProtocol? = nil
     ) {
-        self.catalogSizeChecker = catalogSizeChecker
         self.systemStatusService = systemStatusService
         self.isLocalCatalogFeatureFlagEnabled = isLocalCatalogFeatureFlagEnabled
         self.isCatalogAPIFeatureFlagEnabled = isCatalogAPIFeatureFlagEnabled
         self.remoteFeatureFlagProvider = remoteFeatureFlagProvider
         self.betaFeatureToggleProvider = betaFeatureToggleProvider
         self.syncStatusChecker = syncStatusChecker
-        self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
         // Eagerly start fetching the remote flag in the background
         Task {
             await self.fetchRemoteFlag()
@@ -163,6 +155,8 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             }
 
             DDLogInfo("📋 POSLocalCatalogEligibilityService: WooCommerce version \(wcPlugin.version) meets minimum requirement for site \(siteID)")
+            eligibilityStates[siteID] = .eligible
+            return .eligible
         } catch AFError.explicitlyCancelled, is CancellationError {
             throw POSCatalogSyncError.requestCancelled
         } catch {
@@ -182,48 +176,6 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             )
             eligibilityStates[siteID] = state
             DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check WooCommerce version for site \(siteID): \(error)")
-            return state
-        }
-
-        // Catalog API supports stores of any size, so we skip the size check
-        if isCatalogAPIFeatureFlagEnabled {
-            DDLogInfo("📋 POSLocalCatalogEligibilityService: Using catalog API, skipping size check for site \(siteID)")
-            eligibilityStates[siteID] = .eligible
-            return .eligible
-        }
-
-        // Fetch remote catalog size and check against limit (paginated sync only)
-        // Once pointOfSaleCatalogAPI is enabled and file approach is working, catalog size won't apply
-        do {
-            let size = try await catalogSizeChecker.checkCatalogSize(for: siteID)
-
-            if size.totalCount > catalogSizeLimit {
-                let state = POSLocalCatalogEligibilityState.ineligible(
-                    reason: .catalogSizeTooLarge(totalCount: size.totalCount, limit: catalogSizeLimit)
-                )
-                eligibilityStates[siteID] = state
-                DDLogInfo("📋 POSLocalCatalogEligibilityService: Site \(siteID) catalog size \(size.totalCount) exceeds limit \(catalogSizeLimit)")
-                return state
-            }
-
-            DDLogInfo("📋 POSLocalCatalogEligibilityService: Site \(siteID) catalog size \(size.totalCount) is within limit \(catalogSizeLimit)")
-            eligibilityStates[siteID] = .eligible
-            return .eligible
-        } catch AFError.explicitlyCancelled, is CancellationError {
-            throw POSCatalogSyncError.requestCancelled
-        } catch {
-            // Same tolerance as the version check above: a previously synced catalog stays usable
-            // when the size re-check fails (e.g. offline). Not cached so the next refresh re-validates.
-            if await syncStatusChecker?.hasCompletedFullSync(for: siteID) == true {
-                DDLogInfo("📋 POSLocalCatalogEligibilityService: Size check failed for site \(siteID), using previously synced catalog: \(error)")
-                return .eligible
-            }
-            let errorString = String(describing: error)
-            let state = POSLocalCatalogEligibilityState.ineligible(
-                reason: .catalogSizeCheckFailed(underlyingError: errorString)
-            )
-            eligibilityStates[siteID] = state
-            DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check catalog size for site \(siteID): \(error)")
             return state
         }
     }
@@ -266,7 +218,6 @@ public extension POSLocalCatalogEligibilityService {
 
 private extension POSLocalCatalogEligibilityService {
     enum Constants {
-        static let defaultCatalogSizeLimit = 1000
         static let wcPluginMinimumVersionForLocalCatalog = "10.5.0"
     }
 }

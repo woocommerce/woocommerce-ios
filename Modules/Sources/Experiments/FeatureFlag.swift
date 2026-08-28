@@ -95,10 +95,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSale
 
-    /// Supports hiding sites from the store picker
-    ///
-    case hideSitesInStorePicker
-
     /// Supports managing filer history on order and product lists
     ///
     case filterHistoryOnOrderAndProductLists

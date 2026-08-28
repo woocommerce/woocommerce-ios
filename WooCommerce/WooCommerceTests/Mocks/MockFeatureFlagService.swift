@@ -9,7 +9,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
     var isPointOfSaleEnabled: Bool
-    var hideSitesInStorePicker: Bool
     var backgroundProductImageUpload: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
@@ -22,7 +21,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
-         hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
          selfDrivenPushToken: Bool = false,
@@ -33,7 +31,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
-        self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
         self.selfDrivenPushToken = selfDrivenPushToken
@@ -60,8 +57,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return isScanToUpdateInventoryEnabled
         case .pointOfSale:
             return isPointOfSaleEnabled
-        case .hideSitesInStorePicker:
-            return hideSitesInStorePicker
         case .backgroundProductImageUpload:
             return backgroundProductImageUpload
         case .productImageOptimizedHandling:

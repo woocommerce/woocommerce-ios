@@ -111,10 +111,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case customLoginUIForAccountCreation
 
-    /// Enables the Scan to Update Inventory feature.
-    ///
-    case scanToUpdateInventory
-
     /// Displays the Products tab in a split view
     ///
     case splitViewInProductsTab

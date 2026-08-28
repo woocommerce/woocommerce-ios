@@ -75,10 +75,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case supportRequests
 
-    /// Whether to enable Jetpack setup for users authenticated with application passwords.
-    ///
-    case jetpackSetupWithApplicationPassword
-
     /// Enables the ability to add products to orders by SKU scanning
     ///
     case addProductToOrderViaSKUScanner

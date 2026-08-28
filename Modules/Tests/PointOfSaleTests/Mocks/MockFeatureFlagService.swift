@@ -6,7 +6,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
     var isShowInboxCTAEnabled: Bool
     var isUpdateOrderOptimisticallyOn: Bool
     var isSupportRequestEnabled: Bool
-    var jetpackSetupWithApplicationPassword: Bool
     var betterCustomerSelectionInOrder: Bool
     var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
@@ -22,7 +21,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
          isShowInboxCTAEnabled: Bool = false,
          isUpdateOrderOptimisticallyOn: Bool = false,
          isSupportRequestEnabled: Bool = false,
-         jetpackSetupWithApplicationPassword: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
@@ -36,7 +34,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
         self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.isSupportRequestEnabled = isSupportRequestEnabled
-        self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
@@ -64,8 +61,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
             return isUpdateOrderOptimisticallyOn
         case .supportRequests:
             return isSupportRequestEnabled
-        case .jetpackSetupWithApplicationPassword:
-            return jetpackSetupWithApplicationPassword
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
         case .productBundlesInOrderForm:

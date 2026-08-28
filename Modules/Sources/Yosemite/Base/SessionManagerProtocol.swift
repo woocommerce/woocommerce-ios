@@ -56,11 +56,11 @@ public protocol SessionManagerProtocol {
     /// Persists non-secret cookie-nonce endpoints for WordPress.org credentials.
     ///
     func saveCookieNonceAuthenticationEndpoints(_ endpoints: CookieNonceAuthenticationEndpoints,
-                                                for credentials: Credentials) throws
+                                                for credentials: Credentials)
 
     /// Removes cookie-nonce endpoints only when they match the WordPress.org credentials.
     ///
-    func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) throws
+    func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials)
 
     /// Nukes all of the known Session's properties.
     ///

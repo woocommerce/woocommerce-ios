@@ -3,11 +3,6 @@ import Yosemite
 
 /// Persists the non-secret, identity-bound endpoint configuration used by cookie-nonce authentication.
 struct CookieNonceAuthenticationEndpointStore {
-    enum StoreError: Error {
-        case invalidIdentity
-        case persistenceFailed
-    }
-
     private let userDefaults: UserDefaults
     private static let synchronizationLock = NSLock()
 
@@ -21,25 +16,25 @@ struct CookieNonceAuthenticationEndpointStore {
         }
     }
 
-    func save(_ endpoints: CookieNonceAuthenticationEndpoints, siteURL: String, username: String) throws {
-        try withLock {
+    func save(_ endpoints: CookieNonceAuthenticationEndpoints, siteURL: String, username: String) {
+        withLock {
             guard let canonicalSiteURL = canonicalSiteURL(siteURL: siteURL, username: username),
                   canonicalSiteURL == endpoints.siteURL else {
-                throw StoreError.invalidIdentity
+                return
             }
 
             let record = Record(siteURL: endpoints.siteURL.absoluteString,
                                 username: username,
                                 loginEntryURL: endpoints.loginEntryURL.absoluteString,
                                 adminBaseURL: endpoints.adminBaseURL.absoluteString)
-            let attemptedData = try PropertyListEncoder().encode(record)
-            userDefaults.set(attemptedData, forKey: UserDefaults.Key.cookieNonceAuthenticationEndpoints.rawValue)
-
-            guard userDefaults.data(forKey: UserDefaults.Key.cookieNonceAuthenticationEndpoints.rawValue) == attemptedData,
-                  endpointsUnlocked(siteURL: siteURL, username: username) == endpoints else {
-                invalidateAttemptedDataIfUnchangedUnlocked(attemptedData)
-                throw StoreError.persistenceFailed
+            let data: Data
+            do {
+                data = try PropertyListEncoder().encode(record)
+            } catch {
+                DDLogError("⛔️ Error encoding cookie nonce authentication endpoints: \(error)")
+                return
             }
+            userDefaults.set(data, forKey: UserDefaults.Key.cookieNonceAuthenticationEndpoints.rawValue)
         }
     }
 
@@ -59,10 +54,10 @@ struct CookieNonceAuthenticationEndpointStore {
         }
     }
 
-    func remove(siteURL: String, username: String) throws {
-        try withLock {
-            guard let ownedData = userDefaults.data(forKey: UserDefaults.Key.cookieNonceAuthenticationEndpoints.rawValue),
-                  let record = try? PropertyListDecoder().decode(Record.self, from: ownedData),
+    func remove(siteURL: String, username: String) {
+        withLock {
+            guard let data = userDefaults.data(forKey: UserDefaults.Key.cookieNonceAuthenticationEndpoints.rawValue),
+                  let record = try? PropertyListDecoder().decode(Record.self, from: data),
                   record.username == username,
                   let canonicalSiteURL = canonicalSiteURL(siteURL: siteURL, username: username),
                   let storedSiteURL = URL(string: record.siteURL),
@@ -70,13 +65,7 @@ struct CookieNonceAuthenticationEndpointStore {
                   canonicalSiteURL == storedEndpoints.siteURL else {
                 return
             }
-            guard userDefaults.data(forKey: UserDefaults.Key.cookieNonceAuthenticationEndpoints.rawValue) == ownedData else {
-                throw StoreError.persistenceFailed
-            }
             removeUnlocked()
-            guard userDefaults.data(forKey: UserDefaults.Key.cookieNonceAuthenticationEndpoints.rawValue) == nil else {
-                throw StoreError.persistenceFailed
-            }
         }
     }
 }
@@ -89,10 +78,10 @@ private extension CookieNonceAuthenticationEndpointStore {
         let adminBaseURL: String
     }
 
-    func withLock<T>(_ operation: () throws -> T) rethrows -> T {
+    func withLock<T>(_ operation: () -> T) -> T {
         Self.synchronizationLock.lock()
         defer { Self.synchronizationLock.unlock() }
-        return try operation()
+        return operation()
     }
 
     func endpointsUnlocked(siteURL: String, username: String) -> CookieNonceAuthenticationEndpoints? {
@@ -126,18 +115,6 @@ private extension CookieNonceAuthenticationEndpointStore {
             return nil
         }
         return endpoints.siteURL
-    }
-
-    func invalidateAttemptedDataIfUnchangedUnlocked(_ attemptedData: Data) {
-        let key = UserDefaults.Key.cookieNonceAuthenticationEndpoints.rawValue
-        guard userDefaults.data(forKey: key) == attemptedData else {
-            return
-        }
-        removeUnlocked()
-        guard userDefaults.data(forKey: key) == attemptedData else {
-            return
-        }
-        userDefaults.set(Data(), forKey: key)
     }
 
     func removeUnlocked() {

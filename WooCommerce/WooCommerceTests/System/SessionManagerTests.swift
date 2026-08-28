@@ -490,7 +490,7 @@ final class SessionManagerTests: XCTestCase {
             siteURL: XCTUnwrap(URL(string: "https://example.com")),
             loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login"))
         )
-        try sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
 
         // When, Then
         XCTAssertEqual(sut.cookieNonceAuthenticationEndpoints(for: credentials), endpoints)
@@ -516,7 +516,7 @@ final class SessionManagerTests: XCTestCase {
             siteURL: XCTUnwrap(URL(string: "https://example.com")),
             adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin"))
         )
-        try sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: original)
+        sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: original)
         sut.defaultCredentials = original
 
         // When
@@ -537,7 +537,7 @@ final class SessionManagerTests: XCTestCase {
             loginEntryURL: XCTUnwrap(URL(string: "https://b.example/custom-login"))
         )
         sut.defaultCredentials = credentialsA
-        try sut.saveCookieNonceAuthenticationEndpoints(endpointsB, for: credentialsB)
+        sut.saveCookieNonceAuthenticationEndpoints(endpointsB, for: credentialsB)
 
         // When
         sut.defaultCredentials = credentialsB
@@ -566,7 +566,7 @@ final class SessionManagerTests: XCTestCase {
             let credentials = Credentials.wporg(username: "merchant", password: "password", siteAddress: "https://example.com")
             let endpoints = try CookieNonceAuthenticationEndpoints(siteURL: XCTUnwrap(URL(string: "https://example.com")))
             sut.defaultCredentials = credentials
-            try sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+            sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
 
             // When
             sut.defaultCredentials = replacement
@@ -582,7 +582,7 @@ final class SessionManagerTests: XCTestCase {
         let sut = SessionManager(defaults: defaults, keychainServiceName: UUID().uuidString)
         let credentials = Credentials.wporg(username: "merchant", password: "password", siteAddress: "https://example.com")
         let endpoints = try CookieNonceAuthenticationEndpoints(siteURL: XCTUnwrap(URL(string: "https://example.com")))
-        try sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
 
         // When
         sut.reset()
@@ -619,7 +619,7 @@ final class SessionManagerTests: XCTestCase {
             loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
             adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
         )
-        try sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
 
         // When
         sut.deleteApplicationPassword(using: credentials, locally: false)
@@ -666,7 +666,7 @@ final class SessionManagerTests: XCTestCase {
         defaults[.defaultCredentialsType] = credentials.rawType
         keychain[credentials.username] = credentials.secret
         defer { keychain[credentials.username] = nil }
-        try sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
 
         // When
         sut.deleteApplicationPassword(using: nil, locally: false)
@@ -701,7 +701,7 @@ final class SessionManagerTests: XCTestCase {
             adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
         )
         sut.defaultCredentials = credentials
-        try sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
         sut.defaultCredentials = .wpcom(username: "wpcom-user", authToken: "token", siteAddress: "https://example.com")
         XCTAssertNil(sut.cookieNonceAuthenticationEndpoints(for: credentials))
 
@@ -755,7 +755,7 @@ final class SessionManagerTests: XCTestCase {
             siteURL: XCTUnwrap(URL(string: "https://example.com")),
             loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login"))
         )
-        try sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: incoming)
+        sut.saveCookieNonceAuthenticationEndpoints(endpoints, for: incoming)
         XCTAssertNil(defaults[.defaultCredentialsType])
         XCTAssertEqual(
             sut.defaultCredentials,
@@ -830,7 +830,7 @@ final class SessionManagerTests: XCTestCase {
         let standardEndpoints = try CookieNonceAuthenticationEndpoints(
             siteURL: XCTUnwrap(URL(string: credentials.siteAddress))
         )
-        try sut.saveCookieNonceAuthenticationEndpoints(customEndpoints, for: credentials)
+        sut.saveCookieNonceAuthenticationEndpoints(customEndpoints, for: credentials)
         let persistence = try XCTUnwrap(
             SiteCredentialAuthenticationEndpointPersistence(credentials: credentials, endpoints: standardEndpoints)
         )
@@ -839,7 +839,7 @@ final class SessionManagerTests: XCTestCase {
         }
 
         // When
-        try sut.removeCookieNonceAuthenticationEndpoints(for: persistence.credentials)
+        sut.removeCookieNonceAuthenticationEndpoints(for: persistence.credentials)
 
         // Then
         XCTAssertNil(sut.cookieNonceAuthenticationEndpoints(for: credentials))

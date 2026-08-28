@@ -34,7 +34,7 @@ struct SiteCredentialAuthenticationEndpointPersistence {
 /// - Whether WooCommerce is installed and activated on the logged in site.
 ///
 final class PostSiteCredentialLoginChecker {
-    typealias AuthenticationEndpointPersistenceAction = (SiteCredentialAuthenticationEndpointPersistence) throws -> Void
+    typealias AuthenticationEndpointPersistenceAction = (SiteCredentialAuthenticationEndpointPersistence) -> Void
 
     private let stores: StoresManager
     private let applicationPasswordUseCase: ApplicationPasswordUseCase
@@ -59,9 +59,9 @@ final class PostSiteCredentialLoginChecker {
         self.authenticationEndpointPersistenceAction = authenticationEndpointPersistenceAction ?? { persistence in
             switch persistence.behavior {
             case .persist:
-                try stores.sessionManager.saveCookieNonceAuthenticationEndpoints(persistence.endpoints, for: persistence.credentials)
+                stores.sessionManager.saveCookieNonceAuthenticationEndpoints(persistence.endpoints, for: persistence.credentials)
             case .removeVerifiedStandard:
-                try stores.sessionManager.removeCookieNonceAuthenticationEndpoints(for: persistence.credentials)
+                stores.sessionManager.removeCookieNonceAuthenticationEndpoints(for: persistence.credentials)
             }
         }
         self.previousViewController = previousViewController
@@ -73,42 +73,22 @@ final class PostSiteCredentialLoginChecker {
         checkApplicationPassword(for: siteURL,
                                  with: applicationPasswordUseCase,
                                  in: navigationController) { [weak self] in
-            self?.persistAuthenticationEndpointsIfNeeded(for: siteURL, in: navigationController) {
-                self?.checkRoleEligibility(for: siteURL, in: navigationController) {
-                    self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
-                }
+            guard let self else { return }
+            self.persistAuthenticationEndpointsIfNeeded()
+            self.checkRoleEligibility(for: siteURL, in: navigationController) { [weak self] in
+                self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
             }
         }
     }
 }
 
 private extension PostSiteCredentialLoginChecker {
-    func persistAuthenticationEndpointsIfNeeded(for siteURL: String,
-                                                in navigationController: UINavigationController,
-                                                onSuccess: @escaping () -> Void) {
+    func persistAuthenticationEndpointsIfNeeded() {
         guard let authenticationEndpointPersistence else {
-            return onSuccess()
+            return
         }
 
-        do {
-            try authenticationEndpointPersistenceAction(authenticationEndpointPersistence)
-            onSuccess()
-        } catch {
-            analytics.track(event: .Login.siteCredentialFailed(step: .endpointPersistence, error: error))
-            let retry: () -> Void = { [weak self] in
-                self?.persistAuthenticationEndpointsIfNeeded(
-                    for: siteURL,
-                    in: navigationController,
-                    onSuccess: onSuccess
-                )
-            }
-            showAlert(
-                message: Localization.endpointPersistenceError,
-                siteURL: siteURL,
-                in: navigationController,
-                onRetry: retry
-            )
-        }
+        authenticationEndpointPersistenceAction(authenticationEndpointPersistence)
     }
 
     /// Checks if application password is enabled for the specified site.
@@ -268,11 +248,6 @@ private extension PostSiteCredentialLoginChecker {
         static let applicationPasswordError = NSLocalizedString(
             "Error fetching application password for your site.",
             comment: "Error message displayed when application password cannot be fetched after authentication."
-        )
-        static let endpointPersistenceError = NSLocalizedString(
-            "com.woocommerce.postSiteCredentialLoginChecker.endpointPersistenceError",
-            value: "Error saving your site's login configuration.",
-            comment: "Error message displayed when the site's verified login configuration cannot be saved."
         )
         static let roleEligibilityCheckError = NSLocalizedString(
             "Error fetching user information.",

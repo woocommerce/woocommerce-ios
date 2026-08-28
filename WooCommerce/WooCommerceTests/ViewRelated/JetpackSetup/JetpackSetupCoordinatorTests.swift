@@ -393,7 +393,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
         )
         sessionManager.defaultCredentials = previousCredentials
-        try sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: previousCredentials)
+        sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: previousCredentials)
         let syncedSite = Site.fake().copy(siteID: 123, url: "https://example.com")
         let stores = MockJetpackSetupStoresManager(sessionManager: sessionManager, siteSyncResult: .success(syncedSite))
         let coordinator = JetpackSetupCoordinator(
@@ -429,7 +429,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
         )
         sessionManager.defaultCredentials = previousCredentials
-        try sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: previousCredentials)
+        sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: previousCredentials)
         let site = Site.fake().copy(siteID: 123, url: "https://example.com")
         let stores = MockJetpackSetupStoresManager(
             sessionManager: sessionManager,

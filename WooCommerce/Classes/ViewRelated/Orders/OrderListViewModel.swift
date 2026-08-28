@@ -403,8 +403,12 @@ extension OrderListViewModel {
 
         static func ==(lhs: TopBanner, rhs: TopBanner) -> Bool {
             switch (lhs, rhs) {
-            case (.error, .error),
-                (.currencyUnavailable, .currencyUnavailable),
+            case let (.error(lhsError), .error(rhsError)):
+                // Compare the payloads so that a different error re-renders the banner (which shows
+                // error-specific title/info), while repeated identical errors still dedup to avoid churn.
+                return (lhsError as NSError).domain == (rhsError as NSError).domain
+                    && (lhsError as NSError).code == (rhsError as NSError).code
+            case (.currencyUnavailable, .currencyUnavailable),
                 (.none, .none):
                 return true
             default:

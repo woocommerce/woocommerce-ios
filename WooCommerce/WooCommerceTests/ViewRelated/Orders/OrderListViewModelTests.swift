@@ -456,6 +456,57 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssert(viewModel.topBanner == .currencyUnavailable)
     }
 
+    func test_topBanner_when_a_different_sync_error_occurs_then_the_error_banner_is_re_emitted() {
+        // Given — currency resolved so only the loading error can drive the banner
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
+        viewModel.activate()
+
+        var emittedBanners: [OrderListViewModel.TopBanner] = []
+        let cancellable = viewModel.$topBanner.sink { emittedBanners.append($0) }
+
+        // When — two different errors occur back-to-back, without an intervening success
+        let firstError = NSError(domain: "test", code: 1)
+        let secondError = NSError(domain: "test", code: 2)
+        viewModel.dataLoadingError = firstError
+        viewModel.dataLoadingError = secondError
+
+        // Then — the banner is re-emitted for the second, different error (initial .none + two errors)
+        XCTAssertEqual(emittedBanners.count, 3)
+        let lastError = emittedBanners.last.flatMap { banner -> NSError? in
+            guard case let .error(error) = banner else { return nil }
+            return error as NSError
+        }
+        XCTAssertEqual(lastError, secondError)
+
+        cancellable.cancel()
+    }
+
+    func test_topBanner_when_the_same_sync_error_repeats_then_the_error_banner_is_not_re_emitted() {
+        // Given — currency resolved so only the loading error can drive the banner
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
+        viewModel.activate()
+
+        var emittedBanners: [OrderListViewModel.TopBanner] = []
+        let cancellable = viewModel.$topBanner.sink { emittedBanners.append($0) }
+
+        // When — the same error (same domain + code) is set twice
+        viewModel.dataLoadingError = NSError(domain: "test", code: 1)
+        viewModel.dataLoadingError = NSError(domain: "test", code: 1)
+
+        // Then — the duplicate is deduped, so only one error emission follows the initial .none
+        XCTAssertEqual(emittedBanners.count, 2)
+
+        cancellable.cancel()
+    }
+
     private func makeSelectedSiteSettings(currencyResolved: Bool) -> MockSelectedSiteSettings {
         let mock = MockSelectedSiteSettings()
         mock.isUsingFallbackCurrency = !currencyResolved

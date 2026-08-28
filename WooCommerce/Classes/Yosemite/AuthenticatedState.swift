@@ -76,13 +76,15 @@ class AuthenticatedState: StoresManagerState {
         let site = sessionManager.defaultSitePublisher
             .map { $0?.toJetpackSite() }
             .eraseToAnyPublisher()
+        let resolvedCookieNonceAuthenticationEndpoints = cookieNonceAuthenticationEndpoints
+            ?? sessionManager.cookieNonceAuthenticationEndpoints(for: credentials)
 
         self.appPasswordSupportState = .init()
         self.network = networkFactory(
             credentials,
             site,
             appPasswordSupportState.eraseToAnyPublisher(),
-            cookieNonceAuthenticationEndpoints
+            resolvedCookieNonceAuthenticationEndpoints
         )
 
         var services: [ActionsProcessor] = [
@@ -259,10 +261,8 @@ class AuthenticatedState: StoresManagerState {
             return nil
         }
         let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
-        let cookieNonceAuthenticationEndpoints = sessionManager.cookieNonceAuthenticationEndpoints(for: credentials)
         self.init(credentials: credentials,
                   sessionManager: sessionManager,
-                  cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints,
                   networkFactory: networkFactory,
                   isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)
     }

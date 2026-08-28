@@ -43,9 +43,9 @@ public struct MockSessionManager: SessionManagerProtocol {
     }
 
     public func saveCookieNonceAuthenticationEndpoints(_ endpoints: CookieNonceAuthenticationEndpoints,
-                                                       for credentials: Credentials) throws { }
+                                                       for credentials: Credentials) { }
 
-    public func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) throws { }
+    public func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) { }
 
     public var anonymousUserID: String? = nil
 

@@ -372,14 +372,10 @@ private extension JetpackSetupCoordinator {
     func restoreAuthentication(credentials: Credentials,
                                cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) {
         if let cookieNonceAuthenticationEndpoints {
-            do {
-                try stores.sessionManager.saveCookieNonceAuthenticationEndpoints(
-                    cookieNonceAuthenticationEndpoints,
-                    for: credentials
-                )
-            } catch {
-                DDLogError("⛔️ Error restoring cookie nonce authentication endpoints after Jetpack setup: \(error)")
-            }
+            stores.sessionManager.saveCookieNonceAuthenticationEndpoints(
+                cookieNonceAuthenticationEndpoints,
+                for: credentials
+            )
         }
         stores.authenticate(
             credentials: credentials,

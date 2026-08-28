@@ -2963,7 +2963,6 @@ extension WooAnalyticsEvent {
         enum LoginSiteCredentialStep: String {
             case authentication
             case applicationPasswordGeneration = "application_password_generation"
-            case endpointPersistence = "endpoint_persistence"
             case wooStatus = "woo_status"
             case userRole = "user_role"
         }

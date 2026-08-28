@@ -210,18 +210,18 @@ final class SessionManager: SessionManagerProtocol {
     }
 
     func saveCookieNonceAuthenticationEndpoints(_ endpoints: CookieNonceAuthenticationEndpoints,
-                                                for credentials: Credentials) throws {
-        guard let identity = cookieNonceIdentity(for: credentials) else {
-            throw CookieNonceAuthenticationEndpointStore.StoreError.invalidIdentity
-        }
-        try cookieNonceEndpointStore.save(endpoints, siteURL: identity.siteURL, username: identity.username)
-    }
-
-    func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) throws {
+                                                for credentials: Credentials) {
         guard let identity = cookieNonceIdentity(for: credentials) else {
             return
         }
-        try cookieNonceEndpointStore.remove(siteURL: identity.siteURL, username: identity.username)
+        cookieNonceEndpointStore.save(endpoints, siteURL: identity.siteURL, username: identity.username)
+    }
+
+    func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) {
+        guard let identity = cookieNonceIdentity(for: credentials) else {
+            return
+        }
+        cookieNonceEndpointStore.remove(siteURL: identity.siteURL, username: identity.username)
     }
 
     /// Keeps strong reference of the use case to keep the password deletion request alive

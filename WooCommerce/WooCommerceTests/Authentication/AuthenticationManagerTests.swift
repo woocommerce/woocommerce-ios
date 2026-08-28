@@ -253,7 +253,7 @@ final class AuthenticationManagerTests: XCTestCase {
                 loginEntryURL: XCTUnwrap(URL(string: "https://example.com/stale-login")),
                 adminBaseURL: XCTUnwrap(URL(string: "https://example.com/stale-admin/"))
             )
-            try sessionManager.saveCookieNonceAuthenticationEndpoints(staleEndpoints, for: credentials)
+            sessionManager.saveCookieNonceAuthenticationEndpoints(staleEndpoints, for: credentials)
             let applicationPassword = ApplicationPassword(
                 wpOrgUsername: "merchant",
                 password: .init("application-password"),

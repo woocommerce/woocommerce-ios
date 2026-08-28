@@ -98,7 +98,7 @@ final class StoresManagerTests: XCTestCase {
             adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
         )
         sessionManager.defaultCredentials = credentials
-        try sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
         var capturedCredentials: Credentials?
         var capturedEndpoints: CookieNonceAuthenticationEndpoints?
 
@@ -149,6 +149,42 @@ final class StoresManagerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(capturedCredentials, credentials)
+        XCTAssertEqual(capturedEndpoints, endpoints)
+    }
+
+    func test_authenticated_state_in_session_reauthentication_restores_custom_endpoints_when_transient_value_is_missing() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        let credentials: Credentials = .wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        sessionManager.defaultCredentials = credentials
+        sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+
+        // When
+        _ = AuthenticatedState(
+            credentials: credentials,
+            sessionManager: sessionManager,
+            cookieNonceAuthenticationEndpoints: nil,
+            networkFactory: { _, _, _, endpoints in
+                capturedEndpoints = endpoints
+                return AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
+            },
+            isLocalCatalogFeatureFlagEnabled: false
+        )
+
+        // Then
         XCTAssertEqual(capturedEndpoints, endpoints)
     }
 
@@ -777,9 +813,9 @@ final class MockSessionManager: SessionManagerProtocol {
     }
 
     func saveCookieNonceAuthenticationEndpoints(_ endpoints: CookieNonceAuthenticationEndpoints,
-                                                for credentials: Credentials) throws { }
+                                                for credentials: Credentials) { }
 
-    func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) throws { }
+    func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) { }
 
     func reset() {
         // Do nothing

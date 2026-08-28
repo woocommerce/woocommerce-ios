@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-08-11 11:56:51+0000 */
+/* Translation-Revision-Date: 2026-08-25 10:55:21+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: zh_CN */
@@ -8555,6 +8555,18 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Widget title, displayed when selecting which widget to add */
 "appLinkWidget.displayName" = "图标";
 
+/* Button that exports all retained application logs as a ZIP file. */
+"applicationLog.exportAllLogs" = "导出所有日志";
+
+/* Message of an alert shown when application logs could not be exported. */
+"applicationLog.exportError.message" = "请重试。";
+
+/* Button that dismisses the application log export error alert. */
+"applicationLog.exportError.ok" = "确定";
+
+/* Title of an alert shown when application logs could not be exported. */
+"applicationLog.exportError.title" = "无法导出日志";
+
 /* Placeholder text for the search field on the application log detail screen. */
 "applicationLogDetail.searchPrompt" = "搜索日志";
 
@@ -9763,6 +9775,21 @@ which should be translated separately and considered part of this sentence. */
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "cardPresentPayment.settingsWebView.title" = "WooCommerce 设置";
 
+/* VoiceOver summary confirming that a Tap to Pay payment was canceled without charging the customer. */
+"cardPresentPayment.tapToPay.paymentCancelled.accessibilityLabel" = "付款已取消。 未收到任何付款。 “点按付款”复选标记和声音仅表明卡片已被读取。";
+
+/* Explains that Apple's Tap to Pay success feedback did not mean the canceled payment was completed. */
+"cardPresentPayment.tapToPay.paymentCancelled.cardReadExplanation" = "“点按付款”复选标记和声音仅表明卡片已被读取。";
+
+/* Button dismissing confirmation of a canceled Tap to Pay payment. */
+"cardPresentPayment.tapToPay.paymentCancelled.done" = "完成";
+
+/* Message confirming that a canceled Tap to Pay payment did not charge the customer. */
+"cardPresentPayment.tapToPay.paymentCancelled.noPaymentTaken" = "未收到任何付款。";
+
+/* Title confirming that a Tap to Pay payment was canceled in WooCommerce. */
+"cardPresentPayment.tapToPay.paymentCancelled.title" = "付款已取消";
+
 /* Error message when the Stripe account has overdue requirements, explaining that the merchant can skip and continue taking payments, with a caution that some transactions may be declined if the account is actually blocked. */
 "cardPresentPayments.onboarding.stripeAccountOverdue.message" = "您至少有一项逾期未完成的要求。 您可以跳过此项并继续收款，但如果该要求导致您的账户受阻，则在您解决之前，部分交易可能会被拒绝。";
 
@@ -10059,6 +10086,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Info message when there are no connection issues in the connectivity tool screen */
 "connectivityToolViewModel.message.noIssuesMessage" = "如果数据仍无法加载，请联系我们的支持团队以获得帮助。";
+
+/* Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart. */
+"couponCardView.appliedAccessibilityValue" = "已应用";
 
 /* Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'. */
 "couponCardView.expirationText" = "到期日期：%@";
@@ -10796,6 +10826,9 @@ which should be translated separately and considered part of this sentence. */
 /* Error message when online PIN is not supported in offline mode. */
 "hardware.cardReader.underlyingError.onlinePinNotSupportedOffline" = "离线模式下不支持在线 PIN。 请使用另一张银行卡重新尝试付款。";
 
+/* Error message when the payment intent has no id, so the payment cannot be processed. */
+"hardware.cardReader.underlyingError.paymentIntentIdMissing" = "很抱歉，由于未找到付款 ID，我们无法完成此付款。";
+
 /* Error message when a payment times out while waiting for a card to be tapped/inserted/swiped. */
 "hardware.cardReader.underlyingError.paymentMethodCollectionTimedOut" = "未在规定时间内出示卡片。";
 
@@ -10835,11 +10868,29 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for Contact Support */
 "helpAndSupport.contactSupport.subtitle" = "获取有关应用程序或商店问题的帮助";
 
+/* Description of the mobile status report on Help screen */
+"helpAndSupport.mobileStatusReport.description" = "此应用程序中的应用程序、设备和商店信息";
+
+/* View mobile status report cell title on Help screen */
+"helpAndSupport.mobileStatusReport.title" = "移动设备状态报告";
+
 /* Subtitle for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.subtitle" = "测试您的站点是否与该应用程序兼容";
 
 /* Title for the site compatibility check row on the Help screen */
 "helpAndSupport.siteCompatibility.title" = "检查站点兼容性";
+
+/* Accessibility label for dismissing the HTTPS configuration warning. */
+"https-configuration-warning.dismiss" = "忽略";
+
+/* Message in a persistent warning explaining that a merchant should configure their store address to use HTTPS. */
+"https-configuration-warning.https-supported-message" = "您的商店支持 HTTPS，但其地址配置为使用 HTTP。 将其更新为 HTTPS，以保护您的商店并避免连接问题。";
+
+/* Button title that opens documentation about configuring HTTPS for a WooCommerce store. */
+"https-configuration-warning.learn-more" = "了解更多";
+
+/* Title of a persistent warning shown when a store reports an HTTP site address. */
+"https-configuration-warning.title" = "通过 HTTPS 保护您的商店";
 
 /* Title of the Bookings menu in the hub menu */
 "hubMenu.bookings" = "预订";
@@ -10898,10 +10949,21 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the card present payments onboarding step encouraging the merchant to enable the Pay In Person payment gateway. */
 "inPersonPayments.cashOnDelivery.notSetUp.title" = "您想在结账页面中添加“现场付款”功能吗？";
 
+/* Error message when a Card Present Payments extension is not activated,
+shown to users who cannot activate it themselves. %1$@ is the extension name.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it */
+"inPersonPaymentsPluginNotActivated.messageForNonAdministrator" = "您的商店中已安装 %1$@ 扩展程序，但未启用。 请联系商店管理员将其启用，以便接受现场付款。";
+
 /* Error message when WooPayments is not installed
 The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
 If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
 "inPersonPaymentsPluginNotInstalled.message" = "您需要在您的商店中安装免费的 WooPayments 扩展程序，才能接受现场付款。";
+
+/* Error message when WooPayments is not installed, shown to users who cannot install it themselves.
+The hyphen in "In‑Person" is a non-breaking hyphen (U+2011).
+If your translation of that term also happens to contains a hyphen, please be sure to use the non-breaking hyphen character for it. */
+"inPersonPaymentsPluginNotInstalled.messageForNonAdministrator" = "您需要在您的商店中安装免费的 WooPayments 扩展程序，才能接受现场付款。 请联系商店管理员进行安装。";
 
 /* Title for the error screen when WooPayments is not installed */
 "inPersonPaymentsPluginNotInstalled.title" = "安装 WooPayments";
@@ -11118,8 +11180,32 @@ which should be translated separately and considered part of this sentence. */
 /* Title for the accessibility action to open the learn more screen, showing information about adding Pay in Person to their checkout. */
 "menu.payments.payInPerson.learnMore.link.accessibilityAction" = "了解更多";
 
+/* Cancel button of the confirmation alert shown when the merchant toggles the Pay In Person checkout payment option in the Payments menu. Tapping it leaves the payment method unchanged. */
+"menu.payments.payInPerson.toggle.confirmation.cancelButton" = "取消";
+
+/* Confirmation button of the alert shown when the merchant turns off the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.disableConfirmation.confirmButton" = "禁用";
+
+/* Message of the confirmation alert shown when the merchant turns off the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.disableConfirmation.message" = "此操作将在您商店的结账页面上禁用“货到付款”付款方式，因此客户将无法选择该付款方式。";
+
+/* Title of the confirmation alert shown when the merchant turns off the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.disableConfirmation.title" = "禁用现场付款功能？";
+
 /* Error displayed when the attempt to disable a Pay In Person checkout payment option fails */
 "menu.payments.payInPerson.toggle.disableFailureNotice.title" = "禁用“现场付款”功能失败。 请稍后重试。";
+
+/* Confirmation button of the alert shown when the merchant turns on the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.enableConfirmation.confirmButton" = "启用";
+
+/* Message of the confirmation alert shown when the merchant turns on the Pay In Person checkout payment option and the payment method already has the default Pay in Person title */
+"menu.payments.payInPerson.toggle.enableConfirmation.message" = "此操作将在您商店的结账页面上启用“货到付款”付款方式。";
+
+/* Message of the confirmation alert shown when the merchant turns on the Pay In Person checkout payment option and the payment method has a custom title which will be replaced. %1$@ is a placeholder for the payment method's current customer-facing title, e.g. \"Cash on delivery\". %2$@ is a placeholder for the title it will be renamed to, e.g. \"Pay in Person\". */
+"menu.payments.payInPerson.toggle.enableConfirmation.messageRenameWithTitles" = "此操作将在您商店的结账页面上启用“货到付款”付款方式，并为您的客户将该付款方式的名称从“%1$@”更改为“%2$@”，包括在您网站结账页面上的显示名称。";
+
+/* Title of the confirmation alert shown when the merchant turns on the Pay In Person checkout payment option in the Payments menu */
+"menu.payments.payInPerson.toggle.enableConfirmation.title" = "启用现场付款功能？";
 
 /* Error displayed when the attempt to enable a Pay In Person checkout payment option fails */
 "menu.payments.payInPerson.toggle.enableFailureNotice.title" = "启用“现场付款”功能失败。 请稍后重试。";
@@ -11153,6 +11239,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title for the section related to Woo Payments Payouts/Balances. */
 "menu.payments.wooPaymentsPayouts.section.title" = "Woo Payments 余额";
+
+/* Toast message shown after tapping Copy on the Mobile Status Report screen */
+"mobileStatusReportView.copiedToClipboard" = "已将移动设备状态报告复制到剪贴板";
+
+/* Navigation title of the mobile status report screen */
+"mobileStatusReportView.title" = "移动设备状态报告";
 
 /* Display label for a product's subscription period when it is a single month. */
 "month" = "月";
@@ -11527,6 +11619,15 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle of the custom amount row in order details */
 "orderDetails.customAmountsRow.subtitle" = "自定义金额";
 
+/* Button dismissing the error shown when a gift-card order cannot be refunded in the app */
+"orderDetails.issueRefund.giftCardUnsupported.alert.dismissButton" = "确定";
+
+/* Message explaining why an order paid with a gift card must be refunded from the store admin */
+"orderDetails.issueRefund.giftCardUnsupported.alert.message" = "此笔订单使用礼品卡付款。 在此处退款不会恢复礼品卡余额。 为正确退款，请通过网页端商店管理页面进行操作。";
+
+/* Title shown when a merchant tries to refund an order paid with a gift card */
+"orderDetails.issueRefund.giftCardUnsupported.alert.title" = "通过商店管理页面办理退款";
+
 /* Title in Order Attribution Section on Order Details screen. */
 "orderDetailsDataSource.attributionInfo.campaign" = "活动";
 
@@ -11881,6 +11982,15 @@ which should be translated separately and considered part of this sentence. */
 /* Title label for modal dialog that appears when searching for a card reader */
 "pointOfSale.cardPresent.modalScanningForReader.title" = "正在扫描读卡器";
 
+/* Button dismissing the Tap to Pay payment cancellation confirmation in Point of Sale */
+"pointOfSale.cardPresent.paymentCancellationConfirmation.done.button.title" = "完成";
+
+/* Explains that Tap to Pay card reading succeeded but the payment was canceled in Point of Sale */
+"pointOfSale.cardPresent.paymentCancellationConfirmation.message" = "未收到任何付款。 “点按付款”复选标记和声音仅表明卡片已被读取。";
+
+/* Title confirming that a Tap to Pay payment was canceled in Point of Sale */
+"pointOfSale.cardPresent.paymentCancellationConfirmation.title" = "付款已取消";
+
 /* Button to dismiss payment capture error message. Presented to users after collecting a payment fails from payment capture error on the Point of Sale Checkout */
 "pointOfSale.cardPresent.paymentCaptureError.newOrder.button.title" = "新订单";
 
@@ -12219,6 +12329,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* A message shown on the coupon if's not valid after attempting to apply it */
 "pointOfSale.couponRow.invalidCoupon" = "未应用优惠券";
+
+/* Note shown on a custom amount row in the Point of Sale cart at checkout when a coupon is applied, since coupons never discount custom amounts. */
+"pointOfSale.customAmountRow.discountNotApplied" = "未应用折扣";
 
 /* The title of the menu button to cancel an ongoing card reader reconnection attempt. */
 "pointOfSale.floatingButtons.cancelReconnection.button.title" = "取消重新连接";
@@ -12913,6 +13026,9 @@ which should be translated separately and considered part of this sentence. */
 /* A title for the view that selects the type of coupon to create */
 "pos.couponCreationSheet.selectCoupon.title" = "创建优惠券";
 
+/* Button on the exit Point of Sale modal that dismisses it without exiting Point of Sale. */
+"pos.exitPOSModal.cancelButton" = "取消";
+
 /* Accessibility label for the button to close the exit Point of Sale modal alert. */
 "pos.exitPOSModal.closeButton.accessibilityLabel" = "关闭";
 
@@ -13541,6 +13657,9 @@ which should be translated separately and considered part of this sentence. */
 /* Button to retry fetching the server-calculated refund total on the refund item-selection step */
 "pos.refundItemsSelectionView.retryButton" = "重试";
 
+/* Button to reload the refundable items after the store rejected the refund because the order changed */
+"pos.refundItemsSelectionView.reviewRemainingItemsButton" = "查看剩余商品";
+
 /* Accessibility label for the select-all checkbox in the refund items selection modal */
 "pos.refundItemsSelectionView.selectAll.accessibilityLabel" = "选择或取消选择所有商品";
 
@@ -13564,6 +13683,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title shown when POS cannot confirm whether a card-present refund was recorded successfully. */
 "pos.refundModalContentView.cardPresentCreateError.title" = "无法确认退款";
+
+/* Button to reload the refundable items after the store rejected the refund because the order changed */
+"pos.refundModalContentView.reviewRemainingItemsButton" = "查看剩余商品";
 
 /* Accessibility label for the back button on the nothing to refund screen */
 "pos.refundNothingToRefundView.backButton.accessibilityLabel" = "返回";
@@ -14366,8 +14488,14 @@ which should be translated separately and considered part of this sentence. */
 /* Subtitle for the stock items with no items sold on the Stock section on the My Store screen. */
 "productStockDashboardCard.item.subtitle.zero" = "最近 30 天内未售出任何商品";
 
+/* Time when the Stock dashboard card was last updated */
+"productStockDashboardCard.lastUpdated" = "最后更新时间：%1$@";
+
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.products" = "产品";
+
+/* Message on the Stock dashboard card when a refresh fails; includes the last updated time */
+"productStockDashboardCard.refreshFailed" = "无法刷新 · 最后更新时间：%1$@";
 
 /* Header label on the Stock section on the My Store screen */
 "productStockDashboardCard.status" = "状态";
@@ -14738,6 +14866,24 @@ which should be translated separately and considered part of this sentence. */
 /* The name of the job that appears in the 'Print Center' when printing a receiptReads as 'Woo: receipt for order #123 on MyStoreName' */
 "receiptViewModel.formattedReceiptJobName.receiptJobNameWithStoreName" = "%1$@：%3$@ 上第 %2$@ 号订单的收据";
 
+/* Error shown when a refund is rejected because the refund amount is not valid. */
+"refundAPIError.invalidRefundAmount" = "退款金额无效。";
+
+/* Error shown when a refund is rejected because the order status does not allow refunds or nothing refundable remains. */
+"refundAPIError.orderNotRefundable" = "此订单无法退款。";
+
+/* Error shown when a refund is rejected because the selected quantity exceeds what is still refundable for an item. */
+"refundAPIError.quantityExceedsRefundable" = "所选数量大于剩余可退款数量。";
+
+/* Error shown when a refund is rejected because the requested total exceeds the order's remaining refundable amount. */
+"refundAPIError.refundExceedsRemaining" = "退款金额大于此订单的剩余可退款金额。";
+
+/* Error shown when a refund is rejected because the requested amount exceeds what is left to refund on an item. */
+"refundAPIError.refundTotalExceedsLine" = "退款金额大于此商品的剩余可退款金额。";
+
+/* Error shown when a refund is rejected because one of the selected items is already fully refunded. */
+"refundAPIError.selectedItemAlreadyRefunded" = "所选商品中有一件已全额退款。";
+
 /* Title on the refund screen that lists the custom amounts total cost */
 "refundCustomAmountsDetails.totalTitle" = "自定义金额退款";
 
@@ -14972,6 +15118,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver value announced for an unselected checkbox. */
 "storeCheckbox.accessibilityValue.unchecked" = "未勾选";
+
+/* Default accessibility label for dismissing a store notice banner. */
+"storeNoticeBanner.dismiss.accessibilityLabel" = "忽略";
 
 /* Button when tapped will show a screen with all the store setup tasks.%1$d represents the total number of tasks. */
 "storeOnboardingCardView.viewAll" = "查看所有 %1$d 任务 ";

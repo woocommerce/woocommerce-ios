@@ -26,24 +26,25 @@ public final class PointOfSaleItemService: PointOfSaleItemServiceProtocol {
     public func providePointOfSaleItems(pageNumber: Int = 1,
                                         fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem> {
         do {
-            switch try await fetchStrategy.fetchItems(pageNumber: pageNumber) {
-            case .items(let pagedItems):
-                if pageNumber != 1 && pagedItems.items.isEmpty {
+            // Check if strategy provides mixed items (e.g., FTS search returning products and variations together)
+            if let mixedItems = try await fetchStrategy.fetchMixedItems(pageNumber: pageNumber) {
+                if pageNumber != 1 && mixedItems.items.isEmpty {
                     return .init(items: [], hasMorePages: false, totalItems: 0)
                 }
-                return pagedItems
-
-            case .products(let pagedProducts):
-                let products = pagedProducts.items
-
-                if pageNumber != 1 && products.isEmpty {
-                    return .init(items: [], hasMorePages: false, totalItems: 0)
-                }
-
-                return .init(items: itemMapper.mapProductsToPOSItems(products: products),
-                             hasMorePages: pagedProducts.hasMorePages,
-                             totalItems: pagedProducts.totalItems)
+                return mixedItems
             }
+
+            // Fall back to product-only fetch with mapping
+            let pagedProducts = try await fetchStrategy.fetchProducts(pageNumber: pageNumber)
+            let products = pagedProducts.items
+
+            if pageNumber != 1 && products.isEmpty {
+                return .init(items: [], hasMorePages: false, totalItems: 0)
+            }
+
+            return .init(items: itemMapper.mapProductsToPOSItems(products: products),
+                         hasMorePages: pagedProducts.hasMorePages,
+                         totalItems: pagedProducts.totalItems)
         } catch AFError.explicitlyCancelled, is CancellationError {
             throw PointOfSaleItemServiceError.requestCancelled
         }

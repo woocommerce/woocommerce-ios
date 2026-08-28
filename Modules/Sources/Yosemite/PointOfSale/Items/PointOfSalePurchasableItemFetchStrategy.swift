@@ -2,19 +2,14 @@ import Foundation
 import protocol Networking.ProductsRemoteProtocol
 import protocol Networking.ProductVariationsRemoteProtocol
 
-/// What a fetch strategy returns, in the shape it can produce.
-public enum POSItemFetchResult {
-    /// Products only, which the service maps to POSItems.
-    case products(PagedItems<POSProduct>)
-
-    /// Products and variations already mapped to POSItems, as FTS search returns them.
-    case items(PagedItems<POSItem>)
-}
-
 public protocol PointOfSalePurchasableItemFetchStrategy {
-    func fetchItems(pageNumber: Int) async throws -> POSItemFetchResult
-
+    func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct>
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
+
+    /// Fetches mixed POSItem results (products and variations together).
+    /// Override this in strategies that need to return both products and variations (e.g., FTS search).
+    /// Default implementation returns nil, indicating the service should use fetchProducts instead.
+    func fetchMixedItems(pageNumber: Int) async throws -> PagedItems<POSItem>?
 
     /// The debouncing strategy to use for search input.
     /// Default is `.immediate` (no debouncing) for non-search strategies.
@@ -25,6 +20,11 @@ public extension PointOfSalePurchasableItemFetchStrategy {
     /// Default implementation returns `.immediate` for strategies that don't need debouncing
     var debounceStrategy: SearchDebounceStrategy {
         .immediate
+    }
+
+    /// Default implementation returns nil, indicating the service should use fetchProducts instead.
+    func fetchMixedItems(pageNumber: Int) async throws -> PagedItems<POSItem>? {
+        nil
     }
 }
 
@@ -47,7 +47,7 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
         self.analytics = analytics
     }
 
-    public func fetchItems(pageNumber: Int) async throws -> POSItemFetchResult {
+    public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
         let pagedProducts = try await productsRemote.loadProductsForPointOfSale(
             for: siteID,
             productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
@@ -58,7 +58,7 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
             analytics.trackItemsFetchComplete(totalItems: pagedProducts.totalItems ?? 0)
         }
 
-        return .products(pagedProducts)
+        return pagedProducts
     }
 
     public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
@@ -98,7 +98,7 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
         .smart()
     }
 
-    public func fetchItems(pageNumber: Int) async throws -> POSItemFetchResult {
+    public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
         let startTime = Date()
         let pagedProducts = try await productsRemote.searchProductsForPointOfSale(
             for: siteID,
@@ -111,7 +111,7 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
             analytics.trackSearchRemoteResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
                                                             totalItems: pagedProducts.totalItems ?? 0)
         }
-        return .products(pagedProducts)
+        return pagedProducts
     }
 
     public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
@@ -138,7 +138,7 @@ public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchas
         self.pageSize = pageSize
     }
 
-    public func fetchItems(pageNumber: Int) async throws -> POSItemFetchResult {
+    public func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
         let receivedItems = try await productsRemote.loadPopularProductsForPointOfSale(
             for: siteID,
             productTypes: PointOfSaleDefaultPurchasableItemFetchStrategy.defaultProductTypes,
@@ -148,7 +148,7 @@ public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchas
         let modifiedItems = PagedItems<POSProduct>(items: receivedItems.items,
                                                    hasMorePages: false,
                                                    totalItems: receivedItems.totalItems)
-        return .products(modifiedItems)
+        return modifiedItems
     }
 
     public func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {

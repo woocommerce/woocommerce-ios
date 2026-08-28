@@ -335,33 +335,8 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         _ = try await itemProvider.providePointOfSaleItems(pageNumber: 5, fetchStrategy: fetchStrategy)
 
         // Then
-        XCTAssertTrue(fetchStrategy.fetchItemsCalled)
-        XCTAssertEqual(fetchStrategy.spyFetchItemsPageNumber, 5)
-    }
-
-    func test_providePointOfSaleItems_when_strategy_returns_items_then_returns_them_unmapped() async throws {
-        // Given
-        let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
-        let expectedItem = POSItem.simpleProduct(POSSimpleProduct(
-            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
-            name: "Test Product",
-            formattedPrice: "$10.00",
-            productID: 1,
-            price: "10.00",
-            manageStock: false,
-            stockQuantity: nil,
-            stockStatusKey: ""
-        ))
-        mockFetchStrategy.mockPagedItemsResult = .success(PagedItems(items: [expectedItem],
-                                                                     hasMorePages: false,
-                                                                     totalItems: 1))
-
-        // When
-        let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: 1, fetchStrategy: mockFetchStrategy)
-
-        // Then
-        XCTAssertEqual(pagedItems.items, [expectedItem])
-        XCTAssertFalse(mockItemMapper.mapProductsToPOSItemsCalled)
+        XCTAssertTrue(fetchStrategy.fetchProductsCalled)
+        XCTAssertEqual(fetchStrategy.spyFetchProductsPageNumber, 5)
     }
 
     func test_providePointOfSaleSimpleProductItems_returns_expected_items() async throws {

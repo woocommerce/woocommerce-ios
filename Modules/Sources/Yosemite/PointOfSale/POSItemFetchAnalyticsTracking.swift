@@ -7,11 +7,13 @@ import Foundation
 /// local catalog at all (`PointOfSaleCouponFetchStrategy`), so every coupon search reports `remote`.
 public enum POSSearchMethod: String {
     case fts
+    case like
     case remote
 }
 
 /// The source of search results
 public enum POSSearchSource: String {
+    case product
     case purchasableItems = "purchasable_items"
 }
 

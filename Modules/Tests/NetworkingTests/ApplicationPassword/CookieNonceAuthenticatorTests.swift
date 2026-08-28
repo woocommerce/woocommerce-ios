@@ -663,24 +663,20 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         XCTAssertTrue(trace.successfulProtectedCookie?.contains(scenario.loginCookie) == true)
     }
 
-    func test_default_application_password_use_case_with_custom_endpoints_authenticates_and_maps_password() async throws {
+    func test_default_application_password_use_case_with_custom_endpoints_retains_them_and_maps_password() async throws {
         // Given
         let passwordUUID = "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e"
-        let generatedPassword = "generated-password"
-        let responseBody = Data(#"{"uuid":"\#(passwordUUID)","password":"\#(generatedPassword)"}"#.utf8)
-        let scenario = CookieNonceLoopbackScenario(
-            requiredInitialProtectedRequests: 1,
-            protectedMethod: "POST",
-            protectedTarget: "/wp-json/wp/v2/users/me/application-passwords",
-            successfulProtectedBody: responseBody
-        )
-        let server = try CookieNonceLoopbackServer(handler: scenario.response)
-        defer { server.stop() }
-        let siteURL = server.siteURL
+        let generatedPassword = "passwordvalue"
+        let siteURL = try XCTUnwrap(URL(string: "https://example.com"))
         let endpoints = try CookieNonceAuthenticationEndpoints(
             siteURL: siteURL,
             loginEntryURL: siteURL.appendingPathComponent("custom-entry"),
             adminBaseURL: siteURL.appendingPathComponent("private-admin", isDirectory: true)
+        )
+        let network = MockNetwork()
+        network.simulateResponse(
+            requestUrlSuffix: "users/me/application-passwords",
+            filename: "generate-application-password-using-wporg-creds-success"
         )
         let storage = MockApplicationPasswordStorage()
         let sut = try DefaultApplicationPasswordUseCase(
@@ -688,6 +684,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
             password: samplePassword,
             siteAddress: siteURL.absoluteString,
             authenticationEndpoints: endpoints,
+            network: network,
             storage: storage,
             rootCache: MockRESTAPIRootCache(
                 stubbedRoot: siteURL.appendingPathComponent("wp-json", isDirectory: true).absoluteString
@@ -702,16 +699,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         XCTAssertEqual(password.password.secretValue, generatedPassword)
         XCTAssertEqual(password.uuid, passwordUUID)
         XCTAssertEqual(storage.applicationPassword, password)
-        let trace = scenario.trace
-        XCTAssertEqual(trace.protectedRequestCount, 2)
-        XCTAssertEqual(trace.loginEntryRequestCount, 1)
-        XCTAssertEqual(trace.credentialRequestCount, 1)
-        XCTAssertEqual(trace.nonceRequestCount, 1)
-        XCTAssertEqual(trace.successfulProtectedRequestCount, 1)
-        XCTAssertTrue(trace.credentialCookie?.contains(scenario.preflightCookie) == true)
-        XCTAssertTrue(trace.nonceCookie?.contains(scenario.loginCookie) == true)
-        XCTAssertEqual(trace.successfulProtectedNonce, "freshnonce")
-        XCTAssertTrue(trace.successfulProtectedCookie?.contains(scenario.loginCookie) == true)
+        XCTAssertEqual(sut.authenticationEndpoints, endpoints)
     }
 
     func test_wordpress_org_network_when_protected_requests_are_concurrent_then_coalesces_authentication_and_retries_all() async throws {

@@ -31,8 +31,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
-        case .euShippingNotification:
-            return true
         case .betterCustomerSelectionInOrder:
             return true
         case .giftCardInOrderForm:

@@ -87,10 +87,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case manualErrorHandlingForSiteCredentialLogin
 
-    /// Enables EU Bound notifications inside the Shipping Labels feature
-    ///
-    case euShippingNotification
-
     /// Enables the improvements in the customer selection logic when creating an order
     ///
     case betterCustomerSelectionInOrder

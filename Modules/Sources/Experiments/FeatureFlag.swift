@@ -95,10 +95,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case betterCustomerSelectionInOrder
 
-    /// Enables the hazmat shipping selection during the Shipping Labels package details
-    ///
-    case hazmatShipping
-
     /// Enables gift card support in order creation/editing
     ///
     case giftCardInOrderForm

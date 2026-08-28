@@ -35,8 +35,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .filterHistoryOnOrderAndProductLists:
-            return true
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .productImageOptimizedHandling:

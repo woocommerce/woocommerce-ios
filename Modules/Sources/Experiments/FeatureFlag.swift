@@ -95,10 +95,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSale
 
-    /// Supports managing filer history on order and product lists
-    ///
-    case filterHistoryOnOrderAndProductLists
-
     /// Supports uploading product images in background
     ///
     case backgroundProductImageUpload

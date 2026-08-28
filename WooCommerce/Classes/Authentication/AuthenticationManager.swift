@@ -9,7 +9,6 @@ import UIKit
 import class Networking.UserAgent
 import enum Experiments.ABTest
 import struct Networking.Settings
-import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
 import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
@@ -50,8 +49,6 @@ class AuthenticationManager: Authentication {
 
     private let stores: StoresManager
 
-    private let featureFlagService: FeatureFlagService
-
     private let analytics: Analytics
 
     private let abTestVariationProvider: ABTestVariationProvider
@@ -75,7 +72,6 @@ class AuthenticationManager: Authentication {
 
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider(),
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
@@ -83,7 +79,6 @@ class AuthenticationManager: Authentication {
          qrLoginAvailability: QRLoginAvailabilityProvider = QRLoginAvailability()) {
         self.stores = stores
         self.storageManager = storageManager
-        self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.abTestVariationProvider = abTestVariationProvider
         self.switchStoreUseCase = switchStoreUseCase
@@ -567,10 +562,6 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func handleSiteCredentialLoginFailure(error: Error,
                                           for siteURL: String,
                                           in viewController: UIViewController) {
-        guard featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin) else {
-            return
-        }
-
         let isAppPasswordAuthError = {
             switch error {
             case SiteCredentialLoginError.genericFailure,

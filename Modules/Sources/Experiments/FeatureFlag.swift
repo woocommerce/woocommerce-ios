@@ -71,10 +71,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case addProductToOrderViaSKUScanner
 
-    /// Enables manual error handling for site credential login.
-    ///
-    case manualErrorHandlingForSiteCredentialLogin
-
     /// Enables the improvements in the customer selection logic when creating an order
     ///
     case betterCustomerSelectionInOrder

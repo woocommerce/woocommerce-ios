@@ -1,7 +1,6 @@
 import Combine
 import Foundation
 import Yosemite
-import Experiments
 import class WordPressShared.EmailFormatValidator
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
@@ -40,8 +39,6 @@ open class AddressFormViewModel {
     ///
     let analytics: Analytics
 
-    private let featureFlagService: FeatureFlagService
-
     /// Whether the Done button in the navigation bar is always enabled.
     ///
     private let isDoneButtonAlwaysEnabled: Bool
@@ -66,7 +63,6 @@ open class AddressFormViewModel {
          isDoneButtonAlwaysEnabled: Bool = false,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
 
@@ -86,8 +82,6 @@ open class AddressFormViewModel {
         self.storageManager = storageManager
         self.stores = stores
         self.analytics = analytics
-
-        self.featureFlagService = featureFlagService
 
         // Listen only to the first emitted event.
         onLoadTrigger.first().sink { [weak self] in
@@ -209,10 +203,6 @@ open class AddressFormViewModel {
         secondaryFields.selectedCountry?.states.isNotEmpty ?? false
     }
 
-    var showSearchButton: Bool {
-        !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
-    }
-
     /// Creates a view model to be used when selecting a country for primary fields
     ///
     func createCountryViewModel() -> CountrySelectorViewModel {
@@ -275,19 +265,6 @@ open class AddressFormViewModel {
         let primaryEmailIsValid = fields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         let secondaryEmailIsValid = secondaryFields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         return primaryEmailIsValid && secondaryEmailIsValid
-    }
-
-    /// Fills Order AddressFormFields with Customer details
-    ///
-    func customerSelectedFromSearch(customer: Customer) {
-        fillCustomerFields(customer: customer)
-        let addressesDiffer = customer.billing != customer.shipping
-        showDifferentAddressForm = addressesDiffer
-    }
-
-    private func fillCustomerFields(customer: Customer) {
-        fields = populate(fields: fields, with: customer.billing)
-        secondaryFields = populate(fields: secondaryFields, with: customer.shipping)
     }
 
     private func populate(fields: AddressFormFields, with address: Address?) -> AddressFormFields {

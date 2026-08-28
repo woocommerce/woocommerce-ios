@@ -1,7 +1,6 @@
 import Foundation
 import UIKit
 import Yosemite
-import Experiments
 import protocol WooFoundation.Analytics
 
 /// Implementation of `SearchUICommand` for Customer search.
@@ -13,11 +12,7 @@ final class CustomerSearchUICommand: SearchUICommand {
     typealias ResultsControllerModel = StorageCustomer
 
     var searchBarPlaceholder: String {
-        guard featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) else {
-            return Localization.searchBarPlaceHolder
-        }
-
-        return showSearchFilters ? Localization.customerFiltersSearchBarPlaceHolder : Localization.customerSelectorSearchBarPlaceHolder
+        showSearchFilters ? Localization.customerFiltersSearchBarPlaceHolder : Localization.customerSelectorSearchBarPlaceHolder
     }
 
     let returnKeyType = UIReturnKeyType.done
@@ -48,8 +43,6 @@ final class CustomerSearchUICommand: SearchUICommand {
 
     private let analytics: Analytics
 
-    private let featureFlagService: FeatureFlagService
-
     private var searchTerm: String?
 
     // If customer is a guest, show "Guest" in the detail section
@@ -77,7 +70,6 @@ final class CustomerSearchUICommand: SearchUICommand {
          selectedCustomerID: Int64? = nil,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onAddCustomerDetailsManually: (() -> Void)? = nil,
          onDidSelectSearchResult: @escaping ((Customer) -> Void),
          onDidStartSyncingAllCustomersFirstPage: (() -> Void)? = nil,
@@ -92,7 +84,6 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.selectedCustomerID = selectedCustomerID
         self.stores = stores
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.onAddCustomerDetailsManually = onAddCustomerDetailsManually
         self.onDidSelectSearchResult = onDidSelectSearchResult
         self.onDidStartSyncingAllCustomersFirstPage = onDidStartSyncingAllCustomersFirstPage
@@ -103,27 +94,20 @@ final class CustomerSearchUICommand: SearchUICommand {
         self.selectedCustomerID = customerID
     }
 
-    var hideCancelButton: Bool {
-        featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
-    }
+    let hideCancelButton = true
 
-    var hideNavigationBar: Bool {
-        !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
-    }
+    let hideNavigationBar = false
 
-    var makeSearchBarFirstResponderOnStart: Bool {
-        !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
-    }
+    let makeSearchBarFirstResponderOnStart = false
 
     var syncResultsWhenSearchQueryTurnsEmpty: Bool {
-        featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) && loadResultsWhenSearchTermIsEmpty
+        loadResultsWhenSearchTermIsEmpty
     }
 
     let adjustTableViewBottomInsetWhenKeyboardIsShown = false
 
     func createHeaderView() -> UIView? {
-        guard featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
-        showSearchFilters else {
+        guard showSearchFilters else {
             return nil
         }
         let segmentedControl: UISegmentedControl = {
@@ -156,25 +140,19 @@ final class CustomerSearchUICommand: SearchUICommand {
     func createResultsController() -> ResultsController<StorageCustomer> {
         let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
-        let newCustomerSelectorIsEnabled = featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
-        let descriptors = newCustomerSelectorIsEnabled ?
-        [
+        let descriptors = [
             NSSortDescriptor(keyPath: \StorageCustomer.firstName, ascending: true),
             NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: true)
-        ] : [NSSortDescriptor(keyPath: \StorageCustomer.customerID, ascending: false)]
+        ]
         return ResultsController<StorageCustomer>(storageManager: storageManager, matching: predicate, sortedBy: descriptors)
     }
 
     func createStarterViewController() -> UIViewController? {
-        guard !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) else {
-            guard loadResultsWhenSearchTermIsEmpty else {
-                return createStarterViewControllerForEmptySearch(disallowCreatingCustomer: disallowCreatingCustomer)
-            }
-
-            return nil
+        guard loadResultsWhenSearchTermIsEmpty else {
+            return createStarterViewControllerForEmptySearch(disallowCreatingCustomer: disallowCreatingCustomer)
         }
 
-        return createEmptyStateViewController()
+        return nil
     }
 
     func configureEmptyStateViewControllerBeforeDisplay(viewController: EmptyStateViewController, searchKeyword: String) {
@@ -212,8 +190,7 @@ final class CustomerSearchUICommand: SearchUICommand {
         analytics.track(.orderCreationCustomerSearch)
 
         let action: CustomerAction
-        if featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
-           keyword.isEmpty {
+        if keyword.isEmpty {
             if syncResultsWhenSearchQueryTurnsEmpty {
                 if pageNumber == 1 {
                     onDidStartSyncingAllCustomersFirstPage?()
@@ -239,8 +216,7 @@ final class CustomerSearchUICommand: SearchUICommand {
     }
 
     func searchResultsPredicate(keyword: String) -> NSPredicate? {
-        guard featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
-              keyword.isEmpty else {
+        guard keyword.isEmpty else {
             return NSPredicate(format: "siteID == %lld AND ANY searchResults.keyword = %@", siteID, keyword)
         }
 
@@ -296,25 +272,15 @@ private extension CustomerSearchUICommand {
     }
 
     func searchCustomersAction(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) -> CustomerAction {
-        let searchFilter: CustomerSearchFilter
+        let searchFilter: CustomerSearchFilter = showSearchFilters ? filter : .all
 
-        if featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) {
-            searchFilter = showSearchFilters ? filter : .all
-        } else {
-            searchFilter = .name
-        }
-
-        // Before the betterCustomerSelectionInOrder feature we loaded all customers fields from the search. Now we first load a light version of the customers,
-        // and then all their data once when're selected. We will remove the option to choose light/full data together with the betterCustomerSelectionInOrder
-        // and retrieve only light data when searching.
-        //
         return CustomerAction.searchCustomers(siteID: siteID,
                                               pageNumber: pageNumber,
                                               pageSize: pageSize,
                                               orderby: .name,
                                               order: .asc,
                                               keyword: keyword,
-                                              retrieveFullCustomersData: !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder),
+                                              retrieveFullCustomersData: false,
                                               filter: searchFilter,
                                               filterEmpty: .email) { result in
             switch result {
@@ -338,9 +304,6 @@ private extension CustomerSearchUICommand {
 
 private extension CustomerSearchUICommand {
     enum Localization {
-        static let searchBarPlaceHolder = NSLocalizedString(
-            "Search all customers",
-            comment: "Customer Search Placeholder")
         static let customerSelectorSearchBarPlaceHolder = NSLocalizedString(
             "Search for customers",
             comment: "Customer Search Placeholder")

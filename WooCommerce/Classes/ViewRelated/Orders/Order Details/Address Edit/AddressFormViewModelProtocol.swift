@@ -34,10 +34,6 @@ protocol AddressFormViewModelProtocol: AnyObject, Observable {
     ///
     var onLoadTrigger: PassthroughSubject<Void, Never> { get }
 
-    /// Define if the view should show a search button to look for the addresses.
-    ///
-    var showSearchButton: Bool { get }
-
     /// Define if the view should show placeholders instead of the real elements.
     ///
     var showPlaceholders: Bool { get }
@@ -115,10 +111,6 @@ protocol AddressFormViewModelProtocol: AnyObject, Observable {
     /// Creates a view model to be used when selecting a state for secondary fields
     ///
     func createSecondaryStateViewModel() -> StateSelectorViewModel
-
-    /// Triggers the logic to fill Customer Order details when a Customer is selected
-    ///
-    func customerSelectedFromSearch(customer: Customer)
 }
 
 /// Type to hold values from all the form fields

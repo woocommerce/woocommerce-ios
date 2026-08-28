@@ -48,8 +48,7 @@ public enum CustomerAction: Action {
     ///- `pageSize`: The size of the page you want to load.
     ///- `keyword`: Keyword to perform the search.
     ///- `filter`: Filter to perform the search.
-    ///- `retrieveFullCustomersData`: If `true`, retrieves all customers data one by one after the search request. It will be removed once
-    ///  `betterCustomerSelectionInOrder` is finished for performance reasons.
+    ///- `retrieveFullCustomersData`: If `true`, retrieves all customers data one by one after the search request.
     ///- `onCompletion`: Invoked when the operation finishes. Returns true if there are more customers to be synced in the search results.
     ///     - `result.success(Bool)`:  On success, returns whether there are more pages available.
     ///     - `result.failure(Error)`: Error fetching data

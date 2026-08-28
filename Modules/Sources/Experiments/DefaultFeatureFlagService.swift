@@ -33,8 +33,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .euShippingNotification:
             return true
-        case .betterCustomerSelectionInOrder:
-            return true
         case .hazmatShipping:
             return true
         case .giftCardInOrderForm:

@@ -91,10 +91,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case euShippingNotification
 
-    /// Enables the improvements in the customer selection logic when creating an order
-    ///
-    case betterCustomerSelectionInOrder
-
     /// Enables the hazmat shipping selection during the Shipping Labels package details
     ///
     case hazmatShipping

@@ -400,8 +400,6 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncCompleted,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningDismissed,
             WooAnalyticsStat.pointOfSaleLocalCatalogBlockedFellBackToRemote
         ]
 
@@ -418,8 +416,6 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncCompleted,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningDismissed,
             WooAnalyticsStat.pointOfSaleLocalCatalogBlockedFellBackToRemote
         ]
 

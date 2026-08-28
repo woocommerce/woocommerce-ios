@@ -280,7 +280,6 @@ private extension CustomerSearchUICommand {
                                               orderby: .name,
                                               order: .asc,
                                               keyword: keyword,
-                                              retrieveFullCustomersData: false,
                                               filter: searchFilter,
                                               filterEmpty: .email) { result in
             switch result {

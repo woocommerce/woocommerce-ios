@@ -48,7 +48,6 @@ public enum CustomerAction: Action {
     ///- `pageSize`: The size of the page you want to load.
     ///- `keyword`: Keyword to perform the search.
     ///- `filter`: Filter to perform the search.
-    ///- `retrieveFullCustomersData`: If `true`, retrieves all customers data one by one after the search request.
     ///- `onCompletion`: Invoked when the operation finishes. Returns true if there are more customers to be synced in the search results.
     ///     - `result.success(Bool)`:  On success, returns whether there are more pages available.
     ///     - `result.failure(Error)`: Error fetching data
@@ -59,7 +58,6 @@ public enum CustomerAction: Action {
         orderby: WCAnalyticsCustomerRemote.OrderBy,
         order: WCAnalyticsCustomerRemote.Order,
         keyword: String,
-        retrieveFullCustomersData: Bool,
         filter: CustomerSearchFilter,
         filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty? = nil,
         onCompletion: (Result<Bool, Error>) -> Void)

@@ -152,7 +152,6 @@ final class CustomerStoreTests: XCTestCase {
                 orderby: .name,
                 order: .asc,
                 keyword: self.dummyKeyword,
-                retrieveFullCustomersData: true,
                 filter: .name) { result in
                     promise(result)
                 }
@@ -167,8 +166,6 @@ final class CustomerStoreTests: XCTestCase {
     func test_searchCustomers_upserts_the_returned_CustomerSearchResult() {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
-        network.simulateResponse(requestUrlSuffix: "customers/1", filename: "customer")
-        network.simulateResponse(requestUrlSuffix: "customers/2", filename: "customer-2")
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.CustomerSearchResult.self), 0)
 
@@ -180,7 +177,6 @@ final class CustomerStoreTests: XCTestCase {
                                                         orderby: .name,
                                                         order: .asc,
                                                         keyword: self.dummyKeyword,
-                                                        retrieveFullCustomersData: true,
                                                         filter: .name) { result in
                 promise(result)
             }
@@ -189,9 +185,9 @@ final class CustomerStoreTests: XCTestCase {
 
         // Then
         XCTAssertTrue(response.isSuccess)
-        // Verify hasNextPage is false since we received 2 customers with pageSize 25
+        // Verify hasNextPage is false since we received 4 customers with pageSize 25
         XCTAssertEqual(try? response.get(), false)
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 2)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Customer.self), 4)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.CustomerSearchResult.self), 1)
 
         let storedCustomerSearchResults = viewStorage.loadCustomerSearchResult(siteID: dummySiteID, keyword: dummyKeyword)
@@ -199,8 +195,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertNotNil(storedCustomerSearchResults)
         XCTAssertEqual(storedCustomerSearchResults?.siteID, dummySiteID)
         XCTAssertEqual(storedCustomerSearchResults?.keyword, dummyKeyword)
-        XCTAssertEqual(storedCustomerSearchResults?.customers?.count, 2)
-        XCTAssertTrue(storedCustomerSearchResults?.customers?.allSatisfy { $0.firstName?.contains(dummyKeyword) == true } ?? false )
+        XCTAssertEqual(storedCustomerSearchResults?.customers?.count, 4)
     }
 
     func test_retrieveCustomer_upserts_the_returned_Customer() {
@@ -227,7 +222,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(storedCustomer?.firstName, "John")
     }
 
-    func test_searchCustomers_returns_no_customers_when_customer_is_not_registered() throws {
+    func test_searchCustomers_stores_unregistered_customers_from_the_results() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
 
@@ -239,7 +234,6 @@ final class CustomerStoreTests: XCTestCase {
                                                         orderby: .name,
                                                         order: .asc,
                                                         keyword: self.dummyKeyword,
-                                                        retrieveFullCustomersData: true,
                                                         filter: .name) { _ in
                 promise(())
             }
@@ -247,10 +241,9 @@ final class CustomerStoreTests: XCTestCase {
         }
 
         // Then
-        let requests = network.requestsForResponseData.compactMap { $0 as? JetpackRequest }
-        XCTAssertFalse(requests.contains(where: { request in
-            request.path == "customers/0"
-        }))
+        let unregisteredCustomer = try XCTUnwrap(viewStorage.loadCustomer(siteID: dummySiteID, customerID: 0))
+        XCTAssertEqual(unregisteredCustomer.firstName, "Matt")
+        XCTAssertEqual(unregisteredCustomer.lastName, "The Unregistered")
     }
 
     func test_deleteAllCustomers() {

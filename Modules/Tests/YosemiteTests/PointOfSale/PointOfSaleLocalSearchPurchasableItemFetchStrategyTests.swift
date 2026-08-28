@@ -100,7 +100,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
             Issue.record("Expected a search result variation, got \(item)")
             return
         }
-        #expect(variation.variationID == 1)
+        #expect(variation.productVariationID == 1)
         #expect(parentProduct.productID == parentProductID)
         #expect(parentProduct.name == "Test Shirt")
     }

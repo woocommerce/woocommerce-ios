@@ -74,15 +74,21 @@ struct POSEdgeSwipePolicy {
 
     /// Moves a container holding both screens side by side, so the incoming one arrives from the
     /// trailing edge and covers the full width.
+    ///
+    /// Deliberately not multiplied by `direction`. SwiftUI already mirrors this for right-to-left
+    /// layouts, so applying `direction` here flips it a second time: the container travels the wrong
+    /// way and the incoming screen leaves the screen instead of covering it.
     func incomingOffset(progress: CGFloat, totalWidth: CGFloat) -> CGFloat {
-        -progress * totalWidth * direction
+        -progress * totalWidth
     }
 
     /// Cancels most of the container's travel for the outgoing screen, leaving it the parallax
     /// fraction. Without this the two screens move as one sheet, which reads as the outgoing screen
     /// being dragged in from the side rather than revealed underneath.
+    /// Mirrored by SwiftUI for right-to-left layouts, so no `direction` here either — see
+    /// `incomingOffset`.
     func outgoingParallaxOffset(progress: CGFloat, totalWidth: CGFloat) -> CGFloat {
-        progress * totalWidth * (1 - Self.outgoingParallaxFraction) * direction
+        progress * totalWidth * (1 - Self.outgoingParallaxFraction)
     }
 }
 

@@ -173,7 +173,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
             endPoint: .trailing
         )
         .frame(width: Constants.leadingEdgeShadowWidth)
-        .offset(x: -Constants.leadingEdgeShadowWidth * edgeSwipePolicy.direction)
+        .offset(x: -Constants.leadingEdgeShadowWidth)
         .opacity(progress)
         .ignoresSafeArea()
         .allowsHitTesting(false)

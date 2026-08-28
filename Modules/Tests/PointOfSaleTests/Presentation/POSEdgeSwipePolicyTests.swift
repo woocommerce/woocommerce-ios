@@ -142,13 +142,25 @@ struct POSEdgeSwipePolicyTests {
 
     @Test func test_incomingOffset_when_fully_navigated_then_moves_the_container_a_full_width() {
         // Given
+        let policy = POSEdgeSwipePolicy(layoutDirection: .leftToRight)
+
+        // When / Then
+        #expect(policy.incomingOffset(progress: 1, totalWidth: 400) == -400)
+        #expect(policy.incomingOffset(progress: 0, totalWidth: 400) == 0)
+    }
+
+    @Test func test_incomingOffset_when_right_to_left_then_is_not_flipped_a_second_time() {
+        // Given SwiftUI already mirrors an offset for right-to-left layouts, the policy must return
+        // the same value for both directions. Applying `direction` here flipped it twice, which sent
+        // the incoming screen off the edge instead of over the outgoing one.
         let leftToRight = POSEdgeSwipePolicy(layoutDirection: .leftToRight)
         let rightToLeft = POSEdgeSwipePolicy(layoutDirection: .rightToLeft)
 
         // When / Then
-        #expect(leftToRight.incomingOffset(progress: 1, totalWidth: 400) == -400)
-        #expect(rightToLeft.incomingOffset(progress: 1, totalWidth: 400) == 400)
-        #expect(leftToRight.incomingOffset(progress: 0, totalWidth: 400) == 0)
+        #expect(rightToLeft.incomingOffset(progress: 1, totalWidth: 400)
+                == leftToRight.incomingOffset(progress: 1, totalWidth: 400))
+        #expect(rightToLeft.outgoingParallaxOffset(progress: 1, totalWidth: 400)
+                == leftToRight.outgoingParallaxOffset(progress: 1, totalWidth: 400))
     }
 
     @Test func test_outgoingParallaxOffset_when_combined_with_the_container_then_leaves_only_the_parallax_travel() {
@@ -163,19 +175,6 @@ struct POSEdgeSwipePolicyTests {
 
         // Then
         #expect(netTravel == -totalWidth * POSEdgeSwipePolicy.outgoingParallaxFraction)
-    }
-
-    @Test func test_outgoingParallaxOffset_when_right_to_left_then_travel_mirrors() {
-        // Given
-        let policy = POSEdgeSwipePolicy(layoutDirection: .rightToLeft)
-        let totalWidth: CGFloat = 400
-
-        // When
-        let netTravel = policy.incomingOffset(progress: 1, totalWidth: totalWidth)
-            + policy.outgoingParallaxOffset(progress: 1, totalWidth: totalWidth)
-
-        // Then
-        #expect(netTravel == totalWidth * POSEdgeSwipePolicy.outgoingParallaxFraction)
     }
 
     @Test func test_isPredominantlyHorizontal_when_drag_is_mostly_vertical_then_returns_false() {

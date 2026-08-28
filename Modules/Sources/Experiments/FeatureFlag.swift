@@ -91,10 +91,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case betterCustomerSelectionInOrder
 
-    /// Enables gift card support in order creation/editing
-    ///
-    case giftCardInOrderForm
-
     /// Enables bundle product configuration support in order creation/editing.
     ///
     case productBundlesInOrderForm

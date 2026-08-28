@@ -104,7 +104,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .starReceiptPrinterSupport:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .posServerCalculatedRefunds:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

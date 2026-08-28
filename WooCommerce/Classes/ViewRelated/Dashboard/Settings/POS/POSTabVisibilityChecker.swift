@@ -182,7 +182,9 @@ private extension POSTabVisibilityChecker {
             }
             return siteSettings.settings
         }
-        // If we get here, the stream completed without yielding any values for our site ID which is unexpected.
+        // The settings stream never completes on its own (it is backed by a CurrentValueSubject), so
+        // reaching this point means the surrounding task was cancelled, which ends the async iteration.
+        // Callers must treat the resulting verdict as indeterminate rather than acting on it.
         return []
     }
 

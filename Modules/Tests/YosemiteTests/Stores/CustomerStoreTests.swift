@@ -201,8 +201,9 @@ final class CustomerStoreTests: XCTestCase {
     func test_searchCustomers_when_loading_a_second_page_then_appends_to_the_first_and_keeps_guests_separate() {
         // Given
         let pagedNetwork = MockNetwork(useResponseQueue: true)
+        // Needs its own dispatcher: only one processor per action type is allowed, and `setUp` already registered `store`.
         let pagedStore = CustomerStore(
-            dispatcher: dispatcher,
+            dispatcher: Dispatcher(),
             storageManager: storageManager,
             network: pagedNetwork,
             customerRemote: CustomerRemote(network: pagedNetwork),

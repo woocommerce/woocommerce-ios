@@ -95,10 +95,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case pointOfSale
 
-    /// Enables revamped shipping label flow for Woo Shipping extension
-    ///
-    case revampedShippingLabelCreation
-
     /// Enables selecting objectives during Blaze campaign creation.
     ///
     case blazeCampaignObjective

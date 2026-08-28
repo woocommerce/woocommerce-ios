@@ -10,7 +10,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var isScanToUpdateInventoryEnabled: Bool
     var isPointOfSaleEnabled: Bool
     var blazeCampaignObjective: Bool
-    var revampedShippingLabelCreation: Bool
     var hideSitesInStorePicker: Bool
     var backgroundProductImageUpload: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
@@ -25,7 +24,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          isScanToUpdateInventoryEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
          blazeCampaignObjective: Bool = false,
-         revampedShippingLabelCreation: Bool = false,
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
@@ -38,7 +36,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.blazeCampaignObjective = blazeCampaignObjective
-        self.revampedShippingLabelCreation = revampedShippingLabelCreation
         self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
@@ -68,8 +65,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return isPointOfSaleEnabled
         case .blazeCampaignObjective:
             return blazeCampaignObjective
-        case .revampedShippingLabelCreation:
-            return revampedShippingLabelCreation
         case .hideSitesInStorePicker:
             return hideSitesInStorePicker
         case .backgroundProductImageUpload:

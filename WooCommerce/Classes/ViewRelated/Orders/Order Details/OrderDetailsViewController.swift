@@ -530,18 +530,17 @@ private extension OrderDetailsViewController {
 
     func markOrderCompleteFromShippingLabels() {
         let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
-        let isRevampedFlow = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
 
         var cancellables = Set<AnyCancellable>()
         var cancellable = AnyCancellable { }
         cancellable = fulfillmentProcess.result.sink { completion in
             if case .failure = completion {
                 ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed,
-                                               withProperties: ["is_revamped_flow": isRevampedFlow])
+                                               withProperties: ["is_revamped_flow": true])
             }
             else {
                 ServiceLocator.analytics.track(.shippingLabelOrderFulfillSucceeded,
-                                               withProperties: ["is_revamped_flow": isRevampedFlow])
+                                               withProperties: ["is_revamped_flow": true])
             }
             cancellables.remove(cancellable)
         } receiveValue: {
@@ -629,16 +628,6 @@ private extension OrderDetailsViewController {
     }
 
     func refundShippingLabel(_ shippingLabel: ShippingLabel) {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation) else {
-            let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
-                self?.navigationController?.popViewController(animated: true)
-            }
-            // Disables the bottom bar (tab bar) when requesting a refund.
-            refundViewController.hidesBottomBarWhenPushed = true
-            show(refundViewController, sender: self)
-            return
-        }
-
         let refundViewModel = WooShippingRefundViewModel(shippingLabel: shippingLabel)
         let view = WooShippingRefundView(viewModel: refundViewModel) { [weak self] updatedLabel in
             guard let self else { return }

@@ -70,6 +70,11 @@ namespace :lint do
   task :autocorrect do
     swiftlint(additional_args: ['--fix'])
   end
+
+  desc 'Check the Xcode project for inline build settings'
+  task :xcode_build_settings do
+    run_in_swift_package(dir: 'BuildSettingsPolice', cmd: 'swift run -c release build-settings-police check ../WooCommerce/WooCommerce.xcodeproj --project')
+  end
 end
 
 desc 'Open the project in Xcode'
@@ -108,5 +113,11 @@ end
 
 # We could use more idiomatic Ruby here, with `Dir.chdir`, but leaving as raw shell commands for when we'll drop Ruby and rake for tooling.
 def run_in_build_tools(cmd:)
-  sh "pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && #{cmd} && popd"
+  run_in_swift_package(dir: 'BuildTools', cmd: cmd)
+end
+
+def run_in_swift_package(dir:, cmd:)
+  sh "pushd #{dir} && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && #{cmd} && popd" do |ok, status|
+    exit(status.exitstatus || 1) unless ok
+  end
 end

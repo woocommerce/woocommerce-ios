@@ -343,7 +343,8 @@ private extension AnalyticsHubViewModel {
 
         await withTaskGroup(of: Void.self) { group in
             group.addTask {
-                guard cards.contains(where: [.revenue, .orders, .products, .sessions].contains) else {
+                let statsCards: [AnalyticsCard.CardType] = [.revenue, .orders, .products, .sessions]
+                guard cards.contains(where: { statsCards.contains($0) }) else {
                     return
                 }
                 await self.retrieveOrderStats(currentTimeRange: currentTimeRange, previousTimeRange: previousTimeRange, timeZone: self.timeZone)

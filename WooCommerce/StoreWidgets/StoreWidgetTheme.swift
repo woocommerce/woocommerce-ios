@@ -30,7 +30,7 @@ enum StoreWidgetTheme: String {
 // from that build slice — the environment-driven view styling still works there.
 #if canImport(AppIntents)
 @available(iOS 16.0, watchOS 10.0, macOS 13.0, *)
-extension StoreWidgetTheme: AppEnum {
+nonisolated extension StoreWidgetTheme: AppEnum {
     static var typeDisplayRepresentation: TypeDisplayRepresentation {
         TypeDisplayRepresentation(name: "Theme")
     }

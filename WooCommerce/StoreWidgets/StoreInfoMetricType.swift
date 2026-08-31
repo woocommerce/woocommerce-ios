@@ -87,7 +87,7 @@ enum StoreInfoMetricType: String, CaseIterable, Hashable {
 /// tracked as a follow-up; in-widget cells continue to use `displayName` (host-bundle,
 /// fully localized).
 ///
-extension StoreInfoMetricType: AppEntity {
+nonisolated extension StoreInfoMetricType: AppEntity {
     var id: String { rawValue }
 
     var displayRepresentation: DisplayRepresentation {

@@ -11,6 +11,9 @@ extension Country: AreaSelectorCommandProtocol {}
 extension StateOfACountry: AreaSelectorCommandProtocol {}
 
 final class AreaSelectorCommand: ObservableListSelectorCommand {
+    typealias Model = AreaSelectorCommandProtocol
+    typealias Cell = BasicTableViewCell
+
     /// Original array of areas
     ///
     private let areas: [AreaSelectorCommandProtocol]

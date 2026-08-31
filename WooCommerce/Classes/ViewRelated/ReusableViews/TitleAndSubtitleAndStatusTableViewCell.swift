@@ -39,7 +39,7 @@ final class TitleAndSubtitleAndStatusTableViewCell: UITableViewCell, SearchResul
 // MARK: - CellViewModel subtype
 //
 extension TitleAndSubtitleAndStatusTableViewCell {
-    struct ViewModel: Hashable {
+    nonisolated struct ViewModel: Hashable {
         /// A unique ID to avoid duplicated identifier for the view model in diffable datasource.
         /// Please make sure to override this variable with a value corresponding to the content of the cell if you use diffable datasource,
         /// to avoid unnecessary animation when reloading the table view.

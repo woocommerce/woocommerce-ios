@@ -31,9 +31,11 @@ class FancyAnimatedButton: FancyButton {
         }
     }
 
-    override open func awakeFromNib() {
-        super.awakeFromNib()
-        addSubview(activityIndicator)
+    nonisolated override open func awakeFromNib() {
+        MainActor.assumeIsolated {
+            super.awakeFromNib()
+            addSubview(activityIndicator)
+        }
     }
 
     /// Toggles the visibility of the activity indicator. When visible the button

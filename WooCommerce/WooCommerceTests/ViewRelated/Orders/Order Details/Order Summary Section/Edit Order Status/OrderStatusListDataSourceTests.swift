@@ -46,7 +46,7 @@ class OrderStatusListDataSourceTests: XCTestCase {
 
 /// Mock Order Statuses Store Manager
 ///
-private final class MockOrderStatusesStoresManager: MockStorageManager {
+private nonisolated final class MockOrderStatusesStoresManager: MockStorageManager {
     fileprivate static let siteID: Int64 = 1
 
     /// Inserts an order status

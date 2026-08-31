@@ -1,7 +1,7 @@
 import UIKit
 @testable import Kingfisher
 
-final class MockKingfisherImageDownloader: Kingfisher.ImageDownloader {
+nonisolated final class MockKingfisherImageDownloader: Kingfisher.ImageDownloader {
     // Mocks in-memory cache.
     private let imagesByKey: [String: UIImage]
 

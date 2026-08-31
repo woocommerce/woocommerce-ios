@@ -1,7 +1,7 @@
 import UIKit
 @testable import Kingfisher
 
-final class MockImageCache: ImageCache {
+nonisolated final class MockImageCache: ImageCache {
     // Mocks in-memory cache.
     private var imagesByKey: [String: UIImage] = [:]
 

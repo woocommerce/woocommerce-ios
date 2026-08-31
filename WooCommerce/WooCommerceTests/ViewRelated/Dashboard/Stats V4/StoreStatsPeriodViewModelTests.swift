@@ -518,8 +518,9 @@ final class StoreStatsPeriodViewModelTests: XCTestCase {
 private extension StoreStatsPeriodViewModelTests {
     func createViewModel(timeRange: StatsTimeRangeV4,
                          crashLogging: CrashLogger = MockCrashLogger(),
-                         analytics: Analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())) -> StoreStatsPeriodViewModel {
-        StoreStatsPeriodViewModel(siteID: siteID,
+                         analytics: Analytics? = nil) -> StoreStatsPeriodViewModel {
+        let analytics = analytics ?? WooAnalytics(analyticsProvider: MockAnalyticsProvider())
+        return StoreStatsPeriodViewModel(siteID: siteID,
                                   timeRange: timeRange,
                                   siteTimezone: defaultSiteTimezone,
                                   currentDate: defaultDate,

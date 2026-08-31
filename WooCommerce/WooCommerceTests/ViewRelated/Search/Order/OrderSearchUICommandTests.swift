@@ -173,7 +173,7 @@ final class OrderSearchUICommandTests: XCTestCase {
 
 /// Mock Order Statuses Store Manager
 ///
-private final class MockOrderStatusesStoresManager: MockStorageManager {
+private nonisolated final class MockOrderStatusesStoresManager: MockStorageManager {
     fileprivate static let siteID: Int64 = 12345
 
     /// Inserts an order status whose name and slug are identical.

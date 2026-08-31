@@ -244,6 +244,7 @@ struct AIAssistantEligibilityCheckerTests {
 }
 
 private func makeSUT(flagService: MockFeatureFlagService,
-                     stores: StoresManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))) -> AIAssistantEligibilityChecker {
-    AIAssistantEligibilityChecker(featureFlagService: flagService, stores: stores)
+                     stores: StoresManager? = nil) -> AIAssistantEligibilityChecker {
+    let stores = stores ?? MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+    return AIAssistantEligibilityChecker(featureFlagService: flagService, stores: stores)
 }

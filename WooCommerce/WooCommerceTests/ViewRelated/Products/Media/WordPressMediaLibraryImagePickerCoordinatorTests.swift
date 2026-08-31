@@ -4,6 +4,7 @@ import Yosemite
 
 @testable import WooCommerce
 
+@MainActor
 final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
     typealias Completion = WordPressMediaLibraryPickerCoordinator.Completion
 

@@ -8,9 +8,9 @@ class MockProductDetailWebCoordinator: ProductDetailWebCoordinator {
     }
 }
 
-class MockProductDetailNativeCoordinator: ProductDetailNativeCoordinator {
-    let viewControllerInstance = UIViewController()
-    private(set) var onDuplicate: ProductDuplicateNavigationHandler?
+nonisolated class MockProductDetailNativeCoordinator: ProductDetailNativeCoordinator {
+    nonisolated(unsafe) private(set) var viewControllerInstance: UIViewController?
+    nonisolated(unsafe) private(set) var onDuplicate: ProductDuplicateNavigationHandler?
 
     override func viewController(product: Product,
                         presentationStyle: ProductDetailNavigator.Presentation,
@@ -18,6 +18,10 @@ class MockProductDetailNativeCoordinator: ProductDetailNativeCoordinator {
                         onDelete: (() -> Void)?,
                         onDuplicate: @escaping ProductDuplicateNavigationHandler) -> UIViewController {
         self.onDuplicate = onDuplicate
-        return viewControllerInstance
+        return MainActor.assumeIsolated {
+            let viewController = viewControllerInstance ?? UIViewController()
+            viewControllerInstance = viewController
+            return viewController
+        }
     }
 }

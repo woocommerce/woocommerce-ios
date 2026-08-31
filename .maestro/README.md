@@ -7,13 +7,16 @@ consumer keys for normal runs, a Linear issue, or a notification channel.
 
 ## Local setup
 
-1. Install the repository toolchain pin (Maestro 2.8.0 on Java 21):
+1. Install the repository toolchain pin (Maestro 2.9.0 on Java 21):
 
 ```bash
 source .maestro/scripts/configure-toolchain.sh
 ```
 
-The script selects an installed JDK 21, downloads the immutable Maestro 2.8.0
+Source the setup script from Bash or Zsh so its `JAVA_HOME` and `PATH` exports
+remain active in the current shell.
+
+The script selects an installed JDK 21, downloads the immutable Maestro 2.9.0
 release archive into the workspace, verifies the SHA-256 in
 `toolchain.properties`, and runs the checker. Buildkite uses the same path.
 

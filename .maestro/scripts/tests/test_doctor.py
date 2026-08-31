@@ -21,15 +21,15 @@ class DoctorTests(unittest.TestCase):
         completed = subprocess.CompletedProcess(
             ["check-toolchain.py"],
             1,
-            stdout="Maestro: expected 2.8.0, actual 2.7.0\n",
-            stderr="Maestro version mismatch: expected 2.8.0, actual 2.7.0\n",
+            stdout="Maestro: expected 2.9.0, actual 2.7.0\n",
+            stderr="Maestro version mismatch: expected 2.9.0, actual 2.7.0\n",
         )
         with mock.patch.object(DOCTOR.subprocess, "run", return_value=completed):
             passed, message = DOCTOR.check_toolchain()
 
         self.assertFalse(passed)
         self.assertEqual(
-            "toolchain: Maestro version mismatch: expected 2.8.0, actual 2.7.0",
+            "toolchain: Maestro version mismatch: expected 2.9.0, actual 2.7.0",
             message,
         )
 

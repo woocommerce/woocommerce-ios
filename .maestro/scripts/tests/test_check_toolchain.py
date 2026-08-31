@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -15,10 +16,10 @@ REPO_ROOT = Path(__file__).resolve().parents[3]
 
 class CheckToolchainTests(unittest.TestCase):
     def test_reports_matching_maestro_and_java_versions(self) -> None:
-        result = self.run_checker(maestro_version="2.8.0", java_version="21.0.8")
+        result = self.run_checker(maestro_version="2.9.0", java_version="21.0.8")
 
         self.assertEqual(0, result.returncode, result.stderr)
-        self.assertIn("Maestro: expected 2.8.0, actual 2.8.0", result.stdout)
+        self.assertIn("Maestro: expected 2.9.0, actual 2.9.0", result.stdout)
         self.assertIn("Java: expected major 21, actual 21.0.8", result.stdout)
         self.assertIn("Maestro toolchain OK", result.stdout)
 
@@ -26,10 +27,10 @@ class CheckToolchainTests(unittest.TestCase):
         result = self.run_checker(maestro_version="2.7.0", java_version="21.0.8")
 
         self.assertEqual(1, result.returncode)
-        self.assertIn("Maestro version mismatch: expected 2.8.0, actual 2.7.0", result.stderr)
+        self.assertIn("Maestro version mismatch: expected 2.9.0, actual 2.7.0", result.stderr)
 
     def test_fails_clearly_when_java_major_version_does_not_match(self) -> None:
-        result = self.run_checker(maestro_version="2.8.0", java_version="17.0.12")
+        result = self.run_checker(maestro_version="2.9.0", java_version="17.0.12")
 
         self.assertEqual(1, result.returncode)
         self.assertIn("Java version mismatch: expected major 21, actual 17.0.12", result.stderr)
@@ -47,11 +48,28 @@ class CheckToolchainTests(unittest.TestCase):
         self.assertIn("Could not parse Maestro version output", result.stderr)
 
     def test_ci_configuration_accepts_an_already_matching_toolchain_without_installing(self) -> None:
+        result = self.run_configuration_with_matching_toolchain("/bin/bash")
+
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertNotIn("Installing pinned Maestro", result.stdout)
+
+    @unittest.skipUnless(shutil.which("zsh"), "Zsh is not installed")
+    def test_local_configuration_can_be_sourced_from_zsh(self) -> None:
+        result = self.run_configuration_with_matching_toolchain(shutil.which("zsh"))
+
+        self.assertEqual(0, result.returncode, result.stderr)
+        self.assertIn("Maestro toolchain OK", result.stdout)
+
+    def run_configuration_with_matching_toolchain(
+        self,
+        shell: str | None,
+    ) -> subprocess.CompletedProcess[str]:
+        assert shell is not None
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             bin_dir = root / "bin"
             bin_dir.mkdir()
-            self.write_executable(bin_dir / "maestro", "printf '%s\\n' '2.8.0'\n")
+            self.write_executable(bin_dir / "maestro", "printf '%s\\n' '2.9.0'\n")
             self.write_executable(
                 bin_dir / "java",
                 "printf '%s\\n' 'openjdk version \"21.0.8\"' >&2\n",
@@ -65,7 +83,7 @@ class CheckToolchainTests(unittest.TestCase):
             )
 
             result = subprocess.run(
-                ["/bin/bash", "-c", 'source "$1"', "bash", str(CONFIGURE)],
+                [shell, "-c", 'source "$1"', shell, str(CONFIGURE)],
                 cwd=REPO_ROOT,
                 env=environment,
                 capture_output=True,
@@ -73,8 +91,7 @@ class CheckToolchainTests(unittest.TestCase):
                 check=False,
             )
 
-        self.assertEqual(0, result.returncode, result.stderr)
-        self.assertNotIn("Installing pinned Maestro", result.stdout)
+        return result
 
     def test_ci_configuration_installs_a_verified_release_into_the_job_workspace(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -83,7 +100,7 @@ class CheckToolchainTests(unittest.TestCase):
             bin_dir.mkdir()
             curl_log = root / "curl.log"
             archive_maestro = root / "archive-maestro"
-            self.write_executable(archive_maestro, "printf '%s\\n' '2.8.0'\n")
+            self.write_executable(archive_maestro, "printf '%s\\n' '2.9.0'\n")
             self.write_executable(bin_dir / "maestro", "printf '%s\\n' '2.7.0'\n")
             self.write_executable(
                 bin_dir / "java",
@@ -102,7 +119,7 @@ class CheckToolchainTests(unittest.TestCase):
             self.write_executable(
                 bin_dir / "sha256sum",
                 "printf '%s  %s\\n' "
-                "'b3e561161904fb391875ca5834d5b22cf0b01c052dd1b408ad83e30d8f8951b3' \"$1\"\n",
+                "'855bb2ce1399d82f4f4a73d84a4d945f70b0d43eb86127e027af82809f63f0bd' \"$1\"\n",
             )
             self.write_executable(
                 bin_dir / "unzip",
@@ -132,16 +149,16 @@ class CheckToolchainTests(unittest.TestCase):
                 text=True,
                 check=False,
             )
-            installed = list((root / "toolchain").glob("maestro-2.8.0-*/bin/maestro"))
+            installed = list((root / "toolchain").glob("maestro-2.9.0-*/bin/maestro"))
             requested_url = curl_log.read_text(encoding="utf-8")
 
         self.assertEqual(0, result.returncode, result.stderr)
         self.assertEqual(1, len(installed))
         self.assertIn(
-            "https://github.com/mobile-dev-inc/Maestro/releases/download/cli-2.8.0/maestro.zip",
+            "https://github.com/mobile-dev-inc/Maestro/releases/download/cli-2.9.0/maestro.zip",
             requested_url,
         )
-        self.assertIn("Installing verified Maestro 2.8.0", result.stdout)
+        self.assertIn("Installing verified Maestro 2.9.0", result.stdout)
 
     def run_checker(
         self,

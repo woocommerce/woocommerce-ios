@@ -1,12 +1,29 @@
 #!/bin/bash
 # Source from CI wrappers to select Java 21 and install the verified Maestro pin.
 
-if [[ "${BASH_SOURCE[0]}" == "$0" ]]; then
-  echo "Source this script so JAVA_HOME and PATH remain active: source ${BASH_SOURCE[0]}" >&2
+if [[ -n "${BASH_VERSION:-}" ]]; then
+  TOOLCHAIN_SCRIPT_PATH="${BASH_SOURCE[0]}"
+  TOOLCHAIN_SCRIPT_SOURCED=false
+  if [[ "$TOOLCHAIN_SCRIPT_PATH" != "$0" ]]; then
+    TOOLCHAIN_SCRIPT_SOURCED=true
+  fi
+elif [[ -n "${ZSH_VERSION:-}" ]]; then
+  TOOLCHAIN_SCRIPT_PATH="${(%):-%x}"
+  TOOLCHAIN_SCRIPT_SOURCED=false
+  if [[ "${ZSH_EVAL_CONTEXT:-}" == *:file ]]; then
+    TOOLCHAIN_SCRIPT_SOURCED=true
+  fi
+else
+  echo "Source this script from Bash or Zsh so JAVA_HOME and PATH remain active." >&2
+  return 2
+fi
+
+if [[ "$TOOLCHAIN_SCRIPT_SOURCED" != true ]]; then
+  echo "Source this script so JAVA_HOME and PATH remain active: source $TOOLCHAIN_SCRIPT_PATH" >&2
   exit 2
 fi
 
-TOOLCHAIN_SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+TOOLCHAIN_SCRIPT_DIR="$(cd "$(dirname "$TOOLCHAIN_SCRIPT_PATH")" && pwd)"
 TOOLCHAIN_PROPERTIES="$TOOLCHAIN_SCRIPT_DIR/../toolchain.properties"
 PINNED_MAESTRO="$(awk -F= '$1 == "maestro" { print $2 }' "$TOOLCHAIN_PROPERTIES")"
 PINNED_MAESTRO_SHA256="$(awk -F= '$1 == "maestro_sha256" { print $2 }' "$TOOLCHAIN_PROPERTIES")"

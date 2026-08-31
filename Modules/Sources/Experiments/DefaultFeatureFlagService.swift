@@ -67,8 +67,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .orderAddressMapSearch:
             return true
-        case .pointOfSaleFTSSearch:
-            return true
         case .ciabBookings:
             return false
         case .pointOfSaleCatalogAPI:

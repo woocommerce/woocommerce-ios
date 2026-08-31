@@ -3,6 +3,7 @@
 
 25.6
 -----
+- [**] When your store can't be reached because of a connection problem on your WordPress site, the app now explains what is going on and offers to contact support, instead of retrying silently.
 - [*] Shipping Labels: Fixed purchased labels disappearing when an unfinished label has no carrier information. [https://github.com/woocommerce/woocommerce-ios/pull/17766]
 - [***] POS: On stores running WooCommerce 11.1.0 or newer, refund totals are now calculated by the store instead of on the device. [https://github.com/woocommerce/woocommerce-ios/pull/17741]
 - [*] Orders: Product search results in the order form are now scrollable and selectable on iPhone in landscape. [https://github.com/woocommerce/woocommerce-ios/pull/17693]

@@ -1,0 +1,164 @@
+import Combine
+import Foundation
+import Testing
+import UIKit
+import Yosemite
+@testable import WooCommerce
+
+/// Serialized because the tests suspend while waiting for main-queue delivery, and the session managers
+/// they build share one UserDefaults suite.
+///
+@Suite(.serialized)
+@MainActor
+struct StoreConnectionErrorViewModelTests {
+    private let sessionManager: SessionManager
+    private let stores: MockStoresManager
+    private let monitor: MockStoreConnectionErrorMonitor
+    private let notificationCenter: NotificationCenter
+
+    init() {
+        sessionManager = .makeForTesting(authenticated: true)
+        stores = MockStoresManager(sessionManager: sessionManager)
+        monitor = MockStoreConnectionErrorMonitor()
+        notificationCenter = NotificationCenter()
+    }
+
+    @Test func test_isPresented_when_no_store_is_affected_then_it_is_false() async {
+        // Given
+        sessionManager.defaultStoreID = 123
+
+        // When
+        let viewModel = makeViewModel()
+        await settle()
+
+        // Then
+        #expect(viewModel.isPresented == false)
+    }
+
+    @Test func test_isPresented_when_the_selected_store_is_affected_then_it_is_true() async {
+        // Given
+        sessionManager.defaultStoreID = 123
+        let viewModel = makeViewModel()
+
+        // When
+        monitor.simulateAffectedSiteID(123)
+        await settle()
+
+        // Then
+        #expect(viewModel.isPresented == true)
+    }
+
+    @Test func test_isPresented_when_another_store_is_affected_then_it_is_false() async {
+        // Given
+        sessionManager.defaultStoreID = 123
+        let viewModel = makeViewModel()
+
+        // When
+        monitor.simulateAffectedSiteID(456)
+        await settle()
+
+        // Then
+        #expect(viewModel.isPresented == false)
+    }
+
+    @Test func test_isPresented_when_the_affected_store_recovers_then_it_becomes_false() async {
+        // Given
+        sessionManager.defaultStoreID = 123
+        let viewModel = makeViewModel()
+        monitor.simulateAffectedSiteID(123)
+        await settle()
+
+        // When
+        monitor.simulateAffectedSiteID(nil)
+        await settle()
+
+        // Then
+        #expect(viewModel.isPresented == false)
+    }
+
+    @Test func test_isPresented_when_switching_to_the_affected_store_then_it_becomes_true() async {
+        // Given
+        sessionManager.defaultStoreID = 123
+        let viewModel = makeViewModel()
+        monitor.simulateAffectedSiteID(456)
+        await settle()
+
+        // When
+        sessionManager.defaultStoreID = 456
+        await settle()
+
+        // Then
+        #expect(viewModel.isPresented == true)
+    }
+
+    @Test func test_dismissTapped_when_the_store_is_still_affected_then_it_hides_the_warning() async {
+        // Given
+        sessionManager.defaultStoreID = 123
+        let viewModel = makeViewModel()
+        monitor.simulateAffectedSiteID(123)
+        await settle()
+
+        // When
+        viewModel.dismissTapped()
+        await settle()
+
+        // Then
+        #expect(viewModel.isPresented == false)
+    }
+
+    @Test func test_dismissTapped_when_the_app_returns_to_the_foreground_then_the_warning_comes_back() async {
+        // Given
+        sessionManager.defaultStoreID = 123
+        let viewModel = makeViewModel()
+        monitor.simulateAffectedSiteID(123)
+        await settle()
+        viewModel.dismissTapped()
+        await settle()
+
+        // When
+        notificationCenter.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+        await settle()
+
+        // Then
+        #expect(viewModel.isPresented == true)
+    }
+
+    @Test func test_dismissTapped_when_the_store_recovers_and_fails_again_then_the_warning_comes_back() async {
+        // Given
+        sessionManager.defaultStoreID = 123
+        let viewModel = makeViewModel()
+        monitor.simulateAffectedSiteID(123)
+        await settle()
+        viewModel.dismissTapped()
+        await settle()
+
+        // When
+        monitor.simulateAffectedSiteID(nil)
+        await settle()
+        monitor.simulateAffectedSiteID(123)
+        await settle()
+
+        // Then
+        #expect(viewModel.isPresented == true)
+    }
+}
+
+private extension StoreConnectionErrorViewModelTests {
+    func makeViewModel() -> StoreConnectionErrorViewModel {
+        StoreConnectionErrorViewModel(monitor: monitor,
+                                      stores: stores,
+                                      notificationCenter: notificationCenter)
+    }
+
+    /// The view model delivers on the main queue, so the work it schedules there has to run before the
+    /// assertion does. Both the emission above and this hop are queued on main, in that order, which
+    /// makes the wait deterministic rather than a sleep.
+    ///
+    func settle() async {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                continuation.resume()
+            }
+        }
+    }
+}

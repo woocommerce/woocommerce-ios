@@ -135,6 +135,13 @@ final class MainTabBarController: UITabBarController {
         }
     )
 
+    /// Warns the merchant when the selected store can't be reached. Hosted here so it overlays every
+    /// tab, and stays put while the merchant navigates.
+    ///
+    private lazy var storeConnectionErrorViewModel = StoreConnectionErrorViewModel(stores: stores)
+    private var storeConnectionErrorSubscription: AnyCancellable?
+    private weak var storeConnectionErrorModal: UIViewController?
+
     /// Tab view controllers
     ///
     private let dashboardNavigationController = WooTabNavigationController()
@@ -265,6 +272,7 @@ final class MainTabBarController: UITabBarController {
         observeSiteIDForViewControllers()
         observeSiteForConditionalTabs()
         httpsConfigurationWarningPresenter.start()
+        observeStoreConnectionError()
         observeProductImageUploadStatusUpdates()
 
         startListeningToHubMenuTabBadgeUpdates()
@@ -881,6 +889,69 @@ extension MainTabBarController: DeepLinkNavigator {
         hostingController.modalPresentationStyle = .overFullScreen
         hostingController.modalTransitionStyle = .crossDissolve
         present(hostingController, animated: true)
+    }
+
+    private func observeStoreConnectionError() {
+        storeConnectionErrorSubscription = storeConnectionErrorViewModel.$isPresented
+            .removeDuplicates()
+            .sink { [weak self] isPresented in
+                isPresented ? self?.presentStoreConnectionErrorModal() : self?.dismissStoreConnectionErrorModal()
+            }
+    }
+
+    /// Adds the warning as a child on top of the tab bar rather than presenting it.
+    ///
+    /// A presented view controller owns whatever it presents in turn, so a store that recovered while
+    /// the merchant was filling in the support form would have taken that form down with it. As a child
+    /// the warning covers every tab just the same, support is presented normally over it, and removing
+    /// the warning never disturbs anything the merchant has open.
+    ///
+    private func presentStoreConnectionErrorModal() {
+        guard storeConnectionErrorModal == nil else {
+            return
+        }
+
+        let modalView = StoreConnectionErrorModal(
+            onContactSupport: { [weak self] in
+                self?.presentStoreConnectionErrorSupportForm()
+            },
+            onDismiss: { [weak self] in
+                self?.storeConnectionErrorViewModel.dismissTapped()
+            }
+        )
+        let hostingController = UIHostingController(rootView: modalView)
+        hostingController.view.backgroundColor = .clear
+        hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+
+        addChild(hostingController)
+        view.addSubview(hostingController.view)
+        NSLayoutConstraint.activate([
+            hostingController.view.topAnchor.constraint(equalTo: view.topAnchor),
+            hostingController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            hostingController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            hostingController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ])
+        hostingController.didMove(toParent: self)
+
+        storeConnectionErrorModal = hostingController
+    }
+
+    private func dismissStoreConnectionErrorModal() {
+        guard let storeConnectionErrorModal else {
+            return
+        }
+        self.storeConnectionErrorModal = nil
+        storeConnectionErrorModal.willMove(toParent: nil)
+        storeConnectionErrorModal.view.removeFromSuperview()
+        storeConnectionErrorModal.removeFromParent()
+    }
+
+    /// Opens support over the warning, which stays behind it so the merchant returns to it afterwards.
+    ///
+    private func presentStoreConnectionErrorSupportForm() {
+        let viewModel = SupportFormViewModel(sourceTag: StoreConnectionErrorSupport.sourceTag,
+                                             additionalTags: StoreConnectionErrorSupport.additionalTags)
+        SupportFormHostingController(viewModel: viewModel).show(from: self)
     }
 
     private func presentWebViewSheet(_ webViewModel: WebViewSheetViewModel) {

@@ -2,6 +2,7 @@ import UIKit
 import Foundation
 import BackgroundTasks
 import Network
+import Yosemite
 
 final class BackgroundTaskRefreshDispatcher {
     enum BackgroundTaskType: Codable, CaseIterable {
@@ -10,6 +11,12 @@ final class BackgroundTaskRefreshDispatcher {
     }
 
     private let schedule = BackgroundTaskSchedule()
+
+    private let storeConnectionErrorMonitor: StoreConnectionErrorMonitoring
+
+    init(storeConnectionErrorMonitor: StoreConnectionErrorMonitoring = StoreConnectionErrorMonitor.shared) {
+        self.storeConnectionErrorMonitor = storeConnectionErrorMonitor
+    }
 
     /// Schedule the app refresh background task.
     ///
@@ -92,6 +99,15 @@ final class BackgroundTaskRefreshDispatcher {
         // Make sure the next task is scheduled
         schedule.setNextPreferredRunDate(for: type)
         scheduleNextTask()
+
+        // The store is rejecting our requests for a reason only the merchant can fix on their site, so
+        // syncing now would just fail. Skip this run rather than retrying it silently; the task is still
+        // scheduled above, so it picks up again on the next cycle once the store answers.
+        guard storeConnectionErrorMonitor.affectedSiteID != siteID else {
+            DDLogInfo("Background refresh skipped: store \(siteID) is currently unreachable")
+            backgroundTask.setTaskCompleted(success: false)
+            return
+        }
 
         switch type {
         case .ordersAndDashboardSync:

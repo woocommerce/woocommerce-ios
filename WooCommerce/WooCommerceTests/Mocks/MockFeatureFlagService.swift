@@ -9,7 +9,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var isSupportRequestEnabled: Bool
     var jetpackSetupWithApplicationPassword: Bool
     var betterCustomerSelectionInOrder: Bool
-    var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
     var isPointOfSaleEnabled: Bool
     var googleAdsCampaignCreationOnWebView: Bool
@@ -29,7 +28,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          isSupportRequestEnabled: Bool = false,
          jetpackSetupWithApplicationPassword: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
-         productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
          googleAdsCampaignCreationOnWebView: Bool = false,
@@ -47,7 +45,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
-        self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
@@ -81,8 +78,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return jetpackSetupWithApplicationPassword
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
-        case .productBundlesInOrderForm:
-            return productBundlesInOrderForm
         case .scanToUpdateInventory:
             return isScanToUpdateInventoryEnabled
         case .pointOfSale:

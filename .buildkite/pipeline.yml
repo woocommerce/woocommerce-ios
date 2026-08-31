@@ -21,6 +21,19 @@ steps:
           context: Build
 
   #################
+  # Strict-concurrency warning baseline guard (WOOMOB-3965)
+  # Experimental: per-push on the spike branch only; production design is a nightly schedule.
+  #################
+  - label: ":swift: Strict Concurrency Baseline Guard"
+    if: build.branch == "experiment/swift6-research"
+    soft_fail: true
+    command: .buildkite/commands/strict-concurrency-guard.sh
+    plugins: [$CI_TOOLKIT]
+    notify:
+      - github_commit_status:
+          context: Strict Concurrency Baseline Guard
+
+  #################
   # Create Prototype Build
   #################
   - group: ":rocket: Prototype Build"

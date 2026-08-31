@@ -280,6 +280,111 @@ final class RemoteTests: XCTestCase {
         await fulfillment(of: [expectationForNotification], timeout: 1.0)
     }
 
+    // MARK: - Store connection error detection
+
+    func test_enqueue_when_the_response_body_names_the_invalid_signature_error_then_the_store_is_recorded_as_affected() async throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_error")
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            XCTAssertEqual(error as? DotcomError, .invalidSignature())
+        }
+
+        // Then
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
+    func test_enqueue_when_the_response_body_names_the_invalid_signature_code_then_the_store_is_recorded_as_affected() async throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_code_error")
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            XCTAssertEqual(error as? DotcomError, .invalidSignature())
+        }
+
+        // Then
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
+    /// The store's rejection can also reach us as a status code failure whose body names the code.
+    ///
+    func test_enqueue_when_the_request_fails_with_the_invalid_signature_status_code_then_the_store_is_recorded_as_affected() async throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+
+        let responseBody = try XCTUnwrap(#"{"code":"rest_invalid_signature","message":"The request is not signed correctly."}"#.data(using: .utf8))
+        network.simulateError(requestUrlSuffix: "something",
+                              error: NetworkError.unacceptableStatusCode(statusCode: 400, response: responseBody))
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+        }
+    }
+
+    func test_enqueue_when_the_response_contains_another_error_then_the_store_is_not_recorded_as_affected() async throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "unknown_blog_error")
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? DotcomError, .unknownBlog())
+            XCTAssertTrue(recorder.invalidSignatureSiteIDs.isEmpty)
+        }
+    }
+
+    func test_enqueue_when_the_request_succeeds_then_the_store_is_recorded_as_reachable() throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "generic_success_data")
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper()) { _, error in
+            XCTAssertNil(error)
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(recorder.successfulConnectionSiteIDs, [123])
+    }
+
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
     /// Request Timeout error.
     ///
@@ -1315,6 +1420,19 @@ private extension RemoteTests {
         }
 
         XCTAssertEqual(code, "no_response_body", file: file, line: line)
+    }
+}
+
+private final class MockStoreConnectionErrorRecorder: StoreConnectionErrorRecording {
+    private(set) var invalidSignatureSiteIDs: [Int64] = []
+    private(set) var successfulConnectionSiteIDs: [Int64] = []
+
+    func recordInvalidSignature(siteID: Int64) {
+        invalidSignatureSiteIDs.append(siteID)
+    }
+
+    func recordSuccessfulConnection(siteID: Int64) {
+        successfulConnectionSiteIDs.append(siteID)
     }
 }
 

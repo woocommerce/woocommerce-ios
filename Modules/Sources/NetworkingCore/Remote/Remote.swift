@@ -14,6 +14,10 @@ open class Remote: NSObject {
     ///
     var jetpackTunnelRawBodyErrorLogger: JetpackTunnelRawBodyErrorLogging = JetpackTunnelRawBodyErrorLogger()
 
+    /// Records which store, if any, is rejecting our requests with `rest_invalid_signature`.
+    ///
+    var storeConnectionErrorRecorder: StoreConnectionErrorRecording = StoreConnectionErrorMonitor.shared
+
     /// Designated Initializer.
     ///
     /// - Parameters:
@@ -37,7 +41,7 @@ open class Remote: NSObject {
         }
 
         do {
-            try request.responseDataValidator().validate(data: data)
+            try Self.validateResponse(data, for: request, recorder: storeConnectionErrorRecorder)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
             handleResponseError(error: error, for: request)
@@ -58,7 +62,7 @@ open class Remote: NSObject {
         }
 
         do {
-            try request.responseDataValidator().validate(data: data)
+            try Self.validateResponse(data, for: request, recorder: storeConnectionErrorRecorder)
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
@@ -236,8 +240,11 @@ open class Remote: NSObject {
 
 private extension Remote {
     /// Validates the response and maps it via the mapper.
-    static func validateAndMap<M: Mapper>(_ data: Data, request: Request, mapper: M) throws -> M.Output {
-        try request.responseDataValidator().validate(data: data)
+    static func validateAndMap<M: Mapper>(_ data: Data,
+                                          request: Request,
+                                          mapper: M,
+                                          recorder: StoreConnectionErrorRecording?) throws -> M.Output {
+        try validateResponse(data, for: request, recorder: recorder)
         return try mapper.map(response: data)
     }
 
@@ -247,10 +254,13 @@ private extension Remote {
                                               request: Request,
                                               mapper: M,
                                               completion: @escaping (Result<M.Output, Error>) -> Void) {
+        // Read before hopping queues so the outcome is still recorded, and the completion still called,
+        // if this remote goes away while the response is being parsed.
+        let recorder = storeConnectionErrorRecorder
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let result: Result<M.Output, Error>
             do {
-                result = .success(try Self.validateAndMap(data, request: request, mapper: mapper))
+                result = .success(try Self.validateAndMap(data, request: request, mapper: mapper, recorder: recorder))
             } catch {
                 result = .failure(error)
             }
@@ -270,7 +280,7 @@ private extension Remote {
     // Validation and parsing of the response data is separated so that the decoding error can be handled separately from network error.
     func validateAndParseData<M: Mapper>(_ data: Data, request: Request, mapper: M) throws -> M.Output {
         do {
-            return try Self.validateAndMap(data, request: request, mapper: mapper)
+            return try Self.validateAndMap(data, request: request, mapper: mapper, recorder: storeConnectionErrorRecorder)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
             DDLogError("<> Mapping Error: \(error)")
@@ -315,6 +325,56 @@ private extension Remote {
         }
     }
 
+    /// Runs the request's validator over a response body, recording the outcome for the store the
+    /// request was made against.
+    ///
+    /// This is the one point every response body passes through, whichever `enqueue` overload the
+    /// caller used, so it is where a store is flagged as unreachable and — just as importantly — where
+    /// the flag is cleared again once the store answers normally.
+    ///
+    static func validateResponse(_ data: Data, for request: Request, recorder: StoreConnectionErrorRecording?) throws {
+        do {
+            try request.responseDataValidator().validate(data: data)
+        } catch {
+            recordStoreConnectionFailure(error: error, for: request, recorder: recorder)
+            throw error
+        }
+
+        guard let siteID = affectedSiteID(for: request) else {
+            return
+        }
+        recorder?.recordSuccessfulConnection(siteID: siteID)
+    }
+
+    /// Flags the store as unreachable when the failure is the invalid signature error.
+    ///
+    /// The error reaches us in two shapes: parsed into a `DotcomError` when the response body carried
+    /// it, and as a status code failure whose body names the code, which is what the Jetpack tunnel
+    /// returns when it relays the site's own rejection.
+    ///
+    static func recordStoreConnectionFailure(error: Error, for request: Request, recorder: StoreConnectionErrorRecording?) {
+        let isInvalidSignature: Bool = {
+            if let dotcomError = error as? DotcomError, case .invalidSignature = dotcomError {
+                return true
+            }
+            return (error as? NetworkError)?.errorCode == DotcomError.invalidSignatureCode
+        }()
+
+        guard isInvalidSignature, let siteID = affectedSiteID(for: request) else {
+            return
+        }
+        recorder?.recordInvalidSignature(siteID: siteID)
+    }
+
+    /// The store a request was made against, when we can tell.
+    ///
+    /// Only Jetpack-tunneled requests name their site, and they are also the only ones that can fail
+    /// signature verification: a request authenticated with an application password is never signed.
+    ///
+    static func affectedSiteID(for request: Request) -> Int64? {
+        (request as? JetpackRequest)?.siteID
+    }
+
     /// Handles decoding errors when parsing the response data fails.
     ///
     func handleDecodingError(error: Error, for request: Request, entityName: String) {
@@ -352,8 +412,10 @@ private extension Remote {
         do {
             let validator = request.responseDataValidator()
             try validator.validate(data: response)
+            Self.recordStoreConnectionFailure(error: networkError, for: request, recorder: storeConnectionErrorRecorder)
             return networkError
         } catch {
+            Self.recordStoreConnectionFailure(error: error, for: request, recorder: storeConnectionErrorRecorder)
             return error
         }
     }

@@ -31,7 +31,7 @@ class FancyAnimatedButton: FancyButton {
         }
     }
 
-    nonisolated override open func awakeFromNib() {
+    override nonisolated open func awakeFromNib() {
         MainActor.assumeIsolated {
             super.awakeFromNib()
             addSubview(activityIndicator)

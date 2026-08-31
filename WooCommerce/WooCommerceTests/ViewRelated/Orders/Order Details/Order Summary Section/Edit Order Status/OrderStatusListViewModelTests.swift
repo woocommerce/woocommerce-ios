@@ -121,7 +121,7 @@ class OrderStatusListViewModelTests: XCTestCase {
 
 /// Mock Order Statuses Store Manager
 ///
-private nonisolated final class MockOrderStatusesStoresManager: MockStorageManager {
+nonisolated private final class MockOrderStatusesStoresManager: MockStorageManager {
     /// Insert an array of order statuses into storage.
     ///
     func insert(_ statuses: [OrderStatusEnum], on siteID: Int64) {

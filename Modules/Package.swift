@@ -1,6 +1,10 @@
-// swift-tools-version: 5.10
+// swift-tools-version: 6.2
 
 import PackageDescription
+
+// Pinned language mode for targets not yet migrated to Swift 6.
+// Remove a target's pin (or set .v6) when it reaches zero strict-concurrency warnings.
+let swift5: [SwiftSetting] = [.swiftLanguageMode(.v5)]
 
 let package = Package(
     name: "Modules",
@@ -133,18 +137,21 @@ let package = Package(
     targets: XcodeSupport.targets + [
         .target(
             name: "APIMocks",
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: swift5
         ),
         .target(
             name: "Codegen",
-            exclude: ["README.md", "Sourcery"] // Relative to sources path
+            exclude: ["README.md", "Sourcery"], // Relative to sources path,
+            swiftSettings: swift5
         ),
         .target(
             name: "Experiments",
             dependencies: [
                 "WooFoundationCore",
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .target(
             name: "Fakes",
@@ -153,7 +160,8 @@ let package = Package(
                 "Hardware",
                 "Networking",
                 "Yosemite"
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .target(
             name: "Hardware",
@@ -163,7 +171,8 @@ let package = Package(
                 .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
                 .product(name: "StarIO10", package: "StarXpand-SDK-iOS")
             ],
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: swift5
         ),
         .target(
             name: "Networking",
@@ -176,7 +185,8 @@ let package = Package(
                 .product(name: "Aztec", package: "AztecEditor-iOS"),
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .target(
             name: "NetworkingCore",
@@ -186,7 +196,8 @@ let package = Package(
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack"),
                 .product(name: "HTMLParser", package: "AztecEditor-iOS"),
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .target(
             name: "Storage",
@@ -196,18 +207,21 @@ let package = Package(
                 .product(name: "GRDB", package: "GRDB.swift")
             ],
             exclude: ["Model/Migrations.md"],
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: swift5
         ),
         .target(
             name: "TestKit",
-            dependencies: ["Difference", "Nimble"]
+            dependencies: ["Difference", "Nimble"],
+            swiftSettings: swift5
         ),
         .target(
             name: "UITestsFoundation",
             dependencies: [
                 .product(name: "ScreenObject", package: "ScreenObject"),
                 .product(name: "XCUITestHelpers", package: "ScreenObject"),
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .target(
             name: "WooFoundation",
@@ -215,7 +229,8 @@ let package = Package(
                 "WooFoundationCore",
                 .product(name: "Kingfisher", package: "Kingfisher")
             ],
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: swift5
         ),
         .target(
             name: "WooFoundationCore",
@@ -223,28 +238,33 @@ let package = Package(
                 "Codegen",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ],
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: swift5
         ),
         .target(
             name: "WordPressShared",
             dependencies: [
                 .target(name: "WordPressSharedObjC"),
             ],
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: swift5
         ),
         .target(
             name: "WordPressSharedObjC",
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: swift5
         ),
-        .target(name: "WordPressUIObjC"),
+        .target(name: "WordPressUIObjC", swiftSettings: swift5),
         .target(
             name: "WordPressUI",
             dependencies: [.target(name: "WordPressUIObjC")],
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: swift5
         ),
         .target(
             name: "WPMediaPicker",
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: swift5
         ),
         .target(
             name: "Yosemite",
@@ -261,17 +281,20 @@ let package = Package(
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
                 .product(name: "StripeTerminal", package: "stripe-terminal-ios"),
                 .product(name: "WordPressEditor", package: "AztecEditor-iOS"),
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .target(
             name: "YosemiteTestHelpers",
-            dependencies: ["Yosemite"]
+            dependencies: ["Yosemite"],
+            swiftSettings: swift5
         ),
         .target(
             name: "ParcelFittingCheck",
             dependencies: [
                 "EventHorizonSDK",
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .target(
             name: "PointOfSale",
@@ -284,7 +307,8 @@ let package = Package(
                 .product(name: "Shimmer", package: "SwiftUI-Shimmer"),
                 .product(name: "Kingfisher", package: "Kingfisher"),
             ],
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: swift5
         ),
         .target(
             name: "WooAIAssistant",
@@ -292,28 +316,33 @@ let package = Package(
                 "WooFoundation",
                 "NetworkingCore",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .target(
-            name: "StoreDesignSystem"
+            name: "StoreDesignSystem",
+            swiftSettings: swift5
         ),
         .target(
             name: "NetworkingTestsResponsesFixtures",
             path: "Tests/NetworkingTestsResponsesFixtures",
-            resources: [.process("Responses")]
+            resources: [.process("Responses")],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "ExperimentsTests",
             dependencies: [
                 "Experiments",
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "HardwareTests",
             dependencies: [
                 "Hardware"
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "NetworkingTests",
@@ -326,7 +355,8 @@ let package = Package(
                 "WooFoundation",
                 "WordPressShared",
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "StorageTests",
@@ -334,24 +364,29 @@ let package = Package(
                 "Storage",
                 "TestKit"
             ],
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "WooFoundationTests",
-            dependencies: ["TestKit", .target(name: "WooFoundation")]
+            dependencies: ["TestKit", .target(name: "WooFoundation")],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "WordPressUITests",
-            dependencies: [.target(name: "WordPressUI")]
+            dependencies: [.target(name: "WordPressUI")],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "WordPressSharedTests",
-            dependencies: [.target(name: "WordPressShared")]
+            dependencies: [.target(name: "WordPressShared")],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "WordPressSharedObjCTests",
             dependencies: [.target(name: "WordPressShared")],
-            resources: [.process("Resources")]
+            resources: [.process("Resources")],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "YosemiteTests",
@@ -367,7 +402,8 @@ let package = Package(
             ],
             resources: [
                 .process("Resources"),
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "PointOfSaleTests",
@@ -377,24 +413,28 @@ let package = Package(
                 "Fakes",
                 "TestKit",
                 "WooFoundation"
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "WooAIAssistantTests",
             dependencies: [
                 .target(name: "WooAIAssistant"),
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "ParcelFittingCheckTests",
             dependencies: [
                 .target(name: "ParcelFittingCheck"),
                 "EventHorizonSDK",
-            ]
+            ],
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "StoreDesignSystemTests",
-            dependencies: ["StoreDesignSystem"]
+            dependencies: ["StoreDesignSystem"],
+            swiftSettings: swift5
         ),
         .binaryTarget(
             name: "EventHorizonSDK",
@@ -598,7 +638,8 @@ extension Target {
         .target(
             name: name.supportingName,
             dependencies: dependencies,
-            path: "Sources/XcodeSupport/\(name.replacing(" ", with: "-").supportingName)"
+            path: "Sources/XcodeSupport/\(name.replacing(" ", with: "-").supportingName)",
+            swiftSettings: swift5
         )
     }
 }

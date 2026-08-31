@@ -5,6 +5,7 @@ import PackageDescription
 // Pinned language mode for targets not yet migrated to Swift 6.
 // Remove a target's pin (or set .v6) when it reaches zero strict-concurrency warnings.
 let swift5: [SwiftSetting] = [.swiftLanguageMode(.v5)]
+let swift6: [SwiftSetting] = [.swiftLanguageMode(.v6)]
 
 let package = Package(
     name: "Modules",
@@ -143,7 +144,7 @@ let package = Package(
         .target(
             name: "Codegen",
             exclude: ["README.md", "Sourcery"], // Relative to sources path,
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "Experiments",
@@ -151,7 +152,7 @@ let package = Package(
                 "WooFoundationCore",
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "Fakes",
@@ -264,7 +265,7 @@ let package = Package(
         .target(
             name: "WPMediaPicker",
             resources: [.process("Resources")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "Yosemite",

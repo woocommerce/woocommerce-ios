@@ -8,7 +8,8 @@ public protocol StoreConnectionErrorMonitoring {
     ///
     var affectedSiteID: Int64? { get }
 
-    /// Emits the affected store identifier on every change, starting with the current value.
+    /// Emits the affected store identifier on the main queue on every change, starting with the
+    /// current value.
     ///
     var affectedSiteIDPublisher: AnyPublisher<Int64?, Never> { get }
 }
@@ -38,34 +39,52 @@ protocol StoreConnectionErrorRecording {
 public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, StoreConnectionErrorRecording {
     public static let shared = StoreConnectionErrorMonitor()
 
+    /// The value itself, guarded by `lock` because the networking layer writes it from whatever queue a
+    /// response arrives on while the app reads it from the main thread. `subject` is the notification
+    /// channel rather than the source of truth, so that subscribers can be told about a change without
+    /// the lock being held while their sinks run.
+    ///
+    private var storedSiteID: Int64?
+    private let lock = NSLock()
     private let subject = CurrentValueSubject<Int64?, Never>(nil)
-    private let queue = DispatchQueue(label: "StoreConnectionErrorMonitor", attributes: .concurrent)
 
     init() {}
 
     public var affectedSiteID: Int64? {
-        queue.sync { subject.value }
+        lock.lock()
+        defer { lock.unlock() }
+        return storedSiteID
     }
 
     public var affectedSiteIDPublisher: AnyPublisher<Int64?, Never> {
-        subject.eraseToAnyPublisher()
+        subject.receive(on: DispatchQueue.main).eraseToAnyPublisher()
     }
 
     func recordInvalidSignature(siteID: Int64) {
-        queue.async(flags: .barrier) { [subject] in
-            guard subject.value != siteID else {
-                return
-            }
-            subject.send(siteID)
-        }
+        updateAffectedSiteID(to: siteID) { $0 != siteID }
     }
 
     func recordSuccessfulConnection(siteID: Int64) {
-        queue.async(flags: .barrier) { [subject] in
-            guard subject.value == siteID else {
-                return
-            }
-            subject.send(nil)
+        updateAffectedSiteID(to: nil) { $0 == siteID }
+    }
+}
+
+private extension StoreConnectionErrorMonitor {
+    /// Applies a change only when `shouldUpdate` accepts the current value, then announces it.
+    ///
+    /// The announcement deliberately happens after the lock is released. Sending while holding it would
+    /// run every subscriber's sink inside the critical section, and any sink reading `affectedSiteID`
+    /// would deadlock against the write that woke it.
+    ///
+    func updateAffectedSiteID(to newValue: Int64?, if shouldUpdate: (Int64?) -> Bool) {
+        lock.lock()
+        guard shouldUpdate(storedSiteID) else {
+            lock.unlock()
+            return
         }
+        storedSiteID = newValue
+        lock.unlock()
+
+        subject.send(newValue)
     }
 }

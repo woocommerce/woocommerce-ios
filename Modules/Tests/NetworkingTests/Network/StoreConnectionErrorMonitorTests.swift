@@ -1,3 +1,5 @@
+import Combine
+import Foundation
 import Testing
 @testable import NetworkingCore
 
@@ -58,7 +60,8 @@ struct StoreConnectionErrorMonitorTests {
         #expect(monitor.affectedSiteID == 456)
     }
 
-    @Test func test_affectedSiteIDPublisher_then_it_emits_the_current_value_and_every_change() async throws {
+    @MainActor
+    @Test func test_affectedSiteIDPublisher_then_it_emits_the_current_value_and_every_change() async {
         // Given
         let monitor = StoreConnectionErrorMonitor()
         var emitted: [Int64?] = []
@@ -67,11 +70,44 @@ struct StoreConnectionErrorMonitorTests {
         // When
         monitor.recordInvalidSignature(siteID: 123)
         monitor.recordSuccessfulConnection(siteID: 123)
-        // Reading the value hops through the monitor's queue, so it lands after both writes.
-        _ = monitor.affectedSiteID
+        await settle()
 
         // Then
         #expect(emitted == [nil, 123, nil])
         subscription.cancel()
+    }
+
+    /// The publisher announces changes outside the monitor's lock, so a sink is free to read the value
+    /// that woke it. This pins that: holding the lock while sending would deadlock here instead.
+    ///
+    @MainActor
+    @Test func test_affectedSiteIDPublisher_when_the_sink_reads_the_value_then_it_does_not_deadlock() async {
+        // Given
+        let monitor = StoreConnectionErrorMonitor()
+        var readFromSink: [Int64?] = []
+        let subscription = monitor.affectedSiteIDPublisher.sink { _ in
+            readFromSink.append(monitor.affectedSiteID)
+        }
+
+        // When
+        monitor.recordInvalidSignature(siteID: 123)
+        await settle()
+
+        // Then
+        #expect(readFromSink == [nil, 123])
+        subscription.cancel()
+    }
+}
+
+private extension StoreConnectionErrorMonitorTests {
+    /// The publisher delivers on the main queue, so the emission has to run before the assertion does.
+    ///
+    @MainActor
+    func settle() async {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                continuation.resume()
+            }
+        }
     }
 }

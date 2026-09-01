@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct StoreIconImage {
+public struct StoreIconImage: Sendable {
     private let assetName: String
 
     init(_ assetName: String) {

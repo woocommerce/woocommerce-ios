@@ -96,7 +96,12 @@ struct StoreConnectionErrorMonitorTests {
         await settle()
 
         // Then
-        #expect(readFromSink == [nil, 123])
+        // Both the initial value and the change are delivered on the main queue, so both sinks run after
+        // the write has finished and read the same settled value. What is being pinned is that each read
+        // returned at all: against an implementation that announces while holding the write, these would
+        // deadlock and the time limit above would fail the test.
+        #expect(readFromSink.count == 2)
+        #expect(readFromSink.allSatisfy { $0 == 123 })
         subscription.cancel()
     }
 

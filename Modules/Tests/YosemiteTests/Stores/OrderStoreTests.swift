@@ -1528,7 +1528,8 @@ final class OrderStoreTests: XCTestCase {
 
     // MARK: Tests for `markOrderAsPaidLocally`
 
-    func test_markOrderAsPaidLocally_sets_order_datePaid_and_status_to_processing() throws {
+    @MainActor
+    func test_markOrderAsPaidLocally_sets_order_datePaid_and_status_to_processing() async throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let order = Order.fake().copy(status: .pending)
@@ -1537,9 +1538,9 @@ final class OrderStoreTests: XCTestCase {
         let datePaid = Date(timeIntervalSince1970: 1652240703)
 
         // When
-        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+        let result: Result<Yosemite.Order, Error> = await withCheckedContinuation { continuation in
             let action = OrderAction.markOrderAsPaidLocally(siteID: order.siteID, orderID: order.orderID, datePaid: datePaid) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -1554,7 +1555,8 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(orderInStorage, orderOnCompletion)
     }
 
-    func test_markOrderAsPaidLocally_returns_failure_when_there_is_no_order() throws {
+    @MainActor
+    func test_markOrderAsPaidLocally_returns_failure_when_there_is_no_order() async throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let order = Order.fake()
@@ -1562,9 +1564,9 @@ final class OrderStoreTests: XCTestCase {
         let datePaid = Date(timeIntervalSince1970: 1652240703)
 
         // When
-        let result: Result<Yosemite.Order, Error> = waitFor { promise in
+        let result: Result<Yosemite.Order, Error> = await withCheckedContinuation { continuation in
             let action = OrderAction.markOrderAsPaidLocally(siteID: order.siteID, orderID: order.orderID, datePaid: datePaid) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }

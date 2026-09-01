@@ -135,7 +135,10 @@ public enum OrderAction: Action {
     /// app to prevent from multiple charging for the same order after subsequent failures (e.g. Interac in Canada).
     /// Internally, the order is marked with a paid date and the order status is changed to processing.
     ///
-    case markOrderAsPaidLocally(siteID: Int64, orderID: Int64, datePaid: Date, onCompletion: (Result<Order, Error>) -> Void)
+    case markOrderAsPaidLocally(siteID: Int64,
+                                orderID: Int64,
+                                datePaid: Date,
+                                onCompletion: @MainActor @Sendable (Result<Order, Error>) -> Void)
 
     /// Deletes a given order.
     ///

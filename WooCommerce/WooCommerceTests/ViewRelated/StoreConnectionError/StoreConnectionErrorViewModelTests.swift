@@ -23,7 +23,7 @@ struct StoreConnectionErrorViewModelTests {
         notificationCenter = NotificationCenter()
     }
 
-    @Test func test_isPresented_when_no_store_is_affected_then_it_is_false() async {
+    @Test func test_presentedSiteID_when_no_store_is_affected_then_it_is_nil() async {
         // Given
         sessionManager.defaultStoreID = 123
 
@@ -32,10 +32,10 @@ struct StoreConnectionErrorViewModelTests {
         await settle()
 
         // Then
-        #expect(viewModel.isPresented == false)
+        #expect(viewModel.presentedSiteID == nil)
     }
 
-    @Test func test_isPresented_when_the_selected_store_is_affected_then_it_is_true() async {
+    @Test func test_presentedSiteID_when_the_selected_store_is_affected_then_it_is_that_store() async {
         // Given
         sessionManager.defaultStoreID = 123
         let viewModel = makeViewModel()
@@ -45,10 +45,10 @@ struct StoreConnectionErrorViewModelTests {
         await settle()
 
         // Then
-        #expect(viewModel.isPresented == true)
+        #expect(viewModel.presentedSiteID == 123)
     }
 
-    @Test func test_isPresented_when_another_store_is_affected_then_it_is_false() async {
+    @Test func test_presentedSiteID_when_another_store_is_affected_then_it_is_nil() async {
         // Given
         sessionManager.defaultStoreID = 123
         let viewModel = makeViewModel()
@@ -58,10 +58,10 @@ struct StoreConnectionErrorViewModelTests {
         await settle()
 
         // Then
-        #expect(viewModel.isPresented == false)
+        #expect(viewModel.presentedSiteID == nil)
     }
 
-    @Test func test_isPresented_when_the_affected_store_recovers_then_it_becomes_false() async {
+    @Test func test_presentedSiteID_when_the_affected_store_recovers_then_it_becomes_nil() async {
         // Given
         sessionManager.defaultStoreID = 123
         let viewModel = makeViewModel()
@@ -73,10 +73,10 @@ struct StoreConnectionErrorViewModelTests {
         await settle()
 
         // Then
-        #expect(viewModel.isPresented == false)
+        #expect(viewModel.presentedSiteID == nil)
     }
 
-    @Test func test_isPresented_when_switching_to_the_affected_store_then_it_becomes_true() async {
+    @Test func test_presentedSiteID_when_switching_to_the_affected_store_then_it_becomes_that_store() async {
         // Given
         sessionManager.defaultStoreID = 123
         let viewModel = makeViewModel()
@@ -88,7 +88,7 @@ struct StoreConnectionErrorViewModelTests {
         await settle()
 
         // Then
-        #expect(viewModel.isPresented == true)
+        #expect(viewModel.presentedSiteID == 456)
     }
 
     @Test func test_dismissTapped_when_the_store_is_still_affected_then_it_hides_the_warning() async {
@@ -103,7 +103,7 @@ struct StoreConnectionErrorViewModelTests {
         await settle()
 
         // Then
-        #expect(viewModel.isPresented == false)
+        #expect(viewModel.presentedSiteID == nil)
     }
 
     @Test func test_dismissTapped_when_the_app_returns_to_the_foreground_then_the_warning_comes_back() async {
@@ -120,7 +120,7 @@ struct StoreConnectionErrorViewModelTests {
         await settle()
 
         // Then
-        #expect(viewModel.isPresented == true)
+        #expect(viewModel.presentedSiteID == 123)
     }
 
     @Test func test_dismissTapped_when_switching_away_and_back_then_the_warning_stays_hidden() async {
@@ -139,7 +139,7 @@ struct StoreConnectionErrorViewModelTests {
         await settle()
 
         // Then
-        #expect(viewModel.isPresented == false)
+        #expect(viewModel.presentedSiteID == nil)
     }
 
     @Test func test_dismissTapped_when_another_store_becomes_affected_then_the_warning_is_shown_for_it() async {
@@ -158,7 +158,7 @@ struct StoreConnectionErrorViewModelTests {
         await settle()
 
         // Then
-        #expect(viewModel.isPresented == true)
+        #expect(viewModel.presentedSiteID == 456)
     }
 
     @Test func test_dismissTapped_when_the_store_recovers_and_fails_again_then_the_warning_comes_back() async {
@@ -177,7 +177,30 @@ struct StoreConnectionErrorViewModelTests {
         await settle()
 
         // Then
-        #expect(viewModel.isPresented == true)
+        #expect(viewModel.presentedSiteID == 123)
+    }
+
+    /// The monitor can move on before the view model has processed the change it is currently showing,
+    /// so Dismiss has to silence the store the merchant actually saw, not whatever is affected now.
+    ///
+    @Test func test_dismissTapped_when_the_monitor_has_moved_on_then_it_snoozes_the_store_that_was_shown() async {
+        // Given
+        sessionManager.defaultStoreID = 123
+        let viewModel = makeViewModel()
+        monitor.simulateAffectedSiteID(123)
+        await settle()
+
+        // When
+        // No settle here: the change is queued but unprocessed when the merchant taps Dismiss.
+        monitor.simulateAffectedSiteID(456)
+        viewModel.dismissTapped()
+        await settle()
+
+        // Then
+        // 456 was never shown, so switching to it has to surface the warning.
+        sessionManager.defaultStoreID = 456
+        await settle()
+        #expect(viewModel.presentedSiteID == 456)
     }
 }
 
@@ -190,7 +213,7 @@ private extension StoreConnectionErrorViewModelTests {
 
     /// Lets the view model's scheduled work run before the assertion does.
     ///
-    /// Two hand-offs to the main queue can sit between a change and `isPresented` settling: the monitor
+    /// Two hand-offs to the main queue can sit between a change and `presentedSiteID` settling: the monitor
     /// and the foreground notification each deliver on main, and the view model then delivers its own
     /// combined result there too. Draining twice covers the longest of those chains. Everything is
     /// queued on main in order, so this is deterministic rather than a sleep.

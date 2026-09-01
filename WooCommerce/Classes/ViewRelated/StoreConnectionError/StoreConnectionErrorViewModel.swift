@@ -13,9 +13,13 @@ import Yosemite
 ///
 @MainActor
 final class StoreConnectionErrorViewModel: ObservableObject {
-    @Published private(set) var isPresented = false
-
-    private let monitor: StoreConnectionErrorMonitoring
+    /// The store the warning is currently shown for, or `nil` when it isn't shown.
+    ///
+    /// Published as the store rather than as a flag so that dismissing can silence exactly what the
+    /// merchant was looking at. Asking the monitor at the moment of the tap would sometimes get a
+    /// different store, since it can move on before the change this view model is showing is processed.
+    ///
+    @Published private(set) var presentedSiteID: Int64?
 
     /// The store the merchant dismissed the warning for, if any.
     ///
@@ -29,8 +33,6 @@ final class StoreConnectionErrorViewModel: ObservableObject {
     init(monitor: StoreConnectionErrorMonitoring = StoreConnectionErrorMonitor.shared,
          stores: StoresManager = ServiceLocator.stores,
          notificationCenter: NotificationCenter = .default) {
-        self.monitor = monitor
-
         monitor.affectedSiteIDPublisher
             .combineLatest(stores.siteID, snoozedSiteID)
             .receive(on: DispatchQueue.main)
@@ -39,7 +41,7 @@ final class StoreConnectionErrorViewModel: ObservableObject {
                     return
                 }
                 let isAffected = affectedSiteID != nil && affectedSiteID == selectedSiteID
-                self.isPresented = isAffected && snoozedSiteID != affectedSiteID
+                self.presentedSiteID = isAffected && snoozedSiteID != affectedSiteID ? affectedSiteID : nil
 
                 // The snooze has done its job once the store it was taken for recovers, so drop it and
                 // let a fresh failure speak up. Guarded on the current value because this subject feeds
@@ -61,9 +63,13 @@ final class StoreConnectionErrorViewModel: ObservableObject {
             .store(in: &subscriptions)
     }
 
-    /// Silences the warning for the affected store until the app is next brought to the foreground.
+    /// Silences the warning for the store it is being shown for, until the app is next brought to the
+    /// foreground.
     ///
     func dismissTapped() {
-        snoozedSiteID.send(monitor.affectedSiteID)
+        guard let presentedSiteID else {
+            return
+        }
+        snoozedSiteID.send(presentedSiteID)
     }
 }

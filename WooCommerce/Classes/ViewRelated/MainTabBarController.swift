@@ -892,7 +892,8 @@ extension MainTabBarController: DeepLinkNavigator {
     }
 
     private func observeStoreConnectionError() {
-        storeConnectionErrorSubscription = storeConnectionErrorViewModel.$isPresented
+        storeConnectionErrorSubscription = storeConnectionErrorViewModel.$presentedSiteID
+            .map { $0 != nil }
             .removeDuplicates()
             .sink { [weak self] isPresented in
                 isPresented ? self?.presentStoreConnectionErrorModal() : self?.dismissStoreConnectionErrorModal()

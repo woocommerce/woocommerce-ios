@@ -150,14 +150,19 @@ private extension StoreConnectionErrorViewModelTests {
                                       notificationCenter: notificationCenter)
     }
 
-    /// The view model delivers on the main queue, so the work it schedules there has to run before the
-    /// assertion does. Both the emission above and this hop are queued on main, in that order, which
-    /// makes the wait deterministic rather than a sleep.
+    /// Lets the view model's scheduled work run before the assertion does.
+    ///
+    /// Two hand-offs to the main queue can sit between a change and `isPresented` settling: the monitor
+    /// and the foreground notification each deliver on main, and the view model then delivers its own
+    /// combined result there too. Draining twice covers the longest of those chains. Everything is
+    /// queued on main in order, so this is deterministic rather than a sleep.
     ///
     func settle() async {
-        await withCheckedContinuation { continuation in
-            DispatchQueue.main.async {
-                continuation.resume()
+        for _ in 0..<2 {
+            await withCheckedContinuation { continuation in
+                DispatchQueue.main.async {
+                    continuation.resume()
+                }
             }
         }
     }

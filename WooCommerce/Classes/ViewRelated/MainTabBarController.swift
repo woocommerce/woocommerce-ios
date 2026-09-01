@@ -922,6 +922,9 @@ extension MainTabBarController: DeepLinkNavigator {
         let hostingController = UIHostingController(rootView: modalView)
         hostingController.view.backgroundColor = .clear
         hostingController.view.translatesAutoresizingMaskIntoConstraints = false
+        // A presented view controller would hide what is behind it from VoiceOver on its own. A child
+        // does not, so the tabs underneath stay reachable unless this says otherwise.
+        hostingController.view.accessibilityViewIsModal = true
 
         addChild(hostingController)
         view.addSubview(hostingController.view)

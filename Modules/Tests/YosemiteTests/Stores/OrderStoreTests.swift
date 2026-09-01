@@ -189,16 +189,17 @@ final class OrderStoreTests: XCTestCase {
 
     // MARK: - OrderAction.checkIfStoreHasOrders
 
-    func test_checkIfStoreHasOrders_returns_true_if_there_exists_any_order_in_storage() throws {
+    @MainActor
+    func test_checkIfStoreHasOrders_returns_true_if_there_exists_any_order_in_storage() async throws {
         // Given
         storageManager.insertSampleOrder(readOnlyOrder: Order.fake().copy(siteID: sampleSiteID))
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID, onCompletion: { result in
-                promise(result)
-            }))
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
+            store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID) { result in
+                continuation.resume(returning: result)
+            })
         }
 
         // Then
@@ -207,16 +208,17 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertTrue(hasOrders)
     }
 
-    func test_checkIfStoreHasOrders_returns_true_if_remote_returns_non_empty_results() throws {
+    @MainActor
+    func test_checkIfStoreHasOrders_returns_true_if_remote_returns_non_empty_results() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID, onCompletion: { result in
-                promise(result)
-            }))
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
+            store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID) { result in
+                continuation.resume(returning: result)
+            })
         }
 
         // Then
@@ -225,16 +227,17 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertTrue(hasOrders)
     }
 
-    func test_checkIfStoreHasOrders_returns_false_if_remote_returns_empty_results() throws {
+    @MainActor
+    func test_checkIfStoreHasOrders_returns_false_if_remote_returns_empty_results() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "orders", filename: "empty-data-array")
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID, onCompletion: { result in
-                promise(result)
-            }))
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
+            store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID) { result in
+                continuation.resume(returning: result)
+            })
         }
 
         // Then
@@ -243,16 +246,17 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertFalse(hasOrders)
     }
 
-    func test_checkIfStoreHasOrders_relays_error_if_remote_request_fails() throws {
+    @MainActor
+    func test_checkIfStoreHasOrders_relays_error_if_remote_request_fails() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
-            store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID, onCompletion: { result in
-                promise(result)
-            }))
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
+            store.onAction(OrderAction.checkIfStoreHasOrders(siteID: self.sampleSiteID) { result in
+                continuation.resume(returning: result)
+            })
         }
 
         // Then

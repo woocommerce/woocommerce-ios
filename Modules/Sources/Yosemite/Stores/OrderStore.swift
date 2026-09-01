@@ -233,7 +233,7 @@ private extension OrderStore {
 
     /// Checks if the store already has any orders.
     ///
-    func checkIfStoreHasOrders(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func checkIfStoreHasOrders(siteID: Int64, onCompletion: @escaping @Sendable (Result<Bool, Error>) -> Void) {
         // Check for locally stored products first.
         let storage = storageManager.viewStorage
         let predicate = NSPredicate(format: "siteID == %lld", siteID)

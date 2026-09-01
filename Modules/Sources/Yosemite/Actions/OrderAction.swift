@@ -147,5 +147,5 @@ public enum OrderAction: Action {
 
     /// Checks if the store already has any orders.
     ///
-    case checkIfStoreHasOrders(siteID: Int64, onCompletion: (Result<Bool, Error>) -> Void)
+    case checkIfStoreHasOrders(siteID: Int64, onCompletion: @Sendable (Result<Bool, Error>) -> Void)
 }

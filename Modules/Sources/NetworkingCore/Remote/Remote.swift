@@ -41,7 +41,7 @@ open class Remote: NSObject {
         }
 
         do {
-            try Self.validateResponse(data, for: request, recorder: storeConnectionErrorRecorder, transportError: nil)
+            try Self.validateResponse(data, for: request, recorder: storeConnectionErrorRecorder, outcome: .succeeded)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
             handleResponseError(error: error, for: request)
@@ -62,7 +62,7 @@ open class Remote: NSObject {
         }
 
         do {
-            try Self.validateResponse(data, for: request, recorder: storeConnectionErrorRecorder, transportError: nil)
+            try Self.validateResponse(data, for: request, recorder: storeConnectionErrorRecorder, outcome: .succeeded)
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
@@ -95,7 +95,8 @@ open class Remote: NSObject {
                 return
             }
 
-            self.parseResponse(data, request: request, mapper: mapper, transportError: networkError) { result in
+            let outcome: ResponseOutcome = networkError.map { .failed($0) } ?? .succeeded
+            self.parseResponse(data, request: request, mapper: mapper, outcome: outcome) { result in
                 switch result {
                 case .success(let parsed):
                     completion(parsed, nil)
@@ -124,7 +125,7 @@ open class Remote: NSObject {
 
             switch result {
             case .success(let data):
-                self.parseResponse(data, request: request, mapper: mapper, completion: completion)
+                self.parseResponse(data, request: request, mapper: mapper, outcome: .succeeded, completion: completion)
             case .failure(let error):
                 completion(.failure(self.mapNetworkError(error: error, for: request)))
             }
@@ -153,7 +154,7 @@ open class Remote: NSObject {
 
                 switch result {
                 case .success(let data):
-                    self.parseResponse(data, request: request, mapper: mapper) { parsed in
+                    self.parseResponse(data, request: request, mapper: mapper, outcome: .succeeded) { parsed in
                         promise(.success(parsed))
                     }
                 case .failure(let error):
@@ -197,7 +198,10 @@ open class Remote: NSObject {
                                             self.parseResponse(data,
                                                                request: request,
                                                                mapper: mapper,
-                                                               transportError: networkError,
+                                                               // Uploads report only serialization
+                                                               // failures, not error status codes, so
+                                                               // their outcome cannot be trusted here.
+                                                               outcome: .undetermined,
                                                                completion: completion)
         }
     }
@@ -234,6 +238,7 @@ open class Remote: NSObject {
     public func enqueueWithResponseHeaders(_ request: Request) async throws -> [String: String] {
         do {
             let (_, headers) = try await network.responseDataAndHeaders(for: request)
+            Self.recordSuccessfulConnection(for: request, recorder: storeConnectionErrorRecorder)
             return headers ?? [:]
         } catch {
             handleResponseError(error: error, for: request)
@@ -242,29 +247,45 @@ open class Remote: NSObject {
     }
 }
 
+/// What the network layer was able to tell us about a request's outcome, alongside its body.
+///
+/// The Jetpack tunnel answers with a body worth parsing even when the request failed, so the body on its
+/// own never says whether the store is reachable. Some callers cannot report the outcome at all, and
+/// those must not be read as the store answering normally.
+///
+private enum ResponseOutcome {
+    /// The request completed without a transport error.
+    case succeeded
+
+    /// The request failed, with the error the caller reported if it had one.
+    case failed(Error?)
+
+    /// The caller cannot tell either way. Never counts as the store being reachable.
+    case undetermined
+}
+
 private extension Remote {
     /// Validates the response and maps it via the mapper.
     static func validateAndMap<M: Mapper>(_ data: Data,
                                           request: Request,
                                           mapper: M,
                                           recorder: StoreConnectionErrorRecording?,
-                                          transportError: Error?) throws -> M.Output {
-        try validateResponse(data, for: request, recorder: recorder, transportError: transportError)
+                                          outcome: ResponseOutcome) throws -> M.Output {
+        try validateResponse(data, for: request, recorder: recorder, outcome: outcome)
         return try mapper.map(response: data)
     }
 
     /// Validates and maps `data` on a background queue, then delivers the result — and any error
     /// handling/notifications — back on the main queue.
     ///
-    /// `transportError` is whatever the network layer reported alongside the body. Some callers hand us
-    /// both, because the Jetpack tunnel answers with a body worth parsing even when the status code says
-    /// the request failed, and the store's reachability must be judged on the transport rather than on
-    /// whether the body happened to parse.
+    /// `outcome` is what the caller knows about the request itself, which is a different question from
+    /// whether the body parsed: the Jetpack tunnel answers with a body worth parsing even when the status
+    /// code says the request failed, so the store's reachability is judged on the outcome instead.
     ///
     func parseResponse<M: Mapper>(_ data: Data,
                                               request: Request,
                                               mapper: M,
-                                              transportError: Error? = nil,
+                                              outcome: ResponseOutcome,
                                               completion: @escaping (Result<M.Output, Error>) -> Void) {
         // Read before hopping queues so the outcome is still recorded, and the completion still called,
         // if this remote goes away while the response is being parsed.
@@ -276,7 +297,7 @@ private extension Remote {
                                                           request: request,
                                                           mapper: mapper,
                                                           recorder: recorder,
-                                                          transportError: transportError))
+                                                          outcome: outcome))
             } catch {
                 result = .failure(error)
             }
@@ -300,7 +321,7 @@ private extension Remote {
                                            request: request,
                                            mapper: mapper,
                                            recorder: storeConnectionErrorRecorder,
-                                           transportError: nil)
+                                           outcome: .succeeded)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
             DDLogError("<> Mapping Error: \(error)")
@@ -355,7 +376,7 @@ private extension Remote {
     static func validateResponse(_ data: Data,
                                  for request: Request,
                                  recorder: StoreConnectionErrorRecording?,
-                                 transportError: Error?) throws {
+                                 outcome: ResponseOutcome) throws {
         do {
             try request.responseDataValidator().validate(data: data)
         } catch {
@@ -363,11 +384,22 @@ private extension Remote {
             throw error
         }
 
-        // A body the validator has nothing to say about is not proof the store is reachable: the
-        // request may still have failed at the transport, and this validator ignores plenty of error
-        // shapes. Only an outright successful request counts as the store answering normally.
-        guard transportError == nil, let siteID = affectedSiteID(for: request) else {
-            recordStoreConnectionFailure(error: transportError, for: request, recorder: recorder)
+        // A body the validator had nothing to say about is not proof the store is reachable: this
+        // validator ignores plenty of error shapes, so the request's own outcome decides.
+        switch outcome {
+        case .succeeded:
+            recordSuccessfulConnection(for: request, recorder: recorder)
+        case .failed(let error):
+            recordStoreConnectionFailure(error: error, for: request, recorder: recorder)
+        case .undetermined:
+            break
+        }
+    }
+
+    /// Records that the store answered normally, when the request named one.
+    ///
+    static func recordSuccessfulConnection(for request: Request, recorder: StoreConnectionErrorRecording?) {
+        guard let siteID = affectedSiteID(for: request) else {
             return
         }
         recorder?.recordSuccessfulConnection(siteID: siteID)

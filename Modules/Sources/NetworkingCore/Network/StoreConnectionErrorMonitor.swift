@@ -41,8 +41,8 @@ public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, 
 
     /// The value itself, guarded by `lock` because the networking layer writes it from whatever queue a
     /// response arrives on while the app reads it from the main thread. `subject` is the notification
-    /// channel rather than the source of truth, so that subscribers can be told about a change without
-    /// the lock being held while their sinks run.
+    /// channel; it is written under the same lock so that what it announces and what `affectedSiteID`
+    /// reports can never disagree.
     ///
     private var storedSiteID: Int64?
     private let lock = NSLock()
@@ -70,21 +70,23 @@ public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, 
 }
 
 private extension StoreConnectionErrorMonitor {
-    /// Applies a change only when `shouldUpdate` accepts the current value, then announces it.
+    /// Applies a change only when `shouldUpdate` accepts the current value, and announces it in the same
+    /// breath.
     ///
-    /// The announcement deliberately happens after the lock is released. Sending while holding it would
-    /// run every subscriber's sink inside the critical section, and any sink reading `affectedSiteID`
-    /// would deadlock against the write that woke it.
+    /// The announcement stays inside the critical section on purpose. Two requests to the same store can
+    /// finish at once, and announcing after unlocking lets their sends overtake each other, leaving the
+    /// publisher's last value disagreeing with `affectedSiteID`. Subscribers never run here: the only way
+    /// to observe this subject is `affectedSiteIDPublisher`, which hands delivery to the main queue, so
+    /// holding the lock across the send cannot reach anyone else's code.
     ///
     func updateAffectedSiteID(to newValue: Int64?, if shouldUpdate: (Int64?) -> Bool) {
         lock.lock()
+        defer { lock.unlock() }
+
         guard shouldUpdate(storedSiteID) else {
-            lock.unlock()
             return
         }
         storedSiteID = newValue
-        lock.unlock()
-
         subject.send(newValue)
     }
 }

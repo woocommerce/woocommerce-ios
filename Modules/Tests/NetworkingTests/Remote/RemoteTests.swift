@@ -413,9 +413,14 @@ final class RemoteTests: XCTestCase {
         XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
     }
 
-    func test_enqueueMultipartFormDataUpload_when_the_response_has_both_a_body_and_a_transport_error_then_the_store_is_not_recorded_as_reachable() throws {
+    /// Uploads are not status-code validated, so an error status reaches us as a body with no error at
+    /// all. That is indistinguishable from a success here, so an upload must never be taken as evidence
+    /// that the store is reachable.
+    ///
+    func test_enqueueMultipartFormDataUpload_when_the_upload_cannot_report_its_outcome_then_the_store_is_not_recorded_as_reachable() throws {
         // Given
         let responseBody = try XCTUnwrap(#"{"code":"rest_no_route","message":"No route was found matching the URL."}"#.data(using: .utf8))
+        // This stub drops the error on the upload path, exactly as `AlamofireNetwork` does.
         let network = BodyAndErrorNetwork(data: responseBody,
                                           error: NetworkError.unacceptableStatusCode(statusCode: 400, response: responseBody))
         let recorder = MockStoreConnectionErrorRecorder()
@@ -432,6 +437,24 @@ final class RemoteTests: XCTestCase {
 
         // Then
         XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+    }
+
+    /// The header-only overload parses no body, but it is a real store request: POS catalog syncing uses
+    /// it, so it has to be able to clear a store that has recovered.
+    ///
+    func test_enqueueWithResponseHeaders_when_the_request_succeeds_then_the_store_is_recorded_as_reachable() async throws {
+        // Given
+        let responseBody = try XCTUnwrap("{}".data(using: .utf8))
+        let network = SuccessfulNetwork(data: responseBody, headers: ["x-wp-total": "7"])
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+
+        // When
+        _ = try await remote.enqueueWithResponseHeaders(request)
+
+        // Then
+        XCTAssertEqual(recorder.successfulConnectionSiteIDs, [123])
     }
 
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
@@ -1472,9 +1495,13 @@ private extension RemoteTests {
     }
 }
 
-/// Returns a body and a transport error together, which is what `AlamofireNetwork` does for a failing
-/// Jetpack request: the tunnel answers with a body worth parsing even when the status code says the
-/// request failed. `MockNetwork` can only return one or the other, so it cannot cover this.
+/// Models what `AlamofireNetwork` hands back for a failing Jetpack request, which `MockNetwork` cannot
+/// express because it returns either a body or an error, never both.
+///
+/// The two paths differ on purpose, matching production. `responseData` reports `networkingError`, which
+/// is derived from the status code. `uploadMultipartFormData` reports Alamofire's own `response.error`,
+/// and uploads are not `.validate()`d, so an error status arrives with no error at all: body present,
+/// error nil.
 ///
 private final class BodyAndErrorNetwork: Network {
     private let data: Data
@@ -1506,7 +1533,43 @@ private final class BodyAndErrorNetwork: Network {
     func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                  to request: URLRequestConvertible,
                                  completion: @escaping (Data?, Error?) -> Void) {
-        completion(data, error)
+        completion(data, nil)
+    }
+}
+
+/// Reports a successful response for every path, for exercising the self-healing clear.
+///
+private final class SuccessfulNetwork: Network {
+    private let data: Data
+    private let headers: Network.ResponseHeaders?
+
+    init(data: Data, headers: Network.ResponseHeaders? = [:]) {
+        self.data = data
+        self.headers = headers
+    }
+
+    var session: URLSession { URLSession(configuration: .default) }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+        completion(data, nil)
+    }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+        completion(.success(data))
+    }
+
+    func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+        (data, headers)
+    }
+
+    func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+        Just<Swift.Result<Data, Error>>(.success(data)).eraseToAnyPublisher()
+    }
+
+    func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+                                 to request: URLRequestConvertible,
+                                 completion: @escaping (Data?, Error?) -> Void) {
+        completion(data, nil)
     }
 }
 

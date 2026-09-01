@@ -77,11 +77,13 @@ struct StoreConnectionErrorMonitorTests {
         subscription.cancel()
     }
 
-    /// The publisher announces changes outside the monitor's lock, so a sink is free to read the value
-    /// that woke it. This pins that: holding the lock while sending would deadlock here instead.
+    /// Delivery is handed to the main queue, so a sink never runs on the thread that wrote the value and
+    /// is free to read it back. The time limit is what makes this a failure rather than a hung suite if
+    /// that stops being true.
     ///
     @MainActor
-    @Test func test_affectedSiteIDPublisher_when_the_sink_reads_the_value_then_it_does_not_deadlock() async {
+    @Test(.timeLimit(.minutes(1)))
+    func test_affectedSiteIDPublisher_when_the_sink_reads_the_value_then_it_does_not_deadlock() async {
         // Given
         let monitor = StoreConnectionErrorMonitor()
         var readFromSink: [Int64?] = []
@@ -95,6 +97,31 @@ struct StoreConnectionErrorMonitorTests {
 
         // Then
         #expect(readFromSink == [nil, 123])
+        subscription.cancel()
+    }
+
+    /// Competing outcomes for the same store arrive in parallel all the time. Whichever wins, what the
+    /// publisher last announced has to agree with what the read API reports, or the warning can be shown
+    /// for a store that is no longer affected.
+    ///
+    @MainActor
+    @Test func test_concurrent_writes_then_the_last_published_value_matches_the_stored_one() async {
+        // Given
+        let monitor = StoreConnectionErrorMonitor()
+        var emitted: [Int64?] = []
+        let subscription = monitor.affectedSiteIDPublisher.sink { emitted.append($0) }
+
+        // When
+        await withTaskGroup(of: Void.self) { group in
+            for _ in 0..<50 {
+                group.addTask { monitor.recordInvalidSignature(siteID: 123) }
+                group.addTask { monitor.recordSuccessfulConnection(siteID: 123) }
+            }
+        }
+        await settle()
+
+        // Then
+        #expect(emitted.last == monitor.affectedSiteID)
         subscription.cancel()
     }
 }

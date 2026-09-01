@@ -276,8 +276,7 @@ private extension SettingsViewModel {
 
             if defaults.wpcomSiteSuspended == false,
                site.isJetpackCPConnected == true ||
-                (site.isNonJetpackSite == true &&
-                 featureFlagService.isFeatureFlagEnabled(.jetpackSetupWithApplicationPassword)) {
+                site.isNonJetpackSite == true {
                 rows.append(.installJetpack)
             }
 

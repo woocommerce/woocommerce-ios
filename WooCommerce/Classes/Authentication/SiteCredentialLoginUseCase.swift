@@ -342,7 +342,7 @@ extension SiteCredentialLoginUseCase {
     }
 }
 
-private final class RedirectBlockingURLSessionDelegate: NSObject, URLSessionTaskDelegate {
+nonisolated private final class RedirectBlockingURLSessionDelegate: NSObject, URLSessionTaskDelegate {
     func urlSession(_ session: URLSession,
                     task: URLSessionTask,
                     willPerformHTTPRedirection response: HTTPURLResponse,

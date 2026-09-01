@@ -64,7 +64,9 @@ Run one flow or rerun failures:
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --rerun-failed ~/woocommerce-maestro-output/SUITE-.../report.xml
 ```
 
-Each failed non-destructive flow is retried once; destructive mutation failures
+Each failed non-destructive flow is retried once. A pass on retry is reported as
+a passing flaky result: it does not fail the runner or JUnit, but remains visible
+in reports and selectable through `--rerun-failed`. Destructive mutation failures
 remain failed and proceed to cleanup without a blind retry. The final directory contains combined JUnit,
 HTML with direct artifact links and a faithful rerun command, per-attempt logs,
 screenshots, hierarchy/debug evidence, and a redacted JSON summary with final

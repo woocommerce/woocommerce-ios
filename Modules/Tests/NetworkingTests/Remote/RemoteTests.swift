@@ -477,6 +477,51 @@ final class RemoteTests: XCTestCase {
         XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
     }
 
+    /// The `Result` overload sees a plain success whenever the transport was fine, so the body is the
+    /// only thing standing between a tunneled error and the store being marked reachable.
+    ///
+    func test_enqueue_with_result_when_the_body_carries_the_invalid_signature_error_then_the_store_is_not_recorded_as_reachable() {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_code_error")
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper()) { (_: Result<Any, Error>) in
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
+    func test_enqueue_publisher_when_the_body_carries_the_invalid_signature_error_then_the_store_is_not_recorded_as_reachable() {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_code_error")
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper())
+            .sink { _ in expectationForRequest.fulfill() }
+            .store(in: &cancellables)
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
     /// Request Timeout error.
     ///

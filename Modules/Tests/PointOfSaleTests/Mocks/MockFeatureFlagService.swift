@@ -2,8 +2,6 @@
 import Experiments
 
 final class MockFeatureFlagService: POSFeatureFlagProviding {
-    var isInboxOn: Bool
-    var isShowInboxCTAEnabled: Bool
     var isUpdateOrderOptimisticallyOn: Bool
     var isSupportRequestEnabled: Bool
     var betterCustomerSelectionInOrder: Bool
@@ -17,9 +15,7 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
 
-    init(isInboxOn: Bool = false,
-         isShowInboxCTAEnabled: Bool = false,
-         isUpdateOrderOptimisticallyOn: Bool = false,
+    init(isUpdateOrderOptimisticallyOn: Bool = false,
          isSupportRequestEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
@@ -30,8 +26,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
          hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false) {
-        self.isInboxOn = isInboxOn
-        self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
@@ -53,10 +47,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
 
         // Otherwise uses the default implementation.
         switch featureFlag {
-        case .inbox:
-            return isInboxOn
-        case .showInboxCTA:
-            return isShowInboxCTAEnabled
         case .updateOrderOptimistically:
             return isUpdateOrderOptimisticallyOn
         case .supportRequests:

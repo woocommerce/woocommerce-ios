@@ -419,6 +419,14 @@ private extension Remote {
     /// it, and as a status code failure whose body names the code, which is what the Jetpack tunnel
     /// returns when it relays the site's own rejection.
     ///
+    /// Both of those are flat bodies. The tunnel has a third shape, where the site's response is nested
+    /// as stringified JSON under `data.raw_body`, and it is not unwrapped here. Every example of it we
+    /// have, on iOS and on Android, is an unparseable HTML body behind a 502 or 503, which suggests the
+    /// tunnel only falls back to it when it could not read the response as JSON at all. A well formed
+    /// error like this one should never land there. If detection turns out to be missing stores in
+    /// production, that assumption is the first thing to re-test:
+    /// `JetpackTunnelRawBodyErrorLogger` already models the envelope shapes involved.
+    ///
     static func recordStoreConnectionFailure(error: Error?, for request: Request, recorder: StoreConnectionErrorRecording?) {
         let isInvalidSignature: Bool = {
             if let dotcomError = error as? DotcomError, case .invalidSignature = dotcomError {

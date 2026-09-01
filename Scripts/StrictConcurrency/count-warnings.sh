@@ -35,7 +35,12 @@ if [[ -z "$LOG_FILE" ]]; then
   set -e
   if [[ $BUILD_STATUS -ne 0 ]]; then
     echo "ERROR: build failed — warning counts from a partial build are unusable." >&2
+    echo "--- compiler error diagnostics (if any):" >&2
     grep -E "^/.*\.swift:[0-9]+:[0-9]+: error: " "$LOG_FILE" | sort -u | head -20 >&2
+    echo "--- last 150 lines of the build log (failing commands / crash traces):" >&2
+    tail -n 150 "$LOG_FILE" >&2
+    # Keep the full log where CI can pick it up as an artifact.
+    cp "$LOG_FILE" "$REPO_ROOT/strict-concurrency-build-failed.log" 2>/dev/null || true
     exit $BUILD_STATUS
   fi
 fi

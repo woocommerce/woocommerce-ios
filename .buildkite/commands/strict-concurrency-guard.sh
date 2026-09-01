@@ -23,8 +23,11 @@ set -e
 
 if [[ $COUNT_STATUS -ne 0 ]]; then
   echo '😱 Warning count failed (build error?) — see log above.'
+  if [[ -f strict-concurrency-build-failed.log ]]; then
+    buildkite-agent artifact upload strict-concurrency-build-failed.log || true
+  fi
   buildkite-agent annotate --context strict-concurrency --style error \
-    'Strict-concurrency baseline guard: the measurement build failed, no comparison was possible.'
+    'Strict-concurrency baseline guard: the measurement build failed, no comparison was possible. Full build log uploaded as artifact `strict-concurrency-build-failed.log`.'
   exit $COUNT_STATUS
 fi
 

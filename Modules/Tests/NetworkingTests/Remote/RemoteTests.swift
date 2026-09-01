@@ -457,6 +457,26 @@ final class RemoteTests: XCTestCase {
         XCTAssertEqual(recorder.successfulConnectionSiteIDs, [123])
     }
 
+    /// The tunnel answers with a healthy status and an error body, so a 200 on its own says nothing
+    /// about the store. This overload parses no body for its callers, but it still has to read one
+    /// before deciding the store recovered.
+    ///
+    func test_enqueueWithResponseHeaders_when_the_body_carries_the_invalid_signature_error_then_the_store_is_not_recorded_as_reachable() async throws {
+        // Given
+        let responseBody = try XCTUnwrap(#"{"code":"rest_invalid_signature","message":"The request is not signed correctly."}"#.data(using: .utf8))
+        let network = SuccessfulNetwork(data: responseBody)
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+
+        // When
+        _ = try await remote.enqueueWithResponseHeaders(request)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
     /// Request Timeout error.
     ///

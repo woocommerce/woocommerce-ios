@@ -237,8 +237,18 @@ open class Remote: NSObject {
     /// - Returns: The headers from the response
     public func enqueueWithResponseHeaders(_ request: Request) async throws -> [String: String] {
         do {
-            let (_, headers) = try await network.responseDataAndHeaders(for: request)
-            Self.recordSuccessfulConnection(for: request, recorder: storeConnectionErrorRecorder)
+            let (data, headers) = try await network.responseDataAndHeaders(for: request)
+            do {
+                // A 2xx is not enough on its own: the Jetpack tunnel answers with a healthy status and
+                // an error body. The body decides whether the store is reachable, so it is validated
+                // here even though this overload does not parse it.
+                try Self.validateResponse(data, for: request, recorder: storeConnectionErrorRecorder, outcome: .succeeded)
+            } catch {
+                // Deliberately not rethrown. This overload has never surfaced body-level errors to its
+                // callers and widening that is a separate change; `validateResponse` has already
+                // recorded what the failure means for the store.
+                DDLogDebug("Response body error on a headers-only request: \(error)")
+            }
             return headers ?? [:]
         } catch {
             handleResponseError(error: error, for: request)
@@ -373,6 +383,10 @@ private extension Remote {
     /// caller used, so it is where a store is flagged as unreachable and — just as importantly — where
     /// the flag is cleared again once the store answers normally.
     ///
+    /// Nothing outside this method may record a successful connection. Judging that per overload is what
+    /// produced a run of bugs where a store was marked reachable off a failed request: only here are both
+    /// halves of the evidence in hand, the body having been validated and the caller's own outcome.
+    ///
     static func validateResponse(_ data: Data,
                                  for request: Request,
                                  recorder: StoreConnectionErrorRecording?,
@@ -388,21 +402,15 @@ private extension Remote {
         // validator ignores plenty of error shapes, so the request's own outcome decides.
         switch outcome {
         case .succeeded:
-            recordSuccessfulConnection(for: request, recorder: recorder)
+            guard let siteID = affectedSiteID(for: request) else {
+                return
+            }
+            recorder?.recordSuccessfulConnection(siteID: siteID)
         case .failed(let error):
             recordStoreConnectionFailure(error: error, for: request, recorder: recorder)
         case .undetermined:
             break
         }
-    }
-
-    /// Records that the store answered normally, when the request named one.
-    ///
-    static func recordSuccessfulConnection(for request: Request, recorder: StoreConnectionErrorRecording?) {
-        guard let siteID = affectedSiteID(for: request) else {
-            return
-        }
-        recorder?.recordSuccessfulConnection(siteID: siteID)
     }
 
     /// Flags the store as unreachable when the failure is the invalid signature error.

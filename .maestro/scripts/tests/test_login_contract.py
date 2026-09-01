@@ -9,6 +9,21 @@ MAESTRO_ROOT = REPO_ROOT / ".maestro"
 
 
 class MaestroLoginContractTests(unittest.TestCase):
+    def test_non_wordpress_recovery_preserves_the_entered_address(self) -> None:
+        source = (MAESTRO_ROOT / "flows" / "login_not_wp_site.yaml").read_text(
+            encoding="utf-8"
+        )
+
+        recovery = source.index('- tapOn: "Enter Another Store"')
+        preserved_address = source.index(
+            '- assertVisible:\n'
+            '    id: "Site address"\n'
+            '    text: "https://google.com"\n'
+            '    label: "Verify the last entered site address is preserved"'
+        )
+
+        self.assertLess(recovery, preserved_address)
+
     def test_site_address_entry_waits_for_qr_fallback_or_legacy_form(self) -> None:
         source = (MAESTRO_ROOT / "subflows" / "open_site_address_login.yaml").read_text(
             encoding="utf-8"

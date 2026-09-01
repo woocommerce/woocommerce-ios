@@ -26,4 +26,14 @@ tags:
     timeout: 30000
 - assertVisible: "Enter Another Store"
 - assertVisible: "Log In With Another Account"
+
+- tapOn: "Enter Another Store"
+- extendedWaitUntil:
+    visible:
+      id: "Site address"
+    timeout: 15000
+- assertVisible:
+    id: "Site address"
+    text: "https://google.com"
+    label: "Verify the last entered site address is preserved"
 - takeScreenshot: login_not_wp_site

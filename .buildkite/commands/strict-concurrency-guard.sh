@@ -31,6 +31,10 @@ if [[ $COUNT_STATUS -ne 0 ]]; then
   exit $COUNT_STATUS
 fi
 
+# Always publish the fresh counts: the authoritative source for baseline refreshes
+# (CI's pinned toolchain is the reference — see the 26.2/26.6 caveat in WOOMOB-3965-SWIFT6-PLAN.md).
+buildkite-agent artifact upload "$CURRENT_JSON" || true
+
 echo '+++ :bar_chart: Comparing against baseline'
 COMPARE_OUTPUT_FILE="strict-concurrency-report.txt"
 set +e

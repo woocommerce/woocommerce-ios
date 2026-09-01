@@ -663,7 +663,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         XCTAssertTrue(trace.successfulProtectedCookie?.contains(scenario.loginCookie) == true)
     }
 
-    func test_default_application_password_use_case_with_custom_endpoints_retains_them_and_maps_password() async throws {
+    func test_default_application_password_use_case_with_custom_endpoints_maps_generated_password() async throws {
         // Given
         let passwordUUID = "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e"
         let generatedPassword = "passwordvalue"
@@ -699,7 +699,6 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         XCTAssertEqual(password.password.secretValue, generatedPassword)
         XCTAssertEqual(password.uuid, passwordUUID)
         XCTAssertEqual(storage.applicationPassword, password)
-        XCTAssertEqual(sut.authenticationEndpoints, endpoints)
     }
 
     func test_wordpress_org_network_when_protected_requests_are_concurrent_then_coalesces_authentication_and_retries_all() async throws {

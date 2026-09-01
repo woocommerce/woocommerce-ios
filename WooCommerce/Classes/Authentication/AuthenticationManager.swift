@@ -1300,7 +1300,7 @@ private extension AuthenticationManager {
         }()
         let defaultAction = shouldEnableWebFlow ? { [weak self] in
             guard let self else { return }
-            presentAppPasswordTutorial(error: error, invalidLoginPageDetected: false, for: siteURL, in: viewController)
+            presentApplicationPasswordWebView(for: siteURL, in: viewController)
         } : nil
         presentSiteCredentialLoginErrorAlert(
             message: (error as NSError).localizedDescription,

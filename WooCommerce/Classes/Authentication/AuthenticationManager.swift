@@ -625,9 +625,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             case .inaccessibleLoginPage where endpointUnderVerification != .admin:
                 let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil
                 onRecovery(.login(draftURL: normalizedLoginURL, error: inlineError))
+                self?.analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
             case .invalidLoginResponse where endpointUnderVerification != .admin && loginEntryVerified == false:
                 let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil
                 onRecovery(.login(draftURL: normalizedLoginURL, error: inlineError))
+                self?.analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
             case .inaccessibleAdminPage where loginEntryVerified:
                 let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .admin ? .notFound : nil
                 onRecovery(.admin(verifiedLoginURL: normalizedLoginURL,
@@ -648,12 +650,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     func presentSiteCredentialBrowserAlternative(for siteURL: String, in viewController: UIViewController) {
-        presentAppPasswordTutorial(
-            error: SiteCredentialLoginError.inaccessibleLoginPage,
-            invalidLoginPageDetected: false,
-            for: siteURL,
-            in: viewController
-        )
+        presentAppPasswordTutorial(error: SiteCredentialLoginError.inaccessibleLoginPage, for: siteURL, in: viewController)
     }
 
     /// Presents the failure without ever navigating to the browser flow on its own. The browser alternative
@@ -665,7 +662,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                            in viewController: UIViewController) {
         let browserAction: (() -> Void)? = offersBrowserAlternative ? { [weak self, weak viewController] in
             guard let self, let viewController else { return }
-            presentAppPasswordTutorial(error: error, invalidLoginPageDetected: false, for: siteURL, in: viewController)
+            presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } : nil
         presentSiteCredentialLoginErrorAlert(
             message: error.localizedDescription,
@@ -696,7 +693,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
 
         // Show the tutorial immediately if it's obvious that the error can be solved by the app password flow.
         if isAppPasswordAuthError {
-            presentAppPasswordTutorial(error: error, invalidLoginPageDetected: true, for: siteURL, in: viewController)
+            presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } else {
             presentAppPasswordAlert(error: error, for: siteURL, in: viewController)
         }
@@ -1265,10 +1262,7 @@ private extension AuthenticationManager {
 
     /// Presents Application Passwords tutorial before redirecting user to the site login using a web view.
     ///
-    private func presentAppPasswordTutorial(error: Error,
-                                            invalidLoginPageDetected: Bool,
-                                            for siteURL: String,
-                                            in viewController: UIViewController) {
+    private func presentAppPasswordTutorial(error: Error, for siteURL: String, in viewController: UIViewController) {
         let tutorialVC = ApplicationPasswordTutorialViewController(error: error)
         tutorialVC.continueButtonTapped = { [weak self] in
             self?.presentApplicationPasswordWebView(for: siteURL, in: viewController)
@@ -1280,10 +1274,6 @@ private extension AuthenticationManager {
             self?.analytics.track(event: .ApplicationPasswordAuthorization.explanationContactSupportTapped())
         }
         viewController.show(tutorialVC, sender: viewController)
-
-        if invalidLoginPageDetected {
-            analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
-        }
     }
 
     /// Presents login error alert before redirecting user to the site login using a web view.

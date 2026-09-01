@@ -123,6 +123,44 @@ struct StoreConnectionErrorViewModelTests {
         #expect(viewModel.isPresented == true)
     }
 
+    @Test func test_dismissTapped_when_switching_away_and_back_then_the_warning_stays_hidden() async {
+        // Given
+        sessionManager.defaultStoreID = 123
+        let viewModel = makeViewModel()
+        monitor.simulateAffectedSiteID(123)
+        await settle()
+        viewModel.dismissTapped()
+        await settle()
+
+        // When
+        sessionManager.defaultStoreID = 456
+        await settle()
+        sessionManager.defaultStoreID = 123
+        await settle()
+
+        // Then
+        #expect(viewModel.isPresented == false)
+    }
+
+    @Test func test_dismissTapped_when_another_store_becomes_affected_then_the_warning_is_shown_for_it() async {
+        // Given
+        sessionManager.defaultStoreID = 123
+        let viewModel = makeViewModel()
+        monitor.simulateAffectedSiteID(123)
+        await settle()
+        viewModel.dismissTapped()
+        await settle()
+
+        // When
+        // The affected store moves straight from one to another without recovering in between.
+        monitor.simulateAffectedSiteID(456)
+        sessionManager.defaultStoreID = 456
+        await settle()
+
+        // Then
+        #expect(viewModel.isPresented == true)
+    }
+
     @Test func test_dismissTapped_when_the_store_recovers_and_fails_again_then_the_warning_comes_back() async {
         // Given
         sessionManager.defaultStoreID = 123

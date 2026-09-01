@@ -1822,6 +1822,7 @@
 		3F0904162D26A40800D8ACCE /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				OTHER_SWIFT_FLAGS = "$(inherited) -strict-concurrency=minimal";
 				SWIFT_STRICT_CONCURRENCY = minimal;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1868,6 +1869,7 @@
 		3F0904172D26A40800D8ACCE /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				OTHER_SWIFT_FLAGS = "$(inherited) -strict-concurrency=minimal";
 				SWIFT_STRICT_CONCURRENCY = minimal;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
@@ -1912,6 +1914,7 @@
 		3F0904182D26A40800D8ACCE /* Release-Alpha */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				OTHER_SWIFT_FLAGS = "$(inherited) -strict-concurrency=minimal";
 				SWIFT_STRICT_CONCURRENCY = minimal;
 				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
 				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";

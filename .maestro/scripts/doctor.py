@@ -15,6 +15,7 @@ from pathlib import Path
 SCRIPT_DIR = Path(__file__).resolve().parent
 RUNNER_PATH = SCRIPT_DIR / "run-smoke-tests.py"
 CHECK_TOOLCHAIN = SCRIPT_DIR / "check-toolchain.py"
+DEVICE_LOCALE = SCRIPT_DIR / "device_locale.py"
 SPEC = importlib.util.spec_from_file_location("woo_maestro_runner", RUNNER_PATH)
 if SPEC is None or SPEC.loader is None:
     raise RuntimeError(f"Cannot load {RUNNER_PATH}")
@@ -36,6 +37,22 @@ def check_toolchain() -> tuple[bool, str]:
     details = [line.strip() for line in result.stderr.splitlines() if line.strip()]
     reason = details[-1] if details else "toolchain check failed"
     return False, f"toolchain: {reason}"
+
+
+def check_simulator_locale(device: str) -> tuple[bool, str]:
+    result = subprocess.run(
+        [sys.executable, str(DEVICE_LOCALE), "--device", device],
+        cwd=RUNNER.REPO_ROOT,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if result.returncode == 0:
+        details = [line.strip() for line in result.stdout.splitlines() if line.strip()]
+        return True, details[-1] if details else "simulator primary language is English"
+    details = [line.strip() for line in result.stderr.splitlines() if line.strip()]
+    reason = details[-1] if details else "simulator language check failed"
+    return False, f"simulator language: {reason}"
 
 
 def main() -> int:
@@ -71,6 +88,7 @@ def main() -> int:
     try:
         simulator = RUNNER.resolve_simulator(args.device, family, boot=False)
         checks.append((True, f"simulator: {simulator['name']} ({simulator['udid']})"))
+        checks.append(check_simulator_locale(simulator["udid"]))
     except (SystemExit, subprocess.SubprocessError) as error:
         checks.append((False, f"simulator: {error}"))
 

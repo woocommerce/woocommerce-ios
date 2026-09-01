@@ -38,6 +38,12 @@ stores artifacts under `~/woocommerce-maestro-output/` by default.
 When exactly one built `WooCommerce.app` exists in the repository or Xcode
 DerivedData, `--app` is optional; multiple candidates fail with an explicit list.
 
+The selected simulator's first Preferred Language must be English (`en`, with
+any region). The doctor and runner fail before app installation or Maestro
+execution when another language is primary; they never change simulator
+settings automatically. The side-effect-free doctor does not boot a simulator,
+so boot the selected device before using it to validate language settings.
+
 ## Profiles
 
 ```bash

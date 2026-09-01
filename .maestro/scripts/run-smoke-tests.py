@@ -31,6 +31,7 @@ ENV_FILE = MAESTRO_DIR / ".env.local"
 CONFIG_FILE = MAESTRO_DIR / "config.yaml"
 LINT_ENV = SCRIPT_DIR / "lint-env.py"
 CHECK_TOOLCHAIN = SCRIPT_DIR / "check-toolchain.py"
+DEVICE_LOCALE = SCRIPT_DIR / "device_locale.py"
 OUTPUT_DEFAULT = Path.home() / "woocommerce-maestro-output"
 NOT_WOO_STORE_FLOW = "login_not_woo_store.yaml"
 NO_JETPACK_FLOW = "login_no_jetpack.yaml"
@@ -667,6 +668,13 @@ def main() -> int:
     validate_environment(flows, values, seed=args.seed)
     values = normalized_flow_environment(flows, values)
     simulator = resolve_simulator(args.device, family)
+    locale = run(
+        [sys.executable, str(DEVICE_LOCALE), "--device", simulator["udid"]],
+        capture=False,
+        check=False,
+    )
+    if locale.returncode:
+        return locale.returncode
     run(["xcrun", "simctl", "install", simulator["udid"], str(app)])
     summary = {
         "run_id": run_id, "profile": args.profile, "app": str(app), "app_id": app_id,

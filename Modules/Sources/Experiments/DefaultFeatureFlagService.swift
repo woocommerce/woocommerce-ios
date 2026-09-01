@@ -67,8 +67,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .orderAddressMapSearch:
             return true
-        case .pointOfSaleFTSSearch:
-            return true
         case .ciabBookings:
             return false
         case .pointOfSaleCatalogAPI:
@@ -104,7 +102,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .starReceiptPrinterSupport:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .posServerCalculatedRefunds:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

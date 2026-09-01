@@ -159,10 +159,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case orderAddressMapSearch
 
-    /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
-    ///
-    case pointOfSaleFTSSearch
-
     /// Legacy Bookings tab flag.
     ///
     case ciabBookings

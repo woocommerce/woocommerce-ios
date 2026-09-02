@@ -7,6 +7,7 @@ final class MockFavoriteProductsUseCase: FavoriteProductsUseCase {
 
     var isFavoriteCalledForProductID: Int64?
     var isFavoriteValue = false
+    var onIsFavorite: (@MainActor () -> Void)?
 
     var favoriteProductIDsCalled = false
     var favoriteProductIDsValue: [Int64] = []
@@ -21,6 +22,7 @@ final class MockFavoriteProductsUseCase: FavoriteProductsUseCase {
 
     func isFavorite(productID: Int64) async -> Bool {
         isFavoriteCalledForProductID = productID
+        await onIsFavorite?()
         return isFavoriteValue
     }
 

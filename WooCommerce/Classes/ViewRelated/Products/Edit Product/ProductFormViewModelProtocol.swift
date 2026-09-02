@@ -201,10 +201,16 @@ protocol ProductFormViewModelProtocol {
 
     // Favorite actions
 
-    func isFavorite() async -> Bool
+    @MainActor
+    func refreshFavoriteStatus() async
 
+    @MainActor
+    func isFavorite() -> Bool
+
+    @MainActor
     func markAsFavorite()
 
+    @MainActor
     func removeFromFavorite()
 }
 

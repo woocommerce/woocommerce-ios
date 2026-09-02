@@ -158,7 +158,7 @@ struct InPersonPaymentsMenu: View {
             }
             .navigationDestination(isPresented: $viewModel.presentSupport) {
                 SupportForm(isPresented: $viewModel.presentSupport,
-                            viewModel: .init())
+                            viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
             }
             .navigationDestination(isPresented: $viewModel.presentManagePaymentGateways) {
                 InPersonPaymentsSelectPluginView(selectedPlugin: viewModel.selectedPaymentGatewayPlugin,

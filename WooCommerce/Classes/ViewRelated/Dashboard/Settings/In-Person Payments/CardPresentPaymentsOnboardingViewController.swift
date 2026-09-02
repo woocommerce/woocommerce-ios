@@ -11,7 +11,7 @@ final class CardPresentPaymentsOnboardingViewController: UIHostingController<Car
         super.init(rootView: CardPresentPaymentsOnboardingView(viewModel: viewModel))
         viewModel.showSupport = { [weak self] in
             guard let self else { return }
-            let supportForm = SupportFormHostingController(viewModel: .init())
+            let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
             supportForm.show(from: self)
         }
         viewModel.showURL = { [weak self] url in

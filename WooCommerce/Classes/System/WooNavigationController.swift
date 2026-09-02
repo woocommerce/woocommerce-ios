@@ -43,6 +43,18 @@ class WooNavigationController: UINavigationController {
         }
         return super.shouldPopOnBackButton()
     }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        topViewController?.shouldPopOnSwipeBack() ?? super.shouldPopOnSwipeBack()
+    }
+
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer === interactivePopGestureRecognizer else {
+            return super.gestureRecognizerShouldBegin(gestureRecognizer)
+        }
+
+        return viewControllers.count > 1 && shouldPopOnSwipeBack()
+    }
 }
 
 extension WooNavigationController {

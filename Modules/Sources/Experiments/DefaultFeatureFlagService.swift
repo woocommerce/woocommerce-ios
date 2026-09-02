@@ -9,8 +9,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .searchProductsBySKU:
-            return true
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,

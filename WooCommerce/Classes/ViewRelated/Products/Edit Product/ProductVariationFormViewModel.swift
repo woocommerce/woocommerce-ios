@@ -509,7 +509,12 @@ extension ProductVariationFormViewModel {
 
 // MARK: Favorite
 //
+@MainActor
 extension ProductVariationFormViewModel {
+    func refreshFavoriteStatus() async {
+        // no-op
+    }
+
     func isFavorite() -> Bool {
         false
     }

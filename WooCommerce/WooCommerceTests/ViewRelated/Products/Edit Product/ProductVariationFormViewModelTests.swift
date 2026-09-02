@@ -178,6 +178,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canFavoriteProduct())
     }
 
+    @MainActor
     func test_isFavorite_is_false() {
         // Given
         let product = ProductVariation.fake().copy(status: .published)

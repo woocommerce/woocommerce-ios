@@ -259,7 +259,50 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canFavoriteProduct())
     }
 
-    func test_markAsFavorite_marks_product_as_favorite() async {
+    @MainActor
+    func test_refreshFavoriteStatus_updates_cached_state() async {
+        // Given
+        let product = Product.fake()
+        let mockUseCase = MockFavoriteProductsUseCase()
+        mockUseCase.isFavoriteValue = true
+        let viewModel = createViewModel(product: product,
+                                        formType: .edit,
+                                        stores: stores,
+                                        favoriteProductsUseCase: mockUseCase)
+
+        // When
+        await viewModel.refreshFavoriteStatus()
+
+        // Then
+        XCTAssertTrue(viewModel.isFavorite())
+        XCTAssertEqual(mockUseCase.isFavoriteCalledForProductID, product.productID)
+    }
+
+    @MainActor
+    func test_refreshFavoriteStatus_does_not_override_newer_favorite_state() async {
+        // Given
+        let product = Product.fake()
+        let mockUseCase = MockFavoriteProductsUseCase()
+        mockUseCase.isFavoriteValue = false
+        var viewModel: ProductFormViewModel!
+        mockUseCase.onIsFavorite = {
+            viewModel.markAsFavorite()
+        }
+        viewModel = createViewModel(product: product,
+                                    formType: .edit,
+                                    stores: stores,
+                                    favoriteProductsUseCase: mockUseCase)
+
+        // When
+        await viewModel.refreshFavoriteStatus()
+        mockUseCase.onIsFavorite = nil
+
+        // Then
+        XCTAssertTrue(viewModel.isFavorite())
+    }
+
+    @MainActor
+    func test_markAsFavorite_marks_product_as_favorite_and_updates_cached_state() {
         // Given
         let product = Product.fake()
         let mockUseCase = MockFavoriteProductsUseCase()
@@ -272,22 +315,27 @@ final class ProductFormViewModelTests: XCTestCase {
         viewModel.markAsFavorite()
 
         // Then
+        XCTAssertTrue(viewModel.isFavorite())
         XCTAssertEqual(mockUseCase.markAsFavoriteCalledForProductID, product.productID)
     }
 
-    func test_removeFromFavorite_removes_product_as_favorite() async {
+    @MainActor
+    func test_removeFromFavorite_removes_product_as_favorite_and_updates_cached_state() async {
         // Given
         let product = Product.fake()
         let mockUseCase = MockFavoriteProductsUseCase()
+        mockUseCase.isFavoriteValue = true
         let viewModel = createViewModel(product: product,
                                         formType: .edit,
                                         stores: stores,
                                         favoriteProductsUseCase: mockUseCase)
+        await viewModel.refreshFavoriteStatus()
 
         // When
         viewModel.removeFromFavorite()
 
         // Then
+        XCTAssertFalse(viewModel.isFavorite())
         XCTAssertEqual(mockUseCase.removeFromFavoriteCalledForProductID, product.productID)
     }
 

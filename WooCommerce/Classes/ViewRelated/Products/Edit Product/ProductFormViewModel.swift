@@ -222,6 +222,9 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
 
     private let favoriteProductsUseCase: FavoriteProductsUseCase
 
+    private var isFavoriteProduct = false
+    private var favoriteStatusRevision = 0
+
     /// Assign this closure to be notified when a new product is saved remotely
     ///
     var onProductCreated: (Product) -> Void = { _ in }
@@ -911,17 +914,32 @@ private extension ProductFormViewModel {
 
 // MARK: Favorite
 //
+@MainActor
 extension ProductFormViewModel {
-    @MainActor
-    func isFavorite() async -> Bool {
-        await favoriteProductsUseCase.isFavorite(productID: product.productID)
+    func refreshFavoriteStatus() async {
+        favoriteStatusRevision += 1
+        let revision = favoriteStatusRevision
+        let persistedFavoriteStatus = await favoriteProductsUseCase.isFavorite(productID: product.productID)
+
+        guard revision == favoriteStatusRevision else {
+            return
+        }
+        isFavoriteProduct = persistedFavoriteStatus
+    }
+
+    func isFavorite() -> Bool {
+        isFavoriteProduct
     }
 
     func markAsFavorite() {
+        favoriteStatusRevision += 1
+        isFavoriteProduct = true
         favoriteProductsUseCase.markAsFavorite(productID: product.productID)
     }
 
     func removeFromFavorite() {
+        favoriteStatusRevision += 1
+        isFavoriteProduct = false
         favoriteProductsUseCase.removeFromFavorite(productID: product.productID)
     }
 }

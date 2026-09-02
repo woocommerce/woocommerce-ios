@@ -193,6 +193,14 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         viewModel.refreshProduct()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+
+        Task { @MainActor [weak self] in
+            await self?.viewModel.refreshFavoriteStatus()
+        }
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
@@ -348,15 +356,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     /// More Options button action
     ///
     @objc func didTapMoreOptions(_ sender: UIBarButtonItem) {
-        Task { @MainActor in
-            await presentMoreOptionsActionSheet(sender)
-        }
+        presentMoreOptionsActionSheet(sender)
     }
 
     /// Present More Options Action Sheet
     ///
     @MainActor
-    func presentMoreOptionsActionSheet(_ moreOptionsButton: UIBarButtonItem) async {
+    func presentMoreOptionsActionSheet(_ moreOptionsButton: UIBarButtonItem) {
         let actionSheet = UIAlertController(title: nil, message: nil, preferredStyle: .actionSheet)
         actionSheet.view.tintColor = .text
 
@@ -387,7 +393,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         }
 
         if viewModel.canFavoriteProduct() {
-            if await viewModel.isFavorite() {
+            if viewModel.isFavorite() {
                 actionSheet.addDefaultActionWithTitle(ActionSheetStrings.Favorite.removeFromFavorite) { [weak self] _ in
                     ServiceLocator.analytics.track(event: .ProductForm.productDetailRemoveFromFavoriteButtonTapped())
                     self?.viewModel.removeFromFavorite()

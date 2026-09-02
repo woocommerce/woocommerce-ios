@@ -5,8 +5,8 @@ import protocol WooFoundation.Analytics
 ///
 final class MobileStatusReportHostingController: TabBarHidingHostingController<MobileStatusReportView> {
 
-    init() {
-        super.init(rootView: MobileStatusReportView())
+    init(reportProvider: MobileStatusReportProviding) {
+        super.init(rootView: MobileStatusReportView(reportProvider: reportProvider))
         rootView.noticePresenter.presentingViewController = self
     }
 
@@ -32,7 +32,7 @@ struct MobileStatusReportView: View {
     private let reportProvider: MobileStatusReportProviding
     private let analytics: Analytics
 
-    init(reportProvider: MobileStatusReportProviding = MobileStatusReportProvider(),
+    init(reportProvider: MobileStatusReportProviding,
          analytics: Analytics = ServiceLocator.analytics,
          noticePresenter: NoticePresenter = DefaultNoticePresenter()) {
         self.reportProvider = reportProvider
@@ -98,6 +98,6 @@ private extension MobileStatusReportView {
 
 #Preview {
     NavigationStack {
-        MobileStatusReportView()
+        MobileStatusReportView(reportProvider: MobileStatusReportProvider())
     }
 }

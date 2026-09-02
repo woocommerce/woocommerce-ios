@@ -91,6 +91,7 @@ private struct POSExternalViewAdaptor: POSExternalViewProviding {
         AnyView(
             SupportForm(isPresented: isPresented,
                         viewModel: SupportFormViewModel(sourceTag: sourceTag,
+                                                        mobileStatusReportProvider: MobileStatusReportProvider(),
                                                         defaultSite: ServiceLocator.stores.sessionManager.defaultSite))
         )
     }

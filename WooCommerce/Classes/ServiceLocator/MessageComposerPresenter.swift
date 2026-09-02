@@ -10,6 +10,7 @@ import MessageUI
 /// So, if we set that `messageComposeDelegate` to class that is eventually deallocated, a crash will
 /// happen when the user closes the SMS dialog.
 ///
+@MainActor
 final class MessageComposerPresenter: NSObject {
     private var presentedViewControllers = Set<MFMessageComposeViewController>()
 

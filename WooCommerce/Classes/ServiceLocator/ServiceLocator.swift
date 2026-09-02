@@ -330,7 +330,7 @@ final class ServiceLocator {
 
     /// The main object to use for presenting SMS (`MessageUI`) ViewControllers.
     ///
-    static let messageComposerPresenter = MessageComposerPresenter()
+    @MainActor static let messageComposerPresenter = MessageComposerPresenter()
 
 
     /// Provides the access point to the CardReaderService.

@@ -213,7 +213,7 @@ private extension POSTabCoordinator {
 
                 // Retry transient failures before using the value
                 let state = try await service.catalogEligibility(for: siteID)
-                if case .ineligible(reason: .catalogSizeCheckFailed) = state {
+                if case .ineligible(reason: .versionCheckFailed) = state {
                     try await service.refreshEligibilityState(for: siteID)
                 }
                 isLocalCatalogEligible = try await service.catalogEligibility(for: siteID) == .eligible

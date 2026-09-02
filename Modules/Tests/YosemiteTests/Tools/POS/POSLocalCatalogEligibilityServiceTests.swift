@@ -75,8 +75,8 @@ struct POSLocalCatalogEligibilityServiceTests {
             Issue.record("Expected ineligible state")
             return
         }
-        guard case .catalogSizeCheckFailed(let errorString) = reason else {
-            Issue.record("Expected catalogSizeCheckFailed reason")
+        guard case .versionCheckFailed(let errorString) = reason else {
+            Issue.record("Expected versionCheckFailed reason")
             return
         }
         #expect(errorString.contains("123"))
@@ -375,7 +375,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         #expect(POSLocalCatalogIneligibleReason.posTabNotEligible.skipReason == "pos_not_eligible")
         #expect(POSLocalCatalogIneligibleReason.featureFlagDisabled.skipReason == "feature_flag_disabled")
         #expect(POSLocalCatalogIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "10.5.0").skipReason == "unsupported_woocommerce_version")
-        #expect(POSLocalCatalogIneligibleReason.catalogSizeCheckFailed(underlyingError: "error").skipReason == "catalog_size_check_failed")
+        #expect(POSLocalCatalogIneligibleReason.versionCheckFailed(underlyingError: "error").skipReason == "version_check_failed")
     }
 
     @Test("Skip reason strings are consistent regardless of associated values")
@@ -385,8 +385,8 @@ struct POSLocalCatalogEligibilityServiceTests {
         let version2 = POSLocalCatalogIneligibleReason.unsupportedWooCommerceVersion(minimumVersion: "11.0.0")
         #expect(version1.skipReason == version2.skipReason)
 
-        let checkFailed1 = POSLocalCatalogIneligibleReason.catalogSizeCheckFailed(underlyingError: "error1")
-        let checkFailed2 = POSLocalCatalogIneligibleReason.catalogSizeCheckFailed(underlyingError: "error2")
+        let checkFailed1 = POSLocalCatalogIneligibleReason.versionCheckFailed(underlyingError: "error1")
+        let checkFailed2 = POSLocalCatalogIneligibleReason.versionCheckFailed(underlyingError: "error2")
         #expect(checkFailed1.skipReason == checkFailed2.skipReason)
     }
 

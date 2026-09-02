@@ -15,7 +15,7 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
     case posTabNotEligible
     case featureFlagDisabled
     case unsupportedWooCommerceVersion(minimumVersion: String)
-    case catalogSizeCheckFailed(underlyingError: String)
+    case versionCheckFailed(underlyingError: String)
 
     /// Analytics skip reason string representation
     public var skipReason: String {
@@ -26,8 +26,8 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
             return "feature_flag_disabled"
         case .unsupportedWooCommerceVersion:
             return "unsupported_woocommerce_version"
-        case .catalogSizeCheckFailed:
-            return "catalog_size_check_failed"
+        case .versionCheckFailed:
+            return "version_check_failed"
         }
     }
 }

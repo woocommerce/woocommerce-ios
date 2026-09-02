@@ -22,6 +22,7 @@ public protocol SupportFormMetaDataSource {
 
 /// View Model for the support form.
 ///
+@MainActor
 public final class SupportFormViewModel: ObservableObject {
 
     /// Variable that holds the area of support for better routing.
@@ -117,13 +118,13 @@ public final class SupportFormViewModel: ObservableObject {
         }
     }
 
-    init(areas: [Area] = wooSupportAreas(),
+    init(areas: [Area]? = nil,
          sourceTag: String? = nil,
          additionalTags: [String] = [],
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analyticsProvider: Analytics = ServiceLocator.analytics,
          attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),
-         mobileStatusReportProvider: MobileStatusReportProviding = MobileStatusReportProvider(),
+         mobileStatusReportProvider: MobileStatusReportProviding,
          defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite,
          attachments: [ZendeskAttachment] = [],
          transcript: String? = nil,
@@ -133,7 +134,7 @@ public final class SupportFormViewModel: ObservableObject {
          prefilledDescription: String? = nil,
          onTicketCreated: (() -> Void)? = nil,
          onTicketCreationFailed: ((Error) -> Void)? = nil) {
-        self.areas = areas
+        self.areas = areas ?? Self.wooSupportAreas()
         self.sourceTag = sourceTag
         self.additionalTags = additionalTags
         self.zendeskProvider = zendeskProvider

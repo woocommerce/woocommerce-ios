@@ -96,27 +96,8 @@ final class HubMenuViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_menuElements_do_not_include_inbox_when_feature_flag_is_off() {
+    func test_menuElements_include_inbox() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isInboxOn: false)
-
-        // When
-        let viewModel = HubMenuViewModel(siteID: sampleSiteID,
-                                         tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         featureFlagService: featureFlagService)
-
-        // Then
-        XCTAssertNil(viewModel.generalElements.firstIndex(where: { item in
-            item.id == HubMenuViewModel.Inbox.id
-        }))
-    }
-
-    @MainActor
-    func test_menuElements_include_inbox_when_store_has_eligible_wc_version() {
-        // Given
-        let inboxEligibilityChecker = MockInboxEligibilityChecker()
-        inboxEligibilityChecker.isEligible = true
-
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         // Setting site ID is required before setting `Site`.
         stores.updateDefaultStore(storeID: sampleSiteID)
@@ -125,8 +106,7 @@ final class HubMenuViewModelTests: XCTestCase {
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores,
-                                         inboxEligibilityChecker: inboxEligibilityChecker)
+                                         stores: stores)
 
         viewModel.setupMenuElements()
 
@@ -139,8 +119,6 @@ final class HubMenuViewModelTests: XCTestCase {
     @MainActor
     func test_generalMenuElements_include_the_correct_default_elements() {
         // Given
-        let inboxEligibilityChecker = MockInboxEligibilityChecker()
-
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         // Setting site ID is required before setting `Site`.
         stores.updateDefaultStore(storeID: sampleSiteID)
@@ -149,8 +127,7 @@ final class HubMenuViewModelTests: XCTestCase {
         // When
         let viewModel = HubMenuViewModel(siteID: sampleSiteID,
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
-                                         stores: stores,
-                                         inboxEligibilityChecker: inboxEligibilityChecker)
+                                         stores: stores)
 
         viewModel.setupMenuElements()
 
@@ -580,9 +557,6 @@ final class HubMenuViewModelTests: XCTestCase {
         let generalAppSettings = try mockGeneralAppSettingsStorage()
         let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
         let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: true)
-        let inboxEligibilityChecker = MockInboxEligibilityChecker()
-        inboxEligibilityChecker.isEligible = true
-
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         // Setting site ID is required before setting `Site`.
         stores.updateDefaultStore(storeID: sampleSiteID)
@@ -593,7 +567,6 @@ final class HubMenuViewModelTests: XCTestCase {
                                          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                                          stores: stores,
                                          generalAppSettings: generalAppSettings,
-                                         inboxEligibilityChecker: inboxEligibilityChecker,
                                          blazeEligibilityChecker: blazeEligibilityChecker,
                                          googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         viewModel.navigationPath = navigationPath

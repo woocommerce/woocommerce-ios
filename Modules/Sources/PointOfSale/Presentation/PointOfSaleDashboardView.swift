@@ -371,6 +371,10 @@ struct PointOfSaleDashboardView: View {
         }
         .background(Color.posSurface)
         .toolbar(.hidden, for: .navigationBar)
+        .posEdgeSwipeBackAction(
+            isEnabled: canExitFinalizingOnPhone,
+            onBack: { posModel.addMoreToCart() }
+        )
     }
 
     @State private var showOrders: Bool = false

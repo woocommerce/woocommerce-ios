@@ -168,7 +168,7 @@ class RunnerTests(unittest.TestCase):
     def test_setup_error_has_a_distinct_nonzero_exit_code(self) -> None:
         self.assertEqual(2, RUNNER.status_exit_code("SETUP_ERROR"))
 
-    def test_flaky_retry_is_visible_in_junit_and_returns_nonzero(self) -> None:
+    def test_flaky_retry_is_a_passing_rerunnable_junit_result(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             flow = RUNNER.FLOWS_DIR / "dashboard_stats.yaml"
@@ -192,13 +192,19 @@ class RunnerTests(unittest.TestCase):
             result = RUNNER.finalize_suite(attempts, report)
 
             self.assertEqual("FLAKY", result.status)
-            self.assertEqual(1, result.exit_code)
+            self.assertEqual(0, result.exit_code)
             self.assertEqual(2, result.tests)
-            self.assertEqual(1, result.failures)
+            self.assertEqual(0, result.failures)
             suites = ET.parse(report).getroot().findall("testsuite")
             self.assertEqual(2, len(suites))
             self.assertIn("attempt 1", suites[0].get("name", ""))
             self.assertIn("attempt 2", suites[1].get("name", ""))
+            self.assertNotIn("<failure", report.read_text(encoding="utf-8"))
+            statuses = ET.parse(report).getroot().findall(
+                ".//property[@name='maestro.status']"
+            )
+            self.assertEqual(["FLAKY", "FLAKY"], [item.get("value") for item in statuses])
+            self.assertEqual({"dashboard_stats"}, RUNNER.failed_flow_stems(report))
 
     def test_completed_run_summary_records_final_status_and_attempts(self) -> None:
         flow = RUNNER.FLOWS_DIR / "dashboard_stats.yaml"

@@ -483,6 +483,8 @@ public enum WooAnalyticsStat: String {
     case ordersListLoadError = "orders_list_load_error"
     case ordersListAutomaticTimeoutRetry = "orders_list_automatic_timeout_retry"
     case ordersListTopBannerTroubleshootTapped = "orders_list_top_banner_troubleshoot_tapped"
+    case ordersListCurrencyUnavailableBannerShown = "orders_list_currency_unavailable_banner_shown"
+    case ordersListCurrencyUnavailableBannerRetryTapped = "orders_list_currency_unavailable_banner_retry_tapped"
     case orderProductAdd = "order_product_add"
     case orderProductQuantityChange = "order_product_quantity_change"
     case orderProductRemove = "order_product_remove"
@@ -1099,7 +1101,6 @@ public enum WooAnalyticsStat: String {
     case jetpackInstallFailed = "jetpack_install_failed"
     case jetpackInstallInWPAdminButtonTapped = "jetpack_install_in_wpadmin_button_tapped"
     case jetpackInstallContactSupportButtonTapped = "jetpack_install_contact_support_button_tapped"
-    case jetpackBenefitsModalWPAdminButtonTapped = "jetpack_benefits_modal_wpadmin_button_tapped"
 
     // MARK: - Bookings (error events only — other booking events use EventHorizon codegen)
     case bookingListFailedToFetchBookings = "booking_list_failed_to_fetch_bookings"

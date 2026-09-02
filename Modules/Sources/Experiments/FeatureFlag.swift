@@ -14,14 +14,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case reviews
 
-    /// Displays the Inbox option under the Hub Menu and the Dynamic Dashboard
-    ///
-    case inbox
-
-    /// Displays the call to actions in the Inbox Notes under the Hub Menu and the Dynamic Dashboard
-    ///
-    case showInboxCTA
-
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
@@ -75,10 +67,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case supportRequests
 
-    /// Whether to enable Jetpack setup for users authenticated with application passwords.
-    ///
-    case jetpackSetupWithApplicationPassword
-
     /// Enables the ability to add products to orders by SKU scanning
     ///
     case addProductToOrderViaSKUScanner
@@ -87,21 +75,9 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case manualErrorHandlingForSiteCredentialLogin
 
-    /// Enables EU Bound notifications inside the Shipping Labels feature
-    ///
-    case euShippingNotification
-
     /// Enables the improvements in the customer selection logic when creating an order
     ///
     case betterCustomerSelectionInOrder
-
-    /// Enables the hazmat shipping selection during the Shipping Labels package details
-    ///
-    case hazmatShipping
-
-    /// Enables gift card support in order creation/editing
-    ///
-    case giftCardInOrderForm
 
     /// Enables bundle product configuration support in order creation/editing.
     ///
@@ -118,14 +94,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale
-
-    /// Enables Google ads campaign creation on web view
-    ///
-    case googleAdsCampaignCreationOnWebView
-
-    /// Supports evergreen campaigns for Blaze
-    ///
-    case blazeEvergreenCampaigns
 
     /// Enables revamped shipping label flow for Woo Shipping extension
     ///
@@ -154,10 +122,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
     case orderAddressMapSearch
-
-    /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
-    ///
-    case pointOfSaleFTSSearch
 
     /// Legacy Bookings tab flag.
     ///

@@ -69,13 +69,7 @@ struct PointOfSaleCollectCashView: View {
                     POSPageHeaderView(title: Localization.backNavigationTitle,
                                       subtitle: formattedOrderTotal,
                                       backButtonConfiguration: .init(state: isLoading ? .disabled: .enabled,
-                                                                     action: {
-                        isTextFieldFocused = false
-                        Task { @MainActor in
-                            await paymentModel.cancelCashPayment()
-                            router.popToRoot()
-                        }
-                    }))
+                                                                     action: cancelCashPayment))
 
                     VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.medium)) {
                         Spacer()
@@ -144,6 +138,7 @@ struct PointOfSaleCollectCashView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .ignoresSafeArea([])
+        .posEdgeSwipeBackAction(isEnabled: !isLoading, onBack: cancelCashPayment)
     }
 
     private func markComplete() async throws {
@@ -154,6 +149,14 @@ struct PointOfSaleCollectCashView: View {
 }
 
 private extension PointOfSaleCollectCashView {
+    private func cancelCashPayment() {
+        isTextFieldFocused = false
+        Task { @MainActor in
+            await paymentModel.cancelCashPayment()
+            router.popToRoot()
+        }
+    }
+
     private func submitCashAmount() async {
         analytics.track(.pointOfSaleCashPaymentTapped)
         isLoading = true

@@ -15,8 +15,7 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
     case posTabNotEligible
     case featureFlagDisabled
     case unsupportedWooCommerceVersion(minimumVersion: String)
-    case catalogSizeTooLarge(totalCount: Int, limit: Int)
-    case catalogSizeCheckFailed(underlyingError: String)
+    case versionCheckFailed(underlyingError: String)
 
     /// Analytics skip reason string representation
     public var skipReason: String {
@@ -27,10 +26,8 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
             return "feature_flag_disabled"
         case .unsupportedWooCommerceVersion:
             return "unsupported_woocommerce_version"
-        case .catalogSizeTooLarge:
-            return "catalog_too_large"
-        case .catalogSizeCheckFailed:
-            return "catalog_size_check_failed"
+        case .versionCheckFailed:
+            return "version_check_failed"
         }
     }
 }
@@ -42,7 +39,7 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
 /// - Settings UI can display eligibility status and reasons
 /// - Analytics can track why stores are ineligible
 ///
-/// NOTE: This service checks catalog-related eligibility (size limits) and feature flag state.
+/// NOTE: This service checks catalog-related eligibility (WooCommerce version) and feature flag state.
 /// The service performs an initial eligibility check during initialization.
 public protocol POSLocalCatalogEligibilityServiceProtocol {
     /// Get catalog eligibility for a specific site

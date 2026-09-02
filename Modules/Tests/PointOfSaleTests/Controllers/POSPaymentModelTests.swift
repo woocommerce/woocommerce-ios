@@ -1585,6 +1585,26 @@ struct POSPaymentModelTests {
     }
     // MARK: - Connect Card Reader Concurrency
 
+    @Test("connectCardReader called twice while the first is in progress only tracks discovery once")
+    @MainActor
+    func test_connectCardReader_when_called_twice_while_first_is_in_progress_then_tracks_discovery_once() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let analytics = MockPOSAnalytics()
+        let sut = makePaymentController(cardPresentPaymentService: service, analytics: analytics)
+
+        // When
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
+            sut.connectCardReader()
+            sut.connectCardReader()
+        }
+
+        // Then
+        let discoveryEvents = analytics.events.filter { $0.eventName == "card_reader_discovery_tapped" }
+        #expect(discoveryEvents.count == 1)
+    }
+
     @Test("connectCardReader called twice only triggers one connectReader call on the service")
     @MainActor
     func test_connectCardReader_when_called_twice_while_first_is_in_progress_then_only_one_connectReader_call() async {

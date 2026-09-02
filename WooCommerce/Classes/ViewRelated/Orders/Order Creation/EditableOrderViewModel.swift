@@ -1936,9 +1936,6 @@ private extension EditableOrderViewModel {
 
     @MainActor
     func checkIfGiftCardsPluginIsActive() async -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.giftCardInOrderForm) else {
-            return false
-        }
         return await withCheckedContinuation { continuation in
             stores.dispatch(SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: SystemPluginPaths.giftCards) { plugin in
                 continuation.resume(returning: plugin?.active == true)

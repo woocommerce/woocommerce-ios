@@ -183,11 +183,6 @@ class AuthenticatedState: StoresManagerState {
            ) {
             // Create eligibility service
             let eligibilityService = POSLocalCatalogEligibilityService(
-                catalogSizeChecker: POSCatalogSizeChecker(
-                    credentials: credentials,
-                    selectedSite: site,
-                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
-                ),
                 systemStatusService: POSSystemStatusService(
                     credentials: credentials,
                     selectedSite: site,

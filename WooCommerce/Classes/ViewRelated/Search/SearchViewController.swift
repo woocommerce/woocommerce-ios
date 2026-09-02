@@ -191,7 +191,9 @@ where Cell.SearchModel == Command.CellViewModel {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        navigationController?.setNavigationBarHiddenIfNeeded(false, animated: searchUICommand.animateNavigationBarVisibilityChanges)
+        if searchUICommand.hideNavigationBar {
+            navigationController?.setNavigationBarHiddenIfNeeded(false, animated: searchUICommand.animateNavigationBarVisibilityChanges)
+        }
     }
 
     // MARK: - UITableViewDataSource Conformance

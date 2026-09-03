@@ -75,6 +75,13 @@ final class AppCoordinator {
     }
 
     func start() {
+        // A parent/guardian can answer a significant-change consent question at any time,
+        // including long after it was sent — re-evaluate the age gate when an answer arrives.
+        // Armed before the auth-state subscription so the first verification can't race it.
+        ageRangeVerificationCoordinator.startObservingConsentResponses { [weak self] in
+            self?.triggerAgeVerification()
+        }
+
         authStatesSubscription = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
             .sink {  [weak self] isLoggedIn, needsDefaultStore in
                 guard let self else { return }
@@ -106,12 +113,6 @@ final class AppCoordinator {
             self?.handleLocalNotificationResponse(response)
         }
         updateSitePropertiesIfNeeded()
-
-        // A parent/guardian can answer a significant-change consent question at any time,
-        // including long after it was sent — re-evaluate the age gate when an answer arrives.
-        ageRangeVerificationCoordinator.startObservingConsentResponses { [weak self] in
-            self?.triggerAgeVerification()
-        }
     }
 }
 

@@ -37,6 +37,9 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
     private let ageRangeVerificationService: AgeRangeVerificationServiceProtocol
     private let significantChangeConsentCoordinator: SignificantChangeConsentCoordinator
     private let ageRatingChangeDetector: AgeRatingChangeDetecting
+    /// Guards against concurrent decision flows. All trigger sources (launch, consent
+    /// resolution, foreground re-check, blocker buttons) run on the main thread.
+    private var isVerificationFlowInProgress = false
 
     init(
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -64,24 +67,38 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
             return
         }
 
-        performAgeVerification(hostingWindow: hostingWindow, onResult: onResult)
+        // Never run two decision flows concurrently: racing flows can send duplicate consent
+        // questions and fight over the blocker presentation. Duplicate triggers are dropped;
+        // every trigger source is a fire-and-forget re-check, so nothing waits on the result.
+        guard isVerificationFlowInProgress == false else {
+            DDLogInfo("Age verification flow already in progress; ignoring duplicate trigger.")
+            return
+        }
+        isVerificationFlowInProgress = true
+
+        performAgeVerification(hostingWindow: hostingWindow) { [weak self] decision, result in
+            self?.isVerificationFlowInProgress = false
+            onResult(decision, result)
+        }
     }
 
     func startObservingConsentResponses(onResolution: @escaping @MainActor () -> Void) {
-        significantChangeConsentCoordinator.startObservingResponses { _ in
-            onResolution()
+        Task { @MainActor in
+            self.significantChangeConsentCoordinator.startObservingResponses { _ in
+                onResolution()
+            }
         }
     }
 
     func resetDeniedSignificantChangeConsent() async {
         if let debugIdentifier = DebugAgeVerificationOverrides.manualSignificantChangeIdentifier {
-            significantChangeConsentCoordinator.resetDeniedConsent(for: debugIdentifier)
+            await significantChangeConsentCoordinator.resetDeniedConsent(for: debugIdentifier)
         }
         guard let change = await ageRatingChangeDetector.checkForChange(),
               case let .ageRatingChanged(_, current) = change else {
             return
         }
-        significantChangeConsentCoordinator.resetDeniedConsent(for: .ageRatingChange(ratingCode: current))
+        await significantChangeConsentCoordinator.resetDeniedConsent(for: .ageRatingChange(ratingCode: current))
     }
 }
 

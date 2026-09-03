@@ -227,6 +227,36 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
+    func test_triggerAgeVerificationIfNeeded_when_flow_in_progress_then_drops_duplicate_trigger() {
+        let window = UIWindow()
+        window.rootViewController = UIViewController()
+        let sut = AgeRangeVerificationCoordinator(
+            featureFlagService: featureFlagService,
+            ageRangeVerificationService: FakeAgeRangeService(
+                result: .eligible(
+                    significantAppChangeApprovalRequired: false,
+                    isMinor: false
+                ),
+                delay: 0.05
+            ),
+            significantChangeConsentCoordinator: consentCoordinator,
+            ageRatingChangeDetector: ageRatingChangeDetector
+        )
+        let exp = expectation(description: "onResult")
+        var resultCount = 0
+
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { _, _ in
+            resultCount += 1
+            exp.fulfill()
+        }
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { _, _ in
+            resultCount += 1
+        }
+
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(resultCount, 1)
+    }
+
     func test_triggerAgeVerificationIfNeeded_when_minor_and_consent_denied_then_restricts_without_logout() {
         let window = UIWindow()
         window.rootViewController = UIViewController()

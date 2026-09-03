@@ -15,12 +15,17 @@ enum SignificantChangeConsentState: Equatable {
     case notAvailable
 }
 
+@MainActor
 final class SignificantChangeConsentCoordinator {
     private let consentProvider: SignificantChangeConsentProviding
     private let consentStore: SignificantChangeConsentStoring
     private var responsesTask: Task<Void, Never>?
+    private var onResolution: (@MainActor (SignificantChangeConsentStatus) -> Void)?
+    /// Grace-window waiters keyed by question id. The single response listener resumes these,
+    /// so an answer is never split between two competing stream subscriptions.
+    private var graceContinuations: [UUID: CheckedContinuation<SignificantChangeConsentResponse?, Never>] = [:]
 
-    init(
+    nonisolated init(
         consentProvider: SignificantChangeConsentProviding = PermissionKitSignificantChangeConsentProvider(),
         consentStore: SignificantChangeConsentStoring = UserDefaultsSignificantChangeConsentStore()
     ) {
@@ -32,26 +37,12 @@ final class SignificantChangeConsentCoordinator {
         responsesTask?.cancel()
     }
 
-    /// Starts the long-lived listener for parent/guardian answers. An answer can arrive at any
-    /// time after the question was sent — including on a later launch — so this should run for
-    /// the whole app session. `onResolution` is called on the main actor with the final status.
+    /// Registers the app-wide resolution callback for answers that arrive outside an active
+    /// check (e.g. long after the question was sent, or on a later launch). The underlying
+    /// listener is a single long-lived subscription shared with the grace-window path.
     func startObservingResponses(onResolution: @escaping @MainActor (SignificantChangeConsentStatus) -> Void) {
-        guard responsesTask == nil else { return }
-        responsesTask = Task { [consentProvider, weak self] in
-            for await response in consentProvider.responses() {
-                await MainActor.run { [weak self] in
-                    guard let self,
-                          let pending = self.consentStore.pendingRequest,
-                          pending.questionID == response.questionID else {
-                        return
-                    }
-                    let status: SignificantChangeConsentStatus = response.isApproved ? .granted : .denied
-                    self.consentStore.setStatus(status, for: pending.identifier)
-                    self.consentStore.clearPendingRequest()
-                    onResolution(status)
-                }
-            }
-        }
+        self.onResolution = onResolution
+        ensureObservingResponses()
     }
 
     /// Resolves the consent state for the given change, sending the question when it was never asked.
@@ -122,23 +113,54 @@ private extension SignificantChangeConsentCoordinator {
         static let immediateResponseGraceWindow: TimeInterval = 2
     }
 
+    /// Starts the single long-lived response listener if it isn't running yet.
+    func ensureObservingResponses() {
+        guard responsesTask == nil else { return }
+        responsesTask = Task { [consentProvider, weak self] in
+            for await response in consentProvider.responses() {
+                await self?.handle(response)
+            }
+            // The stream ended — no more answers can arrive, release any grace waiters.
+            await self?.resumeAllGraceWaiters()
+        }
+    }
+
+    func handle(_ response: SignificantChangeConsentResponse) {
+        // An active grace window for this question owns the response; the check flow
+        // persists the outcome and reports the final state itself.
+        if let continuation = graceContinuations.removeValue(forKey: response.questionID) {
+            continuation.resume(returning: response)
+            return
+        }
+        guard let pending = consentStore.pendingRequest, pending.questionID == response.questionID else { return }
+        let status: SignificantChangeConsentStatus = response.isApproved ? .granted : .denied
+        consentStore.setStatus(status, for: pending.identifier)
+        consentStore.clearPendingRequest()
+        onResolution?(status)
+    }
+
     /// Waits up to `timeout` for the answer to the given question; nil when none arrives in time.
     func awaitResponse(questionID: UUID, timeout: TimeInterval) async -> SignificantChangeConsentResponse? {
-        await withTaskGroup(of: SignificantChangeConsentResponse?.self) { group in
-            group.addTask { [consentProvider] in
-                for await response in consentProvider.responses() where response.questionID == questionID {
-                    return response
-                }
-                return nil
-            }
-            group.addTask {
+        ensureObservingResponses()
+        return await withCheckedContinuation { continuation in
+            graceContinuations[questionID] = continuation
+            Task { [weak self] in
                 try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
-                return nil
+                await self?.expireGraceWaiter(questionID: questionID)
             }
-            let first = await group.next() ?? nil
-            group.cancelAll()
-            return first
         }
+    }
+
+    func expireGraceWaiter(questionID: UUID) {
+        if let continuation = graceContinuations.removeValue(forKey: questionID) {
+            continuation.resume(returning: nil)
+        }
+    }
+
+    func resumeAllGraceWaiters() {
+        let continuations = graceContinuations.values
+        graceContinuations.removeAll()
+        continuations.forEach { $0.resume(returning: nil) }
     }
 
     func description(for changeIdentifier: SignificantChangeIdentifier) -> String {

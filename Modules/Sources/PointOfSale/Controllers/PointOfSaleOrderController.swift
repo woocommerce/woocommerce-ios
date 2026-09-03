@@ -51,8 +51,9 @@ protocol PointOfSaleOrderControllerProtocol {
     /// Adds the "Paid via Scan to Pay" note to the cached order so the merchant has
     /// an audit trail in WP-Admin even if the gateway webhook hasn't flipped the status yet.
     func confirmScanToPayPayment() async throws
-    /// Records Scan to Pay as the cached order's visible payment method title.
-    /// This is best-effort display metadata; failures should not block payment success.
+    /// Records Scan to Pay as the cached order's visible payment method title, but only when the
+    /// order does not already carry a gateway-supplied title. This is best-effort display
+    /// metadata; failures should not block payment success.
     func recordScanToPayPaymentMethod() async
     /// Reloads the cached order from the server. Used by the Scan to Pay verifier to detect
     /// when the gateway webhook has flipped the order to `.processing`/`.completed`.
@@ -211,6 +212,10 @@ protocol PointOfSaleOrderControllerProtocol {
             return
         }
 
+        guard order.hasReplaceablePaymentMethodTitle else {
+            return
+        }
+
         do {
             try await orderService.recordScanToPayPaymentMethod(order: order)
         } catch {
@@ -240,6 +245,17 @@ protocol PointOfSaleOrderControllerProtocol {
             orderState = .loaded(totals, promoted)
         }
         return promoted
+    }
+}
+
+private extension Order {
+    var hasReplaceablePaymentMethodTitle: Bool {
+        let normalized = paymentMethodTitle.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return normalized.isEmpty || normalized == Constants.genericPaymentMethodTitle
+    }
+
+    enum Constants {
+        static let genericPaymentMethodTitle = "other"
     }
 }
 

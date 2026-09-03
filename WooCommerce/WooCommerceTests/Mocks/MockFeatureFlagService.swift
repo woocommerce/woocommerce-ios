@@ -7,7 +7,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var isSupportRequestEnabled: Bool
     var betterCustomerSelectionInOrder: Bool
     var productBundlesInOrderForm: Bool
-    var isScanToUpdateInventoryEnabled: Bool
     var isPointOfSaleEnabled: Bool
     var blazeCampaignObjective: Bool
     var revampedShippingLabelCreation: Bool
@@ -22,7 +21,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          isSupportRequestEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
-         isScanToUpdateInventoryEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
          blazeCampaignObjective: Bool = false,
          revampedShippingLabelCreation: Bool = false,
@@ -35,7 +33,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         self.isSupportRequestEnabled = isSupportRequestEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
-        self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.blazeCampaignObjective = blazeCampaignObjective
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
@@ -62,8 +59,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return betterCustomerSelectionInOrder
         case .productBundlesInOrderForm:
             return productBundlesInOrderForm
-        case .scanToUpdateInventory:
-            return isScanToUpdateInventoryEnabled
         case .pointOfSale:
             return isPointOfSaleEnabled
         case .blazeCampaignObjective:

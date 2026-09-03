@@ -29,8 +29,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .customLoginUIForAccountCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .scanToUpdateInventory:
-            return true
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .revampedShippingLabelCreation:

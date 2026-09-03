@@ -13,7 +13,7 @@ public enum POSLocalCatalogEligibilityState: Equatable {
 /// Reasons why local catalog is ineligible
 public enum POSLocalCatalogIneligibleReason: Equatable {
     case posTabNotEligible
-    case featureFlagDisabled
+    case betaFeatureDisabled
     case unsupportedWooCommerceVersion(minimumVersion: String)
     case versionCheckFailed(underlyingError: String)
 
@@ -22,7 +22,7 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
         switch self {
         case .posTabNotEligible:
             return "pos_not_eligible"
-        case .featureFlagDisabled:
+        case .betaFeatureDisabled:
             return "feature_flag_disabled"
         case .unsupportedWooCommerceVersion:
             return "unsupported_woocommerce_version"
@@ -39,7 +39,8 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
 /// - Settings UI can display eligibility status and reasons
 /// - Analytics can track why stores are ineligible
 ///
-/// NOTE: This service checks catalog-related eligibility (WooCommerce version) and feature flag state.
+/// NOTE: This service checks catalog-related eligibility (WooCommerce version), the remote feature flag,
+/// and the user-facing beta toggle.
 /// The service performs an initial eligibility check during initialization.
 public protocol POSLocalCatalogEligibilityServiceProtocol {
     /// Get catalog eligibility for a specific site

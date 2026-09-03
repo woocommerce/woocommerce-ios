@@ -49,8 +49,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .ciabBookings:
             return false
-        case .pointOfSaleCatalogAPI:
-            return true
         case .pointOfSaleRoles:
             return false
         case .pointOfSaleCustomAmounts:

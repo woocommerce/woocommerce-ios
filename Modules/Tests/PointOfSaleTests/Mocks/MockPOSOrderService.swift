@@ -126,6 +126,20 @@ class MockPOSOrderService: POSOrderServiceProtocol {
             throw error
         }
     }
+
+    var recordScanToPayPaymentMethodWasCalled = false
+    var spyRecordScanToPayPaymentMethodOrder: Order?
+    var recordScanToPayPaymentMethodResult: Result<Void, Error>?
+    func recordScanToPayPaymentMethod(order: Order) async throws {
+        recordScanToPayPaymentMethodWasCalled = true
+        spyRecordScanToPayPaymentMethodOrder = order
+        switch recordScanToPayPaymentMethodResult ?? resultToReturn {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
 }
 
 enum MockPOSOrderServiceError: Error {

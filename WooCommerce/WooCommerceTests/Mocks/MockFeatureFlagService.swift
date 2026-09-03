@@ -3,16 +3,11 @@ import Experiments
 import protocol PointOfSale.POSFeatureFlagProviding
 
 final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding {
-    var isInboxOn: Bool
-    var isShowInboxCTAEnabled: Bool
     var isUpdateOrderOptimisticallyOn: Bool
     var isSupportRequestEnabled: Bool
-    var jetpackSetupWithApplicationPassword: Bool
     var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
     var isPointOfSaleEnabled: Bool
-    var googleAdsCampaignCreationOnWebView: Bool
-    var blazeEvergreenCampaigns: Bool
     var blazeCampaignObjective: Bool
     var revampedShippingLabelCreation: Bool
     var hideSitesInStorePicker: Bool
@@ -22,16 +17,11 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var selfDrivenPushToken: Bool
     var smarterNotifications: Bool
 
-    init(isInboxOn: Bool = false,
-         isShowInboxCTAEnabled: Bool = false,
-         isUpdateOrderOptimisticallyOn: Bool = false,
+    init(isUpdateOrderOptimisticallyOn: Bool = false,
          isSupportRequestEnabled: Bool = false,
-         jetpackSetupWithApplicationPassword: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
-         googleAdsCampaignCreationOnWebView: Bool = false,
-         blazeEvergreenCampaigns: Bool = false,
          blazeCampaignObjective: Bool = false,
          revampedShippingLabelCreation: Bool = false,
          hideSitesInStorePicker: Bool = false,
@@ -39,16 +29,11 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          isProductImageOptimizedHandlingEnabled: Bool = false,
          selfDrivenPushToken: Bool = false,
          smarterNotifications: Bool = false) {
-        self.isInboxOn = isInboxOn
-        self.isShowInboxCTAEnabled = isShowInboxCTAEnabled
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.isSupportRequestEnabled = isSupportRequestEnabled
-        self.jetpackSetupWithApplicationPassword = jetpackSetupWithApplicationPassword
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
-        self.googleAdsCampaignCreationOnWebView = googleAdsCampaignCreationOnWebView
-        self.blazeEvergreenCampaigns = blazeEvergreenCampaigns
         self.blazeCampaignObjective = blazeCampaignObjective
         self.revampedShippingLabelCreation = revampedShippingLabelCreation
         self.hideSitesInStorePicker = hideSitesInStorePicker
@@ -66,26 +51,16 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
 
         // Otherwise uses the default implementation.
         switch featureFlag {
-        case .inbox:
-            return isInboxOn
-        case .showInboxCTA:
-            return isShowInboxCTAEnabled
         case .updateOrderOptimistically:
             return isUpdateOrderOptimisticallyOn
         case .supportRequests:
             return isSupportRequestEnabled
-        case .jetpackSetupWithApplicationPassword:
-            return jetpackSetupWithApplicationPassword
         case .productBundlesInOrderForm:
             return productBundlesInOrderForm
         case .scanToUpdateInventory:
             return isScanToUpdateInventoryEnabled
         case .pointOfSale:
             return isPointOfSaleEnabled
-        case .googleAdsCampaignCreationOnWebView:
-            return googleAdsCampaignCreationOnWebView
-        case .blazeEvergreenCampaigns:
-            return blazeEvergreenCampaigns
         case .blazeCampaignObjective:
             return blazeCampaignObjective
         case .revampedShippingLabelCreation:

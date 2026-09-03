@@ -7,45 +7,30 @@ import UIKit
 @MainActor
 struct ForegroundPOSCatalogSyncDispatcherTests {
     private let timerProvider = MockDispatchTimerProvider()
-    private let featureFlags = MockFeatureFlagService()
     private let notificationCenter = NotificationCenter()
     private let storeProvider = MockPOSCatalogStoreProvider()
     private let sut: ForegroundPOSCatalogSyncDispatcher
     private let coordinator = MockPOSCatalogSyncCoordinator()
 
     init() {
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleCatalogAPI] = true
         storeProvider.defaultStoreID = 123
         storeProvider.posCatalogSyncCoordinator = coordinator
         sut = ForegroundPOSCatalogSyncDispatcher(
             notificationCenter: notificationCenter,
             timerProvider: timerProvider,
-            featureFlagService: featureFlags,
             storeProvider: storeProvider,
             isAppActive: { true }
         )
     }
 
     @Test
-    func start_whenFeatureFlagEnabled_createsTimer() async throws {
+    func start_createsTimer() async throws {
         // When
         await sut.start()
 
         // Then
         #expect(timerProvider.createdTimers.count == 1)
         #expect(timerProvider.createdTimers.first?.isResumed == true)
-    }
-
-    @Test
-    func start_whenFeatureFlagDisabled_doesNotCreateTimer() async throws {
-        // Given
-        featureFlags.isFeatureFlagEnabledReturnValue[.pointOfSaleCatalogAPI] = false
-
-        // When
-        await sut.start()
-
-        // Then
-        #expect(timerProvider.createdTimers.isEmpty)
     }
 
     @Test
@@ -159,7 +144,6 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
         let inactiveDispatcher = ForegroundPOSCatalogSyncDispatcher(
             notificationCenter: notificationCenter,
             timerProvider: timerProvider,
-            featureFlagService: featureFlags,
             storeProvider: storeProvider,
             isAppActive: { false }
         )

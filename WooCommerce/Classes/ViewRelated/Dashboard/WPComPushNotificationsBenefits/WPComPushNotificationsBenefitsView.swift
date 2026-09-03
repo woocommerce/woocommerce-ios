@@ -179,7 +179,8 @@ struct WPComPushNotificationsBenefitsView: View {
         NavigationStack {
             SupportForm(
                 isPresented: $showSupport,
-                viewModel: SupportFormViewModel(sourceTag: WPComConnectionSetupViewModel.supportSourceTag)
+                viewModel: SupportFormViewModel(sourceTag: WPComConnectionSetupViewModel.supportSourceTag,
+                                                mobileStatusReportProvider: MobileStatusReportProvider())
             )
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

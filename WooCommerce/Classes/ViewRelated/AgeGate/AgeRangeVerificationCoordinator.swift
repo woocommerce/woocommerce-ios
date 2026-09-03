@@ -1,16 +1,29 @@
 import UIKit
 import Experiments
 
-enum AppAccessDescision: Equatable {
+enum AppAccessDecision: Equatable {
     case allow
     case denyAndLogout
+    /// A significant-change consent is awaiting the parent/guardian answer.
+    /// Recoverable: block the UI, keep the session, re-check on demand.
+    case restrictPendingConsent
+    /// The parent/guardian declined the significant-change consent.
+    /// Recoverable: block the UI, keep the session, allow re-asking.
+    case restrictDeniedConsent
 }
 
 protocol AgeRangeVerificationCoordinatorProtocol {
     func triggerAgeVerificationIfNeeded(
         hostingWindow: UIWindow,
-        onResult: @escaping (AppAccessDescision, AgeRangeVerificationResult) -> Void
+        onResult: @escaping (AppAccessDecision, AgeRangeVerificationResult) -> Void
     )
+
+    /// Starts listening for parent/guardian answers to significant-change consent questions.
+    /// `onResolution` fires on the main actor whenever an outstanding question is answered.
+    func startObservingConsentResponses(onResolution: @escaping @MainActor () -> Void)
+
+    /// Clears a denied significant-change consent so the question can be sent again.
+    func resetDeniedSignificantChangeConsent() async
 }
 
 extension AgeRangeVerificationCoordinator {
@@ -44,7 +57,7 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
     ///   - onResult: Called on when a result is obtained. Passes if the age is eligible + verification result value.
     func triggerAgeVerificationIfNeeded(
         hostingWindow: UIWindow,
-        onResult: @escaping (AppAccessDescision, AgeRangeVerificationResult) -> Void
+        onResult: @escaping (AppAccessDecision, AgeRangeVerificationResult) -> Void
     ) {
         guard featureFlagService.isFeatureFlagEnabled(.ageRangeRequirementsCompliance) else {
             onResult(.allow, .featureUnavailable)
@@ -53,12 +66,26 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
 
         performAgeVerification(hostingWindow: hostingWindow, onResult: onResult)
     }
+
+    func startObservingConsentResponses(onResolution: @escaping @MainActor () -> Void) {
+        significantChangeConsentCoordinator.startObservingResponses { _ in
+            onResolution()
+        }
+    }
+
+    func resetDeniedSignificantChangeConsent() async {
+        guard let change = await ageRatingChangeDetector.checkForChange(),
+              case let .ageRatingChanged(_, current) = change else {
+            return
+        }
+        significantChangeConsentCoordinator.resetDeniedConsent(for: .ageRatingChange(ratingCode: current))
+    }
 }
 
 private extension AgeRangeVerificationCoordinator {
     func performAgeVerification(
         hostingWindow: UIWindow,
-        onResult: @escaping (AppAccessDescision, AgeRangeVerificationResult) -> Void
+        onResult: @escaping (AppAccessDecision, AgeRangeVerificationResult) -> Void
     ) {
         guard let anchor = hostingWindow.topmostPresentedViewController else {
             DDLogWarn("Failed to obtain view controller to present `Declared Age Range` SDK dialogue.")
@@ -83,16 +110,24 @@ private extension AgeRangeVerificationCoordinator {
 
                 Task { @MainActor in
                     let ageRatingChange = await self.ageRatingChangeDetector.checkForChange()
-                    let outcome = await self.significantChangeConsentCoordinator.checkConsentIfNeeded(
+                    let state = await self.significantChangeConsentCoordinator.checkConsentIfNeeded(
                         in: anchor,
                         ageRatingChange: ageRatingChange
                     )
-                    switch outcome {
-                    case .denied:
-                        // TODO: decide on a dedicated result when consent is rejected.
-                        onResult(.denyAndLogout, .ineligible)
-                    case .granted, .notAvailable, .unknown:
+                    switch state {
+                    case .notRequired, .notAvailable:
                         onResult(.allow, result)
+                    case .granted:
+                        // Acknowledge only once the change is approved, so an unresolved change
+                        // keeps being re-evaluated on subsequent launches.
+                        if case let .ageRatingChanged(_, current) = ageRatingChange {
+                            self.ageRatingChangeDetector.acknowledge(ratingCode: current)
+                        }
+                        onResult(.allow, result)
+                    case .pending:
+                        onResult(.restrictPendingConsent, result)
+                    case .denied:
+                        onResult(.restrictDeniedConsent, result)
                     }
                 }
             case .ineligible:

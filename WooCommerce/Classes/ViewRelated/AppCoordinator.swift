@@ -23,6 +23,8 @@ final class AppCoordinator {
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
     private var storePickerCoordinator: StorePickerCoordinator?
+    private var significantChangeBlocker: SignificantChangeConsentBlockingHostingController?
+    private var foregroundConsentRecheckObserver: NSObjectProtocol?
     private var authStatesSubscription: AnyCancellable?
     private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
@@ -104,6 +106,12 @@ final class AppCoordinator {
             self?.handleLocalNotificationResponse(response)
         }
         updateSitePropertiesIfNeeded()
+
+        // A parent/guardian can answer a significant-change consent question at any time,
+        // including long after it was sent — re-evaluate the age gate when an answer arrives.
+        ageRangeVerificationCoordinator.startObservingConsentResponses { [weak self] in
+            self?.triggerAgeVerification()
+        }
     }
 }
 
@@ -447,15 +455,74 @@ private extension AppCoordinator {
     func triggerAgeVerification(onAllowed: @escaping () -> Void = { }) {
         ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
             hostingWindow: window
-        ) { [weak self] appAccessDescision, _ in
+        ) { [weak self] appAccessDecision, _ in
             guard let self else { return }
-            if appAccessDescision == .allow {
+            switch appAccessDecision {
+            case .allow:
+                self.dismissSignificantChangeBlockerIfNeeded()
                 onAllowed()
-            } else {
+            case .denyAndLogout:
                 self.forceLogoutAndShowAgeAlert()
+            case .restrictPendingConsent:
+                self.presentSignificantChangeBlocker(context: .pendingApproval)
+            case .restrictDeniedConsent:
+                self.presentSignificantChangeBlocker(context: .approvalDenied)
             }
 
             //TODO: consider adding analytics event with the result
+        }
+    }
+
+    /// Presents (or updates) the recoverable blocking screen for a pending/denied
+    /// significant-change consent. No logout: the user keeps their session and can
+    /// re-check or re-send the approval request.
+    func presentSignificantChangeBlocker(context: SignificantChangeBlockingContext) {
+        if let blocker = significantChangeBlocker {
+            blocker.update(context: context)
+            return
+        }
+        let blocker = SignificantChangeConsentBlockingHostingController(
+            context: context,
+            onCheckAgain: { [weak self] in
+                self?.triggerAgeVerification()
+            },
+            onAskAgain: { [weak self] in
+                guard let self else { return }
+                Task { @MainActor in
+                    await self.ageRangeVerificationCoordinator.resetDeniedSignificantChangeConsent()
+                    self.triggerAgeVerification()
+                }
+            }
+        )
+        significantChangeBlocker = blocker
+        window.topmostPresentedViewController?.present(blocker, animated: true)
+        startForegroundConsentRecheck()
+    }
+
+    func dismissSignificantChangeBlockerIfNeeded() {
+        guard let blocker = significantChangeBlocker else { return }
+        significantChangeBlocker = nil
+        stopForegroundConsentRecheck()
+        blocker.dismiss(animated: true)
+    }
+
+    /// While the blocker is up, re-check on every foreground: the parent may have
+    /// answered the request (e.g. via Messages) while the app was in the background.
+    func startForegroundConsentRecheck() {
+        guard foregroundConsentRecheckObserver == nil else { return }
+        foregroundConsentRecheckObserver = NotificationCenter.default.addObserver(
+            forName: UIApplication.willEnterForegroundNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            self?.triggerAgeVerification()
+        }
+    }
+
+    func stopForegroundConsentRecheck() {
+        if let observer = foregroundConsentRecheckObserver {
+            NotificationCenter.default.removeObserver(observer)
+            foregroundConsentRecheckObserver = nil
         }
     }
 

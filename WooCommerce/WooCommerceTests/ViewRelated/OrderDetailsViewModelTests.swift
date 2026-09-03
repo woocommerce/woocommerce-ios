@@ -91,7 +91,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
     }
 
-    func test_syncShippingLabels_with_legacy_extension_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
+    func test_syncShippingLabels_with_legacy_extension_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6)])
         configureDefaultStoreCountry("US")
@@ -103,11 +103,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.LegacyWCShip, thenReturn: plugin)
         whenSyncingLegacyShippingLabels(thenReturn: .success([]))
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         await viewModel.syncShippingLabelsOrShipments()
@@ -146,7 +144,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
-    func test_syncShippingLabels_with_wooShipping_extension_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
+    func test_syncShippingLabels_with_wooShipping_extension_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6)])
         configureDefaultStoreCountry("US")
@@ -158,11 +156,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, thenReturn: plugin)
         whenSyncingShipments(thenReturn: .success([]))
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         await viewModel.syncShippingLabelsOrShipments()
@@ -184,61 +180,6 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? WooShippingAction)
         guard case let WooShippingAction.syncShipments(siteID, orderID, _) = secondAction else {
             XCTFail("Expected \(secondAction) to be \(WooShippingAction.self)")
-            return
-        }
-
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(orderID, order.orderID)
-    }
-
-    func test_syncShippingLabels_with_wooShipping_extension_and_feature_flag_disabled_dispatches_actions_correctly() async throws {
-        // Given
-        configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6)])
-        configureDefaultStoreCountry("US")
-
-        storesManager.reset()
-        XCTAssertEqual(storesManager.receivedActions.count, 0)
-
-        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true)
-        whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, thenReturn: plugin)
-        whenSyncingLegacyShippingLabels(thenReturn: .success([]))
-
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: false)
-        let viewModel = OrderDetailsViewModel(order: order,
-                                              stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
-
-        // When
-        await viewModel.syncShippingLabelsOrShipments()
-
-        // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 3)
-
-        // SystemStatusAction.fetchSystemPlugin
-        let firstAction = try XCTUnwrap(storesManager.receivedActions[0] as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID, path, _) = firstAction else {
-            XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
-            return
-        }
-
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.LegacyWCShip)
-
-        // SystemStatusAction.fetchSystemPlugin
-        let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID, path, _) = secondAction else {
-            XCTFail("Expected \(secondAction) to be \(SystemStatusAction.self)")
-            return
-        }
-
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.WooShipping)
-
-        // ShippingLabelAction.synchronizeShippingLabels
-        let thirdAction = try XCTUnwrap(storesManager.receivedActions[2] as? ShippingLabelAction)
-        guard case let ShippingLabelAction.synchronizeShippingLabels(siteID, orderID, _) = thirdAction else {
-            XCTFail("Expected \(thirdAction) to be \(ShippingLabelAction.self)")
             return
         }
 
@@ -290,11 +231,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         configureDefaultStoreCountry("US")
         storesManager.reset()
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         let isEligible = await viewModel.checkShippingLabelCreationEligibility()
@@ -311,11 +250,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         whenFetchingSystemPlugin(thenReturn: plugin)
         whenCheckingShippingLabelCreationEligibility(thenReturn: true)
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         let isEligible = await viewModel.checkShippingLabelCreationEligibility()
@@ -330,11 +267,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         _ = await viewModel.checkShippingLabelCreationEligibility()
@@ -343,7 +278,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
     }
 
-    func test_checkShippingLabelCreationEligibility_with_legacy_extension_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
+    func test_checkShippingLabelCreationEligibility_with_legacy_extension_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
         configureDefaultStoreCountry("US")
@@ -357,11 +292,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         whenFetchingSystemPlugin(path: path, thenReturn: plugin)
         whenCheckingLegacyShippingLabelCreationEligibility(thenReturn: true)
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         _ = await viewModel.checkShippingLabelCreationEligibility()
@@ -400,7 +333,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
-    func test_checkShippingLabelCreationEligibility_with_wooshipping_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
+    func test_checkShippingLabelCreationEligibility_with_wooshipping_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
         configureDefaultStoreCountry("US")
@@ -414,11 +347,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         whenFetchingSystemPlugin(path: path, thenReturn: plugin)
         whenCheckingShippingLabelCreationEligibility(thenReturn: true)
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         _ = await viewModel.checkShippingLabelCreationEligibility()
@@ -440,63 +371,6 @@ final class OrderDetailsViewModelTests: XCTestCase {
         let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? WooShippingAction)
         guard case let WooShippingAction.checkCreationEligibility(siteID, orderID, _) = secondAction else {
             XCTFail("Expected \(secondAction) to be \(WooShippingAction.self)")
-            return
-        }
-
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(orderID, order.orderID)
-    }
-
-    func test_checkShippingLabelCreationEligibility_when_feature_flag_disabled_dispatches_actions_correctly() async throws {
-        // Given
-        configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
-        configureDefaultStoreCountry("US")
-
-        storesManager.reset()
-        XCTAssertEqual(storesManager.receivedActions.count, 0)
-
-        // Make sure the are plugins synced
-        let path = SitePlugin.SupportedPluginPath.WooShipping
-        let plugin = insertSystemPlugin(path: path, siteID: order.siteID, isActive: true)
-        whenFetchingSystemPlugin(path: path, thenReturn: plugin)
-        whenCheckingLegacyShippingLabelCreationEligibility(thenReturn: true)
-
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: false)
-        let viewModel = OrderDetailsViewModel(order: order,
-                                              stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
-
-        // When
-        _ = await viewModel.checkShippingLabelCreationEligibility()
-
-        // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 3)
-
-        // SystemStatusAction.fetchSystemPlugin
-        let firstAction = try XCTUnwrap(storesManager.receivedActions[0] as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: path, onCompletion: _) = firstAction else {
-            XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
-            return
-        }
-
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.LegacyWCShip)
-
-        // SystemStatusAction.fetchSystemPlugin
-        let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: path, onCompletion: _) = secondAction else {
-            XCTFail("Expected \(secondAction) to be \(SystemStatusAction.self)")
-            return
-        }
-
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.WooShipping)
-
-        // WooShippingAction.checkCreationEligibility
-        let thirdAction = try XCTUnwrap(storesManager.receivedActions[2] as? ShippingLabelAction)
-        guard case let ShippingLabelAction.checkCreationEligibility(siteID, orderID, _) = thirdAction else {
-            XCTFail("Expected \(thirdAction) to be \(ShippingLabelAction.self)")
             return
         }
 
@@ -922,10 +796,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     // MARK: - `isWooShippingSupported`
 
-    func test_isWooShippingSupported_returns_true_with_expected_feature_flag_and_version() async {
+    func test_isWooShippingSupported_returns_true_when_plugin_is_active_and_version_is_supported() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
-        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
         let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true, version: "1.0.5")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
@@ -936,24 +809,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(isWooShippingSupported)
     }
 
-    func test_isWooShippingSupported_returns_false_when_feature_flag_disabled() async {
-        // Given
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: false)
-        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
-        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true, version: "1.0.5")
-        whenFetchingSystemPlugin(thenReturn: plugin)
-
-        // When
-        let isWooShippingSupported = await viewModel.isWooShippingSupported()
-
-        // Then
-        XCTAssertFalse(isWooShippingSupported)
-    }
-
     func test_isWooShippingSupported_returns_false_when_woo_shipping_plugin_not_active() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
-        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
         let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: false, version: "1.0.5")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
@@ -1003,8 +861,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_isWooShippingSupported_returns_false_when_woo_shipping_plugin_is_not_minimum_version() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
-        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
         let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: false, version: "1.0.4")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
@@ -1063,11 +920,9 @@ private extension OrderDetailsViewModelTests {
         }
         storesManager.reset()
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
         self.viewModel = viewModel
         return viewModel
     }

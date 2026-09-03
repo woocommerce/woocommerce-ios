@@ -2,7 +2,6 @@ import Foundation
 import SwiftUI
 import UIKit
 import Yosemite
-import Experiments
 import WooFoundation
 import protocol Storage.StorageManagerType
 
@@ -239,8 +238,6 @@ final class OrderDetailsDataSource: NSObject {
 
     private let siteSettings: [SiteSetting]
 
-    private let featureFlags: FeatureFlagService
-
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
@@ -248,8 +245,7 @@ final class OrderDetailsDataSource: NSObject {
          receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
-         userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
-         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
+         userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)) {
         self.storageManager = storageManager
         self.order = order
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
@@ -259,8 +255,6 @@ final class OrderDetailsDataSource: NSObject {
         self.currencySettings = currencySettings
         self.siteSettings = siteSettings
         self.userIsAdmin = userIsAdmin
-        self.featureFlags = featureFlags
-
         super.init()
     }
 
@@ -1305,11 +1299,7 @@ extension OrderDetailsDataSource {
                 let rows: [Row]
                 let headerStyle: Section.HeaderStyle
                 if isRefunded {
-                    if featureFlags.isFeatureFlagEnabled(.revampedShippingLabelCreation) {
-                        rows = [.shippingLabelRefunded]
-                    } else {
-                        rows = [.shippingLabelRefunded, .shippingLabelDetail]
-                    }
+                    rows = [.shippingLabelRefunded]
                     headerStyle = .primary
                 } else {
                     rows = [.shippingLabelProducts, .shippingLabelReprintButton, .shippingLabelPrintingInfo, .shippingLabelTrackingNumber, .shippingLabelDetail]

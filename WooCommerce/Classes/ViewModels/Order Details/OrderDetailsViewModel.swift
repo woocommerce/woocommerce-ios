@@ -4,7 +4,6 @@ import Gridicons
 import Yosemite
 import MessageUI
 import Combine
-import Experiments
 import WooFoundation
 import WooFoundationCore
 import SwiftUI
@@ -72,8 +71,6 @@ final class OrderDetailsViewModel {
     private let siteCurrencyProvider: (Int64) -> String?
     private let orderCurrencyEditingEligibility: OrderCurrencyEditingEligibility
     private let pluginsService: PluginsServiceProtocol
-    let featureFlagService: FeatureFlagService
-
     private(set) var order: Order
 
     /// Defines the current sync states of the view model data.
@@ -90,7 +87,6 @@ final class OrderDetailsViewModel {
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
          receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
          siteCurrencyProvider: ((Int64) -> String?)? = nil,
@@ -106,7 +102,6 @@ final class OrderDetailsViewModel {
                 .value
         }
         self.orderCurrencyEditingEligibility = orderCurrencyEditingEligibility
-        self.featureFlagService = featureFlagService
         self.syncStateController = syncStateController
         self.configurationLoader = CardPresentConfigurationLoader()
         self.dataSource = OrderDetailsDataSource(order: order,
@@ -782,20 +777,6 @@ extension OrderDetailsViewModel {
             return
         }
 
-        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
-        guard isRevampedFlow else {
-            /// old logic for syncing labels
-            let shippingLabels: [ShippingLabel] = await {
-                if await localRequirementsForShippingLabelsAreFulfilled() {
-                    return await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
-                }
-                return []
-            }()
-            // Update the order with the newly synced shipping labels
-            let updatedOrder = order.copy(shippingLabels: shippingLabels)
-            return update(order: updatedOrder)
-        }
-
         guard !orderContainsOnlyVirtualProducts else {
             return
         }
@@ -803,7 +784,7 @@ extension OrderDetailsViewModel {
         if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.WooShipping) {
             syncShipmentsForWooShipping()
         } else if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.LegacyWCShip) {
-            let shippingLabels =  await syncShippingLabelsForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+            let shippingLabels = await syncShippingLabelsForLegacyPlugin()
             // Update the order with the newly synced shipping labels
             let updatedOrder = order.copy(shippingLabels: shippingLabels)
             update(order: updatedOrder)
@@ -855,14 +836,6 @@ extension OrderDetailsViewModel {
             return false
         }
 
-        let isRevampedFlow = featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
-        guard isRevampedFlow else {
-            if await localRequirementsForShippingLabelsAreFulfilled() {
-                return await checkShippingLabelCreationEligibilityForLegacyPlugin(isRevampedFlow: isRevampedFlow)
-            }
-            return false
-        }
-
         guard !orderContainsOnlyVirtualProducts else {
             return false
         }
@@ -870,31 +843,17 @@ extension OrderDetailsViewModel {
         if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.WooShipping) {
             return await checkShippingLabelCreationEligibilityForWooShipping()
         } else if await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.LegacyWCShip) {
-            return await checkShippingLabelCreationEligibilityForLegacyPlugin(isRevampedFlow: isRevampedFlow)
+            return await checkShippingLabelCreationEligibilityForLegacyPlugin()
         } else {
             return false
         }
-    }
-
-    @MainActor
-    func localRequirementsForShippingLabelsAreFulfilled() async -> Bool {
-        guard !orderContainsOnlyVirtualProducts else {
-            return false
-        }
-
-        guard await !isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.LegacyWCShip) else {
-            return true
-        }
-
-        return await isPluginActive(pluginPath: SitePlugin.SupportedPluginPath.WooShipping)
     }
 
     /// Checks if the Woo Shipping extension is active, with the minimum version required for its shipping label flow.
     ///
     @MainActor
     func isWooShippingSupported() async -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation),
-              let plugin = await fetchPluginByPath(SitePlugin.SupportedPluginPath.WooShipping) else {
+        guard let plugin = await fetchPluginByPath(SitePlugin.SupportedPluginPath.WooShipping) else {
             return false
         }
 
@@ -1055,11 +1014,11 @@ private extension OrderDetailsViewModel {
         }
     }
 
-    @MainActor func checkShippingLabelCreationEligibilityForLegacyPlugin(isRevampedFlow: Bool) async -> Bool {
+    @MainActor func checkShippingLabelCreationEligibilityForLegacyPlugin() async -> Bool {
         await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
                                                                          orderID: order.orderID) { [weak self] isEligible in
-                self?.handleShippingLabelCreationEligibilityResult(isEligible: isEligible, isRevampedFlow: isRevampedFlow)
+                self?.handleShippingLabelCreationEligibilityResult(isEligible: isEligible, isRevampedFlow: true)
                 continuation.resume(returning: isEligible)
             })
         }
@@ -1091,20 +1050,20 @@ private extension OrderDetailsViewModel {
         })
     }
 
-    @MainActor func syncShippingLabelsForLegacyPlugin(isRevampedFlow: Bool) async -> [ShippingLabel] {
+    @MainActor func syncShippingLabelsForLegacyPlugin() async -> [ShippingLabel] {
         await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
                 switch result {
                 case .success(let shippingLabels):
                     ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
                         result: .success,
-                        isRevampedFlow: isRevampedFlow
+                        isRevampedFlow: true
                     ))
                     continuation.resume(returning: shippingLabels)
                 case .failure(let error):
                     ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
                         result: .failed(error: error),
-                        isRevampedFlow: isRevampedFlow
+                        isRevampedFlow: true
                     ))
                     DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
                     continuation.resume(returning: [])

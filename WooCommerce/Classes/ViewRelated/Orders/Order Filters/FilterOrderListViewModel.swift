@@ -1,6 +1,5 @@
 import UIKit
 import Yosemite
-import Experiments
 import WooFoundation
 
 /// `FilterListViewModel` for filtering a list of orders.
@@ -67,7 +66,7 @@ final class FilterOrderListViewModel: FilterListViewModel {
 
     let filterTypeViewModels: [FilterTypeViewModel]
 
-    let shouldShowHistory: Bool
+    let shouldShowHistory = true
 
     let source = FilterSource.orders
 
@@ -85,12 +84,10 @@ final class FilterOrderListViewModel: FilterListViewModel {
     ///   - filters: the filters to be applied initially.
     ///   - allowedStatuses: the statuses that will be shown in the filter list.
     ///   - siteID: current selected site ID
-    ///   - featureFlagService: feature flag service
     ///   - stores: stores manager
     init(filters: Filters,
          allowedStatuses: [OrderStatus],
          siteID: Int64,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics) {
         orderStatusFilterViewModel = OrderListFilter.orderStatus.createViewModel(filters: filters, allowedStatuses: allowedStatuses)
@@ -103,7 +100,6 @@ final class FilterOrderListViewModel: FilterListViewModel {
         self.stores = stores
         self.analytics = analytics
 
-        shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
         filterTypeViewModels = [orderStatusFilterViewModel,
                                 dateRangeFilterViewModel,
                                 customerFilterViewModel,

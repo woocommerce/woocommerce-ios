@@ -806,8 +806,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
-                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.configureResultsControllers { }
 
         // When
@@ -852,8 +851,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
-                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.configureResultsControllers { }
 
         // When
@@ -879,8 +877,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
-                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = true
         dataSource.configureResultsControllers { }
 
@@ -898,8 +895,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         let dataSource = OrderDetailsDataSource(order: order,
                                                 storageManager: storageManager,
                                                 cardPresentPaymentsConfiguration: Mocks.configuration,
-                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase(),
-                                                featureFlags: MockFeatureFlagService(revampedShippingLabelCreation: false))
+                                                receiptEligibilityUseCase: MockReceiptEligibilityUseCase())
         dataSource.isEligibleForShippingLabelCreation = false
         dataSource.configureResultsControllers { }
 

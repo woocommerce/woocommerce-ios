@@ -5,6 +5,36 @@ import Yosemite
 /// Authentication endpoints and URL strings derived from WP.org credentials.
 ///
 extension WordPressOrgCredentials {
+    /// Records verified endpoints on the credentials, keeping only the ones that differ from the site's defaults.
+    ///
+    /// Only normalized, verified configuration is carried. Transaction-local values such as a form action or a
+    /// redirect target must never reach here.
+    ///
+    func replacingAuthenticationEndpoints(with endpoints: CookieNonceAuthenticationEndpoints) -> WordPressOrgCredentials {
+        let defaults: CookieNonceAuthenticationEndpoints
+        do {
+            defaults = try CookieNonceAuthenticationEndpoints(siteURL: endpoints.siteURL)
+        } catch {
+            // The supplied endpoints already validated their canonical site URL, so this indicates an invariant violation.
+            DDLogError("⛔️ Failed to derive default authentication endpoints from verified endpoints: \(error)")
+            ServiceLocator.crashLogging.logError(error)
+            var updatedOptions = options
+            updatedOptions[Key.loginURL.rawValue] = [Key.value.rawValue: endpoints.loginEntryURL.absoluteString]
+            updatedOptions[Key.adminURL.rawValue] = [Key.value.rawValue: endpoints.adminBaseURL.absoluteString]
+            return WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: updatedOptions)
+        }
+        var updatedOptions = options
+        updatedOptions.removeValue(forKey: Key.loginURL.rawValue)
+        updatedOptions.removeValue(forKey: Key.adminURL.rawValue)
+        if endpoints.loginEntryURL != defaults.loginEntryURL {
+            updatedOptions[Key.loginURL.rawValue] = [Key.value.rawValue: endpoints.loginEntryURL.absoluteString]
+        }
+        if endpoints.adminBaseURL != defaults.adminBaseURL {
+            updatedOptions[Key.adminURL.rawValue] = [Key.value.rawValue: endpoints.adminBaseURL.absoluteString]
+        }
+        return WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: updatedOptions)
+    }
+
     var loginURL: String {
         if let value = optionValue(for: Key.loginURL.rawValue) as? String {
             return value

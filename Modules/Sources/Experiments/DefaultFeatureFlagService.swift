@@ -57,8 +57,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper
         case .pointOfSaleMarkOrderAsPaid:
             return buildConfig == .localDeveloper
-        case .pointOfSaleTapToPay:
-            return true
         case .selfDrivenPushToken:
             return true
         case .clientSideDashboardBanner:

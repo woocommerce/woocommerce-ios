@@ -1,9 +1,24 @@
 import Foundation
 import UIKit
 
+/// Consent state for the currently outstanding significant change, if any.
+enum SignificantChangeConsentState: Equatable {
+    /// No unacknowledged significant change — no consent needed.
+    case notRequired
+    /// The parent/guardian approved the change.
+    case granted
+    /// The question was sent and the answer hasn't arrived yet.
+    case pending
+    /// The parent/guardian declined the change.
+    case denied
+    /// PermissionKit is unavailable or sending failed — treated permissively by policy.
+    case notAvailable
+}
+
 final class SignificantChangeConsentCoordinator {
     private let consentProvider: SignificantChangeConsentProviding
     private let consentStore: SignificantChangeConsentStoring
+    private var responsesTask: Task<Void, Never>?
 
     init(
         consentProvider: SignificantChangeConsentProviding = PermissionKitSignificantChangeConsentProvider(),
@@ -13,11 +28,40 @@ final class SignificantChangeConsentCoordinator {
         self.consentStore = consentStore
     }
 
+    deinit {
+        responsesTask?.cancel()
+    }
+
+    /// Starts the long-lived listener for parent/guardian answers. An answer can arrive at any
+    /// time after the question was sent — including on a later launch — so this should run for
+    /// the whole app session. `onResolution` is called on the main actor with the final status.
+    func startObservingResponses(onResolution: @escaping @MainActor (SignificantChangeConsentStatus) -> Void) {
+        guard responsesTask == nil else { return }
+        responsesTask = Task { [consentProvider, weak self] in
+            for await response in consentProvider.responses() {
+                await MainActor.run { [weak self] in
+                    guard let self,
+                          let pending = self.consentStore.pendingRequest,
+                          pending.questionID == response.questionID else {
+                        return
+                    }
+                    let status: SignificantChangeConsentStatus = response.isApproved ? .granted : .denied
+                    self.consentStore.setStatus(status, for: pending.identifier)
+                    self.consentStore.clearPendingRequest()
+                    onResolution(status)
+                }
+            }
+        }
+    }
+
+    /// Resolves the consent state for the given change, sending the question when it was never asked.
+    /// - Parameter manualChangeIdentifier: a developer-declared significant change; takes
+    ///   precedence over a detected age rating change.
     func checkConsentIfNeeded(
         in viewController: UIViewController,
         ageRatingChange: AgeRatingChangeCheckResult?,
         manualChangeIdentifier: SignificantChangeIdentifier? = nil
-    ) async -> SignificantChangeConsentOutcome {
+    ) async -> SignificantChangeConsentState {
         let changeIdentifier: SignificantChangeIdentifier? = {
             if let manualChangeIdentifier { return manualChangeIdentifier }
             guard let ageRatingChange else { return nil }
@@ -28,50 +72,58 @@ final class SignificantChangeConsentCoordinator {
         }()
 
         guard let changeIdentifier else {
-            return .granted
+            return .notRequired
         }
 
-        if let status = consentStore.status(for: changeIdentifier) {
-            return status == .granted ? .granted : .denied
-        }
-
-        let outcome = await consentProvider.requestConsent(
-            in: viewController,
-            significantAppUpdateDescription: {
-                switch changeIdentifier {
-                case .ageRatingChange:
-                    return String(
-                        format: Localization.ageRatingChangeRequestDescriptionFormat,
-                        arguments: changeIdentifier.updateDescriptionFormatArguments
-                    )
-                case .manual:
-                    return String(
-                        format: Localization.manualChangeRequestDescriptionFormat,
-                        arguments: changeIdentifier.updateDescriptionFormatArguments
-                    )
-                }
-            }()
-        )
-        switch outcome {
+        switch consentStore.status(for: changeIdentifier) {
         case .granted:
-            consentStore.setStatus(.granted, for: changeIdentifier)
+            return .granted
         case .denied:
-            consentStore.setStatus(.denied, for: changeIdentifier)
-        case .notAvailable, .unknown:
+            return .denied
+        case .pending:
+            return .pending
+        case nil:
             break
         }
 
-        return outcome
+        let requestResult = await consentProvider.requestConsent(
+            in: viewController,
+            significantAppUpdateDescription: description(for: changeIdentifier)
+        )
+        switch requestResult {
+        case let .sent(questionID):
+            consentStore.setStatus(.pending, for: changeIdentifier)
+            consentStore.setPendingRequest(.init(questionID: questionID, identifier: changeIdentifier))
+            return .pending
+        case .notAvailable, .failed:
+            return .notAvailable
+        }
+    }
+
+    /// Clears a previously denied consent so the question can be asked again — the recovery
+    /// path offered by the blocking UI.
+    func resetDeniedConsent(for identifier: SignificantChangeIdentifier) {
+        guard consentStore.status(for: identifier) == .denied else { return }
+        consentStore.clearStatus(for: identifier)
     }
 }
 
 private extension SignificantChangeConsentCoordinator {
+    func description(for changeIdentifier: SignificantChangeIdentifier) -> String {
+        switch changeIdentifier {
+        case .ageRatingChange:
+            return Localization.ageRatingChangeRequestDescription
+        case let .manual(id):
+            return String(format: Localization.manualChangeRequestDescriptionFormat, id)
+        }
+    }
+
     enum Localization {
-        static let ageRatingChangeRequestDescriptionFormat = NSLocalizedString(
-            "significantChangeConsent.ageRatingChange.description",
-            value: "App age rating changed to %1$d.",
-            comment: "PermissionKit description shown when the app age rating changes." +
-            "ratingCode: %1$d is the new rating code."
+        static let ageRatingChangeRequestDescription = NSLocalizedString(
+            "significantChangeConsent.ageRatingChange.request.description",
+            value: "The app's App Store age rating has increased.",
+            comment: "Description a parent or guardian sees in the system consent request " +
+            "when the app's App Store age rating changes."
         )
 
         static let manualChangeRequestDescriptionFormat = NSLocalizedString(

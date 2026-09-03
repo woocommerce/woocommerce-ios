@@ -497,6 +497,29 @@ struct PointOfSaleOrderControllerTests {
         #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
     }
 
+    @Test func confirmScanToPayPayment_when_the_note_fails_still_records_the_payment_method_and_does_not_throw() async throws {
+        // Given
+        struct AddOrderNoteError: Error {}
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 128, items: [OrderItem.fake()])
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+        mockOrderService.addOrderNoteResult = .failure(AddOrderNoteError())
+
+        // When
+        try await sut.confirmScanToPayPayment()
+
+        // Then: the note failure is swallowed, and the payment method title still reaches the service.
+        #expect(mockOrderService.addOrderNoteWasCalled == true)
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
+        #expect(mockOrderService.spyRecordScanToPayPaymentMethodOrder?.orderID == 128)
+    }
+
     @Test func recordScanToPayPaymentMethod_when_gateway_already_set_a_title_then_does_not_overwrite_it() async throws {
         // Given: polling reloaded the order after the gateway settled the payment, so the order
         // already carries the gateway's own payment method title.

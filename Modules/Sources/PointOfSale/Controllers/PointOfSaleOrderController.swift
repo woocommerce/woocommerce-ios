@@ -48,8 +48,9 @@ protocol PointOfSaleOrderControllerProtocol {
     ///   Maria"). When non-nil/non-empty it is appended to the order as a private note via
     ///   `addOrderNote`, separately from the order completion call.
     func markOrderAsPaidManually(note: String?) async throws
-    /// Adds the "Paid via Scan to Pay" note to the cached order so the merchant has
-    /// an audit trail in WP-Admin even if the gateway webhook hasn't flipped the status yet.
+    /// Records the payment method title on the cached order and adds the "Paid via Scan to Pay"
+    /// note, so the merchant has an audit trail in WP-Admin even if the gateway webhook hasn't
+    /// flipped the status yet. The note is best-effort: only a missing order throws.
     func confirmScanToPayPayment() async throws
     /// Records Scan to Pay as the cached order's visible payment method title, but only when the
     /// order does not already carry a gateway-supplied title. This is best-effort display
@@ -199,10 +200,16 @@ protocol PointOfSaleOrderControllerProtocol {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
-        try await orderService.addOrderNote(orderID: order.orderID,
-                                            isCustomerNote: false,
-                                            note: Localization.scanToPayNote)
+
         await recordScanToPayPaymentMethod()
+
+        do {
+            try await orderService.addOrderNote(orderID: order.orderID,
+                                                isCustomerNote: false,
+                                                note: Localization.scanToPayNote)
+        } catch {
+            DDLogWarn("⚠️ [ScanToPay] Payment confirmed but failed to attach the audit-trail note: \(error)")
+        }
     }
 
     @MainActor

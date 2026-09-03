@@ -1320,8 +1320,7 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            analytics: mockAnalytics,
-            usesCatalogAPI: true
+            analytics: mockAnalytics
         )
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 404,
@@ -1350,8 +1349,7 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            analytics: mockAnalytics,
-            usesCatalogAPI: true
+            analytics: mockAnalytics
         )
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 403,
@@ -1401,7 +1399,6 @@ extension POSCatalogSyncCoordinatorTests {
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
             analytics: mockAnalytics,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "10.8.1")
         )
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
@@ -1480,7 +1477,6 @@ extension POSCatalogSyncCoordinatorTests {
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
             analytics: mockAnalytics,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "10.8.1")
         )
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
@@ -1631,7 +1627,6 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
@@ -1657,7 +1652,6 @@ extension POSCatalogSyncCoordinatorTests {
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
             analytics: mockAnalytics,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
@@ -1688,7 +1682,6 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
         let blockedError = POSCatalogFileError.downloadFailed(statusCode: 403, contentType: "text/html")
@@ -1719,7 +1712,6 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
         mockSiteSettings.mockPOSCatalogFileBlockedByHostAt = Date()
@@ -1746,7 +1738,6 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
         mockSiteSettings.mockPOSCatalogFileBlockedByHostAt = Date()
@@ -1773,7 +1764,6 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
         mockSiteSettings.mockPOSCatalogFileBlockedByHostAt = Date()

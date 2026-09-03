@@ -266,27 +266,6 @@ open class AddressFormViewModel {
         let secondaryEmailIsValid = secondaryFields.email.isEmpty || EmailFormatValidator.validate(string: fields.email)
         return primaryEmailIsValid && secondaryEmailIsValid
     }
-
-    private func populate(fields: AddressFormFields, with address: Address?) -> AddressFormFields {
-        var fields = fields
-
-        fields.firstName = address?.firstName ?? ""
-        fields.lastName = address?.lastName ?? ""
-        // Email is declared optional because we're using the same property from the Address model
-        // for both Shipping and Billing details:
-        // https://github.com/woocommerce/woocommerce-ios/issues/7993
-        fields.email = address?.email ?? ""
-        fields.phone = address?.phone ?? ""
-        fields.company = address?.company ?? ""
-        fields.address1 = address?.address1 ?? ""
-        fields.address2 = address?.address2 ?? ""
-        fields.city = address?.city ?? ""
-        fields.postcode = address?.postcode ?? ""
-        fields.country = address?.country ?? ""
-        fields.state = address?.state ?? ""
-
-        return fields
-    }
 }
 
 extension AddressFormViewModel {

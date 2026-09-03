@@ -7,7 +7,7 @@ final class SupportDataSourcesTests: XCTestCase {
     override class func setUp() {
         super.setUp()
         WordPressAuthenticator.initializeAuthenticator()
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isSupportRequestEnabled: true))
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService())
     }
 
     func test_mobile_app_formID_has_correct_value() {

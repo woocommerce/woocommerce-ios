@@ -4,7 +4,6 @@ import protocol PointOfSale.POSFeatureFlagProviding
 
 final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding {
     var isUpdateOrderOptimisticallyOn: Bool
-    var isSupportRequestEnabled: Bool
     var betterCustomerSelectionInOrder: Bool
     var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
@@ -19,7 +18,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var smarterNotifications: Bool
 
     init(isUpdateOrderOptimisticallyOn: Bool = false,
-         isSupportRequestEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
@@ -32,7 +30,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          selfDrivenPushToken: Bool = false,
          smarterNotifications: Bool = false) {
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
-        self.isSupportRequestEnabled = isSupportRequestEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
@@ -56,8 +53,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
         switch featureFlag {
         case .updateOrderOptimistically:
             return isUpdateOrderOptimisticallyOn
-        case .supportRequests:
-            return isSupportRequestEnabled
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
         case .productBundlesInOrderForm:

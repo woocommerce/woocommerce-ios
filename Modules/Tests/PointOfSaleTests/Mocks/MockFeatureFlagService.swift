@@ -3,7 +3,6 @@ import Experiments
 
 final class MockFeatureFlagService: POSFeatureFlagProviding {
     var isUpdateOrderOptimisticallyOn: Bool
-    var isSupportRequestEnabled: Bool
     var betterCustomerSelectionInOrder: Bool
     var productBundlesInOrderForm: Bool
     var isScanToUpdateInventoryEnabled: Bool
@@ -16,7 +15,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
 
     init(isUpdateOrderOptimisticallyOn: Bool = false,
-         isSupportRequestEnabled: Bool = false,
          betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isScanToUpdateInventoryEnabled: Bool = false,
@@ -27,7 +25,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false) {
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
-        self.isSupportRequestEnabled = isSupportRequestEnabled
         self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
@@ -49,8 +46,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
         switch featureFlag {
         case .updateOrderOptimistically:
             return isUpdateOrderOptimisticallyOn
-        case .supportRequests:
-            return isSupportRequestEnabled
         case .betterCustomerSelectionInOrder:
             return betterCustomerSelectionInOrder
         case .productBundlesInOrderForm:

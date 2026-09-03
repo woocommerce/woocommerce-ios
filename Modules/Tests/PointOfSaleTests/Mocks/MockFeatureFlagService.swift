@@ -4,7 +4,6 @@ import Experiments
 final class MockFeatureFlagService: POSFeatureFlagProviding {
     var isUpdateOrderOptimisticallyOn: Bool
     var isSupportRequestEnabled: Bool
-    var betterCustomerSelectionInOrder: Bool
     var productBundlesInOrderForm: Bool
     var isPointOfSaleEnabled: Bool
     var blazeCampaignObjective: Bool
@@ -16,7 +15,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
 
     init(isUpdateOrderOptimisticallyOn: Bool = false,
          isSupportRequestEnabled: Bool = false,
-         betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
          isPointOfSaleEnabled: Bool = false,
          blazeCampaignObjective: Bool = false,
@@ -26,7 +24,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
          isProductImageOptimizedHandlingEnabled: Bool = false) {
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.isSupportRequestEnabled = isSupportRequestEnabled
-        self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.blazeCampaignObjective = blazeCampaignObjective
@@ -48,8 +45,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
             return isUpdateOrderOptimisticallyOn
         case .supportRequests:
             return isSupportRequestEnabled
-        case .betterCustomerSelectionInOrder:
-            return betterCustomerSelectionInOrder
         case .productBundlesInOrderForm:
             return productBundlesInOrderForm
         case .pointOfSale:

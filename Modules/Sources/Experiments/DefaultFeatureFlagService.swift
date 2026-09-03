@@ -23,8 +23,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .appStore
         case .manualErrorHandlingForSiteCredentialLogin:
             return true
-        case .betterCustomerSelectionInOrder:
-            return true
         case .productBundlesInOrderForm:
             return true
         case .customLoginUIForAccountCreation:

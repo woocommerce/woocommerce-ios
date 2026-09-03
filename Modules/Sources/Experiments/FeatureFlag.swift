@@ -71,10 +71,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case manualErrorHandlingForSiteCredentialLogin
 
-    /// Enables the improvements in the customer selection logic when creating an order
-    ///
-    case betterCustomerSelectionInOrder
-
     /// Enables bundle product configuration support in order creation/editing.
     ///
     case productBundlesInOrderForm

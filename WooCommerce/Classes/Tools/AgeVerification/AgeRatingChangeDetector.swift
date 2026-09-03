@@ -44,6 +44,11 @@ final class AgeRatingChangeDetector: AgeRatingChangeDetecting {
     func acknowledge(ratingCode: Int) {
         cacheAgeRatingCode(ratingCode)
     }
+
+    /// Clears the acknowledged-rating cache so the next check re-baselines. Debug/testing helper.
+    static func resetCache(in defaults: UserDefaults = .standard) {
+        defaults.removeObject(forKey: Key.lastSeenAgeRating)
+    }
 }
 
 private extension AgeRatingChangeDetector {

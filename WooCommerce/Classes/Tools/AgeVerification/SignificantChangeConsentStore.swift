@@ -108,4 +108,12 @@ final class UserDefaultsSignificantChangeConsentStore: SignificantChangeConsentS
     func clearPendingRequest() {
         defaults.removeObject(forKey: Key.pendingRequest)
     }
+
+    /// Removes every persisted consent status and the pending request. Debug/testing helper.
+    static func resetAll(in defaults: UserDefaults = .standard) {
+        defaults.dictionaryRepresentation().keys
+            .filter { $0.hasPrefix(Key.prefix) }
+            .forEach { defaults.removeObject(forKey: $0) }
+        defaults.removeObject(forKey: Key.pendingRequest)
+    }
 }

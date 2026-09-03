@@ -74,6 +74,9 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
     }
 
     func resetDeniedSignificantChangeConsent() async {
+        if let debugIdentifier = DebugAgeVerificationOverrides.manualSignificantChangeIdentifier {
+            significantChangeConsentCoordinator.resetDeniedConsent(for: debugIdentifier)
+        }
         guard let change = await ageRatingChangeDetector.checkForChange(),
               case let .ageRatingChanged(_, current) = change else {
             return
@@ -112,7 +115,8 @@ private extension AgeRangeVerificationCoordinator {
                     let ageRatingChange = await self.ageRatingChangeDetector.checkForChange()
                     let state = await self.significantChangeConsentCoordinator.checkConsentIfNeeded(
                         in: anchor,
-                        ageRatingChange: ageRatingChange
+                        ageRatingChange: ageRatingChange,
+                        manualChangeIdentifier: DebugAgeVerificationOverrides.manualSignificantChangeIdentifier
                     )
                     switch state {
                     case .notRequired, .notAvailable:

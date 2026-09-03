@@ -42,6 +42,10 @@ struct SignificantChangeConsentBlockingView: View {
     let onCheckAgain: () -> Void
     let onAskAgain: () -> Void
 
+    /// Brief in-button progress after a tap. The underlying re-check can resolve instantly,
+    /// which otherwise looks like the tap wasn't registered at all.
+    @State private var isWorking = false
+
     var body: some View {
         VStack(spacing: Layout.spacing) {
             Spacer()
@@ -57,14 +61,31 @@ struct SignificantChangeConsentBlockingView: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
             Spacer()
-            Button(Localization.checkAgainButton, action: onCheckAgain)
-                .buttonStyle(PrimaryButtonStyle())
-            if context == .approvalDenied {
-                Button(Localization.askAgainButton, action: onAskAgain)
-                    .buttonStyle(SecondaryButtonStyle())
+            switch context {
+            case .pendingApproval:
+                Button(Localization.checkAgainButton) {
+                    perform(onCheckAgain)
+                }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWorking))
+            case .approvalDenied:
+                // A stored denial can only be lifted by sending a new request —
+                // there is no state to "re-check" until a new answer arrives.
+                Button(Localization.askAgainButton) {
+                    perform(onAskAgain)
+                }
+                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWorking))
             }
         }
         .padding(Layout.padding)
+    }
+
+    private func perform(_ action: @escaping () -> Void) {
+        guard isWorking == false else { return }
+        isWorking = true
+        action()
+        DispatchQueue.main.asyncAfter(deadline: .now() + Layout.minimumWorkingIndicationDuration) {
+            isWorking = false
+        }
     }
 }
 
@@ -91,21 +112,22 @@ private extension SignificantChangeConsentBlockingView {
         static let spacing: CGFloat = 16
         static let padding: CGFloat = 24
         static let iconSize: CGFloat = 56
+        static let minimumWorkingIndicationDuration: TimeInterval = 1
     }
 
     enum Localization {
         static let pendingTitle = NSLocalizedString(
-            "significantChangeConsent.blocking.pending.title",
-            value: "Approval Needed",
-            comment: "Title of the blocking screen shown while a parent/guardian approval " +
-            "for a significant app change is pending."
+            "significantChangeConsent.blocking.pendingRequested.title",
+            value: "Approval Requested",
+            comment: "Title of the blocking screen shown after an approval request for a " +
+            "significant app change was sent to a parent/guardian and is awaiting their response."
         )
         static let pendingMessage = NSLocalizedString(
-            "significantChangeConsent.blocking.pending.message",
-            value: "A parent or guardian needs to approve recent changes to this app before you can continue. " +
-            "Once they respond to the approval request, tap Check Again.",
-            comment: "Message of the blocking screen shown while a parent/guardian approval " +
-            "for a significant app change is pending."
+            "significantChangeConsent.blocking.pendingRequested.message",
+            value: "We've sent an approval request for recent changes to this app to your parent or guardian. " +
+            "Once they respond, tap Check Again to continue.",
+            comment: "Message of the blocking screen shown after an approval request for a " +
+            "significant app change was sent to a parent/guardian and is awaiting their response."
         )
         static let deniedTitle = NSLocalizedString(
             "significantChangeConsent.blocking.denied.title",

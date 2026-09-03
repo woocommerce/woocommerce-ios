@@ -455,11 +455,16 @@ private extension AppCoordinator {
     func triggerAgeVerification(onAllowed: @escaping () -> Void = { }) {
         ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
             hostingWindow: window
-        ) { [weak self] appAccessDecision, _ in
+        ) { [weak self] appAccessDecision, result in
             guard let self else { return }
             switch appAccessDecision {
             case .allow:
-                self.dismissSignificantChangeBlockerIfNeeded()
+                // Only an authoritative eligible outcome clears the consent blocker.
+                // Transient fail-open results (SDK hiccup, invalid UI state — e.g. while the
+                // blocker itself is mid-presentation) must not tear it down.
+                if case .eligible = result {
+                    self.dismissSignificantChangeBlockerIfNeeded()
+                }
                 onAllowed()
             case .denyAndLogout:
                 self.forceLogoutAndShowAgeAlert()

@@ -5,6 +5,9 @@ import UIKit
 enum SignificantChangeConsentState: Equatable {
     /// No unacknowledged significant change — no consent needed.
     case notRequired
+    /// A significant change needs consent and no request has been sent yet.
+    /// Sending is an explicit user action, never automatic.
+    case required
     /// The parent/guardian approved the change.
     case granted
     /// The question was sent and the answer hasn't arrived yet.
@@ -45,24 +48,18 @@ final class SignificantChangeConsentCoordinator {
         ensureObservingResponses()
     }
 
-    /// Resolves the consent state for the given change, sending the question when it was never asked.
+    /// Resolves the consent state for the given change without any side effects.
+    /// Sending the question is a separate, explicitly user-initiated step — `requestConsent`.
     /// - Parameter manualChangeIdentifier: a developer-declared significant change; takes
     ///   precedence over a detected age rating change.
     func checkConsentIfNeeded(
-        in viewController: UIViewController,
         ageRatingChange: AgeRatingChangeCheckResult?,
         manualChangeIdentifier: SignificantChangeIdentifier? = nil
-    ) async -> SignificantChangeConsentState {
-        let changeIdentifier: SignificantChangeIdentifier? = {
-            if let manualChangeIdentifier { return manualChangeIdentifier }
-            guard let ageRatingChange else { return nil }
-            switch ageRatingChange {
-            case let .ageRatingChanged(_, ratingCode):
-                return .ageRatingChange(ratingCode: ratingCode)
-            }
-        }()
-
-        guard let changeIdentifier else {
+    ) -> SignificantChangeConsentState {
+        guard let changeIdentifier = changeIdentifier(
+            ageRatingChange: ageRatingChange,
+            manualChangeIdentifier: manualChangeIdentifier
+        ) else {
             return .notRequired
         }
 
@@ -74,9 +71,37 @@ final class SignificantChangeConsentCoordinator {
         case .pending:
             return .pending
         case nil:
+            return .required
+        }
+    }
+
+    /// Sends the consent question to the parent/guardian. Call only from an explicit user
+    /// action (the blocking screen's button) — never automatically. A previous denial is
+    /// cleared so the question can be asked again.
+    func requestConsent(
+        in viewController: UIViewController,
+        ageRatingChange: AgeRatingChangeCheckResult?,
+        manualChangeIdentifier: SignificantChangeIdentifier? = nil
+    ) async -> SignificantChangeConsentState {
+        guard let changeIdentifier = changeIdentifier(
+            ageRatingChange: ageRatingChange,
+            manualChangeIdentifier: manualChangeIdentifier
+        ) else {
+            return .notRequired
+        }
+
+        switch consentStore.status(for: changeIdentifier) {
+        case .granted:
+            return .granted
+        case .pending:
+            return .pending
+        case .denied:
+            consentStore.clearStatus(for: changeIdentifier)
+        case nil:
             break
         }
 
+        ensureObservingResponses()
         let requestResult = await consentProvider.requestConsent(
             in: viewController,
             significantAppUpdateDescription: description(for: changeIdentifier)
@@ -98,13 +123,6 @@ final class SignificantChangeConsentCoordinator {
         case .notAvailable, .failed:
             return .notAvailable
         }
-    }
-
-    /// Clears a previously denied consent so the question can be asked again — the recovery
-    /// path offered by the blocking UI.
-    func resetDeniedConsent(for identifier: SignificantChangeIdentifier) {
-        guard consentStore.status(for: identifier) == .denied else { return }
-        consentStore.clearStatus(for: identifier)
     }
 }
 
@@ -161,6 +179,18 @@ private extension SignificantChangeConsentCoordinator {
         let continuations = graceContinuations.values
         graceContinuations.removeAll()
         continuations.forEach { $0.resume(returning: nil) }
+    }
+
+    func changeIdentifier(
+        ageRatingChange: AgeRatingChangeCheckResult?,
+        manualChangeIdentifier: SignificantChangeIdentifier?
+    ) -> SignificantChangeIdentifier? {
+        if let manualChangeIdentifier { return manualChangeIdentifier }
+        guard let ageRatingChange else { return nil }
+        switch ageRatingChange {
+        case let .ageRatingChanged(_, ratingCode):
+            return .ageRatingChange(ratingCode: ratingCode)
+        }
     }
 
     func description(for changeIdentifier: SignificantChangeIdentifier) -> String {

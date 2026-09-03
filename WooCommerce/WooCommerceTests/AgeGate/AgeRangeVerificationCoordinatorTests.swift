@@ -296,13 +296,49 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func test_triggerAgeVerificationIfNeeded_when_minor_and_question_sent_then_restricts_pending_consent() {
+    func test_triggerAgeVerificationIfNeeded_when_minor_and_consent_not_requested_then_restricts_consent_required() {
         let window = UIWindow()
         window.rootViewController = UIViewController()
         featureFlagService = AlwaysOnFeatureFlagService()
+        let consentProvider = MockConsentProvider(requestResult: .sent(questionID: UUID()))
         consentCoordinator = SignificantChangeConsentCoordinator(
-            consentProvider: MockConsentProvider(requestResult: .sent(questionID: UUID())),
+            consentProvider: consentProvider,
             consentStore: MockConsentStore()
+        )
+        ageRatingChangeDetector = MockAgeRatingChangeDetector(result: .ageRatingChanged(previous: 4, current: 13))
+        let sut = AgeRangeVerificationCoordinator(
+            featureFlagService: featureFlagService,
+            ageRangeVerificationService: FakeAgeRangeService(
+                result: .eligible(
+                    significantAppChangeApprovalRequired: true,
+                    isMinor: true
+                ),
+                delay: 0.01
+            ),
+            significantChangeConsentCoordinator: consentCoordinator,
+            ageRatingChangeDetector: ageRatingChangeDetector
+        )
+        let exp = expectation(description: "onResult")
+
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, _ in
+            XCTAssertEqual(appAccessDecision, .restrictConsentRequired)
+            exp.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+        // The check never sends the question — that's an explicit user action.
+        XCTAssertEqual(consentProvider.requestCount, 0)
+    }
+
+    func test_triggerAgeVerificationIfNeeded_when_minor_and_consent_pending_then_restricts_pending_consent() {
+        let window = UIWindow()
+        window.rootViewController = UIViewController()
+        featureFlagService = AlwaysOnFeatureFlagService()
+        let consentStore = MockConsentStore()
+        consentStore.statusByKey["ageRatingChange.13"] = .pending
+        consentCoordinator = SignificantChangeConsentCoordinator(
+            consentProvider: MockConsentProvider(requestResult: .notAvailable),
+            consentStore: consentStore
         )
         ageRatingChangeDetector = MockAgeRatingChangeDetector(result: .ageRatingChanged(previous: 4, current: 13))
         let sut = AgeRangeVerificationCoordinator(
@@ -383,6 +419,7 @@ private final class MockAgeRatingChangeDetector: AgeRatingChangeDetecting {
 
 private final class MockConsentProvider: SignificantChangeConsentProviding {
     let requestResult: SignificantChangeConsentRequestResult
+    private(set) var requestCount = 0
     init(requestResult: SignificantChangeConsentRequestResult) {
         self.requestResult = requestResult
     }
@@ -390,7 +427,8 @@ private final class MockConsentProvider: SignificantChangeConsentProviding {
         in viewController: UIViewController,
         significantAppUpdateDescription: String
     ) async -> SignificantChangeConsentRequestResult {
-        requestResult
+        requestCount += 1
+        return requestResult
     }
     func responses() -> AsyncStream<SignificantChangeConsentResponse> {
         AsyncStream { $0.finish() }

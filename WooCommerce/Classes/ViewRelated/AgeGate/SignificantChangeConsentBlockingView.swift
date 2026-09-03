@@ -2,33 +2,25 @@ import SwiftUI
 
 /// Why access is currently restricted by the significant-change consent flow.
 enum SignificantChangeBlockingContext {
+    /// Consent is required and the request hasn't been sent yet — the user sends it explicitly.
+    case approvalNeeded
     /// The consent question was sent and the parent/guardian hasn't answered yet.
     case pendingApproval
     /// The parent/guardian declined the consent question.
     case approvalDenied
 }
 
-/// Full-screen, non-dismissable blocking screen shown while a significant-change consent is
-/// pending or after it was denied. Recoverable by design: no logout, just re-check / re-ask.
+/// Full-screen, non-dismissable blocking screen for the significant-change consent flow.
+/// Recoverable by design: no logout — the user requests approval, re-checks, or re-asks.
 final class SignificantChangeConsentBlockingHostingController: UIHostingController<SignificantChangeConsentBlockingView> {
-    init(context: SignificantChangeBlockingContext,
-         onCheckAgain: @escaping () -> Void,
-         onAskAgain: @escaping () -> Void) {
-        super.init(rootView: SignificantChangeConsentBlockingView(
-            context: context,
-            onCheckAgain: onCheckAgain,
-            onAskAgain: onAskAgain
-        ))
+    init(context: SignificantChangeBlockingContext, onAction: @escaping () -> Void) {
+        super.init(rootView: SignificantChangeConsentBlockingView(context: context, onAction: onAction))
         modalPresentationStyle = .fullScreen
         isModalInPresentation = true
     }
 
-    func update(context: SignificantChangeBlockingContext) {
-        rootView = SignificantChangeConsentBlockingView(
-            context: context,
-            onCheckAgain: rootView.onCheckAgain,
-            onAskAgain: rootView.onAskAgain
-        )
+    func update(context: SignificantChangeBlockingContext, onAction: @escaping () -> Void) {
+        rootView = SignificantChangeConsentBlockingView(context: context, onAction: onAction)
     }
 
     @available(*, unavailable)
@@ -39,17 +31,16 @@ final class SignificantChangeConsentBlockingHostingController: UIHostingControll
 
 struct SignificantChangeConsentBlockingView: View {
     let context: SignificantChangeBlockingContext
-    let onCheckAgain: () -> Void
-    let onAskAgain: () -> Void
+    let onAction: () -> Void
 
-    /// Brief in-button progress after a tap. The underlying re-check can resolve instantly,
+    /// Brief in-button progress after a tap. The underlying work can resolve instantly,
     /// which otherwise looks like the tap wasn't registered at all.
     @State private var isWorking = false
 
     var body: some View {
         VStack(spacing: Layout.spacing) {
             Spacer()
-            Image(systemName: context == .pendingApproval ? "person.badge.clock" : "hand.raised")
+            Image(systemName: iconName)
                 .font(.system(size: Layout.iconSize))
                 .foregroundColor(.secondary)
             Text(title)
@@ -61,37 +52,36 @@ struct SignificantChangeConsentBlockingView: View {
                 .foregroundColor(.secondary)
                 .multilineTextAlignment(.center)
             Spacer()
-            switch context {
-            case .pendingApproval:
-                Button(Localization.checkAgainButton) {
-                    perform(onCheckAgain)
+            Button(actionTitle) {
+                guard isWorking == false else { return }
+                isWorking = true
+                onAction()
+                DispatchQueue.main.asyncAfter(deadline: .now() + Layout.minimumWorkingIndicationDuration) {
+                    isWorking = false
                 }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWorking))
-            case .approvalDenied:
-                // A stored denial can only be lifted by sending a new request —
-                // there is no state to "re-check" until a new answer arrives.
-                Button(Localization.askAgainButton) {
-                    perform(onAskAgain)
-                }
-                .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWorking))
             }
+            .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWorking))
         }
         .padding(Layout.padding)
-    }
-
-    private func perform(_ action: @escaping () -> Void) {
-        guard isWorking == false else { return }
-        isWorking = true
-        action()
-        DispatchQueue.main.asyncAfter(deadline: .now() + Layout.minimumWorkingIndicationDuration) {
-            isWorking = false
-        }
     }
 }
 
 private extension SignificantChangeConsentBlockingView {
+    var iconName: String {
+        switch context {
+        case .approvalNeeded:
+            return "person.badge.shield.checkmark"
+        case .pendingApproval:
+            return "person.badge.clock"
+        case .approvalDenied:
+            return "hand.raised"
+        }
+    }
+
     var title: String {
         switch context {
+        case .approvalNeeded:
+            return Localization.neededTitle
         case .pendingApproval:
             return Localization.pendingTitle
         case .approvalDenied:
@@ -101,10 +91,23 @@ private extension SignificantChangeConsentBlockingView {
 
     var message: String {
         switch context {
+        case .approvalNeeded:
+            return Localization.neededMessage
         case .pendingApproval:
             return Localization.pendingMessage
         case .approvalDenied:
             return Localization.deniedMessage
+        }
+    }
+
+    var actionTitle: String {
+        switch context {
+        case .approvalNeeded:
+            return Localization.requestApprovalButton
+        case .pendingApproval:
+            return Localization.checkAgainButton
+        case .approvalDenied:
+            return Localization.askAgainButton
         }
     }
 
@@ -116,6 +119,25 @@ private extension SignificantChangeConsentBlockingView {
     }
 
     enum Localization {
+        static let neededTitle = NSLocalizedString(
+            "significantChangeConsent.blocking.needed.title",
+            value: "Approval Needed",
+            comment: "Title of the blocking screen shown when a significant app change requires " +
+            "a parent/guardian approval that hasn't been requested yet."
+        )
+        static let neededMessage = NSLocalizedString(
+            "significantChangeConsent.blocking.needed.message",
+            value: "Recent changes to this app need to be approved by your parent or guardian " +
+            "before you can continue. Send them an approval request to proceed.",
+            comment: "Message of the blocking screen shown when a significant app change requires " +
+            "a parent/guardian approval that hasn't been requested yet."
+        )
+        static let requestApprovalButton = NSLocalizedString(
+            "significantChangeConsent.blocking.requestApproval.button",
+            value: "Request Approval",
+            comment: "Button on the significant-change blocking screen that sends the approval " +
+            "request to a parent/guardian."
+        )
         static let pendingTitle = NSLocalizedString(
             "significantChangeConsent.blocking.pendingRequested.title",
             value: "Approval Requested",
@@ -128,6 +150,11 @@ private extension SignificantChangeConsentBlockingView {
             "Once they respond, tap Check Again to continue.",
             comment: "Message of the blocking screen shown after an approval request for a " +
             "significant app change was sent to a parent/guardian and is awaiting their response."
+        )
+        static let checkAgainButton = NSLocalizedString(
+            "significantChangeConsent.blocking.checkAgain.button",
+            value: "Check Again",
+            comment: "Button on the significant-change blocking screen that re-checks the approval status."
         )
         static let deniedTitle = NSLocalizedString(
             "significantChangeConsent.blocking.denied.title",
@@ -142,11 +169,6 @@ private extension SignificantChangeConsentBlockingView {
             comment: "Message of the blocking screen shown when a parent/guardian declined " +
             "the approval for a significant app change."
         )
-        static let checkAgainButton = NSLocalizedString(
-            "significantChangeConsent.blocking.checkAgain.button",
-            value: "Check Again",
-            comment: "Button on the significant-change blocking screen that re-checks the approval status."
-        )
         static let askAgainButton = NSLocalizedString(
             "significantChangeConsent.blocking.askAgain.button",
             value: "Ask Again",
@@ -155,10 +177,14 @@ private extension SignificantChangeConsentBlockingView {
     }
 }
 
+#Preview("Needed") {
+    SignificantChangeConsentBlockingView(context: .approvalNeeded, onAction: {})
+}
+
 #Preview("Pending") {
-    SignificantChangeConsentBlockingView(context: .pendingApproval, onCheckAgain: {}, onAskAgain: {})
+    SignificantChangeConsentBlockingView(context: .pendingApproval, onAction: {})
 }
 
 #Preview("Denied") {
-    SignificantChangeConsentBlockingView(context: .approvalDenied, onCheckAgain: {}, onAskAgain: {})
+    SignificantChangeConsentBlockingView(context: .approvalDenied, onAction: {})
 }

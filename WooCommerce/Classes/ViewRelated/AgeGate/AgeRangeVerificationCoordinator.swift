@@ -4,6 +4,9 @@ import Experiments
 enum AppAccessDecision: Equatable {
     case allow
     case denyAndLogout
+    /// A significant change requires parental consent that hasn't been requested yet.
+    /// Recoverable: block the UI, keep the session, let the user send the request.
+    case restrictConsentRequired
     /// A significant-change consent is awaiting the parent/guardian answer.
     /// Recoverable: block the UI, keep the session, re-check on demand.
     case restrictPendingConsent
@@ -22,8 +25,9 @@ protocol AgeRangeVerificationCoordinatorProtocol {
     /// `onResolution` fires on the main actor whenever an outstanding question is answered.
     func startObservingConsentResponses(onResolution: @escaping @MainActor () -> Void)
 
-    /// Clears a denied significant-change consent so the question can be sent again.
-    func resetDeniedSignificantChangeConsent() async
+    /// Sends the significant-change consent request for the currently outstanding change.
+    /// Call only from an explicit user action; also re-sends after a previous denial.
+    func requestSignificantChangeConsent(hostingWindow: UIWindow) async
 }
 
 extension AgeRangeVerificationCoordinator {
@@ -90,15 +94,17 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         }
     }
 
-    func resetDeniedSignificantChangeConsent() async {
-        if let debugIdentifier = DebugAgeVerificationOverrides.manualSignificantChangeIdentifier {
-            await significantChangeConsentCoordinator.resetDeniedConsent(for: debugIdentifier)
-        }
-        guard let change = await ageRatingChangeDetector.checkForChange(),
-              case let .ageRatingChanged(_, current) = change else {
+    func requestSignificantChangeConsent(hostingWindow: UIWindow) async {
+        guard let anchor = hostingWindow.topmostPresentedViewController else {
+            DDLogWarn("Failed to obtain view controller to anchor the consent request.")
             return
         }
-        await significantChangeConsentCoordinator.resetDeniedConsent(for: .ageRatingChange(ratingCode: current))
+        let ageRatingChange = await ageRatingChangeDetector.checkForChange()
+        _ = await significantChangeConsentCoordinator.requestConsent(
+            in: anchor,
+            ageRatingChange: ageRatingChange,
+            manualChangeIdentifier: DebugAgeVerificationOverrides.manualSignificantChangeIdentifier
+        )
     }
 }
 
@@ -130,8 +136,7 @@ private extension AgeRangeVerificationCoordinator {
 
                 Task { @MainActor in
                     let ageRatingChange = await self.ageRatingChangeDetector.checkForChange()
-                    let state = await self.significantChangeConsentCoordinator.checkConsentIfNeeded(
-                        in: anchor,
+                    let state = self.significantChangeConsentCoordinator.checkConsentIfNeeded(
                         ageRatingChange: ageRatingChange,
                         manualChangeIdentifier: DebugAgeVerificationOverrides.manualSignificantChangeIdentifier
                     )
@@ -145,6 +150,8 @@ private extension AgeRangeVerificationCoordinator {
                             self.ageRatingChangeDetector.acknowledge(ratingCode: current)
                         }
                         onResult(.allow, result)
+                    case .required:
+                        onResult(.restrictConsentRequired, result)
                     case .pending:
                         onResult(.restrictPendingConsent, result)
                     case .denied:

@@ -469,6 +469,8 @@ private extension AppCoordinator {
                 onAllowed()
             case .denyAndLogout:
                 self.forceLogoutAndShowAgeAlert()
+            case .restrictConsentRequired:
+                self.presentSignificantChangeBlocker(context: .approvalNeeded)
             case .restrictPendingConsent:
                 self.presentSignificantChangeBlocker(context: .pendingApproval)
             case .restrictDeniedConsent:
@@ -479,30 +481,35 @@ private extension AppCoordinator {
         }
     }
 
-    /// Presents (or updates) the recoverable blocking screen for a pending/denied
-    /// significant-change consent. No logout: the user keeps their session and can
-    /// re-check or re-send the approval request.
+    /// Presents (or updates) the recoverable blocking screen for the significant-change
+    /// consent flow. No logout: the user keeps their session and explicitly sends the
+    /// approval request, re-checks, or re-asks.
     func presentSignificantChangeBlocker(context: SignificantChangeBlockingContext) {
+        let action: () -> Void = { [weak self] in
+            self?.handleSignificantChangeBlockerAction(for: context)
+        }
         if let blocker = significantChangeBlocker {
-            blocker.update(context: context)
+            blocker.update(context: context, onAction: action)
             return
         }
-        let blocker = SignificantChangeConsentBlockingHostingController(
-            context: context,
-            onCheckAgain: { [weak self] in
-                self?.triggerAgeVerification()
-            },
-            onAskAgain: { [weak self] in
-                guard let self else { return }
-                Task { @MainActor in
-                    await self.ageRangeVerificationCoordinator.resetDeniedSignificantChangeConsent()
-                    self.triggerAgeVerification()
-                }
-            }
-        )
+        let blocker = SignificantChangeConsentBlockingHostingController(context: context, onAction: action)
         significantChangeBlocker = blocker
         window.topmostPresentedViewController?.present(blocker, animated: true)
         startForegroundConsentRecheck()
+    }
+
+    func handleSignificantChangeBlockerAction(for context: SignificantChangeBlockingContext) {
+        switch context {
+        case .approvalNeeded, .approvalDenied:
+            // The user explicitly sends (or re-sends) the approval request,
+            // then the gate re-evaluates with the outcome.
+            Task { @MainActor in
+                await ageRangeVerificationCoordinator.requestSignificantChangeConsent(hostingWindow: window)
+                triggerAgeVerification()
+            }
+        case .pendingApproval:
+            triggerAgeVerification()
+        }
     }
 
     func dismissSignificantChangeBlockerIfNeeded() {

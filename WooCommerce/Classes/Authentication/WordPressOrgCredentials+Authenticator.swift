@@ -1,6 +1,6 @@
 import Foundation
 import WordPressAuthenticator
-import struct NetworkingCore.CookieNonceAuthenticationEndpoints
+import Yosemite
 
 /// Authentication endpoints and URL strings derived from WP.org credentials.
 ///

@@ -209,6 +209,137 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertFalse(isSuccess)
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
     }
+
+    func test_custom_endpoints_when_password_is_generated_then_persists_before_role_and_woo_checks() throws {
+        // Given
+        var events: [String] = []
+        let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
+        appPasswordUseCase.onGenerate = { events.append("application_password") }
+        let roleCheckUseCase = MockRoleEligibilityUseCase()
+        roleCheckUseCase.onCheckEligibility = { events.append("role") }
+        stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            guard case .fetchSiteInfo(_, let completion) = action else { return }
+            events.append("woo")
+            completion(.success(.fake().copy(isWooCommerceActive: true)))
+        }
+        let persistence = try makePersistence(custom: true)
+        let checker = PostSiteCredentialLoginChecker(
+            applicationPasswordUseCase: appPasswordUseCase,
+            roleEligibilityUseCase: roleCheckUseCase,
+            stores: stores,
+            authenticationEndpointPersistence: persistence,
+            authenticationEndpointPersistenceAction: { _ in events.append("endpoint_persistence") },
+            previousViewController: nil
+        )
+        var isSuccess = false
+
+        // When
+        checker.checkEligibility(for: testURL, from: navigationController) {
+            isSuccess = true
+        }
+
+        // Then
+        waitUntil { isSuccess }
+        XCTAssertEqual(events, ["application_password", "endpoint_persistence", "role", "woo"])
+    }
+
+    func test_single_custom_endpoint_when_classifying_persistence_then_persists() throws {
+        // Given
+        let siteURL = try XCTUnwrap(URL(string: testURL))
+        let credentials = Credentials.wporg(username: "merchant", password: "password", siteAddress: testURL)
+        let endpoints = [
+            try CookieNonceAuthenticationEndpoints(
+                siteURL: siteURL,
+                loginEntryURL: try XCTUnwrap(URL(string: testURL + "/custom-login"))
+            ),
+            try CookieNonceAuthenticationEndpoints(
+                siteURL: siteURL,
+                adminBaseURL: try XCTUnwrap(URL(string: testURL + "/custom-admin/"))
+            )
+        ]
+
+        for endpoint in endpoints {
+            // When
+            let persistence = try XCTUnwrap(
+                SiteCredentialAuthenticationEndpointPersistence(credentials: credentials, endpoints: endpoint)
+            )
+
+            // Then
+            guard case .persist = persistence.behavior else {
+                return XCTFail("A single custom endpoint must be persisted")
+            }
+        }
+    }
+
+    func test_verified_standard_endpoints_when_custom_record_exists_then_removes_stale_record_before_role_check() throws {
+        // Given
+        let defaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
+        let sessionManager = SessionManager(defaults: defaults, keychainServiceName: UUID().uuidString)
+        let credentials = Credentials.wporg(username: "merchant", password: "password", siteAddress: testURL)
+        let customEndpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: testURL)),
+            loginEntryURL: XCTUnwrap(URL(string: testURL + "/custom-login"))
+        )
+        let standardEndpoints = try CookieNonceAuthenticationEndpoints(siteURL: XCTUnwrap(URL(string: testURL)))
+        sessionManager.defaultCredentials = credentials
+        sessionManager.saveCookieNonceAuthenticationEndpoints(customEndpoints, for: credentials)
+        let isolatedStores = MockStoresManager(sessionManager: sessionManager)
+        let roleCheckUseCase = MockRoleEligibilityUseCase()
+        roleCheckUseCase.onCheckEligibility = {
+            XCTAssertNil(sessionManager.cookieNonceAuthenticationEndpoints(for: credentials))
+        }
+        isolatedStores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            guard case .fetchSiteInfo(_, let completion) = action else { return }
+            completion(.success(.fake().copy(isWooCommerceActive: true)))
+        }
+        let persistence = try XCTUnwrap(
+            SiteCredentialAuthenticationEndpointPersistence(credentials: credentials, endpoints: standardEndpoints)
+        )
+        let checker = PostSiteCredentialLoginChecker(
+            applicationPasswordUseCase: MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword),
+            roleEligibilityUseCase: roleCheckUseCase,
+            stores: isolatedStores,
+            authenticationEndpointPersistence: persistence,
+            previousViewController: nil
+        )
+        var isSuccess = false
+
+        // When
+        checker.checkEligibility(for: testURL, from: navigationController) {
+            isSuccess = true
+        }
+
+        // Then
+        waitUntil { isSuccess }
+        XCTAssertNil(sessionManager.cookieNonceAuthenticationEndpoints(for: credentials))
+    }
+
+    func test_missing_endpoint_persistence_context_when_checking_browser_or_malformed_flow_then_does_not_mutate_endpoints() {
+        // Given
+        var persistenceCallCount = 0
+        let roleCheckUseCase = MockRoleEligibilityUseCase()
+        stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            guard case .fetchSiteInfo(_, let completion) = action else { return }
+            completion(.success(.fake().copy(isWooCommerceActive: true)))
+        }
+        let checker = PostSiteCredentialLoginChecker(
+            applicationPasswordUseCase: MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword),
+            roleEligibilityUseCase: roleCheckUseCase,
+            stores: stores,
+            authenticationEndpointPersistenceAction: { _ in persistenceCallCount += 1 },
+            previousViewController: nil
+        )
+        var isSuccess = false
+
+        // When
+        checker.checkEligibility(for: testURL, from: navigationController) {
+            isSuccess = true
+        }
+
+        // Then
+        waitUntil { isSuccess }
+        XCTAssertEqual(persistenceCallCount, 0)
+    }
 }
 
 private extension PostSiteCredentialLoginCheckerTests {
@@ -221,6 +352,18 @@ private extension PostSiteCredentialLoginCheckerTests {
         User(localID: 0, siteID: 0, email: "email", username: "username", firstName: "first", lastName: "last",
              nickname: "nick", roles: eligible ? Constants.eligibleRoles : Constants.ineligibleRoles)
     }
+
+    func makePersistence(custom: Bool) throws -> SiteCredentialAuthenticationEndpointPersistence {
+        let siteURL = try XCTUnwrap(URL(string: testURL))
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: siteURL,
+            loginEntryURL: custom ? try XCTUnwrap(URL(string: testURL + "/custom-login")) : nil
+        )
+        return try XCTUnwrap(SiteCredentialAuthenticationEndpointPersistence(
+            credentials: .wporg(username: "merchant", password: "password", siteAddress: testURL),
+            endpoints: endpoints
+        ))
+    }
 }
 
 /// MOCK: application password use case
@@ -230,6 +373,8 @@ private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
     let mockGeneratedPassword: ApplicationPassword?
     let mockGenerationError: Error?
     let mockDeletionError: Error?
+    var generationCallCount = 0
+    var onGenerate: (() -> Void)?
     init(mockApplicationPassword: ApplicationPassword? = nil,
          mockGeneratedPassword: ApplicationPassword? = nil,
          mockGenerationError: Error? = nil,
@@ -247,6 +392,8 @@ private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
     var canRegenerateApplicationPassword: Bool { true }
 
     func generateNewPassword() async throws -> Networking.ApplicationPassword {
+        generationCallCount += 1
+        onGenerate?()
         if let mockGeneratedPassword {
             // Store the newly generated password
             mockApplicationPassword = mockGeneratedPassword

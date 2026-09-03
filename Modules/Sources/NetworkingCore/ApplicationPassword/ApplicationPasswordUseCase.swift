@@ -66,10 +66,6 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
     ///
     private let authenticationType: AuthenticationType
 
-    /// Resolved cookie-nonce endpoints used by WordPress.org authentication.
-    ///
-    let authenticationEndpoints: CookieNonceAuthenticationEndpoints?
-
     /// To generate and delete application password
     ///
     private let network: Network
@@ -95,7 +91,6 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 storage: ApplicationPasswordStorageType? = nil,
                 rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared) {
         self.authenticationType = type
-        self.authenticationEndpoints = nil
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.network = network
         self.applicationPasswordName = passwordName ?? Self.createPasswordName()
@@ -132,7 +127,6 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
             throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
         }
 
-        self.authenticationEndpoints = resolvedEndpoints
         self.authenticationType = .wporg(username: username, password: password, siteAddress: siteAddress)
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.applicationPasswordName = Self.createPasswordName()

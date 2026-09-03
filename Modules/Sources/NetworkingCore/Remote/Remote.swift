@@ -244,9 +244,11 @@ open class Remote: NSObject {
                 // here even though this overload does not parse it.
                 try Self.validateResponse(data, for: request, recorder: storeConnectionErrorRecorder, outcome: .succeeded)
             } catch {
-                // Deliberately not rethrown. This overload has never surfaced body-level errors to its
-                // callers and widening that is a separate change; `validateResponse` has already
-                // recorded what the failure means for the store.
+                // Handled but deliberately not rethrown. This overload has never surfaced body-level
+                // errors to its callers and widening that is a separate change, but now that the body is
+                // read, an expired token or an unknown blog has to reach the notifications the rest of
+                // the app listens for.
+                handleResponseError(error: error, for: request)
                 DDLogDebug("Response body error on a headers-only request: \(error)")
             }
             return headers ?? [:]

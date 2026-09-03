@@ -120,6 +120,9 @@ def discover_entities(client: WooClient, manifest: dict[str, Any]) -> list[dict[
     ):
         if order_contains_run_id(order, run_id):
             entities.append({"type": "order", "id": int(order["id"])})
+    for tag in client.list("products/tags", search=run_id):
+        if run_id in str(tag.get("name", "")):
+            entities.append({"type": "tag", "id": int(tag["id"])})
     return entities
 
 
@@ -133,7 +136,7 @@ def cleanup(args: argparse.Namespace) -> None:
         manifest["discovery_complete"] = True
         write_manifest(args.manifest, manifest)
 
-    paths = {"order": "orders", "product": "products"}
+    paths = {"order": "orders", "product": "products", "tag": "products/tags"}
     errors: list[str] = []
     original_count = len(manifest["entities"])
     for entity in reversed(list(manifest["entities"])):

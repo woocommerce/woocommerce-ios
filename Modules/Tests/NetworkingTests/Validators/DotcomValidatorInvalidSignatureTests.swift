@@ -47,6 +47,18 @@ struct DotcomValidatorInvalidSignatureTests {
         #expect(errorData?["status"]?.value as? Int == 400)
     }
 
+    @Test func test_validate_when_the_body_names_both_an_error_and_a_code_then_the_error_wins() throws {
+        // Given
+        let json = #"{"error":"unknown_blog","code":"rest_invalid_signature","message":"Unknown blog."}"#
+        let data = try #require(json.data(using: .utf8))
+
+        // When
+        let error = capturedError(validating: data)
+
+        // Then
+        #expect(error as? DotcomError == .unknownBlog())
+    }
+
     @Test func test_validate_when_the_body_names_another_code_then_it_does_not_throw() throws {
         // Given
         let json = #"{"code":"rest_no_route","message":"No route was found matching the URL.","data":{"status":404}}"#

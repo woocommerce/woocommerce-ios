@@ -460,22 +460,15 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         return refundSelectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
     }
 
-    /// Reloads the refundable items after the store rejected a preview or a create because the
-    /// order changed since the flow was opened, for example when another register refunded part of
-    /// it. Items the store has since refunded are gone from the reloaded list, so the previous
-    /// selection is intersected with it; when nothing is left of it the default selection applies.
     @MainActor
     func refreshRefundableItems() async -> StartRefundFlowResult {
-        let previousSelection = Set(refundSelectableItems.filter { $0.isSelected }.map(\.id))
         let result = await startRefundFlow()
-
-        guard case .hasItemsToRefund = result,
-              refundSelectableItems.contains(where: { previousSelection.contains($0.id) }) else {
+        guard case .hasItemsToRefund = result else {
             return result
         }
 
         for index in refundSelectableItems.indices {
-            refundSelectableItems[index].isSelected = previousSelection.contains(refundSelectableItems[index].id)
+            refundSelectableItems[index].isSelected = false
         }
         return result
     }

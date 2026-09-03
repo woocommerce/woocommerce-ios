@@ -1199,20 +1199,65 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func refreshRefundableItems_then_keeps_the_selection_that_is_still_refundable() async throws {
+    @Test func refreshRefundableItems_when_the_reloaded_list_is_unchanged_then_clears_the_selection() async throws {
         // Given two refundable units, with only the first one selected
         let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")])
         sut.selectOrder(order)
         _ = await sut.startRefundFlow()
         sut.toggleRefundItemSelection(at: 1)
-        let selectedIDs = Set(sut.refundSelectableItems.filter { $0.isSelected }.map(\.id))
 
-        // When
+        // When the reload returns the same list, as an order-level rejection does
         let result = await sut.refreshRefundableItems()
 
-        // Then
+        // Then nothing is selected
         #expect(result == .hasItemsToRefund)
-        #expect(Set(sut.refundSelectableItems.filter { $0.isSelected }.map(\.id)) == selectedIDs)
+        #expect(sut.refundSelectableItems.count == 2)
+        #expect(sut.refundSelectableItems.allSatisfy { !$0.isSelected })
+    }
+
+    @MainActor
+    @Test func refreshRefundableItems_when_a_unit_was_refunded_elsewhere_then_clears_the_selection() async throws {
+        // Given three refundable units, all selected
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 3, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+
+        // When another register refunds one unit and the cashier reloads
+        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
+            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1,
+                                                     quantity: -1,
+                                                     name: "",
+                                                     formattedPrice: "",
+                                                     formattedTotal: "",
+                                                     imageSrc: nil)])],
+            isFullyRefunded: false,
+            supportsAutomaticRefund: true
+        )
+        let result = await sut.refreshRefundableItems()
+
+        // Then the two remaining units are listed and none of them is selected
+        #expect(result == .hasItemsToRefund)
+        #expect(sut.refundSelectableItems.count == 2)
+        #expect(sut.refundSelectableItems.allSatisfy { !$0.isSelected })
+    }
+
+    @MainActor
+    @Test func refreshRefundableItems_then_hasModifiedRefundSelection_is_false_until_the_next_toggle() async throws {
+        // Given a reloaded list with nothing selected
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 1)
+        _ = await sut.refreshRefundableItems()
+
+        // Then nothing of the cashier's is held, so switching orders needs no prompt
+        #expect(sut.hasModifiedRefundSelection == false)
+
+        // When the cashier picks again
+        sut.toggleRefundItemSelection(at: 0)
+
+        // Then the prompt applies again
+        #expect(sut.hasModifiedRefundSelection == true)
     }
 
     @MainActor

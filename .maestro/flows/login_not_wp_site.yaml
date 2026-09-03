@@ -1,0 +1,29 @@
+# p2: login.not-wp-site
+# Uses a stable public non-WordPress URL and asserts the production error copy.
+appId: ${APP_ID}
+name: "Login - Not a WordPress site error"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - login
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- runFlow:
+    file: ../subflows/open_site_address_login.yaml
+- tapOn:
+    id: "Site address"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: "https://google.com"
+- hideKeyboard
+- tapOn:
+    id: "Site Address Next Button"
+- extendedWaitUntil:
+    visible: "We were not able to detect a WordPress site at the address you entered. Please make sure WordPress is installed and that you are running the latest available version."
+    timeout: 30000
+- assertVisible: "Enter Another Store"
+- assertVisible: "Log In With Another Account"
+- takeScreenshot: login_not_wp_site

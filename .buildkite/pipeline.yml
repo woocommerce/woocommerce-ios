@@ -174,6 +174,82 @@ steps:
           context: UI Tests (iPad)
 
   #################
+  # Maestro live-store smoke tests (on demand, non-blocking)
+  #################
+  - input: Run Maestro live-store smoke tests?
+    prompt: Run the production-like simulator suite against the protected iOS test store?
+    key: maestro_smoke_triggered
+    if: build.branch == "trunk"
+    fields:
+      - select: Profile
+        key: maestro-profile
+        default: release
+        options:
+          - label: Release
+            value: release
+          - label: Burst (three release runs)
+            value: burst
+          - label: POS (eligible iPad)
+            value: pos-ipad
+          - label: iOS system surfaces
+            value: ios-system
+      - select: Simulator app
+        key: maestro-app-variant
+        default: debug
+        options:
+          - label: Debug artifact from this build
+            value: debug
+          - label: Alpha/prototype artifact
+            value: prototype
+      - text: App artifact name
+        key: maestro-app-artifact
+        default: build-products.tar
+      - text: App path after extraction
+        key: maestro-app-path
+        required: false
+        hint: Required for Alpha/prototype; for example build/Prototype/WooCommerce.app
+      - text: Source Buildkite build ID
+        key: maestro-app-source-build-id
+        required: false
+        hint: Optional; use when the app artifact belongs to another Buildkite build
+
+  - label: ":iphone: Maestro live-store smoke"
+    depends_on:
+      - build
+      - maestro_smoke_triggered
+    if: build.branch == "trunk"
+    command: |
+      export MAESTRO_PROFILE="$(buildkite-agent meta-data get maestro-profile)"
+      export MAESTRO_APP_VARIANT="$(buildkite-agent meta-data get maestro-app-variant)"
+      export MAESTRO_APP_ARTIFACT="$(buildkite-agent meta-data get maestro-app-artifact)"
+      export MAESTRO_APP_PATH="$(buildkite-agent meta-data get maestro-app-path --default '')"
+      export MAESTRO_APP_SOURCE_BUILD_ID="$(buildkite-agent meta-data get maestro-app-source-build-id --default '')"
+      .buildkite/commands/run-maestro-tests.sh
+    secrets:
+      MAESTRO_WOO_LAB_JETPACK_STORE_URL: MAESTRO_WOO_LAB_JETPACK_STORE_URL
+      MAESTRO_WOO_LAB_WPCOM_EMAIL: MAESTRO_WOO_LAB_WPCOM_EMAIL
+      MAESTRO_WOO_LAB_WPCOM_PASSWORD: MAESTRO_WOO_LAB_WPCOM_PASSWORD
+      MAESTRO_WOO_CONSUMER_KEY: MAESTRO_WOO_CONSUMER_KEY
+      MAESTRO_WOO_CONSUMER_SECRET: MAESTRO_WOO_CONSUMER_SECRET
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: build/maestro/**/report.xml
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_MAESTRO_TESTS
+    soft_fail: true
+    concurrency: 1
+    concurrency_group: "woocommerce-ios/maestro/${MAESTRO_CI_RESOURCE_KEY:-unconfigured}"
+    artifact_paths:
+      - build/maestro/**/report.xml
+      - build/maestro/**/report.html
+      - build/maestro/**/screenshots/**/*
+      - build/maestro/**/diagnostics/**/*
+      - build/maestro/**/logs/**/*
+      - build/maestro/**/run-summary.json
+
+  #################
   # Claude Build Analysis - dynamically uploaded so Build result conditions evaluate at runtime after the wait
   #################
   - wait: ~

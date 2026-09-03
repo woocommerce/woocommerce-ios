@@ -1,0 +1,25 @@
+# p2: login.help
+# Verifies the pre-login help action reaches the native Help screen.
+appId: ${APP_ID}
+name: "Login - Help section"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - login
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- runFlow:
+    file: ../subflows/open_site_address_login.yaml
+- extendedWaitUntil:
+    visible:
+      id: "authenticator-help-button"
+    timeout: 15000
+- tapOn:
+    id: "authenticator-help-button"
+- extendedWaitUntil:
+    visible: "Help"
+    timeout: 20000
+- assertVisible: "Contact Support"
+- takeScreenshot: login_help

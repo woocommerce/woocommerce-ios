@@ -1,0 +1,36 @@
+# p2: other.quick-actions
+# Exercises the installed app's real UIApplicationShortcutItems. The icon label
+# intentionally matches Debug (Woo (Dev)) and Alpha/prototype display names.
+appId: ${APP_ID}
+name: "iOS system - Home-screen Quick Actions"
+tags:
+  - flaky_quarantine
+  - ios_system
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- stopApp
+- pressKey: HOME
+- tapOn:
+    text: Search
+    index: 0
+- inputText: Woo
+- hideKeyboard
+- extendedWaitUntil:
+    visible: "Woo.*"
+    timeout: 15000
+- longPressOn:
+    text: "Woo.*"
+    index: 0
+- assertVisible: New Order
+- assertVisible: Orders
+- assertVisible: Add a product
+- assertVisible: Collect Payment
+- takeScreenshot: ios_quick_actions
+- tapOn:
+    point: "35%,24%"
+- extendedWaitUntil:
+    visible:
+      id: new-order-create-button
+    timeout: 30000
+- assertVisible:
+    id: new-order-cancel-button

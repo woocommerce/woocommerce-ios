@@ -88,6 +88,7 @@ default.profraw
 
 # Ignore Local Configuration files (like the ones used for Fastlane)
 .env
+**/.env.local
 
 # All secrets should be stored under .configure-files
 # Everything without a .enc extension is ignored
@@ -96,6 +97,10 @@ default.profraw
 
 # Can't imagine ever needing to commit one of these
 *.bak
+
+# Python tooling
+__pycache__/
+*.py[cod]
 
 # WireMock (UI Tests)
 API-Mocks/vendor/

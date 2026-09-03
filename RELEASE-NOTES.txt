@@ -23,6 +23,7 @@
 - [Internal] Payments: Added the card reader discovery and connection Tracks events that iOS was missing, for parity with Android. [PR_URL]
 - [*] Order Creation: Scanning a subscription or bookable product now explains why it can't be added to an order instead of adding it. [https://github.com/woocommerce/woocommerce-ios/pull/17710]
 - [*] Orders paid via Scan to Pay or Mark as Paid now show their actual payment method instead of "Other". [https://github.com/woocommerce/woocommerce-ios/pull/17470]
+- [Internal] Analytics: Site enrichment no longer drops caller-supplied properties when the session cache is still empty [https://github.com/woocommerce/woocommerce-ios/pull/WOOMOB-3994]
 
 25.5
 -----

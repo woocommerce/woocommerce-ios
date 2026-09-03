@@ -165,7 +165,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             }
             let errorString = String(describing: error)
             let state = POSLocalCatalogEligibilityState.ineligible(
-                reason: .catalogSizeCheckFailed(underlyingError: errorString)
+                reason: .versionCheckFailed(underlyingError: errorString)
             )
             eligibilityStates[siteID] = state
             DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check WooCommerce version for site \(siteID): \(error)")

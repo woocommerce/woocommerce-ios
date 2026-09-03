@@ -256,7 +256,6 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleReceiptEmailSendTapped,
             WooAnalyticsStat.pointOfSalePaymentsOnboardingShown,
             WooAnalyticsStat.pointOfSalePaymentsOnboardingDismissed,
-            WooAnalyticsStat.pointOfSaleCardReaderConnectionTapped,
             WooAnalyticsStat.pointOfSaleCheckoutTapToPayTapped,
             WooAnalyticsStat.pointOfSaleTapToPayNotAvailable,
             WooAnalyticsStat.pointOfSaleInteractionWithCustomerStarted,
@@ -332,6 +331,10 @@ private extension TracksProvider {
             WooAnalyticsStat.orderCreationFailed,
 
             // Card Reader Connection
+            WooAnalyticsStat.cardReaderDiscoveryTapped,
+            WooAnalyticsStat.cardReaderDiscoveryReaderDiscovered,
+            WooAnalyticsStat.cardReaderConnectionTapped,
+            WooAnalyticsStat.cardReaderAutoConnectionStarted,
             WooAnalyticsStat.cardReaderDiscoveryFailed,
             WooAnalyticsStat.cardReaderConnectionFailed,
             WooAnalyticsStat.cardReaderConnectionSuccess,

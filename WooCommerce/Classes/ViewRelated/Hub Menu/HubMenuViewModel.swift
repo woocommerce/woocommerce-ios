@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import SwiftUI
 import Combine
-import Experiments
 import Yosemite
 import protocol WooFoundation.Analytics
 import struct Storage.GeneralAppSettingsStorage
@@ -78,10 +77,8 @@ final class HubMenuViewModel: ObservableObject {
     @Published private var currentSite: Yosemite.Site?
 
     private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
     private let generalAppSettings: GeneralAppSettingsStorage
     private let cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol
-    private let inboxEligibilityChecker: InboxEligibilityChecker
     private let blazeEligibilityChecker: BlazeEligibilityCheckerProtocol
     private let googleAdsEligibilityChecker: GoogleAdsEligibilityChecker
 
@@ -97,7 +94,6 @@ final class HubMenuViewModel: ObservableObject {
 
     @Published private var isSiteEligibleForBlaze = false
     @Published private var isSiteEligibleForGoogleAds = false
-    @Published private var isSiteEligibleForInbox = false
     @Published private var isSiteEligibleForBookings = false
     @Published private var isPOSTabCachedVisible = false
 
@@ -130,10 +126,8 @@ final class HubMenuViewModel: ObservableObject {
 
     init(siteID: Int64,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores,
          generalAppSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
-         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
          posEligibilityService: POSEligibilityServiceProtocol = POSEligibilityService(),
@@ -147,10 +141,8 @@ final class HubMenuViewModel: ObservableObject {
         self.credentials = stores.sessionManager.defaultCredentials
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         self.stores = stores
-        self.featureFlagService = featureFlagService
         self.generalAppSettings = generalAppSettings
         self.switchStoreEnabled = stores.isAuthenticatedWithoutWPCom == false
-        self.inboxEligibilityChecker = inboxEligibilityChecker
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.googleAdsEligibilityChecker = googleAdsEligibilityChecker
         self.posEligibilityService = posEligibilityService
@@ -261,23 +253,16 @@ private extension HubMenuViewModel {
             $shouldShowNewFeatureBadgeOnPayments,
             $isSiteEligibleForBookings
         )
-        .combineLatest(
-            Publishers.CombineLatest3(
-                $isSiteEligibleForInbox,
-                $isSiteEligibleForBlaze,
-                $isSiteEligibleForGoogleAds
-            )
-        )
+        .combineLatest(Publishers.CombineLatest($isSiteEligibleForBlaze, $isSiteEligibleForGoogleAds))
         .map { [weak self] combinedResults -> [HubMenuItem] in
             guard let self else { return [] }
 
-            let ((shouldShowBadgeOnPayments, eligibleForBookings), (eligibleForInbox, eligibleForBlaze, eligibleForGoogleAds)) = combinedResults
+            let ((shouldShowBadgeOnPayments, eligibleForBookings), (eligibleForBlaze, eligibleForGoogleAds)) = combinedResults
 
             return createGeneralElements(
                 shouldShowBadgeOnPayments: shouldShowBadgeOnPayments,
                 eligibleForGoogleAds: eligibleForGoogleAds,
                 eligibleForBlaze: eligibleForBlaze,
-                eligibleForInbox: eligibleForInbox,
                 eligibleForBookings: eligibleForBookings
             )
         }
@@ -292,7 +277,6 @@ private extension HubMenuViewModel {
     func createGeneralElements(shouldShowBadgeOnPayments: Bool,
                                eligibleForGoogleAds: Bool,
                                eligibleForBlaze: Bool,
-                               eligibleForInbox: Bool,
                                eligibleForBookings: Bool) -> [HubMenuItem] {
         var items: [HubMenuItem] = []
 
@@ -315,9 +299,7 @@ private extension HubMenuViewModel {
         items.append(Coupons())
         items.append(Reviews())
 
-        if eligibleForInbox {
-            items.append(Inbox())
-        }
+        items.append(Inbox())
 
         items.append(Customers())
 
@@ -376,7 +358,6 @@ private extension HubMenuViewModel {
     }
 
     func updateMenuItemEligibility(with site: Yosemite.Site) {
-        isSiteEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: site.siteID)
         isPOSTabCachedVisible = posEligibilityService.loadCachedPOSTabVisibility(siteID: site.siteID) ?? false
 
         if shouldShowBookingsInMenu {

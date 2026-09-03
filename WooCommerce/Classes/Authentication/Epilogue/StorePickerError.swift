@@ -15,7 +15,7 @@ final class StorePickerErrorHostingController: UIHostingController<StorePickerEr
         },
         contactSupportAction: {
             presenting.dismiss(animated: true) {
-                let supportForm = SupportFormHostingController(viewModel: .init())
+                let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
                 supportForm.show(from: presenting)
             }
         },

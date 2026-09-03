@@ -35,6 +35,10 @@ struct POSRefundConfirmationView: View {
         }
         .background(backgroundColor)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
+        .posEdgeSwipeBackAction(
+            isEnabled: headerBackAction != nil,
+            onBack: headerBackAction
+        )
     }
 }
 

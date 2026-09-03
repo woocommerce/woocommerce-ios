@@ -3,6 +3,7 @@
 
 25.6
 -----
+- [**] POS: Fixed the refund item selection after the store rejects a refund and the items reload. The selection is now cleared so the cashier picks again, instead of coming back covering items they had deselected. [https://github.com/woocommerce/woocommerce-ios/pull/17810]
 - [*] Shipping Labels: Fixed purchased labels disappearing when an unfinished label has no carrier information. [https://github.com/woocommerce/woocommerce-ios/pull/17766]
 - [***] POS: On stores running WooCommerce 11.1.0 or newer, refund totals are now calculated by the store instead of on the device. [https://github.com/woocommerce/woocommerce-ios/pull/17741]
 - [*] Orders: Product search results in the order form are now scrollable and selectable on iPhone in landscape. [https://github.com/woocommerce/woocommerce-ios/pull/17693]

@@ -33,6 +33,9 @@ struct POSOrderDetailsView: View {
     @State private var currentRefundReason: String?
     @State private var selectedRefundForDetail: POSOrderRefund?
     @State private var refundOverrideHandler = POSManagerOverrideHandler()
+    /// `true` once the refundable items have loaded for the running flow. A retry after a
+    /// failed reload is then a reload, not a fresh flow start.
+    @State private var hasLoadedRefundableItems = false
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -136,7 +139,13 @@ struct POSOrderDetailsView: View {
                         state: refundSelectionState,
                         errorStrings: refundErrorStrings,
                         onDismiss: { dismissRefundFlow() },
-                        onRetryLoading: { initiateRefundFlow() },
+                        onRetryLoading: {
+                            if hasLoadedRefundableItems {
+                                refreshRefundSelection()
+                            } else {
+                                initiateRefundFlow()
+                            }
+                        },
                         onRetryPreparation: {
                             self.refundSelectionState = .itemSelection
                         },
@@ -621,6 +630,7 @@ private extension POSOrderDetailsView {
             refundFlowPreparationID = nil
             switch result {
             case .hasItemsToRefund:
+                hasLoadedRefundableItems = true
                 refundSelectionState = .itemSelection
             case .nothingToRefund:
                 refundSelectionState = .nothingToRefund
@@ -672,6 +682,7 @@ private extension POSOrderDetailsView {
             refundFlowPreparationID = nil
             switch result {
             case .hasItemsToRefund:
+                hasLoadedRefundableItems = true
                 refundSelectionState = .itemSelection
             case .nothingToRefund:
                 refundSelectionState = .nothingToRefund
@@ -698,6 +709,7 @@ private extension POSOrderDetailsView {
         refundSelectionState = nil
         refundModalState = nil
         currentRefundReason = nil
+        hasLoadedRefundableItems = false
         orderListModel.ordersController.clearRefundSelection()
         dismissRefundSelectionIfNeeded()
     }

@@ -497,7 +497,7 @@ class DefaultStoresManager: StoresManager {
             return
         }
 
-        sessionManager.defaultSite = site
+        sessionManager.defaultSite = siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
 
         /// Triggers root endpoint to check if application password is available
         dispatch(SettingAction.retrieveSiteAPI(siteID: site.siteID) { [weak self] result in
@@ -505,7 +505,7 @@ class DefaultStoresManager: StoresManager {
             switch result {
             case .success(let siteAPI):
                 let updatedSite = site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
-                sessionManager.defaultSite = updatedSite
+                sessionManager.defaultSite = siteByApplyingCookieNonceAuthenticationEndpoints(to: updatedSite)
             case .failure:
                 break // ignores failure
             }
@@ -524,6 +524,49 @@ class DefaultStoresManager: StoresManager {
             return false
         }
         return true
+    }
+
+    /// Overlays verified direct-site endpoints while preserving the fetched site's identity and metadata.
+    /// Returns the original site whenever the credential, endpoint, and fetched-site identities do not all match.
+    func siteByApplyingCookieNonceAuthenticationEndpoints(to site: Site) -> Site {
+        guard site.isNonJetpackSite,
+              let credentials = sessionManager.defaultCredentials,
+              case let .wporg(_, _, siteAddress) = credentials,
+              let credentialURL = URL(string: siteAddress),
+              let siteURL = URL(string: site.url),
+              let endpoints = sessionManager.cookieNonceAuthenticationEndpoints(for: credentials) else {
+            return site
+        }
+
+        do {
+            let credentialIdentity = try CookieNonceAuthenticationEndpoints(siteURL: credentialURL)
+            let siteIdentity = try CookieNonceAuthenticationEndpoints(siteURL: siteURL)
+            let siteIdentityMatchesEndpoints = siteIdentity.siteURL == endpoints.siteURL ||
+                isDefaultPortHTTPSPromotion(from: endpoints.siteURL, to: siteIdentity.siteURL)
+            guard credentialIdentity.siteURL == endpoints.siteURL,
+                  siteIdentityMatchesEndpoints else {
+                return site
+            }
+            return site.copy(
+                adminURL: endpoints.adminBaseURL.absoluteString,
+                loginURL: endpoints.loginEntryURL.absoluteString
+            )
+        } catch {
+            return site
+        }
+    }
+
+    /// WordPress may report an HTTPS canonical URL after credentials and endpoints were verified against HTTP.
+    /// This mirrors the endpoint policy's only supported cross-scheme identity change: default-port HTTP to HTTPS.
+    private func isDefaultPortHTTPSPromotion(from source: URL, to destination: URL) -> Bool {
+        guard source.scheme == "http",
+              destination.scheme == "https",
+              var promotedSource = URLComponents(url: source, resolvingAgainstBaseURL: false),
+              promotedSource.port == nil else {
+            return false
+        }
+        promotedSource.scheme = "https"
+        return promotedSource.url == destination
     }
 }
 
@@ -920,7 +963,7 @@ private extension DefaultStoresManager {
             guard let self else { return }
             switch result {
             case .success(let site):
-                self.sessionManager.defaultSite = site
+                self.sessionManager.defaultSite = self.siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
                 self.updateAndReloadWidgetInformation(with: site.siteID)
                 /// Trigger the `v1.1/connect/site-info` API to get information about
                 /// the site's Jetpack status and whether it's a WPCom site.
@@ -931,7 +974,7 @@ private extension DefaultStoresManager {
                         let updatedSite = site.copy(isJetpackThePluginInstalled: info.hasJetpack,
                                                     isJetpackConnected: info.isJetpackConnected,
                                                     isWordPressComStore: info.isWPCom)
-                        self.sessionManager.defaultSite = updatedSite
+                        self.sessionManager.defaultSite = self.siteByApplyingCookieNonceAuthenticationEndpoints(to: updatedSite)
                         trackSiteConnectionType()
                         self.updateAndReloadWidgetInformation(with: site.siteID)
                     case .failure(let error):

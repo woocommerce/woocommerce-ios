@@ -5,6 +5,11 @@ import Yosemite
 import class Networking.UserAgent
 import struct WordPressAuthenticator.WordPressOrgCredentials
 
+struct WPOrgWebViewAuthenticationContext {
+    let credentials: WordPressOrgCredentials
+    let authenticationEndpoints: CookieNonceAuthenticationEndpoints
+}
+
 /// A web view which is authenticated for WordPress.com, when possible.
 ///
 final class AuthenticatedWebViewController: UIViewController {
@@ -34,13 +39,17 @@ final class AuthenticatedWebViewController: UIViewController {
     /// Strong reference for the subscription to update progress bar
     private var subscriptions: Set<AnyCancellable> = []
 
-    /// Optional credentials for authenticating with WP.org
-    ///
-    private let siteCredentials: WordPressOrgCredentials?
+    private let siteAuthentication: WPOrgWebViewAuthenticationContext?
 
     private let wpcomCredentials: Credentials?
 
+    private let siteCredentialReplacementScheduler: (@escaping () -> Void) -> Void
+
     private var isFirstNavigation = true
+    private var siteCredentialNavigationGate: WPOrgWebViewAuthenticationNavigationGate?
+    private var siteCredentialNavigation: WKNavigation?
+    private var siteCredentialNavigationExpectedToCancel: WKNavigation?
+    private var siteCredentialReplacementLoadID: UUID?
 
     convenience init(stores: StoresManager = ServiceLocator.stores,
                      viewModel: AuthenticatedWebViewModel,
@@ -60,28 +69,23 @@ final class AuthenticatedWebViewController: UIViewController {
                   webView: popupWebView)
     }
 
-    private init(stores: StoresManager,
-                 viewModel: AuthenticatedWebViewModel,
-                 extraCredentials: Credentials?,
-                 webView: WKWebView) {
+    init(stores: StoresManager,
+         viewModel: AuthenticatedWebViewModel,
+         extraCredentials: Credentials?,
+         webView: WKWebView,
+         siteCredentialReplacementScheduler: @escaping (@escaping () -> Void) -> Void = { work in
+             DispatchQueue.main.async(execute: work)
+         }) {
         self.viewModel = viewModel
         self.webView = webView
+        self.siteCredentialReplacementScheduler = siteCredentialReplacementScheduler
         let currentCredentials = stores.sessionManager.defaultCredentials
 
-        let siteCredentials: WordPressOrgCredentials? = {
-            if case let .wporg(username, password, siteAddress) = extraCredentials {
-                return WordPressOrgCredentials(username: username,
-                                               password: password,
-                                               xmlrpc: siteAddress + "/xmlrpc.php",
-                                               options: [:])
-            } else if case let.wporg(username, password, siteAddress) = currentCredentials {
-                return WordPressOrgCredentials(username: username,
-                                               password: password,
-                                               xmlrpc: siteAddress + "/xmlrpc.php",
-                                               options: [:])
-            }
-            return nil
-        }()
+        let siteAuthentication = Self.resolveWPOrgAuthentication(
+            extraCredentials: extraCredentials,
+            currentCredentials: currentCredentials,
+            authenticationEndpointLookup: stores.sessionManager.cookieNonceAuthenticationEndpoints(for:)
+        )
 
         let wpcomCredentials: Credentials? = {
             if case .wpcom = extraCredentials {
@@ -100,11 +104,11 @@ final class AuthenticatedWebViewController: UIViewController {
             }
             return viewModel.authenticationFlow(currentSite: currentSite,
                                                 wpcomCredentialsAvailable: wpcomCredentials != nil,
-                                                wporgCredentialsAvailable: siteCredentials != nil)
+                                                wporgCredentialsAvailable: siteAuthentication != nil)
         }()
         self.currentSite = currentSite
         self.wpcomCredentials = wpcomCredentials
-        self.siteCredentials = siteCredentials
+        self.siteAuthentication = siteAuthentication
 
         super.init(nibName: nil, bundle: nil)
 
@@ -116,6 +120,7 @@ final class AuthenticatedWebViewController: UIViewController {
         if let initialURL = viewModel.initialURL,
            var viewModel = viewModel as? WebviewReloadable {
             viewModel.reloadWebview = { [weak self] in
+                self?.cancelSiteCredentialAuthentication()
                 self?.webView.load(.init(url: initialURL))
             }
         }
@@ -138,6 +143,7 @@ final class AuthenticatedWebViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         if isBeingDismissedInAnyWay {
+            cancelSiteCredentialAuthentication()
             viewModel.handleDismissal()
         }
     }
@@ -145,6 +151,38 @@ final class AuthenticatedWebViewController: UIViewController {
     override func viewDidDisappear(_ animated: Bool) {
         viewModel.handleDisappear()
         super.viewDidDisappear(animated)
+    }
+}
+
+extension AuthenticatedWebViewController {
+    static func resolveWPOrgAuthentication(
+        extraCredentials: Credentials?,
+        currentCredentials: Credentials?,
+        authenticationEndpointLookup: (Credentials) -> CookieNonceAuthenticationEndpoints?
+    ) -> WPOrgWebViewAuthenticationContext? {
+        let selectedCredentials: Credentials?
+        if case .wporg = extraCredentials {
+            selectedCredentials = extraCredentials
+        } else if case .wporg = currentCredentials {
+            selectedCredentials = currentCredentials
+        } else {
+            selectedCredentials = nil
+        }
+
+        guard let selectedCredentials,
+              case let .wporg(username, password, siteAddress) = selectedCredentials else {
+            return nil
+        }
+        let credentials = WordPressOrgCredentials(
+            username: username,
+            password: password,
+            xmlrpc: siteAddress + "/xmlrpc.php",
+            options: [:]
+        )
+        guard let endpoints = authenticationEndpointLookup(selectedCredentials) ?? credentials.authenticationEndpoints else {
+            return nil
+        }
+        return WPOrgWebViewAuthenticationContext(credentials: credentials, authenticationEndpoints: endpoints)
     }
 }
 
@@ -246,10 +284,23 @@ private extension AuthenticatedWebViewController {
     }
 
     func authenticateUsingSiteCredentialsAndLoadContent(url: URL) {
-        guard let siteCredentials, let request = try? webView.authenticateForWPOrg(with: siteCredentials) else {
+        guard let siteAuthentication else {
             return loadContent(url: url)
         }
-        webView.load(request)
+        do {
+            let request = try webView.authenticateForWPOrg(
+                with: siteAuthentication.credentials,
+                authenticationEndpoints: siteAuthentication.authenticationEndpoints
+            )
+            siteCredentialNavigationGate = try WPOrgWebViewAuthenticationNavigationGate(
+                authenticationRequest: request,
+                authenticationEndpoints: siteAuthentication.authenticationEndpoints
+            )
+            siteCredentialNavigation = webView.load(request)
+        } catch {
+            finishSiteCredentialAuthentication()
+            loadContent(url: url)
+        }
     }
 
     func loadContent(url: URL) {
@@ -282,22 +333,161 @@ private extension AuthenticatedWebViewController {
             loadContent(url: loginURL)
 
         default:
-            if url.absoluteString.contains(WKWebView.wporgNoncePath) == true,
-               initialURL.absoluteString.contains(WKWebView.wporgNoncePath) != true {
-                // Site credentials login completes, now proceed to load the initial URL.
-                loadContent(url: initialURL)
-            } else {
-                viewModel.handleRedirect(for: url)
+            if siteCredentialNavigationGate != nil {
+                return
+            }
+            viewModel.handleRedirect(for: url)
+        }
+    }
+
+    func finishSiteCredentialAuthentication(preservingExpectedCancellation: Bool = false) {
+        siteCredentialNavigationGate = nil
+        siteCredentialNavigation = nil
+        if preservingExpectedCancellation == false {
+            siteCredentialNavigationExpectedToCancel = nil
+        }
+        siteCredentialReplacementLoadID = nil
+    }
+
+    func failSiteCredentialAuthenticationAndLoadInitialURL() {
+        guard siteCredentialNavigationGate != nil else {
+            return
+        }
+        finishSiteCredentialAuthentication()
+        webView.stopLoading()
+        if let initialURL = viewModel.initialURL {
+            loadContent(url: initialURL)
+        }
+    }
+
+    private func cancelSiteCredentialAuthentication() {
+        guard siteCredentialNavigationGate != nil else {
+            return
+        }
+        siteCredentialNavigationExpectedToCancel = siteCredentialNavigation
+        finishSiteCredentialAuthentication(preservingExpectedCancellation: true)
+        webView.stopLoading()
+    }
+}
+
+extension AuthenticatedWebViewController {
+    func decideSiteCredentialNavigation(
+        for request: URLRequest,
+        isMainFrame: Bool,
+        shouldPerformDownload: Bool
+    ) -> WKNavigationActionPolicy? {
+        // Optional chaining mutates the stored gate in place, so its phase always advances with the decision.
+        guard let decision = siteCredentialNavigationGate?.decision(
+            for: request,
+            isMainFrame: isMainFrame,
+            shouldPerformDownload: shouldPerformDownload
+        ) else {
+            return nil
+        }
+        switch decision {
+        case .allowCredentialPost, .allowDestination:
+            return .allow
+        case .cancelAndLoadDestination(let destinationURL):
+            scheduleSiteCredentialReplacementLoad(destinationURL)
+            return .cancel
+        case .cancelAndFinish:
+            scheduleSiteCredentialFallbackLoad()
+            return .cancel
+        }
+    }
+
+    func decideSiteCredentialNavigation(
+        for response: URLResponse,
+        isMainFrame: Bool,
+        canShowMIMEType: Bool
+    ) -> WKNavigationResponsePolicy? {
+        guard let decision = siteCredentialNavigationGate?.decision(
+            for: response,
+            isMainFrame: isMainFrame,
+            canShowMIMEType: canShowMIMEType
+        ) else {
+            return nil
+        }
+        switch decision {
+        case .allowContinuation:
+            return .allow
+        case .allowAndFinish(let destinationURL):
+            if viewModel.initialURL == destinationURL {
+                finishSiteCredentialAuthentication()
+                return .allow
+            }
+            scheduleSiteCredentialFallbackLoad()
+            return .cancel
+        case .cancelAndFinish:
+            scheduleSiteCredentialFallbackLoad()
+            return .cancel
+        }
+    }
+
+    private func scheduleSiteCredentialFallbackLoad() {
+        guard let initialURL = viewModel.initialURL else {
+            siteCredentialNavigationExpectedToCancel = siteCredentialNavigation
+            finishSiteCredentialAuthentication(preservingExpectedCancellation: true)
+            return
+        }
+        scheduleSiteCredentialReplacementLoad(initialURL, purpose: .finishAuthentication)
+    }
+
+    private func scheduleSiteCredentialReplacementLoad(
+        _ destinationURL: URL,
+        purpose: SiteCredentialReplacementPurpose = .continueAuthentication
+    ) {
+        siteCredentialNavigationExpectedToCancel = siteCredentialNavigation
+        let loadID = UUID()
+        siteCredentialReplacementLoadID = loadID
+        siteCredentialReplacementScheduler { [weak self] in
+            guard let self,
+                  self.siteCredentialReplacementLoadID == loadID else {
+                return
+            }
+            switch purpose {
+            case .continueAuthentication:
+                guard self.siteCredentialNavigationGate != nil else {
+                    return
+                }
+                self.siteCredentialReplacementLoadID = nil
+                self.siteCredentialNavigation = self.webView.load(URLRequest(url: destinationURL))
+            case .finishAuthentication:
+                self.finishSiteCredentialAuthentication(preservingExpectedCancellation: true)
+                self.loadContent(url: destinationURL)
             }
         }
+    }
+
+    private func shouldSuppressSiteCredentialCancellation(for navigation: WKNavigation?, error: Error) -> Bool {
+        let error = error as NSError
+        let isExpectedCancellation = error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled
+        let isWebKitPolicyInterruption = error.domain == WKError.errorDomain &&
+            error.code == WebKitError.frameLoadInterruptedByPolicyChange
+        guard let expectedNavigation = siteCredentialNavigationExpectedToCancel,
+              isExpectedCancellation || isWebKitPolicyInterruption,
+              navigation === expectedNavigation else {
+            return false
+        }
+        siteCredentialNavigationExpectedToCancel = nil
+        return true
     }
 }
 
 extension AuthenticatedWebViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, decidePolicyFor navigationAction: WKNavigationAction) async -> WKNavigationActionPolicy {
+        if let policy = decideSiteCredentialNavigation(
+            for: navigationAction.request,
+            isMainFrame: navigationAction.targetFrame?.isMainFrame == true,
+            shouldPerformDownload: navigationAction.shouldPerformDownload
+        ) {
+            return policy
+        }
+
         guard let navigationURL = navigationAction.request.url else {
             return .allow
         }
+
         return await viewModel.decidePolicy(for: navigationURL)
     }
 
@@ -306,6 +496,13 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
             isFirstNavigation = false
         }
         let response = navigationResponse.response
+        if let policy = decideSiteCredentialNavigation(
+            for: response,
+            isMainFrame: navigationResponse.isForMainFrame,
+            canShowMIMEType: navigationResponse.canShowMIMEType
+        ) {
+            return policy
+        }
         if let initialURL = viewModel.initialURL,
            viewModel.isAuthenticationFailure(response: response,
                                              currentSite: currentSite,
@@ -319,6 +516,10 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
     }
 
     func webView(_ webView: WKWebView, didStartProvisionalNavigation navigation: WKNavigation!) {
+        if siteCredentialNavigationGate != nil,
+           navigation !== siteCredentialNavigationExpectedToCancel {
+            siteCredentialNavigation = navigation
+        }
         progressBar.setProgress(0, animated: false)
         activityIndicator.startAnimating()
     }
@@ -330,19 +531,49 @@ extension AuthenticatedWebViewController: WKNavigationDelegate {
     func webView(_ webView: WKWebView, didFinish navigation: WKNavigation!) {
         activityIndicator.stopAnimating()
         guard let url = webView.url else {
+            failSiteCredentialAuthenticationAndLoadInitialURL()
+            return
+        }
+        if siteCredentialNavigationGate != nil {
+            failSiteCredentialAuthenticationAndLoadInitialURL()
             return
         }
         viewModel.didFinishNavigation(for: url)
     }
 
     func webView(_ webView: WKWebView, didFail navigation: WKNavigation!, withError error: any Error) {
+        guard shouldSuppressSiteCredentialCancellation(for: navigation, error: error) == false else {
+            return
+        }
+        failSiteCredentialAuthenticationAndLoadInitialURL()
         activityIndicator.stopAnimating()
     }
 
     func webView(_ webView: WKWebView, didFailProvisionalNavigation navigation: WKNavigation!, withError error: Error) {
-        viewModel.didFailProvisionalNavigation(with: error)
+        guard shouldSuppressSiteCredentialCancellation(for: navigation, error: error) == false else {
+            return
+        }
+        let wasAuthenticatingWithSiteCredentials = siteCredentialNavigationGate != nil
+        failSiteCredentialAuthenticationAndLoadInitialURL()
+        if wasAuthenticatingWithSiteCredentials == false {
+            viewModel.didFailProvisionalNavigation(with: error)
+        }
         activityIndicator.stopAnimating()
     }
+
+    func webViewWebContentProcessDidTerminate(_ webView: WKWebView) {
+        failSiteCredentialAuthenticationAndLoadInitialURL()
+    }
+}
+
+private enum WebKitError {
+    /// WebKit's internal policy-change interruption is not exposed through `WKError.Code`.
+    static let frameLoadInterruptedByPolicyChange = 102
+}
+
+private enum SiteCredentialReplacementPurpose {
+    case continueAuthentication
+    case finishAuthentication
 }
 
 extension AuthenticatedWebViewController: WKUIDelegate {

@@ -94,6 +94,15 @@ final class SignificantChangeConsentCoordinator {
         case let .sent(questionID):
             consentStore.setStatus(.pending, for: changeIdentifier)
             consentStore.setPendingRequest(.init(questionID: questionID, identifier: changeIdentifier))
+            // An answer can arrive immediately (in-person approval, sandbox simulation).
+            // Give it a short grace window so callers get the final state directly instead of
+            // flashing a pending UI that is torn down a moment later.
+            if let response = await awaitResponse(questionID: questionID, timeout: Constants.immediateResponseGraceWindow) {
+                let status: SignificantChangeConsentStatus = response.isApproved ? .granted : .denied
+                consentStore.setStatus(status, for: changeIdentifier)
+                consentStore.clearPendingRequest()
+                return response.isApproved ? .granted : .denied
+            }
             return .pending
         case .notAvailable, .failed:
             return .notAvailable
@@ -109,6 +118,29 @@ final class SignificantChangeConsentCoordinator {
 }
 
 private extension SignificantChangeConsentCoordinator {
+    enum Constants {
+        static let immediateResponseGraceWindow: TimeInterval = 2
+    }
+
+    /// Waits up to `timeout` for the answer to the given question; nil when none arrives in time.
+    func awaitResponse(questionID: UUID, timeout: TimeInterval) async -> SignificantChangeConsentResponse? {
+        await withTaskGroup(of: SignificantChangeConsentResponse?.self) { group in
+            group.addTask { [consentProvider] in
+                for await response in consentProvider.responses() where response.questionID == questionID {
+                    return response
+                }
+                return nil
+            }
+            group.addTask {
+                try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+                return nil
+            }
+            let first = await group.next() ?? nil
+            group.cancelAll()
+            return first
+        }
+    }
+
     func description(for changeIdentifier: SignificantChangeIdentifier) -> String {
         switch changeIdentifier {
         case .ageRatingChange:

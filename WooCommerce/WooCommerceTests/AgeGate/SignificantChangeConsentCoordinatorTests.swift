@@ -98,6 +98,65 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         )
     }
 
+    @MainActor func test_checkConsentIfNeeded_when_approval_arrives_within_grace_window_then_returns_granted_directly() async {
+        // Given
+        let questionID = UUID()
+        let provider = MockConsentProvider(requestResult: .sent(questionID: questionID))
+        provider.stubbedResponses = [.init(questionID: questionID, isApproved: true)]
+        let store = MockConsentStore()
+        let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
+
+        // When
+        let state = await sut.checkConsentIfNeeded(
+            in: UIViewController(),
+            ageRatingChange: .ageRatingChanged(previous: 4, current: 13)
+        )
+
+        // Then
+        XCTAssertEqual(state, .granted)
+        XCTAssertEqual(store.statusByKey["ageRatingChange.13"], .granted)
+        XCTAssertNil(store.pendingRequest)
+    }
+
+    @MainActor func test_checkConsentIfNeeded_when_denial_arrives_within_grace_window_then_returns_denied_directly() async {
+        // Given
+        let questionID = UUID()
+        let provider = MockConsentProvider(requestResult: .sent(questionID: questionID))
+        provider.stubbedResponses = [.init(questionID: questionID, isApproved: false)]
+        let store = MockConsentStore()
+        let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
+
+        // When
+        let state = await sut.checkConsentIfNeeded(
+            in: UIViewController(),
+            ageRatingChange: .ageRatingChanged(previous: 4, current: 13)
+        )
+
+        // Then
+        XCTAssertEqual(state, .denied)
+        XCTAssertEqual(store.statusByKey["ageRatingChange.13"], .denied)
+        XCTAssertNil(store.pendingRequest)
+    }
+
+    @MainActor func test_checkConsentIfNeeded_when_grace_window_response_is_for_other_question_then_stays_pending() async {
+        // Given
+        let provider = MockConsentProvider(requestResult: .sent(questionID: UUID()))
+        provider.stubbedResponses = [.init(questionID: UUID(), isApproved: true)]
+        let store = MockConsentStore()
+        let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
+
+        // When
+        let state = await sut.checkConsentIfNeeded(
+            in: UIViewController(),
+            ageRatingChange: .ageRatingChanged(previous: 4, current: 13)
+        )
+
+        // Then
+        XCTAssertEqual(state, .pending)
+        XCTAssertEqual(store.statusByKey["ageRatingChange.13"], .pending)
+        XCTAssertNotNil(store.pendingRequest)
+    }
+
     @MainActor func test_checkConsentIfNeeded_when_request_notAvailable_then_returns_notAvailable_and_stores_nothing() async {
         // Given
         let provider = MockConsentProvider(requestResult: .notAvailable)

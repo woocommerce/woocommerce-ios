@@ -2025,7 +2025,6 @@ struct POSPaymentModelTests {
 
         // Then
         #expect(handler.completeScanToPayPaymentCalled == true)
-        #expect(handler.completeScanToPayPaymentReceivedOrder?.orderID == order.orderID)
         #expect(sut.paymentState.scanToPay == .paymentSuccess)
         #expect(celebration.celebrationWasCalled == true)
     }
@@ -2090,7 +2089,6 @@ struct POSPaymentModelTests {
 
         // Then: provideOrder was NOT called (cached order was reused)
         #expect(orderProvider.provideOrderCallCount == 0)
-        #expect(handler.completeScanToPayPaymentReceivedOrder?.orderID == cachedOrder.orderID)
     }
 
     // MARK: - Scan to Pay Polling
@@ -2160,7 +2158,6 @@ struct POSPaymentModelTests {
         #expect(sut.paymentState.scanToPay == .paymentSuccess)
         #expect(celebration.celebrationWasCalled == true)
         #expect(scanToPayHandler.recordScanToPayPaymentMethodCalled == true)
-        #expect(scanToPayHandler.recordScanToPayPaymentMethodReceivedOrder?.orderID == 123)
     }
 
     @Test("startScanToPayPolling sets verification error state when verifier throws")

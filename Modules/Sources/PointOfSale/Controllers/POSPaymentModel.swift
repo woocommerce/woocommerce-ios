@@ -768,15 +768,10 @@ extension POSPaymentModel {
     /// note and transitions to success. Used when the gateway webhook hasn't fired yet but
     /// the merchant verified the payment out-of-band.
     func completeScanToPayPayment() async throws {
-        let order: Order
-        if let currentOrder {
-            order = currentOrder
-        } else {
-            let paymentOrder = try await orderProvider.provideOrder()
-            order = paymentOrder.order
-            currentOrder = order
+        if currentOrder == nil {
+            currentOrder = try await orderProvider.provideOrder().order
         }
-        try await scanToPayHandler.completeScanToPayPayment(for: order)
+        try await scanToPayHandler.completeScanToPayPayment()
         try? await postPaymentStep?()
         scanToPayPaymentSuccess()
     }
@@ -858,9 +853,7 @@ extension POSPaymentModel {
         analytics.track(.pointOfSaleScanToPayPaymentDetectedViaPolling)
         paymentState.scanToPay = .showingQRCode(verification: .confirming)
         Task { @MainActor [weak self] in
-            if let order = self?.currentOrder {
-                await self?.scanToPayHandler.recordScanToPayPaymentMethod(for: order)
-            }
+            await self?.scanToPayHandler.recordScanToPayPaymentMethod()
             try? await self?.postPaymentStep?()
             self?.scanToPayPaymentSuccess()
         }

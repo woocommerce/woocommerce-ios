@@ -57,8 +57,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return false
         case .pointOfSaleCustomAmounts:
             return buildConfig == .localDeveloper
-        case .pointOfSalePhonePrototype:
-            return true
         case .pointOfSaleScanToPay:
             return buildConfig == .localDeveloper
         case .pointOfSaleMarkOrderAsPaid:

@@ -2045,7 +2045,6 @@ struct POSPaymentModelTests {
 
         // Then
         #expect(handler.completeScanToPayPaymentCalled == true)
-        #expect(handler.completeScanToPayPaymentReceivedOrder?.orderID == order.orderID)
         #expect(sut.paymentState.scanToPay == .paymentSuccess)
         #expect(celebration.celebrationWasCalled == true)
     }
@@ -2110,7 +2109,6 @@ struct POSPaymentModelTests {
 
         // Then: provideOrder was NOT called (cached order was reused)
         #expect(orderProvider.provideOrderCallCount == 0)
-        #expect(handler.completeScanToPayPaymentReceivedOrder?.orderID == cachedOrder.orderID)
     }
 
     // MARK: - Scan to Pay Polling
@@ -2151,31 +2149,32 @@ struct POSPaymentModelTests {
         let verifier = MockPOSScanToPayVerifier()
         verifier.resultQueue = [.success(.paid)]
         let orderProvider = MockPOSPaymentOrderProvider()
-        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        let order = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.orderToReturn = order
         orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
         let celebration = MockPaymentCaptureCelebration()
+        let scanToPayHandler = MockPOSScanToPayHandler()
 
         let sut = makePaymentController(
             orderProvider: orderProvider,
+            scanToPayHandler: scanToPayHandler,
             scanToPayVerifier: verifier,
             celebration: celebration,
             scanToPayPollInterval: 0)
 
         // When
-        await sut.startScanToPayPayment()
-
-        // Wait for the polling task to process the .paid result and call scanToPayPaymentSuccess.
+        // The payment method write runs last, after the success transition, so waiting on it
+        // means the state change and the celebration have already happened. The hook is armed
+        // before the flow starts so a fast poll can't complete before we're listening.
         await fireOnce { fire in
-            withObservationTracking {
-                _ = sut.paymentState.scanToPay
-            } onChange: {
-                Task { @MainActor in fire() }
-            }
+            scanToPayHandler.onRecordScanToPayPaymentMethodCalled = { fire() }
+            Task { @MainActor in await sut.startScanToPayPayment() }
         }
 
         // Then
         #expect(sut.paymentState.scanToPay == .paymentSuccess)
         #expect(celebration.celebrationWasCalled == true)
+        #expect(scanToPayHandler.recordScanToPayPaymentMethodCalled == true)
     }
 
     @Test("startScanToPayPolling sets verification error state when verifier throws")

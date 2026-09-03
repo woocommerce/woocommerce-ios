@@ -18,10 +18,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case updateOrderOptimistically
 
-    /// Enables searching products by partial SKU for WC version 6.6+.
-    ///
-    case searchProductsBySKU
-
     /// Enables Tap to Pay on iPhone flow in In-Person Payments, on eligible devices.
     /// This flag needs to be retained, as we cannot enable TTPoI on the Enterprise certificate,
     /// so `.alpha` builds must be excluded.
@@ -87,10 +83,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case customLoginUIForAccountCreation
 
-    /// Displays the Products tab in a split view
-    ///
-    case splitViewInProductsTab
-
     /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale
@@ -127,10 +119,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case ciabBookings
 
-    /// Enables using the catalog API endpoint for Point of Sale catalog full sync
-    ///
-    case pointOfSaleCatalogAPI
-
     /// Enables POS staff roles and permissions (PIN access, lock screen, capability-based gating)
     ///
     case pointOfSaleRoles
@@ -138,12 +126,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables adding custom amounts to the cart in Point of Sale
     ///
     case pointOfSaleCustomAmounts
-
-    /// Enables Point of Sale on iPhone (prototype).
-    /// When enabled, the iPad-only gate in `POSTabVisibilityChecker` is lifted and POS layouts
-    /// adapt to compact horizontal size class. Mirrors the Android `POS_ON_PHONES` flag.
-    ///
-    case pointOfSalePhonePrototype
 
     /// Enables Scan to Pay as a secondary payment method in Point of Sale.
     /// When enabled, the merchant can have the customer pay by scanning a QR code that
@@ -156,12 +138,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// account credit, etc.) and just needs the order marked as completed.
     ///
     case pointOfSaleMarkOrderAsPaid
-
-    /// Enables Tap to Pay as a payment method in Point of Sale on phone.
-    /// When enabled and the device + site support TTP, the totals view promotes "Tap to Pay"
-    /// as the primary payment method. Mirrors the Android `WOO_POS_TAP_TO_PAY` flag.
-    ///
-    case pointOfSaleTapToPay
 
     /// Enables self driven push token registration
     ///

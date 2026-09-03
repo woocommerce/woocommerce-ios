@@ -9,8 +9,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .searchProductsBySKU:
-            return true
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,
@@ -31,8 +29,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .customLoginUIForAccountCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .splitViewInProductsTab:
-            return true
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .revampedShippingLabelCreation:
@@ -51,20 +47,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .ciabBookings:
             return false
-        case .pointOfSaleCatalogAPI:
-            return true
         case .pointOfSaleRoles:
             return false
         case .pointOfSaleCustomAmounts:
             return buildConfig == .localDeveloper
-        case .pointOfSalePhonePrototype:
-            return true
         case .pointOfSaleScanToPay:
             return buildConfig == .localDeveloper
         case .pointOfSaleMarkOrderAsPaid:
             return buildConfig == .localDeveloper
-        case .pointOfSaleTapToPay:
-            return true
         case .selfDrivenPushToken:
             return true
         case .clientSideDashboardBanner:

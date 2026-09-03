@@ -51,9 +51,14 @@ final class OrderDetailsDataSource: NSObject {
         return order.datePaid == nil
     }
 
+    /// Whether the order has anything left to refund.
+    ///
+    /// This deliberately does not check whether the order was paid. WooCommerce core gates its own Refund button on
+    /// the same question (`woocommerce_admin_order_should_render_refunds`), because nothing in the API reliably says
+    /// that money arrived: `date_paid` is only set by `payment_complete()`, so an order paid offline never gets one.
+    ///
     var isEligibleForRefund: Bool {
         guard !isRefundedStatus,
-              order.datePaid != nil,
               refundableOrderItemsDeterminer.isAnythingToRefund(from: order, with: refunds, currencyFormatter: currencyFormatter) else {
             return false
         }

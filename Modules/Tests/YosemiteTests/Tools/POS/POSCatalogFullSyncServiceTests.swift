@@ -14,12 +14,13 @@ struct POSCatalogFullSyncServiceTests {
     init() {
         self.mockSyncRemote = MockPOSCatalogSyncRemote()
         self.mockPersistenceService = MockPOSCatalogPersistenceService()
-        self.sut = POSCatalogFullSyncService(syncRemote: mockSyncRemote, batchSize: 2, persistenceService: mockPersistenceService, usesCatalogAPI: false)
+        self.sut = POSCatalogFullSyncService(syncRemote: mockSyncRemote, batchSize: 2, persistenceService: mockPersistenceService)
     }
 
-    // MARK: - Full Sync Tests
+    // MARK: - Paginated Full Sync Tests
+    // `startPaginatedFullSync` is the fallback used when a host blocks the generated catalog file.
 
-    @Test func startFullSync_loads_products_and_variations() async throws {
+    @Test func startPaginatedFullSync_loads_products_and_variations() async throws {
         // Given
         let expectedProducts = [POSProduct.fake(), POSProduct.fake()]
         let expectedVariations = [POSProductVariation.fake()]
@@ -28,7 +29,7 @@ struct POSCatalogFullSyncServiceTests {
         mockSyncRemote.setVariationResult(pageNumber: 1, result: .success(PagedItems(items: expectedVariations, hasMorePages: false, totalItems: 0)))
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
+        let result = try await sut.startPaginatedFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then
         #expect(result.products.count == expectedProducts.count)
@@ -37,7 +38,7 @@ struct POSCatalogFullSyncServiceTests {
         #expect(await mockSyncRemote.loadProductVariationsCallCount.value == 2) // 1 batch of 2 requests
     }
 
-    @Test func startFullSync_handles_paginated_products_correctly() async throws {
+    @Test func startPaginatedFullSync_handles_paginated_products_correctly() async throws {
         // Given - Multiple pages of products
         let page1Products = [POSProduct.fake()]
         let page2Products = [POSProduct.fake()]
@@ -50,7 +51,7 @@ struct POSCatalogFullSyncServiceTests {
         ])
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
+        let result = try await sut.startPaginatedFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then
         #expect(result.products.count == 3)
@@ -58,7 +59,7 @@ struct POSCatalogFullSyncServiceTests {
         #expect(await mockSyncRemote.loadProductVariationsCallCount.value == 2) // 1 batch of 2 requests
     }
 
-    @Test func startFullSync_handles_paginated_variations_correctly() async throws {
+    @Test func startPaginatedFullSync_handles_paginated_variations_correctly() async throws {
         // Given - Multiple pages of variations
         let page1Variations = [POSProductVariation.fake(), POSProductVariation.fake()]
         let page2Variations = [POSProductVariation.fake()]
@@ -71,7 +72,7 @@ struct POSCatalogFullSyncServiceTests {
         ])
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
+        let result = try await sut.startPaginatedFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then
         #expect(result.variations.count == 4)
@@ -79,7 +80,7 @@ struct POSCatalogFullSyncServiceTests {
         #expect(await mockSyncRemote.loadProductVariationsCallCount.value == 4) // 2 batches of 2 requests
     }
 
-    @Test func startFullSync_stops_pagination_when_no_new_items_returned_and_hasMorePages_is_inaccurate() async throws {
+    @Test func startPaginatedFullSync_stops_pagination_when_no_new_items_returned_and_hasMorePages_is_inaccurate() async throws {
         // Given
         let page1Products = [POSProduct.fake()]
         let emptyPage: [POSProduct] = []
@@ -91,14 +92,14 @@ struct POSCatalogFullSyncServiceTests {
         mockSyncRemote.setVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
+        let result = try await sut.startPaginatedFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then - Should stop after empty page
         #expect(result.products.count == 1)
         #expect(await mockSyncRemote.loadProductsCallCount.value == 4) // The results from the second batch are empty
     }
 
-    @Test func startFullSync_handles_batch_processing_correctly() async throws {
+    @Test func startPaginatedFullSync_handles_batch_processing_correctly() async throws {
         // Given - Service with batch size 2
         let products = (1...5).map { _ in POSProduct.fake() }
 
@@ -112,26 +113,25 @@ struct POSCatalogFullSyncServiceTests {
         mockSyncRemote.setVariationResult(pageNumber: 1, result: .success(PagedItems(items: [], hasMorePages: false, totalItems: 0)))
 
         // When
-        let result = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
+        let result = try await sut.startPaginatedFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then
         #expect(result.products.count == 5)
         #expect(await mockSyncRemote.loadProductsCallCount.value == 6)
     }
 
-    @Test func startFullSync_propagates_network_errors() async throws {
+    @Test func startPaginatedFullSync_propagates_network_errors() async throws {
         // Given
         let expectedError = NSError(domain: "network", code: 500, userInfo: [NSLocalizedDescriptionKey: "Network error"])
         mockSyncRemote.setProductResult(pageNumber: 1, result: .failure(expectedError))
         let sut = POSCatalogFullSyncService(syncRemote: mockSyncRemote,
                                             batchSize: 2,
                                             retryDelay: 0,
-                                            persistenceService: mockPersistenceService,
-                                            usesCatalogAPI: false)
+                                            persistenceService: mockPersistenceService)
 
         // When/Then
         await #expect(throws: expectedError) {
-            _ = try await sut.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
+            _ = try await sut.startPaginatedFullSync(for: sampleSiteID, allowCellular: true)
         }
     }
 
@@ -147,8 +147,7 @@ struct POSCatalogFullSyncServiceTests {
             credentials: credentials,
             selectedSite: Just(Site.fake()).map { $0.toJetpackSite() }.eraseToAnyPublisher(),
             appPasswordSupportState: Just(false).eraseToAnyPublisher(),
-            grdbManager: grdbManager,
-            usesCatalogAPI: false
+            grdbManager: grdbManager
         )
 
         // Then
@@ -164,8 +163,7 @@ struct POSCatalogFullSyncServiceTests {
             credentials: nil,
             selectedSite: Just(Site.fake()).map { $0.toJetpackSite() }.eraseToAnyPublisher(),
             appPasswordSupportState: Just(false).eraseToAnyPublisher(),
-            grdbManager: grdbManager,
-            usesCatalogAPI: false
+            grdbManager: grdbManager
         )
 
         // Then
@@ -179,9 +177,8 @@ struct POSCatalogFullSyncServiceTests {
         // When
         let service = POSCatalogFullSyncService(syncRemote: mockSyncRemote,
                                                 batchSize: customBatchSize,
-                                                persistenceService: mockPersistenceService,
-                                                usesCatalogAPI: false)
-        _ = try await service.startFullSync(for: sampleSiteID, allowCellular: true, isBackgroundSync: false)
+                                                persistenceService: mockPersistenceService)
+        _ = try await service.startPaginatedFullSync(for: sampleSiteID, allowCellular: true)
 
         // Then
         #expect(await mockSyncRemote.loadProductsCallCount.value == 5)
@@ -202,8 +199,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When
@@ -225,8 +221,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When/Then
@@ -244,8 +239,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When/Then
@@ -264,8 +258,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When/Then
@@ -283,8 +276,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When
@@ -303,8 +295,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When
@@ -329,8 +320,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When
@@ -353,8 +343,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When/Then - Should throw generationFailed with poll attempts
@@ -374,8 +363,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When
@@ -397,8 +385,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When
@@ -425,8 +412,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When
@@ -452,8 +438,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When
@@ -475,8 +460,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When
@@ -497,8 +481,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When
@@ -525,8 +508,7 @@ struct POSCatalogFullSyncServiceTests {
         let sut = POSCatalogFullSyncService(
             syncRemote: mockSyncRemote,
             batchSize: 2,
-            persistenceService: mockPersistenceService,
-            usesCatalogAPI: true
+            persistenceService: mockPersistenceService
         )
 
         // When

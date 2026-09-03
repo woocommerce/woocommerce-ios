@@ -185,7 +185,8 @@ extension DotcomError: CustomStringConvertible {
         case .unknownBlog:
             return NSLocalizedString("Dotcom Unknown Blog", comment: "WordPress.com error thrown when the site ID is no longer recognized.")
         case .invalidSignature:
-            return NSLocalizedString("Dotcom Invalid Signature",
+            return NSLocalizedString("dotcomError.invalidSignature.description",
+                                     value: "Dotcom Invalid Signature",
                                      comment: "WordPress.com error thrown when the store rejects the signature of a Jetpack request.")
         case .unknown(let code, let message, _):
             let theMessage = message ?? String()

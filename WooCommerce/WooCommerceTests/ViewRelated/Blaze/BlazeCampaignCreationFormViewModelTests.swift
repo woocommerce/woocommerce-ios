@@ -121,32 +121,14 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.adDestinationViewModel?.productURL, sampleSiteAddress + "?post_type=product&p=\(sampleProductID)")
     }
 
-    func test_hasEndDate_is_true_when_feature_flag_is_disabled() {
+    func test_hasEndDate_is_false_by_default() {
         // Given
         insertProduct(sampleProduct)
-        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
-                                                           onCompletion: {})
-
-        // Then
-        XCTAssertTrue(viewModel.budgetSettingViewModel.hasEndDate)
-    }
-
-    func test_hasEndDate_is_false_when_feature_flag_is_enabled() {
-        // Given
-        insertProduct(sampleProduct)
-        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: true)
-        let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
-                                                           productID: sampleProductID,
-                                                           stores: stores,
-                                                           storage: storageManager,
-                                                           productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
 
         // Then
@@ -972,13 +954,11 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     func test_tos_checkbox_first_line_evergreen_displays_expected_text() throws {
         // Given
         insertProduct(sampleProduct)
-        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: true)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
 
         // When
@@ -1004,16 +984,16 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     func test_tos_checkbox_first_line_finite_up_to_seven_days_displays_expected_text() throws {
         // Given
         insertProduct(sampleProduct)
-        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
 
         // When
+        viewModel.budgetSettingViewModel.hasEndDate = true
+        viewModel.budgetSettingViewModel.confirmSettings()
         let attributedText = viewModel.tosCheckboxAttributedText
         let textContent = String(attributedText.characters)
 
@@ -1037,17 +1017,16 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     func test_tos_checkbox_first_line_finite_more_than_seven_days_displays_expected_text() throws {
         // Given
         insertProduct(sampleProduct)
-        let featureFlagService = MockFeatureFlagService(blazeEvergreenCampaigns: false)
         let viewModel = BlazeCampaignCreationFormViewModel(siteID: sampleSiteID,
                                                            productID: sampleProductID,
                                                            stores: stores,
                                                            storage: storageManager,
                                                            productImageLoader: imageLoader,
-                                                           featureFlagService: featureFlagService,
                                                            onCompletion: {})
 
         // When
         // Set duration to more than 7 days to trigger the "more than 7 days" scenario
+        viewModel.budgetSettingViewModel.hasEndDate = true
         viewModel.budgetSettingViewModel.didTapApplyDuration(dayCount: 14, since: Date.now + 60 * 60 * 24)
         viewModel.budgetSettingViewModel.confirmSettings()
 

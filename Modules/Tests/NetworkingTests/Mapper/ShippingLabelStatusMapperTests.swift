@@ -93,6 +93,11 @@ class ShippingLabelStatusMapperTests: XCTestCase {
 
         // Assert
         XCTAssertEqual(shippingLabelResponse.status, .purchaseInProgress)
+        XCTAssertNil(shippingLabelResponse.getPurchasedLabel())
+        guard case .pending = shippingLabelResponse else {
+            XCTFail("Expected a pending shipping label purchase")
+            return
+        }
     }
 }
 

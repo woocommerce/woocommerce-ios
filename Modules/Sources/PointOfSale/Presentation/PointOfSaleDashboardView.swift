@@ -7,7 +7,6 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.posExternalViews) private var externalViews
-    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAccessSession) private var session
@@ -223,8 +222,7 @@ struct PointOfSaleDashboardView: View {
     }
 
     private var isPhoneLayout: Bool {
-        horizontalSizeClass == .compact &&
-        featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+        horizontalSizeClass == .compact
     }
 
     @ViewBuilder
@@ -373,6 +371,10 @@ struct PointOfSaleDashboardView: View {
         }
         .background(Color.posSurface)
         .toolbar(.hidden, for: .navigationBar)
+        .posEdgeSwipeBackAction(
+            isEnabled: canExitFinalizingOnPhone,
+            onBack: { posModel.addMoreToCart() }
+        )
     }
 
     @State private var showOrders: Bool = false

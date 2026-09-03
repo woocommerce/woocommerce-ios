@@ -853,9 +853,10 @@ extension POSPaymentModel {
         analytics.track(.pointOfSaleScanToPayPaymentDetectedViaPolling)
         paymentState.scanToPay = .showingQRCode(verification: .confirming)
         Task { @MainActor [weak self] in
-            await self?.scanToPayHandler.recordScanToPayPaymentMethod()
             try? await self?.postPaymentStep?()
             self?.scanToPayPaymentSuccess()
+
+            await self?.scanToPayHandler.recordScanToPayPaymentMethod()
         }
     }
 }

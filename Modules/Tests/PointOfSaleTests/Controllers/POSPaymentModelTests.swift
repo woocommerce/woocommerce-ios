@@ -2143,15 +2143,12 @@ struct POSPaymentModelTests {
             scanToPayPollInterval: 0)
 
         // When
-        await sut.startScanToPayPayment()
-
-        // Wait for the polling task to process the .paid result and call scanToPayPaymentSuccess.
+        // The payment method write runs last, after the success transition, so waiting on it
+        // means the state change and the celebration have already happened. The hook is armed
+        // before the flow starts so a fast poll can't complete before we're listening.
         await fireOnce { fire in
-            withObservationTracking {
-                _ = sut.paymentState.scanToPay
-            } onChange: {
-                Task { @MainActor in fire() }
-            }
+            scanToPayHandler.onRecordScanToPayPaymentMethodCalled = { fire() }
+            Task { @MainActor in await sut.startScanToPayPayment() }
         }
 
         // Then

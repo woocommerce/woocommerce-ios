@@ -54,7 +54,8 @@ protocol PointOfSaleOrderControllerProtocol {
     func confirmScanToPayPayment() async throws
     /// Records Scan to Pay as the cached order's visible payment method title, but only when the
     /// order does not already carry a gateway-supplied title. This is best-effort display
-    /// metadata; failures should not block payment success.
+    /// metadata: neither its failures nor its latency should block payment success, so callers
+    /// run it after the success transition rather than before it.
     func recordScanToPayPaymentMethod() async
     /// Reloads the cached order from the server. Used by the Scan to Pay verifier to detect
     /// when the gateway webhook has flipped the order to `.processing`/`.completed`.

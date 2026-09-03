@@ -11,8 +11,10 @@ final class MockPOSScanToPayHandler: POSScanToPayHandling {
     }
 
     var recordScanToPayPaymentMethodCalled = false
+    var onRecordScanToPayPaymentMethodCalled: (@Sendable () -> Void)?
 
     func recordScanToPayPaymentMethod() async {
         recordScanToPayPaymentMethodCalled = true
+        onRecordScanToPayPaymentMethodCalled?()
     }
 }

@@ -1,11 +1,38 @@
 import Foundation
 import UIKit
 
+/// Consent state for the currently outstanding significant change, if any.
+enum SignificantChangeConsentState: Equatable {
+    /// No unacknowledged significant change — no consent needed.
+    case notRequired
+    /// A significant change needs consent and no request has been sent yet.
+    /// Sending is an explicit user action, never automatic.
+    case required
+    /// The parent/guardian approved the change.
+    case granted
+    /// The question was sent and the answer hasn't arrived yet.
+    case pending
+    /// The parent/guardian declined the change.
+    case denied
+    /// PermissionKit is unavailable or sending failed — treated permissively by policy.
+    case notAvailable
+}
+
+@MainActor
 final class SignificantChangeConsentCoordinator {
     private let consentProvider: SignificantChangeConsentProviding
     private let consentStore: SignificantChangeConsentStoring
+    private var responsesTask: Task<Void, Never>?
+    private var onResolution: (@MainActor (SignificantChangeConsentStatus) -> Void)?
+    /// Grace-window waiters keyed by question id. The single response listener resumes these,
+    /// so an answer is never split between two competing stream subscriptions.
+    private var graceContinuations: [UUID: CheckedContinuation<SignificantChangeConsentResponse?, Never>] = [:]
+    /// Answers that arrived before their question was recorded as pending — e.g. delivered while
+    /// `requestConsent` was still awaiting the system's send call. They're matched up as soon as
+    /// the send result reports the question id, instead of being dropped as unknown.
+    private var unmatchedResponses: [UUID: SignificantChangeConsentResponse] = [:]
 
-    init(
+    nonisolated init(
         consentProvider: SignificantChangeConsentProviding = PermissionKitSignificantChangeConsentProvider(),
         consentStore: SignificantChangeConsentStoring = UserDefaultsSignificantChangeConsentStore()
     ) {
@@ -13,65 +40,205 @@ final class SignificantChangeConsentCoordinator {
         self.consentStore = consentStore
     }
 
+    deinit {
+        responsesTask?.cancel()
+    }
+
+    /// Registers the app-wide resolution callback for answers that arrive outside an active
+    /// check (e.g. long after the question was sent, or on a later launch). The underlying
+    /// listener is a single long-lived subscription shared with the grace-window path.
+    func startObservingResponses(onResolution: @escaping @MainActor (SignificantChangeConsentStatus) -> Void) {
+        self.onResolution = onResolution
+        ensureObservingResponses()
+    }
+
+    /// Resolves the consent state for the given change without any side effects.
+    /// Sending the question is a separate, explicitly user-initiated step — `requestConsent`.
+    /// - Parameter manualChangeIdentifier: a developer-declared significant change; takes
+    ///   precedence over a detected age rating change.
     func checkConsentIfNeeded(
+        ageRatingChange: AgeRatingChangeCheckResult?,
+        manualChangeIdentifier: SignificantChangeIdentifier? = nil
+    ) -> SignificantChangeConsentState {
+        guard let changeIdentifier = changeIdentifier(
+            ageRatingChange: ageRatingChange,
+            manualChangeIdentifier: manualChangeIdentifier
+        ) else {
+            return .notRequired
+        }
+
+        switch consentStore.status(for: changeIdentifier) {
+        case .granted:
+            return .granted
+        case .denied:
+            return .denied
+        case .pending:
+            return .pending
+        case nil:
+            return .required
+        }
+    }
+
+    /// Sends the consent question to the parent/guardian. Call only from an explicit user
+    /// action (the blocking screen's button) — never automatically. A previous denial can be
+    /// asked again; it stays persisted until the system actually accepts the new question.
+    func requestConsent(
         in viewController: UIViewController,
         ageRatingChange: AgeRatingChangeCheckResult?,
         manualChangeIdentifier: SignificantChangeIdentifier? = nil
-    ) async -> SignificantChangeConsentOutcome {
-        let changeIdentifier: SignificantChangeIdentifier? = {
-            if let manualChangeIdentifier { return manualChangeIdentifier }
-            guard let ageRatingChange else { return nil }
-            switch ageRatingChange {
-            case let .ageRatingChanged(_, ratingCode):
-                return .ageRatingChange(ratingCode: ratingCode)
-            }
-        }()
-
-        guard let changeIdentifier else {
-            return .granted
+    ) async -> SignificantChangeConsentState {
+        guard let changeIdentifier = changeIdentifier(
+            ageRatingChange: ageRatingChange,
+            manualChangeIdentifier: manualChangeIdentifier
+        ) else {
+            return .notRequired
         }
 
-        if let status = consentStore.status(for: changeIdentifier) {
-            return status == .granted ? .granted : .denied
-        }
-
-        let outcome = await consentProvider.requestConsent(
-            in: viewController,
-            significantAppUpdateDescription: {
-                switch changeIdentifier {
-                case .ageRatingChange:
-                    return String(
-                        format: Localization.ageRatingChangeRequestDescriptionFormat,
-                        arguments: changeIdentifier.updateDescriptionFormatArguments
-                    )
-                case .manual:
-                    return String(
-                        format: Localization.manualChangeRequestDescriptionFormat,
-                        arguments: changeIdentifier.updateDescriptionFormatArguments
-                    )
-                }
-            }()
-        )
-        switch outcome {
+        switch consentStore.status(for: changeIdentifier) {
         case .granted:
-            consentStore.setStatus(.granted, for: changeIdentifier)
-        case .denied:
-            consentStore.setStatus(.denied, for: changeIdentifier)
-        case .notAvailable, .unknown:
+            return .granted
+        case .pending:
+            return .pending
+        case .denied, nil:
+            // Re-askable. The denial is only replaced once the question is sent, so a failed
+            // re-ask doesn't downgrade "declined" to "never asked".
             break
         }
 
-        return outcome
+        ensureObservingResponses()
+        let requestResult = await consentProvider.requestConsent(
+            in: viewController,
+            significantAppUpdateDescription: description(for: changeIdentifier)
+        )
+        switch requestResult {
+        case let .sent(questionID):
+            consentStore.setStatus(.pending, for: changeIdentifier)
+            consentStore.setPendingRequest(.init(questionID: questionID, identifier: changeIdentifier))
+            // The answer may already be here (delivered while the send call was in flight) or
+            // arrive right away (in-person approval, sandbox simulation). Resolve it directly so
+            // callers get the final state instead of flashing a pending UI that is torn down
+            // a moment later.
+            let response: SignificantChangeConsentResponse?
+            if let buffered = unmatchedResponses.removeValue(forKey: questionID) {
+                response = buffered
+            } else {
+                response = await awaitResponse(questionID: questionID, timeout: Constants.immediateResponseGraceWindow)
+            }
+            guard let response else {
+                return .pending
+            }
+            return persist(response, for: changeIdentifier) == .granted ? .granted : .denied
+        case .notAvailable, .failed:
+            return .notAvailable
+        }
     }
 }
 
 private extension SignificantChangeConsentCoordinator {
+    enum Constants {
+        static let immediateResponseGraceWindow: TimeInterval = 2
+        /// Only one question is ever in flight; anything beyond a handful of unmatched answers is stale noise.
+        static let maxUnmatchedResponses = 8
+    }
+
+    /// Starts the single long-lived response listener if it isn't running yet.
+    func ensureObservingResponses() {
+        guard responsesTask == nil else { return }
+        responsesTask = Task { [consentProvider, weak self] in
+            for await response in consentProvider.responses() {
+                await self?.handle(response)
+            }
+            // The stream ended — no more answers can arrive, release any grace waiters.
+            await self?.resumeAllGraceWaiters()
+        }
+    }
+
+    func handle(_ response: SignificantChangeConsentResponse) {
+        // An active grace window for this question owns the response; the check flow
+        // persists the outcome and reports the final state itself.
+        if let continuation = graceContinuations.removeValue(forKey: response.questionID) {
+            continuation.resume(returning: response)
+            return
+        }
+        guard let pending = consentStore.pendingRequest, pending.questionID == response.questionID else {
+            // Not a known question (yet): keep it in case a send call still in flight
+            // reports this question id when it returns.
+            bufferUnmatched(response)
+            return
+        }
+        let status = persist(response, for: pending.identifier)
+        onResolution?(status)
+    }
+
+    @discardableResult
+    func persist(
+        _ response: SignificantChangeConsentResponse,
+        for identifier: SignificantChangeIdentifier
+    ) -> SignificantChangeConsentStatus {
+        let status: SignificantChangeConsentStatus = response.isApproved ? .granted : .denied
+        consentStore.setStatus(status, for: identifier)
+        consentStore.clearPendingRequest()
+        return status
+    }
+
+    func bufferUnmatched(_ response: SignificantChangeConsentResponse) {
+        if unmatchedResponses.count >= Constants.maxUnmatchedResponses {
+            unmatchedResponses.removeAll()
+        }
+        unmatchedResponses[response.questionID] = response
+    }
+
+    /// Waits up to `timeout` for the answer to the given question; nil when none arrives in time.
+    func awaitResponse(questionID: UUID, timeout: TimeInterval) async -> SignificantChangeConsentResponse? {
+        ensureObservingResponses()
+        return await withCheckedContinuation { continuation in
+            graceContinuations[questionID] = continuation
+            Task { [weak self] in
+                try? await Task.sleep(nanoseconds: UInt64(timeout * 1_000_000_000))
+                await self?.expireGraceWaiter(questionID: questionID)
+            }
+        }
+    }
+
+    func expireGraceWaiter(questionID: UUID) {
+        if let continuation = graceContinuations.removeValue(forKey: questionID) {
+            continuation.resume(returning: nil)
+        }
+    }
+
+    func resumeAllGraceWaiters() {
+        let continuations = graceContinuations.values
+        graceContinuations.removeAll()
+        continuations.forEach { $0.resume(returning: nil) }
+    }
+
+    func changeIdentifier(
+        ageRatingChange: AgeRatingChangeCheckResult?,
+        manualChangeIdentifier: SignificantChangeIdentifier?
+    ) -> SignificantChangeIdentifier? {
+        if let manualChangeIdentifier { return manualChangeIdentifier }
+        guard let ageRatingChange else { return nil }
+        switch ageRatingChange {
+        case let .ageRatingChanged(_, ratingCode):
+            return .ageRatingChange(ratingCode: ratingCode)
+        }
+    }
+
+    func description(for changeIdentifier: SignificantChangeIdentifier) -> String {
+        switch changeIdentifier {
+        case .ageRatingChange:
+            return Localization.ageRatingChangeRequestDescription
+        case let .manual(id):
+            return String(format: Localization.manualChangeRequestDescriptionFormat, id)
+        }
+    }
+
     enum Localization {
-        static let ageRatingChangeRequestDescriptionFormat = NSLocalizedString(
-            "significantChangeConsent.ageRatingChange.description",
-            value: "App age rating changed to %1$d.",
-            comment: "PermissionKit description shown when the app age rating changes." +
-            "ratingCode: %1$d is the new rating code."
+        static let ageRatingChangeRequestDescription = NSLocalizedString(
+            "significantChangeConsent.ageRatingChange.request.description",
+            value: "The app's App Store age rating has increased.",
+            comment: "Description a parent or guardian sees in the system consent request " +
+            "when the app's App Store age rating changes."
         )
 
         static let manualChangeRequestDescriptionFormat = NSLocalizedString(

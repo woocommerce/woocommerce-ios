@@ -151,13 +151,6 @@ final class MainTabBarController: UITabBarController {
 
     private let productsContainerController = TabContainerController()
 
-    /// Unfortunately, we can't use the above container to directly hold a WooTabNavigationController, due to
-    /// a longstanding bug where a black bar equal to the tab bar height is shown when a nav controller
-    /// is shown as an embedded vc in a tab. See link for details, but the solutions don't work here.
-    /// https://stackoverflow.com/questions/28608817/uinavigationcontroller-embedded-in-a-container-view-displays-a-table-view-contr
-    /// remove when .splitViewInProductsTab is removed.
-    private let productsNavigationController = WooTabNavigationController()
-
     private let posContainerController = TabContainerController()
     private var posTabCoordinator: POSTabCoordinator?
 
@@ -200,8 +193,6 @@ final class MainTabBarController: UITabBarController {
     private var isPOSTabVisible: Bool = false
     private var isBookingsTabVisible: Bool = false
     private var isBookingsFeatureAvailable: Bool = false
-
-    private lazy var isProductsSplitViewFeatureFlagOn = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
 
     /// periphery: ignore - used in tests
     init?(coder: NSCoder,
@@ -992,6 +983,9 @@ private extension MainTabBarController {
         posEligibilityCheckTask = Task { @MainActor [weak self] in
             guard let self, let posTabVisibilityChecker = self.posTabVisibilityChecker else { return }
             let isPOSTabVisible = await posTabVisibilityChecker.checkVisibility()
+            // Cancellation ends the checker's site-settings wait early, so a superseded task resumes
+            // with an indeterminate verdict — it must not cache it or rebuild the tab bar (WOOMOB-3915).
+            guard !Task.isCancelled else { return }
             analytics.track(.pointOfSaleTabVisibilityChecked, withProperties: ["is_visible": isPOSTabVisible])
             cachePOSTabVisibility(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
             let isBookingsTabVisible = shouldShowBookingsTab(isPOSTabVisible: isPOSTabVisible,
@@ -1042,7 +1036,7 @@ private extension MainTabBarController {
             case .orders:
                 return ordersContainerController
             case .products:
-                return isProductsSplitViewFeatureFlagOn ? productsContainerController: productsNavigationController
+                return productsContainerController
             case .bookings:
                 return bookingsContainerController
             case .hubMenu:
@@ -1108,13 +1102,7 @@ private extension MainTabBarController {
 
         ordersContainerController.wrappedController = createOrdersViewController(siteID: siteID)
 
-        if isProductsSplitViewFeatureFlagOn {
-            productsContainerController.wrappedController = ProductsSplitViewWrapperController(siteID: siteID)
-        } else {
-            productsNavigationController.viewControllers = [ProductsViewController(siteID: siteID,
-                                                                                   selectedProduct: Empty().eraseToAnyPublisher(),
-                                                                                   navigateToContent: { _ in })]
-        }
+        productsContainerController.wrappedController = ProductsSplitViewWrapperController(siteID: siteID)
 
         // Configure hub menu tab coordinator once per logged in session potentially with multiple sites.
         if hubMenuTabCoordinator == nil {

@@ -280,10 +280,9 @@ struct POSTabVisibilityCheckerTests {
     }
 
     @Test(arguments: phoneSupportedCountries)
-    func is_visible_when_device_is_phone_and_phonePrototype_flag_enabled_for_supported_country(country: Country, currency: CurrencyCode) async throws {
+    func is_visible_when_device_is_phone_for_supported_country(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
@@ -304,7 +303,6 @@ struct POSTabVisibilityCheckerTests {
     func is_invisible_when_device_is_phone_and_operating_system_is_below_iOS_26_for_supported_country(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
@@ -329,7 +327,6 @@ struct POSTabVisibilityCheckerTests {
     func is_invisible_when_device_is_phone_and_store_is_supported_non_uk_country(country: Country, currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
@@ -349,7 +346,6 @@ struct POSTabVisibilityCheckerTests {
     @Test func is_visible_when_device_is_phone_and_US_store_and_phonePointOfSaleUS_flag_enabled() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
         setupCountry(country: .us, currency: .USD)
         accountWhitelistedInBackend(true, phonePointOfSaleUSFlagEnabled: true)
         let checker = POSTabVisibilityChecker(site: site,
@@ -374,7 +370,6 @@ struct POSTabVisibilityCheckerTests {
                                                                                                    currency: CurrencyCode) async throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
         setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true, phonePointOfSaleUSFlagEnabled: true)
         let checker = POSTabVisibilityChecker(site: site,
@@ -394,28 +389,7 @@ struct POSTabVisibilityCheckerTests {
     @Test func is_invisible_when_device_is_phone_and_store_is_expansion_country() async throws {
         // Given
         let featureFlagService = MockFeatureFlagService()
-        featureFlagService.isFeatureFlagEnabledReturnValue[.pointOfSalePhonePrototype] = true
         setupCountry(country: .nl, currency: .EUR)
-        accountWhitelistedInBackend(true)
-        let checker = POSTabVisibilityChecker(site: site,
-                                              userInterfaceIdiom: .phone,
-                                              siteSettings: siteSettings,
-                                              stores: stores,
-                                              featureFlagService: featureFlagService,
-                                              isOperatingSystemAtLeast: { _ in true })
-
-        // When
-        let result = await checker.checkVisibility()
-
-        // Then
-        #expect(result == false)
-    }
-
-    @Test(arguments: phoneSupportedCountries)
-    func is_invisible_when_device_is_phone_and_phonePrototype_flag_disabled_for_supported_country(country: Country, currency: CurrencyCode) async throws {
-        // Given
-        let featureFlagService = MockFeatureFlagService()
-        setupCountry(country: country, currency: currency)
         accountWhitelistedInBackend(true)
         let checker = POSTabVisibilityChecker(site: site,
                                               userInterfaceIdiom: .phone,

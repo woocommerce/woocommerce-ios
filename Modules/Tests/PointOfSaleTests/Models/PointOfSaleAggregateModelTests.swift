@@ -1203,7 +1203,7 @@ struct PointOfSaleAggregateModelTests {
             #expect(analytics.events.contains(where: { $0.eventName == "payments_onboarding_shown" }))
         }
 
-        @Test func connectCardReader_when_tapped_then_tracks_event() {
+        @Test func connectCardReader_when_tapped_then_tracks_discovery_tapped_event() {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(
@@ -1216,7 +1216,7 @@ struct PointOfSaleAggregateModelTests {
             sut.connectCardReader()
 
             // Then
-            #expect(analytics.events.contains(where: { $0.eventName == "card_reader_connection_tapped" }))
+            #expect(analytics.events.contains(where: { $0.eventName == "card_reader_discovery_tapped" }))
         }
 
         @Test func disconnectCardReader_when_tapped_then_tracks_event() {

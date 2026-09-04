@@ -1,16 +1,10 @@
 import Foundation
 import UIKit
 import Yosemite
-import Experiments
-
-protocol ProductsListViewModelProtocol {
-    @MainActor
-    func scanToUpdateInventoryButtonShouldBeVisible(isCameraAvailable: Bool?, completion: @escaping (Bool) -> (Void))
-}
 
 /// View model for `ProductsViewController`. Has stores logic related to Bulk Editing and Woo Subscriptions.
 ///
-final class ProductListViewModel: ProductsListViewModelProtocol {
+final class ProductListViewModel {
 
     enum BulkEditError: Error {
         case noProductsSelected
@@ -25,7 +19,6 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
     private var wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
     private let barcodeScannerItemFinder: BarcodeScannerItemFinder
-    private let featureFlagService: FeatureFlagService
 
     private let favoriteProductsUseCase: FavoriteProductsUseCase
     private(set) var favoriteProductIDs: [Int64] = []
@@ -34,11 +27,9 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
          stores: StoresManager = ServiceLocator.stores,
          favoriteProductsUseCase: FavoriteProductsUseCase? = nil,
          barcodeScannerItemFinder: BarcodeScannerItemFinder = BarcodeScannerItemFinder(),
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          pluginsService: PluginsServiceProtocol = PluginsService(storageManager: ServiceLocator.storageManager)) {
         self.siteID = siteID
         self.stores = stores
-        self.featureFlagService = featureFlagService
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID)
         self.barcodeScannerItemFinder = barcodeScannerItemFinder
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: siteID)
@@ -211,13 +202,12 @@ final class ProductListViewModel: ProductsListViewModelProtocol {
         case true:
             completion(false)
         case false:
-            guard featureFlagService.isFeatureFlagEnabled(.scanToUpdateInventory), isCameraAvailable else {
+            guard isCameraAvailable else {
                 return completion(false)
             }
             // If all conditions are met, scan to update inventory should be visible:
             // 1. No Square plugin
-            // 2. Feature flag
-            // 3. Camera is available
+            // 2. Camera is available
             completion(true)
         }
     }

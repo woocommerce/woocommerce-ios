@@ -4,8 +4,13 @@
 25.6
 -----
 - [**] When your store can't be reached because of a connection problem on your WordPress site, the app now explains what is going on and offers to contact support, instead of retrying silently. [https://github.com/woocommerce/woocommerce-ios/pull/17799]
+- [*] Products: Fixed a crash on iOS 26 when rapidly reopening the "View product in store" sheet or other modals from the product details screen. [https://github.com/woocommerce/woocommerce-ios/pull/17776]
+- [*] Orders: show a warning on the order list when the store's currency couldn't be loaded, instead of silently showing amounts as USD. [https://github.com/woocommerce/woocommerce-ios/pull/17761]
 - [*] Shipping Labels: Fixed purchased labels disappearing when an unfinished label has no carrier information. [https://github.com/woocommerce/woocommerce-ios/pull/17766]
+- [*] POS: On iPhone, opening an order or a settings section now slides in the way the rest of iOS does, and can be swiped back with the list tracking your finger. [https://github.com/woocommerce/woocommerce-ios/pull/17790]
+- [*] POS: On iPhone, you can now swipe from the left edge to go back, across search, checkout, the payment screens, refunds and hardware settings. [https://github.com/woocommerce/woocommerce-ios/pull/17789]
 - [***] POS: On stores running WooCommerce 11.1.0 or newer, refund totals are now calculated by the store instead of on the device. [https://github.com/woocommerce/woocommerce-ios/pull/17741]
+- [*] POS: Fixed the POS tab briefly flashing into the tab bar while the app loads a store that is not eligible for POS. [https://github.com/woocommerce/woocommerce-ios/pull/17791]
 - [*] Orders: Product search results in the order form are now scrollable and selectable on iPhone in landscape. [https://github.com/woocommerce/woocommerce-ios/pull/17693]
 - [*] Fixed the swipe-back gesture sometimes failing when returning from detail screens. [https://github.com/woocommerce/woocommerce-ios/pull/17749]
 - [*] Analytics Hub: Fixed the interactive swipe-back gesture not working when opened from the Dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17755]
@@ -16,7 +21,9 @@
 - [Internal] POS: Refund submission events now use the POS Tracks prefix when issued from POS. [https://github.com/woocommerce/woocommerce-ios/pull/17744]
 - [*] Order creation: the Add Shipping button now stays above the keyboard after returning from the shipping method picker. [https://github.com/woocommerce/woocommerce-ios/pull/17767]
 - [Internal] POS: Removed the WooCommerce 10.5.0 sunset warning banner that promised an August 1st requirement that is not enforced. [https://github.com/woocommerce/woocommerce-ios/pull/17763]
+- [Internal] Payments: Added the card reader discovery and connection Tracks events that iOS was missing, for parity with Android. [PR_URL]
 - [*] Order Creation: Scanning a subscription or bookable product now explains why it can't be added to an order instead of adding it. [https://github.com/woocommerce/woocommerce-ios/pull/17710]
+- [*] Orders paid via Scan to Pay or Mark as Paid now show their actual payment method instead of "Other". [https://github.com/woocommerce/woocommerce-ios/pull/17470]
 
 25.5
 -----

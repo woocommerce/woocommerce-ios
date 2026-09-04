@@ -244,9 +244,11 @@ open class Remote: NSObject {
                 // here even though this overload does not parse it.
                 try Self.validateResponse(data, for: request, recorder: storeConnectionErrorRecorder, outcome: .succeeded)
             } catch {
-                // Deliberately not rethrown. This overload has never surfaced body-level errors to its
-                // callers and widening that is a separate change; `validateResponse` has already
-                // recorded what the failure means for the store.
+                // Handled but deliberately not rethrown. This overload has never surfaced body-level
+                // errors to its callers and widening that is a separate change, but now that the body is
+                // read, an expired token or an unknown blog has to reach the notifications the rest of
+                // the app listens for.
+                handleResponseError(error: error, for: request)
                 DDLogDebug("Response body error on a headers-only request: \(error)")
             }
             return headers ?? [:]
@@ -443,8 +445,11 @@ private extension Remote {
 
     /// The store a request was made against, when we can tell.
     ///
-    /// Only Jetpack-tunneled requests name their site, and they are also the only ones that can fail
-    /// signature verification: a request authenticated with an application password is never signed.
+    /// Every store-scoped request is a `JetpackRequest` at this layer, so the site is named on both auth
+    /// paths: the conversion to a direct REST call happens below `Remote`, in `AlamofireNetwork`. Only
+    /// the tunneled path can actually come back with a signature failure, since a request authenticated
+    /// with an application password is never signed, but that is a property of the error rather than a
+    /// limit on what this can see.
     ///
     static func affectedSiteID(for request: Request) -> Int64? {
         (request as? JetpackRequest)?.siteID

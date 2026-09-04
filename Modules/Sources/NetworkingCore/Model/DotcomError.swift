@@ -69,9 +69,11 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
     ///
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
-        let message = try container.decodeIfPresent(String.self, forKey: .message)
-        let data = try container.decodeIfPresent([String: AnyDecodable].self, forKey: .data)
 
+        /// The identifier is read before anything else so that a body without one costs nothing. A
+        /// successful tunneled response carries the whole payload under `data`, and decoding it up here
+        /// would build a dictionary out of every product and order the app fetches, only to throw it away.
+        ///
         guard let error = try container.decodeIfPresent(String.self, forKey: .error) else {
             /// WordPress REST errors name the identifier `code` rather than `error`. Only the invalid
             /// signature identifier is read from it, on purpose: mapping every `code`-shaped body here
@@ -81,9 +83,13 @@ public enum DotcomError: Error, Decodable, Equatable, GeneratedFakeable {
                 throw DecodingError.keyNotFound(CodingKeys.error, .init(codingPath: container.codingPath,
                                                                        debugDescription: "No WordPress.com error identifier found"))
             }
+            let data = try container.decodeIfPresent([String: AnyDecodable].self, forKey: .data)
             self = .invalidSignature(data: data)
             return
         }
+
+        let message = try container.decodeIfPresent(String.self, forKey: .message)
+        let data = try container.decodeIfPresent([String: AnyDecodable].self, forKey: .data)
 
         switch error {
         case Constants.invalidToken:
@@ -179,7 +185,8 @@ extension DotcomError: CustomStringConvertible {
         case .unknownBlog:
             return NSLocalizedString("Dotcom Unknown Blog", comment: "WordPress.com error thrown when the site ID is no longer recognized.")
         case .invalidSignature:
-            return NSLocalizedString("Dotcom Invalid Signature",
+            return NSLocalizedString("dotcomError.invalidSignature.description",
+                                     value: "Dotcom Invalid Signature",
                                      comment: "WordPress.com error thrown when the store rejects the signature of a Jetpack request.")
         case .unknown(let code, let message, _):
             let theMessage = message ?? String()

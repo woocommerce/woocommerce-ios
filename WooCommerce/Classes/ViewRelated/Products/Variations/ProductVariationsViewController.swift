@@ -604,7 +604,7 @@ private extension ProductVariationsViewController {
                 self?.dismiss(animated: true)
             })
             let navigationController = WooNavigationController(rootViewController: BulkUpdateViewController(viewModel: viewModel))
-            self.present(navigationController, animated: true)
+            self.presentIfIdle(navigationController)
 
             self.analytics.track(event: .Variations.bulkUpdateSectionTapped())
         }
@@ -614,7 +614,7 @@ private extension ProductVariationsViewController {
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.barButtonItem = sender
 
-        present(actionSheet, animated: true)
+        presentIfIdle(actionSheet)
     }
 
     /// Displays a bottom sheet allowing the merchant to choose whether to generate one variation or to generate all variations.

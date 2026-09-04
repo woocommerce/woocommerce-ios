@@ -190,6 +190,108 @@ struct ProductsSplitViewCoordinatorTests {
         // Then
         #expect(primaryNavigationController.navigationBar.isHidden)
     }
+
+    // MARK: - Layout transition restoration
+
+    @Test
+    func test_completeLayoutTransition_when_collapsing_moved_content_to_the_primary_stack_then_does_not_restore_it_to_the_secondary_one() {
+        // Given
+        let splitViewController = UISplitViewController(style: .doubleColumn)
+        let productList = UIViewController()
+        let productForm = UIViewController()
+        let primaryNavigationController = UINavigationController(rootViewController: productList)
+        let secondaryNavigationController = UINavigationController(rootViewController: productForm)
+        let navigationStack = SplitViewNavigationStack(splitViewController: splitViewController,
+                                                       primaryNavigationController: primaryNavigationController,
+                                                       secondaryNavigationController: secondaryNavigationController)
+        let policy = ProductsSecondaryStackRestorationPolicy()
+        let transitionID = policy.prepareForTransition(currentStack: navigationStack.contentViewControllers)
+
+        // When
+        navigationStack.prepareForCollapsing(showsSecondaryContent: true)
+        let stackToRestore = policy.stackToRestore(for: transitionID, currentStack: navigationStack.contentViewControllers)
+
+        // Then
+        #expect(stackToRestore == nil)
+        #expect(secondaryNavigationController.viewControllers.isEmpty)
+        #expect(navigationStack.navigationItemsHaveSingleOwners())
+    }
+
+    @Test
+    func test_completeLayoutTransition_when_the_transition_dropped_a_pushed_screen_then_restores_it() {
+        // Given
+        let splitViewController = UISplitViewController(style: .doubleColumn)
+        let productList = UIViewController()
+        let productForm = UIViewController()
+        let inventorySettings = UIViewController()
+        let primaryNavigationController = UINavigationController(rootViewController: productList)
+        let secondaryNavigationController = UINavigationController(rootViewController: productForm)
+        secondaryNavigationController.pushViewController(inventorySettings, animated: false)
+        let navigationStack = SplitViewNavigationStack(splitViewController: splitViewController,
+                                                       primaryNavigationController: primaryNavigationController,
+                                                       secondaryNavigationController: secondaryNavigationController)
+        let policy = ProductsSecondaryStackRestorationPolicy()
+        let transitionID = policy.prepareForTransition(currentStack: navigationStack.contentViewControllers)
+
+        // When
+        // Mimics UIKit dropping the pushed screen during the layout transition.
+        secondaryNavigationController.setViewControllers([productForm], animated: false)
+        let stackToRestore = policy.stackToRestore(for: transitionID, currentStack: navigationStack.contentViewControllers)
+
+        // Then
+        #expect(stackToRestore == [productForm, inventorySettings])
+    }
+
+    // MARK: - Swipe back veto
+
+    @Test
+    func test_contentRefusesSwipeBack_when_the_content_is_in_the_secondary_stack_then_asks_the_content_screen() throws {
+        // Given
+        let (sut, _, secondaryNavigationController) = try makeSUT()
+        secondaryNavigationController.setViewControllers([UnsavedChangesViewController()], animated: false)
+
+        // When
+        let refusesSwipeBack = sut.contentRefusesSwipeBack()
+
+        // Then
+        #expect(refusesSwipeBack)
+    }
+
+    @Test
+    func test_topContentViewController_when_collapsing_moved_the_content_to_the_primary_stack_then_still_reports_the_content_screen() {
+        // Given
+        let splitViewController = UISplitViewController(style: .doubleColumn)
+        let productList = UIViewController()
+        let productForm = UnsavedChangesViewController()
+        let primaryNavigationController = UINavigationController(rootViewController: productList)
+        let secondaryNavigationController = UINavigationController(rootViewController: productForm)
+        let navigationStack = SplitViewNavigationStack(splitViewController: splitViewController,
+                                                       primaryNavigationController: primaryNavigationController,
+                                                       secondaryNavigationController: secondaryNavigationController)
+
+        // When
+        navigationStack.prepareForCollapsing(showsSecondaryContent: true)
+
+        // Then
+        #expect(primaryNavigationController.topViewController === productForm)
+        #expect(secondaryNavigationController.viewControllers.isEmpty)
+        // The swipe back veto asks this screen. Reading the secondary navigation controller instead would find
+        // no top view controller here, and the unsaved changes protection would silently stand down.
+        #expect(navigationStack.topContentViewController?.shouldPopOnSwipeBack() == false)
+    }
+
+    @Test
+    func test_contentRefusesSwipeBack_when_there_is_no_content_then_allows_the_swipe() throws {
+        // Given
+        let (sut, _, secondaryNavigationController) = try makeSUT()
+        secondaryNavigationController.setViewControllers([], animated: false)
+
+        // When
+        let refusesSwipeBack = sut.contentRefusesSwipeBack()
+
+        // Then
+        #expect(refusesSwipeBack == false)
+    }
 }
 
 private extension ProductsSplitViewCoordinatorTests {
@@ -206,4 +308,11 @@ private extension ProductsSplitViewCoordinatorTests {
 
 private final class CollapsedSplitViewController: UISplitViewController {
     override var isCollapsed: Bool { true }
+}
+
+/// Stands in for a screen that blocks the swipe back, like a product form with unsaved changes.
+private final class UnsavedChangesViewController: UIViewController {
+    override func shouldPopOnSwipeBack() -> Bool {
+        false
+    }
 }

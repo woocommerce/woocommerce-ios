@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 25.6
+Order management gets easier as orders paid via Scan to Pay or Mark as Paid now show their payment methods, and you’ll see a warning if your store’s currency can’t be loaded. For those on WooCommerce 11.1.0+, refund totals in POS are now calculated by your store, not just your device.
+
 ## 25.5
 You can now see product prices and SKUs in your product list, and Dashboard stats stay visible even when there’s no revenue on the chosen dates. Refunds for gift card payments are now handled from your store admin. Plus, fixes across orders, payments, POS, and in-app displays keep your store running smoothly.
 

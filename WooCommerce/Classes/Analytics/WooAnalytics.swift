@@ -233,8 +233,12 @@ fileprivate extension Analytics {
                 updatedProperties[key] = value
             }
         }
-        updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
-        updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion
+        if let storeUUID = ServiceLocator.stores.sessionManager.defaultStoreUUID {
+            updatedProperties[PropertyKeys.storeID] = storeUUID
+        }
+        if let cachedWooCommerceVersion = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion {
+            updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = cachedWooCommerceVersion
+        }
         return updatedProperties
     }
 

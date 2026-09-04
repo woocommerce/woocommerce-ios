@@ -428,6 +428,37 @@ class WooAnalyticsTests: XCTestCase {
         }
         XCTAssertNil(receivedProperties["store_id"])
     }
+
+    func test_track_by_raw_stat_name_when_session_values_are_nil_then_keeps_caller_supplied_store_and_version_properties() {
+        // Given
+        guard let testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        // Session values are `nil` until the system information sync completes after login / cold start.
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                   defaultSite: Site.fake().copy(
+                                                                    siteID: sampleSiteID,
+                                                                    url: sampleSiteURL),
+                                                                   defaultStoreUUID: nil,
+                                                                   cachedWooCommerceVersion: nil))
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        let callerProperties: [AnyHashable: Any] = [
+            "cached_woo_core_version": "9.8.0",
+            "store_id": "caller_store_uuid"
+        ]
+
+        // When
+        analytics.track(WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed.rawValue, properties: callerProperties, error: nil)
+
+        // Then
+        guard let receivedProperties = testingProvider.receivedProperties.first else {
+            return XCTFail("No properties found")
+        }
+        XCTAssertEqual(receivedProperties["cached_woo_core_version"] as? String, "9.8.0")
+        XCTAssertEqual(receivedProperties["store_id"] as? String, "caller_store_uuid")
+        XCTAssertEqual(receivedProperties["blog_id"] as? Int64, sampleSiteID)
+    }
 }
 
 

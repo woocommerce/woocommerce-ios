@@ -14,6 +14,7 @@ import protocol Storage.StorageManagerType
 import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
+import struct NetworkingCore.CookieNonceAuthenticationEndpoints
 import protocol Experiments.ABTestVariationProvider
 import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
@@ -22,6 +23,32 @@ import struct NetworkingCore.WordPressAPIDiscovery
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
 class AuthenticationManager: Authentication {
+    typealias SiteCredentialLoginUseCaseFactory = (
+        _ siteURL: String,
+        _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?
+    ) -> SiteCredentialLoginProtocol
+
+    typealias ApplicationPasswordUseCaseFactory = (
+        _ username: String,
+        _ password: String,
+        _ siteAddress: String,
+        _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?
+    ) throws -> ApplicationPasswordUseCase
+
+    static let defaultApplicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory = {
+        username, password, siteAddress, authenticationEndpoints in
+        try DefaultApplicationPasswordUseCase(
+            username: username,
+            password: password,
+            siteAddress: siteAddress,
+            authenticationEndpoints: authenticationEndpoints
+        )
+    }
+
+    static let defaultSiteCredentialLoginUseCaseFactory: SiteCredentialLoginUseCaseFactory = { siteURL, authenticationEndpoints in
+        SiteCredentialLoginUseCase(siteURL: siteURL, endpoints: authenticationEndpoints)
+    }
+
     var displayAuthenticatorIfLoggedOut: (() -> UINavigationController?)?
 
     /// Store Picker Coordinator
@@ -60,7 +87,7 @@ class AuthenticationManager: Authentication {
     private var postSiteCredentialLoginChecker: PostSiteCredentialLoginChecker?
 
     /// Keeps a reference to the use case
-    private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
+    private var siteCredentialLoginUseCase: SiteCredentialLoginProtocol?
 
     /// Keeps a reference to the QR-login coordinator while the flow is active.
     private var qrLoginCoordinator: QRLoginCoordinator?
@@ -73,6 +100,12 @@ class AuthenticationManager: Authentication {
 
     private let userDefaults: UserDefaults
 
+    private let runtimeCookieJar: HTTPCookieStorage
+
+    private let siteCredentialLoginUseCaseFactory: SiteCredentialLoginUseCaseFactory
+
+    private let applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory
+
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -80,7 +113,12 @@ class AuthenticationManager: Authentication {
          abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider(),
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
          userDefaults: UserDefaults = .standard,
-         qrLoginAvailability: QRLoginAvailabilityProvider = QRLoginAvailability()) {
+         qrLoginAvailability: QRLoginAvailabilityProvider = QRLoginAvailability(),
+         runtimeCookieJar: HTTPCookieStorage = .shared,
+         siteCredentialLoginUseCaseFactory: @escaping SiteCredentialLoginUseCaseFactory
+             = AuthenticationManager.defaultSiteCredentialLoginUseCaseFactory,
+         applicationPasswordUseCaseFactory: @escaping ApplicationPasswordUseCaseFactory
+             = AuthenticationManager.defaultApplicationPasswordUseCaseFactory) {
         self.stores = stores
         self.storageManager = storageManager
         self.featureFlagService = featureFlagService
@@ -89,6 +127,9 @@ class AuthenticationManager: Authentication {
         self.switchStoreUseCase = switchStoreUseCase
         self.userDefaults = userDefaults
         self.qrLoginAvailability = qrLoginAvailability
+        self.runtimeCookieJar = runtimeCookieJar
+        self.siteCredentialLoginUseCaseFactory = siteCredentialLoginUseCaseFactory
+        self.applicationPasswordUseCaseFactory = applicationPasswordUseCaseFactory
     }
 
     /// Initializes the WordPress Authenticator.
@@ -543,7 +584,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping  (Error, Bool) -> Void) {
-        let useCase = SiteCredentialLoginUseCase(siteURL: credentials.siteURL)
+        let useCase = siteCredentialLoginUseCaseFactory(credentials.siteURL, credentials.authenticationEndpoints)
         useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error in
             guard let self else { return }
             onLoading(false)
@@ -809,6 +850,21 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 }
 
+// MARK: - Application password
+extension AuthenticationManager {
+    func makeApplicationPasswordUseCase(for credentials: WordPressOrgCredentials) throws -> ApplicationPasswordUseCase {
+        if let siteURL = URL(string: credentials.siteURL) {
+            runtimeCookieJar.removeCookies(forHostOf: siteURL)
+        }
+        return try applicationPasswordUseCaseFactory(
+            credentials.username,
+            credentials.password,
+            credentials.siteURL,
+            credentials.authenticationEndpoints
+        )
+    }
+}
+
 // MARK: - Private helpers
 private extension AuthenticationManager {
 
@@ -1001,12 +1057,13 @@ private extension AuthenticationManager {
     func didAuthenticateUser(to siteURL: String,
                              with siteCredentials: WordPressOrgCredentials,
                              in navigationController: UINavigationController) {
-        guard let useCase = try? DefaultApplicationPasswordUseCase(
-            username: siteCredentials.username,
-            password: siteCredentials.password,
-            siteAddress: siteCredentials.siteURL
-        ) else {
-            return assertionFailure("⛔️ Error creating application password use case")
+        let useCase: ApplicationPasswordUseCase
+        do {
+            useCase = try makeApplicationPasswordUseCase(for: siteCredentials)
+        } catch {
+            // Authenticated credentials without a constructible canonical site cannot safely enter the eligibility flow.
+            assertionFailure("⛔️ Error creating application password use case")
+            return
         }
         checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController, previousViewController: nil)
     }

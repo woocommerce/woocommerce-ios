@@ -1,5 +1,7 @@
 import TestKit
 import XCTest
+@testable import Networking
+@testable import NetworkingCore
 import WordPressAuthenticator
 import Yosemite
 import YosemiteTestHelpers
@@ -56,6 +58,166 @@ final class AuthenticationManagerTests: XCTestCase {
 
         // Then
         XCTAssertFalse(canHandle)
+    }
+
+    func test_application_password_factory_receives_custom_endpoints_from_wordpress_org_credentials() throws {
+        // Given
+        let apiRoot = "https://example.com/wp-json/"
+        WordPressRESTAPIRootCache.shared.setRoot(apiRoot, for: "https://example.com")
+        defer { WordPressRESTAPIRootCache.shared.removeRoot(apiRoot, for: "https://example.com") }
+        let credentials = WordPressOrgCredentials(
+            username: "merchant",
+            password: "password",
+            xmlrpc: "https://example.com/xmlrpc.php",
+            options: [
+                "login_url": ["value": "https://example.com/custom-login"],
+                "admin_url": ["value": "https://example.com/custom-admin"]
+            ]
+        )
+        var capturedUsername: String?
+        var capturedPassword: String?
+        var capturedSiteAddress: String?
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+        let manager = AuthenticationManager(
+            applicationPasswordUseCaseFactory: { username, password, siteAddress, endpoints in
+                capturedUsername = username
+                capturedPassword = password
+                capturedSiteAddress = siteAddress
+                capturedEndpoints = endpoints
+                return MockAuthenticationManagerApplicationPasswordUseCase()
+            }
+        )
+
+        // When
+        _ = try manager.makeApplicationPasswordUseCase(for: credentials)
+
+        // Then
+        XCTAssertEqual(capturedUsername, "merchant")
+        XCTAssertEqual(capturedPassword, "password")
+        XCTAssertEqual(capturedSiteAddress, "https://example.com")
+        XCTAssertEqual(capturedEndpoints?.siteURL.absoluteString, "https://example.com")
+        XCTAssertEqual(capturedEndpoints?.loginEntryURL.absoluteString, "https://example.com/custom-login")
+        XCTAssertEqual(capturedEndpoints?.adminBaseURL.absoluteString, "https://example.com/custom-admin/")
+
+        let productionUseCase = try XCTUnwrap(
+            AuthenticationManager().makeApplicationPasswordUseCase(for: credentials) as? DefaultApplicationPasswordUseCase
+        )
+        XCTAssertEqual(productionUseCase.authenticationEndpoints?.siteURL.absoluteString, "https://example.com")
+        XCTAssertEqual(productionUseCase.authenticationEndpoints?.loginEntryURL.absoluteString, "https://example.com/custom-login")
+        XCTAssertEqual(productionUseCase.authenticationEndpoints?.adminBaseURL.absoluteString, "https://example.com/custom-admin/")
+    }
+
+    func test_site_credential_login_factory_receives_custom_endpoints_from_wordpress_org_credentials() {
+        // Given
+        let credentials = WordPressOrgCredentials(
+            username: "merchant",
+            password: "password",
+            xmlrpc: "https://example.com/xmlrpc.php",
+            options: [
+                "login_url": ["value": "https://example.com/custom-login"],
+                "admin_url": ["value": "https://example.com/custom-admin"]
+            ]
+        )
+        let mockUseCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        var capturedSiteURL: String?
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+        let manager = AuthenticationManager(
+            siteCredentialLoginUseCaseFactory: { siteURL, endpoints in
+                capturedSiteURL = siteURL
+                capturedEndpoints = endpoints
+                return mockUseCase
+            }
+        )
+
+        // When
+        manager.handleSiteCredentialLogin(
+            credentials: credentials,
+            onLoading: { _ in },
+            onSuccess: {},
+            onFailure: { _, _ in }
+        )
+
+        // Then
+        XCTAssertEqual(capturedSiteURL, "https://example.com")
+        XCTAssertEqual(capturedEndpoints?.siteURL.absoluteString, "https://example.com")
+        XCTAssertEqual(capturedEndpoints?.loginEntryURL.absoluteString, "https://example.com/custom-login")
+        XCTAssertEqual(capturedEndpoints?.adminBaseURL.absoluteString, "https://example.com/custom-admin/")
+        XCTAssertEqual(mockUseCase.receivedUsername, "merchant")
+        XCTAssertEqual(mockUseCase.receivedPassword, "password")
+    }
+
+    func test_application_password_factory_receives_nil_endpoints_when_credential_options_are_malformed() throws {
+        // Given
+        let apiRoot = "https://example.com/wp-json/"
+        WordPressRESTAPIRootCache.shared.setRoot(apiRoot, for: "https://example.com")
+        defer { WordPressRESTAPIRootCache.shared.removeRoot(apiRoot, for: "https://example.com") }
+        let credentials = WordPressOrgCredentials(
+            username: "merchant",
+            password: "password",
+            xmlrpc: "https://example.com/xmlrpc.php",
+            options: ["login_url": ["value": ":// malformed"]]
+        )
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+        let manager = AuthenticationManager(
+            applicationPasswordUseCaseFactory: { _, _, _, endpoints in
+                capturedEndpoints = endpoints
+                return MockAuthenticationManagerApplicationPasswordUseCase()
+            }
+        )
+
+        // When
+        _ = try manager.makeApplicationPasswordUseCase(for: credentials)
+
+        // Then
+        XCTAssertNil(capturedEndpoints)
+
+        let productionUseCase = try XCTUnwrap(
+            AuthenticationManager().makeApplicationPasswordUseCase(for: credentials) as? DefaultApplicationPasswordUseCase
+        )
+        XCTAssertEqual(productionUseCase.authenticationEndpoints?.siteURL.absoluteString, "https://example.com")
+        XCTAssertEqual(productionUseCase.authenticationEndpoints?.loginEntryURL.absoluteString, "https://example.com/wp-login.php")
+        XCTAssertEqual(productionUseCase.authenticationEndpoints?.adminBaseURL.absoluteString, "https://example.com/wp-admin/")
+    }
+
+    func test_application_password_factory_when_credentials_are_fresh_then_clears_site_cookies_before_construction() throws {
+        // Given
+        let runtimeCookieJar = MockCookieJar()
+        let siteCookie = try XCTUnwrap(HTTPCookie(properties: [
+            .domain: ".example.com",
+            .path: "/",
+            .secure: true,
+            .name: "wordpress_logged_in_stale",
+            .value: "wrong-user"
+        ]))
+        let unrelatedCookie = try XCTUnwrap(HTTPCookie(properties: [
+            .domain: "unrelated.test",
+            .path: "/",
+            .name: "unrelated-session",
+            .value: "preserve"
+        ]))
+        runtimeCookieJar.setCookie(siteCookie)
+        runtimeCookieJar.setCookie(unrelatedCookie)
+        let credentials = WordPressOrgCredentials(
+            username: "merchant",
+            password: "password",
+            xmlrpc: "http://shop.example.com/xmlrpc.php",
+            options: [:]
+        )
+        var cookieNamesDuringConstruction = Set<String>()
+        let manager = AuthenticationManager(
+            runtimeCookieJar: runtimeCookieJar,
+            applicationPasswordUseCaseFactory: { _, _, _, _ in
+                cookieNamesDuringConstruction = Set(runtimeCookieJar.cookies?.map(\.name) ?? [])
+                return MockAuthenticationManagerApplicationPasswordUseCase()
+            }
+        )
+
+        // When
+        _ = try manager.makeApplicationPasswordUseCase(for: credentials)
+
+        // Then
+        XCTAssertFalse(cookieNamesDuringConstruction.contains(siteCookie.name))
+        XCTAssertTrue(cookieNamesDuringConstruction.contains(unrelatedCookie.name))
     }
 
     /// We don't allow sites that do not have SSL. We provide a custom error UI for this.
@@ -649,5 +811,29 @@ private extension AuthenticationManagerTests {
                                       "isJetpackConnected": isJetpackConnected,
                                       "isWordPressDotCom": isWordPressCom,
                                       "isCommerceGarden": isCommerceGarden])
+    }
+}
+
+private final class MockAuthenticationManagerApplicationPasswordUseCase: ApplicationPasswordUseCase {
+    var applicationPassword: ApplicationPassword? { nil }
+    var canRegenerateApplicationPassword: Bool { true }
+
+    func generateNewPassword() async throws -> ApplicationPassword {
+        throw ApplicationPasswordUseCaseError.notSupported
+    }
+
+    func deletePassword(locally: Bool) async throws {}
+}
+
+private final class MockAuthenticationManagerSiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
+    private(set) var receivedUsername: String?
+    private(set) var receivedPassword: String?
+
+    func setupHandlers(onLoginSuccess: @escaping () -> Void,
+                       onLoginFailure: @escaping (SiteCredentialLoginError) -> Void) {}
+
+    func handleLogin(username: String, password: String) {
+        receivedUsername = username
+        receivedPassword = password
     }
 }

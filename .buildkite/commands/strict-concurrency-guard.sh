@@ -31,6 +31,14 @@ if [[ $COUNT_STATUS -ne 0 ]]; then
   fi
   buildkite-agent annotate --context strict-concurrency --style error \
     'Strict-concurrency baseline guard: the measurement build failed, no comparison was possible. Full build log uploaded as artifact `strict-concurrency-build-failed.log`.'
+  # The step is soft_fail, so its GitHub status still reports as passed. Say so on the PR,
+  # otherwise a broken guard is indistinguishable from a passing one.
+  comment_on_pr --id strict-concurrency-guard "## ⚠️ Strict-concurrency baseline guard: measurement build failed
+
+The guard could not measure anything, so no comparison was possible. This does not mean the branch is clean.
+
+Download the \`strict-concurrency-build-failed.log\` artifact from the <a href=\"${BUILDKITE_BUILD_URL}\" target=\"_blank\">build</a> and look for \`error:\` lines. Note that this step is advisory (\`soft_fail\`), so it does not block the merge." \
+    || echo 'PR comment failed (not a PR build?) — Buildkite annotation still posted.'
   exit $COUNT_STATUS
 fi
 

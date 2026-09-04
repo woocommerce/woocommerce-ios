@@ -49,7 +49,8 @@ if [[ -z "$LOG_FILE" ]]; then
   fi
 fi
 
-REPO_ROOT="$REPO_ROOT" LOG_FILE="$LOG_FILE" OUTPUT="$OUTPUT" python3 - <<'PY'
+REPO_ROOT="$REPO_ROOT" LOG_FILE="$LOG_FILE" OUTPUT="$OUTPUT" \
+  STRICT_CONCURRENCY_BUILT="${STRICT_CONCURRENCY_LOG:+0}" python3 - <<'PY'
 import json, os, re, sys
 from collections import defaultdict
 
@@ -71,6 +72,15 @@ result = {
     "total": sum(per_file.values()),
     "perFile": dict(sorted(per_file.items())),
 }
+# A build of this workspace under complete checking cannot legitimately produce zero
+# warnings, so an empty result means the measurement broke (parse failure, path prefix
+# mismatch, nothing actually compiled) rather than a clean tree. Fail instead of writing
+# a baseline-shaped file that would silently compare as "no regressions".
+if result["total"] == 0 and os.environ.get("STRICT_CONCURRENCY_BUILT") != "0":
+    sys.exit("ERROR: the build succeeded but no warnings were parsed. "
+             "That means the measurement is broken, not that the tree is clean. "
+             f"Check that diagnostics in {os.environ['LOG_FILE']} start with {repo_root}")
+
 with open(os.environ["OUTPUT"], "w") as f:
     json.dump(result, f, indent=2, sort_keys=True)
     f.write("\n")

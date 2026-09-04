@@ -947,7 +947,8 @@ extension MainTabBarController: DeepLinkNavigator {
     ///
     private func presentStoreConnectionErrorSupportForm() {
         let viewModel = SupportFormViewModel(sourceTag: StoreConnectionErrorSupport.sourceTag,
-                                             additionalTags: StoreConnectionErrorSupport.additionalTags)
+                                             additionalTags: StoreConnectionErrorSupport.additionalTags,
+                                             mobileStatusReportProvider: MobileStatusReportProvider())
         SupportFormHostingController(viewModel: viewModel).show(from: self)
     }
 

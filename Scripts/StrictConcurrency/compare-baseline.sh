@@ -37,7 +37,14 @@ if improvements:
         print(f"  {path}: {allowed} -> {count}")
 
 if regressions:
-    print(f"\nFAIL: {len(regressions)} file(s) exceed the strict-concurrency baseline:")
+    added = sum(count - allowed for _, allowed, count in regressions)
+    # Lead with the totals: the per-file list can run to hundreds of lines and gets
+    # truncated in the PR comment, so the summary has to survive on its own.
+    print(f"\nFAIL: {len(regressions)} file(s) exceed the strict-concurrency baseline "
+          f"(+{added} warnings; current total {sum(current.values())}, "
+          f"baseline total {sum(baseline.values())}).")
+    print("Refresh the baseline from a passing run's strict-concurrency-current.json "
+          "artifact (Scripts/StrictConcurrency/update-baseline.sh), never by hand-counting.")
     for path, allowed, count in regressions:
         print(f"  {path}: baseline {allowed}, now {count} (+{count - allowed})")
     sys.exit(1)

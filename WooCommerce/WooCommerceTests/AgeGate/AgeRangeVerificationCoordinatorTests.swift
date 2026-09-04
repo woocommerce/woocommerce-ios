@@ -227,34 +227,45 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
-    func test_triggerAgeVerificationIfNeeded_when_flow_in_progress_then_drops_duplicate_trigger() {
+    func test_triggerAgeVerificationIfNeeded_when_flow_in_progress_then_coalesces_triggers_into_one_follow_up_run() {
+        // Given
         let window = UIWindow()
         window.rootViewController = UIViewController()
+        let service = FakeAgeRangeService(
+            result: .eligible(
+                significantAppChangeApprovalRequired: false,
+                isMinor: false
+            ),
+            delay: 0.05
+        )
         let sut = AgeRangeVerificationCoordinator(
             featureFlagService: featureFlagService,
-            ageRangeVerificationService: FakeAgeRangeService(
-                result: .eligible(
-                    significantAppChangeApprovalRequired: false,
-                    isMinor: false
-                ),
-                delay: 0.05
-            ),
+            ageRangeVerificationService: service,
             significantChangeConsentCoordinator: consentCoordinator,
             ageRatingChangeDetector: ageRatingChangeDetector
         )
-        let exp = expectation(description: "onResult")
-        var resultCount = 0
+        let firstExp = expectation(description: "first onResult")
+        let followUpExp = expectation(description: "follow-up onResult")
+        var completionOrder: [String] = []
 
+        // When
         sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { _, _ in
-            resultCount += 1
-            exp.fulfill()
+            completionOrder.append("first")
+            firstExp.fulfill()
+        }
+        // Two triggers land mid-flow: neither is run concurrently, and one follow-up pass covers both.
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { _, _ in
+            XCTFail("Superseded trigger must not run; only the latest queued one is replayed")
         }
         sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { _, _ in
-            resultCount += 1
+            completionOrder.append("followUp")
+            followUpExp.fulfill()
         }
 
-        waitForExpectations(timeout: 1)
-        XCTAssertEqual(resultCount, 1)
+        // Then
+        wait(for: [firstExp, followUpExp], timeout: 1, enforceOrder: true)
+        XCTAssertEqual(completionOrder, ["first", "followUp"])
+        XCTAssertEqual(service.verifyCount, 2)
     }
 
     func test_triggerAgeVerificationIfNeeded_when_minor_and_consent_denied_then_restricts_without_logout() {
@@ -262,7 +273,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         window.rootViewController = UIViewController()
         featureFlagService = AlwaysOnFeatureFlagService()
         let consentStore = MockConsentStore()
-        consentStore.statusByKey["ageRatingChange.13"] = .denied
+        consentStore.statusByIdentifier[.ageRatingChange(ratingCode: 13)] = .denied
         consentCoordinator = SignificantChangeConsentCoordinator(
             consentProvider: MockConsentProvider(requestResult: .notAvailable),
             consentStore: consentStore
@@ -335,7 +346,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         window.rootViewController = UIViewController()
         featureFlagService = AlwaysOnFeatureFlagService()
         let consentStore = MockConsentStore()
-        consentStore.statusByKey["ageRatingChange.13"] = .pending
+        consentStore.statusByIdentifier[.ageRatingChange(ratingCode: 13)] = .pending
         consentCoordinator = SignificantChangeConsentCoordinator(
             consentProvider: MockConsentProvider(requestResult: .notAvailable),
             consentStore: consentStore
@@ -368,7 +379,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         window.rootViewController = UIViewController()
         featureFlagService = AlwaysOnFeatureFlagService()
         let consentStore = MockConsentStore()
-        consentStore.statusByKey["ageRatingChange.13"] = .granted
+        consentStore.statusByIdentifier[.ageRatingChange(ratingCode: 13)] = .granted
         consentCoordinator = SignificantChangeConsentCoordinator(
             consentProvider: MockConsentProvider(requestResult: .notAvailable),
             consentStore: consentStore
@@ -405,6 +416,95 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
     }
 }
 
+extension AgeRangeVerificationCoordinatorTests {
+    func test_triggerAgeVerificationIfNeeded_when_manual_change_granted_then_allows_without_acknowledging_rating_change() {
+        // Given
+        let window = UIWindow()
+        window.rootViewController = UIViewController()
+        let manualIdentifier = SignificantChangeIdentifier.manual(id: "new-feature")
+        let consentStore = MockConsentStore()
+        consentStore.statusByIdentifier[manualIdentifier] = .granted
+        consentCoordinator = SignificantChangeConsentCoordinator(
+            consentProvider: MockConsentProvider(requestResult: .notAvailable),
+            consentStore: consentStore
+        )
+        let detector = MockAgeRatingChangeDetector(result: .ageRatingChanged(previous: 4, current: 13))
+        let sut = AgeRangeVerificationCoordinator(
+            featureFlagService: featureFlagService,
+            ageRangeVerificationService: FakeAgeRangeService(
+                result: .eligible(
+                    significantAppChangeApprovalRequired: true,
+                    isMinor: true
+                ),
+                delay: 0.01
+            ),
+            significantChangeConsentCoordinator: consentCoordinator,
+            ageRatingChangeDetector: detector,
+            manualChangeIdentifierProvider: { manualIdentifier }
+        )
+        let exp = expectation(description: "onResult")
+
+        // When
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, _ in
+            XCTAssertEqual(appAccessDecision, .allow)
+            exp.fulfill()
+        }
+
+        // Then
+        waitForExpectations(timeout: 1)
+        // The manual change was approved, not the rating change: that one stays outstanding.
+        XCTAssertNil(detector.acknowledgedRatingCode)
+    }
+
+    @MainActor
+    func test_requestSignificantChangeConsent_when_system_cannot_take_question_then_returns_notAvailable() async {
+        // Given
+        let window = UIWindow()
+        window.rootViewController = UIViewController()
+        consentCoordinator = SignificantChangeConsentCoordinator(
+            consentProvider: MockConsentProvider(requestResult: .notAvailable),
+            consentStore: MockConsentStore()
+        )
+        let sut = AgeRangeVerificationCoordinator(
+            featureFlagService: featureFlagService,
+            ageRangeVerificationService: FakeAgeRangeService(result: .unknown, delay: 0),
+            significantChangeConsentCoordinator: consentCoordinator,
+            ageRatingChangeDetector: MockAgeRatingChangeDetector(result: .ageRatingChanged(previous: 4, current: 13))
+        )
+
+        // When
+        let state = await sut.requestSignificantChangeConsent(hostingWindow: window)
+
+        // Then
+        XCTAssertEqual(state, .notAvailable)
+    }
+
+    @MainActor
+    func test_requestSignificantChangeConsent_when_question_sent_then_returns_pending() async {
+        // Given
+        let window = UIWindow()
+        window.rootViewController = UIViewController()
+        let consentStore = MockConsentStore()
+        consentCoordinator = SignificantChangeConsentCoordinator(
+            consentProvider: MockConsentProvider(requestResult: .sent(questionID: UUID())),
+            consentStore: consentStore
+        )
+        let sut = AgeRangeVerificationCoordinator(
+            featureFlagService: featureFlagService,
+            ageRangeVerificationService: FakeAgeRangeService(result: .unknown, delay: 0),
+            significantChangeConsentCoordinator: consentCoordinator,
+            ageRatingChangeDetector: MockAgeRatingChangeDetector(result: .ageRatingChanged(previous: 4, current: 13))
+        )
+
+        // When
+        let state = await sut.requestSignificantChangeConsent(hostingWindow: window)
+
+        // Then
+        XCTAssertEqual(state, .pending)
+        XCTAssertEqual(consentStore.statusByIdentifier[.ageRatingChange(ratingCode: 13)], .pending)
+    }
+}
+
 private final class MockAgeRatingChangeDetector: AgeRatingChangeDetecting {
     let result: AgeRatingChangeCheckResult?
     private(set) var acknowledgedRatingCode: Int?
@@ -436,17 +536,14 @@ private final class MockConsentProvider: SignificantChangeConsentProviding {
 }
 
 private final class MockConsentStore: SignificantChangeConsentStoring {
-    var statusByKey: [String: SignificantChangeConsentStatus] = [:]
+    var statusByIdentifier: [SignificantChangeIdentifier: SignificantChangeConsentStatus] = [:]
     var pendingRequest: PendingConsentRequest?
 
     func status(for identifier: SignificantChangeIdentifier) -> SignificantChangeConsentStatus? {
-        statusByKey[identifier.cacheKey]
+        statusByIdentifier[identifier]
     }
     func setStatus(_ status: SignificantChangeConsentStatus, for identifier: SignificantChangeIdentifier) {
-        statusByKey[identifier.cacheKey] = status
-    }
-    func clearStatus(for identifier: SignificantChangeIdentifier) {
-        statusByKey[identifier.cacheKey] = nil
+        statusByIdentifier[identifier] = status
     }
     func setPendingRequest(_ request: PendingConsentRequest) {
         pendingRequest = request
@@ -456,15 +553,23 @@ private final class MockConsentStore: SignificantChangeConsentStoring {
     }
 }
 
-private struct FakeAgeRangeService: AgeRangeVerificationServiceProtocol {
+private final class FakeAgeRangeService: AgeRangeVerificationServiceProtocol {
     let result: AgeRangeVerificationResult
     let delay: TimeInterval
+    private(set) var verifyCount = 0
+
+    init(result: AgeRangeVerificationResult, delay: TimeInterval) {
+        self.result = result
+        self.delay = delay
+    }
+
     func verifyAgeRange(
         in viewController: UIViewController,
         minimumAge: Int,
         completion: @escaping (AgeRangeVerificationResult) -> Void
     ) {
-        DispatchQueue.main.asyncAfter(deadline: .now() + delay) {
+        verifyCount += 1
+        DispatchQueue.main.asyncAfter(deadline: .now() + delay) { [result] in
             completion(result)
         }
     }

@@ -27,7 +27,8 @@ protocol AgeRangeVerificationCoordinatorProtocol {
 
     /// Sends the significant-change consent request for the currently outstanding change.
     /// Call only from an explicit user action; also re-sends after a previous denial.
-    func requestSignificantChangeConsent(hostingWindow: UIWindow) async
+    /// Returns the resulting consent state — `.notAvailable` when the system can't take the question.
+    func requestSignificantChangeConsent(hostingWindow: UIWindow) async -> SignificantChangeConsentState
 }
 
 extension AgeRangeVerificationCoordinator {
@@ -37,24 +38,33 @@ extension AgeRangeVerificationCoordinator {
 }
 
 final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol {
+    typealias VerificationTrigger = (hostingWindow: UIWindow, onResult: (AppAccessDecision, AgeRangeVerificationResult) -> Void)
+
     private let featureFlagService: FeatureFlagService
     private let ageRangeVerificationService: AgeRangeVerificationServiceProtocol
     private let significantChangeConsentCoordinator: SignificantChangeConsentCoordinator
     private let ageRatingChangeDetector: AgeRatingChangeDetecting
+    private let manualChangeIdentifierProvider: () -> SignificantChangeIdentifier?
     /// Guards against concurrent decision flows. All trigger sources (launch, consent
     /// resolution, foreground re-check, blocker buttons) run on the main thread.
     private var isVerificationFlowInProgress = false
+    /// The latest trigger that arrived while a flow was in progress; replayed once it finishes.
+    private var queuedTrigger: VerificationTrigger?
 
     init(
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
         ageRangeVerificationService: AgeRangeVerificationServiceProtocol = ServiceLocator.ageRangeVerificationService,
         significantChangeConsentCoordinator: SignificantChangeConsentCoordinator = SignificantChangeConsentCoordinator(),
-        ageRatingChangeDetector: AgeRatingChangeDetecting = AgeRatingChangeDetector()
+        ageRatingChangeDetector: AgeRatingChangeDetecting = AgeRatingChangeDetector(),
+        manualChangeIdentifierProvider: @escaping () -> SignificantChangeIdentifier? = {
+            DebugAgeVerificationOverrides.manualSignificantChangeIdentifier
+        }
     ) {
         self.featureFlagService = featureFlagService
         self.ageRangeVerificationService = ageRangeVerificationService
         self.significantChangeConsentCoordinator = significantChangeConsentCoordinator
         self.ageRatingChangeDetector = ageRatingChangeDetector
+        self.manualChangeIdentifierProvider = manualChangeIdentifierProvider
     }
 
     /// Triggers the age range verification flow.
@@ -72,10 +82,13 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         }
 
         // Never run two decision flows concurrently: racing flows can send duplicate consent
-        // questions and fight over the blocker presentation. Duplicate triggers are dropped;
-        // every trigger source is a fire-and-forget re-check, so nothing waits on the result.
+        // questions and fight over the blocker presentation. A trigger that lands mid-flow is
+        // not dropped, though — it may carry news the running flow read too early (e.g. a
+        // consent answer arriving during a foreground re-check). It's replayed once the current
+        // flow finishes; only the latest one is kept since a single follow-up pass covers them all.
         guard isVerificationFlowInProgress == false else {
-            DDLogInfo("Age verification flow already in progress; ignoring duplicate trigger.")
+            DDLogInfo("Age verification flow already in progress; queueing a follow-up check.")
+            queuedTrigger = (hostingWindow, onResult)
             return
         }
         isVerificationFlowInProgress = true
@@ -83,6 +96,7 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         performAgeVerification(hostingWindow: hostingWindow) { [weak self] decision, result in
             self?.isVerificationFlowInProgress = false
             onResult(decision, result)
+            self?.replayQueuedTriggerIfNeeded()
         }
     }
 
@@ -94,21 +108,27 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         }
     }
 
-    func requestSignificantChangeConsent(hostingWindow: UIWindow) async {
+    func requestSignificantChangeConsent(hostingWindow: UIWindow) async -> SignificantChangeConsentState {
         guard let anchor = hostingWindow.topmostPresentedViewController else {
             DDLogWarn("Failed to obtain view controller to anchor the consent request.")
-            return
+            return .notAvailable
         }
         let ageRatingChange = await ageRatingChangeDetector.checkForChange()
-        _ = await significantChangeConsentCoordinator.requestConsent(
+        return await significantChangeConsentCoordinator.requestConsent(
             in: anchor,
             ageRatingChange: ageRatingChange,
-            manualChangeIdentifier: DebugAgeVerificationOverrides.manualSignificantChangeIdentifier
+            manualChangeIdentifier: manualChangeIdentifierProvider()
         )
     }
 }
 
 private extension AgeRangeVerificationCoordinator {
+    func replayQueuedTriggerIfNeeded() {
+        guard let trigger = queuedTrigger else { return }
+        queuedTrigger = nil
+        triggerAgeVerificationIfNeeded(hostingWindow: trigger.hostingWindow, onResult: trigger.onResult)
+    }
+
     func performAgeVerification(
         hostingWindow: UIWindow,
         onResult: @escaping (AppAccessDecision, AgeRangeVerificationResult) -> Void
@@ -136,17 +156,20 @@ private extension AgeRangeVerificationCoordinator {
 
                 Task { @MainActor in
                     let ageRatingChange = await self.ageRatingChangeDetector.checkForChange()
+                    let manualChangeIdentifier = self.manualChangeIdentifierProvider()
                     let state = self.significantChangeConsentCoordinator.checkConsentIfNeeded(
                         ageRatingChange: ageRatingChange,
-                        manualChangeIdentifier: DebugAgeVerificationOverrides.manualSignificantChangeIdentifier
+                        manualChangeIdentifier: manualChangeIdentifier
                     )
                     switch state {
                     case .notRequired, .notAvailable:
                         onResult(.allow, result)
                     case .granted:
                         // Acknowledge only once the change is approved, so an unresolved change
-                        // keeps being re-evaluated on subsequent launches.
-                        if case let .ageRatingChanged(_, current) = ageRatingChange {
+                        // keeps being re-evaluated on subsequent launches. A manual change takes
+                        // precedence in the check, so its approval says nothing about a concurrent
+                        // rating change — that one stays outstanding.
+                        if manualChangeIdentifier == nil, case let .ageRatingChanged(_, current) = ageRatingChange {
                             self.ageRatingChangeDetector.acknowledge(ratingCode: current)
                         }
                         onResult(.allow, result)

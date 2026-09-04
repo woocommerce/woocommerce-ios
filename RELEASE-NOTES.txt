@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+25.7
+-----
+
+
 25.6
 -----
 - [*] Products: Fixed a crash on iOS 26 when rapidly reopening the "View product in store" sheet or other modals from the product details screen. [https://github.com/woocommerce/woocommerce-ios/pull/17776]

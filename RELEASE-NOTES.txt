@@ -9,6 +9,7 @@
 - [*] POS: On iPhone, opening an order or a settings section now slides in the way the rest of iOS does, and can be swiped back with the list tracking your finger. [https://github.com/woocommerce/woocommerce-ios/pull/17790]
 - [*] POS: On iPhone, you can now swipe from the left edge to go back, across search, checkout, the payment screens, refunds and hardware settings. [https://github.com/woocommerce/woocommerce-ios/pull/17789]
 - [***] POS: On stores running WooCommerce 11.1.0 or newer, refund totals are now calculated by the store instead of on the device. [https://github.com/woocommerce/woocommerce-ios/pull/17741]
+- [*] POS: Fixed the POS tab briefly flashing into the tab bar while the app loads a store that is not eligible for POS. [https://github.com/woocommerce/woocommerce-ios/pull/17791]
 - [*] Orders: Product search results in the order form are now scrollable and selectable on iPhone in landscape. [https://github.com/woocommerce/woocommerce-ios/pull/17693]
 - [*] Fixed the swipe-back gesture sometimes failing when returning from detail screens. [https://github.com/woocommerce/woocommerce-ios/pull/17749]
 - [*] Analytics Hub: Fixed the interactive swipe-back gesture not working when opened from the Dashboard. [https://github.com/woocommerce/woocommerce-ios/pull/17755]

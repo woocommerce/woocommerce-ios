@@ -367,6 +367,55 @@ final class MainTabBarController_TabsTests: XCTestCase {
         XCTAssertEqual(viewControllersBeforeSiteChange, viewControllersAfterSiteChange)
     }
 
+    func test_pos_tab_is_not_inserted_when_superseded_visibility_check_resolves_after_cancellation() throws {
+        // Given a check that resolves `true` only once its task is cancelled, mimicking the
+        // indeterminate verdict a superseded checker produces when cancellation cuts its
+        // site-settings wait short (WOOMOB-3915).
+        let supersededChecker = MockPOSTabVisibilityChecker()
+        supersededChecker.resolvesVisibilityOnlyOnCancellation = true
+        supersededChecker.visibility = true
+
+        // The replacement check never resolves, so only the superseded check could alter the tab bar.
+        let pendingChecker = MockPOSTabVisibilityChecker()
+        pendingChecker.resolvesVisibilityOnlyOnCancellation = true
+
+        var factoryCallCount = 0
+        let storesManager = MockStoresManager(sessionManager: .makeForTesting())
+        guard let tabBarController = UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController(creator: { coder in
+            return MainTabBarController(coder: coder,
+                                        featureFlagService: MockFeatureFlagService(),
+                                        stores: storesManager,
+                                        posTabVisibilityCheckerFactory: { _ in
+                                            factoryCallCount += 1
+                                            return factoryCallCount == 1 ? supersededChecker : pendingChecker
+                                        })
+        }) else {
+            return
+        }
+
+        // Trigger `viewDidLoad`
+        XCTAssertNotNil(tabBarController.view)
+
+        let siteID: Int64 = 3915
+        storesManager.updateDefaultStore(storeID: siteID)
+        storesManager.updateDefaultStore(.fake().copy(siteID: siteID))
+        waitUntil {
+            supersededChecker.visibilityCheckStarted
+        }
+
+        // When a second site emission supersedes the in-flight check, cancelling its task
+        storesManager.updateDefaultStore(.fake().copy(siteID: siteID))
+        waitUntil {
+            supersededChecker.visibilityCheckResolved
+        }
+        // Drains the superseded task's remaining main-actor continuation before asserting.
+        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.1))
+
+        // Then the cancelled check's `true` verdict is discarded and the POS tab is never inserted
+        XCTAssertEqual(tabBarController.tabRootViewControllers.count, 4)
+        withExtendedLifetime(tabBarController) {}
+    }
+
     func test_pos_visibility_and_eligibility_are_rechecked_when_app_enters_foreground() throws {
         // Given
         let mockPOSVisibilityChecker = MockPOSTabVisibilityChecker()

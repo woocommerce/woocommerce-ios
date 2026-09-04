@@ -906,6 +906,9 @@ private extension MainTabBarController {
         posEligibilityCheckTask = Task { @MainActor [weak self] in
             guard let self, let posTabVisibilityChecker = self.posTabVisibilityChecker else { return }
             let isPOSTabVisible = await posTabVisibilityChecker.checkVisibility()
+            // Cancellation ends the checker's site-settings wait early, so a superseded task resumes
+            // with an indeterminate verdict — it must not cache it or rebuild the tab bar (WOOMOB-3915).
+            guard !Task.isCancelled else { return }
             analytics.track(.pointOfSaleTabVisibilityChecked, withProperties: ["is_visible": isPOSTabVisible])
             cachePOSTabVisibility(siteID: siteID, isPOSTabVisible: isPOSTabVisible)
             let isBookingsTabVisible = shouldShowBookingsTab(isPOSTabVisible: isPOSTabVisible,

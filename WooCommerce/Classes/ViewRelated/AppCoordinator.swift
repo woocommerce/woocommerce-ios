@@ -478,6 +478,14 @@ private extension AppCoordinator {
                     break
                 }
                 onAllowed()
+            case .allowConsentGranted:
+                // The parent/guardian approved. If the wall is up, say so and let the user
+                // dismiss it with Continue — a wall that silently vanishes reads as a glitch.
+                // With no wall (a cached grant on a fresh launch) nothing was blocking.
+                if let blocker = significantChangeBlocker, blocker.presentingViewController != nil {
+                    self.presentSignificantChangeBlocker(context: .approvalGranted)
+                }
+                onAllowed()
             case .denyAndLogout:
                 self.forceLogoutAndShowAgeAlert()
             case .restrictConsentRequired:
@@ -532,6 +540,8 @@ private extension AppCoordinator {
             }
         case .pendingApproval:
             triggerAgeVerification()
+        case .approvalGranted:
+            dismissSignificantChangeBlockerIfNeeded()
         }
     }
 

@@ -8,6 +8,8 @@ enum SignificantChangeBlockingContext {
     case pendingApproval
     /// The parent/guardian declined the consent question.
     case approvalDenied
+    /// The parent/guardian approved; the user acknowledges before the screen goes away.
+    case approvalGranted
 }
 
 /// Full-screen, non-dismissable blocking screen for the significant-change consent flow.
@@ -75,6 +77,8 @@ private extension SignificantChangeConsentBlockingView {
             return "person.badge.clock"
         case .approvalDenied:
             return "hand.raised"
+        case .approvalGranted:
+            return "checkmark.seal"
         }
     }
 
@@ -86,6 +90,8 @@ private extension SignificantChangeConsentBlockingView {
             return Localization.pendingTitle
         case .approvalDenied:
             return Localization.deniedTitle
+        case .approvalGranted:
+            return Localization.grantedTitle
         }
     }
 
@@ -97,6 +103,8 @@ private extension SignificantChangeConsentBlockingView {
             return Localization.pendingMessage
         case .approvalDenied:
             return Localization.deniedMessage
+        case .approvalGranted:
+            return Localization.grantedMessage
         }
     }
 
@@ -108,6 +116,8 @@ private extension SignificantChangeConsentBlockingView {
             return Localization.checkAgainButton
         case .approvalDenied:
             return Localization.askAgainButton
+        case .approvalGranted:
+            return Localization.continueButton
         }
     }
 
@@ -174,6 +184,23 @@ private extension SignificantChangeConsentBlockingView {
             value: "Ask Again",
             comment: "Button on the significant-change blocking screen that sends the approval request again."
         )
+        static let grantedTitle = NSLocalizedString(
+            "significantChangeConsent.blocking.granted.title",
+            value: "Approval Granted",
+            comment: "Title of the blocking screen shown once a parent/guardian approved " +
+            "the significant app change, before the user continues into the app."
+        )
+        static let grantedMessage = NSLocalizedString(
+            "significantChangeConsent.blocking.granted.message",
+            value: "Your parent or guardian approved the recent changes to this app. You're all set.",
+            comment: "Message of the blocking screen shown once a parent/guardian approved " +
+            "the significant app change, before the user continues into the app."
+        )
+        static let continueButton = NSLocalizedString(
+            "significantChangeConsent.blocking.continue.button",
+            value: "Continue",
+            comment: "Button on the significant-change blocking screen that dismisses it after the approval was granted."
+        )
     }
 }
 
@@ -187,4 +214,8 @@ private extension SignificantChangeConsentBlockingView {
 
 #Preview("Denied") {
     SignificantChangeConsentBlockingView(context: .approvalDenied, onAction: {})
+}
+
+#Preview("Granted") {
+    SignificantChangeConsentBlockingView(context: .approvalGranted, onAction: {})
 }

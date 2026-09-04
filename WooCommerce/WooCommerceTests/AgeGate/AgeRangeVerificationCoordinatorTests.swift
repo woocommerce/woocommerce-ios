@@ -401,7 +401,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         let exp = expectation(description: "onResult")
 
         sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, result in
-            XCTAssertEqual(appAccessDecision, .allow)
+            XCTAssertEqual(appAccessDecision, .allowConsentGranted)
             switch result {
             case .eligible:
                 break
@@ -446,7 +446,7 @@ extension AgeRangeVerificationCoordinatorTests {
 
         // When
         sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, _ in
-            XCTAssertEqual(appAccessDecision, .allow)
+            XCTAssertEqual(appAccessDecision, .allowConsentGranted)
             exp.fulfill()
         }
 

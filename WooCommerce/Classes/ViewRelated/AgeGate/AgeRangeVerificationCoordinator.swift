@@ -3,6 +3,10 @@ import Experiments
 
 enum AppAccessDecision: Equatable {
     case allow
+    /// Access is allowed because the parent/guardian approved the outstanding significant change.
+    /// Distinct from `allow` so a blocking screen that is up can confirm what happened
+    /// instead of silently disappearing.
+    case allowConsentGranted
     case denyAndLogout
     /// A significant change requires parental consent that hasn't been requested yet.
     /// Recoverable: block the UI, keep the session, let the user send the request.
@@ -172,7 +176,7 @@ private extension AgeRangeVerificationCoordinator {
                         if manualChangeIdentifier == nil, case let .ageRatingChanged(_, current) = ageRatingChange {
                             self.ageRatingChangeDetector.acknowledge(ratingCode: current)
                         }
-                        onResult(.allow, result)
+                        onResult(.allowConsentGranted, result)
                     case .required:
                         onResult(.restrictConsentRequired, result)
                     case .pending:

@@ -42,6 +42,26 @@ steps:
               context: Prototype Build
 
   #################
+  # Create TestFlight Build
+  #################
+  - group: ":testflight: TestFlight Build"
+    # On-demand only, and only on `trunk`: unlike a Prototype Build, this uploads to App Store
+    # Connect, so every build consumes a build code and shows up to the internal testers.
+    steps:
+      - input: Create TestFlight Build?
+        prompt: Build and upload to TestFlight for internal testers?
+        key: testflight_build_triggered
+        if: build.branch == "trunk"
+      - label: ":testflight: TestFlight Build"
+        depends_on: testflight_build_triggered
+        if: build.branch == "trunk"
+        command: .buildkite/commands/testflight-build.sh
+        plugins: [$CI_TOOLKIT]
+        notify:
+          - github_commit_status:
+              context: TestFlight Build
+
+  #################
   # Run Unit Tests
   #################
   - label: ":microscope: Unit Tests"

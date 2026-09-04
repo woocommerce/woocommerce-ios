@@ -140,7 +140,9 @@ final class MainTabBarController: UITabBarController {
     ///
     private lazy var storeConnectionErrorViewModel = StoreConnectionErrorViewModel(stores: stores)
     private var storeConnectionErrorSubscription: AnyCancellable?
-    private weak var storeConnectionErrorModal: UIViewController?
+    /// Held strongly: assigning `viewControllers` makes UIKit drop every child that is not a tab, and a
+    /// weak reference would go nil while the warning's view is still on screen.
+    private var storeConnectionErrorModal: UIViewController?
 
     /// Tab view controllers
     ///
@@ -1017,6 +1019,20 @@ private extension MainTabBarController {
         self.isPOSTabVisible = isPOSTabVisible
         self.isBookingsTabVisible = isBookingsTabVisible
         httpsConfigurationWarningPresenter.updateAll()
+        reattachStoreConnectionErrorModalIfNeeded()
+    }
+
+    /// Assigning `viewControllers` removes the warning from the children while leaving its view in
+    /// place. Reclaim it so it keeps receiving trait and lifecycle updates, stays above the rebuilt tabs,
+    /// and can still be removed later.
+    ///
+    private func reattachStoreConnectionErrorModalIfNeeded() {
+        guard let storeConnectionErrorModal, storeConnectionErrorModal.parent == nil else {
+            return
+        }
+        addChild(storeConnectionErrorModal)
+        view.bringSubviewToFront(storeConnectionErrorModal.view)
+        storeConnectionErrorModal.didMove(toParent: self)
     }
 
     func rootTabViewController(tab: WooTab) -> UIViewController {

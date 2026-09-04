@@ -3,7 +3,7 @@
 
 25.7
 -----
-- [*****] Age verification: pending or denied parental consent for significant app changes now shows a recoverable blocking screen instead of logging the user out, and consent requests are only sent on explicit user action. Affects the post-login age gate all users pass through — smoke test critical flows, including the sandbox age-assurance scenarios. [https://github.com/woocommerce/woocommerce-ios/pull/17822]
+- [***] Age verification: pending or denied parental consent for significant app changes now shows a recoverable blocking screen instead of logging the user out, and consent requests are only sent on explicit user action. Affects the post-login age gate all users pass through — smoke test critical flows, including the sandbox age-assurance scenarios. [https://github.com/woocommerce/woocommerce-ios/pull/17822]
 
 
 25.6

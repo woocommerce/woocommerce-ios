@@ -77,9 +77,12 @@ final class AppCoordinator {
     func start() {
         // A parent/guardian can answer a significant-change consent question at any time,
         // including long after it was sent — re-evaluate the age gate when an answer arrives.
-        // Armed before the auth-state subscription so the first verification can't race it.
+        // The listener is armed asynchronously; that's fine, the first verification pass is
+        // read-only and never depends on it.
         ageRangeVerificationCoordinator.startObservingConsentResponses { [weak self] in
-            self?.triggerAgeVerification()
+            // When logged out the outcome is already persisted; the next login's check picks it up.
+            guard let self, self.isLoggedIn else { return }
+            self.triggerAgeVerification()
         }
 
         authStatesSubscription = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
@@ -89,6 +92,9 @@ final class AppCoordinator {
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
                 switch (isLoggedIn, needsDefaultStore) {
                 case (false, true):
+                    // The session can end underneath the consent blocker (e.g. token invalidation);
+                    // the login UI replaces the whole hierarchy, so drop the blocker with it.
+                    self.dismissSignificantChangeBlockerIfNeeded(animated: false)
                     self.displayAuthenticatorWithOnboardingIfNeeded()
                 case (false, false):
                     // This is not an expected auth state. When the user is logged out, we expect the default store will not be set.
@@ -96,6 +102,7 @@ final class AppCoordinator {
                     // To get into the expected logged-out state, we can fully deauthenticate before starting the auth flow.
                     DDLogWarn("⚠️ Unexpected authentication state: Unauthenticated user has a default store set.")
                     stores.deauthenticate()
+                    self.dismissSignificantChangeBlockerIfNeeded(animated: false)
                     self.displayAuthenticatorWithOnboardingIfNeeded()
                 case (true, true):
                     self.displayLoggedInStateWithoutDefaultStore()
@@ -460,11 +467,15 @@ private extension AppCoordinator {
             guard let self else { return }
             switch appAccessDecision {
             case .allow:
-                // Only an authoritative eligible outcome clears the consent blocker.
-                // Transient fail-open results (SDK hiccup, invalid UI state — e.g. while the
-                // blocker itself is mid-presentation) must not tear it down.
-                if case .eligible = result {
+                // Only an authoritative outcome clears the consent blocker: the user is eligible,
+                // or the gate no longer applies at all. Transient fail-open results (SDK hiccup,
+                // invalid UI state — e.g. while the blocker itself is mid-presentation) must not
+                // tear it down.
+                switch result {
+                case .eligible, .ineligibleForAgeFeatures, .featureUnavailable:
                     self.dismissSignificantChangeBlockerIfNeeded()
+                case .ineligible, .declinedSharing, .invalidUIState, .sdkError, .unknown:
+                    break
                 }
                 onAllowed()
             case .denyAndLogout:
@@ -488,7 +499,10 @@ private extension AppCoordinator {
         let action: () -> Void = { [weak self] in
             self?.handleSignificantChangeBlockerAction(for: context)
         }
-        if let blocker = significantChangeBlocker {
+        // Reuse the blocker only while it's actually on screen (or mid-presentation). A stale
+        // reference — the presentation was refused, or the root was swapped underneath it —
+        // must be presented afresh, otherwise the user is silently let through.
+        if let blocker = significantChangeBlocker, blocker.presentingViewController != nil {
             blocker.update(context: context, onAction: action)
             return
         }
@@ -504,7 +518,16 @@ private extension AppCoordinator {
             // The user explicitly sends (or re-sends) the approval request,
             // then the gate re-evaluates with the outcome.
             Task { @MainActor in
-                await ageRangeVerificationCoordinator.requestSignificantChangeConsent(hostingWindow: window)
+                let state = await ageRangeVerificationCoordinator.requestSignificantChangeConsent(hostingWindow: window)
+                guard state != .notAvailable else {
+                    // The system can't take the question (unsupported OS, account not eligible
+                    // for asks, or the send failed). Policy is to fail open rather than wall the
+                    // user behind a button that can't do anything. Nothing is persisted, so the
+                    // gate re-evaluates on the next launch.
+                    DDLogWarn("Significant change consent request unavailable; allowing access.")
+                    dismissSignificantChangeBlockerIfNeeded()
+                    return
+                }
                 triggerAgeVerification()
             }
         case .pendingApproval:
@@ -512,11 +535,11 @@ private extension AppCoordinator {
         }
     }
 
-    func dismissSignificantChangeBlockerIfNeeded() {
+    func dismissSignificantChangeBlockerIfNeeded(animated: Bool = true) {
         guard let blocker = significantChangeBlocker else { return }
         significantChangeBlocker = nil
         stopForegroundConsentRecheck()
-        blocker.dismiss(animated: true)
+        blocker.dismiss(animated: animated)
     }
 
     /// While the blocker is up, re-check on every foreground: the parent may have

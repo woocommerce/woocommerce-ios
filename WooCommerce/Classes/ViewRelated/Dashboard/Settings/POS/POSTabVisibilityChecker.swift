@@ -77,11 +77,6 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
         }
-        let phonePrototypeEnabled = featureFlagService.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
-        guard userInterfaceIdiom == .pad || phonePrototypeEnabled else {
-            logNotVisible("the device is not an iPad and the phone prototype flag is off")
-            return false
-        }
         guard userInterfaceIdiom != .phone || isPhoneOperatingSystemEligible else {
             logNotVisible("phone POS needs iOS \(Self.minimumPhonePOSOperatingSystemVersion.majorVersion) or later")
             return false

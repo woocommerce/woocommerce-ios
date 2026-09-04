@@ -163,8 +163,10 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         XCTAssertNotNil(issueRefundRow)
     }
 
-    func test_refund_button_is_not_visible_when_there_is_no_date_paid() throws {
+    func test_refund_button_is_visible_when_there_is_no_date_paid() throws {
         // Given
+        // Orders paid offline never go through `payment_complete()`, so they have no `date_paid`. WooCommerce core
+        // refunds them all the same, gating only on whether anything is left to refund.
         let order = makeOrder().copy(datePaid: .some(nil))
         let orderRefundsOptionsDeterminer = MockOrderRefundsOptionsDeterminer(isAnythingToRefund: true)
         let dataSource = OrderDetailsDataSource(order: order,
@@ -179,7 +181,7 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         // Then
         let paymentSection = try section(withTitle: Title.payment, from: dataSource)
         let issueRefundRow = row(row: .issueRefundButton, in: paymentSection)
-        XCTAssertNil(issueRefundRow)
+        XCTAssertNotNil(issueRefundRow)
     }
 
     func test_refund_button_is_not_visible_when_the_order_status_is_refunded() throws {

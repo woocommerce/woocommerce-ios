@@ -39,6 +39,10 @@ final class MockPOSOrderService: POSOrderServiceProtocol {
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {
         throw MockPOSOrderServiceError.notImplemented
     }
+
+    func recordScanToPayPaymentMethod(order: Order) async throws {
+        throw MockPOSOrderServiceError.notImplemented
+    }
 }
 
 enum MockPOSOrderServiceError: Error {

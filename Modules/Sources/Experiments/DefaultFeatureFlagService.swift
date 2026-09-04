@@ -7,14 +7,8 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         let buildConfig = BuildConfiguration.current
 
         switch featureFlag {
-        case .inbox:
-            return true
-        case .showInboxCTA:
-            return true
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .searchProductsBySKU:
-            return true
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,
@@ -27,32 +21,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // It is not possible to get the TTPoI entitlement for an enterprise certificate,
             // so we should not enable this for alpha builds.
             return buildConfig == .localDeveloper || buildConfig == .appStore
-        case .jetpackSetupWithApplicationPassword:
-            return true
         case .manualErrorHandlingForSiteCredentialLogin:
-            return true
-        case .euShippingNotification:
-            return true
-        case .betterCustomerSelectionInOrder:
-            return true
-        case .hazmatShipping:
-            return true
-        case .giftCardInOrderForm:
             return true
         case .productBundlesInOrderForm:
             return true
         case .customLoginUIForAccountCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .scanToUpdateInventory:
-            return true
-        case .splitViewInProductsTab:
-            return true
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .googleAdsCampaignCreationOnWebView:
-            return true
-        case .blazeEvergreenCampaigns:
-            return true
         case .revampedShippingLabelCreation:
             return true
         case .blazeCampaignObjective:
@@ -67,24 +43,16 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .orderAddressMapSearch:
             return true
-        case .pointOfSaleFTSSearch:
-            return true
         case .ciabBookings:
             return false
-        case .pointOfSaleCatalogAPI:
-            return true
         case .pointOfSaleRoles:
             return false
         case .pointOfSaleCustomAmounts:
             return buildConfig == .localDeveloper
-        case .pointOfSalePhonePrototype:
-            return true
         case .pointOfSaleScanToPay:
             return buildConfig == .localDeveloper
         case .pointOfSaleMarkOrderAsPaid:
             return buildConfig == .localDeveloper
-        case .pointOfSaleTapToPay:
-            return true
         case .selfDrivenPushToken:
             return true
         case .clientSideDashboardBanner:
@@ -104,7 +72,7 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         case .starReceiptPrinterSupport:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .posServerCalculatedRefunds:
-            return buildConfig == .localDeveloper || buildConfig == .alpha
+            return true
         default:
             return true
         }

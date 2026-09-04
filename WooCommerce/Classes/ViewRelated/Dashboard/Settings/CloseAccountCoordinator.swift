@@ -103,7 +103,7 @@ private extension CloseAccountCoordinator {
                                                 preferredStyle: .alert)
         alertController.addActionWithTitle(Localization.ErrorAlert.contactSupportButtonTitle, style: .default) { [weak self] _ in
             guard let self else { return }
-            let supportForm = SupportFormHostingController(viewModel: .init())
+            let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
             supportForm.show(from: self.sourceViewController)
         }
         alertController.addActionWithTitle(Localization.ErrorAlert.dismissButtonTitle, style: .cancel) { _ in }

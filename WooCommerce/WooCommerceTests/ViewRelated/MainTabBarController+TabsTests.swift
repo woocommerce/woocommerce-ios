@@ -33,7 +33,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
         assertThat(tabBarController.tabRootViewController(tab: .orders, isPOSTabVisible: false),
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(tab: .products, isPOSTabVisible: false),
-                   isAnInstanceOf: ProductsViewController.self)
+                   isAnInstanceOf: ProductsSplitViewWrapperController.self)
 
         let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: false) as? UINavigationController)
         assertThat(hubMenuNavigationController.topViewController,
@@ -73,7 +73,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
         assertThat(tabBarController.tabRootViewController(tab: .orders, isPOSTabVisible: true),
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(tab: .products, isPOSTabVisible: true),
-                   isAnInstanceOf: ProductsViewController.self)
+                   isAnInstanceOf: ProductsSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(tab: .pointOfSale, isPOSTabVisible: true),
                    isAnInstanceOf: POSTabViewController.self)
 
@@ -115,7 +115,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
         assertThat(tabBarController.tabRootViewController(tab: .orders, isPOSTabVisible: false),
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(tab: .products, isPOSTabVisible: false),
-                   isAnInstanceOf: ProductsViewController.self)
+                   isAnInstanceOf: ProductsSplitViewWrapperController.self)
 
         let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: false) as? UINavigationController)
         assertThat(hubMenuNavigationController.topViewController,
@@ -200,7 +200,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
             tab: .products,
             isPOSTabVisible: false,
             isBookingsTabVisible: true
-        ), isAnInstanceOf: ProductsViewController.self)
+        ), isAnInstanceOf: ProductsSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(
             tab: .bookings,
             isPOSTabVisible: false,
@@ -258,7 +258,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
             tab: .products,
             isPOSTabVisible: false,
             isBookingsTabVisible: false
-        ), isAnInstanceOf: ProductsViewController.self)
+        ), isAnInstanceOf: ProductsSplitViewWrapperController.self)
 
         let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(
             tab: .hubMenu,

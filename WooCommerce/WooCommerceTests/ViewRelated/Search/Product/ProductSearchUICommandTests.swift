@@ -25,25 +25,17 @@ final class ProductSearchUICommandTests: XCTestCase {
 
     func test_createHeaderView_returns_a_non_nil_view() {
         // When
-        let command = ProductSearchUICommand(siteID: sampleSiteID, isSearchProductsBySKUEnabled: true)
+        let command = ProductSearchUICommand(siteID: sampleSiteID)
 
         // Then
         XCTAssertNotNil(command.createHeaderView())
-    }
-
-    func test_createHeaderView_returns_nil_when_searchProductsBySKU_is_disabled() {
-        // When
-        let command = ProductSearchUICommand(siteID: sampleSiteID, isSearchProductsBySKUEnabled: false)
-
-        // Then
-        XCTAssertNil(command.createHeaderView())
     }
 
     // MARK: - `searchResultsPredicate`
 
     func test_searchResultsPredicate_is_nil_when_keyword_is_empty() {
         // Given
-        let command = ProductSearchUICommand(siteID: sampleSiteID, isSearchProductsBySKUEnabled: true)
+        let command = ProductSearchUICommand(siteID: sampleSiteID)
 
         // When
         let predicate = command.searchResultsPredicate(keyword: "")
@@ -54,7 +46,7 @@ final class ProductSearchUICommandTests: XCTestCase {
 
     func test_searchResultsPredicate_includes_keyword_and_filter_when_keyword_is_not_empty() {
         // Given
-        let command = ProductSearchUICommand(siteID: sampleSiteID, isSearchProductsBySKUEnabled: true)
+        let command = ProductSearchUICommand(siteID: sampleSiteID)
 
         // When
         let predicate = command.searchResultsPredicate(keyword: "🍁")
@@ -64,34 +56,12 @@ final class ProductSearchUICommandTests: XCTestCase {
                        "SUBQUERY(searchResults, $result, $result.keyword == \"🍁\" AND $result.filterKey == \"all\").@count > 0")
     }
 
-    func test_searchResultsPredicate_matches_any_products_with_search_results_when_keyword_is_empty_and_searchProductsBySKU_is_disabled() {
-        // Given
-        let command = ProductSearchUICommand(siteID: sampleSiteID, isSearchProductsBySKUEnabled: false)
-
-        // When
-        let predicate = command.searchResultsPredicate(keyword: "")
-
-        // Then
-        XCTAssertEqual(predicate?.predicateFormat, "ANY searchResults.keyword == \"\"")
-    }
-
-    func test_searchResultsPredicate_includes_keyword_and_filter_when_keyword_is_not_empty_and_searchProductsBySKU_is_disabled() {
-        // Given
-        let command = ProductSearchUICommand(siteID: sampleSiteID, isSearchProductsBySKUEnabled: false)
-
-        // When
-        let predicate = command.searchResultsPredicate(keyword: "Pineapple")
-
-        // Then
-        XCTAssertEqual(predicate?.predicateFormat, "ANY searchResults.keyword == \"Pineapple\"")
-    }
-
     // MARK: - `synchronizeModels`
 
     func test_synchronizeModels_does_not_dispatch_search_action_when_the_last_keyword_is_the_same_for_the_first_page() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let command = ProductSearchUICommand(siteID: sampleSiteID, stores: stores, isSearchProductsBySKUEnabled: true)
+        let command = ProductSearchUICommand(siteID: sampleSiteID, stores: stores)
 
         var invocationCount = 0
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -131,7 +101,7 @@ final class ProductSearchUICommandTests: XCTestCase {
     func test_synchronizeModels_does_not_dispatch_search_action_when_keyword_is_empty() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let command = ProductSearchUICommand(siteID: sampleSiteID, isSearchProductsBySKUEnabled: true)
+        let command = ProductSearchUICommand(siteID: sampleSiteID)
 
         var invocationCount = 0
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -158,7 +128,7 @@ final class ProductSearchUICommandTests: XCTestCase {
     func test_productListSearched_is_tracked_when_synchronizing_models() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
-        let command = ProductSearchUICommand(siteID: sampleSiteID, stores: stores, analytics: analytics, isSearchProductsBySKUEnabled: true)
+        let command = ProductSearchUICommand(siteID: sampleSiteID, stores: stores, analytics: analytics)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             guard case let .searchProducts(_, _, _, _, _, _, _, _, _, _, onCompletion) = action else {
                 return XCTFail("Unexpected action: \(action)")
@@ -182,12 +152,12 @@ final class ProductSearchUICommandTests: XCTestCase {
 
     // MARK: - Split view support
 
-    func test_animateNavigationBarVisibilityChanges_when_using_product_search_then_is_false() {
+    func test_hideNavigationBar_when_using_product_search_then_is_false() {
         // Given
-        let command = ProductSearchUICommand(siteID: sampleSiteID, isSearchProductsBySKUEnabled: true)
+        let command = ProductSearchUICommand(siteID: sampleSiteID)
 
         // Then
-        XCTAssertFalse(command.animateNavigationBarVisibilityChanges)
+        XCTAssertFalse(command.hideNavigationBar)
     }
 
     func test_didSelectSearchResult_ends_editing_before_invoking_onProductSelection() {
@@ -198,7 +168,6 @@ final class ProductSearchUICommandTests: XCTestCase {
         viewController.view = view
         var editingHadEndedWhenProductWasSelected = false
         let command = ProductSearchUICommand(siteID: sampleSiteID,
-                                             isSearchProductsBySKUEnabled: true,
                                              onProductSelection: { _ in
             editingHadEndedWhenProductWasSelected = view.didEndEditing
         }, onCancel: {})
@@ -216,7 +185,7 @@ final class ProductSearchUICommandTests: XCTestCase {
 
         // When
         let selectedProduct = waitFor { promise in
-            let command = ProductSearchUICommand(siteID: self.sampleSiteID, isSearchProductsBySKUEnabled: true, onProductSelection: { product in
+            let command = ProductSearchUICommand(siteID: self.sampleSiteID, onProductSelection: { product in
                 promise(product)
             }, onCancel: {})
             command.didSelectSearchResult(model: product, from: .init(), reloadData: {}, updateActionButton: {})
@@ -229,7 +198,6 @@ final class ProductSearchUICommandTests: XCTestCase {
     func test_onCancel_is_invoked_when_cancel_is_called() throws {
         waitFor { promise in
             let command = ProductSearchUICommand(siteID: self.sampleSiteID,
-                                                 isSearchProductsBySKUEnabled: true,
                                                  onProductSelection: { _ in },
                                                  onCancel: {
                 // Then
@@ -243,7 +211,6 @@ final class ProductSearchUICommandTests: XCTestCase {
     func test_shouldDeselectSearchResultOnSelection_is_false() throws {
         // Given
         let command = ProductSearchUICommand(siteID: self.sampleSiteID,
-                                             isSearchProductsBySKUEnabled: true,
                                              onProductSelection: { _ in },
                                              onCancel: {})
 
@@ -264,12 +231,10 @@ private final class EndEditingSpyView: UIView {
 private extension ProductSearchUICommand {
     convenience init(siteID: Int64,
                      stores: StoresManager = ServiceLocator.stores,
-                     analytics: Analytics = ServiceLocator.analytics,
-                     isSearchProductsBySKUEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsBySKU)) {
+                     analytics: Analytics = ServiceLocator.analytics) {
         self.init(siteID: siteID,
                   stores: stores,
                   analytics: analytics,
-                  isSearchProductsBySKUEnabled: isSearchProductsBySKUEnabled,
                   onProductSelection: { _ in },
                   onCancel: {})
     }

@@ -2,6 +2,7 @@ import Combine
 import XCTest
 import Fakes
 import TestKit
+import protocol Alamofire.URLRequestConvertible
 
 @testable import Networking
 @testable import NetworkingCore
@@ -278,6 +279,247 @@ final class RemoteTests: XCTestCase {
         }
 
         await fulfillment(of: [expectationForNotification], timeout: 1.0)
+    }
+
+    // MARK: - Store connection error detection
+
+    func test_enqueue_when_the_response_body_names_the_invalid_signature_error_then_the_store_is_recorded_as_affected() async throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_error")
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            XCTAssertEqual(error as? DotcomError, .invalidSignature())
+        }
+
+        // Then
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
+    func test_enqueue_when_the_response_body_names_the_invalid_signature_code_then_the_store_is_recorded_as_affected() async throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_code_error")
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            XCTAssertEqual(error as? DotcomError, .invalidSignature())
+        }
+
+        // Then
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
+    /// The store's rejection can also reach us as a status code failure whose body names the code.
+    ///
+    func test_enqueue_when_the_request_fails_with_the_invalid_signature_status_code_then_the_store_is_recorded_as_affected() async throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+
+        let responseBody = try XCTUnwrap(#"{"code":"rest_invalid_signature","message":"The request is not signed correctly."}"#.data(using: .utf8))
+        network.simulateError(requestUrlSuffix: "something",
+                              error: NetworkError.unacceptableStatusCode(statusCode: 400, response: responseBody))
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+        }
+    }
+
+    func test_enqueue_when_the_response_contains_another_error_then_the_store_is_not_recorded_as_affected() async throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "unknown_blog_error")
+
+        // When
+        do {
+            let _: String = try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? DotcomError, .unknownBlog())
+            XCTAssertTrue(recorder.invalidSignatureSiteIDs.isEmpty)
+        }
+    }
+
+    func test_enqueue_when_the_request_succeeds_then_the_store_is_recorded_as_reachable() throws {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "generic_success_data")
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper()) { _, error in
+            XCTAssertNil(error)
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(recorder.successfulConnectionSiteIDs, [123])
+    }
+
+    /// The `(Output?, Error?)` overload parses the body even when the request failed, because the Jetpack
+    /// tunnel returns a body worth reading alongside an error status. A body the validator has nothing to
+    /// say about must not be mistaken for the store being reachable.
+    ///
+    func test_enqueue_when_the_response_has_both_a_body_and_a_transport_error_then_the_store_is_not_recorded_as_reachable() throws {
+        // Given
+        // `rest_no_route` is deliberately a code `DotcomValidator` ignores, so validation passes and the
+        // only thing left saying the request failed is the transport error alongside it.
+        let responseBody = try XCTUnwrap(#"{"code":"rest_no_route","message":"No route was found matching the URL."}"#.data(using: .utf8))
+        let network = BodyAndErrorNetwork(data: responseBody,
+                                          error: NetworkError.unacceptableStatusCode(statusCode: 400, response: responseBody))
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper()) { _, _ in
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+    }
+
+    /// Uploads are not status-code validated, so an error status reaches us as a body with no error at
+    /// all. That is indistinguishable from a success here, so an upload must never be taken as evidence
+    /// that the store is reachable.
+    ///
+    func test_enqueueMultipartFormDataUpload_when_the_upload_cannot_report_its_outcome_then_the_store_is_not_recorded_as_reachable() throws {
+        // Given
+        let responseBody = try XCTUnwrap(#"{"code":"rest_no_route","message":"No route was found matching the URL."}"#.data(using: .utf8))
+        // This stub drops the error on the upload path, exactly as `AlamofireNetwork` does.
+        let network = BodyAndErrorNetwork(data: responseBody,
+                                          error: NetworkError.unacceptableStatusCode(statusCode: 400, response: responseBody))
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueueMultipartFormDataUpload(request, mapper: DummyMapper(), multipartFormData: { _ in }) { _ in
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+    }
+
+    /// The header-only overload parses no body, but it is a real store request: POS catalog syncing uses
+    /// it, so it has to be able to clear a store that has recovered.
+    ///
+    func test_enqueueWithResponseHeaders_when_the_request_succeeds_then_the_store_is_recorded_as_reachable() async throws {
+        // Given
+        let responseBody = try XCTUnwrap("{}".data(using: .utf8))
+        let network = SuccessfulNetwork(data: responseBody, headers: ["x-wp-total": "7"])
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+
+        // When
+        _ = try await remote.enqueueWithResponseHeaders(request)
+
+        // Then
+        XCTAssertEqual(recorder.successfulConnectionSiteIDs, [123])
+    }
+
+    /// The tunnel answers with a healthy status and an error body, so a 200 on its own says nothing
+    /// about the store. This overload parses no body for its callers, but it still has to read one
+    /// before deciding the store recovered.
+    ///
+    func test_enqueueWithResponseHeaders_when_the_body_carries_the_invalid_signature_error_then_the_store_is_not_recorded_as_reachable() async throws {
+        // Given
+        let responseBody = try XCTUnwrap(#"{"code":"rest_invalid_signature","message":"The request is not signed correctly."}"#.data(using: .utf8))
+        let network = SuccessfulNetwork(data: responseBody)
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+
+        // When
+        _ = try await remote.enqueueWithResponseHeaders(request)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
+    /// The `Result` overload sees a plain success whenever the transport was fine, so the body is the
+    /// only thing standing between a tunneled error and the store being marked reachable.
+    ///
+    func test_enqueue_with_result_when_the_body_carries_the_invalid_signature_error_then_the_store_is_not_recorded_as_reachable() {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_code_error")
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper()) { (_: Result<Any, Error>) in
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
+    }
+
+    func test_enqueue_publisher_when_the_body_carries_the_invalid_signature_error_then_the_store_is_not_recorded_as_reachable() {
+        // Given
+        let network = MockNetwork()
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "rest_invalid_signature_code_error")
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper())
+            .sink { _ in expectationForRequest.fulfill() }
+            .store(in: &cancellables)
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+        XCTAssertEqual(recorder.invalidSignatureSiteIDs, [123])
     }
 
     /// Verifies that `enqueue:mapper:` posts a `RemoteDidReceiveJetpackTimeoutError` Notification whenever the backend returns a
@@ -1315,6 +1557,97 @@ private extension RemoteTests {
         }
 
         XCTAssertEqual(code, "no_response_body", file: file, line: line)
+    }
+}
+
+/// Models what `AlamofireNetwork` hands back for a failing Jetpack request, which `MockNetwork` cannot
+/// express because it returns either a body or an error, never both.
+///
+/// The two paths differ on purpose, matching production. `responseData` reports `networkingError`, which
+/// is derived from the status code. `uploadMultipartFormData` reports Alamofire's own `response.error`,
+/// and uploads are not `.validate()`d, so an error status arrives with no error at all: body present,
+/// error nil.
+///
+private final class BodyAndErrorNetwork: Network {
+    private let data: Data
+    private let error: Error
+
+    init(data: Data, error: Error) {
+        self.data = data
+        self.error = error
+    }
+
+    var session: URLSession { URLSession(configuration: .default) }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+        completion(data, error)
+    }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+        completion(.failure(error))
+    }
+
+    func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+        throw error
+    }
+
+    func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+        Just<Swift.Result<Data, Error>>(.failure(error)).eraseToAnyPublisher()
+    }
+
+    func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+                                 to request: URLRequestConvertible,
+                                 completion: @escaping (Data?, Error?) -> Void) {
+        completion(data, nil)
+    }
+}
+
+/// Reports a successful response for every path, for exercising the self-healing clear.
+///
+private final class SuccessfulNetwork: Network {
+    private let data: Data
+    private let headers: Network.ResponseHeaders?
+
+    init(data: Data, headers: Network.ResponseHeaders? = [:]) {
+        self.data = data
+        self.headers = headers
+    }
+
+    var session: URLSession { URLSession(configuration: .default) }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
+        completion(data, nil)
+    }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
+        completion(.success(data))
+    }
+
+    func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+        (data, headers)
+    }
+
+    func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+        Just<Swift.Result<Data, Error>>(.success(data)).eraseToAnyPublisher()
+    }
+
+    func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+                                 to request: URLRequestConvertible,
+                                 completion: @escaping (Data?, Error?) -> Void) {
+        completion(data, nil)
+    }
+}
+
+private final class MockStoreConnectionErrorRecorder: StoreConnectionErrorRecording {
+    private(set) var invalidSignatureSiteIDs: [Int64] = []
+    private(set) var successfulConnectionSiteIDs: [Int64] = []
+
+    func recordInvalidSignature(siteID: Int64) {
+        invalidSignatureSiteIDs.append(siteID)
+    }
+
+    func recordSuccessfulConnection(siteID: Int64) {
+        successfulConnectionSiteIDs.append(siteID)
     }
 }
 

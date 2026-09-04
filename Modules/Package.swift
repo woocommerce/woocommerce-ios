@@ -145,7 +145,7 @@ let package = Package(
         .target(
             name: "Codegen",
             exclude: ["README.md", "Sourcery"], // Relative to sources path
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "Experiments",
@@ -153,7 +153,7 @@ let package = Package(
                 "WooFoundationCore",
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "Fakes",
@@ -267,7 +267,7 @@ let package = Package(
         .target(
             name: "WPMediaPicker",
             resources: [.process("Resources")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "Yosemite",

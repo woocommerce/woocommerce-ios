@@ -20,6 +20,29 @@ steps:
       - github_commit_status:
           context: Build
 
+  - label: ":warning: Build Warning Baseline"
+    key: build-warning-baseline
+    command: .buildkite/commands/build-warning-baseline.sh
+    if: build.pull_request.id != null
+    # Advisory-only: if the baseline can't be produced, the comparison step
+    # skips gracefully instead of the PR build going red.
+    soft_fail: true
+    plugins: [$CI_TOOLKIT]
+
+  - label: ":warning: Build Warning Count"
+    command: .buildkite/commands/comment-build-warning-increase.sh
+    depends_on:
+      - build
+      - build-warning-baseline
+    # Run even when a dependency fails: the script skips gracefully on a
+    # missing report and deletes any stale PR comment.
+    allow_dependency_failure: true
+    if: build.pull_request.id != null
+    # Advisory-only, like the baseline step: a failure here should never
+    # turn the PR build red.
+    soft_fail: true
+    plugins: [$CI_TOOLKIT]
+
   #################
   # Create Prototype Build
   #################

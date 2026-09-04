@@ -21,6 +21,24 @@ steps:
           context: Build
 
   #################
+  # Strict-concurrency warning baseline guard
+  #
+  # Advisory during the pilot: soft_fail means a warning increase reports on the PR
+  # without blocking the merge. No depends_on — it needs its own clean build with
+  # complete concurrency checking and cannot reuse build-products.tar.
+  #################
+  - label: ":swift: Strict Concurrency Baseline Guard"
+    key: strict_concurrency
+    soft_fail: true
+    command: .buildkite/commands/strict-concurrency-guard.sh
+    plugins: [$CI_TOOLKIT]
+    artifact_paths:
+      - strict-concurrency-current.json
+    notify:
+      - github_commit_status:
+          context: Strict Concurrency Baseline Guard
+
+  #################
   # Create Prototype Build
   #################
   - group: ":rocket: Prototype Build"

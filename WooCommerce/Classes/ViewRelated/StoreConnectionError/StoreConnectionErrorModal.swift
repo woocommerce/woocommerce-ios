@@ -14,31 +14,15 @@ struct StoreConnectionErrorModal: View {
             Color.black.opacity(Layout.scrimOpacity)
                 .ignoresSafeArea()
 
-            ScrollView {
-                VStack(alignment: .leading, spacing: Layout.spacing) {
-                    Text(Localization.title)
-                        .font(.title3)
-                        .bold()
-                        .foregroundStyle(Color(.text))
-                        .fixedSize(horizontal: false, vertical: true)
+            // The card sizes to its content, and only scrolls when the content is taller than the screen,
+            // as with the largest accessibility text sizes. A bare ScrollView would fill the whole height.
+            ViewThatFits(in: .vertical) {
+                content
 
-                    Text(Localization.body)
-                        .font(.body)
-                        .foregroundStyle(Color(.text))
-                        .fixedSize(horizontal: false, vertical: true)
-
-                    VStack(spacing: Layout.buttonSpacing) {
-                        Button(Localization.contactSupport, action: onContactSupport)
-                            .buttonStyle(PrimaryButtonStyle())
-
-                        Button(Localization.dismiss, action: onDismiss)
-                            .buttonStyle(SecondaryButtonStyle())
-                    }
-                    .padding(.top, Layout.buttonsTopPadding)
+                ScrollView {
+                    content
                 }
-                .padding(Layout.contentPadding)
             }
-            .scrollBounceBehavior(.basedOnSize)
             .background(Color(.tertiarySystemBackground))
             .cornerRadius(Layout.cornerRadius)
             .shadow(radius: Layout.shadowRadius)
@@ -46,6 +30,31 @@ struct StoreConnectionErrorModal: View {
             .frame(maxWidth: Layout.maxWidth)
         }
         .accessibilityAddTraits(.isModal)
+    }
+
+    private var content: some View {
+        VStack(alignment: .leading, spacing: Layout.spacing) {
+            Text(Localization.title)
+                .font(.title3)
+                .bold()
+                .foregroundStyle(Color(.text))
+                .fixedSize(horizontal: false, vertical: true)
+
+            Text(Localization.body)
+                .font(.body)
+                .foregroundStyle(Color(.text))
+                .fixedSize(horizontal: false, vertical: true)
+
+            VStack(spacing: Layout.buttonSpacing) {
+                Button(Localization.contactSupport, action: onContactSupport)
+                    .buttonStyle(PrimaryButtonStyle())
+
+                Button(Localization.dismiss, action: onDismiss)
+                    .buttonStyle(SecondaryButtonStyle())
+            }
+            .padding(.top, Layout.buttonsTopPadding)
+        }
+        .padding(Layout.contentPadding)
     }
 }
 

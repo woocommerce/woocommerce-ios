@@ -3,7 +3,7 @@
 
 25.7
 -----
-
+- [*] Fixed dashboard Performance and Top Performers cards getting stuck in their error state — the time-range picker now stays visible when a card fails to load, so a shorter range can be picked without logging out. [WOOMOB-3254]
 
 25.6
 -----

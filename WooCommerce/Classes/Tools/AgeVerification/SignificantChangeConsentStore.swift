@@ -7,24 +7,43 @@ enum SignificantChangeIdentifier: Hashable {
     /// or policy change we decide requires renewed parental consent).
     case manual(id: String)
 
+    /// Persisted discriminator of each case. The raw values are part of the on-disk format
+    /// of `cacheKey`: renaming one orphans every status stored under the old name.
+    private enum Kind: String {
+        case ageRatingChange
+        case manual
+    }
+
+    private static let cacheKeySeparator: Character = "."
+
+    /// Stable key the consent status is persisted under: `<kind>.<payload>`.
     var cacheKey: String {
         switch self {
         case let .ageRatingChange(ratingCode):
-            return "ageRatingChange.\(ratingCode)"
+            return Self.cacheKey(kind: .ageRatingChange, payload: String(ratingCode))
         case let .manual(id):
-            return "manual.\(id)"
+            return Self.cacheKey(kind: .manual, payload: id)
         }
     }
 
     init?(cacheKey: String) {
-        if cacheKey.hasPrefix("ageRatingChange."),
-           let ratingCode = Int(cacheKey.dropFirst("ageRatingChange.".count)) {
-            self = .ageRatingChange(ratingCode: ratingCode)
-        } else if cacheKey.hasPrefix("manual.") {
-            self = .manual(id: String(cacheKey.dropFirst("manual.".count)))
-        } else {
+        guard let separatorIndex = cacheKey.firstIndex(of: Self.cacheKeySeparator),
+              let kind = Kind(rawValue: String(cacheKey[..<separatorIndex])) else {
             return nil
         }
+        // Only the first separator splits kind from payload: a manual id may itself contain dots.
+        let payload = String(cacheKey[cacheKey.index(after: separatorIndex)...])
+        switch kind {
+        case .ageRatingChange:
+            guard let ratingCode = Int(payload) else { return nil }
+            self = .ageRatingChange(ratingCode: ratingCode)
+        case .manual:
+            self = .manual(id: payload)
+        }
+    }
+
+    private static func cacheKey(kind: Kind, payload: String) -> String {
+        kind.rawValue + String(cacheKeySeparator) + payload
     }
 }
 
@@ -46,8 +65,6 @@ struct PendingConsentRequest: Equatable {
 protocol SignificantChangeConsentStoring {
     func status(for identifier: SignificantChangeIdentifier) -> SignificantChangeConsentStatus?
     func setStatus(_ status: SignificantChangeConsentStatus, for identifier: SignificantChangeIdentifier)
-    /// Removes the stored status so the question can be asked again (recovery from a denial).
-    func clearStatus(for identifier: SignificantChangeIdentifier)
 
     /// The single outstanding question, if any. Only one significant-change question is in flight at a time.
     var pendingRequest: PendingConsentRequest? { get }
@@ -78,10 +95,6 @@ final class UserDefaultsSignificantChangeConsentStore: SignificantChangeConsentS
     func setStatus(_ status: SignificantChangeConsentStatus, for identifier: SignificantChangeIdentifier) {
         let key = Key.prefix + identifier.cacheKey
         defaults.set(status.rawValue, forKey: key)
-    }
-
-    func clearStatus(for identifier: SignificantChangeIdentifier) {
-        defaults.removeObject(forKey: Key.prefix + identifier.cacheKey)
     }
 
     var pendingRequest: PendingConsentRequest? {

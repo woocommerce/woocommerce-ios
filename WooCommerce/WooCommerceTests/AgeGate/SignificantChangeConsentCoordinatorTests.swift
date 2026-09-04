@@ -2,6 +2,8 @@ import XCTest
 @testable import WooCommerce
 
 final class SignificantChangeConsentCoordinatorTests: XCTestCase {
+    private let ratingChange = AgeRatingChangeCheckResult.ageRatingChanged(previous: 4, current: 13)
+    private let ratingChangeIdentifier = SignificantChangeIdentifier.ageRatingChange(ratingCode: 13)
 
     // MARK: - checkConsentIfNeeded (read-only)
 
@@ -26,7 +28,7 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
 
         // When
-        let state = sut.checkConsentIfNeeded(ageRatingChange: .ageRatingChanged(previous: 4, current: 13))
+        let state = sut.checkConsentIfNeeded(ageRatingChange: ratingChange)
 
         // Then
         XCTAssertEqual(state, .required)
@@ -37,14 +39,14 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
     @MainActor func test_checkConsentIfNeeded_when_cached_granted_then_returns_granted() {
         // Given
         let store = MockConsentStore()
-        store.statusByKey["ageRatingChange.13"] = .granted
+        store.statusByIdentifier[ratingChangeIdentifier] = .granted
         let sut = SignificantChangeConsentCoordinator(
             consentProvider: MockConsentProvider(requestResult: .notAvailable),
             consentStore: store
         )
 
         // When
-        let state = sut.checkConsentIfNeeded(ageRatingChange: .ageRatingChanged(previous: 4, current: 13))
+        let state = sut.checkConsentIfNeeded(ageRatingChange: ratingChange)
 
         // Then
         XCTAssertEqual(state, .granted)
@@ -53,14 +55,14 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
     @MainActor func test_checkConsentIfNeeded_when_cached_denied_then_returns_denied() {
         // Given
         let store = MockConsentStore()
-        store.statusByKey["ageRatingChange.13"] = .denied
+        store.statusByIdentifier[ratingChangeIdentifier] = .denied
         let sut = SignificantChangeConsentCoordinator(
             consentProvider: MockConsentProvider(requestResult: .notAvailable),
             consentStore: store
         )
 
         // When
-        let state = sut.checkConsentIfNeeded(ageRatingChange: .ageRatingChanged(previous: 4, current: 13))
+        let state = sut.checkConsentIfNeeded(ageRatingChange: ratingChange)
 
         // Then
         XCTAssertEqual(state, .denied)
@@ -69,14 +71,14 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
     @MainActor func test_checkConsentIfNeeded_when_cached_pending_then_returns_pending() {
         // Given
         let store = MockConsentStore()
-        store.statusByKey["ageRatingChange.13"] = .pending
+        store.statusByIdentifier[ratingChangeIdentifier] = .pending
         let sut = SignificantChangeConsentCoordinator(
             consentProvider: MockConsentProvider(requestResult: .notAvailable),
             consentStore: store
         )
 
         // When
-        let state = sut.checkConsentIfNeeded(ageRatingChange: .ageRatingChanged(previous: 4, current: 13))
+        let state = sut.checkConsentIfNeeded(ageRatingChange: ratingChange)
 
         // Then
         XCTAssertEqual(state, .pending)
@@ -92,18 +94,15 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
 
         // When
-        let state = await sut.requestConsent(
-            in: UIViewController(),
-            ageRatingChange: .ageRatingChanged(previous: 4, current: 13)
-        )
+        let state = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
 
         // Then
         XCTAssertEqual(state, .pending)
         XCTAssertEqual(provider.requestCount, 1)
-        XCTAssertEqual(store.statusByKey["ageRatingChange.13"], .pending)
+        XCTAssertEqual(store.statusByIdentifier[ratingChangeIdentifier], .pending)
         XCTAssertEqual(
             store.pendingRequest,
-            PendingConsentRequest(questionID: questionID, identifier: .ageRatingChange(ratingCode: 13))
+            PendingConsentRequest(questionID: questionID, identifier: ratingChangeIdentifier)
         )
     }
 
@@ -116,14 +115,11 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
 
         // When
-        let state = await sut.requestConsent(
-            in: UIViewController(),
-            ageRatingChange: .ageRatingChanged(previous: 4, current: 13)
-        )
+        let state = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
 
         // Then
         XCTAssertEqual(state, .granted)
-        XCTAssertEqual(store.statusByKey["ageRatingChange.13"], .granted)
+        XCTAssertEqual(store.statusByIdentifier[ratingChangeIdentifier], .granted)
         XCTAssertNil(store.pendingRequest)
     }
 
@@ -136,14 +132,31 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
 
         // When
-        let state = await sut.requestConsent(
-            in: UIViewController(),
-            ageRatingChange: .ageRatingChanged(previous: 4, current: 13)
-        )
+        let state = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
 
         // Then
         XCTAssertEqual(state, .denied)
-        XCTAssertEqual(store.statusByKey["ageRatingChange.13"], .denied)
+        XCTAssertEqual(store.statusByIdentifier[ratingChangeIdentifier], .denied)
+        XCTAssertNil(store.pendingRequest)
+    }
+
+    @MainActor func test_requestConsent_when_answer_arrives_while_send_is_in_flight_then_returns_final_state() async {
+        // Given
+        let questionID = UUID()
+        let provider = MockConsentProvider(requestResult: .sent(questionID: questionID))
+        provider.finishesStreamImmediately = false
+        // The system answers before `ask` returns — the coordinator doesn't know the question id yet.
+        provider.responsesDeliveredDuringRequest = [.init(questionID: questionID, isApproved: true)]
+        let store = MockConsentStore()
+        let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
+
+        // When
+        let state = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
+
+        // Then
+        // A dropped answer would leave the request pending after the grace window instead.
+        XCTAssertEqual(state, .granted)
+        XCTAssertEqual(store.statusByIdentifier[ratingChangeIdentifier], .granted)
         XCTAssertNil(store.pendingRequest)
     }
 
@@ -155,14 +168,11 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
 
         // When
-        let state = await sut.requestConsent(
-            in: UIViewController(),
-            ageRatingChange: .ageRatingChanged(previous: 4, current: 13)
-        )
+        let state = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
 
         // Then
         XCTAssertEqual(state, .pending)
-        XCTAssertEqual(store.statusByKey["ageRatingChange.13"], .pending)
+        XCTAssertEqual(store.statusByIdentifier[ratingChangeIdentifier], .pending)
         XCTAssertNotNil(store.pendingRequest)
     }
 
@@ -173,10 +183,7 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
 
         // When
-        let state = await sut.requestConsent(
-            in: UIViewController(),
-            ageRatingChange: .ageRatingChanged(previous: 4, current: 13)
-        )
+        let state = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
 
         // Then
         XCTAssertEqual(state, .notAvailable)
@@ -184,38 +191,50 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         XCTAssertNil(store.pendingRequest)
     }
 
-    @MainActor func test_requestConsent_when_previously_denied_then_clears_denial_and_asks_again() async {
+    @MainActor func test_requestConsent_when_previously_denied_then_asks_again_and_marks_pending() async {
         // Given
         let questionID = UUID()
         let provider = MockConsentProvider(requestResult: .sent(questionID: questionID))
         let store = MockConsentStore()
-        store.statusByKey["ageRatingChange.13"] = .denied
+        store.statusByIdentifier[ratingChangeIdentifier] = .denied
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
 
         // When
-        let state = await sut.requestConsent(
-            in: UIViewController(),
-            ageRatingChange: .ageRatingChanged(previous: 4, current: 13)
-        )
+        let state = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
 
         // Then
         XCTAssertEqual(state, .pending)
         XCTAssertEqual(provider.requestCount, 1)
-        XCTAssertEqual(store.statusByKey["ageRatingChange.13"], .pending)
+        XCTAssertEqual(store.statusByIdentifier[ratingChangeIdentifier], .pending)
+    }
+
+    @MainActor func test_requestConsent_when_previously_denied_and_re_ask_fails_then_keeps_denial() async {
+        // Given
+        let provider = MockConsentProvider(requestResult: .failed)
+        let store = MockConsentStore()
+        store.statusByIdentifier[ratingChangeIdentifier] = .denied
+        let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
+
+        // When
+        let state = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
+
+        // Then
+        XCTAssertEqual(state, .notAvailable)
+        XCTAssertEqual(provider.requestCount, 1)
+        // A failed re-ask must not downgrade "declined" to "never asked".
+        XCTAssertEqual(store.statusByIdentifier[ratingChangeIdentifier], .denied)
+        XCTAssertNil(store.pendingRequest)
     }
 
     @MainActor func test_requestConsent_when_already_granted_then_returns_granted_without_asking() async {
         // Given
         let provider = MockConsentProvider(requestResult: .sent(questionID: UUID()))
         let store = MockConsentStore()
-        store.statusByKey["ageRatingChange.13"] = .granted
+        store.statusByIdentifier[ratingChangeIdentifier] = .granted
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
 
         // When
-        let state = await sut.requestConsent(
-            in: UIViewController(),
-            ageRatingChange: .ageRatingChanged(previous: 4, current: 13)
-        )
+        let state = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
 
         // Then
         XCTAssertEqual(state, .granted)
@@ -225,6 +244,7 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
     @MainActor func test_requestConsent_when_manual_identifier_then_takes_precedence_and_persists_pending() async {
         // Given
         let questionID = UUID()
+        let manualIdentifier = SignificantChangeIdentifier.manual(id: "new-feature")
         let provider = MockConsentProvider(requestResult: .sent(questionID: questionID))
         let store = MockConsentStore()
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
@@ -232,17 +252,17 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         // When
         let state = await sut.requestConsent(
             in: UIViewController(),
-            ageRatingChange: .ageRatingChanged(previous: 4, current: 13),
-            manualChangeIdentifier: .manual(id: "new-feature")
+            ageRatingChange: ratingChange,
+            manualChangeIdentifier: manualIdentifier
         )
 
         // Then
         XCTAssertEqual(state, .pending)
-        XCTAssertEqual(store.statusByKey["manual.new-feature"], .pending)
-        XCTAssertNil(store.statusByKey["ageRatingChange.13"])
+        XCTAssertEqual(store.statusByIdentifier[manualIdentifier], .pending)
+        XCTAssertNil(store.statusByIdentifier[ratingChangeIdentifier])
         XCTAssertEqual(
             store.pendingRequest,
-            PendingConsentRequest(questionID: questionID, identifier: .manual(id: "new-feature"))
+            PendingConsentRequest(questionID: questionID, identifier: manualIdentifier)
         )
     }
 
@@ -254,8 +274,8 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         let provider = MockConsentProvider(requestResult: .sent(questionID: questionID))
         provider.stubbedResponses = [.init(questionID: questionID, isApproved: true)]
         let store = MockConsentStore()
-        store.statusByKey["ageRatingChange.13"] = .pending
-        store.pendingRequest = PendingConsentRequest(questionID: questionID, identifier: .ageRatingChange(ratingCode: 13))
+        store.statusByIdentifier[ratingChangeIdentifier] = .pending
+        store.pendingRequest = PendingConsentRequest(questionID: questionID, identifier: ratingChangeIdentifier)
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
         let exp = expectation(description: "onResolution")
 
@@ -269,7 +289,7 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         // Then
         await fulfillment(of: [exp], timeout: 1)
         XCTAssertEqual(resolvedStatus, .granted)
-        XCTAssertEqual(store.statusByKey["ageRatingChange.13"], .granted)
+        XCTAssertEqual(store.statusByIdentifier[ratingChangeIdentifier], .granted)
         XCTAssertNil(store.pendingRequest)
     }
 
@@ -278,7 +298,7 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         let provider = MockConsentProvider(requestResult: .notAvailable)
         provider.stubbedResponses = [.init(questionID: UUID(), isApproved: false)]
         let store = MockConsentStore()
-        store.pendingRequest = PendingConsentRequest(questionID: UUID(), identifier: .ageRatingChange(ratingCode: 13))
+        store.pendingRequest = PendingConsentRequest(questionID: UUID(), identifier: ratingChangeIdentifier)
         let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store)
         let exp = expectation(description: "onResolution")
         exp.isInverted = true
@@ -291,16 +311,25 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         // Then
         await fulfillment(of: [exp], timeout: 0.3)
         XCTAssertNotNil(store.pendingRequest)
+        XCTAssertEqual(store.setCount, 0)
     }
 }
 
 private final class MockConsentProvider: SignificantChangeConsentProviding {
     let requestResult: SignificantChangeConsentRequestResult
+    /// Delivered as soon as the coordinator subscribes to `responses()`.
     var stubbedResponses: [SignificantChangeConsentResponse] = []
+    /// Delivered while `requestConsent` is still in flight — before the caller knows the question id.
+    var responsesDeliveredDuringRequest: [SignificantChangeConsentResponse] = []
+    /// Ends the stream right after the stubbed responses, like a provider that can't deliver more.
+    var finishesStreamImmediately = true
     private(set) var requestCount = 0
+    private let stream: AsyncStream<SignificantChangeConsentResponse>
+    private let continuation: AsyncStream<SignificantChangeConsentResponse>.Continuation
 
     init(requestResult: SignificantChangeConsentRequestResult) {
         self.requestResult = requestResult
+        (stream, continuation) = AsyncStream.makeStream()
     }
 
     func requestConsent(
@@ -308,33 +337,36 @@ private final class MockConsentProvider: SignificantChangeConsentProviding {
         significantAppUpdateDescription: String
     ) async -> SignificantChangeConsentRequestResult {
         requestCount += 1
+        if responsesDeliveredDuringRequest.isEmpty == false {
+            responsesDeliveredDuringRequest.forEach { continuation.yield($0) }
+            // Stay in flight long enough for the listener to consume the answer, like a real
+            // system answer landing before `ask` returns.
+            try? await Task.sleep(nanoseconds: 50_000_000)
+        }
         return requestResult
     }
 
     func responses() -> AsyncStream<SignificantChangeConsentResponse> {
-        AsyncStream { continuation in
-            stubbedResponses.forEach { continuation.yield($0) }
+        stubbedResponses.forEach { continuation.yield($0) }
+        if finishesStreamImmediately {
             continuation.finish()
         }
+        return stream
     }
 }
 
 private final class MockConsentStore: SignificantChangeConsentStoring {
-    var statusByKey: [String: SignificantChangeConsentStatus] = [:]
+    var statusByIdentifier: [SignificantChangeIdentifier: SignificantChangeConsentStatus] = [:]
     var pendingRequest: PendingConsentRequest?
     private(set) var setCount = 0
 
     func status(for identifier: SignificantChangeIdentifier) -> SignificantChangeConsentStatus? {
-        statusByKey[identifier.cacheKey]
+        statusByIdentifier[identifier]
     }
 
     func setStatus(_ status: SignificantChangeConsentStatus, for identifier: SignificantChangeIdentifier) {
         setCount += 1
-        statusByKey[identifier.cacheKey] = status
-    }
-
-    func clearStatus(for identifier: SignificantChangeIdentifier) {
-        statusByKey[identifier.cacheKey] = nil
+        statusByIdentifier[identifier] = status
     }
 
     func setPendingRequest(_ request: PendingConsentRequest) {

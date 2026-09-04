@@ -27,6 +27,10 @@ final class SignificantChangeConsentCoordinator {
     /// Grace-window waiters keyed by question id. The single response listener resumes these,
     /// so an answer is never split between two competing stream subscriptions.
     private var graceContinuations: [UUID: CheckedContinuation<SignificantChangeConsentResponse?, Never>] = [:]
+    /// Answers that arrived before their question was recorded as pending — e.g. delivered while
+    /// `requestConsent` was still awaiting the system's send call. They're matched up as soon as
+    /// the send result reports the question id, instead of being dropped as unknown.
+    private var unmatchedResponses: [UUID: SignificantChangeConsentResponse] = [:]
 
     nonisolated init(
         consentProvider: SignificantChangeConsentProviding = PermissionKitSignificantChangeConsentProvider(),
@@ -76,8 +80,8 @@ final class SignificantChangeConsentCoordinator {
     }
 
     /// Sends the consent question to the parent/guardian. Call only from an explicit user
-    /// action (the blocking screen's button) — never automatically. A previous denial is
-    /// cleared so the question can be asked again.
+    /// action (the blocking screen's button) — never automatically. A previous denial can be
+    /// asked again; it stays persisted until the system actually accepts the new question.
     func requestConsent(
         in viewController: UIViewController,
         ageRatingChange: AgeRatingChangeCheckResult?,
@@ -95,9 +99,9 @@ final class SignificantChangeConsentCoordinator {
             return .granted
         case .pending:
             return .pending
-        case .denied:
-            consentStore.clearStatus(for: changeIdentifier)
-        case nil:
+        case .denied, nil:
+            // Re-askable. The denial is only replaced once the question is sent, so a failed
+            // re-ask doesn't downgrade "declined" to "never asked".
             break
         }
 
@@ -110,16 +114,20 @@ final class SignificantChangeConsentCoordinator {
         case let .sent(questionID):
             consentStore.setStatus(.pending, for: changeIdentifier)
             consentStore.setPendingRequest(.init(questionID: questionID, identifier: changeIdentifier))
-            // An answer can arrive immediately (in-person approval, sandbox simulation).
-            // Give it a short grace window so callers get the final state directly instead of
-            // flashing a pending UI that is torn down a moment later.
-            if let response = await awaitResponse(questionID: questionID, timeout: Constants.immediateResponseGraceWindow) {
-                let status: SignificantChangeConsentStatus = response.isApproved ? .granted : .denied
-                consentStore.setStatus(status, for: changeIdentifier)
-                consentStore.clearPendingRequest()
-                return response.isApproved ? .granted : .denied
+            // The answer may already be here (delivered while the send call was in flight) or
+            // arrive right away (in-person approval, sandbox simulation). Resolve it directly so
+            // callers get the final state instead of flashing a pending UI that is torn down
+            // a moment later.
+            let response: SignificantChangeConsentResponse?
+            if let buffered = unmatchedResponses.removeValue(forKey: questionID) {
+                response = buffered
+            } else {
+                response = await awaitResponse(questionID: questionID, timeout: Constants.immediateResponseGraceWindow)
             }
-            return .pending
+            guard let response else {
+                return .pending
+            }
+            return persist(response, for: changeIdentifier) == .granted ? .granted : .denied
         case .notAvailable, .failed:
             return .notAvailable
         }
@@ -129,6 +137,8 @@ final class SignificantChangeConsentCoordinator {
 private extension SignificantChangeConsentCoordinator {
     enum Constants {
         static let immediateResponseGraceWindow: TimeInterval = 2
+        /// Only one question is ever in flight; anything beyond a handful of unmatched answers is stale noise.
+        static let maxUnmatchedResponses = 8
     }
 
     /// Starts the single long-lived response listener if it isn't running yet.
@@ -150,11 +160,32 @@ private extension SignificantChangeConsentCoordinator {
             continuation.resume(returning: response)
             return
         }
-        guard let pending = consentStore.pendingRequest, pending.questionID == response.questionID else { return }
-        let status: SignificantChangeConsentStatus = response.isApproved ? .granted : .denied
-        consentStore.setStatus(status, for: pending.identifier)
-        consentStore.clearPendingRequest()
+        guard let pending = consentStore.pendingRequest, pending.questionID == response.questionID else {
+            // Not a known question (yet): keep it in case a send call still in flight
+            // reports this question id when it returns.
+            bufferUnmatched(response)
+            return
+        }
+        let status = persist(response, for: pending.identifier)
         onResolution?(status)
+    }
+
+    @discardableResult
+    func persist(
+        _ response: SignificantChangeConsentResponse,
+        for identifier: SignificantChangeIdentifier
+    ) -> SignificantChangeConsentStatus {
+        let status: SignificantChangeConsentStatus = response.isApproved ? .granted : .denied
+        consentStore.setStatus(status, for: identifier)
+        consentStore.clearPendingRequest()
+        return status
+    }
+
+    func bufferUnmatched(_ response: SignificantChangeConsentResponse) {
+        if unmatchedResponses.count >= Constants.maxUnmatchedResponses {
+            unmatchedResponses.removeAll()
+        }
+        unmatchedResponses[response.questionID] = response
     }
 
     /// Waits up to `timeout` for the answer to the given question; nil when none arrives in time.

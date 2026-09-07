@@ -1,5 +1,6 @@
 import UIKit
 import Experiments
+import protocol WooFoundation.Analytics
 
 enum AppAccessDecision: Equatable {
     case allow
@@ -49,6 +50,7 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
     private let significantChangeConsentCoordinator: SignificantChangeConsentCoordinator
     private let ageRatingChangeDetector: AgeRatingChangeDetecting
     private let manualChangeIdentifierProvider: () -> SignificantChangeIdentifier?
+    private let analytics: Analytics
     /// Guards against concurrent decision flows. All trigger sources (launch, consent
     /// resolution, foreground re-check, blocker buttons) run on the main thread.
     private var isVerificationFlowInProgress = false
@@ -62,13 +64,15 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         ageRatingChangeDetector: AgeRatingChangeDetecting = AgeRatingChangeDetector(),
         manualChangeIdentifierProvider: @escaping () -> SignificantChangeIdentifier? = {
             CurrentSignificantChange.activeManualChangeIdentifier()
-        }
+        },
+        analytics: Analytics = ServiceLocator.analytics
     ) {
         self.featureFlagService = featureFlagService
         self.ageRangeVerificationService = ageRangeVerificationService
         self.significantChangeConsentCoordinator = significantChangeConsentCoordinator
         self.ageRatingChangeDetector = ageRatingChangeDetector
         self.manualChangeIdentifierProvider = manualChangeIdentifierProvider
+        self.analytics = analytics
     }
 
     /// Triggers the age range verification flow.
@@ -137,10 +141,15 @@ private extension AgeRangeVerificationCoordinator {
         hostingWindow: UIWindow,
         onResult: @escaping (AppAccessDecision, AgeRangeVerificationResult) -> Void
     ) {
+        let finish = { [weak self] (decision: AppAccessDecision, result: AgeRangeVerificationResult, consentState: SignificantChangeConsentState?) in
+            self?.trackVerificationIfNeeded(decision: decision, result: result, consentState: consentState)
+            onResult(decision, result)
+        }
+
         guard let anchor = hostingWindow.topmostPresentedViewController else {
             DDLogWarn("Failed to obtain view controller to present `Declared Age Range` SDK dialogue.")
             // Allow flow to continue if we can't present the dialogue.
-            onResult(.allow, .invalidUIState)
+            finish(.allow, .invalidUIState, nil)
             return
         }
 
@@ -154,7 +163,7 @@ private extension AgeRangeVerificationCoordinator {
                     "Age is eligible. significantAppChangeApprovalRequired: \(significantAppChangeApprovalRequired), isMinor: \(isMinor)"
                 )
                 guard isMinor, significantAppChangeApprovalRequired else {
-                    onResult(.allow, result)
+                    finish(.allow, result, nil)
                     return
                 }
 
@@ -167,7 +176,7 @@ private extension AgeRangeVerificationCoordinator {
                     )
                     switch state {
                     case .notRequired, .notAvailable:
-                        onResult(.allow, result)
+                        finish(.allow, result, state)
                     case .granted:
                         // Acknowledge only once the change is approved, so an unresolved change
                         // keeps being re-evaluated on subsequent launches. A manual change takes
@@ -176,17 +185,17 @@ private extension AgeRangeVerificationCoordinator {
                         if manualChangeIdentifier == nil, case let .ageRatingChanged(_, current) = ageRatingChange {
                             self.ageRatingChangeDetector.acknowledge(ratingCode: current)
                         }
-                        onResult(.allowConsentGranted, result)
+                        finish(.allowConsentGranted, result, state)
                     case .required:
-                        onResult(.restrictConsentRequired, result)
+                        finish(.restrictConsentRequired, result, state)
                     case .pending:
-                        onResult(.restrictPendingConsent, result)
+                        finish(.restrictPendingConsent, result, state)
                     case .denied:
-                        onResult(.restrictDeniedConsent, result)
+                        finish(.restrictDeniedConsent, result, state)
                     }
                 }
             case .ineligible:
-                onResult(.denyAndLogout, result)
+                finish(.denyAndLogout, result, nil)
             case .declinedSharing,
                  .featureUnavailable,
                  .ineligibleForAgeFeatures,
@@ -194,8 +203,40 @@ private extension AgeRangeVerificationCoordinator {
                  .sdkError,
                  .unknown:
                 // Non-deterministic/unavailable results are treated as allowed.
-                onResult(.allow, result)
+                finish(.allow, result, nil)
             }
+        }
+    }
+
+    /// Volume guardrail: the gate runs on every logged-in transition for every user, and nearly all
+    /// of them are uninteresting allows (account not under a covered regime, API unavailable on
+    /// older iOS). Only a flow that got past the compliance-required check, or any decision other
+    /// than `allow`, is worth an event. The covered population is tiny, so these events are rare
+    /// by nature.
+    func trackVerificationIfNeeded(
+        decision: AppAccessDecision,
+        result: AgeRangeVerificationResult,
+        consentState: SignificantChangeConsentState?
+    ) {
+        guard decision != .allow || result.isUnderCoveredRegime else { return }
+        analytics.track(event: .AgeVerification.restrictionChecked(decision: decision, result: result, consentState: consentState))
+    }
+}
+
+private extension AgeRangeVerificationResult {
+    /// Whether the flow got past the compliance-required check, i.e. the account is under a covered regime.
+    var isUnderCoveredRegime: Bool {
+        switch self {
+        case .eligible, .ineligible, .declinedSharing, .unknown:
+            return true
+        case let .sdkError(error):
+            // `notAvailable` is the unsupported OS/account case, reached before any regime check.
+            if let providerError = error as? AgeRangeProviderError, case .notAvailable = providerError {
+                return false
+            }
+            return true
+        case .featureUnavailable, .ineligibleForAgeFeatures, .invalidUIState:
+            return false
         }
     }
 }

@@ -15,14 +15,14 @@ enum SignificantChangeBlockingContext {
 /// Full-screen, non-dismissable blocking screen for the significant-change consent flow.
 /// Recoverable by design: no logout — the user requests approval, re-checks, or re-asks.
 final class SignificantChangeConsentBlockingHostingController: UIHostingController<SignificantChangeConsentBlockingView> {
-    init(context: SignificantChangeBlockingContext, onAction: @escaping () -> Void) {
-        super.init(rootView: SignificantChangeConsentBlockingView(context: context, onAction: onAction))
+    init(context: SignificantChangeBlockingContext, detailMessage: String? = nil, onAction: @escaping () -> Void) {
+        super.init(rootView: SignificantChangeConsentBlockingView(context: context, detailMessage: detailMessage, onAction: onAction))
         modalPresentationStyle = .fullScreen
         isModalInPresentation = true
     }
 
-    func update(context: SignificantChangeBlockingContext, onAction: @escaping () -> Void) {
-        rootView = SignificantChangeConsentBlockingView(context: context, onAction: onAction)
+    func update(context: SignificantChangeBlockingContext, detailMessage: String? = nil, onAction: @escaping () -> Void) {
+        rootView = SignificantChangeConsentBlockingView(context: context, detailMessage: detailMessage, onAction: onAction)
     }
 
     @available(*, unavailable)
@@ -33,6 +33,8 @@ final class SignificantChangeConsentBlockingHostingController: UIHostingControll
 
 struct SignificantChangeConsentBlockingView: View {
     let context: SignificantChangeBlockingContext
+    /// Replaces the generic `.approvalNeeded` message, e.g. a declared change's `blockerMessage`.
+    var detailMessage: String? = nil
     let onAction: () -> Void
 
     /// Brief in-button progress after a tap. The underlying work can resolve instantly,
@@ -98,7 +100,7 @@ private extension SignificantChangeConsentBlockingView {
     var message: String {
         switch context {
         case .approvalNeeded:
-            return Localization.neededMessage
+            return detailMessage ?? Localization.neededMessage
         case .pendingApproval:
             return Localization.pendingMessage
         case .approvalDenied:
@@ -206,6 +208,15 @@ private extension SignificantChangeConsentBlockingView {
 
 #Preview("Needed") {
     SignificantChangeConsentBlockingView(context: .approvalNeeded, onAction: {})
+}
+
+#Preview("Needed with declared change") {
+    SignificantChangeConsentBlockingView(
+        context: .approvalNeeded,
+        detailMessage: "We've updated the Terms of Service for this app. Because of these changes, " +
+            "your parent or guardian needs to approve your continued use of the app.",
+        onAction: {}
+    )
 }
 
 #Preview("Pending") {

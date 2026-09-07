@@ -24,6 +24,9 @@ release archive into the workspace, verifies the SHA-256 in
 3. Copy `env.example` to `.env.local` and fill it locally.
    WordPress.com-hosted not-Woo fixtures require the dedicated WP.com pair.
    Jurassic Ninja `/wp-admin` or `/wp-admin/` URLs are normalized to the site root.
+
+   The lab store can be provisioned instead of filled in by hand. See
+   [Provisioning a lab store](#provisioning-a-lab-store) below.
 4. Run the linter and side-effect-free doctor without printing values or
    booting a simulator:
 
@@ -37,6 +40,50 @@ compatible simulator, installs the app, generates a unique `SUITE_RUN_ID`, and
 stores artifacts under `~/woocommerce-maestro-output/` by default.
 When exactly one built `WooCommerce.app` exists in the repository or Xcode
 DerivedData, `--app` is optional; multiple candidates fail with an explicit list.
+
+## Provisioning a lab store
+
+`.maestro/scripts/setup-jn-store.sh` turns a Jurassic Ninja site into the lab store:
+it connects Jetpack to your own WordPress.com test account, creates WooCommerce REST
+API keys, and writes the matching `.env.local` entries. Everything site-side runs over
+SSH and wp-cli; only the two WordPress.com calls go over HTTP. No Jetpack partner
+credentials are involved.
+
+The quickest path is the `/setup-test-stores` skill, which creates the site through the
+`jurassic-ninja` ContextA8C MCP and then runs the script. To do it by hand instead,
+create a site at
+`https://jurassic.ninja/create/?woocommerce&woocommerce-import-sample-data`, take the
+admin password from the notice the site shows in `/wp-admin`, and run:
+
+```bash
+.maestro/scripts/setup-jn-store.sh --site your-site.jurassic.ninja
+```
+
+The script prompts for anything it cannot find in `.env.local`, so a later run against a
+new site needs only `--site`. Passwords are prompted rather than passed as flags, because
+command-line arguments are written to shell history and are visible in `ps` output. For
+non-interactive use, supply the site password via the `JN_SSH_PASS` environment variable.
+
+Requirements: `expect` (ships with macOS), app credentials at
+`~/.configure/woocommerce-ios/secrets/woo_app_credentials.json` (`rake dependencies`), and
+a **WordPress.com test account with two-factor authentication disabled** — the OAuth
+password grant cannot answer a 2FA challenge non-interactively. Use test accounts only.
+
+### What a provisioned store covers
+
+It ships with the WooCommerce sample products and is known-good for the products flows
+and the basic dashboard flows.
+
+It has no orders, customers, or coupons, and an unset onboarding profile, so
+`orders_list_and_search`, `dashboard_view_all_analytics`, `orders_create` and the coupon
+flows are expected to fail against it until that data is seeded, which is not yet
+automated. The negative-login fixtures (`MAESTRO_WOO_NO_JETPACK_*`,
+`MAESTRO_WOO_NOT_A_WOO_STORE_*`, `MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are not
+provisioned either and still need to be supplied by hand.
+
+Jurassic Ninja sites expire after 7 days of inactivity. Re-run the script or the skill
+against a new site when that happens; the WordPress.com account already in `.env.local`
+is reused.
 
 ## Profiles
 

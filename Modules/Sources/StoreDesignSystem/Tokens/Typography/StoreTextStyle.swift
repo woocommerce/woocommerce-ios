@@ -1,6 +1,6 @@
 import SwiftUI
 
-public struct StoreTextStyle: Equatable {
+public struct StoreTextStyle: Equatable, Sendable {
     public let size: CGFloat
     public let lineHeight: CGFloat
     public let tracking: CGFloat

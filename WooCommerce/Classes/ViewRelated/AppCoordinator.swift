@@ -495,8 +495,6 @@ private extension AppCoordinator {
             case .restrictDeniedConsent:
                 self.presentSignificantChangeBlocker(context: .approvalDenied)
             }
-
-            //TODO: consider adding analytics event with the result
         }
     }
 
@@ -515,16 +513,22 @@ private extension AppCoordinator {
         // reference — the presentation was refused, or the root was swapped underneath it —
         // must be presented afresh, otherwise the user is silently let through.
         if let blocker = significantChangeBlocker, blocker.presentingViewController != nil {
+            // A re-check that lands on the same screen isn't a new dialog.
+            if blocker.context != context {
+                analytics.track(event: .AgeVerification.dialogShown(screen: WooAnalyticsEvent.AgeVerification.screen(for: context)))
+            }
             blocker.update(context: context, detailMessage: detailMessage, onAction: action)
             return
         }
         let blocker = SignificantChangeConsentBlockingHostingController(context: context, detailMessage: detailMessage, onAction: action)
         significantChangeBlocker = blocker
         window.topmostPresentedViewController?.present(blocker, animated: true)
+        analytics.track(event: .AgeVerification.dialogShown(screen: WooAnalyticsEvent.AgeVerification.screen(for: context)))
         startForegroundConsentRecheck()
     }
 
     func handleSignificantChangeBlockerAction(for context: SignificantChangeBlockingContext) {
+        analytics.track(event: .AgeVerification.action(WooAnalyticsEvent.AgeVerification.action(for: context)))
         switch context {
         case .approvalNeeded, .approvalDenied:
             // The user explicitly sends (or re-sends) the approval request,
@@ -606,6 +610,7 @@ private extension AppCoordinator {
                 )
             )
             presenter.present(alert, animated: true)
+            self.analytics.track(event: .AgeVerification.dialogShown(screen: .underageAlert))
         }
     }
 }

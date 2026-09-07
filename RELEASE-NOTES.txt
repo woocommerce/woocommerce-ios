@@ -3,6 +3,7 @@
 
 25.7
 -----
+- [*] POS: Fixed a refund failing with "Invalid refund amount" on stores that enter prices inclusive of tax.
 
 
 25.6

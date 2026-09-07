@@ -158,7 +158,7 @@ remote_php() {
 
 # JN provisions asynchronously and answers HTTP well before its plugins finish
 # installing, so poll for the state actually needed rather than for a 200.
-step 1/7 "Waiting for $SITE to finish provisioning"
+step 1/6 "Waiting for $SITE to finish provisioning"
 DEADLINE=$(( $(date +%s) + 900 ))
 STATE=""
 while :; do
@@ -181,7 +181,7 @@ echo "USER:" . ( get_user_by( "id", __ADMIN_ID__ ) ? "ok" : "MISSING" ) . "\n";'
 done
 ok "site is up, WooCommerce and Jetpack active"
 
-step 2/7 "Checking SSH and admin user"
+step 2/6 "Checking SSH and admin user"
 if ! printf '%s' "$STATE" | grep -q "WPCLI:ok"; then
   printf '  remote output: %s\n' "$(printf '%s' "$STATE" | head -3 | tr '\n' ' ')" >&2
   die "could not run wp-cli over SSH. Check the site admin password."
@@ -189,15 +189,10 @@ fi
 printf '%s' "$STATE" | grep -q "USER:ok" || die "no user with id $ADMIN_ID (try --admin-id)"
 ok "ssh and wp-cli working, admin user id $ADMIN_ID present"
 
-# Jetpack matches the local user to the WordPress.com account by email. The
-# Jetpack e2e suite does the same before provisioning a connection.
-step 3/7 "Aligning the site admin's email with $WPCOM_USER"
-remote "wp user update $ADMIN_ID --user_email='$WPCOM_USER' --quiet" >/dev/null
-ok "admin email aligned"
 
 # rest_do_request runs as an authenticated admin inside wp-cli, so no cookie or
 # REST nonce is needed for the two site-side Jetpack calls.
-step 4/7 "Registering the site with Jetpack"
+step 3/6 "Registering the site with Jetpack"
 REG="$(remote_php '<?php
 wp_set_current_user( __ADMIN_ID__ );
 $res = rest_do_request( new WP_REST_Request( "POST", "/jetpack/v4/connection/register" ) );
@@ -210,7 +205,7 @@ BLOG_ID="$(printf '%s' "$REG" | sed -n 's/^BLOGID:\([0-9][0-9]*\).*/\1/p' | head
 [ -n "$BLOG_ID" ] || die "could not register the site: $(printf '%s' "$REG" | head -3)"
 ok "registered, blogID=$BLOG_ID"
 
-step 5/7 "Provisioning the user connection"
+step 4/6 "Provisioning the user connection"
 PROV="$(remote_php '<?php
 wp_set_current_user( __ADMIN_ID__ );
 $res = rest_do_request( new WP_REST_Request( "POST", "/jetpack/v4/remote_provision" ) );
@@ -228,7 +223,7 @@ ok "scope and secret obtained (the secret is short-lived)"
 # --data-urlencode is required, not stylistic: curl -d sends the body raw, so a
 # plus-alias address arrives with the + decoded as a space and the grant fails
 # with a misleading "Incorrect username or password".
-step 6/7 "Connecting Jetpack to $WPCOM_USER"
+step 5/6 "Connecting Jetpack to $WPCOM_USER"
 CID="$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['dotcom_app_id'])" "$APP_CREDS")"
 CSEC="$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['dotcom_secret'])" "$APP_CREDS")"
 TOKRESP="$(curl -s -X POST https://public-api.wordpress.com/oauth2/token \
@@ -259,7 +254,7 @@ ok "isUserConnected=yes, hasConnectedOwner=yes"
 
 # WooCommerce exposes no REST endpoint for API keys, so insert the row the same
 # way its own admin-ajax handler does.
-step 7/7 "Creating WooCommerce API keys and writing $(basename "$ENV_OUT")"
+step 6/6 "Creating WooCommerce API keys and writing $(basename "$ENV_OUT")"
 KEYS="$(remote_php '<?php
 $ck = "ck_" . wc_rand_hash();
 $cs = "cs_" . wc_rand_hash();

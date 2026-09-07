@@ -22,9 +22,26 @@ hand against a site created in a browser.
 - `expect` on PATH (ships with macOS) for password-based SSH.
 - A **WordPress.com test account with two-factor authentication disabled**. The OAuth
   password grant used to connect Jetpack cannot answer a 2FA challenge non-interactively.
-  Never use a personal or production account.
+  Never use a personal or production account. The account is read from `.env.local`, or
+  from `MAESTRO_WOO_LAB_WPCOM_EMAIL` / `MAESTRO_WOO_LAB_WPCOM_PASSWORD` in the
+  environment; see step 0.
 
 ## Steps
+
+0. **Make sure the WordPress.com account is available.** The script needs a test account
+   to connect Jetpack to, and it cannot prompt when run by an agent because there is no
+   terminal attached; it will exit with a message naming what is missing.
+
+   If `.env.local` has no `MAESTRO_WOO_LAB_WPCOM_EMAIL` / `MAESTRO_WOO_LAB_WPCOM_PASSWORD`,
+   stop and ask the user to either add those two lines themselves, or run the script
+   directly in their own terminal, where it prompts without echoing:
+
+   ```bash
+   .maestro/scripts/setup-jn-store.sh --site <domain>.jurassic.ninja
+   ```
+
+   Do not ask the user to paste a password into the conversation, and never pass one as a
+   command-line argument.
 
 1. **Check whether setup is already usable.** If `.maestro/.env.local` exists, read
    `MAESTRO_WOO_LAB_JETPACK_STORE_URL` and the consumer key/secret, then probe:
@@ -67,9 +84,8 @@ hand against a site created in a browser.
    finish installing), connects Jetpack, creates the API keys, and writes
    `.maestro/.env.local`.
 
-   If `.env.local` has no WordPress.com account yet, the script prompts for it
-   interactively. Let it prompt: do not collect the password yourself and do not pass it
-   as an argument.
+   This assumes `.env.local` already has `MAESTRO_WOO_LAB_WPCOM_EMAIL` and
+   `MAESTRO_WOO_LAB_WPCOM_PASSWORD`. If it does not, see step 0.
 
 5. **Report** the store URL and blog ID. Do not print any credential.
 

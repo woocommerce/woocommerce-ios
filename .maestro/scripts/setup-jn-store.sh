@@ -87,14 +87,30 @@ prompt_secret() {
   printf -v "$__var" '%s' "$__value"
 }
 
+# Resolution order per value: flag, then environment, then .env.local, then an
+# interactive prompt.
 [ -n "$SITE_PASS" ]   || SITE_PASS="${JN_SSH_PASS:-}"
 [ -n "$SITE_PASS" ]   || SITE_PASS="$(env_value MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_PASSWORD)"
+[ -n "$WPCOM_USER" ]  || WPCOM_USER="${MAESTRO_WOO_LAB_WPCOM_EMAIL:-}"
 [ -n "$WPCOM_USER" ]  || WPCOM_USER="$(env_value MAESTRO_WOO_LAB_WPCOM_EMAIL)"
+[ -n "$WPCOM_PASS" ]  || WPCOM_PASS="${MAESTRO_WOO_LAB_WPCOM_PASSWORD:-}"
 [ -n "$WPCOM_PASS" ]  || WPCOM_PASS="$(env_value MAESTRO_WOO_LAB_WPCOM_PASSWORD)"
 
+# Prompting needs a terminal. Without one (an agent, a pipeline) the reads would
+# take EOF and fail several steps later with a misleading message, so say
+# exactly what is missing and how to supply it.
 if [ -z "$SITE_PASS" ] || [ -z "$WPCOM_USER" ] || [ -z "$WPCOM_PASS" ]; then
+  if [ ! -t 0 ]; then
+    printf 'error: missing credentials and no terminal to prompt on.\n' >&2
+    [ -n "$SITE_PASS" ]  || printf '  site admin password: pass --site-password or set JN_SSH_PASS\n' >&2
+    [ -n "$WPCOM_USER" ] || printf '  WordPress.com account: set MAESTRO_WOO_LAB_WPCOM_EMAIL or add it to %s\n' "$(basename "$ENV_OUT")" >&2
+    [ -n "$WPCOM_PASS" ] || printf '  WordPress.com password: set MAESTRO_WOO_LAB_WPCOM_PASSWORD or add it to %s\n' "$(basename "$ENV_OUT")" >&2
+    printf 'Or run this script directly in a terminal and it will prompt.\n' >&2
+    exit 1
+  fi
   printf '\nCredentials not found in %s, enter them now.\n' "$(basename "$ENV_OUT")"
 fi
+
 [ -n "$SITE_PASS" ] || prompt_secret SITE_PASS "site admin password for $SITE"
 if [ -z "$WPCOM_USER" ]; then
   printf '  WordPress.com test account email: ' >&2

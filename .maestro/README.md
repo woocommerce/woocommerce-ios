@@ -59,10 +59,24 @@ admin password from the notice the site shows in `/wp-admin`, and run:
 .maestro/scripts/setup-jn-store.sh --site your-site.jurassic.ninja
 ```
 
-The script prompts for anything it cannot find in `.env.local`, so a later run against a
-new site needs only `--site`. Passwords are prompted rather than passed as flags, because
-command-line arguments are written to shell history and are visible in `ps` output. For
-non-interactive use, supply the site password via the `JN_SSH_PASS` environment variable.
+### Supplying the WordPress.com account
+
+The first run needs a test account for Jetpack to connect to. Supply it either by filling
+`MAESTRO_WOO_LAB_WPCOM_EMAIL` and `MAESTRO_WOO_LAB_WPCOM_PASSWORD` in `.env.local`
+beforehand, or by letting the script prompt when you run it in a terminal. Once the account
+is in `.env.local`, later runs against new sites reuse it and need only `--site`.
+
+Passwords are prompted rather than passed as flags, because command-line arguments are
+written to shell history and are visible in `ps` output. When there is no terminal to
+prompt on — an agent, or CI — supply them through the environment instead:
+
+```bash
+JN_SSH_PASS=… MAESTRO_WOO_LAB_WPCOM_EMAIL=… MAESTRO_WOO_LAB_WPCOM_PASSWORD=… \
+  .maestro/scripts/setup-jn-store.sh --site your-site.jurassic.ninja
+```
+
+Run without a terminal and without credentials, the script exits immediately naming what
+is missing rather than failing further in.
 
 Requirements: `expect` (ships with macOS), app credentials at
 `~/.configure/woocommerce-ios/secrets/woo_app_credentials.json` (`rake dependencies`), and

@@ -2,11 +2,8 @@ import Foundation
 import protocol WooFoundationCore.WooAnalyticsEventPropertyType
 
 extension WooAnalyticsEvent {
-    /// Age verification and parental consent events (Declared Age Range + significant-change consent).
-    ///
-    /// Every property is deliberately categorical, per Legal guidance on this feature: coarse age
-    /// bands only (never raw bounds or exact ages), SDK error domain and numeric code only (never
-    /// messages), and no PermissionKit question ids or parent/child identifiers.
+    /// Age verification and parental consent events. Every property is categorical (Legal guidance):
+    /// coarse age bands, SDK error domain + numeric code, no question ids or identifiers.
     enum AgeVerification {
         /// Coarse outcome of the Declared Age Range request. Bands match what Android reports.
         enum AgeRangeOutcome: String {
@@ -90,6 +87,7 @@ extension WooAnalyticsEvent {
         }
 
         private enum Keys {
+            static let trigger = "trigger"
             static let ageRangeOutcome = "age_range_outcome"
             static let finalDecision = "final_decision"
             static let restrictionReason = "restriction_reason"
@@ -108,11 +106,13 @@ extension WooAnalyticsEvent {
         /// One completed verification flow.
         /// - Parameter consentState: the consent state when the significant-change branch ran; `nil` otherwise.
         static func restrictionChecked(
+            trigger: AgeVerificationTrigger,
             decision: AppAccessDecision,
             result: AgeRangeVerificationResult,
             consentState: SignificantChangeConsentState?
         ) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [
+                Keys.trigger: trigger.rawValue,
                 Keys.ageRangeOutcome: ageRangeOutcome(for: result).rawValue,
                 Keys.finalDecision: finalDecision(for: decision).rawValue
             ]
@@ -134,9 +134,14 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .accountAgeRestrictionDialogShown, properties: [Keys.screen: screen.rawValue])
         }
 
-        /// A tap on the blocking wall.
-        static func action(_ action: Action) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .accountAgeVerificationAction, properties: [Keys.action: action.rawValue])
+        /// The blocking wall became visible in the given context.
+        static func dialogShown(for context: SignificantChangeBlockingContext) -> WooAnalyticsEvent {
+            dialogShown(screen: screenValue(for: context))
+        }
+
+        /// A tap on the blocking wall's button in the given context.
+        static func action(for context: SignificantChangeBlockingContext) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .accountAgeVerificationAction, properties: [Keys.action: actionValue(for: context).rawValue])
         }
 
         /// The app handed a consent question to the system (iOS-only; on Android, Play manages the ask).
@@ -209,7 +214,7 @@ extension WooAnalyticsEvent.AgeVerification {
         }
     }
 
-    static func screen(for context: SignificantChangeBlockingContext) -> Screen {
+    private static func screenValue(for context: SignificantChangeBlockingContext) -> Screen {
         switch context {
         case .approvalNeeded: return .consentNeeded
         case .pendingApproval: return .consentPending
@@ -218,7 +223,7 @@ extension WooAnalyticsEvent.AgeVerification {
         }
     }
 
-    static func action(for context: SignificantChangeBlockingContext) -> Action {
+    private static func actionValue(for context: SignificantChangeBlockingContext) -> Action {
         switch context {
         case .approvalNeeded: return .requestApproval
         case .pendingApproval: return .checkAgain

@@ -20,9 +20,22 @@ enum AppAccessDecision: Equatable {
     case restrictDeniedConsent
 }
 
+/// What started a verification flow; reported with `account_age_restriction_checked`.
+enum AgeVerificationTrigger: String {
+    /// A logged-in transition (launch or login).
+    case login
+    /// A parent/guardian answer arrived through the response listener.
+    case consentResolution = "consent_resolution"
+    /// The app returned to the foreground while the consent wall was up.
+    case foregroundRecheck = "foreground_recheck"
+    /// A button on the consent wall.
+    case wallAction = "wall_action"
+}
+
 protocol AgeRangeVerificationCoordinatorProtocol {
     func triggerAgeVerificationIfNeeded(
         hostingWindow: UIWindow,
+        trigger: AgeVerificationTrigger,
         onResult: @escaping (AppAccessDecision, AgeRangeVerificationResult) -> Void
     )
 
@@ -43,7 +56,11 @@ extension AgeRangeVerificationCoordinator {
 }
 
 final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol {
-    typealias VerificationTrigger = (hostingWindow: UIWindow, onResult: (AppAccessDecision, AgeRangeVerificationResult) -> Void)
+    typealias QueuedVerification = (
+        hostingWindow: UIWindow,
+        trigger: AgeVerificationTrigger,
+        onResult: (AppAccessDecision, AgeRangeVerificationResult) -> Void
+    )
 
     private let featureFlagService: FeatureFlagService
     private let ageRangeVerificationService: AgeRangeVerificationServiceProtocol
@@ -55,7 +72,7 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
     /// resolution, foreground re-check, blocker buttons) run on the main thread.
     private var isVerificationFlowInProgress = false
     /// The latest trigger that arrived while a flow was in progress; replayed once it finishes.
-    private var queuedTrigger: VerificationTrigger?
+    private var queuedTrigger: QueuedVerification?
 
     init(
         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
@@ -79,9 +96,11 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
     /// Handles "blocking UI" presenting in case of ineligible age and performs a logout.
     /// - Parameters:
     ///   - hostingWindow: The window that handles the dialogue UI. Basically the main app window works well.
+    ///   - trigger: What started this flow; reported in analytics.
     ///   - onResult: Called on when a result is obtained. Passes if the age is eligible + verification result value.
     func triggerAgeVerificationIfNeeded(
         hostingWindow: UIWindow,
+        trigger: AgeVerificationTrigger,
         onResult: @escaping (AppAccessDecision, AgeRangeVerificationResult) -> Void
     ) {
         guard featureFlagService.isFeatureFlagEnabled(.ageRangeRequirementsCompliance) else {
@@ -96,12 +115,12 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         // flow finishes; only the latest one is kept since a single follow-up pass covers them all.
         guard isVerificationFlowInProgress == false else {
             DDLogInfo("Age verification flow already in progress; queueing a follow-up check.")
-            queuedTrigger = (hostingWindow, onResult)
+            queuedTrigger = (hostingWindow, trigger, onResult)
             return
         }
         isVerificationFlowInProgress = true
 
-        performAgeVerification(hostingWindow: hostingWindow) { [weak self] decision, result in
+        performAgeVerification(hostingWindow: hostingWindow, trigger: trigger) { [weak self] decision, result in
             self?.isVerificationFlowInProgress = false
             onResult(decision, result)
             self?.replayQueuedTriggerIfNeeded()
@@ -117,9 +136,10 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
     }
 
     func requestSignificantChangeConsent(hostingWindow: UIWindow) async -> SignificantChangeConsentState {
-        guard let anchor = hostingWindow.topmostPresentedViewController else {
+        // A missing anchor is reported (and tracked) by the consent coordinator as `.notAvailable`.
+        let anchor = hostingWindow.topmostPresentedViewController
+        if anchor == nil {
             DDLogWarn("Failed to obtain view controller to anchor the consent request.")
-            return .notAvailable
         }
         let ageRatingChange = await ageRatingChangeDetector.checkForChange()
         return await significantChangeConsentCoordinator.requestConsent(
@@ -134,15 +154,16 @@ private extension AgeRangeVerificationCoordinator {
     func replayQueuedTriggerIfNeeded() {
         guard let trigger = queuedTrigger else { return }
         queuedTrigger = nil
-        triggerAgeVerificationIfNeeded(hostingWindow: trigger.hostingWindow, onResult: trigger.onResult)
+        triggerAgeVerificationIfNeeded(hostingWindow: trigger.hostingWindow, trigger: trigger.trigger, onResult: trigger.onResult)
     }
 
     func performAgeVerification(
         hostingWindow: UIWindow,
+        trigger: AgeVerificationTrigger,
         onResult: @escaping (AppAccessDecision, AgeRangeVerificationResult) -> Void
     ) {
         let finish = { [weak self] (decision: AppAccessDecision, result: AgeRangeVerificationResult, consentState: SignificantChangeConsentState?) in
-            self?.trackVerificationIfNeeded(decision: decision, result: result, consentState: consentState)
+            self?.trackVerificationIfNeeded(trigger: trigger, decision: decision, result: result, consentState: consentState)
             onResult(decision, result)
         }
 
@@ -214,12 +235,18 @@ private extension AgeRangeVerificationCoordinator {
     /// than `allow`, is worth an event. The covered population is tiny, so these events are rare
     /// by nature.
     func trackVerificationIfNeeded(
+        trigger: AgeVerificationTrigger,
         decision: AppAccessDecision,
         result: AgeRangeVerificationResult,
         consentState: SignificantChangeConsentState?
     ) {
         guard decision != .allow || result.isUnderCoveredRegime else { return }
-        analytics.track(event: .AgeVerification.restrictionChecked(decision: decision, result: result, consentState: consentState))
+        analytics.track(event: .AgeVerification.restrictionChecked(
+            trigger: trigger,
+            decision: decision,
+            result: result,
+            consentState: consentState
+        ))
     }
 }
 
@@ -229,13 +256,17 @@ private extension AgeRangeVerificationResult {
         switch self {
         case .eligible, .ineligible, .declinedSharing, .unknown:
             return true
+        case .invalidUIState:
+            // Almost always the service's post-check anchor guard (a covered user failing open);
+            // the pre-check variant (no view controller on the window) is negligible noise.
+            return true
         case let .sdkError(error):
             // `notAvailable` is the unsupported OS/account case, reached before any regime check.
             if let providerError = error as? AgeRangeProviderError, case .notAvailable = providerError {
                 return false
             }
             return true
-        case .featureUnavailable, .ineligibleForAgeFeatures, .invalidUIState:
+        case .featureUnavailable, .ineligibleForAgeFeatures:
             return false
         }
     }

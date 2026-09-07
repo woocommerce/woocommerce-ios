@@ -90,8 +90,9 @@ final class SignificantChangeConsentCoordinator {
     /// Sends the consent question to the parent/guardian. Call only from an explicit user
     /// action (the blocking screen's button) — never automatically. A previous denial can be
     /// asked again; it stays persisted until the system actually accepts the new question.
+    /// - Parameter viewController: anchor for the system sheet; `nil` is reported as `.notAvailable`.
     func requestConsent(
-        in viewController: UIViewController,
+        in viewController: UIViewController?,
         ageRatingChange: AgeRatingChangeCheckResult?,
         manualChangeIdentifier: SignificantChangeIdentifier? = nil
     ) async -> SignificantChangeConsentState {
@@ -114,6 +115,11 @@ final class SignificantChangeConsentCoordinator {
             isReask = true
         case nil:
             isReask = false
+        }
+
+        guard let viewController else {
+            trackConsentRequested(for: changeIdentifier, requestResult: .notAvailable, isReask: isReask)
+            return .notAvailable
         }
 
         ensureObservingResponses()

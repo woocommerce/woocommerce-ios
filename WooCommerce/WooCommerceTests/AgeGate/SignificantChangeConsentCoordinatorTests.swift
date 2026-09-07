@@ -429,6 +429,31 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         XCTAssertFalse(properties?.values.contains { ($0 as? String) == "2026-terms-of-service" } ?? true)
     }
 
+    @MainActor func test_requestConsent_when_no_anchor_then_returns_notAvailable_and_tracks_without_sending() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let provider = MockConsentProvider(requestResult: .sent(questionID: UUID()))
+        let store = MockConsentStore()
+        store.statusByIdentifier[ratingChangeIdentifier] = .denied
+        let sut = SignificantChangeConsentCoordinator(
+            consentProvider: provider,
+            consentStore: store,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+
+        // When
+        let state = await sut.requestConsent(in: nil, ageRatingChange: ratingChange)
+
+        // Then
+        XCTAssertEqual(state, .notAvailable)
+        XCTAssertEqual(provider.requestCount, 0)
+        XCTAssertEqual(store.statusByIdentifier[ratingChangeIdentifier], .denied)
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.accountAgeConsentRequested.rawValue])
+        let properties = analyticsProvider.receivedProperties.first
+        XCTAssertEqual(properties?["result"] as? String, "not_available")
+        XCTAssertEqual(properties?["is_reask"] as? Bool, true)
+    }
+
     @MainActor func test_requestConsent_when_answer_arrives_within_grace_window_then_tracks_resolution_via_grace_window() async {
         // Given
         let analyticsProvider = MockAnalyticsProvider()

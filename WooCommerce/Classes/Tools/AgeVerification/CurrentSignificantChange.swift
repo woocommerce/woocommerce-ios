@@ -17,21 +17,19 @@ struct SignificantChangeDeclaration: Equatable {
 /// (e.g. new Terms of Service) significant despite an unchanged rating; allow one release cycle of
 /// lead time for copy review and localization, and remove it once consent has been collected.
 ///
+/// Both texts must be `NSLocalizedString` literals keyed `significantChange.<id>.parentDescription`
+/// and `significantChange.<id>.blockerMessage`. The example spells those calls out in comments
+/// because the strings extraction (genstrings) also scans doc comments.
+///
 /// Example:
 ///
 ///     static let declaration: SignificantChangeDeclaration? = SignificantChangeDeclaration(
 ///         id: "2026-10-terms-of-service",
-///         parentDescription: NSLocalizedString(
-///             "significantChange.2026TermsOfService.parentDescription",
-///             value: "The app's Terms of Service have changed.",
-///             comment: "Description a parent or guardian sees in the system consent request for the updated Terms of Service."
-///         ),
-///         blockerMessage: NSLocalizedString(
-///             "significantChange.2026TermsOfService.blockerMessage",
-///             value: "We've updated the Terms of Service for this app. Because of these changes, " +
-///                 "your parent or guardian needs to approve your continued use of the app.",
-///             comment: "Message on the in-app Approval Needed screen for the updated Terms of Service."
-///         )
+///         // NSLocalizedString, key "significantChange.2026TermsOfService.parentDescription"
+///         parentDescription: "The app's Terms of Service have changed.",
+///         // NSLocalizedString, key "significantChange.2026TermsOfService.blockerMessage"
+///         blockerMessage: "We've updated the Terms of Service for this app. Because of these changes, " +
+///             "your parent or guardian needs to approve your continued use of the app."
 ///     )
 enum CurrentSignificantChange {
     static let declaration: SignificantChangeDeclaration? = nil

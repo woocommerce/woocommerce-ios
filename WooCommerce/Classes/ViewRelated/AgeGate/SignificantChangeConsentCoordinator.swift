@@ -256,12 +256,8 @@ private extension SignificantChangeConsentCoordinator {
         )
 
         #if DEBUG || ALPHA
-        static let manualChangeRequestDescriptionFormat = NSLocalizedString(
-            "significantChangeConsent.manual.description",
-            value: "Significant app update: %1$@.",
-            comment: "PermissionKit description shown for a manual significant change." +
-            "manualChangeID: %1$@ is a short description."
-        )
+        /// Debug Panel ids only; intentionally not localized so the placeholder never reaches translators.
+        static let manualChangeRequestDescriptionFormat = "Significant app update: %1$@."
         #endif
     }
 }

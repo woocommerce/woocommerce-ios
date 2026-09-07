@@ -23,9 +23,8 @@ The flow runs after login, from `AppCoordinator`, and re-runs on every foregroun
 | `AgeRangeVerificationService.swift` | Fetches the regulatory requirements, requests the declared age range (two gates: 13 and 18) and maps the snapshot to an `AgeRangeVerificationResult`. |
 | `AgeRangeProvider.swift` | Thin wrapper around the Declared Age Range framework. |
 | `AgeRatingProvider.swift` / `AgeRatingChangeDetector.swift` / `AgeRatingChangeDetecting.swift` | Reads the app's current App Store age rating and reports an unacknowledged rating increase (non-consuming until explicitly acknowledged). |
-| `SignificantChangeIdentifier.swift` | `.ageRatingChange(ratingCode:)` (auto-detected) and `.manual(id:)` (developer-declared) plus the persisted cache key format. |
 | `SignificantChangeConsentProvider.swift` | PermissionKit wrapper: `requestConsent` sends the question, `responses()` streams answers. |
-| `SignificantChangeConsentStore.swift` | UserDefaults persistence of per-change statuses (`granted`/`denied`/`pending`) and the single pending-question slot. |
+| `SignificantChangeConsentStore.swift` | `SignificantChangeIdentifier` (`.ageRatingChange(ratingCode:)` auto-detected, `.manual(id:)` developer-declared, plus the persisted cache key format) and the UserDefaults persistence of per-change statuses (`granted`/`denied`/`pending`) and the single pending-question slot. |
 | `CurrentSignificantChange.swift` | The one well-known place to declare a real manual significant change for a release, with its parent-facing copy. |
 | `DebugAgeVerificationOverrides.swift` | Debug Panel override (manual change id). Inert in release builds and while unit tests run. |
 
@@ -59,7 +58,7 @@ The flow runs after login, from `AppCoordinator`, and re-runs on every foregroun
 
 Notes on the matrix:
 
-- Rows 7–11 apply to the single change currently in effect. A declared manual change takes precedence over a detected age rating change, so approving the manual change does not acknowledge a concurrent rating change; that one stays outstanding and is evaluated once the manual change is resolved.
+- Rows 7–11 apply to the single change currently in effect. A declared manual change takes precedence over a detected age rating change for as long as the declaration exists in `CurrentSignificantChange.swift`, even after its consent is `granted`. Approving the manual change does not acknowledge a concurrent rating change; that one stays outstanding but is masked until the declaration is removed in a later release, and is evaluated on the next launch after that.
 - Row 10: "change acknowledged" means the age rating change detector caches the approved rating so it stops reporting it. Manual changes are acknowledged implicitly by their persisted `granted` status.
 - Row 12 covers both `checkConsentIfNeeded` returning `notAvailable` and a failed or unavailable `requestConsent` from the wall. Nothing is persisted in either case, so the gate re-evaluates on the next launch.
 - Consent requests are never sent automatically. The only sender is the wall's Request Approval / Ask Again button.
@@ -75,8 +74,8 @@ Notes on the matrix:
 A "significant change" without an age rating impact (for example new Terms of Service or a new data practice) is declared by editing one file: `WooCommerce/Classes/Tools/AgeVerification/CurrentSignificantChange.swift`. Set `CurrentSignificantChange.declaration` to a `SignificantChangeDeclaration` with:
 
 - `id`: a new, stable identifier (consent outcomes are persisted per id; reusing an old id replays its previous answer).
-- `parentDescription`: the short, plain summary Apple shows inside the consent request the parent/guardian receives. Use an `NSLocalizedString` literal.
-- `blockerMessage`: the longer explanation shown on the in-app "Approval Needed" screen. Use an `NSLocalizedString` literal.
+- `parentDescription`: the short, plain summary Apple shows inside the consent request the parent/guardian receives. Use an `NSLocalizedString` literal with the key `significantChange.<id>.parentDescription`.
+- `blockerMessage`: the longer explanation shown on the in-app "Approval Needed" screen. Use an `NSLocalizedString` literal with the key `significantChange.<id>.blockerMessage`.
 
 Both texts are required by construction, so a change cannot be declared without parent-facing copy. Legal drives the trigger: a change is declared only when Legal determines it is significant under the applicable rules. Plan for one release cycle of lead time so the copy can be reviewed and localized before the release that carries the declaration ships. Remove the declaration in a later release once the change has shipped and consent for it has had time to be collected.
 
@@ -84,6 +83,6 @@ Both texts are required by construction, so a change cannot be declared without 
 
 Menu → Settings → Debug Panel → "Age Verification" (DEBUG and ALPHA builds only; every override is inert while unit tests run).
 
-- **Manual significant change ID**: a non-empty id is treated as an undeclared manual significant change on the next age verification (relaunch or re-login). The field saves as you type; there is no Save button. A debug id takes precedence over `CurrentSignificantChange.declaration`, and its consent request uses a placeholder description that only exists in DEBUG/ALPHA builds.
+- **Manual significant change ID**: a non-empty id is treated as an undeclared manual significant change on the next age verification (relaunch or re-login). The field saves as you type; there is no Save button. A debug id takes precedence over `CurrentSignificantChange.declaration`, and its consent request uses an unlocalized placeholder description that only exists in DEBUG/ALPHA builds.
 - **Reset significant change consent state**: clears every persisted consent status, the pending question and the acknowledged age rating cache. Tap it before every test scenario.
 - **Sandbox testing entry point**: on a physical device with a sandbox Apple Account, iOS Settings → Developer → Sandbox Apple Account → Manage → Age Assurance lets you pick the age band and the parent's answer (approved/declined) that the sandbox returns. The sandbox answers instantly, so the "Approval Requested" wall is only reachable with a real supervised account. The SDKs do not work on the simulator.

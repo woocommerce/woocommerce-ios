@@ -16,7 +16,7 @@ struct CurrentSignificantChangeTests {
         (nil, declaration, declaredIdentifier),
         (nil, nil, nil)
     ] as [(SignificantChangeIdentifier?, SignificantChangeDeclaration?, SignificantChangeIdentifier?)])
-    func activeManualChangeIdentifier_when_resolved_then_debug_override_wins_over_declaration(
+    func test_activeManualChangeIdentifier_when_resolved_then_debug_override_wins_over_declaration(
         debugOverride: SignificantChangeIdentifier?,
         declaration: SignificantChangeDeclaration?,
         expected: SignificantChangeIdentifier?
@@ -30,7 +30,7 @@ struct CurrentSignificantChangeTests {
         (.ageRatingChange(ratingCode: 13), declaration, nil),
         (declaredIdentifier, nil, nil)
     ] as [(SignificantChangeIdentifier, SignificantChangeDeclaration?, SignificantChangeDeclaration?)])
-    func declaration_matching_when_resolved_then_returns_declaration_only_for_its_own_manual_id(
+    func test_declaration_matching_when_resolved_then_returns_declaration_only_for_its_own_manual_id(
         identifier: SignificantChangeIdentifier,
         declaration: SignificantChangeDeclaration?,
         expected: SignificantChangeDeclaration?
@@ -43,7 +43,7 @@ struct CurrentSignificantChangeTests {
         (debugOverride, declaration, nil),
         (nil, nil, nil)
     ] as [(SignificantChangeIdentifier?, SignificantChangeDeclaration?, SignificantChangeDeclaration?)])
-    func activeDeclaration_when_resolved_then_is_hidden_by_a_debug_override(
+    func test_activeDeclaration_when_resolved_then_is_hidden_by_a_debug_override(
         debugOverride: SignificantChangeIdentifier?,
         declaration: SignificantChangeDeclaration?,
         expected: SignificantChangeDeclaration?

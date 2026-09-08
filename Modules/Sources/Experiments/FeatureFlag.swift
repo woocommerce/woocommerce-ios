@@ -67,10 +67,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case addProductToOrderViaSKUScanner
 
-    /// Enables manual error handling for site credential login.
-    ///
-    case manualErrorHandlingForSiteCredentialLogin
-
     /// Enables bundle product configuration support in order creation/editing.
     ///
     case productBundlesInOrderForm
@@ -82,22 +78,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale
-
-    /// Enables revamped shipping label flow for Woo Shipping extension
-    ///
-    case revampedShippingLabelCreation
-
-    /// Enables selecting objectives during Blaze campaign creation.
-    ///
-    case blazeCampaignObjective
-
-    /// Supports hiding sites from the store picker
-    ///
-    case hideSitesInStorePicker
-
-    /// Supports managing filer history on order and product lists
-    ///
-    case filterHistoryOnOrderAndProductLists
 
     /// Supports uploading product images in background
     ///

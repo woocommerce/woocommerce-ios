@@ -1,5 +1,4 @@
 import Foundation
-import Experiments
 import UIKit
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -38,19 +37,15 @@ final class StorePickerViewModel {
     private let userDefaults: UserDefaults
     private let analytics: Analytics
     private let roleEligibilityUseCase: RoleEligibilityUseCase
-    private let featureFlagService: FeatureFlagService
-
     init(configuration: StorePickerConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
         self.configuration = configuration
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
-        self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores)
     }
@@ -148,8 +143,7 @@ private extension StorePickerViewModel {
 
     func checkIfHidingStoresShouldBeEnabled() {
         shouldEnableHidingStores = {
-            guard featureFlagService.isFeatureFlagEnabled(.hideSitesInStorePicker),
-                  configuration == .switchingStores else {
+            guard configuration == .switchingStores else {
                 return false
             }
             return allFetchedSites.filter { $0.isWooCommerceActive }.count > 1

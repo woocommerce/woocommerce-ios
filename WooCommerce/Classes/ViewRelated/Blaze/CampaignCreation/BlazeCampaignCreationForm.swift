@@ -115,15 +115,13 @@ struct BlazeCampaignCreationForm: View {
                     .accessibilityAddTraits(.isHeader)
 
                 VStack(spacing: 0) {
-                    VStack(spacing: 0) {
-                        // Objective - hidden behind a feature flag
-                        detailView(title: Localization.objective,
-                                   content: viewModel.campaignObjectiveText ?? Localization.chooseObjective) {
-                            isShowingCampaignObjectivePicker = true
-                        }
-                        divider
+                    // Objective
+                    detailView(title: Localization.objective,
+                               content: viewModel.campaignObjectiveText ?? Localization.chooseObjective) {
+                        isShowingCampaignObjectivePicker = true
                     }
-                    .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective))
+
+                    divider
 
                     // Budget
                     detailView(title: Localization.budget, content: viewModel.budgetDetailText) {

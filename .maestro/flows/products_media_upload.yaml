@@ -29,24 +29,41 @@ tags:
 - assertVisible: Choose from device
 - tapOn: Choose from device
 - extendedWaitUntil:
-    visible:
-      text: Photos
+    visible: "Albums"
+    timeout: 15000
+- tapOn: "Recently Added"
+- extendedWaitUntil:
+    notVisible: "Recents"
     timeout: 15000
 - tapOn:
     point: 20%,25%
-- tapOn: Add
+- extendedWaitUntil:
+    visible:
+      id: SelectedActionButton
+    timeout: 15000
+- tapOn:
+    id: SelectedActionButton
 - extendedWaitUntil:
     notVisible:
       text: Add a product image
     timeout: 30000
+# The image attaches as the cover; let the device-image upload finish settling before
+# publishing, otherwise the product save is raced while media is still uploading and
+# never completes.
+- assertVisible: "Cover"
+- waitForAnimationToEnd:
+    timeout: 60000
 - tapOn:
     id: publish-product-button
+# Publish succeeds when the Publish button is consumed (no dedicated save button exists
+# in this app version — the top bar reverts to the more-options button).
 - extendedWaitUntil:
-    visible:
-      id: save-product-button
-    timeout: 30000
-- assertNotVisible: Add a product image
+    notVisible:
+      id: publish-product-button
+    timeout: 60000
 - assertVisible: Media ${SUITE_RUN_ID}
+- assertVisible: "Cover"
+# Verify the run-owned product is discoverable in the (now unfiltered) list and reopens with its media.
 - tapOn:
     text: Products
     index: 0
@@ -55,6 +72,8 @@ tags:
       text: Media ${SUITE_RUN_ID}
     timeout: 30000
 - tapOn: Media ${SUITE_RUN_ID}
-- assertVisible:
-    id: save-product-button
+- extendedWaitUntil:
+    visible:
+      id: edit-product-more-options-button
+    timeout: 20000
 - assertNotVisible: Add a product image

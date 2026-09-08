@@ -91,8 +91,14 @@ tags:
     visible: "Variations"
     timeout: 20000
 - assertVisible: "Variations"
+# Open the first generated variation by its "#<id> <attributes>" row rather than a
+# fixed screen point. The point tap on the row's chevron was flaky while the list was
+# still loading; waiting for a row and matching its label is deterministic.
+- extendedWaitUntil:
+    visible: "#\\d+.*"
+    timeout: 20000
 - tapOn:
-    point: "93%,27%"
+    text: "#\\d+.*"
     retryTapIfNoChange: true
 - extendedWaitUntil:
     visible: "Attributes"

@@ -447,6 +447,144 @@ struct PointOfSaleOrderControllerTests {
         })
     }
 
+    @Test func confirmScanToPayPayment_with_synced_order_adds_note_and_records_payment_method() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(orderID: 123, items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+
+        // When
+        try await sut.confirmScanToPayPayment()
+
+        // Then
+        #expect(mockOrderService.addOrderNoteWasCalled == true)
+        #expect(mockOrderService.spyAddOrderNoteOrderID == 123)
+        #expect(mockOrderService.spyAddOrderNoteIsCustomerNote == false)
+        #expect(mockOrderService.spyAddOrderNoteText == "Paid via Scan to Pay")
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
+        #expect(mockOrderService.spyRecordScanToPayPaymentMethodOrder?.orderID == 123)
+    }
+
+    @Test func confirmScanToPayPayment_when_payment_method_update_fails_still_succeeds() async throws {
+        // Given
+        struct PaymentMethodUpdateError: Error {}
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(orderID: 124, items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+        mockOrderService.recordScanToPayPaymentMethodResult = .failure(PaymentMethodUpdateError())
+
+        // When
+        try await sut.confirmScanToPayPayment()
+
+        // Then
+        #expect(mockOrderService.addOrderNoteWasCalled == true)
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
+    }
+
+    @Test func confirmScanToPayPayment_when_the_note_fails_still_records_the_payment_method_and_does_not_throw() async throws {
+        // Given
+        struct AddOrderNoteError: Error {}
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 128, items: [OrderItem.fake()])
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+        mockOrderService.addOrderNoteResult = .failure(AddOrderNoteError())
+
+        // When
+        try await sut.confirmScanToPayPayment()
+
+        // Then: the note failure is swallowed, and the payment method title still reaches the service.
+        #expect(mockOrderService.addOrderNoteWasCalled == true)
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
+        #expect(mockOrderService.spyRecordScanToPayPaymentMethodOrder?.orderID == 128)
+    }
+
+    @Test func recordScanToPayPaymentMethod_when_gateway_already_set_a_title_then_does_not_overwrite_it() async throws {
+        // Given: polling reloaded the order after the gateway settled the payment, so the order
+        // already carries the gateway's own payment method title.
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 125, items: [OrderItem.fake()])
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 125,
+                                                           paymentMethodTitle: "Credit card (WooPayments)",
+                                                           items: [OrderItem.fake()])
+        _ = try await sut.reloadCurrentOrder()
+
+        // When
+        await sut.recordScanToPayPaymentMethod()
+
+        // Then
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == false)
+    }
+
+    @Test func recordScanToPayPaymentMethod_when_title_is_the_generic_other_placeholder_then_records_it() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 126,
+                                                           paymentMethodTitle: "Other",
+                                                           items: [OrderItem.fake()])
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        mockOrderService.resultToReturn = .success(())
+
+        // When
+        await sut.recordScanToPayPaymentMethod()
+
+        // Then
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
+        #expect(mockOrderService.spyRecordScanToPayPaymentMethodOrder?.orderID == 126)
+    }
+
+    @Test func recordScanToPayPaymentMethod_when_title_is_empty_then_records_it() async throws {
+        // Given: the manual confirmation path, where no gateway has claimed the order yet.
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 127,
+                                                           paymentMethodTitle: "",
+                                                           items: [OrderItem.fake()])
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        mockOrderService.resultToReturn = .success(())
+
+        // When
+        await sut.recordScanToPayPaymentMethod()
+
+        // Then
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
+        #expect(mockOrderService.spyRecordScanToPayPaymentMethodOrder?.orderID == 127)
+    }
+
     @Test func syncOrder_when_successful_returns_newOrder_result() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,

@@ -309,41 +309,8 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_scanToUpdateInventoryButton_when_isScanToUpdateInventoryEnabled_is_true_then_should_be_visible() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: true)
-        let viewModel = MockProductListViewModel(featureFlagService: featureFlagService)
-
-        // When
-        let result = waitFor { promise in
-            viewModel.scanToUpdateInventoryButtonShouldBeVisible { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        XCTAssertTrue(result)
-    }
-
-    func test_scanToUpdateInventoryButton_when_isScanToUpdateInventoryEnabled_is_false_then_should_not_be_visible() {
-        // Given
-        let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: false)
-        let viewModel = MockProductListViewModel(featureFlagService: featureFlagService)
-
-        // Then
-        let result = waitFor { promise in
-            viewModel.scanToUpdateInventoryButtonShouldBeVisible { result in
-                promise(result)
-            }
-        }
-
-        // Then
-        XCTAssertFalse(result)
-    }
-
     func test_scanToUpdateInventoryButton_when_square_plugin_is_active_then_should_not_be_visible() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: true)
         let pluginsService = MockPluginsService()
         pluginsService.setMockPlugin(.wooSquare, systemPlugin: .fake().copy(
             siteID: sampleSiteID,
@@ -354,7 +321,6 @@ final class ProductListViewModelTests: XCTestCase {
         let viewModel = ProductListViewModel(
             siteID: sampleSiteID,
             stores: storesManager,
-            featureFlagService: featureFlagService,
             pluginsService: pluginsService
         )
 
@@ -371,7 +337,6 @@ final class ProductListViewModelTests: XCTestCase {
 
     func test_scanToUpdateInventoryButton_when_square_plugin_is_inactive_then_should_be_visible() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: true)
         let pluginsService = MockPluginsService()
         pluginsService.setMockPlugin(.wooSquare, systemPlugin: .fake().copy(
             siteID: sampleSiteID,
@@ -382,7 +347,6 @@ final class ProductListViewModelTests: XCTestCase {
         let viewModel = ProductListViewModel(
             siteID: sampleSiteID,
             stores: storesManager,
-            featureFlagService: featureFlagService,
             pluginsService: pluginsService
         )
 
@@ -399,14 +363,12 @@ final class ProductListViewModelTests: XCTestCase {
 
     func test_scanToUpdateInventoryButton_when_square_plugin_is_not_installed_then_should_be_visible() {
         // Given
-        let featureFlagService = MockFeatureFlagService(isScanToUpdateInventoryEnabled: true)
         let pluginsService = MockPluginsService()
         pluginsService.pluginsToReturnForLoadPluginInStorageByPlugin = [:]
 
         let viewModel = ProductListViewModel(
             siteID: sampleSiteID,
             stores: storesManager,
-            featureFlagService: featureFlagService,
             pluginsService: pluginsService
         )
 

@@ -10,7 +10,6 @@ struct ProductsSplitViewCoordinatorTests {
         // Given
         let (sut, primaryNavigationController, _) = try makeSUT()
         let command = ProductSearchUICommand(siteID: 123,
-                                             isSearchProductsBySKUEnabled: false,
                                              onProductSelection: { _ in },
                                              onCancel: {})
         let searchViewController = SearchViewController(storeID: 123,
@@ -32,7 +31,6 @@ struct ProductsSplitViewCoordinatorTests {
         let splitViewController = CollapsedSplitViewController(style: .doubleColumn)
         let (sut, primaryNavigationController, _) = try makeSUT(splitViewController: splitViewController)
         let command = ProductSearchUICommand(siteID: 123,
-                                             isSearchProductsBySKUEnabled: false,
                                              onProductSelection: { _ in },
                                              onCancel: {})
         let searchViewController = SearchViewController(storeID: 123,
@@ -69,7 +67,6 @@ struct ProductsSplitViewCoordinatorTests {
         let splitViewController = CollapsedSplitViewController(style: .doubleColumn)
         let (sut, primaryNavigationController, _) = try makeSUT(splitViewController: splitViewController)
         let command = ProductSearchUICommand(siteID: 123,
-                                             isSearchProductsBySKUEnabled: false,
                                              onProductSelection: { _ in },
                                              onCancel: {})
         let searchViewController = SearchViewController(storeID: 123,
@@ -165,7 +162,6 @@ struct ProductsSplitViewCoordinatorTests {
         let (sut, primaryNavigationController, _) = try makeSUT()
         let productListViewController = try #require(primaryNavigationController.topViewController)
         let command = ProductSearchUICommand(siteID: 123,
-                                             isSearchProductsBySKUEnabled: false,
                                              onProductSelection: { _ in },
                                              onCancel: {})
         let searchViewController = SearchViewController(storeID: 123,

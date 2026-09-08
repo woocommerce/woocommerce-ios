@@ -60,6 +60,7 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
             additionalAttachmentsProvider: { [weak self] in
                 self?.buildTroubleshootingAttachment() ?? []
             },
+            mobileStatusReportProvider: MobileStatusReportProvider(),
             onTicketCreated: onTicketCreated
         )
         supportEscalationCoordinator?.handleEscalation(chatID: chatID,

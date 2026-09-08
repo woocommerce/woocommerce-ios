@@ -50,7 +50,6 @@ public final class CustomerStore: Store {
                                   orderby: orderby,
                                   order: order,
                                   keyword: keyword,
-                                  retrieveFullCustomersData: retrieveFullCustomersData,
                                   filter: filter,
                                   filterEmpty: filterEmpty,
                                   onCompletion: onCompletion):
@@ -60,7 +59,6 @@ public final class CustomerStore: Store {
                             orderby: orderby,
                             order: order,
                             keyword: keyword,
-                            retrieveFullCustomersData: retrieveFullCustomersData,
                             filter: filter,
                             filterEmpty: filterEmpty,
                             onCompletion: onCompletion)
@@ -99,7 +97,6 @@ public final class CustomerStore: Store {
         orderby: WCAnalyticsCustomerRemote.OrderBy,
         order: WCAnalyticsCustomerRemote.Order,
         keyword: String,
-        retrieveFullCustomersData: Bool,
         filter: CustomerSearchFilter,
         filterEmpty: WCAnalyticsCustomerRemote.FilterEmpty?,
         onCompletion: @escaping (Result<Bool, Error>) -> Void) {
@@ -115,25 +112,13 @@ public final class CustomerStore: Store {
                 switch result {
                 case .success(let customers):
                     let hasNextPage = customers.count == pageSize
-                    if retrieveFullCustomersData {
-                        self.mapSearchResultsToCustomerObjects(for: siteID,
-                                                               with: keyword,
-                                                               with: customers,
-                                                               onCompletion: { result in
-                            switch result {
-                            case .success: onCompletion(.success(hasNextPage))
-                            case .failure(let error): onCompletion(.failure(error))
-                            }
-                        })
-                    } else {
-                        self.upsertCustomersAndSave(siteID: siteID,
-                                                    readOnlyCustomers: customers,
-                                                    shouldDeleteExistingCustomers: pageNumber == 1,
-                                                    keyword: keyword,
-                                                    onCompletion: {
-                            onCompletion(.success(hasNextPage))
-                        })
-                    }
+                    self.upsertCustomersAndSave(siteID: siteID,
+                                                readOnlyCustomers: customers,
+                                                shouldDeleteExistingCustomers: pageNumber == 1,
+                                                keyword: keyword,
+                                                onCompletion: {
+                        onCompletion(.success(hasNextPage))
+                    })
                 case .failure(let error):
                     onCompletion(.failure(error))
                 }
@@ -259,74 +244,10 @@ public final class CustomerStore: Store {
             storage.deleteCustomers(siteID: siteID)
         }, completion: onCompletion, on: .main)
     }
-
-    /// Maps CustomerSearchResult to Customer objects
-    ///
-    /// - Parameters:
-    ///   - siteID: The site for which customers should be fetched.
-    ///   - keyword: The keyword used for the Customer search query.
-    ///   - searchResults: A WCAnalyticsCustomer collection that represents the matches we've got from the API based in our keyword search.
-    ///   - onCompletion: Invoked when the operation finishes. Will map the result to a `[Customer]` entity.
-    ///
-    private func mapSearchResultsToCustomerObjects(for siteID: Int64,
-                                                   with keyword: String,
-                                                   with searchResults: [WCAnalyticsCustomer],
-                                                   onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        var customers = [Customer]()
-        let group = DispatchGroup()
-        for result in searchResults {
-            // At the moment, we're not searching through non-registered customers
-            // As we only search by customer ID, calls to /wc/v3/customers/0 will always fail
-            // https://github.com/woocommerce/woocommerce-ios/issues/7741
-            if result.userID == 0 {
-                continue
-            }
-            group.enter()
-            self.retrieveCustomer(for: siteID, with: result.userID, onCompletion: { result in
-                if let customer = try? result.get() {
-                    customers.append(customer)
-                }
-                group.leave()
-            })
-        }
-
-        group.notify(queue: .main) {
-            self.upsertSearchCustomerResult(
-                siteID: siteID,
-                keyword: keyword,
-                readOnlyCustomers: customers,
-                onCompletion: {
-                    onCompletion(.success(()))
-                }
-            )
-        }
-    }
 }
 
 // MARK: Storage operations
 private extension CustomerStore {
-    /// Inserts or updates CustomerSearchResults in Storage
-    ///
-    private func upsertSearchCustomerResult(siteID: Int64,
-                                            keyword: String,
-                                            readOnlyCustomers: [Networking.Customer],
-                                            onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ storage in
-            let storedSearchResult = storage.loadCustomerSearchResult(siteID: siteID, keyword: keyword) ??
-            storage.insertNewObject(ofType: Storage.CustomerSearchResult.self)
-
-            storedSearchResult.siteID = siteID
-            storedSearchResult.keyword = keyword
-
-            let storedCustomers = storage.loadCustomers(siteID: siteID, matching: readOnlyCustomers.map { $0.customerID })
-            for result in readOnlyCustomers {
-                if let storedCustomer = storedCustomers.first(where: { $0.customerID == result.customerID }) {
-                    storedSearchResult.addToCustomers(storedCustomer)
-                }
-            }
-        }, completion: onCompletion, on: .main)
-    }
-
     private func upsertCustomersAndSave(siteID: Int64,
                                         readOnlyCustomers: [StorageCustomerConvertible],
                                         shouldDeleteExistingCustomers: Bool = false,

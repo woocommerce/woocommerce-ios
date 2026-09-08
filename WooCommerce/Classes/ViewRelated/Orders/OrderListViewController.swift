@@ -344,6 +344,8 @@ private extension OrderListViewController {
                     self.hideTopBannerView()
                 case .error(let error):
                     self.setErrorTopBanner(for: error)
+                case .currencyUnavailable:
+                    self.setCurrencyUnavailableTopBanner()
                 }
             }
             .store(in: &cancellables)
@@ -963,9 +965,31 @@ private extension OrderListViewController {
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self else { return }
-            let supportForm = SupportFormHostingController(viewModel: .init())
+            let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
             supportForm.show(from: self)
         })
+        showTopBannerView()
+    }
+
+    /// Sets the `topBannerView` property to a warning banner shown when the store currency couldn't be loaded.
+    ///
+    func setCurrencyUnavailableTopBanner() {
+        let retryAction = TopBannerViewModel.ActionButton(title: Localization.currencyUnavailableRetry) { [weak self] _ in
+            self?.viewModel.retryStoreCurrencySync()
+        }
+        let bannerViewModel = TopBannerViewModel(title: Localization.currencyUnavailableTitle,
+                                                 infoText: Localization.currencyUnavailableInfo,
+                                                 icon: .infoOutlineImage,
+                                                 isExpanded: true,
+                                                 shouldResizeInfo: false,
+                                                 topButton: .chevron(handler: { [weak self] in
+                                                     self?.tableView.updateHeaderHeight()
+                                                 }),
+                                                 actionButtons: [retryAction],
+                                                 type: .warning)
+        let banner = TopBannerView(viewModel: bannerViewModel)
+        banner.translatesAutoresizingMaskIntoConstraints = false
+        topBannerView = banner
         showTopBannerView()
     }
 
@@ -1002,6 +1026,24 @@ private extension OrderListViewController {
                                  comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
+
+        static let currencyUnavailableTitle = NSLocalizedString(
+            "orderList.currencyUnavailable.banner.title",
+            value: "Store currency unavailable",
+            comment: "Title of the banner shown on the Orders list when the store's currency couldn't be loaded."
+        )
+
+        static let currencyUnavailableInfo = NSLocalizedString(
+            "orderList.currencyUnavailable.banner.info",
+            value: "We couldn't load your store's currency, so order totals may be shown in the wrong currency.",
+            comment: "Message of the banner shown on the Orders list when the store's currency couldn't be loaded."
+        )
+
+        static let currencyUnavailableRetry = NSLocalizedString(
+            "orderList.currencyUnavailable.banner.retry",
+            value: "Retry",
+            comment: "Title of the button to retry loading the store's currency on the Orders list warning banner."
+        )
 
         static let shareFeedbackButton = NSLocalizedString("Share feedback",
                                                            comment: "Title of the feedback action button on the In-Person Payments feedback banner"

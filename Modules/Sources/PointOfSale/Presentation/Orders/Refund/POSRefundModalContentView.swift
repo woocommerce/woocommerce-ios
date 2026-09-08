@@ -246,6 +246,7 @@ struct POSRefundModalContentView: View {
             onCancel: dismissAfterError,
             onClose: dismissAfterError
         )
+        .posEdgeSwipeBackAction(onBack: dismissAfterError)
     }
 
     /// `true` when the card-present refund itself failed, rather than the store rejecting the request.

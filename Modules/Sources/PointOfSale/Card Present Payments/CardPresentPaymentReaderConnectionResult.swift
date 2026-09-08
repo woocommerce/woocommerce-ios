@@ -1,6 +1,6 @@
 import Foundation
 
-public enum CardPresentPaymentReaderConnectionResult {
+public enum CardPresentPaymentReaderConnectionResult: Sendable {
     case connected(CardPresentPaymentCardReader)
     case canceled
 }

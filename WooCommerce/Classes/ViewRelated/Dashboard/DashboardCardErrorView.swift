@@ -51,7 +51,7 @@ struct DashboardCardErrorView: View {
     private var supportForm: some View {
         NavigationView {
             SupportForm(isPresented: $showingSupportForm,
-                        viewModel: SupportFormViewModel())
+                        viewModel: SupportFormViewModel(mobileStatusReportProvider: MobileStatusReportProvider()))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.done) {

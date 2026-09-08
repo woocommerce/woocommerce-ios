@@ -19,23 +19,9 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
     }
 
     @MainActor
-    func test_isSiteEligible_returns_false_if_feature_flag_is_disabled() async {
-        // Given
-        let featureFlagService = MockFeatureFlagService(googleAdsCampaignCreationOnWebView: false)
-        let checker = DefaultGoogleAdsEligibilityChecker(featureFlagService: featureFlagService)
-
-        // When
-        let result = await checker.isSiteEligible(siteID: sampleSite)
-
-        // Then
-        XCTAssertFalse(result)
-    }
-
-    @MainActor
     func test_isSiteEligible_returns_false_checking_connection_fails() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(googleAdsCampaignCreationOnWebView: true)
-        let checker = DefaultGoogleAdsEligibilityChecker(stores: stores, featureFlagService: featureFlagService)
+        let checker = DefaultGoogleAdsEligibilityChecker(stores: stores)
         mockRequests(adsConnection: nil)
 
         // When
@@ -48,8 +34,7 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
     @MainActor
     func test_isSiteEligible_returns_false_if_google_ads_account_is_not_connected() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(googleAdsCampaignCreationOnWebView: true)
-        let checker = DefaultGoogleAdsEligibilityChecker(stores: stores, featureFlagService: featureFlagService)
+        let checker = DefaultGoogleAdsEligibilityChecker(stores: stores)
         let connection = GoogleAdsConnection.fake().copy(rawStatus: "incomplete")
         mockRequests(adsConnection: connection)
 
@@ -63,8 +48,7 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
     @MainActor
     func test_isSiteEligible_returns_false_if_plugin_version_is_not_satisfied() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(googleAdsCampaignCreationOnWebView: true)
-        let checker = DefaultGoogleAdsEligibilityChecker(stores: stores, featureFlagService: featureFlagService)
+        let checker = DefaultGoogleAdsEligibilityChecker(stores: stores)
         let plugin = SystemPlugin.fake().copy(siteID: sampleSite,
                                               plugin: pluginSlug,
                                               version: "2.7.6",
@@ -82,8 +66,7 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
     @MainActor
     func test_isSiteEligible_returns_true_if_plugin_is_satisfied_and_ads_account_is_connected() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(googleAdsCampaignCreationOnWebView: true)
-        let checker = DefaultGoogleAdsEligibilityChecker(stores: stores, featureFlagService: featureFlagService)
+        let checker = DefaultGoogleAdsEligibilityChecker(stores: stores)
         let plugin = SystemPlugin.fake().copy(siteID: sampleSite,
                                               plugin: pluginSlug,
                                               version: "2.7.7",

@@ -302,8 +302,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.completionHandler = onCompletion
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
-        // sets isEvergreen = true by default if evergreen campaigns are supported
-        self.isEvergreen = featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns)
+        self.isEvergreen = true
 
         product = productsResultsController.fetchedObjects.first
 

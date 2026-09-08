@@ -120,6 +120,7 @@ final class ConnectivityToolViewController: TabBarHidingHostingController<Connec
             additionalAttachmentsProvider: { [weak self] in
                 self?.buildTroubleshootingAttachment() ?? []
             },
+            mobileStatusReportProvider: MobileStatusReportProvider(),
             onTicketCreated: onTicketCreated
         )
         supportEscalationCoordinator?.handleEscalation(chatID: chatID,

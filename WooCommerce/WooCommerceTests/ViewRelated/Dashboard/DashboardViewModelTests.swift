@@ -17,7 +17,6 @@ final class DashboardViewModelTests: XCTestCase {
 
     private let blazeEligibilityChecker = MockBlazeEligibilityChecker(isSiteEligible: true)
 
-    private let inboxEligibilityChecker = MockInboxEligibilityChecker()
     private let googleAdsEligibilityChecker = MockGoogleAdsEligibilityChecker(isEligible: false)
 
     /// Mock Storage: InMemory
@@ -500,11 +499,8 @@ final class DashboardViewModelTests: XCTestCase {
     // MARK: Dashboard cards
 
     @MainActor
-    func test_generated_default_cards_are_as_expected_when_site_is_eligible_for_inbox() async throws {
+    func test_generated_default_cards_are_as_expected() async throws {
         // Given
-        let inboxEligibilityChecker = MockInboxEligibilityChecker()
-        inboxEligibilityChecker.isEligible = true
-
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
 
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
@@ -512,7 +508,6 @@ final class DashboardViewModelTests: XCTestCase {
                                            storageManager: storageManager,
                                            userDefaults: userDefaults,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
                                            aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(storeHasOrders: false)
@@ -523,47 +518,6 @@ final class DashboardViewModelTests: XCTestCase {
                              DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
                              DashboardCard(type: .blaze, availability: .hide, enabled: false),
                              DashboardCard(type: .inbox, availability: .show, enabled: false),
-                             DashboardCard(type: .reviews, availability: .show, enabled: false),
-                             DashboardCard(type: .coupons, availability: .show, enabled: false),
-                             DashboardCard(type: .stock, availability: .show, enabled: false),
-                             DashboardCard(type: .lastOrders, availability: .unavailable, enabled: false),
-                             DashboardCard(type: .googleAds, availability: .hide, enabled: false)]
-
-        // When
-        await viewModel.reloadAllData()
-
-        // Then
-        assertEqual(expectedCards, viewModel.dashboardCards)
-
-        assertEqual([.onboarding, .shareStore],
-                    viewModel.showOnDashboardCards.map(\.type))
-        assertEqual([.onboarding], viewModel.showOnDashboardFirstColumn.map(\.type))
-        assertEqual([.shareStore], viewModel.showOnDashboardSecondColumn.map(\.type))
-    }
-
-    @MainActor
-    func test_generated_default_cards_are_as_expected_when_site_is_not_eligible_for_inbox() async throws {
-        // Given
-        inboxEligibilityChecker.isEligible = false
-
-        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
-
-        let viewModel = DashboardViewModel(siteID: sampleSiteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           userDefaults: userDefaults,
-                                           blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker,
-                                           googleAdsEligibilityChecker: googleAdsEligibilityChecker,
-                                           aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
-        mockReloadingData(storeHasOrders: false)
-
-        let expectedCards = [DashboardCard(type: .aiAssistant, availability: .hide, enabled: false),
-                             DashboardCard(type: .onboarding, availability: .show, enabled: true),
-                             DashboardCard(type: .performance, availability: .unavailable, enabled: false),
-                             DashboardCard(type: .topPerformers, availability: .unavailable, enabled: false),
-                             DashboardCard(type: .blaze, availability: .hide, enabled: false),
-                             DashboardCard(type: .inbox, availability: .hide, enabled: false),
                              DashboardCard(type: .reviews, availability: .show, enabled: false),
                              DashboardCard(type: .coupons, availability: .show, enabled: false),
                              DashboardCard(type: .stock, availability: .show, enabled: false),
@@ -786,11 +740,8 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_showNewCardsNotice_is_false_when_all_new_cards_are_already_in_saved_cards() async {
         // Given
-        inboxEligibilityChecker.isEligible = true
-
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
-                                           inboxEligibilityChecker: inboxEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         let completeCardsSet: [DashboardCard] = [
             .init(type: .inbox, availability: .show, enabled: true),
@@ -816,7 +767,6 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         let incompleteNewCardsSet: [DashboardCard] = []
         mockReloadingData(storedDashboardCards: incompleteNewCardsSet)
@@ -840,7 +790,6 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         mockReloadingData(storedDashboardCards: incompleteNewCardsSet)
 
@@ -862,14 +811,10 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_inAppFeedbackCard_is_not_available_when_feedback_is_not_needed() async {
         // Given
-        let inboxEligibilityChecker = MockInboxEligibilityChecker()
-        inboxEligibilityChecker.isEligible = true
-
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker)
         mockReloadingData(shouldShowInAppFeedback: false)
 
@@ -885,14 +830,10 @@ final class DashboardViewModelTests: XCTestCase {
     @MainActor
     func test_inAppFeedbackCard_is_available_when_feedback_is_needed() async {
         // Given
-        let inboxEligibilityChecker = MockInboxEligibilityChecker()
-        inboxEligibilityChecker.isEligible = true
-
         let viewModel = DashboardViewModel(siteID: sampleSiteID,
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
                                            aiAssistantEligibilityChecker: MockAIAssistantEligibilityChecker(isEligible: false))
         mockReloadingData(shouldShowInAppFeedback: true)
@@ -916,7 +857,6 @@ final class DashboardViewModelTests: XCTestCase {
                                stores: stores,
                                storageManager: storageManager,
                                blazeEligibilityChecker: blazeEligibilityChecker,
-                               inboxEligibilityChecker: inboxEligibilityChecker,
                                googleAdsEligibilityChecker: googleAdsEligibilityChecker,
                                localNotificationScheduler: scheduler)
 
@@ -932,7 +872,6 @@ final class DashboardViewModelTests: XCTestCase {
                                            stores: stores,
                                            storageManager: storageManager,
                                            blazeEligibilityChecker: blazeEligibilityChecker,
-                                           inboxEligibilityChecker: inboxEligibilityChecker,
                                            googleAdsEligibilityChecker: googleAdsEligibilityChecker,
                                            localNotificationScheduler: scheduler)
         mockReloadingData()

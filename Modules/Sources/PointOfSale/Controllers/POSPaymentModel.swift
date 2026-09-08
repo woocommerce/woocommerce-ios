@@ -561,8 +561,14 @@ extension POSPaymentModel {
     }
 
     func connectCardReader() {
-        analytics.track(.pointOfSaleCardReaderConnectionTapped)
         guard connectCardReaderTask == nil else { return }
+
+        /// The merchant is starting reader discovery here, not picking a discovered reader.
+        /// The tap on a specific found reader is tracked by `CardReaderConnectionController`.
+        /// Tracked after the guard so a tap that is ignored because a connection is already
+        /// in flight does not report a discovery that never started.
+        ///
+        analytics.track(.cardReaderDiscoveryTapped)
         connectCardReaderTask = Task { @MainActor [weak self] in
             defer { self?.connectCardReaderTask = nil }
             do {
@@ -768,15 +774,10 @@ extension POSPaymentModel {
     /// note and transitions to success. Used when the gateway webhook hasn't fired yet but
     /// the merchant verified the payment out-of-band.
     func completeScanToPayPayment() async throws {
-        let order: Order
-        if let currentOrder {
-            order = currentOrder
-        } else {
-            let paymentOrder = try await orderProvider.provideOrder()
-            order = paymentOrder.order
-            currentOrder = order
+        if currentOrder == nil {
+            currentOrder = try await orderProvider.provideOrder().order
         }
-        try await scanToPayHandler.completeScanToPayPayment(for: order)
+        try await scanToPayHandler.completeScanToPayPayment()
         try? await postPaymentStep?()
         scanToPayPaymentSuccess()
     }
@@ -860,6 +861,8 @@ extension POSPaymentModel {
         Task { @MainActor [weak self] in
             try? await self?.postPaymentStep?()
             self?.scanToPayPaymentSuccess()
+
+            await self?.scanToPayHandler.recordScanToPayPaymentMethod()
         }
     }
 }

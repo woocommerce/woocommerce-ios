@@ -86,6 +86,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     ///
     private var shareProductCoordinator: ShareProductCoordinator?
 
+    /// Re-entry guard for the More Options menu: `presentMoreOptionsActionSheet` suspends before
+    /// presenting, so rapid taps would otherwise queue multiple action sheets (WOOMOB-3923).
+    ///
+    private var isPresentingMoreOptionsMenu = false
+
     /// Whether the product details were generated with AI.
     ///
     private let isAIContent: Bool
@@ -247,7 +252,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     @objc func dismissPresentedViewController() {
-        presentedViewController?.dismiss(animated: true, completion: nil)
+        dismissPresentedIfNeeded()
     }
 
     func saveProductAsDraft() {
@@ -321,7 +326,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         configuration.secureInteraction = true
         let webKitVC = WebKitViewController(configuration: configuration)
         let nc = WooNavigationController(rootViewController: webKitVC)
-        present(nc, animated: true)
+        presentIfIdle(nc)
     }
 
     // MARK: Navigation actions
@@ -348,8 +353,13 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     /// More Options button action
     ///
     @objc func didTapMoreOptions(_ sender: UIBarButtonItem) {
+        guard !isPresentingMoreOptionsMenu else {
+            return
+        }
+        isPresentingMoreOptionsMenu = true
         Task { @MainActor in
             await presentMoreOptionsActionSheet(sender)
+            isPresentingMoreOptionsMenu = false
         }
     }
 
@@ -426,7 +436,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         let popoverController = actionSheet.popoverPresentationController
         popoverController?.barButtonItem = moreOptionsButton
 
-        present(actionSheet, animated: true)
+        presentIfIdle(actionSheet)
     }
 
     // MARK: - UIScrollViewDelegate
@@ -1059,16 +1069,20 @@ private extension ProductFormViewController {
                 DDLogError("⛔️ Error updating Product: \(error)")
 
                 // Dismisses the in-progress UI then presents the error alert.
-                self?.navigationController?.dismiss(animated: true) {
+                // On the retry path no in-progress UI is shown, and `dismiss` does not call its
+                // completion when there is nothing to dismiss — so present the alert directly instead.
+                let presentErrorAlert: () -> Void = {
                     self?.displayProductSavingErrorAlert(error: error, onRetry: {
                         self?.saveProductRemotely(status: status, onCompletion: onCompletion)
                     })
                     onCompletion(.failure(error))
                 }
+                if let navigationController = self?.navigationController, navigationController.presentedViewController != nil {
+                    navigationController.dismiss(animated: true, completion: presentErrorAlert)
+                } else {
+                    presentErrorAlert()
+                }
             case .success:
-                // Dismisses the in-progress UI
-                self?.navigationController?.dismiss(animated: true, completion: nil)
-
                 // Presents the confirmation alert
                 let alertType: ProductSavedAlertType
                 if status == .published && (isNewProduct || previousStatus != .published) {
@@ -1083,7 +1097,18 @@ private extension ProductFormViewController {
                 // Show linked products promo banner after product save
                 (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
                 self?.reloadLinkedPromoCell()
-                onCompletion(.success(()))
+
+                // Dismisses the in-progress UI, deferring the completion until the dismissal finishes
+                // so that completion handlers can present another modal safely (WOOMOB-3923).
+                // On the retry path no in-progress UI is shown, and `dismiss` does not call its
+                // completion when there is nothing to dismiss — so complete directly instead.
+                if let navigationController = self?.navigationController, navigationController.presentedViewController != nil {
+                    navigationController.dismiss(animated: true) {
+                        onCompletion(.success(()))
+                    }
+                } else {
+                    onCompletion(.success(()))
+                }
             }
         }
     }
@@ -1159,7 +1184,7 @@ private extension ProductFormViewController {
         controller.navigationItem.leftBarButtonItem = UIBarButtonItem(barButtonSystemItem: .cancel,
                                                                       target: self,
                                                                       action: #selector(dismissPresentedViewController))
-        present(navigationController, animated: true)
+        presentIfIdle(navigationController)
     }
 
     func displayShareProduct(from sourceView: UIBarButtonItem, analyticSource: WooAnalyticsEvent.ProductForm.ShareProductSource) {

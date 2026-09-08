@@ -700,8 +700,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
     ///
     func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag.origin))
-        supportForm.show(from: sourceViewController)
+        Task { @MainActor in
+            let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag.origin,
+                                                                            mobileStatusReportProvider: MobileStatusReportProvider()))
+            supportForm.show(from: sourceViewController)
+        }
     }
 
     /// Indicates if the Login Epilogue should be presented.
@@ -1035,9 +1038,14 @@ private extension AuthenticationManager {
             self?.analytics.track(event: .ApplicationPasswordAuthorization.explanationContinueButtonTapped())
         }
         tutorialVC.contactSupportButtonTapped = { [weak self] in
-            let supportController = SupportFormHostingController(viewModel: .init(sourceTag: WordPressSupportSourceTag.loginUsernamePassword.origin))
-            supportController.show(from: viewController)
-            self?.analytics.track(event: .ApplicationPasswordAuthorization.explanationContactSupportTapped())
+            Task { @MainActor in
+                let supportController = SupportFormHostingController(
+                    viewModel: .init(sourceTag: WordPressSupportSourceTag.loginUsernamePassword.origin,
+                                     mobileStatusReportProvider: MobileStatusReportProvider())
+                )
+                supportController.show(from: viewController)
+                self?.analytics.track(event: .ApplicationPasswordAuthorization.explanationContactSupportTapped())
+            }
         }
         viewController.show(tutorialVC, sender: viewController)
 

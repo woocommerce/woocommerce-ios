@@ -1,5 +1,4 @@
 import UIKit
-import Experiments
 import Yosemite
 import enum Networking.NetworkError
 import class Networking.AlamofireNetwork
@@ -22,7 +21,6 @@ final class JetpackSetupCoordinator {
     private let stores: StoresManager
     private let jetpackConnectionService: JetpackConnectionServiceProtocol
     private let analytics: Analytics
-    private let featureFlagService: FeatureFlagService
     private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
 
     private let onCompletion: (() -> Void)?
@@ -52,7 +50,6 @@ final class JetpackSetupCoordinator {
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck(),
          onCompletion: (() -> Void)? = nil) {
         self.site = site
@@ -61,7 +58,6 @@ final class JetpackSetupCoordinator {
         self.accountService = accountService
         self.stores = stores
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
         self.onCompletion = onCompletion
         self.jetpackConnectionService = JetpackConnectionService(siteID: site.siteID, stores: stores)
@@ -117,7 +113,7 @@ final class JetpackSetupCoordinator {
 //
 private extension JetpackSetupCoordinator {
     func showBenefitModal() {
-        let benefitsController = JetpackBenefitsHostingController(siteURL: site.url, isJetpackCPSite: site.isJetpackCPConnected, onSubmit: { [weak self] in
+        let benefitsController = JetpackBenefitsHostingController(isJetpackCPSite: site.isJetpackCPConnected, onSubmit: { [weak self] in
             await self?.handleBenefitModalCTA()
         }, onDismiss: { [weak self] in
             self?.rootViewController.dismiss(animated: true, completion: nil)

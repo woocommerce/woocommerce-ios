@@ -250,6 +250,7 @@ final class OrderDetailsDataSource: NSObject {
         self.currencySettings = currencySettings
         self.siteSettings = siteSettings
         self.userIsAdmin = userIsAdmin
+
         super.init()
     }
 

@@ -1008,7 +1008,7 @@ private extension OrderDetailsViewModel {
         await withCheckedContinuation { continuation in
             stores.dispatch(WooShippingAction.checkCreationEligibility(siteID: order.siteID,
                                                                          orderID: order.orderID) { [weak self] isEligible in
-                self?.handleShippingLabelCreationEligibilityResult(isEligible: isEligible, isRevampedFlow: true)
+                self?.handleShippingLabelCreationEligibilityResult(isEligible: isEligible)
                 continuation.resume(returning: isEligible)
             })
         }
@@ -1018,17 +1018,17 @@ private extension OrderDetailsViewModel {
         await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
                                                                          orderID: order.orderID) { [weak self] isEligible in
-                self?.handleShippingLabelCreationEligibilityResult(isEligible: isEligible, isRevampedFlow: true)
+                self?.handleShippingLabelCreationEligibilityResult(isEligible: isEligible)
                 continuation.resume(returning: isEligible)
             })
         }
     }
 
-    func handleShippingLabelCreationEligibilityResult(isEligible: Bool, isRevampedFlow: Bool) {
+    func handleShippingLabelCreationEligibilityResult(isEligible: Bool) {
         if isEligible, let orderStatus = orderStatus?.status.rawValue {
             ServiceLocator.analytics.track(.shippingLabelOrderIsEligible,
                                            withProperties: ["order_status": orderStatus,
-                                                            "is_revamped_flow": isRevampedFlow])
+                                                            "is_revamped_flow": true])
         }
     }
 
@@ -1036,15 +1036,9 @@ private extension OrderDetailsViewModel {
         stores.dispatch(WooShippingAction.syncShipments(siteID: order.siteID, orderID: order.orderID) { result in
             switch result {
             case .success:
-                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
-                    result: .success,
-                    isRevampedFlow: true
-                ))
+                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
             case .failure(let error):
-                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
-                    result: .failed(error: error),
-                    isRevampedFlow: true
-                ))
+                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
                 DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
             }
         })
@@ -1055,16 +1049,10 @@ private extension OrderDetailsViewModel {
             stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
                 switch result {
                 case .success(let shippingLabels):
-                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
-                        result: .success,
-                        isRevampedFlow: true
-                    ))
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
                     continuation.resume(returning: shippingLabels)
                 case .failure(let error):
-                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(
-                        result: .failed(error: error),
-                        isRevampedFlow: true
-                    ))
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
                     DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
                     continuation.resume(returning: [])
                 }

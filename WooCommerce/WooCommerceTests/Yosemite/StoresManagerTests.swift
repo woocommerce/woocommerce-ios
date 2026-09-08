@@ -143,8 +143,7 @@ final class StoresManagerTests: XCTestCase {
                 capturedCredentials = credentials
                 capturedEndpoints = endpoints
                 return AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
-            },
-            isLocalCatalogFeatureFlagEnabled: false
+            }
         )
 
         // Then
@@ -180,8 +179,7 @@ final class StoresManagerTests: XCTestCase {
             networkFactory: { _, _, _, endpoints in
                 capturedEndpoints = endpoints
                 return AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
-            },
-            isLocalCatalogFeatureFlagEnabled: false
+            }
         )
 
         // Then

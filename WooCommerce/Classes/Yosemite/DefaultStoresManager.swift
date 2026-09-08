@@ -27,6 +27,9 @@ class DefaultStoresManager: StoresManager {
 
     private let defaults: UserDefaults
 
+    /// Shared app-group defaults used by the notification service extension.
+    private let pushNotificationDefaults: UserDefaults
+
     /// Keychain access. Used for sharing the auth access token with the widgets extension.
     ///
     private lazy var keychain = Keychain(service: WooConstants.keychainServiceName)
@@ -166,12 +169,15 @@ class DefaultStoresManager: StoresManager {
     init(sessionManager: SessionManagerProtocol,
          notificationCenter: NotificationCenter = .default,
          defaults: UserDefaults = .standard,
+         pushNotificationDefaults: UserDefaults = .group ?? .standard,
+         stateFactory: (SessionManagerProtocol) -> StoresManagerState = { AuthenticatedState(sessionManager: $0) ?? DeauthenticatedState() },
          cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared,
          grdbManagerProvider: GRDBManagerProviding = ServiceLocatorGRDBManagerProvider()) {
         _sessionManager = sessionManager
-        self.state = AuthenticatedState(sessionManager: sessionManager) ?? DeauthenticatedState()
+        self.state = stateFactory(sessionManager)
         self.notificationCenter = notificationCenter
         self.defaults = defaults
+        self.pushNotificationDefaults = pushNotificationDefaults
         self.cardPresentPaymentOnboardingStateCache = cardPresentPaymentOnboardingStateCache
         self.grdbManagerProvider = grdbManagerProvider
 
@@ -179,6 +185,7 @@ class DefaultStoresManager: StoresManager {
         if isLoggedIn, case .some(.wpcom) = sessionManager.defaultCredentials {
             startObservingNetworkNotifications()
         } else if isLoggedIn {
+            PushNotificationRegistrationState(defaults: pushNotificationDefaults).clearConnectedSiteIDs()
             listenToApplicationPasswordInvalidatedNotification()
         }
     }
@@ -194,14 +201,30 @@ class DefaultStoresManager: StoresManager {
     /// Forwards the Action to the current State.
     ///
     func dispatch(_ action: Action) {
-        state.onAction(action)
+        guard let accountAction = action as? AccountAction else {
+            return state.onAction(action)
+        }
+
+        switch accountAction {
+        case let .loadAndSynchronizeSite(siteID, forcedUpdate, shouldSynchronize, onCompletion):
+            loadAndSynchronizeSite(siteID: siteID,
+                                   forcedUpdate: forcedUpdate,
+                                   shouldSynchronize: shouldSynchronize,
+                                   onCompletion: onCompletion)
+        case let .synchronizeSites(onCompletion):
+            synchronizeSites(onCompletion: onCompletion)
+        case let .synchronizeSitesAndReturnSelectedSiteInfo(siteAddress, onCompletion):
+            synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: siteAddress, onCompletion: onCompletion)
+        default:
+            state.onAction(action)
+        }
     }
 
     /// Forwards the Actions to the current State.
     ///
     func dispatch(_ actions: [Action]) {
         for action in actions {
-            state.onAction(action)
+            dispatch(action)
         }
     }
 
@@ -215,6 +238,11 @@ class DefaultStoresManager: StoresManager {
     @discardableResult
     func authenticate(credentials: Credentials,
                       cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
+        let currentWPComToken = wpcomAuthToken(for: sessionManager.defaultCredentials)
+        if currentWPComToken == nil || currentWPComToken != wpcomAuthToken(for: credentials) {
+            PushNotificationRegistrationState(defaults: pushNotificationDefaults).clearConnectedSiteIDs()
+        }
+
         state = AuthenticatedState(credentials: credentials,
                                    sessionManager: sessionManager,
                                    cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints)
@@ -322,7 +350,7 @@ class DefaultStoresManager: StoresManager {
         }
 
         group.enter()
-        synchronizeSites { _ in
+        synchronizeSitesForSession { _ in
             group.leave()
         }
 
@@ -385,6 +413,7 @@ class DefaultStoresManager: StoresManager {
     ///
     @discardableResult
     func deauthenticate() -> StoresManager {
+        PushNotificationRegistrationState(defaults: pushNotificationDefaults).clearConnectedSiteIDs()
         let pushNotesManager = ServiceLocator.pushNotesManager
         pushNotesManager.resetBadgeCountForAllStores(onCompletion: {})
 
@@ -573,6 +602,72 @@ class DefaultStoresManager: StoresManager {
 //
 private extension DefaultStoresManager {
 
+    /// Runs `/me/sites` only for WordPress.com sessions and applies successful results while the
+    /// credentials that started the request are still active.
+    func synchronizeSites(onCompletion: @escaping (Result<SiteSynchronizationResult, Error>) -> Void) {
+        guard let authToken = wpcomAuthToken(for: sessionManager.defaultCredentials) else {
+            onCompletion(.failure(StoresManagerError.missingDefaultSite))
+            return
+        }
+
+        state.onAction(AccountAction.synchronizeSites { [weak self] result in
+            if case let .success(result) = result {
+                self?.reconcileSynchronizedSites(result, authToken: authToken)
+            }
+            onCompletion(result)
+        })
+    }
+
+    func loadAndSynchronizeSite(siteID: Int64,
+                                forcedUpdate: Bool,
+                                shouldSynchronize: Bool,
+                                onCompletion: @escaping (Result<SiteLoadResult, Error>) -> Void) {
+        let authToken = wpcomAuthToken(for: sessionManager.defaultCredentials)
+        state.onAction(AccountAction.loadAndSynchronizeSite(siteID: siteID,
+                                                            forcedUpdate: forcedUpdate,
+                                                            shouldSynchronize: shouldSynchronize && authToken != nil) { [weak self] result in
+            if case let .success(result) = result, let synchronizationResult = result.synchronizationResult, let authToken {
+                self?.reconcileSynchronizedSites(synchronizationResult, authToken: authToken)
+            }
+
+            onCompletion(result)
+        })
+    }
+
+    func synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: String,
+                                                    onCompletion: @escaping (Result<SelectedSiteSynchronizationResult, Error>) -> Void) {
+        guard let authToken = wpcomAuthToken(for: sessionManager.defaultCredentials) else {
+            onCompletion(.failure(StoresManagerError.missingDefaultSite))
+            return
+        }
+
+        state.onAction(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: siteAddress) { [weak self] result in
+            if case let .success(result) = result {
+                self?.reconcileSynchronizedSites(result.synchronizationResult, authToken: authToken)
+            }
+            onCompletion(result)
+        })
+    }
+
+    func reconcileSynchronizedSites(_ result: SiteSynchronizationResult, authToken: String) {
+        guard wpcomAuthToken(for: sessionManager.defaultCredentials) == authToken else {
+            return
+        }
+
+        PushNotificationRegistrationState(defaults: pushNotificationDefaults).updateConnectedSiteIDs(result.siteIDs)
+
+        if let selectedSiteID = sessionManager.defaultStoreID, result.siteIDs.contains(selectedSiteID) == false {
+            resetSelectedStore()
+        }
+    }
+
+    func wpcomAuthToken(for credentials: Credentials?) -> String? {
+        guard case let .wpcom(_, authToken, _) = credentials else {
+            return nil
+        }
+        return authToken
+    }
+
     /// Loads the Default Account into the current Session, if possible.
     ///
     func restoreSessionAccountIfPossible() {
@@ -658,9 +753,9 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
     ///
-    func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeSitesForSession(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let action = AccountAction
-            .synchronizeSites(selectedSiteID: sessionManager.defaultStoreID) { result in
+            .synchronizeSites { result in
                 onCompletion(result.map { _ in () })
             }
         dispatch(action)
@@ -991,12 +1086,12 @@ private extension DefaultStoresManager {
     ///
     func restoreJetpackSiteAndSynchronizeIfNeeded(with siteID: Int64) {
         let action = AccountAction
-            .loadAndSynchronizeSite(siteID: siteID, forcedUpdate: false) { [weak self] result in
+            .loadAndSynchronizeSite(siteID: siteID, forcedUpdate: false, shouldSynchronize: true) { [weak self] result in
             guard let self else { return }
-            guard case .success(let site) = result else {
+            guard case let .success(siteLoadResult) = result else {
                 return
             }
-            sessionManager.defaultSite = site
+            sessionManager.defaultSite = siteLoadResult.site
             updateAndReloadWidgetInformation(with: siteID)
 
             /// Triggers root endpoint to check if application password is available
@@ -1004,7 +1099,7 @@ private extension DefaultStoresManager {
                 guard let self else { return }
                 switch result {
                 case .success(let siteAPI):
-                    let updatedSite = site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
+                    let updatedSite = siteLoadResult.site.copy(applicationPasswordAvailable: siteAPI.applicationPasswordAvailable)
                     sessionManager.defaultSite = updatedSite
                     trackSiteConnectionType()
                     updateAndReloadWidgetInformation(with: siteID)

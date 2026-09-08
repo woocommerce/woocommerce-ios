@@ -359,7 +359,9 @@ private extension JetpackSetupCoordinator {
         }
 
         if site.isJetpackCPConnected {
-            stores.dispatch(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url, onCompletion: resultHandler))
+            stores.dispatch(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url) { result in
+                resultHandler(result.map(\.site))
+            })
         } else {
             stores.dispatch(SiteAction.syncSiteByDomain(domain: site.url.trimHTTPScheme(), completion: resultHandler))
         }

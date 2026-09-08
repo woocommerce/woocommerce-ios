@@ -59,7 +59,7 @@ struct NotificationSettingsViewModelTests {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, onCompletion):
+            case let .synchronizeSites(onCompletion):
                 onCompletion(.failure(NSError(domain: "test", code: 500)))
             default:
                 break
@@ -103,9 +103,9 @@ struct NotificationSettingsViewModelTests {
         let testSite4 = Site.fake().copy(siteID: 11, name: "Lala", isWooCommerceActive: true)
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(_, onCompletion):
+            case let .synchronizeSites(onCompletion):
                 storageManager.insertSampleSite(readOnlySite: testSite4)
-                onCompletion(.success(false))
+                onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break
             }

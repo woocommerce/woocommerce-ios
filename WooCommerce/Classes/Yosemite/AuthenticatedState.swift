@@ -257,6 +257,9 @@ class AuthenticatedState: StoresManagerState {
     /// Executed before the current state is deactivated.
     ///
     func willLeave() {
+        services
+            .compactMap { $0 as? AccountStore }
+            .forEach { $0.cancelSiteSynchronizations() }
         resetServices()
     }
 

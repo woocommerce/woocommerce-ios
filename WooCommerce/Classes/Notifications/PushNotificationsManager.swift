@@ -566,6 +566,10 @@ extension PushNotificationsManager {
             return UNNotificationPresentationOptions(rawValue: 0)
         }
 
+        guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: content.userInfo) == false else {
+            return []
+        }
+
         handleRemoteNotificationInAllAppStates(content.userInfo)
 
         if let foregroundNotification = PushNotification.from(userInfo: content.userInfo) {
@@ -613,6 +617,9 @@ extension PushNotificationsManager {
 
         // Remote notification response is handled separately.
         if let notification = PushNotification.from(userInfo: userInfo) {
+            guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) == false else {
+                return
+            }
             handleRemoteNotificationInAllAppStates(userInfo)
             await handleInactiveRemoteNotification(notification: notification)
         } else {
@@ -634,6 +641,10 @@ extension PushNotificationsManager {
 
         guard PushNotificationSharedConstants.isKnownNotificationType(in: userInfo) else {
             DDLogVerbose("📱 Discarding background push notification with unknown type")
+            return .noData
+        }
+
+        guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) == false else {
             return .noData
         }
 

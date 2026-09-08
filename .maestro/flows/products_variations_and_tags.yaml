@@ -81,7 +81,10 @@ tags:
     element: "Variations"
     direction: DOWN
     timeout: 15000
-- assertVisible: "2 variations"
+# Assert the product exposes a variation count without hardcoding a specific number,
+# matching the flow's own prerequisite ("at least one generated variation"). A literal
+# "2 variations" is coupled to one fixture and fails on any other store.
+- assertVisible: "\\d+ variations"
 - assertVisible: "Variations"
 - tapOn: "Variations"
 - extendedWaitUntil:

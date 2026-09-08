@@ -2152,12 +2152,9 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressFormViewModel.fields.email, customer.email)
     }
 
-    func test_addCustomerAddressToOrder_when_feature_flag_is_enabled_and_a_customer_was_added_then_shows_the_form() {
+    func test_addCustomerAddressToOrder_when_a_customer_was_added_then_shows_the_form() {
         // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               stores: stores,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
         let customer = Customer.fake().copy(
             email: "scrambled@scrambled.com",
             firstName: "Johnny",
@@ -2172,22 +2169,16 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.customerNavigationScreen == .form)
     }
 
-    func test_addCustomerAddressToOrder_when_feature_flag_is_enabled_and_no_customer_is_added_then_shows_the_selector() {
+    func test_addCustomerAddressToOrder_when_no_customer_is_added_then_shows_the_selector() {
         // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               stores: stores,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
         // Then
         XCTAssertTrue(viewModel.customerNavigationScreen == .selector)
     }
 
-    func test_addCustomerAddressToOrder_when_feature_flag_is_enabled_and_an_empty_address_was_added_then_shows_the_selector() {
+    func test_addCustomerAddressToOrder_when_an_empty_address_was_added_then_shows_the_selector() {
         // Given
-        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
-                                               stores: stores,
-                                               storageManager: storageManager,
-                                               featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true))
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
         let customer = Customer.fake().copy(
             email: "",
             firstName: "",

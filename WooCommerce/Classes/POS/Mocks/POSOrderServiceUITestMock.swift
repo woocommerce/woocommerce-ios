@@ -73,6 +73,8 @@ final class POSOrderServiceUITestMock: POSOrderServiceProtocol {
 
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {}
 
+    func recordScanToPayPaymentMethod(order: Order) async throws {}
+
     private func makeOrderItem(from cartItem: POSCartItem, itemID: Int64) -> OrderItem {
         let productIdentifiers = productIdentifiers(for: cartItem.item)
         let price = NSDecimalNumber(string: productIdentifiers.price)

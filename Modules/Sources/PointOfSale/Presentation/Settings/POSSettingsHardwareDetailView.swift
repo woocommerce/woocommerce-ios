@@ -365,13 +365,16 @@ private struct POSSettingsDetailPage<Content: View>: View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: title,
-                backButtonConfiguration: .init(state: .enabled, action: onBack, buttonIcon: "chevron.left"))
+                // No `buttonIcon` override: the default is `chevron.backward`, which mirrors itself
+                // in right-to-left layouts. `chevron.left` does not, and pointed the wrong way.
+                backButtonConfiguration: .init(state: .enabled, action: onBack))
             .foregroundColor(.posSurface)
 
             content()
         }
         .background(backgroundColor)
         .navigationBarBackButtonHidden(true)
+        .posEdgeSwipeBackAction(onBack: onBack)
     }
 }
 

@@ -118,4 +118,6 @@ final class POSOrderServiceScreenshotMock: POSOrderServiceProtocol {
     func promoteOrderToPending(order: Order) async throws -> Order { order }
 
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {}
+
+    func recordScanToPayPaymentMethod(order: Order) async throws {}
 }

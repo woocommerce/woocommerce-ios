@@ -609,6 +609,7 @@ private struct ShimmeringLineView: View {
                 .fixedSize(horizontal: true, vertical: true)
                 .shimmering(active: true)
                 .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
+                .geometryGroup()
         } else {
             Color.posOnSurfaceVariantLowest
                 .frame(maxWidth: .infinity)
@@ -616,6 +617,7 @@ private struct ShimmeringLineView: View {
                 .shimmering(active: true)
                 .cornerRadius(TotalsView.Constants.shimmeringCornerRadius)
                 .padding(.horizontal, POSPadding.medium)
+                .geometryGroup()
         }
     }
 }

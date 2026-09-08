@@ -5,9 +5,7 @@ import protocol PointOfSale.POSFeatureFlagProviding
 final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding {
     var isUpdateOrderOptimisticallyOn: Bool
     var isSupportRequestEnabled: Bool
-    var betterCustomerSelectionInOrder: Bool
     var productBundlesInOrderForm: Bool
-    var isScanToUpdateInventoryEnabled: Bool
     var isPointOfSaleEnabled: Bool
     var backgroundProductImageUpload: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
@@ -17,9 +15,7 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
 
     init(isUpdateOrderOptimisticallyOn: Bool = false,
          isSupportRequestEnabled: Bool = false,
-         betterCustomerSelectionInOrder: Bool = false,
          productBundlesInOrderForm: Bool = false,
-         isScanToUpdateInventoryEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
@@ -27,9 +23,7 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
          smarterNotifications: Bool = false) {
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.isSupportRequestEnabled = isSupportRequestEnabled
-        self.betterCustomerSelectionInOrder = betterCustomerSelectionInOrder
         self.productBundlesInOrderForm = productBundlesInOrderForm
-        self.isScanToUpdateInventoryEnabled = isScanToUpdateInventoryEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
@@ -49,12 +43,8 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return isUpdateOrderOptimisticallyOn
         case .supportRequests:
             return isSupportRequestEnabled
-        case .betterCustomerSelectionInOrder:
-            return betterCustomerSelectionInOrder
         case .productBundlesInOrderForm:
             return productBundlesInOrderForm
-        case .scanToUpdateInventory:
-            return isScanToUpdateInventoryEnabled
         case .pointOfSale:
             return isPointOfSaleEnabled
         case .backgroundProductImageUpload:

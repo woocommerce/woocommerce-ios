@@ -265,12 +265,70 @@ struct POSRefundSubmissionAdaptorTests {
                                                reason: nil)
         }
     }
+
+    @Test func prepareReviewData_when_rounded_tax_inclusive_line_sums_above_order_total_then_shows_order_total() async throws {
+        // Given a tax-inclusive line whose rounded total and rounded tax sum to 10.00 on a 9.99 order
+        let sut = makeSUT(previewResult: nil, flagEnabled: false, order: taxInclusiveRoundedUpOrder())
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+
+        // When
+        let reviewData = try await sut.adaptor.prepareReviewData(for: posOrder(),
+                                                                 preparation: preparation,
+                                                                 selectedItems: preparation.selectableItems,
+                                                                 reason: nil)
+
+        // Then the reviewed total is capped at what the order can still refund
+        #expect(reviewData.formattedRefundTotal == "$9.99")
+        #expect(reviewData.calculationFlow == .local)
+    }
+
+    @Test func submitRefund_when_rounded_tax_inclusive_line_sums_above_order_total_then_submits_order_total() async throws {
+        // Given the same order, reviewed on the local path
+        let sut = makeSUT(previewResult: nil, flagEnabled: false, order: taxInclusiveRoundedUpOrder())
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        _ = try await sut.adaptor.prepareReviewData(for: posOrder(),
+                                                    preparation: preparation,
+                                                    selectedItems: preparation.selectableItems,
+                                                    reason: nil)
+
+        // When
+        try await sut.adaptor.submitRefund(for: posOrder(),
+                                           preparation: preparation,
+                                           selectedItems: preparation.selectableItems,
+                                           reason: nil)
+
+        // Then the amount the server would reject as "Invalid refund amount" is never sent
+        #expect(sut.spy.classicCreateAmount == "9.99")
+    }
+
+    @Test func submitRefund_when_order_is_partly_refunded_then_caps_amount_at_the_remaining_total() async throws {
+        // Given an $11.00 order with $10.00 already refunded, and a selection worth $11.00
+        let refund = OrderRefundCondensed(refundID: 1, reason: nil, total: "-10.00")
+        let sut = makeSUT(previewResult: nil,
+                          flagEnabled: false,
+                          order: order().copy(total: "11.00", refunds: [refund]))
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        _ = try await sut.adaptor.prepareReviewData(for: posOrder(),
+                                                    preparation: preparation,
+                                                    selectedItems: preparation.selectableItems,
+                                                    reason: nil)
+
+        // When
+        try await sut.adaptor.submitRefund(for: posOrder(),
+                                           preparation: preparation,
+                                           selectedItems: preparation.selectableItems,
+                                           reason: nil)
+
+        // Then
+        #expect(sut.spy.classicCreateAmount == "1")
+    }
 }
 
 private extension POSRefundSubmissionAdaptorTests {
 
     final class RefundActionSpy {
         var dispatchedClassicCreate = false
+        var classicCreateAmount: String?
     }
 
     /// `RefundServiceProtocol` mock pinned to the main actor so the manual-resolution list and the
@@ -350,6 +408,7 @@ private extension POSRefundSubmissionAdaptorTests {
             switch action {
             case .createRefund(_, _, let refund, let onCompletion):
                 spy.dispatchedClassicCreate = true
+                spy.classicCreateAmount = refund.amount
                 onCompletion(refund, nil)
             case .retrieveRefund(_, _, _, let onCompletion):
                 onCompletion(.fake(), nil)
@@ -416,6 +475,24 @@ private extension POSRefundSubmissionAdaptorTests {
                                                         subtotal: "10.00",
                                                         total: "10.00",
                                                         totalTax: "1.00")],
+                          refunds: [])
+    }
+
+    /// A tax-inclusive line whose money strings the API already rounded up: 8.325 -> "8.33" and
+    /// 1.665 -> "1.67". Summing them gives 10.00, a penny above the 9.99 order total.
+    func taxInclusiveRoundedUpOrder() -> Order {
+        Order.fake().copy(siteID: siteID,
+                          orderID: orderID,
+                          currency: "USD",
+                          total: "9.99",
+                          items: [OrderItem.fake().copy(itemID: 10,
+                                                        quantity: 1,
+                                                        price: NSDecimalNumber(string: "8.325"),
+                                                        subtotal: "8.33",
+                                                        subtotalTax: "1.67",
+                                                        taxes: [OrderItemTax(taxID: 1, subtotal: "1.67", total: "1.67")],
+                                                        total: "8.33",
+                                                        totalTax: "1.67")],
                           refunds: [])
     }
 

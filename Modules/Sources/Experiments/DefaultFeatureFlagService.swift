@@ -9,8 +9,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
         switch featureFlag {
         case .updateOrderOptimistically:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .searchProductsBySKU:
-            return true
         case .performanceMonitoring,
                 .performanceMonitoringCoreData,
                 .performanceMonitoringFileIO,
@@ -23,16 +21,10 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // It is not possible to get the TTPoI entitlement for an enterprise certificate,
             // so we should not enable this for alpha builds.
             return buildConfig == .localDeveloper || buildConfig == .appStore
-        case .betterCustomerSelectionInOrder:
-            return true
         case .productBundlesInOrderForm:
             return true
         case .customLoginUIForAccountCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .scanToUpdateInventory:
-            return true
-        case .splitViewInProductsTab:
-            return true
         case .pointOfSale:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .backgroundProductImageUpload:
@@ -43,20 +35,14 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .ciabBookings:
             return false
-        case .pointOfSaleCatalogAPI:
-            return true
         case .pointOfSaleRoles:
             return false
         case .pointOfSaleCustomAmounts:
             return buildConfig == .localDeveloper
-        case .pointOfSalePhonePrototype:
-            return true
         case .pointOfSaleScanToPay:
             return buildConfig == .localDeveloper
         case .pointOfSaleMarkOrderAsPaid:
             return buildConfig == .localDeveloper
-        case .pointOfSaleTapToPay:
-            return true
         case .selfDrivenPushToken:
             return true
         case .clientSideDashboardBanner:

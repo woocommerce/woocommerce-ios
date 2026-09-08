@@ -156,8 +156,4 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case starReceiptPrinterSupport
 
-    /// Enables server-calculated POS refunds: the `/wc/v3` refund preview and `compute_totals`
-    /// create endpoints (WC 11.1.0+).
-    ///
-    case posServerCalculatedRefunds
 }

@@ -61,8 +61,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .starReceiptPrinterSupport:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .posServerCalculatedRefunds:
-            return true
         default:
             return true
         }

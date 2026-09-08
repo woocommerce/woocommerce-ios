@@ -109,7 +109,7 @@ final class AppCoordinator {
                 case (true, false):
                     self.validateRoleEligibility {
                         self.displayLoggedInUI()
-                        self.triggerAgeVerification(trigger: .login)
+                        self.triggerAgeVerification(trigger: .sessionStart)
                         self.synchronizeAndShowWhatsNew()
                     }
                 }

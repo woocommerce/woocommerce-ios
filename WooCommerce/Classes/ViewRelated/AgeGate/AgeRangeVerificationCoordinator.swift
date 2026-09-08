@@ -22,8 +22,8 @@ enum AppAccessDecision: Equatable {
 
 /// What started a verification flow; reported with `account_age_restriction_checked`.
 enum AgeVerificationTrigger: String {
-    /// A logged-in transition (launch or login).
-    case login
+    /// A logged-in session began: a cold launch while logged in, or a fresh login.
+    case sessionStart = "session_start"
     /// A parent/guardian answer arrived through the response listener.
     case consentResolution = "consent_resolution"
     /// The app returned to the foreground while the consent wall was up.

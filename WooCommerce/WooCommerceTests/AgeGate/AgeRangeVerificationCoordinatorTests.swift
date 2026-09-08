@@ -38,7 +38,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .denyAndLogout)
             switch result {
             case .ineligible:
@@ -66,7 +66,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allow) // per current logic: declined → allow
             switch result {
             case .declinedSharing:
@@ -93,7 +93,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allow) // we allow when no presenter is available
             switch result {
             case .invalidUIState:
@@ -121,7 +121,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allow) // per current logic: featureUnavailable → allow
             switch result {
             case .featureUnavailable:
@@ -154,7 +154,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allow) // per current logic: sdkError → allow
             switch result {
             case .sdkError:
@@ -182,7 +182,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allow) // per current logic: unknown → allow
             switch result {
             case .unknown:
@@ -213,7 +213,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allow)
             switch result {
             case .eligible:
@@ -249,15 +249,15 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         var completionOrder: [String] = []
 
         // When
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { _, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
             completionOrder.append("first")
             firstExp.fulfill()
         }
         // Two triggers land mid-flow: neither is run concurrently, and one follow-up pass covers both.
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { _, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
             XCTFail("Superseded trigger must not run; only the latest queued one is replayed")
         }
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { _, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
             completionOrder.append("followUp")
             followUpExp.fulfill()
         }
@@ -293,7 +293,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .restrictDeniedConsent)
             switch result {
             case .eligible:
@@ -331,7 +331,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, _ in
             XCTAssertEqual(appAccessDecision, .restrictConsentRequired)
             exp.fulfill()
         }
@@ -366,7 +366,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, _ in
             XCTAssertEqual(appAccessDecision, .restrictPendingConsent)
             exp.fulfill()
         }
@@ -400,7 +400,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allowConsentGranted)
             switch result {
             case .eligible:
@@ -445,7 +445,7 @@ extension AgeRangeVerificationCoordinatorTests {
         let exp = expectation(description: "onResult")
 
         // When
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, _ in
             XCTAssertEqual(appAccessDecision, .allowConsentGranted)
             exp.fulfill()
         }
@@ -530,7 +530,7 @@ extension AgeRangeVerificationCoordinatorTests {
         let exp = expectation(description: "onResult")
 
         // When
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { _, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
             exp.fulfill()
         }
 
@@ -538,7 +538,7 @@ extension AgeRangeVerificationCoordinatorTests {
         waitForExpectations(timeout: 1)
         XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.accountAgeRestrictionChecked.rawValue])
         let properties = analyticsProvider.receivedProperties.first
-        XCTAssertEqual(properties?["trigger"] as? String, "login")
+        XCTAssertEqual(properties?["trigger"] as? String, "session_start")
         XCTAssertEqual(properties?["age_range_outcome"] as? String, "age_13_17")
         XCTAssertEqual(properties?["final_decision"] as? String, "wall_consent_denied")
         XCTAssertEqual(properties?["restriction_reason"] as? String, "consent_denied")
@@ -561,7 +561,7 @@ extension AgeRangeVerificationCoordinatorTests {
         let exp = expectation(description: "onResult")
 
         // When
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { _, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
             exp.fulfill()
         }
 
@@ -590,7 +590,7 @@ extension AgeRangeVerificationCoordinatorTests {
         let exp = expectation(description: "onResult")
 
         // When
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { _, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
             exp.fulfill()
         }
 
@@ -646,7 +646,7 @@ extension AgeRangeVerificationCoordinatorTests {
         let exp = expectation(description: "onResult")
 
         // When
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { appAccessDecision, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, _ in
             XCTAssertEqual(appAccessDecision, .allow)
             exp.fulfill()
         }
@@ -671,7 +671,7 @@ extension AgeRangeVerificationCoordinatorTests {
         let exp = expectation(description: "onResult")
 
         // When
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { _, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
             exp.fulfill()
         }
 
@@ -696,7 +696,7 @@ extension AgeRangeVerificationCoordinatorTests {
         let exp = expectation(description: "onResult")
 
         // When
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .login) { _, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
             exp.fulfill()
         }
 

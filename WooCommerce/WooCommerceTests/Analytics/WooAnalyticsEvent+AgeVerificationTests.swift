@@ -20,7 +20,7 @@ struct WooAnalyticsEvent_AgeVerificationTests {
         for (decision, expectedDecision, expectedReason) in cases {
             // When
             let event = WooAnalyticsEvent.AgeVerification.restrictionChecked(
-                trigger: .login,
+                trigger: .sessionStart,
                 decision: decision,
                 result: .eligible(significantAppChangeApprovalRequired: true, isMinor: true),
                 consentState: nil
@@ -50,7 +50,7 @@ struct WooAnalyticsEvent_AgeVerificationTests {
 
         for (result, expected) in cases {
             // When
-            let event = WooAnalyticsEvent.AgeVerification.restrictionChecked(trigger: .login, decision: .allow, result: result, consentState: nil)
+            let event = WooAnalyticsEvent.AgeVerification.restrictionChecked(trigger: .sessionStart, decision: .allow, result: result, consentState: nil)
 
             // Then
             #expect(event.properties["age_range_outcome"] as? String == expected)
@@ -70,7 +70,7 @@ struct WooAnalyticsEvent_AgeVerificationTests {
 
         for (state, expected) in cases {
             // When
-            let event = WooAnalyticsEvent.AgeVerification.restrictionChecked(trigger: .login, decision: .allow, result: .unknown, consentState: state)
+            let event = WooAnalyticsEvent.AgeVerification.restrictionChecked(trigger: .sessionStart, decision: .allow, result: .unknown, consentState: state)
 
             // Then
             #expect(event.properties["significant_change_status"] as? String == expected)
@@ -83,7 +83,7 @@ struct WooAnalyticsEvent_AgeVerificationTests {
 
         // When
         let event = WooAnalyticsEvent.AgeVerification.restrictionChecked(
-            trigger: .login,
+            trigger: .sessionStart,
             decision: .allow,
             result: .sdkError(AgeRangeProviderError.other(underlying)),
             consentState: nil
@@ -99,7 +99,7 @@ struct WooAnalyticsEvent_AgeVerificationTests {
     @Test func test_restrictionChecked_when_api_not_available_then_records_no_error_properties() {
         // When
         let event = WooAnalyticsEvent.AgeVerification.restrictionChecked(
-            trigger: .login,
+            trigger: .sessionStart,
             decision: .allow,
             result: .sdkError(AgeRangeProviderError.notAvailable),
             consentState: nil
@@ -113,7 +113,7 @@ struct WooAnalyticsEvent_AgeVerificationTests {
     @Test func test_restrictionChecked_when_given_each_trigger_then_maps_trigger() {
         // Given
         let cases: [(AgeVerificationTrigger, String)] = [
-            (.login, "login"),
+            (.sessionStart, "session_start"),
             (.consentResolution, "consent_resolution"),
             (.foregroundRecheck, "foreground_recheck"),
             (.wallAction, "wall_action")

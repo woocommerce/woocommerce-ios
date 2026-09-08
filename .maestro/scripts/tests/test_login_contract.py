@@ -9,6 +9,44 @@ MAESTRO_ROOT = REPO_ROOT / ".maestro"
 
 
 class MaestroLoginContractTests(unittest.TestCase):
+    def test_login_flows_share_password_prompt_dismissal(self) -> None:
+        flow_paths = [
+            MAESTRO_ROOT / "flows" / name
+            for name in (
+                "login_no_jetpack.yaml",
+                "login_not_woo_store.yaml",
+                "login_wrong_account.yaml",
+                "login_wrong_credentials.yaml",
+            )
+        ]
+
+        for path in flow_paths:
+            with self.subTest(path=path):
+                source = path.read_text(encoding="utf-8")
+                self.assertIn("../subflows/dismiss_save_password_prompt.yaml", source)
+                self.assertNotIn('visible: "Save Password?"', source)
+
+        shared_login = (MAESTRO_ROOT / "subflows" / "login.yaml").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn("file: dismiss_save_password_prompt.yaml", shared_login)
+        self.assertNotIn('visible: "Save Password?"', shared_login)
+
+    def test_non_wordpress_recovery_preserves_the_entered_address(self) -> None:
+        source = (MAESTRO_ROOT / "flows" / "login_not_wp_site.yaml").read_text(
+            encoding="utf-8"
+        )
+
+        recovery = source.index('- tapOn: "Enter Another Store"')
+        preserved_address = source.index(
+            '- assertVisible:\n'
+            '    id: "Site address"\n'
+            '    text: "https://google.com"\n'
+            '    label: "Verify the last entered site address is preserved"'
+        )
+
+        self.assertLess(recovery, preserved_address)
+
     def test_site_address_entry_waits_for_qr_fallback_or_legacy_form(self) -> None:
         source = (MAESTRO_ROOT / "subflows" / "open_site_address_login.yaml").read_text(
             encoding="utf-8"

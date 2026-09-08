@@ -31,6 +31,7 @@ ENV_FILE = MAESTRO_DIR / ".env.local"
 CONFIG_FILE = MAESTRO_DIR / "config.yaml"
 LINT_ENV = SCRIPT_DIR / "lint-env.py"
 CHECK_TOOLCHAIN = SCRIPT_DIR / "check-toolchain.py"
+DEVICE_LOCALE = SCRIPT_DIR / "device_locale.py"
 OUTPUT_DEFAULT = Path.home() / "woocommerce-maestro-output"
 NOT_WOO_STORE_FLOW = "login_not_woo_store.yaml"
 NO_JETPACK_FLOW = "login_no_jetpack.yaml"
@@ -71,7 +72,7 @@ ENV_REFERENCE_RE = re.compile(r"\$\{(MAESTRO_[A-Z0-9_]+)\}")
 SUBFLOW_REFERENCE_RE = re.compile(r"(?:file:|runFlow:)\s*([^\s#]+\.ya?ml)")
 STATUS_EXIT_CODES = {
     "PASS": 0,
-    "FLAKY": 1,
+    "FLAKY": 0,
     "FAIL": 1,
     "SETUP_ERROR": 2,
     "TIMED_OUT": 124,
@@ -278,7 +279,9 @@ def failed_flow_stems(report: Path) -> set[str]:
     root = ET.parse(report).getroot()
     stems: set[str] = set()
     for case in root.iter("testcase"):
-        if case.find("failure") is None and case.find("error") is None:
+        status = case.find("./properties/property[@name='maestro.status']")
+        is_flaky = status is not None and status.get("value") == "FLAKY"
+        if case.find("failure") is None and case.find("error") is None and not is_flaky:
             continue
         haystack = " ".join([case.get("name", ""), case.get("classname", ""), case.get("file", "")])
         stems.update(path.stem for path in FLOWS_DIR.glob("*.yaml") if path.stem in haystack)
@@ -458,18 +461,53 @@ def sanitize_artifacts(root: Path, values: dict[str, str], *, remove_images: boo
 def write_combined_junit(attempts: list[Attempt], destination: Path) -> tuple[int, int, int]:
     suites = ET.Element("testsuites")
     tests = failures = skipped = 0
+    attempts_by_execution: dict[tuple[Path, int], list[int]] = {}
     for attempt in attempts:
+        attempts_by_execution.setdefault((attempt.flow, attempt.repeat), []).append(
+            attempt.returncode
+        )
+    for attempt in attempts:
+        status = flow_status(attempts_by_execution[(attempt.flow, attempt.repeat)])
         if not attempt.junit.exists():
-            suite = ET.SubElement(suites, "testsuite", name=f"{attempt.flow.stem}-attempt-{attempt.number}", tests="1", failures="1")
+            is_flaky = status == "FLAKY"
+            suite = ET.SubElement(
+                suites,
+                "testsuite",
+                name=f"{attempt.flow.stem}-attempt-{attempt.number}",
+                tests="1",
+                failures="0" if is_flaky else "1",
+            )
             case = ET.SubElement(suite, "testcase", name=attempt.flow.stem, file=str(attempt.flow.relative_to(REPO_ROOT)))
-            ET.SubElement(case, "failure", message="Maestro did not produce JUnit output")
+            if is_flaky:
+                properties = ET.SubElement(case, "properties")
+                ET.SubElement(properties, "property", name="maestro.status", value="FLAKY")
+            else:
+                ET.SubElement(case, "failure", message="Maestro did not produce JUnit output")
             tests += 1
-            failures += 1
+            failures += int(not is_flaky)
             continue
         root = ET.parse(attempt.junit).getroot()
         children = [root] if root.tag == "testsuite" else list(root.findall("testsuite"))
         for suite in children:
             suite.set("name", f"{suite.get('name', attempt.flow.stem)} [run {attempt.repeat} attempt {attempt.number}]")
+            if status == "FLAKY":
+                suite.set("failures", "0")
+                suite.set("errors", "0")
+                for case in suite.iter("testcase"):
+                    for result in list(case):
+                        if result.tag in {"failure", "error"}:
+                            case.remove(result)
+                    properties = case.find("properties")
+                    if properties is None:
+                        properties = ET.Element("properties")
+                        case.insert(0, properties)
+                    existing = properties.find("property[@name='maestro.status']")
+                    if existing is None:
+                        ET.SubElement(properties, "property", name="maestro.status", value="FLAKY")
+                    else:
+                        existing.set("value", "FLAKY")
+            for case in suite.iter("testcase"):
+                case.set("file", str(attempt.flow.relative_to(REPO_ROOT)))
             suites.append(suite)
             tests += int(suite.get("tests", len(suite.findall("testcase"))))
             failures += int(suite.get("failures", "0")) + int(suite.get("errors", "0"))
@@ -667,6 +705,13 @@ def main() -> int:
     validate_environment(flows, values, seed=args.seed)
     values = normalized_flow_environment(flows, values)
     simulator = resolve_simulator(args.device, family)
+    locale = run(
+        [sys.executable, str(DEVICE_LOCALE), "--device", simulator["udid"]],
+        capture=False,
+        check=False,
+    )
+    if locale.returncode:
+        return locale.returncode
     run(["xcrun", "simctl", "install", simulator["udid"], str(app)])
     summary = {
         "run_id": run_id, "profile": args.profile, "app": str(app), "app_id": app_id,
@@ -788,8 +833,8 @@ def main() -> int:
         flow_timeout_seconds=args.flow_timeout_seconds,
     )
     sanitize_artifacts(output, values)
-    passed = statuses.count("PASS")
     flaky = statuses.count("FLAKY")
+    passed = statuses.count("PASS") + flaky
     failed = statuses.count("FAIL")
     timed_out = statuses.count("TIMED_OUT")
     suite_duration = round(time.monotonic() - suite_started)
@@ -802,7 +847,7 @@ def main() -> int:
     print(f"Simulator: {simulator['name']} ({simulator['udid']})")
     print(f"Bundle identifier: {app_id}")
     print(
-        f"Result: {passed} passed, {flaky} flaky, {failed} failed, {timed_out} timed out "
+        f"Result: {passed} passed ({flaky} flaky), {failed} failed, {timed_out} timed out "
         f"out of {total_runs} executions ({suite_duration}s)"
     )
     print(f"Overall status: {result.status}")

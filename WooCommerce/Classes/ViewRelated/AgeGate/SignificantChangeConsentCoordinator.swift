@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import protocol WooFoundation.Analytics
 
 /// Consent state for the currently outstanding significant change, if any.
 enum SignificantChangeConsentState: Equatable {
@@ -33,15 +34,18 @@ final class SignificantChangeConsentCoordinator {
     private var unmatchedResponses: [UUID: SignificantChangeConsentResponse] = [:]
     /// Source of the parent-facing copy for a declared manual change.
     private let declaration: SignificantChangeDeclaration?
+    private let analytics: Analytics
 
     nonisolated init(
         consentProvider: SignificantChangeConsentProviding = PermissionKitSignificantChangeConsentProvider(),
         consentStore: SignificantChangeConsentStoring = UserDefaultsSignificantChangeConsentStore(),
-        declaration: SignificantChangeDeclaration? = CurrentSignificantChange.declaration
+        declaration: SignificantChangeDeclaration? = CurrentSignificantChange.declaration,
+        analytics: Analytics = ServiceLocator.analytics
     ) {
         self.consentProvider = consentProvider
         self.consentStore = consentStore
         self.declaration = declaration
+        self.analytics = analytics
     }
 
     deinit {
@@ -86,8 +90,9 @@ final class SignificantChangeConsentCoordinator {
     /// Sends the consent question to the parent/guardian. Call only from an explicit user
     /// action (the blocking screen's button) — never automatically. A previous denial can be
     /// asked again; it stays persisted until the system actually accepts the new question.
+    /// - Parameter viewController: anchor for the system sheet; `nil` is reported as `.notAvailable`.
     func requestConsent(
-        in viewController: UIViewController,
+        in viewController: UIViewController?,
         ageRatingChange: AgeRatingChangeCheckResult?,
         manualChangeIdentifier: SignificantChangeIdentifier? = nil
     ) async -> SignificantChangeConsentState {
@@ -98,15 +103,23 @@ final class SignificantChangeConsentCoordinator {
             return .notRequired
         }
 
+        let isReask: Bool
         switch consentStore.status(for: changeIdentifier) {
         case .granted:
             return .granted
         case .pending:
             return .pending
-        case .denied, nil:
+        case .denied:
             // Re-askable. The denial is only replaced once the question is sent, so a failed
             // re-ask doesn't downgrade "declined" to "never asked".
-            break
+            isReask = true
+        case nil:
+            isReask = false
+        }
+
+        guard let viewController else {
+            trackConsentRequested(for: changeIdentifier, requestResult: .notAvailable, isReask: isReask)
+            return .notAvailable
         }
 
         ensureObservingResponses()
@@ -114,6 +127,7 @@ final class SignificantChangeConsentCoordinator {
             in: viewController,
             significantAppUpdateDescription: description(for: changeIdentifier)
         )
+        trackConsentRequested(for: changeIdentifier, requestResult: requestResult, isReask: isReask)
         switch requestResult {
         case let .sent(questionID):
             consentStore.setStatus(.pending, for: changeIdentifier)
@@ -131,7 +145,9 @@ final class SignificantChangeConsentCoordinator {
             guard let response else {
                 return .pending
             }
-            return persist(response, for: changeIdentifier) == .granted ? .granted : .denied
+            let status = persist(response, for: changeIdentifier)
+            trackConsentResolved(status, via: .graceWindow)
+            return status == .granted ? .granted : .denied
         case .notAvailable, .failed:
             return .notAvailable
         }
@@ -171,6 +187,7 @@ private extension SignificantChangeConsentCoordinator {
             return
         }
         let status = persist(response, for: pending.identifier)
+        trackConsentResolved(status, via: .listener)
         onResolution?(status)
     }
 
@@ -183,6 +200,31 @@ private extension SignificantChangeConsentCoordinator {
         consentStore.setStatus(status, for: identifier)
         consentStore.clearPendingRequest()
         return status
+    }
+
+    func trackConsentRequested(
+        for identifier: SignificantChangeIdentifier,
+        requestResult: SignificantChangeConsentRequestResult,
+        isReask: Bool
+    ) {
+        let result: WooAnalyticsEvent.AgeVerification.ConsentRequestResult
+        switch requestResult {
+        case .sent:
+            result = .sent
+        case .notAvailable:
+            result = .notAvailable
+        case .failed:
+            result = .failed
+        }
+        analytics.track(event: .AgeVerification.consentRequested(
+            changeType: WooAnalyticsEvent.AgeVerification.changeType(for: identifier),
+            result: result,
+            isReask: isReask
+        ))
+    }
+
+    func trackConsentResolved(_ status: SignificantChangeConsentStatus, via path: WooAnalyticsEvent.AgeVerification.ResolutionPath) {
+        analytics.track(event: .AgeVerification.consentResolved(resolution: status == .granted ? .granted : .denied, via: path))
     }
 
     func bufferUnmatched(_ response: SignificantChangeConsentResponse) {

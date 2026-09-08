@@ -79,6 +79,20 @@ A "significant change" without an age rating impact (for example new Terms of Se
 
 Both texts are required by construction, so a change cannot be declared without parent-facing copy. Legal drives the trigger: a change is declared only when Legal determines it is significant under the applicable rules. Plan for one release cycle of lead time so the copy can be reviewed and localized before the release that carries the declaration ships. Remove the declaration in a later release once the change has shipped and consent for it has had time to be collected.
 
+## Analytics
+
+Tracks events are categorical by design (Legal guidance): coarse age bands only, SDK error domain and numeric code only, never PermissionKit question ids or parent/child identifiers. Factories live in `WooCommerce/Classes/Analytics/WooAnalyticsEvent+AgeVerification.swift`.
+
+| Event | When | Properties |
+|---|---|---|
+| `account_age_restriction_checked` | One per completed verification flow, including re-checks while the wall is up (`trigger` tells them apart). Volume guardrail: only when the account is under a covered regime or the decision is not a plain allow, so it is never sent for non-covered accounts or unsupported OS versions. | `trigger` (`session_start` for a launch while logged in or a login, `consent_resolution`, `foreground_recheck`, `wall_action`), `age_range_outcome` (`eligible`, `age_13_17`, `below_13`, `declined_sharing`, `unavailable`, `not_applicable`, `invalid_ui_state`, `sdk_error`, `unknown`), `final_decision` (`allowed`, `restricted`, `wall_consent_required`, `wall_consent_pending`, `wall_consent_denied`), `restriction_reason` when restricted (`below_minimum_age`, `consent_required`, `consent_pending`, `consent_denied`), `significant_change_status` when the consent branch ran (`not_applicable`, `required`, `approved`, `pending`, `declined`, `unavailable`), `sdk_error_domain` + `sdk_error_code` for SDK failures |
+| `account_age_restriction_dialog_shown` | A wall or the underage alert became visible (a re-check landing on the same wall does not re-fire) | `screen` (`consent_needed`, `consent_pending`, `consent_denied`, `consent_granted`, `underage_alert`) |
+| `account_age_verification_action` | A tap on the wall | `action` (`request_approval`, `check_again`, `ask_again`, `continue`) |
+| `account_age_consent_requested` | iOS-only: the app tried to hand the consent question to the system (`not_available` also covers a missing anchor view controller) | `change_type` (`age_rating`, `manual`), `result` (`sent`, `not_available`, `failed`), `is_reask` |
+| `account_age_consent_resolved` | iOS-only: a parent/guardian answer was processed | `resolution` (`granted`, `denied`), `via` (`grace_window`, `listener`) |
+
+The first three events and their property names match Android (`woocommerce-android` PR #16377). iOS requests age gates 13 and 18 only, so it reports `age_13_17` where Android splits `13_15` / `16_17`; `trigger` is the closest iOS equivalent of Android's `is_recovery`; Android's `access_status`, `request_stage` and `retry_count` have no iOS equivalent.
+
 ## Debug tooling
 
 Menu → Settings → Debug Panel → "Age Verification" (DEBUG and ALPHA builds only; every override is inert while unit tests run).

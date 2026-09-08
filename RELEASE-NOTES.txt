@@ -5,6 +5,7 @@
 -----
 - [***] Age verification: pending or denied parental consent for significant app changes now shows a recoverable blocking screen instead of logging the user out, and consent requests are only sent on explicit user action. Affects the post-login age gate all users pass through — smoke test critical flows, including the sandbox age-assurance scenarios. [https://github.com/woocommerce/woocommerce-ios/pull/17822]
 - [Internal] Age verification: added a declaration file for manual significant changes with parent-facing copy, and the iOS decision matrix doc (docs/age-verification.md). [https://github.com/woocommerce/woocommerce-ios/pull/17826]
+- [Internal] Age verification: added Tracks events for the verification outcome, access decision, restriction reason, consent request/resolution and blocking screen actions, with categorical properties only. [https://github.com/woocommerce/woocommerce-ios/pull/17829]
 
 
 25.6

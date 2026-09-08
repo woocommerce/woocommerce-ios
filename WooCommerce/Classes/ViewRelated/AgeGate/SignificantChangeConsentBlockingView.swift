@@ -15,13 +15,17 @@ enum SignificantChangeBlockingContext {
 /// Full-screen, non-dismissable blocking screen for the significant-change consent flow.
 /// Recoverable by design: no logout — the user requests approval, re-checks, or re-asks.
 final class SignificantChangeConsentBlockingHostingController: UIHostingController<SignificantChangeConsentBlockingView> {
+    private(set) var context: SignificantChangeBlockingContext
+
     init(context: SignificantChangeBlockingContext, detailMessage: String? = nil, onAction: @escaping () -> Void) {
+        self.context = context
         super.init(rootView: SignificantChangeConsentBlockingView(context: context, detailMessage: detailMessage, onAction: onAction))
         modalPresentationStyle = .fullScreen
         isModalInPresentation = true
     }
 
     func update(context: SignificantChangeBlockingContext, detailMessage: String? = nil, onAction: @escaping () -> Void) {
+        self.context = context
         rootView = SignificantChangeConsentBlockingView(context: context, detailMessage: detailMessage, onAction: onAction)
     }
 

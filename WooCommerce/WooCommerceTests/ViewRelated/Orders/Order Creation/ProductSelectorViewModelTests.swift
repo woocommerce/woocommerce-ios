@@ -1690,6 +1690,287 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     // MARK: - Pagination
 
+    func test_syncing_first_page_loads_top_products_concurrently_and_keeps_them_stable_during_pagination() throws {
+        // Given
+        let firstPage = (1...25).map { productID in
+            Product.fake().copy(siteID: sampleSiteID,
+                                productID: Int64(productID),
+                                name: "Product \(productID)",
+                                purchasable: true)
+        }
+        let popularProductIDs = Array(Int64(1)...Int64(5))
+        let lastSoldProductIDs = Array(Int64(26)...Int64(31))
+        let topProductsProvider = MockProductSelectorTopProductsProvider(
+            provideTopProductsFromCachedOrders: ProductSelectorTopProducts(
+                popularProductsIds: popularProductIDs,
+                lastSoldProductsIds: popularProductIDs + lastSoldProductIDs
+            )
+        )
+        let requestedTopProductIDs = popularProductIDs + Array(lastSoldProductIDs.prefix(5))
+        let requestedTopProducts = requestedTopProductIDs.reversed().map { productID in
+            Product.fake().copy(siteID: sampleSiteID,
+                                productID: productID,
+                                name: "Top Product \(productID)",
+                                purchasable: true)
+        }
+        let nextPageProducts = [
+            Product.fake().copy(siteID: sampleSiteID,
+                                productID: try XCTUnwrap(lastSoldProductIDs.first),
+                                name: "Updated Last Sold Product",
+                                purchasable: true),
+            Product.fake().copy(siteID: sampleSiteID,
+                                productID: try XCTUnwrap(lastSoldProductIDs.last),
+                                name: "New Last Sold Candidate",
+                                purchasable: true)
+        ]
+        var firstPageCompletion: ((Result<Bool, Error>) -> Void)?
+        var topProductsCompletion: ((Result<(products: [Yosemite.Product], hasNextPage: Bool), Error>) -> Void)?
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .synchronizeProducts(_, pageNumber, _, _, _, _, _, _, _, _, _, onCompletion):
+                if pageNumber == 1 {
+                    firstPageCompletion = onCompletion
+                } else {
+                    self.insert(nextPageProducts)
+                    onCompletion(.success(false))
+                }
+            case let .retrieveProductsTransiently(_, currency, pageNumber, pageSize, _, _, _, _, _, productIDs, _, onCompletion):
+                XCTAssertNil(currency)
+                XCTAssertEqual(pageNumber, 1)
+                XCTAssertEqual(pageSize, requestedTopProductIDs.count)
+                XCTAssertEqual(productIDs, requestedTopProductIDs)
+                topProductsCompletion = onCompletion
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 topProductsProvider: topProductsProvider)
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        let completeFirstPage = try XCTUnwrap(firstPageCompletion)
+        let completeTopProducts = try XCTUnwrap(topProductsCompletion)
+
+        completeTopProducts(.success((requestedTopProducts, false)))
+        XCTAssertTrue(viewModel.productRows.isEmpty)
+
+        insert(firstPage)
+        completeFirstPage(.success(true))
+        waitUntil {
+            viewModel.sections.count == 3
+        }
+
+        let initialPopularProductIDs = viewModel.sections[0].products.map(\.productID)
+        let initialLastSoldProductIDs = viewModel.sections[1].products.map(\.productID)
+        XCTAssertEqual(initialPopularProductIDs, popularProductIDs)
+        XCTAssertEqual(initialLastSoldProductIDs, Array(lastSoldProductIDs.prefix(5)))
+        XCTAssertEqual(viewModel.sections[2].products.count, firstPage.count)
+
+        // When
+        viewModel.sync(pageNumber: 2, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.sections[0].products.map(\.productID), initialPopularProductIDs)
+        XCTAssertEqual(viewModel.sections[1].products.map(\.productID), initialLastSoldProductIDs)
+        XCTAssertEqual(viewModel.sections[1].products.first?.name, "Updated Last Sold Product")
+        XCTAssertEqual(viewModel.sections[2].products.count, firstPage.count + nextPageProducts.count)
+    }
+
+    func test_syncing_first_page_when_top_products_fail_freezes_suggestions_from_the_first_page() {
+        // Given
+        let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        let laterLastSoldProduct = Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true)
+        let topProductsProvider = MockProductSelectorTopProductsProvider(
+            provideTopProductsFromCachedOrders: ProductSelectorTopProducts(
+                popularProductsIds: [popularProduct.productID],
+                lastSoldProductsIds: [laterLastSoldProduct.productID]
+            )
+        )
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .synchronizeProducts(_, pageNumber, _, _, _, _, _, _, _, _, _, onCompletion):
+                self.insert(pageNumber == 1 ? popularProduct : laterLastSoldProduct)
+                onCompletion(.success(pageNumber == 1))
+            case let .retrieveProductsTransiently(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "TopProducts", code: 0)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 topProductsProvider: topProductsProvider)
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+        waitUntil {
+            viewModel.sections.count == 2
+        }
+        viewModel.sync(pageNumber: 2, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.sections.map(\.type), [.mostPopular, .restOfProducts])
+        XCTAssertEqual(viewModel.sections[0].products.map(\.productID), [popularProduct.productID])
+        XCTAssertEqual(viewModel.sections[1].products.map(\.productID), [popularProduct.productID, laterLastSoldProduct.productID])
+    }
+
+    func test_syncing_first_page_does_not_wait_for_top_products_or_add_them_after_the_first_page_completes() throws {
+        // Given
+        let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        let lastSoldProduct = Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true)
+        let topProductsProvider = MockProductSelectorTopProductsProvider(
+            provideTopProductsFromCachedOrders: ProductSelectorTopProducts(
+                popularProductsIds: [popularProduct.productID],
+                lastSoldProductsIds: [lastSoldProduct.productID]
+            )
+        )
+        var firstPageCompletion: ((Result<Bool, Error>) -> Void)?
+        var topProductsCompletion: ((Result<(products: [Yosemite.Product], hasNextPage: Bool), Error>) -> Void)?
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
+                firstPageCompletion = onCompletion
+            case let .retrieveProductsTransiently(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
+                topProductsCompletion = onCompletion
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 topProductsProvider: topProductsProvider)
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+        insert(popularProduct)
+        try XCTUnwrap(firstPageCompletion)(.success(false))
+
+        // Then
+        waitUntil {
+            viewModel.sections.map(\.type) == [.mostPopular, .restOfProducts]
+        }
+        XCTAssertEqual(viewModel.sections[0].products.map(\.productID), [popularProduct.productID])
+
+        // When
+        try XCTUnwrap(topProductsCompletion)(.success(([popularProduct, lastSoldProduct], false)))
+
+        // Then
+        XCTAssertEqual(viewModel.sections.map(\.type), [.mostPopular, .restOfProducts])
+        XCTAssertEqual(viewModel.sections[0].products.map(\.productID), [popularProduct.productID])
+    }
+
+    func test_syncing_first_page_when_product_sync_fails_retries_both_requests() {
+        // Given
+        let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        let topProductsProvider = MockProductSelectorTopProductsProvider(
+            provideTopProductsFromCachedOrders: ProductSelectorTopProducts(
+                popularProductsIds: [popularProduct.productID],
+                lastSoldProductsIds: []
+            )
+        )
+        var productRequestCount = 0
+        var topProductsRequestCount = 0
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
+                productRequestCount += 1
+                if productRequestCount == 1 {
+                    onCompletion(.failure(NSError(domain: "Products", code: 0)))
+                } else {
+                    self.insert(popularProduct)
+                    onCompletion(.success(false))
+                }
+            case let .retrieveProductsTransiently(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
+                topProductsRequestCount += 1
+                onCompletion(.success(([popularProduct], false)))
+            default:
+                XCTFail("Unsupported Action")
+            }
+        }
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 topProductsProvider: topProductsProvider)
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+        waitUntil {
+            viewModel.notice != nil
+        }
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+        waitUntil {
+            viewModel.sections.first?.type == .mostPopular
+        }
+
+        // Then
+        XCTAssertEqual(productRequestCount, 2)
+        XCTAssertEqual(topProductsRequestCount, 2)
+    }
+
+    func test_syncing_first_page_with_currency_loads_products_and_top_products_transiently_with_the_same_currency() throws {
+        // Given
+        let pageProduct = Product.fake().copy(siteID: sampleSiteID, productID: 3, purchasable: true)
+        let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        let lastSoldProduct = Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true)
+        let topProductsProvider = MockProductSelectorTopProductsProvider(
+            provideTopProductsFromCachedOrders: ProductSelectorTopProducts(
+                popularProductsIds: [popularProduct.productID],
+                lastSoldProductsIds: [lastSoldProduct.productID]
+            )
+        )
+        var productsCompletion: ((Result<(products: [Yosemite.Product], hasNextPage: Bool), Error>) -> Void)?
+        var topProductsCompletion: ((Result<(products: [Yosemite.Product], hasNextPage: Bool), Error>) -> Void)?
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProductsTransiently(_, currency, _, _, _, _, _, _, _, productIDs, _, onCompletion):
+                XCTAssertEqual(currency, "GBP")
+                if productIDs.isEmpty {
+                    productsCompletion = onCompletion
+                } else {
+                    XCTAssertEqual(productIDs, [popularProduct.productID, lastSoldProduct.productID])
+                    topProductsCompletion = onCompletion
+                }
+            default:
+                XCTFail("Currency mode dispatched a persistent product action")
+            }
+        }
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "GBP",
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 topProductsProvider: topProductsProvider)
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        let completeProducts = try XCTUnwrap(productsCompletion)
+        let completeTopProducts = try XCTUnwrap(topProductsCompletion)
+        completeTopProducts(.success(([lastSoldProduct, popularProduct], false)))
+        XCTAssertTrue(viewModel.productRows.isEmpty)
+        completeProducts(.success(([pageProduct], false)))
+        waitUntil {
+            viewModel.sections.count == 3
+        }
+        XCTAssertEqual(viewModel.sections.map(\.type), [.mostPopular, .lastSold, .restOfProducts])
+        XCTAssertEqual(viewModel.sections[0].products.map(\.productID), [popularProduct.productID])
+        XCTAssertEqual(viewModel.sections[1].products.map(\.productID), [lastSoldProduct.productID])
+        XCTAssertEqual(viewModel.sections[2].products.map(\.productID), [pageProduct.productID])
+    }
+
     func test_it_syncs_the_second_page_after_searching_and_selecting_a_product_not_in_the_first_page() {
         // Given
         var searchProductsPages = [Int]()

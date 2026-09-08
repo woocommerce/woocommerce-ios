@@ -62,10 +62,10 @@ public enum ProductAction: Action {
                              shouldDeleteStoredProductsOnFirstPage: Bool = true,
                              onCompletion: (Result<Bool, Error>) -> Void)
 
-    /// Retrieves a currency-scoped page of products without writing the results to local storage.
+    /// Retrieves a page of products without writing the results to local storage.
     ///
     case retrieveProductsTransiently(siteID: Int64,
-                                     currency: String,
+                                     currency: String?,
                                      pageNumber: Int,
                                      pageSize: Int = ProductsRemote.Default.pageSize,
                                      stockStatus: ProductStockStatus?,

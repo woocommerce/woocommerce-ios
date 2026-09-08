@@ -6,7 +6,7 @@ We use the [Swift.org API Design Guidelines](https://swift.org/documentation/api
 
 We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce as many of our rules as we can. It is integrated in the build process so you should see any violations in Xcode.
 
-You can the lint check manually by executing `bundle exec rake lint` in the command line. You can also run `bundle exec rake lint:autocorrect` to automatically fix any lint issues.
+You can run the lint check manually by executing `bundle exec rake lint` in the command line. You can also run `bundle exec rake lint:autocorrect` to automatically fix any lint issues.
 
 The SwiftLint rules are automatically enforced by the `SwiftLint` CI step when pull requests are submitted.
 

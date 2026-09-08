@@ -8,7 +8,7 @@ We use [SwiftLint](https://github.com/realm/SwiftLint) to enforce as many of our
 
 You can the lint check manually by executing `bundle exec rake lint` in the command line. You can also run `bundle exec rake lint:autocorrect` to automatically fix any lint issues.
 
-The SwiftLint rules are automatically enforced by [Hound](https://houndci.com) when pull requests are submitted.
+The SwiftLint rules are automatically enforced by the `SwiftLint` CI step when pull requests are submitted.
 
 ## Braces
 

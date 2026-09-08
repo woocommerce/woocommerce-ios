@@ -30,6 +30,11 @@ class FakeClient:
                 {"id": 11, "name": "Media SUITE-20260805T120000Z-abc123"},
                 {"id": 12, "name": "Merchant product"},
             ]
+        if path == "products/tags":
+            return [
+                {"id": 31, "name": "maestro-SUITE-20260805T120000Z-abc123"},
+                {"id": 32, "name": "merchant-tag"},
+            ]
         return [
             {
                 "id": 21,
@@ -93,7 +98,13 @@ class SeedFixtureTests(unittest.TestCase):
             with mock.patch.object(SEED, "WooClient", return_value=client):
                 SEED.cleanup(args)
 
-            self.assertEqual([("orders", 21), ("products", 11)], client.deleted)
+            # Tags are discovered last and the deletion loop is reversed, so the
+            # run-owned tag is removed before the products that reference it.
+            # The merchant's own product, order, and tag are left untouched.
+            self.assertEqual(
+                [("products/tags", 31), ("orders", 21), ("products", 11)],
+                client.deleted,
+            )
             contents = json.loads(manifest.read_text(encoding="utf-8"))
             self.assertEqual([], contents["entities"])
 

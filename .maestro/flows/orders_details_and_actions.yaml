@@ -18,8 +18,14 @@ tags:
     index: 0
 - tapOn:
     id: product-multiple-selection-done-button
-- swipe:
-    direction: UP
+# The order totals panel is pinned over the bottom of the form, so a blind swipe
+# can leave this row present in the hierarchy but covered: the tap is then
+# swallowed by the panel. Scroll until it is genuinely unobscured.
+- scrollUntilVisible:
+    element:
+      id: add-customer-note-button
+    direction: DOWN
+    visibilityPercentage: 100
 - tapOn:
     id: add-customer-note-button
 - tapOn:
@@ -30,18 +36,21 @@ tags:
       TEXT_TO_PASTE: Details ${SUITE_RUN_ID}
 - tapOn:
     id: edit-note-done-button
+# Verify the note on the order form, where it renders as a "Customer Note"
+# section. Order details has no customer-note section, so asserting it after
+# creation can never pass.
+- scrollUntilVisible:
+    element:
+      text: Details ${SUITE_RUN_ID}
+    direction: DOWN
+    visibilityPercentage: 100
+- assertVisible: Details ${SUITE_RUN_ID}
 - tapOn:
     id: new-order-create-button
 - extendedWaitUntil:
     visible:
       id: order-details-table-view
     timeout: 30000
-- scrollUntilVisible:
-    element:
-      text: Details ${SUITE_RUN_ID}
-    direction: DOWN
-- assertVisible: Details ${SUITE_RUN_ID}
-
 # Take a cash payment so this same run-owned order becomes receipt-eligible.
 - scrollUntilVisible:
     element:
@@ -49,18 +58,29 @@ tags:
     direction: DOWN
 - tapOn:
     id: order-details-collect-payment-button
-- assertVisible:
-    id: payment-methods-header-label
+# Wait for the payment methods screen to push rather than asserting immediately.
+- extendedWaitUntil:
+    visible:
+      id: payment-methods-header-label
+    timeout: 15000
 - tapOn:
     id: payment-methods-view-cash-row
 - assertVisible: Cash received
 - tapOn: Cash received
 - inputText: "9999"
 - tapOn: Mark Order as Complete
+# Order details reloads after the payment completes. Wait for the reloaded
+# screen to settle on the completed order before touching it, otherwise the
+# scroll and tap below race the reload and the tap lands on nothing.
 - extendedWaitUntil:
     visible:
-      text: See Receipt
+      text: Completed
     timeout: 30000
+- scrollUntilVisible:
+    element:
+      text: See Receipt
+    direction: DOWN
+    visibilityPercentage: 100
 - tapOn: See Receipt
 - extendedWaitUntil:
     visible:

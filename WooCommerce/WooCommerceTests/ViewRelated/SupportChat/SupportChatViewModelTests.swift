@@ -552,6 +552,20 @@ struct SupportChatViewModelTests {
         #expect(sut.isExecutingAction == false)
     }
 
+    @Test func test_executeAction_registerDevice_when_service_throws_then_state_is_device_registration_error() async {
+        // Given
+        let diagnosticsService = MockSupportDiagnosticsService { _ in [] }
+        diagnosticsService.registerDeviceError = NSError(domain: "TestDomain", code: 1)
+        let sut = makeSUT(diagnosticsService: diagnosticsService)
+
+        // When
+        await sut.executeAction(.registerDevice)
+
+        // Then
+        #expect(sut.state == .error("We couldn't register your device for push notifications. Please try again."))
+        #expect(sut.isExecutingAction == false)
+    }
+
     @Test func executeAction_setupJetpack_calls_onStartJetpackSetup() async {
         // Given
         var callbackCalled = false
@@ -2212,6 +2226,7 @@ private extension SupportChatViewModel.ChatMessage {
 @MainActor
 private final class MockSupportDiagnosticsService: SupportDiagnosticsServicing {
     var formattedSystemStatusReport: String?
+    var registerDeviceError: Error?
 
     private let resultProvider: ([SupportDiagnosticsService.Test]) -> [SupportDiagnosticsService.Result]
 
@@ -2225,7 +2240,11 @@ private final class MockSupportDiagnosticsService: SupportDiagnosticsServicing {
 
     func enableAnalytics() async throws {}
 
-    func registerDevice() async throws {}
+    func registerDevice() async throws {
+        if let registerDeviceError {
+            throw registerDeviceError
+        }
+    }
 
     func enableOrderNotifications(settings: NotificationSettings) async throws {}
 

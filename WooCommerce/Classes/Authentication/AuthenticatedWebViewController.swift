@@ -462,7 +462,8 @@ extension AuthenticatedWebViewController {
     private func shouldSuppressSiteCredentialCancellation(for navigation: WKNavigation?, error: Error) -> Bool {
         let error = error as NSError
         let isExpectedCancellation = error.domain == NSURLErrorDomain && error.code == NSURLErrorCancelled
-        let isWebKitPolicyInterruption = error.domain == WKError.errorDomain &&
+        // Policy cancellations use WebKit's legacy domain, not WKError.errorDomain.
+        let isWebKitPolicyInterruption = error.domain == "WebKitErrorDomain" &&
             error.code == WebKitError.frameLoadInterruptedByPolicyChange
         guard let expectedNavigation = siteCredentialNavigationExpectedToCancel,
               isExpectedCancellation || isWebKitPolicyInterruption,

@@ -394,7 +394,7 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         XCTAssertEqual(webView.loadedRequests.map(\.url), [credentialRequest.url, nonceURL])
         XCTAssertEqual(scheduledWork.count, 1)
         scheduledWork.removeFirst()()
-        sut.webView(webView, didFailProvisionalNavigation: cleanGetNavigation, withError: URLError(.cancelled))
+        sut.webView(webView, didFailProvisionalNavigation: cleanGetNavigation, withError: NSError(domain: "WebKitErrorDomain", code: 102))
 
         // Then
         XCTAssertEqual(preservedPolicy, .cancel)
@@ -539,8 +539,19 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
     }
 
     func test_WebKit_policy_interruption_does_not_cancel_scheduled_clean_get() throws {
+        try assertWebKitPolicyInterruption(replacementRunsFirst: false)
+    }
+
+    func test_WebKit_policy_interruption_after_clean_get_does_not_report_failure() throws {
+        try assertWebKitPolicyInterruption(replacementRunsFirst: true)
+    }
+
+    private func assertWebKitPolicyInterruption(replacementRunsFirst: Bool) throws {
         // Given
-        let harness = try makeAuthenticatedControllerHarness()
+        var scheduledWork: [() -> Void] = []
+        let harness = try makeAuthenticatedControllerHarness { work in
+            scheduledWork.append(work)
+        }
         defer { harness.cleanup() }
         let (sut, webView, endpoints) = (harness.controller, harness.webView, harness.endpoints)
         sut.loadViewIfNeeded()
@@ -558,14 +569,20 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
             sut.decideSiteCredentialNavigation(for: preservedPost, isMainFrame: true, shouldPerformDownload: false),
             .cancel
         )
-        let cleanGet = try XCTUnwrap(webView.loadedRequests.last)
-
         // When
+        XCTAssertEqual(scheduledWork.count, 1)
+        if replacementRunsFirst {
+            scheduledWork.removeFirst()()
+        }
         sut.webView(
             webView,
             didFailProvisionalNavigation: credentialNavigation,
-            withError: NSError(domain: WKError.errorDomain, code: 102)
+            withError: NSError(domain: "WebKitErrorDomain", code: 102)
         )
+        if !replacementRunsFirst {
+            scheduledWork.removeFirst()()
+        }
+        let cleanGet = try XCTUnwrap(webView.loadedRequests.last)
         let cleanGetPolicy = sut.decideSiteCredentialNavigation(for: cleanGet, isMainFrame: true, shouldPerformDownload: false)
 
         // Then
@@ -573,6 +590,7 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         XCTAssertEqual(cleanGet.httpMethod, "GET")
         XCTAssertNil(cleanGet.httpBody)
         XCTAssertEqual(cleanGetPolicy, .allow)
+        XCTAssertTrue(harness.viewModel.provisionalNavigationErrors.isEmpty)
     }
 
     func test_reload_without_site_credential_authentication_does_not_stop_unrelated_navigation() throws {

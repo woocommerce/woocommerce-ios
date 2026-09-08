@@ -52,17 +52,30 @@ tags:
       id: order-details-table-view
     timeout: 30000
 # Take a cash payment so this same run-owned order becomes receipt-eligible.
-- scrollUntilVisible:
-    element:
-      id: order-details-collect-payment-button
-    direction: DOWN
-- tapOn:
-    id: order-details-collect-payment-button
-# Wait for the payment methods screen to push rather than asserting immediately.
+# Order details reloads asynchronously after the order is created, which moves
+# this row. A single tap therefore lands mid-reload and is swallowed roughly two
+# runs in three. Re-scroll and retry until the payment methods screen pushes.
+- repeat:
+    times: 3
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              id: payment-methods-header-label
+          commands:
+            - scrollUntilVisible:
+                element:
+                  id: order-details-collect-payment-button
+                direction: DOWN
+                visibilityPercentage: 100
+            - tapOn:
+                id: order-details-collect-payment-button
+            - waitForAnimationToEnd:
+                timeout: 5000
 - extendedWaitUntil:
     visible:
       id: payment-methods-header-label
-    timeout: 15000
+    timeout: 30000
 - tapOn:
     id: payment-methods-view-cash-row
 - assertVisible: Cash received
@@ -78,10 +91,20 @@ tags:
     timeout: 30000
 - scrollUntilVisible:
     element:
-      text: See Receipt
+      id: order-details-see-receipt-button
     direction: DOWN
     visibilityPercentage: 100
-- tapOn: See Receipt
+# The receipt is generated asynchronously after the order completes. The row
+# renders before its receipt is ready, so an immediate tap hits an inert
+# control and silently does nothing - no receipt screen and no error. Let the
+# screen settle, then retry the tap until the receipt actually opens.
+- waitForAnimationToEnd:
+    timeout: 10000
+# Tap by identifier. Matching the bare "See Receipt" text resolves to a label
+# whose reported bounds are relative to its cell ([0,100][94,120]), so the tap
+# landed in the navigation bar and silently did nothing.
+- tapOn:
+    id: order-details-see-receipt-button
 - extendedWaitUntil:
     visible:
       text: Receipt

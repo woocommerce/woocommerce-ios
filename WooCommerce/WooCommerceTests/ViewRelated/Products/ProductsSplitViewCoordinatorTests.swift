@@ -101,29 +101,52 @@ struct ProductsSplitViewCoordinatorTests {
     }
 
     @Test
-    func test_hidePrimaryNavigationBarWhenInteractionCompletes_when_swipe_completes_then_hides_the_bar() throws {
+    func test_hidePrimaryNavigationBarWhenTransitionCompletes_when_swipe_completes_then_hides_the_bar() throws {
         // Given
         let (sut, primaryNavigationController, _) = try makeSUT()
         primaryNavigationController.setNavigationBarHidden(false, animated: false)
 
         // When
-        sut.hidePrimaryNavigationBarWhenInteractionCompletes(isCancelled: false)
+        sut.hidePrimaryNavigationBarWhenTransitionCompletes(isCancelled: false)
 
         // Then
         #expect(primaryNavigationController.isNavigationBarHidden)
     }
 
     @Test
-    func test_hidePrimaryNavigationBarWhenInteractionCompletes_when_swipe_is_cancelled_then_leaves_the_bar_visible() throws {
+    func test_hidePrimaryNavigationBarWhenTransitionCompletes_when_swipe_is_cancelled_then_leaves_the_bar_visible() throws {
         // Given
         let (sut, primaryNavigationController, _) = try makeSUT()
         primaryNavigationController.setNavigationBarHidden(false, animated: false)
 
         // When
-        sut.hidePrimaryNavigationBarWhenInteractionCompletes(isCancelled: true)
+        sut.hidePrimaryNavigationBarWhenTransitionCompletes(isCancelled: true)
 
         // Then
         #expect(primaryNavigationController.isNavigationBarHidden == false)
+    }
+
+    @Test
+    func test_schedulePrimaryNavigationBarHide_then_waits_until_the_interactive_transition_completes() throws {
+        // Given
+        let (sut, primaryNavigationController, _) = try makeSUT()
+        let transitionCoordinator = MockInteractiveTransitionCoordinator()
+        primaryNavigationController.setNavigationBarHidden(false, animated: false)
+
+        // When
+        sut.schedulePrimaryNavigationBarHide(after: transitionCoordinator)
+        transitionCoordinator.changeInteraction(isCancelled: false)
+
+        // Then
+        #expect(primaryNavigationController.isNavigationBarHidden == false)
+        #expect(primaryNavigationController.navigationBar.isHidden == false)
+
+        // When
+        transitionCoordinator.completeTransition(isCancelled: false)
+
+        // Then
+        #expect(primaryNavigationController.isNavigationBarHidden)
+        #expect(primaryNavigationController.navigationBar.isHidden)
     }
 
     @Test
@@ -206,4 +229,63 @@ private extension ProductsSplitViewCoordinatorTests {
 
 private final class CollapsedSplitViewController: UISplitViewController {
     override var isCollapsed: Bool { true }
+}
+
+@objc private final class MockInteractiveTransitionCoordinator: NSObject, UIViewControllerTransitionCoordinator {
+    private var interactionChangeHandler: ((UIViewControllerTransitionCoordinatorContext) -> Void)?
+    private var completionHandler: ((UIViewControllerTransitionCoordinatorContext) -> Void)?
+
+    private(set) var isCancelled = false
+
+    func changeInteraction(isCancelled: Bool) {
+        self.isCancelled = isCancelled
+        interactionChangeHandler?(self)
+    }
+
+    func completeTransition(isCancelled: Bool) {
+        self.isCancelled = isCancelled
+        completionHandler?(self)
+    }
+
+    func animate(alongsideTransition animation: ((UIViewControllerTransitionCoordinatorContext) -> Void)?,
+                 completion: ((UIViewControllerTransitionCoordinatorContext) -> Void)? = nil) -> Bool {
+        completionHandler = completion
+        return true
+    }
+
+    func animateAlongsideTransition(in view: UIView?,
+                                    animation: ((UIViewControllerTransitionCoordinatorContext) -> Void)?,
+                                    completion: ((UIViewControllerTransitionCoordinatorContext) -> Void)? = nil) -> Bool {
+        completionHandler = completion
+        return true
+    }
+
+    func notifyWhenInteractionEnds(_ handler: @escaping (UIViewControllerTransitionCoordinatorContext) -> Void) {
+        interactionChangeHandler = handler
+    }
+
+    func notifyWhenInteractionChanges(_ handler: @escaping (UIViewControllerTransitionCoordinatorContext) -> Void) {
+        interactionChangeHandler = handler
+    }
+
+    let isAnimated = true
+    let presentationStyle: UIModalPresentationStyle = .none
+    let initiallyInteractive = true
+    let isInterruptible = true
+    let isInteractive = true
+    let transitionDuration: TimeInterval = 0.35
+    let percentComplete: CGFloat = 0
+    let completionVelocity: CGFloat = 1
+    let completionCurve: UIView.AnimationCurve = .easeInOut
+
+    func viewController(forKey key: UITransitionContextViewControllerKey) -> UIViewController? {
+        nil
+    }
+
+    func view(forKey key: UITransitionContextViewKey) -> UIView? {
+        nil
+    }
+
+    let containerView = UIView()
+    let targetTransform: CGAffineTransform = .identity
 }

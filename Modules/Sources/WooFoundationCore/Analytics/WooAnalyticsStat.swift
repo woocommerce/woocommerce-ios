@@ -1473,6 +1473,10 @@ extension WooAnalyticsStat {
         case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError,
              .wooPushTokenDeleteSuccess, .wooPushTokenDeleteError:
             return false
+        // Received/pressed push notification events attribute `blog_id` / `site_url` to the notification's
+        // origin site (read from the APNS payload) via a factory, so opt out of the default-site enrichment.
+        case .pushNotificationReceived, .pushNotificationAlertPressed:
+            return false
         default:
             return true
         }

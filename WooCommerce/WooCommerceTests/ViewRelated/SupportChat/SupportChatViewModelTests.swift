@@ -552,7 +552,7 @@ struct SupportChatViewModelTests {
         #expect(sut.isExecutingAction == false)
     }
 
-    @Test func test_executeAction_registerDevice_when_service_throws_then_state_is_device_registration_error() async {
+    @Test func executeAction_registerDevice_when_service_throws_then_state_is_device_registration_error() async {
         // Given
         let diagnosticsService = MockSupportDiagnosticsService { _ in [] }
         diagnosticsService.registerDeviceError = NSError(domain: "TestDomain", code: 1)

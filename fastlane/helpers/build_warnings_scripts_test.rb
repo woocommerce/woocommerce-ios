@@ -7,7 +7,8 @@ require 'open3'
 require 'rbconfig'
 require 'tmpdir'
 
-class BuildWarningsScriptsTest < Minitest::Test
+# Isolated integration tests for warning comparison and PR comment delivery.
+class BuildWarningsScriptsTest < Minitest::Test # rubocop:disable Metrics/ClassLength
   COMMANDS_DIR = File.expand_path('../../.buildkite/commands', __dir__)
   CURRENT_COMMIT = 'a' * 40
   OTHER_COMMIT = 'b' * 40
@@ -101,7 +102,7 @@ class BuildWarningsScriptsTest < Minitest::Test
     run_commenter
 
     # Then
-    assert_equal [['--id', 'build-warning-count', '--if-exist', 'delete']], calls('comment_on_pr').map { |call| call.fetch('arguments') }
+    assert_equal([['--id', 'build-warning-count', '--if-exist', 'delete']], calls('comment_on_pr').map { |call| call.fetch('arguments') })
   end
 
   def test_commenter_when_current_artifact_is_missing_then_posts_unavailable
@@ -149,7 +150,7 @@ class BuildWarningsScriptsTest < Minitest::Test
 
     # Then
     assert_includes comment_body, '1 new build warning'
-    assert_equal 2, calls('buildkite-agent').count { |call| call.fetch('arguments').first(2) == %w[artifact download] }
+    assert_equal(2, calls('buildkite-agent').count { |call| call.fetch('arguments').first(2) == %w[artifact download] })
   end
 
   def test_commenter_when_build_is_stale_then_does_not_mutate_any_comment_state
@@ -227,11 +228,9 @@ class BuildWarningsScriptsTest < Minitest::Test
     run_commenter
 
     # Then
-    assert_empty calls('download_artifact')
-    assert_empty calls('github_api')
-    assert_empty calls('comment_on_pr')
+    assert_no_delivery_attempts
     assert_equal ['--all-match'], calls('pr_changed_files').first.fetch('arguments').first(1)
-    refute calls('buildkite-agent').any? { |call| call.fetch('arguments').first == 'artifact' }
+    refute(calls('buildkite-agent').any? { |call| call.fetch('arguments').first == 'artifact' })
   end
 
   def test_commenter_when_not_pull_request_then_does_not_use_external_tools
@@ -269,9 +268,9 @@ class BuildWarningsScriptsTest < Minitest::Test
     {
       'invalid JSON' => 'invalid json',
       'invalid count' => report('new warning').merge('count' => 'one'),
-      'missing scope' => report('new warning').reject { |key, _| key == 'scope' },
+      'missing scope' => report('new warning').except('scope'),
       'incompatible scope' => report('new warning').merge('scope' => 'all_warnings'),
-      'missing warning entries' => report('new warning').reject { |key, _| key == 'warnings' }
+      'missing warning entries' => report('new warning').except('warnings')
     }
   end
 
@@ -328,12 +327,22 @@ class BuildWarningsScriptsTest < Minitest::Test
     assert_includes arguments, '--max-time'
   end
 
-  def install_stubs
+  def assert_no_delivery_attempts
+    assert_empty calls('download_artifact')
+    assert_empty calls('github_api')
+    assert_empty calls('comment_on_pr')
+  end
+
+  def link_runtime_tools
     File.symlink(RbConfig.ruby, File.join(@bin, 'ruby'))
     jq = ENV.fetch('PATH').split(File::PATH_SEPARATOR).map { |directory| File.join(directory, 'jq') }.find { |path| File.executable?(path) }
     raise 'jq is required to test the Buildkite scripts' unless jq
 
     File.symlink(jq, File.join(@bin, 'jq'))
+  end
+
+  def install_stubs
+    link_runtime_tools
     stub = File.join(@bin, 'warning-test-stub')
     File.write(stub, tool_stub)
     File.chmod(0o755, stub)

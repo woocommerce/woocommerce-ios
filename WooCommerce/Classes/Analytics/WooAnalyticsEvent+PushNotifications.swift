@@ -38,8 +38,9 @@ extension WooAnalyticsEvent {
                               error: error)
         }
 
-        /// Tracked when a push notification is received while the app is running. Attributes `blog_id` /
-        /// `site_url` to the notification's origin site rather than the currently selected one.
+        /// Tracked when a push notification arrives in any app state other than being opened from the
+        /// notification. Attributes `blog_id` / `site_url` to the notification's origin site rather than
+        /// the currently selected one.
         static func pushNotificationReceived(originSiteID: Int64?,
                                              originSite: Site?,
                                              properties: [String: WooAnalyticsEventPropertyType]) -> WooAnalyticsEvent {
@@ -58,13 +59,14 @@ extension WooAnalyticsEvent {
 
         /// Builds properties for an event about the notification's origin site. When the origin site isn't
         /// available locally (e.g. a store no longer in the account), `blog_id` still carries the payload's
-        /// site ID so the origin is never lost.
+        /// site ID so the origin is never lost. Note that `store_id` and `cached_woo_core_version` still
+        /// describe the selected session store, matching the token register/delete events.
         private static func originSiteProperties(originSiteID: Int64?,
                                                  originSite: Site?,
                                                  merging eventProperties: [String: WooAnalyticsEventPropertyType]) -> [String: WooAnalyticsEventPropertyType] {
             var properties = properties(for: originSite)
             if originSite == nil, let originSiteID {
-                properties[SitePropertyKeys.blogID] = originSiteID
+                properties[Site.PropertyKeys.blogID] = originSiteID
             }
             return properties.merging(eventProperties) { _, event in event }
         }
@@ -83,10 +85,6 @@ extension WooAnalyticsEvent {
                 properties[SessionPropertyKeys.cachedWooCoreVersion] = cachedWooCoreVersion
             }
             return properties
-        }
-
-        private enum SitePropertyKeys {
-            static let blogID = "blog_id"
         }
 
         private enum SessionPropertyKeys {

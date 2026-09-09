@@ -47,6 +47,36 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.ordersCount)
     }
 
+    /// `OrderDetailsViewController` relies on the delete + re-insert of a `deleteAllBeforeSaving` sync
+    /// landing in a single save: its `EntityListener.onReplace` handler only fires when both changes
+    /// merge into the view context as one change notification. Splitting them into separate saves
+    /// would silently break that pairing, so this test pins the single-save behavior.
+    ///
+    func test_fetchFilteredOrders_when_deleting_all_before_saving_then_it_writes_in_a_single_save() {
+        // Given
+        let saveCountingStorageManager = SaveCountingStorageManager()
+        let storageManager: StorageManagerType = saveCountingStorageManager
+        let storageOrder = storageManager.viewStorage.insertNewObject(ofType: Storage.Order.self)
+        storageOrder.update(with: Fixtures.order)
+
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "orders", filename: Fixtures.ordersLoadAllJSON.fileName)
+        let store = OrderStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
+
+        // When
+        executeActionAndWait(using: store,
+                             statuses: [OrderStatusEnum.processing.rawValue],
+                             writeStrategy: .deleteAllBeforeSaving)
+
+        // Then
+        // The deletion of all stored orders and the insertion of the fetched orders happen in
+        // one `performAndSave` operation, i.e. a single save.
+        XCTAssertEqual(saveCountingStorageManager.performAndSaveCallCount, 1)
+        XCTAssertNil(storageManager.viewStorage.firstObject(ofType: Storage.Order.self,
+                                                            matching: NSPredicate(format: "orderID = %ld", Fixtures.order.orderID)))
+        XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.Order.self), Fixtures.ordersLoadAllJSON.ordersCount)
+    }
+
     func testItCanSkipDeletingAllOrdersBeforeSaving() {
         // Arrange
         insert(order: Fixtures.order)
@@ -210,4 +240,34 @@ private enum Fixtures {
         paymentMethodTitle: "Credit Card (Stripe)",
         items: []
     )
+}
+
+/// Counts `performAndSave` operations (each is a single save) while forwarding to an in-memory stack.
+///
+private final class SaveCountingStorageManager: StorageManagerType {
+    private let inner = MockStorageManager()
+
+    private(set) var performAndSaveCallCount = 0
+
+    var viewStorage: StorageType {
+        inner.viewStorage
+    }
+
+    func performAndSave(_ operation: @escaping (StorageType) -> Void,
+                        completion: (() -> Void)?,
+                        on queue: DispatchQueue) {
+        performAndSaveCallCount += 1
+        inner.performAndSave(operation, completion: completion, on: queue)
+    }
+
+    func performAndSave<T>(_ operation: @escaping (StorageType) throws -> T,
+                           completion: @escaping (Result<T, Error>) -> Void,
+                           on queue: DispatchQueue) {
+        performAndSaveCallCount += 1
+        inner.performAndSave(operation, completion: completion, on: queue)
+    }
+
+    func reset(onCompletion: (() -> Void)?) {
+        inner.reset(onCompletion: onCompletion)
+    }
 }

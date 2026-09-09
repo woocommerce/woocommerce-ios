@@ -29,12 +29,16 @@ final class ReceiptEmailViewModel: ObservableObject {
         self.onResult = onResult
     }
 
+    private var trimmedEmail: String {
+        email.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     var isEmailValid: Bool {
-        emailValidator(email)
+        emailValidator(trimmedEmail)
     }
 
     func sendReceipt() {
-        let email = email
+        let email = trimmedEmail
         let action = ReceiptAction.sendReceipt(order: order, email: email) { [weak self] result in
             DispatchQueue.main.async {
                 guard let self else { return }

@@ -126,6 +126,31 @@ final class PointOfSaleCardPresentPaymentEventPresentationStyleTests: XCTestCase
         XCTAssertTrue(spyPaymentCaptureErrorNewOrderCalled)
     }
 
+    func test_presentationStyle_for_paymentCancellationConfirmation_is_message_with_dismiss_action() {
+        // Given
+        var spyDismissCalled = false
+        let eventDetails = CardPresentPaymentEventDetails.paymentCancellationConfirmation {
+            spyDismissCalled = true
+        }
+        let dependencies = createPresentationStyleDependencies()
+
+        // When
+        let presentationStyle = PointOfSaleCardPresentPaymentEventPresentationStyle(
+            for: eventDetails,
+            dependencies: dependencies)
+
+        // Then
+        guard case .message(.paymentCancellationConfirmation(let viewModel)) = presentationStyle else {
+            return XCTFail("Expected payment cancellation confirmation message not found")
+        }
+        XCTAssertEqual(viewModel.title, "Payment canceled")
+        XCTAssertEqual(viewModel.message,
+                       "No payment was taken. The Tap to Pay checkmark and sound only confirmed that the card was read.")
+
+        viewModel.tryAgainButtonViewModel.actionHandler()
+        XCTAssertTrue(spyDismissCalled)
+    }
+
     func test_presentationStyle_for_scanningForReader_is_alert_scanningForReader_with_correctActions() {
         // Given
         let eventDetails = CardPresentPaymentEventDetails.scanningForReaders(endSearch: {})

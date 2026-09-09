@@ -15,6 +15,7 @@ extension Cart {
     mutating func addErrorItem(error: PointOfSaleBarcodeScanError) -> Cart.PurchasableItem {
         let errorItem = errorItem(id: UUID(), error: error)
         purchasableItems.insert(errorItem, at: purchasableItems.startIndex)
+        latestScannedItemID = errorItem.id
         return errorItem
     }
 

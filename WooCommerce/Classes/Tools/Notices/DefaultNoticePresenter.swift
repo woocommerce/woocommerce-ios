@@ -26,10 +26,6 @@ class DefaultNoticePresenter: NoticePresenter {
     ///
     weak var presentingViewController: UIViewController?
 
-    /// Observes keyboard and repositions Notice
-    ///
-    private var keyboardFrameObserver: KeyboardFrameObserver?
-
     /// Enqueues the specified Notice for display.
     ///
     @discardableResult
@@ -107,38 +103,13 @@ private extension DefaultNoticePresenter {
 
         let noticeContainerView = NoticeContainerView(noticeView: noticeView)
 
-        var onScreenBottomOffsetAdjustedForKeyboard: CGFloat = 0
-        keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
-            guard let self else { return }
-
-            onScreenBottomOffsetAdjustedForKeyboard = -keyboardFrame.height
-
-            // Subtract the tab bar height from keyboard height, if keyboard is visible
-            // to avoid having extra gap between keyboard and notice, when `offscreenBottomOffset` has a positive value
-            //
-            if keyboardFrame.height > 0 {
-                onScreenBottomOffsetAdjustedForKeyboard -= self.offscreenBottomOffset
-            }
-
-            // Adjust the bottom constraint ONLY if the noticeContainerView is already presented.
-            // If noticeContainerView is not already presented, it will be presented using onScreenBottomOffsetAdjustedForKeyboard.
-            //
-            if noticeContainerView.superview != nil {
-                noticeContainerView.noticeBottomConstraint.constant = onScreenBottomOffsetAdjustedForKeyboard
-                self.animatePresentation(toState: {
-                    noticeContainerView.layoutIfNeeded()
-                })
-            }
-        }
-        keyboardFrameObserver?.startObservingKeyboardFrame(sendInitialEvent: true)
-
         addNoticeContainerToPresentingViewController(noticeContainerView)
 
+        // Let UIKit track the docked keyboard as part of the view's layout so the notice follows keyboard and window changes.
         NSLayoutConstraint.activate([
             noticeContainerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            makeBottomConstraintForNoticeContainer(noticeContainerView)
-        ])
+            noticeContainerView.trailingAnchor.constraint(equalTo: view.trailingAnchor)
+        ] + makeBottomConstraintsForNoticeContainer(noticeContainerView))
 
         let offScreenState = { [weak noticeView, weak self] in
             guard let noticeView, let self else {
@@ -152,7 +123,7 @@ private extension DefaultNoticePresenter {
 
         let onScreenState = {
             noticeView.alpha = UIKitConstants.alphaFull
-            noticeContainerView.noticeBottomConstraint.constant = onScreenBottomOffsetAdjustedForKeyboard
+            noticeContainerView.noticeBottomConstraint.constant = 0
 
             noticeContainerView.layoutIfNeeded()
         }
@@ -192,7 +163,6 @@ private extension DefaultNoticePresenter {
 
     func dismiss() {
         noticeOnScreen = nil
-        keyboardFrameObserver = nil
         kvoToken = nil
         presentNextNoticeIfPossible()
     }
@@ -205,13 +175,16 @@ private extension DefaultNoticePresenter {
         }
     }
 
-    func makeBottomConstraintForNoticeContainer(_ container: UIView) -> NSLayoutConstraint {
+    func makeBottomConstraintsForNoticeContainer(_ container: UIView) -> [NSLayoutConstraint] {
         guard let presentingViewController else {
             fatalError("NoticePresenter requires a presentingViewController!")
         }
 
+        let baselineAnchor: NSLayoutYAxisAnchor
         if let tabBarController = presentingViewController as? UITabBarController,
            !tabBarController.tabBar.isHidden {
+            baselineAnchor = tabBarController.tabBar.topAnchor
+
             if kvoToken == nil {
                 kvoToken = tabBarController.tabBar.observe(\.isHidden, options: .new) { tabBar, _ in
                     guard tabBar.isHidden else {
@@ -223,19 +196,20 @@ private extension DefaultNoticePresenter {
                     container.isHidden = true
                 }
             }
-
-            return container.bottomAnchor.constraint(equalTo: tabBarController.tabBar.topAnchor)
+        } else {
+            baselineAnchor = presentingViewController.view.bottomAnchor
         }
 
-        return container.bottomAnchor.constraint(equalTo: presentingViewController.view.bottomAnchor)
+        let baselineConstraint = container.bottomAnchor.constraint(equalTo: baselineAnchor)
+        baselineConstraint.priority = .defaultHigh
+
+        let keyboardConstraint = container.bottomAnchor.constraint(lessThanOrEqualTo: presentingViewController.view.keyboardLayoutGuide.topAnchor)
+
+        return [baselineConstraint, keyboardConstraint]
     }
 
     var offscreenBottomOffset: CGFloat {
-        if let tabBarController = presentingViewController as? UITabBarController {
-            return tabBarController.tabBar.bounds.height
-        }
-
-        return 0
+        (presentingViewController as? UITabBarController)?.tabBar.bounds.height ?? 0
     }
 
     func animatePresentation(fromState: (() -> Void)? = nil,
@@ -262,13 +236,13 @@ private extension DefaultNoticePresenter {
     }
 }
 
-
 // MARK: - NoticeContainerView: Small wrapper view that ensures a notice remains centered and at a maximum width when
 //         displayed in a regular size class.
 //
 private class NoticeContainerView: UIView {
 
-    let containerMargin: CGFloat = 16.0
+    private let containerMargin: CGFloat = 16.0
+    private let bottomMargin: CGFloat = 8.0
 
     private let contentView: UIView = {
         let view = UIView()
@@ -316,7 +290,10 @@ private class NoticeContainerView: UIView {
         /// NoticeContainer Setup
         ///
         translatesAutoresizingMaskIntoConstraints = false
-        layoutMargins = UIEdgeInsets(top: containerMargin, left: containerMargin, bottom: containerMargin, right: containerMargin)
+        layoutMargins = UIEdgeInsets(top: containerMargin,
+                                    left: containerMargin,
+                                    bottom: bottomMargin,
+                                    right: containerMargin)
         addSubview(contentView)
 
         /// LayoutContraints: ContentView

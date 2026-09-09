@@ -33,6 +33,9 @@ struct HelpAndSupportViewModel {
         if isAuthenticated {
             rows.append(.systemStatusReport)
         }
+        // Unlike the store-scoped system status report, this one needs no store and no network. On the login
+        // screen it is the only device information a ticket would carry, which is where it is most useful.
+        rows.append(.mobileStatusReport)
         if !isAuthenticated && hasLoginSiteURL {
             rows.append(.siteCompatibility)
         }

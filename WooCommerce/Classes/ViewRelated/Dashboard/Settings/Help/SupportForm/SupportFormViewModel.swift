@@ -22,6 +22,7 @@ public protocol SupportFormMetaDataSource {
 
 /// View Model for the support form.
 ///
+@MainActor
 public final class SupportFormViewModel: ObservableObject {
 
     /// Variable that holds the area of support for better routing.
@@ -61,6 +62,10 @@ public final class SupportFormViewModel: ObservableObject {
     private let zendeskProvider: ZendeskManagerProtocol
 
     private let attachmentProvider: SupportRequestAttachmentProviding
+
+    /// Builds the app-level status report attached to every ticket.
+    ///
+    private let mobileStatusReportProvider: MobileStatusReportProviding
 
     /// Handles the communication with Tracks..
     ///
@@ -113,12 +118,13 @@ public final class SupportFormViewModel: ObservableObject {
         }
     }
 
-    init(areas: [Area] = wooSupportAreas(),
+    init(areas: [Area]? = nil,
          sourceTag: String? = nil,
          additionalTags: [String] = [],
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analyticsProvider: Analytics = ServiceLocator.analytics,
          attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),
+         mobileStatusReportProvider: MobileStatusReportProviding,
          defaultSite: Site? = ServiceLocator.stores.sessionManager.defaultSite,
          attachments: [ZendeskAttachment] = [],
          transcript: String? = nil,
@@ -128,12 +134,13 @@ public final class SupportFormViewModel: ObservableObject {
          prefilledDescription: String? = nil,
          onTicketCreated: (() -> Void)? = nil,
          onTicketCreationFailed: ((Error) -> Void)? = nil) {
-        self.areas = areas
+        self.areas = areas ?? Self.wooSupportAreas()
         self.sourceTag = sourceTag
         self.additionalTags = additionalTags
         self.zendeskProvider = zendeskProvider
         self.analyticsProvider = analyticsProvider
         self.attachmentProvider = attachmentProvider
+        self.mobileStatusReportProvider = mobileStatusReportProvider
         self.defaultSite = defaultSite
         self.attachments = attachments
         self.transcript = transcript
@@ -178,17 +185,28 @@ public final class SupportFormViewModel: ObservableObject {
 
     /// Submits the support request using the Zendesk Provider.
     ///
-    func submitSupportRequest() {
+    /// Async because the Mobile Status Report reads notification settings and the POS catalog, neither of which
+    /// can be read synchronously. It is generated here rather than prefetched so it always describes the app as
+    /// it was when the ticket was filed.
+    ///
+    @MainActor
+    func submitSupportRequest() async {
         guard let area else { return }
 
         showLoadingIndicator = true
 
+        let mobileStatusReport = await mobileStatusReportProvider.generateReport(siteAddress: siteAddress)
+        let (customFields, requestAttachments) = MobileStatusReportZendesk.embed(
+            mobileStatusReport,
+            intoCustomFields: area.datasource.customFields(siteAddress: siteAddress),
+            attachments: attachmentProvider.attachments(including: attachments))
+
         let request = ZendeskSupportRequest(formID: area.datasource.formID,
-                                            customFields: area.datasource.customFields(siteAddress: siteAddress),
+                                            customFields: customFields,
                                             tags: assembleTags(),
                                             subject: subject,
                                             description: requestDescription,
-                                            attachments: attachmentProvider.attachments(including: attachments))
+                                            attachments: requestAttachments)
         zendeskProvider.createSupportRequest(request) { [weak self] result in
             guard let self else { return }
             self.showLoadingIndicator = false

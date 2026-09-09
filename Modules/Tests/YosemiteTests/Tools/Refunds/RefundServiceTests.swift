@@ -69,7 +69,7 @@ struct RefundServiceTests {
     }
 
     /// Verifies that `previewRefund` forwards the `noRestRoute` failure that signals
-    /// v4 is unavailable, so callers can fall back to v3.
+    /// server-calculated refunds are unavailable, so callers can fall back to local calculations.
     ///
     @Test func previewRefund_when_route_not_registered_then_throws_noRestRoute() async {
         // Given
@@ -99,11 +99,11 @@ struct RefundServiceTests {
 
     // MARK: - createRefund
 
-    /// Verifies that `createRefund` persists the created refund.
+    /// Verifies that `createRefund` decodes the classic v3 refund response and persists it.
     ///
     @Test func createRefund_persists_created_refund() async throws {
         // Given
-        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refund-v4")
+        network.simulateResponse(requestUrlSuffix: "refunds", filename: "refund-single")
         #expect(storageManager.viewStorage.countObjects(ofType: Storage.Refund.self) == 0)
 
         // When
@@ -112,15 +112,14 @@ struct RefundServiceTests {
                                                     reason: "Damaged item",
                                                     automaticRefund: true,
                                                     restockItems: true,
+                                                    amountOverride: nil,
                                                     lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
 
-        // Then
-        #expect(refund.refundID == 3266)
-        // The v4 response carries no display fields: items follow the v3 negation contract
-        // but keep empty names and zero prices until `retrieveRefund` backfills them.
-        #expect(refund.items.count == 2)
-        #expect(refund.items.first?.quantity == -2)
-        #expect(refund.items.first?.name.isEmpty == true)
+        // Then the classic v3 refund object is decoded, display fields included
+        #expect(refund.refundID == 562)
+        #expect(refund.items.count == 1)
+        #expect(refund.items.first?.quantity == -1)
+        #expect(refund.items.first?.name == "Ship Your Idea - Blue, XL")
         #expect(storageManager.viewStorage.countObjects(ofType: Storage.Refund.self) == 1)
     }
 
@@ -137,6 +136,7 @@ struct RefundServiceTests {
                                            reason: "",
                                            automaticRefund: false,
                                            restockItems: true,
+                                           amountOverride: nil,
                                            lineItems: [.quantityBased(lineItemID: 50, quantity: 2)])
         }
         #expect(storageManager.viewStorage.countObjects(ofType: Storage.Refund.self) == 0)

@@ -4,6 +4,7 @@ import struct WooFoundation.WooAnalyticsEvent
 struct POSRefundItemsSelectionView: View {
     let onClose: () -> Void
     let onContinue: () -> Void
+    let onRefreshItems: () -> Void
 
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posModalParentSize) private var parentSize
@@ -16,6 +17,25 @@ struct POSRefundItemsSelectionView: View {
 
     private var reviewPreparationState: POSRefundReviewPreparationState {
         orderListModel.ordersController.refundReviewPreparationState
+    }
+
+    /// The inline error shown above the continue button: the server's rejection copy when the
+    /// preview failed with an actionable code, or the generic copy for other preview failures.
+    private var previewErrorMessage: String? {
+        guard case .previewError(let message, _) = reviewPreparationState else {
+            return nil
+        }
+        return message ?? Localization.previewError
+    }
+
+    /// What the failed preview offers the cashier next. A recognised rejection is deterministic,
+    /// so the same request cannot succeed: the way forward is a reloaded item list, or changing
+    /// the selection. Only unrecognised failures, network errors among them, keep the retry.
+    private var previewRecovery: POSRefundRecovery? {
+        guard case .previewError(_, let recovery) = reviewPreparationState else {
+            return nil
+        }
+        return recovery
     }
 
     private var selectedItems: [POSRefundSelectableItem] {
@@ -119,14 +139,16 @@ private extension POSRefundItemsSelectionView {
 
     var actionsFooter: some View {
         VStack(spacing: POSSpacing.small) {
-            if reviewPreparationState == .previewError {
-                Text(Localization.previewError)
+            if let previewErrorMessage {
+                Text(previewErrorMessage)
                     .font(.posBodyMediumRegular())
                     .foregroundStyle(Color.posError)
                     .multilineTextAlignment(.center)
             }
 
-            Button(reviewPreparationState == .previewError ? Localization.retryButton : Localization.continueButton) {
+            recoveryButton
+
+            Button(Localization.continueButton) {
                 onContinue()
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: reviewPreparationState == .loading))
@@ -134,14 +156,34 @@ private extension POSRefundItemsSelectionView {
         }
     }
 
+    @ViewBuilder
+    var recoveryButton: some View {
+        switch previewRecovery {
+        case .retry:
+            Button(Localization.retryButton) {
+                onContinue()
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        case .refreshItems:
+            Button(Localization.reviewRemainingItemsButton) {
+                onRefreshItems()
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        case .dismiss, nil:
+            EmptyView()
+        }
+    }
+
+    /// A failed preview always disables Continue: the same selection produces the same answer, so
+    /// the cashier moves on by changing the selection or through the recovery button above it.
     var isContinueDisabled: Bool {
         guard hasSelectedItems else {
             return true
         }
         switch reviewPreparationState {
-        case .loading:
+        case .loading, .previewError:
             return true
-        case .idle, .previewError:
+        case .idle:
             return false
         }
     }
@@ -171,6 +213,11 @@ private extension POSRefundItemsSelectionView {
             "pos.refundItemsSelectionView.retryButton",
             value: "Retry",
             comment: "Button to retry fetching the server-calculated refund total on the refund item-selection step"
+        )
+        static let reviewRemainingItemsButton = NSLocalizedString(
+            "pos.refundItemsSelectionView.reviewRemainingItemsButton",
+            value: "Review remaining items",
+            comment: "Button to reload the refundable items after the store rejected the refund because the order changed"
         )
 
         static let backButtonAccessibilityLabel = NSLocalizedString(
@@ -203,7 +250,8 @@ private extension POSRefundItemsSelectionView {
 #Preview("POSRefundItemsSelectionView") {
     POSRefundItemsSelectionView(
         onClose: { },
-        onContinue: { }
+        onContinue: { },
+        onRefreshItems: { }
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: POSPreviewHelpers.loadedState()))
 }

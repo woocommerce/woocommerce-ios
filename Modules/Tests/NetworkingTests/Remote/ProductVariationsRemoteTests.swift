@@ -26,6 +26,37 @@ final class ProductVariationsRemoteTests: XCTestCase {
 
     // MARK: - Load all product variations tests
 
+    func test_loadProductVariations_with_currency_includes_currency_param_in_network_request() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When
+        _ = try await remote.loadProductVariations(for: sampleSiteID,
+                                                   productID: sampleProductID,
+                                                   pageNumber: 1,
+                                                   pageSize: 25,
+                                                   currency: "EUR")
+
+        // Then
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "EUR")
+    }
+
+    func test_loadProductVariations_without_currency_omits_currency_param_from_network_request() async throws {
+        // Given
+        let remote = ProductVariationsRemote(network: network)
+        network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
+
+        // When
+        _ = try await remote.loadProductVariations(for: sampleSiteID,
+                                                   productID: sampleProductID,
+                                                   pageNumber: 1,
+                                                   pageSize: 25)
+
+        // Then
+        XCTAssertNil(try XCTUnwrap(network.queryParametersDictionary)["currency"])
+    }
+
     /// Verifies that loadAllProductVariations properly parses the `product-variations-load-all` sample response.
     ///
     func testLoadAllProductVariationsProperlyReturnsParsedData() {

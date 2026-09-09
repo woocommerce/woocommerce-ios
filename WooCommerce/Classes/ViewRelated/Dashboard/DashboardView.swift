@@ -418,7 +418,8 @@ private extension DashboardView {
 
     var supportForm: some View {
         NavigationStack {
-            SupportForm(isPresented: .constant(true), viewModel: .init())
+            SupportForm(isPresented: .constant(true),
+                        viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
                 .toolbar {
                     ToolbarItem(placement: .confirmationAction) {
                         Button(Localization.done) {

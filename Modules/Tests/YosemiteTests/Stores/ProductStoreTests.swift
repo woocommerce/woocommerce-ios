@@ -332,6 +332,59 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.synchronizeProducts
 
+    func test_retrieveProductsTransiently_returns_currency_scoped_products_without_persisting_them() throws {
+        // Given
+        let expectation = expectation(description: #function)
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
+
+        // When
+        let action = ProductAction.retrieveProductsTransiently(siteID: sampleSiteID,
+                                                               currency: "EUR",
+                                                               pageNumber: 1,
+                                                               pageSize: 25,
+                                                               stockStatus: nil,
+                                                               productStatus: nil,
+                                                               productType: nil,
+                                                               productCategory: nil,
+                                                               sortOrder: .nameAscending) { result in
+            XCTAssertEqual(try? result.get().products.count, 10)
+            expectation.fulfill()
+        }
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "EUR")
+    }
+
+    func test_searchProductsTransiently_returns_currency_scoped_products_without_persisting_products_or_search_results() throws {
+        // Given
+        let expectation = expectation(description: #function)
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "products", filename: "products-search-photo")
+
+        // When
+        let action = ProductAction.searchProductsTransiently(siteID: sampleSiteID,
+                                                             currency: "GBP",
+                                                             keyword: "photo",
+                                                             pageNumber: 1,
+                                                             pageSize: 25,
+                                                             productIDs: [12, 34]) { result in
+            XCTAssertFalse((try? result.get().products.isEmpty) ?? true)
+            expectation.fulfill()
+        }
+        productStore.onAction(action)
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductSearchResults.self), 0)
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "GBP")
+        XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["include"] as? String, "12,34")
+    }
+
     /// Verifies that ProductAction.synchronizeProducts effectively persists any retrieved products.
     ///
     func testRetrieveProductsEffectivelyPersistsRetrievedProducts() {
@@ -1026,8 +1079,8 @@ final class ProductStoreTests: XCTestCase {
             numberOfUpsertEvents += 1
         }
 
-        // We expect *never* to get a deletion event
-        entityListener.onDelete = {
+        // We expect *never* to get a replacement event
+        entityListener.onReplace = { _ in
             XCTFail()
         }
 
@@ -1722,6 +1775,98 @@ final class ProductStoreTests: XCTestCase {
         // Assert
         XCTAssertEqual(retrievedProducts, [expectedProduct])
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
+    }
+
+    func test_retrieveProductsIfNeeded_returns_products_from_every_page() {
+        // Arrange
+        // A full page means there is another one to fetch, so this takes two requests.
+        let remote = MockProductsRemote()
+        let productIDs = Array(1...30).map { Int64($0) }
+        let products = productIDs.map { Product.fake().copy(siteID: sampleSiteID, productID: $0) }
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: productIDs, thenReturn: .success(products))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        var result: Result<[Yosemite.Product], Error>?
+        waitForExpectation { expectation in
+            let action = ProductAction.retrieveProductsIfNeeded(siteID: sampleSiteID, productIDs: productIDs) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        XCTAssertEqual(try XCTUnwrap(result).get().map { $0.productID }, productIDs)
+    }
+
+    func test_retrieveProductsIfNeeded_when_every_product_is_stored_then_no_request_is_made() throws {
+        // Arrange
+        // The remote has no stubbed result, so reaching it at all fails the test.
+        let remote = MockProductsRemote()
+        let storedProducts = [sampleProductID, sampleProductID + 1].map { Product.fake().copy(siteID: sampleSiteID, productID: $0) }
+        storedProducts.forEach { storageManager.insertSampleProduct(readOnlyProduct: $0) }
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        var result: Result<[Yosemite.Product], Error>?
+        waitForExpectation { expectation in
+            let action = ProductAction.retrieveProductsIfNeeded(siteID: sampleSiteID,
+                                                                productIDs: storedProducts.map { $0.productID }) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        XCTAssertEqual(try XCTUnwrap(result).get().map { $0.productID }.sorted(), storedProducts.map { $0.productID }.sorted())
+    }
+
+    func test_retrieveProductsIfNeeded_when_a_product_is_missing_then_only_that_one_is_fetched() throws {
+        // Arrange
+        let remote = MockProductsRemote()
+        let storedProduct = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
+        storageManager.insertSampleProduct(readOnlyProduct: storedProduct)
+        let missingProduct = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID + 1)
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [missingProduct.productID], thenReturn: .success([missingProduct]))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        var result: Result<[Yosemite.Product], Error>?
+        waitForExpectation { expectation in
+            let action = ProductAction.retrieveProductsIfNeeded(siteID: sampleSiteID,
+                                                                productIDs: [storedProduct.productID, missingProduct.productID]) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        // Only the missing product was asked for, and both come back.
+        XCTAssertEqual(remote.requestedProductIDsForLoading, [missingProduct.productID])
+        XCTAssertEqual(try XCTUnwrap(result).get().map { $0.productID }.sorted(), [storedProduct.productID, missingProduct.productID].sorted())
+    }
+
+    func test_retrieveProductsIfNeeded_when_a_page_fails_then_it_returns_the_error() {
+        // Arrange
+        let remote = MockProductsRemote()
+        remote.whenLoadingProducts(siteID: sampleSiteID, productIDs: [sampleProductID], thenReturn: .failure(NetworkError.timeout()))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // Action
+        var result: Result<[Yosemite.Product], Error>?
+        waitForExpectation { expectation in
+            let action = ProductAction.retrieveProductsIfNeeded(siteID: sampleSiteID, productIDs: [sampleProductID]) { aResult in
+                result = aResult
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Assert
+        XCTAssertTrue(try XCTUnwrap(result).isFailure)
     }
 
     func test_retrieving_products_of_the_same_page_size_has_next_page() {

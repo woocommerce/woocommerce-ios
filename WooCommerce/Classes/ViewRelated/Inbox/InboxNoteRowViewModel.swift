@@ -1,5 +1,4 @@
 import SwiftUI
-import Experiments
 import Yosemite
 
 /// View model for `InboxNoteRow`.
@@ -24,9 +23,6 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
     /// Stores to handle note actions.
     private let stores: StoresManager
 
-    /// Feature Flag Service.
-    private let featureFlagService: FeatureFlagService
-
     /// Whether the row is shown in placeholder state.
     let isPlaceholder: Bool
 
@@ -39,11 +35,6 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
     /// Indicate if the note is actioned or not.
     let isActioned: Bool
 
-    /// Indicate if the call to actions of the Inbox Note Row should be hidden
-    var showInboxCTA: Bool {
-        featureFlagService.isFeatureFlagEnabled(.showInboxCTA)
-    }
-
     var shouldAuthenticateAdminPage: Bool {
         guard let site = stores.sessionManager.defaultSite else {
             return false
@@ -55,8 +46,7 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
          today: Date = .init(),
          locale: Locale = .current,
          calendar: Calendar = .current,
-         stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+         stores: StoresManager = ServiceLocator.stores) {
         let attributedContent = note.content.htmlToAttributedString
             .addingAttributes([
                 .foregroundColor: UIColor.secondaryLabel
@@ -77,7 +67,6 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
                   actions: actions,
                   siteID: note.siteID,
                   stores: stores,
-                  featureFlagService: featureFlagService,
                   isPlaceholder: false,
                   isRead: note.isRead,
                   isSurvey: note.type == "survey",
@@ -92,7 +81,6 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
          actions: [InboxNoteRowActionViewModel],
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          isPlaceholder: Bool,
          isRead: Bool,
          isSurvey: Bool,
@@ -104,7 +92,6 @@ struct InboxNoteRowViewModel: Identifiable, Equatable {
         self.actions = actions
         self.siteID = siteID
         self.stores = stores
-        self.featureFlagService = featureFlagService
         self.isPlaceholder = isPlaceholder
         self.isRead = isRead
         self.isSurvey = isSurvey

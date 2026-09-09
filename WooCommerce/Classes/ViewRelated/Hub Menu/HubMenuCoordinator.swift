@@ -17,6 +17,7 @@ final class HubMenuCoordinator {
     private let storesManager: StoresManager
     private let noticePresenter: NoticePresenter
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
+    private let httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel
 
     private var notificationsSubscription: AnyCancellable?
 
@@ -29,6 +30,7 @@ final class HubMenuCoordinator {
          storesManager: StoresManager = ServiceLocator.stores,
          noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
          switchStoreUseCase: SwitchStoreUseCaseProtocol,
+         httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
          willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
 
@@ -36,6 +38,7 @@ final class HubMenuCoordinator {
         self.storesManager = storesManager
         self.noticePresenter = noticePresenter
         self.switchStoreUseCase = switchStoreUseCase
+        self.httpsConfigurationWarningViewModel = httpsConfigurationWarningViewModel
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
         self.willPresentReviewDetailsFromPushNotification = willPresentReviewDetailsFromPushNotification
         self.tabContainerController = tabContainerController
@@ -43,11 +46,13 @@ final class HubMenuCoordinator {
 
     convenience init(tabContainerController: TabContainerController,
                      storesManager: StoresManager = ServiceLocator.stores,
+                     httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel,
                      tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker,
                      willPresentReviewDetailsFromPushNotification: @escaping () async -> Void) {
         self.init(tabContainerController: tabContainerController,
                   storesManager: storesManager,
                   switchStoreUseCase: SwitchStoreUseCase(stores: storesManager),
+                  httpsConfigurationWarningViewModel: httpsConfigurationWarningViewModel,
                   tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker,
                   willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
     }
@@ -61,6 +66,7 @@ final class HubMenuCoordinator {
     func activate(siteID: Int64) {
         hubMenuController = HubMenuViewController(siteID: siteID,
                                                   stores: storesManager,
+                                                  httpsConfigurationWarningViewModel: httpsConfigurationWarningViewModel,
                                                   tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker)
         if let hubMenuController {
             let navigationController = UINavigationController(rootViewController: hubMenuController)
@@ -95,7 +101,7 @@ final class HubMenuCoordinator {
             return
         }
         let action = ProductReviewAction.retrieveProductReviewAndProduct(
-            siteID: notification.siteID,
+            siteID: notification.resolvedSiteID(stores: storesManager),
             reviewID: Int64(reviewID),
             onCompletion: { [weak self] result in
                 self?.handleProductReviewResult(result)

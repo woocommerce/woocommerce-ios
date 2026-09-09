@@ -1,5 +1,4 @@
 import Foundation
-import Experiments
 import UIKit
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -38,19 +37,15 @@ final class StorePickerViewModel {
     private let userDefaults: UserDefaults
     private let analytics: Analytics
     private let roleEligibilityUseCase: RoleEligibilityUseCase
-    private let featureFlagService: FeatureFlagService
-
     init(configuration: StorePickerConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
         self.configuration = configuration
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
-        self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores)
     }
@@ -104,6 +99,32 @@ final class StorePickerViewModel {
         userDefaults.unhideStoreID(siteID)
         updateDisplayedStores()
     }
+
+    /// Returns the store that should be selected when the picker first loads.
+    func siteToPreselect(from sites: [Site]) -> Site? {
+        guard let firstAvailableStore = sites.first(where: \.isWooCommerceActive) else {
+            return nil
+        }
+
+        // Login only preselects an explicit credential match or an unambiguous sole result.
+        if configuration != .login, let site = stores.sessionManager.defaultSite {
+            return site
+        }
+
+        if case let .wpcom(_, _, siteAddress) = stores.sessionManager.defaultCredentials,
+           let site = sites.first(where: { $0.url == siteAddress }),
+           site.isWooCommerceActive {
+            return site
+        }
+
+        if configuration != .login {
+            return firstAvailableStore
+        }
+        guard sites.count == 1 else {
+            return nil
+        }
+        return firstAvailableStore
+    }
 }
 
 // MARK: - Private helpers
@@ -122,8 +143,7 @@ private extension StorePickerViewModel {
 
     func checkIfHidingStoresShouldBeEnabled() {
         shouldEnableHidingStores = {
-            guard featureFlagService.isFeatureFlagEnabled(.hideSitesInStorePicker),
-                  configuration == .switchingStores else {
+            guard configuration == .switchingStores else {
                 return false
             }
             return allFetchedSites.filter { $0.isWooCommerceActive }.count > 1

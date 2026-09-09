@@ -34,10 +34,11 @@ final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayou
             DDLogError("## Notification with [\(String(describing: notification.noteID))] lacks its OrderID!")
             return
         }
+        let notificationSiteID = notification.resolvedSiteID()
 
         // workaround - delay to ensure the transition to the secondary column works after switching stores
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [self] in
-            presentDetails(for: Int64(orderID), siteID: notification.siteID, note: notification.note)
+            presentDetails(for: Int64(orderID), siteID: notificationSiteID, note: notification.note)
         }
     }
 
@@ -205,6 +206,16 @@ private extension OrdersSplitViewWrapperController {
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(contentView)
+    }
+}
+
+extension OrdersSplitViewWrapperController: TabReselectionHandling {
+    /// Returns the orders list (primary column) to its root when the Orders tab is re-selected.
+    func handleTabReselection() {
+        guard let primaryNavigationController = ordersSplitViewController.viewController(for: .primary) as? UINavigationController else {
+            return
+        }
+        primaryNavigationController.popToRootOrScrollToTop(animated: true)
     }
 }
 

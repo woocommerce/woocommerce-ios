@@ -41,6 +41,7 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     private let mockedDeviceID: String?
+    let deviceToken: String?
     let wooPushNotificationToken: String?
     private(set) var siteIDsRegisteredForWooPNs: [Int64]
     let hasStoredSiteIDsRegisteredForWooPNs: Bool
@@ -72,10 +73,12 @@ final class MockPushNotificationsManager: PushNotesManager {
     private(set) var registeredSiteIDsForSelfDrivenPushNotifications: [Int64] = []
 
     init(mockedDeviceID: String? = nil,
+         deviceToken: String? = nil,
          wooPushNotificationToken: String? = nil,
          siteIDsRegisteredForWooPNs: [Int64] = [],
          hasStoredSiteIDsRegisteredForWooPNs: Bool? = nil) {
         self.mockedDeviceID = mockedDeviceID
+        self.deviceToken = deviceToken
         self.wooPushNotificationToken = wooPushNotificationToken
         self.siteIDsRegisteredForWooPNs = siteIDsRegisteredForWooPNs
         self.hasStoredSiteIDsRegisteredForWooPNs = hasStoredSiteIDsRegisteredForWooPNs ?? !siteIDsRegisteredForWooPNs.isEmpty

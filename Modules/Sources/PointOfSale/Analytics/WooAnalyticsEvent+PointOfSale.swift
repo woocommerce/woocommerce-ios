@@ -2,10 +2,14 @@ import Foundation
 import enum Yosemite.CardPresentPaymentOnboardingState
 import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
+import enum Yosemite.POSSearchMethod
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
 import enum WooFoundation.CountryCode
+import protocol WooFoundation.WooAnalyticsEventPropertyType
+import enum Yosemite.CardReaderServiceError
 import enum Yosemite.PaymentMethod
+import enum Yosemite.RefundAPIError
 import struct WooFoundation.WooAnalyticsEvent
 
 extension WooAnalyticsEvent {
@@ -33,6 +37,7 @@ extension WooAnalyticsEvent {
             static let countryCode = "country"
             static let paymentMethodType = "payment_method_type"
             static let gatewayID = "plugin_slug"
+            static let cancellationSource = "cancellation_source"
             static let scanDurationMs = "scan_duration_ms"
             static let barcodeLength = "barcode_length"
             static let failReason = "fail_reason"
@@ -52,6 +57,10 @@ extension WooAnalyticsEvent {
             static let refundType = "refund_type"
             static let hasReason = "has_reason"
             static let refundStep = "refund_step"
+            static let refundFlow = "refund_flow"
+            /// Distinct from the `error_code` the `error:` initializer writes from `NSError.code`:
+            /// this is the REST rejection code, and the two must not share a key.
+            static let apiErrorCode = "api_error_code"
             static let action = "action"
             static let mode = "mode"
             static let isTaxable = "is_taxable"
@@ -271,6 +280,73 @@ extension WooAnalyticsEvent {
             ])
         }
 
+        /// Tracked when a card present payment fails in POS.
+        ///
+        public static func cardPresentCollectPaymentFailed(forGatewayID: String?,
+                                                           error: Error,
+                                                           countryCode: CountryCode,
+                                                           cardReaderModel: String?,
+                                                           millisecondsSinceCustomerIteractionStarted: Double,
+                                                           millisecondsSinceOrderSyncSuccess: Double,
+                                                           millisecondsSinceReaderReadyToCollect: Double,
+                                                           millisecondsSinceCardTapped: Double,
+                                                           checkoutTapCount: Int) -> WooAnalyticsEvent {
+            let paymentMethod: PaymentMethod? = {
+                guard case let CardReaderServiceError.paymentCaptureWithPaymentMethod(_, paymentMethod) = error else {
+                    return nil
+                }
+                return paymentMethod
+            }()
+            let properties: [String: WooAnalyticsEventPropertyType] = [
+                Key.cardReaderModel: readerModel(for: cardReaderModel),
+                Key.countryCode: countryCode.rawValue,
+                Key.gatewayID: safeGatewayID(for: forGatewayID),
+                Key.paymentMethodType: paymentMethod.map(analyticsValue(for:)),
+                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
+                Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
+                Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
+                Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
+                Key.checkoutTapCount: "\(checkoutTapCount)"
+            ].compactMapValues { $0 }
+            return WooAnalyticsEvent(statName: .collectPaymentFailed, properties: properties, error: error)
+        }
+
+        /// Tracked when a card present payment is cancelled in POS.
+        ///
+        public static func cardPresentCollectPaymentCanceled(forGatewayID: String?,
+                                                             countryCode: CountryCode,
+                                                             cardReaderModel: String?,
+                                                             cancellationSource: String,
+                                                             millisecondsSinceCustomerIteractionStarted: Double,
+                                                             millisecondsSinceOrderSyncSuccess: Double,
+                                                             millisecondsSinceReaderReadyToCollect: Double,
+                                                             millisecondsSinceCardTapped: Double,
+                                                             checkoutTapCount: Int) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectPaymentCanceled, properties: [
+                Key.cardReaderModel: readerModel(for: cardReaderModel),
+                Key.countryCode: countryCode.rawValue,
+                Key.gatewayID: safeGatewayID(for: forGatewayID),
+                Key.cancellationSource: cancellationSource,
+                Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
+                Key.millisecondsSinceOrderSyncSuccess: "\(millisecondsSinceOrderSyncSuccess)",
+                Key.millisecondsSinceReaderReadyToCollect: "\(millisecondsSinceReaderReadyToCollect)",
+                Key.millisecondsSinceCardTapped: "\(millisecondsSinceCardTapped)",
+                Key.checkoutTapCount: "\(checkoutTapCount)"
+            ])
+        }
+
+        /// Tracked when an Interac payment is processed in POS, alongside the regular card payment success event.
+        ///
+        public static func interacCollectPaymentSuccess(forGatewayID: String?,
+                                                        countryCode: CountryCode,
+                                                        cardReaderModel: String?) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .collectInteracPaymentSuccess, properties: [
+                Key.cardReaderModel: readerModel(for: cardReaderModel),
+                Key.countryCode: countryCode.rawValue,
+                Key.gatewayID: safeGatewayID(for: forGatewayID)
+            ])
+        }
+
         static func analyticsValue(for paymentMethod: PaymentMethod) -> String {
             switch paymentMethod {
             case .card, .cardPresent:
@@ -348,7 +424,8 @@ extension WooAnalyticsEvent {
                               properties: [
                                 Key.sourceView: SourceView(itemType: itemType).rawValue,
                                 Key.resultsCount: "\(resultsCount)",
-                                Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)"
+                                Key.millisecondsSinceRequestSent: "\(millisecondsSinceRequestSent)",
+                                Key.searchMethod: POSSearchMethod.remote.rawValue
                               ])
         }
 
@@ -573,16 +650,29 @@ extension WooAnalyticsEvent {
             ])
         }
 
-        static func refundProcessingStarted() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingStarted, properties: [:])
+        static func refundProcessingStarted(flow: POSRefundReviewData.CalculationFlow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingStarted, properties: [
+                Key.refundFlow: flow.rawValue
+            ])
         }
 
-        static func refundProcessingSuccess() -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingSuccess, properties: [:])
+        static func refundProcessingSuccess(flow: POSRefundReviewData.CalculationFlow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingSuccess, properties: [
+                Key.refundFlow: flow.rawValue
+            ])
         }
 
-        static func refundProcessingFailed(error: Error) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingFailed, properties: [:], error: error)
+        static func refundProcessingFailed(error: Error, flow: POSRefundReviewData.CalculationFlow) -> WooAnalyticsEvent {
+            var properties: [String: WooAnalyticsEventPropertyType] = [
+                Key.refundFlow: flow.rawValue
+            ]
+            // The wire code separates deterministic server rejections (`woocommerce_rest_*`) from
+            // transport failures, which `error_description` alone cannot do — it is localized to
+            // the store and varies by message. Omitted rather than sent empty when there is none.
+            if let code = RefundAPIError.restErrorCode(from: error) {
+                properties[Key.apiErrorCode] = code
+            }
+            return WooAnalyticsEvent(statName: .pointOfSaleRefundProcessingFailed, properties: properties, error: error)
         }
 
         enum RefundStep: String {

@@ -17,6 +17,114 @@ final class StorePickerViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_siteToPreselect_when_multiple_woo_stores_have_no_matching_site_address_then_returns_nil() {
+        // Given
+        let firstSite = Site.fake().copy(siteID: 123, url: "https://first.example.com", isWooCommerceActive: true)
+        let secondSite = Site.fake().copy(siteID: 456, url: "https://second.example.com", isWooCommerceActive: true)
+        let sessionManager = SessionManager.makeForTesting(authenticated: true)
+        sessionManager.defaultCredentials = .wpcom(username: "merchant", authToken: "token", siteAddress: "https://wordpress.com")
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = StorePickerViewModel(configuration: .login, stores: stores, storageManager: storageManager)
+
+        // When
+        let selectedSite = viewModel.siteToPreselect(from: [firstSite, secondSite])
+
+        // Then
+        XCTAssertNil(selectedSite)
+    }
+
+    func test_siteToPreselect_when_multiple_mixed_sites_have_no_matching_site_address_then_returns_nil() {
+        // Given
+        let wooSite = Site.fake().copy(siteID: 123, url: "https://store.example.com", isWooCommerceActive: true)
+        let nonWooSite = Site.fake().copy(siteID: 456, url: "https://blog.example.com", isWooCommerceActive: false)
+        let sessionManager = SessionManager.makeForTesting(authenticated: true)
+        sessionManager.defaultCredentials = .wpcom(username: "merchant", authToken: "token", siteAddress: "https://wordpress.com")
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = StorePickerViewModel(configuration: .login, stores: stores, storageManager: storageManager)
+
+        // When
+        let selectedSite = viewModel.siteToPreselect(from: [wooSite, nonWooSite])
+
+        // Then
+        XCTAssertNil(selectedSite)
+    }
+
+    func test_siteToPreselect_when_one_woo_store_is_the_only_site_then_returns_it() {
+        // Given
+        let wooSite = Site.fake().copy(siteID: 123, url: "https://store.example.com", isWooCommerceActive: true)
+        let sessionManager = SessionManager.makeForTesting(authenticated: true)
+        sessionManager.defaultCredentials = .wpcom(username: "merchant", authToken: "token", siteAddress: "https://wordpress.com")
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = StorePickerViewModel(configuration: .login, stores: stores, storageManager: storageManager)
+
+        // When
+        let selectedSite = viewModel.siteToPreselect(from: [wooSite])
+
+        // Then
+        XCTAssertEqual(selectedSite, wooSite)
+    }
+
+    func test_siteToPreselect_when_site_address_matches_a_woo_store_then_returns_it() {
+        // Given
+        let firstSite = Site.fake().copy(siteID: 123, url: "https://first.example.com", isWooCommerceActive: true)
+        let matchingSite = Site.fake().copy(siteID: 456, url: "https://matching.example.com", isWooCommerceActive: true)
+        let sessionManager = SessionManager.makeForTesting(authenticated: true)
+        sessionManager.defaultCredentials = .wpcom(username: "merchant", authToken: "token", siteAddress: matchingSite.url)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = StorePickerViewModel(configuration: .login, stores: stores, storageManager: storageManager)
+
+        // When
+        let selectedSite = viewModel.siteToPreselect(from: [firstSite, matchingSite])
+
+        // Then
+        XCTAssertEqual(selectedSite, matchingSite)
+    }
+
+    func test_siteToPreselect_when_switching_stores_has_a_default_site_then_returns_it() {
+        // Given
+        let firstSite = Site.fake().copy(siteID: 123, url: "https://first.example.com", isWooCommerceActive: true)
+        let defaultSite = Site.fake().copy(siteID: 456, url: "https://default.example.com", isWooCommerceActive: true)
+        let sessionManager = SessionManager.makeForTesting(defaultSite: defaultSite)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = StorePickerViewModel(configuration: .switchingStores, stores: stores, storageManager: storageManager)
+
+        // When
+        let selectedSite = viewModel.siteToPreselect(from: [firstSite, defaultSite])
+
+        // Then
+        XCTAssertEqual(selectedSite, defaultSite)
+    }
+
+    func test_siteToPreselect_when_switching_stores_has_no_default_site_then_returns_the_first_woo_store() {
+        // Given
+        let firstSite = Site.fake().copy(siteID: 123, url: "https://first.example.com", isWooCommerceActive: true)
+        let secondSite = Site.fake().copy(siteID: 456, url: "https://second.example.com", isWooCommerceActive: true)
+        let sessionManager = SessionManager.makeForTesting(authenticated: true)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = StorePickerViewModel(configuration: .switchingStores, stores: stores, storageManager: storageManager)
+
+        // When
+        let selectedSite = viewModel.siteToPreselect(from: [firstSite, secondSite])
+
+        // Then
+        XCTAssertEqual(selectedSite, firstSite)
+    }
+
+    func test_siteToPreselect_when_switching_stores_has_only_non_woo_sites_then_returns_nil() {
+        // Given
+        let defaultSite = Site.fake().copy(siteID: 123, url: "https://store.example.com", isWooCommerceActive: true)
+        let nonWooSite = Site.fake().copy(siteID: 456, url: "https://blog.example.com", isWooCommerceActive: false)
+        let sessionManager = SessionManager.makeForTesting(defaultSite: defaultSite)
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        let viewModel = StorePickerViewModel(configuration: .switchingStores, stores: stores, storageManager: storageManager)
+
+        // When
+        let selectedSite = viewModel.siteToPreselect(from: [nonWooSite])
+
+        // Then
+        XCTAssertNil(selectedSite)
+    }
+
     func test_multipleStoresAvailable_is_correct_for_single_store() {
         // Given
         let testSite = Site.fake()
@@ -180,37 +288,8 @@ final class StorePickerViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldEnableHidingStores_returns_false_if_feature_flag_is_disabled() async {
-        // Given
-        let featureFlagService = MockFeatureFlagService(hideSitesInStorePicker: false)
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: AccountAction.self) { action in
-            switch action {
-            case let .synchronizeSites(_, onCompletion):
-                onCompletion(.success(false))
-            default:
-                break
-            }
-        }
-
-        let viewModel = StorePickerViewModel(configuration: .switchingStores,
-                                             stores: stores,
-                                             storageManager: storageManager,
-                                             featureFlagService: featureFlagService)
-
-        // When
-        await viewModel.refreshSites(currentlySelectedSiteID: nil)
-
-        // Then
-        XCTAssertFalse(viewModel.shouldEnableHidingStores)
-    }
-
-    @MainActor
     func test_shouldEnableHidingStores_returns_false_if_configuration_is_not_switchingStores() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(hideSitesInStorePicker: true)
-
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
@@ -223,8 +302,7 @@ final class StorePickerViewModelTests: XCTestCase {
 
         let viewModel = StorePickerViewModel(configuration: .standard,
                                              stores: stores,
-                                             storageManager: storageManager,
-                                             featureFlagService: featureFlagService)
+                                             storageManager: storageManager)
 
         // When
         await viewModel.refreshSites(currentlySelectedSiteID: nil)
@@ -239,8 +317,6 @@ final class StorePickerViewModelTests: XCTestCase {
         let testSite1 = Site.fake().copy(siteID: 123, name: "abc", isWooCommerceActive: true)
         storageManager.insertSampleSite(readOnlySite: testSite1)
 
-        let featureFlagService = MockFeatureFlagService(hideSitesInStorePicker: true)
-
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
@@ -253,8 +329,7 @@ final class StorePickerViewModelTests: XCTestCase {
 
         let viewModel = StorePickerViewModel(configuration: .switchingStores,
                                              stores: stores,
-                                             storageManager: storageManager,
-                                             featureFlagService: featureFlagService)
+                                             storageManager: storageManager)
 
         // When
         await viewModel.refreshSites(currentlySelectedSiteID: nil)
@@ -264,7 +339,7 @@ final class StorePickerViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldEnableHidingStores_returns_true_with_enabled_feature_flag_and_switchingStore_config_and_more_than_one_fetched_store() async {
+    func test_shouldEnableHidingStores_returns_true_with_switchingStore_config_and_more_than_one_fetched_store() async {
         // Given
         let testSite1 = Site.fake().copy(siteID: 123, name: "abc", isWooCommerceActive: true)
         let testSite2 = Site.fake().copy(siteID: 124, name: "def", isWooCommerceActive: true)
@@ -272,8 +347,6 @@ final class StorePickerViewModelTests: XCTestCase {
         storageManager.insertSampleSite(readOnlySite: testSite1)
         storageManager.insertSampleSite(readOnlySite: testSite2)
         storageManager.insertSampleSite(readOnlySite: testSite3)
-
-        let featureFlagService = MockFeatureFlagService(hideSitesInStorePicker: true)
 
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
@@ -287,8 +360,7 @@ final class StorePickerViewModelTests: XCTestCase {
 
         let viewModel = StorePickerViewModel(configuration: .switchingStores,
                                              stores: stores,
-                                             storageManager: storageManager,
-                                             featureFlagService: featureFlagService)
+                                             storageManager: storageManager)
 
         // When
         await viewModel.refreshSites(currentlySelectedSiteID: nil)

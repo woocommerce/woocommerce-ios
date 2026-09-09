@@ -1,4 +1,5 @@
 import EventHorizonSDK
+import Experiments
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
@@ -173,6 +174,60 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertEqual(testingProvider?.receivedEvents.count, 0)
     }
 
+    @MainActor
+    func test_refreshUserData_starts_AB_tests_after_provider_refresh_completes() async {
+        // Given
+        guard let testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        testingProvider.defersRefreshUserDataCompletion = true
+        let abTestStarted = expectation(description: "A/B test started")
+        var startedContexts: [ExperimentContext] = []
+        analytics = WooAnalytics(analyticsProvider: testingProvider,
+                                 userDefaults: userDefaults,
+                                 startABTest: { context in
+            startedContexts.append(context)
+            abTestStarted.fulfill()
+        })
+
+        // When
+        analytics.refreshUserData()
+        await Task.yield()
+
+        // Then
+        XCTAssertTrue(startedContexts.isEmpty)
+
+        testingProvider.completeRefreshUserData()
+        await fulfillment(of: [abTestStarted], timeout: 1.0)
+        XCTAssertEqual(startedContexts, [.loggedOut])
+    }
+
+    @MainActor
+    func test_refreshUserData_when_authenticated_without_WPCom_then_starts_AB_tests_without_refreshing_provider() async {
+        // Given
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        ServiceLocator.setStores(stores)
+
+        let provider = MockAnalyticsProvider()
+        provider.defersRefreshUserDataCompletion = true
+        let abTestStarted = expectation(description: "A/B test started")
+        var startedContexts: [ExperimentContext] = []
+        analytics = WooAnalytics(analyticsProvider: provider,
+                                 userDefaults: userDefaults,
+                                 startABTest: { context in
+            startedContexts.append(context)
+            abTestStarted.fulfill()
+        })
+
+        // When
+        analytics.refreshUserData()
+
+        // Then
+        await fulfillment(of: [abTestStarted], timeout: 1.0)
+        XCTAssertEqual(startedContexts, [.loggedIn])
+        XCTAssertEqual(provider.refreshUserDataCallCount, 0)
+    }
+
     func test_events_when_logged_in_include_site_properties() {
         // Given
         guard let testingProvider else {
@@ -296,6 +351,82 @@ class WooAnalyticsTests: XCTestCase {
         }
         XCTAssertEqual(receivedProperties["booking_status"] as? String, "attended")
         XCTAssertNil(receivedProperties["blog_id"])
+    }
+
+    // MARK: - Data-layer tracking by raw event name
+
+    func test_track_by_raw_stat_name_when_authenticated_then_includes_site_properties() {
+        // Given
+        guard let testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                   defaultSite: Site.fake().copy(
+                                                                    siteID: sampleSiteID,
+                                                                    url: sampleSiteURL),
+                                                                   defaultStoreUUID: "sample_store_uuid",
+                                                                   cachedWooCommerceVersion: "10.0"))
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+
+        // When
+        analytics.track(WooAnalyticsStat.cardReaderLocationSuccess.rawValue, properties: Constants.testProperty1, error: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider.receivedEvents.first, WooAnalyticsStat.cardReaderLocationSuccess.rawValue)
+        guard let receivedProperties = testingProvider.receivedProperties.first else {
+            return XCTFail("No properties found")
+        }
+        XCTAssertEqual(receivedProperties["store_id"] as? String, "sample_store_uuid")
+        XCTAssertEqual(receivedProperties["blog_id"] as? Int64, sampleSiteID)
+        XCTAssertEqual(receivedProperties["prop-key1"] as? String, "prop-value1")
+    }
+
+    func test_track_by_raw_stat_name_when_stat_opts_out_of_site_properties_then_skips_them() {
+        // Given
+        guard let testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                   defaultSite: Site.fake().copy(
+                                                                    siteID: sampleSiteID,
+                                                                    url: sampleSiteURL),
+                                                                   defaultStoreUUID: "sample_store_uuid"))
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+
+        // When
+        analytics.track(WooAnalyticsStat.wooPushTokenRegisterSuccess.rawValue, properties: Constants.testProperty1, error: nil)
+
+        // Then
+        guard let receivedProperties = testingProvider.receivedProperties.first else {
+            return XCTFail("No properties found")
+        }
+        XCTAssertNil(receivedProperties["store_id"])
+        XCTAssertNil(receivedProperties["blog_id"])
+    }
+
+    func test_track_by_unknown_event_name_then_skips_site_properties() {
+        // Given
+        guard let testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                   defaultSite: Site.fake().copy(
+                                                                    siteID: sampleSiteID,
+                                                                    url: sampleSiteURL),
+                                                                   defaultStoreUUID: "sample_store_uuid"))
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+
+        // When
+        analytics.track("an_event_name_that_is_not_a_stat", properties: Constants.testProperty1, error: nil)
+
+        // Then
+        guard let receivedProperties = testingProvider.receivedProperties.first else {
+            return XCTFail("No properties found")
+        }
+        XCTAssertNil(receivedProperties["store_id"])
     }
 }
 

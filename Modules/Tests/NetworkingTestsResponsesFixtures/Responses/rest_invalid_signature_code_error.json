@@ -1,0 +1,7 @@
+{
+	"code":"rest_invalid_signature",
+	"message":"The request is not signed correctly.",
+	"data":{
+		"status":400
+	}
+}

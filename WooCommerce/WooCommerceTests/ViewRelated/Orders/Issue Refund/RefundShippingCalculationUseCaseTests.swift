@@ -30,4 +30,26 @@ final class RefundShippingCalculationUseCaseTests: XCTestCase {
 
         XCTAssertEqual(value, 14.39)
     }
+
+    func test_calculateRefundValue_when_totalTax_is_rounded_to_currency_decimals_then_tax_is_summed_from_tax_lines() {
+        // Given
+        // Values from a $1.00 tax-inclusive shipping charge with a 13% rate and WooCommerce's default
+        // "round tax per line" setting: `totalTax` is rounded to currency decimals while
+        // `total` and `taxes[].total` keep the API's full precision.
+        let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let shippingLine = ShippingLine(shippingID: 123,
+                                        methodTitle: "",
+                                        methodID: "",
+                                        total: "0.884956",
+                                        totalTax: "0.12",
+                                        taxes: [ShippingLineTax(taxID: 1, subtotal: "", total: "0.115044")])
+
+        // When
+        let useCase = RefundShippingCalculationUseCase(shippingLine: shippingLine, currencyFormatter: formatter)
+        let value = useCase.calculateRefundValue()
+
+        // Then
+        // Summing `total` + `totalTax` would yield 1.004956, above the 1.00 gross value of the line.
+        XCTAssertEqual(value, Decimal(string: "1.00"))
+    }
 }

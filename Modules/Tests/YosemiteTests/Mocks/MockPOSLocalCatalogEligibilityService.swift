@@ -12,11 +12,15 @@ actor MockPOSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServicePr
 
     /// Set to ineligible for testing
     func setIneligible(for siteID: Int64) {
-        eligibilityStates[siteID] = .ineligible(reason: .featureFlagDisabled)
+        eligibilityStates[siteID] = .ineligible(reason: .betaFeatureDisabled)
     }
 
     func catalogEligibility(for siteID: Int64) async -> POSLocalCatalogEligibilityState {
         return eligibilityStates[siteID] ?? .eligible
+    }
+
+    func cachedCatalogEligibility(for siteID: Int64) async -> POSLocalCatalogEligibilityState? {
+        eligibilityStates[siteID]
     }
 
     func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async {

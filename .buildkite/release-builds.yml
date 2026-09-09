@@ -12,7 +12,7 @@ env:
 steps:
   - label: ":hammer_and_wrench: Release Build (App Store Connect)"
     command: |
-      .buildkite/commands/checkout-release-branch.sh "$RELEASE_VERSION"
+      checkout_release_branch "$RELEASE_VERSION"
 
       .buildkite/commands/release-build.sh ${IS_BETA_RELEASE}
     priority: 1

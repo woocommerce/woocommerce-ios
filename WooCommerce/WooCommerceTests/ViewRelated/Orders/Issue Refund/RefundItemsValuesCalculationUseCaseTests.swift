@@ -102,4 +102,69 @@ final class RefundItemsValuesCalculationUseCaseTests: XCTestCase {
         XCTAssertEqual(values.tax, 0.0)
         XCTAssertEqual(values.total, 0.0)
     }
+
+    func test_calculateRefundValues_when_totalTax_is_rounded_to_currency_decimals_then_tax_is_summed_from_tax_lines() {
+        // Given
+        // Values from a $1.00 tax-inclusive item with a 13% rate and WooCommerce's default
+        // "round tax per line" setting: `totalTax` is rounded to currency decimals while
+        // `total` and `taxes[].total` keep the API's full precision.
+        let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let refundItems: [RefundableOrderItem] = [
+            .init(item: MockOrderItem.sampleItem(quantity: 1,
+                                                 taxes: [OrderItemTax(taxID: 1, subtotal: "", total: "0.115044")],
+                                                 total: "0.884956",
+                                                 totalTax: "0.12"),
+                  quantity: 1)
+        ]
+
+        // When
+        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
+        let values = useCase.calculateRefundValues()
+
+        // Then
+        // Summing `total` + `totalTax` would yield 1.004956, above the 1.00 order total.
+        XCTAssertEqual(values.tax, Decimal(string: "0.115044"))
+        XCTAssertEqual(values.total, Decimal(string: "1.00"))
+    }
+
+    func test_calculateRefundValues_when_item_has_multiple_tax_lines_then_tax_lines_are_summed_for_partial_quantities() {
+        // Given
+        let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let refundItems: [RefundableOrderItem] = [
+            .init(item: MockOrderItem.sampleItem(quantity: 2,
+                                                 taxes: [OrderItemTax(taxID: 1, subtotal: "", total: "0.30"),
+                                                         OrderItemTax(taxID: 2, subtotal: "", total: "0.10")],
+                                                 total: "10.00",
+                                                 totalTax: "0.40"),
+                  quantity: 1)
+        ]
+
+        // When
+        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
+        let values = useCase.calculateRefundValues()
+
+        // Then
+        // Tax = (0.30 + 0.10) / 2 (purchased quantity) x 1 (refunded quantity) = 0.20
+        XCTAssertEqual(values.subtotal, 5.00)
+        XCTAssertEqual(values.tax, 0.20)
+    }
+
+    func test_calculateRefundValues_when_item_has_no_tax_lines_then_totalTax_is_used() {
+        // Given
+        let formatter = CurrencyFormatter(currencySettings: CurrencySettings())
+        let refundItems: [RefundableOrderItem] = [
+            .init(item: MockOrderItem.sampleItem(quantity: 2,
+                                                 total: "10.00",
+                                                 totalTax: "0.50"),
+                  quantity: 1)
+        ]
+
+        // When
+        let useCase = RefundItemsValuesCalculationUseCase(refundItems: refundItems, currencyFormatter: formatter)
+        let values = useCase.calculateRefundValues()
+
+        // Then
+        XCTAssertEqual(values.subtotal, 5.00)
+        XCTAssertEqual(values.tax, 0.25)
+    }
 }

@@ -150,7 +150,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             self.stores = stores
             self.storage = storage
             self.analytics = analytics
-            let configuration = cardPresentPaymentsConfiguration ?? CardPresentConfigurationLoader(stores: stores).configuration
+            let configuration = cardPresentPaymentsConfiguration ?? CardPresentConfigurationLoader().configuration
             self.cardPresentPaymentsConfiguration = configuration
             self.orderDurationRecorder = orderDurationRecorder
             self.featureFlagService = featureFlagService

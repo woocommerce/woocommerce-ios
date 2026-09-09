@@ -193,8 +193,8 @@ private extension StorePerformanceView {
 
     @ViewBuilder
     var statsView: some View {
-        if viewModel.hasRevenue {
-            VStack(spacing: Layout.padding) {
+        VStack(spacing: Layout.padding) {
+            if viewModel.hasRevenue {
                 VStack(spacing: Layout.contentVerticalSpacing) {
                     if let selectedDateText = viewModel.selectedDateText {
                         Text(selectedDateText)
@@ -207,26 +207,32 @@ private extension StorePerformanceView {
                         .largeTitleStyle()
                         .accessibilityIdentifier("revenue-value")
                 }
-
-                HStack(alignment: .bottom) {
-                    Group {
-                        ordersStatsItemView
-                            .frame(maxWidth: .infinity)
-
-                        statsItemView(title: Localization.visitors,
-                                      value: viewModel.visitorStatsText,
-                                      redactMode: .withIcon)
-                        .frame(maxWidth: .infinity)
-
-                        statsItemView(title: Localization.conversion,
-                                      value: viewModel.conversionStatsText,
-                                      redactMode: .withoutIcon)
-                        .frame(maxWidth: .infinity)
-                    }
-                }
             }
-        } else {
-            emptyStatsView
+
+            statsItemsView
+
+            if !viewModel.hasRevenue {
+                emptyStatsView
+            }
+        }
+    }
+
+    var statsItemsView: some View {
+        HStack(alignment: .bottom) {
+            Group {
+                ordersStatsItemView
+                    .frame(maxWidth: .infinity)
+
+                statsItemView(title: Localization.visitors,
+                              value: viewModel.visitorStatsText,
+                              redactMode: .withIcon)
+                .frame(maxWidth: .infinity)
+
+                statsItemView(title: Localization.conversion,
+                              value: viewModel.conversionStatsText,
+                              redactMode: .withoutIcon)
+                .frame(maxWidth: .infinity)
+            }
         }
     }
 

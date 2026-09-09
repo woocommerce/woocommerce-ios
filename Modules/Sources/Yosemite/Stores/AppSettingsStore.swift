@@ -222,6 +222,17 @@ public class AppSettingsStore: Store {
             setTelemetryLastReportedTime(siteID: siteID, time: time)
         case .getTelemetryInfo(siteID: let siteID, onCompletion: let onCompletion):
             getTelemetryInfo(siteID: siteID, onCompletion: onCompletion)
+        case let .setHTTPSConfigurationUpdateRequired(siteID, required):
+            let settings = siteSpecificAppSettingsStoreMethods.getStoreSettings(for: siteID)
+            let updatedSettings = settings.copy(requiresHTTPSConfigurationUpdate: .some(required))
+            siteSpecificAppSettingsStoreMethods.setStoreSettings(settings: updatedSettings, for: siteID, onCompletion: nil)
+        case let .getHTTPSConfigurationWarningState(siteID, onCompletion):
+            let settings = siteSpecificAppSettingsStoreMethods.getStoreSettings(for: siteID)
+            onCompletion(settings.requiresHTTPSConfigurationUpdate, settings.lastHTTPSConfigurationWarningDismissedDate)
+        case let .dismissHTTPSConfigurationWarning(siteID, time):
+            let settings = siteSpecificAppSettingsStoreMethods.getStoreSettings(for: siteID)
+            let updatedSettings = settings.copy(lastHTTPSConfigurationWarningDismissedDate: .some(time))
+            siteSpecificAppSettingsStoreMethods.setStoreSettings(settings: updatedSettings, for: siteID, onCompletion: nil)
         case let .setSimplePaymentsTaxesToggleState(siteID, isOn, onCompletion):
             setSimplePaymentsTaxesToggleState(siteID: siteID, isOn: isOn, onCompletion: onCompletion)
         case let .getSimplePaymentsTaxesToggleState(siteID, onCompletion):
@@ -336,6 +347,8 @@ public class AppSettingsStore: Store {
             setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: allowed, onCompletion: onCompletion)
         case .getPOSLocalCatalogCellularDataAllowed(let siteID, let onCompletion):
             getPOSLocalCatalogCellularDataAllowed(siteID: siteID, onCompletion: onCompletion)
+        case .getPOSCatalogFileBlockedByHost(let siteID, let onCompletion):
+            getPOSCatalogFileBlockedByHost(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -1467,6 +1480,10 @@ private extension AppSettingsStore {
     func getPOSLocalCatalogCellularDataAllowed(siteID: Int64, onCompletion: (Bool) -> Void) {
         let allowed = siteSpecificAppSettingsStoreMethods.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         onCompletion(allowed)
+    }
+
+    func getPOSCatalogFileBlockedByHost(siteID: Int64, onCompletion: (Bool) -> Void) {
+        onCompletion(siteSpecificAppSettingsStoreMethods.isPOSCatalogFileBlockedByHost(siteID: siteID))
     }
 }
 

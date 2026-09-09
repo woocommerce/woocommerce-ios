@@ -114,6 +114,8 @@ struct AIAssistantEligibilityCheckerTests {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
                 onCompletion(true)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
         let sut = makeSUT(flagService: flagService, stores: stores)
@@ -136,6 +138,8 @@ struct AIAssistantEligibilityCheckerTests {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
                 onCompletion(false)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
         let sut = makeSUT(flagService: flagService, stores: stores)
@@ -158,6 +162,8 @@ struct AIAssistantEligibilityCheckerTests {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
                 onCompletion(true)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
         let sut = makeSUT(flagService: flagService, stores: stores)
@@ -187,6 +193,8 @@ struct AIAssistantEligibilityCheckerTests {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
                 onCompletion(true)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
         let sut = makeSUT(flagService: flagService, stores: stores)
@@ -215,6 +223,8 @@ struct AIAssistantEligibilityCheckerTests {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, onCompletion):
                 onCompletion(true)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
         let sut = makeSUT(flagService: flagService, stores: stores)

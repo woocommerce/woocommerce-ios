@@ -29,6 +29,8 @@ struct ARParcelFittingEligibilityCheckerTests {
                 switch action {
                 case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                     completion(remoteFF)
+                case let .loadRemoteFeatureFlagsInEffect(completion):
+                    completion(nil)
                 }
             }
             let featureFlagService = MockFeatureFlagService()
@@ -58,6 +60,8 @@ struct ARParcelFittingEligibilityCheckerTests {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 completion(true)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
         let featureFlagService = MockFeatureFlagService()
@@ -129,6 +133,8 @@ struct ARParcelFittingEligibilityCheckerTests {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 completion(false)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
         let featureFlagService = MockFeatureFlagService()
@@ -163,6 +169,8 @@ struct ARParcelFittingEligibilityCheckerTests {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 Task { completion(true) }
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
         let featureFlagService = MockFeatureFlagService()

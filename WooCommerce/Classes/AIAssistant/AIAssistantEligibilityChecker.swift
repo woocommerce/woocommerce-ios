@@ -9,12 +9,12 @@ protocol AIAssistantEligibilityCheckerProtocol {
 
 struct AIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {
     private let featureFlagService: FeatureFlagService
-    private let stores: StoresManager
+    private let remoteFeatureFlagService: RemoteFeatureFlagServiceProtocol
 
     init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          stores: StoresManager = ServiceLocator.stores) {
         self.featureFlagService = featureFlagService
-        self.stores = stores
+        self.remoteFeatureFlagService = RemoteFeatureFlagService(stores: stores)
     }
 
     func isEligible(for site: Site?) -> Bool {
@@ -25,17 +25,7 @@ struct AIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {
         guard localEligibility(for: site) else {
             return false
         }
-        return await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
-            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.wooAIAssistant,
-                                                                      defaultValue: true,
-                                                                      useCache: useCache) { isEnabled in
-                continuation.resume(returning: isEnabled)
-            }
-
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
-        }
+        return await remoteFeatureFlagService.isEnabled(.wooAIAssistant, defaultValue: true, useCache: useCache)
     }
 
     private func localEligibility(for site: Site?) -> Bool {

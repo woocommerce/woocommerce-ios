@@ -3,6 +3,10 @@ import UIKit
 import protocol WooFoundation.ConnectivityObserver
 import enum WooFoundation.ConnectivityStatus
 
+extension Notification.Name {
+    static let wooNavigationControllerDidShowViewController = Notification.Name("WooNavigationControllerDidShowViewController")
+}
+
 /// Subclass to set Woo styling. Removes back button text on managed view controllers.
 ///
 class WooNavigationController: UINavigationController {
@@ -38,6 +42,18 @@ class WooNavigationController: UINavigationController {
             return vc.shouldPopOnBackButton()
         }
         return super.shouldPopOnBackButton()
+    }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        topViewController?.shouldPopOnSwipeBack() ?? super.shouldPopOnSwipeBack()
+    }
+
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer === interactivePopGestureRecognizer else {
+            return super.gestureRecognizerShouldBegin(gestureRecognizer)
+        }
+
+        return viewControllers.count > 1 && shouldPopOnSwipeBack()
     }
 }
 
@@ -83,6 +99,7 @@ final class WooNavigationControllerDelegate: NSObject, UINavigationControllerDel
         currentController = viewController
         configureOfflineBanner(for: viewController)
         forwardDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)
+        NotificationCenter.default.post(name: .wooNavigationControllerDidShowViewController, object: navigationController)
     }
 
     /// Forwards the event to the children delegate.

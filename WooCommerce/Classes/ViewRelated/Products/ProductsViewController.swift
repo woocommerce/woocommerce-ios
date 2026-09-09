@@ -1,4 +1,3 @@
-import Experiments
 import UIKit
 import SwiftUI
 import WordPressUI
@@ -220,13 +219,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    private var addProductCoordinator: AddProductCoordinator?
-
     /// Tracks if the swipe actions have been glanced to the user.
     ///
     private var swipeActionsGlanced = false
 
-    private let isSplitViewEnabled: Bool
     private let navigateToContent: (NavigationContentType) -> Void
     private let selectedProduct: AnyPublisher<Product?, Never>
     private let onTableViewEditingEnd: PassthroughSubject<Void, Never> = .init()
@@ -240,12 +236,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     init(siteID: Int64,
          selectedProduct: AnyPublisher<Product?, Never>,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          navigateToContent: @escaping (NavigationContentType) -> Void) {
         self.siteID = siteID
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
         self.selectedProduct = selectedProduct
-        self.isSplitViewEnabled = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
         self.navigateToContent = navigateToContent
         self.paginationTracker = PaginationTracker()
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -307,6 +301,21 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         super.viewWillDisappear(animated)
 
         finishBulkEditing()
+
+        // On iOS 26, keeping the native refresh control attached during a navigation transition can cause
+        // UINavigationController's refresh control host and content overlay updates to recursively trigger each other.
+        // Detach it while this screen is covered, then restore it once the products list is fully visible again.
+        if #available(iOS 26.0, *) {
+            uninstallRefreshControl()
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if #available(iOS 26.0, *) {
+            installRefreshControl()
+        }
     }
 
     override func viewDidLayoutSubviews() {
@@ -417,23 +426,6 @@ private extension ProductsViewController {
         guard let sourceView else {
             return
         }
-        guard isSplitViewEnabled else {
-            guard let navigationController else {
-                return
-            }
-
-            let source: AddProductCoordinator.Source = .productsTab
-            let coordinatingController = AddProductCoordinator(siteID: siteID,
-                                                               source: source,
-                                                               sourceView: sourceView,
-                                                               sourceNavigationController: navigationController,
-                                                               isFirstProduct: isFirstProduct)
-
-            coordinatingController.start()
-            self.addProductCoordinator = coordinatingController
-            return
-        }
-
         navigateToContent(.addProduct(sourceView: sourceView, isFirstProduct: isFirstProduct))
     }
 }
@@ -1003,7 +995,9 @@ private extension ProductsViewController {
             },
             onContactSupportButtonPressed: { [weak self] in
                 guard let self else { return }
-                let supportForm = SupportFormHostingController(viewModel: .init())
+                let supportForm = SupportFormHostingController(
+                    viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider())
+                )
                 supportForm.show(from: self)
             })
         topBannerContainerView.updateSubview(errorBanner)
@@ -1256,7 +1250,10 @@ extension ProductsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
         let product = resultsController.listItem(at: indexPath)
         let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
-        let viewModel = ProductsTabProductViewModel(product: product, hasPendingUploads: hasPendingUploads)
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    hasPendingUploads: hasPendingUploads,
+                                                    isSKUShown: true,
+                                                    isPriceShown: true)
         cell.update(viewModel: viewModel, imageService: imageService)
 
         return cell
@@ -1276,7 +1273,7 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if (splitViewController?.isCollapsed == true || !isSplitViewEnabled) &&
+        if splitViewController?.isCollapsed == true &&
             !tableView.isEditing {
             tableView.deselectRow(at: indexPath, animated: true)
         }
@@ -1372,12 +1369,6 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
-        guard isSplitViewEnabled else {
-            let viewController = ProductDetailNavigator.shared.makeDestination(product: product,
-                                                                               isReadOnly: false)
-            navigationController?.pushViewController(viewController, animated: true)
-            return
-        }
         navigateToContent(.productForm(product: product))
     }
 }

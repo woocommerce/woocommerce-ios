@@ -166,8 +166,8 @@ struct AnalyticsHubView: View {
             guard let notice else { return }
             dismissWithNotice(notice)
         }
-        .gesture(
-            // Detects when scrolling begins so it can be tracked.
+        .simultaneousGesture(
+            // Detects when scrolling begins so it can be tracked without blocking the navigation controller's swipe-back gesture.
             DragGesture().onChanged({ _ in
                 viewModel.trackAnalyticsInteraction()
             })

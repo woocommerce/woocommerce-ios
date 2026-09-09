@@ -131,6 +131,32 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.totalValue, expectedValue)
     }
 
+    func test_totalValue_when_order_currency_matches_store_default_then_shows_no_currency_code() {
+        // Given — a USD order on a store whose default currency is USD
+        let store = CurrencySettings() // defaults to USD
+        let usdOrder = MockOrders().sampleOrder().copy(currency: "USD", total: "31.20")
+        let viewModel = OrderPaymentDetailsViewModel(order: usdOrder, currencySettings: store)
+        let expected = CurrencyFormatter(currencySettings: store).formatAmount("31.20", with: "USD")
+
+        // When / Then
+        XCTAssertEqual(viewModel.totalValue, expected)
+        XCTAssertFalse(viewModel.totalValue.contains("USD"))
+    }
+
+    func test_totalValue_when_order_currency_differs_from_store_default_then_appends_currency_code() {
+        // Given — a CAD order on a store whose default currency is USD
+        let store = CurrencySettings() // defaults to USD
+        let cadOrder = MockOrders().sampleOrder().copy(currency: "CAD", total: "31.20")
+        let viewModel = OrderPaymentDetailsViewModel(order: cadOrder, currencySettings: store)
+        let baseAmount = CurrencyFormatter(currencySettings: store).formatAmount("31.20", with: "CAD") ?? ""
+
+        // When
+        let totalValue = viewModel.totalValue
+
+        // Then — the "$" symbol is disambiguated with the ISO code
+        XCTAssertEqual(totalValue, baseAmount + "\u{00a0}CAD")
+    }
+
     /// Test that the `paymentSummary` calculated property returns a date-only summary
     /// when the order is paid but the payment method title is an empty string.
     ///

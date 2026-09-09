@@ -32,6 +32,8 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
 
     let requestParameters: RequestParameters
 
+    let queryParameters: RequestParameters
+
     /// Whether this request should be transformed to a REST request if application password is available.
     ///
     private let availableAsRESTRequest: Bool
@@ -46,6 +48,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                  locale: String? = nil,
                  path: String,
                  requestParameters: RequestParameters,
+                 queryParameters: RequestParameters,
                  availableAsRESTRequest: Bool = false,
                  allowsCellularAccess: Bool = true) {
         if [.mark1, .mark2].contains(wooApiVersion) {
@@ -57,6 +60,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
         self.locale = locale
         self.path = path
         self.requestParameters = requestParameters
+        self.queryParameters = queryParameters
         self.availableAsRESTRequest = availableAsRESTRequest
         self.allowsCellularAccess = allowsCellularAccess
     }
@@ -69,6 +73,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
     ///     - siteID: Identifier of the Jetpack-Connected site we'll query.
     ///     - path: RPC that should be called.
     ///     - parameters: Collection of Key/Value parameters, to be forwarded to the Jetpack Connected site.
+    ///     - queryParameters: Collection of Key/Value parameters to encode in the endpoint URL.
     ///     - availableAsRESTRequest: Whether the request should be transformed to a REST request if application password is available.
     ///     - allowsCellularAccess: Whether the request should allow cellular data access.
     ///
@@ -78,6 +83,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
          locale: String? = nil,
          path: String,
          parameters: RequestParameterDictionary? = nil,
+         queryParameters: RequestParameterDictionary? = nil,
          availableAsRESTRequest: Bool = false,
          allowsCellularAccess: Bool = true) {
         self.init(wooApiVersion: wooApiVersion,
@@ -86,6 +92,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                   locale: locale,
                   path: path,
                   requestParameters: RequestParameters(parameters),
+                  queryParameters: RequestParameters(queryParameters),
                   availableAsRESTRequest: availableAsRESTRequest,
                   allowsCellularAccess: allowsCellularAccess)
     }
@@ -96,6 +103,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
          locale: String? = nil,
          path: String,
          parameters: [String: Value],
+         queryParameters: RequestParameterDictionary? = nil,
          availableAsRESTRequest: Bool = false,
          allowsCellularAccess: Bool = true) {
         self.init(wooApiVersion: wooApiVersion,
@@ -104,6 +112,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                   locale: locale,
                   path: path,
                   requestParameters: RequestParameters(parameters),
+                  queryParameters: RequestParameters(queryParameters),
                   availableAsRESTRequest: availableAsRESTRequest,
                   allowsCellularAccess: allowsCellularAccess)
     }
@@ -114,6 +123,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
          locale: String? = nil,
          path: String,
          parameters: RequestParameterConvertibleDictionary,
+         queryParameters: RequestParameterDictionary? = nil,
          availableAsRESTRequest: Bool = false,
          allowsCellularAccess: Bool = true) {
         self.init(wooApiVersion: wooApiVersion,
@@ -122,6 +132,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                   locale: locale,
                   path: path,
                   requestParameters: RequestParameters(parameters),
+                  queryParameters: RequestParameters(queryParameters),
                   availableAsRESTRequest: availableAsRESTRequest,
                   allowsCellularAccess: allowsCellularAccess)
     }
@@ -151,6 +162,7 @@ public struct JetpackRequest: Request, RESTRequestConvertible {
                            method: method,
                            path: path,
                            parameters: requestParameters.dictionary,
+                           queryParameters: queryParameters.dictionary,
                            allowsCellularAccess: allowsCellularAccess)
     }
 }
@@ -192,7 +204,7 @@ private extension JetpackRequest {
     func dotcomParams() throws -> [String: String] {
         var output = [
             "json": "true",
-            "path": jetpackPath + "&_method=" + method.rawValue.lowercased()
+            "path": try jetpackPathWithQueryParameters() + "&_method=" + method.rawValue.lowercased()
         ]
 
         if let locale {
@@ -231,11 +243,15 @@ private extension JetpackRequest {
     /// Returns the Jetpack-Tunneled-Request's Parameters
     ///
     func jetpackQueryParams() throws -> String? {
-        guard jetpackEncodesParametersInQuery, requestParameters.isEmpty == false else {
+        guard jetpackEncodesParametersInQuery else {
             return nil
         }
 
-        return try requestParameters.validatedDictionaryOrEmpty().toJSONEncoded()
+        var parameters = try requestParameters.validatedDictionaryOrEmpty()
+        if method == .get {
+            parameters.merge(try queryParameters.validatedDictionaryOrEmpty()) { _, queryValue in queryValue }
+        }
+        return parameters.isEmpty ? nil : parameters.toJSONEncoded()
     }
 
     /// Returns the Jetpack-Tunneled-Request's Body parameters
@@ -246,5 +262,25 @@ private extension JetpackRequest {
         }
 
         return try requestParameters.validatedDictionaryOrEmpty().toJSONEncoded()
+    }
+
+    /// Returns the endpoint path with explicit query parameters encoded for the Jetpack tunnel.
+    ///
+    func jetpackPathWithQueryParameters() throws -> String {
+        guard method != .get, let parameters = try queryParameters.validatedAlamofireParameters() else {
+            return jetpackPath
+        }
+
+        guard let query = try urlEncodedQuery(from: parameters), query.isEmpty == false else {
+            return jetpackPath
+        }
+        return jetpackPath + "&" + query
+    }
+
+    /// Uses a disposable request to reuse Alamofire's query encoding. The placeholder URL is never sent.
+    ///
+    func urlEncodedQuery(from parameters: Parameters) throws -> String? {
+        let request = URLRequest(url: try "https://localhost".asURL())
+        return try URLEncoding.queryString.encode(request, with: parameters).url?.query
     }
 }

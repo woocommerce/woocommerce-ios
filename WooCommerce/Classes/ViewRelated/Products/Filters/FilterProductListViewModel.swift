@@ -1,6 +1,5 @@
 import UIKit
 import Yosemite
-import Experiments
 import WooFoundation
 import protocol Storage.StorageManagerType
 
@@ -66,7 +65,7 @@ final class FilterProductListViewModel: FilterListViewModel {
 
     let filterTypeViewModels: [FilterTypeViewModel]
 
-    let shouldShowHistory: Bool
+    let shouldShowHistory = true
 
     let source = FilterSource.products
 
@@ -78,20 +77,16 @@ final class FilterProductListViewModel: FilterListViewModel {
 
     private let siteID: Int64
     private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
     private let analytics: Analytics
 
     /// - Parameters:
     ///   - filters: the filters to be applied initially.
     ///   - siteID: Current selected store's ID
-    ///   - featureFlagService: Feature flag service
     init(filters: Filters,
          siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics) {
-        self.featureFlagService = featureFlagService
         self.stockStatusFilterViewModel = ProductListFilter.stockStatus.createViewModel(filters: filters)
         self.productStatusFilterViewModel = ProductListFilter.productStatus.createViewModel(filters: filters)
         self.productTypeFilterViewModel = ProductListFilter
@@ -102,7 +97,6 @@ final class FilterProductListViewModel: FilterListViewModel {
             )
         self.productCategoryFilterViewModel = ProductListFilter.productCategory(siteID: siteID).createViewModel(filters: filters)
         self.productFavoriteFilterViewModel = ProductListFilter.favoriteProducts.createViewModel(filters: filters)
-        self.shouldShowHistory = featureFlagService.isFeatureFlagEnabled(.filterHistoryOnOrderAndProductLists)
         self.stores = stores
         self.siteID = siteID
         self.analytics = analytics

@@ -46,6 +46,8 @@ extension Color {
     static var posOnSuccess: Color { Color("posOnSuccess", bundle: .module) }
     static var posAlert: Color { Color("posAlert", bundle: .module) }
     static var posOnAlert: Color { Color("posOnAlert", bundle: .module) }
+    static var posAlertLowest: Color { Color("posAlertLowest", bundle: .module) }
+    static var posOnAlertLowest: Color { Color("posOnAlertLowest", bundle: .module) }
     static var posErrorLowest: Color { Color("posErrorLowest", bundle: .module) }
     static var posOnErrorLowest: Color { Color("posOnErrorLowest", bundle: .module) }
     static var posInfoLowest: Color { Color("posInfoLowest", bundle: .module) }

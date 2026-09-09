@@ -11,7 +11,7 @@ final class CardPresentPaymentsOnboardingViewController: UIHostingController<Car
         super.init(rootView: CardPresentPaymentsOnboardingView(viewModel: viewModel))
         viewModel.showSupport = { [weak self] in
             guard let self else { return }
-            let supportForm = SupportFormHostingController(viewModel: .init())
+            let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
             supportForm.show(from: self)
         }
         viewModel.showURL = { [weak self] url in
@@ -50,16 +50,22 @@ struct CardPresentPaymentsOnboardingView: View {
                 InPersonPaymentsCountryNotSupportedStripe(countryCode: countryCode, analyticReason: viewModel.state.reasonForAnalytics)
             case .pluginNotInstalled:
                 InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics,
+                                                   userIsAdministrator: viewModel.userIsAdministrator,
                                                    onInstall: viewModel.installPlugin)
             case .pluginUnsupportedVersion(let plugin):
                 InPersonPaymentsPluginNotSupportedVersion(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh: viewModel.refresh)
             case .pluginNotActivated(let plugin):
                 switch plugin {
                 case .wcPay:
-                    InPersonPaymentsPluginNotActivated(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onActivate: viewModel.activatePlugin)
+                    InPersonPaymentsPluginNotActivated(plugin: plugin,
+                                                       analyticReason: viewModel.state.reasonForAnalytics,
+                                                       userIsAdministrator: viewModel.userIsAdministrator,
+                                                       onActivate: viewModel.activatePlugin)
                 case .stripe:
                     // Show WCPay install flow when only Stripe is installed, but not active
-                    InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics, onInstall: viewModel.installPlugin)
+                    InPersonPaymentsPluginNotInstalled(analyticReason: viewModel.state.reasonForAnalytics,
+                                                       userIsAdministrator: viewModel.userIsAdministrator,
+                                                       onInstall: viewModel.installPlugin)
                 }
             case .pluginInTestModeWithLiveStripeAccount(let plugin):
                 InPersonPaymentsLiveSiteInTestMode(plugin: plugin, analyticReason: viewModel.state.reasonForAnalytics, onRefresh:

@@ -232,6 +232,8 @@ private extension HelpAndSupportViewController {
             configureApplicationLog(cell: cell)
         case let cell as ValueOneTableViewCell where row == .systemStatusReport:
             configureSystemStatusReport(cell: cell)
+        case let cell as ValueOneTableViewCell where row == .mobileStatusReport:
+            configureMobileStatusReport(cell: cell)
         case let cell as ValueOneTableViewCell where row == .siteCompatibility:
             configureSiteCompatibility(cell: cell)
         case let cell as ValueOneTableViewCell where row == .featureFlags:
@@ -312,6 +314,23 @@ private extension HelpAndSupportViewController {
         cell.detailTextLabel?.text = NSLocalizedString(
             "Various system information about your site",
             comment: "Description of the system status report on Help screen"
+        )
+    }
+
+    /// Mobile status report cell.
+    ///
+    func configureMobileStatusReport(cell: ValueOneTableViewCell) {
+        cell.accessoryType = .disclosureIndicator
+        cell.selectionStyle = .default
+        cell.textLabel?.text = NSLocalizedString(
+            "helpAndSupport.mobileStatusReport.title",
+            value: "Mobile Status Report",
+            comment: "View mobile status report cell title on Help screen"
+        )
+        cell.detailTextLabel?.text = NSLocalizedString(
+            "helpAndSupport.mobileStatusReport.description",
+            value: "App, device and store information from this app",
+            comment: "Description of the mobile status report on Help screen"
         )
     }
 
@@ -445,6 +464,16 @@ private extension HelpAndSupportViewController {
         ServiceLocator.analytics.track(.supportSSROpened)
     }
 
+    /// Mobile status report action
+    ///
+    func mobileStatusReportWasPressed() {
+        navigationController?.pushViewController(
+            MobileStatusReportHostingController(reportProvider: MobileStatusReportProvider()),
+            animated: true
+        )
+        ServiceLocator.analytics.track(.supportMobileStatusReportOpened)
+    }
+
     /// Override Feature Flags action
     ///
     func featureFlagsWasPressed() {
@@ -491,6 +520,7 @@ private extension HelpAndSupportViewController {
                                            hasReceivedBotResponse: Bool,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController,
+                                                                    mobileStatusReportProvider: MobileStatusReportProvider(),
                                                                     onTicketCreated: onTicketCreated)
         supportEscalationCoordinator?.handleEscalation(chatID: chatID,
                                                        transcript: transcript,
@@ -594,6 +624,8 @@ extension HelpAndSupportViewController: UITableViewDelegate {
             applicationLogWasPressed()
         case .systemStatusReport:
             systemStatusReportWasPressed()
+        case .mobileStatusReport:
+            mobileStatusReportWasPressed()
         case .siteCompatibility:
             siteCompatibilityWasPressed()
         case .featureFlags:
@@ -624,6 +656,7 @@ enum HelpAndSupportRow: CaseIterable {
     case contactEmail
     case applicationLog
     case systemStatusReport
+    case mobileStatusReport
     case siteCompatibility
     case featureFlags
     case chatHistory
@@ -631,7 +664,7 @@ enum HelpAndSupportRow: CaseIterable {
     var type: UITableViewCell.Type {
         switch self {
         case .helpCenter, .contactSupport, .contactEmail, .applicationLog,
-             .systemStatusReport, .siteCompatibility, .featureFlags, .chatHistory:
+             .systemStatusReport, .mobileStatusReport, .siteCompatibility, .featureFlags, .chatHistory:
             return ValueOneTableViewCell.self
         }
     }

@@ -52,7 +52,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
                 configuration: configuration,
                 paymentOrchestrator: invalidatablePaymentOrchestrator,
                 alertsPresenter: alertsPresenter,
-                tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
+                tapToPayAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(showsTapToPayCancellationConfirmation: true),
                 bluetoothAlertsProvider: CardPresentPaymentsTransactionAlertsProvider(),
                 preflightController: preflightController,
                 analyticsTracker: collectOrderPaymentAnalyticsTracker)
@@ -158,6 +158,8 @@ private extension CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
             /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
                 .cancelledOnReader:
             cancelPayment(paymentOrchestrator: paymentOrchestrator)
+        case .paymentCancellationConfirmation(let onDismiss):
+            onDismiss()
         case .paymentSuccess(done: let done):
             done()
         case .locationRequestPreAlert:

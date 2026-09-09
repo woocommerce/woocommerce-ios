@@ -737,7 +737,7 @@ private extension ProductsSection {
     }
 
     // View containing the scanner, ready for product SKU reading input
-    func scannerViewContent() -> ProductSKUInputScannerView {
+    func scannerViewContent() -> some View {
         ProductSKUInputScannerView(onBarcodeScanned: { detectedBarcode in
             showAddProductViaSKUScanner = false
             showAddProductViaSKUScannerLoading = true
@@ -747,6 +747,7 @@ private extension ProductsSection {
                 showAddProductViaSKUScanner = true
             })
         })
+        .ignoresSafeArea(edges: .bottom)
     }
 
     @ViewBuilder var scanProductRow: some View {

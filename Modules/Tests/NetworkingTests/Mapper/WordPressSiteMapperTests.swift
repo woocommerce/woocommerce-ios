@@ -17,6 +17,26 @@ final class WordPressSiteMapperTests: XCTestCase {
         XCTAssertFalse(site.namespaces.isEmpty)
         XCTAssertFalse(site.isWooCommerceActive)
     }
+
+    func test_asSite_normalizes_http_url_and_records_that_normalization_was_required() {
+        // Given
+        let originalURL = "http://example.com"
+
+        // When
+        let site = WordPressSite(name: "Store",
+                                 description: "Description",
+                                 url: originalURL,
+                                 timezone: "UTC",
+                                 gmtOffset: "0",
+                                 namespaces: [],
+                                 applicationPasswordAuthorizationURL: nil).asSite
+
+        // Then
+        XCTAssertEqual(site.url, "https://example.com")
+        XCTAssertEqual(site.adminURL, "https://example.com/wp-admin/")
+        XCTAssertEqual(site.loginURL, "https://example.com/wp-login.php")
+        XCTAssertEqual(site.wasURLNormalizedToHTTPS, true)
+    }
 }
 
 // MARK: - Private Methods.

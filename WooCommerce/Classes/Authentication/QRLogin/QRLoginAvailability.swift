@@ -23,14 +23,14 @@ protocol QRLoginAvailabilityProvider {
 
 struct QRLoginAvailability: QRLoginAvailabilityProvider {
 
-    private let stores: StoresManager
+    private let remoteFeatureFlagService: RemoteFeatureFlagServiceProtocol
     private let overrideStore: RemoteFeatureFlagOverrideStore?
     private let isCameraAvailable: () -> Bool
 
     init(stores: StoresManager = ServiceLocator.stores,
          overrideStore: RemoteFeatureFlagOverrideStore? = ServiceLocator.remoteFeatureFlagOverrideStore,
          isCameraAvailable: @escaping () -> Bool = QRLoginAvailability.defaultCameraAvailability) {
-        self.stores = stores
+        self.remoteFeatureFlagService = RemoteFeatureFlagService(stores: stores)
         self.overrideStore = overrideStore
         self.isCameraAvailable = isCameraAvailable
     }
@@ -65,14 +65,8 @@ private extension QRLoginAvailability {
     }
 
     /// Reads the `qrCodeLogin` remote flag from the feature-flag store.
-    @MainActor
     func isRemoteFlagEnabled() async -> Bool {
-        await withCheckedContinuation { (continuation: CheckedContinuation<Bool, Never>) in
-            let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.qrCodeLogin, defaultValue: false) { value in
-                continuation.resume(returning: value)
-            }
-            stores.dispatch(action)
-        }
+        await remoteFeatureFlagService.isEnabled(.qrCodeLogin, defaultValue: false)
     }
 
     static func defaultCameraAvailability() -> Bool {

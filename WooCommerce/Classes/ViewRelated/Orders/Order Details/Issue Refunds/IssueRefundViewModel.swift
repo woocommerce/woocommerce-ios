@@ -469,7 +469,26 @@ extension IssueRefundViewModel {
             refundsTotal += RefundFeesCalculationUseCase(fees: state.order.fees, currencyFormatter: formatter).calculateRefundValues().total
         }
 
+        // The API rejects amounts above the remaining refundable total with "Invalid refund amount",
+        // and sub-cent precision drift between the locally summed lines and the server-side order total
+        // can otherwise push the sum past that limit.
+        if let maxRefundableAmount = calculateMaxRefundableAmount(with: formatter) {
+            refundsTotal = min(refundsTotal, maxRefundableAmount)
+        }
+
         return refundsTotal
+    }
+
+    /// Returns the maximum amount that can still be refunded on the order:
+    /// the order total minus the previously refunded totals. `nil` when the order total cannot be parsed.
+    ///
+    private func calculateMaxRefundableAmount(with formatter: CurrencyFormatter) -> Decimal? {
+        guard let orderTotal = formatter.convertToDecimal(state.order.total) as Decimal? else {
+            return nil
+        }
+        // `totalRefunded()` is a negative value.
+        let totalRefunded = TotalRefundedCalculationUseCase(order: state.order, currencyFormatter: formatter).totalRefunded().decimalValue
+        return max(orderTotal + totalRefunded, .zero)
     }
 
     /// Returns a string with the count of how many items are selected for refund.

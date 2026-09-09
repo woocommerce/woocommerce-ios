@@ -7,6 +7,7 @@ import Yosemite
 
 /// Test cases for `HubMenuCoordinator`.
 ///
+@MainActor
 final class HubMenuCoordinatorTests: XCTestCase {
     private var pushNotificationsManager: MockPushNotificationsManager!
     private var storesManager: MockStoresManager!
@@ -128,12 +129,14 @@ final class HubMenuCoordinatorTests: XCTestCase {
 
 // MARK: - Utils
 private extension HubMenuCoordinatorTests {
+    @MainActor
     func makeHubMenuCoordinator(willPresentReviewDetailsFromPushNotification: (@escaping () -> Void) = { }) -> HubMenuCoordinator {
         HubMenuCoordinator(tabContainerController: TabContainerController(),
                            pushNotificationsManager: pushNotificationsManager,
                            storesManager: storesManager,
                            noticePresenter: noticePresenter,
                            switchStoreUseCase: switchStoreUseCase,
+                           httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel(stores: storesManager),
                            tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker(),
                            willPresentReviewDetailsFromPushNotification: willPresentReviewDetailsFromPushNotification)
     }

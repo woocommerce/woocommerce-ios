@@ -43,6 +43,8 @@ struct PointOfSaleCardPresentPaymentInLineMessage: View {
             PointOfSaleCardPresentPaymentIntentCreationErrorMessageView(viewModel: viewModel, animation: animation)
         case .cancelledOnReader(let viewModel):
             PointOfSaleCardPresentPaymentCancelledOnReaderMessageView(viewModel: viewModel, animation: animation)
+        case .paymentCancellationConfirmation(let viewModel):
+            PointOfSaleCardPresentPaymentCancelledOnReaderMessageView(viewModel: viewModel, animation: animation)
         }
     }
 }

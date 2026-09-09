@@ -1,5 +1,4 @@
 import UIKit
-import Experiments
 import Yosemite
 import enum Networking.NetworkError
 import class Networking.AlamofireNetwork
@@ -22,7 +21,6 @@ final class JetpackSetupCoordinator {
     private let stores: StoresManager
     private let jetpackConnectionService: JetpackConnectionServiceProtocol
     private let analytics: Analytics
-    private let featureFlagService: FeatureFlagService
     private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
 
     private let onCompletion: (() -> Void)?
@@ -52,7 +50,6 @@ final class JetpackSetupCoordinator {
          accountService: WordPressComAccountServiceProtocol = WordPressComAccountService(),
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck(),
          onCompletion: (() -> Void)? = nil) {
         self.site = site
@@ -61,7 +58,6 @@ final class JetpackSetupCoordinator {
         self.accountService = accountService
         self.stores = stores
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
         self.onCompletion = onCompletion
         self.jetpackConnectionService = JetpackConnectionService(siteID: site.siteID, stores: stores)
@@ -117,7 +113,7 @@ final class JetpackSetupCoordinator {
 //
 private extension JetpackSetupCoordinator {
     func showBenefitModal() {
-        let benefitsController = JetpackBenefitsHostingController(siteURL: site.url, isJetpackCPSite: site.isJetpackCPConnected, onSubmit: { [weak self] in
+        let benefitsController = JetpackBenefitsHostingController(isJetpackCPSite: site.isJetpackCPConnected, onSubmit: { [weak self] in
             await self?.handleBenefitModalCTA()
         }, onDismiss: { [weak self] in
             self?.rootViewController.dismiss(animated: true, completion: nil)
@@ -288,10 +284,23 @@ private extension JetpackSetupCoordinator {
     }
 
     func authenticateUserAndRefreshSite(with credentials: Credentials) {
+        let previousCredentials = stores.sessionManager.defaultCredentials
+        let previousAuthenticationEndpoints = previousCredentials.flatMap {
+            stores.sessionManager.cookieNonceAuthenticationEndpoints(for: $0)
+        }
+        authenticateUserAndRefreshSite(
+            with: credentials,
+            replacing: previousCredentials,
+            previousAuthenticationEndpoints: previousAuthenticationEndpoints
+        )
+    }
+
+    func authenticateUserAndRefreshSite(with credentials: Credentials,
+                                        replacing previousCredentials: Credentials?,
+                                        previousAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) {
         analytics.track(.jetpackSetupCompleted)
 
-        let previousCredentials = stores.sessionManager.defaultCredentials
-        if previousCredentials != credentials {
+        if stores.sessionManager.defaultCredentials != credentials {
             stores.authenticate(credentials: credentials)
         }
 
@@ -307,7 +316,11 @@ private extension JetpackSetupCoordinator {
                     dismiss()
                 } else {
                     stores.updateDefaultStore(storeID: site.siteID)
-                    stores.sessionManager.deleteApplicationPassword(using: previousCredentials, locally: true)
+                    stores.sessionManager.deleteApplicationPassword(
+                        using: previousCredentials,
+                        cookieNonceAuthenticationEndpoints: previousAuthenticationEndpoints,
+                        locally: true
+                    )
                     stores.synchronizeEntities { [weak self] in
                         self?.stores.updateDefaultStore(site)
                         dismiss()
@@ -327,11 +340,18 @@ private extension JetpackSetupCoordinator {
                 DDLogError("⛔️ Error fetching sites after Jetpack setup: \(error)")
                 progressView.dismiss(animated: true, completion: { [weak self] in
                     self?.showAlert(message: Localization.errorFetchingSites, onRetry: {
-                        self?.authenticateUserAndRefreshSite(with: credentials)
+                        self?.authenticateUserAndRefreshSite(
+                            with: credentials,
+                            replacing: previousCredentials,
+                            previousAuthenticationEndpoints: previousAuthenticationEndpoints
+                        )
                     }, onCancel: {
                         // Revert the change to credentials
                         if let previousCredentials {
-                            self?.stores.authenticate(credentials: previousCredentials)
+                            self?.restoreAuthentication(
+                                credentials: previousCredentials,
+                                cookieNonceAuthenticationEndpoints: previousAuthenticationEndpoints
+                            )
                         }
                     })
                 })
@@ -343,6 +363,20 @@ private extension JetpackSetupCoordinator {
         } else {
             stores.dispatch(SiteAction.syncSiteByDomain(domain: site.url.trimHTTPScheme(), completion: resultHandler))
         }
+    }
+
+    func restoreAuthentication(credentials: Credentials,
+                               cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) {
+        if let cookieNonceAuthenticationEndpoints {
+            stores.sessionManager.saveCookieNonceAuthenticationEndpoints(
+                cookieNonceAuthenticationEndpoints,
+                for: credentials
+            )
+        }
+        stores.authenticate(
+            credentials: credentials,
+            cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints
+        )
     }
 
     func registerForPushNotifications() {

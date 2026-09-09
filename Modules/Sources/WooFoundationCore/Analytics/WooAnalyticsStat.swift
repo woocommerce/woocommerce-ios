@@ -294,6 +294,8 @@ public enum WooAnalyticsStat: String {
     case supportIdentitySet = "support_identity_set"
     case supportSSROpened = "support_ssr_opened"
     case supportSSRCopyButtonTapped = "support_ssr_copy_button_tapped"
+    case supportMobileStatusReportOpened = "support_mobile_status_report_opened"
+    case supportMobileStatusReportCopyButtonTapped = "support_mobile_status_report_copy_button_tapped"
 
     // MARK: Settings Plugin List Events
     //
@@ -340,6 +342,10 @@ public enum WooAnalyticsStat: String {
     case cardReaderSelectTypeShown = "card_present_select_reader_type_shown"
     case cardReaderSelectTypeTapToPayTapped = "card_present_select_reader_type_built_in_tapped"
     case cardReaderSelectTypeBluetoothTapped = "card_present_select_reader_type_bluetooth_tapped"
+    case cardReaderDiscoveryTapped = "card_reader_discovery_tapped"
+    case cardReaderDiscoveryReaderDiscovered = "card_reader_discovery_reader_discovered"
+    case cardReaderConnectionTapped = "card_reader_connection_tapped"
+    case cardReaderAutoConnectionStarted = "card_reader_auto_connection_started"
     case cardReaderDiscoveryFailed = "card_reader_discovery_failed"
     case cardReaderConnectionFailed = "card_reader_connection_failed"
     case cardReaderConnectionSuccess = "card_reader_connection_success"
@@ -481,6 +487,8 @@ public enum WooAnalyticsStat: String {
     case ordersListLoadError = "orders_list_load_error"
     case ordersListAutomaticTimeoutRetry = "orders_list_automatic_timeout_retry"
     case ordersListTopBannerTroubleshootTapped = "orders_list_top_banner_troubleshoot_tapped"
+    case ordersListCurrencyUnavailableBannerShown = "orders_list_currency_unavailable_banner_shown"
+    case ordersListCurrencyUnavailableBannerRetryTapped = "orders_list_currency_unavailable_banner_retry_tapped"
     case orderProductAdd = "order_product_add"
     case orderProductQuantityChange = "order_product_quantity_change"
     case orderProductRemove = "order_product_remove"
@@ -1097,7 +1105,6 @@ public enum WooAnalyticsStat: String {
     case jetpackInstallFailed = "jetpack_install_failed"
     case jetpackInstallInWPAdminButtonTapped = "jetpack_install_in_wpadmin_button_tapped"
     case jetpackInstallContactSupportButtonTapped = "jetpack_install_contact_support_button_tapped"
-    case jetpackBenefitsModalWPAdminButtonTapped = "jetpack_benefits_modal_wpadmin_button_tapped"
 
     // MARK: - Bookings (error events only — other booking events use EventHorizon codegen)
     case bookingListFailedToFetchBookings = "booking_list_failed_to_fetch_bookings"
@@ -1324,7 +1331,6 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleReceiptEmailSendTapped = "receipt_email_send_tapped"
     case pointOfSalePaymentsOnboardingShown = "payments_onboarding_shown"
     case pointOfSalePaymentsOnboardingDismissed = "payments_onboarding_dismissed"
-    case pointOfSaleCardReaderConnectionTapped = "card_reader_connection_tapped"
     case pointOfSaleCheckoutTapToPayTapped = "checkout_tap_to_pay_tapped"
     case pointOfSaleTapToPayNotAvailable = "tap_to_pay_not_available"
     case pointOfSaleInteractionWithCustomerStarted = "interaction_with_customer_started"
@@ -1377,6 +1383,7 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleRefundProcessingFailed = "refund_processing_failed"
     case pointOfSaleRefundFlowAborted = "refund_flow_aborted"
     case pointOfSaleRefundSelectAllTapped = "refund_select_all_tapped"
+    case pointOfSaleRefundServerFlowUnavailable = "refund_server_flow_unavailable"
     case pointOfSaleLocalCatalogDownloadingScreenShown = "local_catalog_downloading_screen_shown"
     case pointOfSaleLocalCatalogDownloadingScreenExitPosTapped = "local_catalog_downloading_screen_exit_pos_tapped"
     case pointOfSaleSplashScreenErrorShown = "splash_screen_error_shown"
@@ -1387,8 +1394,6 @@ public enum WooAnalyticsStat: String {
     case pointOfSaleLocalCatalogSyncCompleted = "local_catalog_sync_completed"
     case pointOfSaleLocalCatalogSyncFailed = "local_catalog_sync_failed"
     case pointOfSaleLocalCatalogSyncSkipped = "local_catalog_sync_skipped"
-    case pointOfSaleLocalCatalogSunsetWarningShown = "local_catalog_sunset_warning_shown"
-    case pointOfSaleLocalCatalogSunsetWarningDismissed = "local_catalog_sunset_warning_dismissed"
     case pointOfSaleLocalCatalogBlockedFellBackToRemote = "local_catalog_blocked_fell_back_to_remote"
     case pointOfSaleCheckoutOutdatedItemDetectedScreenShown = "checkout_outdated_item_detected_screen_shown"
     case pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped = "checkout_outdated_item_detected_edit_order_tapped"

@@ -50,6 +50,7 @@ final class ProductDiscountViewModel: Identifiable {
     /// Publisher to fire when the view is dismissed
     var viewDismissPublisher = PassthroughSubject<(), Never>()
 
+    private let currencySettings: CurrencySettings
     private let currencyFormatter: CurrencyFormatter
 
     init(id: Int64,
@@ -58,7 +59,7 @@ final class ProductDiscountViewModel: Identifiable {
          totalPricePreDiscount: String?,
          priceSummary: CollapsibleProductCardPriceSummaryViewModel,
          discountConfiguration: DiscountConfiguration?,
-         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)) {
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
         self.id = id
         self.imageURL = imageURL
         self.name = name
@@ -68,7 +69,8 @@ final class ProductDiscountViewModel: Identifiable {
         hasDiscount = addedDiscount != 0
         baseAmountForDiscountPercentage = discountConfiguration?.baseAmountForDiscountPercentage ?? .zero
         onSave = discountConfiguration?.onSave ?? { _ in }
-        self.currencyFormatter = currencyFormatter
+        self.currencySettings = currencySettings
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
     }
 
     /// View model used for the `DiscountLineDetailsView`
@@ -77,6 +79,7 @@ final class ProductDiscountViewModel: Identifiable {
                                           baseAmount: baseAmountForDiscountPercentage,
                                           initialTotal: addedDiscount,
                                           lineType: .discount,
+                                          storeCurrencySettings: currencySettings,
                                           didSelectSave: { [weak self] discount in
             self?.onSave(discount)
             self?.viewDismissPublisher.send(())

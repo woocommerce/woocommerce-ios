@@ -7,7 +7,7 @@ import Codegen
 /// The endpoint returns a thin wrapper around the Stripe object, so
 /// [these docs are relevant](https://stripe.com/docs/api/charges/object#charge_object-status)
 ///
-public enum WCPayChargeStatus: String, Decodable, GeneratedCopiable, GeneratedFakeable, Equatable {
+public enum WCPayChargeStatus: String, Decodable, Sendable, GeneratedCopiable, GeneratedFakeable, Equatable {
     case succeeded
     case pending
     case failed

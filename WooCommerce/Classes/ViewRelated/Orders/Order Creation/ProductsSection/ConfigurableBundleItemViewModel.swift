@@ -74,6 +74,7 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
          variableProductSettings: VariableProductSettings?,
          existingParentOrderItem: OrderItem?,
          existingOrderItem: OrderItem?,
+         defaultSelectedVariation: Variation? = nil,
          analytics: Analytics = ServiceLocator.analytics) {
         bundledItemID = bundleItem.bundledItemID
         self.product = product
@@ -132,6 +133,10 @@ final class ConfigurableBundleItemViewModel: ObservableObject, Identifiable {
                 return Variation(variationID: existingOrderItem.variationID,
                                  attributes: attributes)
             }()
+        } else if existingOrderItem == nil, isVariable, let defaultSelectedVariation {
+            // Pre-selects the variation matching the default form values when the bundle item is freshly added,
+            // mirroring the web behavior where default attributes allow adding the bundle without manual selection.
+            selectedVariation = defaultSelectedVariation
         }
         observeSelectedStateForProductRowViewModelIfOptional()
         observeSelectedVariationForSelectableAttributes()

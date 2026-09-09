@@ -49,6 +49,26 @@ struct CartTests {
         #expect(cart.totalItemCount == 5)
     }
 
+    @Test func test_isEmpty_when_cart_is_new_then_returns_true() {
+        // Given
+        let cart = Cart()
+
+        // When, Then
+        #expect(cart.isEmpty)
+    }
+
+    @Test func test_isEmpty_when_only_a_loading_placeholder_was_added_then_returns_false() {
+        // Given
+        var cart = Cart()
+
+        // When
+        _ = cart.addLoadingItem()
+
+        // Then
+        #expect(cart.isEmpty == false)
+        #expect(cart.totalItemCount == 1)
+    }
+
     private func makeCoupon(code: String) -> Cart.CouponItem {
         Cart.CouponItem(
             id: UUID(),

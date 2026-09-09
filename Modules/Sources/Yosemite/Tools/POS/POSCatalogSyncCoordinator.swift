@@ -116,7 +116,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
     private let analytics: Analytics?
     private let connectivityObserver: ConnectivityObserver?
-    private let syncStrategy: POSCatalogSyncStrategy
+    /// The app always syncs the catalog via the catalog file API. The paginated strategy remains
+    /// as the fallback used when a host blocks the generated catalog file.
+    private let syncStrategy: POSCatalogSyncStrategy = .localCatalogFile
     private let pendingParseResumer: BackgroundCatalogParseResuming
     private let pluginsService: PluginsServiceProtocol?
 
@@ -147,7 +149,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil,
                 analytics: Analytics? = nil,
                 connectivityObserver: ConnectivityObserver? = nil,
-                usesCatalogAPI: Bool = false,
                 pendingParseResumer: BackgroundCatalogParseResuming = BackgroundCatalogDownloadCoordinator(),
                 pluginsService: PluginsServiceProtocol? = nil) {
         self.fullSyncService = fullSyncService
@@ -157,7 +158,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
         self.analytics = analytics
         self.connectivityObserver = connectivityObserver
-        self.syncStrategy = usesCatalogAPI ? .localCatalogFile : .localCatalog
         self.pendingParseResumer = pendingParseResumer
         self.pluginsService = pluginsService
     }
@@ -171,7 +171,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             let reason = await getSyncSkipReason(for: siteID, maxAge: maxAge)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason,
                                                                       syncType: POSCatalogSyncType.full.rawValue,
-                                                                      syncStrategy: syncStrategy.rawValue))
+                                                                      syncStrategy: syncStrategy.rawValue,
+                                                                      cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)))
             throw POSCatalogSyncError.shouldNotSync
         }
 
@@ -188,7 +189,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let connectionType = getConnectionType()
         trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.full.rawValue,
                                                                   syncStrategy: syncStrategy.rawValue,
-                                                                  connectionType: connectionType))
+                                                                  connectionType: connectionType,
+                                                                  cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)))
 
         let allowCellular = isFirstSync || siteSettings.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
@@ -226,7 +228,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 totalVariations: totalVariations,
                 syncDurationMs: syncDurationMs,
                 generationDurationMs: syncedCatalog.syncMetadata?.generationDurationMs,
-                pollAttempts: syncedCatalog.syncMetadata?.pollAttempts
+                pollAttempts: syncedCatalog.syncMetadata?.pollAttempts,
+                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
             ))
         } catch AFError.explicitlyCancelled, is CancellationError {
             if isFirstSync {
@@ -239,7 +242,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 syncType: POSCatalogSyncType.full.rawValue,
                 syncStrategy: syncStrategy.rawValue,
                 error: POSCatalogSyncError.requestCancelled,
-                errorClassifier: POSCatalogSyncErrorClassifier.classify
+                errorClassifier: POSCatalogSyncErrorClassifier.classify,
+                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
             ))
             throw POSCatalogSyncError.requestCancelled
         } catch {
@@ -261,7 +265,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 lastGenerationState: lastGenerationState,
                 failureStage: catalogFileMetadata.failureStage,
                 httpStatusCode: catalogFileMetadata.httpStatusCode,
-                responseContentType: catalogFileMetadata.responseContentType
+                responseContentType: catalogFileMetadata.responseContentType,
+                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
             ))
             throw error
         }
@@ -291,9 +296,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                                                      isBackgroundSync: isBackgroundSync) {
             DDLogInfo("⚠️ POSCatalogSyncCoordinator: Catalog file is blocked by host for site \(siteID); " +
                       "skipping automatic file sync wait and falling back to paginated full sync")
-            let wooCommerceVersion = await pluginsService?.loadPluginInStorage(siteID: siteID,
-                                                                               plugin: .wooCommerce,
-                                                                               isActive: true)?.version
+            let wooCommerceVersion = await cachedWooCoreVersion(for: siteID)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.blockedFellBackToRemote(wooCommerceVersion: wooCommerceVersion))
             return try await fullSyncService.startPaginatedFullSync(for: siteID, allowCellular: allowCellular)
         }
@@ -313,9 +316,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             }
             return catalog
         } catch where error.isPOSCatalogFileBlockedError {
-            let wooCommerceVersion = await pluginsService?.loadPluginInStorage(siteID: siteID,
-                                                                               plugin: .wooCommerce,
-                                                                               isActive: true)?.version
+            let wooCommerceVersion = await cachedWooCoreVersion(for: siteID)
             let isRetryWhileBlocked = sitesWithBlockedCatalogFile.contains(siteID)
             sitesWithBlockedCatalogFile.insert(siteID)
             siteSettings.setPOSCatalogFileBlockedByHostAt(siteID: siteID, date: Date())
@@ -335,7 +336,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 errorClassifier: POSCatalogSyncErrorClassifier.classify,
                 failureStage: catalogFileMetadata.failureStage,
                 httpStatusCode: catalogFileMetadata.httpStatusCode,
-                responseContentType: catalogFileMetadata.responseContentType
+                responseContentType: catalogFileMetadata.responseContentType,
+                cachedWooCoreVersion: wooCommerceVersion
             ))
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.blockedFellBackToRemote(wooCommerceVersion: wooCommerceVersion))
 
@@ -454,7 +456,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             let reason = await getIncrementalSyncSkipReason(for: siteID, maxAge: maxAge)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason,
                                                                       syncType: POSCatalogSyncType.incremental.rawValue,
-                                                                      syncStrategy: syncStrategy.rawValue))
+                                                                      syncStrategy: syncStrategy.rawValue,
+                                                                      cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)))
             return
         }
 
@@ -484,7 +487,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let connectionType = getConnectionType()
         trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.incremental.rawValue,
                                                                   syncStrategy: syncStrategy.rawValue,
-                                                                  connectionType: connectionType))
+                                                                  connectionType: connectionType,
+                                                                  cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)))
 
         let syncStartTime = Date()
 
@@ -516,7 +520,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 variationsSynced: syncedCatalog.variations.count,
                 totalProducts: totalProducts,
                 totalVariations: totalVariations,
-                syncDurationMs: syncDurationMs
+                syncDurationMs: syncDurationMs,
+                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
             ))
         } catch AFError.explicitlyCancelled, is CancellationError {
             // Track sync failed analytics
@@ -524,7 +529,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 syncType: POSCatalogSyncType.incremental.rawValue,
                 syncStrategy: syncStrategy.rawValue,
                 error: POSCatalogSyncError.requestCancelled,
-                errorClassifier: POSCatalogSyncErrorClassifier.classify
+                errorClassifier: POSCatalogSyncErrorClassifier.classify,
+                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
             ))
             throw POSCatalogSyncError.requestCancelled
         } catch {
@@ -534,7 +540,8 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 syncType: POSCatalogSyncType.incremental.rawValue,
                 syncStrategy: syncStrategy.rawValue,
                 error: error,
-                errorClassifier: POSCatalogSyncErrorClassifier.classify
+                errorClassifier: POSCatalogSyncErrorClassifier.classify,
+                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
             ))
             throw error
         }
@@ -676,6 +683,11 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     nonisolated private func trackAnalytics(_ event: WooAnalyticsEvent) {
         analytics?.track(event.statName.rawValue, properties: event.properties, error: event.error)
+    }
+
+    /// The store's cached WooCommerce version, read from local plugin storage.
+    private func cachedWooCoreVersion(for siteID: Int64) async -> String? {
+        await pluginsService?.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true)?.version
     }
 
     /// Extracts polling metadata from enriched `POSCatalogSyncError` cases for analytics.

@@ -99,7 +99,8 @@ public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessi
                             paymentMethodDescription: preparation.paymentMethodDescription,
                             customerEmail: preparation.customerEmail,
                             refundReason: reason,
-                            isFullRefund: false)
+                            isFullRefund: false,
+                            calculationFlow: .local)
     }
 
     public func submitRefund(for order: POSOrder,

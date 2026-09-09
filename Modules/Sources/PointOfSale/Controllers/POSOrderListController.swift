@@ -1,6 +1,7 @@
 import Foundation
 import Observation
 import enum Yosemite.POSOrderListServiceError
+import enum Yosemite.RefundAPIError
 import protocol Yosemite.POSOrderListServiceProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
@@ -10,13 +11,15 @@ import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderCustomAmount
 import struct Yosemite.POSOrderRefund
 import struct Yosemite.POSRefundItem
+import enum Yosemite.OrderRefundEligibilityFailure
 import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
 import CocoaLumberjackSwift
 
-enum StartRefundFlowResult {
+enum StartRefundFlowResult: Equatable {
     case hasItemsToRefund
     case nothingToRefund
+    case ineligible(OrderRefundEligibilityFailure)
     case failed
 }
 
@@ -38,6 +41,7 @@ protocol POSOrderListControllerProtocol {
     func updateOrder(orderID: Int64) async throws
     func preloadRefundDetails() async
     func startRefundFlow() async -> StartRefundFlowResult
+    func refreshRefundableItems() async -> StartRefundFlowResult
     func toggleRefundItemSelection(at index: Int)
     func clearRefundSelection()
     func toggleAllRefundItemsSelection()
@@ -65,7 +69,10 @@ enum POSOrderListSelectedOrderRefundsState {
 enum POSRefundReviewPreparationState: Equatable {
     case idle
     case loading
-    case previewError
+    /// `message` carries the server's rejection copy when the preview failed with an actionable
+    /// code (for example the order changed since the screen was loaded); `nil` shows the generic
+    /// preview error copy. `recovery` is what the cashier is offered next to it.
+    case previewError(message: String? = nil, recovery: POSRefundRecovery = .retry)
 }
 
 /// Outcome of `prepareRefundReview()`, returned directly to the caller.
@@ -73,6 +80,9 @@ enum POSRefundReviewPreparationResult: Equatable {
     case ready(POSRefundReviewData)
     case previewError
     case preparationError
+    /// The store rejected the preview because the order has nothing refundable left, so the flow
+    /// ends on the terminal screen rather than back on the selection.
+    case nothingToRefund
     /// A newer preparation or a selection change invalidated this one; callers ignore it.
     case superseded
 }
@@ -435,6 +445,9 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         do {
             preparation = try await refundSubmissionProcessor.prepareRefund(for: order)
             selectedOrderRefundsState = .loaded(preparation)
+        } catch let eligibilityFailure as OrderRefundEligibilityFailure {
+            selectedOrderRefundsState = .failed(eligibilityFailure)
+            return .ineligible(eligibilityFailure)
         } catch {
             selectedOrderRefundsState = .failed(error)
             return .failed
@@ -447,6 +460,25 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         return refundSelectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
     }
 
+    /// Reloads the refundable items after the store rejected a preview or a create because the
+    /// order changed since the flow was opened, for example when another register refunded part of
+    /// it. Items the store has since refunded are gone from the reloaded list, so the previous
+    /// selection is intersected with it; when nothing is left of it the default selection applies.
+    @MainActor
+    func refreshRefundableItems() async -> StartRefundFlowResult {
+        let previousSelection = Set(refundSelectableItems.filter { $0.isSelected }.map(\.id))
+        let result = await startRefundFlow()
+
+        guard case .hasItemsToRefund = result,
+              refundSelectableItems.contains(where: { previousSelection.contains($0.id) }) else {
+            return result
+        }
+
+        for index in refundSelectableItems.indices {
+            refundSelectableItems[index].isSelected = previousSelection.contains(refundSelectableItems[index].id)
+        }
+        return result
+    }
 
     @MainActor
     func toggleRefundItemSelection(at index: Int) {
@@ -497,6 +529,8 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         refundReviewPreparationState = .loading
         let preparationTask = Task { @MainActor [weak self] () -> POSRefundReviewPreparationResult in
             guard let self else { return .superseded }
+            let state: POSRefundReviewPreparationState
+            let result: POSRefundReviewPreparationResult
             do {
                 let reviewData = try await refundSubmissionProcessor.prepareReviewData(
                     for: order,
@@ -504,20 +538,28 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
                     selectedItems: selectedItems,
                     reason: nil
                 )
-                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
-                refundReviewPreparationState = .idle
-                return .ready(reviewData)
+                state = .idle
+                result = .ready(reviewData)
             } catch is CancellationError {
                 return .superseded
             } catch POSRefundSubmissionError.refundPreviewFailed {
-                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
-                refundReviewPreparationState = .previewError
-                return .previewError
+                state = .previewError()
+                result = .previewError
+            } catch RefundAPIError.orderNotRefundable {
+                state = .idle
+                result = .nothingToRefund
+            } catch let rejection as RefundAPIError {
+                state = .previewError(message: rejection.localizedDescription, recovery: rejection.recovery)
+                result = .previewError
             } catch {
-                guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
-                refundReviewPreparationState = .idle
-                return .preparationError
+                state = .idle
+                result = .preparationError
             }
+            // Applied once for every outcome: a result computed against a selection the cashier has
+            // since changed must not be published, and a new catch must not be able to skip the check.
+            guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
+            refundReviewPreparationState = state
+            return result
         }
         refundReviewPreparationTask = preparationTask
         return await preparationTask.value

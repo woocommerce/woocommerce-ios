@@ -59,6 +59,7 @@ extension WooCommerce.ProductListItem {
         productTypeKey: CopiableProp<String> = .copy,
         statusKey: CopiableProp<String> = .copy,
         sku: NullableCopiableProp<String> = .copy,
+        price: CopiableProp<String> = .copy,
         manageStock: CopiableProp<Bool> = .copy,
         stockQuantity: NullableCopiableProp<Decimal> = .copy,
         stockStatusKey: CopiableProp<String> = .copy,
@@ -73,6 +74,7 @@ extension WooCommerce.ProductListItem {
         let productTypeKey = productTypeKey ?? self.productTypeKey
         let statusKey = statusKey ?? self.statusKey
         let sku = sku ?? self.sku
+        let price = price ?? self.price
         let manageStock = manageStock ?? self.manageStock
         let stockQuantity = stockQuantity ?? self.stockQuantity
         let stockStatusKey = stockStatusKey ?? self.stockStatusKey
@@ -88,6 +90,7 @@ extension WooCommerce.ProductListItem {
             productTypeKey: productTypeKey,
             statusKey: statusKey,
             sku: sku,
+            price: price,
             manageStock: manageStock,
             stockQuantity: stockQuantity,
             stockStatusKey: stockStatusKey,

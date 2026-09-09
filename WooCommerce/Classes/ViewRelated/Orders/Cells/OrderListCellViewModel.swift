@@ -36,7 +36,7 @@ struct OrderListCellViewModel {
     /// Example: $48,415,504.20
     ///
     var total: String? {
-        return currencyFormatter.formatAmount(order.total, with: order.currency)
+        return currencyFormatter.formatAmount(order.total, with: order.currency, annotatingNonDefaultCurrencyCode: true)
     }
 
     /// The value will only include the year if the `createdDate` is not from the current year.

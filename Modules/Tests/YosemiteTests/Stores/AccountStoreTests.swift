@@ -322,8 +322,10 @@ final class AccountStoreTests: XCTestCase {
         ])
         remote.whenFetchingWordPressSiteSettings(siteID: siteIDOfJCPSite, thenReturn: .success(.init(name: "new name",
                                                                                                      description: "new description",
-                                                                                                     url: "newurl")))
+                                                                                                     url: "http://example.com")))
         remote.whenCheckingIfWooCommerceIsActive(siteID: siteIDOfJCPSite, thenReturn: .success(true))
+        let mockProcessor = MockActionsProcessor()
+        dispatcher.register(processor: mockProcessor, for: AppSettingsAction.self)
 
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self), 0)
@@ -348,8 +350,14 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(jcpSite.siteID, siteIDOfJCPSite)
         XCTAssertEqual(jcpSite.name, "new name")
         XCTAssertEqual(jcpSite.tagline, "new description")
-        XCTAssertEqual(jcpSite.url, "newurl")
+        XCTAssertEqual(jcpSite.url, "https://example.com")
         XCTAssertTrue(jcpSite.isWooCommerceActive?.boolValue == true)
+        let action = try XCTUnwrap(mockProcessor.receivedActions.first as? AppSettingsAction)
+        guard case let .setHTTPSConfigurationUpdateRequired(persistedSiteID, required) = action else {
+            return XCTFail("Expected HTTPS configuration requirement action")
+        }
+        XCTAssertEqual(persistedSiteID, siteIDOfJCPSite)
+        XCTAssertTrue(required)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jetpackSitePredicate), 1)
         let jetpackSite = try XCTUnwrap(viewStorage.firstObject(ofType: Storage.Site.self, matching: jetpackSitePredicate))

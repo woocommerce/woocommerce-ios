@@ -88,12 +88,13 @@ public extension WordPressSite {
     /// Converts to `Site` with placeholder values for unknown fields.
     ///
     var asSite: Site {
-        .init(siteID: WooConstants.placeholderSiteID, // Placeholder site ID
+        let normalizedURL = url.normalizedToHTTPS()
+        return .init(siteID: WooConstants.placeholderSiteID, // Placeholder site ID
               name: name,
               description: description,
-              url: url,
-              adminURL: url + Constants.adminPath, // this would not work for sites with custom URLs
-              loginURL: url + Constants.loginPath, // this would not work for sites with custom URLs
+              url: normalizedURL,
+              adminURL: normalizedURL + Constants.adminPath, // this would not work for sites with custom URLs
+              loginURL: normalizedURL + Constants.loginPath, // this would not work for sites with custom URLs
               isSiteOwner: false,
               frameNonce: "",
               plan: "",
@@ -110,7 +111,8 @@ public extension WordPressSite {
               isAdmin: false,
               wasEcommerceTrial: false,
               hasSSOEnabled: false,
-              applicationPasswordAvailable: false)
+              applicationPasswordAvailable: false,
+              wasURLNormalizedToHTTPS: url.requiresHTTPSNormalization)
     }
 
     struct Authentication: Decodable {

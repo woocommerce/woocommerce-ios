@@ -16,17 +16,12 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 1234
 
-    private var ineligibleService: StubCardPresentCountryEligibilityService!
-    private var eligibleService: StubCardPresentCountryEligibilityService!
-
     override func setUpWithError() throws {
         try super.setUpWithError()
         storageManager = MockStorageManager()
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.sessionManager.setStoreId(sampleSiteID)
         ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings(stores: stores, storageManager: storageManager))
-        ineligibleService = StubCardPresentCountryEligibilityService(isEligible: false)
-        eligibleService = StubCardPresentCountryEligibilityService(isEligible: true)
     }
 
     override func tearDownWithError() throws {
@@ -34,8 +29,6 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         storageManager.reset()
         storageManager = nil
         stores = nil
-        ineligibleService = nil
-        eligibleService = nil
         try super.tearDownWithError()
     }
 
@@ -44,7 +37,7 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         setupCountry(country: .us)
 
         // When
-        let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: ineligibleService)
+        let loader = CardPresentConfigurationLoader()
 
         // Then
         XCTAssertTrue(loader.configuration.isSupportedCountry)
@@ -55,7 +48,7 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         setupCountry(country: .ca)
 
         // When
-        let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: ineligibleService)
+        let loader = CardPresentConfigurationLoader()
 
         // Then
         XCTAssertTrue(loader.configuration.isSupportedCountry)
@@ -66,29 +59,18 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         setupCountry(country: .gb)
 
         // When
-        let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: ineligibleService)
+        let loader = CardPresentConfigurationLoader()
 
         // Then
         XCTAssertTrue(loader.configuration.isSupportedCountry)
     }
 
-    func test_configuration_for_Netherlands_is_unsupported_when_expansion_ineligible() {
+    func test_configuration_for_Netherlands_is_supported_without_cached_eligibility() {
         // Given
         setupCountry(country: .nl)
 
         // When
-        let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: ineligibleService)
-
-        // Then
-        XCTAssertFalse(loader.configuration.isSupportedCountry)
-    }
-
-    func test_configuration_for_Netherlands_is_supported_when_expansion_eligible() {
-        // Given
-        setupCountry(country: .nl)
-
-        // When
-        let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: eligibleService)
+        let loader = CardPresentConfigurationLoader()
 
         // Then
         XCTAssertTrue(loader.configuration.isSupportedCountry)
@@ -100,57 +82,46 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
         setupCountry(country: .es)
 
         // When
-        let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: eligibleService)
+        let loader = CardPresentConfigurationLoader()
 
         // Then
         XCTAssertFalse(loader.configuration.isSupportedCountry)
     }
 
-    func test_configuration_for_Singapore_is_supported_when_expansion_eligible() {
+    func test_configuration_for_Singapore_is_supported_without_cached_eligibility() {
         // Given
         setupCountry(country: .sg)
 
         // When
-        let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: eligibleService)
+        let loader = CardPresentConfigurationLoader()
 
         // Then
         XCTAssertTrue(loader.configuration.isSupportedCountry)
         XCTAssertEqual(loader.configuration.currencies, [.SGD])
     }
 
-    func test_configuration_for_New_Zealand_is_supported_when_expansion_eligible() {
+    func test_configuration_for_New_Zealand_is_supported_without_cached_eligibility() {
         // Given
         setupCountry(country: .nz)
 
         // When
-        let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: eligibleService)
+        let loader = CardPresentConfigurationLoader()
 
         // Then
         XCTAssertTrue(loader.configuration.isSupportedCountry)
         XCTAssertEqual(loader.configuration.currencies, [.NZD])
     }
 
-    func test_configuration_for_Australia_is_supported_when_country_eligibility_is_cached() {
+    func test_configuration_for_Australia_is_supported() {
         // Given
         setupCountry(country: .au)
 
         // When
-        let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: eligibleService)
+        let loader = CardPresentConfigurationLoader()
 
         // Then
         XCTAssertTrue(loader.configuration.isSupportedCountry)
         XCTAssertEqual(loader.configuration.currencies, [.AUD])
-    }
-
-    func test_configuration_for_Australia_is_unsupported_when_country_eligibility_is_not_cached() {
-        // Given
-        setupCountry(country: .au)
-
-        // When
-        let loader = CardPresentConfigurationLoader(stores: stores, eligibilityService: ineligibleService)
-
-        // Then
-        XCTAssertFalse(loader.configuration.isSupportedCountry)
     }
 }
 
@@ -176,23 +147,5 @@ private extension CardPresentConfigurationLoaderTests {
         case sg = "SG"
         case nz = "NZ"
         case au = "AU"
-    }
-}
-
-// MARK: - Test Helper
-
-private final class StubCardPresentCountryEligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol {
-    private var isEligibleValue: Bool
-
-    init(isEligible: Bool) {
-        self.isEligibleValue = isEligible
-    }
-
-    func isEligible(siteID: Int64) -> Bool {
-        isEligibleValue
-    }
-
-    func cacheEligibility(siteID: Int64, isEligible: Bool) {
-        isEligibleValue = isEligible
     }
 }

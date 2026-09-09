@@ -11,6 +11,7 @@ struct POSConnectivityView: View {
         ZStack(alignment: .top) {
             if isVisible {
                 noConnectionBanner
+                    .padding(.top, POSPadding.small)
                     .transition(.asymmetric(insertion: .push(from: .top), removal: .move(edge: .top)))
             }
         }

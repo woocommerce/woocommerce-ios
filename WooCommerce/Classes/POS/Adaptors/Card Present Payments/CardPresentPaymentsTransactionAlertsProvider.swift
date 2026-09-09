@@ -5,6 +5,12 @@ import struct Yosemite.CardReaderInput
 struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlertsProviding {
     typealias AlertDetails = CardPresentPaymentEventDetails
 
+    private let showsTapToPayCancellationConfirmation: Bool
+
+    init(showsTapToPayCancellationConfirmation: Bool = false) {
+        self.showsTapToPayCancellationConfirmation = showsTapToPayCancellationConfirmation
+    }
+
     func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentEventDetails {
         .validatingOrder(cancelPayment: onCancel)
     }
@@ -58,5 +64,10 @@ struct CardPresentPaymentsTransactionAlertsProvider: CardReaderTransactionAlerts
 
     func cancelledOnReader() -> CardPresentPaymentEventDetails? {
         .cancelledOnReader
+    }
+
+    func paymentCancellationConfirmation(onDismiss: @escaping () -> Void) -> CardPresentPaymentEventDetails? {
+        guard showsTapToPayCancellationConfirmation else { return nil }
+        return .paymentCancellationConfirmation(onDismiss: onDismiss)
     }
 }

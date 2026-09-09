@@ -1320,8 +1320,7 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            analytics: mockAnalytics,
-            usesCatalogAPI: true
+            analytics: mockAnalytics
         )
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 404,
@@ -1350,8 +1349,7 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            analytics: mockAnalytics,
-            usesCatalogAPI: true
+            analytics: mockAnalytics
         )
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
             statusCode: 403,
@@ -1401,7 +1399,6 @@ extension POSCatalogSyncCoordinatorTests {
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
             analytics: mockAnalytics,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "10.8.1")
         )
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
@@ -1425,6 +1422,203 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(mockSiteSettings.mockPOSCatalogFileBlockedByHostAt != nil)
     }
 
+    // MARK: - Cached WooCommerce Core Version
+
+    @Test func performFullSyncIfApplicable_when_sync_fails_tracks_cached_woo_core_version() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics,
+            pluginsService: makePluginsService(wooCommerceVersion: "10.8.1")
+        )
+        mockSyncService.startFullSyncResult = .failure(NSError(domain: "NetworkingCore.NetworkError", code: 500))
+
+        // When
+        try? await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
+        #expect(syncFailed?.properties?["cached_woo_core_version"] as? String == "10.8.1")
+    }
+
+    @Test func performFullSyncIfApplicable_when_sync_fails_without_stored_plugin_tracks_unknown_cached_woo_core_version() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics
+        )
+        mockSyncService.startFullSyncResult = .failure(NSError(domain: "NetworkingCore.NetworkError", code: 500))
+
+        // When
+        try? await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
+        #expect(syncFailed?.properties?["cached_woo_core_version"] as? String == "unknown")
+    }
+
+    @Test func performFullSyncIfApplicable_when_blocked_tracks_cached_woo_core_version_on_the_failure_event() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics,
+            pluginsService: makePluginsService(wooCommerceVersion: "10.8.1")
+        )
+        mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
+            statusCode: 403,
+            contentType: "text/html; charset=UTF-8"
+        ))
+        mockSyncService.startPaginatedFullSyncResult = .success(POSCatalog(products: [POSProduct.fake()], variations: [], syncDate: .now))
+
+        // When
+        try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
+        #expect(syncFailed?.properties?["error_type"] as? String == "catalog_file_blocked")
+        #expect(syncFailed?.properties?["cached_woo_core_version"] as? String == "10.8.1")
+    }
+
+    @Test func performIncrementalSyncIfApplicable_when_sync_fails_tracks_cached_woo_core_version() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics,
+            pluginsService: makePluginsService(wooCommerceVersion: "10.8.1")
+        )
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-30 * 60))
+        mockIncrementalSyncService.startIncrementalSyncResult = .failure(NSError(domain: "NetworkingCore.NetworkError", code: 500))
+
+        // When
+        try? await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
+        #expect(syncFailed?.properties?["sync_type"] as? String == "incremental")
+        #expect(syncFailed?.properties?["cached_woo_core_version"] as? String == "10.8.1")
+    }
+
+    @Test func performFullSyncIfApplicable_tracks_cached_woo_core_version_on_started_and_completed() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics,
+            pluginsService: makePluginsService(wooCommerceVersion: "10.8.1")
+        )
+
+        // When
+        try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncStarted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_started" }
+        #expect(syncStarted?.properties?["cached_woo_core_version"] as? String == "10.8.1")
+        let syncCompleted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
+        #expect(syncCompleted?.properties?["cached_woo_core_version"] as? String == "10.8.1")
+    }
+
+    @Test func performFullSyncIfApplicable_without_stored_plugin_tracks_unknown_on_started_and_completed() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics
+        )
+
+        // When
+        try await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncStarted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_started" }
+        #expect(syncStarted?.properties?["cached_woo_core_version"] as? String == "unknown")
+        let syncCompleted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
+        #expect(syncCompleted?.properties?["cached_woo_core_version"] as? String == "unknown")
+    }
+
+    @Test func performFullSyncIfApplicable_when_skipped_tracks_cached_woo_core_version() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics,
+            pluginsService: makePluginsService(wooCommerceVersion: "10.8.1")
+        )
+        // A recent sync exists, so the full sync is skipped
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date())
+
+        // When
+        try? await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
+        #expect(syncSkipped?.properties?["sync_type"] as? String == "full")
+        #expect(syncSkipped?.properties?["cached_woo_core_version"] as? String == "10.8.1")
+    }
+
+    @Test func performIncrementalSyncIfApplicable_tracks_cached_woo_core_version_on_started_completed_and_skipped() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics,
+            pluginsService: makePluginsService(wooCommerceVersion: "10.8.1")
+        )
+
+        // When: no full sync exists yet, so the incremental sync is skipped
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
+        #expect(syncSkipped?.properties?["sync_type"] as? String == "incremental")
+        #expect(syncSkipped?.properties?["cached_woo_core_version"] as? String == "10.8.1")
+
+        // When: a full sync exists, so the incremental sync runs to completion
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-30 * 60))
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncStarted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_started" }
+        #expect(syncStarted?.properties?["cached_woo_core_version"] as? String == "10.8.1")
+        let syncCompleted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
+        #expect(syncCompleted?.properties?["cached_woo_core_version"] as? String == "10.8.1")
+    }
+
     @Test func performFullSyncIfApplicable_when_blocked_on_WC_11_does_not_fall_back_on_first_attempt() async throws {
         // Given
         let sut = POSCatalogSyncCoordinator(
@@ -1433,7 +1627,6 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
@@ -1459,7 +1652,6 @@ extension POSCatalogSyncCoordinatorTests {
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
             analytics: mockAnalytics,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
         mockSyncService.startFullSyncResult = .failure(POSCatalogFileError.downloadFailed(
@@ -1490,7 +1682,6 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
         let blockedError = POSCatalogFileError.downloadFailed(statusCode: 403, contentType: "text/html")
@@ -1521,7 +1712,6 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
         mockSiteSettings.mockPOSCatalogFileBlockedByHostAt = Date()
@@ -1548,7 +1738,6 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
         mockSiteSettings.mockPOSCatalogFileBlockedByHostAt = Date()
@@ -1575,7 +1764,6 @@ extension POSCatalogSyncCoordinatorTests {
             grdbManager: grdbManager,
             catalogEligibilityChecker: mockEligibilityChecker,
             siteSettings: mockSiteSettings,
-            usesCatalogAPI: true,
             pluginsService: makePluginsService(wooCommerceVersion: "11.0.0")
         )
         mockSiteSettings.mockPOSCatalogFileBlockedByHostAt = Date()

@@ -251,7 +251,7 @@ private extension CardPresentPaymentEventDetails {
         case .locationRequired(let cancel):
             return .locationRequired(cancel: markAndRun(cancel))
         case .connectingToReader, .connectionSuccess, .paymentSuccess, .processing,
-                .displayReaderMessage, .cancelledOnReader, .locationRequestPreAlert:
+                .displayReaderMessage, .cancelledOnReader, .paymentCancellationConfirmation, .locationRequestPreAlert:
             return self
         }
     }

@@ -140,6 +140,28 @@ final class OrderListSyncActionUseCaseTests: XCTestCase {
         XCTAssertEqual(modifiedAfter, lastSyncDate)
     }
 
+    func test_first_page_load_for_push_notification_performs_incremental_fetch() {
+        // Given
+        let useCase = OrderListSyncActionUseCase(siteID: siteID, filters: nil)
+        let lastSyncDate = Date()
+
+        // When
+        let action = useCase.actionFor(pageNumber: Defaults.pageFirstIndex,
+                                       pageSize: pageSize,
+                                       reason: .pushNotification,
+                                       lastFullSyncTimestamp: lastSyncDate,
+                                       completionHandler: unimportantCompletionHandler)
+
+        // Then
+        guard case .fetchFilteredOrders(_, _, _, _, let modifiedAfter, _, _, _, let writeStrategy, _, _) = action else {
+            XCTFail("Unexpected OrderAction type: \(action)")
+            return
+        }
+
+        XCTAssertEqual(writeStrategy, .save)
+        XCTAssertEqual(modifiedAfter, lastSyncDate)
+    }
+
     func test_subsequent_page_loads_on_filtered_list_will_fetch_the_given_page_on_that_list() {
         // Arrange
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.pending],

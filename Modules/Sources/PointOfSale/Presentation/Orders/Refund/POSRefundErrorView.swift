@@ -4,6 +4,9 @@ struct POSRefundErrorView: View {
     let title: String
     let subtitle: String
     let onRetry: (() -> Void)?
+    /// Label for the primary action. Defaults to "Retry"; a recovery that is not a retry, such as
+    /// reloading the refundable items, passes its own.
+    let retryButtonTitle: String?
     let cancelButtonTitle: String?
     let onCancel: () -> Void
     let onClose: () -> Void
@@ -14,12 +17,14 @@ struct POSRefundErrorView: View {
     init(title: String,
          subtitle: String,
          onRetry: (() -> Void)?,
+         retryButtonTitle: String? = nil,
          cancelButtonTitle: String? = nil,
          onCancel: @escaping () -> Void,
          onClose: @escaping () -> Void) {
         self.title = title
         self.subtitle = subtitle
         self.onRetry = onRetry
+        self.retryButtonTitle = retryButtonTitle
         self.cancelButtonTitle = cancelButtonTitle
         self.onCancel = onCancel
         self.onClose = onClose
@@ -55,6 +60,7 @@ private extension POSRefundErrorView {
                 Text(title)
                     .font(.posHeadingBold)
                     .foregroundColor(Color.posOnSurface)
+                    .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
 
                 Text(subtitle)
@@ -72,7 +78,7 @@ private extension POSRefundErrorView {
     var buttonsSection: some View {
         VStack(spacing: POSSpacing.medium) {
             if let onRetry {
-                Button(Localization.retryButton, action: onRetry)
+                Button(retryButtonTitle ?? Localization.retryButton, action: onRetry)
                     .buttonStyle(POSFilledButtonStyle(size: .normal))
             }
 

@@ -46,12 +46,17 @@ protocol PointOfSaleOrderControllerProtocol {
     ///
     /// - Parameter note: Optional merchant-supplied free-form note (e.g. "Bank transfer from
     ///   Maria"). When non-nil/non-empty it is appended to the order as a private note via
-    ///   `addOrderNote`, separately from the order completion call. The order's payment-method
-    ///   title stays "Other" regardless of the note's content.
+    ///   `addOrderNote`, separately from the order completion call.
     func markOrderAsPaidManually(note: String?) async throws
-    /// Adds the "Customer paid via Scan to Pay" note to the cached order so the merchant has
-    /// an audit trail in WP-Admin even if the gateway webhook hasn't flipped the status yet.
+    /// Records the payment method title on the cached order and adds the "Paid via Scan to Pay"
+    /// note, so the merchant has an audit trail in WP-Admin even if the gateway webhook hasn't
+    /// flipped the status yet. The note is best-effort: only a missing order throws.
     func confirmScanToPayPayment() async throws
+    /// Records Scan to Pay as the cached order's visible payment method title, but only when the
+    /// order does not already carry a gateway-supplied title. This is best-effort display
+    /// metadata: neither its failures nor its latency should block payment success, so callers
+    /// run it after the success transition rather than before it.
+    func recordScanToPayPaymentMethod() async
     /// Reloads the cached order from the server. Used by the Scan to Pay verifier to detect
     /// when the gateway webhook has flipped the order to `.processing`/`.completed`.
     func reloadCurrentOrder() async throws -> Order
@@ -196,9 +201,34 @@ protocol PointOfSaleOrderControllerProtocol {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
-        try await orderService.addOrderNote(orderID: order.orderID,
-                                            isCustomerNote: false,
-                                            note: Localization.scanToPayNote)
+
+        await recordScanToPayPaymentMethod()
+
+        do {
+            try await orderService.addOrderNote(orderID: order.orderID,
+                                                isCustomerNote: false,
+                                                note: Localization.scanToPayNote)
+        } catch {
+            DDLogWarn("⚠️ [ScanToPay] Payment confirmed but failed to attach the audit-trail note: \(error)")
+        }
+    }
+
+    @MainActor
+    func recordScanToPayPaymentMethod() async {
+        guard let order else {
+            DDLogWarn("⚠️ [ScanToPay] Could not record payment method title because there is no current order")
+            return
+        }
+
+        guard order.hasReplaceablePaymentMethodTitle else {
+            return
+        }
+
+        do {
+            try await orderService.recordScanToPayPaymentMethod(order: order)
+        } catch {
+            DDLogWarn("⚠️ [ScanToPay] Failed to record payment method title: \(error)")
+        }
     }
 
     @MainActor
@@ -226,11 +256,22 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 }
 
+private extension Order {
+    var hasReplaceablePaymentMethodTitle: Bool {
+        let normalized = paymentMethodTitle.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return normalized.isEmpty || normalized == Constants.genericPaymentMethodTitle
+    }
+
+    enum Constants {
+        static let genericPaymentMethodTitle = "other"
+    }
+}
+
 private extension PointOfSaleOrderController {
     enum Localization {
         static let scanToPayNote = NSLocalizedString(
-            "pointOfSale.scanToPay.orderNote",
-            value: "Customer paid via Scan to Pay",
+            "pointOfSale.scanToPay.orderNote.1",
+            value: "Paid via Scan to Pay",
             comment: "Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale."
         )
     }
@@ -241,7 +282,7 @@ private extension PointOfSaleOrderController {
         let totalsCalculator = OrderTotalsCalculator(for: order,
                                                      using: currencyFormatter)
         return PointOfSaleOrderTotals(
-            cartTotal: formattedPrice(totalsCalculator.itemsTotal.stringValue,
+            cartTotal: formattedPrice(totalsCalculator.itemsTotal,
                                       currency: order.currency) ?? "",
             orderTotal: formattedPrice(order.total, currency: order.currency) ?? "",
             taxTotal: formattedPrice(order.totalTax, currency: order.currency) ?? "",
@@ -260,18 +301,27 @@ private extension PointOfSaleOrderController {
         return currencyFormatter.formatAmount(price, with: currency, isNegative: isNegative)
     }
 
+    func formattedPrice(_ price: NSDecimalNumber?, currency: String?, isNegative: Bool = false) -> String? {
+        guard let price, let currency else {
+            return nil
+        }
+        return currencyFormatter.formatAmount(price, with: currency, isNegative: isNegative)
+    }
+
     func couponsTotals(_ order: Order) -> [PointOfSaleCouponTotal] {
         return order.coupons.compactMap { coupon in
-            PointOfSaleCouponTotal(
+            let discount = currencyFormatter.convertToDecimal(coupon.discount) ?? .zero
+            return PointOfSaleCouponTotal(
                 code: coupon.code,
-                total: formattedPrice(coupon.discount, currency: order.currency, isNegative: true) ?? ""
+                total: formattedPrice(discount, currency: order.currency, isNegative: true) ?? "",
+                hasDiscount: discount.compare(NSDecimalNumber.zero) == .orderedDescending
             )
         }
     }
 
     func formattedDiscount(_ discount: NSDecimalNumber, currency: String) -> String? {
         guard !discount.isZero(),
-              let formattedDiscount = formattedPrice(discount.stringValue, currency: currency, isNegative: true) else {
+              let formattedDiscount = formattedPrice(discount, currency: currency, isNegative: true) else {
             return nil
         }
 
@@ -282,7 +332,7 @@ private extension PointOfSaleOrderController {
     /// (`cartTotal`). We surface them on their own line, returning `nil` when there are none.
     func formattedCustomAmounts(_ fees: NSDecimalNumber, currency: String) -> String? {
         guard !fees.isZero(),
-              let formattedFees = formattedPrice(fees.stringValue, currency: currency) else {
+              let formattedFees = formattedPrice(fees, currency: currency) else {
             return nil
         }
 

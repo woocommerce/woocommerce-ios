@@ -79,6 +79,30 @@ enum CouponRowState: Equatable {
 }
 
 extension CartViewHelper {
+    /// Coupons never discount custom amounts (order fees), so the custom amount rows warn
+    /// about it at checkout — but only for whole-cart coupons ("x% off" / "$x off cart"),
+    /// where a merchant could expect the custom amount to be included, and only once the
+    /// order response shows the coupon actually produced a discount.
+    func shouldShowCustomAmountDiscountNotAppliedNote(
+        orderStage: PointOfSaleOrderStage,
+        orderState: PointOfSaleOrderState,
+        cart: Cart
+    ) -> Bool {
+        guard orderStage == .finalizing,
+              case .loaded(let totals) = orderState else {
+            return false
+        }
+
+        let discountingCoupons = totals.couponsTotals.filter(\.hasDiscount)
+        guard discountingCoupons.isNotEmpty else {
+            return false
+        }
+
+        return cart.coupons.contains { coupon in
+            coupon.appliesToWholeCart && discountingCoupons.contains { $0.matches(code: coupon.code) }
+        }
+    }
+
     func couponRowState(
         orderStage: PointOfSaleOrderStage,
         orderState: PointOfSaleOrderState,
@@ -93,7 +117,7 @@ extension CartViewHelper {
             return .validating
         case .loaded(let totals):
             if let couponTotal = totals.couponsTotals
-                .first(where: { $0.code == couponItem.code }) {
+                .first(where: { $0.matches(code: couponItem.code) }) {
                     return .valid(couponTotal)
                 } else {
                     return .idle
@@ -103,5 +127,13 @@ extension CartViewHelper {
         default:
             return .idle
         }
+    }
+}
+
+private extension PointOfSaleCouponTotal {
+    /// WooCommerce treats coupon codes as case-insensitive, and the code in the order
+    /// response may be cased differently from the one the merchant added to the cart.
+    func matches(code: String) -> Bool {
+        self.code.caseInsensitiveCompare(code) == .orderedSame
     }
 }

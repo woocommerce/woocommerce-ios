@@ -148,6 +148,7 @@ private extension CardReaderServiceUnderlyingError {
                 .invalidClientSecret,
                 .featureNotAvailable,
                 .nilPaymentIntent,
+                .paymentIntentIdMissing,
                 .nilSetupIntent,
                 .forwardingTestModePaymentInLiveMode,
                 .forwardingLiveModePaymentInTestMode,

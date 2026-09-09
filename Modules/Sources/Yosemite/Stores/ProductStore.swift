@@ -53,6 +53,22 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .retrieveProductsIfNeeded(let siteID, let productIDs, let onCompletion):
+            retrieveProductsIfNeeded(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
+        case let .retrieveProductsTransiently(siteID, currency, pageNumber, pageSize, stockStatus, productStatus, productType,
+                                              productCategory, sortOrder, productIDs, excludedProductIDs, onCompletion):
+            retrieveProductsTransiently(siteID: siteID,
+                                        currency: currency,
+                                        pageNumber: pageNumber,
+                                        pageSize: pageSize,
+                                        stockStatus: stockStatus,
+                                        productStatus: productStatus,
+                                        productType: productType,
+                                        productCategory: productCategory,
+                                        sortOrder: sortOrder,
+                                        productIDs: productIDs,
+                                        excludedProductIDs: excludedProductIDs,
+                                        onCompletion: onCompletion)
         case .retrieveFirstPurchasableItemMatchFromIdentifier(siteID: let siteID, identifier: let identifier, onCompletion: let onCompletion):
             retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID, identifier: identifier, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
@@ -80,6 +96,21 @@ public class ProductStore: Store {
                            productCategory: productCategory,
                            excludedProductIDs: excludedProductIDs,
                            onCompletion: onCompletion)
+        case let .searchProductsTransiently(siteID, currency, keyword, filter, pageNumber, pageSize, stockStatus, productStatus,
+                                            productType, productCategory, productIDs, excludedProductIDs, onCompletion):
+            searchProductsTransiently(siteID: siteID,
+                                      currency: currency,
+                                      keyword: keyword,
+                                      filter: filter,
+                                      pageNumber: pageNumber,
+                                      pageSize: pageSize,
+                                      stockStatus: stockStatus,
+                                      productStatus: productStatus,
+                                      productType: productType,
+                                      productCategory: productCategory,
+                                      productIDs: productIDs,
+                                      excludedProductIDs: excludedProductIDs,
+                                      onCompletion: onCompletion)
         case .synchronizeProducts(let siteID,
                                   let pageNumber,
                                   let pageSize,
@@ -209,6 +240,85 @@ public class ProductStore: Store {
 //
 private extension ProductStore {
 
+    func retrieveProductsTransiently(siteID: Int64,
+                                     currency: String,
+                                     pageNumber: Int,
+                                     pageSize: Int,
+                                     stockStatus: ProductStockStatus?,
+                                     productStatus: ProductStatus?,
+                                     productType: ProductType?,
+                                     productCategory: ProductCategory?,
+                                     sortOrder: ProductsSortOrder,
+                                     productIDs: [Int64],
+                                     excludedProductIDs: [Int64],
+                                     onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let products = try await remote.loadAllProducts(for: siteID,
+                                                                context: nil,
+                                                                pageNumber: pageNumber,
+                                                                pageSize: pageSize,
+                                                                stockStatus: stockStatus,
+                                                                productStatus: productStatus,
+                                                                productType: productType,
+                                                                productCategory: productCategory,
+                                                                orderBy: sortOrder.remoteOrderKey,
+                                                                order: sortOrder.remoteOrder,
+                                                                productIDs: productIDs,
+                                                                excludedProductIDs: excludedProductIDs,
+                                                                currency: currency)
+                onCompletion(.success((products, products.count == pageSize)))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func searchProductsTransiently(siteID: Int64,
+                                   currency: String,
+                                   keyword: String,
+                                   filter: ProductSearchFilter,
+                                   pageNumber: Int,
+                                   pageSize: Int,
+                                   stockStatus: ProductStockStatus?,
+                                   productStatus: ProductStatus?,
+                                   productType: ProductType?,
+                                   productCategory: ProductCategory?,
+                                   productIDs: [Int64],
+                                   excludedProductIDs: [Int64],
+                                   onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let products: [Product]
+                if filter == .sku {
+                    products = try await remote.searchProductsBySKU(for: siteID,
+                                                                    keyword: keyword,
+                                                                    pageNumber: pageNumber,
+                                                                    pageSize: pageSize,
+                                                                    productIDs: productIDs,
+                                                                    currency: currency)
+                } else {
+                    let fields: [ProductSearchField] = filter == .name ? [.name] : []
+                    products = try await remote.searchProducts(for: siteID,
+                                                               keyword: keyword,
+                                                               searchFields: fields,
+                                                               pageNumber: pageNumber,
+                                                               pageSize: pageSize,
+                                                               stockStatus: stockStatus,
+                                                               productStatus: productStatus,
+                                                               productType: productType,
+                                                               productCategory: productCategory,
+                                                               productIDs: productIDs,
+                                                               excludedProductIDs: excludedProductIDs,
+                                                               currency: currency)
+                }
+                onCompletion(.success((products, products.count == pageSize)))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
     /// Deletes all of the Stored Products.
     ///
     func resetStoredProducts(onCompletion: @escaping () -> Void) {
@@ -244,7 +354,9 @@ private extension ProductStore {
                                             productStatus: productStatus,
                                             productType: productType,
                                             productCategory: productCategory,
-                                            excludedProductIDs: excludedProductIDs)
+                                            productIDs: [],
+                                            excludedProductIDs: excludedProductIDs,
+                                            currency: nil)
         }
         Task { @MainActor in
             do {
@@ -258,7 +370,9 @@ private extension ProductStore {
                     products = try await remote.searchProductsBySKU(for: siteID,
                                                                     keyword: keyword,
                                                                     pageNumber: pageNumber,
-                                                                    pageSize: pageSize)
+                                                                    pageSize: pageSize,
+                                                                    productIDs: [],
+                                                                    currency: nil)
                 }
                 await upsertSearchResultsInBackground(siteID: siteID, keyword: keyword, filter: filter, readOnlyProducts: products)
                 let hasNextPage = products.count == pageSize
@@ -311,7 +425,8 @@ private extension ProductStore {
                                                             orderBy: sortOrder.remoteOrderKey,
                                                             order: sortOrder.remoteOrder,
                                                             productIDs: productIDs,
-                                                            excludedProductIDs: excludedProductIDs)
+                                                            excludedProductIDs: excludedProductIDs,
+                                                            currency: nil)
 
             let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
             await upsertStoredProductsInBackground(readOnlyProducts: products,
@@ -360,6 +475,51 @@ private extension ProductStore {
     /// Retrieves multiple products with a given siteID + productIDs.
     /// - Note: This is NOT a wrapper for retrieving a single product.
     ///
+    func retrieveProductsIfNeeded(siteID: Int64, productIDs: [Int64], onCompletion: @escaping (Result<[Product], Error>) -> Void) {
+        let storedProducts = storageManager.viewStorage.loadProducts(siteID: siteID, productsIDs: productIDs).map { $0.toReadOnly() }
+        let storedProductIDs = storedProducts.map { $0.productID }
+        let missingIDs = productIDs.filter { storedProductIDs.contains($0) == false }
+
+        guard !missingIDs.isEmpty else {
+            return onCompletion(.success(storedProducts))
+        }
+
+        recursivelyRetrieveProducts(siteID: siteID,
+                                    productIDs: missingIDs,
+                                    pageNumber: ProductsRemote.Default.pageNumber,
+                                    retrievedProducts: []) { result in
+            onCompletion(result.map { storedProducts + $0 })
+        }
+    }
+
+    /// Recursively retrieves products starting with the given page number, until there are no more pages left.
+    ///
+    func recursivelyRetrieveProducts(siteID: Int64,
+                                     productIDs: [Int64],
+                                     pageNumber: Int,
+                                     retrievedProducts: [Product],
+                                     onCompletion: @escaping (Result<[Product], Error>) -> Void) {
+        retrieveProducts(siteID: siteID,
+                         productIDs: productIDs,
+                         pageNumber: pageNumber,
+                         pageSize: ProductsRemote.Default.pageSize) { [weak self] result in
+            switch result {
+            case .success((let products, let hasNextPage)):
+                let retrievedProducts = retrievedProducts + products
+                guard hasNextPage else {
+                    return onCompletion(.success(retrievedProducts))
+                }
+                self?.recursivelyRetrieveProducts(siteID: siteID,
+                                                  productIDs: productIDs,
+                                                  pageNumber: pageNumber + 1,
+                                                  retrievedProducts: retrievedProducts,
+                                                  onCompletion: onCompletion)
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
     func retrieveProducts(siteID: Int64,
                           productIDs: [Int64],
                           pageNumber: Int,
@@ -1348,7 +1508,9 @@ private extension ProductStore {
         try await remote.searchProductsBySKU(for: siteID,
                                              keyword: keyword,
                                              pageNumber: Remote.Default.firstPageNumber,
-                                             pageSize: ProductsRemote.Default.pageSize)
+                                             pageSize: ProductsRemote.Default.pageSize,
+                                             productIDs: [],
+                                             currency: nil)
     }
 
     func searchProductsByGlobalUniqueIdentifier(for siteID: Int64, keyword: String) async throws -> [Product] {

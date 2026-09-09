@@ -96,9 +96,6 @@ protocol PointOfSaleAggregateModelProtocol {
     /// Indicates whether the local catalog feature is enabled for this store
     let isLocalCatalogEligible: Bool
 
-    /// Checker for whether the store needs a POS sunset warning (WC < 10.5)
-    private let sunsetWarningChecker: POSSunsetWarningChecking?
-
     /// Resolves whether Tap to Pay is available for the current device + site. Optional
     /// so existing callers (previews, tests) keep working — when nil the rest of POS
     /// behaves as if TTP is not available.
@@ -142,8 +139,6 @@ protocol PointOfSaleAggregateModelProtocol {
         return syncDate < thresholdDate && !isStaleSyncWarningDismissed
     }
 
-    var showSunsetWarning: Bool = false
-
     @MainActor
     init(entryPointController: POSEntryPointController,
          itemsController: PointOfSaleItemsControllerProtocol,
@@ -165,7 +160,6 @@ protocol PointOfSaleAggregateModelProtocol {
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
          cartProductObserver: POSCartProductObserving? = nil,
          isLocalCatalogEligible: Bool = false,
-         sunsetWarningChecker: POSSunsetWarningChecking? = nil,
          tapToPayAvailabilityController: POSTapToPayAvailabilityController? = nil,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
@@ -188,7 +182,6 @@ protocol PointOfSaleAggregateModelProtocol {
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.cartProductObserver = cartProductObserver
         self.isLocalCatalogEligible = isLocalCatalogEligible
-        self.sunsetWarningChecker = sunsetWarningChecker
         self.tapToPayAvailabilityController = tapToPayAvailabilityController
         self.receiptPrinter = receiptPrinter
 
@@ -806,34 +799,6 @@ extension PointOfSaleAggregateModel {
     @MainActor
     private var currentFullSyncState: POSCatalogSyncState? {
         catalogSyncCoordinator?.fullSyncStateModel.state[siteID]
-    }
-}
-
-extension PointOfSaleAggregateModel {
-    func dismissSunsetWarning() {
-        showSunsetWarning = false
-        sunsetWarningChecker?.recordDismissal(siteID: siteID)
-    }
-
-    @MainActor
-    func checkSunsetWarningStatus() async {
-        guard let sunsetWarningChecker else { return }
-        let shouldShow = await sunsetWarningChecker.shouldShowSunsetWarning(siteID: siteID)
-        let wasShowingSunsetWarning = showSunsetWarning
-
-        guard shouldShow else {
-            showSunsetWarning = false
-            return
-        }
-
-        showSunsetWarning = true
-        trackSunsetWarningShownIfNeeded(wasShowing: wasShowingSunsetWarning)
-    }
-
-    private func trackSunsetWarningShownIfNeeded(wasShowing: Bool) {
-        guard !wasShowing, showSunsetWarning else { return }
-
-        analytics.track(event: WooAnalyticsEvent.LocalCatalog.sunsetWarningShown())
     }
 }
 

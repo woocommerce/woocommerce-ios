@@ -10,6 +10,9 @@ public final class DefaultConnectivityObserver: ConnectivityObserver {
 
     @Published public private(set) var currentStatus: ConnectivityStatus = .unknown
 
+    public private(set) var isConnectionMetered: Bool?
+    public private(set) var isLowDataModeEnabled: Bool?
+
     public var statusPublisher: AnyPublisher<ConnectivityStatus, Never> {
         $currentStatus.eraseToAnyPublisher()
     }
@@ -24,6 +27,10 @@ public final class DefaultConnectivityObserver: ConnectivityObserver {
         networkMonitor.networkUpdateHandler = { [weak self] path in
             guard let self else { return }
             DispatchQueue.main.async {
+                // Before `currentStatus`, whose publisher fires synchronously: a subscriber reacting to the
+                // status change must already see this path's flags.
+                self.isConnectionMetered = path.isExpensive
+                self.isLowDataModeEnabled = path.isConstrained
                 self.currentStatus = self.connectivityStatus(from: path)
             }
         }
@@ -78,6 +85,12 @@ protocol NetworkMonitoring: AnyObject {
 protocol NetworkMonitorable {
     /// A status indicating whether a network can be used by connections.
     var status: NWPath.Status { get }
+
+    /// Whether the path uses an interface the system considers expensive.
+    var isExpensive: Bool { get }
+
+    /// Whether the path uses an interface constrained by Low Data Mode.
+    var isConstrained: Bool { get }
 
     /// Checks if the network uses an NWInterface with the specified type
     func usesInterfaceType(_ type: NWInterface.InterfaceType) -> Bool

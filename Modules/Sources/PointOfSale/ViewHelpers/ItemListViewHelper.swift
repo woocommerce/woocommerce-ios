@@ -1,6 +1,22 @@
 import Foundation
+import struct Yosemite.POSCoupon
 
 struct ItemListViewHelper {
+    /// Whether a coupon row in the item list should show the applied indicator
+    /// (green checkmark tile) because the coupon is already in the cart.
+    ///
+    /// Phone-only: on compact layout the cart lives behind a sheet, so the list is
+    /// the only visible feedback that a tapped coupon was applied. On regular layout
+    /// the cart is always on screen and already shows applied coupons.
+    func shouldShowAppliedCouponIndicator(coupon: POSCoupon,
+                                          cartCoupons: [Cart.CouponItem],
+                                          layoutScale: POSLayoutScale) -> Bool {
+        guard layoutScale == .compact else {
+            return false
+        }
+        return cartCoupons.contains(where: { $0.posItemIdentifier == coupon.id })
+    }
+
     /// Whether the products list should show the entry row that opens the
     /// custom amount form.
     ///

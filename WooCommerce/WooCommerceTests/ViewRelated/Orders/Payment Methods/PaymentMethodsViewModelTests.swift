@@ -36,7 +36,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
@@ -118,7 +118,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let (siteID, orderID): (Int64, Int64) = await waitForAsync { promise in
             self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, _, _, _, onCompletion):
+                case let .updateOrder(_, _, _, _, _, onCompletion):
                     onCompletion(.success(.fake()))
                 case let .retrieveOrder(siteID, orderID, _):
                     promise((siteID, orderID))
@@ -145,7 +145,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
@@ -178,7 +178,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         var orderUpdateFields: [OrderUpdateField]?
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, order, _, fields, onCompletion):
+            case let .updateOrder(_, order, _, fields, _, onCompletion):
                 modifiedOrder = order
                 orderUpdateFields = fields
                 onCompletion(.success(.fake()))
@@ -210,7 +210,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
@@ -249,7 +249,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
                                                 dependencies: dependencies)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "Error", code: 0)))
             default:
                 XCTFail("Received unsupported action: \(action)")
@@ -278,7 +278,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
@@ -319,7 +319,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break
@@ -451,7 +451,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0, userInfo: nil)))
             case .retrieveOrder:
                 break
@@ -491,7 +491,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let cashPaymentInfo = OrderPaidByCashInfo(customerPaidAmount: "$50", changeGivenAmount: "$20", addNoteWithChangeData: true)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.success(.fake()))
             case .retrieveOrder:
                 break

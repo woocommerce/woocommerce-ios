@@ -138,6 +138,7 @@ extension WooBasicTableViewCell {
 
     func applyPlainTextStyle() {
         bodyLabel.applyBodyStyle()
+        bodyLabel.textAlignment = .natural
         bodyLabelTopMarginConstraint.constant = 8
     }
 

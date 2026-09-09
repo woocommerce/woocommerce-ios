@@ -5,21 +5,31 @@ import DeclaredAgeRange
 #endif
 
 /// Snapshot of age range data used by our app logic (SDK-agnostic).
-struct AgeRangeSnapshot {
+struct AgeRangeSnapshot: Sendable {
     /// Lower bound of the declared age range, if available.
     let lowerBound: Int?
     /// Whether parental approval is required for significant app changes.
     let significantAppChangeApprovalRequired: Bool
 }
 
+/// Regulatory requirements that determine whether the app needs to request the user's age range.
+struct AgeRangeRequirements: Sendable {
+    /// Whether any age-related compliance flow is required for the current user.
+    let isComplianceRequired: Bool
+    /// Whether a parent or guardian must approve significant app changes.
+    /// A nil value means the legacy age range response should be used instead.
+    let significantAppChangeApprovalRequired: Bool?
+}
+
 /// Abstraction over DeclaredAgeRange APIs for testability.
-protocol AgeRangeProviding {
+protocol AgeRangeProviding: Sendable {
+    @MainActor
     func requestAgeRange(
         minimumAge: Int,
         in viewController: UIViewController
     ) async throws -> AgeRangeSnapshot
 
-    func isEligibleForAgeFeatures() async throws -> Bool
+    func retrieveAgeRangeRequirements() async throws -> AgeRangeRequirements
 }
 
 enum AgeRangeProviderError: Error {
@@ -31,7 +41,8 @@ enum AgeRangeProviderError: Error {
 
 #if canImport(DeclaredAgeRange)
 /// Real adapter for DeclaredAgeRange (iOS 26+).
-final class DeclaredAgeRangeProvider: AgeRangeProviding {
+struct DeclaredAgeRangeProvider: AgeRangeProviding {
+    @MainActor
     func requestAgeRange(
         minimumAge: Int,
         in viewController: UIViewController
@@ -61,17 +72,30 @@ final class DeclaredAgeRangeProvider: AgeRangeProviding {
             @unknown default:
                 throw AgeRangeProviderError.unknown
             }
+        } catch let error as AgeRangeProviderError {
+            throw error
         } catch {
             throw AgeRangeProviderError.other(error)
         }
     }
 
-    func isEligibleForAgeFeatures() async throws -> Bool {
+    func retrieveAgeRangeRequirements() async throws -> AgeRangeRequirements {
         guard #available(iOS 26.2, *) else {
             throw AgeRangeProviderError.notAvailable
         }
         do {
-            return try await AgeRangeService.shared.isEligibleForAgeFeatures
+            if #available(iOS 26.4, *) {
+                let features = try await AgeRangeService.shared.requiredRegulatoryFeatures
+                return AgeRangeRequirements(
+                    isComplianceRequired: !features.isEmpty,
+                    significantAppChangeApprovalRequired: features.contains(.significantAppChangeRequiresParentalConsent)
+                )
+            }
+
+            return AgeRangeRequirements(
+                isComplianceRequired: try await AgeRangeService.shared.isEligibleForAgeFeatures,
+                significantAppChangeApprovalRequired: nil
+            )
         } catch {
             throw AgeRangeProviderError.other(error)
         }
@@ -79,7 +103,8 @@ final class DeclaredAgeRangeProvider: AgeRangeProviding {
 }
 #else
 /// Fallback adapter when DeclaredAgeRange is unavailable.
-final class DeclaredAgeRangeProvider: AgeRangeProviding {
+struct DeclaredAgeRangeProvider: AgeRangeProviding {
+    @MainActor
     func requestAgeRange(
         minimumAge: Int,
         in viewController: UIViewController
@@ -87,7 +112,7 @@ final class DeclaredAgeRangeProvider: AgeRangeProviding {
         throw AgeRangeProviderError.notAvailable
     }
 
-    func isEligibleForAgeFeatures() async throws -> Bool {
+    func retrieveAgeRangeRequirements() async throws -> AgeRangeRequirements {
         throw AgeRangeProviderError.notAvailable
     }
 }

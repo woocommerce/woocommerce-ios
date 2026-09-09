@@ -16,6 +16,8 @@ final class EditableOrderShippingLineViewModel: ObservableObject {
     private var storageManager: StorageManagerType
     private var stores: StoresManager
     private var orderSynchronizer: OrderSynchronizer
+    private let currencySettings: CurrencySettings
+    private let currencyFormatter: CurrencyFormatter
 
     /// Current flow. For editing stores existing order state prior to applying any edits.
     ///
@@ -112,6 +114,8 @@ final class EditableOrderShippingLineViewModel: ObservableObject {
         self.storageManager = storageManager
         self.stores = stores
         self.orderSynchronizer = orderSynchronizer
+        self.currencySettings = currencySettings
+        self.currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
 
         configurePaymentData()
         configureNonEditableIndicators()
@@ -142,6 +146,7 @@ final class EditableOrderShippingLineViewModel: ObservableObject {
     func addShippingLine() {
         shippingLineDetails = ShippingLineSelectionDetailsViewModel(siteID: siteID,
                                                                     shippingLine: nil,
+                                                                    storeCurrencySettings: currencySettings,
                                                                     didSelectSave: saveShippingLine,
                                                                     didSelectRemove: removeShippingLine)
         analytics.track(event: .Orders.orderAddShippingTapped())
@@ -184,6 +189,7 @@ private extension EditableOrderShippingLineViewModel {
                     return ShippingLineRowViewModel(shippingLine: shippingLine,
                                                     shippingMethods: self.allShippingMethods,
                                                     editable: !isNonEditable,
+                                                    currencyFormatter: self.currencyFormatter,
                                                     onEditShippingLine: { [weak self] _ in
                         guard let self else {
                             return
@@ -193,6 +199,7 @@ private extension EditableOrderShippingLineViewModel {
                                                                                     initialMethodID: shippingLine.methodID ?? "",
                                                                                     initialMethodTitle: shippingLine.methodTitle,
                                                                                     shippingTotal: shippingLine.total,
+                                                                                    storeCurrencySettings: currencySettings,
                                                                                     didSelectSave: saveShippingLine,
                                                                                     didSelectRemove: removeShippingLine)
                     })
@@ -205,10 +212,11 @@ private extension EditableOrderShippingLineViewModel {
     ///
     func configurePaymentData() {
         orderSynchronizer.orderPublisher
-            .map { order in
+            .map { [currencyFormatter] order in
                 ShippingPaymentData(shouldShowShippingTotal: order.shippingLines.filter { $0.methodID != nil }.isNotEmpty,
                                     shippingTotal: order.shippingTotal.isNotEmpty ? order.shippingTotal : "0",
-                                    shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0")
+                                    shippingTax: order.shippingTax.isNotEmpty ? order.shippingTax : "0",
+                                    currencyFormatter: currencyFormatter)
             }
             .assign(to: &$paymentData)
     }

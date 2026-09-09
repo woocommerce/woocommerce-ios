@@ -66,6 +66,8 @@ public final class FeatureFlagStore: Store {
         switch action {
         case let .isRemoteFeatureFlagEnabled(featureFlag, defaultValue, useCache, completion):
             isRemoteFeatureFlagEnabled(featureFlag, defaultValue: defaultValue, useCache: useCache, completion: completion)
+        case let .loadRemoteFeatureFlagsInEffect(completion):
+            completion(remoteFeatureFlagsInEffect)
         }
     }
 }
@@ -73,6 +75,16 @@ public final class FeatureFlagStore: Store {
 // MARK: - Services
 //
 private extension FeatureFlagStore {
+
+    /// Mirrors exactly what `isRemoteFeatureFlagEnabled` would consult, so a report built from this can never
+    /// contradict the values the app is actually acting on: `nil` unless a fetch succeeded and has not aged out.
+    var remoteFeatureFlagsInEffect: [RemoteFeatureFlag: Bool]? {
+        guard let cachedFeatureFlags, !isCacheExpired else {
+            return nil
+        }
+        return cachedFeatureFlags
+    }
+
     var isCacheExpired: Bool {
         guard let cacheTimestamp else { return true }
         return currentDate().timeIntervalSince(cacheTimestamp) >= cacheMaxAge

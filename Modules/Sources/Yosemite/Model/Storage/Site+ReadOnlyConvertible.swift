@@ -58,6 +58,7 @@ extension Storage.Site: ReadOnlyConvertible {
                     isAdmin: isAdmin,
                     wasEcommerceTrial: wasEcommerceTrial,
                     hasSSOEnabled: hasSSOEnabled,
-                    applicationPasswordAvailable: false) // to be updated separately
+                    applicationPasswordAvailable: false, // to be updated separately
+                    wasURLNormalizedToHTTPS: nil) // unavailable in persisted sites
     }
 }

@@ -173,7 +173,7 @@ where Cell.SearchModel == Command.CellViewModel {
         super.viewWillAppear(animated)
 
         if searchUICommand.hideNavigationBar {
-            navigationController?.setNavigationBarHidden(true, animated: searchUICommand.animateNavigationBarVisibilityChanges)
+            navigationController?.setNavigationBarHiddenIfNeeded(true, animated: searchUICommand.animateNavigationBarVisibilityChanges)
         }
 
         if searchUICommand.makeSearchBarFirstResponderOnStart {
@@ -191,7 +191,9 @@ where Cell.SearchModel == Command.CellViewModel {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        navigationController?.setNavigationBarHidden(false, animated: searchUICommand.animateNavigationBarVisibilityChanges)
+        if searchUICommand.hideNavigationBar {
+            navigationController?.setNavigationBarHiddenIfNeeded(false, animated: searchUICommand.animateNavigationBarVisibilityChanges)
+        }
     }
 
     // MARK: - UITableViewDataSource Conformance

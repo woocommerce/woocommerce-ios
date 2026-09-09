@@ -14,21 +14,9 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case reviews
 
-    /// Displays the Inbox option under the Hub Menu and the Dynamic Dashboard
-    ///
-    case inbox
-
-    /// Displays the call to actions in the Inbox Notes under the Hub Menu and the Dynamic Dashboard
-    ///
-    case showInboxCTA
-
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
-
-    /// Enables searching products by partial SKU for WC version 6.6+.
-    ///
-    case searchProductsBySKU
 
     /// Enables Tap to Pay on iPhone flow in In-Person Payments, on eligible devices.
     /// This flag needs to be retained, as we cannot enable TTPoI on the Enterprise certificate,
@@ -75,33 +63,9 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case supportRequests
 
-    /// Whether to enable Jetpack setup for users authenticated with application passwords.
-    ///
-    case jetpackSetupWithApplicationPassword
-
     /// Enables the ability to add products to orders by SKU scanning
     ///
     case addProductToOrderViaSKUScanner
-
-    /// Enables manual error handling for site credential login.
-    ///
-    case manualErrorHandlingForSiteCredentialLogin
-
-    /// Enables EU Bound notifications inside the Shipping Labels feature
-    ///
-    case euShippingNotification
-
-    /// Enables the improvements in the customer selection logic when creating an order
-    ///
-    case betterCustomerSelectionInOrder
-
-    /// Enables the hazmat shipping selection during the Shipping Labels package details
-    ///
-    case hazmatShipping
-
-    /// Enables gift card support in order creation/editing
-    ///
-    case giftCardInOrderForm
 
     /// Enables bundle product configuration support in order creation/editing.
     ///
@@ -111,41 +75,9 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case customLoginUIForAccountCreation
 
-    /// Enables the Scan to Update Inventory feature.
-    ///
-    case scanToUpdateInventory
-
-    /// Displays the Products tab in a split view
-    ///
-    case splitViewInProductsTab
-
     /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale
-
-    /// Enables Google ads campaign creation on web view
-    ///
-    case googleAdsCampaignCreationOnWebView
-
-    /// Supports evergreen campaigns for Blaze
-    ///
-    case blazeEvergreenCampaigns
-
-    /// Enables revamped shipping label flow for Woo Shipping extension
-    ///
-    case revampedShippingLabelCreation
-
-    /// Enables selecting objectives during Blaze campaign creation.
-    ///
-    case blazeCampaignObjective
-
-    /// Supports hiding sites from the store picker
-    ///
-    case hideSitesInStorePicker
-
-    /// Supports managing filer history on order and product lists
-    ///
-    case filterHistoryOnOrderAndProductLists
 
     /// Supports uploading product images in background
     ///
@@ -159,17 +91,9 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case orderAddressMapSearch
 
-    /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
-    ///
-    case pointOfSaleFTSSearch
-
     /// Legacy Bookings tab flag.
     ///
     case ciabBookings
-
-    /// Enables using the catalog API endpoint for Point of Sale catalog full sync
-    ///
-    case pointOfSaleCatalogAPI
 
     /// Enables POS staff roles and permissions (PIN access, lock screen, capability-based gating)
     ///
@@ -178,12 +102,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Enables adding custom amounts to the cart in Point of Sale
     ///
     case pointOfSaleCustomAmounts
-
-    /// Enables Point of Sale on iPhone (prototype).
-    /// When enabled, the iPad-only gate in `POSTabVisibilityChecker` is lifted and POS layouts
-    /// adapt to compact horizontal size class. Mirrors the Android `POS_ON_PHONES` flag.
-    ///
-    case pointOfSalePhonePrototype
 
     /// Enables Scan to Pay as a secondary payment method in Point of Sale.
     /// When enabled, the merchant can have the customer pay by scanning a QR code that
@@ -196,12 +114,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// account credit, etc.) and just needs the order marked as completed.
     ///
     case pointOfSaleMarkOrderAsPaid
-
-    /// Enables Tap to Pay as a payment method in Point of Sale on phone.
-    /// When enabled and the device + site support TTP, the totals view promotes "Tap to Pay"
-    /// as the primary payment method. Mirrors the Android `WOO_POS_TAP_TO_PAY` flag.
-    ///
-    case pointOfSaleTapToPay
 
     /// Enables self driven push token registration
     ///
@@ -244,5 +156,8 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case starReceiptPrinterSupport
 
-    case posRefundsV4
+    /// Enables server-calculated POS refunds: the `/wc/v3` refund preview and `compute_totals`
+    /// create endpoints (WC 11.1.0+).
+    ///
+    case posServerCalculatedRefunds
 }

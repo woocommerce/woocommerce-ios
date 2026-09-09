@@ -691,7 +691,8 @@ extension NetworkingCore.Site {
             isAdmin: .fake(),
             wasEcommerceTrial: .fake(),
             hasSSOEnabled: .fake(),
-            applicationPasswordAvailable: .fake()
+            applicationPasswordAvailable: .fake(),
+            wasURLNormalizedToHTTPS: .fake()
         )
     }
 }

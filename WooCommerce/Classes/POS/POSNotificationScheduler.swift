@@ -131,9 +131,21 @@ final class POSNotificationScheduler: POSNotificationScheduling {
     }
 
     private func scheduleLocalNotification(for merchantType: POSNotificationScheduler.MerchantType) async {
+        guard let surveyURL = URL(string: merchantType.surveyURL) else {
+            assertionFailure("Invalid POS survey URL: \(merchantType.surveyURL)")
+            return
+        }
+
+        let sessionManager = stores.sessionManager
+        let taggedSurveyURL = surveyURL
+            .tagPlatform("ios")
+            .tagAppVersion(Bundle.main.bundleVersion())
+            .tagSiteInfo(siteID: sessionManager.defaultSite?.siteID,
+                         storeUUID: sessionManager.defaultStoreUUID,
+                         storeURL: sessionManager.defaultSite?.url)
 
         let payload: [AnyHashable: Any] = [
-            LocalNotification.UserInfoKey.surveyURL: merchantType.surveyURL
+            LocalNotification.UserInfoKey.surveyURL: taggedSurveyURL.absoluteString
         ]
 
         let notification = LocalNotification(

@@ -9,6 +9,32 @@ import YosemiteTestHelpers
 
 final class OrderDetailsViewControllerTests: XCTestCase {
     @MainActor
+    func test_refresh_control_when_view_loads_on_iOS26_then_is_attached_as_subview() throws {
+        guard #available(iOS 26.0, *) else {
+            throw XCTSkip("Requires iOS 26")
+        }
+
+        // Given
+        let storageManager = MockStorageManager()
+        let order = MockOrders().sampleOrder()
+        let storesManager = OrderDetailStoreManagerFactory.createManager(order: order)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+        let viewController = OrderDetailsViewController(viewModel: viewModel)
+
+        // When
+        viewController.loadViewIfNeeded()
+
+        // Then
+        let tableView = try Self.mirror(of: viewController).tableView
+        let refreshControls = tableView.subviews.compactMap { $0 as? UIRefreshControl }
+        let refreshControl = try XCTUnwrap(refreshControls.first)
+        XCTAssertEqual(refreshControls.count, 1)
+        XCTAssertNil(tableView.refreshControl)
+        XCTAssertTrue(refreshControl.isHidden)
+        XCTAssertFalse(refreshControl.isEnabled)
+    }
+
+    @MainActor
     func test_products_cell_is_not_visible_on_order_with_no_items() throws {
         // Given
         let storageManager = MockStorageManager()
@@ -105,6 +131,57 @@ final class OrderDetailsViewControllerTests: XCTestCase {
         default:
             XCTFail("Expected OrderFormHostingController to be presented, got: \(String(describing: presentationVerifier.presentedViewController))")
         }
+    }
+
+    @MainActor
+    func test_issue_refund_when_order_has_applied_gift_card_then_presents_unsupported_alert() throws {
+        // Given
+        let presentationVerifier = PresentationVerifier()
+        let storageManager = MockStorageManager()
+        let giftCard = OrderGiftCard(giftCardID: 1, code: "ABCD-1234", amount: 10)
+        let order = MockOrders().sampleOrder().copy(appliedGiftCards: [giftCard])
+        let storesManager = OrderDetailStoreManagerFactory.createManager(order: order)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+        let viewController = OrderDetailsViewController(viewModel: viewModel)
+        _ = try XCTUnwrap(viewController.view)
+        viewController.viewWillAppear(false)
+        viewModel.reloadSections()
+        let mirror = try Self.mirror(of: viewController)
+        let cell = try XCTUnwrap(Self.findCell(type: IssueRefundTableViewCell.self, on: mirror.tableView)?.cell)
+
+        // When
+        cell.issueRefundWasPressed()
+
+        // Then
+        let alert: UIAlertController? = presentationVerifier.verify(animated: true, presentingViewController: viewController)
+        XCTAssertEqual(alert?.title, "Refund from your store admin")
+        XCTAssertEqual(alert?.message,
+                       "This order was paid with a gift card. Refunding here won’t restore the gift-card balance. " +
+                       "To refund correctly, please process it from your store admin on the web.")
+        XCTAssertEqual(alert?.actions.map(\.title), ["OK"])
+    }
+
+    @MainActor
+    func test_issue_refund_when_order_has_no_applied_gift_cards_then_presents_refund_flow() throws {
+        // Given
+        let presentationVerifier = PresentationVerifier()
+        let storageManager = MockStorageManager()
+        let order = MockOrders().sampleOrder().copy(appliedGiftCards: [])
+        let storesManager = OrderDetailStoreManagerFactory.createManager(order: order)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+        let viewController = OrderDetailsViewController(viewModel: viewModel)
+        _ = try XCTUnwrap(viewController.view)
+        viewController.viewWillAppear(false)
+        viewModel.reloadSections()
+        let mirror = try Self.mirror(of: viewController)
+        let cell = try XCTUnwrap(Self.findCell(type: IssueRefundTableViewCell.self, on: mirror.tableView)?.cell)
+
+        // When
+        cell.issueRefundWasPressed()
+
+        // Then
+        let refundFlow: IssueRefundCoordinatingController? = presentationVerifier.verify(animated: true, presentingViewController: viewController)
+        XCTAssertNotNil(refundFlow)
     }
 }
 

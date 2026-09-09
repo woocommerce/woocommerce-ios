@@ -112,16 +112,11 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var posCatalogFileBlockedByHostAt: Date?
 
-    /// The last time the sunset warning banner was dismissed for this store.
-    /// Used to throttle the banner to once every 14 days.
-    ///
-    public var lastSunsetWarningDismissedDate: Date?
+    /// Whether the site last reported an HTTP URL that the app had to normalize to HTTPS.
+    public var requiresHTTPSConfigurationUpdate: Bool?
 
-    /// Whether this site is eligible for In-Person Payments countries gated by remote flags.
-    /// `nil` until the eligibility refresher has run for the first time. Cached based on
-    /// the relevant remote feature flag for the site's country, with US/PR/CA/GB
-    /// short-circuited to `true`. Australia uses its own WooPayments-only flag.
-    public var isCardPresentPaymentsCountryExpansionEligible: Bool?
+    /// The last time the merchant dismissed the HTTPS configuration warning for this store.
+    public var lastHTTPSConfigurationWarningDismissedDate: Date?
 
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
@@ -149,8 +144,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 firstPOSCatalogSyncDate: Date? = nil,
                 syncPOSCatalogOverCellular: Bool = true,
                 posCatalogFileBlockedByHostAt: Date? = nil,
-                lastSunsetWarningDismissedDate: Date? = nil,
-                isCardPresentPaymentsCountryExpansionEligible: Bool? = nil) {
+                requiresHTTPSConfigurationUpdate: Bool? = nil,
+                lastHTTPSConfigurationWarningDismissedDate: Date? = nil) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -177,8 +172,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.firstPOSCatalogSyncDate = firstPOSCatalogSyncDate
         self.syncPOSCatalogOverCellular = syncPOSCatalogOverCellular
         self.posCatalogFileBlockedByHostAt = posCatalogFileBlockedByHostAt
-        self.lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate
-        self.isCardPresentPaymentsCountryExpansionEligible = isCardPresentPaymentsCountryExpansionEligible
+        self.requiresHTTPSConfigurationUpdate = requiresHTTPSConfigurationUpdate
+        self.lastHTTPSConfigurationWarningDismissedDate = lastHTTPSConfigurationWarningDismissedDate
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -206,8 +201,8 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              lastPOSOpenedDate: lastPOSOpenedDate,
                              firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
                              posCatalogFileBlockedByHostAt: posCatalogFileBlockedByHostAt,
-                             lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
-                             isCardPresentPaymentsCountryExpansionEligible: isCardPresentPaymentsCountryExpansionEligible)
+                             requiresHTTPSConfigurationUpdate: requiresHTTPSConfigurationUpdate,
+                             lastHTTPSConfigurationWarningDismissedDate: lastHTTPSConfigurationWarningDismissedDate)
     }
 }
 
@@ -248,11 +243,9 @@ extension GeneralStoreSettings {
         self.firstPOSCatalogSyncDate = try container.decodeIfPresent(Date.self, forKey: .firstPOSCatalogSyncDate)
         self.syncPOSCatalogOverCellular = try container.decodeIfPresent(Bool.self, forKey: .syncPOSCatalogOverCellular) ?? true
         self.posCatalogFileBlockedByHostAt = try container.decodeIfPresent(Date.self, forKey: .posCatalogFileBlockedByHostAt)
-        self.lastSunsetWarningDismissedDate = try container.decodeIfPresent(Date.self, forKey: .lastSunsetWarningDismissedDate)
-        self.isCardPresentPaymentsCountryExpansionEligible = try container.decodeIfPresent(
-            Bool.self,
-            forKey: .isCardPresentPaymentsCountryExpansionEligible
-        )
+        self.requiresHTTPSConfigurationUpdate = try container.decodeIfPresent(Bool.self, forKey: .requiresHTTPSConfigurationUpdate)
+        self.lastHTTPSConfigurationWarningDismissedDate = try container.decodeIfPresent(Date.self,
+                                                                                          forKey: .lastHTTPSConfigurationWarningDismissedDate)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

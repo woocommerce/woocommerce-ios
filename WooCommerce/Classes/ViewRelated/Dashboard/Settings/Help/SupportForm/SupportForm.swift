@@ -172,7 +172,9 @@ struct SupportForm: View {
                 Divider()
 
                 Button {
-                    viewModel.submitSupportRequest()
+                    Task {
+                        await viewModel.submitSupportRequest()
+                    }
                 } label: {
                     Text(Localization.submitRequest)
                 }
@@ -314,7 +316,7 @@ struct SupportFormProvider: PreviewProvider {
                 .init(title: "WooPayments", datasource: MockDataSource()),
                 .init(title: "WooCommerce Plugins", datasource: MockDataSource()),
                 .init(title: "Other Plugins", datasource: MockDataSource()),
-            ]))
+            ], mobileStatusReportProvider: MobileStatusReportProvider()))
         }
     }
 }

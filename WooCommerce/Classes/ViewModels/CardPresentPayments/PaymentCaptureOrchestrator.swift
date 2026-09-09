@@ -80,12 +80,14 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        let readerEventFilter = CardReaderEventPresentationFilter()
         handlersForActivePayment = PaymentHandlers(onPreparingReader: onPreparingReader,
                                                    onWaitingForInput: onWaitingForInput,
                                                    onCardInserted: onCardInserted,
                                                    onProcessingMessage: onProcessingMessage,
                                                    onDisplayMessage: onDisplayMessage,
                                                    onProcessingCompletion: onProcessingCompletion,
+                                                   readerEventFilter: readerEventFilter,
                                                    countryCode: countryCode,
                                                    terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled)
         onPreparingReader()
@@ -110,11 +112,12 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
             countryCode: countryCode,
             terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled,
             onCardReaderMessage: { event in
+                guard let event = readerEventFilter.filter(event) else { return }
                 switch event {
                 case .waitingForInput(let inputMethods):
                     onWaitingForInput(inputMethods)
                 case .displayMessage(let message):
-                    onDisplayMessage(message)
+                    onDisplayMessage(message.text)
                 case .removeCardRequested(let message):
                     onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
@@ -129,6 +132,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                 onProcessingCompletion(intent)
             },
             onCompletion: { [weak self] result in
+                readerEventFilter.reset()
                 self?.allowPassPresentation()
                 self?.completePaymentIntentCapture(
                     order: order,
@@ -148,6 +152,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         }
 
         handlers.onPreparingReader()
+        handlers.readerEventFilter.reset()
 
         let retryPaymentAction = CardPresentPaymentAction.retryPayment(
             siteID: order.siteID,
@@ -155,11 +160,12 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
             countryCode: handlers.countryCode,
             terminalPaymentPreparationEnabled: handlers.terminalPaymentPreparationEnabled,
             onCardReaderMessage: { event in
+                guard let event = handlers.readerEventFilter.filter(event) else { return }
                 switch event {
                 case .waitingForInput(let inputMethods):
                     handlers.onWaitingForInput(inputMethods)
                 case .displayMessage(let message):
-                    handlers.onDisplayMessage(message)
+                    handlers.onDisplayMessage(message.text)
                 case .removeCardRequested(let message):
                     handlers.onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
@@ -174,6 +180,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                 handlers.onProcessingCompletion(intent)
             },
             onCompletion: { [weak self] result in
+                handlers.readerEventFilter.reset()
                 self?.allowPassPresentation()
                 self?.completePaymentIntentCapture(
                     order: order,
@@ -186,6 +193,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        handlersForActivePayment?.readerEventFilter.reset()
         let action = CardPresentPaymentAction.cancelPayment() { [weak self] result in
             self?.allowPassPresentation()
             onCompletion(result)
@@ -407,6 +415,7 @@ private extension PaymentCaptureOrchestrator {
         let onProcessingMessage: () -> Void
         let onDisplayMessage: (String) -> Void
         let onProcessingCompletion: (PaymentIntent) -> Void
+        let readerEventFilter: CardReaderEventPresentationFilter
         let countryCode: CountryCode
         let terminalPaymentPreparationEnabled: Bool
     }

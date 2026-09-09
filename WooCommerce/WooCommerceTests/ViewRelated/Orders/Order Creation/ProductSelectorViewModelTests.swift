@@ -35,6 +35,116 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_sync_when_currency_is_configured_then_retrieves_and_paginates_products_in_memory_with_order_currency() {
+        // Given
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 99, name: "Cached USD product", purchasable: true))
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "GBP",
+                                                 storageManager: storageManager,
+                                                 stores: stores)
+        let firstPage = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "First", price: "10", purchasable: true)
+        let secondPage = Product.fake().copy(siteID: sampleSiteID, productID: 2, name: "Second", price: "20", purchasable: true)
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProductsTransiently(_, currency, pageNumber, _, _, _, _, _, _, _, _, onCompletion):
+                XCTAssertEqual(currency, "GBP")
+                onCompletion(.success((pageNumber == 1 ? [firstPage] : [secondPage], pageNumber == 1)))
+            default:
+                XCTFail("Currency mode dispatched a persistent product action")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 1, onCompletion: nil)
+        viewModel.sync(pageNumber: 2, pageSize: 1, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.map(\.productOrVariationID), [1, 2])
+        XCTAssertEqual(viewModel.productRows.first?.priceLabel, "£10.00")
+        XCTAssertFalse(viewModel.productRows.contains { $0.productOrVariationID == 99 })
+    }
+
+    func test_sync_when_currency_and_search_term_are_configured_then_searches_and_paginates_in_memory_without_cached_search() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "EUR",
+                                                 storageManager: storageManager,
+                                                 stores: stores)
+        viewModel.searchTerm = "shirt"
+        var searchedPages: [Int] = []
+
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProductsTransiently(_, currency, keyword, _, pageNumber, _, _, _, _, _, _, _, onCompletion):
+                searchedPages.append(pageNumber)
+                XCTAssertEqual(currency, "EUR")
+                XCTAssertEqual(keyword, "shirt")
+                let product = Product.fake().copy(siteID: self.sampleSiteID, productID: Int64(pageNumber), purchasable: true)
+                onCompletion(.success(([product], pageNumber == 1)))
+            default:
+                XCTFail("Currency search dispatched a cached or persistent product action")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 1, onCompletion: nil)
+        viewModel.sync(pageNumber: 2, pageSize: 1, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(searchedPages, [1, 2])
+        XCTAssertEqual(viewModel.productRows.map(\.productOrVariationID), [1, 2])
+    }
+
+    func test_sync_when_transient_product_retrieval_fails_then_shows_sync_notice() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "GBP",
+                                                 storageManager: storageManager,
+                                                 stores: stores)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .retrieveProductsTransiently(_, _, _, _, _, _, _, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.notice, ProductSelectorViewModel.NoticeFactory.productSyncNotice(retryAction: {}))
+    }
+
+    func test_sync_when_transient_product_search_fails_then_shows_search_notice() {
+        // Given
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "GBP",
+                                                 storageManager: storageManager,
+                                                 stores: stores)
+        viewModel.searchTerm = "shirt"
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProductsTransiently(_, _, _, _, _, _, _, _, _, _, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "Error", code: 0)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(viewModel.notice, ProductSelectorViewModel.NoticeFactory.productSearchNotice(retryAction: {}))
+    }
+
     func test_view_model_is_initialized_with_default_values() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID, source: .orderForm(flow: .creation))
@@ -1553,6 +1663,8 @@ final class ProductSelectorViewModelTests: XCTestCase {
         // Given
         let bundleProduct = createAndInsertBundleProduct(bundleItems: [.fake()])
         let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
+        // The bundle's contents are checked before its configuration screen is offered.
+        mockBundledProductsRetrieval([Product.fake().copy(siteID: sampleSiteID, purchasable: true)])
 
         // When
         let productToConfigure: Yosemite.Product = try waitFor { promise in
@@ -1671,6 +1783,72 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.favoriteProductIDs, sampleProductIDs)
     }
 
+    func test_sync_when_currency_and_empty_favorites_filter_are_configured_then_returns_empty_without_request() {
+        // Given
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        favoriteProductsUseCase.favoriteProductIDsValue = []
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "GBP",
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 favoriteProductsUseCase: favoriteProductsUseCase)
+        viewModel.updateFilters(.init(stockStatus: nil,
+                                      productStatus: nil,
+                                      promotableProductType: nil,
+                                      productCategory: nil,
+                                      favoriteProduct: FavoriteProductsFilter(),
+                                      numberOfActiveFilters: 1))
+        var dispatchedAction = false
+        stores.whenReceivingAction(ofType: ProductAction.self) { _ in
+            dispatchedAction = true
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertFalse(dispatchedAction)
+        XCTAssertTrue(viewModel.productRows.isEmpty)
+        XCTAssertEqual(viewModel.syncStatus, .empty)
+    }
+
+    func test_sync_when_currency_search_and_favorites_filter_are_configured_then_forwards_favorite_productIDs() async {
+        // Given
+        let favoriteProductsUseCase = MockFavoriteProductsUseCase()
+        favoriteProductsUseCase.favoriteProductIDsValue = [23, 89, 432]
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "GBP",
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 favoriteProductsUseCase: favoriteProductsUseCase)
+        await viewModel.loadFavoriteProductIDs()
+        viewModel.updateFilters(.init(stockStatus: nil,
+                                      productStatus: nil,
+                                      promotableProductType: nil,
+                                      productCategory: nil,
+                                      favoriteProduct: FavoriteProductsFilter(),
+                                      numberOfActiveFilters: 1))
+        viewModel.searchTerm = "shirt"
+        var requestedProductIDs: [Int64] = []
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            switch action {
+            case let .searchProductsTransiently(_, _, _, _, _, _, _, _, _, _, productIDs, _, onCompletion):
+                requestedProductIDs = productIDs
+                onCompletion(.success((products: [], hasNextPage: false)))
+            default:
+                XCTFail("Received unsupported action: \(action)")
+            }
+        }
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(requestedProductIDs, favoriteProductsUseCase.favoriteProductIDsValue)
+    }
+
     // MARK: - Resetting filters
 
     func test_it_resets_filters_when_tapping_close_button() {
@@ -1745,6 +1923,174 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(viewModel.filterListViewModel.criteria.stockStatus, .inStock)
+    }
+
+    // MARK: - Products unsupported in order creation
+
+    func test_productRow_when_source_is_orderForm_and_product_is_subscription_then_selectedState_is_unsupported() {
+        // Given
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.subscription.rawValue, purchasable: true))
+
+        // When
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.first?.selectedState,
+                       .unsupported(reason: "Subscription products are not supported for order creation"))
+    }
+
+    func test_productRow_when_source_is_orderForm_and_product_is_bookable_then_selectedState_is_unsupported() {
+        // Given
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.booking.rawValue, purchasable: true))
+
+        // When
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.first?.selectedState,
+                       .unsupported(reason: "Bookable products are not supported for order creation"))
+    }
+
+    func test_productRow_when_source_is_orderForm_and_product_is_legacyBooking_then_selectedState_is_unsupported() {
+        // Given
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.legacyBooking.rawValue, purchasable: true))
+
+        // When
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.first?.selectedState,
+                       .unsupported(reason: "Bookable products are not supported for order creation"))
+    }
+
+    // MARK: - Bundles holding an unsupported product
+
+    func test_configuring_a_bundle_when_it_holds_a_subscription_child_then_the_configuration_is_not_opened() throws {
+        // Given
+        insertBundle(productID: 1, childID: 2)
+        mockBundledProductsRetrieval([Product.fake().copy(siteID: sampleSiteID,
+                                                          productID: 2,
+                                                          productTypeKey: ProductType.subscription.rawValue)])
+        var configuredProduct: Yosemite.Product?
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 onProductSelectionStateChanged: { _, _ in },
+                                                 onConfigureProductRow: { configuredProduct = $0 })
+
+        // When
+        try XCTUnwrap(viewModel.productRows.first?.configure)()
+
+        // Then
+        waitUntil {
+            viewModel.notice != nil
+        }
+        XCTAssertEqual(viewModel.notice?.title, "Bundles with subscription products are not supported")
+        XCTAssertNil(configuredProduct)
+    }
+
+    func test_configuring_a_bundle_when_its_children_cannot_be_loaded_then_the_configuration_is_not_opened() throws {
+        // Given
+        insertBundle(productID: 1, childID: 2)
+        // The child lookup returns nothing, so whether the bundle holds an unsupported product is unknowable.
+        mockBundledProductsRetrieval([])
+        var configuredProduct: Yosemite.Product?
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 onProductSelectionStateChanged: { _, _ in },
+                                                 onConfigureProductRow: { configuredProduct = $0 })
+
+        // When
+        try XCTUnwrap(viewModel.productRows.first?.configure)()
+
+        // Then
+        waitUntil {
+            viewModel.notice != nil
+        }
+        XCTAssertEqual(viewModel.notice?.title, "Cannot check the bundled products. Please try again.")
+        XCTAssertNil(configuredProduct)
+    }
+
+    func test_configuring_a_bundle_when_it_holds_only_supported_children_then_the_configuration_is_opened() throws {
+        // Given
+        insertBundle(productID: 1, childID: 2)
+        mockBundledProductsRetrieval([Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true)])
+        var configuredProduct: Yosemite.Product?
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 onProductSelectionStateChanged: { _, _ in },
+                                                 onConfigureProductRow: { configuredProduct = $0 })
+
+        // When
+        try XCTUnwrap(viewModel.productRows.first?.configure)()
+
+        // Then
+        waitUntil {
+            configuredProduct != nil
+        }
+        XCTAssertNil(viewModel.notice)
+    }
+
+    func test_productRow_when_source_is_not_orderForm_and_product_is_subscription_then_selectedState_is_notSelected() {
+        // Given
+        insert(Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.subscription.rawValue, purchasable: true))
+
+        // When
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .couponForm,
+                                                 storageManager: storageManager)
+
+        // Then
+        XCTAssertEqual(viewModel.productRows.first?.selectedState, .notSelected)
+    }
+}
+
+// MARK: - Bundle utils
+private extension ProductSelectorViewModelTests {
+    /// Inserts a purchasable bundle product holding a single child.
+    ///
+    /// The bundled items have to be inserted as storage objects of their own: `StorageProduct.update(with:)`
+    /// does not carry them over, and a bundle which reads back with no children is treated as having nothing
+    /// to check.
+    @discardableResult
+    func insertBundle(productID: Int64, childID: Int64) -> Yosemite.Product {
+        let bundleItem = ProductBundleItem.fake().copy(bundledItemID: childID, productID: childID)
+        let bundle = Product.fake().copy(siteID: sampleSiteID,
+                                         productID: productID,
+                                         productTypeKey: ProductType.bundle.rawValue,
+                                         purchasable: true,
+                                         bundledItems: [bundleItem])
+        storageManager.performAndSave({ storage in
+            let storageProduct = storage.insertNewObject(ofType: StorageProduct.self)
+            storageProduct.update(with: bundle)
+
+            let storageBundleItem = storage.insertNewObject(ofType: StorageProductBundleItem.self)
+            storageBundleItem.update(with: bundleItem)
+            storageBundleItem.product = storageProduct
+        }, completion: {}, on: .main)
+
+        return bundle
+    }
+
+    /// Stubs the bundled product lookup so a bundle's children resolve to `children`.
+    func mockBundledProductsRetrieval(_ children: [Yosemite.Product]) {
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .retrieveProductsIfNeeded(_, _, onCompletion) = action else {
+                return
+            }
+            onCompletion(.success(children))
+        }
     }
 }
 

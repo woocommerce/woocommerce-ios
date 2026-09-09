@@ -12,6 +12,7 @@ struct ProductListItem: Equatable, GeneratedCopiable {
     let productTypeKey: String
     let statusKey: String        // draft, pending, private, published
     let sku: String?
+    let price: String
 
     let manageStock: Bool
     let stockQuantity: Decimal?    // Core API reports Int or null; some extensions allow decimal values as well
@@ -48,6 +49,7 @@ struct ProductListItem: Equatable, GeneratedCopiable {
          productTypeKey: String,
          statusKey: String,
          sku: String?,
+         price: String,
          manageStock: Bool,
          stockQuantity: Decimal?,
          stockStatusKey: String,
@@ -61,6 +63,7 @@ struct ProductListItem: Equatable, GeneratedCopiable {
         self.productTypeKey = productTypeKey
         self.statusKey = statusKey
         self.sku = sku
+        self.price = price
         self.manageStock = manageStock
         self.stockQuantity = stockQuantity
         self.stockStatusKey = stockStatusKey
@@ -77,6 +80,7 @@ struct ProductListItem: Equatable, GeneratedCopiable {
         self.productTypeKey = storageProduct.productTypeKey
         self.statusKey = storageProduct.statusKey
         self.sku = storageProduct.sku
+        self.price = storageProduct.price
         self.manageStock = storageProduct.manageStock
         self.stockQuantity = {
             var quantity: Decimal?

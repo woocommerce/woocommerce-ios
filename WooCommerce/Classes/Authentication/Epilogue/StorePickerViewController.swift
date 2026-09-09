@@ -428,33 +428,18 @@ extension StorePickerViewController {
 //
 private extension StorePickerViewController {
 
-    /// Sets the first available Store as the default one. If possible!
+    /// Preselects a Store when there is an unambiguous choice.
     ///
     func preselectStoreIfPossible() {
 
-        guard case let .available(sites) = viewModel.state, let firstSite = sites.first(where: { $0.isWooCommerceActive }) else {
+        guard case let .available(sites) = viewModel.state else {
             return
         }
         guard currentlySelectedSite == nil else {
             return
         }
 
-        // If there is a defaultSite already set, select it
-        if let site = ServiceLocator.stores.sessionManager.defaultSite {
-            currentlySelectedSite = site
-            return
-        }
-
-        // If a site address was passed in credentials, select it
-        if case let .wpcom(_, _, siteAddress) = ServiceLocator.stores.sessionManager.defaultCredentials,
-           let site = sites.first(where: { $0.url == siteAddress }),
-           site.isWooCommerceActive {
-            currentlySelectedSite = site
-            return
-        }
-
-        // Otherwise select the first site in the list
-        currentlySelectedSite = firstSite
+        currentlySelectedSite = viewModel.siteToPreselect(from: sites)
     }
 
     /// Reloads the UI.

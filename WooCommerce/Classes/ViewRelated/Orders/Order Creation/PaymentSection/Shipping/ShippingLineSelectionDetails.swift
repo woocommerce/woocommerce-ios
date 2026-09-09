@@ -10,27 +10,31 @@ struct ShippingLineSelectionDetails: View {
 
     @Environment(\.dismiss) var dismiss
 
+    @State private var isMethodPickerPresented = false
+    @FocusState private var isNameFieldFocused: Bool
+
     var body: some View {
         NavigationStack {
             List {
                 // MARK: Shipping Method
-                NavigationLink {
-                    SingleSelectionList(title: Localization.methodTitle,
-                                        items: viewModel.shippingMethods,
-                                        contentKeyPath: \.title,
-                                        selected: $viewModel.selectedMethod,
-                                        showDoneButton: false,
-                                        backgroundColor: nil) { method in
-                        viewModel.trackShippingMethodSelected(method)
-                    }
+                Button {
+                    // Dismissing the keyboard before the push keeps SwiftUI's keyboard avoidance working
+                    // when this screen returns: pushing while the keyboard is visible permanently breaks
+                    // the keyboard safe area for the rest of the sheet's lifetime.
+                    endEditing()
+                    isMethodPickerPresented = true
                 } label: {
-                    VStack(alignment: .leading) {
-                        Text(Localization.methodTitle)
-                            .font(.title3)
-                            .foregroundColor(Color(.textSubtle))
-                        Text(viewModel.selectedMethod.title)
-                            .font(.title2.bold())
-                            .foregroundColor(viewModel.selectedMethodColor)
+                    HStack {
+                        VStack(alignment: .leading) {
+                            Text(Localization.methodTitle)
+                                .font(.title3)
+                                .foregroundColor(Color(.textSubtle))
+                            Text(viewModel.selectedMethod.title)
+                                .font(.title2.bold())
+                                .foregroundColor(viewModel.selectedMethodColor)
+                        }
+                        Spacer()
+                        DisclosureIndicator()
                     }
                 }
 
@@ -49,6 +53,7 @@ struct ShippingLineSelectionDetails: View {
                         .foregroundColor(Color(.textSubtle))
                     TextField(Localization.namePlaceholder, text: $viewModel.methodTitle)
                         .secondaryTitleStyle()
+                        .focused($isNameFieldFocused)
                         .accessibilityIdentifier(Accessibility.nameField)
                 }
 
@@ -75,6 +80,16 @@ struct ShippingLineSelectionDetails: View {
                 .padding()
                 .background(Color(.systemBackground))
             })
+            .navigationDestination(isPresented: $isMethodPickerPresented) {
+                SingleSelectionList(title: Localization.methodTitle,
+                                    items: viewModel.shippingMethods,
+                                    contentKeyPath: \.title,
+                                    selected: $viewModel.selectedMethod,
+                                    showDoneButton: false,
+                                    backgroundColor: nil) { method in
+                    viewModel.trackShippingMethodSelected(method)
+                }
+            }
             .navigationTitle(Localization.shipping)
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
@@ -85,6 +100,17 @@ struct ShippingLineSelectionDetails: View {
                 }
             }
         }
+    }
+}
+
+private extension ShippingLineSelectionDetails {
+    func endEditing() {
+        viewModel.formattableAmountViewModel.isFocused = false
+        isNameFieldFocused = false
+        // Resign synchronously as well: the focus bindings above take effect on the next view update,
+        // which is after the push has started — late enough for UIKit to capture the field as the
+        // navigation stack's first responder and restore it (with the keyboard) on pop.
+        UIApplication.shared.sendAction(#selector(UIResponder.resignFirstResponder), to: nil, from: nil, for: nil)
     }
 }
 

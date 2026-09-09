@@ -2003,6 +2003,54 @@ final class PushNotificationsManagerTests: XCTestCase {
         )
     }
 
+    func test_handleNotificationInTheForeground_when_authenticated_without_wpcom_and_no_default_site_then_tracks_selected_site_id() async throws {
+        // Given — application-password login before the site is synced: no `defaultSite`, only the selected store ID.
+        storesManager.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+        storesManager.sessionManager.setStoreId(500)
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        let payload = notificationPayload(noteID: nil, type: .storeOrder, siteID: 999, title: Sample.defaultTitle)
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then — the unreliable payload site ID must not leak into `blog_id`.
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "push_notification_received"))
+        let properties = analyticsProvider.receivedProperties[index]
+        XCTAssertEqual(properties["blog_id"] as? Int64, 500)
+        XCTAssertEqual(properties["is_from_selected_site"] as? Bool, true)
+    }
+
+    func test_handleNotificationInTheForeground_when_payload_has_no_site_id_then_tracks_without_site_properties() async throws {
+        // Given — WPCom session; the payload carries no `blog` key.
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(100)
+        await insertSitesIntoStorageWithCapabilities([
+            (siteID: 100, url: "https://alpha.example", isWPCom: true, isJetpackInstalled: true, isJetpackConnected: true)
+        ])
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        var payload = notificationPayload(noteID: 1234, type: .storeOrder, title: Sample.defaultTitle)
+        payload.removeValue(forKey: "blog")
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then — no site attribution at all, rather than the selected site's.
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "push_notification_received"))
+        let properties = analyticsProvider.receivedProperties[index]
+        XCTAssertEqual(properties["push_notification_type"] as? String, "store_order")
+        XCTAssertNil(properties["blog_id"])
+        XCTAssertNil(properties["site_url"])
+        XCTAssertNil(properties["is_from_selected_site"])
+    }
+
     func test_handleUserResponseToNotification_when_app_is_inactive_then_alert_pressed_event_carries_origin_site_properties() async throws {
         // Given — selected site is 100; the tapped notification comes from stored site 200.
         let selectedSiteID: Int64 = 100

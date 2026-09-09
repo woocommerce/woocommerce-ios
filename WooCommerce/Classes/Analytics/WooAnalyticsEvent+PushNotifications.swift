@@ -38,6 +38,37 @@ extension WooAnalyticsEvent {
                               error: error)
         }
 
+        /// Tracked when a push notification is received while the app is running. Attributes `blog_id` /
+        /// `site_url` to the notification's origin site rather than the currently selected one.
+        static func pushNotificationReceived(originSiteID: Int64?,
+                                             originSite: Site?,
+                                             properties: [String: WooAnalyticsEventPropertyType]) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pushNotificationReceived,
+                              properties: originSiteProperties(originSiteID: originSiteID, originSite: originSite, merging: properties))
+        }
+
+        /// Tracked when the user opens the app by tapping a push notification. Attributes `blog_id` /
+        /// `site_url` to the notification's origin site rather than the currently selected one.
+        static func pushNotificationAlertPressed(originSiteID: Int64?,
+                                                 originSite: Site?,
+                                                 properties: [String: WooAnalyticsEventPropertyType]) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pushNotificationAlertPressed,
+                              properties: originSiteProperties(originSiteID: originSiteID, originSite: originSite, merging: properties))
+        }
+
+        /// Builds properties for an event about the notification's origin site. When the origin site isn't
+        /// available locally (e.g. a store no longer in the account), `blog_id` still carries the payload's
+        /// site ID so the origin is never lost.
+        private static func originSiteProperties(originSiteID: Int64?,
+                                                 originSite: Site?,
+                                                 merging eventProperties: [String: WooAnalyticsEventPropertyType]) -> [String: WooAnalyticsEventPropertyType] {
+            var properties = properties(for: originSite)
+            if originSite == nil, let originSiteID {
+                properties[SitePropertyKeys.blogID] = originSiteID
+            }
+            return properties.merging(eventProperties) { _, event in event }
+        }
+
         /// Combines the target site's analytics properties with session-level fields (`store_id`,
         /// `cached_woo_core_version`) that the default-site enrichment would normally attach.
         /// These events opt out of that enrichment to protect the target-site attribution, so the
@@ -52,6 +83,10 @@ extension WooAnalyticsEvent {
                 properties[SessionPropertyKeys.cachedWooCoreVersion] = cachedWooCoreVersion
             }
             return properties
+        }
+
+        private enum SitePropertyKeys {
+            static let blogID = "blog_id"
         }
 
         private enum SessionPropertyKeys {

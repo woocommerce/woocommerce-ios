@@ -153,7 +153,7 @@ let package = Package(
                 "WooFoundationCore",
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
             ],
-            swiftSettings: swift6
+            swiftSettings: swift5
         ),
         .target(
             name: "Fakes",

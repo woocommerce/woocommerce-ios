@@ -62,6 +62,16 @@ public enum ProductAction: Action {
                              shouldDeleteStoredProductsOnFirstPage: Bool = true,
                              onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Synchronizes a page of products and additional products needed for order creation in one storage update.
+    ///
+    case synchronizeProductsForOrderCreation(siteID: Int64,
+                                              pageNumber: Int,
+                                              pageSize: Int = ProductsRemote.Default.pageSize,
+                                              sortOrder: ProductsSortOrder,
+                                              additionalProductIDs: [Int64],
+                                              shouldDeleteStoredProductsOnFirstPage: Bool = true,
+                                              onCompletion: (Result<Bool, Error>) -> Void)
+
     /// Retrieves a page of products without writing the results to local storage.
     ///
     case retrieveProductsTransiently(siteID: Int64,

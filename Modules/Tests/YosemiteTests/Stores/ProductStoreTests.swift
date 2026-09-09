@@ -386,6 +386,137 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertNil(try XCTUnwrap(network.queryParametersDictionary)["currency"])
     }
 
+    func test_synchronizeProductsForOrderCreation_persists_page_and_additional_products_and_uses_page_for_pagination() throws {
+        // Given
+        let pageProducts = (1...25).map { Product.fake().copy(siteID: sampleSiteID, productID: Int64($0), name: "Page \($0)") }
+        let overlappingProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Additional 1")
+        let additionalProduct = Product.fake().copy(siteID: sampleSiteID, productID: 26, name: "Additional 26")
+        let additionalProductIDs = [overlappingProduct.productID, additionalProduct.productID]
+        let remote = MockProductsRemote()
+        remote.whenLoadingAllProducts(siteID: sampleSiteID, thenReturn: .success(pageProducts))
+        remote.whenLoadingProducts(siteID: sampleSiteID,
+                                   productIDs: additionalProductIDs,
+                                   thenReturn: .success([overlappingProduct, additionalProduct]))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        var result: Result<Bool, Error>?
+
+        // When
+        waitForExpectation { expectation in
+            let action = ProductAction.synchronizeProductsForOrderCreation(siteID: sampleSiteID,
+                                                                           pageNumber: 1,
+                                                                           pageSize: 25,
+                                                                           sortOrder: .nameAscending,
+                                                                           additionalProductIDs: additionalProductIDs) {
+                result = $0
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(try result?.get(), true)
+        XCTAssertEqual(remote.requestedProductIDsForLoading, additionalProductIDs)
+        XCTAssertEqual(viewStorage.loadProducts(siteID: sampleSiteID)?.count, 26)
+        XCTAssertEqual(viewStorage.loadProduct(siteID: sampleSiteID, productID: 1)?.name, "Page 1")
+        XCTAssertEqual(viewStorage.loadProduct(siteID: sampleSiteID, productID: 26)?.name, "Additional 26")
+    }
+
+    func test_synchronizeProductsForOrderCreation_when_additional_request_fails_preserves_cached_requested_products() throws {
+        // Given
+        let pageProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1)
+        let cachedAdditionalProduct = Product.fake().copy(siteID: sampleSiteID, productID: 26)
+        let unrelatedCachedProduct = Product.fake().copy(siteID: sampleSiteID, productID: 99)
+        insertStoredProduct(cachedAdditionalProduct)
+        insertStoredProduct(unrelatedCachedProduct)
+        let remote = MockProductsRemote()
+        remote.whenLoadingAllProducts(siteID: sampleSiteID, thenReturn: .success([pageProduct]))
+        remote.whenLoadingProducts(siteID: sampleSiteID,
+                                   productIDs: [cachedAdditionalProduct.productID],
+                                   thenReturn: .failure(NetworkError.timeout()))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        var result: Result<Bool, Error>?
+
+        // When
+        waitForExpectation { expectation in
+            let action = ProductAction.synchronizeProductsForOrderCreation(siteID: sampleSiteID,
+                                                                           pageNumber: 1,
+                                                                           pageSize: 25,
+                                                                           sortOrder: .nameAscending,
+                                                                           additionalProductIDs: [cachedAdditionalProduct.productID]) {
+                result = $0
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(try result?.get(), false)
+        XCTAssertNotNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: pageProduct.productID))
+        XCTAssertNotNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: cachedAdditionalProduct.productID))
+        XCTAssertNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: unrelatedCachedProduct.productID))
+    }
+
+    func test_synchronizeProductsForOrderCreation_when_additional_request_omits_cached_product_removes_it() throws {
+        // Given
+        let pageProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1)
+        let cachedAdditionalProduct = Product.fake().copy(siteID: sampleSiteID, productID: 26)
+        insertStoredProduct(cachedAdditionalProduct)
+        let remote = MockProductsRemote()
+        remote.whenLoadingAllProducts(siteID: sampleSiteID, thenReturn: .success([pageProduct]))
+        remote.whenLoadingProducts(siteID: sampleSiteID,
+                                   productIDs: [cachedAdditionalProduct.productID],
+                                   thenReturn: .success([]))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+
+        // When
+        waitForExpectation { expectation in
+            let action = ProductAction.synchronizeProductsForOrderCreation(siteID: sampleSiteID,
+                                                                           pageNumber: 1,
+                                                                           pageSize: 25,
+                                                                           sortOrder: .nameAscending,
+                                                                           additionalProductIDs: [cachedAdditionalProduct.productID]) { _ in
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertNotNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: pageProduct.productID))
+        XCTAssertNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: cachedAdditionalProduct.productID))
+    }
+
+    func test_synchronizeProductsForOrderCreation_when_page_request_fails_leaves_storage_untouched() throws {
+        // Given
+        let cachedProduct = Product.fake().copy(siteID: sampleSiteID, productID: 99)
+        let additionalProduct = Product.fake().copy(siteID: sampleSiteID, productID: 26)
+        insertStoredProduct(cachedProduct)
+        let remote = MockProductsRemote()
+        remote.whenLoadingAllProducts(siteID: sampleSiteID, thenReturn: .failure(NetworkError.timeout()))
+        remote.whenLoadingProducts(siteID: sampleSiteID,
+                                   productIDs: [additionalProduct.productID],
+                                   thenReturn: .success([additionalProduct]))
+        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        var result: Result<Bool, Error>?
+
+        // When
+        waitForExpectation { expectation in
+            let action = ProductAction.synchronizeProductsForOrderCreation(siteID: sampleSiteID,
+                                                                           pageNumber: 1,
+                                                                           pageSize: 25,
+                                                                           sortOrder: .nameAscending,
+                                                                           additionalProductIDs: [additionalProduct.productID]) {
+                result = $0
+                expectation.fulfill()
+            }
+            productStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertNotNil(result?.failure)
+        XCTAssertNotNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: cachedProduct.productID))
+        XCTAssertNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: additionalProduct.productID))
+    }
+
     func test_searchProductsTransiently_returns_currency_scoped_products_without_persisting_products_or_search_results() throws {
         // Given
         let expectation = expectation(description: #function)
@@ -3987,6 +4118,15 @@ private extension ProductStoreTests {
                             key: "privileges_mutated",
                             value: "zyx")
         return [meta1, meta2]
+    }
+
+    func insertStoredProduct(_ product: Networking.Product) {
+        waitForExpectation { expectation in
+            storageManager.performAndSave({ storage in
+                let storedProduct = storage.insertNewObject(ofType: Storage.Product.self)
+                storedProduct.update(with: product)
+            }, completion: expectation.fulfill, on: .main)
+        }
     }
 }
 

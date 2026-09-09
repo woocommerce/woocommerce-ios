@@ -1208,7 +1208,7 @@ private extension PushNotificationsManager {
     /// Tracks the specified Notification's Payload.
     ///
     func trackNotification(with userInfo: [AnyHashable: Any]) {
-        var properties = [String: Any]()
+        var properties = [String: WooAnalyticsEventPropertyType]()
 
         // Determine notification source - Woo driven PNs don't have `note_id` in the payload.
         // The value may be absent, Swift `nil`, or `NSNull`, so resolve it via `string(forKey:)`,
@@ -1234,19 +1234,30 @@ private extension PushNotificationsManager {
             properties[AnalyticKey.token] = theToken
         }
 
+        // Attribute the event to the notification's origin site, not the currently selected one.
         let notificationSiteID = userInfo[APNSKey.siteID] as? Int64
+        let originSite: Yosemite.Site?
         if stores.isAuthenticatedWithoutWPCom {
+            // Application-password sessions are single-site and the payload site ID is unreliable, so use the selected site.
             properties[AnalyticKey.fromSelectedSite] = true
-        } else if let siteID, let notificationSiteID {
-            properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
+            originSite = stores.sessionManager.defaultSite
+        } else {
+            originSite = notificationSiteID.flatMap { loadTargetSite(siteID: $0) }
+            if let siteID, let notificationSiteID {
+                properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
+            }
         }
 
         switch applicationState {
         case .inactive:
-            analytics.track(.pushNotificationAlertPressed, withProperties: properties)
+            analytics.track(event: .PushNotifications.pushNotificationAlertPressed(originSiteID: notificationSiteID,
+                                                                                  originSite: originSite,
+                                                                                  properties: properties))
         default:
             properties[AnalyticKey.appState] = applicationState.rawValue
-            analytics.track(.pushNotificationReceived, withProperties: properties)
+            analytics.track(event: .PushNotifications.pushNotificationReceived(originSiteID: notificationSiteID,
+                                                                              originSite: originSite,
+                                                                              properties: properties))
         }
     }
 

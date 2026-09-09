@@ -2,9 +2,9 @@
 # frozen_string_literal: true
 
 # Compares a PR build warning report against the PR base baseline report and
-# prints the PR comment markdown to stdout. Prints nothing (and explains on
-# stderr) when no comment is warranted, so the calling step can delete any
-# stale comment. Logic lives in BuildWarningsHelper so it can be unit-tested.
+# prints the PR comment markdown to stdout. A successful empty result means
+# no new warnings. An unavailable comparison exits nonzero so the calling
+# step can distinguish it from a clean result and remain advisory-only.
 #
 # Usage: compare-build-warnings.rb [current_report.json] [baseline_report.json]
 
@@ -25,14 +25,14 @@ begin
     baseline_report_path: baseline_report_path
   )
 rescue ScriptError, StandardError => e
-  # The guard is advisory-only: degrade malformed reports or unexpected
-  # errors to "no comment" (the calling step then deletes any stale comment)
-  # instead of failing the CI step.
   warn "Build warning comparison failed: #{e.class}: #{e.message}"
-  exit 0
+  exit 1
 end
 
-if result[:skip]
+if result[:unavailable]
+  warn result[:unavailable]
+  exit 1
+elsif result[:skip]
   warn result[:skip]
 else
   puts result[:comment]

@@ -25,7 +25,7 @@ steps:
     command: .buildkite/commands/build-warning-baseline.sh
     if: build.pull_request.id != null
     # Advisory-only: if the baseline can't be produced, the comparison step
-    # skips gracefully instead of the PR build going red.
+    # reports it as unavailable instead of the PR build going red.
     soft_fail: true
     plugins: [$CI_TOOLKIT]
 
@@ -34,8 +34,8 @@ steps:
     depends_on:
       - build
       - build-warning-baseline
-    # Run even when a dependency fails: the script skips gracefully on a
-    # missing report and deletes any stale PR comment.
+    # Run even when a dependency fails: the script reports missing data as
+    # unavailable and only clears the comment after a valid clean comparison.
     allow_dependency_failure: true
     if: build.pull_request.id != null
     # Advisory-only, like the baseline step: a failure here should never

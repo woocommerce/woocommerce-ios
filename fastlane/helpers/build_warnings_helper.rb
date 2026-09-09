@@ -14,6 +14,9 @@ require 'json'
 # artifact downloads and PR commenting around this module.
 module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
   OWNED_SCOPE = 'owned_app_and_modules'
+  MAX_COMMENT_BYTES = 48_000
+  MAX_TABLE_BYTES = 20_000
+  MAX_TABLE_ROWS = 50
 
   ANSI_ESCAPE = /\e\[[0-9;]*[A-Za-z]/
   WARNING_LINE_MARKER = /(^|[^[:alnum:]_])warning:/
@@ -160,14 +163,19 @@ module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
   # @param current [Hash] parsed current report JSON (string keys)
   # @param baseline [Hash] parsed baseline report JSON (string keys)
   # @return [Hash] `{ comment: String }` when a comment should be posted, or
-  #   `{ skip: String }` with the reason when no comment is warranted
+  #   `{ skip: String }` when no comment is warranted, or `{ unavailable: String }`
+  #   when the reports cannot be compared
   # @raise [ArgumentError] when either report has a malformed count
   def build_comment(current:, baseline:, base_branch:, build_url:, repository_url:, report_path:, baseline_report_path:) # rubocop:disable Metrics/ParameterLists
     current_count = validate_count(current['count'], "Invalid current build warning count in #{report_path}")
-    skip = scope_skip_reason(current: current, baseline: baseline)
-    return { skip: skip } if skip
+    unavailable = scope_unavailable_reason(current: current, baseline: baseline)
+    return { unavailable: unavailable } if unavailable
 
     baseline_count = validate_count(baseline['count'], 'Invalid baseline build warning count')
+    [current, baseline].each do |report|
+      return { unavailable: 'A build warning report is missing a valid warning entries array.' } unless report['warnings'].is_a?(Array)
+      return { unavailable: 'A build warning report count does not match its warning entries.' } unless report['count'] == report['warnings'].length
+    end
 
     comparison = compare_warnings(current: current, baseline: baseline)
     count_delta = current_count - baseline_count
@@ -186,12 +194,14 @@ module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
     raise ArgumentError, "#{error_prefix}: #{count.inspect}"
   end
 
-  def scope_skip_reason(current:, baseline:)
+  def scope_unavailable_reason(current:, baseline:)
     current_scope = current['scope'].to_s
-    return 'Current build warning report is missing a scope; skipping comparison.' if current_scope.empty?
+    return 'Current build warning report is missing a scope; comparison is unavailable.' if current_scope.empty?
 
     baseline_scope = baseline['scope'].to_s
-    return "Baseline warning scope '#{baseline_scope}' does not match current scope '#{current_scope}'; skipping comparison." if baseline_scope != current_scope
+    if baseline_scope != current_scope
+      return "Baseline warning scope '#{baseline_scope}' does not match current scope '#{current_scope}'; comparison is unavailable."
+    end
 
     nil
   end
@@ -200,9 +210,9 @@ module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
   #   entries), `:unique_additional` (grouped by file/line/column/message),
   #   and `:details_available`
   def compare_warnings(current:, baseline:)
-    current_warnings = current.fetch('warnings', [])
-    baseline_warnings = baseline.fetch('warnings', [])
-    details_available = !(current_warnings.empty? || baseline_warnings.empty?)
+    current_warnings = current['warnings']
+    baseline_warnings = baseline['warnings']
+    details_available = current_warnings.is_a?(Array) && baseline_warnings.is_a?(Array)
     additional = details_available ? additional_warnings(current_warnings: current_warnings, baseline_warnings: baseline_warnings) : []
 
     {
@@ -256,27 +266,47 @@ module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
       .sort_by { |entry| unique_warning_sort_key(entry[:warning]) }
   end
 
-  def markdown_escape(value)
-    value.to_s.gsub('|', '\\|').gsub(/\s+/, ' ').strip
+  def markdown_literal(value)
+    text = value.to_s.gsub(/\s+/, ' ').strip.gsub(/[[:punct:]]/) { |character| "&##{character.ord};" }
+    "<code>#{text}</code>"
+  end
+
+  def bounded_table(header:, rows:, build_url:)
+    lines = header.dup
+    table_bytes = lines.join("\n").bytesize
+    shown = 0
+    rows.each do |entry|
+      break if shown >= MAX_TABLE_ROWS
+
+      row = yield(entry)
+      break if table_bytes + row.bytesize + 1 > MAX_TABLE_BYTES
+
+      lines << row
+      table_bytes += row.bytesize + 1
+      shown += 1
+    end
+    if shown < rows.length
+      lines.push('', "Showing #{shown} of #{rows.length} rows. Full JSON reports are in the Artifacts tab of the [CI build](#{build_url}).")
+    end
+    lines.push('', '</details>').join("\n")
   end
 
   def pluralize(count, singular, plural = nil)
     count == 1 ? singular : (plural || "#{singular}s")
   end
 
-  def area_breakdown_markdown(rows)
+  def area_breakdown_markdown(rows, build_url:)
     return '_No individual area has a higher warning count; exact warning identities changed._' if rows.empty?
 
     lines = ['<details>', "<summary>Area breakdown: #{rows.length} #{pluralize(rows.length, 'area')} with higher warning counts</summary>", '']
     lines << '| Area | Current | Baseline | Count change |'
     lines << '|---|---:|---:|---:|'
-    rows.each do |area, current_count, baseline_count, delta|
-      lines << "| `#{markdown_escape(area)}` | #{current_count} | #{baseline_count} | +#{delta} |"
+    bounded_table(header: lines, rows: rows, build_url: build_url) do |area, current_count, baseline_count, delta|
+      "| #{markdown_literal(area)} | #{current_count} | #{baseline_count} | +#{delta} |"
     end
-    lines.push('', '</details>').join("\n")
   end
 
-  def additional_warnings_markdown(comparison)
+  def additional_warnings_markdown(comparison, build_url:)
     return '_Exact additional warning details are unavailable because one report does not include warning entries._' unless comparison[:details_available]
 
     unique_additional = comparison[:unique_additional]
@@ -286,8 +316,9 @@ module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
     lines = ['<details>']
     lines.concat(additional_warnings_table_header(unique_count: unique_additional.length, entry_count: comparison[:additional].length,
                                                   has_duplicates: has_duplicates))
-    unique_additional.each { |entry| lines << additional_warning_row(entry, has_duplicates: has_duplicates) }
-    lines.push('', '</details>').join("\n")
+    bounded_table(header: lines, rows: unique_additional, build_url: build_url) do |entry|
+      additional_warning_row(entry, has_duplicates: has_duplicates)
+    end
   end
 
   def additional_warnings_table_header(unique_count:, entry_count:, has_duplicates:)
@@ -305,7 +336,7 @@ module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
     warning = entry[:warning]
     path = warning.fetch('path', '')
     location = warning['line'] ? "#{path}:#{warning['line']}" : path
-    row = "| `#{markdown_escape(location)}` | #{markdown_escape(warning.fetch('message', ''))} |"
+    row = "| #{markdown_literal(location)} | #{markdown_literal(warning.fetch('message', ''))} |"
     row = "| #{entry[:count]} #{row}" if has_duplicates
     row
   end
@@ -328,14 +359,15 @@ module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  def details_section(current_count:, baseline_count:, count_delta:, additional_count:, baseline:, base_branch:, build_url:, report_path:, baseline_report_path:) # rubocop:disable Metrics/ParameterLists
+  def details_section(current_count:, baseline_count:, count_delta:, additional_count:, baseline:, base_branch:,
+                      build_url:, report_path:, baseline_report_path:) # rubocop:disable Metrics/ParameterLists
     count_delta_label = count_delta.positive? ? "+#{count_delta}" : count_delta.to_s
     baseline_cache_source = baseline['baseline_cache_source'].to_s
     ['<details>', '<summary>Details and caveats</summary>', '',
      "- Full JSON reports are in the Artifacts tab of the [CI build](#{build_url}): `#{report_path}` for this PR (uploaded by the Build step) " \
      "and `#{baseline_report_path}` for the base branch (uploaded by the Build Warning Baseline step).",
      baseline_cache_source.empty? ? '' : "- Baseline source: `#{baseline_cache_source}`",
-     "- Warning counts: **#{current_count}** on this PR vs **#{baseline_count}** on the base — net change **#{count_delta_label}**, " \
+     "- Warning counts: **#{current_count}** on this PR vs **#{baseline_count}** on the base - net change **#{count_delta_label}**, " \
      "with #{additional_count} exact additional warning #{pluralize(additional_count, 'entry', 'entries')}.",
      '- Only warnings in files under `WooCommerce/`, `Modules/Sources/`, and `Modules/Tests/` are counted; ' \
      'warnings from dependencies and generated code are ignored.',
@@ -345,16 +377,21 @@ module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
      '', '</details>'].join("\n")
   end
 
-  def render_comment(current_count:, baseline_count:, count_delta:, comparison:, baseline:, base_branch:, build_url:, repository_url:, report_path:, baseline_report_path:) # rubocop:disable Metrics/ParameterLists
+  def render_comment(current_count:, baseline_count:, count_delta:, comparison:, baseline:, base_branch:,
+                     build_url:, repository_url:, report_path:, baseline_report_path:) # rubocop:disable Metrics/ParameterLists
     label = baseline_label(baseline: baseline, base_branch: base_branch, repository_url: repository_url)
-    ['## New build warnings detected', '',
+    comment = ['## New build warnings detected', '',
      headline(current_count: current_count, baseline_count: baseline_count,
               unique_additional_count: comparison[:unique_additional].length, baseline_label: label), '',
-     additional_warnings_markdown(comparison), '',
-     area_breakdown_markdown(comparison[:rows]), '',
+     additional_warnings_markdown(comparison, build_url: build_url), '',
+     area_breakdown_markdown(comparison[:rows], build_url: build_url), '',
      details_section(current_count: current_count, baseline_count: baseline_count, count_delta: count_delta,
                      additional_count: comparison[:additional].length, baseline: baseline, base_branch: base_branch,
                      build_url: build_url, report_path: report_path, baseline_report_path: baseline_report_path), '',
      'Please consider removing the new warnings before merging.'].join("\n")
+    return comment if comment.bytesize <= MAX_COMMENT_BYTES
+
+    "## New build warnings detected\n\nThe warning summary exceeds the comment size limit. " \
+      "Full JSON reports are in the Artifacts tab of the [CI build](#{build_url})."
   end
 end

@@ -20,10 +20,10 @@ echo "--- :warning: Count build warnings"
 if ruby .buildkite/commands/count-build-warnings.rb fastlane/logs build-warnings.json; then
   # upload_artifact stores to S3 for the comparison step; the buildkite-agent
   # upload makes the report visible in the build's Artifacts tab.
-  upload_artifact build-warnings.json || echo "Failed to store the warning report; the comparison step will be skipped."
+  upload_artifact build-warnings.json || echo "Failed to store the warning report; the comparison may be unavailable."
   buildkite-agent artifact upload build-warnings.json || echo "Failed to upload the warning report to the Artifacts tab."
 else
-  echo "Failed to count build warnings; the build warning comparison step will be skipped."
+  echo "Failed to count build warnings; the build warning comparison will be unavailable."
 fi
 
 echo "--- :arrow_up: Upload Build Products"

@@ -99,7 +99,7 @@ class BuildWarningsHelperTest < Minitest::Test # rubocop:disable Metrics/ClassLe
     body = result.fetch(:comment)
     assert_includes body, '## New build warnings detected'
     assert_includes body, 'This PR introduces **1 new build warning** not present on'
-    assert_includes body, '`WooCommerce/Classes/ViewRelated/New.swift:10` | new warning'
+    assert_includes body, "#{Helper.markdown_literal('WooCommerce/Classes/ViewRelated/New.swift:10')} | <code>new warning</code>"
     refute_includes body, 'Occurrences'
   end
 
@@ -110,7 +110,7 @@ class BuildWarningsHelperTest < Minitest::Test # rubocop:disable Metrics/ClassLe
 
     body = result.fetch(:comment)
     assert_includes body, 'net change **0**'
-    assert_includes body, '`WooCommerce/Classes/ViewRelated/New.swift:10` | new warning'
+    assert_includes body, "#{Helper.markdown_literal('WooCommerce/Classes/ViewRelated/New.swift:10')} | <code>new warning</code>"
   end
 
   def test_decrease_without_exact_additions_skips
@@ -137,30 +137,52 @@ class BuildWarningsHelperTest < Minitest::Test # rubocop:disable Metrics/ClassLe
 
     assert_includes body, '<summary>New warnings: 1 (2 entries in the build log)</summary>'
     assert_includes body, '| Occurrences | File | Warning |'
-    assert_includes body, '| 2 | `WooCommerce/Classes/ViewRelated/New.swift:10` | new warning |'
+    assert_includes body, "| 2 | #{Helper.markdown_literal('WooCommerce/Classes/ViewRelated/New.swift:10')} | <code>new warning</code> |"
   end
 
-  def test_count_increase_without_warning_details_falls_back_to_count_comparison
-    current = report_fixture(count: 5, warnings: nil)
-    baseline = report_fixture(count: 3, warnings: nil)
-    body = build_comment(current: current, baseline: baseline).fetch(:comment)
+  def test_first_warning_against_empty_baseline_includes_exact_details
+    body = build_comment(current: report_fixture, baseline: report_fixture(warnings: [])).fetch(:comment)
 
-    assert_includes body, 'This PR raises the build warning count to **5**, up from **3**'
-    assert_includes body, '_Exact additional warning details are unavailable because one report does not include warning entries._'
+    assert_includes body, 'This PR introduces **1 new build warning**'
+    assert_includes body, "#{Helper.markdown_literal('WooCommerce/Classes/ViewRelated/Existing.swift:10')} | <code>existing warning</code>"
+    refute_includes body, 'details are unavailable'
   end
 
-  def test_scope_mismatch_skips
+  def test_two_empty_reports_skip
+    result = build_comment(current: report_fixture(warnings: []), baseline: report_fixture(warnings: []))
+
+    assert result.key?(:skip)
+  end
+
+  def test_missing_or_non_array_warning_entries_are_unavailable
+    [nil, 'invalid', {}].each do |warnings|
+      malformed_report = report_fixture(count: 1, warnings: warnings)
+      current_result = build_comment(current: malformed_report, baseline: report_fixture)
+      baseline_result = build_comment(current: report_fixture, baseline: malformed_report)
+
+      assert_match(/missing a valid warning entries array/, current_result.fetch(:unavailable))
+      assert_match(/missing a valid warning entries array/, baseline_result.fetch(:unavailable))
+    end
+  end
+
+  def test_warning_count_mismatch_is_unavailable
+    result = build_comment(current: report_fixture(count: 2), baseline: report_fixture)
+
+    assert_match(/count does not match its warning entries/, result.fetch(:unavailable))
+  end
+
+  def test_scope_mismatch_is_unavailable
     current = report_fixture
     baseline = report_fixture(scope: 'another_scope')
     result = build_comment(current: current, baseline: baseline)
 
-    assert_match(/does not match current scope/, result.fetch(:skip))
+    assert_match(/does not match current scope/, result.fetch(:unavailable))
   end
 
-  def test_missing_current_scope_skips
+  def test_missing_current_scope_is_unavailable
     result = build_comment(current: report_fixture(scope: nil), baseline: report_fixture)
 
-    assert_match(/missing a scope/, result.fetch(:skip))
+    assert_match(/missing a scope/, result.fetch(:unavailable))
   end
 
   def test_malformed_counts_raise
@@ -187,15 +209,77 @@ class BuildWarningsHelperTest < Minitest::Test # rubocop:disable Metrics/ClassLe
     body = build_comment(current: current, baseline: baseline).fetch(:comment)
 
     assert_includes body, '<summary>Area breakdown: 1 area with higher warning counts</summary>'
-    assert_includes body, '| `WooCommerce/Classes/ViewRelated` | 2 | 1 | +1 |'
+    assert_includes body, "| #{Helper.markdown_literal('WooCommerce/Classes/ViewRelated')} | 2 | 1 | +1 |"
     assert_includes body, 'Artifacts tab of the [CI build](https://buildkite.example/builds/1)'
     assert_includes body, '- Baseline source: `local-cache`'
     assert_includes body, 'renaming or moving a file can report its pre-existing warnings as new'
     assert_includes body, 'Please consider removing the new warnings before merging.'
   end
 
-  def test_markdown_escape_neutralizes_table_breaking_characters
-    assert_equal 'a \\| b', Helper.markdown_escape("a | \n b")
+  def test_markdown_literal_encodes_punctuation_to_keep_it_out_of_markdown_parsing
+    text = "` @review-team [link](https://example.com) </details> | \n warning"
+
+    assert_equal '<code>&#96; &#64;review&#45;team &#91;link&#93;&#40;https&#58;&#47;&#47;example&#46;com&#41; ' \
+                 '&#60;&#47;details&#62; &#124; warning</code>', Helper.markdown_literal(text)
+  end
+
+  def test_markdown_literal_preserves_backslash_runs_before_pipes_without_table_delimiters
+    (0..3).each do |count|
+      assert_equal "<code>#{'&#92;' * count}&#124;</code>", Helper.markdown_literal(('\\' * count) + '|')
+    end
+  end
+
+  def test_warning_paths_messages_and_areas_are_rendered_as_literal_code
+    text = '`code`` @review-team [link](https://example.com) </details> | warning'
+    warning = warning_fixture(path: "WooCommerce/#{text}.swift", message: text)
+    current = report_fixture(warnings: [warning], breakdown: [{ 'area' => text, 'count' => 1 }])
+    body = build_comment(current: current, baseline: report_fixture(warnings: [])).fetch(:comment)
+
+    assert_includes body, Helper.markdown_literal("WooCommerce/#{text}.swift:10")
+    assert_includes body, "| #{Helper.markdown_literal(text)} |"
+    assert_includes body, "| #{Helper.markdown_literal(text)} | 1 | 0 | +1 |"
+  end
+
+  def test_warning_and_area_tables_limit_rows_and_link_full_reports
+    warnings = 60.times.map { |index| warning_fixture(path: "WooCommerce/File#{index}.swift", message: "warning #{index}") }
+    breakdown = 60.times.map { |index| { 'area' => "WooCommerce/Area#{index}", 'count' => 1 } }
+    current = report_fixture(warnings: warnings, breakdown: breakdown)
+    body = build_comment(current: current, baseline: report_fixture(warnings: [])).fetch(:comment)
+
+    assert_equal 2, body.scan('Showing 50 of 60 rows.').length
+    assert_includes body, 'Full JSON reports are in the Artifacts tab of the [CI build](https://buildkite.example/builds/1).'
+    assert_operator body.bytesize, :<=, Helper::MAX_COMMENT_BYTES
+  end
+
+  def test_warning_and_area_tables_limit_bytes_for_large_multibyte_fields
+    warnings = 600.times.map { |index| warning_fixture(path: "WooCommerce/#{'é' * 500}#{index}.swift", message: '界' * 500) }
+    breakdown = 600.times.map { |index| { 'area' => "WooCommerce/#{'界' * 500}#{index}", 'count' => 1 } }
+    current = report_fixture(warnings: warnings, breakdown: breakdown)
+    body = build_comment(current: current, baseline: report_fixture(warnings: [])).fetch(:comment)
+
+    assert_match(/Showing \d+ of 600 rows/, body)
+    assert_operator body.bytesize, :<=, Helper::MAX_COMMENT_BYTES
+    assert body.valid_encoding?
+    assert_equal 3, body.scan('</details>').length
+  end
+
+  def test_an_oversized_warning_or_area_links_full_reports_without_truncating_markup
+    warning = warning_fixture(path: "WooCommerce/#{'`' * Helper::MAX_COMMENT_BYTES}.swift", message: '界' * Helper::MAX_COMMENT_BYTES)
+    current = report_fixture(warnings: [warning], breakdown: [{ 'area' => '界' * Helper::MAX_COMMENT_BYTES, 'count' => 1 }])
+    body = build_comment(current: current, baseline: report_fixture(warnings: [])).fetch(:comment)
+
+    assert_equal 2, body.scan('Showing 0 of 1 rows.').length
+    assert_operator body.bytesize, :<=, Helper::MAX_COMMENT_BYTES
+    assert_equal 3, body.scan('</details>').length
+  end
+
+  def test_oversized_summary_falls_back_to_a_short_comment_with_full_report_link
+    baseline = report_fixture(warnings: []).merge('baseline_cache_source' => 'x' * Helper::MAX_COMMENT_BYTES)
+    body = build_comment(current: report_fixture, baseline: baseline).fetch(:comment)
+
+    assert_includes body, 'The warning summary exceeds the comment size limit.'
+    assert_includes body, 'Artifacts tab of the [CI build](https://buildkite.example/builds/1).'
+    assert_operator body.bytesize, :<=, Helper::MAX_COMMENT_BYTES
   end
 
   private

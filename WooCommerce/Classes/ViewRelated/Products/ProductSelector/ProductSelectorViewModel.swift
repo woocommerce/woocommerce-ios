@@ -980,8 +980,7 @@ private extension ProductSelectorViewModel {
         let suggestionProducts = topProducts ?? loadedProducts
         let eligibleSuggestions = purchasableItemsOnly ? suggestionProducts.filter(\.purchasable) : suggestionProducts
         let loadedProducts = purchasableItemsOnly ? loadedProducts.filter(\.purchasable) : loadedProducts
-        let popularIDs = topProducts == nil ? topProductsFromCachedOrders.popularProductsIds :
-            Array(topProductsFromCachedOrders.popularProductsIds.prefix(Constants.topSectionsMaxLength))
+        let popularIDs = Array(topProductsFromCachedOrders.popularProductsIds.prefix(Constants.topSectionsMaxLength))
         let popularProducts = Array(filterProductsFromSortedIdsArray(originalProducts: eligibleSuggestions, productsIds: popularIDs)
             .prefix(Constants.topSectionsMaxLength))
 
@@ -993,8 +992,8 @@ private extension ProductSelectorViewModel {
 
         sections = [ProductSelectorSection(type: .mostPopular, products: popularProducts)]
 
-        let lastSoldProducts = filterProductsFromSortedIdsArray(originalProducts: eligibleSuggestions,
-                                                               productsIds: topProductsFromCachedOrders.lastSoldProductsIds)
+        let lastSoldIDs = Array(topProductIDsToRetrieve.dropFirst(popularIDs.count))
+        let lastSoldProducts = filterProductsFromSortedIdsArray(originalProducts: eligibleSuggestions, productsIds: lastSoldIDs)
         let filteredLastSoldProducts = Array(removeAlreadyAddedProducts(from: lastSoldProducts).prefix(Constants.topSectionsMaxLength))
 
         appendSectionIfNotEmpty(type: .lastSold, products: filteredLastSoldProducts)

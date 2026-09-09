@@ -1691,6 +1691,49 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     // MARK: - Pagination
 
+    func test_reopening_selector_when_cache_contains_lower_ranked_candidates_then_preserves_suggestion_membership() {
+        // Given
+        let popularProductIDs: [Int64] = [1, 2, 3, 4, 5, 6]
+        let lastSoldProductIDs: [Int64] = [1, 6, 7, 8, 9, 10, 11]
+        let cachedProducts = (1...11).map { productID in
+            Product.fake().copy(siteID: sampleSiteID,
+                                productID: Int64(productID),
+                                purchasable: ![1, 7].contains(productID))
+        }
+        insert(cachedProducts)
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .synchronizeProductsForOrderCreation(_, _, _, _, _, _, onCompletion) = action else {
+                return XCTFail("Unexpected product action")
+            }
+            onCompletion(.success((cachedProducts, false, [])))
+        }
+        let originalViewModel = makeViewModel(popularProductIDs: popularProductIDs,
+                                              lastSoldProductIDs: lastSoldProductIDs,
+                                              purchasableItemsOnly: true)
+        originalViewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+        let expectedPopularIDs: [Int64] = [2, 3, 4, 5]
+        let expectedLastSoldIDs: [Int64] = [6, 8, 9, 10]
+        XCTAssertEqual(originalViewModel.sections.first { $0.type == .mostPopular }?.products.map(\.productID), expectedPopularIDs)
+        XCTAssertEqual(originalViewModel.sections.first { $0.type == .lastSold }?.products.map(\.productID), expectedLastSoldIDs)
+
+        // When
+        let reopenedViewModel = makeViewModel(popularProductIDs: popularProductIDs,
+                                              lastSoldProductIDs: lastSoldProductIDs,
+                                              purchasableItemsOnly: true)
+
+        // Then
+        XCTAssertEqual(reopenedViewModel.sections.first { $0.type == .mostPopular }?.products.map(\.productID), expectedPopularIDs)
+        XCTAssertEqual(reopenedViewModel.sections.first { $0.type == .lastSold }?.products.map(\.productID), expectedLastSoldIDs)
+        XCTAssertTrue(reopenedViewModel.sections.last?.products.contains { $0.productID == 11 } == true)
+
+        // When
+        reopenedViewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(reopenedViewModel.sections.first { $0.type == .mostPopular }?.products.map(\.productID), expectedPopularIDs)
+        XCTAssertEqual(reopenedViewModel.sections.first { $0.type == .lastSold }?.products.map(\.productID), expectedLastSoldIDs)
+    }
+
     func test_syncing_first_page_persists_additional_products_and_keeps_top_sections_stable_during_pagination() throws {
         // Given
         let firstPage = (1...25).map { productID in

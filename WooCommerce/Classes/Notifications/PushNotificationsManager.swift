@@ -1236,12 +1236,15 @@ private extension PushNotificationsManager {
 
         // Attribute the event to the notification's origin site, not the currently selected one.
         let notificationSiteID = userInfo[APNSKey.siteID] as? Int64
+        let originSiteID: Int64?
         let originSite: Yosemite.Site?
         if stores.isAuthenticatedWithoutWPCom {
             // Application-password sessions are single-site and the payload site ID is unreliable, so use the selected site.
             properties[AnalyticKey.fromSelectedSite] = true
+            originSiteID = siteID
             originSite = stores.sessionManager.defaultSite
         } else {
+            originSiteID = notificationSiteID
             originSite = notificationSiteID.flatMap { loadTargetSite(siteID: $0) }
             if let siteID, let notificationSiteID {
                 properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
@@ -1250,12 +1253,12 @@ private extension PushNotificationsManager {
 
         switch applicationState {
         case .inactive:
-            analytics.track(event: .PushNotifications.pushNotificationAlertPressed(originSiteID: notificationSiteID,
+            analytics.track(event: .PushNotifications.pushNotificationAlertPressed(originSiteID: originSiteID,
                                                                                   originSite: originSite,
                                                                                   properties: properties))
         default:
             properties[AnalyticKey.appState] = applicationState.rawValue
-            analytics.track(event: .PushNotifications.pushNotificationReceived(originSiteID: notificationSiteID,
+            analytics.track(event: .PushNotifications.pushNotificationReceived(originSiteID: originSiteID,
                                                                               originSite: originSite,
                                                                               properties: properties))
         }

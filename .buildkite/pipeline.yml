@@ -1,208 +1,26 @@
-# yaml-language-server: $schema=https://raw.githubusercontent.com/buildkite/pipeline-schema/main/schema.json
 ---
-
 agents:
   queue: mac
 
 env:
   IMAGE_ID: $IMAGE_ID
 
-# This is the default pipeline – it will build and test the app
 steps:
-  #################
-  # Build the app
-  #################
-  - label: ":pipeline: Build"
-    key: build
-    command: .buildkite/commands/build-for-testing.sh
+  - label: "TEMP: Seed warning reports, expected advisory failure (42)"
+    key: temp-warning-seed
+    command: ruby .buildkite/commands/temporary-warning-probe.rb seed
     plugins: [$CI_TOOLKIT]
-    notify:
-      - github_commit_status:
-          context: Build
+    timeout_in_minutes: 10
+    soft_fail:
+      - exit_status: 42
 
-  - label: ":warning: Build Warning Baseline"
-    key: build-warning-baseline
-    command: .buildkite/commands/build-warning-baseline.sh
-    if: build.pull_request.id != null
-    # Advisory-only: if the baseline can't be produced, the comparison step
-    # reports it as unavailable instead of the PR build going red.
-    soft_fail: true
+  - label: "TEMP: Verify warning recovery and simulated stale execution"
+    key: temp-warning-verify
+    command: ruby .buildkite/commands/temporary-warning-probe.rb verify
     plugins: [$CI_TOOLKIT]
-
-  - label: ":warning: Build Warning Count"
-    command: .buildkite/commands/comment-build-warning-increase.sh
-    depends_on:
-      - build
-      - build-warning-baseline
-    # Run even when a dependency fails: the script reports missing data as
-    # unavailable and only clears the comment after a valid clean comparison.
+    timeout_in_minutes: 10
+    depends_on: temp-warning-seed
     allow_dependency_failure: true
-    if: build.pull_request.id != null
-    # Advisory-only, like the baseline step: a failure here should never
-    # turn the PR build red.
-    soft_fail: true
-    plugins: [$CI_TOOLKIT]
-
-  #################
-  # Create Prototype Build
-  #################
-  - group: ":rocket: Prototype Build"
-    # Prototype Builds are on-demand on `trunk`, but always built on PRs
-    steps:
-      - input: Create Prototype Build?
-        prompt: Share a Prototype Build via Firebase App Distribution?
-        key: prototype_build_triggered
-        if: build.branch == "trunk"
-      - label: ":firebase: Prototype Build"
-        # Buildkite considers this implicitly satisfied if the `depends_on` step is skipped due to `if:` condition. So this will run unconditionally on PRs
-        # https://buildkite.com/docs/pipelines/configure/dependencies#how-skipped-steps-affect-dependencies
-        depends_on: prototype_build_triggered
-        if: build.pull_request.id != null || build.branch == "trunk"
-        command: .buildkite/commands/prototype-build.sh
-        plugins: [$CI_TOOLKIT]
-        notify:
-          - github_commit_status:
-              context: Prototype Build
-
-  #################
-  # Run Unit Tests
-  #################
-  - label: ":microscope: Unit Tests"
-    command: .buildkite/commands/run-unit-tests.sh
-    depends_on: build
-    plugins:
-      - $CI_TOOLKIT
-      - ${TEST_COLLECTOR}:
-          files: fastlane/test_output/report.junit
-          format: junit
-          missing-error: 0
-          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UNIT_TESTS
-    artifact_paths:
-      - fastlane/test_output/*
     notify:
       - github_commit_status:
-          context: Unit Tests
-
-  - label: ":microscope: Standalone WordPressAuthenticator Unit Tests"
-    command: .buildkite/commands/run-wordpress-authenticator-tests.sh
-    plugins: [$CI_TOOLKIT]
-    artifact_paths:
-      - fastlane/test_output/*
-    notify:
-      - github_commit_status:
-          context: WordPressAuthenticator Unit Tests
-
-  #################
-  # Ruby Automation Tests (Fastlane helpers)
-  #################
-  - label: ":ruby: Ruby Automation Tests"
-    command: .buildkite/commands/run-ruby-automation-tests.sh
-    plugins: [$CI_TOOLKIT]
-    notify:
-      - github_commit_status:
-          context: Ruby Automation Tests
-
-  #################
-  # Linters
-  #################
-  - group: Linters
-    steps:
-      - label: ":danger: Danger - PR Check"
-        command: danger
-        key: danger
-        if: build.pull_request.id != null
-        retry:
-          manual:
-            permit_on_passed: true
-        agents:
-          queue: linter
-        notify:
-          - github_commit_status:
-              context: Danger - PR Check
-
-      - label: ":swift: SwiftLint"
-        command: swiftlint
-        notify:
-          - github_commit_status:
-              context: SwiftLint
-        agents:
-          queue: linter
-
-
-      - label: 🧹 Lint Translations
-        command: gplint /workdir/WooCommerce/Resources/AppStoreStrings.pot
-        plugins:
-          - docker#v3.8.0:
-              image: public.ecr.aws/automattic/glotpress-validator:1.0.0
-        agents:
-          queue: default
-        notify:
-          - github_commit_status:
-              context: Lint Translations
-
-      - label: ":sleuth_or_spy: Lint Localized Strings Format"
-        command: .buildkite/commands/lint-localized-strings-format.sh
-        plugins: [$CI_TOOLKIT]
-        notify:
-          - github_commit_status:
-              context: Lint Localized Strings Format
-
-      - label: ":swift: Ensure single Package.resolved"
-        command: .buildkite/commands/check-package-resolved.sh
-        agents:
-          queue: default
-        notify:
-          - github_commit_status:
-              context: Check Package.resolved
-
-  #################
-  # UI Tests
-  #################
-  - label: ":microscope: UI Tests (iPhone)"
-    command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
-    depends_on: build
-    # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
-    if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
-    plugins:
-      - $CI_TOOLKIT
-      - ${TEST_COLLECTOR}:
-          files: fastlane/test_output/report.junit
-          format: junit
-          missing-error: 0
-          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPHONE
-    artifact_paths:
-      - fastlane/test_output/*
-      - build/logs/wiremock.txt
-    notify:
-      - github_commit_status:
-          context: UI Tests (iPhone)
-
-  - label: ":microscope: UI Tests (iPad)"
-    command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
-    depends_on: build
-    # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
-    if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
-    plugins:
-      - $CI_TOOLKIT
-      - ${TEST_COLLECTOR}:
-          files: fastlane/test_output/report.junit
-          format: junit
-          missing-error: 0
-          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_UI_TESTS_IPAD
-    artifact_paths:
-      - fastlane/test_output/*
-      - build/logs/wiremock.txt
-    notify:
-      - github_commit_status:
-          context: UI Tests (iPad)
-
-  #################
-  # Claude Build Analysis - dynamically uploaded so Build result conditions evaluate at runtime after the wait
-  #################
-  - wait: ~
-    continue_on_failure: true
-
-  - label: ":claude: 🕵️ Check for Build Failures and Run Claude Analysis"
-    command: .buildkite/commands/upload-claude-analysis.sh
-    agents:
-      queue: upload
+          context: "TEMP Warning Validation"

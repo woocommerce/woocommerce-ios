@@ -186,7 +186,7 @@ struct POSOrderDetailsView: View {
             await orderListModel.ordersController.loadOrderRefunds()
         }
         .task {
-            await orderListModel.ordersController.preloadRefundDetails()
+            await orderListModel.preloadRefund()
         }
         .onAppear {
             if autoStartNextRefundFlow {
@@ -541,7 +541,7 @@ private extension POSOrderDetailsView {
         case .refunded:
             return .init(primary: email, secondary: [])
         case .completed:
-            switch orderListModel.ordersController.refundActionAvailability {
+            switch orderListModel.refundController.refundActionAvailability(for: orderListModel.ordersController.selectedOrder) {
             case .available:
                 return .init(primary: .issueRefund, secondary: [email])
 
@@ -621,7 +621,7 @@ private extension POSOrderDetailsView {
         refundSelectionState = .loading
         presentRefundSelection()
         Task { @MainActor in
-            let result = await orderListModel.ordersController.startRefundFlow()
+            let result = await orderListModel.startRefundFlow()
             guard refundFlowPreparationID == preparationID else {
                 return
             }
@@ -642,7 +642,7 @@ private extension POSOrderDetailsView {
 
     func navigateToRefundReview() {
         Task { @MainActor in
-            switch await orderListModel.ordersController.prepareRefundReview() {
+            switch await orderListModel.refundController.prepareReview() {
             case .ready(var reviewData):
                 reviewData.refundReason = currentRefundReason
                 refundModalState = .review(reviewData)
@@ -673,7 +673,7 @@ private extension POSOrderDetailsView {
         refundSelectionState = .loading
         presentRefundSelection()
         Task { @MainActor in
-            let result = await orderListModel.ordersController.refreshRefundableItems()
+            let result = await orderListModel.refundController.refreshRefundableItems()
             guard refundFlowPreparationID == preparationID else {
                 return
             }
@@ -708,7 +708,7 @@ private extension POSOrderDetailsView {
         refundModalState = nil
         currentRefundReason = nil
         hasLoadedRefundableItems = false
-        orderListModel.ordersController.clearRefundSelection()
+        orderListModel.refundController.clearSelection()
         dismissRefundSelectionIfNeeded()
     }
 

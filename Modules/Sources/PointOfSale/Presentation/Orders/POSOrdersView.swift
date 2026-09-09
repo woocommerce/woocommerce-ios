@@ -165,7 +165,7 @@ private extension POSOrdersView {
             return
         }
 
-        if orderListModel.ordersController.hasModifiedRefundSelection {
+        if orderListModel.refundController.hasModifiedSelection {
             pendingOrderSelection = order
             isCancelRefundConfirmationPresented = true
         } else {
@@ -176,7 +176,7 @@ private extension POSOrdersView {
     func cancelActiveRefundSelectionAndSelect(_ order: POSOrder) {
         activeRefundSelectionOrderID = nil
         pendingOrderSelection = nil
-        orderListModel.ordersController.clearRefundSelection()
+        orderListModel.refundController.clearSelection()
         selectOrder(order)
     }
 
@@ -185,7 +185,7 @@ private extension POSOrdersView {
             activeRefundSelectionOrderID = nil
             pendingOrderSelection = nil
         }
-        orderListModel.ordersController.selectOrder(order)
+        orderListModel.selectOrder(order)
     }
 }
 

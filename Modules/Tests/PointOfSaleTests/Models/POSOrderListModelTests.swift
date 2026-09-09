@@ -6,9 +6,11 @@ import enum NetworkingCore.OrderStatusEnum
 
 final class POSOrderListModelTests {
     private let mockOrdersController = MockPOSOrderListController()
+    private let mockRefundController = MockPOSRefundController()
     private let mockReceiptSender = MockPOSReceiptSender()
     private lazy var sut = POSOrderListModel(
         ordersController: mockOrdersController,
+        refundController: mockRefundController,
         receiptSender: mockReceiptSender,
         refundSubmissionModel: POSRefundSubmissionModel()
     )
@@ -64,6 +66,84 @@ final class POSOrderListModelTests {
         #expect(mockReceiptSender.sendReceiptCalledWithEmail == testEmail)
         #expect(mockOrdersController.updateOrderCalled == true)
         #expect(mockOrdersController.spyUpdateOrderID == 999)
+    }
+
+    @Test @MainActor func selectOrder_then_selects_the_order_and_resets_the_refund_flow() async throws {
+        // Given
+        let testOrder = makeTestOrder(id: 321, email: "customer@example.com")
+
+        // When
+        sut.selectOrder(testOrder)
+
+        // Then
+        #expect(mockOrdersController.selectedOrder?.id == 321)
+        #expect(mockRefundController.resetCalled == true)
+    }
+
+    @Test @MainActor func startRefundFlow_then_starts_it_for_the_selected_order() async throws {
+        // Given
+        mockOrdersController.selectedOrder = makeTestOrder(id: 555, email: "customer@example.com")
+
+        // When
+        let result = await sut.startRefundFlow()
+
+        // Then
+        #expect(mockRefundController.startRefundFlowOrderID == 555)
+        #expect(result == .hasItemsToRefund)
+    }
+
+    @Test @MainActor func startRefundFlow_when_no_order_is_selected_then_fails_without_starting_it() async throws {
+        // When
+        let result = await sut.startRefundFlow()
+
+        // Then
+        #expect(mockRefundController.startRefundFlowOrderID == nil)
+        #expect(result == .failed)
+    }
+
+    @Test @MainActor func preloadRefund_then_preloads_for_the_selected_order() async throws {
+        // Given
+        mockOrdersController.selectedOrder = makeTestOrder(id: 777, email: "customer@example.com")
+
+        // When
+        await sut.preloadRefund()
+
+        // Then
+        #expect(mockRefundController.preloadedOrderID == 777)
+    }
+
+    @Test @MainActor func preloadRefund_when_no_order_is_selected_then_does_not_preload() async throws {
+        // When
+        await sut.preloadRefund()
+
+        // Then
+        #expect(mockRefundController.preloadedOrderID == nil)
+    }
+
+    @Test @MainActor func processRefund_when_successful_then_refreshes_the_refunded_order() async throws {
+        // Given
+        mockRefundController.stubProcessRefundOrderID = 456
+
+        // When
+        try await sut.processRefund(reason: "Damaged")
+
+        // Then
+        #expect(mockRefundController.processRefundCalled == true)
+        #expect(mockRefundController.spyProcessRefundReason == "Damaged")
+        #expect(mockOrdersController.spyUpdateOrderID == 456)
+        #expect(mockOrdersController.loadOrderRefundsCalled == true)
+    }
+
+    @Test @MainActor func processRefund_when_submission_fails_then_throws_without_refreshing_the_order() async throws {
+        // Given
+        mockRefundController.processRefundErrorToThrow = MockPOSRefundController.TestError.processRefundFailed
+
+        // When & Then
+        await #expect(throws: MockPOSRefundController.TestError.processRefundFailed) {
+            try await sut.processRefund(reason: nil)
+        }
+        #expect(mockOrdersController.updateOrderCalled == false)
+        #expect(mockOrdersController.loadOrderRefundsCalled == false)
     }
 
     private func makeTestOrder(id: Int64, email: String) -> POSOrder {

@@ -3,7 +3,7 @@
 
 25.7
 -----
-- [Internal] Attribute push_notification_received/alert_pressed events to the notification's origin site instead of the selected site. [https://github.com/woocommerce/woocommerce-ios/pull/XXXXX]
+- [Internal] Attribute push_notification_received/alert_pressed events to the notification's origin site instead of the selected site. [https://github.com/woocommerce/woocommerce-ios/pull/17848]
 - [*] POS: Fixed a refund failing with "Invalid refund amount" on stores that enter prices inclusive of tax. [https://github.com/woocommerce/woocommerce-ios/pull/17827]
 - [*] Login: Signing in with store credentials now asks for your WordPress sign-in or dashboard address when a security plugin has moved it, instead of failing. [https://github.com/woocommerce/woocommerce-ios/pull/17724]
 

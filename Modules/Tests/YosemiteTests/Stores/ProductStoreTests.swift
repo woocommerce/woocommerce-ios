@@ -11,6 +11,8 @@ import YosemiteTestHelpers
 ///
 final class ProductStoreTests: XCTestCase {
 
+    private typealias SyncedProducts = (products: [Networking.Product], hasNextPage: Bool, missingProductIDs: [Int64])
+
     /// Mock Dispatcher!
     ///
     private var dispatcher: Dispatcher!
@@ -371,23 +373,23 @@ final class ProductStoreTests: XCTestCase {
                                    productIDs: additionalProductIDs,
                                    thenReturn: .success([overlappingProduct, additionalProduct]))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
-        var result: Result<Bool, Error>?
 
         // When
-        waitForExpectation { expectation in
-            let action = ProductAction.synchronizeProductsForOrderCreation(siteID: sampleSiteID,
+        let result: Result<SyncedProducts, Error> = waitFor { promise in
+            let action = ProductAction.synchronizeProductsForOrderCreation(siteID: self.sampleSiteID,
                                                                            pageNumber: 1,
                                                                            pageSize: 25,
                                                                            sortOrder: .nameAscending,
-                                                                           additionalProductIDs: additionalProductIDs) {
-                result = $0
-                expectation.fulfill()
-            }
+                                                                           additionalProductIDs: additionalProductIDs,
+                                                                           onCompletion: promise)
             productStore.onAction(action)
         }
 
         // Then
-        XCTAssertEqual(try result?.get(), true)
+        let syncedProducts = try result.get()
+        XCTAssertTrue(syncedProducts.hasNextPage)
+        XCTAssertEqual(syncedProducts.products, pageProducts + [additionalProduct])
+        XCTAssertTrue(syncedProducts.missingProductIDs.isEmpty)
         XCTAssertEqual(remote.requestedProductIDsForLoading, additionalProductIDs)
         XCTAssertEqual(viewStorage.loadProducts(siteID: sampleSiteID)?.count, 26)
         XCTAssertEqual(viewStorage.loadProduct(siteID: sampleSiteID, productID: 1)?.name, "Page 1")
@@ -407,23 +409,23 @@ final class ProductStoreTests: XCTestCase {
                                    productIDs: [cachedAdditionalProduct.productID],
                                    thenReturn: .failure(NetworkError.timeout()))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
-        var result: Result<Bool, Error>?
 
         // When
-        waitForExpectation { expectation in
-            let action = ProductAction.synchronizeProductsForOrderCreation(siteID: sampleSiteID,
+        let result: Result<SyncedProducts, Error> = waitFor { promise in
+            let action = ProductAction.synchronizeProductsForOrderCreation(siteID: self.sampleSiteID,
                                                                            pageNumber: 1,
                                                                            pageSize: 25,
                                                                            sortOrder: .nameAscending,
-                                                                           additionalProductIDs: [cachedAdditionalProduct.productID]) {
-                result = $0
-                expectation.fulfill()
-            }
+                                                                           additionalProductIDs: [cachedAdditionalProduct.productID],
+                                                                           onCompletion: promise)
             productStore.onAction(action)
         }
 
         // Then
-        XCTAssertEqual(try result?.get(), false)
+        let syncedProducts = try result.get()
+        XCTAssertFalse(syncedProducts.hasNextPage)
+        XCTAssertEqual(syncedProducts.products.map(\.productID), [pageProduct.productID, cachedAdditionalProduct.productID])
+        XCTAssertTrue(syncedProducts.missingProductIDs.isEmpty)
         XCTAssertNotNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: pageProduct.productID))
         XCTAssertNotNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: cachedAdditionalProduct.productID))
         XCTAssertNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: unrelatedCachedProduct.productID))
@@ -442,18 +444,21 @@ final class ProductStoreTests: XCTestCase {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
 
         // When
-        waitForExpectation { expectation in
-            let action = ProductAction.synchronizeProductsForOrderCreation(siteID: sampleSiteID,
+        let result: Result<SyncedProducts, Error> = waitFor { promise in
+            let action = ProductAction.synchronizeProductsForOrderCreation(siteID: self.sampleSiteID,
                                                                            pageNumber: 1,
                                                                            pageSize: 25,
                                                                            sortOrder: .nameAscending,
-                                                                           additionalProductIDs: [cachedAdditionalProduct.productID]) { _ in
-                expectation.fulfill()
-            }
+                                                                           additionalProductIDs: [cachedAdditionalProduct.productID],
+                                                                           onCompletion: promise)
             productStore.onAction(action)
         }
 
         // Then
+        let syncedProducts = try result.get()
+        XCTAssertFalse(syncedProducts.hasNextPage)
+        XCTAssertEqual(syncedProducts.products, [pageProduct])
+        XCTAssertEqual(syncedProducts.missingProductIDs, [cachedAdditionalProduct.productID])
         XCTAssertNotNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: pageProduct.productID))
         XCTAssertNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: cachedAdditionalProduct.productID))
     }
@@ -469,23 +474,20 @@ final class ProductStoreTests: XCTestCase {
                                    productIDs: [additionalProduct.productID],
                                    thenReturn: .success([additionalProduct]))
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
-        var result: Result<Bool, Error>?
 
         // When
-        waitForExpectation { expectation in
-            let action = ProductAction.synchronizeProductsForOrderCreation(siteID: sampleSiteID,
+        let result: Result<SyncedProducts, Error> = waitFor { promise in
+            let action = ProductAction.synchronizeProductsForOrderCreation(siteID: self.sampleSiteID,
                                                                            pageNumber: 1,
                                                                            pageSize: 25,
                                                                            sortOrder: .nameAscending,
-                                                                           additionalProductIDs: [additionalProduct.productID]) {
-                result = $0
-                expectation.fulfill()
-            }
+                                                                           additionalProductIDs: [additionalProduct.productID],
+                                                                           onCompletion: promise)
             productStore.onAction(action)
         }
 
         // Then
-        XCTAssertNotNil(result?.failure)
+        XCTAssertNotNil(result.failure)
         XCTAssertNotNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: cachedProduct.productID))
         XCTAssertNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: additionalProduct.productID))
     }

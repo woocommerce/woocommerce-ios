@@ -70,9 +70,9 @@ public enum ProductAction: Action {
                                               sortOrder: ProductsSortOrder,
                                               additionalProductIDs: [Int64],
                                               shouldDeleteStoredProductsOnFirstPage: Bool = true,
-                                              onCompletion: (Result<Bool, Error>) -> Void)
+                                              onCompletion: (Result<(products: [Product], hasNextPage: Bool, missingProductIDs: [Int64]), Error>) -> Void)
 
-    /// Retrieves a page of products without writing the results to local storage.
+    /// Retrieves a currency-scoped page of products without writing the results to local storage.
     ///
     case retrieveProductsTransiently(siteID: Int64,
                                      currency: String,

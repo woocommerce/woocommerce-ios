@@ -32,6 +32,22 @@ def required_environment(name: str) -> str:
     return value
 
 
+def rest_datetime(value: str) -> str:
+    """Convert a manifest timestamp into the form the WooCommerce REST API accepts.
+
+    `created_at` is stored as a full ISO 8601 UTC timestamp, e.g.
+    `2026-09-09T05:29:41.207439+00:00`. The API's `after`/`before` filters reject
+    that: the same query returns zero rows with the offset present and the real
+    rows once it is removed. Everything is UTC, so dropping the offset and the
+    microseconds is lossless here.
+    """
+    text = str(value).strip()
+    for separator in ("+", "Z"):
+        head, _, _ = text.partition(separator)
+        text = head or text
+    return text.split(".", 1)[0]
+
+
 def strict_run_id(value: str) -> str:
     if not RUN_ID_RE.fullmatch(value):
         raise SmokeSetupError(f"Invalid suite run ID: {value!r}")
@@ -102,6 +118,9 @@ def initialize(args: argparse.Namespace) -> None:
 def order_contains_run_id(order: dict[str, Any], run_id: str) -> bool:
     candidates = [str(order.get("customer_note", ""))]
     candidates.extend(str(item.get("name", "")) for item in order.get("line_items", []))
+    # Custom amounts are stored as fee lines rather than line items, so an order
+    # whose only run-id marker is a custom amount name is invisible without this.
+    candidates.extend(str(item.get("name", "")) for item in order.get("fee_lines", []))
     candidates.extend(str(item.get("value", "")) for item in order.get("meta_data", []))
     return any(run_id in candidate for candidate in candidates)
 
@@ -112,14 +131,51 @@ def discover_entities(client: WooClient, manifest: dict[str, Any]) -> list[dict[
     for product in client.list("products", search=run_id, status="any"):
         if run_id in str(product.get("name", "")):
             entities.append({"type": "product", "id": int(product["id"])})
+    seen_orders: set[int] = set()
     for order in client.list(
         "orders",
-        after=manifest["created_at"],
+        after=rest_datetime(manifest["created_at"]),
         status="any",
         order="asc",
     ):
         if order_contains_run_id(order, run_id):
+            seen_orders.add(int(order["id"]))
             entities.append({"type": "order", "id": int(order["id"])})
+
+    # `status=any` excludes auto-draft in the WooCommerce REST API, and every order
+    # the UI flows create begins as an auto-draft. Querying only `any` therefore
+    # reports a successful cleanup while leaving run-owned drafts behind.
+    #
+    # Drafts are still matched by run id, never by age alone. A draft that carries
+    # the id is ours; one that does not may be a merchant part-way through writing
+    # an order in another window, and deleting it would destroy their work.
+    unmatched_drafts = 0
+    for order in client.list(
+        "orders",
+        after=rest_datetime(manifest["created_at"]),
+        status="auto-draft",
+        order="asc",
+    ):
+        order_id = int(order["id"])
+        if order_id in seen_orders:
+            continue
+        if order_contains_run_id(order, run_id):
+            seen_orders.add(order_id)
+            entities.append({"type": "order", "id": order_id})
+        else:
+            unmatched_drafts += 1
+
+    # A flow that fails before it finishes creating an order leaves a draft that
+    # never received the run id, so it cannot be attributed and is not deleted.
+    # Surface the count rather than reporting a clean run, because these
+    # accumulate: the lab store had roughly 430 of them when this was written.
+    if unmatched_drafts:
+        print(
+            f"warning: {unmatched_drafts} auto-draft order(s) created during this run "
+            "carry no run ID and were left in place. They are most likely abandoned "
+            "by a failed flow, but cannot be told apart from a merchant's own draft.",
+            file=sys.stderr,
+        )
     for tag in client.list("products/tags", search=run_id):
         if run_id in str(tag.get("name", "")):
             entities.append({"type": "tag", "id": int(tag["id"])})

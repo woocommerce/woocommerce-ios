@@ -76,6 +76,22 @@ class BuildWarningsHelperTest < Minitest::Test # rubocop:disable Metrics/ClassLe
     assert_equal 3, warning[:column]
   end
 
+  def test_count_warnings_includes_generated_files_within_owned_paths
+    # Given
+    paths = ['WooCommerce/Classes/Copiable/Models+Copiable.generated.swift', 'Modules/Sources/Fakes/Yosemite.generated.swift',
+             'Modules/Tests/NetworkingTests/Fixture.generated.swift']
+    lines = paths.map { |path| "#{REPO_ROOT}/#{path}:7:3: warning: generated warning" }
+    lines << "#{REPO_ROOT}/DerivedData/Generated.swift:7:3: warning: excluded warning"
+
+    # When
+    report = count_report(lines)
+
+    # Then
+    assert_equal 3, report[:count]
+    assert_equal 1, report[:excluded_warning_lines]
+    assert_equal paths.sort, report[:warnings].map { |warning| warning[:path] }.sort
+  end
+
   def test_collect_log_files_supports_file_directory_and_missing_paths
     Dir.mktmpdir do |dir|
       log = File.join(dir, 'a.log')
@@ -225,8 +241,18 @@ class BuildWarningsHelperTest < Minitest::Test # rubocop:disable Metrics/ClassLe
 
   def test_markdown_literal_preserves_backslash_runs_before_pipes_without_table_delimiters
     (0..3).each do |count|
-      assert_equal "<code>#{'&#92;' * count}&#124;</code>", Helper.markdown_literal(('\\' * count) + '|')
+      assert_equal "<code>#{'&#92;' * count}&#124;</code>", Helper.markdown_literal("#{'\\' * count}|")
     end
+  end
+
+  def test_comment_caveat_explains_that_generated_files_in_owned_paths_are_counted
+    # Given: the current report introduces a warning against an empty baseline.
+    # When
+    body = build_comment(current: report_fixture, baseline: report_fixture(warnings: [])).fetch(:comment)
+
+    # Then
+    assert_includes body, 'this includes generated files within these paths. Warnings outside these paths are ignored.'
+    refute_includes body, 'warnings from dependencies and generated code are ignored.'
   end
 
   def test_warning_paths_messages_and_areas_are_rendered_as_literal_code
@@ -252,10 +278,7 @@ class BuildWarningsHelperTest < Minitest::Test # rubocop:disable Metrics/ClassLe
   end
 
   def test_warning_and_area_tables_limit_bytes_for_large_multibyte_fields
-    warnings = 600.times.map { |index| warning_fixture(path: "WooCommerce/#{'é' * 500}#{index}.swift", message: '界' * 500) }
-    breakdown = 600.times.map { |index| { 'area' => "WooCommerce/#{'界' * 500}#{index}", 'count' => 1 } }
-    current = report_fixture(warnings: warnings, breakdown: breakdown)
-    body = build_comment(current: current, baseline: report_fixture(warnings: [])).fetch(:comment)
+    body = build_comment(current: multibyte_report_fixture, baseline: report_fixture(warnings: [])).fetch(:comment)
 
     assert_match(/Showing \d+ of 600 rows/, body)
     assert_operator body.bytesize, :<=, Helper::MAX_COMMENT_BYTES
@@ -304,6 +327,12 @@ class BuildWarningsHelperTest < Minitest::Test # rubocop:disable Metrics/ClassLe
 
   def warning_fixture(path: 'WooCommerce/Classes/ViewRelated/Existing.swift', message: 'existing warning', line: 10)
     { 'area' => 'WooCommerce/Classes/ViewRelated', 'path' => path, 'line' => line, 'column' => 5, 'message' => message }
+  end
+
+  def multibyte_report_fixture
+    warnings = 600.times.map { |index| warning_fixture(path: "WooCommerce/#{'é' * 500}#{index}.swift", message: '界' * 500) }
+    breakdown = 600.times.map { |index| { 'area' => "WooCommerce/#{'界' * 500}#{index}", 'count' => 1 } }
+    report_fixture(warnings: warnings, breakdown: breakdown)
   end
 
   def report_fixture(count: :from_warnings, scope: Helper::OWNED_SCOPE, warnings: [warning_fixture], breakdown: nil)

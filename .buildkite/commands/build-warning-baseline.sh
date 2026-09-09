@@ -22,7 +22,7 @@ if "$COMMANDS_DIR/should-skip-job.sh" --job-type build; then
 fi
 
 echo "--- :git: Resolve build warning baseline"
-git fetch --no-tags origin "$BASE_BRANCH"
+git fetch --no-tags origin "+refs/heads/$BASE_BRANCH:refs/remotes/origin/$BASE_BRANCH"
 
 BASE_REF="origin/$BASE_BRANCH"
 BASE_COMMIT="$(git merge-base HEAD "$BASE_REF")"

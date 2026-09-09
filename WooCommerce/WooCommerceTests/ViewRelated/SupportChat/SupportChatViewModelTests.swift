@@ -562,7 +562,11 @@ struct SupportChatViewModelTests {
         await sut.executeAction(.registerDevice)
 
         // Then
-        #expect(sut.state == .error("We couldn't register your device for push notifications. Please try again."))
+        #expect(sut.state == .error(NSLocalizedString(
+            "supportChatViewModel.deviceRegistrationErrorMessage",
+            value: "We couldn't register your device for push notifications. Please try again.",
+            comment: ""
+        )))
         #expect(sut.isExecutingAction == false)
     }
 

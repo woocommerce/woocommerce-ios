@@ -18,13 +18,18 @@ tags:
     index: 0
 - tapOn:
     id: product-multiple-selection-done-button
-- tapOn:
-    id: order-status-section-edit-button
-- assertVisible:
-    id: order-status-list
-- tapOn: Processing
-- swipe:
-    direction: UP
+# The order status section is only rendered when the order form is in editing
+# flow (`OrderForm.swift:282`, `.renderedIf(flow == .editing)`), so it does not
+# exist while creating an order. The status is set below, on order details.
+#
+# The order totals panel is pinned over the bottom of the form, so a blind swipe
+# can leave this row present in the hierarchy but covered, and the tap is then
+# swallowed by the panel.
+- scrollUntilVisible:
+    element:
+      id: add-customer-note-button
+    direction: DOWN
+    visibilityPercentage: 100
 - tapOn:
     id: add-customer-note-button
 - tapOn:
@@ -35,16 +40,101 @@ tags:
       TEXT_TO_PASTE: Complete ${SUITE_RUN_ID}
 - tapOn:
     id: edit-note-done-button
+# Verify the note here, where it renders as a "Customer Note" section. Order
+# details has no customer-note section, so asserting it after creation cannot
+# pass.
+- scrollUntilVisible:
+    element:
+      text: Complete ${SUITE_RUN_ID}
+    direction: DOWN
+    visibilityPercentage: 100
+- assertVisible: Complete ${SUITE_RUN_ID}
 - tapOn:
     id: new-order-create-button
 - extendedWaitUntil:
     visible:
       id: order-details-table-view
     timeout: 30000
+# "Mark Order Complete" is only offered when the order is processing AND not
+# eligible for payment (`OrderDetailsDataSource.swift:1232`, the
+# `(true, false, false)` case). A freshly created unpaid order is always
+# eligible for payment, so the button never renders until the order is paid.
+# Take the cash payment first, then move the paid order back to processing.
+- repeat:
+    times: 3
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              id: payment-methods-header-label
+          commands:
+            - scrollUntilVisible:
+                element:
+                  id: order-details-collect-payment-button
+                direction: DOWN
+                visibilityPercentage: 100
+            - tapOn:
+                id: order-details-collect-payment-button
+            - waitForAnimationToEnd:
+                timeout: 5000
+- extendedWaitUntil:
+    visible:
+      id: payment-methods-header-label
+    timeout: 30000
+- tapOn:
+    id: payment-methods-view-cash-row
+- extendedWaitUntil:
+    visible: "Cash received"
+    timeout: 15000
+- tapOn: Cash received
+- inputText: "9999"
+- tapOn: Mark Order as Complete
+- extendedWaitUntil:
+    visible:
+      text: Completed
+    timeout: 30000
+
+# Put the now-paid run-owned order into Processing from order details, which is
+# where the status editor lives.
+# Order details reloads, so a single tap here is swallowed. Retry until the
+# status list opens.
+- waitForAnimationToEnd:
+    timeout: 10000
+- repeat:
+    times: 4
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              id: order-status-list
+          commands:
+            - tapOn:
+                id: summary-table-view-cell-update-status-button
+            - waitForAnimationToEnd:
+                timeout: 5000
+- extendedWaitUntil:
+    visible:
+      id: order-status-list
+    timeout: 15000
+- tapOn: Processing
+- runFlow:
+    when:
+      visible:
+        id: order-status-list-apply-button
+    commands:
+      - tapOn:
+          id: order-status-list-apply-button
+- extendedWaitUntil:
+    visible:
+      text: Processing
+    timeout: 30000
+
+# Now transition the processing order to completed.
 - scrollUntilVisible:
     element:
       text: Mark Order Complete
     direction: DOWN
+    visibilityPercentage: 100
 - tapOn: Mark Order Complete
 - assertVisible: Review Order
 - tapOn: Mark Order Complete
@@ -53,8 +143,3 @@ tags:
       text: Completed
     timeout: 30000
 - assertVisible: Completed
-- scrollUntilVisible:
-    element:
-      text: Complete ${SUITE_RUN_ID}
-    direction: DOWN
-- assertVisible: Complete ${SUITE_RUN_ID}

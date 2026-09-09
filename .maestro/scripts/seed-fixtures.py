@@ -19,6 +19,9 @@ from typing import Any
 
 RUN_ID_RE = re.compile(r"^SUITE-\d{8}T\d{6}Z-[a-f0-9]{6}$")
 API_PREFIX = "/wp-json/wc/v3/"
+# Media items live in WordPress core, not the WooCommerce namespace. Deleting a product
+# does not remove the images it uploaded, so run-owned media is cleaned via this prefix.
+MEDIA_PREFIX = "/wp-json/wp/v2/"
 
 
 class SmokeSetupError(RuntimeError):
@@ -63,8 +66,8 @@ class WooClient:
             "User-Agent": "woocommerce-ios-maestro-smoke",
         }
 
-    def request(self, method: str, path: str, *, query: dict[str, Any] | None = None) -> Any:
-        url = self.site_url + API_PREFIX + path.lstrip("/")
+    def request(self, method: str, path: str, *, query: dict[str, Any] | None = None, prefix: str = API_PREFIX) -> Any:
+        url = self.site_url + prefix + path.lstrip("/")
         if query:
             url += "?" + urllib.parse.urlencode(query, doseq=True)
         request = urllib.request.Request(url, headers=self.headers, method=method)
@@ -83,8 +86,8 @@ class WooClient:
         query.setdefault("per_page", 100)
         return self.request("GET", path, query=query)
 
-    def delete(self, path: str, entity_id: int) -> None:
-        self.request("DELETE", f"{path}/{entity_id}", query={"force": "true"})
+    def delete(self, path: str, entity_id: int, *, prefix: str = API_PREFIX) -> None:
+        self.request("DELETE", f"{path}/{entity_id}", query={"force": "true"}, prefix=prefix)
 
 
 def initialize(args: argparse.Namespace) -> None:
@@ -112,6 +115,12 @@ def discover_entities(client: WooClient, manifest: dict[str, Any]) -> list[dict[
     for product in client.list("products", search=run_id, status="any"):
         if run_id in str(product.get("name", "")):
             entities.append({"type": "product", "id": int(product["id"])})
+            # Deleting the product does not remove images it uploaded to the media
+            # library, so journal them as run-owned media to avoid an orphaned-media leak.
+            for image in product.get("images", []) or []:
+                image_id = image.get("id")
+                if image_id:
+                    entities.append({"type": "media", "id": int(image_id)})
     for order in client.list(
         "orders",
         after=manifest["created_at"],
@@ -136,12 +145,13 @@ def cleanup(args: argparse.Namespace) -> None:
         manifest["discovery_complete"] = True
         write_manifest(args.manifest, manifest)
 
-    paths = {"order": "orders", "product": "products", "tag": "products/tags"}
+    paths = {"order": "orders", "product": "products", "tag": "products/tags", "media": "media"}
+    prefixes = {"order": API_PREFIX, "product": API_PREFIX, "tag": API_PREFIX, "media": MEDIA_PREFIX}
     errors: list[str] = []
     original_count = len(manifest["entities"])
     for entity in reversed(list(manifest["entities"])):
         try:
-            client.delete(paths[entity["type"]], int(entity["id"]))
+            client.delete(paths[entity["type"]], int(entity["id"]), prefix=prefixes[entity["type"]])
         except SmokeSetupError as error:
             errors.append(str(error))
         else:

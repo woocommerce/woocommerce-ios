@@ -52,6 +52,7 @@ tags:
 - assertVisible: "Product type"
 - tapOn:
     id: "edit-product-more-options-button"
+    retryTapIfNoChange: true
 - extendedWaitUntil:
     visible: "Product Settings"
     timeout: 10000

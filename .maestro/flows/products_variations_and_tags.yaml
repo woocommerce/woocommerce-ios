@@ -35,6 +35,7 @@ tags:
     timeout: 20000
 - tapOn:
     id: "edit-product-more-options-button"
+    retryTapIfNoChange: true
 - extendedWaitUntil:
     visible: "Product Settings"
     timeout: 10000

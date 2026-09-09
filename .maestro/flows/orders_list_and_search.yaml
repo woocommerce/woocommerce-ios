@@ -13,9 +13,23 @@ tags:
 - assertVisible:
     id: "orders-table-view"
 
+# The table view is present before its rows carry text, so reading row content
+# immediately races the first fetch and yields an empty string on a cold cache.
+# Wait for a real order number to render before capturing anything.
+- extendedWaitUntil:
+    visible:
+      text: "#.*"
+      childOf:
+        id: "orders-table-view"
+    timeout: 30000
+
 # Capture the first live order title (for example, "#560 Pamela Nguyen").
+# Match the order-number shape rather than ".+": the table also exposes section
+# headers ("YESTERDAY"), row dates ("Sep 7"), status chips ("Completed") and
+# amounts ("$135.26"), and which of those lands at index 0 is not stable between
+# runs.
 - copyTextFrom:
-    text: ".+"
+    text: "#.*"
     childOf:
       id: "orders-table-view"
     index: 0
@@ -31,7 +45,7 @@ tags:
 - scroll
 - scroll
 - copyTextFrom:
-    text: ".+"
+    text: "#.*"
     childOf:
       id: "orders-table-view"
     index: 0

@@ -359,33 +359,6 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "EUR")
     }
 
-    func test_retrieveProductsTransiently_without_currency_does_not_persist_products_or_send_currency() throws {
-        // Given
-        let expectation = expectation(description: #function)
-        let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
-        network.simulateResponse(requestUrlSuffix: "products", filename: "products-load-all")
-
-        // When
-        let action = ProductAction.retrieveProductsTransiently(siteID: sampleSiteID,
-                                                               currency: nil,
-                                                               pageNumber: 1,
-                                                               pageSize: 25,
-                                                               stockStatus: nil,
-                                                               productStatus: nil,
-                                                               productType: nil,
-                                                               productCategory: nil,
-                                                               sortOrder: .nameAscending) { result in
-            XCTAssertEqual(try? result.get().products.count, 10)
-            expectation.fulfill()
-        }
-        productStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
-
-        // Then
-        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 0)
-        XCTAssertNil(try XCTUnwrap(network.queryParametersDictionary)["currency"])
-    }
-
     func test_synchronizeProductsForOrderCreation_persists_page_and_additional_products_and_uses_page_for_pagination() throws {
         // Given
         let pageProducts = (1...25).map { Product.fake().copy(siteID: sampleSiteID, productID: Int64($0), name: "Page \($0)") }

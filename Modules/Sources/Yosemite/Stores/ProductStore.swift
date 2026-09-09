@@ -263,7 +263,7 @@ public class ProductStore: Store {
 private extension ProductStore {
 
     func retrieveProductsTransiently(siteID: Int64,
-                                     currency: String?,
+                                     currency: String,
                                      pageNumber: Int,
                                      pageSize: Int,
                                      stockStatus: ProductStockStatus?,

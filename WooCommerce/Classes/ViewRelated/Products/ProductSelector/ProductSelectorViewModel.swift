@@ -140,13 +140,14 @@ final class ProductSelectorViewModel: ObservableObject {
 
     private enum TopProductsState {
         case unresolved
-        case loading(UUID, retrievedProducts: [Product]?)
+        case loading(UUID)
         case resolved(popular: [Product], lastSold: [Product])
     }
 
     private typealias RetrievedProducts = (products: [Product], hasNextPage: Bool)
 
     private var topProductsState = TopProductsState.unresolved
+    private var hasUnfilteredProductsPredicate = true
 
     private let tracker: ProductSelectorViewModelTracker
 
@@ -588,14 +589,14 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
             return
         }
 
-        guard shouldRetrieveTopProducts(pageNumber: pageNumber) else {
+        guard shouldSynchronizeAdditionalProducts(pageNumber: pageNumber) else {
             synchronizeStoredProducts(pageNumber: pageNumber, pageSize: pageSize) { [weak self] result in
                 self?.handleStoredProductsResult(result, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
             }
             return
         }
 
-        syncStoredProductsAndTopProducts(pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        synchronizeProductsForOrderCreation(pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
     }
 
     private func synchronizeStoredProducts(pageNumber: Int,
@@ -615,27 +616,38 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
         stores.dispatch(action)
     }
 
-    private func syncStoredProductsAndTopProducts(pageNumber: Int, pageSize: Int, onCompletion: SyncCompletion?) {
-        syncProductsAndTopProducts(currency: nil, syncProducts: { completion in
-            self.synchronizeStoredProducts(pageNumber: pageNumber, pageSize: pageSize, onCompletion: completion)
-        }) { [weak self] productsResult, topProducts in
+    private func synchronizeProductsForOrderCreation(pageNumber: Int, pageSize: Int, onCompletion: SyncCompletion?) {
+        let action = ProductAction.synchronizeProductsForOrderCreation(
+            siteID: siteID,
+            pageNumber: pageNumber,
+            pageSize: pageSize,
+            sortOrder: .nameAscending,
+            additionalProductIDs: topProductIDsToRetrieve,
+            shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage
+        ) { [weak self] result in
             guard let self else { return }
-            self.handleStoredProductsResult(productsResult,
+            let topProductsToResolve: [Product]? = if case .unresolved = self.topProductsState,
+                                                      self.shouldShowSections,
+                                                      self.hasUnfilteredProductsPredicate { [] } else { nil }
+            self.handleStoredProductsResult(result,
                                             pageNumber: pageNumber,
                                             pageSize: pageSize,
-                                            resolvingTopProductsWith: topProducts,
+                                            resolvingTopProductsWith: topProductsToResolve,
+                                            discardMissingTopProducts: self.shouldShowSections && self.hasUnfilteredProductsPredicate,
                                             onCompletion: onCompletion)
         }
+        stores.dispatch(action)
     }
 
     private func handleStoredProductsResult(_ result: Result<Bool, Error>,
                                             pageNumber: Int,
                                             pageSize: Int,
                                             resolvingTopProductsWith topProducts: [Product]? = nil,
+                                            discardMissingTopProducts: Bool = false,
                                             onCompletion: SyncCompletion?) {
         switch result {
         case .success:
-            reloadData(resolvingTopProductsWith: topProducts)
+            reloadData(resolvingTopProductsWith: topProducts, discardMissingTopProducts: discardMissingTopProducts)
         case let .failure(error):
             productNotice = NoticeFactory.productSyncNotice() { [weak self] in
                 self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
@@ -647,7 +659,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
         onCompletion?(result)
     }
 
-    private func retrieveTopProducts(currency: String?,
+    private func retrieveTopProducts(currency: String,
                                      onCompletion: @escaping (Result<RetrievedProducts, Error>) -> Void) {
         let productIDs = topProductIDsToRetrieve
         guard productIDs.isNotEmpty else {
@@ -761,58 +773,59 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                                      pageNumber: Int,
                                                      pageSize: Int,
                                                      onCompletion: SyncCompletion?) {
-        syncProductsAndTopProducts(currency: currency, syncProducts: { completion in
-            self.retrieveTransientProducts(currency: currency,
-                                           pageNumber: pageNumber,
-                                           pageSize: pageSize,
-                                           onCompletion: completion)
-        }) { [weak self] productsResult, topProducts in
-            self?.handleTransientSyncResult(productsResult,
-                                            pageNumber: pageNumber,
-                                            pageSize: pageSize,
-                                            resolvingTopProductsWith: topProducts,
-                                            onCompletion: onCompletion)
-        }
-    }
-
-    private func syncProductsAndTopProducts<Products>(
-        currency: String?,
-        syncProducts: (@escaping (Result<Products, Error>) -> Void) -> Void,
-        onCompletion: @escaping (Result<Products, Error>, [Product]?) -> Void
-    ) {
         let requestID = UUID()
-        topProductsState = .loading(requestID, retrievedProducts: nil)
+        topProductsState = .loading(requestID)
+        var productsResult: Result<RetrievedProducts, Error>?
+        var topProductsResult: Result<RetrievedProducts, Error>?
 
-        retrieveTopProducts(currency: currency) { [weak self] result in
-            if case let .failure(error) = result {
-                DDLogError("⛔️ Error retrieving top products during order creation: \(error)")
-            }
-
+        let finishIfPossible = { [weak self] in
             guard let self,
-                  case let .loading(activeRequestID, _) = self.topProductsState,
-                  activeRequestID == requestID else {
+                  case let .loading(activeRequestID) = self.topProductsState,
+                  activeRequestID == requestID,
+                  let productsResult,
+                  let topProductsResult else {
                 return
             }
 
-            switch result {
+            let topProducts: [Product]
+            switch topProductsResult {
             case let .success(result):
-                self.topProductsState = .loading(requestID, retrievedProducts: result.products)
-            case .failure:
-                self.topProductsState = .loading(requestID, retrievedProducts: [])
-            }
-        }
-
-        syncProducts { [weak self] result in
-            guard let self,
-                  case let .loading(activeRequestID, retrievedTopProducts) = self.topProductsState,
-                  activeRequestID == requestID else {
-                return
+                topProducts = result.products
+            case let .failure(error):
+                DDLogError("⛔️ Error retrieving top products during order creation: \(error)")
+                topProducts = []
             }
 
-            if case .failure = result {
+            if case .failure = productsResult {
                 self.topProductsState = .unresolved
             }
-            onCompletion(result, result.isSuccess ? retrievedTopProducts ?? [] : nil)
+            self.handleTransientSyncResult(productsResult,
+                                           pageNumber: pageNumber,
+                                           pageSize: pageSize,
+                                           resolvingTopProductsWith: productsResult.isSuccess ? topProducts : nil,
+                                           onCompletion: onCompletion)
+        }
+
+        retrieveTopProducts(currency: currency) { [weak self] result in
+            guard let self,
+                  case let .loading(activeRequestID) = self.topProductsState,
+                  activeRequestID == requestID else {
+                return
+            }
+            topProductsResult = result
+            finishIfPossible()
+        }
+
+        retrieveTransientProducts(currency: currency,
+                                  pageNumber: pageNumber,
+                                  pageSize: pageSize) { [weak self] result in
+            guard let self,
+                  case let .loading(activeRequestID) = self.topProductsState,
+                  activeRequestID == requestID else {
+                return
+            }
+            productsResult = result
+            finishIfPossible()
         }
     }
 
@@ -884,17 +897,15 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                        onCompletion: SyncCompletion?) {
         switch result {
         case let .success((products, hasNextPage)):
-            let products = purchasableItemsOnly ? products.filter(\.purchasable) : products
             if pageNumber == pageFirstIndex {
                 transientProducts = products
             } else {
+                let productsByID = Dictionary(products.map { ($0.productID, $0) }, uniquingKeysWith: { _, latest in latest })
+                transientProducts = transientProducts.map { productsByID[$0.productID] ?? $0 }
                 let existingIDs = Set(transientProducts.map(\.productID))
                 transientProducts += products.filter { !existingIDs.contains($0.productID) }
             }
-            let retrievedTopProducts = topProducts.map { products in
-                purchasableItemsOnly ? products.filter(\.purchasable) : products
-            }
-            reloadData(resolvingTopProductsWith: retrievedTopProducts)
+            reloadData(resolvingTopProductsWith: topProducts)
             transitionToResultsUpdatedState()
             onCompletion?(.success(hasNextPage))
         case let .failure(error):
@@ -989,7 +1000,7 @@ private extension ProductSelectorViewModel {
 
     /// Reloads the data from the storage and composes sections and selections.
     ///
-    func reloadData(resolvingTopProductsWith retrievedTopProducts: [Product]? = nil) {
+    func reloadData(resolvingTopProductsWith retrievedTopProducts: [Product]? = nil, discardMissingTopProducts: Bool = false) {
         if currency != nil {
             if let retrievedTopProducts {
                 resolveTopProducts(from: transientProducts, retrievedTopProducts: retrievedTopProducts)
@@ -1001,26 +1012,23 @@ private extension ProductSelectorViewModel {
 
         do {
             try productsResultsController.performFetch()
-            var loadedProducts: [Product] = []
-            if purchasableItemsOnly {
-                loadedProducts = productsResultsController.fetchedObjects.filter { $0.purchasable }
-            } else {
-                loadedProducts = productsResultsController.fetchedObjects
-            }
+            let loadedProducts = productsResultsController.fetchedObjects
 
             if let retrievedTopProducts {
                 resolveTopProducts(from: loadedProducts, retrievedTopProducts: retrievedTopProducts)
             }
-            createSectionsAddingTopProductsIfRequired(from: loadedProducts)
+            createSectionsAddingTopProductsIfRequired(from: loadedProducts, discardMissingTopProducts: discardMissingTopProducts)
             observeSelections()
         } catch {
             DDLogError("⛔️ Error fetching products for new order: \(error)")
         }
     }
 
-    func createSectionsAddingTopProductsIfRequired(from loadedProducts: [Product]) {
-        let topProducts = displayedTopProducts(from: loadedProducts)
-        let popularProducts = topProducts.popular
+    func createSectionsAddingTopProductsIfRequired(from loadedProducts: [Product], discardMissingTopProducts: Bool = false) {
+        let topProducts = displayedTopProducts(from: loadedProducts, discardMissingProducts: discardMissingTopProducts)
+        let loadedProducts = purchasableItemsOnly ? loadedProducts.filter(\.purchasable) : loadedProducts
+        let popularProducts = purchasableItemsOnly ? topProducts.popular.filter(\.purchasable) : topProducts.popular
+        let lastSoldProducts = purchasableItemsOnly ? topProducts.lastSold.filter(\.purchasable) : topProducts.lastSold
 
         guard popularProducts.isNotEmpty,
               shouldShowSections else {
@@ -1030,21 +1038,23 @@ private extension ProductSelectorViewModel {
 
         sections = [ProductSelectorSection(type: .mostPopular, products: popularProducts)]
 
-        let filteredLastSoldProducts = Array(removeAlreadyAddedProducts(from: topProducts.lastSold).prefix(Constants.topSectionsMaxLength))
+        let filteredLastSoldProducts = Array(removeAlreadyAddedProducts(from: lastSoldProducts).prefix(Constants.topSectionsMaxLength))
 
         appendSectionIfNotEmpty(type: .lastSold, products: filteredLastSoldProducts)
         appendSectionIfNotEmpty(type: .restOfProducts, products: loadedProducts)
     }
 
-    func displayedTopProducts(from loadedProducts: [Product]) -> (popular: [Product], lastSold: [Product]) {
+    func displayedTopProducts(from loadedProducts: [Product], discardMissingProducts: Bool) -> (popular: [Product], lastSold: [Product]) {
         switch topProductsState {
         case let .resolved(popular, lastSold):
-            let loadedProductsByID = Dictionary(uniqueKeysWithValues: loadedProducts.map { ($0.productID, $0) })
-            let updatedPopular = popular.map { loadedProductsByID[$0.productID] ?? $0 }
-            let updatedLastSold = lastSold.map { loadedProductsByID[$0.productID] ?? $0 }
+            let loadedProductsByID = Dictionary(loadedProducts.map { ($0.productID, $0) }, uniquingKeysWith: { _, latest in latest })
+            // Only a completed unfiltered refresh can confirm removal. A filtered cache may temporarily omit suggestions.
+            let updatedPopular = popular.compactMap { loadedProductsByID[$0.productID] ?? (discardMissingProducts ? nil : $0) }
+            let updatedLastSold = lastSold.compactMap { loadedProductsByID[$0.productID] ?? (discardMissingProducts ? nil : $0) }
             topProductsState = .resolved(popular: updatedPopular, lastSold: updatedLastSold)
             return (updatedPopular, updatedLastSold)
         case .unresolved, .loading:
+            let loadedProducts = purchasableItemsOnly ? loadedProducts.filter(\.purchasable) : loadedProducts
             let popular = filterProductsFromSortedIdsArray(originalProducts: loadedProducts,
                                                            productsIds: topProductsFromCachedOrders.popularProductsIds)
             let lastSold = filterProductsFromSortedIdsArray(originalProducts: loadedProducts,
@@ -1054,9 +1064,11 @@ private extension ProductSelectorViewModel {
     }
 
     func resolveTopProducts(from loadedProducts: [Product], retrievedTopProducts: [Product]) {
-        let eligibleTopProducts = purchasableItemsOnly ? retrievedTopProducts.filter(\.purchasable) : retrievedTopProducts
-        var productsByID = Dictionary(uniqueKeysWithValues: eligibleTopProducts.map { ($0.productID, $0) })
+        var productsByID = Dictionary(retrievedTopProducts.map { ($0.productID, $0) }, uniquingKeysWith: { _, latest in latest })
         loadedProducts.forEach { productsByID[$0.productID] = $0 }
+        if purchasableItemsOnly {
+            productsByID = productsByID.filter { $0.value.purchasable }
+        }
 
         let popularProductIDs = Array(topProductsFromCachedOrders.popularProductsIds.prefix(Constants.topSectionsMaxLength))
         let popularProductIDSet = Set(popularProductIDs)
@@ -1087,6 +1099,10 @@ private extension ProductSelectorViewModel {
             return false
         }
         return topProductIDsToRetrieve.isNotEmpty
+    }
+
+    func shouldSynchronizeAdditionalProducts(pageNumber: Int) -> Bool {
+        pageNumber == pageFirstIndex && shouldShowSections && topProductIDsToRetrieve.isNotEmpty
     }
 
     func filterProductsFromSortedIdsArray(originalProducts: [Product], productsIds: [Int64]) -> [Product] {
@@ -1149,6 +1165,7 @@ private extension ProductSelectorViewModel {
             // Resets the results to the full product list when there is no search query.
             productsResultsController.predicate = resultsPredicate
         }
+        hasUnfilteredProductsPredicate = searchTerm.isEmpty && filters.numberOfActiveFilters == 0
     }
 
     /// Setup: Pagination Tracker

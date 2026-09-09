@@ -2,7 +2,6 @@ import Testing
 import Foundation
 import Yosemite
 import YosemiteTestHelpers
-import Experiments
 import enum NetworkingCore.DotcomError
 import enum NetworkingCore.NetworkError
 import WooFoundation
@@ -61,8 +60,9 @@ struct POSRefundSubmissionAdaptorTests {
     }
 
     @Test func prepareReviewData_when_preview_falls_back_then_shows_local_totals_and_submits_via_classic_create() async throws {
-        // Given the flag is off, so the preview use case falls back without probing
-        let sut = makeSUT(previewResult: nil, flagEnabled: false)
+        // Given a store below the minimum WooCommerce version, so the preview use case falls
+        // back without probing
+        let sut = makeSUT(previewResult: nil, serverFlowEligible: false)
         let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
 
         // When
@@ -203,7 +203,7 @@ struct POSRefundSubmissionAdaptorTests {
                                                     reason: nil)
 
         // When the same selection is re-previewed and the site now reports the local fallback
-        sut.flags.isFeatureFlagEnabledReturnValue = [.posServerCalculatedRefunds: false]
+        sut.availabilityCache.markUnavailable(siteID: siteID)
         _ = try await sut.adaptor.prepareReviewData(for: posOrder(),
                                                     preparation: preparation,
                                                     selectedItems: preparation.selectableItems,
@@ -268,7 +268,7 @@ struct POSRefundSubmissionAdaptorTests {
 
     @Test func prepareReviewData_when_rounded_tax_inclusive_line_sums_above_order_total_then_shows_order_total() async throws {
         // Given a tax-inclusive line whose rounded total and rounded tax sum to 10.00 on a 9.99 order
-        let sut = makeSUT(previewResult: nil, flagEnabled: false, order: taxInclusiveRoundedUpOrder())
+        let sut = makeSUT(previewResult: nil, serverFlowEligible: false, order: taxInclusiveRoundedUpOrder())
         let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
 
         // When
@@ -284,7 +284,7 @@ struct POSRefundSubmissionAdaptorTests {
 
     @Test func submitRefund_when_rounded_tax_inclusive_line_sums_above_order_total_then_submits_order_total() async throws {
         // Given the same order, reviewed on the local path
-        let sut = makeSUT(previewResult: nil, flagEnabled: false, order: taxInclusiveRoundedUpOrder())
+        let sut = makeSUT(previewResult: nil, serverFlowEligible: false, order: taxInclusiveRoundedUpOrder())
         let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
         _ = try await sut.adaptor.prepareReviewData(for: posOrder(),
                                                     preparation: preparation,
@@ -305,7 +305,7 @@ struct POSRefundSubmissionAdaptorTests {
         // Given an $11.00 order with $10.00 already refunded, and a selection worth $11.00
         let refund = OrderRefundCondensed(refundID: 1, reason: nil, total: "-10.00")
         let sut = makeSUT(previewResult: nil,
-                          flagEnabled: false,
+                          serverFlowEligible: false,
                           order: order().copy(total: "11.00", refunds: [refund]))
         let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
         _ = try await sut.adaptor.prepareReviewData(for: posOrder(),
@@ -385,19 +385,22 @@ private extension POSRefundSubmissionAdaptorTests {
         let spy: RefundActionSpy
         let analyticsProvider: MockAnalyticsProvider
         /// Exposed so a test can change eligibility between two previews of the same selection.
-        let flags: MockFeatureFlagService
+        let availabilityCache: ServerRefundAvailabilityCache
     }
 
     /// Builds the adaptor with a mocked order service, refund service, stores manager, and a fresh
     /// availability cache. `previewResult` stubs the `RefundService.previewRefund` outcome; pass
-    /// `nil` when the preview is not expected to run (e.g. flag off).
+    /// `nil` when the preview is not expected to run (e.g. an ineligible store).
+    ///
+    /// `serverFlowEligible: false` puts the store below the minimum WooCommerce version, which is
+    /// how the local flow is now reached.
     func makeSUT(previewResult: Result<RefundPreview, Error>?,
-                     flagEnabled: Bool = true,
+                     serverFlowEligible: Bool = true,
                      manualPreviewResolution: Bool = false,
                      orderQuantity: Decimal = 1,
                      order suppliedOrder: Order? = nil) -> SUT {
         let session = SessionManager.testingInstance
-        session.cachedWooCommerceVersion = "11.1.0"
+        session.cachedWooCommerceVersion = serverFlowEligible ? "11.1.0" : "11.0.9"
         let stores = MockStoresManager(sessionManager: session)
         let spy = RefundActionSpy()
         let service = MockManualRefundService()
@@ -427,12 +430,9 @@ private extension POSRefundSubmissionAdaptorTests {
             }
         }
 
-        let flags = MockFeatureFlagService()
-        flags.isFeatureFlagEnabledReturnValue = [.posServerCalculatedRefunds: flagEnabled]
         let availabilityCache = ServerRefundAvailabilityCache()
         let previewUseCase = POSServerRefundPreviewUseCase(refundService: service,
                                                            flowResolver: POSRefundFlowResolver(stores: stores,
-                                                                                               featureFlagService: flags,
                                                                                                availabilityCache: availabilityCache,
                                                                                                minimumWooVersion: "11.1.0"),
                                                            availabilityCache: availabilityCache,
@@ -453,7 +453,7 @@ private extension POSRefundSubmissionAdaptorTests {
                    service: service,
                    spy: spy,
                    analyticsProvider: analyticsProvider,
-                   flags: flags)
+                   availabilityCache: availabilityCache)
     }
 
     func usdCurrencySettings() -> CurrencySettings {

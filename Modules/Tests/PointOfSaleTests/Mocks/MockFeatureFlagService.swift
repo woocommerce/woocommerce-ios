@@ -4,7 +4,6 @@ import Experiments
 final class MockFeatureFlagService: POSFeatureFlagProviding {
     var isUpdateOrderOptimisticallyOn: Bool
     var isSupportRequestEnabled: Bool
-    var productBundlesInOrderForm: Bool
     var isPointOfSaleEnabled: Bool
     var backgroundProductImageUpload: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
@@ -12,13 +11,11 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
 
     init(isUpdateOrderOptimisticallyOn: Bool = false,
          isSupportRequestEnabled: Bool = false,
-         productBundlesInOrderForm: Bool = false,
          isPointOfSaleEnabled: Bool = false,
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false) {
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.isSupportRequestEnabled = isSupportRequestEnabled
-        self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
@@ -36,8 +33,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
             return isUpdateOrderOptimisticallyOn
         case .supportRequests:
             return isSupportRequestEnabled
-        case .productBundlesInOrderForm:
-            return productBundlesInOrderForm
         case .pointOfSale:
             return isPointOfSaleEnabled
         case .backgroundProductImageUpload:

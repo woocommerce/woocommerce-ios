@@ -67,10 +67,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case addProductToOrderViaSKUScanner
 
-    /// Enables bundle product configuration support in order creation/editing.
-    ///
-    case productBundlesInOrderForm
-
     /// Enables the custom login UI when user enters an existing email address during account creation.
     ///
     case customLoginUIForAccountCreation

@@ -53,6 +53,10 @@ tags:
 - assertTrue:
     condition: ${output.afterScrollOrderTitle.length > 0 && output.afterScrollOrderTitle !== output.initialOrderTitle}
     label: Orders list exposes an additional row after scrolling
+# Keep this second, different order number. The search below asserts it is gone
+# from the results, which is what distinguishes a real search from a list that
+# ignored the query.
+- evalScript: ${output.excludedOrderNumber = output.afterScrollOrderTitle.split(' ')[0].replace('#', '')}
 - takeScreenshot: orders_list_scrolled
 
 - tapOn:
@@ -73,6 +77,13 @@ tags:
     timeout: 30000
 - assertVisible:
     text: "#${output.orderSearchText}.*"
+    childOf:
+      id: "updated-search-results-table-view"
+# Presence alone is weak: the searched order was already on screen before the
+# search ran, so a list that ignored the query entirely would also satisfy it.
+# Assert a known non-matching order has gone.
+- assertNotVisible:
+    text: "#${output.excludedOrderNumber}.*"
     childOf:
       id: "updated-search-results-table-view"
 - takeScreenshot: orders_search_results

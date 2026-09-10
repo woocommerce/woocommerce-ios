@@ -175,10 +175,6 @@ where Cell.SearchModel == Command.CellViewModel {
         if searchUICommand.hideNavigationBar {
             navigationController?.setNavigationBarHiddenIfNeeded(true, animated: searchUICommand.animateNavigationBarVisibilityChanges)
         }
-
-        if searchUICommand.makeSearchBarFirstResponderOnStart {
-            searchBar.becomeFirstResponder()
-        }
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -186,6 +182,10 @@ where Cell.SearchModel == Command.CellViewModel {
 
         // Note: configuring the search bar text color does not work in `viewDidLoad` and `viewWillAppear`.
         configureSearchBar()
+
+        if searchUICommand.makeSearchBarFirstResponderOnStart {
+            searchBar.becomeFirstResponder()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {

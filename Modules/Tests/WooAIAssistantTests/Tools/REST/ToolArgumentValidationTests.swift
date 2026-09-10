@@ -31,9 +31,8 @@ struct ToolArgumentValidationTests {
                                                      toolName: "orders_update")
 
         // Then
-        let unwrapped = try? #require(failed)
-        #expect(unwrapped?.kind == .invalidToolCall)
-        #expect(unwrapped?.reason == "Unsupported orders_update argument(s): discount_total")
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason == "Unsupported orders_update argument(s): discount_total")
     }
 
     @Test
@@ -48,8 +47,7 @@ struct ToolArgumentValidationTests {
                                                      toolName: "orders_update")
 
         // Then
-        let unwrapped = try? #require(failed)
-        #expect(unwrapped?.reason.contains("_method, discount_total") == true)
+        #expect(failed.reason.contains("_method, discount_total") == true)
     }
 
     @Test
@@ -96,8 +94,7 @@ struct ToolArgumentValidationTests {
                                                      toolName: "orders_bulk_update")
 
         // Then
-        let unwrapped = try? #require(failed)
-        #expect(unwrapped?.kind == .invalidToolCall)
-        #expect(unwrapped?.reason.contains("discount_total") == true)
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("discount_total") == true)
     }
 }

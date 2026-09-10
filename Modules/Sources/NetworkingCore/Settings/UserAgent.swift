@@ -13,13 +13,13 @@ public class UserAgent {
 
     /// Returns the default WooCommerce iOS User Agent
     ///
-    public static var defaultUserAgent: String = {
+    public static let defaultUserAgent: String = {
         return webkitUserAgent + " " + Constants.woocommerceIdentifier + "/" + bundleShortVersion
     }()
 
     /// Returns a user agent string similar to (but may not exactly match) the one used in `WKWebView`.
     ///
-    static var webkitUserAgent: String = {
+    static let webkitUserAgent: String = {
         // Examples user agent strings from `WKWebView` in iOS simulators:
         //
         // ## iPhone 15 Pro (iOS 17.2)

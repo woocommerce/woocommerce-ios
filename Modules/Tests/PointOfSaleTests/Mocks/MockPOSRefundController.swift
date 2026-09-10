@@ -4,6 +4,7 @@ import struct Yosemite.POSOrder
 
 final class MockPOSRefundController: POSRefundControllerProtocol {
     var selectableItems: [POSRefundSelectableItem] = []
+    var hasLoadedSelectableItems: Bool { !selectableItems.isEmpty }
     var hasModifiedSelection = false
     var reviewPreparationState: POSRefundReviewPreparationState = .idle
     var requiresCardPresentRefund = false
@@ -41,6 +42,12 @@ final class MockPOSRefundController: POSRefundControllerProtocol {
 
     func refreshRefundableItems() async -> StartRefundFlowResult {
         refreshRefundableItemsCallCount += 1
+        if case .hasItemsToRefund = stubStartRefundFlowResult {
+            for index in selectableItems.indices {
+                selectableItems[index].isSelected = false
+            }
+            hasModifiedSelection = false
+        }
         return stubStartRefundFlowResult
     }
 

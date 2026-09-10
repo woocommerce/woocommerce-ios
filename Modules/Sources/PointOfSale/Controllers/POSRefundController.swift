@@ -73,6 +73,7 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
 
 protocol POSRefundControllerProtocol {
     var selectableItems: [POSRefundSelectableItem] { get }
+    var hasLoadedSelectableItems: Bool { get }
     var hasModifiedSelection: Bool { get }
     var reviewPreparationState: POSRefundReviewPreparationState { get }
     var requiresCardPresentRefund: Bool { get }
@@ -151,6 +152,11 @@ protocol POSRefundControllerProtocol {
         resetReviewPreparation()
 
         return selectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
+    }
+
+    @MainActor
+    var hasLoadedSelectableItems: Bool {
+        !selectableItems.isEmpty
     }
 
     /// Reloads the refundable items after the store rejected a preview or a create because the

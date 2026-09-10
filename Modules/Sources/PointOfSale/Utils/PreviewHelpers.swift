@@ -547,6 +547,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
 // MARK: - Preview Refund Controller
 final class POSPreviewRefundController: POSRefundControllerProtocol {
     var selectableItems: [POSRefundSelectableItem] = []
+    var hasLoadedSelectableItems: Bool { !selectableItems.isEmpty }
     var hasModifiedSelection = false
     var reviewPreparationState: POSRefundReviewPreparationState { .idle }
     var requiresCardPresentRefund: Bool { false }

@@ -33,7 +33,6 @@ struct POSOrderDetailsView: View {
     @State private var currentRefundReason: String?
     @State private var selectedRefundForDetail: POSOrderRefund?
     @State private var refundOverrideHandler = POSManagerOverrideHandler()
-    @State private var hasLoadedRefundableItems = false
 
     private var shouldShowBackButton: Bool {
         horizontalSizeClass == .compact
@@ -138,7 +137,7 @@ struct POSOrderDetailsView: View {
                         errorStrings: refundErrorStrings,
                         onDismiss: { dismissRefundFlow() },
                         onRetryLoading: {
-                            if hasLoadedRefundableItems {
+                            if orderListModel.refundController.hasLoadedSelectableItems {
                                 refreshRefundSelection()
                             } else {
                                 initiateRefundFlow()
@@ -628,7 +627,6 @@ private extension POSOrderDetailsView {
             refundFlowPreparationID = nil
             switch result {
             case .hasItemsToRefund:
-                hasLoadedRefundableItems = true
                 refundSelectionState = .itemSelection
             case .nothingToRefund:
                 refundSelectionState = .nothingToRefund
@@ -680,7 +678,6 @@ private extension POSOrderDetailsView {
             refundFlowPreparationID = nil
             switch result {
             case .hasItemsToRefund:
-                hasLoadedRefundableItems = true
                 refundSelectionState = .itemSelection
             case .nothingToRefund:
                 refundSelectionState = .nothingToRefund
@@ -707,7 +704,6 @@ private extension POSOrderDetailsView {
         refundSelectionState = nil
         refundModalState = nil
         currentRefundReason = nil
-        hasLoadedRefundableItems = false
         orderListModel.refundController.clearSelection()
         dismissRefundSelectionIfNeeded()
     }

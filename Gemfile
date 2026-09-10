@@ -11,11 +11,11 @@ end
 
 gem 'danger-dangermattic', '~> 1.4'
 gem 'dotenv'
-gem 'fastlane', '~> 2.238'
+gem 'fastlane', '~> 2.239'
 gem 'fastlane-plugin-firebase_app_distribution', '~> 1.0'
 gem 'fastlane-plugin-sentry', '~> 2.6'
 # gem 'fastlane-plugin-wpmreleasetoolkit', git: 'git@github.com:wordpress-mobile/release-toolkit', branch: ''
-gem 'fastlane-plugin-wpmreleasetoolkit', '~> 14.11'
+gem 'fastlane-plugin-wpmreleasetoolkit', '~> 15.0'
 # To avoid errors like:
 #
 # SSL_connect returned=1 errno=0 peeraddr=3.5.132.155:443 state=error: certificate verify failed (unable to get certificate CRL)

@@ -90,16 +90,10 @@ final class EditableOrderViewModel: ObservableObject {
     /// Indicates the customer details screen to be shown. If there's no address added show the customer selector, otherwise the form so it can be edited
     ///
     var customerNavigationScreen: CustomerNavigationScreen {
-        let shouldShowSelector = featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder) &&
-        // If there are no addresses added
-        orderSynchronizer.order.billingAddress?.isEmpty ?? true &&
-        orderSynchronizer.order.shippingAddress?.isEmpty ?? true
+        let hasNoBillingAddress = orderSynchronizer.order.billingAddress?.isEmpty ?? true
+        let hasNoShippingAddress = orderSynchronizer.order.shippingAddress?.isEmpty ?? true
 
-        return shouldShowSelector ? .selector : .form
-    }
-
-    var shouldShowSearchButtonInOrderAddressForm: Bool {
-        !featureFlagService.isFeatureFlagEnabled(.betterCustomerSelectionInOrder)
+        return hasNoBillingAddress && hasNoShippingAddress ? .selector : .form
     }
 
     var orderIsNotEmpty: Bool {
@@ -1936,9 +1930,6 @@ private extension EditableOrderViewModel {
 
     @MainActor
     func checkIfGiftCardsPluginIsActive() async -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.giftCardInOrderForm) else {
-            return false
-        }
         return await withCheckedContinuation { continuation in
             stores.dispatch(SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: SystemPluginPaths.giftCards) { plugin in
                 continuation.resume(returning: plugin?.active == true)

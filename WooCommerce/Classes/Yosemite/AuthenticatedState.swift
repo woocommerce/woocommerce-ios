@@ -8,6 +8,24 @@ import enum NetworkingCore.RequestAuthenticationMode
 // MARK: - AuthenticatedState
 //
 class AuthenticatedState: StoresManagerState {
+    typealias NetworkFactory = (
+        _ credentials: Credentials,
+        _ selectedSite: AnyPublisher<JetpackSite?, Never>,
+        _ appPasswordSupportState: AnyPublisher<Bool, Never>,
+        _ cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?
+    ) -> AlamofireNetwork
+
+    /// The production `NetworkFactory`, used whenever no factory is injected.
+    ///
+    static func makeNetwork(credentials: Credentials,
+                            selectedSite: AnyPublisher<JetpackSite?, Never>,
+                            appPasswordSupportState: AnyPublisher<Bool, Never>,
+                            cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> AlamofireNetwork {
+        AlamofireNetwork(credentials: credentials,
+                         selectedSite: selectedSite,
+                         appPasswordSupportState: appPasswordSupportState,
+                         cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints)
+    }
 
     var requestAuthenticationMode: RequestAuthenticationMode? {
         network.authenticationMode
@@ -50,18 +68,22 @@ class AuthenticatedState: StoresManagerState {
     ///
     init(credentials: Credentials,
          sessionManager: SessionManagerProtocol,
-         isLocalCatalogFeatureFlagEnabled: Bool) {
+         cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
+         networkFactory: NetworkFactory = AuthenticatedState.makeNetwork) {
         let storageManager = ServiceLocator.storageManager
 
         let site = sessionManager.defaultSitePublisher
             .map { $0?.toJetpackSite() }
             .eraseToAnyPublisher()
+        let resolvedCookieNonceAuthenticationEndpoints = cookieNonceAuthenticationEndpoints
+            ?? sessionManager.cookieNonceAuthenticationEndpoints(for: credentials)
 
         self.appPasswordSupportState = .init()
-        self.network = AlamofireNetwork(
-            credentials: credentials,
-            selectedSite: site,
-            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
+        self.network = networkFactory(
+            credentials,
+            site,
+            appPasswordSupportState.eraseToAnyPublisher(),
+            resolvedCookieNonceAuthenticationEndpoints
         )
 
         var services: [ActionsProcessor] = [
@@ -168,13 +190,11 @@ class AuthenticatedState: StoresManagerState {
 
         self.services = services
 
-        // Initialize POS catalog sync coordinator and eligibility service if feature flag is enabled
-        if isLocalCatalogFeatureFlagEnabled,
-           let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
+        // Initialize POS catalog sync coordinator and eligibility service
+        if let fullSyncService = POSCatalogFullSyncService(credentials: credentials,
                                                            selectedSite: site,
                                                            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
-                                                           grdbManager: ServiceLocator.grdbManager,
-                                                           usesCatalogAPI: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)),
+                                                           grdbManager: ServiceLocator.grdbManager),
            let incrementalSyncService = POSCatalogIncrementalSyncService(
             credentials: credentials,
             selectedSite: site,
@@ -183,19 +203,12 @@ class AuthenticatedState: StoresManagerState {
            ) {
             // Create eligibility service
             let eligibilityService = POSLocalCatalogEligibilityService(
-                catalogSizeChecker: POSCatalogSizeChecker(
-                    credentials: credentials,
-                    selectedSite: site,
-                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
-                ),
                 systemStatusService: POSSystemStatusService(
                     credentials: credentials,
                     selectedSite: site,
                     appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
                     storageManager: ServiceLocator.storageManager
                 ),
-                isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled,
-                isCatalogAPIFeatureFlagEnabled: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI),
                 remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher),
                 betaFeatureToggleProvider: {
                     await MainActor.run {
@@ -214,7 +227,6 @@ class AuthenticatedState: StoresManagerState {
                 catalogEligibilityChecker: eligibilityService,
                 analytics: ServiceLocator.analytics,
                 connectivityObserver: ServiceLocator.connectivityObserver,
-                usesCatalogAPI: ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI),
                 pluginsService: PluginsService(storageManager: ServiceLocator.storageManager)
             )
 
@@ -232,14 +244,14 @@ class AuthenticatedState: StoresManagerState {
 
     /// Convenience Initializer
     ///
-    convenience init?(sessionManager: SessionManagerProtocol) {
+    convenience init?(sessionManager: SessionManagerProtocol,
+                      networkFactory: NetworkFactory = AuthenticatedState.makeNetwork) {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
-        let isLocalCatalogFeatureFlagEnabled = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI)
         self.init(credentials: credentials,
                   sessionManager: sessionManager,
-                  isLocalCatalogFeatureFlagEnabled: isLocalCatalogFeatureFlagEnabled)
+                  networkFactory: networkFactory)
     }
 
     /// Executed before the current state is deactivated.

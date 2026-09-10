@@ -24,6 +24,7 @@ struct POSRefundReviewView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
         .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
+        .posEdgeSwipeBackAction(onBack: onClose)
     }
 }
 

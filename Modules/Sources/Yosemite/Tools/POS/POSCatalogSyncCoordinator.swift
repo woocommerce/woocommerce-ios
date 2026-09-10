@@ -116,7 +116,9 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
     private let siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol
     private let analytics: Analytics?
     private let connectivityObserver: ConnectivityObserver?
-    private let syncStrategy: POSCatalogSyncStrategy
+    /// The app always syncs the catalog via the catalog file API. The paginated strategy remains
+    /// as the fallback used when a host blocks the generated catalog file.
+    private let syncStrategy: POSCatalogSyncStrategy = .localCatalogFile
     private let pendingParseResumer: BackgroundCatalogParseResuming
     private let pluginsService: PluginsServiceProtocol?
 
@@ -147,7 +149,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 siteSettings: SiteSpecificAppSettingsStoreMethodsProtocol? = nil,
                 analytics: Analytics? = nil,
                 connectivityObserver: ConnectivityObserver? = nil,
-                usesCatalogAPI: Bool = false,
                 pendingParseResumer: BackgroundCatalogParseResuming = BackgroundCatalogDownloadCoordinator(),
                 pluginsService: PluginsServiceProtocol? = nil) {
         self.fullSyncService = fullSyncService
@@ -157,7 +158,6 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         self.siteSettings = siteSettings ?? SiteSpecificAppSettingsStoreMethods(fileStorage: PListFileStorage())
         self.analytics = analytics
         self.connectivityObserver = connectivityObserver
-        self.syncStrategy = usesCatalogAPI ? .localCatalogFile : .localCatalog
         self.pendingParseResumer = pendingParseResumer
         self.pluginsService = pluginsService
     }

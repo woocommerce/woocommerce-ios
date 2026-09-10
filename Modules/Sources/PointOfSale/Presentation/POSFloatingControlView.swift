@@ -130,8 +130,7 @@ private extension POSFloatingControlView {
     }
 
     private var isPhoneLayout: Bool {
-        horizontalSizeClass == .compact &&
-        featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+        horizontalSizeClass == .compact
     }
 
     private var isRolesEnabled: Bool {

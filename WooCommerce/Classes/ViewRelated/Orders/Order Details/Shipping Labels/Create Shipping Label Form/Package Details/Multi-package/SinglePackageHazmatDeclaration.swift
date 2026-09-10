@@ -74,7 +74,6 @@ struct SinglePackageHazmatDeclaration: View {
                 .padding(.leading, Constants.horizontalPadding)
                 .calloutStyle()
         }
-        .renderedIf(viewModel.isHazmatShippingEnabled)
     }
 
     private func createHazmatInstructionsView() -> some View {

@@ -48,6 +48,7 @@ struct POSRefundSelectionFlowView: View {
             .background(Color.posSurfaceBright)
             .ignoresSafeArea(.container, edges: .bottom)
             .posHidesFloatingControl()
+            .posEdgeSwipeBackAction(onBack: onDismiss)
     }
 
     @ViewBuilder

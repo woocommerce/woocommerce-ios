@@ -4,3 +4,7 @@
 // This is App Store account id.
 // Build configurations that need the Enterprise account should override in their dedicated xcconfig.
 DEVELOPMENT_TEAM = PZYM8XX95Q
+
+// Single source of truth for concurrency checking in ordinary builds.
+// Targets already migrated to Swift 6 are enforced by the compiler instead.
+SWIFT_STRICT_CONCURRENCY = minimal

@@ -467,7 +467,10 @@ private extension HelpAndSupportViewController {
     /// Mobile status report action
     ///
     func mobileStatusReportWasPressed() {
-        navigationController?.pushViewController(MobileStatusReportHostingController(), animated: true)
+        navigationController?.pushViewController(
+            MobileStatusReportHostingController(reportProvider: MobileStatusReportProvider()),
+            animated: true
+        )
         ServiceLocator.analytics.track(.supportMobileStatusReportOpened)
     }
 
@@ -517,6 +520,7 @@ private extension HelpAndSupportViewController {
                                            hasReceivedBotResponse: Bool,
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController,
+                                                                    mobileStatusReportProvider: MobileStatusReportProvider(),
                                                                     onTicketCreated: onTicketCreated)
         supportEscalationCoordinator?.handleEscalation(chatID: chatID,
                                                        transcript: transcript,

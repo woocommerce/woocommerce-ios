@@ -9,6 +9,11 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
     ///
     private var didBeginSearchAutomatically = false
 
+    /// Whether a search started from this screen is still running, so that a second tap doesn't
+    /// start a search in parallel with the one already in flight
+    ///
+    private var searchAndConnectInProgress = false
+
     private var viewModel: CardReaderSettingsSearchingViewModel
 
     private lazy var alertsPresenter = CardPresentPaymentAlertsPresenter(rootViewController: self)
@@ -44,7 +49,22 @@ final class CardReaderSettingsSearchingViewController: UIHostingController<CardR
 
     private func configureView() {
         rootView.connectClickAction = { [weak self] in
-            self?.searchAndConnect()
+            guard let self, searchAndConnect() else {
+                return
+            }
+
+            /// Tracked here rather than in `CardReaderConnectionController` because this is the only
+            /// merchant-initiated entry point to discovery. The controller is also driven by payment
+            /// preflight, Tap to Pay reconnection and refunds, and `ConnectionType.userInitiated`
+            /// does not separate those from this tap. Tracking it there would inflate the event well
+            /// beyond the equivalent on Android.
+            ///
+            /// Tracked after the search starts so that a tap ignored because a search is already
+            /// running doesn't report a discovery that never happened, and so that the tracker
+            /// already holds the payment gateway ID, which `connectionController` sets when it is
+            /// created. On a first connection nothing else has created it yet.
+            ///
+            viewModel.cardReaderConnectionAnalyticsTracker.discoveryTapped()
         }
         rootView.showURL = { [weak self] url in
             guard let self else { return }
@@ -109,13 +129,25 @@ private extension CardReaderSettingsSearchingViewController {
 // MARK: - Convenience Methods
 //
 private extension CardReaderSettingsSearchingViewController {
-    func searchAndConnect() {
+    /// Starts searching for a reader, unless a search is already in progress.
+    /// Returns whether this call started a search.
+    ///
+    @discardableResult
+    func searchAndConnect() -> Bool {
+        guard let connectionController, !searchAndConnectInProgress else {
+            return false
+        }
+
+        searchAndConnectInProgress = true
         viewModel.clearSkipAutoSearch()
-        connectionController?.searchAndConnect() { [weak self] _ in
-            /// No need for logic here. Once connected, the connected reader will publish
-            /// through the `cardReaderAvailableSubscription`
+        connectionController.searchAndConnect() { [weak self] _ in
+            /// Once connected, the connected reader will publish through the
+            /// `cardReaderAvailableSubscription`
+            self?.searchAndConnectInProgress = false
             self?.alertsPresenter.dismiss()
         }
+
+        return true
     }
 }
 

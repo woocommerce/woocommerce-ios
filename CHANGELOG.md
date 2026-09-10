@@ -1,6 +1,9 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 25.6
+More fixes for your store: orders paid via Scan to Pay or Mark as Paid show the correct payment method. You’ll see a warning if your store’s currency can’t load. Purchased shipping labels now appear reliably, and rejected site logins show an error. We also fixed an iOS 26 crash, a Settings layout issue, and other product and order problems.
+
 ## 25.5
 You can now see product prices and SKUs in your product list, and Dashboard stats stay visible even when there’s no revenue on the chosen dates. Refunds for gift card payments are now handled from your store admin. Plus, fixes across orders, payments, POS, and in-app displays keep your store running smoothly.
 

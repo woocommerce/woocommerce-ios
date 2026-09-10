@@ -274,8 +274,7 @@ public struct PointOfSaleEntryPointView: View {
     }
 
     private var isCompactLayout: Bool {
-        horizontalSizeClass == .compact &&
-        services.featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+        horizontalSizeClass == .compact
     }
 }
 

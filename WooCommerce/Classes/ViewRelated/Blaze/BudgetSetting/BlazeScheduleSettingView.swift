@@ -84,10 +84,9 @@ struct BlazeScheduleSettingView: View {
                     .accessibilityAddTraits(.isButton)
                 }
 
-                // Toggle to switch between evergreen and not. Hidden under a feature flag.
+                // Toggle to switch between evergreen and finite campaigns.
                 Toggle(Localization.specifyDuration, isOn: $hasEndDate)
                     .toggleStyle(.switch)
-                    .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns))
 
                 Text(Localization.evergreenDescription)
                     .secondaryBodyStyle()

@@ -104,7 +104,8 @@ public struct WooShippingLabelData: Decodable, Equatable {
         let container = try decoder.container(keyedBy: CodingKeys.self)
 
         let storedData = try container.decodeIfPresent(StoredData.self, forKey: .storedData)
-        let decodedOrderLabels = try container.decodeIfPresent([ShippingLabel].self, forKey: .currentOrderLabels) ?? []
+        // A malformed unfinished label should not prevent valid purchased labels from being displayed.
+        let decodedOrderLabels = container.failsafeDecodeIfPresent(lossyList: [ShippingLabel].self, forKey: .currentOrderLabels)
 
         /// Inject destination addresses into labels if present
         let orderLabels: [ShippingLabel]

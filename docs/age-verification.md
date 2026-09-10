@@ -22,7 +22,7 @@ The flow runs after login, from `AppCoordinator`, and re-runs on every foregroun
 |---|---|
 | `AgeRangeVerificationService.swift` | Fetches the regulatory requirements, requests the declared age range (two gates: 13 and 18) and maps the snapshot to an `AgeRangeVerificationResult`. |
 | `AgeRangeProvider.swift` | Thin wrapper around the Declared Age Range framework. |
-| `AgeRatingProvider.swift` / `AgeRatingChangeDetector.swift` / `AgeRatingChangeDetecting.swift` | Reads the app's current App Store age rating and reports an unacknowledged rating increase (non-consuming until explicitly acknowledged). |
+| `AgeRatingProvider.swift` / `AgeRatingChangeDetector.swift` / `AgeRatingChangeDetecting.swift` | Reads the app's current App Store age rating and reports an unacknowledged rating change (non-consuming until explicitly acknowledged). |
 | `SignificantChangeConsentProvider.swift` | PermissionKit wrapper: `requestConsent` sends the question, `responses()` streams answers. |
 | `SignificantChangeConsentStore.swift` | `SignificantChangeIdentifier` (`.ageRatingChange(ratingCode:)` auto-detected, `.manual(id:)` developer-declared, plus the persisted cache key format) and the UserDefaults persistence of per-change statuses (`granted`/`denied`/`pending`) and the single pending-question slot. |
 | `CurrentSignificantChange.swift` | The one well-known place to declare a real manual significant change for a release, with its parent-facing copy. |
@@ -77,7 +77,7 @@ A "significant change" without an age rating impact (for example new Terms of Se
 - `parentDescription`: the short, plain summary Apple shows inside the consent request the parent/guardian receives. Use an `NSLocalizedString` literal with the key `significantChange.<id>.parentDescription`.
 - `blockerMessage`: the longer explanation shown on the in-app "Approval Needed" screen. Use an `NSLocalizedString` literal with the key `significantChange.<id>.blockerMessage`.
 
-Both texts are required by construction, so a change cannot be declared without parent-facing copy. Legal drives the trigger: a change is declared only when Legal determines it is significant under the applicable rules. Plan for one release cycle of lead time so the copy can be reviewed and localized before the release that carries the declaration ships. Remove the declaration in a later release once the change has shipped and consent for it has had time to be collected.
+Both texts are required by construction, so a change cannot be declared without parent-facing copy. Legal drives the trigger: a change is declared only when Legal determines it is significant under the applicable rules. Plan for one release cycle of lead time so the copy can be reviewed and localized before the release that carries the declaration ships. Keep the latest declaration in subsequent releases: consent is persisted per id, so users who already approved are not asked again, while users who skip the release that introduced the change are still asked. Replace it only when a newer significant change, with a new id, supersedes it.
 
 ## Debug tooling
 

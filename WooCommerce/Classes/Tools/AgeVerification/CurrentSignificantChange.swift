@@ -13,9 +13,9 @@ struct SignificantChangeDeclaration: Equatable {
 
 /// The single place to declare a real significant change for a release.
 ///
-/// Normally `nil`: age rating increases are detected automatically. Set it when Legal deems a change
+/// Normally `nil`: age rating changes are detected automatically. Set it when Legal deems a change
 /// (e.g. new Terms of Service) significant despite an unchanged rating; allow one release cycle of
-/// lead time for copy review and localization, and remove it once consent has been collected.
+/// lead time for copy review and localization. Keep it until a newer change with a new id supersedes it.
 ///
 /// Both texts must be `NSLocalizedString` literals keyed `significantChange.<id>.parentDescription`
 /// and `significantChange.<id>.blockerMessage`. The example spells those calls out in comments

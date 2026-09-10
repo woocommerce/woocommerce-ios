@@ -89,6 +89,85 @@ class SeedFixtureTests(unittest.TestCase):
             self.assertEqual([], contents["entities"])
             self.assertIn("created_at", contents)
 
+    def test_rest_datetime_strips_offset_and_microseconds(self) -> None:
+        """The API's `after` filter returns nothing when the offset is present.
+
+        `created_at` is written as a full ISO 8601 UTC timestamp, which the
+        WooCommerce REST API rejects for date filtering. Measured against a live
+        store: 0 rows with the offset, 5 rows without it.
+        """
+        self.assertEqual(
+            "2026-09-09T05:29:41",
+            SEED.rest_datetime("2026-09-09T05:29:41.207439+00:00"),
+        )
+        self.assertEqual("2026-09-09T05:29:41", SEED.rest_datetime("2026-09-09T05:29:41Z"))
+        self.assertEqual("2026-09-09T05:29:41", SEED.rest_datetime("2026-09-09T05:29:41"))
+
+    def test_cleanup_collects_run_owned_auto_drafts_but_leaves_unattributed_ones(self) -> None:
+        """`status=any` excludes auto-draft, so drafts need their own query.
+
+        A draft carrying the run ID is ours. One without it cannot be told apart
+        from a merchant part-way through writing an order, so it is left alone.
+        """
+        run_id = "SUITE-20260805T120000Z-abc123"
+
+        class StatusAwareClient(FakeClient):
+            def list(self, path: str, **query: object) -> list[dict[str, object]]:
+                if path != "orders":
+                    return []
+                if query.get("status") == "auto-draft":
+                    return [
+                        {
+                            "id": 41,
+                            "customer_note": "",
+                            "line_items": [],
+                            "fee_lines": [{"name": f"QR {run_id}"}],
+                            "meta_data": [],
+                        },
+                        {
+                            "id": 42,
+                            "customer_note": "",
+                            "line_items": [],
+                            "fee_lines": [],
+                            "meta_data": [],
+                        },
+                    ]
+                return []
+
+        with tempfile.TemporaryDirectory() as directory:
+            manifest = Path(directory) / "manifest.json"
+            args = argparse.Namespace(run_id=run_id, manifest=manifest)
+            SEED.initialize(args)
+            client = StatusAwareClient()
+
+            with mock.patch.object(SEED, "WooClient", return_value=client):
+                SEED.cleanup(args)
+
+            # 41 carries the run ID in a fee line; 42 is unattributable.
+            self.assertEqual([("orders", 41)], client.deleted)
+
+    def test_order_contains_run_id_matches_custom_amount_fee_lines(self) -> None:
+        """Custom amounts are fee lines, not line items.
+
+        The QR and share-payment flows stamp the run ID only on a custom amount,
+        so without this those orders can never be attributed.
+        """
+        run_id = "SUITE-20260805T120000Z-abc123"
+        order = {
+            "customer_note": "",
+            "line_items": [],
+            "fee_lines": [{"name": f"Share {run_id}"}],
+            "meta_data": [],
+        }
+
+        self.assertTrue(SEED.order_contains_run_id(order, run_id))
+        self.assertFalse(
+            SEED.order_contains_run_id(
+                {"customer_note": "", "line_items": [], "fee_lines": [{"name": "Gift wrap"}], "meta_data": []},
+                run_id,
+            )
+        )
+
     def test_cleanup_deletes_only_exact_run_owned_entities(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             manifest = Path(directory) / "manifest.json"

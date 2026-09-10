@@ -757,6 +757,19 @@ def main() -> int:
                 env=values,
             )
             cleanup_status = "PASS" if cleanup_result.returncode == 0 else "FAIL"
+            # Surface cleanup output even when it succeeds. It reports orders it
+            # could not attribute to this run and therefore left on the store,
+            # which is exactly the case a PASS would otherwise hide.
+            cleanup_output = redact(
+                "\n".join(
+                    part.strip()
+                    for part in (cleanup_result.stdout, cleanup_result.stderr)
+                    if part and part.strip()
+                ),
+                values,
+            )
+            if cleanup_output:
+                print(cleanup_output, flush=True)
             if cleanup_result.returncode:
                 cleanup_error = redact(
                     (cleanup_result.stderr or cleanup_result.stdout).strip()

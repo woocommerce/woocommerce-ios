@@ -141,7 +141,13 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        tableView.refreshControl = refreshControl
+        if #available(iOS 26.0, *) {
+            // Work around WOOMOB-3694 by avoiding the navigation controller's refresh-control host, which can enter a recursive layout cycle.
+            // Order Details does not use large titles, so direct subview attachment preserves pull-to-refresh without that integration.
+            tableView.addSubview(refreshControl)
+        } else {
+            tableView.refreshControl = refreshControl
+        }
 
         tableView.dataSource = viewModel.dataSource
         tableView.accessibilityIdentifier = "order-details-table-view"
@@ -530,18 +536,17 @@ private extension OrderDetailsViewController {
 
     func markOrderCompleteFromShippingLabels() {
         let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
-        let isRevampedFlow = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
 
         var cancellables = Set<AnyCancellable>()
         var cancellable = AnyCancellable { }
         cancellable = fulfillmentProcess.result.sink { completion in
             if case .failure = completion {
                 ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed,
-                                               withProperties: ["is_revamped_flow": isRevampedFlow])
+                                               withProperties: ["is_revamped_flow": true])
             }
             else {
                 ServiceLocator.analytics.track(.shippingLabelOrderFulfillSucceeded,
-                                               withProperties: ["is_revamped_flow": isRevampedFlow])
+                                               withProperties: ["is_revamped_flow": true])
             }
             cancellables.remove(cancellable)
         } receiveValue: {
@@ -629,16 +634,6 @@ private extension OrderDetailsViewController {
     }
 
     func refundShippingLabel(_ shippingLabel: ShippingLabel) {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation) else {
-            let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
-                self?.navigationController?.popViewController(animated: true)
-            }
-            // Disables the bottom bar (tab bar) when requesting a refund.
-            refundViewController.hidesBottomBarWhenPushed = true
-            show(refundViewController, sender: self)
-            return
-        }
-
         let refundViewModel = WooShippingRefundViewModel(shippingLabel: shippingLabel)
         let view = WooShippingRefundView(viewModel: refundViewModel) { [weak self] updatedLabel in
             guard let self else { return }

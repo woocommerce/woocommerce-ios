@@ -203,6 +203,12 @@ public class MockStoresManager: StoresManager {
     }
 
     @discardableResult
+    public func authenticate(credentials: Credentials,
+                             cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
+        return self
+    }
+
+    @discardableResult
     public func deauthenticate() -> StoresManager {
         return self
     }

@@ -317,7 +317,6 @@ private extension POSTabCoordinator {
                 }
 
                 let refundFlowResolver = POSRefundFlowResolver(stores: storesManager,
-                                                               featureFlagService: ServiceLocator.featureFlagService,
                                                                availabilityCache: .shared,
                                                                minimumWooVersion: POSRefundFlowResolver.Constants.minimumWooVersionForServerRefunds)
                 let serverRefundPreviewUseCase = POSServerRefundPreviewUseCase(refundService: refundService,

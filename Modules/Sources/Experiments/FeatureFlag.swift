@@ -51,13 +51,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
     case performanceMonitoringViewController
 
-    /// Enables manual error handling for site credential login.
-    ///
-    case manualErrorHandlingForSiteCredentialLogin
-
-    /// Enables the improvements in the customer selection logic when creating an order
-    ///
-    case betterCustomerSelectionInOrder
 
     /// Enables bundle product configuration support in order creation/editing.
     ///
@@ -67,29 +60,9 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case customLoginUIForAccountCreation
 
-    /// Enables the Scan to Update Inventory feature.
-    ///
-    case scanToUpdateInventory
-
     /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale
-
-    /// Enables revamped shipping label flow for Woo Shipping extension
-    ///
-    case revampedShippingLabelCreation
-
-    /// Enables selecting objectives during Blaze campaign creation.
-    ///
-    case blazeCampaignObjective
-
-    /// Supports hiding sites from the store picker
-    ///
-    case hideSitesInStorePicker
-
-    /// Supports managing filer history on order and product lists
-    ///
-    case filterHistoryOnOrderAndProductLists
 
     /// Supports uploading product images in background
     ///
@@ -167,9 +140,4 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Off by default until the stack is ready to enable for internal builds.
     ///
     case starReceiptPrinterSupport
-
-    /// Enables server-calculated POS refunds: the `/wc/v3` refund preview and `compute_totals`
-    /// create endpoints (WC 11.1.0+).
-    ///
-    case posServerCalculatedRefunds
 }

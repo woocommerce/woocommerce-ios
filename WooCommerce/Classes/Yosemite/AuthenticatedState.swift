@@ -8,6 +8,24 @@ import enum NetworkingCore.RequestAuthenticationMode
 // MARK: - AuthenticatedState
 //
 class AuthenticatedState: StoresManagerState {
+    typealias NetworkFactory = (
+        _ credentials: Credentials,
+        _ selectedSite: AnyPublisher<JetpackSite?, Never>,
+        _ appPasswordSupportState: AnyPublisher<Bool, Never>,
+        _ cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?
+    ) -> AlamofireNetwork
+
+    /// The production `NetworkFactory`, used whenever no factory is injected.
+    ///
+    static func makeNetwork(credentials: Credentials,
+                            selectedSite: AnyPublisher<JetpackSite?, Never>,
+                            appPasswordSupportState: AnyPublisher<Bool, Never>,
+                            cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> AlamofireNetwork {
+        AlamofireNetwork(credentials: credentials,
+                         selectedSite: selectedSite,
+                         appPasswordSupportState: appPasswordSupportState,
+                         cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints)
+    }
 
     var requestAuthenticationMode: RequestAuthenticationMode? {
         network.authenticationMode
@@ -49,18 +67,23 @@ class AuthenticatedState: StoresManagerState {
     /// Designated Initializer
     ///
     init(credentials: Credentials,
-         sessionManager: SessionManagerProtocol) {
+         sessionManager: SessionManagerProtocol,
+         cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
+         networkFactory: NetworkFactory = AuthenticatedState.makeNetwork) {
         let storageManager = ServiceLocator.storageManager
 
         let site = sessionManager.defaultSitePublisher
             .map { $0?.toJetpackSite() }
             .eraseToAnyPublisher()
+        let resolvedCookieNonceAuthenticationEndpoints = cookieNonceAuthenticationEndpoints
+            ?? sessionManager.cookieNonceAuthenticationEndpoints(for: credentials)
 
         self.appPasswordSupportState = .init()
-        self.network = AlamofireNetwork(
-            credentials: credentials,
-            selectedSite: site,
-            appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher()
+        self.network = networkFactory(
+            credentials,
+            site,
+            appPasswordSupportState.eraseToAnyPublisher(),
+            resolvedCookieNonceAuthenticationEndpoints
         )
 
         var services: [ActionsProcessor] = [
@@ -221,12 +244,14 @@ class AuthenticatedState: StoresManagerState {
 
     /// Convenience Initializer
     ///
-    convenience init?(sessionManager: SessionManagerProtocol) {
+    convenience init?(sessionManager: SessionManagerProtocol,
+                      networkFactory: NetworkFactory = AuthenticatedState.makeNetwork) {
         guard let credentials = sessionManager.defaultCredentials else {
             return nil
         }
         self.init(credentials: credentials,
-                  sessionManager: sessionManager)
+                  sessionManager: sessionManager,
+                  networkFactory: networkFactory)
     }
 
     /// Executed before the current state is deactivated.

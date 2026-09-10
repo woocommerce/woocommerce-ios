@@ -2,7 +2,6 @@ import Foundation
 import SwiftUI
 import UIKit
 import Yosemite
-import Experiments
 import WooFoundation
 import protocol Storage.StorageManagerType
 
@@ -51,14 +50,9 @@ final class OrderDetailsDataSource: NSObject {
         return order.datePaid == nil
     }
 
-    /// Whether the order has anything left to refund.
-    ///
-    /// This deliberately does not check whether the order was paid. WooCommerce core gates its own Refund button on
-    /// the same question (`woocommerce_admin_order_should_render_refunds`), because nothing in the API reliably says
-    /// that money arrived: `date_paid` is only set by `payment_complete()`, so an order paid offline never gets one.
-    ///
     var isEligibleForRefund: Bool {
         guard !isRefundedStatus,
+              order.datePaid != nil,
               refundableOrderItemsDeterminer.isAnythingToRefund(from: order, with: refunds, currencyFormatter: currencyFormatter) else {
             return false
         }
@@ -239,8 +233,6 @@ final class OrderDetailsDataSource: NSObject {
 
     private let siteSettings: [SiteSetting]
 
-    private let featureFlags: FeatureFlagService
-
     init(order: Order,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
@@ -248,8 +240,7 @@ final class OrderDetailsDataSource: NSObject {
          receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
-         userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator),
-         featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
+         userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)) {
         self.storageManager = storageManager
         self.order = order
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
@@ -259,7 +250,6 @@ final class OrderDetailsDataSource: NSObject {
         self.currencySettings = currencySettings
         self.siteSettings = siteSettings
         self.userIsAdmin = userIsAdmin
-        self.featureFlags = featureFlags
 
         super.init()
     }
@@ -1305,11 +1295,7 @@ extension OrderDetailsDataSource {
                 let rows: [Row]
                 let headerStyle: Section.HeaderStyle
                 if isRefunded {
-                    if featureFlags.isFeatureFlagEnabled(.revampedShippingLabelCreation) {
-                        rows = [.shippingLabelRefunded]
-                    } else {
-                        rows = [.shippingLabelRefunded, .shippingLabelDetail]
-                    }
+                    rows = [.shippingLabelRefunded]
                     headerStyle = .primary
                 } else {
                     rows = [.shippingLabelProducts, .shippingLabelReprintButton, .shippingLabelPrintingInfo, .shippingLabelTrackingNumber, .shippingLabelDetail]

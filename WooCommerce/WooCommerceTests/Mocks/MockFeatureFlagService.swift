@@ -33,6 +33,8 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
 
         // Otherwise uses the default implementation.
         switch featureFlag {
+        case .updateOrderOptimistically:
+            return isUpdateOrderOptimisticallyOn
         case .pointOfSale:
             return isPointOfSaleEnabled
         case .backgroundProductImageUpload:

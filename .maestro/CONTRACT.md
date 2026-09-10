@@ -39,6 +39,10 @@ fixtures and optional for self-hosted fixtures. Set both or leave both blank.
 The runner removes a trailing `/wp-admin` or `/wp-admin/` from the no-Jetpack
 site URL before passing it to the app.
 
+Variables written by store-setup tooling (`MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_USERNAME`
+and `MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_PASSWORD`) are never required by a flow and are
+never forwarded to Maestro; they exist so a provisioned store can be reconfigured later.
+
 `MAESTRO_WOO_CONSUMER_KEY` and `MAESTRO_WOO_CONSUMER_SECRET` are optional and
 are validated only when explicit REST seeding or cleanup is requested. Local
 runs may load `.maestro/.env.local`; CI injects protected environment variables

@@ -1070,6 +1070,35 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(events, ["loading:true", "handle", "success"])
     }
 
+    /// Nothing further along clears the sign-in loading state when the application password use case cannot be built,
+    /// so plainly returning would leave the merchant on a credential form whose fields, submit button and back button
+    /// are all still disabled. Login has to restart instead.
+    ///
+    func test_didAuthenticateUser_when_the_application_password_use_case_cannot_be_created_then_login_restarts() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        stores.authenticate(credentials: .wporg(username: "merchant", password: "password", siteAddress: "https://example.com"))
+        let root = UIViewController()
+        navigationController.setViewControllers([root, UIViewController()], animated: false)
+        let manager = AuthenticationManager(
+            stores: stores,
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, _ in
+                throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
+            })
+        )
+
+        // When
+        manager.didAuthenticateUser(to: "https://example.com", with: siteCredentials(), in: navigationController)
+
+        // Then
+        waitUntil { self.navigationController.viewControllers == [root] }
+        XCTAssertFalse(stores.isAuthenticated)
+    }
+
     func test_authenticate_site_credentials_when_login_retry_has_invalid_unverified_response_then_recovers_not_found() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()

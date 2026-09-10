@@ -1214,7 +1214,14 @@ extension AuthenticationManager {
             useCase = try makeApplicationPasswordUseCase(for: siteCredentials)
         } catch {
             // Authenticated credentials without a constructible canonical site cannot safely enter the eligibility flow.
-            assertionFailure("⛔️ Error creating application password use case")
+            // Nothing further along clears the sign-in loading state, so plainly returning would strand the merchant on a
+            // credential form whose fields, submit button and back button all stay disabled. Report the broken invariant
+            // and restart login, which is the same escape the post-login eligibility alerts already offer.
+            ServiceLocator.crashLogging.logError(error,
+                                                 userInfo: ["site_url": siteURL],
+                                                 level: .error)
+            stores.deauthenticate()
+            navigationController.popToRootViewController(animated: true)
             return
         }
         let credentials = Credentials.wporg(

@@ -32,6 +32,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         storage = nil
     }
 
+    @MainActor
     func test_loading_is_enabled_while_marking_order_as_paid() async {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in

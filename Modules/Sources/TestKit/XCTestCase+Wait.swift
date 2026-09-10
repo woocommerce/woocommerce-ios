@@ -110,6 +110,7 @@ extension XCTestCase {
     }
 
     /// Async/await version of `waitFor`, as `XCTWaiter.wait(for:timeout:)` does not support concurrency in `waitFor`.
+    @MainActor
     public func waitForAsync<ValueType>(file: StaticString = #file,
                                         line: UInt = #line,
                                         timeout: TimeInterval = 5.0,

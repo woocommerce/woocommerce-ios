@@ -20,7 +20,7 @@ struct ToolArgumentValidationTests {
     }
 
     @Test
-    func test_validate_when_args_contain_unknown_key_then_failed_with_invalidToolCall_kind_is_returned() {
+    func test_validate_when_args_contain_unknown_key_then_failed_with_invalidToolCall_kind_is_returned() throws {
         // Given
         let arguments = #"{"id": 1, "discount_total": "9.00"}"#
         let allowed: Set<String> = ["id", "status"]
@@ -31,12 +31,13 @@ struct ToolArgumentValidationTests {
                                                      toolName: "orders_update")
 
         // Then
-        #expect(failed.kind == .invalidToolCall)
-        #expect(failed.reason == "Unsupported orders_update argument(s): discount_total")
+        let unwrapped = try #require(failed)
+        #expect(unwrapped.kind == .invalidToolCall)
+        #expect(unwrapped.reason == "Unsupported orders_update argument(s): discount_total")
     }
 
     @Test
-    func test_validate_when_args_contain_multiple_unknown_keys_then_message_lists_them_comma_separated() {
+    func test_validate_when_args_contain_multiple_unknown_keys_then_message_lists_them_comma_separated() throws {
         // Given
         let arguments = #"{"id": 1, "_method": "delete", "discount_total": "9.00"}"#
         let allowed: Set<String> = ["id"]
@@ -47,7 +48,8 @@ struct ToolArgumentValidationTests {
                                                      toolName: "orders_update")
 
         // Then
-        #expect(failed.reason.contains("_method, discount_total") == true)
+        let unwrapped = try #require(failed)
+        #expect(unwrapped.reason.contains("_method, discount_total") == true)
     }
 
     @Test
@@ -81,7 +83,7 @@ struct ToolArgumentValidationTests {
     }
 
     @Test
-    func test_validate_patch_when_object_has_unknown_key_then_failed_is_returned() {
+    func test_validate_patch_when_object_has_unknown_key_then_failed_is_returned() throws {
         // Given
         let patch: AnyCodableJSON = .object([
             "status": .string("completed"),
@@ -94,7 +96,8 @@ struct ToolArgumentValidationTests {
                                                      toolName: "orders_bulk_update")
 
         // Then
-        #expect(failed.kind == .invalidToolCall)
-        #expect(failed.reason.contains("discount_total") == true)
+        let unwrapped = try #require(failed)
+        #expect(unwrapped.kind == .invalidToolCall)
+        #expect(unwrapped.reason.contains("discount_total") == true)
     }
 }

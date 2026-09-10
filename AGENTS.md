@@ -218,6 +218,15 @@ Modules/Tests/PointOfSaleTests/  # POS unit tests
 WooCommerce/Classes/POS/         # App-target POS integration (POSTabCoordinator, adaptors)
 ```
 
+## Design System (StoreDesignSystem)
+
+`Modules/Sources/StoreDesignSystem/` is the Woo Mobile Design System module: tokens (`Tokens/` — color, typography, icons, spacing, padding, radius, size, stroke, motion) and `Store*` components (`Components/<Name>/`). Figma source: the "Mobile Design System" file. The in-app gallery lives in Debug Panel → Design System (`WooCommerce/Classes/ViewRelated/DesignSystemDemo/`).
+
+- **New SwiftUI views use `StoreDesignSystem`**: `Store*` components, `.storeTextStyle(_:)`, `Color.store*`, `StoreSpacing`/`StorePadding`/`StoreRadius`/`StoreIcon`. No hardcoded sizes, colors, or system fonts alongside them.
+- **Do not mix legacy styling with DS tokens** in one view: a view is either legacy (`Color(.text)`, `.headline`, `.withColorStudio`) or design-system, never both.
+- **Adding a component**: `Components/<Name>/Store<Name>.swift` plus closed variant/tone types, tokens only, a demo view in `DesignSystemDemo/` registered in `DesignSystemDemoView`, `#Preview` blocks, and Swift Testing coverage in `Modules/Tests/StoreDesignSystemTests/`. Pull the spec from the Figma node before implementing.
+- **Screen migrations** are flag-gated and swap the view layer only; view models and business logic stay shared.
+
 ## WooAIAssistant Module
 
 The WooAIAssistant module (`Modules/Sources/WooAIAssistant/`) is a self-contained feature module that ships an in-app conversational agent for merchants. The architecture is designed to be flexible: it can integrate REST tools, MCP tools, or both, and the chat endpoint is swappable without touching the agentic loop. The module renders rich entity cards that integrate with existing app views and screens. See `Modules/Sources/WooAIAssistant/AGENTS.md` for architecture, decisions, and anti-patterns. Live evaluation runs through the `/woo-ai-smoke` skill.

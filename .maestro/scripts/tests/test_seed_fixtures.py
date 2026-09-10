@@ -27,8 +27,12 @@ class FakeClient:
     def list(self, path: str, **query: object) -> list[dict[str, object]]:
         if path == "products":
             return [
-                {"id": 11, "name": "Media SUITE-20260805T120000Z-abc123"},
-                {"id": 12, "name": "Merchant product"},
+                {
+                    "id": 11,
+                    "name": "Media SUITE-20260805T120000Z-abc123",
+                    "images": [{"id": 101}],
+                },
+                {"id": 12, "name": "Merchant product", "images": [{"id": 102}]},
             ]
         if path == "products/tags":
             return [
@@ -50,7 +54,7 @@ class FakeClient:
             },
         ]
 
-    def delete(self, path: str, entity_id: int) -> None:
+    def delete(self, path: str, entity_id: int, *, prefix: str | None = None) -> None:
         if entity_id == self.fail_delete_id:
             raise SEED.SmokeSetupError("injected deletion failure")
         self.deleted.append((path, entity_id))
@@ -177,11 +181,11 @@ class SeedFixtureTests(unittest.TestCase):
             with mock.patch.object(SEED, "WooClient", return_value=client):
                 SEED.cleanup(args)
 
-            # Tags are discovered last and the deletion loop is reversed, so the
-            # run-owned tag is removed before the products that reference it.
-            # The merchant's own product, order, and tag are left untouched.
+            # Tags are discovered last and the deletion loop is reversed, so ordering is
+            # tag → order → the product's uploaded media → product. The merchant's own
+            # product (and its image 102), order, and tag are left untouched.
             self.assertEqual(
-                [("products/tags", 31), ("orders", 21), ("products", 11)],
+                [("products/tags", 31), ("orders", 21), ("media", 101), ("products", 11)],
                 client.deleted,
             )
             contents = json.loads(manifest.read_text(encoding="utf-8"))

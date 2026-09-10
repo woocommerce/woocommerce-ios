@@ -7,7 +7,7 @@ import Codegen
 /// The endpoint returns a thin wrapper around the Stripe object, so
 /// [these docs are relevant](https://stripe.com/docs/api/charges/object#charge_object-payment_method_details-card-brand)
 ///
-public enum WCPayCardBrand: String, Codable, GeneratedCopiable, GeneratedFakeable, Equatable {
+public enum WCPayCardBrand: String, Codable, Sendable, GeneratedCopiable, GeneratedFakeable, Equatable {
     case amex
     case cartesBancaires = "cartes_bancaires"
     case diners

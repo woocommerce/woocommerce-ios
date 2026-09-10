@@ -1,0 +1,473 @@
+# p2: dashboard.customization
+# Every known card is toggled or explicitly classified as unavailable/hidden.
+# All selectable mutations persist across one relaunch, then the captured
+# original states are restored and asserted after another relaunch. A card
+# reorder is also persisted, reversed, and verified before anchor restoration.
+appId: ${APP_ID}
+name: "Dashboard - Exercise every card, persist selection and reorder, then restore"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - dashboard
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/navigate_to_dashboard.yaml
+- runFlow: ../helpers/open_dashboard_customizer.yaml
+
+# Capture the two always-available anchor cards and keep both selected so the
+# list's last-selected guard cannot block any non-anchor toggle.
+- evalScript: |
+    output.dashboardReviewsOriginal = '';
+    output.dashboardCouponsOriginal = '';
+- repeat:
+    times: 6
+    commands:
+      - swipe: { start: "50%,25%", end: "50%,80%", duration: 300 }
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    when:
+      visible:
+        id: "selectable-item-selected-Most recent reviews"
+    commands:
+      - evalScript: |
+          output.dashboardReviewsOriginal = 'selected';
+- runFlow:
+    when:
+      visible:
+        id: "selectable-item-unselected-Most recent reviews"
+    commands:
+      - evalScript: |
+          output.dashboardReviewsOriginal = 'unselected';
+      - runFlow:
+          file: ../helpers/set_dashboard_card_selection.yaml
+          env: { CARD_TITLE: Most recent reviews, DESIRED_STATE: selected }
+- scrollUntilVisible:
+    element: "Most active coupons"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    when:
+      visible:
+        id: "selectable-item-selected-Most active coupons"
+    commands:
+      - evalScript: |
+          output.dashboardCouponsOriginal = 'selected';
+- runFlow:
+    when:
+      visible:
+        id: "selectable-item-unselected-Most active coupons"
+    commands:
+      - evalScript: |
+          output.dashboardCouponsOriginal = 'unselected';
+      - runFlow:
+          file: ../helpers/set_dashboard_card_selection.yaml
+          env: { CARD_TITLE: Most active coupons, DESIRED_STATE: selected }
+- assertTrue:
+    condition: ${output.dashboardReviewsOriginal !== '' && output.dashboardCouponsOriginal !== ''}
+    label: Capture original dashboard anchor selection
+
+# Toggle every non-anchor card exactly once while retaining both anchors.
+- runFlow:
+    file: ../helpers/dashboard_toggle_card.yaml
+    env: { CARD_TITLE: AI Assistant, CARD_KEY: ai }
+- runFlow:
+    file: ../helpers/dashboard_toggle_card.yaml
+    env: { CARD_TITLE: Store setup, CARD_KEY: store_setup }
+- runFlow:
+    file: ../helpers/dashboard_toggle_card.yaml
+    env: { CARD_TITLE: Performance, CARD_KEY: performance }
+- runFlow:
+    file: ../helpers/dashboard_toggle_card.yaml
+    env: { CARD_TITLE: Top performers, CARD_KEY: top_performers }
+- runFlow:
+    file: ../helpers/dashboard_toggle_card.yaml
+    env: { CARD_TITLE: Blaze campaigns, CARD_KEY: blaze }
+- runFlow:
+    file: ../helpers/dashboard_toggle_card.yaml
+    env: { CARD_TITLE: Inbox, CARD_KEY: inbox }
+- runFlow:
+    file: ../helpers/dashboard_toggle_card.yaml
+    env: { CARD_TITLE: Stock, CARD_KEY: stock }
+- runFlow:
+    file: ../helpers/dashboard_toggle_card.yaml
+    env: { CARD_TITLE: Most recent orders, CARD_KEY: recent_orders }
+- runFlow:
+    file: ../helpers/dashboard_toggle_card.yaml
+    env: { CARD_TITLE: Google Ads campaigns, CARD_KEY: google_ads }
+
+# Exercise both anchor controls while preserving one selected guard. Reviews is
+# toggled off/on in-session; Coupons is toggled off and persisted below.
+- repeat:
+    times: 6
+    commands:
+      - swipe: { start: "50%,25%", end: "50%,80%", duration: 300 }
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    file: ../helpers/set_dashboard_card_selection.yaml
+    env: { CARD_TITLE: Most recent reviews, DESIRED_STATE: unselected }
+- runFlow:
+    file: ../helpers/set_dashboard_card_selection.yaml
+    env: { CARD_TITLE: Most recent reviews, DESIRED_STATE: selected }
+- scrollUntilVisible:
+    element: "Most active coupons"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    file: ../helpers/set_dashboard_card_selection.yaml
+    env: { CARD_TITLE: Most active coupons, DESIRED_STATE: unselected }
+- runFlow: ../helpers/save_dashboard_customizer.yaml
+
+# Relaunch and assert the externally persisted inverse state for every
+# selectable non-anchor card plus the deliberately persisted Coupons change.
+- stopApp
+- launchApp
+- runFlow: ../helpers/open_dashboard_customizer.yaml
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: AI Assistant, CARD_KEY: ai, EXPECTED_MODE: inverse }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Store setup, CARD_KEY: store_setup, EXPECTED_MODE: inverse }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Performance, CARD_KEY: performance, EXPECTED_MODE: inverse }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Top performers, CARD_KEY: top_performers, EXPECTED_MODE: inverse }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Blaze campaigns, CARD_KEY: blaze, EXPECTED_MODE: inverse }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Inbox, CARD_KEY: inbox, EXPECTED_MODE: inverse }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Stock, CARD_KEY: stock, EXPECTED_MODE: inverse }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Most recent orders, CARD_KEY: recent_orders, EXPECTED_MODE: inverse }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Google Ads campaigns, CARD_KEY: google_ads, EXPECTED_MODE: inverse }
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- assertVisible:
+    id: "selectable-item-selected-Most recent reviews"
+- scrollUntilVisible:
+    element: "Most active coupons"
+    direction: DOWN
+    timeout: 15000
+- assertVisible:
+    id: "selectable-item-unselected-Most active coupons"
+
+# Restore every non-anchor and the dynamically captured anchor selections.
+- runFlow:
+    file: ../helpers/dashboard_restore_card.yaml
+    env: { CARD_TITLE: AI Assistant, CARD_KEY: ai }
+- runFlow:
+    file: ../helpers/dashboard_restore_card.yaml
+    env: { CARD_TITLE: Store setup, CARD_KEY: store_setup }
+- runFlow:
+    file: ../helpers/dashboard_restore_card.yaml
+    env: { CARD_TITLE: Performance, CARD_KEY: performance }
+- runFlow:
+    file: ../helpers/dashboard_restore_card.yaml
+    env: { CARD_TITLE: Top performers, CARD_KEY: top_performers }
+- runFlow:
+    file: ../helpers/dashboard_restore_card.yaml
+    env: { CARD_TITLE: Blaze campaigns, CARD_KEY: blaze }
+- runFlow:
+    file: ../helpers/dashboard_restore_card.yaml
+    env: { CARD_TITLE: Inbox, CARD_KEY: inbox }
+- runFlow:
+    file: ../helpers/dashboard_restore_card.yaml
+    env: { CARD_TITLE: Stock, CARD_KEY: stock }
+- runFlow:
+    file: ../helpers/dashboard_restore_card.yaml
+    env: { CARD_TITLE: Most recent orders, CARD_KEY: recent_orders }
+- runFlow:
+    file: ../helpers/dashboard_restore_card.yaml
+    env: { CARD_TITLE: Google Ads campaigns, CARD_KEY: google_ads }
+- repeat:
+    times: 6
+    commands:
+      - swipe: { start: "50%,25%", end: "50%,80%", duration: 300 }
+- scrollUntilVisible:
+    element: "Most active coupons"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    file: ../helpers/set_dashboard_card_selection.yaml
+    env: { CARD_TITLE: Most active coupons, DESIRED_STATE: selected }
+- runFlow:
+    when:
+      true: ${output.dashboardReviewsOriginal === 'unselected'}
+    commands:
+      - scrollUntilVisible:
+          element: "Most recent reviews"
+          direction: DOWN
+          timeout: 15000
+      - runFlow:
+          file: ../helpers/set_dashboard_card_selection.yaml
+          env: { CARD_TITLE: Most recent reviews, DESIRED_STATE: unselected }
+- runFlow:
+    when:
+      true: ${output.dashboardCouponsOriginal === 'unselected'}
+    commands:
+      - scrollUntilVisible:
+          element: "Most active coupons"
+          direction: DOWN
+          timeout: 15000
+      - runFlow:
+          file: ../helpers/set_dashboard_card_selection.yaml
+          env: { CARD_TITLE: Most active coupons, DESIRED_STATE: unselected }
+- runFlow: ../helpers/save_dashboard_customizer.yaml
+
+# Prove all captured selections were restored across another relaunch.
+- stopApp
+- launchApp
+- runFlow: ../helpers/open_dashboard_customizer.yaml
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: AI Assistant, CARD_KEY: ai, EXPECTED_MODE: original }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Store setup, CARD_KEY: store_setup, EXPECTED_MODE: original }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Performance, CARD_KEY: performance, EXPECTED_MODE: original }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Top performers, CARD_KEY: top_performers, EXPECTED_MODE: original }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Blaze campaigns, CARD_KEY: blaze, EXPECTED_MODE: original }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Inbox, CARD_KEY: inbox, EXPECTED_MODE: original }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Stock, CARD_KEY: stock, EXPECTED_MODE: original }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Most recent orders, CARD_KEY: recent_orders, EXPECTED_MODE: original }
+- runFlow:
+    file: ../helpers/dashboard_assert_card.yaml
+    env: { CARD_TITLE: Google Ads campaigns, CARD_KEY: google_ads, EXPECTED_MODE: original }
+- repeat:
+    times: 6
+    commands:
+      - swipe: { start: "50%,25%", end: "50%,80%", duration: 300 }
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    when:
+      true: ${output.dashboardReviewsOriginal === 'selected'}
+    commands:
+      - assertVisible:
+          id: "selectable-item-selected-Most recent reviews"
+- runFlow:
+    when:
+      true: ${output.dashboardReviewsOriginal === 'unselected'}
+    commands:
+      - assertVisible:
+          id: "selectable-item-unselected-Most recent reviews"
+- scrollUntilVisible:
+    element: "Most active coupons"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    when:
+      true: ${output.dashboardCouponsOriginal === 'selected'}
+    commands:
+      - assertVisible:
+          id: "selectable-item-selected-Most active coupons"
+- runFlow:
+    when:
+      true: ${output.dashboardCouponsOriginal === 'unselected'}
+    commands:
+      - assertVisible:
+          id: "selectable-item-unselected-Most active coupons"
+- stopApp
+- launchApp
+
+# Prepare two selected adjacent anchors, persist an inverse order, prove it
+# after relaunch, reverse it, and prove the restored order after relaunch.
+- runFlow: ../helpers/open_dashboard_customizer.yaml
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    when:
+      visible:
+        id: "selectable-item-unselected-Most recent reviews"
+    commands:
+      - runFlow:
+          file: ../helpers/set_dashboard_card_selection.yaml
+          env: { CARD_TITLE: Most recent reviews, DESIRED_STATE: selected }
+- scrollUntilVisible:
+    element: "Most active coupons"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    when:
+      visible:
+        id: "selectable-item-unselected-Most active coupons"
+    commands:
+      - runFlow:
+          file: ../helpers/set_dashboard_card_selection.yaml
+          env: { CARD_TITLE: Most active coupons, DESIRED_STATE: selected }
+- runFlow:
+    when:
+      true: ${output.dashboardReviewsOriginal === 'unselected' || output.dashboardCouponsOriginal === 'unselected'}
+    commands:
+      - runFlow: ../helpers/save_dashboard_customizer.yaml
+- stopApp
+- launchApp
+- runFlow: ../helpers/open_dashboard_customizer.yaml
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    file: ../helpers/set_dashboard_card_selection.yaml
+    env: { CARD_TITLE: Most recent reviews, DESIRED_STATE: unselected }
+- scrollUntilVisible:
+    element: "Most active coupons"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    file: ../helpers/set_dashboard_card_selection.yaml
+    env: { CARD_TITLE: Most active coupons, DESIRED_STATE: unselected }
+- runFlow: ../helpers/save_dashboard_customizer.yaml
+- runFlow: ../helpers/open_dashboard_customizer.yaml
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    file: ../helpers/set_dashboard_card_selection.yaml
+    env: { CARD_TITLE: Most recent reviews, DESIRED_STATE: selected }
+- runFlow:
+    file: ../helpers/set_dashboard_card_selection.yaml
+    env: { CARD_TITLE: Most active coupons, DESIRED_STATE: selected }
+- runFlow: ../helpers/save_dashboard_customizer.yaml
+- runFlow: ../helpers/open_dashboard_customizer.yaml
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- assertVisible:
+    text: "Most recent reviews"
+    above:
+      text: "Most active coupons"
+- swipe: { start: "92%,54%", end: "92%,60%", duration: 2000 }
+- waitForAnimationToEnd:
+    timeout: 5000
+- assertVisible:
+    text: "Most recent reviews"
+    below:
+      text: "Most active coupons"
+- runFlow: ../helpers/save_dashboard_customizer.yaml
+- stopApp
+- launchApp
+- runFlow: ../helpers/open_dashboard_customizer.yaml
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- assertVisible:
+    text: "Most recent reviews"
+    below:
+      text: "Most active coupons"
+- swipe: { start: "92%,60%", end: "92%,54%", duration: 2000 }
+- waitForAnimationToEnd:
+    timeout: 5000
+- assertVisible:
+    text: "Most recent reviews"
+    above:
+      text: "Most active coupons"
+- runFlow: ../helpers/save_dashboard_customizer.yaml
+- stopApp
+- launchApp
+- runFlow: ../helpers/open_dashboard_customizer.yaml
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- assertVisible:
+    text: "Most recent reviews"
+    above:
+      text: "Most active coupons"
+
+# Restore the captured anchor selections and verify the shared state one final
+# time after relaunch. Non-anchor order and selection were already restored.
+- runFlow:
+    when:
+      true: ${output.dashboardReviewsOriginal === 'unselected'}
+    commands:
+      - runFlow:
+          file: ../helpers/set_dashboard_card_selection.yaml
+          env: { CARD_TITLE: Most recent reviews, DESIRED_STATE: unselected }
+- runFlow:
+    when:
+      true: ${output.dashboardCouponsOriginal === 'unselected'}
+    commands:
+      - runFlow:
+          file: ../helpers/set_dashboard_card_selection.yaml
+          env: { CARD_TITLE: Most active coupons, DESIRED_STATE: unselected }
+- runFlow:
+    when:
+      true: ${output.dashboardReviewsOriginal === 'unselected' || output.dashboardCouponsOriginal === 'unselected'}
+    commands:
+      - runFlow: ../helpers/save_dashboard_customizer.yaml
+- stopApp
+- launchApp
+- runFlow: ../helpers/open_dashboard_customizer.yaml
+- scrollUntilVisible:
+    element: "Most recent reviews"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    when:
+      true: ${output.dashboardReviewsOriginal === 'selected'}
+    commands:
+      - assertVisible:
+          id: "selectable-item-selected-Most recent reviews"
+- runFlow:
+    when:
+      true: ${output.dashboardReviewsOriginal === 'unselected'}
+    commands:
+      - assertVisible:
+          id: "selectable-item-unselected-Most recent reviews"
+- scrollUntilVisible:
+    element: "Most active coupons"
+    direction: DOWN
+    timeout: 15000
+- runFlow:
+    when:
+      true: ${output.dashboardCouponsOriginal === 'selected'}
+    commands:
+      - assertVisible:
+          id: "selectable-item-selected-Most active coupons"
+- runFlow:
+    when:
+      true: ${output.dashboardCouponsOriginal === 'unselected'}
+    commands:
+      - assertVisible:
+          id: "selectable-item-unselected-Most active coupons"
+- stopApp
+- launchApp
+- runFlow: ../subflows/navigate_to_dashboard.yaml
+- takeScreenshot: dashboard_customize_restored

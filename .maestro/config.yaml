@@ -1,0 +1,46 @@
+# WooCommerce iOS live-store Maestro workspace.
+# The repository runner derives APP_ID from the supplied .app bundle.
+appId: ${APP_ID}
+
+flows:
+  - "flows/*"
+
+executionOrder:
+  continueOnFailure: true
+  flowsOrder:
+    - flows/login_not_wp_site.yaml
+    - flows/login_wrong_credentials.yaml
+    - flows/login_help.yaml
+    - flows/login_not_woo_store.yaml
+    - flows/login_wrong_account.yaml
+    - flows/login_no_jetpack.yaml
+    - flows/login_google.yaml
+    - flows/login_successful.yaml
+    - flows/dashboard_stats.yaml
+    - flows/dashboard_view_all_analytics.yaml
+    - flows/dashboard_customize.yaml
+    - flows/orders_list_and_search.yaml
+    - flows/products_list_and_sort.yaml
+    - flows/products_detail.yaml
+    - flows/products_variations_and_tags.yaml
+    - flows/hub_menu_settings.yaml
+    - flows/hub_menu_payments.yaml
+    - flows/hub_menu_coupons.yaml
+    - flows/hub_menu_customers_inbox.yaml
+    - flows/hub_menu_admin_and_store.yaml
+    - flows/blaze_campaign.yaml
+    - flows/google_for_woo.yaml
+    - flows/orders_create.yaml
+    - flows/orders_details_and_actions.yaml
+    - flows/orders_mark_complete.yaml
+    - flows/orders_cash_payment.yaml
+    - flows/orders_refund.yaml
+    - flows/products_create.yaml
+    - flows/products_media_upload.yaml
+    - flows/pos_search_and_coupons.yaml
+    - flows/pos_cash_payment.yaml
+    - flows/ios_quick_actions.yaml
+    - flows/ios_notification_long_press.yaml
+    - flows/orders_qr_payment.yaml
+    - flows/orders_share_payment_link.yaml
+    - flows/orders_barcode_scanner.yaml

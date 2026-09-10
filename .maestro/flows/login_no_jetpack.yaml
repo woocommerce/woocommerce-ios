@@ -1,0 +1,103 @@
+# p2: login.no-jetpack
+# Required fixture: a WooCommerce site without Jetpack and site-admin creds.
+appId: ${APP_ID}
+name: "Login - No Jetpack via site credentials"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - login
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- runFlow:
+    file: ../subflows/open_site_address_login.yaml
+- tapOn:
+    id: "Site address"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_URL}
+- hideKeyboard
+- tapOn:
+    id: "Site Address Next Button"
+
+# Some site configurations offer the credential path explicitly, while a
+# fully self-hosted site can route to it directly.
+- runFlow:
+    when:
+      visible:
+        id: "Sign in with site credentials Button"
+    commands:
+      - tapOn:
+          id: "Sign in with site credentials Button"
+
+- extendedWaitUntil:
+    visible: "Username"
+    timeout: 30000
+- tapOn: "Username"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME}
+- tapOn: "Password"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD}
+- hideKeyboard
+- tapOn: "Continue"
+
+- runFlow:
+    when:
+      visible:
+        id: "login-epilogue-continue-button"
+    commands:
+      - tapOn:
+          id: "login-epilogue-continue-button"
+- runFlow:
+    when:
+      visible: "Got it"
+    commands:
+      - tapOn: "Got it"
+- runFlow:
+    when:
+      visible: "Not now"
+    commands:
+      - tapOn: "Not now"
+
+- extendedWaitUntil:
+    visible: "Manage Privacy|Save Password\\?"
+    timeout: 60000
+- runFlow:
+    when:
+      visible: "Manage Privacy"
+    commands:
+      - tapOn: "Save"
+- runFlow:
+    when:
+      visible: "Save Password?"
+    commands:
+      - tapOn: "Not Now"
+- extendedWaitUntil:
+    visible: "Manage Privacy|Save Password\\?|Orders"
+    timeout: 30000
+- runFlow:
+    when:
+      visible: "Manage Privacy"
+    commands:
+      - tapOn: "Save"
+- runFlow:
+    when:
+      visible: "Save Password?"
+    commands:
+      - tapOn: "Not Now"
+- extendedWaitUntil:
+    visible:
+      id: "tab-bar-orders-item"
+    timeout: 15000
+- assertVisible:
+    id: "tab-bar-orders-item"
+- assertVisible:
+    id: "tab-bar-products-item"
+- takeScreenshot: login_no_jetpack

@@ -1,0 +1,59 @@
+# p2: orders.collect-payment.share-link
+# Prerequisite: the configured store generates payment URLs for new orders.
+# The flow verifies the real iOS share surface without contacting a recipient.
+appId: ${APP_ID}
+name: "iOS system - Share an order payment link"
+tags:
+  - flaky_quarantine
+  - destructive
+  - orders
+  - ios_system
+---
+- runFlow: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/navigate_to_orders.yaml
+- tapOn:
+    id: new-order-type-sheet-button
+- tapOn:
+    id: new-order-add-product-button
+- tapOn:
+    id: product-item
+    index: 0
+- tapOn:
+    id: product-multiple-selection-done-button
+- swipe:
+    direction: UP
+- tapOn:
+    id: new-order-add-custom-amount-button
+- tapOn:
+    id: custom-amount-fixed-button
+- inputText: "1"
+- tapOn: "Custom amount"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Share ${SUITE_RUN_ID}
+- tapOn:
+    id: order-add-custom-amount-view-add-custom-amount-button
+- assertVisible: Share ${SUITE_RUN_ID}
+- tapOn:
+    id: new-order-create-button
+- extendedWaitUntil:
+    visible:
+      id: order-details-table-view
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: order-details-collect-payment-button
+    direction: DOWN
+- tapOn:
+    id: order-details-collect-payment-button
+- assertVisible:
+    id: payment-methods-header-label
+- tapOn:
+    id: payment-methods-view-payment-link-row
+- extendedWaitUntil:
+    visible: Copy
+    timeout: 15000
+- assertVisible: Messages
+- assertVisible: Mail
+- takeScreenshot: order_payment_link_share_sheet

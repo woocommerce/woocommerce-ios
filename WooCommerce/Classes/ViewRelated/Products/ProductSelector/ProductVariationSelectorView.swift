@@ -52,6 +52,7 @@ struct ProductVariationSelectorView: View {
                         ForEach(viewModel.productVariationRows) { rowViewModel in
                             ProductRow(multipleSelectionsEnabled: true,
                                        viewModel: rowViewModel)
+                                .accessibilityIdentifier("product-variation-item")
                                 .accessibilityHint(Localization.productRowAccessibilityHint)
                                 .padding(Constants.defaultPadding)
                                 .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])

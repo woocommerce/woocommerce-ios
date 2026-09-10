@@ -1,0 +1,80 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/buildkite/pipeline-schema/main/schema.json
+---
+
+agents:
+  queue: mac
+
+env:
+  IMAGE_ID: $IMAGE_ID
+  MAESTRO_PROFILE: burst
+  MAESTRO_APP_VARIANT: debug
+  MAESTRO_APP_ARTIFACT: build-products.tar
+  MAESTRO_CI_RESOURCE_KEY: "${MAESTRO_CI_RESOURCE_KEY:-unconfigured}"
+
+steps:
+  - label: ":pipeline: Build Debug simulator app"
+    key: maestro_burst_build
+    command: .buildkite/commands/build-for-testing.sh
+    plugins: [$CI_TOOLKIT]
+
+  - label: ":repeat: Maestro release burst"
+    command: .buildkite/commands/run-maestro-tests.sh
+    depends_on: maestro_burst_build
+    secrets:
+      MAESTRO_WOO_LAB_JETPACK_STORE_URL: MAESTRO_WOO_LAB_JETPACK_STORE_URL
+      MAESTRO_WOO_LAB_WPCOM_EMAIL: MAESTRO_WOO_LAB_WPCOM_EMAIL
+      MAESTRO_WOO_LAB_WPCOM_PASSWORD: MAESTRO_WOO_LAB_WPCOM_PASSWORD
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: build/maestro/**/report.xml
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_MAESTRO_TESTS
+    soft_fail: true
+    concurrency: 1
+    concurrency_group: "woocommerce-ios/maestro/${MAESTRO_CI_RESOURCE_KEY:-unconfigured}"
+    artifact_paths:
+      - build/maestro/**/report.xml
+      - build/maestro/**/report.html
+      - build/maestro/**/screenshots/**/*
+      - build/maestro/**/diagnostics/**/*
+      - build/maestro/**/logs/**/*
+      - build/maestro/**/run-summary.json
+
+  - label: ":iphone: Maestro phone-full observation"
+    command: .buildkite/commands/run-maestro-tests.sh
+    depends_on: maestro_burst_build
+    env:
+      MAESTRO_PROFILE: "phone-full"
+    secrets:
+      MAESTRO_WOO_LAB_JETPACK_STORE_URL: MAESTRO_WOO_LAB_JETPACK_STORE_URL
+      MAESTRO_WOO_LAB_WPCOM_EMAIL: MAESTRO_WOO_LAB_WPCOM_EMAIL
+      MAESTRO_WOO_LAB_WPCOM_PASSWORD: MAESTRO_WOO_LAB_WPCOM_PASSWORD
+      MAESTRO_WOO_CONSUMER_KEY: MAESTRO_WOO_CONSUMER_KEY
+      MAESTRO_WOO_CONSUMER_SECRET: MAESTRO_WOO_CONSUMER_SECRET
+      MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH: MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH
+      MAESTRO_WOO_NOT_A_WOO_STORE_URL: MAESTRO_WOO_NOT_A_WOO_STORE_URL
+      MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_USERNAME: MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_USERNAME
+      MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD: MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD
+      MAESTRO_WOO_NO_JETPACK_SITE_URL: MAESTRO_WOO_NO_JETPACK_SITE_URL
+      MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME: MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME
+      MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD: MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD
+      MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL: MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL
+    plugins:
+      - $CI_TOOLKIT
+      - ${TEST_COLLECTOR}:
+          files: build/maestro/**/report.xml
+          format: junit
+          missing-error: 0
+          api-token-env-name: BUILDKITE_ANALYTICS_TOKEN_MAESTRO_TESTS
+    soft_fail: true
+    concurrency: 1
+    concurrency_group: "woocommerce-ios/maestro/${MAESTRO_CI_RESOURCE_KEY:-unconfigured}"
+    artifact_paths:
+      - build/maestro/**/report.xml
+      - build/maestro/**/report.html
+      - build/maestro/**/screenshots/**/*
+      - build/maestro/**/diagnostics/**/*
+      - build/maestro/**/logs/**/*
+      - build/maestro/**/run-summary.json

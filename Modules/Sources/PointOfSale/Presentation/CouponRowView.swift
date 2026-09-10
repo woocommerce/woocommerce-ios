@@ -82,6 +82,7 @@ struct CouponRowView: View {
         .posItemCardBorderStyles()
         .padding(.horizontal, Constants.horizontalPadding)
         .geometryGroup()
+        .accessibilityIdentifier("pos-cart-coupon-\(couponItem.posItemIdentifier.itemID)")
     }
 }
 

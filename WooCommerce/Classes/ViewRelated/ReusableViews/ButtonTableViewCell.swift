@@ -51,7 +51,11 @@ final class ButtonTableViewCell: UITableViewCell {
         apply(style: style)
         button.setTitle(title, for: .normal)
         button.setImage(image, for: .normal)
-        button.accessibilityIdentifier = accessibilityIdentifier
+        // Identify the cell rather than the button it contains. A control nested in
+        // a cell reports its frame relative to that cell, so UI automation resolves
+        // an on-screen position that does not match the button and the tap lands
+        // elsewhere.
+        self.accessibilityIdentifier = accessibilityIdentifier
         self.onButtonTouchUp = onButtonTouchUp
 
         topConstraint.constant = topSpacing

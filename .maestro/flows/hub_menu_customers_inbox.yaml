@@ -1,0 +1,51 @@
+# p2: hub.customers, hub.inbox
+# Inbox eligibility is a required fixture capability for extended smoke runs.
+appId: ${APP_ID}
+name: "Hub Menu - Customers and Inbox"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- scrollUntilVisible:
+    element:
+      id: "menu-customers"
+    direction: DOWN
+    timeout: 15000
+- tapOn:
+    id: "menu-customers"
+- extendedWaitUntil:
+    visible: "Search for customers"
+    timeout: 20000
+- assertVisible: "Customers"
+- assertVisible: "Search for customers"
+- takeScreenshot: hub_customers
+- tapOn: "Back"
+- extendedWaitUntil:
+    visible:
+      id: "menu-customers"
+    timeout: 10000
+- scrollUntilVisible:
+    element:
+      id: "menu-inbox"
+    direction: DOWN
+    timeout: 15000
+    label: "Require an Inbox-eligible extended-smoke store"
+- tapOn:
+    id: "menu-inbox"
+- extendedWaitUntil:
+    visible: "Inbox"
+    timeout: 20000
+- assertVisible: "Inbox"
+- assertNotVisible:
+    id: "menu-customers"
+- takeScreenshot: hub_inbox
+- tapOn: "Back"
+- extendedWaitUntil:
+    visible:
+      id: "menu-customers"
+    timeout: 10000

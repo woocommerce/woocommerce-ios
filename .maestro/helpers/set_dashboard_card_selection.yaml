@@ -1,0 +1,34 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    when:
+      true: ${String(DESIRED_STATE) === 'selected'}
+      visible:
+        id: "selectable-item-unselected-${CARD_TITLE}"
+    commands:
+      - tapOn:
+          id: "selectable-item-row-${CARD_TITLE}"
+- runFlow:
+    when:
+      true: ${String(DESIRED_STATE) === 'selected'}
+    commands:
+      - extendedWaitUntil:
+          visible:
+            id: "selectable-item-selected-${CARD_TITLE}"
+          timeout: 15000
+- runFlow:
+    when:
+      true: ${String(DESIRED_STATE) === 'unselected'}
+      visible:
+        id: "selectable-item-selected-${CARD_TITLE}"
+    commands:
+      - tapOn:
+          id: "selectable-item-row-${CARD_TITLE}"
+- runFlow:
+    when:
+      true: ${String(DESIRED_STATE) === 'unselected'}
+    commands:
+      - extendedWaitUntil:
+          visible:
+            id: "selectable-item-unselected-${CARD_TITLE}"
+          timeout: 15000

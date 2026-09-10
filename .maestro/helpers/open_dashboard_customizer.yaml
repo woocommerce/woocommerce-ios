@@ -1,0 +1,40 @@
+appId: ${APP_ID}
+---
+- extendedWaitUntil:
+    visible:
+      id: "dashboard-edit-button"
+      enabled: true
+    timeout: 30000
+- waitForAnimationToEnd:
+    timeout: 5000
+- tapOn:
+    id: "dashboard-edit-button"
+    enabled: true
+    retryTapIfNoChange: true
+- waitForAnimationToEnd:
+    timeout: 5000
+- runFlow:
+    when:
+      visible:
+        id: "dashboard-edit-button"
+        enabled: true
+    commands:
+      - tapOn:
+          id: "dashboard-edit-button"
+          enabled: true
+          retryTapIfNoChange: true
+- waitForAnimationToEnd:
+    timeout: 5000
+- runFlow:
+    when:
+      visible:
+        id: "dashboard-edit-button"
+        enabled: true
+    commands:
+      - tapOn:
+          id: "dashboard-edit-button"
+          enabled: true
+          retryTapIfNoChange: true
+- extendedWaitUntil:
+    visible: "Customize"
+    timeout: 15000

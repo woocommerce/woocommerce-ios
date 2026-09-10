@@ -1,0 +1,79 @@
+# p2: products.detail.media
+appId: ${APP_ID}
+name: Create a run-owned product with persisted device media
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - destructive
+  - products
+---
+# Put a deterministic image in the simulator library before opening the app picker.
+- addMedia:
+    - ../../WooCommerce/WooCommerceScreenshots/ScreenshotImages.xcassets/black-coral-shades.imageset/black-coral-shades.png
+- runFlow: ../subflows/ensure_logged_in.yaml
+- runFlow: ../subflows/navigate_to_products.yaml
+- tapOn:
+    id: product-add-button
+- assertVisible:
+    id: product-creation-sheet
+- tapOn: Physical product
+- tapOn:
+    id: product-title
+- eraseText
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Media ${SUITE_RUN_ID}
+- hideKeyboard
+- tapOn: Add a product image
+- assertVisible: Choose from device
+- tapOn: Choose from device
+- extendedWaitUntil:
+    visible: "Albums"
+    timeout: 15000
+- tapOn: "Recently Added"
+- extendedWaitUntil:
+    notVisible: "Recents"
+    timeout: 15000
+- tapOn:
+    point: 20%,25%
+- extendedWaitUntil:
+    visible:
+      id: SelectedActionButton
+    timeout: 15000
+- tapOn:
+    id: SelectedActionButton
+- extendedWaitUntil:
+    notVisible:
+      text: Add a product image
+    timeout: 30000
+# The image attaches as the cover; let the device-image upload finish settling before
+# publishing, otherwise the product save is raced while media is still uploading and
+# never completes.
+- assertVisible: "Cover"
+- waitForAnimationToEnd:
+    timeout: 60000
+- tapOn:
+    id: publish-product-button
+# Publish succeeds when the Publish button is consumed (no dedicated save button exists
+# in this app version — the top bar reverts to the more-options button).
+- extendedWaitUntil:
+    notVisible:
+      id: publish-product-button
+    timeout: 60000
+- assertVisible: Media ${SUITE_RUN_ID}
+- assertVisible: "Cover"
+# Verify the run-owned product is discoverable in the (now unfiltered) list and reopens with its media.
+- tapOn:
+    text: Products
+    index: 0
+- extendedWaitUntil:
+    visible:
+      text: Media ${SUITE_RUN_ID}
+    timeout: 30000
+- tapOn: Media ${SUITE_RUN_ID}
+- extendedWaitUntil:
+    visible:
+      id: edit-product-more-options-button
+    timeout: 20000
+- assertNotVisible: Add a product image

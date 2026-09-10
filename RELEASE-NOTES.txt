@@ -4,6 +4,9 @@
 25.7
 -----
 - [***] Age verification: pending or denied parental consent for significant app changes now shows a recoverable blocking screen instead of logging the user out, and consent requests are only sent on explicit user action. Affects the post-login age gate all users pass through — smoke test critical flows, including the sandbox age-assurance scenarios. [https://github.com/woocommerce/woocommerce-ios/pull/17822]
+- [Internal] POS: Removed the server-calculated refunds feature flag; the flow is on for every store running WooCommerce 11.1.0 or later. [https://github.com/woocommerce/woocommerce-ios/pull/17836]
+- [*] POS: Fixed a refund failing with "Invalid refund amount" on stores that enter prices inclusive of tax. [https://github.com/woocommerce/woocommerce-ios/pull/17827]
+- [*] Login: Signing in with store credentials now asks for your WordPress sign-in or dashboard address when a security plugin has moved it, instead of failing. [https://github.com/woocommerce/woocommerce-ios/pull/17724]
 
 
 25.6
@@ -28,6 +31,7 @@
 - [Internal] Payments: Added the card reader discovery and connection Tracks events that iOS was missing, for parity with Android. [PR_URL]
 - [*] Order Creation: Scanning a subscription or bookable product now explains why it can't be added to an order instead of adding it. [https://github.com/woocommerce/woocommerce-ios/pull/17710]
 - [*] Orders paid via Scan to Pay or Mark as Paid now show their actual payment method instead of "Other". [https://github.com/woocommerce/woocommerce-ios/pull/17470]
+- [Internal] Analytics: Site enrichment no longer drops caller-supplied properties when the session cache is still empty [https://github.com/woocommerce/woocommerce-ios/pull/17809]
 
 25.5
 -----

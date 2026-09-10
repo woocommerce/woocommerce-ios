@@ -610,7 +610,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             endpointUnderVerification == .admin
         )
         useCase.setupHandlers(onLoginSuccess: {
-            onLoading(false)
+            // Deliberately no `onLoading(false)` here, unlike the failure branch below. The credential
+            // transaction succeeding only starts the sign-in: `onSuccess` goes on to run the application
+            // password, role eligibility and WooCommerce installation checks, and the form has to stay
+            // disabled until one of those navigates away.
             onSuccess(credentials.replacingAuthenticationEndpoints(with: endpoints))
         }, onLoginFailure: { [weak self] error, loginEntryVerified, offersBrowserAlternative in
             onLoading(false)

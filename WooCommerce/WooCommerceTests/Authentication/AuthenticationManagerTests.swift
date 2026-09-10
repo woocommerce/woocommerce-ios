@@ -1041,6 +1041,35 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(events, ["loading:true", "handle", "loading:false", "recovery"])
     }
 
+    /// The credential transaction succeeding is not the end of the sign-in: `onSuccess` kicks off the
+    /// application password, role eligibility and WooCommerce installation checks, which take several
+    /// seconds more. Ending the loading state here would re-enable the submit button and restore the back
+    /// button while the merchant is still being signed in.
+    ///
+    func test_authenticate_site_credentials_when_login_succeeds_then_the_loading_state_is_not_ended() {
+        // Given
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        var events = [String]()
+        useCase.onHandleLogin = { events.append("handle") }
+        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+
+        // When
+        manager.authenticateSiteCredentials(
+            credentials: siteCredentials(),
+            loginURL: nil,
+            adminURL: nil,
+            endpointUnderVerification: nil,
+            onLoading: { events.append("loading:\($0)") },
+            onSuccess: { _ in events.append("success") },
+            onRecovery: { _ in XCTFail("Expected the login to succeed") },
+            onFailure: { _, _, _, _ in XCTFail("Expected the login to succeed") }
+        )
+        useCase.succeed()
+
+        // Then
+        XCTAssertEqual(events, ["loading:true", "handle", "success"])
+    }
+
     func test_authenticate_site_credentials_when_login_retry_has_invalid_unverified_response_then_recovers_not_found() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1385,7 +1414,9 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual((options["login_url"] as? [String: String])?["value"], "https://example.com/custom-login")
         XCTAssertNil(options["admin_url"])
         XCTAssertEqual((options["unrelated"] as? [String: String])?["value"], "preserved")
-        XCTAssertEqual(loading, [true, false])
+        // The loading state is not ended on success: the post-login checks still have to run.
+        // See `test_authenticate_site_credentials_when_login_succeeds_then_the_loading_state_is_not_ended`.
+        XCTAssertEqual(loading, [true])
 
         let defaultEndpoints = try CookieNonceAuthenticationEndpoints(
             siteURL: XCTUnwrap(URL(string: "https://example.com"))

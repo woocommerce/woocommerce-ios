@@ -61,7 +61,7 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         significantChangeConsentCoordinator: SignificantChangeConsentCoordinator = SignificantChangeConsentCoordinator(),
         ageRatingChangeDetector: AgeRatingChangeDetecting = AgeRatingChangeDetector(),
         manualChangeIdentifierProvider: @escaping () -> SignificantChangeIdentifier? = {
-            DebugAgeVerificationOverrides.manualSignificantChangeIdentifier
+            CurrentSignificantChange.activeManualChangeIdentifier()
         }
     ) {
         self.featureFlagService = featureFlagService

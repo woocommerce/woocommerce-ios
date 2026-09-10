@@ -266,6 +266,70 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         )
     }
 
+    // MARK: - Parent-facing description
+
+    @MainActor func test_requestConsent_when_age_rating_change_then_sends_age_rating_description() async {
+        // Given
+        let provider = MockConsentProvider(requestResult: .sent(questionID: UUID()))
+        let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: MockConsentStore())
+
+        // When
+        _ = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
+
+        // Then
+        XCTAssertEqual(provider.lastRequestedDescription, "The app's App Store age rating has increased.")
+    }
+
+    @MainActor func test_requestConsent_when_manual_id_matches_declaration_then_sends_declared_parent_description() async {
+        // Given
+        let declaration = SignificantChangeDeclaration(
+            id: "2026-terms-of-service",
+            parentDescription: "The app's Terms of Service have changed.",
+            blockerMessage: "Longer in-app explanation."
+        )
+        let provider = MockConsentProvider(requestResult: .sent(questionID: UUID()))
+        let sut = SignificantChangeConsentCoordinator(
+            consentProvider: provider,
+            consentStore: MockConsentStore(),
+            declaration: declaration
+        )
+
+        // When
+        _ = await sut.requestConsent(
+            in: UIViewController(),
+            ageRatingChange: nil,
+            manualChangeIdentifier: .manual(id: declaration.id)
+        )
+
+        // Then
+        XCTAssertEqual(provider.lastRequestedDescription, declaration.parentDescription)
+    }
+
+    @MainActor func test_requestConsent_when_manual_id_has_no_declaration_then_uses_debug_placeholder() async {
+        // Given
+        let declaration = SignificantChangeDeclaration(
+            id: "2026-terms-of-service",
+            parentDescription: "The app's Terms of Service have changed.",
+            blockerMessage: "Longer in-app explanation."
+        )
+        let provider = MockConsentProvider(requestResult: .sent(questionID: UUID()))
+        let sut = SignificantChangeConsentCoordinator(
+            consentProvider: provider,
+            consentStore: MockConsentStore(),
+            declaration: declaration
+        )
+
+        // When
+        _ = await sut.requestConsent(
+            in: UIViewController(),
+            ageRatingChange: nil,
+            manualChangeIdentifier: .manual(id: "debug-test-1")
+        )
+
+        // Then (DEBUG build: undeclared ids get the placeholder copy)
+        XCTAssertEqual(provider.lastRequestedDescription, "Significant app update: debug-test-1.")
+    }
+
     // MARK: - Response listener
 
     @MainActor func test_startObservingResponses_when_pending_question_approved_then_stores_granted_and_notifies() async {
@@ -324,6 +388,8 @@ private final class MockConsentProvider: SignificantChangeConsentProviding {
     /// Ends the stream right after the stubbed responses, like a provider that can't deliver more.
     var finishesStreamImmediately = true
     private(set) var requestCount = 0
+    /// The parent-facing description passed to the most recent `requestConsent` call.
+    private(set) var lastRequestedDescription: String?
     private let stream: AsyncStream<SignificantChangeConsentResponse>
     private let continuation: AsyncStream<SignificantChangeConsentResponse>.Continuation
 
@@ -337,6 +403,7 @@ private final class MockConsentProvider: SignificantChangeConsentProviding {
         significantAppUpdateDescription: String
     ) async -> SignificantChangeConsentRequestResult {
         requestCount += 1
+        lastRequestedDescription = significantAppUpdateDescription
         if responsesDeliveredDuringRequest.isEmpty == false {
             responsesDeliveredDuringRequest.forEach { continuation.yield($0) }
             // Stay in flight long enough for the listener to consume the answer, like a real

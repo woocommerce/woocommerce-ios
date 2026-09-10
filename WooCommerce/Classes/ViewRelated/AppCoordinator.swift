@@ -507,14 +507,18 @@ private extension AppCoordinator {
         let action: () -> Void = { [weak self] in
             self?.handleSignificantChangeBlockerAction(for: context)
         }
+        // Only a declared change has its own Approval Needed copy.
+        let detailMessage: String? = context == .approvalNeeded
+            ? CurrentSignificantChange.activeDeclaration()?.blockerMessage
+            : nil
         // Reuse the blocker only while it's actually on screen (or mid-presentation). A stale
         // reference — the presentation was refused, or the root was swapped underneath it —
         // must be presented afresh, otherwise the user is silently let through.
         if let blocker = significantChangeBlocker, blocker.presentingViewController != nil {
-            blocker.update(context: context, onAction: action)
+            blocker.update(context: context, detailMessage: detailMessage, onAction: action)
             return
         }
-        let blocker = SignificantChangeConsentBlockingHostingController(context: context, onAction: action)
+        let blocker = SignificantChangeConsentBlockingHostingController(context: context, detailMessage: detailMessage, onAction: action)
         significantChangeBlocker = blocker
         window.topmostPresentedViewController?.present(blocker, animated: true)
         startForegroundConsentRecheck()

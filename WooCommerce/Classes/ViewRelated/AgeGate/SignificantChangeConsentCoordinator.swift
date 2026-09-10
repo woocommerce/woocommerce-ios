@@ -31,13 +31,17 @@ final class SignificantChangeConsentCoordinator {
     /// `requestConsent` was still awaiting the system's send call. They're matched up as soon as
     /// the send result reports the question id, instead of being dropped as unknown.
     private var unmatchedResponses: [UUID: SignificantChangeConsentResponse] = [:]
+    /// Source of the parent-facing copy for a declared manual change.
+    private let declaration: SignificantChangeDeclaration?
 
     nonisolated init(
         consentProvider: SignificantChangeConsentProviding = PermissionKitSignificantChangeConsentProvider(),
-        consentStore: SignificantChangeConsentStoring = UserDefaultsSignificantChangeConsentStore()
+        consentStore: SignificantChangeConsentStoring = UserDefaultsSignificantChangeConsentStore(),
+        declaration: SignificantChangeDeclaration? = CurrentSignificantChange.declaration
     ) {
         self.consentProvider = consentProvider
         self.consentStore = consentStore
+        self.declaration = declaration
     }
 
     deinit {
@@ -224,12 +228,22 @@ private extension SignificantChangeConsentCoordinator {
         }
     }
 
+    /// Parent-facing text of the consent request. A raw manual id must never reach a parent.
     func description(for changeIdentifier: SignificantChangeIdentifier) -> String {
         switch changeIdentifier {
         case .ageRatingChange:
             return Localization.ageRatingChangeRequestDescription
         case let .manual(id):
+            if let declaration = CurrentSignificantChange.declaration(matching: changeIdentifier, declaration: declaration) {
+                return declaration.parentDescription
+            }
+            #if DEBUG || ALPHA
+            // Debug Panel ids have no declaration.
             return String(format: Localization.manualChangeRequestDescriptionFormat, id)
+            #else
+            DDLogError("Significant change consent: manual change '\(id)' has no declaration; using the age rating copy.")
+            return Localization.ageRatingChangeRequestDescription
+            #endif
         }
     }
 
@@ -241,11 +255,9 @@ private extension SignificantChangeConsentCoordinator {
             "when the app's App Store age rating changes."
         )
 
-        static let manualChangeRequestDescriptionFormat = NSLocalizedString(
-            "significantChangeConsent.manual.description",
-            value: "Significant app update: %1$@.",
-            comment: "PermissionKit description shown for a manual significant change." +
-            "manualChangeID: %1$@ is a short description."
-        )
+        #if DEBUG || ALPHA
+        /// Debug Panel ids only; intentionally not localized so the placeholder never reaches translators.
+        static let manualChangeRequestDescriptionFormat = "Significant app update: %1$@."
+        #endif
     }
 }

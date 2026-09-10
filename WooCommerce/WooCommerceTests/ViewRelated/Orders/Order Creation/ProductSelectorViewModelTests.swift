@@ -1643,14 +1643,12 @@ final class ProductSelectorViewModelTests: XCTestCase {
     func test_bundle_product_row_is_not_configurable_when_onConfigureProductRow_is_nil() async throws {
         // Given
         _ = createAndInsertBundleProduct(bundleItems: [.fake()])
-        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
 
         // When
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
                                                  source: .orderForm(flow: .creation),
                                                  storageManager: storageManager,
                                                  stores: stores,
-                                                 featureFlagService: featureFlagService,
                                                  onConfigureProductRow: nil)
 
         // Then
@@ -1662,7 +1660,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
     func test_bundle_product_row_is_configurable_and_invokes_onConfigureProductRow_on_row_configure() async throws {
         // Given
         let bundleProduct = createAndInsertBundleProduct(bundleItems: [.fake()])
-        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
         // The bundle's contents are checked before its configuration screen is offered.
         mockBundledProductsRetrieval([Product.fake().copy(siteID: sampleSiteID, purchasable: true)])
 
@@ -1672,7 +1669,6 @@ final class ProductSelectorViewModelTests: XCTestCase {
                                                      source: .orderForm(flow: .creation),
                                                      storageManager: self.storageManager,
                                                      stores: self.stores,
-                                                     featureFlagService: featureFlagService,
                                                      onConfigureProductRow: { product in
                 promise(product)
             })

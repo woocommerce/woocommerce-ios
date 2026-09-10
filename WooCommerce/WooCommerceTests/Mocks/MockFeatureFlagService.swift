@@ -4,7 +4,6 @@ import protocol PointOfSale.POSFeatureFlagProviding
 
 final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding {
     var isUpdateOrderOptimisticallyOn: Bool
-    var productBundlesInOrderForm: Bool
     var isPointOfSaleEnabled: Bool
     var backgroundProductImageUpload: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
@@ -13,14 +12,12 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var smarterNotifications: Bool
 
     init(isUpdateOrderOptimisticallyOn: Bool = false,
-         productBundlesInOrderForm: Bool = false,
          isPointOfSaleEnabled: Bool = false,
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false,
          selfDrivenPushToken: Bool = false,
          smarterNotifications: Bool = false) {
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
-        self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
@@ -36,10 +33,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
 
         // Otherwise uses the default implementation.
         switch featureFlag {
-        case .updateOrderOptimistically:
-            return isUpdateOrderOptimisticallyOn
-        case .productBundlesInOrderForm:
-            return productBundlesInOrderForm
         case .pointOfSale:
             return isPointOfSaleEnabled
         case .backgroundProductImageUpload:

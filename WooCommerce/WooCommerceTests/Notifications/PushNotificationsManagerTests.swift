@@ -366,19 +366,29 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertNil(application.presentInAppMessages.first?.message)
     }
 
-    func test_handleNotification_does_not_display_inApp_notice_if_no_noteID_in_payload_and_site_registered_with_Woo() async throws {
+    func test_handleNotificationInTheForeground_when_connected_wpcom_notification_duplicates_woo_push_then_tracks_and_updates_badge_without_banner() async throws {
         // Given
         let siteID: Int64 = 132
-        let payload = notificationPayload(siteID: siteID, title: Sample.defaultTitle, message: nil)
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        let payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: siteID, title: Sample.defaultTitle, message: nil)
         defaults.set("\(siteID)", forKey: PushNotificationSharedConstants.UserDefaultsKeys.siteIDsRegisteredForWooPushNotifications)
-        manager = {
-            let configuration = PushNotificationsConfiguration(application: self.application,
-                                                               defaults: self.defaults,
-                                                               storesManager: self.storesManager,
-                                                               userNotificationsCenter: self.userNotificationCenter)
+        defaults.set("\(siteID)", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        storesManager.sessionManager.setStoreId(siteID)
+        storesManager.whenReceivingAction(ofType: NotificationCountAction.self) { action in
+            switch action {
+            case let .increment(_, _, _, onCompletion):
+                onCompletion()
+            case let .load(_, _, onCompletion):
+                onCompletion(1)
+            default:
+                break
+            }
+        }
+        manager = makeManager(analytics: analytics)
 
-            return PushNotificationsManager(configuration: configuration, backgroundSynchronizerFactory: backgroundSynchronizerFactory)
-        }()
+        var emittedNotifications: [WooCommerce.PushNotification] = []
+        manager.foregroundNotifications.sink { emittedNotifications.append($0) }.store(in: &subscriptions)
 
         // When
         application.applicationState = .active
@@ -387,6 +397,16 @@ final class PushNotificationsManagerTests: XCTestCase {
 
         // Then
         XCTAssertNil(application.presentInAppMessages.first)
+        XCTAssertTrue(emittedNotifications.isEmpty)
+        XCTAssertEqual(application.applicationIconBadgeNumber, AppIconBadgeNumber.hasUnreadPushNotifications)
+        analyticsProvider.assertReceived(
+            event: "push_notification_received",
+            with: [
+                "push_notification_source": "wpcom",
+                "push_notification_note_id": "1234",
+                "push_notification_type": "store_order"
+            ]
+        )
     }
 
     // MARK: - Foreground Notification Observable
@@ -2180,6 +2200,56 @@ final class PushNotificationsManagerTests: XCTestCase {
         // Then
         XCTAssertEqual(emittedBackgroundNotifications.count, 1)
         XCTAssertEqual(emittedBackgroundNotifications.first?.kind, .storeOrder)
+    }
+
+    func test_handleNotificationInTheForeground_when_site_is_disconnected_then_does_not_emit_or_present() async throws {
+        // Given
+        defaults.set("", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        manager = makeManager()
+        application.applicationState = .active
+        var emittedNotifications: [WooCommerce.PushNotification] = []
+        manager.foregroundNotifications.sink { emittedNotifications.append($0) }.store(in: &subscriptions)
+        let notification = try XCTUnwrap(MockNotification(userInfo: notificationPayload(type: .storeOrder, siteID: 42)))
+
+        // When
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        XCTAssertTrue(emittedNotifications.isEmpty)
+        XCTAssertTrue(application.presentInAppMessages.isEmpty)
+    }
+
+    func test_handleRemoteNotificationInTheBackground_when_site_is_disconnected_then_returns_no_data_and_does_not_emit() async {
+        // Given
+        defaults.set("1", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        manager = makeManager()
+        application.applicationState = .background
+        var emittedNotifications: [WooCommerce.PushNotification] = []
+        manager.backgroundNotifications.sink { emittedNotifications.append($0) }.store(in: &subscriptions)
+
+        // When
+        let result = await manager.handleRemoteNotificationInTheBackground(userInfo: notificationPayload(type: .storeOrder, siteID: 42))
+
+        // Then
+        XCTAssertEqual(result, .noData)
+        XCTAssertTrue(emittedNotifications.isEmpty)
+    }
+
+    func test_handleUserResponseToNotification_when_site_is_disconnected_then_does_not_present_details() async throws {
+        // Given
+        defaults.set("1", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        manager = makeManager()
+        application.applicationState = .inactive
+        var emittedNotifications: [WooCommerce.PushNotification] = []
+        manager.inactiveNotifications.sink { emittedNotifications.append($0) }.store(in: &subscriptions)
+        let response = try XCTUnwrap(MockNotificationResponse(notificationUserInfo: notificationPayload(type: .storeOrder, siteID: 42)))
+
+        // When
+        await manager.handleUserResponseToNotification(response)
+
+        // Then
+        XCTAssertTrue(application.presentDetailsNoteIDs.isEmpty)
+        XCTAssertTrue(emittedNotifications.isEmpty)
     }
 }
 

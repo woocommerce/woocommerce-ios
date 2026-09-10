@@ -10,6 +10,9 @@ import Yosemite
 ///
 final class StoresManagerTests: XCTestCase {
     private var cancellable: AnyCancellable?
+    private var pushNotificationDefaults: UserDefaults!
+
+    private let pushNotificationDefaultsSuiteName = "StoresManagerTests.connectedSites"
 
     // MARK: - Overridden Methods
 
@@ -17,10 +20,14 @@ final class StoresManagerTests: XCTestCase {
         super.setUp()
         let session = SessionManager.testingInstance
         session.reset()
+        pushNotificationDefaults = UserDefaults(suiteName: pushNotificationDefaultsSuiteName)
+        pushNotificationDefaults.removePersistentDomain(forName: pushNotificationDefaultsSuiteName)
     }
 
     override func tearDown() {
         cancellable?.cancel()
+        pushNotificationDefaults.removePersistentDomain(forName: pushNotificationDefaultsSuiteName)
+        pushNotificationDefaults = nil
         super.tearDown()
     }
 
@@ -877,6 +884,119 @@ final class StoresManagerTests: XCTestCase {
         sessionManager.cookieNonceAuthenticationEndpointsToReturn = endpoints
         return (DefaultStoresManager(sessionManager: sessionManager), sessionManager)
     }
+
+    func test_synchronizeSites_when_successful_response_omits_selected_site_then_resets_selection_and_persists_connected_site_ids() {
+        for responseSiteIDs: [Int64] in [[456], []] {
+            // Given
+            let (manager, state, sessionManager) = makeSiteSynchronizationTestContext()
+
+            // When
+            let onCompletion = startSiteSynchronization(manager: manager, state: state)
+            onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: responseSiteIDs)))
+
+            // Then
+            XCTAssertNil(sessionManager.defaultStoreID)
+            XCTAssertEqual(PushNotificationRegistrationState(defaults: pushNotificationDefaults).connectedSiteIDs, responseSiteIDs)
+        }
+    }
+
+    func test_synchronizeSites_when_request_fails_then_preserves_selected_store_and_connected_site_ids() {
+        // Given
+        pushNotificationDefaults.set("123", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        let (manager, state, sessionManager) = makeSiteSynchronizationTestContext()
+
+        // When
+        let onCompletion = startSiteSynchronization(manager: manager, state: state)
+        onCompletion(.failure(NSError(domain: "test", code: 1)))
+
+        // Then
+        XCTAssertEqual(sessionManager.defaultStoreID, 123)
+        XCTAssertEqual(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs), "123")
+    }
+
+    func test_synchronizeSites_when_session_changes_before_response_then_ignores_stale_connected_site_ids() {
+        // Given
+        pushNotificationDefaults.set("123", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        let (manager, state, sessionManager) = makeSiteSynchronizationTestContext()
+
+        // When
+        let onCompletion = startSiteSynchronization(manager: manager, state: state)
+        sessionManager.defaultCredentials = .wpcom(username: "new-user", authToken: "new-token", siteAddress: "site")
+        onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [456])))
+
+        // Then
+        XCTAssertEqual(sessionManager.defaultStoreID, 123)
+        XCTAssertEqual(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs), "123")
+    }
+
+    func test_synchronizeSites_when_authenticated_with_site_credentials_then_bypasses_wpcom_sync() {
+        // Given
+        let (manager, state, _) = makeSiteSynchronizationTestContext(credentials: SessionSettings.wporgCredentials)
+        var completionError: Error?
+
+        // When
+        manager.dispatch(AccountAction.synchronizeSites { result in
+            completionError = result.failure
+        })
+
+        // Then
+        XCTAssertNotNil(completionError)
+        XCTAssertTrue(state.receivedActions.isEmpty)
+    }
+
+    func test_authenticate_when_session_changes_then_clears_connected_site_ids_but_preserves_same_wpcom_session() {
+        // Given
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultCredentials = SessionSettings.wpcomCredentials
+        pushNotificationDefaults.set("123", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           pushNotificationDefaults: pushNotificationDefaults,
+                                           stateFactory: { _ in MockStoresManagerState() })
+
+        // When
+        manager.authenticate(credentials: .wpcom(username: "renamed-user", authToken: "authToken", siteAddress: "site"))
+
+        // Then
+        XCTAssertEqual(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs), "123")
+
+        // When
+        manager.authenticate(credentials: .wpcom(username: "other-user", authToken: "other-token", siteAddress: "site"))
+
+        // Then
+        XCTAssertNil(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs))
+
+        // When
+        pushNotificationDefaults.set("123", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        manager.authenticate(credentials: SessionSettings.wporgCredentials)
+
+        // Then
+        XCTAssertNil(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs))
+    }
+}
+
+private extension StoresManagerTests {
+    func makeSiteSynchronizationTestContext(credentials: Credentials = SessionSettings.wpcomCredentials)
+        -> (DefaultStoresManager, MockStoresManagerState, MockSessionManager) {
+        let state = MockStoresManagerState()
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultCredentials = credentials
+        sessionManager.defaultStoreID = 123
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           pushNotificationDefaults: pushNotificationDefaults,
+                                           stateFactory: { _ in state })
+        return (manager, state, sessionManager)
+    }
+
+    func startSiteSynchronization(manager: DefaultStoresManager,
+                                  state: MockStoresManagerState) -> (Result<SiteSynchronizationResult, Error>) -> Void {
+        manager.dispatch(AccountAction.synchronizeSites { _ in })
+        guard let action = state.receivedActions.first as? AccountAction,
+              case let .synchronizeSites(onCompletion) = action else {
+            XCTFail("Expected synchronizeSites action")
+            return { _ in }
+        }
+        return onCompletion
+    }
 }
 
 
@@ -1015,6 +1135,18 @@ final class MockSessionManager: SessionManagerProtocol {
 
 private class MockNotificationCenter: NotificationCenter, @unchecked Sendable {
     static var testingInstance = MockNotificationCenter()
+}
+
+private final class MockStoresManagerState: StoresManagerState {
+    private(set) var receivedActions: [Action] = []
+
+    func willLeave() { }
+
+    func didEnter() { }
+
+    func onAction(_ action: Action) {
+        receivedActions.append(action)
+    }
 }
 
 final class MockCardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache {

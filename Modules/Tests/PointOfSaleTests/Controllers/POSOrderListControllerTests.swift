@@ -1242,6 +1242,56 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
+    @Test func refreshRefundableItems_when_the_reload_fails_then_keeps_the_previously_loaded_items() async throws {
+        // Given two refundable units, with only the first one selected
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        sut.toggleRefundItemSelection(at: 1)
+
+        // When the reload fails, for example because the register lost connectivity
+        refundSubmissionProcessor.prepareRefundErrorToThrow = NSError(domain: "test", code: 1)
+        let result = await sut.refreshRefundableItems()
+
+        // Then the previous list is still there, so a retry reloads instead of starting a new flow
+        #expect(result == .failed)
+        #expect(sut.refundSelectableItems.count == 2)
+        #expect(sut.hasLoadedRefundableItems == true)
+    }
+
+    @MainActor
+    @Test func hasLoadedRefundableItems_when_no_load_has_succeeded_then_is_false() async throws {
+        // Given a selected order
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+
+        // Then
+        #expect(sut.hasLoadedRefundableItems == false)
+
+        // When the first load fails
+        refundSubmissionProcessor.prepareRefundErrorToThrow = NSError(domain: "test", code: 1)
+        _ = await sut.startRefundFlow()
+
+        // Then
+        #expect(sut.hasLoadedRefundableItems == false)
+    }
+
+    @MainActor
+    @Test func hasLoadedRefundableItems_when_the_flow_ends_then_is_false_again() async throws {
+        // Given a loaded list of refundable items
+        let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")])
+        sut.selectOrder(order)
+        _ = await sut.startRefundFlow()
+        #expect(sut.hasLoadedRefundableItems == true)
+
+        // When the cashier dismisses the flow
+        sut.clearRefundSelection()
+
+        // Then
+        #expect(sut.hasLoadedRefundableItems == false)
+    }
+
+    @MainActor
     @Test func refreshRefundableItems_then_hasModifiedRefundSelection_is_false_until_the_next_toggle() async throws {
         // Given a reloaded list with nothing selected
         let order = makeOrder(lineItems: [makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")])

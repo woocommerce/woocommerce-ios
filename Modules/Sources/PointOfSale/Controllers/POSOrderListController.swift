@@ -32,6 +32,7 @@ protocol POSOrderListControllerProtocol {
     var displayedCustomAmounts: [POSOrderCustomAmount] { get }
     var refundActionAvailability: RefundActionAvailability { get }
     var refundSelectableItems: [POSRefundSelectableItem] { get }
+    var hasLoadedRefundableItems: Bool { get }
     var currentRefundRequiresCardPresentRefund: Bool { get }
     var hasModifiedRefundSelection: Bool { get }
     func loadOrders() async
@@ -458,6 +459,11 @@ enum POSRefundProcessingError: LocalizedError, Equatable {
         resetRefundReviewPreparation()
 
         return refundSelectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
+    }
+
+    @MainActor
+    var hasLoadedRefundableItems: Bool {
+        !refundSelectableItems.isEmpty
     }
 
     @MainActor

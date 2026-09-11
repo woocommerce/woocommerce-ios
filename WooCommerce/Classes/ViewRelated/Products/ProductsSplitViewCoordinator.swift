@@ -65,6 +65,11 @@ final class ProductsSplitViewCoordinator: NSObject {
         return .primary
     }
 
+    func didCollapse() {
+        navigationStack.didCollapse()
+        refreshSwipeBackVetoRelationships()
+    }
+
     /// Called when the split view transitions from collapsed to expanded mode.
     func didExpand() {
         navigationStack.didExpand()

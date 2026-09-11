@@ -11,13 +11,17 @@ final class WooSplitViewController: UISplitViewController {
 
     private let columnForCollapsingHandler: ColumnForCollapsingHandler?
 
+    private let didCollapseHandler: ((UISplitViewController) -> Void)?
+
     private let didExpandHandler: ((UISplitViewController) -> Void)?
 
     /// Init a split view with an optional handler to decide which column to collapse the split view into.
     /// By default, always display the primary column when collapsed.
     init(columnForCollapsingHandler: ColumnForCollapsingHandler? = nil,
+         didCollapseHandler: ((UISplitViewController) -> Void)? = nil,
          didExpandHandler: ((UISplitViewController) -> Void)? = nil) {
         self.columnForCollapsingHandler = columnForCollapsingHandler
+        self.didCollapseHandler = didCollapseHandler
         self.didExpandHandler = didExpandHandler
         super.init(style: .doubleColumn)
         configureCommonStyle()
@@ -43,6 +47,11 @@ final class SplitViewNavigationStack {
     let secondaryNavigationController: UINavigationController
 
     private var contentIsInPrimaryNavigationController = false
+    private struct PendingCollapse {
+        let viewControllers: [UIViewController]
+        let showsSecondaryContent: Bool
+    }
+    private var pendingCollapse: PendingCollapse?
 
     init(splitViewController: UISplitViewController,
          primaryNavigationController: UINavigationController,
@@ -53,6 +62,9 @@ final class SplitViewNavigationStack {
     }
 
     var contentViewControllers: [UIViewController] {
+        if let pendingCollapse {
+            return pendingCollapse.viewControllers
+        }
         if contentIsInPrimaryNavigationController {
             return Array(primaryNavigationController.viewControllers.dropFirst())
         }
@@ -64,6 +76,10 @@ final class SplitViewNavigationStack {
     }
 
     func setContentViewControllers(_ viewControllers: [UIViewController], showsInCollapsedLayout: Bool) {
+        if pendingCollapse != nil {
+            pendingCollapse = PendingCollapse(viewControllers: viewControllers, showsSecondaryContent: showsInCollapsedLayout)
+            return
+        }
         if showsInCollapsedLayout && (splitViewController.isCollapsed || contentIsInPrimaryNavigationController) {
             moveContentToPrimary(viewControllers)
         } else {
@@ -81,20 +97,26 @@ final class SplitViewNavigationStack {
     }
 
     func removeAllContent() {
-        moveContentToSecondary([])
+        setContentViewControllers([], showsInCollapsedLayout: false)
     }
 
-    /// Prepares a compact layout before UIKit starts changing the split-view hierarchy.
-    /// Returning the primary column after this transfer avoids wrapping the secondary navigation
-    /// controller in the primary one.
+    /// Keeps the intended content while UIKit changes the split-view hierarchy. Installing it in
+    /// the primary stack here is too early: UIKit subsequently returns that stack to its root.
     func prepareForCollapsing(showsSecondaryContent: Bool) {
-        guard showsSecondaryContent else {
-            contentIsInPrimaryNavigationController = false
-            assertNavigationItemsHaveSingleOwners()
+        pendingCollapse = PendingCollapse(viewControllers: contentViewControllers, showsSecondaryContent: showsSecondaryContent)
+    }
+
+    /// Installs compact content after UIKit has finished resetting the primary stack.
+    func didCollapse() {
+        guard let pendingCollapse else {
             return
         }
-
-        moveContentToPrimary(secondaryNavigationController.viewControllers)
+        self.pendingCollapse = nil
+        if pendingCollapse.showsSecondaryContent {
+            moveContentToPrimary(pendingCollapse.viewControllers)
+        } else {
+            moveContentToSecondary(pendingCollapse.viewControllers)
+        }
     }
 
     /// Restores the expanded two-column ownership after UIKit has separated the split view.
@@ -153,5 +175,9 @@ extension WooSplitViewController: UISplitViewControllerDelegate {
 
     func splitViewControllerDidExpand(_ svc: UISplitViewController) {
         didExpandHandler?(svc)
+    }
+
+    func splitViewControllerDidCollapse(_ svc: UISplitViewController) {
+        didCollapseHandler?(svc)
     }
 }

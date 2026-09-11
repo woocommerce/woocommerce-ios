@@ -7,6 +7,7 @@ final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayou
     private let siteID: Int64
 
     private lazy var ordersSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView,
+                                                                        didCollapseHandler: handleDidCollapse,
                                                                         didExpandHandler: handleDidExpand)
     private lazy var ordersViewController = OrdersRootViewController(siteID: siteID, switchDetailsHandler: handleSwitchingDetails)
     private let primaryNavigationController = WooTabNavigationController()
@@ -195,6 +196,10 @@ private extension OrdersSplitViewWrapperController {
 
     func handleDidExpand(splitViewController _: UISplitViewController) {
         navigationStack.didExpand()
+    }
+
+    func handleDidCollapse(splitViewController _: UISplitViewController) {
+        navigationStack.didCollapse()
     }
 
     /// Set up properties for `self` as a root tab bar controller.

@@ -44,6 +44,10 @@ struct OrdersSplitViewWrapperControllerTests {
             topColumnForCollapsingToProposedTopColumn: .secondary
         )
 
+        #expect(secondaryNavigationController.topViewController === detailViewController)
+        #expect(primaryNavigationController.viewControllers.count == 1)
+        splitViewController.splitViewControllerDidCollapse(splitViewController)
+
         // Then
         #expect(selectedColumn == .primary)
         #expect(primaryNavigationController.topViewController === detailViewController)
@@ -65,6 +69,8 @@ struct OrdersSplitViewWrapperControllerTests {
 
         // When
         sut.prepareForCollapsing(showsSecondaryContent: true)
+        #expect(secondaryNavigationController.viewControllers.isEmpty == false)
+        sut.didCollapse()
 
         // Then
         #expect(primaryNavigationController.viewControllers == [rootViewController, detailViewController])
@@ -88,6 +94,8 @@ struct OrdersSplitViewWrapperControllerTests {
                                            primaryNavigationController: primaryNavigationController,
                                            secondaryNavigationController: secondaryNavigationController)
         sut.prepareForCollapsing(showsSecondaryContent: true)
+        #expect(secondaryNavigationController.viewControllers.isEmpty == false)
+        sut.didCollapse()
 
         // When
         sut.didExpand()
@@ -114,6 +122,8 @@ struct OrdersSplitViewWrapperControllerTests {
                                            primaryNavigationController: primaryNavigationController,
                                            secondaryNavigationController: secondaryNavigationController)
         sut.prepareForCollapsing(showsSecondaryContent: true)
+        #expect(secondaryNavigationController.viewControllers.isEmpty == false)
+        sut.didCollapse()
 
         // When
         sut.setContentViewControllers([replacementDetailViewController], showsInCollapsedLayout: true)
@@ -124,5 +134,68 @@ struct OrdersSplitViewWrapperControllerTests {
         #expect(primaryNavigationController.viewControllers == [rootViewController, replacementDetailViewController])
         #expect(secondaryNavigationController.viewControllers.isEmpty)
         #expect(sut.navigationItemsHaveSingleOwners())
+    }
+}
+
+@MainActor
+struct SplitViewPendingCollapseTests {
+    @Test
+    func test_set_content_when_collapse_is_pending_then_installs_latest_content() {
+        // Given
+        let (stack, primary, secondary) = makeStack()
+        stack.prepareForCollapsing(showsSecondaryContent: true)
+        let replacement = UIViewController()
+
+        // When
+        stack.setContentViewControllers([replacement], showsInCollapsedLayout: true)
+        #expect(stack.contentViewControllers == [replacement])
+        stack.didCollapse()
+
+        // Then
+        #expect(primary.topViewController === replacement)
+        #expect(secondary.viewControllers.isEmpty)
+    }
+
+    @Test
+    func test_remove_content_when_collapse_is_pending_then_does_not_restore_removed_content() {
+        // Given
+        let (stack, primary, secondary) = makeStack()
+        stack.prepareForCollapsing(showsSecondaryContent: true)
+
+        // When
+        stack.removeAllContent()
+        #expect(stack.contentViewControllers.isEmpty)
+        stack.didCollapse()
+
+        // Then
+        #expect(primary.viewControllers.count == 1)
+        #expect(secondary.viewControllers.isEmpty)
+        #expect(stack.contentViewControllers.isEmpty)
+    }
+
+    @Test
+    func test_set_placeholder_when_collapse_is_pending_then_keeps_placeholder_in_secondary() {
+        // Given
+        let (stack, primary, secondary) = makeStack()
+        stack.prepareForCollapsing(showsSecondaryContent: true)
+        let placeholder = UIViewController()
+
+        // When
+        stack.setContentViewControllers([placeholder], showsInCollapsedLayout: false)
+        stack.didCollapse()
+
+        // Then
+        #expect(primary.viewControllers.count == 1)
+        #expect(secondary.viewControllers == [placeholder])
+        #expect(stack.contentViewControllers == [placeholder])
+    }
+
+    private func makeStack() -> (SplitViewNavigationStack, UINavigationController, UINavigationController) {
+        let split = UISplitViewController(style: .doubleColumn)
+        let primary = UINavigationController(rootViewController: UIViewController())
+        let secondary = UINavigationController(rootViewController: UIViewController())
+        return (SplitViewNavigationStack(splitViewController: split,
+                                          primaryNavigationController: primary,
+                                          secondaryNavigationController: secondary), primary, secondary)
     }
 }

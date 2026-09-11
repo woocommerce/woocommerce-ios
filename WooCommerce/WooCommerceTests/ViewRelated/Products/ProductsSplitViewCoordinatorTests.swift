@@ -213,6 +213,7 @@ struct ProductsSplitViewCoordinatorTests {
 
         // When
         navigationStack.prepareForCollapsing(showsSecondaryContent: true)
+        navigationStack.didCollapse()
         let stackToRestore = policy.stackToRestore(for: transitionID, currentStack: navigationStack.contentViewControllers)
 
         // Then
@@ -275,6 +276,7 @@ struct ProductsSplitViewCoordinatorTests {
 
         // When
         navigationStack.prepareForCollapsing(showsSecondaryContent: true)
+        navigationStack.didCollapse()
 
         // Then
         #expect(primaryNavigationController.topViewController === productForm)

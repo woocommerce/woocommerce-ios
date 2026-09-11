@@ -610,7 +610,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             endpointUnderVerification == .admin
         )
         useCase.setupHandlers(onLoginSuccess: {
-            onLoading(false)
+            // Deliberately no `onLoading(false)` here, unlike the failure branch below. The credential
+            // transaction succeeding only starts the sign-in: `onSuccess` goes on to run the application
+            // password, role eligibility and WooCommerce installation checks, and the form has to stay
+            // disabled until one of those navigates away.
             onSuccess(credentials.replacingAuthenticationEndpoints(with: endpoints))
         }, onLoginFailure: { [weak self] error, loginEntryVerified, offersBrowserAlternative in
             onLoading(false)
@@ -1211,7 +1214,14 @@ extension AuthenticationManager {
             useCase = try makeApplicationPasswordUseCase(for: siteCredentials)
         } catch {
             // Authenticated credentials without a constructible canonical site cannot safely enter the eligibility flow.
-            assertionFailure("⛔️ Error creating application password use case")
+            // Nothing further along clears the sign-in loading state, so plainly returning would strand the merchant on a
+            // credential form whose fields, submit button and back button all stay disabled. Report the broken invariant
+            // and restart login, which is the same escape the post-login eligibility alerts already offer.
+            ServiceLocator.crashLogging.logError(error,
+                                                 userInfo: ["site_url": siteURL],
+                                                 level: .error)
+            stores.deauthenticate()
+            navigationController.popToRootViewController(animated: true)
             return
         }
         let credentials = Credentials.wporg(

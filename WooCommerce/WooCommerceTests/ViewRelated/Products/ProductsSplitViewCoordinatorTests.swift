@@ -191,6 +191,76 @@ struct ProductsSplitViewCoordinatorTests {
         #expect(primaryNavigationController.navigationBar.isHidden)
     }
 
+    // MARK: - iOS 26 compact Product return
+
+    @Test
+    func test_prepare_products_large_title_when_presenting_compact_product_then_sets_products_to_never() throws {
+        // Given
+        let splitViewController = CollapsedSplitViewController(style: .doubleColumn)
+        let (sut, primaryNavigationController, _) = try makeSUT(splitViewController: splitViewController)
+        let productsViewController = try #require(primaryNavigationController.topViewController)
+        productsViewController.navigationItem.largeTitleDisplayMode = .always
+
+        // When
+        sut.prepareProductsLargeTitleForCompactProductPresentationIfNeeded()
+
+        // Then
+        #expect(productsViewController.navigationItem.largeTitleDisplayMode == .never)
+    }
+
+    @Test
+    func test_navigation_controller_when_compact_product_return_is_cancelled_then_prepares_products_for_retry() throws {
+        // Given
+        let splitViewController = CollapsedSplitViewController(style: .doubleColumn)
+        let (sut, primaryNavigationController, _) = try makeSUT(splitViewController: splitViewController)
+        let productsViewController = try #require(primaryNavigationController.topViewController)
+        sut.prepareProductsLargeTitleForCompactProductPresentationIfNeeded()
+
+        // When: UIKit restores the incoming Products item, but the interactive transition returns to Product.
+        sut.navigationController(primaryNavigationController, willShow: productsViewController, animated: true)
+        #expect(productsViewController.navigationItem.largeTitleDisplayMode == .always)
+        sut.navigationController(primaryNavigationController, didShow: UIViewController(), animated: true)
+
+        // Then: Products is invalidated again, and a retry can restore its normal large-title mode.
+        #expect(productsViewController.navigationItem.largeTitleDisplayMode == .never)
+        sut.navigationController(primaryNavigationController, willShow: productsViewController, animated: true)
+        #expect(productsViewController.navigationItem.largeTitleDisplayMode == .always)
+    }
+
+    @Test
+    func test_prepare_products_large_title_when_collapsing_with_product_then_did_expand_restores_always() throws {
+        // Given
+        let splitViewController = UISplitViewController(style: .doubleColumn)
+        let (sut, primaryNavigationController, _) = try makeSUT(splitViewController: splitViewController)
+        let productsViewController = try #require(primaryNavigationController.topViewController)
+
+        // When
+        sut.prepareProductsLargeTitleForCompactProductPresentationIfNeeded(forCollapsingSplitView: true)
+        #expect(productsViewController.navigationItem.largeTitleDisplayMode == .never)
+        sut.didExpand()
+
+        // Then
+        #expect(productsViewController.navigationItem.largeTitleDisplayMode == .always)
+    }
+
+    @Test
+    func test_navigation_controller_when_product_return_is_not_animated_then_clears_prepared_state() throws {
+        // Given
+        let splitViewController = CollapsedSplitViewController(style: .doubleColumn)
+        let (sut, primaryNavigationController, _) = try makeSUT(splitViewController: splitViewController)
+        let productsViewController = try #require(primaryNavigationController.topViewController)
+        sut.prepareProductsLargeTitleForCompactProductPresentationIfNeeded()
+
+        // When
+        sut.navigationController(primaryNavigationController, willShow: productsViewController, animated: false)
+        sut.navigationController(primaryNavigationController, didShow: productsViewController, animated: false)
+
+        // Then: later navigation callbacks cannot treat the finished return as a cancelled Product transition.
+        sut.navigationController(primaryNavigationController, willShow: productsViewController, animated: true)
+        sut.navigationController(primaryNavigationController, didShow: UIViewController(), animated: true)
+        #expect(productsViewController.navigationItem.largeTitleDisplayMode == .always)
+    }
+
     // MARK: - Layout transition restoration
 
     @Test
@@ -326,7 +396,9 @@ private extension ProductsSplitViewCoordinatorTests {
     func makeSUT(
         splitViewController: UISplitViewController = UISplitViewController(style: .doubleColumn)
     ) throws -> (ProductsSplitViewCoordinator, UINavigationController, UINavigationController) {
-        let sut = ProductsSplitViewCoordinator(siteID: 123, splitViewController: splitViewController)
+        let sut = ProductsSplitViewCoordinator(siteID: 123,
+                                               splitViewController: splitViewController,
+                                               usesIOS26CompactProductLargeTitleWorkaround: true)
         sut.start()
         let primaryNavigationController = try #require(splitViewController.viewController(for: .primary) as? UINavigationController)
         let secondaryNavigationController = try #require(splitViewController.viewController(for: .secondary) as? UINavigationController)

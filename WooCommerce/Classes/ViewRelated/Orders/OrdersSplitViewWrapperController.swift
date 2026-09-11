@@ -196,6 +196,10 @@ private extension OrdersSplitViewWrapperController {
 
     func handleDidExpand(splitViewController _: UISplitViewController) {
         navigationStack.didExpand()
+        if navigationStack.contentViewControllers.isEmpty {
+            showEmptyView()
+            ordersViewController.restoreSelectedOrderDetails()
+        }
     }
 
     func handleDidCollapse(splitViewController _: UISplitViewController) {

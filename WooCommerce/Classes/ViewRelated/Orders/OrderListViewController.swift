@@ -602,12 +602,12 @@ private extension OrderListViewController {
     /// Checks to see if there is a selected order ID, and selects its order.
     /// Otherwise, try to select first item.
     ///
-    func checkSelectedItem() {
+    func checkSelectedItem(forceShowingDetails: Bool = false) {
         guard let orderID = selectedOrderID else {
             selectFirstItemIfPossible()
             return
         }
-        let selected = selectOrderFromListIfPossible(for: orderID)
+        let selected = selectOrderFromListIfPossible(for: orderID, isTriggeredByUserAction: forceShowingDetails)
         if !selected {
             selectedIndexPath = nil
             switchDetailsHandler([], 0, true, nil)
@@ -650,6 +650,11 @@ private extension OrderListViewController {
 }
 
 extension OrderListViewController {
+    /// Recreates the selected detail without changing the selected row.
+    func restoreSelectedOrderDetails() {
+        checkSelectedItem(forceShowingDetails: true)
+    }
+
     /// Adds ability to select any order
     /// Used when opening an order with deep link
     /// - Parameter orderID: ID of the order to select in the list.

@@ -193,6 +193,11 @@ final class OrdersRootViewController: UIViewController {
         ordersViewController.onOrderSelected(id: orderID)
     }
 
+    /// Restores the selected detail after compact navigation removed it from the stack.
+    func restoreSelectedOrderDetails() {
+        ordersViewController.restoreSelectedOrderDetails()
+    }
+
     /// Presents the Order Creation flow.
     ///
     @objc func presentOrderCreationFlow() {

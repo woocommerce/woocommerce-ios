@@ -14,6 +14,7 @@ import WooFoundationCore
 final class WooAnalytics: Analytics {
 
     typealias ABTestStarter = @MainActor (ExperimentContext) async -> Void
+    typealias WidgetConfigurationProvider = (@escaping (Result<[WidgetInfo], Error>) -> Void) -> Void
 
     // MARK: - Properties
 
@@ -32,6 +33,9 @@ final class WooAnalytics: Analytics {
     private let userDefaults: UserDefaults
 
     private let startABTest: ABTestStarter
+    private let notificationCenter: NotificationCenter
+    private let getWidgetConfigurations: WidgetConfigurationProvider
+    private var isObservingNotifications = false
 
     /// Check user opt-in for analytics
     ///
@@ -53,10 +57,16 @@ final class WooAnalytics: Analytics {
     ///
     init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker,
          userDefaults: UserDefaults = .standard,
+         notificationCenter: NotificationCenter = .default,
+         getWidgetConfigurations: @escaping WidgetConfigurationProvider = { completion in
+             WidgetCenter.shared.getCurrentConfigurations(completion)
+         },
          startABTest: @escaping ABTestStarter = { await ABTest.start(for: $0) }) {
         self.analyticsProvider = analyticsProvider
         self.userDefaults = userDefaults
         self.startABTest = startABTest
+        self.notificationCenter = notificationCenter
+        self.getWidgetConfigurations = getWidgetConfigurations
         WPAnalytics.register(analyticsProvider)
     }
 }
@@ -136,6 +146,7 @@ extension WooAnalytics {
             DDLogInfo("🔴 Tracking opt-out complete.")
         } else {
             refreshUserData()
+            startObservingNotifications()
             DDLogInfo("🔵 Tracking started.")
         }
     }
@@ -292,23 +303,24 @@ private extension Analytics {
 private extension WooAnalytics {
 
     func startObservingNotifications() {
-        guard userHasOptedIn == true else {
+        guard userHasOptedIn, !isObservingNotifications else {
             return
         }
+        isObservingNotifications = true
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(trackApplicationOpened),
-                                               name: UIApplication.didBecomeActiveNotification,
-                                               object: nil)
+        notificationCenter.addObserver(self,
+                                       selector: #selector(trackApplicationOpened),
+                                       name: UIApplication.didBecomeActiveNotification,
+                                       object: nil)
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(trackApplicationClosed),
-                                               name: UIApplication.didEnterBackgroundNotification,
-                                               object: nil)
+        notificationCenter.addObserver(self,
+                                       selector: #selector(trackApplicationClosed),
+                                       name: UIApplication.didEnterBackgroundNotification,
+                                       object: nil)
     }
 
     @objc func trackApplicationOpened() {
-        WidgetCenter.shared.getCurrentConfigurations { [weak self] configurationResult in
+        getWidgetConfigurations { [weak self] configurationResult in
             guard let self else { return }
 
             let applicationProperties = self.applicationOpenedProperties(configurationResult)

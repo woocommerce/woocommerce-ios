@@ -104,6 +104,11 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     ///
     private var skippedReaderIDs: [String]
 
+    /// IDs of the readers we have already reported as discovered during the current search.
+    /// The discovery callback fires repeatedly, so this keeps us to one event per change of the found set.
+    ///
+    private var trackedReaderIDs: Set<String> = []
+
     /// The reader we want the user to consider connecting to
     ///
     private var candidateReader: CardReader?
@@ -308,6 +313,7 @@ private extension CardReaderConnectionController {
         ///
         foundReaders = []
         skippedReaderIDs = []
+        trackedReaderIDs = []
         candidateReader = nil
         showSeveralFoundReaders = false
 
@@ -353,6 +359,23 @@ private extension CardReaderConnectionController {
                 /// and prune skipped ones
                 ///
                 self.foundReaders = cardReaders
+
+                /// Only report discovery while the merchant is still in the discovery flow.
+                /// This callback keeps firing after they cancel and after we start connecting,
+                /// and those late calls are ignored below, so reporting them would count
+                /// discoveries the flow never acted on.
+                ///
+                switch self.state {
+                case .searching, .foundReader, .foundSeveralReaders:
+                    let discoveredReaderIDs = Set(cardReaders.map({ $0.id }))
+                    if discoveredReaderIDs != self.trackedReaderIDs {
+                        self.trackedReaderIDs = discoveredReaderIDs
+                        self.analyticsTracker.readersDiscovered(count: cardReaders.count)
+                    }
+                default:
+                    break
+                }
+
                 self.updateShowSeveralFoundReaders()
                 self.pruneSkippedReaders()
 
@@ -382,6 +405,7 @@ private extension CardReaderConnectionController {
                     if !didAutoAdvance {
                         didAutoAdvance = true
                         self.candidateReader = foundKnownReader
+                        self.analyticsTracker.autoConnectionStarted(cardReaderModel: foundKnownReader.readerType.model)
                         self.state = .requestLocationPermission
                         return
                     }
@@ -422,6 +446,7 @@ private extension CardReaderConnectionController {
         /// (unknown) reader, auto-connect to that known reader
         if let foundKnownReader = self.getFoundKnownReader() {
             self.candidateReader = foundKnownReader
+            self.analyticsTracker.autoConnectionStarted(cardReaderModel: foundKnownReader.readerType.model)
             self.state = .requestLocationPermission
             return
         }
@@ -463,6 +488,7 @@ private extension CardReaderConnectionController {
             viewModel: alertsProvider.foundReader(
                 name: candidateReader.id,
                 connect: {
+                    self.analyticsTracker.connectionTapped(cardReaderModel: candidateReader.readerType.model)
                     self.state = .requestLocationPermission
                 },
                 continueSearch: {
@@ -486,7 +512,16 @@ private extension CardReaderConnectionController {
                 guard let self else {
                     return
                 }
-                self.candidateReader = self.getFoundReaderByID(readerID: readerID)
+                /// The list keeps updating while it is presented, so the tapped reader may
+                /// already be gone. Without a candidate `onConnectToReader` returns without
+                /// connecting, so there is nothing to report and nothing to advance to.
+                ///
+                guard let candidateReader = self.getFoundReaderByID(readerID: readerID) else {
+                    return
+                }
+
+                self.candidateReader = candidateReader
+                self.analyticsTracker.connectionTapped(cardReaderModel: candidateReader.readerType.model)
                 self.state = .requestLocationPermission
             },
             cancelSearch: { [weak self] in

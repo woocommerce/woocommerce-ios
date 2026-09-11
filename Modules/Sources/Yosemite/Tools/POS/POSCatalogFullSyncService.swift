@@ -101,14 +101,12 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
     private let syncRemote: POSCatalogSyncRemoteProtocol
     private let persistenceService: POSCatalogPersistenceServiceProtocol
     private let batchedLoader: BatchedRequestLoader
-    private let usesCatalogAPI: Bool
 
     public convenience init?(credentials: Credentials?,
                              selectedSite: AnyPublisher<JetpackSite?, Never>,
                              appPasswordSupportState: AnyPublisher<Bool, Never>,
                              batchSize: Int = 2,
-                             grdbManager: GRDBManagerProtocol,
-                             usesCatalogAPI: Bool) {
+                             grdbManager: GRDBManagerProtocol) {
         guard let credentials else {
             DDLogError("⛔️ Could not create POSCatalogFullSyncService due missing credentials")
             return nil
@@ -118,20 +116,18 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
                                        appPasswordSupportState: appPasswordSupportState)
         let syncRemote = POSCatalogSyncRemote(network: network)
         let persistenceService = POSCatalogPersistenceService(grdbManager: grdbManager)
-        self.init(syncRemote: syncRemote, batchSize: batchSize, persistenceService: persistenceService, usesCatalogAPI: usesCatalogAPI)
+        self.init(syncRemote: syncRemote, batchSize: batchSize, persistenceService: persistenceService)
     }
 
     init(
         syncRemote: POSCatalogSyncRemoteProtocol,
         batchSize: Int,
         retryDelay: TimeInterval = 2.0,
-        persistenceService: POSCatalogPersistenceServiceProtocol,
-        usesCatalogAPI: Bool
+        persistenceService: POSCatalogPersistenceServiceProtocol
     ) {
         self.syncRemote = syncRemote
         self.persistenceService = persistenceService
         self.batchedLoader = BatchedRequestLoader(batchSize: batchSize, retryDelay: retryDelay)
-        self.usesCatalogAPI = usesCatalogAPI
     }
 
     // MARK: - Protocol Conformance
@@ -146,18 +142,13 @@ public final class POSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol 
 
         do {
             // Sync from network
-            let catalog: POSCatalog
-            if usesCatalogAPI {
-                let maxAttempts = isBackgroundSync ? PollingConfig.backgroundMaxAttempts : .max
-                catalog = try await loadCatalogFromCatalogAPI(for: siteID,
+            let maxAttempts = isBackgroundSync ? PollingConfig.backgroundMaxAttempts : .max
+            let catalog = try await loadCatalogFromCatalogAPI(for: siteID,
                                                               syncRemote: syncRemote,
                                                               regenerateCatalog: regenerateCatalog,
                                                               allowCellular: allowCellular,
                                                               maxAttempts: maxAttempts,
                                                               onProgress: onProgress)
-            } else {
-                catalog = try await loadCatalog(for: siteID, syncRemote: syncRemote, allowCellular: allowCellular)
-            }
             DDLogInfo("✅ Loaded \(catalog.products.count) products and \(catalog.variations.count) variations for siteID \(siteID)")
 
             // Persist to database

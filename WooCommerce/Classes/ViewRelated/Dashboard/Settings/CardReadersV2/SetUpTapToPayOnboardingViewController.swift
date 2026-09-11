@@ -17,7 +17,7 @@ final class SetUpTapToPayOnboardingViewController: UIHostingController<SetUpTapT
 
         viewModel.showSupport = { [weak self] in
             guard let self else { return }
-            let supportForm = SupportFormHostingController(viewModel: .init())
+            let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
             supportForm.show(from: self)
         }
 

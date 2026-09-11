@@ -68,6 +68,11 @@ final class MockPointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
         }
     }
 
+    var recordScanToPayPaymentMethodWasCalled = false
+    func recordScanToPayPaymentMethod() async {
+        recordScanToPayPaymentMethodWasCalled = true
+    }
+
     var reloadCurrentOrderWasCalled = false
     var reloadCurrentOrderResult: Result<Order, Error> = .success(.fake())
     func reloadCurrentOrder() async throws -> Order {

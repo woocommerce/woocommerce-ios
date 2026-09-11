@@ -60,6 +60,22 @@ final class WooShippingConfigMapperTests: XCTestCase {
         XCTAssertEqual(shippingLabelData.first?.shipmentID, "1")
         XCTAssertEqual(shippingLabelData.first?.shippingLabelID, 4871)
     }
+
+    func test_config_with_null_carrier_id_preserves_valid_labels() throws {
+        // Given
+        let config = try XCTUnwrap(mapShippingLabelConfig(from: "shipping-label-config-with-null-carrier-id"))
+
+        // Then
+        let labels = try XCTUnwrap(config.shippingLabelData?.currentOrderLabels)
+        XCTAssertEqual(labels.count, 1)
+
+        let purchasedLabel = try XCTUnwrap(labels.first(where: { $0.shippingLabelID == 4871 }))
+        XCTAssertEqual(purchasedLabel.carrierID, "usps")
+        XCTAssertEqual(purchasedLabel.status, .purchased)
+
+        let shipment = try XCTUnwrap(config.shipments.first)
+        XCTAssertEqual(shipment.shippingLabel?.shippingLabelID, purchasedLabel.shippingLabelID)
+    }
 }
 
 /// Private Helpers

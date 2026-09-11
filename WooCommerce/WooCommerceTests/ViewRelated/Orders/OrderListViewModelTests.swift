@@ -346,7 +346,8 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           filters: nil)
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadFeedbackVisibility(_, onCompletion):
@@ -369,13 +370,196 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           filters: nil)
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
 
         // When
         viewModel.activate()
         viewModel.dataLoadingError = expectedError
 
         XCTAssert(viewModel.topBanner == .error(expectedError))
+    }
+
+    func test_topBanner_when_store_currency_is_unresolved_and_no_loading_error_then_shows_currencyUnavailable() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+
+        // When
+        viewModel.activate()
+
+        // Then
+        XCTAssert(viewModel.topBanner == .currencyUnavailable)
+    }
+
+    func test_topBanner_when_store_currency_is_resolved_then_does_not_show_currencyUnavailable() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
+
+        // When
+        viewModel.activate()
+
+        // Then
+        XCTAssert(viewModel.topBanner == .none)
+    }
+
+    func test_topBanner_when_loading_error_and_currency_is_unresolved_then_error_takes_precedence() {
+        // Given
+        let expectedError = MockError()
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+
+        // When
+        viewModel.activate()
+        viewModel.dataLoadingError = expectedError
+
+        // Then — a data-loading error wins over the currency warning
+        XCTAssert(viewModel.topBanner == .error(expectedError))
+    }
+
+    func test_retryStoreCurrencySync_hides_the_banner_while_refreshing_then_reshows_it_when_currency_is_still_unavailable() {
+        // Given — the store currency is unavailable, so the banner is showing
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+        var capturedCompletion: ((Error?) -> Void)?
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .synchronizeGeneralSiteSettings(_, onCompletion) = action {
+                capturedCompletion = onCompletion
+            }
+        }
+        viewModel.activate()
+        XCTAssert(viewModel.topBanner == .currencyUnavailable)
+
+        // When — the re-sync starts
+        viewModel.retryStoreCurrencySync()
+
+        // Then — the banner is hidden while the sync is in flight
+        XCTAssert(viewModel.topBanner == .none)
+
+        // When — the sync completes but the currency is still unavailable
+        capturedCompletion?(nil)
+
+        // Then — the banner is shown again
+        XCTAssert(viewModel.topBanner == .currencyUnavailable)
+    }
+
+    func test_currencyUnavailable_banner_shown_event_is_tracked_when_the_banner_appears() {
+        // Given — the store currency is unavailable
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+
+        // When
+        viewModel.activate()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == "orders_list_currency_unavailable_banner_shown" }.count, 1)
+    }
+
+    func test_currencyUnavailable_banner_shown_event_is_not_tracked_when_currency_is_resolved() {
+        // Given — the store currency is available, so no banner
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
+
+        // When
+        viewModel.activate()
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("orders_list_currency_unavailable_banner_shown"))
+    }
+
+    func test_retryStoreCurrencySync_tracks_the_retry_tapped_event() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+        viewModel.activate()
+
+        // When
+        viewModel.retryStoreCurrencySync()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("orders_list_currency_unavailable_banner_retry_tapped"))
+    }
+
+    func test_topBanner_when_a_different_sync_error_occurs_then_the_error_banner_is_re_emitted() {
+        // Given — currency resolved so only the loading error can drive the banner
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
+        viewModel.activate()
+
+        var emittedBanners: [OrderListViewModel.TopBanner] = []
+        let cancellable = viewModel.$topBanner.sink { emittedBanners.append($0) }
+
+        // When — two different errors occur back-to-back, without an intervening success
+        let firstError = NSError(domain: "test", code: 1)
+        let secondError = NSError(domain: "test", code: 2)
+        viewModel.dataLoadingError = firstError
+        viewModel.dataLoadingError = secondError
+
+        // Then — the banner is re-emitted for the second, different error (initial .none + two errors)
+        XCTAssertEqual(emittedBanners.count, 3)
+        let lastError = emittedBanners.last.flatMap { banner -> NSError? in
+            guard case let .error(error) = banner else { return nil }
+            return error as NSError
+        }
+        XCTAssertEqual(lastError, secondError)
+
+        cancellable.cancel()
+    }
+
+    func test_topBanner_when_the_same_sync_error_repeats_then_the_error_banner_is_not_re_emitted() {
+        // Given — currency resolved so only the loading error can drive the banner
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
+        viewModel.activate()
+
+        var emittedBanners: [OrderListViewModel.TopBanner] = []
+        let cancellable = viewModel.$topBanner.sink { emittedBanners.append($0) }
+
+        // When — the same error (same domain + code) is set twice
+        viewModel.dataLoadingError = NSError(domain: "test", code: 1)
+        viewModel.dataLoadingError = NSError(domain: "test", code: 1)
+
+        // Then — the duplicate is deduped, so only one error emission follows the initial .none
+        XCTAssertEqual(emittedBanners.count, 2)
+
+        cancellable.cancel()
+    }
+
+    private func makeSelectedSiteSettings(currencyResolved: Bool) -> MockSelectedSiteSettings {
+        let mock = MockSelectedSiteSettings()
+        mock.isUsingFallbackCurrency = !currencyResolved
+        return mock
     }
 
     // MARK: - Filters Applied

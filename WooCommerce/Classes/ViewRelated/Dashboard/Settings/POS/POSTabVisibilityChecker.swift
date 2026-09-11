@@ -77,11 +77,6 @@ final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         if ProcessConfiguration.shouldBypassPOSTabVisibilityChecks {
             return true
         }
-        let phonePrototypeEnabled = featureFlagService.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
-        guard userInterfaceIdiom == .pad || phonePrototypeEnabled else {
-            logNotVisible("the device is not an iPad and the phone prototype flag is off")
-            return false
-        }
         guard userInterfaceIdiom != .phone || isPhoneOperatingSystemEligible else {
             logNotVisible("phone POS needs iOS \(Self.minimumPhonePOSOperatingSystemVersion.majorVersion) or later")
             return false
@@ -182,7 +177,9 @@ private extension POSTabVisibilityChecker {
             }
             return siteSettings.settings
         }
-        // If we get here, the stream completed without yielding any values for our site ID which is unexpected.
+        // The settings stream never completes on its own (it is backed by a CurrentValueSubject), so
+        // reaching this point means the surrounding task was cancelled, which ends the async iteration.
+        // Callers must treat the resulting verdict as indeterminate rather than acting on it.
         return []
     }
 

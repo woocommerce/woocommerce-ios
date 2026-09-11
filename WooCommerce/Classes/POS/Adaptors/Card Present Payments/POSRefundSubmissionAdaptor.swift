@@ -153,7 +153,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
         case .fallbackToLocal:
             serverPreviewTotals[selectionKey] = nil
             let components = refundMapping.refundComponents(from: selectedItems, context: context)
-            let values = refundMapping.refundValues(items: components.items, fees: components.fees)
+            let values = refundMapping.refundValues(items: components.items, fees: components.fees, order: context.order)
             return reviewData(subtotal: values.subtotal,
                               tax: values.tax,
                               total: values.total,
@@ -205,7 +205,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
         }
 
         let components = refundMapping.refundComponents(from: selectedItems, context: context)
-        let values = refundMapping.refundValues(items: components.items, fees: components.fees)
+        let values = refundMapping.refundValues(items: components.items, fees: components.fees, order: context.order)
         // A server-computed create is only allowed when this exact selection was previewed
         // successfully; otherwise the classic v3 create path is used.
         let serverPreviewTotal = serverPreviewTotals[SelectionKey(orderID: preparation.orderID,

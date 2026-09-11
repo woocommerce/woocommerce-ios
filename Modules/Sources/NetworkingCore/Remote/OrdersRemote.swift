@@ -699,11 +699,15 @@ public extension OrdersRemote {
     /// - Returns: The loaded Order.
     /// - Throws: Network or parsing errors.
     func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order {
+        let parameters: RequestParameterConvertibleDictionary = [
+            ParameterKeys.decimalPlaces: OrdersRemote.Defaults.decimalPoints
+        ]
         let path = "\(Constants.ordersPath)/\(orderID)"
         let request = JetpackRequest(wooApiVersion: .mark3,
                                    method: .get,
                                    siteID: siteID,
                                    path: path,
+                                   parameters: parameters,
                                    availableAsRESTRequest: true)
         let mapper = OrderMapper(siteID: siteID)
 

@@ -31,6 +31,8 @@ class PointOfSalePreviewOrderController: PointOfSaleOrderControllerProtocol {
 
     func confirmScanToPayPayment() async throws {}
 
+    func recordScanToPayPaymentMethod() async {}
+
     func reloadCurrentOrder() async throws -> Order {
         guard case let .loaded(_, order) = orderState else {
             throw NSError(domain: "PointOfSalePreviewOrderController", code: 0)

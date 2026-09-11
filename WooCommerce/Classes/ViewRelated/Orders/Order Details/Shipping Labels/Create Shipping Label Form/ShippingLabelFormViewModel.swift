@@ -3,9 +3,6 @@ import Yosemite
 import Combine
 import WooFoundation
 import protocol Storage.StorageManagerType
-import protocol Experiments.FeatureFlagService
-
-
 /// Provides view data for Create Shipping Label, and handles init/UI/navigation actions needed.
 ///
 final class ShippingLabelFormViewModel {
@@ -177,10 +174,6 @@ final class ShippingLabelFormViewModel {
     ///
     @Published private(set) var shouldPresentEUShippingNotice: Bool = false
 
-    /// Flag to indicate if the `.euShippingNotification` feature is activated.
-    ///
-    private let isEUShippingNotificationEnabled: Bool
-
     var subscriptions = Set<AnyCancellable>()
 
     init(order: Order,
@@ -188,7 +181,6 @@ final class ShippingLabelFormViewModel {
          destinationAddress: Address?,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          userDefaults: UserDefaults) {
 
         self.siteID = order.siteID
@@ -209,8 +201,6 @@ final class ShippingLabelFormViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
-        self.isEUShippingNotificationEnabled = featureFlagService.isFeatureFlagEnabled(.euShippingNotification)
-
         state.sections = generateInitialSections()
         syncShippingLabelAccountSettings()
         syncPackageDetails()
@@ -926,10 +916,6 @@ extension ShippingLabelFormViewModel {
     }
 
     private func verifyEUShippingNoticeDismissState(onCompletion: @escaping (Bool) -> Void) {
-        guard isEUShippingNotificationEnabled else {
-            return onCompletion(false)
-        }
-
         let action = AppSettingsAction.loadEUShippingNoticeDismissState { result in
             switch result {
             case .success(let dismissed):

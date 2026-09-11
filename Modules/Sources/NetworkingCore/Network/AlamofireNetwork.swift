@@ -78,6 +78,7 @@ public class AlamofireNetwork: Network {
     public required init(credentials: Credentials?,
                          selectedSite: AnyPublisher<JetpackSite?, Never>?,
                          appPasswordSupportState: AnyPublisher<Bool, Never>?,
+                         cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
                          userDefaults: UserDefaults = .standard,
                          sessionManager: Alamofire.Session? = nil,
                          discoveryHandler: ((String) async -> Void)? = nil) {
@@ -98,7 +99,10 @@ public class AlamofireNetwork: Network {
             }()
             return RequestConverter(siteAddress: siteAddress)
         }()
-        let requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(credentials: credentials))
+        let requestAuthenticator = RequestProcessor(requestAuthenticator: DefaultRequestAuthenticator(
+            credentials: credentials,
+            cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints
+        ))
         self.requestAuthenticator = requestAuthenticator
         if let sessionManager {
             self.alamofireSession = sessionManager

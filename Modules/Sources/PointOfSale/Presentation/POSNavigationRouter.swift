@@ -67,7 +67,8 @@ struct POSNavigationDestinationScanToPayView: View {
 /// alert. Hosting it inside the `NavigationStack` gives us:
 ///
 /// - the same in-pane navigation pattern as cash and scan-to-pay (no special-case modifier)
-/// - "back" semantics for free (chevron-back, edge swipe)
+/// - the same "back" affordances as cash and scan-to-pay: a chevron-back, plus the module's own
+///   `posEdgeSwipeBackAction`, since a hidden navigation bar rules out UIKit's interactive pop
 /// - the same `navigationPath`-based check used to hide floating dashboard controls
 /// - no modal-stack optics (no "sheet → alert" chain, no auto-dismiss binding hack)
 ///
@@ -94,12 +95,7 @@ struct POSNavigationDestinationMarkAsPaidView: View {
                     }
                 }
             },
-            onCancel: {
-                Task { @MainActor in
-                    await paymentModel.cancelMarkAsPaidPayment()
-                    router.pop()
-                }
-            }
+            onCancel: cancelMarkAsPaidPayment
         )
         .toolbar(.hidden, for: .navigationBar)
         // Fill the right pane so the visual transition reads as "totals → confirmation → totals"
@@ -109,6 +105,17 @@ struct POSNavigationDestinationMarkAsPaidView: View {
         // Asks the dashboard to hide the floating control overlay (`…` menu, reader chip)
         // so the merchant can focus on the confirmation step without distractions.
         .posHidesFloatingControl()
+        .posEdgeSwipeBackAction(
+            isEnabled: paymentModel.paymentState.markAsPaid != .processing,
+            onBack: cancelMarkAsPaidPayment
+        )
+    }
+
+    private func cancelMarkAsPaidPayment() {
+        Task { @MainActor in
+            await paymentModel.cancelMarkAsPaidPayment()
+            router.pop()
+        }
     }
 
     private enum Localization {
@@ -132,6 +139,7 @@ struct POSNavigationDestinationEmailReceiptView: View {
             try await paymentModel.sendReceipt(to: email)
         }
         .toolbar(.hidden, for: .navigationBar)
+        .posEdgeSwipeBackAction(onBack: { router.pop() })
     }
 }
 

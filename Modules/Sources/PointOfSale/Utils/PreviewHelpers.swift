@@ -535,6 +535,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
     var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
     var refundActionAvailability: RefundActionAvailability { .available }
+    var hasLoadedRefundableItems: Bool { !refundSelectableItems.isEmpty }
     var currentRefundRequiresCardPresentRefund: Bool { false }
     var hasModifiedRefundSelection = false
 
@@ -609,6 +610,8 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
     func promoteOrderToPending(order: Yosemite.Order) async throws -> Yosemite.Order { order }
 
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {}
+
+    func recordScanToPayPaymentMethod(order: Yosemite.Order) async throws {}
 }
 
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {

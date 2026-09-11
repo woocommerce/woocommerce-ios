@@ -201,7 +201,9 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
             case .withSupportRequest:
                 return { [weak self] in
                     if let self {
-                        let supportForm = SupportFormHostingController(viewModel: .init())
+                        let supportForm = SupportFormHostingController(
+                            viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider())
+                        )
                         supportForm.show(from: self)
                     }
                 }
@@ -273,7 +275,7 @@ final class EmptyStateViewController: UIViewController, KeyboardFrameAdjustmentP
                                                               onContactSupportButtonPressed: { [weak self] in
             guard let self else { return }
 
-            let supportForm = SupportFormHostingController(viewModel: .init())
+            let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
             supportForm.show(from: self)
         })
 

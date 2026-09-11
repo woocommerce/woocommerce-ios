@@ -115,15 +115,13 @@ struct BlazeCampaignCreationForm: View {
                     .accessibilityAddTraits(.isHeader)
 
                 VStack(spacing: 0) {
-                    VStack(spacing: 0) {
-                        // Objective - hidden behind a feature flag
-                        detailView(title: Localization.objective,
-                                   content: viewModel.campaignObjectiveText ?? Localization.chooseObjective) {
-                            isShowingCampaignObjectivePicker = true
-                        }
-                        divider
+                    // Objective
+                    detailView(title: Localization.objective,
+                               content: viewModel.campaignObjectiveText ?? Localization.chooseObjective) {
+                        isShowingCampaignObjectivePicker = true
                     }
-                    .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective))
+
+                    divider
 
                     // Budget
                     detailView(title: Localization.budget, content: viewModel.budgetDetailText) {
@@ -472,7 +470,8 @@ private extension BlazeCampaignCreationForm {
     var supportForm: some View {
         NavigationView {
             SupportForm(isPresented: $isShowingSupport,
-                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
+                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
+                                                        mobileStatusReportProvider: MobileStatusReportProvider()))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.done) {

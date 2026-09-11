@@ -7,6 +7,7 @@ import protocol WooFoundation.Analytics
 /// Handles routing based on confidence level, navigation to support form,
 /// direct ticket creation, and success/failure UI feedback.
 ///
+@MainActor
 final class SupportEscalationCoordinator {
     typealias TranscriptConsentPresenter = (_ presentingViewController: UIViewController,
                                              _ onSendTicket: @escaping () -> Void,
@@ -54,7 +55,7 @@ final class SupportEscalationCoordinator {
     init(navigationController: UINavigationController?,
          additionalAttachmentsProvider: @escaping () -> [ZendeskAttachment] = { [] },
          attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),
-         mobileStatusReportProvider: MobileStatusReportProviding = MobileStatusReportProvider(),
+         mobileStatusReportProvider: MobileStatusReportProviding,
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,

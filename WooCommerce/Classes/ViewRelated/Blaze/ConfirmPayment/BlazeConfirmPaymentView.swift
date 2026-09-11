@@ -131,7 +131,8 @@ private extension BlazeConfirmPaymentView {
     var supportForm: some View {
         NavigationView {
             SupportForm(isPresented: $isShowingSupport,
-                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
+                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
+                                                        mobileStatusReportProvider: MobileStatusReportProvider()))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.done) {

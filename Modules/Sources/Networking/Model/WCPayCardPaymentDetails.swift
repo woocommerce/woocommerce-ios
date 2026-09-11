@@ -7,7 +7,7 @@ import Codegen
 /// The endpoint returns a thin wrapper around the Stripe object, so
 /// [these docs are relevant](https://stripe.com/docs/api/charges/object#charge_object-payment_method_details-card)
 ///
-public struct WCPayCardPaymentDetails: Codable, GeneratedCopiable, GeneratedFakeable, Equatable {
+public struct WCPayCardPaymentDetails: Codable, Sendable, GeneratedCopiable, GeneratedFakeable, Equatable {
     /// The brand of the card used to pay, e.g. `amex`, `mastercard`, `visa`
     public let brand: WCPayCardBrand
 

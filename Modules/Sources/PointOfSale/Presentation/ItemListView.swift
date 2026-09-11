@@ -186,6 +186,7 @@ struct ItemListView: View {
             guard oldStage == .finalizing, newStage == .building, posModel.cart.isEmpty else { return }
             navigationResetID += 1
         }
+        .posEdgeSwipeBackAction(isEnabled: isSearching, onBack: dismissSearch)
     }
 
     private var searchItemsController: PointOfSaleSearchingItemsControllerProtocol {
@@ -376,6 +377,7 @@ struct ItemListView: View {
             .barcodeScanning(enabled: isBarcodeScanningEnabled) { scannedCode in
                 posModel.barcodeScanned(scannedCode)
             }
+            .posEdgeSwipeBackAction()
         default:
             EmptyView()
         }
@@ -395,6 +397,7 @@ struct ItemListView: View {
         // (matches how `ChildItemList` handles the variations push).
         .toolbar(.hidden, for: .navigationBar)
         .navigationBarBackButtonHidden(true)
+        .posEdgeSwipeBackAction(onBack: { isAddingCustomAmount = false })
     }
 }
 
@@ -424,9 +427,7 @@ private extension ItemListView {
                             searchable: POSProductSearchable(itemListType: selectedItemListType,
                                                              itemsController: searchItemsController,
                                                              searchHistoryProvider: posModel.searchHistoryService),
-                            onBack: {
-                                setSearch(false)
-                            }
+                            onBack: dismissSearch
                         )
                         .transition(.opacity.combined(with: .move(edge: .trailing)))
                     } else {
@@ -597,6 +598,11 @@ private extension ItemListView {
         case .coupons:
             selectedItemListType = .coupons(search: isSearching)
         }
+    }
+
+    private func dismissSearch() {
+        searchTerm = ""
+        setSearch(false)
     }
 }
 

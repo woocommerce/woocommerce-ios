@@ -1,7 +1,6 @@
 import Foundation
 import Observation
 import enum Yosemite.POSOrderListServiceError
-import enum Yosemite.RefundAPIError
 import protocol Yosemite.POSOrderListServiceProtocol
 import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
@@ -81,13 +80,10 @@ private enum POSOrderRefundDetailsState {
     /// Refund details fetch state per order. `.loaded` caches the fetched refunds so list refreshes,
     /// which rebuild orders from summary data, don't lose them or re-show the loading skeleton.
     private var refundDetailsByOrderID: [Int64: POSOrderRefundDetailsState] = [:]
-    private(set) var refundReviewPreparationState: POSRefundReviewPreparationState = .idle
-    private var refundReviewPreparationTask: Task<POSRefundReviewPreparationResult, Never>?
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
     private let refundController: POSRefundController
-    private var isProcessingRefund = false
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
              return existing
@@ -108,6 +104,11 @@ private enum POSOrderRefundDetailsState {
         self.refundsService = refundsService
         self.refundSubmissionProcessor = refundSubmissionProcessor
         self.refundController = refundController
+    }
+
+    @MainActor
+    var refundReviewPreparationState: POSRefundReviewPreparationState {
+        refundController.reviewPreparationState
     }
 
     @MainActor
@@ -302,7 +303,6 @@ private enum POSOrderRefundDetailsState {
             refundDetailsByOrderID[order.id] = .loaded(order.refunds)
         }
         refundController.reset()
-        resetRefundReviewPreparation()
     }
 
     @MainActor
@@ -363,9 +363,7 @@ private enum POSOrderRefundDetailsState {
     @MainActor
     func startRefundFlow() async -> StartRefundFlowResult {
         guard let order = selectedOrder else { return .failed }
-        let result = await refundController.startRefundFlow(for: order)
-        resetRefundReviewPreparation()
-        return result
+        return await refundController.startRefundFlow(for: order)
     }
 
     @MainActor
@@ -375,129 +373,37 @@ private enum POSOrderRefundDetailsState {
 
     @MainActor
     func refreshRefundableItems() async -> StartRefundFlowResult {
-        let result = await refundController.refreshRefundableItems()
-        resetRefundReviewPreparation()
-        return result
+        return await refundController.refreshRefundableItems()
     }
 
     @MainActor
     func toggleRefundItemSelection(at index: Int) {
         refundController.toggleItemSelection(at: index)
-        resetRefundReviewPreparation()
     }
 
     @MainActor
     func clearRefundSelection() {
         refundController.clearSelection()
-        resetRefundReviewPreparation()
     }
 
     @MainActor
     func toggleAllRefundItemsSelection() {
         refundController.toggleAllItemsSelection()
-        resetRefundReviewPreparation()
     }
 
     // MARK: - Refund Review Data Preparation
 
     @MainActor
     func prepareRefundReview() async -> POSRefundReviewPreparationResult {
-        refundReviewPreparationTask?.cancel()
-
-        guard let order = refundController.order,
-              let preparation = refundController.preparation else {
-            refundReviewPreparationState = .idle
-            return .preparationError
-        }
-
-        let selectedItems = refundController.selectableItems.filter { $0.isSelected }
-        guard !selectedItems.isEmpty else {
-            refundReviewPreparationState = .idle
-            return .preparationError
-        }
-
-        let selectionSnapshot = refundController.selectableItems
-        refundReviewPreparationState = .loading
-        let preparationTask = Task { @MainActor [weak self] () -> POSRefundReviewPreparationResult in
-            guard let self else { return .superseded }
-            let state: POSRefundReviewPreparationState
-            let result: POSRefundReviewPreparationResult
-            do {
-                let reviewData = try await refundSubmissionProcessor.prepareReviewData(
-                    for: order,
-                    preparation: preparation,
-                    selectedItems: selectedItems,
-                    reason: nil
-                )
-                state = .idle
-                result = .ready(reviewData)
-            } catch is CancellationError {
-                return .superseded
-            } catch POSRefundSubmissionError.refundPreviewFailed {
-                state = .previewError()
-                result = .previewError
-            } catch RefundAPIError.orderNotRefundable {
-                state = .idle
-                result = .nothingToRefund
-            } catch let rejection as RefundAPIError {
-                state = .previewError(message: rejection.localizedDescription, recovery: rejection.recovery)
-                result = .previewError
-            } catch {
-                state = .idle
-                result = .preparationError
-            }
-            // Applied once for every outcome: a result computed against a selection the cashier has
-            // since changed must not be published, and a new catch must not be able to skip the check.
-            guard !Task.isCancelled, refundController.selectableItems == selectionSnapshot else { return .superseded }
-            refundReviewPreparationState = state
-            return result
-        }
-        refundReviewPreparationTask = preparationTask
-        return await preparationTask.value
-    }
-
-    @MainActor
-    func resetRefundReviewPreparation() {
-        refundReviewPreparationTask?.cancel()
-        refundReviewPreparationTask = nil
-        refundReviewPreparationState = .idle
+        await refundController.prepareReview()
     }
 
     // MARK: - Refund Processing
 
     @MainActor
     func processRefund(reason: String?) async throws {
-        guard !isProcessingRefund else {
-            throw POSRefundProcessingError.refundAlreadyInProgress
-        }
-
-        isProcessingRefund = true
-        defer {
-            isProcessingRefund = false
-        }
-
-        guard let order = refundController.order else {
-            throw POSRefundProcessingError.missingSelectedOrder
-        }
-
-        guard let preparation = refundController.preparation else {
-            throw POSRefundProcessingError.missingRefundPreparation
-        }
-
-        let selectedItems = refundSelectableItems.filter { $0.isSelected }
-        guard !selectedItems.isEmpty else {
-            throw POSRefundProcessingError.emptySelection
-        }
-
-        try await refundSubmissionProcessor.submitRefund(
-            for: order,
-            preparation: preparation,
-            selectedItems: selectedItems,
-            reason: reason
-        )
-
-        clearRefundSelection()
-        try? await updateOrder(orderID: order.id)
+        let result = try await refundController.processRefund(reason: reason)
+        try? await updateOrder(orderID: result.refundedOrderID)
         await loadOrderRefunds()
     }
 

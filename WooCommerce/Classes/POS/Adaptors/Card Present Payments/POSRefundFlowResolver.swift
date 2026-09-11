@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import Experiments
 import class WooFoundation.VersionHelpers
 
 /// The two POS refund calculation flows.
@@ -16,7 +15,6 @@ enum POSRefundFlow: Equatable {
 /// Decides which refund calculation flow a site is eligible for.
 ///
 /// `serverComputed` requires all of:
-/// - the `posServerCalculatedRefunds` feature flag,
 /// - the site not being cached as unavailable (a preview already returned `rest_no_route`),
 /// - a cached WooCommerce version that is known and at least
 ///   ``Constants/minimumWooVersionForServerRefunds``; an unknown version fails closed to
@@ -33,26 +31,20 @@ enum POSRefundFlow: Equatable {
 @MainActor
 struct POSRefundFlowResolver {
     private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
     private let availabilityCache: ServerRefundAvailabilityCache
     private let minimumWooVersion: String
 
     // Every dependency is explicit (no defaults) so a missing one is a compile error
     // rather than a silently picked service, per review.
     init(stores: StoresManager,
-         featureFlagService: FeatureFlagService,
          availabilityCache: ServerRefundAvailabilityCache,
          minimumWooVersion: String) {
         self.stores = stores
-        self.featureFlagService = featureFlagService
         self.availabilityCache = availabilityCache
         self.minimumWooVersion = minimumWooVersion
     }
 
     func resolveFlow(siteID: Int64) -> POSRefundFlow {
-        guard featureFlagService.isFeatureFlagEnabled(.posServerCalculatedRefunds) else {
-            return .localComputed
-        }
         guard availabilityCache.isAvailable(siteID: siteID) != false else {
             return .localComputed
         }

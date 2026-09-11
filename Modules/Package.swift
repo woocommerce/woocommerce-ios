@@ -324,7 +324,7 @@ let package = Package(
         ),
         .target(
             name: "StoreDesignSystem",
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "NetworkingTestsResponsesFixtures",
@@ -437,7 +437,7 @@ let package = Package(
         .testTarget(
             name: "StoreDesignSystemTests",
             dependencies: ["StoreDesignSystem"],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .binaryTarget(
             name: "EventHorizonSDK",

@@ -21,8 +21,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             // It is not possible to get the TTPoI entitlement for an enterprise certificate,
             // so we should not enable this for alpha builds.
             return buildConfig == .localDeveloper || buildConfig == .appStore
-        case .productBundlesInOrderForm:
-            return true
         case .customLoginUIForAccountCreation:
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .pointOfSale:
@@ -61,8 +59,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return true
         case .starReceiptPrinterSupport:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .posServerCalculatedRefunds:
-            return true
         default:
             return true
         }

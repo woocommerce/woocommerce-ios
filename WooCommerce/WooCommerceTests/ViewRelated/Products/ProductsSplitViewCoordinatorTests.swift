@@ -231,7 +231,7 @@ private final class CollapsedSplitViewController: UISplitViewController {
     override var isCollapsed: Bool { true }
 }
 
-@objc private final class MockInteractiveTransitionCoordinator: NSObject, UIViewControllerTransitionCoordinator {
+private final class MockInteractiveTransitionCoordinator: NSObject, UIViewControllerTransitionCoordinator {
     private var interactionChangeHandler: ((UIViewControllerTransitionCoordinatorContext) -> Void)?
     private var completionHandler: ((UIViewControllerTransitionCoordinatorContext) -> Void)?
 

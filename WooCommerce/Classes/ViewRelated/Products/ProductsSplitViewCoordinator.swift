@@ -482,7 +482,7 @@ private extension ProductsSplitViewCoordinator {
         // IMPORTANT: This intentionally leaves navigation-bar-sized space above Product Search briefly after a back swipe.
         // Do not remove that gap by hiding the bar or forcing Search to lay out earlier in the transition. In a collapsed
         // split view, the product detail navigation item can still belong to the secondary navigation bar at that point.
-        // Forcing the primary bar to lay it out risks the NSInternalInconsistencyException in Sentry issue 1523523535.
+        // Doing either too early risks the NSInternalInconsistencyException in Sentry issues 7669931391 and 1523523535.
         if isShowingProductSearch,
            let transitionCoordinator = navigationController.transitionCoordinator,
            transitionCoordinator.isInteractive {

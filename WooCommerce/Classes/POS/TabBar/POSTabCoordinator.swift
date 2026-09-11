@@ -1,7 +1,7 @@
 import Foundation
 import UIKit
 import SwiftUI
-import Yosemite
+@preconcurrency import Yosemite
 import Combine
 import class WooFoundation.CurrencySettings
 import WooFoundationCore
@@ -32,6 +32,7 @@ final class POSTabViewController: UIViewController {
 
 /// Coordinator for the Point of Sale tab.
 ///
+@MainActor
 final class POSTabCoordinator {
     private let siteID: Int64
     private let tabContainerController: TabContainerController
@@ -41,13 +42,13 @@ final class POSTabCoordinator {
     private let storageManager: StorageManagerType
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
-    private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
+    nonisolated(unsafe) private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
     private let httpsConfigurationNoticeProvider: () -> POSHTTPSConfigurationNotice?
 
     private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
 
     /// Local catalog eligibility service - created asynchronously during init
-    private(set) var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
+    private let localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
 
     /// Creates item fetch strategy factory with current local catalog eligibility
     private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleItemFetchStrategyFactory {

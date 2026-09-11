@@ -36,7 +36,6 @@ enum POSRefundReviewPreparationResult: Equatable {
 }
 
 enum RefundActionAvailability {
-    case unknown
     case available
     case unavailable
 }
@@ -89,17 +88,12 @@ protocol POSRefundControllerProtocol {
     func processRefund(reason: String?) async throws -> Int64
 }
 
-/// Owns the refund flow for one order: which units the cashier picked, the review preparation, and
-/// the submission. It holds the order the flow was started for, so a list refresh or a new
-/// selection cannot move the flow to a different order mid-way.
 @Observable final class POSRefundController: POSRefundControllerProtocol {
     private(set) var selectableItems: [POSRefundSelectableItem] = []
     private(set) var hasModifiedSelection = false
     private(set) var reviewPreparationState: POSRefundReviewPreparationState = .idle
 
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
-    /// The order the current flow refunds, and what the store said is refundable on it. Both are
-    /// set by `startRefundFlow(for:)` and dropped by `reset()`.
     private var order: POSOrder?
     private var preparation: POSRefundPreparation?
     private var reviewPreparationTask: Task<POSRefundReviewPreparationResult, Never>?
@@ -159,10 +153,6 @@ protocol POSRefundControllerProtocol {
         !selectableItems.isEmpty
     }
 
-    /// Reloads the refundable items after the store rejected a preview or a create because the
-    /// order changed since the flow was opened, for example when another register refunded part of
-    /// it. The reloaded list starts with nothing selected: the cashier has to pick again, so they
-    /// cannot confirm a refund for items they never saw.
     @MainActor
     func refreshRefundableItems() async -> StartRefundFlowResult {
         guard let order else { return .failed }
@@ -198,8 +188,6 @@ protocol POSRefundControllerProtocol {
         resetReviewPreparation()
     }
 
-    /// Drops the cashier's picks but keeps the order and its preparation, so the flow can be
-    /// reopened on the same order without preparing it again.
     @MainActor
     func clearSelection() {
         selectableItems = []
@@ -207,8 +195,6 @@ protocol POSRefundControllerProtocol {
         resetReviewPreparation()
     }
 
-    /// Drops everything held for the refund flow, including the order it was started for. Called
-    /// when the selected order changes.
     @MainActor
     func reset() {
         order = nil
@@ -282,8 +268,6 @@ protocol POSRefundControllerProtocol {
 
     // MARK: - Refund Processing
 
-    /// Submits the refund and returns the id of the order it was submitted for, so the caller can
-    /// refresh that order and its refunds.
     @MainActor
     func processRefund(reason: String?) async throws -> Int64 {
         guard !isProcessingRefund else {

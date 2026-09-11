@@ -546,9 +546,6 @@ private extension POSOrderDetailsView {
 
             case .unavailable:
                 return .init(primary: email, secondary: [])
-
-            case .unknown:
-                return .init(primary: nil, secondary: [email])
             }
         default:
             return .init(primary: nil, secondary: [])

@@ -2,10 +2,6 @@ import Foundation
 import Observation
 import struct Yosemite.POSOrder
 
-/// Coordinates the two controllers behind the orders screen: the order list and the refund flow.
-/// Everything that spans both — starting a refund for the selected order, resetting the flow when
-/// the selection changes, refreshing the order after a refund — belongs here, so neither controller
-/// has to know about the other.
 @Observable final class POSOrderListModel {
     let ordersController: POSSearchingOrderListControllerProtocol
     let refundController: POSRefundControllerProtocol

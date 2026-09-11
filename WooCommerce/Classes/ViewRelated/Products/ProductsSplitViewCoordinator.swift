@@ -558,6 +558,11 @@ private extension ProductsSplitViewCoordinator {
         }
         contentTypes = []
         navigationStack.removeAllContent()
+        if #available(iOS 26.0, *), primaryNavigationController.topViewController === productsViewController {
+            // A compact pop can leave the root item in an invisible inline-title presentation.
+            // Reset the bar only after the outgoing item has been removed from both navigation stacks.
+            primaryNavigationController.resetVisibleNavigationBarPresentation()
+        }
     }
 
     func isShowingProductListInPrimaryNavigationController() -> Bool {

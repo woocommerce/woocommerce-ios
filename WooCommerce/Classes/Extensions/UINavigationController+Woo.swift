@@ -18,6 +18,14 @@ extension UINavigationController {
         setNavigationBarHidden(hidden, animated: animated)
     }
 
+    /// Rebuilds the visible bar presentation after UIKit retains state from an outgoing navigation item.
+    /// Call this only after the outgoing item has been removed from the navigation stack.
+    @available(iOS 26.0, *)
+    func resetVisibleNavigationBarPresentation() {
+        setNavigationBarHidden(true, animated: false)
+        setNavigationBarHidden(false, animated: false)
+    }
+
     /// Whenever there's a single viewController onscreen, this method will set the "Top" UIScrollView's
     /// Content Offset to zero.
     ///

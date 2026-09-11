@@ -216,7 +216,7 @@ struct POSRefundModalContentView: View {
                 onClose: {},
                 onConfirm: {},
                 onBack: { returnToRefundConfirmation(reviewData: reviewData) },
-                shouldUseCardPresentCompletionStyle: orderListModel.ordersController.currentRefundRequiresCardPresentRefund,
+                shouldUseCardPresentCompletionStyle: orderListModel.requiresCardPresentRefund,
                 onPaymentCaptureErrorCancel: { cancelPayment in
                     handleAmbiguousCardPresentRefund(cancelPayment: cancelPayment)
                 }
@@ -251,7 +251,7 @@ struct POSRefundModalContentView: View {
 
     /// `true` when the card-present refund itself failed, rather than the store rejecting the request.
     private var isCardPresentRefundError: Bool {
-        orderListModel.ordersController.currentRefundRequiresCardPresentRefund
+        orderListModel.requiresCardPresentRefund
     }
 
     /// A recognised rejection is a deterministic validation error, so resubmitting the same request
@@ -407,7 +407,7 @@ struct POSRefundModalContentView: View {
     private func processRefund(reviewData: POSRefundReviewData) async {
         analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingStarted(flow: reviewData.calculationFlow))
         do {
-            try await orderListModel.ordersController.processRefund(reason: reviewData.refundReason)
+            try await orderListModel.processRefund(reason: reviewData.refundReason)
             analytics.track(event: WooAnalyticsEvent.PointOfSale.refundProcessingSuccess(flow: reviewData.calculationFlow))
             refundSubmissionModel.reset()
             modalState = .success(reviewData)
@@ -508,7 +508,7 @@ struct POSRefundModalContentView: View {
     }
 
     private func shouldRequireReaderConnection() -> Bool {
-        guard orderListModel.ordersController.currentRefundRequiresCardPresentRefund else {
+        guard orderListModel.requiresCardPresentRefund else {
             return false
         }
 

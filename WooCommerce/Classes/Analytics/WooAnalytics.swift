@@ -13,7 +13,7 @@ import WooFoundationCore
 
 final class WooAnalytics: Analytics {
 
-    typealias ABTestStarter = @MainActor (ExperimentContext) async -> Void
+    typealias ABTestStarter = (ExperimentContext) -> Void
 
     // MARK: - Properties
 
@@ -32,6 +32,7 @@ final class WooAnalytics: Analytics {
     private let userDefaults: UserDefaults
 
     private let startABTest: ABTestStarter
+    private let notificationCenter: NotificationCenter
 
     /// Check user opt-in for analytics
     ///
@@ -53,10 +54,16 @@ final class WooAnalytics: Analytics {
     ///
     init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker,
          userDefaults: UserDefaults = .standard,
-         startABTest: @escaping ABTestStarter = { await ABTest.start(for: $0) }) {
+         notificationCenter: NotificationCenter = .default,
+         startABTest: @escaping ABTestStarter = { context in
+             Task { @MainActor in
+                 await ABTest.start(for: context)
+             }
+         }) {
         self.analyticsProvider = analyticsProvider
         self.userDefaults = userDefaults
         self.startABTest = startABTest
+        self.notificationCenter = notificationCenter
         WPAnalytics.register(analyticsProvider)
     }
 }
@@ -69,7 +76,8 @@ extension WooAnalytics {
     /// Initialize the analytics engine
     ///
     func initialize() {
-        refreshUserData()
+        // Restore the saved Tracks identity on launch, including site-credential sessions.
+        refreshUserData(includingSiteCredentialSessions: true)
         startObservingNotifications()
     }
 
@@ -77,26 +85,25 @@ extension WooAnalytics {
     /// It's good to call this function after a user logs in or out of the app.
     ///
     func refreshUserData() {
+        refreshUserData(includingSiteCredentialSessions: false)
+    }
+
+    private func refreshUserData(includingSiteCredentialSessions: Bool) {
         guard userHasOptedIn == true else {
             return
         }
 
-        // Skips refreshing user data when user is authenticated without WPCom
-        // since they are still identified with anonymous ID.
         let context: ExperimentContext = ServiceLocator.stores.isAuthenticated ?
             .loggedIn: .loggedOut
 
-        let refreshABTests: () -> Void = { [startABTest] in
-            Task { @MainActor in
-                await startABTest(context)
+        if includingSiteCredentialSessions || ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
+            // Refreshes A/B experiments after Tracks finishes switching users because that switch resets `ExPlat.shared`.
+            analyticsProvider.refreshUserData { [startABTest] in
+                startABTest(context)
             }
-        }
-
-        // Refreshes A/B experiments after Tracks finishes switching users because that switch resets `ExPlat.shared`.
-        if ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
-            analyticsProvider.refreshUserData(completion: refreshABTests)
         } else {
-            refreshABTests()
+            // Keep the login-time skip from #9485, which addressed missing application-password approval events.
+            startABTest(context)
         }
     }
 
@@ -128,6 +135,7 @@ extension WooAnalytics {
 extension WooAnalytics {
 
     func setUserHasOptedOut(_ optedOut: Bool) {
+        let wasOptedIn = userHasOptedIn
         userHasOptedIn = !optedOut
 
         if optedOut {
@@ -135,7 +143,9 @@ extension WooAnalytics {
             analyticsProvider.clearUsers()
             DDLogInfo("🔴 Tracking opt-out complete.")
         } else {
-            refreshUserData()
+            // An opted-out launch skips identity restoration. Restore it when tracking becomes enabled.
+            // Repeated enabled settings must keep the regular site-credential login skip.
+            refreshUserData(includingSiteCredentialSessions: !wasOptedIn)
             DDLogInfo("🔵 Tracking started.")
         }
     }
@@ -296,15 +306,15 @@ private extension WooAnalytics {
             return
         }
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(trackApplicationOpened),
-                                               name: UIApplication.didBecomeActiveNotification,
-                                               object: nil)
+        notificationCenter.addObserver(self,
+                                       selector: #selector(trackApplicationOpened),
+                                       name: UIApplication.didBecomeActiveNotification,
+                                       object: nil)
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(trackApplicationClosed),
-                                               name: UIApplication.didEnterBackgroundNotification,
-                                               object: nil)
+        notificationCenter.addObserver(self,
+                                       selector: #selector(trackApplicationClosed),
+                                       name: UIApplication.didEnterBackgroundNotification,
+                                       object: nil)
     }
 
     @objc func trackApplicationOpened() {

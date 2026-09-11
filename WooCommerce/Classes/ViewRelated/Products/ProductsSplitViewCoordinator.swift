@@ -35,6 +35,9 @@ final class ProductsSplitViewCoordinator: NSObject {
         gestureRecognizer.delaysTouchesEnded = true
         return gestureRecognizer
     }()
+    private lazy var navigationStack = SplitViewNavigationStack(splitViewController: splitViewController,
+                                                                primaryNavigationController: primaryNavigationController,
+                                                                secondaryNavigationController: secondaryNavigationController)
     private lazy var productsViewController = ProductsViewController(siteID: siteID,
                                                                      selectedProduct: selectedProduct,
                                                                      navigateToContent: showFromProductList)
@@ -58,14 +61,14 @@ final class ProductsSplitViewCoordinator: NSObject {
     /// Called when the split view is collapsing from the expanded state to determine which column to show in the collapsed mode.
     /// - Returns: The column to show when the split view is collapsed.
     func columnToShowWhenSplitViewIsCollapsing() -> UISplitViewController.Column {
-        guard let lastContentType = contentTypes.last else {
-            return .primary
-        }
-        return lastContentType == .empty ? .primary : .secondary
+        navigationStack.prepareForCollapsing(showsSecondaryContent: contentTypes.last != .empty)
+        return .primary
     }
 
     /// Called when the split view transitions from collapsed to expanded mode.
     func didExpand() {
+        navigationStack.didExpand()
+
         // Auto-selects the first product if there is no content to be shown.
         if shouldAutoSelectProductInExpandedLayout() {
             showEmptyViewOrFirstProduct()
@@ -85,19 +88,24 @@ final class ProductsSplitViewCoordinator: NSObject {
         didExpand()
     }
 
+    /// Snapshots the secondary content so a layout transition that drops pushed screens can be undone.
+    ///
+    /// This tracks content rather than the secondary navigation controller's own stack, because a collapse
+    /// legitimately empties that stack by transferring the content into the primary one. Comparing raw stacks
+    /// would read the transfer as a drop and reinstate the content in both columns.
     func prepareForLayoutTransition() -> UUID {
-        secondaryStackRestorationPolicy.prepareForTransition(currentStack: secondaryNavigationController.viewControllers)
+        secondaryStackRestorationPolicy.prepareForTransition(currentStack: navigationStack.contentViewControllers)
     }
 
     func completeLayoutTransition(_ transitionID: UUID) {
         guard let stackToRestore = secondaryStackRestorationPolicy.stackToRestore(
             for: transitionID,
-            currentStack: secondaryNavigationController.viewControllers
+            currentStack: navigationStack.contentViewControllers
         ) else {
             return
         }
 
-        secondaryNavigationController.setViewControllers(stackToRestore, animated: false)
+        navigationStack.setContentViewControllers(stackToRestore, showsInCollapsedLayout: contentTypes.last != .empty)
         refreshSwipeBackVetoRelationships()
     }
 
@@ -132,7 +140,7 @@ final class ProductsSplitViewCoordinator: NSObject {
         if let contentType = contentTypes.last,
             case let .productForm(product) = contentType,
             product?.productID == productID {
-            return secondaryNavigationController.topViewController as? ProductFormViewController<ProductFormViewModel>
+            return navigationStack.topContentViewController as? ProductFormViewController<ProductFormViewModel>
         }
         return nil
     }
@@ -249,7 +257,7 @@ private extension ProductsSplitViewCoordinator {
     func whenSecondaryViewProductHasNoUnsavedChanges(then closure: @escaping () -> Void) {
         // Closes the product form in the secondary view only if there are no unsaved changes or if the user chooses to discard the changes.
         // This works based on the assumption that there is only one product form in the secondary navigation stack.
-        if let lastProductFormViewController = secondaryNavigationController.viewControllers
+        if let lastProductFormViewController = navigationStack.contentViewControllers
             .compactMap({ $0 as? ProductFormViewController<ProductFormViewModel> }).last {
             return lastProductFormViewController.close(completion: {
                 closure()
@@ -266,18 +274,21 @@ private extension ProductsSplitViewCoordinator {
 
     func showSecondaryView(contentType: SecondaryViewContentType, viewController: UIViewController, replacesNavigationStack: Bool) {
         if replacesNavigationStack {
-            secondaryNavigationController.setViewControllers([viewController], animated: false)
+            navigationStack.setContentViewControllers([viewController], showsInCollapsedLayout: contentType != .empty)
             contentTypes = [contentType]
         } else {
-            secondaryNavigationController.pushViewController(viewController, animated: false)
+            navigationStack.pushContentViewController(viewController, showsInCollapsedLayout: contentType != .empty)
             contentTypes.append(contentType)
         }
 
-        splitViewController.show(.secondary)
+        if !splitViewController.isCollapsed {
+            splitViewController.show(.secondary)
+        }
     }
 
     func onSecondaryProductFormDeletion() {
-        splitViewController.show(.primary)
+        navigationStack.removeAllContent()
+        contentTypes = []
         if !splitViewController.isCollapsed {
             showEmptyViewOrFirstProduct()
         }
@@ -415,7 +426,15 @@ extension ProductsSplitViewCoordinator: UIGestureRecognizerDelegate {
             return false
         }
 
-        return secondaryNavigationController.shouldPopOnSwipeBack() == false
+        return contentRefusesSwipeBack()
+    }
+
+    /// Whether the top content screen refuses a swipe back, e.g. a product form holding unsaved changes.
+    ///
+    /// Asks the content view controller rather than the secondary navigation controller, because in a collapsed
+    /// layout the content lives in the primary stack and the secondary controller has no top view controller.
+    func contentRefusesSwipeBack() -> Bool {
+        navigationStack.topContentViewController?.shouldPopOnSwipeBack() == false
     }
 }
 
@@ -504,7 +523,7 @@ private extension ProductsSplitViewCoordinator {
         primaryNavigationController.navigationBar.isHidden = shouldHideNavigationBar
     }
 
-    /// In the collapsed mode, the secondary navigation controller is added to the primary navigation stack and the primary navigation stack is shown.
+    /// In the collapsed mode, secondary content is transferred into the primary navigation stack.
     /// When the user taps the back button to leave the last secondary view controller (e.g. product form), we want to reset `contentTypes`
     /// while there is no proper callback that I can find other than observing the primary navigation controller's `didShow`.
     /// As a workaround, it checks the following to empty out the secondary view content types:
@@ -533,7 +552,7 @@ private extension ProductsSplitViewCoordinator {
             didDismissProductForm(product: dismissedProduct)
         }
         contentTypes = []
-        secondaryNavigationController.viewControllers = []
+        navigationStack.removeAllContent()
     }
 
     func isShowingProductListInPrimaryNavigationController() -> Bool {

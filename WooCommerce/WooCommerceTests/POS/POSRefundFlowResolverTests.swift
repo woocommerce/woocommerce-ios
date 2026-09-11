@@ -1,24 +1,15 @@
 import Testing
 import Foundation
 import Yosemite
-import Experiments
 @testable import WooCommerce
 
-/// Covers the eligibility table for the POS refund flow decision: feature flag, cached
-/// server-availability verdicts, and the WooCommerce version gate (11.1.0).
+/// Covers the eligibility table for the POS refund flow decision: cached server-availability
+/// verdicts and the WooCommerce version gate (11.1.0).
 @MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct POSRefundFlowResolverTests {
 
     private let siteID: Int64 = 123
-
-    @Test func resolveFlow_when_flag_disabled_then_local() {
-        // Given
-        let sut = makeSUT(flagEnabled: false)
-
-        // Then
-        #expect(sut.resolveFlow(siteID: siteID) == .localComputed)
-    }
 
     @Test func resolveFlow_when_site_cached_unavailable_then_local_even_on_a_supported_version() {
         // Given a probe already returned `rest_no_route` for the site
@@ -104,8 +95,7 @@ private extension POSRefundFlowResolverTests {
         static let belowMinimum = "11.0.9"
     }
 
-    func makeSUT(flagEnabled: Bool = true,
-                 cachedWooVersion: String? = Versions.minimum,
+    func makeSUT(cachedWooVersion: String? = Versions.minimum,
                  cache: ServerRefundAvailabilityCache? = nil) -> POSRefundFlowResolver {
         // Resolved in the (main-actor) test body rather than as a default argument: the cache's
         // initializer is main-actor-isolated, and default arguments are evaluated nonisolated.
@@ -113,10 +103,7 @@ private extension POSRefundFlowResolverTests {
         let session = SessionManager.testingInstance
         session.cachedWooCommerceVersion = cachedWooVersion
         let stores = MockStoresManager(sessionManager: session)
-        let flags = MockFeatureFlagService()
-        flags.isFeatureFlagEnabledReturnValue = [.posServerCalculatedRefunds: flagEnabled]
         return POSRefundFlowResolver(stores: stores,
-                                     featureFlagService: flags,
                                      availabilityCache: cache,
                                      minimumWooVersion: Versions.minimum)
     }

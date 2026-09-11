@@ -6,7 +6,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
     func test_verifyAgeRange_when_lowerBound_at_least_minimum_returns_eligible_with_minor_false() {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
-            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 20, significantAppChangeApprovalRequired: true)),
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 20, upperBound: nil, significantAppChangeApprovalRequired: true)),
             requirementsResult: .success(.required())
         )
         let sut = AgeRangeVerificationService(provider: provider)
@@ -29,7 +29,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
     func test_verifyAgeRange_when_lowerBound_is_minor_returns_eligible_with_minor_true() {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
-            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, significantAppChangeApprovalRequired: false)),
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, upperBound: 17, significantAppChangeApprovalRequired: false)),
             requirementsResult: .success(.required())
         )
         let sut = AgeRangeVerificationService(provider: provider)
@@ -49,10 +49,34 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         waitForExpectations(timeout: 1)
     }
 
+    func test_verifyAgeRange_when_upperBound_is_missing_returns_eligible_with_minor_false() {
+        // A response without an upper bound is the adult band (or a degenerate single-band
+        // response); it carries no affirmative evidence of being a minor and must not gate.
+        let window = makeWindow()
+        let provider = MockAgeRangeProvider(
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, upperBound: nil, significantAppChangeApprovalRequired: true)),
+            requirementsResult: .success(.required(significantAppChangeApprovalRequired: true))
+        )
+        let sut = AgeRangeVerificationService(provider: provider)
+        let exp = expectation(description: "completion")
+
+        sut.verifyAgeRange(in: window.rootViewController!, minimumAge: 13) { result in
+            switch result {
+            case let .eligible(_, isMinor):
+                XCTAssertFalse(isMinor)
+            default:
+                XCTFail("Expected .eligible, got \(result)")
+            }
+            exp.fulfill()
+        }
+
+        waitForExpectations(timeout: 1)
+    }
+
     func test_verifyAgeRange_when_lowerBound_below_minimum_returns_ineligible() {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
-            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 12, significantAppChangeApprovalRequired: false)),
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 12, upperBound: 12, significantAppChangeApprovalRequired: false)),
             requirementsResult: .success(.required())
         )
         let sut = AgeRangeVerificationService(provider: provider)
@@ -74,7 +98,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
     func test_verifyAgeRange_when_lowerBound_is_nil_returns_ineligible() {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
-            snapshotResult: .success(AgeRangeSnapshot(lowerBound: nil, significantAppChangeApprovalRequired: false)),
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: nil, upperBound: 12, significantAppChangeApprovalRequired: false)),
             requirementsResult: .success(.required())
         )
         let sut = AgeRangeVerificationService(provider: provider)
@@ -162,7 +186,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
     func test_verifyAgeRange_when_compliance_is_not_required_returns_ineligibleForAgeFeatures() {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
-            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 18, significantAppChangeApprovalRequired: false)),
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 18, upperBound: nil, significantAppChangeApprovalRequired: false)),
             requirementsResult: .success(.notRequired())
         )
         let sut = AgeRangeVerificationService(provider: provider)
@@ -185,7 +209,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
     func test_verifyAgeRange_when_requirements_include_parental_consent_uses_requirements_value() {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
-            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, significantAppChangeApprovalRequired: false)),
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, upperBound: 17, significantAppChangeApprovalRequired: false)),
             requirementsResult: .success(.required(significantAppChangeApprovalRequired: true))
         )
         let sut = AgeRangeVerificationService(provider: provider)
@@ -208,7 +232,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
     func test_verifyAgeRange_when_requirements_fetch_fails_falls_back_to_snapshot_approval_value() {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
-            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, significantAppChangeApprovalRequired: true)),
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, upperBound: 17, significantAppChangeApprovalRequired: true)),
             requirementsResult: .failure(AgeRangeProviderError.unknown)
         )
         let sut = AgeRangeVerificationService(provider: provider)
@@ -232,7 +256,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         // Given
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
-            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, significantAppChangeApprovalRequired: true)),
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, upperBound: 17, significantAppChangeApprovalRequired: true)),
             requirementsResult: .failure(AgeRangeProviderError.other(TestError.requirementsFetch))
         )
         let crashLogging = MockCrashLogger()
@@ -258,7 +282,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         // Given
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
-            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, significantAppChangeApprovalRequired: true)),
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 13, upperBound: 17, significantAppChangeApprovalRequired: true)),
             requirementsResult: .failure(AgeRangeProviderError.notAvailable)
         )
         let crashLogging = MockCrashLogger()
@@ -278,7 +302,7 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
     func test_verifyAgeRange_when_called_concurrently_coalesces_provider_requests() {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
-            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 20, significantAppChangeApprovalRequired: false)),
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 20, upperBound: nil, significantAppChangeApprovalRequired: false)),
             requirementsResult: .success(.required()),
             requirementsDelayNanoseconds: 100_000_000
         )
@@ -333,6 +357,7 @@ private final class MockAgeRangeProvider: AgeRangeProviding, @unchecked Sendable
     @MainActor
     func requestAgeRange(
         minimumAge: Int,
+        adultAge: Int,
         in viewController: UIViewController
     ) async throws -> AgeRangeSnapshot {
         stateQueue.sync { _requestCallCount += 1 }

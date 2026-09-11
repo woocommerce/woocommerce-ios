@@ -29,6 +29,8 @@ class WooAnalyticsTests: XCTestCase {
     ///
     private var userDefaultsSuiteName: String!
 
+    private var notificationCenter: NotificationCenter!
+
     private let sampleSiteID: Int64 = 12345
 
     private let sampleSiteURL: String = "https://example.com"
@@ -39,20 +41,21 @@ class WooAnalyticsTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false,
-                                                                   defaultSite: Site.fake().copy(
-                                                                    siteID: sampleSiteID,
-                                                                    url: sampleSiteURL)))
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultSite = Site.fake().copy(siteID: sampleSiteID, url: sampleSiteURL)
+        stores = MockStoresManager(sessionManager: sessionManager)
         ServiceLocator.setStores(stores)
         userDefaultsSuiteName = UUID().uuidString
         userDefaults = UserDefaults(suiteName: userDefaultsSuiteName)!
-        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider(), userDefaults: userDefaults)
+        notificationCenter = NotificationCenter()
+        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider(), userDefaults: userDefaults, notificationCenter: notificationCenter)
     }
 
     override func tearDown() {
         userDefaults.removePersistentDomain(forName: userDefaultsSuiteName)
         userDefaults = nil
         userDefaultsSuiteName = nil
+        notificationCenter = nil
         super.tearDown()
         ServiceLocator.setStores(originalStores)
     }
@@ -175,57 +178,261 @@ class WooAnalyticsTests: XCTestCase {
     }
 
     @MainActor
-    func test_refreshUserData_starts_AB_tests_after_provider_refresh_completes() async {
-        // Given
-        guard let testingProvider else {
-            return XCTFail("Testing provider not available")
-        }
-        testingProvider.defersRefreshUserDataCompletion = true
-        let abTestStarted = expectation(description: "A/B test started")
-        var startedContexts: [ExperimentContext] = []
-        analytics = WooAnalytics(analyticsProvider: testingProvider,
-                                 userDefaults: userDefaults,
-                                 startABTest: { context in
-            startedContexts.append(context)
-            abTestStarted.fulfill()
-        })
-
-        // When
-        analytics.refreshUserData()
-        await Task.yield()
-
-        // Then
-        XCTAssertTrue(startedContexts.isEmpty)
-
-        testingProvider.completeRefreshUserData()
-        await fulfillment(of: [abTestStarted], timeout: 1.0)
-        XCTAssertEqual(startedContexts, [.loggedOut])
+    func test_refreshUserData_when_logged_out_then_starts_AB_tests_after_provider_refresh() {
+        assertABTestsStartAfterProviderRefresh(credentials: nil, expectedContext: .loggedOut)
     }
 
     @MainActor
-    func test_refreshUserData_when_authenticated_without_WPCom_then_starts_AB_tests_without_refreshing_provider() async {
-        // Given
-        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        ServiceLocator.setStores(stores)
+    func test_refreshUserData_when_authenticated_with_WPCom_then_starts_AB_tests_after_provider_refresh() {
+        assertABTestsStartAfterProviderRefresh(credentials: SessionSettings.wpcomCredentials, expectedContext: .loggedIn)
+    }
 
+    @MainActor
+    func test_initialize_when_authenticated_with_site_credentials_then_starts_AB_tests_after_provider_refresh() {
+        assertABTestsStartAfterProviderRefresh(credentials: SessionSettings.wporgCredentials,
+                                              expectedContext: .loggedIn,
+                                              operation: { $0.initialize() })
+    }
+
+    @MainActor
+    func test_initialize_when_authenticated_with_application_password_then_starts_AB_tests_after_provider_refresh() {
+        assertABTestsStartAfterProviderRefresh(credentials: SessionSettings.applicationPasswordCredentials,
+                                              expectedContext: .loggedIn,
+                                              operation: { $0.initialize() })
+    }
+
+    @MainActor
+    func test_initialize_when_logged_out_then_starts_AB_tests_after_provider_refresh() {
+        assertABTestsStartAfterProviderRefresh(credentials: nil, expectedContext: .loggedOut, operation: { $0.initialize() })
+    }
+
+    @MainActor
+    func test_initialize_when_authenticated_with_WPCom_then_starts_AB_tests_after_provider_refresh() {
+        assertABTestsStartAfterProviderRefresh(credentials: SessionSettings.wpcomCredentials,
+                                              expectedContext: .loggedIn,
+                                              operation: { $0.initialize() })
+    }
+
+    @MainActor
+    func test_setUserHasOptedOut_when_enabling_after_site_credential_launch_then_refreshes_provider_before_AB_tests() {
+        assertABTestsStartAfterProviderRefresh(credentials: SessionSettings.wporgCredentials,
+                                              expectedContext: .loggedIn,
+                                              operation: {
+            $0.userHasOptedIn = false
+            $0.initialize()
+            $0.setUserHasOptedOut(false)
+        })
+    }
+
+    @MainActor
+    func test_setUserHasOptedOut_when_enabling_after_application_password_launch_then_refreshes_provider_before_AB_tests() {
+        assertABTestsStartAfterProviderRefresh(credentials: SessionSettings.applicationPasswordCredentials,
+                                              expectedContext: .loggedIn,
+                                              operation: {
+            $0.userHasOptedIn = false
+            $0.initialize()
+            $0.setUserHasOptedOut(false)
+        })
+    }
+
+    @MainActor
+    func test_setUserHasOptedOut_when_already_enabled_after_site_credential_login_then_does_not_refresh_provider_again() {
+        assertLoginDoesNotRefreshProvider(credentials: SessionSettings.wporgCredentials, operation: { $0.setUserHasOptedOut(false) })
+    }
+
+    @MainActor
+    func test_setUserHasOptedOut_when_already_enabled_after_application_password_login_then_does_not_refresh_provider_again() {
+        assertLoginDoesNotRefreshProvider(credentials: SessionSettings.applicationPasswordCredentials, operation: { $0.setUserHasOptedOut(false) })
+    }
+
+    @MainActor
+    func test_refreshUserData_when_signing_in_with_site_credentials_then_does_not_refresh_provider_again() {
+        assertLoginDoesNotRefreshProvider(credentials: SessionSettings.wporgCredentials)
+    }
+
+    @MainActor
+    func test_refreshUserData_when_signing_in_with_application_password_then_does_not_refresh_provider_again() {
+        assertLoginDoesNotRefreshProvider(credentials: SessionSettings.applicationPasswordCredentials)
+    }
+
+    @MainActor
+    private func assertLoginDoesNotRefreshProvider(credentials: Credentials,
+                                                  operation: (WooAnalytics) -> Void = { $0.refreshUserData() },
+                                                  file: StaticString = #filePath,
+                                                  line: UInt = #line) {
+        // Given: startup has restored the anonymous identity before the merchant signs in.
+        let sessionManager = MockSessionManager()
+        stores = MockStoresManager(sessionManager: sessionManager)
+        ServiceLocator.setStores(stores)
         let provider = MockAnalyticsProvider()
         provider.defersRefreshUserDataCompletion = true
-        let abTestStarted = expectation(description: "A/B test started")
         var startedContexts: [ExperimentContext] = []
         analytics = WooAnalytics(analyticsProvider: provider,
                                  userDefaults: userDefaults,
+                                 notificationCenter: notificationCenter,
                                  startABTest: { context in
             startedContexts.append(context)
-            abTestStarted.fulfill()
         })
+        analytics.initialize()
+        provider.completeRefreshUserData()
+        XCTAssertEqual(provider.refreshUserDataCallCount, 1, file: file, line: line)
+        XCTAssertEqual(startedContexts, [.loggedOut], file: file, line: line)
+
+        // When: the login event is recorded immediately before the authentication state changes.
+        analytics.track(.applicationPasswordAuthorizationApproved)
+        sessionManager.defaultCredentials = credentials
+        stores = MockStoresManager(sessionManager: sessionManager)
+        ServiceLocator.setStores(stores)
+        operation(analytics)
+
+        // Then: preserve the login-time skip from #9485 while starting logged-in experiments.
+        XCTAssertEqual(provider.refreshUserDataCallCount, 1, file: file, line: line)
+        XCTAssertEqual(startedContexts, [.loggedOut, .loggedIn], file: file, line: line)
+    }
+
+    @MainActor
+    func test_refreshUserData_when_opted_out_then_does_not_refresh_provider_or_start_AB_tests() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        var startedContexts: [ExperimentContext] = []
+        analytics = WooAnalytics(analyticsProvider: provider,
+                                 userDefaults: userDefaults,
+                                 notificationCenter: notificationCenter,
+                                 startABTest: { context in
+            startedContexts.append(context)
+        })
+        analytics.userHasOptedIn = false
 
         // When
         analytics.refreshUserData()
 
         // Then
-        await fulfillment(of: [abTestStarted], timeout: 1.0)
-        XCTAssertEqual(startedContexts, [.loggedIn])
         XCTAssertEqual(provider.refreshUserDataCallCount, 0)
+        XCTAssertTrue(startedContexts.isEmpty)
+    }
+
+    @MainActor
+    func test_initialize_when_opted_out_then_does_not_refresh_provider_or_start_AB_tests() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        var startedContexts: [ExperimentContext] = []
+        analytics = WooAnalytics(analyticsProvider: provider,
+                                 userDefaults: userDefaults,
+                                 notificationCenter: notificationCenter,
+                                 startABTest: { context in
+            startedContexts.append(context)
+        })
+        analytics.userHasOptedIn = false
+
+        // When
+        analytics.initialize()
+
+        // Then
+        XCTAssertEqual(provider.refreshUserDataCallCount, 0)
+        XCTAssertTrue(startedContexts.isEmpty)
+    }
+
+    @MainActor
+    private func assertABTestsStartAfterProviderRefresh(credentials: Credentials?,
+                                                      expectedContext: ExperimentContext,
+                                                      operation: (WooAnalytics) -> Void = { $0.refreshUserData() },
+                                                      file: StaticString = #filePath,
+                                                      line: UInt = #line) {
+        // Given
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultCredentials = credentials
+        stores = MockStoresManager(sessionManager: sessionManager)
+        ServiceLocator.setStores(stores)
+        let provider = MockAnalyticsProvider()
+        provider.defersRefreshUserDataCompletion = true
+        var startedContexts: [ExperimentContext] = []
+        analytics = WooAnalytics(analyticsProvider: provider,
+                                 userDefaults: userDefaults,
+                                 notificationCenter: notificationCenter,
+                                 startABTest: { context in
+            startedContexts.append(context)
+        })
+
+        // When
+        operation(analytics)
+
+        // Then: experiments must wait until the test explicitly completes the refresh.
+        XCTAssertEqual(provider.refreshUserDataCallCount, 1, file: file, line: line)
+        XCTAssertTrue(startedContexts.isEmpty, file: file, line: line)
+
+        // When
+        provider.completeRefreshUserData()
+
+        // Then
+        XCTAssertEqual(startedContexts, [expectedContext], file: file, line: line)
+    }
+
+    @MainActor
+    func test_lifecycle_notifications_when_enabling_after_opted_out_launch_then_tracks_open_and_close_events() {
+        // Given
+        analytics = makeAnalyticsForLifecycleTests()
+        analytics.userHasOptedIn = false
+        analytics.initialize()
+
+        // When
+        analytics.setUserHasOptedOut(false)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents, [WooAnalyticsStat.applicationOpened.rawValue, WooAnalyticsStat.applicationClosed.rawValue])
+    }
+
+    @MainActor
+    func test_lifecycle_notifications_when_initializing_and_enabling_repeatedly_then_tracks_each_event_once() {
+        // Given
+        analytics = makeAnalyticsForLifecycleTests()
+        analytics.initialize()
+
+        // When
+        analytics.initialize()
+        analytics.setUserHasOptedOut(false)
+        analytics.setUserHasOptedOut(false)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents, [WooAnalyticsStat.applicationOpened.rawValue, WooAnalyticsStat.applicationClosed.rawValue])
+    }
+
+    @MainActor
+    func test_lifecycle_notifications_when_disabling_and_reenabling_then_tracks_only_while_enabled_without_duplicates() {
+        // Given
+        analytics = makeAnalyticsForLifecycleTests()
+        analytics.initialize()
+
+        // When
+        analytics.setUserHasOptedOut(true)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents, [])
+
+        // When
+        analytics.setUserHasOptedOut(false)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents, [WooAnalyticsStat.applicationOpened.rawValue, WooAnalyticsStat.applicationClosed.rawValue])
+    }
+
+    @MainActor
+    private func makeAnalyticsForLifecycleTests() -> WooAnalytics {
+        let provider = MockAnalyticsProvider()
+        provider.defersRefreshUserDataCompletion = true
+        return WooAnalytics(analyticsProvider: provider,
+                     userDefaults: userDefaults,
+                     notificationCenter: notificationCenter,
+                     getWidgetConfigurations: { completion in
+            completion(.failure(NSError(domain: "WidgetConfigurationError", code: 0)))
+        }, startABTest: { _ in })
     }
 
     func test_events_when_logged_in_include_site_properties() {
@@ -242,7 +449,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultStoreUUID: "sample_store_uuid",
                                                                    cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
@@ -280,7 +487,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
@@ -318,7 +525,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
@@ -339,7 +546,7 @@ class WooAnalyticsTests: XCTestCase {
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
@@ -367,7 +574,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultStoreUUID: "sample_store_uuid",
                                                                    cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track(WooAnalyticsStat.cardReaderLocationSuccess.rawValue, properties: Constants.testProperty1, error: nil)
@@ -393,7 +600,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     url: sampleSiteURL),
                                                                    defaultStoreUUID: "sample_store_uuid"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track(WooAnalyticsStat.wooPushTokenRegisterSuccess.rawValue, properties: Constants.testProperty1, error: nil)
@@ -417,7 +624,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     url: sampleSiteURL),
                                                                    defaultStoreUUID: "sample_store_uuid"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track("an_event_name_that_is_not_a_stat", properties: Constants.testProperty1, error: nil)
@@ -427,6 +634,67 @@ class WooAnalyticsTests: XCTestCase {
             return XCTFail("No properties found")
         }
         XCTAssertNil(receivedProperties["store_id"])
+    }
+
+    func test_track_by_raw_stat_name_when_session_values_are_nil_then_keeps_caller_supplied_store_and_version_properties() {
+        // Given
+        guard let testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        // Session values are `nil` until the system information sync completes after login / cold start.
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                   defaultSite: Site.fake().copy(
+                                                                    siteID: sampleSiteID,
+                                                                    url: sampleSiteURL),
+                                                                   defaultStoreUUID: nil,
+                                                                   cachedWooCommerceVersion: nil))
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
+        let callerProperties: [AnyHashable: Any] = [
+            "cached_woo_core_version": "9.8.0",
+            "store_id": "caller_store_uuid"
+        ]
+
+        // When
+        analytics.track(WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed.rawValue, properties: callerProperties, error: nil)
+
+        // Then
+        guard let receivedProperties = testingProvider.receivedProperties.first else {
+            return XCTFail("No properties found")
+        }
+        XCTAssertEqual(receivedProperties["cached_woo_core_version"] as? String, "9.8.0")
+        XCTAssertEqual(receivedProperties["store_id"] as? String, "caller_store_uuid")
+        XCTAssertEqual(receivedProperties["blog_id"] as? Int64, sampleSiteID)
+    }
+
+    func test_track_by_raw_stat_name_when_session_and_caller_both_have_values_then_session_values_win() {
+        // Given
+        guard let testingProvider else {
+            return XCTFail("Testing provider not available")
+        }
+        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true,
+                                                                   defaultSite: Site.fake().copy(
+                                                                    siteID: sampleSiteID,
+                                                                    url: sampleSiteURL),
+                                                                   defaultStoreUUID: "session_store_uuid",
+                                                                   cachedWooCommerceVersion: "10.0"))
+        ServiceLocator.setStores(stores)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
+        let callerProperties: [AnyHashable: Any] = [
+            "cached_woo_core_version": "9.8.0",
+            "store_id": "caller_store_uuid"
+        ]
+
+        // When
+        analytics.track(WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed.rawValue, properties: callerProperties, error: nil)
+
+        // Then
+        guard let receivedProperties = testingProvider.receivedProperties.first else {
+            return XCTFail("No properties found")
+        }
+        XCTAssertEqual(receivedProperties["cached_woo_core_version"] as? String, "10.0")
+        XCTAssertEqual(receivedProperties["store_id"] as? String, "session_store_uuid")
+        XCTAssertEqual(receivedProperties["blog_id"] as? Int64, sampleSiteID)
     }
 }
 

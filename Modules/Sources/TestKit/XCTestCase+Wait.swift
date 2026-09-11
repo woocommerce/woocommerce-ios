@@ -114,7 +114,7 @@ extension XCTestCase {
     public func waitForAsync<ValueType>(file: StaticString = #file,
                                         line: UInt = #line,
                                         timeout: TimeInterval = 5.0,
-                                        awaiting: @escaping (_ promise: (@escaping (ValueType) -> Void)) async throws -> Void)
+                                        awaiting: @escaping @MainActor (_ promise: (@escaping (ValueType) -> Void)) async throws -> Void)
     async rethrows -> ValueType {
         let exp = expectation(description: "Expect promise to be called.")
 

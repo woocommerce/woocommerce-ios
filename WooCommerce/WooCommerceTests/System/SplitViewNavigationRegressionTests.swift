@@ -28,7 +28,7 @@ struct SplitViewNavigationRegressionTests {
         try #require(rig.primary.topViewController === product.form)
         try #require(product.form.view.window != nil)
         if #available(iOS 26.0, *) {
-            try #require(product.form.navigationItem.title == "",
+            try #require(product.form.navigationItem.title?.isEmpty == true,
                          "The compact form must be visually untitled without passing nil into the shared navigation bar")
         }
         product.viewModel.updateName("Unsaved product")

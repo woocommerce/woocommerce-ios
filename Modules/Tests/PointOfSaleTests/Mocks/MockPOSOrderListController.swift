@@ -4,7 +4,7 @@ import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
 import struct Yosemite.POSOrderCustomAmount
 
-final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol {
+final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol, POSOrderSelectionHandling {
     var ordersViewState: POSOrderListState = .empty
     var selectedOrder: POSOrder?
     var isLoadingOrderRefunds = false
@@ -20,14 +20,10 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     }
     var displayedLineItems: [POSOrderItem] = []
     var displayedCustomAmounts: [POSOrderCustomAmount] = []
-    var refundActionAvailability: RefundActionAvailability = .available
-    var refundSelectableItems: [POSRefundSelectableItem] = []
-    var hasLoadedRefundableItems: Bool { !refundSelectableItems.isEmpty }
-    var currentRefundRequiresCardPresentRefund = false
-    var hasModifiedRefundSelection = false
     var updateOrderCalled = false
     var spyUpdateOrderID: Int64?
     var shouldThrowError = false
+    private(set) var loadOrderRefundsCalled = false
 
     enum TestError: Error {
         case updateOrderFailed
@@ -41,8 +37,6 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order
-        refundSelectableItems = []
-        hasModifiedRefundSelection = false
     }
 
     func updateOrder(orderID: Int64) async throws {
@@ -54,117 +48,11 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
         }
     }
 
-    func preloadRefundDetails() async {}
-
     func searchOrders(searchTerm: String) async {}
 
     func clearSearchOrders() {}
 
-    var stubStartRefundFlowResult: StartRefundFlowResult = .hasItemsToRefund
-
-    func startRefundFlow() async -> StartRefundFlowResult {
-        guard let order = selectedOrder else { return .failed }
-        switch stubStartRefundFlowResult {
-        case .hasItemsToRefund:
-            refundSelectableItems = order.lineItems.map {
-                POSRefundSelectableItem(from: $0, isSelected: true, index: 0)
-            }
-            hasModifiedRefundSelection = false
-        case .nothingToRefund:
-            refundSelectableItems = []
-            hasModifiedRefundSelection = false
-        case .ineligible, .failed:
-            break
-        }
-        return stubStartRefundFlowResult
-    }
-
-    private(set) var refreshRefundableItemsCallCount = 0
-    var stubRefreshedRefundSelectableItems: [POSRefundSelectableItem]?
-
-    func refreshRefundableItems() async -> StartRefundFlowResult {
-        refreshRefundableItemsCallCount += 1
-        switch stubStartRefundFlowResult {
-        case .hasItemsToRefund:
-            if let stubRefreshedRefundSelectableItems {
-                refundSelectableItems = stubRefreshedRefundSelectableItems
-            }
-            for index in refundSelectableItems.indices {
-                refundSelectableItems[index].isSelected = false
-            }
-            hasModifiedRefundSelection = false
-        case .nothingToRefund:
-            refundSelectableItems = []
-            hasModifiedRefundSelection = false
-        case .ineligible, .failed:
-            break
-        }
-        return stubStartRefundFlowResult
-    }
-
-    func toggleRefundItemSelection(at index: Int) {
-        guard refundSelectableItems.indices.contains(index) else { return }
-        refundSelectableItems[index].isSelected.toggle()
-        hasModifiedRefundSelection = true
-    }
-
-    func clearRefundSelection() {
-        refundSelectableItems = []
-        hasModifiedRefundSelection = false
-    }
-
-    func toggleAllRefundItemsSelection() {
-        guard !refundSelectableItems.isEmpty else { return }
-        let allSelected = refundSelectableItems.allSatisfy { $0.isSelected }
-        let newSelectionState = !allSelected
-        for index in refundSelectableItems.indices {
-            refundSelectableItems[index].isSelected = newSelectionState
-        }
-        hasModifiedRefundSelection = true
-    }
-
-    // MARK: - Refund Review Data
-
-    var stubPOSRefundReviewData: POSRefundReviewData?
-    private(set) var refundReviewPreparationState: POSRefundReviewPreparationState = .idle
-
-    func prepareRefundReview() async -> POSRefundReviewPreparationResult {
-        if let stubData = stubPOSRefundReviewData {
-            return .ready(stubData)
-        }
-
-        let selectedItems = refundSelectableItems.filter { $0.isSelected }
-        guard !selectedItems.isEmpty else {
-            return .preparationError
-        }
-
-        return .ready(POSRefundReviewData(
-            itemsCount: selectedItems.count,
-            formattedItemsSubtotal: "$0.00",
-            formattedTax: "$0.00",
-            formattedRefundTotal: "$0.00",
-            paymentMethodDescription: "Via payment card",
-            customerEmail: nil,
-            refundReason: nil,
-            isFullRefund: selectedItems.count == refundSelectableItems.count,
-            calculationFlow: .local
-        ))
-    }
-
-    func loadOrderRefunds() async {}
-
-    // MARK: - Refund Processing
-
-    var processRefundCalled = false
-    var spyProcessRefundReason: String?
-    var shouldThrowProcessRefundError = false
-
-    func processRefund(reason: String?) async throws {
-        processRefundCalled = true
-        spyProcessRefundReason = reason
-
-        if shouldThrowProcessRefundError {
-            throw TestError.updateOrderFailed
-        }
+    func loadOrderRefunds() async {
+        loadOrderRefundsCalled = true
     }
 }

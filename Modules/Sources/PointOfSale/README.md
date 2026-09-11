@@ -51,6 +51,10 @@ Each `Controller` handles a piece of global shared state, and provides the inter
 
 Often, the best way to do that is to expose a single enum covering all valid possibilities for that state, rather than exposing model objects. We've not achieved that in all the controllers yet, and some global state hasn't been encapsulated in a controller successfully yet, for example card payments.
 
+#### Coordinating models
+
+When one screen spans several controllers, a coordinating model owns them and is the single surface its views talk to. `POSOrderListModel` is the example: it holds the order list controller and the refund controller, forwards their state and actions to the orders screens, and owns everything that spans both, such as resetting the refund flow when the selected order changes and refreshing an order after a refund. Neither controller knows about the other. `POSOrderListModel` deliberately holds the order list controller twice — once as the view-facing `POSSearchingOrderListControllerProtocol` and once privately as `POSOrderSelectionHandling` — so views can read list state but cannot change the selection behind the model's back.
+
 #### Services
 
 Ideally each `Service` should be stateless, and owned by a controller which handles the state in between service calls, where needed.

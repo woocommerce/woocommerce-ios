@@ -50,13 +50,6 @@ protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol
     func clearSearchOrders()
 }
 
-enum POSOrderListSelectedOrderRefundsState {
-    case idle
-    case loading
-    case loaded(POSRefundPreparation)
-    case failed(Error)
-}
-
 enum POSOrderDetailsItemsState: Equatable {
     case loading(rowCount: Int)
     case loaded(lineItems: [POSOrderItem], customAmounts: [POSOrderCustomAmount], refundedItems: [POSRefundItem])
@@ -88,14 +81,12 @@ private enum POSOrderRefundDetailsState {
     /// Refund details fetch state per order. `.loaded` caches the fetched refunds so list refreshes,
     /// which rebuild orders from summary data, don't lose them or re-show the loading skeleton.
     private var refundDetailsByOrderID: [Int64: POSOrderRefundDetailsState] = [:]
-    private(set) var selectedOrderRefundsState: POSOrderListSelectedOrderRefundsState = .idle
-    private(set) var refundSelectableItems: [POSRefundSelectableItem] = []
-    private(set) var hasModifiedRefundSelection = false
     private(set) var refundReviewPreparationState: POSRefundReviewPreparationState = .idle
     private var refundReviewPreparationTask: Task<POSRefundReviewPreparationResult, Never>?
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
+    private let refundController: POSRefundController
     private var isProcessingRefund = false
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
@@ -109,12 +100,14 @@ private enum POSOrderRefundDetailsState {
     init(orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
          refundsService: POSRefundsServiceProtocol,
          refundSubmissionProcessor: POSRefundSubmissionProcessing,
+         refundController: POSRefundController,
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
         self.refundsService = refundsService
         self.refundSubmissionProcessor = refundSubmissionProcessor
+        self.refundController = refundController
     }
 
     @MainActor
@@ -144,19 +137,12 @@ private enum POSOrderRefundDetailsState {
 
     @MainActor
     var refundActionAvailability: RefundActionAvailability {
-        guard let order = selectedOrder,
-              order.status == .completed else {
-            return .unavailable
-        }
-        return .available
+        selectedOrder?.refundActionAvailability ?? .unavailable
     }
 
     @MainActor
     var currentRefundRequiresCardPresentRefund: Bool {
-        guard case .loaded(let preparation) = selectedOrderRefundsState else {
-            return false
-        }
-        return preparation.requiresCardPresentRefund
+        refundController.requiresCardPresentRefund
     }
 
     @MainActor
@@ -315,9 +301,7 @@ private enum POSOrderRefundDetailsState {
             // which rebuild orders from summary data, don't re-show the skeleton and re-fetch.
             refundDetailsByOrderID[order.id] = .loaded(order.refunds)
         }
-        selectedOrderRefundsState = .idle
-        refundSelectableItems = []
-        hasModifiedRefundSelection = false
+        refundController.reset()
         resetRefundReviewPreparation()
     }
 
@@ -362,80 +346,55 @@ private enum POSOrderRefundDetailsState {
 
     // MARK: - Refund Item Selection
 
+    var refundSelectableItems: [POSRefundSelectableItem] {
+        refundController.selectableItems
+    }
+
+    var hasModifiedRefundSelection: Bool {
+        refundController.hasModifiedSelection
+    }
+
     @MainActor
     func preloadRefundDetails() async {
-        guard refundActionAvailability == .available,
-              let order = selectedOrder else {
-            return
-        }
-        await refundSubmissionProcessor.preloadRefund(for: order)
+        guard let order = selectedOrder else { return }
+        await refundController.preloadRefund(for: order)
     }
 
     @MainActor
     func startRefundFlow() async -> StartRefundFlowResult {
         guard let order = selectedOrder else { return .failed }
-
-        let preparation: POSRefundPreparation
-        do {
-            preparation = try await refundSubmissionProcessor.prepareRefund(for: order)
-            selectedOrderRefundsState = .loaded(preparation)
-        } catch let eligibilityFailure as OrderRefundEligibilityFailure {
-            selectedOrderRefundsState = .failed(eligibilityFailure)
-            return .ineligible(eligibilityFailure)
-        } catch {
-            selectedOrderRefundsState = .failed(error)
-            return .failed
-        }
-
-        refundSelectableItems = preparation.selectableItems
-        hasModifiedRefundSelection = false
+        let result = await refundController.startRefundFlow(for: order)
         resetRefundReviewPreparation()
-
-        return refundSelectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
+        return result
     }
 
     @MainActor
     var hasLoadedRefundableItems: Bool {
-        !refundSelectableItems.isEmpty
+        refundController.hasLoadedSelectableItems
     }
 
     @MainActor
     func refreshRefundableItems() async -> StartRefundFlowResult {
-        let result = await startRefundFlow()
-        guard case .hasItemsToRefund = result else {
-            return result
-        }
-
-        for index in refundSelectableItems.indices {
-            refundSelectableItems[index].isSelected = false
-        }
+        let result = await refundController.refreshRefundableItems()
+        resetRefundReviewPreparation()
         return result
     }
 
     @MainActor
     func toggleRefundItemSelection(at index: Int) {
-        guard refundSelectableItems.indices.contains(index) else { return }
-        refundSelectableItems[index].isSelected.toggle()
-        hasModifiedRefundSelection = true
+        refundController.toggleItemSelection(at: index)
         resetRefundReviewPreparation()
     }
 
     @MainActor
     func clearRefundSelection() {
-        refundSelectableItems = []
-        hasModifiedRefundSelection = false
+        refundController.clearSelection()
         resetRefundReviewPreparation()
     }
 
     @MainActor
     func toggleAllRefundItemsSelection() {
-        guard !refundSelectableItems.isEmpty else { return }
-        let allSelected = !refundSelectableItems.isEmpty && refundSelectableItems.allSatisfy { $0.isSelected }
-        let newSelectionState = !allSelected
-        for index in refundSelectableItems.indices {
-            refundSelectableItems[index].isSelected = newSelectionState
-        }
-        hasModifiedRefundSelection = true
+        refundController.toggleAllItemsSelection()
         resetRefundReviewPreparation()
     }
 
@@ -445,19 +404,19 @@ private enum POSOrderRefundDetailsState {
     func prepareRefundReview() async -> POSRefundReviewPreparationResult {
         refundReviewPreparationTask?.cancel()
 
-        guard let order = selectedOrder,
-              case .loaded(let preparation) = selectedOrderRefundsState else {
+        guard let order = refundController.order,
+              let preparation = refundController.preparation else {
             refundReviewPreparationState = .idle
             return .preparationError
         }
 
-        let selectedItems = refundSelectableItems.filter { $0.isSelected }
+        let selectedItems = refundController.selectableItems.filter { $0.isSelected }
         guard !selectedItems.isEmpty else {
             refundReviewPreparationState = .idle
             return .preparationError
         }
 
-        let selectionSnapshot = refundSelectableItems
+        let selectionSnapshot = refundController.selectableItems
         refundReviewPreparationState = .loading
         let preparationTask = Task { @MainActor [weak self] () -> POSRefundReviewPreparationResult in
             guard let self else { return .superseded }
@@ -489,7 +448,7 @@ private enum POSOrderRefundDetailsState {
             }
             // Applied once for every outcome: a result computed against a selection the cashier has
             // since changed must not be published, and a new catch must not be able to skip the check.
-            guard !Task.isCancelled, refundSelectableItems == selectionSnapshot else { return .superseded }
+            guard !Task.isCancelled, refundController.selectableItems == selectionSnapshot else { return .superseded }
             refundReviewPreparationState = state
             return result
         }
@@ -517,11 +476,11 @@ private enum POSOrderRefundDetailsState {
             isProcessingRefund = false
         }
 
-        guard let order = selectedOrder else {
+        guard let order = refundController.order else {
             throw POSRefundProcessingError.missingSelectedOrder
         }
 
-        guard case .loaded(let preparation) = selectedOrderRefundsState else {
+        guard let preparation = refundController.preparation else {
             throw POSRefundProcessingError.missingRefundPreparation
         }
 

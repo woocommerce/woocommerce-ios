@@ -17,6 +17,8 @@ public enum JetpackConnectionAction: Action {
                                    completion: (Result<URL, Error>) -> Void)
     /// Fetches connection state with the given site's Jetpack.
     case fetchJetpackConnectionData(siteID: Int64, completion: (Result<JetpackConnectionData, Error>) -> Void)
+    /// Fetches the given site's Jetpack connection status, including Offline Mode.
+    case fetchJetpackConnectionStatus(siteID: Int64, completion: (Result<JetpackConnectionStatus, Error>) -> Void)
     /// Establishes site-level connection and returns WordPress.com blog ID.
     case registerSite(completion: (Result<Int64, Error>) -> Void)
     /// Provisions connection and returns provision response with scope and secret.

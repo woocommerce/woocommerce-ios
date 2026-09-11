@@ -65,6 +65,7 @@ public typealias GoogleAdsCampaignStatsItem = Networking.GoogleAdsCampaignStatsI
 public typealias InboxNote = Networking.InboxNote
 public typealias InboxAction = Networking.InboxAction
 public typealias JetpackConnectionData = Networking.JetpackConnectionData
+public typealias JetpackConnectionStatus = Networking.JetpackConnectionStatus
 public typealias JetpackConnectionProvisionResponse = Networking.JetpackConnectionProvisionResponse
 public typealias JustInTimeMessageHook = Networking.JustInTimeMessagesRemote.MessagePath.Hook
 public typealias Media = Networking.Media

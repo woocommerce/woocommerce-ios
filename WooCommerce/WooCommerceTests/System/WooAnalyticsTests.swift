@@ -367,6 +367,74 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertEqual(startedContexts, [expectedContext], file: file, line: line)
     }
 
+    @MainActor
+    func test_lifecycle_notifications_when_enabling_after_opted_out_launch_then_tracks_open_and_close_events() {
+        // Given
+        analytics = makeAnalyticsForLifecycleTests()
+        analytics.userHasOptedIn = false
+        analytics.initialize()
+
+        // When
+        analytics.setUserHasOptedOut(false)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents, [WooAnalyticsStat.applicationOpened.rawValue, WooAnalyticsStat.applicationClosed.rawValue])
+    }
+
+    @MainActor
+    func test_lifecycle_notifications_when_initializing_and_enabling_repeatedly_then_tracks_each_event_once() {
+        // Given
+        analytics = makeAnalyticsForLifecycleTests()
+        analytics.initialize()
+
+        // When
+        analytics.initialize()
+        analytics.setUserHasOptedOut(false)
+        analytics.setUserHasOptedOut(false)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents, [WooAnalyticsStat.applicationOpened.rawValue, WooAnalyticsStat.applicationClosed.rawValue])
+    }
+
+    @MainActor
+    func test_lifecycle_notifications_when_disabling_and_reenabling_then_tracks_only_while_enabled_without_duplicates() {
+        // Given
+        analytics = makeAnalyticsForLifecycleTests()
+        analytics.initialize()
+
+        // When
+        analytics.setUserHasOptedOut(true)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents, [])
+
+        // When
+        analytics.setUserHasOptedOut(false)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents, [WooAnalyticsStat.applicationOpened.rawValue, WooAnalyticsStat.applicationClosed.rawValue])
+    }
+
+    @MainActor
+    private func makeAnalyticsForLifecycleTests() -> WooAnalytics {
+        let provider = MockAnalyticsProvider()
+        provider.defersRefreshUserDataCompletion = true
+        return WooAnalytics(analyticsProvider: provider,
+                     userDefaults: userDefaults,
+                     notificationCenter: notificationCenter,
+                     getWidgetConfigurations: { completion in
+            completion(.failure(NSError(domain: "WidgetConfigurationError", code: 0)))
+        }, startABTest: { _ in })
+    }
+
     func test_events_when_logged_in_include_site_properties() {
         // Given
         guard let testingProvider else {

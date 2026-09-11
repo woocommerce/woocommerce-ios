@@ -1367,13 +1367,7 @@ private extension ProductFormViewController {
 
     func updateNavigationBarTitle() {
         guard traitCollection.horizontalSizeClass != .compact else {
-            if #available(iOS 26.0, *) {
-                // iOS 26 can retain the inline-title state after this item is popped from a large-title stack.
-                // An empty title keeps the form visually untitled while giving UIKit a concrete transition value.
-                title = ""
-            } else {
-                title = nil
-            }
+            title = nil
             return
         }
         // Update navigation bar title with variation ID for variation page

@@ -151,7 +151,10 @@ private extension SplitViewNavigationStack {
 
     func moveContentToSecondary(_ viewControllers: [UIViewController]) {
         // Remove the view controllers from the primary bar before its items are adopted by the secondary bar.
-        primaryNavigationController.setViewControllers(primaryRootViewControllers, animated: false)
+        let rootViewControllers = primaryRootViewControllers
+        if !primaryNavigationController.viewControllers.elementsEqual(rootViewControllers, by: { $0 === $1 }) {
+            primaryNavigationController.setViewControllers(rootViewControllers, animated: false)
+        }
         secondaryNavigationController.setViewControllers(viewControllers, animated: false)
         contentIsInPrimaryNavigationController = false
         assertNavigationItemsHaveSingleOwners()

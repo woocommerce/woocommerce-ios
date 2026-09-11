@@ -243,6 +243,32 @@ struct ProductsSplitViewCoordinatorTests {
         #expect(stackToRestore == [productForm, inventorySettings])
     }
 
+    @Test
+    func test_removeAllContent_when_primary_already_contains_only_root_then_does_not_replace_root_stack() {
+        // Given: UIKit has completed the compact Back transition before the coordinator clears its content state.
+        let splitViewController = CollapsedSplitViewController(style: .doubleColumn)
+        let productList = UIViewController()
+        let productForm = UIViewController()
+        let primaryNavigationController = ViewControllersUpdateSpyNavigationController()
+        let secondaryNavigationController = UINavigationController(rootViewController: productForm)
+        primaryNavigationController.setViewControllers([productList], animated: false)
+        let navigationStack = SplitViewNavigationStack(splitViewController: splitViewController,
+                                                       primaryNavigationController: primaryNavigationController,
+                                                       secondaryNavigationController: secondaryNavigationController)
+        navigationStack.prepareForCollapsing(showsSecondaryContent: true)
+        navigationStack.didCollapse()
+        primaryNavigationController.setViewControllers([productList], animated: false)
+        primaryNavigationController.resetViewControllerUpdates()
+
+        // When
+        navigationStack.removeAllContent()
+
+        // Then: do not replace the identical root stack after UIKit has finished showing it.
+        #expect(primaryNavigationController.viewControllerUpdates.isEmpty)
+        #expect(primaryNavigationController.viewControllers == [productList])
+        #expect(secondaryNavigationController.viewControllers.isEmpty)
+    }
+
     // MARK: - Swipe back veto
 
     @Test
@@ -310,6 +336,19 @@ private extension ProductsSplitViewCoordinatorTests {
 
 private final class CollapsedSplitViewController: UISplitViewController {
     override var isCollapsed: Bool { true }
+}
+
+private final class ViewControllersUpdateSpyNavigationController: UINavigationController {
+    private(set) var viewControllerUpdates: [[UIViewController]] = []
+
+    override func setViewControllers(_ viewControllers: [UIViewController], animated: Bool) {
+        viewControllerUpdates.append(viewControllers)
+        super.setViewControllers(viewControllers, animated: animated)
+    }
+
+    func resetViewControllerUpdates() {
+        viewControllerUpdates = []
+    }
 }
 
 /// Stands in for a screen that blocks the swipe back, like a product form with unsaved changes.

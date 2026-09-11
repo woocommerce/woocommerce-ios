@@ -35,24 +35,6 @@ struct WooNavigationControllerTests {
         #expect(navigationController.visibilityUpdates.first?.animated == false)
     }
 
-    @Test func test_resetVisibleNavigationBarPresentation_then_forces_hidden_and_visible_updates() {
-        // Given
-        guard #available(iOS 26.0, *) else {
-            return
-        }
-        let navigationController = NavigationBarVisibilitySpyNavigationController()
-        navigationController.setNavigationBarHidden(false, animated: false)
-        navigationController.resetVisibilityUpdates()
-
-        // When
-        navigationController.resetVisibleNavigationBarPresentation()
-
-        // Then
-        #expect(navigationController.visibilityUpdates.map { $0.hidden } == [true, false])
-        #expect(navigationController.visibilityUpdates.allSatisfy { $0.animated == false })
-        #expect(navigationController.isNavigationBarHidden == false)
-    }
-
     @Test func test_did_show_view_controller_then_posts_navigation_notification() {
         // Given
         let connectivityObserver = MockConnectivityObserver()

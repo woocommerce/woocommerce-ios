@@ -87,7 +87,7 @@ struct CellComponentView: View {
         case .badge:
             StoreBadge("New", tone: .info)
         case .toggle:
-            Toggle("Enabled", isOn: $isToggleOn).labelsHidden()
+            Toggle("Notifications", isOn: $isToggleOn).labelsHidden()
         }
     }
 }

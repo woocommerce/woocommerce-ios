@@ -25,12 +25,3 @@ struct StoreCellAppearance: Equatable {
         }
     }
 }
-
-/// How a non-interactive ``StoreCell`` groups its children for VoiceOver.
-enum StoreCellAccessibility {
-    /// A cell whose trailing slot is empty reads as one element (title, description). A populated
-    /// trailing slot may hold its own control (e.g. a toggle), so the children stay reachable.
-    static func childBehavior(hasTrailingContent: Bool) -> AccessibilityChildBehavior {
-        hasTrailingContent ? .contain : .combine
-    }
-}

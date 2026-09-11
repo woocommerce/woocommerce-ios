@@ -45,7 +45,7 @@ public struct StoreCell<Leading: View, Trailing: View>: View {
             .buttonStyle(StoreCellButtonStyle())
         } else {
             content
-                .accessibilityElement(children: StoreCellAccessibility.childBehavior(hasTrailingContent: hasTrailingContent))
+                .accessibilityElement(children: .contain)
         }
     }
 
@@ -53,10 +53,8 @@ public struct StoreCell<Leading: View, Trailing: View>: View {
         StoreCellAppearance(isEnabled: isEnabled)
     }
 
-    private var hasTrailingContent: Bool {
-        Trailing.self != EmptyView.self
-    }
-
+    /// The leading visual sits `s5` from the text (the "cell content" spec); the trailing slot and the
+    /// disclosure indicator sit `s6` from the content (the row spec).
     private var content: some View {
         HStack(alignment: .center, spacing: StoreSpacing.s6) {
             HStack(alignment: .center, spacing: StoreSpacing.s5) {
@@ -67,20 +65,18 @@ public struct StoreCell<Leading: View, Trailing: View>: View {
             trailing
                 .foregroundStyle(appearance.slot)
             if showsDisclosureIndicator {
-                StoreIcon.AngleRight.regular.image(size: Constants.disclosureIconSize)
+                StoreIcon.AngleRight.regular.image(size: StoreCellConstants.disclosureIconSize)
                     .foregroundStyle(appearance.slot)
                     .flipsForRightToLeftLayoutDirection(true)
                     .accessibilityHidden(true)
             }
         }
         .padding(StorePadding.p7)
-        .frame(minHeight: StoreSize.minimumTapTarget)
         .background(appearance.background)
         .contentShape(Rectangle())
     }
 
-    /// The leading visual sits `s5` from the text (the "cell content" spec); the trailing slot and the
-    /// disclosure indicator sit `s6` from the content (the row spec).
+    /// Title and description read as one VoiceOver element, whatever the slots hold.
     private var text: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s1) {
             Text(title)
@@ -93,6 +89,7 @@ public struct StoreCell<Leading: View, Trailing: View>: View {
             }
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+        .accessibilityElement(children: .combine)
     }
 }
 
@@ -143,7 +140,7 @@ public extension StoreCell where Leading == EmptyView {
 }
 
 /// File-scoped rather than nested in ``StoreCell`` because a generic type can't hold static stored properties.
-private enum Constants {
+private enum StoreCellConstants {
     /// The chevron size from the design (18 pt).
     static let disclosureIconSize: StoreIconSize = .medium
 }

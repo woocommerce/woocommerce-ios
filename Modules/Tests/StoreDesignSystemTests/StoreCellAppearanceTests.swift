@@ -25,16 +25,4 @@ import Testing
         #expect(sut.description == .storeStateLayerOnSurfaceOpacity24)
         #expect(sut.slot == .storeStateLayerOnSurfaceOpacity24)
     }
-
-    @Test func test_childBehavior_when_trailing_slot_is_empty_then_combines_children() {
-        // Given a static cell without trailing content / When resolving its VoiceOver grouping
-        // Then the row reads as one element
-        #expect(StoreCellAccessibility.childBehavior(hasTrailingContent: false) == .combine)
-    }
-
-    @Test func test_childBehavior_when_trailing_slot_has_content_then_keeps_children_reachable() {
-        // Given a static cell with trailing content (which may hold a control) / When resolving its grouping
-        // Then the children stay individually reachable
-        #expect(StoreCellAccessibility.childBehavior(hasTrailingContent: true) == .contain)
-    }
 }

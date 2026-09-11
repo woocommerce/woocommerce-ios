@@ -59,19 +59,11 @@ public struct StoreCell<Leading: View, Trailing: View>: View {
 
     private var content: some View {
         HStack(alignment: .center, spacing: StoreSpacing.s6) {
-            leading
-                .foregroundStyle(appearance.slot)
-            VStack(alignment: .leading, spacing: StoreSpacing.s1) {
-                Text(title)
-                    .storeTextStyle(.bodyLarge.emphasized)
-                    .foregroundStyle(appearance.title)
-                if let description {
-                    Text(description)
-                        .storeTextStyle(.bodyMedium)
-                        .foregroundStyle(appearance.description)
-                }
+            HStack(alignment: .center, spacing: StoreSpacing.s5) {
+                leading
+                    .foregroundStyle(appearance.slot)
+                text
             }
-            .frame(maxWidth: .infinity, alignment: .leading)
             trailing
                 .foregroundStyle(appearance.slot)
             if showsDisclosureIndicator {
@@ -85,6 +77,22 @@ public struct StoreCell<Leading: View, Trailing: View>: View {
         .frame(minHeight: StoreSize.minimumTapTarget)
         .background(appearance.background)
         .contentShape(Rectangle())
+    }
+
+    /// The leading visual sits `s5` from the text (the "cell content" spec); the trailing slot and the
+    /// disclosure indicator sit `s6` from the content (the row spec).
+    private var text: some View {
+        VStack(alignment: .leading, spacing: StoreSpacing.s1) {
+            Text(title)
+                .storeTextStyle(.bodyLarge.emphasized)
+                .foregroundStyle(appearance.title)
+            if let description {
+                Text(description)
+                    .storeTextStyle(.bodyMedium)
+                    .foregroundStyle(appearance.description)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
 

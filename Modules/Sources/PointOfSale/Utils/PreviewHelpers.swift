@@ -265,6 +265,7 @@ struct POSPreviewHelpers {
     static func makePreviewOrdersModel(state: POSOrderListState) -> POSOrderListModel {
         return POSOrderListModel(
             ordersController: POSConfigurablePreviewOrderListController(state: state),
+            refundController: POSPreviewRefundController(),
             receiptSender: POSReceiptSenderPreview(),
             refundSubmissionModel: POSRefundSubmissionModel())
     }
@@ -512,12 +513,10 @@ struct POSPreviewHelpers {
 
 // MARK: - Preview Orders Controller
 final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
-    var refundSelectableItems: [POSRefundSelectableItem]
     let ordersViewState: POSOrderListState
 
     init(state: POSOrderListState) {
         self.ordersViewState = state
-        self.refundSelectableItems = []
     }
 
     var selectedOrder: POSOrder? {
@@ -534,28 +533,35 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     }
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
     var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
-    var refundActionAvailability: RefundActionAvailability { .available }
-    var hasLoadedRefundableItems: Bool { !refundSelectableItems.isEmpty }
-    var currentRefundRequiresCardPresentRefund: Bool { false }
-    var hasModifiedRefundSelection = false
 
     func loadOrders() async {}
     func loadNextOrders() async {}
     func refreshOrders() async {}
     func selectOrder(_ order: POSOrder?) {}
     func updateOrder(orderID: Int64) async throws {}
-    func preloadRefundDetails() async {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
-    func startRefundFlow() async -> StartRefundFlowResult { .hasItemsToRefund }
-    func refreshRefundableItems() async -> StartRefundFlowResult { .hasItemsToRefund }
-    func toggleRefundItemSelection(at index: Int) {}
-    func clearRefundSelection() {}
-    func toggleAllRefundItemsSelection() {}
-    var refundReviewPreparationState: POSRefundReviewPreparationState { .idle }
-    func prepareRefundReview() async -> POSRefundReviewPreparationResult { .preparationError }
-    func processRefund(reason: String?) async throws {}
     func loadOrderRefunds() async {}
+}
+
+// MARK: - Preview Refund Controller
+final class POSPreviewRefundController: POSRefundControllerProtocol {
+    var selectableItems: [POSRefundSelectableItem] = []
+    var hasLoadedSelectableItems: Bool { !selectableItems.isEmpty }
+    var hasModifiedSelection = false
+    var reviewPreparationState: POSRefundReviewPreparationState { .idle }
+    var requiresCardPresentRefund: Bool { false }
+
+    func refundActionAvailability(for order: POSOrder?) -> RefundActionAvailability { .available }
+    func preloadRefund(for order: POSOrder) async {}
+    func startRefundFlow(for order: POSOrder) async -> StartRefundFlowResult { .hasItemsToRefund }
+    func refreshRefundableItems() async -> StartRefundFlowResult { .hasItemsToRefund }
+    func toggleItemSelection(at index: Int) {}
+    func toggleAllItemsSelection() {}
+    func clearSelection() {}
+    func reset() {}
+    func prepareReview() async -> POSRefundReviewPreparationResult { .preparationError }
+    func processRefund(reason: String?) async throws -> Int64 { 0 }
 }
 
 // MARK: - Barcode Scan Service

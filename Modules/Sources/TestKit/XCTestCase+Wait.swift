@@ -84,7 +84,7 @@ extension XCTestCase {
     /// XCTAssertEquals("expected_value", value)
     /// ```
     ///
-    public func waitFor<ValueType>(file: StaticString = #file,
+    public func waitFor<ValueType>(file: StaticString = #filePath,
                                    line: UInt = #line,
                                    timeout: TimeInterval = 5.0,
                                    awaiting: @escaping (_ promise: (@escaping (ValueType) -> Void)) throws -> Void) rethrows -> ValueType {
@@ -111,7 +111,7 @@ extension XCTestCase {
 
     /// Async/await version of `waitFor`, as `XCTWaiter.wait(for:timeout:)` does not support concurrency in `waitFor`.
     @MainActor
-    public func waitForAsync<ValueType>(file: StaticString = #file,
+    public func waitForAsync<ValueType>(file: StaticString = #filePath,
                                         line: UInt = #line,
                                         timeout: TimeInterval = 5.0,
                                         awaiting: @escaping @MainActor (_ promise: (@escaping (ValueType) -> Void)) async throws -> Void)

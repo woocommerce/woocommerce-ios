@@ -28,9 +28,11 @@ final class POSOrderListControllerTests {
     private lazy var currencyFormatter = CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
     private lazy var refundSubmissionProcessor = MockPOSRefundSubmissionProcessor(refundsService: refundsService,
                                                                                   currencyFormatter: currencyFormatter)
+    private lazy var refundController = POSRefundController(refundSubmissionProcessor: refundSubmissionProcessor)
     private lazy var sut = POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory,
                                                    refundsService: refundsService,
-                                                   refundSubmissionProcessor: refundSubmissionProcessor)
+                                                   refundSubmissionProcessor: refundSubmissionProcessor,
+                                                   refundController: refundController)
 
     @Test func loadOrders_requests_first_page_after_loading_two_pages() async throws {
         try #require(sut.ordersViewState.isLoading)
@@ -442,10 +444,7 @@ final class POSOrderListControllerTests {
         // Then
         #expect(refundSubmissionProcessor.preloadedOrderIDs == [order.id])
         #expect(sut.refundSelectableItems.isEmpty)
-        guard case .idle = sut.selectedOrderRefundsState else {
-            Issue.record("Preloading should not move the visible refund flow state.")
-            return
-        }
+        #expect(refundController.preparation == nil, "Preloading should not move the visible refund flow state.")
     }
 
     @MainActor
@@ -1533,11 +1532,28 @@ final class POSOrderListControllerTests {
     }
 
     @MainActor
-    @Test func processRefund_when_refund_is_not_prepared_then_throws_missingRefundPreparation() async throws {
-        // Given
+    @Test func processRefund_when_no_refund_flow_was_started_then_throws_missingSelectedOrder() async throws {
+        // Given an order is selected but the refund flow was never started
         sut.selectOrder(makeOrder(lineItems: [
             makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
         ]))
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.processRefund(reason: .none)
+        }, throws: { error in
+            (error as? POSRefundProcessingError) == .missingSelectedOrder
+        })
+    }
+
+    @MainActor
+    @Test func processRefund_when_refund_is_not_prepared_then_throws_missingRefundPreparation() async throws {
+        // Given
+        refundSubmissionProcessor.prepareRefundErrorToThrow = NSError(domain: "test", code: 1)
+        sut.selectOrder(makeOrder(lineItems: [
+            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
+        ]))
+        _ = await sut.startRefundFlow()
 
         // When / Then
         await #expect(performing: {
@@ -2228,11 +2244,13 @@ private extension POSOrderListControllerTests {
 
     func makeController(currencySettings: CurrencySettings) -> POSOrderListController {
         let formatter = CurrencyFormatter(currencySettings: currencySettings)
+        let processor = MockPOSRefundSubmissionProcessor(refundsService: refundsService,
+                                                         currencyFormatter: formatter)
         return POSOrderListController(
             orderListFetchStrategyFactory: fetchStrategyFactory,
             refundsService: refundsService,
-            refundSubmissionProcessor: MockPOSRefundSubmissionProcessor(refundsService: refundsService,
-                                                                        currencyFormatter: formatter)
+            refundSubmissionProcessor: processor,
+            refundController: POSRefundController(refundSubmissionProcessor: processor)
         )
     }
 

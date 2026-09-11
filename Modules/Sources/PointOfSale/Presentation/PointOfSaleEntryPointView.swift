@@ -165,7 +165,8 @@ public struct PointOfSaleEntryPointView: View {
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService,
-                                                      refundSubmissionProcessor: refundSubmissionProcessor)
+                                                      refundSubmissionProcessor: refundSubmissionProcessor,
+                                                      refundController: POSRefundController(refundSubmissionProcessor: refundSubmissionProcessor))
         self.orderListModel = POSOrderListModel(ordersController: ordersController,
                                                 receiptSender: receiptSender,
                                                 refundSubmissionModel: refundSubmissionProcessor.stateModel)

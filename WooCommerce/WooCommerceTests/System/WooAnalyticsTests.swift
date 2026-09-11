@@ -29,6 +29,8 @@ class WooAnalyticsTests: XCTestCase {
     ///
     private var userDefaultsSuiteName: String!
 
+    private var notificationCenter: NotificationCenter!
+
     private let sampleSiteID: Int64 = 12345
 
     private let sampleSiteURL: String = "https://example.com"
@@ -39,20 +41,21 @@ class WooAnalyticsTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false,
-                                                                   defaultSite: Site.fake().copy(
-                                                                    siteID: sampleSiteID,
-                                                                    url: sampleSiteURL)))
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultSite = Site.fake().copy(siteID: sampleSiteID, url: sampleSiteURL)
+        stores = MockStoresManager(sessionManager: sessionManager)
         ServiceLocator.setStores(stores)
         userDefaultsSuiteName = UUID().uuidString
         userDefaults = UserDefaults(suiteName: userDefaultsSuiteName)!
-        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider(), userDefaults: userDefaults)
+        notificationCenter = NotificationCenter()
+        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider(), userDefaults: userDefaults, notificationCenter: notificationCenter)
     }
 
     override func tearDown() {
         userDefaults.removePersistentDomain(forName: userDefaultsSuiteName)
         userDefaults = nil
         userDefaultsSuiteName = nil
+        notificationCenter = nil
         super.tearDown()
         ServiceLocator.setStores(originalStores)
     }
@@ -185,6 +188,7 @@ class WooAnalyticsTests: XCTestCase {
         var startedContexts: [ExperimentContext] = []
         analytics = WooAnalytics(analyticsProvider: testingProvider,
                                  userDefaults: userDefaults,
+                                 notificationCenter: notificationCenter,
                                  startABTest: { context in
             startedContexts.append(context)
             abTestStarted.fulfill()
@@ -214,6 +218,7 @@ class WooAnalyticsTests: XCTestCase {
         var startedContexts: [ExperimentContext] = []
         analytics = WooAnalytics(analyticsProvider: provider,
                                  userDefaults: userDefaults,
+                                 notificationCenter: notificationCenter,
                                  startABTest: { context in
             startedContexts.append(context)
             abTestStarted.fulfill()
@@ -226,6 +231,74 @@ class WooAnalyticsTests: XCTestCase {
         await fulfillment(of: [abTestStarted], timeout: 1.0)
         XCTAssertEqual(startedContexts, [.loggedIn])
         XCTAssertEqual(provider.refreshUserDataCallCount, 0)
+    }
+
+    @MainActor
+    func test_lifecycle_notifications_when_enabling_after_opted_out_launch_then_tracks_open_and_close_events() {
+        // Given
+        analytics = makeAnalyticsForLifecycleTests()
+        analytics.userHasOptedIn = false
+        analytics.initialize()
+
+        // When
+        analytics.setUserHasOptedOut(false)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents, [WooAnalyticsStat.applicationOpened.rawValue, WooAnalyticsStat.applicationClosed.rawValue])
+    }
+
+    @MainActor
+    func test_lifecycle_notifications_when_initializing_and_enabling_repeatedly_then_tracks_each_event_once() {
+        // Given
+        analytics = makeAnalyticsForLifecycleTests()
+        analytics.initialize()
+
+        // When
+        analytics.initialize()
+        analytics.setUserHasOptedOut(false)
+        analytics.setUserHasOptedOut(false)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents, [WooAnalyticsStat.applicationOpened.rawValue, WooAnalyticsStat.applicationClosed.rawValue])
+    }
+
+    @MainActor
+    func test_lifecycle_notifications_when_disabling_and_reenabling_then_tracks_only_while_enabled_without_duplicates() {
+        // Given
+        analytics = makeAnalyticsForLifecycleTests()
+        analytics.initialize()
+
+        // When
+        analytics.setUserHasOptedOut(true)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents, [])
+
+        // When
+        analytics.setUserHasOptedOut(false)
+        notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        notificationCenter.post(name: UIApplication.didEnterBackgroundNotification, object: nil)
+
+        // Then
+        XCTAssertEqual(testingProvider?.receivedEvents, [WooAnalyticsStat.applicationOpened.rawValue, WooAnalyticsStat.applicationClosed.rawValue])
+    }
+
+    @MainActor
+    private func makeAnalyticsForLifecycleTests() -> WooAnalytics {
+        let provider = MockAnalyticsProvider()
+        provider.defersRefreshUserDataCompletion = true
+        return WooAnalytics(analyticsProvider: provider,
+                     userDefaults: userDefaults,
+                     notificationCenter: notificationCenter,
+                     getWidgetConfigurations: { completion in
+            completion(.failure(NSError(domain: "WidgetConfigurationError", code: 0)))
+        }, startABTest: { _ in })
     }
 
     func test_events_when_logged_in_include_site_properties() {
@@ -242,7 +315,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultStoreUUID: "sample_store_uuid",
                                                                    cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
@@ -280,7 +353,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
@@ -318,7 +391,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
@@ -339,7 +412,7 @@ class WooAnalyticsTests: XCTestCase {
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
@@ -367,7 +440,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultStoreUUID: "sample_store_uuid",
                                                                    cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track(WooAnalyticsStat.cardReaderLocationSuccess.rawValue, properties: Constants.testProperty1, error: nil)
@@ -393,7 +466,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     url: sampleSiteURL),
                                                                    defaultStoreUUID: "sample_store_uuid"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track(WooAnalyticsStat.wooPushTokenRegisterSuccess.rawValue, properties: Constants.testProperty1, error: nil)
@@ -417,7 +490,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     url: sampleSiteURL),
                                                                    defaultStoreUUID: "sample_store_uuid"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
 
         // When
         analytics.track("an_event_name_that_is_not_a_stat", properties: Constants.testProperty1, error: nil)
@@ -442,7 +515,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultStoreUUID: nil,
                                                                    cachedWooCommerceVersion: nil))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
         let callerProperties: [AnyHashable: Any] = [
             "cached_woo_core_version": "9.8.0",
             "store_id": "caller_store_uuid"
@@ -472,7 +545,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultStoreUUID: "session_store_uuid",
                                                                    cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
         let callerProperties: [AnyHashable: Any] = [
             "cached_woo_core_version": "9.8.0",
             "store_id": "caller_store_uuid"

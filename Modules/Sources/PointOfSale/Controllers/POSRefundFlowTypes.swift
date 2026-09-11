@@ -44,6 +44,10 @@ extension POSOrder {
     }
 }
 
+struct POSRefundSubmissionResult: Equatable {
+    let refundedOrderID: Int64
+}
+
 enum POSRefundProcessingError: LocalizedError, Equatable {
     case missingSelectedOrder
     case missingRefundPreparation

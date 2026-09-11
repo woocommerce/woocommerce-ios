@@ -1,16 +1,20 @@
 import Foundation
 import Observation
 import enum Yosemite.OrderRefundEligibilityFailure
+import enum Yosemite.RefundAPIError
 import struct Yosemite.POSOrder
 
 @Observable final class POSRefundController {
     private(set) var selectableItems: [POSRefundSelectableItem] = []
     private(set) var hasModifiedSelection = false
+    private(set) var reviewPreparationState: POSRefundReviewPreparationState = .idle
 
     private(set) var order: POSOrder?
     private(set) var preparation: POSRefundPreparation?
 
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
+    private var reviewPreparationTask: Task<POSRefundReviewPreparationResult, Never>?
+    private var isProcessingRefund = false
 
     init(refundSubmissionProcessor: POSRefundSubmissionProcessing) {
         self.refundSubmissionProcessor = refundSubmissionProcessor
@@ -49,6 +53,7 @@ import struct Yosemite.POSOrder
 
         selectableItems = preparation.selectableItems
         hasModifiedSelection = false
+        resetReviewPreparation()
 
         return selectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
     }
@@ -78,6 +83,7 @@ import struct Yosemite.POSOrder
         guard selectableItems.indices.contains(index) else { return }
         selectableItems[index].isSelected.toggle()
         hasModifiedSelection = true
+        resetReviewPreparation()
     }
 
     @MainActor
@@ -89,12 +95,14 @@ import struct Yosemite.POSOrder
             selectableItems[index].isSelected = newSelectionState
         }
         hasModifiedSelection = true
+        resetReviewPreparation()
     }
 
     @MainActor
     func clearSelection() {
         selectableItems = []
         hasModifiedSelection = false
+        resetReviewPreparation()
     }
 
     @MainActor
@@ -102,5 +110,106 @@ import struct Yosemite.POSOrder
         order = nil
         preparation = nil
         clearSelection()
+    }
+
+    // MARK: - Refund Review Data Preparation
+
+    @MainActor
+    func prepareReview() async -> POSRefundReviewPreparationResult {
+        reviewPreparationTask?.cancel()
+
+        guard let order, let preparation else {
+            reviewPreparationState = .idle
+            return .preparationError
+        }
+
+        let selectedItems = selectableItems.filter { $0.isSelected }
+        guard !selectedItems.isEmpty else {
+            reviewPreparationState = .idle
+            return .preparationError
+        }
+
+        let selectionSnapshot = selectableItems
+        reviewPreparationState = .loading
+        let preparationTask = Task { @MainActor [weak self] () -> POSRefundReviewPreparationResult in
+            guard let self else { return .superseded }
+            let state: POSRefundReviewPreparationState
+            let result: POSRefundReviewPreparationResult
+            do {
+                let reviewData = try await refundSubmissionProcessor.prepareReviewData(
+                    for: order,
+                    preparation: preparation,
+                    selectedItems: selectedItems,
+                    reason: nil
+                )
+                state = .idle
+                result = .ready(reviewData)
+            } catch is CancellationError {
+                return .superseded
+            } catch POSRefundSubmissionError.refundPreviewFailed {
+                state = .previewError()
+                result = .previewError
+            } catch RefundAPIError.orderNotRefundable {
+                state = .idle
+                result = .nothingToRefund
+            } catch let rejection as RefundAPIError {
+                state = .previewError(message: rejection.localizedDescription, recovery: rejection.recovery)
+                result = .previewError
+            } catch {
+                state = .idle
+                result = .preparationError
+            }
+            // Applied once for every outcome: a result computed against a selection the cashier has
+            // since changed must not be published, and a new catch must not be able to skip the check.
+            guard !Task.isCancelled, selectableItems == selectionSnapshot else { return .superseded }
+            reviewPreparationState = state
+            return result
+        }
+        reviewPreparationTask = preparationTask
+        return await preparationTask.value
+    }
+
+    @MainActor
+    private func resetReviewPreparation() {
+        reviewPreparationTask?.cancel()
+        reviewPreparationTask = nil
+        reviewPreparationState = .idle
+    }
+
+    // MARK: - Refund Processing
+
+    @MainActor
+    func processRefund(reason: String?) async throws -> POSRefundSubmissionResult {
+        guard !isProcessingRefund else {
+            throw POSRefundProcessingError.refundAlreadyInProgress
+        }
+
+        isProcessingRefund = true
+        defer {
+            isProcessingRefund = false
+        }
+
+        guard let order else {
+            throw POSRefundProcessingError.missingSelectedOrder
+        }
+
+        guard let preparation else {
+            throw POSRefundProcessingError.missingRefundPreparation
+        }
+
+        let selectedItems = selectableItems.filter { $0.isSelected }
+        guard !selectedItems.isEmpty else {
+            throw POSRefundProcessingError.emptySelection
+        }
+
+        try await refundSubmissionProcessor.submitRefund(
+            for: order,
+            preparation: preparation,
+            selectedItems: selectedItems,
+            reason: reason
+        )
+
+        clearSelection()
+        return POSRefundSubmissionResult(refundedOrderID: order.id)
     }
 }

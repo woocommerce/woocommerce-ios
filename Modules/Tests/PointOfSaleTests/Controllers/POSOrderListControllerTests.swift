@@ -1385,7 +1385,7 @@ final class POSOrderListControllerTests {
         _ = await awaitReviewPreparation(sut)
 
         // When
-        sut.resetRefundReviewPreparation()
+        sut.clearRefundSelection()
 
         // Then
         #expect(sut.refundReviewPreparationState == .idle)

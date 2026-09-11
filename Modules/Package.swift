@@ -215,7 +215,7 @@ let package = Package(
         .target(
             name: "TestKit",
             dependencies: ["Difference", "Nimble"],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "UITestsFoundation",

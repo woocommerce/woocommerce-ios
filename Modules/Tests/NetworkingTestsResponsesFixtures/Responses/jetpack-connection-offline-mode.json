@@ -1,0 +1,15 @@
+{
+    "isActive": false,
+    "isStaging": false,
+    "isRegistered": false,
+    "isUserConnected": false,
+    "hasConnectedOwner": false,
+    "offlineMode": {
+        "isActive": true,
+        "constant": true,
+        "url": true,
+        "filter": false,
+        "wpLocalConstant": false
+    },
+    "isPublic": true
+}

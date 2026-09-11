@@ -45,6 +45,10 @@ protocol JetpackConnectionServiceProtocol {
 
     /// Fetches the current Jetpack connection data for the site.
     func fetchConnectionData() async throws -> JetpackConnectionData
+
+    /// Returns whether the site's Jetpack is currently in Offline Mode.
+    /// Best-effort: returns `false` if the status cannot be determined.
+    func isJetpackInOfflineMode() async -> Bool
 }
 
 final class JetpackConnectionService: JetpackConnectionServiceProtocol {
@@ -136,6 +140,18 @@ final class JetpackConnectionService: JetpackConnectionServiceProtocol {
     func fetchConnectionData() async throws -> JetpackConnectionData {
         try await dispatch { completion in
             JetpackConnectionAction.fetchJetpackConnectionData(siteID: self.siteID, completion: completion)
+        }
+    }
+
+    func isJetpackInOfflineMode() async -> Bool {
+        do {
+            let status: JetpackConnectionStatus = try await dispatch { completion in
+                JetpackConnectionAction.fetchJetpackConnectionStatus(siteID: self.siteID, completion: completion)
+            }
+            return status.isInOfflineMode
+        } catch {
+            DDLogError("⛔️ Error fetching Jetpack connection status: \(error)")
+            return false
         }
     }
 }

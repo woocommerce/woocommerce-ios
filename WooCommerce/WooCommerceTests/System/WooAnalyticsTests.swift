@@ -178,59 +178,193 @@ class WooAnalyticsTests: XCTestCase {
     }
 
     @MainActor
-    func test_refreshUserData_starts_AB_tests_after_provider_refresh_completes() async {
-        // Given
-        guard let testingProvider else {
-            return XCTFail("Testing provider not available")
-        }
-        testingProvider.defersRefreshUserDataCompletion = true
-        let abTestStarted = expectation(description: "A/B test started")
-        var startedContexts: [ExperimentContext] = []
-        analytics = WooAnalytics(analyticsProvider: testingProvider,
-                                 userDefaults: userDefaults,
-                                 notificationCenter: notificationCenter,
-                                 startABTest: { context in
-            startedContexts.append(context)
-            abTestStarted.fulfill()
-        })
-
-        // When
-        analytics.refreshUserData()
-        await Task.yield()
-
-        // Then
-        XCTAssertTrue(startedContexts.isEmpty)
-
-        testingProvider.completeRefreshUserData()
-        await fulfillment(of: [abTestStarted], timeout: 1.0)
-        XCTAssertEqual(startedContexts, [.loggedOut])
+    func test_refreshUserData_when_logged_out_then_starts_AB_tests_after_provider_refresh() {
+        assertABTestsStartAfterProviderRefresh(credentials: nil, expectedContext: .loggedOut)
     }
 
     @MainActor
-    func test_refreshUserData_when_authenticated_without_WPCom_then_starts_AB_tests_without_refreshing_provider() async {
-        // Given
-        stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        ServiceLocator.setStores(stores)
+    func test_refreshUserData_when_authenticated_with_WPCom_then_starts_AB_tests_after_provider_refresh() {
+        assertABTestsStartAfterProviderRefresh(credentials: SessionSettings.wpcomCredentials, expectedContext: .loggedIn)
+    }
 
+    @MainActor
+    func test_initialize_when_authenticated_with_site_credentials_then_starts_AB_tests_after_provider_refresh() {
+        assertABTestsStartAfterProviderRefresh(credentials: SessionSettings.wporgCredentials,
+                                              expectedContext: .loggedIn,
+                                              operation: { $0.initialize() })
+    }
+
+    @MainActor
+    func test_initialize_when_authenticated_with_application_password_then_starts_AB_tests_after_provider_refresh() {
+        assertABTestsStartAfterProviderRefresh(credentials: SessionSettings.applicationPasswordCredentials,
+                                              expectedContext: .loggedIn,
+                                              operation: { $0.initialize() })
+    }
+
+    @MainActor
+    func test_initialize_when_logged_out_then_starts_AB_tests_after_provider_refresh() {
+        assertABTestsStartAfterProviderRefresh(credentials: nil, expectedContext: .loggedOut, operation: { $0.initialize() })
+    }
+
+    @MainActor
+    func test_initialize_when_authenticated_with_WPCom_then_starts_AB_tests_after_provider_refresh() {
+        assertABTestsStartAfterProviderRefresh(credentials: SessionSettings.wpcomCredentials,
+                                              expectedContext: .loggedIn,
+                                              operation: { $0.initialize() })
+    }
+
+    @MainActor
+    func test_setUserHasOptedOut_when_enabling_after_site_credential_launch_then_refreshes_provider_before_AB_tests() {
+        assertABTestsStartAfterProviderRefresh(credentials: SessionSettings.wporgCredentials,
+                                              expectedContext: .loggedIn,
+                                              operation: {
+            $0.userHasOptedIn = false
+            $0.initialize()
+            $0.setUserHasOptedOut(false)
+        })
+    }
+
+    @MainActor
+    func test_setUserHasOptedOut_when_enabling_after_application_password_launch_then_refreshes_provider_before_AB_tests() {
+        assertABTestsStartAfterProviderRefresh(credentials: SessionSettings.applicationPasswordCredentials,
+                                              expectedContext: .loggedIn,
+                                              operation: {
+            $0.userHasOptedIn = false
+            $0.initialize()
+            $0.setUserHasOptedOut(false)
+        })
+    }
+
+    @MainActor
+    func test_setUserHasOptedOut_when_already_enabled_after_site_credential_login_then_does_not_refresh_provider_again() {
+        assertLoginDoesNotRefreshProvider(credentials: SessionSettings.wporgCredentials, operation: { $0.setUserHasOptedOut(false) })
+    }
+
+    @MainActor
+    func test_setUserHasOptedOut_when_already_enabled_after_application_password_login_then_does_not_refresh_provider_again() {
+        assertLoginDoesNotRefreshProvider(credentials: SessionSettings.applicationPasswordCredentials, operation: { $0.setUserHasOptedOut(false) })
+    }
+
+    @MainActor
+    func test_refreshUserData_when_signing_in_with_site_credentials_then_does_not_refresh_provider_again() {
+        assertLoginDoesNotRefreshProvider(credentials: SessionSettings.wporgCredentials)
+    }
+
+    @MainActor
+    func test_refreshUserData_when_signing_in_with_application_password_then_does_not_refresh_provider_again() {
+        assertLoginDoesNotRefreshProvider(credentials: SessionSettings.applicationPasswordCredentials)
+    }
+
+    @MainActor
+    private func assertLoginDoesNotRefreshProvider(credentials: Credentials,
+                                                  operation: (WooAnalytics) -> Void = { $0.refreshUserData() },
+                                                  file: StaticString = #filePath,
+                                                  line: UInt = #line) {
+        // Given: startup has restored the anonymous identity before the merchant signs in.
+        let sessionManager = MockSessionManager()
+        stores = MockStoresManager(sessionManager: sessionManager)
+        ServiceLocator.setStores(stores)
         let provider = MockAnalyticsProvider()
         provider.defersRefreshUserDataCompletion = true
-        let abTestStarted = expectation(description: "A/B test started")
         var startedContexts: [ExperimentContext] = []
         analytics = WooAnalytics(analyticsProvider: provider,
                                  userDefaults: userDefaults,
                                  notificationCenter: notificationCenter,
                                  startABTest: { context in
             startedContexts.append(context)
-            abTestStarted.fulfill()
         })
+        analytics.initialize()
+        provider.completeRefreshUserData()
+        XCTAssertEqual(provider.refreshUserDataCallCount, 1, file: file, line: line)
+        XCTAssertEqual(startedContexts, [.loggedOut], file: file, line: line)
+
+        // When: the login event is recorded immediately before the authentication state changes.
+        analytics.track(.applicationPasswordAuthorizationApproved)
+        sessionManager.defaultCredentials = credentials
+        stores = MockStoresManager(sessionManager: sessionManager)
+        ServiceLocator.setStores(stores)
+        operation(analytics)
+
+        // Then: preserve the login-time skip from #9485 while starting logged-in experiments.
+        XCTAssertEqual(provider.refreshUserDataCallCount, 1, file: file, line: line)
+        XCTAssertEqual(startedContexts, [.loggedOut, .loggedIn], file: file, line: line)
+    }
+
+    @MainActor
+    func test_refreshUserData_when_opted_out_then_does_not_refresh_provider_or_start_AB_tests() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        var startedContexts: [ExperimentContext] = []
+        analytics = WooAnalytics(analyticsProvider: provider,
+                                 userDefaults: userDefaults,
+                                 notificationCenter: notificationCenter,
+                                 startABTest: { context in
+            startedContexts.append(context)
+        })
+        analytics.userHasOptedIn = false
 
         // When
         analytics.refreshUserData()
 
         // Then
-        await fulfillment(of: [abTestStarted], timeout: 1.0)
-        XCTAssertEqual(startedContexts, [.loggedIn])
         XCTAssertEqual(provider.refreshUserDataCallCount, 0)
+        XCTAssertTrue(startedContexts.isEmpty)
+    }
+
+    @MainActor
+    func test_initialize_when_opted_out_then_does_not_refresh_provider_or_start_AB_tests() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        var startedContexts: [ExperimentContext] = []
+        analytics = WooAnalytics(analyticsProvider: provider,
+                                 userDefaults: userDefaults,
+                                 notificationCenter: notificationCenter,
+                                 startABTest: { context in
+            startedContexts.append(context)
+        })
+        analytics.userHasOptedIn = false
+
+        // When
+        analytics.initialize()
+
+        // Then
+        XCTAssertEqual(provider.refreshUserDataCallCount, 0)
+        XCTAssertTrue(startedContexts.isEmpty)
+    }
+
+    @MainActor
+    private func assertABTestsStartAfterProviderRefresh(credentials: Credentials?,
+                                                      expectedContext: ExperimentContext,
+                                                      operation: (WooAnalytics) -> Void = { $0.refreshUserData() },
+                                                      file: StaticString = #filePath,
+                                                      line: UInt = #line) {
+        // Given
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultCredentials = credentials
+        stores = MockStoresManager(sessionManager: sessionManager)
+        ServiceLocator.setStores(stores)
+        let provider = MockAnalyticsProvider()
+        provider.defersRefreshUserDataCompletion = true
+        var startedContexts: [ExperimentContext] = []
+        analytics = WooAnalytics(analyticsProvider: provider,
+                                 userDefaults: userDefaults,
+                                 notificationCenter: notificationCenter,
+                                 startABTest: { context in
+            startedContexts.append(context)
+        })
+
+        // When
+        operation(analytics)
+
+        // Then: experiments must wait until the test explicitly completes the refresh.
+        XCTAssertEqual(provider.refreshUserDataCallCount, 1, file: file, line: line)
+        XCTAssertTrue(startedContexts.isEmpty, file: file, line: line)
+
+        // When
+        provider.completeRefreshUserData()
+
+        // Then
+        XCTAssertEqual(startedContexts, [expectedContext], file: file, line: line)
     }
 
     @MainActor

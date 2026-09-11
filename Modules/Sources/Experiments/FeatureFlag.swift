@@ -6,14 +6,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
-    /// Barcode scanner for product inventory management
-    ///
-    case barcodeScanner
-
-    /// Product Reviews
-    ///
-    case reviews
-
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
@@ -59,13 +51,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
     case performanceMonitoringViewController
 
-    /// Whether to enable the new support request form.
-    ///
-    case supportRequests
-
-    /// Enables the ability to add products to orders by SKU scanning
-    ///
-    case addProductToOrderViaSKUScanner
 
     /// Enables the custom login UI when user enters an existing email address during account creation.
     ///

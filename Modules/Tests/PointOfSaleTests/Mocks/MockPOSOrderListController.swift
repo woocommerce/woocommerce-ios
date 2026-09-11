@@ -22,6 +22,7 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
     var displayedCustomAmounts: [POSOrderCustomAmount] = []
     var refundActionAvailability: RefundActionAvailability = .available
     var refundSelectableItems: [POSRefundSelectableItem] = []
+    var hasLoadedRefundableItems: Bool { !refundSelectableItems.isEmpty }
     var currentRefundRequiresCardPresentRefund = false
     var hasModifiedRefundSelection = false
     var updateOrderCalled = false
@@ -63,10 +64,18 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     func startRefundFlow() async -> StartRefundFlowResult {
         guard let order = selectedOrder else { return .failed }
-        refundSelectableItems = order.lineItems.map {
-            POSRefundSelectableItem(from: $0, isSelected: true, index: 0)
+        switch stubStartRefundFlowResult {
+        case .hasItemsToRefund:
+            refundSelectableItems = order.lineItems.map {
+                POSRefundSelectableItem(from: $0, isSelected: true, index: 0)
+            }
+            hasModifiedRefundSelection = false
+        case .nothingToRefund:
+            refundSelectableItems = []
+            hasModifiedRefundSelection = false
+        case .ineligible, .failed:
+            break
         }
-        hasModifiedRefundSelection = false
         return stubStartRefundFlowResult
     }
 
@@ -75,16 +84,21 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol 
 
     func refreshRefundableItems() async -> StartRefundFlowResult {
         refreshRefundableItemsCallCount += 1
-        let previousSelection = Set(refundSelectableItems.filter { $0.isSelected }.map(\.id))
-        if let stubRefreshedRefundSelectableItems {
-            refundSelectableItems = stubRefreshedRefundSelectableItems
-        }
-        if refundSelectableItems.contains(where: { previousSelection.contains($0.id) }) {
-            for index in refundSelectableItems.indices {
-                refundSelectableItems[index].isSelected = previousSelection.contains(refundSelectableItems[index].id)
+        switch stubStartRefundFlowResult {
+        case .hasItemsToRefund:
+            if let stubRefreshedRefundSelectableItems {
+                refundSelectableItems = stubRefreshedRefundSelectableItems
             }
+            for index in refundSelectableItems.indices {
+                refundSelectableItems[index].isSelected = false
+            }
+            hasModifiedRefundSelection = false
+        case .nothingToRefund:
+            refundSelectableItems = []
+            hasModifiedRefundSelection = false
+        case .ineligible, .failed:
+            break
         }
-        hasModifiedRefundSelection = false
         return stubStartRefundFlowResult
     }
 

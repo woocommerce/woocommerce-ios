@@ -141,6 +141,28 @@ public class ProductStore: Store {
                     onCompletion(.failure(error))
                 }
             }
+        case .synchronizeProductsForOrderCreation(let siteID,
+                                                  let pageNumber,
+                                                  let pageSize,
+                                                  let sortOrder,
+                                                  let additionalProductIDs,
+                                                  let shouldDeleteStoredProductsOnFirstPage,
+                                                  let onCompletion):
+            Task { @MainActor in
+                do {
+                    let result = try await synchronizeProductsForOrderCreation(
+                        siteID: siteID,
+                        pageNumber: pageNumber,
+                        pageSize: pageSize,
+                        sortOrder: sortOrder,
+                        additionalProductIDs: additionalProductIDs,
+                        shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage
+                    )
+                    onCompletion(.success(result))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
         case .requestMissingProducts(let order, let onCompletion):
             requestMissingProducts(for: order, onCompletion: onCompletion)
         case .updateProduct(let product, let onCompletion):
@@ -443,6 +465,78 @@ private extension ProductStore {
             throw error
         } catch {
             throw error
+        }
+    }
+
+    /// Loads the catalog page and additional order-suggestion products concurrently, then persists their deduplicated result in one update.
+    /// The catalog page is required and determines pagination. If only the additional request fails, matching products already in storage are retained.
+    func synchronizeProductsForOrderCreation(
+        siteID: Int64,
+        pageNumber: Int,
+        pageSize: Int,
+        sortOrder: ProductsSortOrder,
+        additionalProductIDs: [Int64],
+        shouldDeleteStoredProductsOnFirstPage: Bool
+    ) async throws -> (products: [Networking.Product], hasNextPage: Bool, missingProductIDs: [Int64]) {
+        let cachedAdditionalProducts = await loadCachedProducts(siteID: siteID, productIDs: additionalProductIDs)
+
+        async let pageProductsRequest = remote.loadAllProducts(for: siteID,
+                                                               context: nil,
+                                                               pageNumber: pageNumber,
+                                                               pageSize: pageSize,
+                                                               stockStatus: nil,
+                                                               productStatus: nil,
+                                                               productType: nil,
+                                                               productCategory: nil,
+                                                               orderBy: sortOrder.remoteOrderKey,
+                                                               order: sortOrder.remoteOrder,
+                                                               productIDs: [],
+                                                               excludedProductIDs: [],
+                                                               currency: nil)
+        async let additionalProductsRequest: Result<[Networking.Product], Error> = {
+            do {
+                let products = try await remote.loadProducts(for: siteID,
+                                                            by: additionalProductIDs,
+                                                            pageNumber: ProductsRemote.Default.pageNumber,
+                                                            pageSize: additionalProductIDs.count)
+                return .success(products)
+            } catch {
+                return .failure(error)
+            }
+        }()
+
+        let pageProducts = try await pageProductsRequest
+        let additionalProductsResult = await additionalProductsRequest
+        let additionalProducts: [Networking.Product]
+        switch additionalProductsResult {
+        case let .success(products):
+            additionalProducts = products
+        case let .failure(error):
+            DDLogError("⛔️ Error retrieving additional products during order creation: \(error)")
+            additionalProducts = cachedAdditionalProducts
+        }
+
+        var mergedProducts = pageProducts
+        var mergedProductIDs = Set(pageProducts.map(\.productID))
+        mergedProducts.append(contentsOf: additionalProducts.filter { mergedProductIDs.insert($0.productID).inserted })
+
+        let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
+        await upsertStoredProductsInBackground(readOnlyProducts: mergedProducts,
+                                               siteID: siteID,
+                                               shouldDeleteExistingProducts: shouldDeleteExistingProducts)
+        let missingProductIDs = shouldDeleteExistingProducts && additionalProductsResult.isSuccess
+            ? additionalProductIDs.filter { !mergedProductIDs.contains($0) } : []
+        return (mergedProducts, pageProducts.count == pageSize, missingProductIDs)
+    }
+
+    /// Reads immutable product snapshots on the view storage's queue.
+    func loadCachedProducts(siteID: Int64, productIDs: [Int64]) async -> [Networking.Product] {
+        let storage = storageManager.viewStorage
+        return await withCheckedContinuation { continuation in
+            storage.perform {
+                let products = storage.loadProducts(siteID: siteID, productsIDs: productIDs).map { $0.toReadOnly() }
+                continuation.resume(returning: products)
+            }
         }
     }
 

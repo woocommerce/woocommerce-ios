@@ -3,19 +3,16 @@ import Experiments
 
 final class MockFeatureFlagService: POSFeatureFlagProviding {
     var isUpdateOrderOptimisticallyOn: Bool
-    var isSupportRequestEnabled: Bool
     var isPointOfSaleEnabled: Bool
     var backgroundProductImageUpload: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
 
     init(isUpdateOrderOptimisticallyOn: Bool = false,
-         isSupportRequestEnabled: Bool = false,
          isPointOfSaleEnabled: Bool = false,
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false) {
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
-        self.isSupportRequestEnabled = isSupportRequestEnabled
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
@@ -31,8 +28,6 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
         switch featureFlag {
         case .updateOrderOptimistically:
             return isUpdateOrderOptimisticallyOn
-        case .supportRequests:
-            return isSupportRequestEnabled
         case .pointOfSale:
             return isPointOfSaleEnabled
         case .backgroundProductImageUpload:

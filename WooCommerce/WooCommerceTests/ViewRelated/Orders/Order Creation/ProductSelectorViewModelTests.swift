@@ -2138,6 +2138,129 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections.last?.products.map(\.productID), [pageProduct.productID])
     }
 
+    @MainActor
+    func test_clearing_filters_with_currency_when_suggestion_was_deleted_then_removes_it_and_prevents_selection() async {
+        // Given
+        let deletedProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        let remainingProduct = Product.fake().copy(siteID: sampleSiteID, productID: 2, purchasable: true)
+        var deletedOnServer = false
+        var selectedProductID: Int64?
+        let filteredRequest = expectation(description: "Filtered products loaded")
+        let unfilteredRefresh = expectation(description: "Unfiltered products refreshed after deletion")
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .retrieveProductsTransiently(_, currency, _, _, stockStatus, _, _, _, _, productIDs, _, onCompletion) = action else {
+                return XCTFail("Currency mode dispatched a persistent product action")
+            }
+            XCTAssertEqual(currency, "GBP")
+            if stockStatus != nil {
+                onCompletion(.success(([], false)))
+                filteredRequest.fulfill()
+            } else {
+                let availableProducts = deletedOnServer ? [remainingProduct] : [deletedProduct, remainingProduct]
+                let products = availableProducts.filter { productIDs.isEmpty || productIDs.contains($0.productID) }
+                onCompletion(.success((products, false)))
+                if deletedOnServer && productIDs.isEmpty {
+                    unfilteredRefresh.fulfill()
+                }
+            }
+        }
+        let topProductsProvider = MockProductSelectorTopProductsProvider(
+            provideTopProductsFromCachedOrders: ProductSelectorTopProducts(popularProductsIds: [deletedProduct.productID], lastSoldProductsIds: [])
+        )
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 currency: "GBP",
+                                                 purchasableItemsOnly: true,
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 topProductsProvider: topProductsProvider,
+                                                 onProductSelectionStateChanged: { product, _ in selectedProductID = product.productID })
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+        XCTAssertEqual(viewModel.sections.first?.type, .mostPopular)
+        XCTAssertEqual(viewModel.sections.first?.products.map(\.productID), [deletedProduct.productID])
+
+        // When
+        deletedOnServer = true
+        viewModel.updateFilters(.init(stockStatus: .outOfStock,
+                                      productStatus: nil,
+                                      promotableProductType: nil,
+                                      productCategory: nil,
+                                      favoriteProduct: nil,
+                                      numberOfActiveFilters: 1))
+        await fulfillment(of: [filteredRequest], timeout: Constants.expectationTimeout)
+        viewModel.clearSearchAndFilters()
+        await fulfillment(of: [unfilteredRefresh], timeout: Constants.expectationTimeout)
+        viewModel.changeSelectionStateForProduct(with: deletedProduct.productID, selected: true)
+
+        // Then
+        XCTAssertFalse(viewModel.productRows.contains { $0.productOrVariationID == deletedProduct.productID })
+        XCTAssertTrue(viewModel.productRows.contains { $0.productOrVariationID == remainingProduct.productID })
+        XCTAssertNil(selectedProductID)
+    }
+
+    func test_resyncing_first_page_with_currency_when_suggestions_are_outside_page_then_preserves_membership_and_refreshes_details() throws {
+        // Given
+        let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 26, name: "Original", purchasable: true)
+        let laterProduct = Product.fake().copy(siteID: sampleSiteID, productID: 27, purchasable: true)
+        let pageProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        let updatedProduct = popularProduct.copy(name: "Updated", price: "20")
+        var additionalRequestCount = 0
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .retrieveProductsTransiently(_, _, _, _, _, _, _, _, _, productIDs, _, onCompletion) = action else {
+                return XCTFail("Currency mode dispatched a persistent product action")
+            }
+            if productIDs.isEmpty {
+                onCompletion(.success(([pageProduct], true)))
+            } else {
+                additionalRequestCount += 1
+                let products = additionalRequestCount == 1 ? [popularProduct] : [updatedProduct, laterProduct]
+                onCompletion(.success((products, false)))
+            }
+        }
+        let viewModel = makeViewModel(popularProductIDs: [popularProduct.productID, laterProduct.productID], currency: "GBP")
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(additionalRequestCount, 2)
+        XCTAssertEqual(viewModel.sections.first?.products.map(\.productID), [popularProduct.productID])
+        let suggestion = try XCTUnwrap(viewModel.sections.first?.products.first)
+        XCTAssertEqual(suggestion.name, updatedProduct.name)
+        XCTAssertEqual(suggestion.price, updatedProduct.price)
+        XCTAssertEqual(viewModel.sections.last?.products.map(\.productID), [pageProduct.productID])
+    }
+
+    func test_resyncing_first_page_with_currency_when_additional_request_fails_then_keeps_frozen_suggestions() {
+        // Given
+        let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 26, purchasable: true)
+        let pageProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
+        var additionalRequestCount = 0
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .retrieveProductsTransiently(_, _, _, _, _, _, _, _, _, productIDs, _, onCompletion) = action else {
+                return XCTFail("Currency mode dispatched a persistent product action")
+            }
+            if productIDs.isEmpty {
+                onCompletion(.success(([pageProduct], true)))
+            } else {
+                additionalRequestCount += 1
+                onCompletion(additionalRequestCount == 1 ? .success(([popularProduct], false)) : .failure(NSError(domain: "test", code: 1)))
+            }
+        }
+        let viewModel = makeViewModel(popularProductIDs: [popularProduct.productID], currency: "GBP")
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // When
+        viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: nil)
+
+        // Then
+        XCTAssertEqual(additionalRequestCount, 2)
+        XCTAssertEqual(viewModel.sections.first?.type, .mostPopular)
+        XCTAssertEqual(viewModel.sections.first?.products.map(\.productID), [popularProduct.productID])
+        XCTAssertEqual(viewModel.sections.last?.products.map(\.productID), [pageProduct.productID])
+    }
+
     func test_pagination_with_currency_when_existing_products_change_then_refreshes_details_and_purchasability() throws {
         // Given
         let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Original", price: "10", purchasable: true)

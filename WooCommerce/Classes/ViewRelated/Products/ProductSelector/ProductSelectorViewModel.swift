@@ -740,6 +740,7 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                                      pageSize: Int,
                                                      onCompletion: SyncCompletion?) {
         isLoadingTopProducts = true
+        let productIDs = topProductIDsToRetrieve
         var productsResult: Result<RetrievedProducts, Error>?
         var topProductsResult: Result<RetrievedProducts, Error>?
 
@@ -761,7 +762,11 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
 
             self.isLoadingTopProducts = false
             if case let .success(result) = productsResult {
-                self.captureTopProducts(from: topProducts + result.products)
+                let products = topProducts + result.products
+                self.captureTopProducts(from: products)
+                let missingProductIDs = topProductsResult.isSuccess
+                    ? productIDs.filter { id in !products.contains { $0.productID == id } } : []
+                self.refreshTopProducts(from: products, missingProductIDs: missingProductIDs)
             }
             self.handleTransientSyncResult(productsResult,
                                            pageNumber: pageNumber,
@@ -769,7 +774,6 @@ extension ProductSelectorViewModel: PaginationTrackerDelegate {
                                            onCompletion: onCompletion)
         }
 
-        let productIDs = topProductIDsToRetrieve
         retrieveTransientProducts(currency: currency,
                                   pageNumber: pageFirstIndex,
                                   pageSize: productIDs.count,
@@ -1027,7 +1031,7 @@ private extension ProductSelectorViewModel {
     }
 
     func shouldRetrieveTopProducts(pageNumber: Int) -> Bool {
-        shouldSynchronizeAdditionalProducts(pageNumber: pageNumber) && topProducts == nil && !isLoadingTopProducts
+        shouldSynchronizeAdditionalProducts(pageNumber: pageNumber) && !isLoadingTopProducts
     }
 
     func shouldSynchronizeAdditionalProducts(pageNumber: Int) -> Bool {

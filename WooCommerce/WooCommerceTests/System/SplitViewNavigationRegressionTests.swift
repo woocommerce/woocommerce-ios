@@ -10,6 +10,47 @@ import YosemiteTestHelpers
 @Suite(.serialized, .timeLimit(.minutes(5)))
 struct SplitViewNavigationRegressionTests {
     @Test
+    func test_discard_when_product_form_is_in_compact_layout_then_returns_to_primary_root() async throws {
+        // Given
+        let sessionID = "splitNavigationTests.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: sessionID))
+        defer { defaults.removePersistentDomain(forName: sessionID) }
+        let session = SessionManager(defaults: defaults, keychainServiceName: sessionID)
+        let stores = MockStoresManager(sessionManager: session)
+        let product = makeProduct(stores: stores)
+        let rig = ProductNavigationRig(form: product.form)
+        let host = try HostedNavigation(content: rig.split)
+        defer { host.close() }
+        try await host.layout(.regular)
+        try await host.layout(.compact)
+        rig.showProduct(product.form)
+        await host.settle()
+        try #require(rig.primary.topViewController === product.form)
+        try #require(product.form.view.window != nil)
+        product.viewModel.updateName("Unsaved product")
+        try #require(product.viewModel.hasUnsavedChanges())
+        var completionCalled = false
+
+        // When: call the actual form entry and invoke its actual destructive action.
+        product.form.close(completion: { completionCalled = true })
+        let alert = try #require(product.form.presentedViewController as? UIAlertController)
+        await host.settle(extra: alert)
+        let discardIndex = try #require(alert.actions.firstIndex(where: { $0.style == .destructive }))
+        // Existing tapButton calls only the handler. Dismiss through UIKit first to avoid a fake
+        // still-presented alert changing the navigation result. This is not a physical UI tap test.
+        await withCheckedContinuation { continuation in
+            alert.dismiss(animated: false) { continuation.resume() }
+        }
+        alert.tapButton(atIndex: discardIndex)
+        await host.settle()
+
+        // Then: do not claim all edits were reset; Discard must complete and navigate Back.
+        #expect(completionCalled)
+        #expect(rig.primary.topViewController === rig.list)
+        #expect(product.form.navigationController == nil)
+    }
+
+    @Test
     func test_round_trip_when_product_inventory_is_open_then_preserves_both_controllers() async throws {
         // Given: real form and inventory screens, selected after compact entry.
         let sessionID = "splitNavigationTests.\(UUID().uuidString)"

@@ -27,6 +27,7 @@
 - [*] Login: Signing in with store credentials now asks for your WordPress sign-in or dashboard address when a security plugin has moved it, instead of failing. [https://github.com/woocommerce/woocommerce-ios/pull/17724]
 - [*] Notifications: Removed notifications for sites disconnected from WordPress.com from Notification Center. [https://github.com/woocommerce/woocommerce-ios/pull/17835]
 - [*] Push notifications: When a store's Jetpack is in Offline Mode, setup now shows a clear, actionable message explaining the cause instead of a generic permission error. [https://github.com/woocommerce/woocommerce-ios/pull/17857]
+- [*] Settings: Fixed the missing back button on the Push Notifications detail screens (New orders, New reviews, Stock) on iOS 18. [https://github.com/woocommerce/woocommerce-ios/pull/PR_NUMBER]
 
 25.6
 -----

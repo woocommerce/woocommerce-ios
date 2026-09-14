@@ -87,8 +87,11 @@ private extension AgeRangeVerificationService {
             requirements = try await Task.detached(priority: .userInitiated) {
                 try await provider.retrieveAgeRangeRequirements()
             }.value
+        } catch let providerError as AgeRangeProviderError where providerError.isPreflightUnavailable {
+            // No preflight API on this OS (iOS 26.0–26.1): the age range request is the only signal.
+            requirements = nil
         } catch {
-            DDLogError("Age Range: Failed to fetch regulatory requirements. Error: \(error)")
+            DDLogError("Age Range: Failed to fetch regulatory requirements; skipping the age range request. Error: \(error)")
             if let providerError = error as? AgeRangeProviderError,
                case let .other(underlyingError) = providerError {
                 crashLogging.logError(
@@ -97,7 +100,9 @@ private extension AgeRangeVerificationService {
                     level: .warning
                 )
             }
-            requirements = nil
+            // Fail open, like every other provider error. Asking without a verdict would send
+            // users outside any regulated regime into the system sheet; the next launch re-checks.
+            return .sdkError(error)
         }
 
         if requirements?.isComplianceRequired == false {
@@ -169,5 +174,15 @@ private extension AgeRangeVerificationService {
     func isMinor(lowerBound: Int?) -> Bool {
         guard let lowerBound else { return false }
         return lowerBound < 18
+    }
+}
+
+private extension AgeRangeProviderError {
+    /// The preflight API itself is missing on this OS, as opposed to the system failing to answer.
+    var isPreflightUnavailable: Bool {
+        if case .notAvailable = self {
+            return true
+        }
+        return false
     }
 }

@@ -135,6 +135,40 @@ struct OrdersSplitViewWrapperControllerTests {
         #expect(secondaryNavigationController.viewControllers.isEmpty)
         #expect(sut.navigationItemsHaveSingleOwners())
     }
+
+    @Test func setting_collapsed_content_with_animation_detaches_before_animating_the_primary_stack() {
+        // Given
+        let splitViewController = CollapsedSplitViewController(style: .doubleColumn)
+        let rootViewController = UIViewController()
+        let detailViewController = UIViewController()
+        let primaryNavigationController = NavigationControllerUpdateSpy(rootViewController: rootViewController)
+        let secondaryNavigationController = NavigationControllerUpdateSpy()
+        let sut = SplitViewNavigationStack(splitViewController: splitViewController,
+                                           primaryNavigationController: primaryNavigationController,
+                                           secondaryNavigationController: secondaryNavigationController)
+
+        // When
+        sut.setContentViewControllers([detailViewController], showsInCollapsedLayout: true, animated: true)
+
+        // Then
+        #expect(secondaryNavigationController.viewControllers.isEmpty)
+        #expect(primaryNavigationController.lastPushAnimation == true)
+        #expect(primaryNavigationController.viewControllers == [rootViewController, detailViewController])
+        #expect(sut.navigationItemsHaveSingleOwners())
+    }
+}
+
+private final class CollapsedSplitViewController: UISplitViewController {
+    override var isCollapsed: Bool { true }
+}
+
+private final class NavigationControllerUpdateSpy: UINavigationController {
+    private(set) var lastPushAnimation: Bool?
+
+    override func pushViewController(_ viewController: UIViewController, animated: Bool) {
+        lastPushAnimation = animated
+        super.pushViewController(viewController, animated: animated)
+    }
 }
 
 @MainActor

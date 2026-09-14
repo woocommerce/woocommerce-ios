@@ -75,20 +75,26 @@ final class SplitViewNavigationStack {
         contentViewControllers.last
     }
 
-    func setContentViewControllers(_ viewControllers: [UIViewController], showsInCollapsedLayout: Bool) {
+    func setContentViewControllers(_ viewControllers: [UIViewController],
+                                   showsInCollapsedLayout: Bool,
+                                   animated: Bool = false) {
         if pendingCollapse != nil {
             pendingCollapse = PendingCollapse(viewControllers: viewControllers, showsSecondaryContent: showsInCollapsedLayout)
             return
         }
         if showsInCollapsedLayout && (splitViewController.isCollapsed || contentIsInPrimaryNavigationController) {
-            moveContentToPrimary(viewControllers)
+            moveContentToPrimary(viewControllers, animated: animated)
         } else {
             moveContentToSecondary(viewControllers)
         }
     }
 
-    func pushContentViewController(_ viewController: UIViewController, showsInCollapsedLayout: Bool) {
-        setContentViewControllers(contentViewControllers + [viewController], showsInCollapsedLayout: showsInCollapsedLayout)
+    func pushContentViewController(_ viewController: UIViewController,
+                                   showsInCollapsedLayout: Bool,
+                                   animated: Bool = false) {
+        setContentViewControllers(contentViewControllers + [viewController],
+                                  showsInCollapsedLayout: showsInCollapsedLayout,
+                                  animated: animated)
     }
 
     func replaceTopContentViewController(with viewController: UIViewController, showsInCollapsedLayout: Bool) {
@@ -141,10 +147,18 @@ private extension SplitViewNavigationStack {
         Array(primaryNavigationController.viewControllers.prefix(1))
     }
 
-    func moveContentToPrimary(_ viewControllers: [UIViewController]) {
+    func moveContentToPrimary(_ viewControllers: [UIViewController], animated: Bool = false) {
         // Remove the view controllers from the secondary bar before its items are adopted by the primary bar.
         secondaryNavigationController.setViewControllers([], animated: false)
-        primaryNavigationController.setViewControllers(primaryRootViewControllers + viewControllers, animated: false)
+        guard animated, let viewControllerToShow = viewControllers.last else {
+            primaryNavigationController.setViewControllers(primaryRootViewControllers + viewControllers, animated: false)
+            contentIsInPrimaryNavigationController = true
+            assertNavigationItemsHaveSingleOwners()
+            return
+        }
+
+        primaryNavigationController.setViewControllers(primaryRootViewControllers + viewControllers.dropLast(), animated: false)
+        primaryNavigationController.pushViewController(viewControllerToShow, animated: true)
         contentIsInPrimaryNavigationController = true
         assertNavigationItemsHaveSingleOwners()
     }

@@ -315,10 +315,14 @@ private extension ProductsSplitViewCoordinator {
         }
 
         if replacesNavigationStack {
-            navigationStack.setContentViewControllers([viewController], showsInCollapsedLayout: contentType != .empty)
+            navigationStack.setContentViewControllers([viewController],
+                                                      showsInCollapsedLayout: contentType != .empty,
+                                                      animated: splitViewController.isCollapsed)
             contentTypes = [contentType]
         } else {
-            navigationStack.pushContentViewController(viewController, showsInCollapsedLayout: contentType != .empty)
+            navigationStack.pushContentViewController(viewController,
+                                                      showsInCollapsedLayout: contentType != .empty,
+                                                      animated: splitViewController.isCollapsed)
             contentTypes.append(contentType)
         }
 

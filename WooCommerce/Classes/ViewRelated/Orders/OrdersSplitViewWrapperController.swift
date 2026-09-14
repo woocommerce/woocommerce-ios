@@ -97,7 +97,9 @@ private extension OrdersSplitViewWrapperController {
         // - white debugging noticed that ordersViewController.navigationController had multiple orders in the view controllers list
         ordersViewController.navigationController?.popToRootViewController(animated: false)
 
-        navigationStack.setContentViewControllers([viewController], showsInCollapsedLayout: showsInCollapsedLayout)
+        navigationStack.setContentViewControllers([viewController],
+                                                  showsInCollapsedLayout: showsInCollapsedLayout,
+                                                  animated: ordersSplitViewController.isCollapsed && showsInCollapsedLayout)
         if !ordersSplitViewController.isCollapsed {
             ordersSplitViewController.show(.secondary)
         }

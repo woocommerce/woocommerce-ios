@@ -50,8 +50,8 @@ public class AccountStore: Store {
             synchronizeAccount(onCompletion: onCompletion)
         case .synchronizeAccountSettings(let userID, let onCompletion):
             synchronizeAccountSettings(userID: userID, onCompletion: onCompletion)
-        case .synchronizeSites(let onCompletion):
-            synchronizeSites(onCompletion: onCompletion)
+        case .synchronizeSites(let siteIDToPreserve, let onCompletion):
+            synchronizeSites(preservingSiteID: siteIDToPreserve, onCompletion: onCompletion)
         case .synchronizeSitesAndReturnSelectedSiteInfo(let siteAddress, let onCompletion):
             synchronizeSitesAndReturnSelectedSiteInfo(for: siteAddress, onCompletion: onCompletion)
         case .synchronizeSitePlan(let siteID, let onCompletion):
@@ -172,7 +172,7 @@ private extension AccountStore {
 
     /// Synchronizes the WordPress.com sites associated with the Network's Auth Token.
     ///
-    func synchronizeSites(onCompletion: @escaping (Result<SiteSynchronizationResult, Error>) -> Void) {
+    func synchronizeSites(preservingSiteID: Int64? = nil, onCompletion: @escaping (Result<SiteSynchronizationResult, Error>) -> Void) {
         remote.loadSites()
             .flatMap { result -> AnyPublisher<Result<[Site], Error>, Never> in
                 switch result {
@@ -221,7 +221,7 @@ private extension AccountStore {
                     }
                     let containsJCPSites = sites.contains(where: { $0.isJetpackCPConnected })
                     sites.forEach { self.persistHTTPSConfigurationRequirement(from: $0) }
-                    self.upsertStoredSitesInBackground(readOnlySites: sites) { wasApplied in
+                    self.upsertStoredSitesInBackground(readOnlySites: sites, preservingSiteID: preservingSiteID) { wasApplied in
                         guard wasApplied else {
                             return
                         }
@@ -352,16 +352,18 @@ extension AccountStore {
 
     /// Updates (OR Inserts) the specified ReadOnly Site Entities into the Storage Layer.
     ///
-    func upsertStoredSitesInBackground(readOnlySites: [Networking.Site], onCompletion: @escaping (Bool) -> Void) {
+    func upsertStoredSitesInBackground(readOnlySites: [Networking.Site],
+                                      preservingSiteID: Int64? = nil,
+                                      onCompletion: @escaping (Bool) -> Void) {
         storageManager.performAndSave({ [weak self] derivedStorage -> Bool in
             guard self?.canApplySiteSynchronization == true else {
                 return false
             }
 
-            // Deletes sites in storage that are not in `readOnlySites`, including the selected site.
+            // Jetpack setup can preserve its just-verified site while `/me/sites` catches up.
             let storageSites = derivedStorage.loadAllSites()
             let readOnlySiteIDs = readOnlySites.map(\.siteID)
-            storageSites.filter { readOnlySiteIDs.contains($0.siteID) == false }
+            storageSites.filter { readOnlySiteIDs.contains($0.siteID) == false && $0.siteID != preservingSiteID }
                 .forEach { remotelyDeletedSite in
                     derivedStorage.deleteObject(remotelyDeletedSite)
                 }

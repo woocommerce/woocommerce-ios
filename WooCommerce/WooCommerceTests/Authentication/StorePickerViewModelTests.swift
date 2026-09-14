@@ -135,7 +135,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break
@@ -159,7 +159,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break
@@ -179,7 +179,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break
@@ -204,7 +204,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break
@@ -234,7 +234,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break
@@ -271,7 +271,7 @@ final class StorePickerViewModelTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break
@@ -293,7 +293,7 @@ final class StorePickerViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break
@@ -320,7 +320,7 @@ final class StorePickerViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break
@@ -351,7 +351,7 @@ final class StorePickerViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break
@@ -380,7 +380,7 @@ final class StorePickerViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break
@@ -412,7 +412,7 @@ final class StorePickerViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
-            case let .synchronizeSites(onCompletion):
+            case let .synchronizeSites(_, onCompletion):
                 onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break

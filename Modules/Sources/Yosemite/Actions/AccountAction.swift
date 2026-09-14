@@ -31,7 +31,7 @@ public enum AccountAction: Action {
                                 onCompletion: (Result<SiteLoadResult, Error>) -> Void)
     case synchronizeAccount(onCompletion: (Result<Account, Error>) -> Void)
     case synchronizeAccountSettings(userID: Int64, onCompletion: (Result<AccountSettings, Error>) -> Void)
-    case synchronizeSites(onCompletion: (Result<SiteSynchronizationResult, Error>) -> Void)
+    case synchronizeSites(preservingSiteID: Int64? = nil, onCompletion: (Result<SiteSynchronizationResult, Error>) -> Void)
     case synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: String, onCompletion: (Result<SelectedSiteSynchronizationResult, Error>) -> Void)
     case synchronizeSitePlan(siteID: Int64, onCompletion: (Result<Void, Error>) -> Void)
     case updateAccountSettings(userID: Int64, tracksOptOut: Bool, onCompletion: (Result<Void, Error>) -> Void)

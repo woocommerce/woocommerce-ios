@@ -900,6 +900,24 @@ final class StoresManagerTests: XCTestCase {
         }
     }
 
+    func test_synchronizeEntities_when_preserving_selected_site_then_keeps_selection_and_notifications_enabled() {
+        // Given
+        let (manager, state, sessionManager) = makeSiteSynchronizationTestContext()
+
+        // When
+        manager.synchronizeEntities(preservingSelectedSite: true, onCompletion: nil)
+        guard let action = state.receivedActions.last as? AccountAction,
+              case let .synchronizeSites(preservingSiteID, onCompletion) = action else {
+            return XCTFail("Expected synchronizeSites action")
+        }
+        onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [456])))
+
+        // Then
+        XCTAssertEqual(preservingSiteID, 123)
+        XCTAssertEqual(sessionManager.defaultStoreID, 123)
+        XCTAssertEqual(Set(PushNotificationRegistrationState(defaults: pushNotificationDefaults).connectedSiteIDs ?? []), [123, 456])
+    }
+
     func test_synchronizeSites_when_request_fails_then_preserves_selected_store_and_connected_site_ids() {
         // Given
         pushNotificationDefaults.set("123", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
@@ -991,7 +1009,7 @@ private extension StoresManagerTests {
                                   state: MockStoresManagerState) -> (Result<SiteSynchronizationResult, Error>) -> Void {
         manager.dispatch(AccountAction.synchronizeSites { _ in })
         guard let action = state.receivedActions.first as? AccountAction,
-              case let .synchronizeSites(onCompletion) = action else {
+              case let .synchronizeSites(_, onCompletion) = action else {
             XCTFail("Expected synchronizeSites action")
             return { _ in }
         }

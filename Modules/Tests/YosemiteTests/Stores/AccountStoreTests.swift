@@ -521,6 +521,25 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSite(siteID: 127))
     }
 
+    func test_synchronizeSites_when_preserving_site_then_deletes_only_other_missing_sites() throws {
+        // Given
+        let remote = MockAccountRemote()
+        remote.loadSitesResult = .success([])
+        let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
+        storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123))
+        storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 456))
+
+        // When
+        let result: Result<SiteSynchronizationResult, Error> = waitFor { promise in
+            store.onAction(AccountAction.synchronizeSites(preservingSiteID: 123, onCompletion: promise))
+        }
+
+        // Then
+        XCTAssertEqual(try result.get().siteIDs, [])
+        XCTAssertNotNil(viewStorage.loadSite(siteID: 123))
+        XCTAssertNil(viewStorage.loadSite(siteID: 456))
+    }
+
     /// Verifies that `synchronizeSites` deletes the selected site after a successful response omits it.
     ///
     func test_synchronizeSites_deletes_selected_site_that_does_not_exist_remotely() {

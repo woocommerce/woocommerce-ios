@@ -321,7 +321,7 @@ private extension JetpackSetupCoordinator {
                         cookieNonceAuthenticationEndpoints: previousAuthenticationEndpoints,
                         locally: true
                     )
-                    stores.synchronizeEntities { [weak self] in
+                    stores.synchronizeEntities(preservingSelectedSite: true) { [weak self] in
                         self?.stores.updateDefaultStore(site)
                         dismiss()
                     }

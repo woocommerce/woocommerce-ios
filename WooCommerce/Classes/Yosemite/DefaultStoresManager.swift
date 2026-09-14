@@ -211,8 +211,8 @@ class DefaultStoresManager: StoresManager {
                                    forcedUpdate: forcedUpdate,
                                    shouldSynchronize: shouldSynchronize,
                                    onCompletion: onCompletion)
-        case let .synchronizeSites(onCompletion):
-            synchronizeSites(onCompletion: onCompletion)
+        case let .synchronizeSites(siteIDToPreserve, onCompletion):
+            synchronizeSites(preservingSiteID: siteIDToPreserve, onCompletion: onCompletion)
         case let .synchronizeSitesAndReturnSelectedSiteInfo(siteAddress, onCompletion):
             synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: siteAddress, onCompletion: onCompletion)
         default:
@@ -337,7 +337,8 @@ class DefaultStoresManager: StoresManager {
     /// Synchronizes all of the Session's Entities.
     ///
     @discardableResult
-    func synchronizeEntities(onCompletion: (() -> Void)? = nil) -> StoresManager {
+    func synchronizeEntities(preservingSelectedSite: Bool = false, onCompletion: (() -> Void)? = nil) -> StoresManager {
+        let selectedSiteID = preservingSelectedSite ? sessionManager.defaultStoreID : nil
         let group = DispatchGroup()
 
         group.enter()
@@ -350,7 +351,7 @@ class DefaultStoresManager: StoresManager {
         }
 
         group.enter()
-        synchronizeSitesForSession { _ in
+        synchronizeSitesForSession(preservingSiteID: selectedSiteID) { _ in
             group.leave()
         }
 
@@ -604,15 +605,15 @@ private extension DefaultStoresManager {
 
     /// Runs `/me/sites` only for WordPress.com sessions and applies successful results while the
     /// credentials that started the request are still active.
-    func synchronizeSites(onCompletion: @escaping (Result<SiteSynchronizationResult, Error>) -> Void) {
+    func synchronizeSites(preservingSiteID: Int64? = nil, onCompletion: @escaping (Result<SiteSynchronizationResult, Error>) -> Void) {
         guard let authToken = wpcomAuthToken(for: sessionManager.defaultCredentials) else {
             onCompletion(.failure(StoresManagerError.missingDefaultSite))
             return
         }
 
-        state.onAction(AccountAction.synchronizeSites { [weak self] result in
+        state.onAction(AccountAction.synchronizeSites(preservingSiteID: preservingSiteID) { [weak self] result in
             if case let .success(result) = result {
-                self?.reconcileSynchronizedSites(result, authToken: authToken)
+                self?.reconcileSynchronizedSites(result, authToken: authToken, preservingSiteID: preservingSiteID)
             }
             onCompletion(result)
         })
@@ -649,14 +650,19 @@ private extension DefaultStoresManager {
         })
     }
 
-    func reconcileSynchronizedSites(_ result: SiteSynchronizationResult, authToken: String) {
+    func reconcileSynchronizedSites(_ result: SiteSynchronizationResult, authToken: String, preservingSiteID: Int64? = nil) {
         guard wpcomAuthToken(for: sessionManager.defaultCredentials) == authToken else {
             return
         }
 
-        PushNotificationRegistrationState(defaults: pushNotificationDefaults).updateConnectedSiteIDs(result.siteIDs)
+        // Setup has just verified this store; keep its notifications enabled while `/me/sites` catches up.
+        var connectedSiteIDs = result.siteIDs
+        if let preservingSiteID, connectedSiteIDs.contains(preservingSiteID) == false {
+            connectedSiteIDs.append(preservingSiteID)
+        }
+        PushNotificationRegistrationState(defaults: pushNotificationDefaults).updateConnectedSiteIDs(connectedSiteIDs)
 
-        if let selectedSiteID = sessionManager.defaultStoreID, result.siteIDs.contains(selectedSiteID) == false {
+        if let currentSiteID = sessionManager.defaultStoreID, connectedSiteIDs.contains(currentSiteID) == false {
             resetSelectedStore()
         }
     }
@@ -753,9 +759,9 @@ private extension DefaultStoresManager {
 
     /// Synchronizes the WordPress.com Sites, associated with the current credentials.
     ///
-    func synchronizeSitesForSession(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeSitesForSession(preservingSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let action = AccountAction
-            .synchronizeSites { result in
+            .synchronizeSites(preservingSiteID: preservingSiteID) { result in
                 onCompletion(result.map { _ in () })
             }
         dispatch(action)

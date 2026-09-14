@@ -409,6 +409,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
             capturedEndpoints != nil
         }
         XCTAssertEqual(capturedEndpoints, endpoints)
+        XCTAssertEqual(stores.preservingSelectedSite, true)
     }
 
     func test_authenticateUserAndRefreshSite_when_sync_fails_and_user_cancels_then_restores_wporg_endpoints() throws {
@@ -489,6 +490,7 @@ private extension MockStoresManager {
 
 private final class MockJetpackSetupStoresManager: DefaultStoresManager {
     private let siteSyncResult: Result<Site, Error>
+    private(set) var preservingSelectedSite: Bool?
     private(set) var authenticatedCookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?
 
     init(sessionManager: SessionManager, siteSyncResult: Result<Site, Error>) {
@@ -529,7 +531,8 @@ private final class MockJetpackSetupStoresManager: DefaultStoresManager {
     }
 
     @discardableResult
-    override func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
+    override func synchronizeEntities(preservingSelectedSite: Bool = false, onCompletion: (() -> Void)?) -> StoresManager {
+        self.preservingSelectedSite = preservingSelectedSite
         onCompletion?()
         return self
     }

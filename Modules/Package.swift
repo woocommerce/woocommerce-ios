@@ -320,7 +320,7 @@ let package = Package(
                 "NetworkingCore",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "StoreDesignSystem",
@@ -424,7 +424,7 @@ let package = Package(
             dependencies: [
                 .target(name: "WooAIAssistant"),
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .testTarget(
             name: "ParcelFittingCheckTests",

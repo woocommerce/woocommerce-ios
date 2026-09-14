@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@MainActor
 struct ToolActivityCarouselTests {
 
     @Test

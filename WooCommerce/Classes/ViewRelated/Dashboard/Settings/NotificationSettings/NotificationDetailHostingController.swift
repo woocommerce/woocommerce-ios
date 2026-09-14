@@ -8,12 +8,19 @@ import protocol WooFoundation.Analytics
 /// discard-changes flow; each subclass just declares its detail view and a
 /// scoped discard handler.
 ///
+/// The **title** is set via `.navigationTitle` *and* `title`.
+/// `UIHostingController` clears `navigationItem.title` when SwiftUI doesn't
+/// supply one, and the UIKit side is what the push transition measures —
+/// otherwise the back button is sized against an empty title and visibly
+/// collapses to "Back" once the real one lands. Both read
+/// `Content.navigationTitle`.
+///
 /// The back button is UIKit's standard one, which routes through
 /// `navigationBar(_:shouldPop:)` into `shouldPopOnBackButton` to trigger the
 /// discard flow. Do NOT add `.navigationBarBackButtonHidden(true)` — on iOS 18
 /// that hides the whole leading area, UIKit-set items included (WOOMOB-4027).
 ///
-class NotificationDetailHostingController<Content: View>: UIHostingController<Content> {
+class NotificationDetailHostingController<Content: NotificationDetailContent>: UIHostingController<Content> {
 
     let viewModel: PushNotificationPreferencesViewModel
     private let onDiscard: () -> Void
@@ -53,6 +60,8 @@ class NotificationDetailHostingController<Content: View>: UIHostingController<Co
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        // Reserves width for the bar's first layout, during the push transition.
+        title = Content.navigationTitle
         refreshRightBarButtonItem()
         // Routes the edge-swipe gesture through `shouldPopOnSwipeBack`.
         handleSwipeBackGesture()
@@ -131,6 +140,12 @@ class NotificationDetailHostingController<Content: View>: UIHostingController<Co
                                                                                outcome: .cancel))
         })
     }
+}
+
+/// Root view of a push-notification preference detail screen.
+/// `NotificationDetailHostingController` reads `navigationTitle`.
+protocol NotificationDetailContent: View {
+    static var navigationTitle: String { get }
 }
 
 /// Localized strings for `NotificationDetailHostingController`. Lives at file

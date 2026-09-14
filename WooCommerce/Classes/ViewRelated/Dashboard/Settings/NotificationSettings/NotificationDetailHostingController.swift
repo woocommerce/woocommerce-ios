@@ -4,18 +4,14 @@ import EventHorizonSDK
 import protocol WooFoundation.Analytics
 
 /// Generic base for per-section push-notification preference detail screens.
-/// Owns navigation chrome — Save bar button, custom back button, spinner
-/// while saving, discard-changes flow — and observes the shared
-/// `PushNotificationPreferencesViewModel` so each kind's host controller
-/// becomes a thin subclass that just declares its detail view and a scoped
-/// discard handler.
+/// Owns navigation chrome — Save bar button, spinner while saving, and the
+/// discard-changes flow; each subclass just declares its detail view and a
+/// scoped discard handler.
 ///
-/// Toolbar items live on `navigationItem` rather than in a SwiftUI `.toolbar`
-/// modifier — when a `UIHostingController`'s root view declares any toolbar
-/// item, SwiftUI takes ownership of the navigation item and routes the back
-/// button through its own gesture stack, bypassing
-/// `UINavigationBarDelegate.navigationBar(_:shouldPop:)` and
-/// `shouldPopOnBackButton`.
+/// The back button is UIKit's standard one, which routes through
+/// `navigationBar(_:shouldPop:)` into `shouldPopOnBackButton` to trigger the
+/// discard flow. Do NOT add `.navigationBarBackButtonHidden(true)` — on iOS 18
+/// that hides the whole leading area, UIKit-set items included (WOOMOB-4027).
 ///
 class NotificationDetailHostingController<Content: View>: UIHostingController<Content> {
 
@@ -30,16 +26,6 @@ class NotificationDetailHostingController<Content: View>: UIHostingController<Co
                                    target: self,
                                    action: #selector(handleSaveTapped))
         item.isEnabled = false
-        return item
-    }()
-
-    private lazy var backBarButtonItem: UIBarButtonItem = {
-        let image = UIImage(systemName: "chevron.backward")
-        let item = UIBarButtonItem(image: image,
-                                   style: .plain,
-                                   target: self,
-                                   action: #selector(handleBackTapped))
-        item.accessibilityLabel = NotificationDetailHostingControllerStrings.back
         return item
     }()
 
@@ -67,7 +53,6 @@ class NotificationDetailHostingController<Content: View>: UIHostingController<Co
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        navigationItem.leftBarButtonItem = backBarButtonItem
         refreshRightBarButtonItem()
         // Routes the edge-swipe gesture through `shouldPopOnSwipeBack`.
         handleSwipeBackGesture()
@@ -90,14 +75,6 @@ class NotificationDetailHostingController<Content: View>: UIHostingController<Co
     //
     // Lives in the class body (not a private extension) because `@objc`
     // members aren't permitted in extensions of generic classes.
-
-    @objc private func handleBackTapped() {
-        if viewModel.hasUnsavedChanges {
-            presentBackNavigationActionSheet()
-        } else {
-            navigationController?.popViewController(animated: true)
-        }
-    }
 
     @objc private func handleSaveTapped() {
         guard !viewModel.isSaving else { return }
@@ -164,10 +141,5 @@ private enum NotificationDetailHostingControllerStrings {
         "notificationDetailHostingController.save",
         value: "Save",
         comment: "Title of the Save bar button on a push notification preferences detail screen."
-    )
-    static let back = NSLocalizedString(
-        "notificationDetailHostingController.back",
-        value: "Back",
-        comment: "VoiceOver label for the back button on a push notification preferences detail screen."
     )
 }

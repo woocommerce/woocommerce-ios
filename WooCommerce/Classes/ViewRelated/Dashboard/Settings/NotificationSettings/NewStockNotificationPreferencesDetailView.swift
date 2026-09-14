@@ -26,10 +26,6 @@ struct NewStockNotificationPreferencesDetailView: View {
         .disabled(viewModel.isSaving)
         .navigationTitle(Localization.title)
         .navigationBarTitleDisplayMode(.inline)
-        // `leftBarButtonItem` set in UIKit doesn't suppress SwiftUI's own back
-        // button, so without this both render side-by-side and only the UIKit
-        // one routes through the discard handler.
-        .navigationBarBackButtonHidden(true)
         .notice($viewModel.errorNotice)
         .onAppear {
             viewModel.detailDidAppear(notificationType: .stockAlert)

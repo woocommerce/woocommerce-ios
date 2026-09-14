@@ -13,6 +13,9 @@
 - [Internal] POS: Removed the server-calculated refunds feature flag; the flow is on for every store running WooCommerce 11.1.0 or later. [https://github.com/woocommerce/woocommerce-ios/pull/17836]
 - [*] POS: Fixed a refund failing with "Invalid refund amount" on stores that enter prices inclusive of tax. [https://github.com/woocommerce/woocommerce-ios/pull/17827]
 - [*] Login: Signing in with store credentials now asks for your WordPress sign-in or dashboard address when a security plugin has moved it, instead of failing. [https://github.com/woocommerce/woocommerce-ios/pull/17724]
+- [*] Settings: Fixed the missing back button on the Push Notifications detail screens (New orders, New reviews, Stock) on iOS 18. [https://github.com/woocommerce/woocommerce-ios/pull/17868]
+- [*] Settings: The Save button on the Push Notifications detail screens no longer disappears right after the screen opens. [https://github.com/woocommerce/woocommerce-ios/pull/17868]
+- [*] Settings: Fixed stray "u{00A0}" text in the low stock threshold sentence on the Stock notifications screen. [https://github.com/woocommerce/woocommerce-ios/pull/17868]
 
 25.6
 -----

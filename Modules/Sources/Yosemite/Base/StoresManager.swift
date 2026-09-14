@@ -27,6 +27,12 @@ public protocol StoresManager {
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager
 
+    /// Switches the internal state to Authenticated with transient cookie-nonce endpoint configuration.
+    ///
+    @discardableResult
+    func authenticate(credentials: Credentials,
+                      cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager
+
     /// Switches the state to a Deauthenticated one.
     ///
     @discardableResult

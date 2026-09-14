@@ -9,7 +9,7 @@ import Codegen
 ///
 /// e.g. `credit`, `debit`, `prepaid`
 ///
-public enum WCPayCardFunding: String, Codable, GeneratedCopiable, GeneratedFakeable, Equatable {
+public enum WCPayCardFunding: String, Codable, Sendable, GeneratedCopiable, GeneratedFakeable, Equatable {
     case credit
     case debit
     case prepaid

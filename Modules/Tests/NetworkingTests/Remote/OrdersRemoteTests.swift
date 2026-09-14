@@ -1170,6 +1170,18 @@ final class OrdersRemoteTests: XCTestCase {
         XCTAssertFalse(fields.contains("meta_data"))
     }
 
+    func test_loadPOSOrder_requests_full_precision_amounts() async throws {
+        // Given
+        let remote = OrdersRemote(network: network)
+
+        // When
+        _ = try? await remote.loadPOSOrder(siteID: sampleSiteID, orderID: sampleOrderID)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.parameters["dp"] as? String, "8")
+    }
+
     func test_loadPOSOrders_by_orderIDs_excludes_meta_data_from_fields() async throws {
         // Given
         let remote = OrdersRemote(network: network)

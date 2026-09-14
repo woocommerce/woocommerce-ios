@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// - Note: A closed type holding only the enabled color roles; the disabled presentation is derived
 ///   uniformly by ``StoreButtonStyle`` from the state-layer rule, so it isn't duplicated per variant.
-public struct StoreButtonVariant {
+public struct StoreButtonVariant: Sendable {
     /// The enabled-state color roles. `background` and `border` are optional: `nil` means
     /// the variant has no fill / no border.
     struct Appearance {

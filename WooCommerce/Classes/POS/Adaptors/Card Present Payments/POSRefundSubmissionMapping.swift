@@ -145,12 +145,20 @@ struct POSRefundSubmissionMapping {
         return productLines + feeLines
     }
 
-    func refundValues(items: [RefundableOrderItem], fees: [OrderFeeLine]) -> (subtotal: Decimal, tax: Decimal, total: Decimal) {
+    func refundValues(items: [RefundableOrderItem],
+                      fees: [OrderFeeLine],
+                      order: Order) -> (subtotal: Decimal, tax: Decimal, total: Decimal) {
         let itemValues = RefundItemsValuesCalculationUseCase(refundItems: items, currencyFormatter: currencyFormatter).calculateRefundValues()
         let feeValues = RefundFeesCalculationUseCase(fees: fees, currencyFormatter: currencyFormatter).calculateRefundValues()
         let subtotal = itemValues.subtotal + feeValues.subtotal
         let tax = itemValues.tax + feeValues.tax
-        return (subtotal, tax, subtotal + tax)
+        var total = subtotal + tax
+
+        if let maxRefundableAmount = maxRefundableAmount(for: order) {
+            total = min(total, maxRefundableAmount)
+        }
+
+        return (subtotal, tax, total)
     }
 
     func apiAmountString(for amount: Decimal) -> String {
@@ -187,6 +195,14 @@ struct POSRefundSubmissionMapping {
 }
 
 private extension POSRefundSubmissionMapping {
+    func maxRefundableAmount(for order: Order) -> Decimal? {
+        guard let orderTotal = currencyFormatter.convertToDecimal(order.total) as Decimal? else {
+            return nil
+        }
+        let totalRefunded = TotalRefundedCalculationUseCase(order: order, currencyFormatter: currencyFormatter).totalRefunded().decimalValue
+        return max(orderTotal + totalRefunded, .zero)
+    }
+
     /// The tax-inclusive amount to request for a fee line, or nil for a zero-total fee.
     /// Zero lines must be dropped from both the preview and the computed create: the server
     /// rejects a gross line refund of zero with `invalid_refund_total`, and a zero line

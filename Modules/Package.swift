@@ -153,7 +153,7 @@ let package = Package(
                 "WooFoundationCore",
                 .product(name: "AutomatticTracks", package: "Automattic-Tracks-iOS"),
             ],
-            swiftSettings: swift6
+            swiftSettings: swift5
         ),
         .target(
             name: "Fakes",
@@ -215,7 +215,7 @@ let package = Package(
         .target(
             name: "TestKit",
             dependencies: ["Difference", "Nimble"],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "UITestsFoundation",
@@ -320,11 +320,11 @@ let package = Package(
                 "NetworkingCore",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "StoreDesignSystem",
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "NetworkingTestsResponsesFixtures",
@@ -424,7 +424,7 @@ let package = Package(
             dependencies: [
                 .target(name: "WooAIAssistant"),
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .testTarget(
             name: "ParcelFittingCheckTests",
@@ -437,7 +437,7 @@ let package = Package(
         .testTarget(
             name: "StoreDesignSystemTests",
             dependencies: ["StoreDesignSystem"],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .binaryTarget(
             name: "EventHorizonSDK",

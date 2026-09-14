@@ -1,5 +1,4 @@
 import Foundation
-import Experiments
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
@@ -276,7 +275,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private let locale: Locale
     private let userDefaults: UserDefaults
     private let analytics: Analytics
-    private let featureFlagService: FeatureFlagService
 
     private var didTrackOnAppear = false
 
@@ -288,7 +286,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
          locale: Locale = .current,
          userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.productID = productID
@@ -298,7 +295,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.locale = locale
         self.userDefaults = userDefaults
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.completionHandler = onCompletion
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
@@ -381,8 +377,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             return isShowingMissingDestinationURLAlert = true
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective),
-           campaignObjective == nil {
+        if campaignObjective == nil {
             return isShowingMissingObjectiveAlert = true
         }
 
@@ -543,9 +538,6 @@ private extension BlazeCampaignCreationFormViewModel {
 
 private extension BlazeCampaignCreationFormViewModel {
     func initializeCampaignObjective() {
-        guard featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective) else {
-            return
-        }
         guard let savedID = userDefaults.retrieveSavedObjectiveID(for: siteID) else {
             return
         }

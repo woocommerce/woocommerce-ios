@@ -206,12 +206,15 @@ private extension NewStockNotificationPreferencesDetailView {
             value: "When a product variant reaches its low stock threshold.",
             comment: "Subtitle of the low-stock toggle row."
         )
+        // Literal non-breaking space before `%1$@` — keep it literal. `genstrings`
+        // copies values verbatim and `.strings` has no `\u{...}` escape, so an escape
+        // ships to users as the text "u{00A0}".
         static let thresholdValueWithLinkFormat = NSLocalizedString(
-            "newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat",
-            value: "Products can use their own threshold or the store-wide threshold of\u{00A0}%1$@. %2$@",
+            "newStockNotificationPreferencesDetailView.lowStock.thresholdValueWithLinkFormat.v2",
+            value: "Products can use their own threshold or the store-wide threshold of %1$@. %2$@",
             comment: "Sentence shown under the Low stock toggle. %1$@ is the store-wide low stock threshold value, e.g. 5; "
                 + "%2$@ is the tappable 'Edit store-wide threshold' link text. "
-                + "The non-breaking space (\\u00A0) before %1$@ keeps the word 'of' and the value on the same line."
+                + "The character before %1$@ is a non-breaking space, keeping the word 'of' and the value on the same line."
         )
         static let thresholdUnavailableSentenceFormat = NSLocalizedString(
             "newStockNotificationPreferencesDetailView.lowStock.thresholdUnavailableSentenceFormat",

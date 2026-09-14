@@ -9,6 +9,8 @@ struct DebugPanelView: View {
 
     @State private var minimumWooVersionOverride: String = UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications] ?? ""
 
+    @State private var manualSignificantChangeID: String = UserDefaults.standard[.debugManualSignificantChangeID] ?? ""
+
     var body: some View {
         List {
             Button {
@@ -40,6 +42,30 @@ struct DebugPanelView: View {
                 DesignSystemDemoView()
             }
             #endif
+
+            Section("Age Verification") {
+                VStack(alignment: .leading) {
+                    Text("Manual significant change ID")
+                    TextField("e.g. test-change-1", text: $manualSignificantChangeID)
+                        .textFieldStyle(.roundedBorder)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .onChange(of: manualSignificantChangeID) { _, newValue in
+                            let trimmed = newValue.trimmingCharacters(in: .whitespaces)
+                            UserDefaults.standard[.debugManualSignificantChangeID] = trimmed.isEmpty ? nil : trimmed
+                        }
+                    Text("A non-empty id is treated as an undeclared significant change on the next age verification " +
+                         "(relaunch or re-login). Needs a device with a sandbox minor account to reach the consent flow.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
+                }
+
+                Button("Reset significant change consent state") {
+                    UserDefaultsSignificantChangeConsentStore.resetAll()
+                    AgeRatingChangeDetector.resetCache()
+                    ServiceLocator.noticePresenter.enqueue(notice: Notice(title: "Significant change consent state cleared"))
+                }
+            }
 
             Section("Announcements") {
                 Button("Fetch Test Announcement (v999.0)") {

@@ -136,7 +136,13 @@ struct POSOrderDetailsView: View {
                         state: refundSelectionState,
                         errorStrings: refundErrorStrings,
                         onDismiss: { dismissRefundFlow() },
-                        onRetryLoading: { initiateRefundFlow() },
+                        onRetryLoading: {
+                            if orderListModel.ordersController.hasLoadedRefundableItems {
+                                refreshRefundSelection()
+                            } else {
+                                initiateRefundFlow()
+                            }
+                        },
                         onRetryPreparation: {
                             self.refundSelectionState = .itemSelection
                         },

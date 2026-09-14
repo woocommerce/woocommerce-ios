@@ -3,11 +3,13 @@ import UserNotifications
 import Yosemite
 import Experiments
 
+@MainActor
 protocol POSNotificationScheduling {
     func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async
 }
 
-final class POSNotificationScheduler: @preconcurrency POSNotificationScheduling {
+@MainActor
+final class POSNotificationScheduler: POSNotificationScheduling {
     enum MerchantType {
         case potentialMerchant
         case currentMerchant
@@ -47,7 +49,7 @@ final class POSNotificationScheduler: @preconcurrency POSNotificationScheduling 
     private let stores: StoresManager
     private let siteSettings: [SiteSetting]
     private let featureFlagService: FeatureFlagService
-    nonisolated(unsafe) private let pushNotificationsManager: PushNotesManager
+    private let pushNotificationsManager: PushNotesManager
 
     init(stores: StoresManager = ServiceLocator.stores,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
@@ -59,7 +61,6 @@ final class POSNotificationScheduler: @preconcurrency POSNotificationScheduling 
         self.pushNotificationsManager = pushNotificationsManager
     }
 
-    @MainActor
     func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async {
         guard stores.isAuthenticated else { return }
 

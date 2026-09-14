@@ -14,7 +14,7 @@ import protocol PointOfSale.POSExternalNavigationProviding
 import protocol PointOfSale.POSExternalViewProviding
 
 @MainActor
-final class POSServiceLocatorAdaptor: @preconcurrency POSDependencyProviding {
+final class POSServiceLocatorAdaptor: POSDependencyProviding {
     init() {
     }
 
@@ -82,14 +82,14 @@ private struct POSConnectivityAdaptor: POSConnectivityProviding {
 }
 
 @MainActor
-private struct POSExternalNavigationAdaptor: @preconcurrency POSExternalNavigationProviding {
+private struct POSExternalNavigationAdaptor: POSExternalNavigationProviding {
     func navigateToCreateOrder() {
         AppDelegate.shared.tabBarController?.navigate(to: OrdersDestination.createOrder)
     }
 }
 
 @MainActor
-private struct POSExternalViewAdaptor: @preconcurrency POSExternalViewProviding {
+private struct POSExternalViewAdaptor: POSExternalViewProviding {
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView {
         AnyView(
             SupportForm(isPresented: isPresented,

@@ -38,6 +38,7 @@ public protocol POSConnectivityProviding {
 }
 
 /// Protocol that provides main app navigation capabilities for POS
+@MainActor
 public protocol POSExternalNavigationProviding {
     func navigateToCreateOrder()
 }
@@ -46,8 +47,8 @@ public protocol POSExternalNavigationProviding {
 /// and cannot be easily moved and reused in a shared module
 /// This is used as a workaround to enable POS modularization without requiring a larger refactoring effort
 ///
+@MainActor
 public protocol POSExternalViewProviding {
-    @MainActor
     func createSupportFormView(isPresented: Binding<Bool>, sourceTag: String) -> AnyView
     func createCouponCreationView(discountType: CouponDiscountType,
                                   showTypeSelection: Binding<Bool>,
@@ -63,6 +64,7 @@ public protocol POSExternalViewProviding {
 
 /// Main protocol that combines all POS dependency providers
 /// This enables dependency injection for POS code while maintaining clean separation from ServiceLocator
+@MainActor
 public protocol POSDependencyProviding {
     var analytics: POSAnalyticsProviding { get }
     var currency: POSCurrencySettingsProviding { get }

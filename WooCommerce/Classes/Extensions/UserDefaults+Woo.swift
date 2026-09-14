@@ -7,6 +7,7 @@ import Foundation
 extension UserDefaults {
     enum Key: String {
         case applicationPasswordUnsupportedList
+        case cookieNonceAuthenticationEndpoints
         case defaultCredentialsType
         case defaultAccountID
         case defaultUsername

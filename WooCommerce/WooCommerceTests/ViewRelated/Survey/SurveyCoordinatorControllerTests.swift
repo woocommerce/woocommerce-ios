@@ -15,7 +15,7 @@ final class SurveyCoordinatingControllerTests: XCTestCase {
         super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        ServiceLocator.setFeatureFlagService(MockFeatureFlagService(isSupportRequestEnabled: false))
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService())
     }
 
     override func tearDown() {

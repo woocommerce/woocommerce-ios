@@ -28,6 +28,11 @@ struct MockProductActionHandler: MockActionHandler {
                 retrieveProducts(siteId: siteID, productIds: productIDs, onCompletion: onCompletion)
             case .synchronizeProducts(let siteID, _, _, _, _, _, _, _, _, let excludedProductIDs, _, let onCompletion):
                 synchronizeProducts(siteID: siteID, excludedProductIDs: excludedProductIDs, onCompletion: onCompletion)
+            case .synchronizeProductsForOrderCreation(let siteID, _, _, _, _, _, let onCompletion):
+                let products = objectGraph.products(forSiteId: siteID, without: [])
+                upsert(products: products) {
+                    onCompletion(.success((products, false, [])))
+                }
             default: unimplementedAction(action: action)
         }
     }

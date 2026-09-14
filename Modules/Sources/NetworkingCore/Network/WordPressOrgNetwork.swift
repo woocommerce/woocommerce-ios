@@ -7,14 +7,12 @@ import Foundation
 public struct CookieNonceAuthenticatorConfiguration {
     let username: String
     let password: String
-    let loginURL: URL
-    let adminURL: URL
+    let endpoints: CookieNonceAuthenticationEndpoints
 
-    public init(username: String, password: String, loginURL: URL, adminURL: URL) {
+    public init(username: String, password: String, endpoints: CookieNonceAuthenticationEndpoints) {
         self.username = username
         self.password = password
-        self.loginURL = loginURL
-        self.adminURL = adminURL
+        self.endpoints = endpoints
     }
 }
 

@@ -377,6 +377,138 @@ final class SignificantChangeConsentCoordinatorTests: XCTestCase {
         XCTAssertNotNil(store.pendingRequest)
         XCTAssertEqual(store.setCount, 0)
     }
+
+    // MARK: - Analytics
+
+    @MainActor func test_requestConsent_when_previously_denied_then_tracks_request_as_reask() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let provider = MockConsentProvider(requestResult: .sent(questionID: UUID()))
+        let store = MockConsentStore()
+        store.statusByIdentifier[ratingChangeIdentifier] = .denied
+        let sut = SignificantChangeConsentCoordinator(
+            consentProvider: provider,
+            consentStore: store,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+
+        // When
+        _ = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.accountAgeConsentRequested.rawValue])
+        let properties = analyticsProvider.receivedProperties.first
+        XCTAssertEqual(properties?["change_type"] as? String, "age_rating")
+        XCTAssertEqual(properties?["result"] as? String, "sent")
+        XCTAssertEqual(properties?["is_reask"] as? Bool, true)
+    }
+
+    @MainActor func test_requestConsent_when_manual_change_and_notAvailable_then_tracks_request_result() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = SignificantChangeConsentCoordinator(
+            consentProvider: MockConsentProvider(requestResult: .notAvailable),
+            consentStore: MockConsentStore(),
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+
+        // When
+        _ = await sut.requestConsent(
+            in: UIViewController(),
+            ageRatingChange: nil,
+            manualChangeIdentifier: .manual(id: "2026-terms-of-service")
+        )
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.accountAgeConsentRequested.rawValue])
+        let properties = analyticsProvider.receivedProperties.first
+        XCTAssertEqual(properties?["change_type"] as? String, "manual")
+        XCTAssertEqual(properties?["result"] as? String, "not_available")
+        XCTAssertEqual(properties?["is_reask"] as? Bool, false)
+        // Never the manual change id.
+        XCTAssertFalse(properties?.values.contains { ($0 as? String) == "2026-terms-of-service" } ?? true)
+    }
+
+    @MainActor func test_requestConsent_when_no_anchor_then_returns_notAvailable_and_tracks_without_sending() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let provider = MockConsentProvider(requestResult: .sent(questionID: UUID()))
+        let store = MockConsentStore()
+        store.statusByIdentifier[ratingChangeIdentifier] = .denied
+        let sut = SignificantChangeConsentCoordinator(
+            consentProvider: provider,
+            consentStore: store,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+
+        // When
+        let state = await sut.requestConsent(in: nil, ageRatingChange: ratingChange)
+
+        // Then
+        XCTAssertEqual(state, .notAvailable)
+        XCTAssertEqual(provider.requestCount, 0)
+        XCTAssertEqual(store.statusByIdentifier[ratingChangeIdentifier], .denied)
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.accountAgeConsentRequested.rawValue])
+        let properties = analyticsProvider.receivedProperties.first
+        XCTAssertEqual(properties?["result"] as? String, "not_available")
+        XCTAssertEqual(properties?["is_reask"] as? Bool, true)
+    }
+
+    @MainActor func test_requestConsent_when_answer_arrives_within_grace_window_then_tracks_resolution_via_grace_window() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let questionID = UUID()
+        let provider = MockConsentProvider(requestResult: .sent(questionID: questionID))
+        provider.stubbedResponses = [.init(questionID: questionID, isApproved: false)]
+        let sut = SignificantChangeConsentCoordinator(
+            consentProvider: provider,
+            consentStore: MockConsentStore(),
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+
+        // When
+        _ = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents, [
+            WooAnalyticsStat.accountAgeConsentRequested.rawValue,
+            WooAnalyticsStat.accountAgeConsentResolved.rawValue
+        ])
+        let properties = analyticsProvider.receivedProperties.last
+        XCTAssertEqual(properties?["resolution"] as? String, "denied")
+        XCTAssertEqual(properties?["via"] as? String, "grace_window")
+        // Never the PermissionKit question id.
+        XCTAssertFalse(properties?.values.contains { ($0 as? String) == questionID.uuidString } ?? true)
+    }
+
+    @MainActor func test_startObservingResponses_when_pending_question_answered_then_tracks_resolution_via_listener() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let questionID = UUID()
+        let provider = MockConsentProvider(requestResult: .sent(questionID: questionID))
+        provider.stubbedResponses = [.init(questionID: questionID, isApproved: true)]
+        let store = MockConsentStore()
+        store.statusByIdentifier[ratingChangeIdentifier] = .pending
+        store.pendingRequest = PendingConsentRequest(questionID: questionID, identifier: ratingChangeIdentifier)
+        let sut = SignificantChangeConsentCoordinator(
+            consentProvider: provider,
+            consentStore: store,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+        let exp = expectation(description: "onResolution")
+
+        // When
+        sut.startObservingResponses { _ in
+            exp.fulfill()
+        }
+
+        // Then
+        await fulfillment(of: [exp], timeout: 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.accountAgeConsentResolved.rawValue])
+        let properties = analyticsProvider.receivedProperties.first
+        XCTAssertEqual(properties?["resolution"] as? String, "granted")
+        XCTAssertEqual(properties?["via"] as? String, "listener")
+    }
 }
 
 private final class MockConsentProvider: SignificantChangeConsentProviding {

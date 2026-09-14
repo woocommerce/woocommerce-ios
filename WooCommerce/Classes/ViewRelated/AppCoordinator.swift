@@ -82,7 +82,7 @@ final class AppCoordinator {
         ageRangeVerificationCoordinator.startObservingConsentResponses { [weak self] in
             // When logged out the outcome is already persisted; the next login's check picks it up.
             guard let self, self.isLoggedIn else { return }
-            self.triggerAgeVerification()
+            self.triggerAgeVerification(trigger: .consentResolution)
         }
 
         authStatesSubscription = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
@@ -109,7 +109,7 @@ final class AppCoordinator {
                 case (true, false):
                     self.validateRoleEligibility {
                         self.displayLoggedInUI()
-                        self.triggerAgeVerification()
+                        self.triggerAgeVerification(trigger: .sessionStart)
                         self.synchronizeAndShowWhatsNew()
                     }
                 }
@@ -460,9 +460,10 @@ private extension AppCoordinator {
 }
 
 private extension AppCoordinator {
-    func triggerAgeVerification(onAllowed: @escaping () -> Void = { }) {
+    func triggerAgeVerification(trigger: AgeVerificationTrigger, onAllowed: @escaping () -> Void = { }) {
         ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
-            hostingWindow: window
+            hostingWindow: window,
+            trigger: trigger
         ) { [weak self] appAccessDecision, result in
             guard let self else { return }
             switch appAccessDecision {
@@ -495,8 +496,6 @@ private extension AppCoordinator {
             case .restrictDeniedConsent:
                 self.presentSignificantChangeBlocker(context: .approvalDenied)
             }
-
-            //TODO: consider adding analytics event with the result
         }
     }
 
@@ -515,16 +514,26 @@ private extension AppCoordinator {
         // reference — the presentation was refused, or the root was swapped underneath it —
         // must be presented afresh, otherwise the user is silently let through.
         if let blocker = significantChangeBlocker, blocker.presentingViewController != nil {
+            // A re-check that lands on the same screen isn't a new dialog.
+            if blocker.context != context {
+                analytics.track(event: .AgeVerification.dialogShown(for: context))
+            }
             blocker.update(context: context, detailMessage: detailMessage, onAction: action)
             return
         }
         let blocker = SignificantChangeConsentBlockingHostingController(context: context, detailMessage: detailMessage, onAction: action)
         significantChangeBlocker = blocker
-        window.topmostPresentedViewController?.present(blocker, animated: true)
+        if let presenter = window.topmostPresentedViewController {
+            presenter.present(blocker, animated: true)
+            analytics.track(event: .AgeVerification.dialogShown(for: context))
+        } else {
+            DDLogWarn("Failed to obtain view controller to present the significant change blocker.")
+        }
         startForegroundConsentRecheck()
     }
 
     func handleSignificantChangeBlockerAction(for context: SignificantChangeBlockingContext) {
+        analytics.track(event: .AgeVerification.action(for: context))
         switch context {
         case .approvalNeeded, .approvalDenied:
             // The user explicitly sends (or re-sends) the approval request,
@@ -540,10 +549,10 @@ private extension AppCoordinator {
                     dismissSignificantChangeBlockerIfNeeded()
                     return
                 }
-                triggerAgeVerification()
+                triggerAgeVerification(trigger: .wallAction)
             }
         case .pendingApproval:
-            triggerAgeVerification()
+            triggerAgeVerification(trigger: .wallAction)
         case .approvalGranted:
             dismissSignificantChangeBlockerIfNeeded()
         }
@@ -565,7 +574,7 @@ private extension AppCoordinator {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.triggerAgeVerification()
+            self?.triggerAgeVerification(trigger: .foregroundRecheck)
         }
     }
 
@@ -583,6 +592,8 @@ private extension AppCoordinator {
     }
 
     func forceLogoutAndShowAgeAlert() {
+        // Tracked before logout so the event is attributed to the restricted session, like the check itself.
+        analytics.track(event: .AgeVerification.dialogShown(screen: .underageAlert))
         forceLogoutAndReturnToLogin()
 
         DispatchQueue.main.async { [weak self] in

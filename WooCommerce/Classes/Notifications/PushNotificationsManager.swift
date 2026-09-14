@@ -1235,7 +1235,7 @@ private extension PushNotificationsManager {
         }
 
         // Attribute the event to the notification's origin site, not the currently selected one.
-        let notificationSiteID = userInfo[APNSKey.siteID] as? Int64
+        let notificationSiteID = userInfo.integer(forKey: APNSKey.siteID)
         let originSiteID: Int64?
         let originSite: Yosemite.Site?
         if stores.isAuthenticatedWithoutWPCom {

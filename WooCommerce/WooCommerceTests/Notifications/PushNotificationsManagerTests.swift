@@ -1939,6 +1939,30 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(properties["is_from_selected_site"] as? Bool, false)
     }
 
+    func test_handleNotificationInTheForeground_when_blog_is_a_string_then_tracks_origin_blog_id_from_payload() async throws {
+        // Given — the payload encodes `blog` as a string rather than a number.
+        let selectedSiteID: Int64 = 100
+        let originSiteID: Int64 = 300
+        storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        storesManager.sessionManager.setStoreId(selectedSiteID)
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+        application.applicationState = .active
+        var payload = notificationPayload(noteID: 1234, type: .storeOrder, siteID: originSiteID, title: Sample.defaultTitle)
+        payload["blog"] = "\(originSiteID)"
+        manager = makeManager(analytics: analytics)
+
+        // When
+        let notification = try XCTUnwrap(MockNotification(userInfo: payload))
+        _ = await manager.handleNotificationInTheForeground(notification)
+
+        // Then
+        let index = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(of: "push_notification_received"))
+        let properties = analyticsProvider.receivedProperties[index]
+        XCTAssertEqual(properties["blog_id"] as? Int64, originSiteID)
+        XCTAssertEqual(properties["is_from_selected_site"] as? Bool, false)
+    }
+
     func test_handleNotificationInTheForeground_when_woo_driven_store_stock_notification_then_tracks_origin_blog_id() async throws {
         // Given — `store_stock` has no local identifier, so the origin must come from the site properties.
         let selectedSiteID: Int64 = 100

@@ -1,3 +1,4 @@
+import Combine
 import Fakes
 import XCTest
 import WooFoundation
@@ -323,6 +324,41 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertFalse(wasApplied)
         XCTAssertNotNil(viewStorage.loadSite(siteID: cachedSiteID))
         XCTAssertNil(viewStorage.loadSite(siteID: responseSiteID))
+    }
+
+    func test_cancelSiteSynchronizations_when_requests_are_pending_then_completes_each_once_without_cached_fallback() {
+        let site = Site.fake().copy(siteID: 123, url: "https://example.com", isJetpackThePluginInstalled: true)
+        storageManager.insertSampleSite(readOnlySite: site)
+        for responseArrivesBeforeCancellation in [false, true] {
+            // Given
+            let remote = MockAccountRemote()
+            let response = PassthroughSubject<Result<[Networking.Site], Error>, Never>()
+            remote.loadSitesPublisher = response.eraseToAnyPublisher()
+            let store = AccountStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network, remote: remote)
+            var errors: [Error?] = []
+
+            // When
+            waitFor { promise in
+                store.onAction(AccountAction.synchronizeSites { errors.append($0.failure) })
+                store.onAction(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url) { errors.append($0.failure) })
+                store.onAction(AccountAction.loadAndSynchronizeSite(siteID: site.siteID, forcedUpdate: true, shouldSynchronize: true) {
+                    errors.append($0.failure)
+                })
+                if responseArrivesBeforeCancellation {
+                    response.send(.success([site]))
+                }
+                store.cancelSiteSynchronizations()
+                store.cancelSiteSynchronizations()
+                response.send(.success([]))
+                // Let any storage completions queued before cancellation run too.
+                DispatchQueue.main.async { promise(()) }
+            }
+
+            // Then
+            XCTAssertEqual(errors.count, 3)
+            XCTAssertTrue(errors.allSatisfy { $0 is CancellationError })
+            XCTAssertNotNil(viewStorage.loadSite(siteID: site.siteID))
+        }
     }
 
     /// Verifies that `synchronizeSites` effectively persists a Jetpack Connection Package site and a Jetpack site.

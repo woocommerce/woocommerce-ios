@@ -1,15 +1,15 @@
 import SwiftUI
 
-/// Detail screen for the New reviews push notification preferences. Reached by
-/// tapping the New reviews row in `PushNotificationPreferencesView`. Navigation
-/// chrome (title, Save bar button, discard confirmation) lives on the wrapping
-/// `NewReviewNotificationPreferencesHostingController`.
+/// Detail screen for the new reviews push notification preferences. Reached by
+/// tapping the New reviews row in `PushNotificationPreferencesView`.
 ///
 struct NewReviewNotificationPreferencesDetailView: NotificationDetailContent {
 
     @Bindable private var viewModel: PushNotificationPreferencesViewModel
 
     static var navigationTitle: String { Localization.title }
+
+    var onSave: (() -> Void)?
 
     init(viewModel: PushNotificationPreferencesViewModel) {
         self.viewModel = viewModel
@@ -25,6 +25,7 @@ struct NewReviewNotificationPreferencesDetailView: NotificationDetailContent {
         .disabled(viewModel.isSaving)
         .navigationTitle(Self.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .notificationDetailSaveToolbar(viewModel: viewModel, onSave: onSave)
         .notice($viewModel.errorNotice)
         .onAppear {
             viewModel.detailDidAppear(notificationType: .newReview)

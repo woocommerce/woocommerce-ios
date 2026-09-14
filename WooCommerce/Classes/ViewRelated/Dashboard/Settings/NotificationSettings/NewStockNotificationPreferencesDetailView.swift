@@ -1,9 +1,7 @@
 import SwiftUI
 
-/// Detail screen for the Stock push notification preferences. Reached by
-/// tapping the Stock row in `PushNotificationPreferencesView`. Navigation
-/// chrome (title, Save bar button, discard confirmation) lives on the wrapping
-/// `NewStockNotificationPreferencesHostingController`.
+/// Detail screen for the stock push notification preferences. Reached by
+/// tapping the Stock row in `PushNotificationPreferencesView`.
 ///
 struct NewStockNotificationPreferencesDetailView: NotificationDetailContent {
 
@@ -11,6 +9,8 @@ struct NewStockNotificationPreferencesDetailView: NotificationDetailContent {
     @Bindable private var detailViewModel: NewStockNotificationPreferencesDetailViewModel
 
     static var navigationTitle: String { Localization.title }
+
+    var onSave: (() -> Void)?
 
     init(viewModel: PushNotificationPreferencesViewModel,
          detailViewModel: NewStockNotificationPreferencesDetailViewModel) {
@@ -28,6 +28,7 @@ struct NewStockNotificationPreferencesDetailView: NotificationDetailContent {
         .disabled(viewModel.isSaving)
         .navigationTitle(Self.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .notificationDetailSaveToolbar(viewModel: viewModel, onSave: onSave)
         .notice($viewModel.errorNotice)
         .onAppear {
             viewModel.detailDidAppear(notificationType: .stockAlert)

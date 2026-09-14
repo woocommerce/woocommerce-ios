@@ -4,21 +4,20 @@ import EventHorizonSDK
 import protocol WooFoundation.Analytics
 
 /// Generic base for per-section push-notification preference detail screens.
-/// Owns navigation chrome — Save bar button, spinner while saving, and the
-/// discard-changes flow; each subclass just declares its detail view and a
-/// scoped discard handler.
+/// Owns the discard-changes flow and the save action; each subclass just declares
+/// its detail view and a scoped discard handler.
 ///
-/// The **title** is set via `.navigationTitle` *and* `title`.
-/// `UIHostingController` clears `navigationItem.title` when SwiftUI doesn't
-/// supply one, and the UIKit side is what the push transition measures —
-/// otherwise the back button is sized against an empty title and visibly
-/// collapses to "Back" once the real one lands. Both read
-/// `Content.navigationTitle`.
+/// SwiftUI owns the navigation item here, which dictates where each piece lives:
 ///
-/// The back button is UIKit's standard one, which routes through
-/// `navigationBar(_:shouldPop:)` into `shouldPopOnBackButton` to trigger the
-/// discard flow. Do NOT add `.navigationBarBackButtonHidden(true)` — on iOS 18
-/// that hides the whole leading area, UIKit-set items included (WOOMOB-4027).
+/// - **Title**: set via `.navigationTitle` *and* `title`. `UIHostingController`
+///   clears `navigationItem.title` when SwiftUI doesn't supply one, and the UIKit
+///   side is what the push transition measures. Both read `Content.navigationTitle`.
+/// - **Save button**: declared by the root view. A UIKit `rightBarButtonItem` is
+///   wiped on SwiftUI's next update pass.
+/// - **Back button**: UIKit's standard one, which routes through
+///   `navigationBar(_:shouldPop:)` into `shouldPopOnBackButton` to trigger the
+///   discard flow. Do NOT add `.navigationBarBackButtonHidden(true)` — on iOS 18
+///   that hides the whole leading area, UIKit-set items included (WOOMOB-4027).
 ///
 class NotificationDetailHostingController<Content: NotificationDetailContent>: UIHostingController<Content> {
 
@@ -27,19 +26,15 @@ class NotificationDetailHostingController<Content: NotificationDetailContent>: U
     private let notificationType: NotificationTypeValue
     private let analytics: Analytics
 
-    private lazy var saveBarButtonItem: UIBarButtonItem = {
+    /// Reserves the SwiftUI Save button's width for the bar's first layout pass.
+    /// Usually replaced before it ever draws.
+    private lazy var placeholderSaveBarButtonItem: UIBarButtonItem = {
         let item = UIBarButtonItem(title: NotificationDetailHostingControllerStrings.save,
                                    style: .done,
-                                   target: self,
-                                   action: #selector(handleSaveTapped))
+                                   target: nil,
+                                   action: nil)
         item.isEnabled = false
         return item
-    }()
-
-    private lazy var savingActivityItem: UIBarButtonItem = {
-        let spinner = UIActivityIndicatorView(style: .medium)
-        spinner.startAnimating()
-        return UIBarButtonItem(customView: spinner)
     }()
 
     init(viewModel: PushNotificationPreferencesViewModel,
@@ -52,6 +47,8 @@ class NotificationDetailHostingController<Content: NotificationDetailContent>: U
         self.notificationType = notificationType
         self.analytics = analytics
         super.init(rootView: rootView)
+        // Set after `super.init` so the closure can capture `self` weakly.
+        self.rootView.onSave = { [weak self] in self?.handleSaveTapped() }
     }
 
     dynamic required init?(coder aDecoder: NSCoder) {
@@ -60,12 +57,18 @@ class NotificationDetailHostingController<Content: NotificationDetailContent>: U
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        // Reserves width for the bar's first layout, during the push transition.
+        // Both reserve width for the bar's first layout, during the push transition.
         title = Content.navigationTitle
-        refreshRightBarButtonItem()
+        navigationItem.rightBarButtonItem = placeholderSaveBarButtonItem
         // Routes the edge-swipe gesture through `shouldPopOnSwipeBack`.
         handleSwipeBackGesture()
-        observeUnsavedChanges()
+    }
+
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        // Render SwiftUI before the bar is laid out for the push, so the real toolbar
+        // item and title are in place rather than arriving mid-transition.
+        view.layoutIfNeeded()
     }
 
     override func shouldPopOnBackButton() -> Bool {
@@ -81,11 +84,8 @@ class NotificationDetailHostingController<Content: NotificationDetailContent>: U
     }
 
     // MARK: - Action handlers
-    //
-    // Lives in the class body (not a private extension) because `@objc`
-    // members aren't permitted in extensions of generic classes.
 
-    @objc private func handleSaveTapped() {
+    private func handleSaveTapped() {
         guard !viewModel.isSaving else { return }
         analytics.track(.notificationsSettingsUpdateStarted(notificationType: notificationType))
         Task { @MainActor [weak self] in
@@ -97,31 +97,6 @@ class NotificationDetailHostingController<Content: NotificationDetailContent>: U
             } else {
                 analytics.track(.notificationsSettingsUpdateFailed(notificationType: notificationType))
             }
-        }
-    }
-
-    /// `@Observable` tracking fires once and stops, so re-register after each
-    /// change to keep the bar item in sync with `hasUnsavedChanges` and
-    /// `isSaving`.
-    private func observeUnsavedChanges() {
-        withObservationTracking {
-            _ = viewModel.hasUnsavedChanges
-            _ = viewModel.isSaving
-        } onChange: { [weak self] in
-            // `onChange` fires from `willSet`; hop to main before touching UIKit.
-            DispatchQueue.main.async {
-                self?.refreshRightBarButtonItem()
-                self?.observeUnsavedChanges()
-            }
-        }
-    }
-
-    private func refreshRightBarButtonItem() {
-        if viewModel.isSaving {
-            navigationItem.rightBarButtonItem = savingActivityItem
-        } else {
-            saveBarButtonItem.isEnabled = viewModel.hasUnsavedChanges
-            navigationItem.rightBarButtonItem = saveBarButtonItem
         }
     }
 
@@ -143,14 +118,44 @@ class NotificationDetailHostingController<Content: NotificationDetailContent>: U
 }
 
 /// Root view of a push-notification preference detail screen.
-/// `NotificationDetailHostingController` reads `navigationTitle`.
+/// `NotificationDetailHostingController` reads `navigationTitle` and injects `onSave`.
 protocol NotificationDetailContent: View {
     static var navigationTitle: String { get }
+
+    var onSave: (() -> Void)? { get set }
 }
 
-/// Localized strings for `NotificationDetailHostingController`. Lives at file
-/// scope because static stored properties aren't supported inside generic
-/// types.
+/// Save bar button, shown as a spinner while a save is in flight. Reading the
+/// view model here lets `@Observable` keep it in sync.
+private struct NotificationDetailSaveToolbar: ViewModifier {
+    let viewModel: PushNotificationPreferencesViewModel
+    let onSave: (() -> Void)?
+
+    func body(content: Content) -> some View {
+        content.toolbar {
+            // `.confirmationAction` renders semibold, matching the placeholder's `.done`.
+            ToolbarItem(placement: .confirmationAction) {
+                if viewModel.isSaving {
+                    ProgressView()
+                } else {
+                    Button(NotificationDetailHostingControllerStrings.save) {
+                        onSave?()
+                    }
+                    .disabled(!viewModel.hasUnsavedChanges)
+                }
+            }
+        }
+    }
+}
+
+extension View {
+    func notificationDetailSaveToolbar(viewModel: PushNotificationPreferencesViewModel,
+                                       onSave: (() -> Void)?) -> some View {
+        modifier(NotificationDetailSaveToolbar(viewModel: viewModel, onSave: onSave))
+    }
+}
+
+/// At file scope because generic types can't hold static stored properties.
 private enum NotificationDetailHostingControllerStrings {
     static let save = NSLocalizedString(
         "notificationDetailHostingController.save",

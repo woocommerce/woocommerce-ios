@@ -42,7 +42,7 @@ final class POSTabCoordinator {
     private let storageManager: StorageManagerType
     private let currencySettings: CurrencySettings
     private let pushNotesManager: PushNotesManager
-    nonisolated(unsafe) private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
+    private let eligibilityChecker: POSEntryPointEligibilityCheckerProtocol
     private let httpsConfigurationNoticeProvider: () -> POSHTTPSConfigurationNotice?
 
     private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()

@@ -313,7 +313,7 @@ class DefaultStoresManager: StoresManager {
         unknownBlogNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveUnknownBlogError,
                                                                          object: nil,
                                                                          queue: .main) { [weak self] _ in
-            self?.resetSelectedStore()
+            self?.resetSelectedStore(reason: .unknownBlog)
         }
     }
 
@@ -372,19 +372,19 @@ class DefaultStoresManager: StoresManager {
 
     /// Resets the selected store while remaining authenticated, routing the user to the store picker.
     ///
-    /// Triggered when WPCom returns an `unknown_blog` error, meaning the persisted site ID is no
-    /// longer recognized (stale state, Jetpack disconnect, or site deletion). Clearing
+    /// Triggered when WPCom returns an `unknown_blog` error or a successful site-list sync omits
+    /// the selected site. The reason is tracked to distinguish these cases. Clearing
     /// `defaultStoreID` makes `needsDefaultStore` emit `true`, which the `AppCoordinator` observes
     /// to present the store picker.
     ///
-    func resetSelectedStore() {
+    func resetSelectedStore(reason: WooAnalyticsEvent.SelectedStoreResetReason) {
         // Guard against repeated resets: many in-flight requests can fail with `unknown_blog`
         // simultaneously, each posting a notification. Once the store is cleared, ignore the rest.
         guard let siteID = sessionManager.defaultStoreID else {
             return
         }
 
-        ServiceLocator.analytics.track(event: .selectedSiteResetDueToUnknownBlog())
+        ServiceLocator.analytics.track(event: .selectedSiteReset(reason: reason))
 
         // Stop any ongoing catalog sync tasks for the site before clearing it.
         Task {
@@ -663,7 +663,7 @@ private extension DefaultStoresManager {
         PushNotificationRegistrationState(defaults: pushNotificationDefaults).updateConnectedSiteIDs(connectedSiteIDs)
 
         if let currentSiteID = sessionManager.defaultStoreID, connectedSiteIDs.contains(currentSiteID) == false {
-            resetSelectedStore()
+            resetSelectedStore(reason: .missingFromSitesSync)
         }
     }
 

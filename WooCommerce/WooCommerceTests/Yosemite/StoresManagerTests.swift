@@ -833,6 +833,10 @@ final class StoresManagerTests: XCTestCase {
     ///
     func test_it_resets_selected_store_and_stays_authenticated_upon_receiving_unknown_blog_error_notification() {
         // Given
+        let originalAnalytics = ServiceLocator.analytics
+        defer { ServiceLocator.setAnalytics(originalAnalytics) }
+        let analyticsProvider = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
         let sessionManager = SessionManager.testingInstance
         let manager = DefaultStoresManager(sessionManager: sessionManager,
                                            notificationCenter: MockNotificationCenter.testingInstance)
@@ -848,6 +852,8 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(sessionManager.defaultStoreID, "Selected store should be cleared")
         XCTAssertTrue(manager.isAuthenticated, "User should remain authenticated")
         XCTAssertTrue(manager.needsDefaultStore, "Should route to the store picker")
+        XCTAssertEqual(analyticsProvider.receivedEvents.last, "selected_site_reset")
+        XCTAssertEqual(analyticsProvider.receivedProperties.last?["reason"] as? String, "unknown_blog")
     }
 
     /// Verifies that default store is reset when initialized in an unexpected state: deauthenticated state with default store set.
@@ -886,6 +892,10 @@ final class StoresManagerTests: XCTestCase {
     }
 
     func test_synchronizeSites_when_successful_response_omits_selected_site_then_resets_selection_and_persists_connected_site_ids() {
+        let originalAnalytics = ServiceLocator.analytics
+        defer { ServiceLocator.setAnalytics(originalAnalytics) }
+        let analyticsProvider = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
         for responseSiteIDs: [Int64] in [[456], []] {
             // Given
             let (manager, state, sessionManager) = makeSiteSynchronizationTestContext()
@@ -897,6 +907,8 @@ final class StoresManagerTests: XCTestCase {
             // Then
             XCTAssertNil(sessionManager.defaultStoreID)
             XCTAssertEqual(PushNotificationRegistrationState(defaults: pushNotificationDefaults).connectedSiteIDs, responseSiteIDs)
+            XCTAssertEqual(analyticsProvider.receivedEvents.last, "selected_site_reset")
+            XCTAssertEqual(analyticsProvider.receivedProperties.last?["reason"] as? String, "missing_from_sites_sync")
         }
     }
 

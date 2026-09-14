@@ -38,7 +38,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .denyAndLogout)
             switch result {
             case .ineligible:
@@ -66,7 +66,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allow) // per current logic: declined → allow
             switch result {
             case .declinedSharing:
@@ -93,7 +93,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allow) // we allow when no presenter is available
             switch result {
             case .invalidUIState:
@@ -121,7 +121,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allow) // per current logic: featureUnavailable → allow
             switch result {
             case .featureUnavailable:
@@ -154,7 +154,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allow) // per current logic: sdkError → allow
             switch result {
             case .sdkError:
@@ -182,7 +182,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allow) // per current logic: unknown → allow
             switch result {
             case .unknown:
@@ -213,7 +213,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allow)
             switch result {
             case .eligible:
@@ -249,15 +249,15 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         var completionOrder: [String] = []
 
         // When
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { _, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
             completionOrder.append("first")
             firstExp.fulfill()
         }
         // Two triggers land mid-flow: neither is run concurrently, and one follow-up pass covers both.
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { _, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
             XCTFail("Superseded trigger must not run; only the latest queued one is replayed")
         }
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { _, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
             completionOrder.append("followUp")
             followUpExp.fulfill()
         }
@@ -293,7 +293,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .restrictDeniedConsent)
             switch result {
             case .eligible:
@@ -331,7 +331,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, _ in
             XCTAssertEqual(appAccessDecision, .restrictConsentRequired)
             exp.fulfill()
         }
@@ -366,7 +366,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, _ in
             XCTAssertEqual(appAccessDecision, .restrictPendingConsent)
             exp.fulfill()
         }
@@ -400,7 +400,7 @@ final class AgeRangeVerificationCoordinatorTests: XCTestCase {
         )
         let exp = expectation(description: "onResult")
 
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, result in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, result in
             XCTAssertEqual(appAccessDecision, .allowConsentGranted)
             switch result {
             case .eligible:
@@ -445,7 +445,7 @@ extension AgeRangeVerificationCoordinatorTests {
         let exp = expectation(description: "onResult")
 
         // When
-        sut.triggerAgeVerificationIfNeeded(hostingWindow: window) { appAccessDecision, _ in
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, _ in
             XCTAssertEqual(appAccessDecision, .allowConsentGranted)
             exp.fulfill()
         }
@@ -502,6 +502,212 @@ extension AgeRangeVerificationCoordinatorTests {
         // Then
         XCTAssertEqual(state, .pending)
         XCTAssertEqual(consentStore.statusByIdentifier[.ageRatingChange(ratingCode: 13)], .pending)
+    }
+
+    // MARK: - Analytics
+
+    func test_triggerAgeVerificationIfNeeded_when_eligible_minor_and_consent_denied_then_tracks_restriction_checked() {
+        // Given
+        let window = UIWindow()
+        window.rootViewController = UIViewController()
+        let analyticsProvider = MockAnalyticsProvider()
+        let consentStore = MockConsentStore()
+        consentStore.statusByIdentifier[.ageRatingChange(ratingCode: 13)] = .denied
+        consentCoordinator = SignificantChangeConsentCoordinator(
+            consentProvider: MockConsentProvider(requestResult: .notAvailable),
+            consentStore: consentStore
+        )
+        let sut = AgeRangeVerificationCoordinator(
+            featureFlagService: featureFlagService,
+            ageRangeVerificationService: FakeAgeRangeService(
+                result: .eligible(significantAppChangeApprovalRequired: true, isMinor: true),
+                delay: 0
+            ),
+            significantChangeConsentCoordinator: consentCoordinator,
+            ageRatingChangeDetector: MockAgeRatingChangeDetector(result: .ageRatingChanged(previous: 4, current: 13)),
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+        let exp = expectation(description: "onResult")
+
+        // When
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
+            exp.fulfill()
+        }
+
+        // Then
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.accountAgeRestrictionChecked.rawValue])
+        let properties = analyticsProvider.receivedProperties.first
+        XCTAssertEqual(properties?["trigger"] as? String, "session_start")
+        XCTAssertEqual(properties?["age_range_outcome"] as? String, "age_13_17")
+        XCTAssertEqual(properties?["final_decision"] as? String, "wall_consent_denied")
+        XCTAssertEqual(properties?["restriction_reason"] as? String, "consent_denied")
+        XCTAssertEqual(properties?["significant_change_status"] as? String, "declined")
+        XCTAssertNil(properties?["sdk_error_code"])
+    }
+
+    func test_triggerAgeVerificationIfNeeded_when_age_is_ineligible_then_tracks_restricted_with_below_minimum_age() {
+        // Given
+        let window = UIWindow()
+        window.rootViewController = UIViewController()
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = AgeRangeVerificationCoordinator(
+            featureFlagService: featureFlagService,
+            ageRangeVerificationService: FakeAgeRangeService(result: .ineligible, delay: 0),
+            significantChangeConsentCoordinator: consentCoordinator,
+            ageRatingChangeDetector: ageRatingChangeDetector,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+        let exp = expectation(description: "onResult")
+
+        // When
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
+            exp.fulfill()
+        }
+
+        // Then
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.accountAgeRestrictionChecked.rawValue])
+        let properties = analyticsProvider.receivedProperties.first
+        XCTAssertEqual(properties?["age_range_outcome"] as? String, "below_13")
+        XCTAssertEqual(properties?["final_decision"] as? String, "restricted")
+        XCTAssertEqual(properties?["restriction_reason"] as? String, "below_minimum_age")
+        XCTAssertNil(properties?["significant_change_status"])
+    }
+
+    func test_triggerAgeVerificationIfNeeded_when_declined_sharing_then_tracks_allowed_without_restriction_reason() {
+        // Given
+        let window = UIWindow()
+        window.rootViewController = UIViewController()
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = AgeRangeVerificationCoordinator(
+            featureFlagService: featureFlagService,
+            ageRangeVerificationService: FakeAgeRangeService(result: .declinedSharing, delay: 0),
+            significantChangeConsentCoordinator: consentCoordinator,
+            ageRatingChangeDetector: ageRatingChangeDetector,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+        let exp = expectation(description: "onResult")
+
+        // When
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
+            exp.fulfill()
+        }
+
+        // Then
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.accountAgeRestrictionChecked.rawValue])
+        let properties = analyticsProvider.receivedProperties.first
+        XCTAssertEqual(properties?["age_range_outcome"] as? String, "declined_sharing")
+        XCTAssertEqual(properties?["final_decision"] as? String, "allowed")
+        XCTAssertNil(properties?["restriction_reason"])
+    }
+
+    func test_triggerAgeVerificationIfNeeded_when_invalid_ui_state_then_tracks_allowed_with_trigger() {
+        // Given
+        let window = UIWindow()
+        window.rootViewController = UIViewController()
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = AgeRangeVerificationCoordinator(
+            featureFlagService: featureFlagService,
+            ageRangeVerificationService: FakeAgeRangeService(result: .invalidUIState, delay: 0),
+            significantChangeConsentCoordinator: consentCoordinator,
+            ageRatingChangeDetector: ageRatingChangeDetector,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+        let exp = expectation(description: "onResult")
+
+        // When
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .foregroundRecheck) { _, _ in
+            exp.fulfill()
+        }
+
+        // Then
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.accountAgeRestrictionChecked.rawValue])
+        let properties = analyticsProvider.receivedProperties.first
+        XCTAssertEqual(properties?["trigger"] as? String, "foreground_recheck")
+        XCTAssertEqual(properties?["age_range_outcome"] as? String, "invalid_ui_state")
+        XCTAssertEqual(properties?["final_decision"] as? String, "allowed")
+    }
+
+    func test_triggerAgeVerificationIfNeeded_when_account_not_covered_then_does_not_track() {
+        // Given
+        let window = UIWindow()
+        window.rootViewController = UIViewController()
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = AgeRangeVerificationCoordinator(
+            featureFlagService: featureFlagService,
+            ageRangeVerificationService: FakeAgeRangeService(result: .ineligibleForAgeFeatures, delay: 0),
+            significantChangeConsentCoordinator: consentCoordinator,
+            ageRatingChangeDetector: ageRatingChangeDetector,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+        let exp = expectation(description: "onResult")
+
+        // When
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { appAccessDecision, _ in
+            XCTAssertEqual(appAccessDecision, .allow)
+            exp.fulfill()
+        }
+
+        // Then
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(analyticsProvider.receivedEvents.isEmpty)
+    }
+
+    func test_triggerAgeVerificationIfNeeded_when_api_not_available_then_does_not_track() {
+        // Given
+        let window = UIWindow()
+        window.rootViewController = UIViewController()
+        let analyticsProvider = MockAnalyticsProvider()
+        let sut = AgeRangeVerificationCoordinator(
+            featureFlagService: featureFlagService,
+            ageRangeVerificationService: FakeAgeRangeService(result: .sdkError(AgeRangeProviderError.notAvailable), delay: 0),
+            significantChangeConsentCoordinator: consentCoordinator,
+            ageRatingChangeDetector: ageRatingChangeDetector,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+        let exp = expectation(description: "onResult")
+
+        // When
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
+            exp.fulfill()
+        }
+
+        // Then
+        waitForExpectations(timeout: 1)
+        XCTAssertTrue(analyticsProvider.receivedEvents.isEmpty)
+    }
+
+    func test_triggerAgeVerificationIfNeeded_when_sdk_fails_then_tracks_error_domain_and_code_only() {
+        // Given
+        let window = UIWindow()
+        window.rootViewController = UIViewController()
+        let analyticsProvider = MockAnalyticsProvider()
+        let underlying = NSError(domain: "com.apple.DeclaredAgeRange", code: 42, userInfo: [NSLocalizedDescriptionKey: "Sensitive message"])
+        let sut = AgeRangeVerificationCoordinator(
+            featureFlagService: featureFlagService,
+            ageRangeVerificationService: FakeAgeRangeService(result: .sdkError(AgeRangeProviderError.other(underlying)), delay: 0),
+            significantChangeConsentCoordinator: consentCoordinator,
+            ageRatingChangeDetector: ageRatingChangeDetector,
+            analytics: WooAnalytics(analyticsProvider: analyticsProvider)
+        )
+        let exp = expectation(description: "onResult")
+
+        // When
+        sut.triggerAgeVerificationIfNeeded(hostingWindow: window, trigger: .sessionStart) { _, _ in
+            exp.fulfill()
+        }
+
+        // Then
+        waitForExpectations(timeout: 1)
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.accountAgeRestrictionChecked.rawValue])
+        let properties = analyticsProvider.receivedProperties.first
+        XCTAssertEqual(properties?["age_range_outcome"] as? String, "sdk_error")
+        XCTAssertEqual(properties?["sdk_error_domain"] as? String, "com.apple.DeclaredAgeRange")
+        XCTAssertEqual(properties?["sdk_error_code"] as? Int64, 42)
+        XCTAssertFalse(properties?.values.contains { ($0 as? String)?.contains("Sensitive") == true } ?? true)
     }
 }
 

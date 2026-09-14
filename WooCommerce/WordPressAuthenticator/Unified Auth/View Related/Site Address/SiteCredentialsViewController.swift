@@ -875,6 +875,10 @@ extension SiteCredentialsViewController {
         }
     }
 
+    /// - Note: the screen is still in its loading state when this runs, and stays there until something navigates away
+    ///   from it. A `completionHandler` caller is therefore responsible for dismissing or popping this view controller
+    ///   itself; leaving it on screen leaves the merchant on a permanently disabled form.
+    ///
     func finishedLogin(withUsername username: String, password: String, xmlrpc: String, options: [AnyHashable: Any]) {
         let wporg = WordPressOrgCredentials(username: username, password: password, xmlrpc: xmlrpc, options: options)
         /// If `completionHandler` is available, return early with the credentials.

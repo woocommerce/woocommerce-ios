@@ -120,7 +120,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
 
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
         switch ineligibleReason {
-        case .siteSettingsNotAvailable, .unsupportedCurrency:
+        case .siteSettingsNotAvailable, .unsupportedCountry, .unsupportedCurrency:
             do {
                 try await syncSiteSettingsRemotely()
                 return await checkEligibility(forceRemoteCheck: false)
@@ -216,7 +216,7 @@ private extension POSIneligibleReason {
         switch self {
         case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound, .featureSwitchDisabled, .unsupportedCurrency:
             return true
-        case .noInternetConnection, .siteSettingsNotAvailable, .selfDeallocated:
+        case .noInternetConnection, .siteSettingsNotAvailable, .unsupportedCountry, .selfDeallocated:
             return false
         }
     }
@@ -300,11 +300,10 @@ private extension POSTabEligibilityChecker {
             return .eligible
         case .ineligible(reason: let reason):
             switch reason {
-            case .siteSettingsNotAvailable, .unsupportedCountry:
-                // This is an edge case where the store country is expected to be eligible from the visilibity check, but site settings might have
-                // changed to an unsupported country during the session. In this case, we return an ineligible reason that prompts the merchant to
-                // relaunch the app.
+            case .siteSettingsNotAvailable:
                 return .ineligible(reason: .siteSettingsNotAvailable)
+            case .unsupportedCountry:
+                return .ineligible(reason: .unsupportedCountry)
             case let .unsupportedCurrency(countryCode: countryCode, supportedCurrencies: supportedCurrencies):
                 return .ineligible(reason: .unsupportedCurrency(countryCode: countryCode, supportedCurrencies: supportedCurrencies))
             }
@@ -320,6 +319,9 @@ private extension POSTabEligibilityChecker {
 
         // Conditions that can change if site settings are synced during the lifetime.
         let countryCode = SiteAddress(siteSettings: siteSettings).countryCode
+        guard countryCode != .unknown else {
+            return .ineligible(reason: .siteSettingsNotAvailable)
+        }
         let currencyCode = CurrencySettings(siteSettings: siteSettings).currencyCode
 
         return isEligibleFromCountryAndCurrencyCode(countryCode: countryCode, currencyCode: currencyCode)

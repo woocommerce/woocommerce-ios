@@ -5,10 +5,12 @@ import SwiftUI
 /// chrome (title, Save bar button, discard confirmation) lives on the wrapping
 /// `NewStockNotificationPreferencesHostingController`.
 ///
-struct NewStockNotificationPreferencesDetailView: View {
+struct NewStockNotificationPreferencesDetailView: NotificationDetailContent {
 
     @Bindable private var viewModel: PushNotificationPreferencesViewModel
     @Bindable private var detailViewModel: NewStockNotificationPreferencesDetailViewModel
+
+    static var navigationTitle: String { Localization.title }
 
     init(viewModel: PushNotificationPreferencesViewModel,
          detailViewModel: NewStockNotificationPreferencesDetailViewModel) {
@@ -24,7 +26,7 @@ struct NewStockNotificationPreferencesDetailView: View {
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
         .disabled(viewModel.isSaving)
-        .navigationTitle(Localization.title)
+        .navigationTitle(Self.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .notice($viewModel.errorNotice)
         .onAppear {

@@ -5,13 +5,15 @@ import SwiftUI
 /// chrome (title, Save bar button, discard confirmation) lives on the wrapping
 /// `NewOrderNotificationPreferencesHostingController`.
 ///
-struct NewOrderNotificationPreferencesDetailView: View {
+struct NewOrderNotificationPreferencesDetailView: NotificationDetailContent {
 
     private typealias Threshold = PushNotificationPreferencesViewModel.StoreOrderThreshold
 
     @Bindable private var viewModel: PushNotificationPreferencesViewModel
 
     @State private var thresholdInput: String
+
+    static var navigationTitle: String { Localization.title }
 
     init(viewModel: PushNotificationPreferencesViewModel) {
         self.viewModel = viewModel
@@ -26,7 +28,7 @@ struct NewOrderNotificationPreferencesDetailView: View {
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
         .disabled(viewModel.isSaving)
-        .navigationTitle(Localization.title)
+        .navigationTitle(Self.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
         .notice($viewModel.errorNotice)
         .onAppear {

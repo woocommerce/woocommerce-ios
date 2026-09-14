@@ -2,10 +2,8 @@ import SwiftUI
 
 /// A single list row: a title with an optional description between optional leading and trailing
 /// slots, on a surface-bright container. Combine cells (separated by ``StoreDivider``) to build lists.
-///
-/// - Note: Pass `action` to make the whole row one tappable button. A `trailing` slot that carries its
-///   own control (e.g. a toggle) belongs on a row without `action`, so the row doesn't expose two
-///   competing actions. `.disabled(_:)` dims the row and blocks its action.
+/// `action` makes the whole row a button; a `trailing` slot with its own control (e.g. a toggle) belongs on a row without `action`.
+/// `leading` is a single view value and `trailing` a view builder, so a lone trailing closure always fills `trailing:`.
 public struct StoreCell<Leading: View, Trailing: View>: View {
     @Environment(\.isEnabled) private var isEnabled
 
@@ -21,19 +19,19 @@ public struct StoreCell<Leading: View, Trailing: View>: View {
     ///   - description: Secondary text shown under the title.
     ///   - showsDisclosureIndicator: Shows the trailing chevron that signals the row opens a detail.
     ///   - action: Makes the whole row a button. `nil` renders a static row.
-    ///   - leading: Content before the text, e.g. a ``StoreIconContainer`` or an image.
+    ///   - leading: A single view before the text, e.g. a ``StoreIconContainer`` or an image.
     ///   - trailing: Content after the text, e.g. a value label, a ``StoreBadge`` or a toggle.
     public init(_ title: String,
                 description: String? = nil,
                 showsDisclosureIndicator: Bool = false,
                 action: (() -> Void)? = nil,
-                @ViewBuilder leading: () -> Leading,
+                leading: Leading,
                 @ViewBuilder trailing: () -> Trailing) {
         self.title = title
         self.description = description
         self.showsDisclosureIndicator = showsDisclosureIndicator
         self.action = action
-        self.leading = leading()
+        self.leading = leading
         self.trailing = trailing()
     }
 
@@ -104,7 +102,7 @@ public extension StoreCell where Leading == EmptyView, Trailing == EmptyView {
                   description: description,
                   showsDisclosureIndicator: showsDisclosureIndicator,
                   action: action,
-                  leading: { EmptyView() },
+                  leading: EmptyView(),
                   trailing: { EmptyView() })
     }
 }
@@ -114,7 +112,7 @@ public extension StoreCell where Trailing == EmptyView {
          description: String? = nil,
          showsDisclosureIndicator: Bool = false,
          action: (() -> Void)? = nil,
-         @ViewBuilder leading: () -> Leading) {
+         leading: Leading) {
         self.init(title,
                   description: description,
                   showsDisclosureIndicator: showsDisclosureIndicator,
@@ -134,7 +132,7 @@ public extension StoreCell where Leading == EmptyView {
                   description: description,
                   showsDisclosureIndicator: showsDisclosureIndicator,
                   action: action,
-                  leading: { EmptyView() },
+                  leading: EmptyView(),
                   trailing: trailing)
     }
 }

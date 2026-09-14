@@ -1,10 +1,7 @@
 import SwiftUI
 
 /// The colors of a ``StoreCell``, resolved for its enabled state.
-///
-/// - Note: The design defines one container (surface bright) and no disabled variant, so the
-///   disabled presentation follows the module's uniform state-layer rule (as ``StoreButton`` does)
-///   rather than a cell-specific token.
+/// The design defines no disabled variant, so the disabled colors follow the module's state-layer rule, as ``StoreButton`` does.
 struct StoreCellAppearance: Equatable {
     let background: Color
     let title: Color

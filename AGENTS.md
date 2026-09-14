@@ -224,7 +224,7 @@ WooCommerce/Classes/POS/         # App-target POS integration (POSTabCoordinator
 
 - **New SwiftUI views use `StoreDesignSystem`**: `Store*` components, `.storeTextStyle(_:)`, `Color.store*`, `StoreSpacing`/`StorePadding`/`StoreRadius`/`StoreIcon`. No hardcoded sizes, colors, or system fonts alongside them.
 - **Do not mix legacy styling with DS tokens** in one view: a view is either legacy (`Color(.text)`, `.headline`, `.withColorStudio`) or design-system, never both.
-- **Adding a component**: `Components/<Name>/Store<Name>.swift` plus closed variant/tone types, tokens only, a demo view in `DesignSystemDemo/` registered in `DesignSystemDemoView`, `#Preview` blocks, and Swift Testing coverage in `Modules/Tests/StoreDesignSystemTests/`. Pull the spec from the Figma node before implementing.
+- **Adding a component**: `Components/<Name>/Store<Name>.swift` plus closed variant/tone types, tokens only, a demo view in `DesignSystemDemo/` registered in `DesignSystemDemoView`, `#Preview` blocks, and Swift Testing coverage in `Modules/Tests/StoreDesignSystemTests/`. Before implementing, read the component spec through the Figma MCP connection: take the Figma node link from the ticket or issue description when present, otherwise ask the user for it. Figma links are not committed to this repository.
 
 ## WooAIAssistant Module
 

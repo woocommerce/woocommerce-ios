@@ -60,9 +60,8 @@ struct CellComponentView: View {
         StoreCell(title,
                   description: showsDescription ? description : nil,
                   showsDisclosureIndicator: showsDisclosureIndicator,
-                  action: isTappable ? {} : nil) {
-            leadingContent
-        } trailing: {
+                  action: isTappable ? {} : nil,
+                  leading: leadingContent) {
             trailingContent
         }
     }

@@ -1,9 +1,7 @@
 import SwiftUI
 
-/// Detail screen for the New orders push notification preferences. Reached by
-/// tapping the New orders row in `PushNotificationPreferencesView`. Navigation
-/// chrome (title, Save bar button, discard confirmation) lives on the wrapping
-/// `NewOrderNotificationPreferencesHostingController`.
+/// Detail screen for the new orders push notification preferences. Reached by
+/// tapping the New orders row in `PushNotificationPreferencesView`.
 ///
 struct NewOrderNotificationPreferencesDetailView: NotificationDetailContent {
 
@@ -14,6 +12,8 @@ struct NewOrderNotificationPreferencesDetailView: NotificationDetailContent {
     @State private var thresholdInput: String
 
     static var navigationTitle: String { Localization.title }
+
+    var onSave: (() -> Void)?
 
     init(viewModel: PushNotificationPreferencesViewModel) {
         self.viewModel = viewModel
@@ -30,6 +30,7 @@ struct NewOrderNotificationPreferencesDetailView: NotificationDetailContent {
         .disabled(viewModel.isSaving)
         .navigationTitle(Self.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
+        .notificationDetailSaveToolbar(viewModel: viewModel, onSave: onSave)
         .notice($viewModel.errorNotice)
         .onAppear {
             viewModel.detailDidAppear(notificationType: .newOrder)

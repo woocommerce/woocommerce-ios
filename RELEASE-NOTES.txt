@@ -28,6 +28,8 @@
 - [*] Notifications: Removed notifications for sites disconnected from WordPress.com from Notification Center. [https://github.com/woocommerce/woocommerce-ios/pull/17835]
 - [*] Push notifications: When a store's Jetpack is in Offline Mode, setup now shows a clear, actionable message explaining the cause instead of a generic permission error. [https://github.com/woocommerce/woocommerce-ios/pull/17857]
 - [*] Settings: Fixed the missing back button on the Push Notifications detail screens (New orders, New reviews, Stock) on iOS 18. [https://github.com/woocommerce/woocommerce-ios/pull/PR_NUMBER]
+- [*] Settings: The Save button on the Push Notifications detail screens no longer disappears right after the screen opens. [https://github.com/woocommerce/woocommerce-ios/pull/PR_NUMBER]
+- [*] Settings: Fixed stray "u{00A0}" text in the low stock threshold sentence on the Stock notifications screen. [https://github.com/woocommerce/woocommerce-ios/pull/PR_NUMBER]
 
 25.6
 -----

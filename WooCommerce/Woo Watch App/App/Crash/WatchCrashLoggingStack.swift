@@ -40,6 +40,10 @@ struct WatchCrashLoggingStack: CrashLoggingStack {
         DDLogWarn("logError not supported")
     }
 
+    func logBreadcrumb(_ message: String, category: String, properties: [String: Any]?) {
+        DDLogWarn("logBreadcrumb not supported")
+    }
+
     func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]?) -> Never {
         DDLogWarn("logFatalErrorAndExit not supported")
         fatalError(error.localizedDescription)

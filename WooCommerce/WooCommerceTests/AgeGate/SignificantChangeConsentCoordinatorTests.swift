@@ -1,9 +1,35 @@
 import XCTest
+import WooFoundationCore
 @testable import WooCommerce
 
 final class SignificantChangeConsentCoordinatorTests: XCTestCase {
     private let ratingChange = AgeRatingChangeCheckResult.ageRatingChanged(previous: 4, current: 13)
     private let ratingChangeIdentifier = SignificantChangeIdentifier.ageRatingChange(ratingCode: 13)
+
+    // MARK: - Crash report breadcrumbs
+
+    @MainActor func test_requestConsent_when_question_sent_then_records_request_breadcrumbs() async {
+        // Given
+        let provider = MockConsentProvider(requestResult: .sent(questionID: UUID()))
+        let store = MockConsentStore()
+        let crashLogging = MockCrashLogger()
+        let sut = SignificantChangeConsentCoordinator(consentProvider: provider, consentStore: store, crashLogging: crashLogging)
+
+        // When
+        _ = await sut.requestConsent(in: UIViewController(), ageRatingChange: ratingChange)
+
+        // Then
+        let breadcrumbs = crashLogging.loggedBreadcrumbs
+        XCTAssertTrue(breadcrumbs.allSatisfy { $0.category == "age_verification" })
+        XCTAssertEqual(breadcrumbs.first?.message, "Consent response listener started")
+        // The listener's own breadcrumbs land asynchronously; only the request pair is ordered.
+        let requestBreadcrumbs = breadcrumbs.filter { $0.message.hasPrefix("Consent request") }
+        XCTAssertEqual(requestBreadcrumbs.map(\.message), ["Consent request started", "Consent request finished"])
+        XCTAssertEqual(requestBreadcrumbs[0].properties?["change_type"] as? String, "age_rating")
+        XCTAssertEqual(requestBreadcrumbs[0].properties?["is_reask"] as? Bool, false)
+        XCTAssertEqual(requestBreadcrumbs[1].properties?["result"] as? String, "sent")
+        XCTAssertNotNil(requestBreadcrumbs[1].properties?["duration_ms"] as? Int)
+    }
 
     // MARK: - checkConsentIfNeeded (read-only)
 
@@ -574,5 +600,22 @@ private final class MockConsentStore: SignificantChangeConsentStoring {
 
     func clearPendingRequest() {
         pendingRequest = nil
+    }
+}
+
+private final class MockCrashLogger: CrashLogger {
+    private(set) var loggedBreadcrumbs: [(message: String, category: String, properties: [String: Any]?)] = []
+
+    func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel) {}
+
+    func logError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) {}
+
+    func logBreadcrumb(_ message: String, category: String, properties: [String: Any]?) {
+        loggedBreadcrumbs.append((message, category, properties))
+    }
+
+    func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]?) -> Never {
+        // The test logger cannot recover if the production code unexpectedly invokes fatal logging.
+        fatalError(error.localizedDescription)
     }
 }

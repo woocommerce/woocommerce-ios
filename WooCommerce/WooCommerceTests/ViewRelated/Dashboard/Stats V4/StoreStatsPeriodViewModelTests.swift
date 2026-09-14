@@ -595,6 +595,8 @@ private final class MockCrashLogger: CrashLogger {
 
     func logError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) {}
 
+    func logBreadcrumb(_ message: String, category: String, properties: [String: Any]?) {}
+
     func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel) {
         loggedMessages.append((message, properties, level))
     }

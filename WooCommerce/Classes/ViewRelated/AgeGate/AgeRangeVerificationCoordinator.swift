@@ -1,6 +1,7 @@
 import UIKit
 import Experiments
 import protocol WooFoundation.Analytics
+import protocol WooFoundationCore.CrashLogger
 
 enum AppAccessDecision: Equatable {
     case allow
@@ -52,6 +53,7 @@ protocol AgeRangeVerificationCoordinatorProtocol {
 extension AgeRangeVerificationCoordinator {
     enum Constants {
         static let minimumTOSRequiredAge = 13
+        static let breadcrumbCategory = "age_verification"
     }
 }
 
@@ -68,6 +70,7 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
     private let ageRatingChangeDetector: AgeRatingChangeDetecting
     private let manualChangeIdentifierProvider: () -> SignificantChangeIdentifier?
     private let analytics: Analytics
+    private let crashLogging: CrashLogger
     /// Guards against concurrent decision flows. All trigger sources (launch, consent
     /// resolution, foreground re-check, blocker buttons) run on the main thread.
     private var isVerificationFlowInProgress = false
@@ -82,7 +85,8 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         manualChangeIdentifierProvider: @escaping () -> SignificantChangeIdentifier? = {
             CurrentSignificantChange.activeManualChangeIdentifier()
         },
-        analytics: Analytics = ServiceLocator.analytics
+        analytics: Analytics = ServiceLocator.analytics,
+        crashLogging: CrashLogger = ServiceLocator.crashLogging
     ) {
         self.featureFlagService = featureFlagService
         self.ageRangeVerificationService = ageRangeVerificationService
@@ -90,6 +94,7 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         self.ageRatingChangeDetector = ageRatingChangeDetector
         self.manualChangeIdentifierProvider = manualChangeIdentifierProvider
         self.analytics = analytics
+        self.crashLogging = crashLogging
     }
 
     /// Triggers the age range verification flow.
@@ -115,13 +120,20 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         // flow finishes; only the latest one is kept since a single follow-up pass covers them all.
         guard isVerificationFlowInProgress == false else {
             DDLogInfo("Age verification flow already in progress; queueing a follow-up check.")
+            logBreadcrumb("Verification queued behind the in-flight flow", ["trigger": trigger.rawValue])
             queuedTrigger = (hostingWindow, trigger, onResult)
             return
         }
         isVerificationFlowInProgress = true
+        logBreadcrumb("Verification triggered", ["trigger": trigger.rawValue])
 
         performAgeVerification(hostingWindow: hostingWindow, trigger: trigger) { [weak self] decision, result in
             self?.isVerificationFlowInProgress = false
+            self?.logBreadcrumb("Verification finished", [
+                "trigger": trigger.rawValue,
+                "decision": String(describing: decision),
+                "outcome": WooAnalyticsEvent.AgeVerification.ageRangeOutcome(for: result).rawValue
+            ])
             onResult(decision, result)
             self?.replayQueuedTriggerIfNeeded()
         }
@@ -151,6 +163,12 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
 }
 
 private extension AgeRangeVerificationCoordinator {
+    /// Marks a step of the flow in the crash report trail, so a crash inside the system
+    /// frameworks shows what started the flow and how far it got.
+    func logBreadcrumb(_ message: String, _ properties: [String: Any] = [:]) {
+        crashLogging.logBreadcrumb(message, category: Constants.breadcrumbCategory, properties: properties)
+    }
+
     func replayQueuedTriggerIfNeeded() {
         guard let trigger = queuedTrigger else { return }
         queuedTrigger = nil

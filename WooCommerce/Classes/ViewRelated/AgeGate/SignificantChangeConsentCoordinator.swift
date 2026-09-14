@@ -1,6 +1,7 @@
 import Foundation
 import UIKit
 import protocol WooFoundation.Analytics
+import protocol WooFoundationCore.CrashLogger
 
 /// Consent state for the currently outstanding significant change, if any.
 enum SignificantChangeConsentState: Equatable {
@@ -35,17 +36,20 @@ final class SignificantChangeConsentCoordinator {
     /// Source of the parent-facing copy for a declared manual change.
     private let declaration: SignificantChangeDeclaration?
     private let analytics: Analytics
+    private let crashLogging: CrashLogger
 
     nonisolated init(
         consentProvider: SignificantChangeConsentProviding = PermissionKitSignificantChangeConsentProvider(),
         consentStore: SignificantChangeConsentStoring = UserDefaultsSignificantChangeConsentStore(),
         declaration: SignificantChangeDeclaration? = CurrentSignificantChange.declaration,
-        analytics: Analytics = ServiceLocator.analytics
+        analytics: Analytics = ServiceLocator.analytics,
+        crashLogging: CrashLogger = ServiceLocator.crashLogging
     ) {
         self.consentProvider = consentProvider
         self.consentStore = consentStore
         self.declaration = declaration
         self.analytics = analytics
+        self.crashLogging = crashLogging
     }
 
     deinit {
@@ -123,10 +127,18 @@ final class SignificantChangeConsentCoordinator {
         }
 
         ensureObservingResponses()
+        let changeType = WooAnalyticsEvent.AgeVerification.changeType(for: changeIdentifier).rawValue
+        let requestStart = Date()
+        logBreadcrumb("Consent request started", ["change_type": changeType, "is_reask": isReask])
         let requestResult = await consentProvider.requestConsent(
             in: viewController,
             significantAppUpdateDescription: description(for: changeIdentifier)
         )
+        logBreadcrumb("Consent request finished", [
+            "change_type": changeType,
+            "result": breadcrumbLabel(for: requestResult),
+            "duration_ms": Int(Date().timeIntervalSince(requestStart) * 1000)
+        ])
         trackConsentRequested(for: changeIdentifier, requestResult: requestResult, isReask: isReask)
         switch requestResult {
         case let .sent(questionID):
@@ -157,6 +169,7 @@ final class SignificantChangeConsentCoordinator {
 private extension SignificantChangeConsentCoordinator {
     enum Constants {
         static let immediateResponseGraceWindow: TimeInterval = 2
+        static let breadcrumbCategory = "age_verification"
         /// Only one question is ever in flight; anything beyond a handful of unmatched answers is stale noise.
         static let maxUnmatchedResponses = 8
     }
@@ -164,11 +177,13 @@ private extension SignificantChangeConsentCoordinator {
     /// Starts the single long-lived response listener if it isn't running yet.
     func ensureObservingResponses() {
         guard responsesTask == nil else { return }
+        logBreadcrumb("Consent response listener started")
         responsesTask = Task { [consentProvider, weak self] in
             for await response in consentProvider.responses() {
                 await self?.handle(response)
             }
             // The stream ended — no more answers can arrive, release any grace waiters.
+            await self?.logBreadcrumb("Consent response listener ended")
             await self?.resumeAllGraceWaiters()
         }
     }
@@ -177,15 +192,18 @@ private extension SignificantChangeConsentCoordinator {
         // An active grace window for this question owns the response; the check flow
         // persists the outcome and reports the final state itself.
         if let continuation = graceContinuations.removeValue(forKey: response.questionID) {
+            logBreadcrumb("Consent response received", ["approved": response.isApproved, "matched": "grace_window"])
             continuation.resume(returning: response)
             return
         }
         guard let pending = consentStore.pendingRequest, pending.questionID == response.questionID else {
             // Not a known question (yet): keep it in case a send call still in flight
             // reports this question id when it returns.
+            logBreadcrumb("Consent response received", ["approved": response.isApproved, "matched": "none"])
             bufferUnmatched(response)
             return
         }
+        logBreadcrumb("Consent response received", ["approved": response.isApproved, "matched": "pending_request"])
         let status = persist(response, for: pending.identifier)
         trackConsentResolved(status, via: .listener)
         onResolution?(status)
@@ -225,6 +243,23 @@ private extension SignificantChangeConsentCoordinator {
 
     func trackConsentResolved(_ status: SignificantChangeConsentStatus, via path: WooAnalyticsEvent.AgeVerification.ResolutionPath) {
         analytics.track(event: .AgeVerification.consentResolved(resolution: status == .granted ? .granted : .denied, via: path))
+    }
+
+    /// Marks a step of the flow in the crash report trail, so a crash inside the system
+    /// frameworks shows which PermissionKit call was in flight and for how long.
+    func logBreadcrumb(_ message: String, _ properties: [String: Any] = [:]) {
+        crashLogging.logBreadcrumb(message, category: Constants.breadcrumbCategory, properties: properties)
+    }
+
+    func breadcrumbLabel(for requestResult: SignificantChangeConsentRequestResult) -> String {
+        switch requestResult {
+        case .sent:
+            return "sent"
+        case .notAvailable:
+            return "not_available"
+        case .failed:
+            return "failed"
+        }
     }
 
     func bufferUnmatched(_ response: SignificantChangeConsentResponse) {

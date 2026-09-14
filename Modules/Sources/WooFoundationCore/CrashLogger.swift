@@ -28,6 +28,16 @@ public protocol CrashLogger {
     func logError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel)
 
     /**
+     Records a breadcrumb: a trail entry attached to the next crash or error report.
+     Cheap and never creates a report on its own — use it to mark the steps leading up to a crash.
+     - Parameters:
+     - message: The message
+     - category: A short grouping key shown next to the message in the report
+     - properties: A dictionary containing additional information about this step
+    */
+    func logBreadcrumb(_ message: String, category: String, properties: [String: Any]?)
+
+    /**
      Writes an error to the Crash Logging system, waits until the message is sent, and exits the app
 
      This method assumes that the app is in an unrecoverable state and will prioritize sending an error event over having complete metadata.

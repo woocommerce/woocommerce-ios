@@ -64,7 +64,10 @@ final class AgeRangeVerificationService: AgeRangeVerificationServiceProtocol {
     ) {
         Task { @MainActor in
             pendingCompletions.append(completion)
-            guard isVerificationInProgress == false else { return }
+            guard isVerificationInProgress == false else {
+                logBreadcrumb("Verification joined the in-flight request")
+                return
+            }
             isVerificationInProgress = true
 
             let result = await performVerification(in: viewController, minimumAge: minimumAge)
@@ -82,12 +85,23 @@ private extension AgeRangeVerificationService {
         minimumAge: Int
     ) async -> AgeRangeVerificationResult {
         let requirements: AgeRangeRequirements?
+        let requirementsStart = Date()
+        logBreadcrumb("Requirements fetch started")
         do {
             let provider = provider
-            requirements = try await Task.detached(priority: .userInitiated) {
+            let fetched = try await Task.detached(priority: .userInitiated) {
                 try await provider.retrieveAgeRangeRequirements()
             }.value
+            requirements = fetched
+            logBreadcrumb("Requirements fetch finished", [
+                "compliance_required": fetched.isComplianceRequired,
+                "duration_ms": elapsedMilliseconds(since: requirementsStart)
+            ])
         } catch {
+            logBreadcrumb("Requirements fetch failed", [
+                "error": errorLabel(error),
+                "duration_ms": elapsedMilliseconds(since: requirementsStart)
+            ])
             DDLogError("Age Range: Failed to fetch regulatory requirements. Error: \(error)")
             if let providerError = error as? AgeRangeProviderError,
                case let .other(underlyingError) = providerError {
@@ -111,6 +125,8 @@ private extension AgeRangeVerificationService {
             return .invalidUIState
         }
 
+        let requestStart = Date()
+        logBreadcrumb("Age range request started")
         do {
             let snapshot = try await provider.requestAgeRange(
                 minimumAge: minimumAge,
@@ -122,25 +138,66 @@ private extension AgeRangeVerificationService {
                 minimumAge: minimumAge,
                 significantAppChangeApprovalRequired: requirements?.significantAppChangeApprovalRequired
             )
+            logBreadcrumb("Age range request finished", [
+                "outcome": WooAnalyticsEvent.AgeVerification.ageRangeOutcome(for: result).rawValue,
+                "duration_ms": elapsedMilliseconds(since: requestStart)
+            ])
             DDLogInfo("Age Range: Response mapped to \(result)")
             return result
         } catch {
-            if let providerError = error as? AgeRangeProviderError {
-                switch providerError {
-                case .declinedSharing:
-                    return .declinedSharing
-                case .notAvailable:
-                    DDLogInfo("Age Range: Not available (simulator or account not eligible); skipping further prompts.")
-                case .unknown:
-                    return .unknown
-                case .other(let underlying):
-                    DDLogError("Age Range: Failed to retrieve age range. Error: \(underlying)")
-                }
-            } else {
-                DDLogError("Age Range: Failed to retrieve age range. Error: \(error)")
-            }
+            let result = mapErrorToResult(error)
+            logBreadcrumb("Age range request failed", [
+                "outcome": WooAnalyticsEvent.AgeVerification.ageRangeOutcome(for: result).rawValue,
+                "error": errorLabel(error),
+                "duration_ms": elapsedMilliseconds(since: requestStart)
+            ])
+            return result
+        }
+    }
+
+    func mapErrorToResult(_ error: Error) -> AgeRangeVerificationResult {
+        guard let providerError = error as? AgeRangeProviderError else {
+            DDLogError("Age Range: Failed to retrieve age range. Error: \(error)")
             return .sdkError(error)
         }
+        switch providerError {
+        case .declinedSharing:
+            return .declinedSharing
+        case .notAvailable:
+            DDLogInfo("Age Range: Not available (simulator or account not eligible); skipping further prompts.")
+            return .sdkError(error)
+        case .unknown:
+            return .unknown
+        case .other(let underlying):
+            DDLogError("Age Range: Failed to retrieve age range. Error: \(underlying)")
+            return .sdkError(error)
+        }
+    }
+
+    /// Marks a step of the flow in the crash report trail, so a crash inside the system
+    /// frameworks shows which call was in flight and for how long.
+    func logBreadcrumb(_ message: String, _ properties: [String: Any] = [:]) {
+        crashLogging.logBreadcrumb(message, category: Constants.breadcrumbCategory, properties: properties)
+    }
+
+    func errorLabel(_ error: Error) -> String {
+        guard let providerError = error as? AgeRangeProviderError else {
+            return String(describing: error)
+        }
+        switch providerError {
+        case .declinedSharing:
+            return "declined_sharing"
+        case .notAvailable:
+            return "not_available"
+        case .unknown:
+            return "unknown"
+        case .other(let underlying):
+            return String(describing: underlying)
+        }
+    }
+
+    func elapsedMilliseconds(since start: Date) -> Int {
+        Int(Date().timeIntervalSince(start) * 1000)
     }
 
     @MainActor
@@ -181,5 +238,6 @@ private extension AgeRangeVerificationService {
         /// Second age gate: separates minors (13–17) from adults. Without it, responses can't
         /// distinguish a 16-year-old from an adult — both would report only "13 or older".
         static let adultAgeThreshold = 18
+        static let breadcrumbCategory = "age_verification"
     }
 }

@@ -12,6 +12,10 @@ struct MockCrashLogger: CrashLogger {
         // no-op
     }
 
+    func logBreadcrumb(_ message: String, category: String, properties: [String: Any]?) {
+        // no-op
+    }
+
     func logMessageAndWait(_ message: String, properties: [String: Any]?, level: SeverityLevel) {
         // no-op
     }

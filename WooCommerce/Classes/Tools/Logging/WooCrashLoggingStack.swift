@@ -61,6 +61,13 @@ struct WooCrashLoggingStack: CrashLoggingStack {
         crashLogging.logError(error, userInfo: userInfo, level: sentrySeverity(with: level))
     }
 
+    func logBreadcrumb(_ message: String, category: String, properties: [String: Any]?) {
+        let breadcrumb = Breadcrumb(level: .info, category: category)
+        breadcrumb.message = message
+        breadcrumb.data = properties
+        SentrySDK.addBreadcrumb(breadcrumb)
+    }
+
     func logFatalErrorAndExit(_ error: Error, userInfo: [String: Any]? = nil) -> Never {
         crashLoggingDataProvider.appIsCrashing = true
         crashLogging.logErrorAndWait(error, userInfo: userInfo, level: .fatal)

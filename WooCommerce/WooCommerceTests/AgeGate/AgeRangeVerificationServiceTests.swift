@@ -299,6 +299,65 @@ final class AgeRangeVerificationServiceTests: XCTestCase {
         XCTAssertTrue(crashLogging.loggedErrors.isEmpty)
     }
 
+    func test_verifyAgeRange_when_flow_completes_then_records_breadcrumbs_for_both_system_calls() {
+        // Given
+        let window = makeWindow()
+        let provider = MockAgeRangeProvider(
+            snapshotResult: .success(AgeRangeSnapshot(lowerBound: 20, upperBound: nil, significantAppChangeApprovalRequired: false)),
+            requirementsResult: .success(.required())
+        )
+        let crashLogging = MockCrashLogger()
+        let sut = AgeRangeVerificationService(provider: provider, crashLogging: crashLogging)
+        let exp = expectation(description: "completion")
+
+        // When
+        sut.verifyAgeRange(in: window.rootViewController!, minimumAge: 13) { _ in
+            exp.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+
+        // Then
+        XCTAssertEqual(crashLogging.loggedBreadcrumbs.map(\.message), [
+            "Requirements fetch started",
+            "Requirements fetch finished",
+            "Age range request started",
+            "Age range request finished"
+        ])
+        XCTAssertTrue(crashLogging.loggedBreadcrumbs.allSatisfy { $0.category == "age_verification" })
+        XCTAssertEqual(crashLogging.loggedBreadcrumbs[1].properties?["compliance_required"] as? Bool, true)
+        XCTAssertEqual(crashLogging.loggedBreadcrumbs[3].properties?["outcome"] as? String, "eligible")
+        XCTAssertNotNil(crashLogging.loggedBreadcrumbs[3].properties?["duration_ms"] as? Int)
+    }
+
+    func test_verifyAgeRange_when_request_fails_then_records_failure_breadcrumb_with_error() {
+        // Given
+        let window = makeWindow()
+        let provider = MockAgeRangeProvider(
+            snapshotResult: .failure(AgeRangeProviderError.declinedSharing),
+            requirementsResult: .failure(AgeRangeProviderError.notAvailable)
+        )
+        let crashLogging = MockCrashLogger()
+        let sut = AgeRangeVerificationService(provider: provider, crashLogging: crashLogging)
+        let exp = expectation(description: "completion")
+
+        // When
+        sut.verifyAgeRange(in: window.rootViewController!, minimumAge: 13) { _ in
+            exp.fulfill()
+        }
+        waitForExpectations(timeout: 1)
+
+        // Then
+        XCTAssertEqual(crashLogging.loggedBreadcrumbs.map(\.message), [
+            "Requirements fetch started",
+            "Requirements fetch failed",
+            "Age range request started",
+            "Age range request failed"
+        ])
+        XCTAssertEqual(crashLogging.loggedBreadcrumbs[1].properties?["error"] as? String, "not_available")
+        XCTAssertEqual(crashLogging.loggedBreadcrumbs[3].properties?["error"] as? String, "declined_sharing")
+        XCTAssertEqual(crashLogging.loggedBreadcrumbs[3].properties?["outcome"] as? String, "declined_sharing")
+    }
+
     func test_verifyAgeRange_when_called_concurrently_coalesces_provider_requests() {
         let window = makeWindow()
         let provider = MockAgeRangeProvider(
@@ -375,8 +434,13 @@ private final class MockAgeRangeProvider: AgeRangeProviding, @unchecked Sendable
 
 private final class MockCrashLogger: CrashLogger {
     private(set) var loggedErrors: [(error: Error, userInfo: [String: Any]?, level: SeverityLevel)] = []
+    private(set) var loggedBreadcrumbs: [(message: String, category: String, properties: [String: Any]?)] = []
 
     func logMessage(_ message: String, properties: [String: Any]?, level: SeverityLevel) {}
+
+    func logBreadcrumb(_ message: String, category: String, properties: [String: Any]?) {
+        loggedBreadcrumbs.append((message, category, properties))
+    }
 
     func logError(_ error: Error, userInfo: [String: Any]?, level: SeverityLevel) {
         loggedErrors.append((error, userInfo, level))

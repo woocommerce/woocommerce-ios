@@ -101,7 +101,25 @@ struct POSSystemStatusServiceTests {
             try await sut.loadWooCommercePluginAndPOSFeatureSwitch(siteID: sampleSiteID)
         }
     }
+
+    @Test func initialization_retains_app_password_state_owner() {
+        // Given
+        var stateOwner: TestAppPasswordStateOwner? = TestAppPasswordStateOwner()
+        weak var weakStateOwner = stateOwner
+        let service = POSSystemStatusService(network: network,
+                                             storageManager: storageManager,
+                                             appPasswordSupportStateOwner: stateOwner)
+
+        // When
+        stateOwner = nil
+
+        // Then
+        #expect(weakStateOwner != nil)
+        withExtendedLifetime(service) {}
+    }
 }
+
+private final class TestAppPasswordStateOwner {}
 
 private extension POSSystemStatusServiceTests {
     func createWCPlugin(version: String = "5.8.0", active: Bool = true) -> Yosemite.SystemPlugin {

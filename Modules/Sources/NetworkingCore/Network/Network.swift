@@ -42,6 +42,11 @@ public protocol Network {
 
     func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?)
 
+    /// Executes a request while preserving the caller's actor isolation across the legacy network
+    /// boundary.
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?)
+
     /// Executes the specified Network Request and returns the response body.
     ///
     /// - Parameter request: Request that should be performed.

@@ -27,6 +27,7 @@ import protocol Yosemite.POSLocalCatalogEligibilityServiceProtocol
 import protocol Yosemite.POSCatalogSyncStatusCheckerProtocol
 import struct Yosemite.POSCatalogSyncStatusChecker
 
+@MainActor
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64
     private let siteSettings: SelectedSiteSettingsProtocol
@@ -79,10 +80,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     /// eligibility checks and has a fully synced local catalog can run POS from local data without
     /// waiting on remote checks, online or offline. Background refreshes pass `forceRemoteCheck`
     /// to re-validate remotely and detect a store that became ineligible.
-    ///
-    /// The protocol isolates UI-facing calls to the main actor. The implementation is nonisolated
-    /// because it owns no mutable state and delegates asynchronous work to service-owned APIs.
-    nonisolated func checkEligibility(forceRemoteCheck: Bool) async -> POSEligibilityState {
+    func checkEligibility(forceRemoteCheck: Bool) async -> POSEligibilityState {
         // Bypass eligibility checks for screenshot tests
         if ProcessConfiguration.shouldBypassPOSEligibilityChecks {
             return .eligible
@@ -121,7 +119,7 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         }
     }
 
-    nonisolated func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
+    func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState {
         switch ineligibleReason {
         case .siteSettingsNotAvailable, .unsupportedCurrency:
             do {

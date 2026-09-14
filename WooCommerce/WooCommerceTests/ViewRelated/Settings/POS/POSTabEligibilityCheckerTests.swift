@@ -869,6 +869,7 @@ private extension POSTabEligibilityCheckerTests {
     }
 }
 
+@MainActor
 private final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
     var resultToReturn: Result<POSPluginAndFeatureInfo, Error> = .success(POSPluginAndFeatureInfo(wcPlugin: nil, featureValue: nil))
     var cachedPluginToReturn: SystemPlugin?
@@ -882,7 +883,6 @@ private final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
         }
     }
 
-    @MainActor
     func loadCachedWooCommercePlugin(siteID: Int64) -> SystemPlugin? {
         cachedPluginToReturn
     }

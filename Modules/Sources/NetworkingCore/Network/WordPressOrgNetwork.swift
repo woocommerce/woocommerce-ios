@@ -85,6 +85,11 @@ public final class WordPressOrgNetwork: Network {
     }
 
     public func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+        try await responseDataAndHeaders(for: request, isolation: #isolation)
+    }
+
+    public func responseDataAndHeaders(for request: URLRequestConvertible,
+                                       isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         let request = requestConverter.convert(request)
         let sessionRequest = alamofireSession.request(request).validate()
         let response = await sessionRequest.serializingData().response

@@ -19,6 +19,11 @@ public final class NullNetwork: Network {
     }
 
     public func responseDataAndHeaders(for request: any URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+        try await responseDataAndHeaders(for: request, isolation: #isolation)
+    }
+
+    public func responseDataAndHeaders(for request: any URLRequestConvertible,
+                                       isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         throw NetworkError.notFound()
     }
 

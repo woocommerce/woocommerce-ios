@@ -1588,6 +1588,11 @@ private final class BodyAndErrorNetwork: Network {
     }
 
     func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+        try await responseDataAndHeaders(for: request, isolation: #isolation)
+    }
+
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         throw error
     }
 
@@ -1624,6 +1629,11 @@ private final class SuccessfulNetwork: Network {
     }
 
     func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+        try await responseDataAndHeaders(for: request, isolation: #isolation)
+    }
+
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         (data, headers)
     }
 

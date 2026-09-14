@@ -320,7 +320,7 @@ let package = Package(
                 "NetworkingCore",
                 .product(name: "CocoaLumberjackSwift", package: "CocoaLumberjack")
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "StoreDesignSystem",

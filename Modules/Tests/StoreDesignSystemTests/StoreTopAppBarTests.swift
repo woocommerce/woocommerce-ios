@@ -4,7 +4,7 @@ import Testing
 
 @Suite struct StoreTopAppBarSizeTests {
 
-    @Test func test_small_then_uses_title_large_and_body_small_emphasized() {
+    @Test func test_textStyles_when_small_then_uses_title_large_and_body_small_emphasized() {
         // Given / When the small bar resolves its typography
         let sut = StoreTopAppBarSize.small
 
@@ -13,7 +13,7 @@ import Testing
         #expect(sut.supportingTextStyle == .bodySmall.emphasized)
     }
 
-    @Test func test_medium_then_uses_headline_small_and_body_medium_emphasized() {
+    @Test func test_textStyles_when_medium_then_uses_headline_small_and_body_medium_emphasized() {
         // Given / When the medium bar resolves its typography
         let sut = StoreTopAppBarSize.medium
 
@@ -45,7 +45,7 @@ import Testing
         #expect(sut.textTrailingInset == StoreSpacing.s2)
     }
 
-    @Test func test_medium_then_text_row_uses_its_own_insets() {
+    @Test func test_insets_when_medium_then_text_row_uses_its_own_insets() {
         // Given medium bars with and without a navigation control
         let withNavigation = StoreTopAppBarLayout(size: .medium, hasNavigation: true, actionCount: 0)
         let withoutNavigation = StoreTopAppBarLayout(size: .medium, hasNavigation: false, actionCount: 0)

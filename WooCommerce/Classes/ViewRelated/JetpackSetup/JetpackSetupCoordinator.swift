@@ -321,7 +321,7 @@ private extension JetpackSetupCoordinator {
                         cookieNonceAuthenticationEndpoints: previousAuthenticationEndpoints,
                         locally: true
                     )
-                    stores.synchronizeEntities { [weak self] in
+                    stores.synchronizeEntities(preservingSelectedSite: true) { [weak self] in
                         self?.stores.updateDefaultStore(site)
                         dismiss()
                     }
@@ -359,7 +359,9 @@ private extension JetpackSetupCoordinator {
         }
 
         if site.isJetpackCPConnected {
-            stores.dispatch(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url, onCompletion: resultHandler))
+            stores.dispatch(AccountAction.synchronizeSitesAndReturnSelectedSiteInfo(siteAddress: site.url) { result in
+                resultHandler(result.map(\.site))
+            })
         } else {
             stores.dispatch(SiteAction.syncSiteByDomain(domain: site.url.trimHTTPScheme(), completion: resultHandler))
         }

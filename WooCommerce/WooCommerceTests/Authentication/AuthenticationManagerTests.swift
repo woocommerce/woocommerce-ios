@@ -1041,6 +1041,64 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(events, ["loading:true", "handle", "loading:false", "recovery"])
     }
 
+    /// The credential transaction succeeding is not the end of the sign-in: `onSuccess` kicks off the
+    /// application password, role eligibility and WooCommerce installation checks, which take several
+    /// seconds more. Ending the loading state here would re-enable the submit button and restore the back
+    /// button while the merchant is still being signed in.
+    ///
+    func test_authenticate_site_credentials_when_login_succeeds_then_the_loading_state_is_not_ended() {
+        // Given
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        var events = [String]()
+        useCase.onHandleLogin = { events.append("handle") }
+        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+
+        // When
+        manager.authenticateSiteCredentials(
+            credentials: siteCredentials(),
+            loginURL: nil,
+            adminURL: nil,
+            endpointUnderVerification: nil,
+            onLoading: { events.append("loading:\($0)") },
+            onSuccess: { _ in events.append("success") },
+            onRecovery: { _ in XCTFail("Expected the login to succeed") },
+            onFailure: { _, _, _, _ in XCTFail("Expected the login to succeed") }
+        )
+        useCase.succeed()
+
+        // Then
+        XCTAssertEqual(events, ["loading:true", "handle", "success"])
+    }
+
+    /// Nothing further along clears the sign-in loading state when the application password use case cannot be built,
+    /// so plainly returning would leave the merchant on a credential form whose fields, submit button and back button
+    /// are all still disabled. Login has to restart instead.
+    ///
+    func test_didAuthenticateUser_when_the_application_password_use_case_cannot_be_created_then_login_restarts() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        let stores = MockStoresManager(sessionManager: sessionManager)
+        stores.authenticate(credentials: .wporg(username: "merchant", password: "password", siteAddress: "https://example.com"))
+        let root = UIViewController()
+        navigationController.setViewControllers([root, UIViewController()], animated: false)
+        let manager = AuthenticationManager(
+            stores: stores,
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, _ in
+                throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
+            })
+        )
+
+        // When
+        manager.didAuthenticateUser(to: "https://example.com", with: siteCredentials(), in: navigationController)
+
+        // Then
+        waitUntil { self.navigationController.viewControllers == [root] }
+        XCTAssertFalse(stores.isAuthenticated)
+    }
+
     func test_authenticate_site_credentials_when_login_retry_has_invalid_unverified_response_then_recovers_not_found() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1385,7 +1443,9 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual((options["login_url"] as? [String: String])?["value"], "https://example.com/custom-login")
         XCTAssertNil(options["admin_url"])
         XCTAssertEqual((options["unrelated"] as? [String: String])?["value"], "preserved")
-        XCTAssertEqual(loading, [true, false])
+        // The loading state is not ended on success: the post-login checks still have to run.
+        // See `test_authenticate_site_credentials_when_login_succeeds_then_the_loading_state_is_not_ended`.
+        XCTAssertEqual(loading, [true])
 
         let defaultEndpoints = try CookieNonceAuthenticationEndpoints(
             siteURL: XCTUnwrap(URL(string: "https://example.com"))

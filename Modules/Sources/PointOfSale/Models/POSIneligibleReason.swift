@@ -6,6 +6,7 @@ import enum WooFoundation.CurrencyCode
 public enum POSIneligibleReason: Equatable {
     case noInternetConnection
     case unsupportedWooCommerceVersion(minimumVersion: String)
+    case unsupportedCountry
     case siteSettingsNotAvailable
     case wooCommercePluginNotFound
     case featureSwitchDisabled

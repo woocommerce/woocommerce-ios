@@ -3,6 +3,7 @@ import Testing
 @testable import WooAIAssistant
 
 @Suite(.timeLimit(.minutes(1)))
+@MainActor
 struct MessageBubbleOrderingTests {
 
     @Test

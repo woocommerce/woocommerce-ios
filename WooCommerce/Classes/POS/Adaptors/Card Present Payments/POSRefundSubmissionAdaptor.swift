@@ -18,7 +18,7 @@ import WooFoundation
 final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     let stateModel = POSRefundSubmissionModel()
 
-    private struct PreparedRefundSnapshot {
+    private struct PreparedRefundSnapshot: Sendable {
         let preparation: POSRefundPreparation
         let context: POSRefundSubmissionMapping.PreparedRefundContext
     }

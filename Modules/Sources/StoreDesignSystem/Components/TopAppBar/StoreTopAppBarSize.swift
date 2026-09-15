@@ -40,16 +40,6 @@ public enum StoreTopAppBarTitleAlignment: Sendable {
     }
 
     var frameAlignment: Alignment {
-        switch self {
-        case .leading: .leading
-        case .center: .center
-        }
-    }
-
-    var textAlignment: TextAlignment {
-        switch self {
-        case .leading: .leading
-        case .center: .center
-        }
+        Alignment(horizontal: horizontalAlignment, vertical: .center)
     }
 }

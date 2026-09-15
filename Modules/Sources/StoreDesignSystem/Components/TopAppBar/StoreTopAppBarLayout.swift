@@ -9,7 +9,8 @@ struct StoreTopAppBarLayout: Equatable {
     let hasNavigation: Bool
     let actionCount: Int
 
-    /// The bar's own leading inset before the navigation control.
+    /// The bar's own leading inset before the navigation control. The trailing inset before the
+    /// bar's edge is always `p2`.
     var barLeadingInset: CGFloat {
         switch size {
         case .small: hasNavigation ? StorePadding.p2 : StorePadding.p0

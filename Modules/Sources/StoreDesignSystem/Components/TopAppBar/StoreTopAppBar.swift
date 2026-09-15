@@ -42,19 +42,21 @@ public struct StoreTopAppBar: View {
     }
 
     public var body: some View {
-        Group {
-            switch size {
-            case .small:
-                smallLayout
-            case .medium:
-                mediumLayout
+        layoutBody
+            .background(appearance.background)
+            .overlay(alignment: .bottom) {
+                if showsDivider {
+                    StoreDivider()
+                }
             }
-        }
-        .background(appearance.background)
-        .overlay(alignment: .bottom) {
-            if showsDivider {
-                StoreDivider()
-            }
+    }
+
+    @ViewBuilder private var layoutBody: some View {
+        switch size {
+        case .small:
+            smallLayout
+        case .medium:
+            mediumLayout
         }
     }
 
@@ -94,7 +96,8 @@ public struct StoreTopAppBar: View {
     }
 
     /// Two rows: the controls row keeps its height even when empty, so the title always sits at
-    /// the same position.
+    /// the same position. The design's `s3` row gap and `p4` bottom padding are measured to the
+    /// title's cap height and baseline; the font's line box carries the rest, hence `s1` / `p3`.
     private var mediumLayout: some View {
         VStack(alignment: .leading, spacing: StoreSpacing.s1) {
             HStack(spacing: StoreSpacing.s0) {
@@ -104,11 +107,12 @@ public struct StoreTopAppBar: View {
             }
             .frame(minHeight: StoreSize.topAppBarControlSize)
             .padding(.top, StorePadding.p3)
-            .padding(.horizontal, layout.barLeadingInset)
+            .padding(.leading, layout.barLeadingInset)
+            .padding(.trailing, StorePadding.p2)
 
             text
-                .padding(.leading, alignment == .center ? layout.centeredTextInset : layout.textLeadingInset)
-                .padding(.trailing, alignment == .center ? layout.centeredTextInset : layout.textTrailingInset)
+                .padding(.leading, layout.textLeadingInset)
+                .padding(.trailing, alignment == .center ? layout.textLeadingInset : layout.textTrailingInset)
         }
         .padding(.bottom, StorePadding.p3)
     }
@@ -130,7 +134,6 @@ public struct StoreTopAppBar: View {
             }
         }
         .lineLimit(1)
-        .multilineTextAlignment(alignment.textAlignment)
         .frame(maxWidth: .infinity, alignment: alignment.frameAlignment)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)

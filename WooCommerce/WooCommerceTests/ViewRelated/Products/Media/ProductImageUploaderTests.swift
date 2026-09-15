@@ -5,6 +5,7 @@ import XCTest
 import Yosemite
 import Networking
 
+@MainActor
 final class ProductImageUploaderTests: XCTestCase {
     private let siteID: Int64 = 134
     private let productID = ProductOrVariationID.product(id: 606)

@@ -2,6 +2,7 @@
 import XCTest
 import Yosemite
 
+@MainActor
 final class ProductImagesProductIDUpdaterTests: XCTestCase {
     private var storesManager: MockStoresManager!
 

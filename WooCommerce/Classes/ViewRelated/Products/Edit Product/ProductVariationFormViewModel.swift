@@ -111,6 +111,7 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
     private let productImagesUploader: ProductImageUploaderProtocol
     private var cancellable: AnyCancellable?
 
+    @MainActor
     init(productVariation: EditableProductVariationModel,
          allAttributes: [ProductAttribute],
          parentProductSKU: String?,

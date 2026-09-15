@@ -9,6 +9,7 @@ import YosemiteTestHelpers
 import Yosemite
 
 /// Unit tests for observables (`observableProduct`, `productName`, `isUpdateEnabled`)
+@MainActor
 final class ProductFormViewModel_ObservablesTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
     private var productSubscription: AnyCancellable?

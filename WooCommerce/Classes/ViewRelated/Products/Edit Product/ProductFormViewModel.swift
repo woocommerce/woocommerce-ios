@@ -230,6 +230,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     ///
     private lazy var remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
 
+    @MainActor
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,

@@ -6,6 +6,7 @@ import Fakes
 import Yosemite
 
 /// Unit tests for update functions in `ProductFormViewModel`.
+@MainActor
 final class ProductFormViewModel_UpdatesTests: XCTestCase {
     func testUpdatingName() {
         // Arrange

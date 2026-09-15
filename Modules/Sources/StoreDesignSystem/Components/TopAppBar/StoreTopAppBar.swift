@@ -5,7 +5,8 @@ import SwiftUI
 ///
 /// - Note: The bar is static. The screen decides when its content has scrolled under the bar and
 ///   toggles `showsDivider`; the medium bar collapsing to small on scroll is a separate, later
-///   piece. `.disabled(_:)` dims the text and controls and blocks every action.
+///   piece. `.disabled(_:)` dims the text and controls and blocks every action. Dynamic Type
+///   follows ``StoreTopAppBarScaling``: text grows up to a cap, controls don't.
 public struct StoreTopAppBar: View {
     @Environment(\.isEnabled) private var isEnabled
 
@@ -43,6 +44,7 @@ public struct StoreTopAppBar: View {
 
     public var body: some View {
         layoutBody
+            .dynamicTypeSize(...StoreTopAppBarScaling.maximumDynamicTypeSize)
             .background(appearance.background)
             .overlay(alignment: .bottom) {
                 if showsDivider {
@@ -195,7 +197,8 @@ public struct StoreTopAppBar: View {
     }
 }
 
-/// A 48 pt icon button: the 24 pt glyph centered in the design's control box.
+/// A 48 pt icon button: the 24 pt glyph centered in the design's control box. Fixed-size at every
+/// Dynamic Type setting; the Large Content Viewer shows the enlarged glyph and label on long-press.
 private struct StoreTopAppBarControl: View {
     @Environment(\.isEnabled) private var isEnabled
 
@@ -214,6 +217,13 @@ private struct StoreTopAppBarControl: View {
         }
         .buttonStyle(StorePressFeedbackButtonStyle())
         .accessibilityLabel(accessibilityLabel)
+        .accessibilityShowsLargeContentViewer {
+            Label {
+                Text(accessibilityLabel)
+            } icon: {
+                icon.image(size: Constants.iconSize)
+            }
+        }
     }
 
     private enum Constants {

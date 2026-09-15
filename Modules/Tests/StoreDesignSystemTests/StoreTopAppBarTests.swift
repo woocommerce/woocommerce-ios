@@ -154,3 +154,11 @@ import Testing
         #expect(sut.control == .storeStateLayerOnSurfaceOpacity24)
     }
 }
+
+@Suite struct StoreTopAppBarScalingTests {
+
+    @Test func test_maximumDynamicTypeSize_then_caps_text_growth_at_accessibility2() {
+        // Given / When / Then text stops growing after the second accessibility size
+        #expect(StoreTopAppBarScaling.maximumDynamicTypeSize == .accessibility2)
+    }
+}

@@ -229,6 +229,80 @@ final class AlamofireNetworkTests: XCTestCase {
         }
     }
 
+    // MARK: - Jetpack tunnel detection
+
+    func test_usesJetpackTunnel_when_no_site_is_selected_then_it_is_true_for_a_jetpack_request() {
+        // Given
+        let network = AlamofireNetwork(credentials: createWPComCredentials(),
+                                       selectedSite: nil,
+                                       appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let request = createJetpackRequest(siteID: 123, path: "products")
+
+        // When
+        let usesTunnel = network.usesJetpackTunnel(for: request)
+
+        // Then
+        XCTAssertTrue(usesTunnel)
+    }
+
+    func test_usesJetpackTunnel_when_the_site_uses_application_passwords_then_it_is_false_for_a_convertible_request() {
+        // Given
+        let network = createNetworkWithSelectedSite(siteID: 123)
+        let request = createJetpackRequest(siteID: 123, path: "products")
+
+        // When
+        let usesTunnel = network.usesJetpackTunnel(for: request)
+
+        // Then
+        XCTAssertFalse(usesTunnel)
+    }
+
+    func test_usesJetpackTunnel_when_the_site_uses_application_passwords_then_it_is_true_for_a_tunnel_only_request() {
+        // Given
+        let network = createNetworkWithSelectedSite(siteID: 123)
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: 123,
+                                     path: "products",
+                                     parameters: nil,
+                                     availableAsRESTRequest: false)
+
+        // When
+        let usesTunnel = network.usesJetpackTunnel(for: request)
+
+        // Then
+        XCTAssertTrue(usesTunnel)
+    }
+
+    func test_usesJetpackTunnel_when_the_selected_site_has_no_application_password_then_it_is_true_for_a_convertible_request() {
+        // Given
+        let site = JetpackSite(siteID: 123, siteAddress: "https://example.com", applicationPasswordAvailable: false)
+        let network = AlamofireNetwork(credentials: createWPComCredentials(),
+                                       selectedSite: Just(site).eraseToAnyPublisher(),
+                                       appPasswordSupportState: Just(true).eraseToAnyPublisher(),
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let request = createJetpackRequest(siteID: 123, path: "products")
+
+        // When
+        let usesTunnel = network.usesJetpackTunnel(for: request)
+
+        // Then
+        XCTAssertTrue(usesTunnel)
+    }
+
+    func test_usesJetpackTunnel_when_application_password_switching_is_off_then_it_is_true_for_a_convertible_request() {
+        // Given
+        let network = createNetworkWithSelectedSite(siteID: 123, appPasswordSupport: Just(false).eraseToAnyPublisher())
+        let request = createJetpackRequest(siteID: 123, path: "products")
+
+        // When
+        let usesTunnel = network.usesJetpackTunnel(for: request)
+
+        // Then
+        XCTAssertTrue(usesTunnel)
+    }
+
     // MARK: - Retry Logic Tests
 
     func test_responseData_with_completion_retries_direct_request_when_converted_request_fails() throws {

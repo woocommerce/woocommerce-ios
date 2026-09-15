@@ -46,6 +46,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
                                       completion: completion)
         case .fetchJetpackConnectionData(let siteID, let completion):
             fetchJetpackConnectionData(siteID: siteID, completion: completion)
+        case .fetchJetpackConnectionStatus(let siteID, let completion):
+            fetchJetpackConnectionStatus(siteID: siteID, completion: completion)
         case .registerSite(let completion):
             registerSite(completion: completion)
         case .provisionConnection(let completion):
@@ -133,6 +135,14 @@ private extension JetpackConnectionStore {
             return
         }
         jetpackConnectionRemote.fetchJetpackConnectionData(siteID: siteID, completion: completion)
+    }
+
+    func fetchJetpackConnectionStatus(siteID: Int64, completion: @escaping (Result<JetpackConnectionStatus, Error>) -> Void) {
+        guard let jetpackConnectionRemote else {
+            completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
+            return
+        }
+        jetpackConnectionRemote.fetchJetpackConnectionStatus(siteID: siteID, completion: completion)
     }
 
     func registerSite(completion: @escaping (Result<Int64, Error>) -> Void) {

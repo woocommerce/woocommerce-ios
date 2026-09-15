@@ -51,12 +51,14 @@ protocol ProductImageUploaderProtocol {
     ///   - siteID: The ID of the site to which images are uploaded to.
     ///   - localID: A temporary local ID of the product.
     ///   - remoteID: Remote product ID received from API.
+    @MainActor
     func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64)
 
     /// Saves the product remotely with the images after none is pending upload.
     /// - Parameters:
     ///   - key: identifiable information about the product.
     ///   - onProductSave: called after the product is saved remotely with the uploaded images.
+    @MainActor
     func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void)
 
@@ -81,6 +83,7 @@ protocol ProductImageUploaderProtocol {
     /// - Parameters:
     ///   - key: identifiable information about the product.
     ///   - originalImages: the image statuses before any edits.
+    @MainActor
     func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool
 
     /// Resets all internal states and tracking of image uploads for connected stores.
@@ -209,6 +212,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         return actionHandler
     }
 
+    @MainActor
     func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64) {
         // Every caller is on the main thread today (view controllers and view models driven by them), but the
         // protocol requirement stays nonisolated because `ProductFormViewModelProtocol.hasUnsavedChanges()`
@@ -259,6 +263,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
     }
 
+    @MainActor
     func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool {
         // Every caller is on the main thread today (view controllers and view models driven by them), but the
         // protocol requirement stays nonisolated because `ProductFormViewModelProtocol.hasUnsavedChanges()`
@@ -289,6 +294,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
     }
 
+    @MainActor
     func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         // Every caller is on the main thread today (view controllers and view models driven by them), but the

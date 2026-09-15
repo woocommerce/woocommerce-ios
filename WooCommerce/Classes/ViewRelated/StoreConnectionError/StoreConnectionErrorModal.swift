@@ -29,7 +29,6 @@ struct StoreConnectionErrorModal: View {
             .padding(Layout.modalPadding)
             .frame(maxWidth: Layout.maxWidth)
         }
-        .accessibilityAddTraits(.isModal)
     }
 
     private var content: some View {

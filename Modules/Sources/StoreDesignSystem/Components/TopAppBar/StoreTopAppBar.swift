@@ -119,9 +119,10 @@ public struct StoreTopAppBar: View {
 
     // MARK: - Parts
 
-    /// Title and supporting text read as one VoiceOver heading. Line spacing is `s0`: the design's
-    /// `s3` gap is measured between cap height and baseline, which the fonts' own line boxes
-    /// already provide.
+    /// Title and supporting text read as one VoiceOver heading, after the navigation control and
+    /// before the actions whatever the layout puts on screen first. Line spacing is `s0`: the
+    /// design's `s3` gap is measured between cap height and baseline, which the fonts' own line
+    /// boxes already provide.
     private var text: some View {
         VStack(alignment: alignment.horizontalAlignment, spacing: StoreSpacing.s0) {
             Text(title)
@@ -137,6 +138,7 @@ public struct StoreTopAppBar: View {
         .frame(maxWidth: .infinity, alignment: alignment.frameAlignment)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
+        .accessibilitySortPriority(AccessibilityOrder.text)
     }
 
     @ViewBuilder private var navigationControl: some View {
@@ -145,6 +147,7 @@ public struct StoreTopAppBar: View {
                                   accessibilityLabel: navigation.accessibilityLabel,
                                   flipsForRightToLeft: navigation.flipsForRightToLeft,
                                   action: navigation.action)
+                .accessibilitySortPriority(AccessibilityOrder.navigation)
         }
     }
 
@@ -159,6 +162,14 @@ public struct StoreTopAppBar: View {
                     .disabled(!action.isEnabled)
             }
         }
+        .accessibilitySortPriority(AccessibilityOrder.actions)
+    }
+
+    /// VoiceOver order: navigation, text, actions. Higher reads first.
+    private enum AccessibilityOrder {
+        static let navigation: Double = 3
+        static let text: Double = 2
+        static let actions: Double = 1
     }
 }
 

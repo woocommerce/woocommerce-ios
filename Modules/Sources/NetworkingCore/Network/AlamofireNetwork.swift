@@ -261,8 +261,10 @@ public class AlamofireNetwork: Network {
     ///
     /// Answered from the converter's current state, which matches the transport of every response except
     /// one: a direct request that failed and was retried through the tunnel is reported as direct, because
-    /// the retry marker is cleared before the response reaches the caller. A successful retry marks the
-    /// site as unsupported for application passwords, so the next request is classified correctly.
+    /// the retry marker is cleared before the response reaches the caller. Callers treat a direct answer
+    /// as "says nothing", so such a response is skipped rather than misattributed. The gap closes on its
+    /// own once the error handler marks the site as unsupported for application passwords, which is
+    /// immediate for a 401, 403 or 429 and after a few failures otherwise.
     ///
     public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
         convertRequestIfNeeded(request) is JetpackRequest

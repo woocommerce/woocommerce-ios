@@ -153,10 +153,6 @@
     "Modules/Sources/WooAIAssistant/AI/AIApiProxyChatService.swift": 3,
     "Modules/Sources/WooAIAssistant/Headless/WooAssistantHeadless.swift": 1,
     "Modules/Sources/WooAIAssistant/Presentation/AssistantConfirmationHandler.swift": 1,
-    "Modules/Sources/WooFoundation/Colors/UIColor+SemanticColors.swift": 8,
-    "Modules/Sources/WooFoundation/UI Components/SafariSheet.swift": 2,
-    "Modules/Sources/WooFoundation/UI Components/TextFieldStyles.swift": 2,
-    "Modules/Sources/WooFoundation/Utilities/Connectivity/DefaultConnectivityObserver.swift": 5,
     "Modules/Sources/WooFoundationCore/BuildConfiguration.swift": 1,
     "Modules/Sources/WooFoundationCore/ColorStudio.swift": 13,
     "Modules/Sources/WooFoundationCore/CurrencySettings.swift": 2,
@@ -1281,5 +1277,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 11158
+  "total": 11141
 }

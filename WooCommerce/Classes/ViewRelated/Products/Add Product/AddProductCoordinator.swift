@@ -115,12 +115,16 @@ final class AddProductCoordinator: Coordinator {
 
         analytics.track(event: .ProductCreation.addProductStarted(source: source, storeHasProducts: storeHasProducts))
 
-        if shouldSkipBottomSheet {
-            presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
-        } else if shouldShowAIActionSheet {
-            presentActionSheetWithAI()
-        } else {
-            presentProductTypeBottomSheet()
+        // `Coordinator.start()` is a nonisolated requirement, but every coordinator is started from UI code.
+        // Check that assumption at runtime until the `Coordinator` protocol is `@MainActor`. Depends on WOOMOB-4085.
+        MainActor.assumeIsolated {
+            if shouldSkipBottomSheet {
+                presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
+            } else if shouldShowAIActionSheet {
+                presentActionSheetWithAI()
+            } else {
+                presentProductTypeBottomSheet()
+            }
         }
     }
 }
@@ -188,6 +192,7 @@ private extension AddProductCoordinator {
 
     /// Presents a new product based on the provided bottom sheet type.
     ///
+    @MainActor
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
         guard let product = ProductFactory().createNewProduct(type: bottomSheetProductType.productType,
                                                               isVirtual: bottomSheetProductType.isVirtual,
@@ -251,6 +256,7 @@ private extension AddProductCoordinator {
 
     /// Presents a product onto the current navigation stack.
     ///
+    @MainActor
     func presentProduct(_ product: Product, formType: ProductFormType = .add, isAIContent: Bool = false) {
         let model = EditableProductModel(product: product)
         let currencyCode = ServiceLocator.currencySettings.currencyCode

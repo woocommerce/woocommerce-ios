@@ -75,10 +75,7 @@ tags:
     commands:
       - tapOn: "Save"
 - runFlow:
-    when:
-      visible: "Save Password?"
-    commands:
-      - tapOn: "Not Now"
+    file: ../subflows/dismiss_save_password_prompt.yaml
 - extendedWaitUntil:
     visible: "Manage Privacy|Save Password\\?|Orders"
     timeout: 30000
@@ -88,10 +85,7 @@ tags:
     commands:
       - tapOn: "Save"
 - runFlow:
-    when:
-      visible: "Save Password?"
-    commands:
-      - tapOn: "Not Now"
+    file: ../subflows/dismiss_save_password_prompt.yaml
 - extendedWaitUntil:
     visible:
       id: "tab-bar-orders-item"

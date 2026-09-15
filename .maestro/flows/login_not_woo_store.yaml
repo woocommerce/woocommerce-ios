@@ -92,10 +92,7 @@ tags:
             - tapOn:
                 id: "Continue Button"
       - runFlow:
-          when:
-            visible: "Save Password?"
-          commands:
-            - tapOn: "Not Now"
+          file: ../subflows/dismiss_save_password_prompt.yaml
 - extendedWaitUntil:
     visible: '.*is not a WooCommerce site\.'
     timeout: 60000

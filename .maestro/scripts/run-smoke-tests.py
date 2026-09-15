@@ -469,34 +469,21 @@ def write_combined_junit(attempts: list[Attempt], destination: Path) -> tuple[in
     for attempt in attempts:
         status = flow_status(attempts_by_execution[(attempt.flow, attempt.repeat)])
         if not attempt.junit.exists():
-            is_flaky = status == "FLAKY"
-            suite = ET.SubElement(
-                suites,
-                "testsuite",
-                name=f"{attempt.flow.stem}-attempt-{attempt.number}",
-                tests="1",
-                failures="0" if is_flaky else "1",
-            )
+            suite = ET.SubElement(suites, "testsuite", name=f"{attempt.flow.stem}-attempt-{attempt.number}", tests="1", failures="1")
             case = ET.SubElement(suite, "testcase", name=attempt.flow.stem, file=str(attempt.flow.relative_to(REPO_ROOT)))
-            if is_flaky:
+            if status == "FLAKY":
                 properties = ET.SubElement(case, "properties")
                 ET.SubElement(properties, "property", name="maestro.status", value="FLAKY")
-            else:
-                ET.SubElement(case, "failure", message="Maestro did not produce JUnit output")
+            ET.SubElement(case, "failure", message="Maestro did not produce JUnit output")
             tests += 1
-            failures += int(not is_flaky)
+            failures += 1
             continue
         root = ET.parse(attempt.junit).getroot()
         children = [root] if root.tag == "testsuite" else list(root.findall("testsuite"))
         for suite in children:
             suite.set("name", f"{suite.get('name', attempt.flow.stem)} [run {attempt.repeat} attempt {attempt.number}]")
             if status == "FLAKY":
-                suite.set("failures", "0")
-                suite.set("errors", "0")
                 for case in suite.iter("testcase"):
-                    for result in list(case):
-                        if result.tag in {"failure", "error"}:
-                            case.remove(result)
                     properties = case.find("properties")
                     if properties is None:
                         properties = ET.Element("properties")

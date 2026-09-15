@@ -175,7 +175,7 @@ private final class HostedNavigation {
             window = UIWindow(frame: UIScreen.main.bounds)
         }
         root.addChild(content)
-        root.setOverrideTraitCollection(UITraitCollection(horizontalSizeClass: .regular), forChild: content)
+        try overrideHorizontalSizeClass(.regular)
         root.view.addSubview(content.view)
         content.view.frame = root.view.bounds
         content.view.autoresizingMask = [.flexibleWidth, .flexibleHeight]
@@ -185,7 +185,7 @@ private final class HostedNavigation {
     }
 
     func layout(_ sizeClass: UIUserInterfaceSizeClass) async throws {
-        root.setOverrideTraitCollection(UITraitCollection(horizontalSizeClass: sizeClass), forChild: content)
+        try overrideHorizontalSizeClass(sizeClass)
         root.view.setNeedsLayout()
         root.view.layoutIfNeeded()
         await settle()
@@ -211,6 +211,13 @@ private final class HostedNavigation {
         window.isHidden = true
         window.rootViewController = nil
         previousKeyWindow?.makeKey()
+    }
+
+    private func overrideHorizontalSizeClass(_ sizeClass: UIUserInterfaceSizeClass) throws {
+        guard #available(iOS 17.0, *) else {
+            throw CocoaError(.featureUnsupported)
+        }
+        content.traitOverrides.horizontalSizeClass = sizeClass
     }
 }
 

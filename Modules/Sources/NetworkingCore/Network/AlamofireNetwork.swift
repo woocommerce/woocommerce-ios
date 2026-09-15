@@ -264,7 +264,7 @@ public class AlamofireNetwork: Network {
     /// the retry marker is cleared before the response reaches the caller. Callers treat a direct answer
     /// as "says nothing", so such a response is skipped rather than misattributed. The gap closes on its
     /// own once the error handler marks the site as unsupported for application passwords, which is
-    /// immediate for a 401, 403 or 429 and after a few failures otherwise.
+    /// immediate for a 401, 403 or 429 and takes ten such fallbacks otherwise.
     ///
     public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
         convertRequestIfNeeded(request) is JetpackRequest

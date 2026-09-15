@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 
 /// Coordinates the state of multiple columns (product list and secondary view) based on the secondary view.
+@MainActor
 final class ProductsSplitViewCoordinator: NSObject {
     /// Content type that is shown in the secondary view.
     enum SecondaryViewContentType: Equatable {

@@ -160,6 +160,7 @@ private extension AddProductCoordinator {
 
     /// Presents a bottom sheet for users to choose if what kind of product they want to create.
     ///
+    @MainActor
     func presentProductTypeBottomSheet() {
         let subtitle = NSLocalizedString("Select a product type",
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
@@ -205,6 +206,7 @@ private extension AddProductCoordinator {
 
     /// Presents an action sheet with the option to start product creation with AI
     ///
+    @MainActor
     func presentActionSheetWithAI() {
         let isEligibleForWooSubscriptionProducts = wooSubscriptionProductsEligibilityChecker.isSiteEligible()
         let productTypes: [BottomSheetProductType] = [
@@ -239,6 +241,7 @@ private extension AddProductCoordinator {
         analytics.track(event: .ProductCreationAI.entryPointDisplayed())
     }
 
+    @MainActor
     func startProductCreationWithAI() {
         let viewController = AddProductWithAIContainerHostingController(viewModel: .init(siteID: siteID,
                                                                                          source: source,

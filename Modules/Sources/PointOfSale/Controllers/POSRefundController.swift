@@ -4,13 +4,31 @@ import enum Yosemite.OrderRefundEligibilityFailure
 import enum Yosemite.RefundAPIError
 import struct Yosemite.POSOrder
 
-@Observable final class POSRefundController {
+@MainActor
+protocol POSRefundControllerProtocol {
+    var selectableItems: [POSRefundSelectableItem] { get }
+    var hasLoadedSelectableItems: Bool { get }
+    var hasModifiedSelection: Bool { get }
+    var reviewPreparationState: POSRefundReviewPreparationState { get }
+    var requiresCardPresentRefund: Bool { get }
+    func preloadRefund(for order: POSOrder) async
+    func startRefundFlow(for order: POSOrder) async -> StartRefundFlowResult
+    func refreshRefundableItems() async -> StartRefundFlowResult
+    func toggleItemSelection(at index: Int)
+    func toggleAllItemsSelection()
+    func clearSelection()
+    func reset()
+    func prepareReview() async -> POSRefundReviewPreparationResult
+    func processRefund(reason: String?) async throws -> POSRefundSubmissionResult
+}
+
+@Observable final class POSRefundController: POSRefundControllerProtocol {
     private(set) var selectableItems: [POSRefundSelectableItem] = []
     private(set) var hasModifiedSelection = false
     private(set) var reviewPreparationState: POSRefundReviewPreparationState = .idle
 
-    private(set) var order: POSOrder?
-    private(set) var preparation: POSRefundPreparation?
+    private var order: POSOrder?
+    private var preparation: POSRefundPreparation?
 
     private let refundSubmissionProcessor: POSRefundSubmissionProcessing
     private var reviewPreparationTask: Task<POSRefundReviewPreparationResult, Never>?

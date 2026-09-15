@@ -15,6 +15,7 @@ import class Yosemite.AsyncPaginationTracker
 import protocol Experiments.FeatureFlagService
 import CocoaLumberjackSwift
 
+@MainActor
 protocol POSOrderListControllerProtocol {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
@@ -22,26 +23,16 @@ protocol POSOrderListControllerProtocol {
     var orderDetailsItemsState: POSOrderDetailsItemsState { get }
     var displayedLineItems: [POSOrderItem] { get }
     var displayedCustomAmounts: [POSOrderCustomAmount] { get }
-    var refundActionAvailability: RefundActionAvailability { get }
-    var refundSelectableItems: [POSRefundSelectableItem] { get }
-    var hasLoadedRefundableItems: Bool { get }
-    var currentRefundRequiresCardPresentRefund: Bool { get }
-    var hasModifiedRefundSelection: Bool { get }
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
-    func selectOrder(_ order: POSOrder?)
     func updateOrder(orderID: Int64) async throws
-    func preloadRefundDetails() async
-    func startRefundFlow() async -> StartRefundFlowResult
-    func refreshRefundableItems() async -> StartRefundFlowResult
-    func toggleRefundItemSelection(at index: Int)
-    func clearRefundSelection()
-    func toggleAllRefundItemsSelection()
-    var refundReviewPreparationState: POSRefundReviewPreparationState { get }
-    func prepareRefundReview() async -> POSRefundReviewPreparationResult
-    func processRefund(reason: String?) async throws
     func loadOrderRefunds() async
+}
+
+@MainActor
+protocol POSOrderSelectionHandling {
+    func selectOrder(_ order: POSOrder?)
 }
 
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
@@ -71,7 +62,7 @@ private enum POSOrderRefundDetailsState {
     }
 }
 
-@Observable final class POSOrderListController: POSSearchingOrderListControllerProtocol {
+@Observable final class POSOrderListController: POSSearchingOrderListControllerProtocol, POSOrderSelectionHandling {
     var ordersViewState: POSOrderListState
     private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
     private var fetchStrategy: POSOrderListFetchStrategy
@@ -82,8 +73,6 @@ private enum POSOrderRefundDetailsState {
     private var refundDetailsByOrderID: [Int64: POSOrderRefundDetailsState] = [:]
     private let orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol
     private let refundsService: POSRefundsServiceProtocol
-    private let refundSubmissionProcessor: POSRefundSubmissionProcessing
-    private let refundController: POSRefundController
     private var paginationTracker: AsyncPaginationTracker {
         if let existing = strategyPaginationTracker[fetchStrategy.id] {
              return existing
@@ -95,20 +84,11 @@ private enum POSOrderRefundDetailsState {
 
     init(orderListFetchStrategyFactory: POSOrderListFetchStrategyFactoryProtocol,
          refundsService: POSRefundsServiceProtocol,
-         refundSubmissionProcessor: POSRefundSubmissionProcessing,
-         refundController: POSRefundController,
          initialState: POSOrderListState = .loading([])) {
         self.ordersViewState = initialState
         self.orderListFetchStrategyFactory = orderListFetchStrategyFactory
         self.fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
         self.refundsService = refundsService
-        self.refundSubmissionProcessor = refundSubmissionProcessor
-        self.refundController = refundController
-    }
-
-    @MainActor
-    var refundReviewPreparationState: POSRefundReviewPreparationState {
-        refundController.reviewPreparationState
     }
 
     @MainActor
@@ -134,16 +114,6 @@ private enum POSOrderRefundDetailsState {
             customAmounts: displayedCustomAmounts,
             refundedItems: order.refunds.flatMap(\.items)
         )
-    }
-
-    @MainActor
-    var refundActionAvailability: RefundActionAvailability {
-        selectedOrder?.refundActionAvailability ?? .unavailable
-    }
-
-    @MainActor
-    var currentRefundRequiresCardPresentRefund: Bool {
-        refundController.requiresCardPresentRefund
     }
 
     @MainActor
@@ -302,7 +272,6 @@ private enum POSOrderRefundDetailsState {
             // which rebuild orders from summary data, don't re-show the skeleton and re-fetch.
             refundDetailsByOrderID[order.id] = .loaded(order.refunds)
         }
-        refundController.reset()
     }
 
     @MainActor
@@ -342,69 +311,6 @@ private enum POSOrderRefundDetailsState {
         if selectedOrder?.id == orderID {
             selectedOrder = updatedOrder
         }
-    }
-
-    // MARK: - Refund Item Selection
-
-    var refundSelectableItems: [POSRefundSelectableItem] {
-        refundController.selectableItems
-    }
-
-    var hasModifiedRefundSelection: Bool {
-        refundController.hasModifiedSelection
-    }
-
-    @MainActor
-    func preloadRefundDetails() async {
-        guard let order = selectedOrder else { return }
-        await refundController.preloadRefund(for: order)
-    }
-
-    @MainActor
-    func startRefundFlow() async -> StartRefundFlowResult {
-        guard let order = selectedOrder else { return .failed }
-        return await refundController.startRefundFlow(for: order)
-    }
-
-    @MainActor
-    var hasLoadedRefundableItems: Bool {
-        refundController.hasLoadedSelectableItems
-    }
-
-    @MainActor
-    func refreshRefundableItems() async -> StartRefundFlowResult {
-        return await refundController.refreshRefundableItems()
-    }
-
-    @MainActor
-    func toggleRefundItemSelection(at index: Int) {
-        refundController.toggleItemSelection(at: index)
-    }
-
-    @MainActor
-    func clearRefundSelection() {
-        refundController.clearSelection()
-    }
-
-    @MainActor
-    func toggleAllRefundItemsSelection() {
-        refundController.toggleAllItemsSelection()
-    }
-
-    // MARK: - Refund Review Data Preparation
-
-    @MainActor
-    func prepareRefundReview() async -> POSRefundReviewPreparationResult {
-        await refundController.prepareReview()
-    }
-
-    // MARK: - Refund Processing
-
-    @MainActor
-    func processRefund(reason: String?) async throws {
-        let result = try await refundController.processRefund(reason: reason)
-        try? await updateOrder(orderID: result.refundedOrderID)
-        await loadOrderRefunds()
     }
 
     @MainActor

@@ -264,6 +264,13 @@ public class AlamofireNetwork: Network {
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: A publisher that emits the result of the given request.
+    /// A Jetpack request that the converter leaves alone goes through the tunnel; one it turns into a
+    /// `RESTRequest` goes directly to the site with an application password.
+    ///
+    public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        convertRequestIfNeeded(request) is JetpackRequest
+    }
+
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         return Future() { [weak self] promise in
             guard let self else { return }

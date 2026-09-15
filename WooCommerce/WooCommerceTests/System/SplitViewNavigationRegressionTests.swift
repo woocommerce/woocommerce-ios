@@ -9,7 +9,7 @@ import YosemiteTestHelpers
 @MainActor
 @Suite(.serialized, .timeLimit(.minutes(5)))
 struct SplitViewNavigationRegressionTests {
-    @Test
+    @Test(.enabled(if: supportsTraitOverrides(), "Requires iOS 17 or later"))
     func test_discard_when_product_form_is_in_compact_layout_then_returns_to_primary_root() async throws {
         // Given
         let sessionID = "splitNavigationTests.\(UUID().uuidString)"
@@ -50,7 +50,7 @@ struct SplitViewNavigationRegressionTests {
         #expect(product.form.navigationController == nil)
     }
 
-    @Test
+    @Test(.enabled(if: supportsTraitOverrides(), "Requires iOS 17 or later"))
     func test_round_trip_when_product_inventory_is_open_then_preserves_both_controllers() async throws {
         // Given: real form and inventory screens, selected after compact entry.
         let sessionID = "splitNavigationTests.\(UUID().uuidString)"
@@ -88,6 +88,13 @@ struct SplitViewNavigationRegressionTests {
         #expect(product.viewModel.productModel.name == "Unsaved product")
         #expect(product.viewModel.hasUnsavedChanges())
     }
+}
+
+private func supportsTraitOverrides() -> Bool {
+    if #available(iOS 17.0, *) {
+        return true
+    }
+    return false
 }
 
 @MainActor

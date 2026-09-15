@@ -1,5 +1,6 @@
 import Foundation
 import enum Yosemite.OrderRefundEligibilityFailure
+import struct Yosemite.POSOrder
 
 enum StartRefundFlowResult: Equatable {
     case hasItemsToRefund
@@ -35,6 +36,16 @@ enum POSRefundReviewPreparationResult: Equatable {
 enum RefundActionAvailability {
     case available
     case unavailable
+}
+
+extension POSOrder {
+    var refundActionAvailability: RefundActionAvailability {
+        status == .completed ? .available : .unavailable
+    }
+}
+
+struct POSRefundSubmissionResult: Equatable {
+    let refundedOrderID: Int64
 }
 
 enum POSRefundProcessingError: LocalizedError, Equatable {

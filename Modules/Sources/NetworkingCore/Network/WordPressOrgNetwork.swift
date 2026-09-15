@@ -42,7 +42,7 @@ public final class WordPressOrgNetwork: Network {
     /// only a request the converter leaves alone counts as tunnelled.
     ///
     public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
-        requestConverter.convert(request) is JetpackRequest
+        request is JetpackRequest && !requestConverter.convertsToDirectRequest(request)
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.

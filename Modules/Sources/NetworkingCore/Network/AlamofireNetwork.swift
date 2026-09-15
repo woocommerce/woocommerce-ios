@@ -267,7 +267,10 @@ public class AlamofireNetwork: Network {
     /// immediate for a 401, 403 or 429 and takes ten such fallbacks otherwise.
     ///
     public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
-        convertRequestIfNeeded(request) is JetpackRequest
+        guard request is JetpackRequest else {
+            return false
+        }
+        return errorHandler.isRequestRetried(request) || !requestConverter.convertsToDirectRequest(request)
     }
 
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.

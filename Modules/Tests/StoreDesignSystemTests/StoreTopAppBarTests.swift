@@ -39,9 +39,10 @@ import Testing
         // Given a small bar with a navigation control
         let sut = StoreTopAppBarLayout(size: .small, hasNavigation: true, actionCount: 1)
 
-        // When / Then the control sits p2 from the edge and the text s2 after it
+        // When / Then the control sits p2 from the edge and the text keeps an s2 gap on both sides
         #expect(sut.barLeadingInset == StorePadding.p2)
         #expect(sut.textLeadingInset == StoreSpacing.s2)
+        #expect(sut.textTrailingInset == StoreSpacing.s2)
     }
 
     @Test func test_medium_then_text_row_uses_its_own_insets() {

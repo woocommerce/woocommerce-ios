@@ -26,11 +26,14 @@ struct StoreTopAppBarLayout: Equatable {
         }
     }
 
-    /// Space between leading-aligned text and the actions (or the bar's trailing edge).
+    /// Space between leading-aligned text and the actions (or the bar's trailing edge). The small
+    /// bar mirrors its leading gap after a navigation control and lets the text meet the actions
+    /// when there is none, as the design does.
     var textTrailingInset: CGFloat {
-        switch size {
-        case .small: StorePadding.p0
-        case .medium: StorePadding.p5
+        switch (size, hasNavigation) {
+        case (.small, true): StoreSpacing.s2
+        case (.small, false): StorePadding.p0
+        case (.medium, _): StorePadding.p5
         }
     }
 

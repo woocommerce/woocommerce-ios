@@ -42,7 +42,7 @@ public struct StoreCell<Leading: View, Trailing: View>: View {
             Button(action: action) {
                 content
             }
-            .buttonStyle(StoreCellButtonStyle())
+            .buttonStyle(StorePressFeedbackButtonStyle())
         } else {
             content
                 .accessibilityElement(children: .contain)
@@ -143,17 +143,4 @@ public extension StoreCell where Leading == EmptyView {
 private enum StoreCellConstants {
     /// The chevron size from the design (18 pt).
     static let disclosureIconSize: StoreIconSize = .medium
-}
-
-/// Renders a tappable row as its plain content plus the module's press feedback — no button tint.
-private struct StoreCellButtonStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .opacity(configuration.isPressed ? Constants.pressedOpacity : 1)
-            .animation(.easeOut(duration: StoreMotion.pressDuration), value: configuration.isPressed)
-    }
-
-    private enum Constants {
-        static let pressedOpacity: Double = 0.7
-    }
 }

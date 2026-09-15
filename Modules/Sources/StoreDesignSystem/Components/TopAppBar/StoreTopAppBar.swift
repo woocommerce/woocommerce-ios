@@ -176,25 +176,12 @@ private struct StoreTopAppBarControl: View {
                 .frame(width: StoreSize.topAppBarControlSize, height: StoreSize.topAppBarControlSize)
                 .contentShape(Rectangle())
         }
-        .buttonStyle(StoreTopAppBarControlStyle())
+        .buttonStyle(StorePressFeedbackButtonStyle())
         .accessibilityLabel(accessibilityLabel)
     }
 
     private enum Constants {
         /// The glyph size from the design (24 pt).
         static let iconSize: StoreIconSize = .largeIncreased
-    }
-}
-
-/// Renders a control as its plain glyph plus the module's press feedback — no button tint.
-private struct StoreTopAppBarControlStyle: ButtonStyle {
-    func makeBody(configuration: Configuration) -> some View {
-        configuration.label
-            .opacity(configuration.isPressed ? Constants.pressedOpacity : 1)
-            .animation(.easeOut(duration: StoreMotion.pressDuration), value: configuration.isPressed)
-    }
-
-    private enum Constants {
-        static let pressedOpacity: Double = 0.7
     }
 }

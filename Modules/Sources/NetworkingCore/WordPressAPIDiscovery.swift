@@ -121,6 +121,10 @@ private actor DiscoveryCoordinator {
     }
 
     func resolve(siteURL: String, session: URLSessionProtocol, cache: WordPressRESTAPIRootCache) async -> String? {
+        if let cachedRoot = cache.root(for: siteURL) {
+            return cachedRoot
+        }
+
         let key = RequestKey(siteURL: siteURL, session: session, cache: cache)
         if let existing = inFlightResolutions[key] {
             return await existing.value

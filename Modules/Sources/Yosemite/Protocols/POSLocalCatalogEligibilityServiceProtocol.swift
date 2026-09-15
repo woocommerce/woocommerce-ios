@@ -41,7 +41,8 @@ public enum POSLocalCatalogIneligibleReason: Equatable, Sendable {
 ///
 /// NOTE: This service checks catalog-related eligibility (WooCommerce version), the remote feature flag,
 /// and the user-facing beta toggle.
-/// The service performs an initial eligibility check during initialization.
+/// It evaluates catalog eligibility when a caller requests or refreshes it, after the session-specific
+/// system status service is configured.
 public protocol POSLocalCatalogEligibilityServiceProtocol: Sendable {
     /// Attaches the session-specific system status service before catalog eligibility is evaluated.
     /// The service is created by the main-actor POS coordinator so it retains the authenticated

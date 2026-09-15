@@ -105,7 +105,7 @@ struct POSSystemStatusServiceTests {
     @Test func initialization_retains_app_password_state_owner() {
         // Given
         var stateOwner: TestAppPasswordStateOwner? = TestAppPasswordStateOwner()
-        weak var weakStateOwner = stateOwner
+        weak let weakStateOwner = stateOwner
         let service = POSSystemStatusService(network: network,
                                              storageManager: storageManager,
                                              appPasswordSupportStateOwner: stateOwner)

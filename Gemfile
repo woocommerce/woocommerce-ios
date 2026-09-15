@@ -23,6 +23,6 @@ gem 'fastlane-plugin-wpmreleasetoolkit', '~> 15.0'
 # See https://github.com/ruby/openssl/issues/949
 gem 'openssl', '~> 4.0'
 gem 'rake', '~> 13.4'
-gem 'rubocop', '~> 1.90'
+gem 'rubocop', '~> 1.91'
 gem 'rubocop-rake', '~> 0.6'
 gem 'xcode-install'

@@ -7,14 +7,17 @@ import CoreData
 ///
 final class CoreDataManagerTests: XCTestCase {
 
-    private let storageIdentifier = "WooCommerce"
+    private let modelName = "WooCommerce"
+    private let storageIdentifier = "WooCommerce-\(UUID().uuidString)"
 
     /// Verifies that the Store URL contains the ContextIdentifier string.
     ///
-    func test_storeUrl_maps_to_sqlite_file_with_context_identifier() {
-        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
-        XCTAssertEqual(manager.storeURL.lastPathComponent, "WooCommerce.sqlite")
-        XCTAssertEqual(manager.storeDescription.url?.lastPathComponent, "WooCommerce.sqlite")
+    func test_storeUrl_maps_to_sqlite_file_with_context_identifier() throws {
+        let manager = try makeManager(using: makeModelsInventory(), deletingExistingStoreFiles: true)
+        let expectedStoreFileName = "\(storageIdentifier).sqlite"
+
+        XCTAssertEqual(manager.storeURL.lastPathComponent, expectedStoreFileName)
+        XCTAssertEqual(manager.storeDescription.url?.lastPathComponent, expectedStoreFileName)
     }
 
     /// Verifies that the PersistentContainer properly loads the sqlite database.
@@ -22,8 +25,7 @@ final class CoreDataManagerTests: XCTestCase {
     func test_persistentContainer_loads_expected_data_model_and_sqlite_database() throws {
         // Given
         let modelsInventory = try makeModelsInventory()
-
-        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
+        let manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
 
         // When
         let container = manager.persistentContainer
@@ -35,8 +37,8 @@ final class CoreDataManagerTests: XCTestCase {
 
     /// Verifies that the ContextManager's viewContext matches the PersistenContainer.viewContext
     ///
-    func test_viewContext_property_returns_persistentContainer_main_context() {
-        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
+    func test_viewContext_property_returns_persistentContainer_main_context() throws {
+        let manager = try makeManager(using: makeModelsInventory(), deletingExistingStoreFiles: true)
         XCTAssertEqual(manager.viewStorage as? NSManagedObjectContext, manager.persistentContainer.viewContext)
     }
 
@@ -330,7 +332,7 @@ private extension CoreDataManagerTests {
     }
 
     func makeModelsInventory() throws -> ManagedObjectModelsInventory {
-        try ManagedObjectModelsInventory.from(packageName: storageIdentifier, bundle: .storage)
+        try ManagedObjectModelsInventory.from(packageName: modelName, bundle: .storage)
     }
 
     func deleteStoreFiles(at storeURL: URL) throws {

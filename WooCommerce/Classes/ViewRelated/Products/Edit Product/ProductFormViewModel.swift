@@ -230,7 +230,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
     ///
     private lazy var remoteActionUseCase = ProductFormRemoteActionUseCase(stores: stores)
 
-    @MainActor
     init(product: EditableProductModel,
          formType: ProductFormType,
          productImageActionHandler: ProductImageActionHandler,
@@ -261,10 +260,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         updateVariationsPriceState()
         configureResultsController()
         updateBlazeEligibility()
-    }
-
-    deinit {
-        cancellable?.cancel()
     }
 
     func hasUnsavedChanges() -> Bool {
@@ -913,7 +908,6 @@ private extension ProductFormViewModel {
 // MARK: Favorite
 //
 extension ProductFormViewModel {
-    @MainActor
     func isFavorite() async -> Bool {
         await favoriteProductsUseCase.isFavorite(productID: product.productID)
     }

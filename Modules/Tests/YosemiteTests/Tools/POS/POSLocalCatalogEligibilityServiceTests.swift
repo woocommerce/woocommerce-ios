@@ -39,7 +39,7 @@ struct POSLocalCatalogEligibilityServiceTests {
         let laterSessionService = MockPOSSystemStatusService(
             pluginInfoToReturn: .failure(URLError(.notConnectedToInternet))
         )
-        let service = makeService()
+        let service: any POSLocalCatalogEligibilityServiceProtocol = makeService()
         try await service.updatePOSEligibility(isEligible: true, for: siteID)
 
         // When

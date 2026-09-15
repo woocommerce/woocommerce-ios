@@ -81,10 +81,6 @@ class MockNetwork: Network {
         completion(.success(data))
     }
 
-    func responseDataAndHeaders(for request: any URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
-        try await responseDataAndHeaders(for: request, isolation: #isolation)
-    }
-
     func responseDataAndHeaders(for request: any URLRequestConvertible,
                                 isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         requestsForResponseData.append(request)

@@ -40,8 +40,6 @@ public protocol Network {
     func responseData(for request: URLRequestConvertible,
                       completion: @escaping (Swift.Result<Data, Error>) -> Void)
 
-    func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?)
-
     /// Executes a request while preserving the caller's actor isolation across the legacy network
     /// boundary.
     func responseDataAndHeaders(for request: URLRequestConvertible,
@@ -51,7 +49,8 @@ public protocol Network {
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: The response payload as `Data`.
-    func responseData(for request: URLRequestConvertible) async throws -> Data
+    func responseData(for request: URLRequestConvertible,
+                      isolation: isolated (any Actor)?) async throws -> Data
 
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
     ///
@@ -73,8 +72,16 @@ public protocol Network {
 }
 
 public extension Network {
+    /// Captures the caller's actor isolation, then dispatches to the conformer's checked
+    /// implementation.
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)? = #isolation) async throws -> (Data, ResponseHeaders?) {
+        try await self.responseDataAndHeaders(for: request, isolation: isolation)
+    }
+
     /// Default implementation that returns the response body, discarding the response headers.
-    func responseData(for request: URLRequestConvertible) async throws -> Data {
-        try await responseDataAndHeaders(for: request).0
+    func responseData(for request: URLRequestConvertible,
+                      isolation: isolated (any Actor)? = #isolation) async throws -> Data {
+        try await responseDataAndHeaders(for: request, isolation: isolation).0
     }
 }

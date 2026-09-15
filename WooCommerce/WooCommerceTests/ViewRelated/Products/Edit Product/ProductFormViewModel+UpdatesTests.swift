@@ -357,9 +357,3 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.product.downloadExpiry, newDownloadExpiry)
     }
 }
-
-extension ProductImageActionHandler {
-    convenience init(siteID: Int64, product: ProductFormDataModel) {
-        self.init(siteID: siteID, productID: .product(id: product.productID), imageStatuses: product.imageStatuses)
-    }
-}

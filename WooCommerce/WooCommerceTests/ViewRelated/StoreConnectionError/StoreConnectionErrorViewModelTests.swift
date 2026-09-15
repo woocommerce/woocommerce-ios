@@ -180,6 +180,25 @@ struct StoreConnectionErrorViewModelTests {
         #expect(viewModel.presentedSiteID == 123)
     }
 
+    @Test func test_dismissTapped_when_logging_out_and_back_in_then_the_warning_comes_back() async {
+        // Given
+        sessionManager.defaultStoreID = 123
+        let viewModel = makeViewModel()
+        monitor.simulateAffectedSiteID(123)
+        await settle()
+        viewModel.dismissTapped()
+        await settle()
+
+        // When
+        sessionManager.defaultStoreID = nil
+        await settle()
+        sessionManager.defaultStoreID = 123
+        await settle()
+
+        // Then
+        #expect(viewModel.presentedSiteID == 123)
+    }
+
     /// The monitor can move on before the view model has processed the change it is currently showing,
     /// so Dismiss has to silence the store the merchant actually saw, not whatever is affected now.
     ///

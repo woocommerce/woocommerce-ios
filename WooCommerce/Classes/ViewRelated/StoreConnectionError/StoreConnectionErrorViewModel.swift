@@ -43,10 +43,10 @@ final class StoreConnectionErrorViewModel: ObservableObject {
                 let isAffected = affectedSiteID != nil && affectedSiteID == selectedSiteID
                 self.presentedSiteID = isAffected && snoozedSiteID != affectedSiteID ? affectedSiteID : nil
 
-                // The snooze has done its job once the store it was taken for recovers, so drop it and
-                // let a fresh failure speak up. Guarded on the current value because this subject feeds
-                // the combine above, and re-sending the same value would loop.
-                if affectedSiteID == nil, self.snoozedSiteID.value != nil {
+                // The snooze has done its job once the store it was taken for recovers or the merchant logs
+                // out, so drop it and let a fresh failure speak up. Guarded on the current value because
+                // this subject feeds the combine above, and re-sending the same value would loop.
+                if affectedSiteID == nil || selectedSiteID == nil, self.snoozedSiteID.value != nil {
                     self.snoozedSiteID.send(nil)
                 }
             }

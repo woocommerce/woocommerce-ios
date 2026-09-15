@@ -179,18 +179,18 @@ extension WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .shipmentTrackingMenuAction, properties: ["action": action.rawValue])
     }
 
-    static func shippingLabelsAPIRequest(result: ShippingLabelsAPIRequestResult, isRevampedFlow: Bool) -> WooAnalyticsEvent {
+    static func shippingLabelsAPIRequest(result: ShippingLabelsAPIRequestResult) -> WooAnalyticsEvent {
         switch result {
         case .success:
             return WooAnalyticsEvent(statName: .shippingLabelsAPIRequest, properties: [
                 "action": result.rawValue,
-                "is_revamped_flow": isRevampedFlow
+                "is_revamped_flow": true
             ])
         case .failed(let error):
             return WooAnalyticsEvent(statName: .shippingLabelsAPIRequest, properties: [
                 "action": result.rawValue,
                 "error": error.localizedDescription,
-                "is_revamped_flow": isRevampedFlow
+                "is_revamped_flow": true
             ])
         }
     }

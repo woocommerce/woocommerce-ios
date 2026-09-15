@@ -288,37 +288,8 @@ final class StorePickerViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldEnableHidingStores_returns_false_if_feature_flag_is_disabled() async {
-        // Given
-        let featureFlagService = MockFeatureFlagService(hideSitesInStorePicker: false)
-
-        let stores = MockStoresManager(sessionManager: .makeForTesting())
-        stores.whenReceivingAction(ofType: AccountAction.self) { action in
-            switch action {
-            case let .synchronizeSites(_, onCompletion):
-                onCompletion(.success(false))
-            default:
-                break
-            }
-        }
-
-        let viewModel = StorePickerViewModel(configuration: .switchingStores,
-                                             stores: stores,
-                                             storageManager: storageManager,
-                                             featureFlagService: featureFlagService)
-
-        // When
-        await viewModel.refreshSites(currentlySelectedSiteID: nil)
-
-        // Then
-        XCTAssertFalse(viewModel.shouldEnableHidingStores)
-    }
-
-    @MainActor
     func test_shouldEnableHidingStores_returns_false_if_configuration_is_not_switchingStores() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(hideSitesInStorePicker: true)
-
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
@@ -331,8 +302,7 @@ final class StorePickerViewModelTests: XCTestCase {
 
         let viewModel = StorePickerViewModel(configuration: .standard,
                                              stores: stores,
-                                             storageManager: storageManager,
-                                             featureFlagService: featureFlagService)
+                                             storageManager: storageManager)
 
         // When
         await viewModel.refreshSites(currentlySelectedSiteID: nil)
@@ -347,8 +317,6 @@ final class StorePickerViewModelTests: XCTestCase {
         let testSite1 = Site.fake().copy(siteID: 123, name: "abc", isWooCommerceActive: true)
         storageManager.insertSampleSite(readOnlySite: testSite1)
 
-        let featureFlagService = MockFeatureFlagService(hideSitesInStorePicker: true)
-
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
             switch action {
@@ -361,8 +329,7 @@ final class StorePickerViewModelTests: XCTestCase {
 
         let viewModel = StorePickerViewModel(configuration: .switchingStores,
                                              stores: stores,
-                                             storageManager: storageManager,
-                                             featureFlagService: featureFlagService)
+                                             storageManager: storageManager)
 
         // When
         await viewModel.refreshSites(currentlySelectedSiteID: nil)
@@ -372,7 +339,7 @@ final class StorePickerViewModelTests: XCTestCase {
     }
 
     @MainActor
-    func test_shouldEnableHidingStores_returns_true_with_enabled_feature_flag_and_switchingStore_config_and_more_than_one_fetched_store() async {
+    func test_shouldEnableHidingStores_returns_true_with_switchingStore_config_and_more_than_one_fetched_store() async {
         // Given
         let testSite1 = Site.fake().copy(siteID: 123, name: "abc", isWooCommerceActive: true)
         let testSite2 = Site.fake().copy(siteID: 124, name: "def", isWooCommerceActive: true)
@@ -380,8 +347,6 @@ final class StorePickerViewModelTests: XCTestCase {
         storageManager.insertSampleSite(readOnlySite: testSite1)
         storageManager.insertSampleSite(readOnlySite: testSite2)
         storageManager.insertSampleSite(readOnlySite: testSite3)
-
-        let featureFlagService = MockFeatureFlagService(hideSitesInStorePicker: true)
 
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: AccountAction.self) { action in
@@ -395,8 +360,7 @@ final class StorePickerViewModelTests: XCTestCase {
 
         let viewModel = StorePickerViewModel(configuration: .switchingStores,
                                              stores: stores,
-                                             storageManager: storageManager,
-                                             featureFlagService: featureFlagService)
+                                             storageManager: storageManager)
 
         // When
         await viewModel.refreshSites(currentlySelectedSiteID: nil)

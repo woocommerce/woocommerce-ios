@@ -535,6 +535,7 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
     var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
     var refundActionAvailability: RefundActionAvailability { .available }
+    var hasLoadedRefundableItems: Bool { !refundSelectableItems.isEmpty }
     var currentRefundRequiresCardPresentRefund: Bool { false }
     var hasModifiedRefundSelection = false
 

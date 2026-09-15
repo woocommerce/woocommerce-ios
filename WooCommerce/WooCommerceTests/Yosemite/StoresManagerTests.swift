@@ -81,6 +81,111 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(isLoggedInValues, [true])
     }
 
+    func test_authenticated_state_relaunch_passes_restored_custom_endpoints_to_network_factory() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        let credentials: Credentials = .wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        sessionManager.defaultCredentials = credentials
+        sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        var capturedCredentials: Credentials?
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+
+        // When
+        let state = AuthenticatedState(sessionManager: sessionManager) { credentials, _, _, endpoints in
+            capturedCredentials = credentials
+            capturedEndpoints = endpoints
+            return AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
+        }
+
+        // Then
+        XCTAssertNotNil(state)
+        XCTAssertEqual(capturedCredentials, credentials)
+        XCTAssertEqual(capturedEndpoints, endpoints)
+    }
+
+    func test_authenticated_state_transient_custom_endpoints_pass_to_network_factory() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        let credentials: Credentials = .wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        var capturedCredentials: Credentials?
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+
+        // When
+        _ = AuthenticatedState(
+            credentials: credentials,
+            sessionManager: sessionManager,
+            cookieNonceAuthenticationEndpoints: endpoints,
+            networkFactory: { credentials, _, _, endpoints in
+                capturedCredentials = credentials
+                capturedEndpoints = endpoints
+                return AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
+            }
+        )
+
+        // Then
+        XCTAssertEqual(capturedCredentials, credentials)
+        XCTAssertEqual(capturedEndpoints, endpoints)
+    }
+
+    func test_authenticated_state_in_session_reauthentication_restores_custom_endpoints_when_transient_value_is_missing() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        let credentials: Credentials = .wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        sessionManager.defaultCredentials = credentials
+        sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+
+        // When
+        _ = AuthenticatedState(
+            credentials: credentials,
+            sessionManager: sessionManager,
+            cookieNonceAuthenticationEndpoints: nil,
+            networkFactory: { _, _, _, endpoints in
+                capturedEndpoints = endpoints
+                return AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
+            }
+        )
+
+        // Then
+        XCTAssertEqual(capturedEndpoints, endpoints)
+    }
+
     /// Verifies that the Initial State is Authenticated with application password credentials.
     ///
     func test_initial_state_is_authenticated_if_defaultCredentials_is_application_password() {
@@ -380,6 +485,146 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(manager.sessionManager.defaultSite)
     }
 
+    func test_site_endpoint_overlay_when_direct_site_identities_match_then_replaces_only_login_and_admin_urls() throws {
+        // Given
+        let site = Site.fake().copy(
+            siteID: WooConstants.placeholderStoreID,
+            url: "https://example.com/store",
+            adminURL: "https://example.com/store/wp-admin/",
+            loginURL: "https://example.com/store/wp-login.php"
+        )
+        let endpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: "https://example.com/store/")
+        let (sut, sessionManager) = makeStoresManager(
+            credentials: .wporg(username: "merchant", password: "secret", siteAddress: "https://example.com/store/"),
+            endpoints: endpoints
+        )
+
+        // When
+        let result = sut.siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
+
+        // Then
+        XCTAssertEqual(result, site.copy(adminURL: endpoints.adminBaseURL.absoluteString, loginURL: endpoints.loginEntryURL.absoluteString))
+        XCTAssertEqual(sessionManager.cookieNonceAuthenticationEndpointCredentials, sessionManager.defaultCredentials)
+    }
+
+    func test_site_endpoint_overlay_when_site_is_default_port_HTTPS_promotion_then_replaces_login_and_admin_urls() throws {
+        // Given
+        let credentialSiteAddress = "http://example.com:80/store/"
+        let site = Site.fake().copy(
+            siteID: WooConstants.placeholderStoreID,
+            url: "https://example.com/store",
+            adminURL: "https://example.com/store/wp-admin/",
+            loginURL: "https://example.com/store/wp-login.php"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: credentialSiteAddress)),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/store/hidden-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/store/hidden-admin/"))
+        )
+        let (sut, _) = makeStoresManager(
+            credentials: .wporg(username: "merchant", password: "secret", siteAddress: credentialSiteAddress),
+            endpoints: endpoints
+        )
+
+        // When
+        let result = sut.siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
+
+        // Then
+        XCTAssertEqual(result, site.copy(adminURL: endpoints.adminBaseURL.absoluteString, loginURL: endpoints.loginEntryURL.absoluteString))
+    }
+
+    func test_site_endpoint_overlay_when_non_default_port_changes_scheme_then_leaves_site_unchanged() throws {
+        // Given
+        let credentialSiteAddress = "http://example.com:8080/store"
+        let site = Site.fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://example.com:8080/store")
+        let endpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: credentialSiteAddress)
+        let (sut, _) = makeStoresManager(
+            credentials: .wporg(username: "merchant", password: "secret", siteAddress: credentialSiteAddress),
+            endpoints: endpoints
+        )
+
+        // When
+        let result = sut.siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
+
+        // Then
+        XCTAssertEqual(result, site)
+    }
+
+    func test_site_endpoint_overlay_when_site_has_positive_id_then_leaves_site_unchanged() throws {
+        // Given
+        let site = Site.fake().copy(siteID: 42, url: "https://example.com")
+        let endpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: site.url)
+        let (sut, sessionManager) = makeStoresManager(
+            credentials: .wporg(username: "merchant", password: "secret", siteAddress: site.url),
+            endpoints: endpoints
+        )
+        sessionManager.resetCookieNonceAuthenticationEndpointCredentials()
+
+        // When
+        let result = sut.siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
+
+        // Then
+        XCTAssertEqual(result, site)
+        XCTAssertNil(sessionManager.cookieNonceAuthenticationEndpointCredentials)
+    }
+
+    func test_site_endpoint_overlay_when_any_identity_differs_then_leaves_site_unchanged() throws {
+        // Given
+        let site = Site.fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://site.example")
+        let siteEndpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: site.url)
+        let otherEndpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: "https://other.example")
+        let cases: [(Credentials, CookieNonceAuthenticationEndpoints?)] = [
+            (.wporg(username: "merchant", password: "secret", siteAddress: "https://credentials.example"), siteEndpoints),
+            (.wporg(username: "merchant", password: "secret", siteAddress: site.url), otherEndpoints),
+            (.wpcom(username: "merchant", authToken: "token", siteAddress: site.url), siteEndpoints),
+            (.wporg(username: "merchant", password: "secret", siteAddress: site.url), nil)
+        ]
+
+        // When
+        let results = cases.map { credentials, endpoints in
+            makeStoresManager(credentials: credentials, endpoints: endpoints).0
+                .siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
+        }
+
+        // Then
+        XCTAssertEqual(results, Array(repeating: site, count: cases.count))
+    }
+
+    func test_update_default_store_when_direct_site_api_copy_completes_then_reapplies_latest_endpoints() throws {
+        // Given
+        let site = Site.fake().copy(
+            siteID: WooConstants.placeholderStoreID,
+            url: "https://example.com",
+            applicationPasswordAvailable: false
+        )
+        let initialEndpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: site.url, pathPrefix: "initial")
+        let latestEndpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: site.url, pathPrefix: "latest")
+        let sessionManager = MockSessionManager()
+        let sut = DeferredSiteAPIStoresManager(sessionManager: sessionManager)
+        sessionManager.defaultCredentials = .wporg(username: "merchant", password: "secret", siteAddress: site.url)
+        sessionManager.cookieNonceAuthenticationEndpointsToReturn = initialEndpoints
+        sessionManager.defaultStoreID = site.siteID
+        sut.updateDefaultStore(site)
+        XCTAssertEqual(
+            sessionManager.defaultSite,
+            site.copy(adminURL: initialEndpoints.adminBaseURL.absoluteString, loginURL: initialEndpoints.loginEntryURL.absoluteString)
+        )
+        sessionManager.cookieNonceAuthenticationEndpointsToReturn = latestEndpoints
+
+        // When
+        sut.completeSiteAPI(with: .success(SiteAPI(siteID: site.siteID, namespaces: [], applicationPasswordAvailable: true)))
+
+        // Then
+        XCTAssertEqual(
+            sessionManager.defaultSite,
+            site.copy(
+                adminURL: latestEndpoints.adminBaseURL.absoluteString,
+                loginURL: latestEndpoints.loginEntryURL.absoluteString,
+                applicationPasswordAvailable: true
+            )
+        )
+    }
+
     func test_deauthenticating_invokes_ProductImageUploader_reset() {
         // Given
         let mockProductImageUploader = MockProductImageUploader()
@@ -610,6 +855,28 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertFalse(manager.isAuthenticated)
         XCTAssertTrue(manager.needsDefaultStore)
     }
+
+    private func makeCookieNonceAuthenticationEndpoints(
+        siteAddress: String,
+        pathPrefix: String = "hidden"
+    ) throws -> CookieNonceAuthenticationEndpoints {
+        let siteURL = try XCTUnwrap(URL(string: siteAddress))
+        return try CookieNonceAuthenticationEndpoints(
+            siteURL: siteURL,
+            loginEntryURL: siteURL.appendingPathComponent("\(pathPrefix)-login"),
+            adminBaseURL: siteURL.appendingPathComponent("\(pathPrefix)-admin", isDirectory: true)
+        )
+    }
+
+    private func makeStoresManager(
+        credentials: Credentials,
+        endpoints: CookieNonceAuthenticationEndpoints?
+    ) -> (DefaultStoresManager, MockSessionManager) {
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultCredentials = credentials
+        sessionManager.cookieNonceAuthenticationEndpointsToReturn = endpoints
+        return (DefaultStoresManager(sessionManager: sessionManager), sessionManager)
+    }
 }
 
 
@@ -664,6 +931,22 @@ private final class MockGRDBManager: GRDBManagerProtocol {
     }
 }
 
+private final class DeferredSiteAPIStoresManager: DefaultStoresManager {
+    private var siteAPICompletion: ((Result<SiteAPI, Error>) -> Void)?
+
+    override func dispatch(_ action: Action) {
+        guard let action = action as? SettingAction,
+              case let .retrieveSiteAPI(_, completion) = action else {
+            return
+        }
+        siteAPICompletion = completion
+    }
+
+    func completeSiteAPI(with result: Result<SiteAPI, Error>) {
+        siteAPICompletion?(result)
+    }
+}
+
 final class MockSessionManager: SessionManagerProtocol {
 
     private(set) var deleteApplicationPasswordInvoked: Bool = false
@@ -701,11 +984,30 @@ final class MockSessionManager: SessionManagerProtocol {
 
     var defaultCredentials: Yosemite.Credentials? = nil
 
+    var cookieNonceAuthenticationEndpointsToReturn: Yosemite.CookieNonceAuthenticationEndpoints?
+    private(set) var cookieNonceAuthenticationEndpointCredentials: Yosemite.Credentials?
+
+    func cookieNonceAuthenticationEndpoints(for credentials: Credentials) -> CookieNonceAuthenticationEndpoints? {
+        cookieNonceAuthenticationEndpointCredentials = credentials
+        return cookieNonceAuthenticationEndpointsToReturn
+    }
+
+    func resetCookieNonceAuthenticationEndpointCredentials() {
+        cookieNonceAuthenticationEndpointCredentials = nil
+    }
+
+    func saveCookieNonceAuthenticationEndpoints(_ endpoints: CookieNonceAuthenticationEndpoints,
+                                                for credentials: Credentials) { }
+
+    func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) { }
+
     func reset() {
         // Do nothing
     }
 
-    func deleteApplicationPassword(using credentials: Credentials?, locally: Bool) {
+    func deleteApplicationPassword(using credentials: Credentials?,
+                                   cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?,
+                                   locally: Bool) {
         deleteApplicationPasswordInvoked = true
         deleteApplicationPasswordLocally = locally
     }

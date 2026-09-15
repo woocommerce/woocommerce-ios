@@ -3,32 +3,17 @@ import Experiments
 
 final class MockFeatureFlagService: POSFeatureFlagProviding {
     var isUpdateOrderOptimisticallyOn: Bool
-    var isSupportRequestEnabled: Bool
-    var productBundlesInOrderForm: Bool
     var isPointOfSaleEnabled: Bool
-    var blazeCampaignObjective: Bool
-    var revampedShippingLabelCreation: Bool
-    var hideSitesInStorePicker: Bool
     var backgroundProductImageUpload: Bool
     var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
 
     init(isUpdateOrderOptimisticallyOn: Bool = false,
-         isSupportRequestEnabled: Bool = false,
-         productBundlesInOrderForm: Bool = false,
          isPointOfSaleEnabled: Bool = false,
-         blazeCampaignObjective: Bool = false,
-         revampedShippingLabelCreation: Bool = false,
-         hideSitesInStorePicker: Bool = false,
          backgroundProductImageUpload: Bool = false,
          isProductImageOptimizedHandlingEnabled: Bool = false) {
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
-        self.isSupportRequestEnabled = isSupportRequestEnabled
-        self.productBundlesInOrderForm = productBundlesInOrderForm
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
-        self.blazeCampaignObjective = blazeCampaignObjective
-        self.revampedShippingLabelCreation = revampedShippingLabelCreation
-        self.hideSitesInStorePicker = hideSitesInStorePicker
         self.backgroundProductImageUpload = backgroundProductImageUpload
         self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
     }
@@ -43,18 +28,8 @@ final class MockFeatureFlagService: POSFeatureFlagProviding {
         switch featureFlag {
         case .updateOrderOptimistically:
             return isUpdateOrderOptimisticallyOn
-        case .supportRequests:
-            return isSupportRequestEnabled
-        case .productBundlesInOrderForm:
-            return productBundlesInOrderForm
         case .pointOfSale:
             return isPointOfSaleEnabled
-        case .blazeCampaignObjective:
-            return blazeCampaignObjective
-        case .revampedShippingLabelCreation:
-            return revampedShippingLabelCreation
-        case .hideSitesInStorePicker:
-            return hideSitesInStorePicker
         case .backgroundProductImageUpload:
             return backgroundProductImageUpload
         case .productImageOptimizedHandling:

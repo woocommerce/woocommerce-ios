@@ -114,6 +114,7 @@ private extension AgeRangeVerificationService {
         do {
             let snapshot = try await provider.requestAgeRange(
                 minimumAge: minimumAge,
+                adultAge: Constants.adultAgeThreshold,
                 in: anchor
             )
             let result = mapSnapshotToResult(
@@ -160,14 +161,25 @@ private extension AgeRangeVerificationService {
                 // On iOS 26.4+, use the regulatory requirements value whenever it was retrieved,
                 // including `false`; otherwise fall back to the legacy snapshot.
                 significantAppChangeApprovalRequired: significantAppChangeApprovalRequired ?? snapshot.significantAppChangeApprovalRequired,
-                isMinor: isMinor(lowerBound: lowerBound)
+                isMinor: isMinor(upperBound: snapshot.upperBound)
             )
         }
         return .ineligible
     }
 
-    func isMinor(lowerBound: Int?) -> Bool {
-        guard let lowerBound else { return false }
-        return lowerBound < 18
+    /// A user counts as a minor only on affirmative evidence: a declared upper bound below the
+    /// adult threshold. Responses are quantized to the requested age gates, so the adult band
+    /// carries a nil upper bound — and a degenerate response without bounds must not gate anyone.
+    func isMinor(upperBound: Int?) -> Bool {
+        guard let upperBound else { return false }
+        return upperBound < Constants.adultAgeThreshold
+    }
+}
+
+private extension AgeRangeVerificationService {
+    enum Constants {
+        /// Second age gate: separates minors (13–17) from adults. Without it, responses can't
+        /// distinguish a 16-year-old from an adult — both would report only "13 or older".
+        static let adultAgeThreshold = 18
     }
 }

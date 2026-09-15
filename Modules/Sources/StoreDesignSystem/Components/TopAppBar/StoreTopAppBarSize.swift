@@ -29,7 +29,8 @@ public enum StoreTopAppBarSize: Sendable {
 public enum StoreTopAppBarTitleAlignment: Sendable {
     /// Text starts after the navigation control (or at the bar's inset when there is none).
     case leading
-    /// Text is centered on the bar, clear of the navigation control and actions.
+    /// Text is centered on the bar while it fits clear of the controls, and slides toward the free
+    /// side before it truncates.
     case center
 
     var horizontalAlignment: HorizontalAlignment {

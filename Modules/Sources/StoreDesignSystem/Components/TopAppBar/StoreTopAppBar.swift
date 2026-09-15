@@ -70,8 +70,9 @@ public struct StoreTopAppBar: View {
 
     // MARK: - Layouts
 
-    /// One row. Leading-aligned text sits in the row; centered text is overlaid so it centers on
-    /// the bar rather than on the space left between the controls.
+    /// One row. Leading-aligned text sits between the controls. Centered text centers on the bar
+    /// while it fits inside the controls' symmetric inset, then slides toward the free side and
+    /// only truncates once it fills the space between the controls, as `UINavigationBar` does.
     private var smallLayout: some View {
         HStack(spacing: StoreSpacing.s0) {
             navigationControl
@@ -80,7 +81,13 @@ public struct StoreTopAppBar: View {
                     .padding(.leading, layout.textLeadingInset)
                     .padding(.trailing, layout.textTrailingInset)
             } else {
+                centeringBalance(maxWidth: layout.leadingCenteringBalance)
                 Spacer(minLength: StoreSpacing.s0)
+                textStack
+                    .padding(.horizontal, layout.centeredTextGap)
+                    .layoutPriority(LayoutPriority.text)
+                Spacer(minLength: StoreSpacing.s0)
+                centeringBalance(maxWidth: layout.trailingCenteringBalance)
             }
             actionControls
         }
@@ -88,11 +95,14 @@ public struct StoreTopAppBar: View {
         .padding(.vertical, StorePadding.p3)
         .padding(.leading, layout.barLeadingInset)
         .padding(.trailing, StorePadding.p2)
-        .overlay {
-            if alignment == .center {
-                text.padding(.horizontal, layout.centeredTextInset)
-            }
-        }
+    }
+
+    /// Pads the narrower control cluster up to the wider one. Sized after the text, so it yields
+    /// before the text truncates, and before the plain spacers, so centering stays exact while it fits.
+    private func centeringBalance(maxWidth: CGFloat) -> some View {
+        Spacer(minLength: StoreSpacing.s0)
+            .frame(maxWidth: maxWidth)
+            .layoutPriority(LayoutPriority.centeringBalance)
     }
 
     /// Two rows: the controls row keeps its height even when empty, so the title always sits at
@@ -124,6 +134,12 @@ public struct StoreTopAppBar: View {
     /// design's `s3` gap is measured between cap height and baseline, which the fonts' own line
     /// boxes already provide.
     private var text: some View {
+        textStack
+            .frame(maxWidth: .infinity, alignment: alignment.frameAlignment)
+    }
+
+    /// The text without a flexible frame, for layouts that size it to its content.
+    private var textStack: some View {
         VStack(alignment: alignment.horizontalAlignment, spacing: StoreSpacing.s0) {
             Text(title)
                 .storeTextStyle(size.titleStyle)
@@ -135,7 +151,6 @@ public struct StoreTopAppBar: View {
             }
         }
         .lineLimit(1)
-        .frame(maxWidth: .infinity, alignment: alignment.frameAlignment)
         .accessibilityElement(children: .combine)
         .accessibilityAddTraits(.isHeader)
         .accessibilitySortPriority(AccessibilityOrder.text)
@@ -163,6 +178,13 @@ public struct StoreTopAppBar: View {
             }
         }
         .accessibilitySortPriority(AccessibilityOrder.actions)
+    }
+
+    /// Sizing order in the centered small row: text first, then the centering balance, then the
+    /// plain spacers.
+    private enum LayoutPriority {
+        static let text: Double = 2
+        static let centeringBalance: Double = 1
     }
 
     /// VoiceOver order: navigation, text, actions. Higher reads first.

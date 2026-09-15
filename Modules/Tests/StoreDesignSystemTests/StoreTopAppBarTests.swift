@@ -58,38 +58,50 @@ import Testing
         #expect(withNavigation.textTrailingInset == StorePadding.p5)
     }
 
-    @Test func test_centeredTextInset_when_small_with_navigation_and_one_action_then_clears_both_controls() {
+    @Test func test_centeringBalance_when_control_clusters_match_then_needs_no_balance() {
         // Given a small bar with a navigation control and one action (the design's reference variant)
         let sut = StoreTopAppBarLayout(size: .small, hasNavigation: true, actionCount: 1)
 
-        // When / Then the text is inset 56 pt on both sides: inset + control + gap
-        #expect(sut.centeredTextInset == StorePadding.p2 + StoreSize.topAppBarControlSize + StoreSpacing.s2)
+        // When / Then both clusters are p2 + control wide, so centered text needs no balance
+        #expect(sut.leadingCenteringBalance == 0)
+        #expect(sut.trailingCenteringBalance == 0)
+        #expect(sut.centeredTextGap == StoreSpacing.s2)
     }
 
-    @Test func test_centeredTextInset_when_small_with_three_actions_then_clears_the_actions() {
-        // Given a small bar whose actions are wider than its navigation control
+    @Test func test_centeringBalance_when_actions_are_wider_then_balances_the_leading_side() {
+        // Given a small bar whose three actions outweigh its navigation control
         let sut = StoreTopAppBarLayout(size: .small, hasNavigation: true, actionCount: 3)
 
-        // When / Then the inset follows the actions cluster
-        #expect(sut.centeredTextInset == StorePadding.p2 + StoreSize.topAppBarControlSize * 3 + StoreSpacing.s2)
+        // When / Then the leading side is padded by the two extra controls
+        #expect(sut.leadingCenteringBalance == StoreSize.topAppBarControlSize * 2)
+        #expect(sut.trailingCenteringBalance == 0)
     }
 
-    @Test func test_centeredTextInset_when_small_without_controls_then_keeps_the_content_inset() {
+    @Test func test_centeringBalance_when_navigation_is_wider_then_balances_the_trailing_side() {
+        // Given a small bar with a navigation control and no actions
+        let sut = StoreTopAppBarLayout(size: .small, hasNavigation: true, actionCount: 0)
+
+        // When / Then the trailing side is padded by one control
+        #expect(sut.leadingCenteringBalance == 0)
+        #expect(sut.trailingCenteringBalance == StoreSize.topAppBarControlSize)
+    }
+
+    @Test func test_centeringBalance_when_no_navigation_then_accounts_for_the_missing_leading_inset() {
+        // Given a small section bar with one action and no navigation control
+        let sut = StoreTopAppBarLayout(size: .small, hasNavigation: false, actionCount: 1)
+
+        // When / Then the leading side is padded by the action plus the trailing inset the bar has and the leading edge lacks
+        #expect(sut.leadingCenteringBalance == StorePadding.p2 + StoreSize.topAppBarControlSize)
+        #expect(sut.trailingCenteringBalance == 0)
+    }
+
+    @Test func test_centeredTextGap_when_no_controls_then_keeps_the_content_inset() {
         // Given a small bar with no controls at all
         let sut = StoreTopAppBarLayout(size: .small, hasNavigation: false, actionCount: 0)
 
-        // When / Then the text keeps the p7 content inset rather than collapsing to the gap
-        #expect(sut.centeredTextInset == StorePadding.p7)
-    }
-
-    @Test func test_centeredTextInset_when_medium_then_mirrors_the_leading_inset() {
-        // Given medium bars: the text has its own row, so the controls never constrain it
-        let withNavigation = StoreTopAppBarLayout(size: .medium, hasNavigation: true, actionCount: 3)
-        let withoutNavigation = StoreTopAppBarLayout(size: .medium, hasNavigation: false, actionCount: 3)
-
-        // When / Then the inset is symmetric to the leading inset
-        #expect(withNavigation.centeredTextInset == StorePadding.p5)
-        #expect(withoutNavigation.centeredTextInset == StorePadding.p7)
+        // When / Then the text keeps the p7 content inset rather than the control gap
+        #expect(sut.centeredTextGap == StorePadding.p7)
+        #expect(sut.leadingCenteringBalance == StorePadding.p2)
     }
 }
 

@@ -38,16 +38,29 @@ struct StoreTopAppBarLayout: Equatable {
         }
     }
 
-    /// The symmetric inset of centered text: the wider of the two control clusters plus a gap, so
-    /// the text stays centered on the bar without running under a control.
-    var centeredTextInset: CGFloat {
-        switch size {
-        case .small:
-            let navigationWidth = hasNavigation ? barLeadingInset + StoreSize.topAppBarControlSize : 0
-            let actionsWidth = StorePadding.p2 + StoreSize.topAppBarControlSize * CGFloat(actionCount)
-            return max(StorePadding.p7, max(navigationWidth, actionsWidth) + StoreSpacing.s2)
-        case .medium:
-            return textLeadingInset
-        }
+    /// Extra space before / after centered text that evens out the two control clusters, so the
+    /// text centers on the bar rather than on the gap between the controls. At most one side is
+    /// non-zero; the bar lets it shrink before the text truncates.
+    var leadingCenteringBalance: CGFloat {
+        max(0, trailingControlsWidth - leadingControlsWidth)
+    }
+
+    var trailingCenteringBalance: CGFloat {
+        max(0, leadingControlsWidth - trailingControlsWidth)
+    }
+
+    /// The gap centered text keeps from the controls, or the bar's content inset when there are none.
+    var centeredTextGap: CGFloat {
+        hasNavigation || actionCount > 0 ? StoreSpacing.s2 : StorePadding.p7
+    }
+
+    /// The bar's leading inset plus the navigation control, measured from the bar's leading edge.
+    private var leadingControlsWidth: CGFloat {
+        barLeadingInset + (hasNavigation ? StoreSize.topAppBarControlSize : 0)
+    }
+
+    /// The actions plus the bar's trailing inset, measured from the bar's trailing edge.
+    private var trailingControlsWidth: CGFloat {
+        StorePadding.p2 + StoreSize.topAppBarControlSize * CGFloat(actionCount)
     }
 }

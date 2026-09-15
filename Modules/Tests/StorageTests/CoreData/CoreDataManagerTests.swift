@@ -32,7 +32,7 @@ final class CoreDataManagerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(container.managedObjectModel, modelsInventory.currentModel)
-        XCTAssertEqual(container.persistentStoreCoordinator.persistentStores.first?.url?.lastPathComponent, "WooCommerce.sqlite")
+        XCTAssertEqual(container.persistentStoreCoordinator.persistentStores.first?.url?.lastPathComponent, "\(storageIdentifier).sqlite")
     }
 
     /// Verifies that the ContextManager's viewContext matches the PersistenContainer.viewContext

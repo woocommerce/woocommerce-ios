@@ -663,7 +663,7 @@ extension ProductFormViewModel {
 
         remoteActionUseCase.duplicateProduct(originalProduct: snapshot.product,
                                              password: snapshot.password) { [weak self] result in
-            guard let self else { return }
+            guard self != nil else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))

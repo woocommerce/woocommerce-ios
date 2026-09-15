@@ -275,6 +275,22 @@ final class AlamofireNetworkTests: XCTestCase {
         XCTAssertTrue(usesTunnel)
     }
 
+    func test_usesJetpackTunnel_when_the_selected_site_has_no_application_password_then_it_is_true_for_a_convertible_request() {
+        // Given
+        let site = JetpackSite(siteID: 123, siteAddress: "https://example.com", applicationPasswordAvailable: false)
+        let network = AlamofireNetwork(credentials: createWPComCredentials(),
+                                       selectedSite: Just(site).eraseToAnyPublisher(),
+                                       appPasswordSupportState: Just(true).eraseToAnyPublisher(),
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let request = createJetpackRequest(siteID: 123, path: "products")
+
+        // When
+        let usesTunnel = network.usesJetpackTunnel(for: request)
+
+        // Then
+        XCTAssertTrue(usesTunnel)
+    }
+
     func test_usesJetpackTunnel_when_application_password_switching_is_off_then_it_is_true_for_a_convertible_request() {
         // Given
         let network = createNetworkWithSelectedSite(siteID: 123, appPasswordSupport: Just(false).eraseToAnyPublisher())

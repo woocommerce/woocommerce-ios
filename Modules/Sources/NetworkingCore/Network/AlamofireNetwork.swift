@@ -256,6 +256,18 @@ public class AlamofireNetwork: Network {
         }
     }
 
+    /// A Jetpack request that the converter leaves alone goes through the tunnel; one it turns into a
+    /// `RESTRequest` goes directly to the site with an application password.
+    ///
+    /// Answered from the converter's current state, which matches the transport of every response except
+    /// one: a direct request that failed and was retried through the tunnel is reported as direct, because
+    /// the retry marker is cleared before the response reaches the caller. A successful retry marks the
+    /// site as unsupported for application passwords, so the next request is classified correctly.
+    ///
+    public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        convertRequestIfNeeded(request) is JetpackRequest
+    }
+
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
     /// Only one value will be emitted and the request cannot be retried.
     ///
@@ -264,13 +276,6 @@ public class AlamofireNetwork: Network {
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: A publisher that emits the result of the given request.
-    /// A Jetpack request that the converter leaves alone goes through the tunnel; one it turns into a
-    /// `RESTRequest` goes directly to the site with an application password.
-    ///
-    public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
-        convertRequestIfNeeded(request) is JetpackRequest
-    }
-
     public func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
         return Future() { [weak self] promise in
             guard let self else { return }

@@ -1,0 +1,78 @@
+# p2: login.social-google
+# Prerequisite: the simulator's browser session has a Google identity linked to
+# a WP.com account. The account must have access to the configured lab store.
+appId: ${APP_ID}
+name: "Login - Social login with Google"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - login
+---
+- launchApp:
+    clearState: true
+    clearKeychain: true
+- runFlow:
+    file: ../subflows/open_site_address_login.yaml
+- tapOn:
+    id: "Site address"
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: ${MAESTRO_WOO_LAB_JETPACK_STORE_URL}
+- hideKeyboard
+- tapOn:
+    id: "Site Address Next Button"
+- extendedWaitUntil:
+    visible:
+      id: "Continue with Google Button"
+    timeout: 20000
+- tapOn:
+    id: "Continue with Google Button"
+
+- runFlow:
+    when:
+      visible: ".*Wants to Use.*Sign In.*"
+    commands:
+      - tapOn: "Continue"
+- extendedWaitUntil:
+    visible: '.*accounts\.google\.com.*|.*Sign in with Google.*|.*Choose an account.*|.*@.*\..*'
+    timeout: 30000
+- takeScreenshot: login_google_account_picker
+
+# A previously authenticated browser may return immediately; an account picker
+# needs an explicit selection. Either route must still reach the app below.
+- runFlow:
+    when:
+      visible: '.*@.*\..*'
+    commands:
+      - tapOn:
+          text: '.*@.*\..*'
+          index: 0
+- runFlow:
+    when:
+      visible: ".*Continue as.*|.*Allow.*"
+    commands:
+      - tapOn: ".*Continue as.*|.*Allow.*"
+
+- runFlow:
+    when:
+      visible:
+        id: "login-epilogue-continue-button"
+    commands:
+      - copyTextFrom:
+          id: "url-label"
+      - evalScript: |
+          function normalized(value) {
+            return String(value || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '');
+          }
+          if (normalized(maestro.copiedText) !== normalized(MAESTRO_WOO_LAB_JETPACK_STORE_URL)) {
+            throw new Error('Google login selected a different store');
+          }
+      - tapOn:
+          id: "login-epilogue-continue-button"
+
+- extendedWaitUntil:
+    visible:
+      id: "tab-bar-my-store-item"
+    timeout: 90000
+- takeScreenshot: login_google_success

@@ -251,6 +251,52 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
+    func test_fetchJetpackConnectionStatus_correctly_returns_offline_mode() throws {
+        // Given
+        let urlSuffix = "/jetpack/v4/connection"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-offline-mode")
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
+
+        // When
+        let result: Result<JetpackConnectionStatus, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.fetchJetpackConnectionStatus(siteID: 0) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let status = try XCTUnwrap(result.get())
+        XCTAssertTrue(status.isInOfflineMode)
+    }
+
+    func test_fetchJetpackConnectionStatus_properly_relays_errors() {
+        // Given
+        let urlSuffix = "/jetpack/v4/connection"
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: urlSuffix, error: error)
+        let store = JetpackConnectionStore(dispatcher: dispatcher)
+
+        let setupAction = JetpackConnectionAction.authenticate(siteURL: siteURL, network: network)
+        store.onAction(setupAction)
+
+        // When
+        let result: Result<JetpackConnectionStatus, Error> = waitFor { promise in
+            let action = JetpackConnectionAction.fetchJetpackConnectionStatus(siteID: 0) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, error)
+    }
+
     func test_loadWPComAccount_returns_parsed_account() {
         // Given
         let store = JetpackConnectionStore(dispatcher: dispatcher)

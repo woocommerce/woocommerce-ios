@@ -3,19 +3,19 @@ import Difference
 
 /// Asserts that a collection is empty.
 ///
-public func assertEmpty<T: Collection>(_ collection: T, file: StaticString = #file, line: UInt = #line) {
+public func assertEmpty<T: Collection>(_ collection: T, file: StaticString = #filePath, line: UInt = #line) {
     XCTAssertTrue(collection.isEmpty, "Expected collection \(collection) to be empty.", file: file, line: line)
 }
 
 /// Asserts that a collection is not empty.
 ///
-public func assertNotEmpty<T: Collection>(_ collection: T, file: StaticString = #file, line: UInt = #line) {
+public func assertNotEmpty<T: Collection>(_ collection: T, file: StaticString = #filePath, line: UInt = #line) {
     XCTAssertFalse(collection.isEmpty, "Expected collection \(collection) to not be empty.", file: file, line: line)
 }
 
 /// Asserts that `lhs` has the same pointer address as `rhs`.
 ///
-public func assertThat(_ lhs: AnyObject?, isIdenticalTo rhs: AnyObject?, file: StaticString = #file, line: UInt = #line) {
+public func assertThat(_ lhs: AnyObject?, isIdenticalTo rhs: AnyObject?, file: StaticString = #filePath, line: UInt = #line) {
     XCTAssertTrue(lhs === rhs,
                   "Expected object \(String(describing: lhs)) to have the same pointer address as \(String(describing: rhs)).",
                   file: file,
@@ -24,7 +24,7 @@ public func assertThat(_ lhs: AnyObject?, isIdenticalTo rhs: AnyObject?, file: S
 
 /// Asserts that `subject` contains the given string.
 ///
-public func assertThat(_ subject: String, contains value: String, file: StaticString = #file, line: UInt = #line) {
+public func assertThat(_ subject: String, contains value: String, file: StaticString = #filePath, line: UInt = #line) {
     XCTAssertTrue(subject.contains(value),
                   "Expected “\(subject)” to contain “\(value)”.",
                   file: file,
@@ -35,7 +35,7 @@ public func assertThat(_ subject: String, contains value: String, file: StaticSt
 ///
 /// If `subject`'s type is just a subclass of `expectedType`, then this will fail.
 ///
-public func assertThat<T>(_ subject: Any?, isAnInstanceOf expectedType: T.Type, file: StaticString = #file, line: UInt = #line) {
+public func assertThat<T>(_ subject: Any?, isAnInstanceOf expectedType: T.Type, file: StaticString = #filePath, line: UInt = #line) {
     guard let subject else {
         XCTFail("Expected nil to be an instance of \(expectedType)",
                 file: file,
@@ -52,7 +52,7 @@ public func assertThat<T>(_ subject: Any?, isAnInstanceOf expectedType: T.Type, 
 /// Asserts that the async throws `expression` throws an error, and asserts the given Bool expression
 /// with the generated error.
 ///
-public func assertThrowsError(_ expression: () async throws -> (), errorAssert: (Error) -> Bool, file: StaticString = #file, line: UInt = #line) async {
+public func assertThrowsError(_ expression: () async throws -> (), errorAssert: (Error) -> Bool, file: StaticString = #filePath, line: UInt = #line) async {
     do {
         _ = try await expression()
         XCTFail("It should throw an error",

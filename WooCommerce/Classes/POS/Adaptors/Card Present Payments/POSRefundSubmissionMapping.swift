@@ -4,7 +4,7 @@ import Yosemite
 import WooFoundation
 
 struct POSRefundSubmissionMapping {
-    struct PreparedRefundContext {
+    struct PreparedRefundContext: Sendable {
         let order: Order
         let charge: WCPayCharge?
         let paymentGateway: PaymentGateway?

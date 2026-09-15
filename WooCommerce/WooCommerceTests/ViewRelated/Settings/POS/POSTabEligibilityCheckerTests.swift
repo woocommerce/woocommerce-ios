@@ -129,7 +129,52 @@ struct POSTabEligibilityCheckerTests {
         let result = await checker.checkEligibility(forceRemoteCheck: false)
 
         // Then
+        #expect(result == .ineligible(reason: .unsupportedCountry))
+    }
+
+    @Test(arguments: [nil, "", "INVALID"] as [String?])
+    func test_checkEligibility_when_country_is_missing_or_invalid_then_reports_unavailable_settings(country: String?) async throws {
+        // Given
+        var settings = [mockCurrencySetting(currency: .USD)]
+        if let country {
+            settings.append(mockCountrySetting(country: .us).copy(value: country))
+        }
+        siteSettings.mockSettingsStream = [
+            (siteID: siteID, settings: settings, source: SettingsUpdateSource.refresh)
+        ].publisher.eraseToAnyPublisher()
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
         #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
+    }
+
+    @Test func test_checkEligibility_when_settings_stream_finishes_empty_then_reports_unavailable_settings() async throws {
+        // Given
+        siteSettings.mockSettingsStream = Empty(completeImmediately: true).eraseToAnyPublisher()
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: false)
+
+        // Then
+        #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
+    }
+
+    @Test func test_checkEligibility_when_country_is_unsupported_then_keeps_cached_eligibility() async throws {
+        // Given
+        eligibilityService.cacheLastKnownPOSEligibility(siteID: siteID, isEligible: true)
+        setupCountry(country: .es, currency: .EUR)
+        let checker = makeEligibilityChecker()
+
+        // When
+        let result = await checker.checkEligibility(forceRemoteCheck: true)
+
+        // Then
+        #expect(result == .ineligible(reason: .unsupportedCountry))
+        #expect(eligibilityService.loadLastKnownPOSEligibility(siteID: siteID) == true)
     }
 
     @Test(arguments: [
@@ -429,6 +474,7 @@ struct POSTabEligibilityCheckerTests {
 
     @Test(arguments: [
         POSIneligibleReason.siteSettingsNotAvailable,
+        POSIneligibleReason.unsupportedCountry,
         POSIneligibleReason.unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD])
     ])
     fileprivate func refreshEligibility_syncs_site_settings_and_checks_eligibility_for_site_settings_issues(ineligibleReason: POSIneligibleReason) async throws {
@@ -461,6 +507,7 @@ struct POSTabEligibilityCheckerTests {
 
     @Test(arguments: [
         POSIneligibleReason.siteSettingsNotAvailable,
+        POSIneligibleReason.unsupportedCountry,
         POSIneligibleReason.unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD])
     ])
     fileprivate func refreshEligibility_returns_siteSettingsNotAvailable_when_site_settings_sync_fails(ineligibleReason: POSIneligibleReason) async throws {
@@ -719,8 +766,8 @@ struct POSTabEligibilityCheckerTests {
         // When
         let result = await checker.checkEligibility(forceRemoteCheck: false)
 
-        // Then - falls through with `siteSettingsNotAvailable` (the unsupportedCountry path is mapped here)
-        #expect(result == .ineligible(reason: .siteSettingsNotAvailable))
+        // Then
+        #expect(result == .ineligible(reason: .unsupportedCountry))
     }
 
     @Test func expansion_country_with_mismatched_currency_is_ineligible() async throws {

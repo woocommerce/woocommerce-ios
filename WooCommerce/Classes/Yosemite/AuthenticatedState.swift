@@ -203,17 +203,11 @@ class AuthenticatedState: StoresManagerState {
            ) {
             // Create eligibility service
             let eligibilityService = POSLocalCatalogEligibilityService(
-                systemStatusService: POSSystemStatusService(
-                    credentials: credentials,
-                    selectedSite: site,
-                    appPasswordSupportState: appPasswordSupportState.eraseToAnyPublisher(),
-                    storageManager: ServiceLocator.storageManager
-                ),
-                remoteFeatureFlagProvider: POSLocalCatalogEligibilityService.makeRemoteFeatureFlagProvider(dispatcher: dispatcher),
-                betaFeatureToggleProvider: {
-                    await MainActor.run {
-                        ServiceLocator.generalAppSettings.betaFeatureEnabled(.posLocalCatalog)
-                    }
+                remoteFeatureFlagProvider: { @MainActor in
+                    await RemoteFeatureFlagService(stores: ServiceLocator.stores).isEnabled(.posLocalCatalogM1, defaultValue: true)
+                },
+                betaFeatureToggleProvider: { @MainActor in
+                    ServiceLocator.generalAppSettings.betaFeatureEnabled(.posLocalCatalog)
                 },
                 syncStatusChecker: POSCatalogSyncStatusChecker(grdbManager: ServiceLocator.grdbManager)
             )

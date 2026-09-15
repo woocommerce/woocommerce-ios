@@ -1,6 +1,7 @@
 import Testing
 @testable import PointOfSale
 
+@MainActor
 struct POSEntryPointControllerTests {
     @Test func eligibilityState_is_set_to_ineligible_when_checker_returns_ineligible() async throws {
         // Given

@@ -24,6 +24,28 @@ final class RemoteTests: XCTestCase {
         cancellables = []
     }
 
+    func test_responseDataAndHeaders_when_called_from_mainActor_then_forwards_caller_isolation() async throws {
+        // Given
+        let network: any Network = IsolationCapturingNetwork()
+
+        // When
+        let response = try await network.responseDataAndHeaders(for: request)
+
+        // Then
+        XCTAssertEqual(response.0, Data([1]))
+    }
+
+    func test_responseData_when_called_from_mainActor_then_forwards_caller_isolation() async throws {
+        // Given
+        let network: any Network = IsolationCapturingNetwork()
+
+        // When
+        let response = try await network.responseData(for: request)
+
+        // Then
+        XCTAssertEqual(response, Data([1]))
+    }
+
     /// Verifies that `enqueue:mapper:` properly wraps up the received request within an AuthenticatedRequest, with
     /// the remote credentials.
     ///
@@ -1587,7 +1609,8 @@ private final class BodyAndErrorNetwork: Network {
         completion(.failure(error))
     }
 
-    func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         throw error
     }
 
@@ -1623,7 +1646,8 @@ private final class SuccessfulNetwork: Network {
         completion(.success(data))
     }
 
-    func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         (data, headers)
     }
 
@@ -1636,6 +1660,28 @@ private final class SuccessfulNetwork: Network {
                                  completion: @escaping (Data?, Error?) -> Void) {
         completion(data, nil)
     }
+}
+
+/// Returns whether the call carried MainActor isolation in its response body.
+private struct IsolationCapturingNetwork: Network {
+    var session: URLSession { URLSession(configuration: .default) }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) { }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) { }
+
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
+        (Data([isolation === MainActor.shared ? 1 : 0]), nil)
+    }
+
+    func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+        Empty<Swift.Result<Data, Error>, Never>().eraseToAnyPublisher()
+    }
+
+    func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+                                 to request: URLRequestConvertible,
+                                 completion: @escaping (Data?, Error?) -> Void) { }
 }
 
 private final class MockStoreConnectionErrorRecorder: StoreConnectionErrorRecording {

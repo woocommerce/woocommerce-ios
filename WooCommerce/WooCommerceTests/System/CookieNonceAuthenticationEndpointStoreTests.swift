@@ -264,7 +264,7 @@ private extension CookieNonceAuthenticationEndpointStoreTests {
     }
 }
 
-private final class BlockingRemovalUserDefaults: UserDefaults, @unchecked Sendable {
+private final class BlockingRemovalUserDefaults: UserDefaults {
     var pauseNextEndpointRemoval = false
     let removalReached = DispatchSemaphore(value: 0)
     let continueRemoval = DispatchSemaphore(value: 0)

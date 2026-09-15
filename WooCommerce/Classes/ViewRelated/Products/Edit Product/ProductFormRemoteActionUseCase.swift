@@ -257,7 +257,7 @@ extension ProductFormRemoteActionUseCase {
     /// Fetches the latest product from the server and updates local storage.
     @MainActor
     func retrieveProduct(id: Int64, siteID: Int64) async throws -> Product {
-        try await withCheckedThrowingContinuation { [weak self] continuation in
+        try await withCheckedThrowingContinuation { continuation in
             let action = ProductAction.retrieveProduct(siteID: siteID, productID: id) { result in
                 switch result {
                 case .success(let product):
@@ -266,10 +266,8 @@ extension ProductFormRemoteActionUseCase {
                     continuation.resume(throwing: error)
                 }
             }
-            DispatchQueue.main.async { [weak self] in
-                self?.stores.dispatch(action)
-            }
-        } as Product
+            stores.dispatch(action)
+        }
     }
 }
 

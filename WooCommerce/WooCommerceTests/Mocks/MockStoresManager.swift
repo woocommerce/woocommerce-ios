@@ -36,6 +36,10 @@ final class MockStoresManager: DefaultStoresManager {
         super.init(sessionManager: sessionManager)
     }
 
+    init(sessionManager: SessionManagerProtocol) {
+        super.init(sessionManager: sessionManager)
+    }
+
     // MARK: - Overridden Properties
 
     override var posCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? {

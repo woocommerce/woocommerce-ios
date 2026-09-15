@@ -6,14 +6,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
-    /// Barcode scanner for product inventory management
-    ///
-    case barcodeScanner
-
-    /// Product Reviews
-    ///
-    case reviews
-
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
@@ -59,17 +51,6 @@ public enum FeatureFlag: Int, CaseIterable {
     /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
     case performanceMonitoringViewController
 
-    /// Whether to enable the new support request form.
-    ///
-    case supportRequests
-
-    /// Enables the ability to add products to orders by SKU scanning
-    ///
-    case addProductToOrderViaSKUScanner
-
-    /// Enables bundle product configuration support in order creation/editing.
-    ///
-    case productBundlesInOrderForm
 
     /// Enables the custom login UI when user enters an existing email address during account creation.
     ///
@@ -155,9 +136,4 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Off by default until the stack is ready to enable for internal builds.
     ///
     case starReceiptPrinterSupport
-
-    /// Enables server-calculated POS refunds: the `/wc/v3` refund preview and `compute_totals`
-    /// create endpoints (WC 11.1.0+).
-    ///
-    case posServerCalculatedRefunds
 }

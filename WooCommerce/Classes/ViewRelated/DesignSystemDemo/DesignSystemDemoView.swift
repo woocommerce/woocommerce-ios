@@ -32,6 +32,7 @@ private struct ComponentsView: View {
         List {
             NavigationLink("Badge") { BadgeComponentView() }
             NavigationLink("Button") { ButtonComponentView() }
+            NavigationLink("Cell") { CellComponentView() }
             NavigationLink("Checkbox") { CheckboxComponentView() }
             NavigationLink("Icon Container") { IconContainerComponentView() }
             NavigationLink("Divider") { DividerComponentView() }

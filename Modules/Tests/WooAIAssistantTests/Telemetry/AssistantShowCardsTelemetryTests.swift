@@ -35,10 +35,10 @@ struct AssistantShowCardsTelemetryTests {
         await registry.setResult(for: ShowCardsTool.name,
                                  result: .success(.init(toolName: ShowCardsTool.name,
                                                         structured: structured)))
-        let tracker = await RecordingAssistantTelemetryTracker()
-        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
-                                                         toolRegistry: registry,
-                                                         telemetryTracker: tracker)
+        let tracker = RecordingAssistantTelemetryTracker()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   telemetryTracker: tracker)
 
         // When
         for try await _ in orchestrator.run(prompt: "show me",
@@ -84,10 +84,10 @@ struct AssistantShowCardsTelemetryTests {
                                  result: .failed(.init(toolName: ShowCardsTool.name,
                                                        kind: .invalidToolCall,
                                                        reason: "bad args")))
-        let tracker = await RecordingAssistantTelemetryTracker()
-        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
-                                                         toolRegistry: registry,
-                                                         telemetryTracker: tracker)
+        let tracker = RecordingAssistantTelemetryTracker()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   telemetryTracker: tracker)
 
         // When
         for try await _ in orchestrator.run(prompt: "show me",
@@ -130,10 +130,10 @@ struct AssistantShowCardsTelemetryTests {
         await registry.setResult(for: ShowCardsTool.name,
                                  result: .success(.init(toolName: ShowCardsTool.name,
                                                         structured: .array([.int(1)]))))
-        let tracker = await RecordingAssistantTelemetryTracker()
-        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
-                                                         toolRegistry: registry,
-                                                         telemetryTracker: tracker)
+        let tracker = RecordingAssistantTelemetryTracker()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   telemetryTracker: tracker)
 
         // When
         for try await _ in orchestrator.run(prompt: "show me",

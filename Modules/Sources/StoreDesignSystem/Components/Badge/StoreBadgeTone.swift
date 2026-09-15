@@ -5,7 +5,7 @@ import SwiftUI
 /// - Note: A closed type holding the color roles per tone; `background` and `border` are optional
 ///   (`nil` means no fill / no border). Caution and Warning map to their like-named container
 ///   tokens, matching the Android `WooBadge`.
-public struct StoreBadgeTone {
+public struct StoreBadgeTone: Sendable {
     struct Appearance {
         let background: Color?
         let foreground: Color

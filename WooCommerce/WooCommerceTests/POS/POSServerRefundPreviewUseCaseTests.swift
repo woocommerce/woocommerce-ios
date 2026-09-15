@@ -1,7 +1,6 @@
 import Testing
 import Foundation
 import Yosemite
-import Experiments
 import enum NetworkingCore.DotcomError
 import enum NetworkingCore.NetworkError
 @testable import WooCommerce
@@ -14,18 +13,6 @@ struct POSServerRefundPreviewUseCaseTests {
     private let orderID: Int64 = 456
 
     // MARK: - Gating without a network call
-
-    @Test func previewRefund_when_flag_disabled_then_falls_back_without_dispatch() async {
-        // Given
-        let (sut, service, _) = makeSUT(flagEnabled: false)
-
-        // When
-        let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
-
-        // Then
-        #expect(result == .fallbackToLocal)
-        #expect(service.previewRefundCallCount == 0)
-    }
 
     @Test func previewRefund_when_site_cached_unavailable_then_falls_back_without_dispatch() async {
         // Given
@@ -283,8 +270,7 @@ private extension POSServerRefundPreviewUseCaseTests {
         static let belowMinimum = "11.0.9"
     }
 
-    func makeSUT(flagEnabled: Bool = true,
-                 cachedWooVersion: String? = Versions.minimum,
+    func makeSUT(cachedWooVersion: String? = Versions.minimum,
                  cache: ServerRefundAvailabilityCache? = nil,
                  previewResult: Swift.Result<RefundPreview, Error>? = nil,
                  analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider())
@@ -297,11 +283,8 @@ private extension POSServerRefundPreviewUseCaseTests {
         let stores = MockStoresManager(sessionManager: session)
         let service = MockRefundService()
         service.previewRefundResult = previewResult
-        let flags = MockFeatureFlagService()
-        flags.isFeatureFlagEnabledReturnValue = [.posServerCalculatedRefunds: flagEnabled]
         let sut = POSServerRefundPreviewUseCase(refundService: service,
                                                 flowResolver: POSRefundFlowResolver(stores: stores,
-                                                                                    featureFlagService: flags,
                                                                                     availabilityCache: cache,
                                                                                     minimumWooVersion: Versions.minimum),
                                                 availabilityCache: cache,

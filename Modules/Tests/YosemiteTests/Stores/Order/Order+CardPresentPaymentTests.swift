@@ -12,10 +12,10 @@ final class Order_CardPresentPaymentTests: XCTestCase {
                                                currency: Order_CardPresentPaymentTests.currency,
                                                datePaid: nil,
                                                total: "25",
-                                               paymentMethodID: "woocommercePayments")
+                                               paymentMethodID: "woocommerce_payments")
 
     func test_isEligibleForCardPresentPayment_when_order_has_all_requirements_then_it_is_eligible() {
-        XCTAssertFalse(eligibleOrder.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: configuration, products: []))
+        XCTAssertTrue(eligibleOrder.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: configuration, products: []))
     }
 
     func test_isEligibleForCardPresentPayment_when_order_has_date_paid_then_is_not_eligible() {
@@ -69,4 +69,62 @@ final class Order_CardPresentPaymentTests: XCTestCase {
         // Then
         XCTAssertFalse(order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: configuration, products: [product]))
     }
+    func test_eligibility_when_only_currency_is_unsupported_then_returns_currency_reason() {
+        // Given
+        let order = eligibleOrder.copy(currency: "eur")
+
+        // When
+        let result = order.cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: configuration, products: [])
+
+        // Then
+        XCTAssertEqual(result, .unsupportedCurrency("EUR"))
+    }
+
+    func test_eligibility_when_order_is_paid_then_does_not_report_currency_as_the_reason() {
+        // Given
+        let order = eligibleOrder.copy(currency: "EUR", datePaid: Date())
+
+        // When
+        let result = order.cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: configuration, products: [])
+
+        // Then
+        XCTAssertEqual(result, .ineligible)
+    }
+
+    func test_eligibility_when_order_contains_subscription_then_does_not_report_currency_as_the_reason() {
+        // Given
+        let order = eligibleOrder.copy(currency: "EUR")
+        let product = Product.fake().copy(productTypeKey: "subscription")
+
+        // When
+        let result = order.cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: configuration, products: [product])
+
+        // Then
+        XCTAssertEqual(result, .ineligible)
+    }
+
+    func test_eligibility_when_country_is_unresolved_or_unsupported_then_does_not_report_currency_as_the_reason() {
+        // Given
+        let countries: [CountryCode] = [.unknown, .LT]
+
+        for country in countries {
+            // When
+            let result = eligibleOrder.cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: .init(country: country), products: [])
+
+            // Then
+            XCTAssertEqual(result, .ineligible)
+        }
+    }
+
+    func test_eligibility_when_currency_uses_lowercase_then_remains_eligible() {
+        // Given
+        let order = eligibleOrder.copy(currency: "usd")
+
+        // When
+        let result = order.cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: configuration, products: [])
+
+        // Then
+        XCTAssertEqual(result, .eligible)
+    }
+
 }

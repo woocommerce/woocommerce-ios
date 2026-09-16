@@ -106,6 +106,9 @@ struct PaymentMethodsView: View {
                     .padding(.horizontal)
                     .background(Color(.listForeground(modal: false)))
 
+                    if let message = viewModel.cardPaymentUnavailableMessage {
+                        FooterNotice(infoText: message)
+                    }
                     if viewModel.countryRecovery.isLoading {
                         ProgressView(CardPresentPaymentCountryRecovery.Localization.loading)
                             .padding()

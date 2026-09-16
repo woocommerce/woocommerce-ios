@@ -17,12 +17,25 @@ import protocol Storage.StorageManagerType
     ///
     func isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
                                          products: [Product]) -> Bool {
-        isAmountEligibleForCardPayment &&
-        isStatusEligibleForCardPayment &&
-        isPaymentMethodEligibleForCardPayment &&
-        isCurrencyEligibleForCardPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) &&
-        !containsAnySubscription(from: products)
+        cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration, products: products) == .eligible
     }
+
+    func cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
+                                       products: [Product]) -> OrderCardPresentPaymentEligibility {
+        guard cardPresentPaymentsConfiguration.isSupportedCountry,
+              isAmountEligibleForCardPayment,
+              isStatusEligibleForCardPayment,
+              isPaymentMethodEligibleForCardPayment,
+              !containsAnySubscription(from: products),
+              let orderCurrency = CurrencyCode(caseInsensitiveRawValue: currency) else {
+            return .ineligible
+        }
+        guard cardPresentPaymentsConfiguration.currencies.contains(orderCurrency) else {
+            return .unsupportedCurrency(orderCurrency.rawValue)
+        }
+        return .eligible
+    }
+
 
     private var isAmountEligibleForCardPayment: Bool {
         // If the order is paid, it is not eligible.
@@ -56,13 +69,6 @@ import protocol Storage.StorageManagerType
         case .unknown:
             return false
         }
-    }
-
-    private func isCurrencyEligibleForCardPayment(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration) -> Bool {
-        guard let currency = CurrencyCode(caseInsensitiveRawValue: currency) else {
-            return false
-        }
-        return cardPresentPaymentsConfiguration.currencies.contains(currency)
     }
 
     private func containsAnySubscription(from products: [Product]) -> Bool {

@@ -20,6 +20,7 @@ final class PaymentMethodsViewModel: ObservableObject {
     @Published private(set) var showPayWithCardRow = false
 
     @Published private(set) var showTapToPayRow = false
+    @Published private(set) var cardPaymentUnavailableMessage: String?
 
     /// Allows the onboarding flow to be presented before a card present payment when required
     ///
@@ -467,6 +468,7 @@ private extension PaymentMethodsViewModel {
     }
 
     func updateCardPaymentVisibility() {
+        cardPaymentUnavailableMessage = nil
         guard cardPresentPaymentsConfiguration.isSupportedCountry else {
             showPayWithCardRow = false
             showTapToPayRow = false
@@ -495,12 +497,15 @@ private extension PaymentMethodsViewModel {
 
     private func orderIsEligibleForCardPresentPayment(onCompletion: @escaping (Bool) -> Void) {
         let action = OrderCardPresentPaymentEligibilityAction
-            .orderIsEligibleForCardPresentPayment(orderID: orderID,
-                                                  siteID: siteID,
-                                                  cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) { result in
+            .checkEligibility(orderID: orderID,
+                              siteID: siteID,
+                              cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration) { [weak self] result in
                 switch result {
                 case .success(let eligibility):
-                    onCompletion(eligibility)
+                    if case let .unsupportedCurrency(currency) = eligibility {
+                        self?.cardPaymentUnavailableMessage = String(format: Localization.unsupportedOrderCurrency, currency)
+                    }
+                    onCompletion(eligibility == .eligible)
                 case .failure:
                     onCompletion(false)
                 }
@@ -603,6 +608,11 @@ private extension PaymentMethodsViewModel {
 
 private extension PaymentMethodsViewModel {
     enum Localization {
+        static let unsupportedOrderCurrency = NSLocalizedString(
+            "paymentMethods.unsupportedOrderCurrency",
+            value: "In-person card payments aren’t available for this order’s currency (%1$@). Choose another payment method.",
+            comment: "Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD.")
+
         static let markAsPaidError = NSLocalizedString("There was an error while marking the order as paid.",
                                                        comment: "Text when there is an error while marking the order as paid for during payment.")
 

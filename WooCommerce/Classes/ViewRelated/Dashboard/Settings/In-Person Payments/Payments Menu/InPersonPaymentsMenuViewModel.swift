@@ -241,9 +241,7 @@ private extension InPersonPaymentsMenuViewModel {
             shouldShowOnboarding = false
             shouldShowPaymentOptionsSection = false
             shouldShowManagePaymentGatewaysRow = false
-            selectedPaymentGatewayName = nil
-            selectedPaymentGatewayPlugin = nil
-            shouldDisableManageCardReaders = true
+            updateForIncompleteOnboarding(selectedPlugin: nil)
             payInPersonToggleViewModel.selectedPlugin = nil
             return
         }

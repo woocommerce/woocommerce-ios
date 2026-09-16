@@ -15,11 +15,6 @@ import protocol Storage.StorageManagerType
     ///     - cardPresentPaymentsConfiguration: The current configuration for the card payment. Use to check the validity of the order currency.
     ///     - products: A list of products linked to the store. Used to check whether the order contains any product of type subscription.
     ///
-    func isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
-                                         products: [Product]) -> Bool {
-        cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration, products: products) == .eligible
-    }
-
     func cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
                                        products: [Product]) -> OrderCardPresentPaymentEligibility {
         guard cardPresentPaymentsConfiguration.isSupportedCountry,

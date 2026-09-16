@@ -3,7 +3,7 @@ import struct Yosemite.Order
 /// Result of a scan-to-pay verification poll.
 enum POSScanToPayVerificationResult: Equatable {
     /// The order has been paid (datePaid is set, or status indicates payment received).
-    case paid
+    case paid(Order)
     /// The order is still awaiting payment.
     case pending
 }

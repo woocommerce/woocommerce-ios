@@ -36,15 +36,16 @@ final class SystemStatusStoreTests: XCTestCase {
         network = MockNetwork()
     }
 
-    func test_synchronizeSystemInformation_stores_systemPlugins_correctly() {
+    @MainActor
+    func test_synchronizeSystemInformation_stores_systemPlugins_correctly() async {
         // Given
         network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result = waitFor { promise in
+        let result: Result<SystemInformation, Error> = await withCheckedContinuation { continuation in
             store.onAction(SystemStatusAction.synchronizeSystemInformation(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             })
         }
 
@@ -53,7 +54,8 @@ final class SystemStatusStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageSystemPlugin.self), 6) // number of systemPlugins in json file
     }
 
-    func test_synchronizeSystemInformation_stores_storeID_correctly() throws {
+    @MainActor
+    func test_synchronizeSystemInformation_stores_storeID_correctly() async throws {
         // Given
         let mockProcessor = MockActionsProcessor()
         dispatcher.register(processor: mockProcessor, for: AppSettingsAction.self)
@@ -62,9 +64,9 @@ final class SystemStatusStoreTests: XCTestCase {
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        _ = waitFor { promise in
+        let _: Result<SystemInformation, Error> = await withCheckedContinuation { continuation in
             store.onAction(SystemStatusAction.synchronizeSystemInformation(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             })
         }
 
@@ -78,7 +80,8 @@ final class SystemStatusStoreTests: XCTestCase {
         }
     }
 
-    func test_synchronizeSystemInformation_removes_stale_systemPlugins_correctly() {
+    @MainActor
+    func test_synchronizeSystemInformation_removes_stale_systemPlugins_correctly() async {
         // Given
         let staleSystemPluginPath = "folder/stale-plugin.php"
         let staleSystemPlugin = SystemPlugin.fake().copy(siteID: sampleSiteID, plugin: staleSystemPluginPath)
@@ -90,9 +93,9 @@ final class SystemStatusStoreTests: XCTestCase {
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result = waitFor { promise in
+        let result: Result<SystemInformation, Error> = await withCheckedContinuation { continuation in
             store.onAction(SystemStatusAction.synchronizeSystemInformation(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             })
         }
 
@@ -102,7 +105,8 @@ final class SystemStatusStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSystemPlugin(siteID: sampleSiteID, fileNameWithoutExtension: "stale-plugin"))
     }
 
-    func test_fetchSystemPluginWithPath_returns_plugin_when_matching_plugin_is_in_storage() {
+    @MainActor
+    func test_fetchSystemPluginWithPath_returns_plugin_when_matching_plugin_is_in_storage() async {
         // Given
         let systemPlugin1 = viewStorage.insertNewObject(ofType: SystemPlugin.self)
         systemPlugin1.name = "WooPayments"
@@ -117,10 +121,10 @@ final class SystemStatusStoreTests: XCTestCase {
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let fetchedPlugin = waitFor { promise in
+        let fetchedPlugin: SystemPlugin? = await withCheckedContinuation { continuation in
             store.onAction(SystemStatusAction.fetchSystemPluginWithPath(siteID: self.sampleSiteID,
                                                                       pluginPath: "woocommerce-gift-cards/woocommerce-gift-cards.php") { result in
-                promise(result)
+                continuation.resume(returning: result)
             })
         }
 
@@ -129,7 +133,8 @@ final class SystemStatusStoreTests: XCTestCase {
         XCTAssertEqual(fetchedPlugin?.plugin, "woocommerce-gift-cards/woocommerce-gift-cards.php")
     }
 
-    func test_fetchSystemPluginWithPath_returns_nil_when_no_matching_plugin() {
+    @MainActor
+    func test_fetchSystemPluginWithPath_returns_nil_when_no_matching_plugin() async {
         // Given
         let systemPlugin = viewStorage.insertNewObject(ofType: SystemPlugin.self)
         systemPlugin.name = "WooPayments"
@@ -139,10 +144,10 @@ final class SystemStatusStoreTests: XCTestCase {
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let fetchedPlugin = waitFor { promise in
+        let fetchedPlugin: SystemPlugin? = await withCheckedContinuation { continuation in
             store.onAction(SystemStatusAction.fetchSystemPluginWithPath(siteID: self.sampleSiteID,
                                                                       pluginPath: "woocommerce-gift-cards/woocommerce-gift-cards.php") { result in
-                promise(result)
+                continuation.resume(returning: result)
             })
         }
 
@@ -150,15 +155,16 @@ final class SystemStatusStoreTests: XCTestCase {
         XCTAssertNil(fetchedPlugin)
     }
 
-    func test_fetchSystemStatusReport_returns_systemStatus_correctly() {
+    @MainActor
+    func test_fetchSystemStatusReport_returns_systemStatus_correctly() async {
         // Given
         network.simulateResponse(requestUrlSuffix: "system_status", filename: "systemStatus")
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<SystemStatusReport, Error> = waitFor { promise in
+        let result: Result<SystemStatusReport, Error> = await withCheckedContinuation { continuation in
             let action = SystemStatusAction.fetchSystemStatusReport(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }

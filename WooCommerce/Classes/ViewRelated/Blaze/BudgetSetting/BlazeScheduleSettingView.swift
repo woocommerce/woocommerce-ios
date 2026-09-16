@@ -9,7 +9,7 @@ struct BlazeScheduleSettingView: View {
     @State private var hasEndDate: Bool
     @State private var duration: Double
 
-    private let durationTextFormatter: (Double) -> NSAttributedString
+    private let durationTextFormatter: (Date, Double) -> NSAttributedString
     private let completionHandler: (Date, Bool, Double) -> Void
     private let dismissHandler: () -> Void
 
@@ -25,7 +25,7 @@ struct BlazeScheduleSettingView: View {
     init(startDate: Date,
          hasEndDate: Bool,
          duration: Double,
-         durationTextFormatter: @escaping (Double) -> NSAttributedString,
+         durationTextFormatter: @escaping (Date, Double) -> NSAttributedString,
          onCompletion: @escaping (Date, Bool, Double) -> Void,
          onDismiss: @escaping () -> Void) {
         self.startDate = startDate
@@ -100,7 +100,7 @@ struct BlazeScheduleSettingView: View {
                         Text(Localization.duration)
                             .bodyStyle()
                         Spacer().renderedIf(sizeCategory.isAccessibilityCategory == false)
-                        AttributedText(durationTextFormatter(duration))
+                        AttributedText(durationTextFormatter(startDate, duration))
                     }
 
                     Slider(value: $duration,
@@ -109,7 +109,7 @@ struct BlazeScheduleSettingView: View {
                 }
                 .accessibilityElement(children: .combine)
                 .accessibilityLabel(Localization.duration)
-                .accessibilityValue(durationTextFormatter(duration).string)
+                .accessibilityValue(durationTextFormatter(startDate, duration).string)
                 .renderedIf(hasEndDate)
 
                 Spacer()
@@ -195,7 +195,7 @@ private extension BlazeScheduleSettingView {
 }
 
 #Preview {
-    BlazeScheduleSettingView(startDate: .now, hasEndDate: true, duration: 3, durationTextFormatter: { _ in
+    BlazeScheduleSettingView(startDate: .now, hasEndDate: true, duration: 3, durationTextFormatter: { _, _ in
         NSAttributedString(string: "test")
     }, onCompletion: { _, _, _ in }, onDismiss: {})
 }

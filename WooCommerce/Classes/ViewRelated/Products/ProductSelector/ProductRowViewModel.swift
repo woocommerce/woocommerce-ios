@@ -1,4 +1,3 @@
-import Experiments
 import Foundation
 import Yosemite
 import WooFoundation
@@ -303,7 +302,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      currency: String? = nil,
                      analytics: Analytics = ServiceLocator.analytics,
-                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      configure: (() -> Void)? = nil) {
         // Don't show any price for variable products; price will be shown for each product variation.
         let price: String?
@@ -345,8 +343,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             }
         }()
 
-        let isConfigurable = featureFlagService.isFeatureFlagEnabled(.productBundlesInOrderForm)
-        && product.productType == .bundle
+        let isConfigurable = product.productType == .bundle
         && product.bundledItems.isNotEmpty
         && configure != nil
 

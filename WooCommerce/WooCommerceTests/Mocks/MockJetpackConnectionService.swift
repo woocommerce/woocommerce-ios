@@ -19,6 +19,9 @@ final class MockJetpackConnectionService: JetpackConnectionServiceProtocol {
     var fetchConnectionDataResult: Result<JetpackConnectionData, Error>?
     private(set) var fetchConnectionDataCallCount = 0
 
+    var isJetpackInOfflineModeResult: Bool = false
+    private(set) var isJetpackInOfflineModeCallCount = 0
+
     func establishSiteConnection(siteURL: String) async throws {
         establishSiteConnectionCallCount += 1
         try establishSiteConnectionResult.get()
@@ -46,5 +49,10 @@ final class MockJetpackConnectionService: JetpackConnectionServiceProtocol {
             throw NSError(domain: "MockJetpackConnectionService", code: 0, userInfo: [NSLocalizedDescriptionKey: "fetchConnectionDataResult not set"])
         }
         return try result.get()
+    }
+
+    func isJetpackInOfflineMode() async -> Bool {
+        isJetpackInOfflineModeCallCount += 1
+        return isJetpackInOfflineModeResult
     }
 }

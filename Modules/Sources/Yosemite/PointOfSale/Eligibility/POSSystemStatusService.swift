@@ -3,7 +3,8 @@ import Networking
 import Storage
 import struct Combine.AnyPublisher
 
-public protocol POSSystemStatusServiceProtocol {
+@MainActor
+public protocol POSSystemStatusServiceProtocol: Sendable {
     /// Loads WooCommerce plugin and POS feature switch value remotely for eligibility checks.
     /// - Parameter siteID: The site ID to fetch information for.
     /// - Returns: POSPluginAndFeatureInfo containing plugin and feature data.
@@ -14,12 +15,11 @@ public protocol POSSystemStatusServiceProtocol {
     /// anywhere in the app, without hitting the network.
     /// - Parameter siteID: The site ID to load the plugin for.
     /// - Returns: The locally synced plugin in any active state, or nil when none has been synced.
-    @MainActor
     func loadCachedWooCommercePlugin(siteID: Int64) -> SystemPlugin?
 }
 
 /// Contains WooCommerce plugin information and POS feature switch value.
-public struct POSPluginAndFeatureInfo {
+public struct POSPluginAndFeatureInfo: Sendable {
     public let wcPlugin: SystemPlugin?
     public let featureValue: Bool?
 
@@ -34,27 +34,34 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
     private let remote: SystemStatusRemote
     private let storageManager: StorageManagerType
     private let pluginsService: PluginsServiceProtocol
+    /// Keeps the producer of `appPasswordSupportState` alive for this authenticated session.
+    /// Type-erased Combine publishers do not retain their producer.
+    private let appPasswordSupportStateOwner: AnyObject?
 
     public init(credentials: Credentials?,
                 selectedSite: AnyPublisher<JetpackSite?, Never>,
                 appPasswordSupportState: AnyPublisher<Bool, Never>,
-                storageManager: StorageManagerType) {
+                storageManager: StorageManagerType,
+                appPasswordSupportStateOwner: AnyObject? = nil) {
         let network = AlamofireNetwork(credentials: credentials,
                                        selectedSite: selectedSite,
                                        appPasswordSupportState: appPasswordSupportState)
         self.remote = SystemStatusRemote(network: network)
         self.storageManager = storageManager
         self.pluginsService = PluginsService(storageManager: storageManager)
+        self.appPasswordSupportStateOwner = appPasswordSupportStateOwner
     }
 
     /// Test-friendly initializer that accepts a network implementation.
-    init(network: Network, storageManager: StorageManagerType) {
+    init(network: Network,
+         storageManager: StorageManagerType,
+         appPasswordSupportStateOwner: AnyObject? = nil) {
         self.remote = SystemStatusRemote(network: network)
         self.storageManager = storageManager
         self.pluginsService = PluginsService(storageManager: storageManager)
+        self.appPasswordSupportStateOwner = appPasswordSupportStateOwner
     }
 
-    @MainActor
     public func loadWooCommercePluginAndPOSFeatureSwitch(siteID: Int64) async throws -> POSPluginAndFeatureInfo {
         let mapper = SingleItemMapper<POSPluginEligibilitySystemStatus>(siteID: siteID)
         let systemStatus: POSPluginEligibilitySystemStatus = try await remote.loadSystemStatus(
@@ -64,10 +71,12 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
         )
 
         // Upserts all plugins in storage.
-        await storageManager.performAndSaveAsync({ storage in
-            let useCase = SystemPluginsUpsertUseCase(storage: storage)
-            useCase.upsert(siteID: siteID, activePlugins: systemStatus.activePlugins, inactivePlugins: systemStatus.inactivePlugins)
-        })
+        await withCheckedContinuation { continuation in
+            storageManager.performAndSave({ storage in
+                let useCase = SystemPluginsUpsertUseCase(storage: storage)
+                useCase.upsert(siteID: siteID, activePlugins: systemStatus.activePlugins, inactivePlugins: systemStatus.inactivePlugins)
+            }, completion: continuation.resume, on: .main)
+        }
 
         // Loads WooCommerce plugin from storage.
         guard let wcPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: true) else {
@@ -79,7 +88,6 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
         return POSPluginAndFeatureInfo(wcPlugin: wcPlugin, featureValue: featureValue)
     }
 
-    @MainActor
     public func loadCachedWooCommercePlugin(siteID: Int64) -> SystemPlugin? {
         pluginsService.loadPluginInStorage(siteID: siteID, plugin: .wooCommerce, isActive: nil)
     }
@@ -87,7 +95,7 @@ public final class POSSystemStatusService: POSSystemStatusServiceProtocol {
 
 // MARK: - Network Response Structs
 
-private struct POSPluginEligibilitySystemStatus: Decodable {
+private struct POSPluginEligibilitySystemStatus: Decodable, Sendable {
     let activePlugins: [SystemPlugin]
     let inactivePlugins: [SystemPlugin]
     let settings: POSEligibilitySystemStatusSettings
@@ -99,7 +107,7 @@ private struct POSPluginEligibilitySystemStatus: Decodable {
     }
 }
 
-private struct POSEligibilitySystemStatusSettings: Decodable {
+private struct POSEligibilitySystemStatusSettings: Decodable, Sendable {
     // As `settings.enable_features` was introduced in WC version 9.9.0, this field is optional.
     // Ref: https://github.com/woocommerce/woocommerce/pull/57168
     let enabledFeatures: [String]?

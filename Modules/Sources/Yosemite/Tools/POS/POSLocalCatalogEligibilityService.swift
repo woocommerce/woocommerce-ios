@@ -3,9 +3,9 @@ import Alamofire
 import WooFoundationCore
 
 public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
-    private let systemStatusService: POSSystemStatusServiceProtocol
-    private let remoteFeatureFlagProvider: @Sendable () async -> Bool
-    private let betaFeatureToggleProvider: @Sendable () async -> Bool
+    private var systemStatusService: POSSystemStatusServiceProtocol?
+    private let remoteFeatureFlagProvider: @MainActor @Sendable () async -> Bool
+    private let betaFeatureToggleProvider: @MainActor @Sendable () async -> Bool
     private let syncStatusChecker: POSCatalogSyncStatusCheckerProtocol?
 
     // Eligibility states cached per site
@@ -25,9 +25,9 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     ///   - syncStatusChecker: Checks whether a full catalog sync completed for a site.
     ///     Used to keep the local catalog usable when remote eligibility checks fail (e.g. offline).
     public init(
-        systemStatusService: POSSystemStatusServiceProtocol,
-        remoteFeatureFlagProvider: @escaping @Sendable () async -> Bool,
-        betaFeatureToggleProvider: @escaping @Sendable () async -> Bool,
+        systemStatusService: POSSystemStatusServiceProtocol? = nil,
+        remoteFeatureFlagProvider: @escaping @MainActor @Sendable () async -> Bool,
+        betaFeatureToggleProvider: @escaping @MainActor @Sendable () async -> Bool,
         syncStatusChecker: POSCatalogSyncStatusCheckerProtocol? = nil
     ) {
         self.systemStatusService = systemStatusService
@@ -38,6 +38,17 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         Task {
             await self.fetchRemoteFlag()
         }
+    }
+
+    /// Attaches the service once. A local catalog eligibility actor belongs to one authenticated
+    /// session, so a later coordinator must not replace its status service with another session.
+    @discardableResult
+    public func configure(systemStatusService: POSSystemStatusServiceProtocol) async -> Bool {
+        guard self.systemStatusService == nil else {
+            return false
+        }
+        self.systemStatusService = systemStatusService
+        return true
     }
 
     /// Get catalog eligibility for a specific site
@@ -126,6 +137,11 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
 
         // Check WooCommerce version: local catalog requires 10.5.0+ (Catalog API)
         let minimumVersion = Constants.wcPluginMinimumVersionForLocalCatalog
+        guard let systemStatusService else {
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: System status service is not configured for site \(siteID)")
+            return .ineligible(reason: .posTabNotEligible)
+        }
+
         do {
             let pluginInfo = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
 
@@ -184,26 +200,6 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         let isRemoteEnabled = await isRemoteCatalogFeatureFlagEnabled()
         let isBetaToggleEnabled = await betaFeatureToggleProvider()
         return (isRemoteEnabled, isBetaToggleEnabled)
-    }
-}
-
-// MARK: - Factory Method
-
-public extension POSLocalCatalogEligibilityService {
-    /// Creates a remote feature flag provider closure for POS local catalog
-    /// - Parameter dispatcher: The dispatcher to use for fetching the remote flag
-    /// - Returns: A closure that fetches the remote feature flag value, defaulting to true if unavailable
-    static func makeRemoteFeatureFlagProvider(dispatcher: Dispatcher) -> @Sendable () async -> Bool {
-        return {
-            await withCheckedContinuation { continuation in
-                Task { @MainActor in
-                    let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.posLocalCatalogM1, defaultValue: true) { isEnabled in
-                        continuation.resume(returning: isEnabled)
-                    }
-                    dispatcher.dispatch(action)
-                }
-            }
-        }
     }
 }
 

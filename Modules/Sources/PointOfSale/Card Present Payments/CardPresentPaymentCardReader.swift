@@ -1,6 +1,6 @@
 import Foundation
 
-public struct CardPresentPaymentCardReader: Equatable {
+public struct CardPresentPaymentCardReader: Equatable, Sendable {
     let name: String
 
     /// The reader's battery level, if available.

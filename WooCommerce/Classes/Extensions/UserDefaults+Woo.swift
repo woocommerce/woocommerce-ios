@@ -7,6 +7,7 @@ import Foundation
 extension UserDefaults {
     enum Key: String {
         case applicationPasswordUnsupportedList
+        case cookieNonceAuthenticationEndpoints
         case defaultCredentialsType
         case defaultAccountID
         case defaultUsername
@@ -85,6 +86,9 @@ extension UserDefaults {
 
         /// Debug override for the minimum WooCommerce plugin version required for WPCom connection setup
         case debugMinWooVersionForSelfDrivenPushNotifications
+
+        /// Debug override: id of a simulated manual significant change for the age-gate consent flow
+        case debugManualSignificantChangeID
 
         /// Sites available for selection in the configurable store stats widget picker
         case widgetSelectableSites

@@ -3,6 +3,7 @@ import Testing
 @testable import Yosemite
 @testable import Networking
 
+@MainActor
 struct POSSiteSettingServiceTests {
     private let sut: POSSiteSettingService
     private let mockRemote: MockSiteSettingsRemote

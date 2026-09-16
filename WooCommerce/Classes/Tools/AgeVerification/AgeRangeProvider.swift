@@ -8,6 +8,9 @@ import DeclaredAgeRange
 struct AgeRangeSnapshot: Sendable {
     /// Lower bound of the declared age range, if available.
     let lowerBound: Int?
+    /// Upper bound of the declared age range. Nil for the top band (adult) — responses are
+    /// quantized to the requested age gates, so a bounded value only exists between gates.
+    let upperBound: Int?
     /// Whether parental approval is required for significant app changes.
     let significantAppChangeApprovalRequired: Bool
 }
@@ -23,9 +26,13 @@ struct AgeRangeRequirements: Sendable {
 
 /// Abstraction over DeclaredAgeRange APIs for testability.
 protocol AgeRangeProviding: Sendable {
+    /// Requests the declared age range with two gates: `minimumAge` (ToS floor) and `adultAge`.
+    /// Both gates are needed because responses only resolve to the requested thresholds —
+    /// with a single gate at 13, a 16-year-old and an adult return identical data.
     @MainActor
     func requestAgeRange(
         minimumAge: Int,
+        adultAge: Int,
         in viewController: UIViewController
     ) async throws -> AgeRangeSnapshot
 
@@ -50,6 +57,7 @@ struct DeclaredAgeRangeProvider: AgeRangeProviding {
     @MainActor
     func requestAgeRange(
         minimumAge: Int,
+        adultAge: Int,
         in viewController: UIViewController
     ) async throws -> AgeRangeSnapshot {
         guard #available(iOS 26.0, *) else {
@@ -58,6 +66,7 @@ struct DeclaredAgeRangeProvider: AgeRangeProviding {
         do {
             let response = try await AgeRangeService.shared.requestAgeRange(
                 ageGates: minimumAge,
+                adultAge,
                 in: viewController
             )
             switch response {
@@ -70,6 +79,7 @@ struct DeclaredAgeRangeProvider: AgeRangeProviding {
                 }()
                 return AgeRangeSnapshot(
                     lowerBound: range.lowerBound,
+                    upperBound: range.upperBound,
                     significantAppChangeApprovalRequired: approvalRequired
                 )
             case .declinedSharing:
@@ -112,6 +122,7 @@ struct DeclaredAgeRangeProvider: AgeRangeProviding {
     @MainActor
     func requestAgeRange(
         minimumAge: Int,
+        adultAge: Int,
         in viewController: UIViewController
     ) async throws -> AgeRangeSnapshot {
         throw AgeRangeProviderError.notAvailable

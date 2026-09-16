@@ -3,10 +3,12 @@ import UserNotifications
 import Yosemite
 import Experiments
 
+@MainActor
 protocol POSNotificationScheduling {
     func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async
 }
 
+@MainActor
 final class POSNotificationScheduler: POSNotificationScheduling {
     enum MerchantType {
         case potentialMerchant
@@ -84,6 +86,7 @@ final class POSNotificationScheduler: POSNotificationScheduling {
         }
     }
 
+    @MainActor
     private func isNotificationAlreadyScheduled(for merchantType: MerchantType) async -> Bool {
         // Check if the specific notification type is already scheduled
         let isCurrentMerchantTypeScheduled = await checkIfScheduled(for: merchantType)
@@ -100,36 +103,35 @@ final class POSNotificationScheduler: POSNotificationScheduling {
         return isCurrentMerchantScheduled
     }
 
+    @MainActor
     private func checkIfScheduled(for merchantType: MerchantType) async -> Bool {
-        await MainActor.run {
-            var isScheduled = false
-            let action: AppSettingsAction
-            switch merchantType {
-            case .potentialMerchant:
-                action = AppSettingsAction.getPOSSurveyPotentialMerchantNotificationScheduled { scheduled in
-                    isScheduled = scheduled
-                }
-            case .currentMerchant:
-                action = AppSettingsAction.getPOSSurveyCurrentMerchantNotificationScheduled { scheduled in
-                    isScheduled = scheduled
-                }
+        var isScheduled = false
+        let action: AppSettingsAction
+        switch merchantType {
+        case .potentialMerchant:
+            action = AppSettingsAction.getPOSSurveyPotentialMerchantNotificationScheduled { scheduled in
+                isScheduled = scheduled
             }
-            stores.dispatch(action)
-            return isScheduled
+        case .currentMerchant:
+            action = AppSettingsAction.getPOSSurveyCurrentMerchantNotificationScheduled { scheduled in
+                isScheduled = scheduled
+            }
         }
+        stores.dispatch(action)
+        return isScheduled
     }
 
+    @MainActor
     private func hasOpenedPOSAtLeastOnce() async -> Bool {
-        await MainActor.run {
-            var hasOpenedPOS = false
-            let action = AppSettingsAction.getHasPOSBeenOpenedAtLeastOnce { hasOpened in
-                hasOpenedPOS = hasOpened
-            }
-            stores.dispatch(action)
-            return hasOpenedPOS
+        var hasOpenedPOS = false
+        let action = AppSettingsAction.getHasPOSBeenOpenedAtLeastOnce { hasOpened in
+            hasOpenedPOS = hasOpened
         }
+        stores.dispatch(action)
+        return hasOpenedPOS
     }
 
+    @MainActor
     private func scheduleLocalNotification(for merchantType: POSNotificationScheduler.MerchantType) async {
         guard let surveyURL = URL(string: merchantType.surveyURL) else {
             assertionFailure("Invalid POS survey URL: \(merchantType.surveyURL)")
@@ -160,15 +162,13 @@ final class POSNotificationScheduler: POSNotificationScheduling {
 
         await pushNotificationsManager.requestLocalNotification(notification, trigger: trigger)
 
-        await MainActor.run {
-            let action: AppSettingsAction
-            switch merchantType {
-            case .potentialMerchant:
-                action = AppSettingsAction.setPOSSurveyPotentialMerchantNotificationScheduled { _ in }
-            case .currentMerchant:
-                action = AppSettingsAction.setPOSSurveyCurrentMerchantNotificationScheduled { _ in }
-            }
-            stores.dispatch(action)
+        let action: AppSettingsAction
+        switch merchantType {
+        case .potentialMerchant:
+            action = AppSettingsAction.setPOSSurveyPotentialMerchantNotificationScheduled { _ in }
+        case .currentMerchant:
+            action = AppSettingsAction.setPOSSurveyCurrentMerchantNotificationScheduled { _ in }
         }
+        stores.dispatch(action)
     }
 }

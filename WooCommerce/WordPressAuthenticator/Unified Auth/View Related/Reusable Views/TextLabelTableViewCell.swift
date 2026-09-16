@@ -14,11 +14,16 @@ public final class TextLabelTableViewCell: UITableViewCell {
 
     public func configureLabel(text: String?, style: TextLabelStyle = .body) {
         label.text = text
+        label.accessibilityTraits.remove(.header)
 
         switch style {
         case .body:
             label.textColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
             label.font = UIFont.preferredFont(forTextStyle: .body)
+        case .headline:
+            label.textColor = WordPressAuthenticator.shared.unifiedStyle?.textColor ?? WordPressAuthenticator.shared.style.instructionColor
+            label.font = UIFont.preferredFont(forTextStyle: .headline)
+            label.accessibilityTraits.insert(.header)
         case .error:
             label.textColor = WordPressAuthenticator.shared.unifiedStyle?.errorColor ?? UIColor.red
             label.font = UIFont.preferredFont(forTextStyle: .body)
@@ -30,6 +35,7 @@ public final class TextLabelTableViewCell: UITableViewCell {
     override public func prepareForReuse() {
         super.prepareForReuse()
         label.text = nil
+        label.accessibilityTraits.remove(.header)
     }
 }
 
@@ -38,6 +44,7 @@ public extension TextLabelTableViewCell {
     ///
     enum TextLabelStyle {
         case body
+        case headline
         case error
     }
 }

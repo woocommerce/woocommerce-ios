@@ -136,7 +136,13 @@ struct POSOrderDetailsView: View {
                         state: refundSelectionState,
                         errorStrings: refundErrorStrings,
                         onDismiss: { dismissRefundFlow() },
-                        onRetryLoading: { initiateRefundFlow() },
+                        onRetryLoading: {
+                            if orderListModel.hasLoadedRefundableItems {
+                                refreshRefundSelection()
+                            } else {
+                                initiateRefundFlow()
+                            }
+                        },
                         onRetryPreparation: {
                             self.refundSelectionState = .itemSelection
                         },
@@ -179,7 +185,7 @@ struct POSOrderDetailsView: View {
             await orderListModel.ordersController.loadOrderRefunds()
         }
         .task {
-            await orderListModel.ordersController.preloadRefundDetails()
+            await orderListModel.preloadRefund()
         }
         .onAppear {
             if autoStartNextRefundFlow {
@@ -534,15 +540,12 @@ private extension POSOrderDetailsView {
         case .refunded:
             return .init(primary: email, secondary: [])
         case .completed:
-            switch orderListModel.ordersController.refundActionAvailability {
+            switch orderListModel.refundActionAvailability {
             case .available:
                 return .init(primary: .issueRefund, secondary: [email])
 
             case .unavailable:
                 return .init(primary: email, secondary: [])
-
-            case .unknown:
-                return .init(primary: nil, secondary: [email])
             }
         default:
             return .init(primary: nil, secondary: [])
@@ -614,7 +617,7 @@ private extension POSOrderDetailsView {
         refundSelectionState = .loading
         presentRefundSelection()
         Task { @MainActor in
-            let result = await orderListModel.ordersController.startRefundFlow()
+            let result = await orderListModel.startRefundFlow()
             guard refundFlowPreparationID == preparationID else {
                 return
             }
@@ -634,7 +637,7 @@ private extension POSOrderDetailsView {
 
     func navigateToRefundReview() {
         Task { @MainActor in
-            switch await orderListModel.ordersController.prepareRefundReview() {
+            switch await orderListModel.prepareRefundReview() {
             case .ready(var reviewData):
                 reviewData.refundReason = currentRefundReason
                 refundModalState = .review(reviewData)
@@ -665,7 +668,7 @@ private extension POSOrderDetailsView {
         refundSelectionState = .loading
         presentRefundSelection()
         Task { @MainActor in
-            let result = await orderListModel.ordersController.refreshRefundableItems()
+            let result = await orderListModel.refreshRefundableItems()
             guard refundFlowPreparationID == preparationID else {
                 return
             }
@@ -698,7 +701,7 @@ private extension POSOrderDetailsView {
         refundSelectionState = nil
         refundModalState = nil
         currentRefundReason = nil
-        orderListModel.ordersController.clearRefundSelection()
+        orderListModel.clearRefundSelection()
         dismissRefundSelectionIfNeeded()
     }
 

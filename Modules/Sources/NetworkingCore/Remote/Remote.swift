@@ -25,7 +25,7 @@ open class Remote: NSObject {
     /// signature verification, and its success says nothing about whether the tunnel works. Recording it
     /// would clear a store that is still unreachable through the tunnel.
     ///
-    func connectionErrorRecorder(for request: Request) -> StoreConnectionErrorRecording? {
+    private func connectionErrorRecorder(for request: Request) -> StoreConnectionErrorRecording? {
         network.usesJetpackTunnel(for: request) ? storeConnectionErrorRecorder : nil
     }
 

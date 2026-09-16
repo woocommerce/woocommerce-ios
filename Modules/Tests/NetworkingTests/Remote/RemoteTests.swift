@@ -408,6 +408,31 @@ final class RemoteTests: XCTestCase {
         XCTAssertEqual(recorder.successfulConnectionSiteIDs, [123])
     }
 
+    /// A direct request authenticated with an application password never touches the Jetpack connection,
+    /// so its success must not clear a store whose tunnel is still broken.
+    ///
+    func test_enqueue_when_the_request_succeeds_directly_with_an_application_password_then_the_store_is_not_recorded_as_reachable() throws {
+        // Given
+        let network = MockNetwork()
+        network.simulatesJetpackTunnel = false
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "generic_success_data")
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper()) { _, error in
+            XCTAssertNil(error)
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+    }
+
     /// The `(Output?, Error?)` overload parses the body even when the request failed, because the Jetpack
     /// tunnel returns a body worth reading alongside an error status. A body the validator has nothing to
     /// say about must not be mistaken for the store being reachable.
@@ -1601,6 +1626,12 @@ private final class BodyAndErrorNetwork: Network {
 
     var session: URLSession { URLSession(configuration: .default) }
 
+    /// Stands in for a store reached through the tunnel.
+    ///
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request is JetpackRequest
+    }
+
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         completion(data, error)
     }
@@ -1637,6 +1668,12 @@ private final class SuccessfulNetwork: Network {
     }
 
     var session: URLSession { URLSession(configuration: .default) }
+
+    /// Stands in for a store reached through the tunnel.
+    ///
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request is JetpackRequest
+    }
 
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         completion(data, nil)

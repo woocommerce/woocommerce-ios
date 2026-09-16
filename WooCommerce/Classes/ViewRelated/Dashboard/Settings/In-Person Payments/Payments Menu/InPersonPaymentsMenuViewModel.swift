@@ -236,9 +236,20 @@ private extension InPersonPaymentsMenuViewModel {
 
     func runCardPresentPaymentsOnboardingIfPossible() {
         guard cardPresentPaymentsConfiguration.isSupportedCountry else {
+            cardPresentPaymentsOnboardingNotice = nil
+            backgroundOnboardingInProgress = false
+            shouldShowOnboarding = false
+            shouldShowPaymentOptionsSection = false
+            shouldShowManagePaymentGatewaysRow = false
+            selectedPaymentGatewayName = nil
+            selectedPaymentGatewayPlugin = nil
+            shouldDisableManageCardReaders = true
+            payInPersonToggleViewModel.selectedPlugin = nil
             return
         }
 
+        // A cached state may not be published again when country support returns.
+        refreshAfterNewOnboardingState(onboardingUseCase.state)
         onboardingUseCase.refreshIfNecessary()
     }
 

@@ -1,3 +1,4 @@
+import Combine
 import SwiftUI
 import XCTest
 import TestKit
@@ -221,6 +222,76 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(menu.shouldShowCardReaderSection)
         XCTAssertTrue(mockOnboardingUseCase.refreshIfNecessaryWasCalled)
+    }
+
+    func test_country_change_when_unsupported_then_clears_onboarding_notice_and_loading() {
+        for state in [CardPresentPaymentOnboardingState.pluginSetupNotCompleted(plugin: .wcPay), .loading] {
+            // Given
+            let changes = PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>()
+            let menu = makeMenuForCountryChanges(state: state, changes: changes)
+            waitUntil { menu.cardPresentPaymentsOnboardingNotice != nil || menu.backgroundOnboardingInProgress }
+
+            // When
+            sendCountry("LT", to: changes)
+
+            // Then
+            XCTAssertNil(menu.cardPresentPaymentsOnboardingNotice)
+            XCTAssertFalse(menu.backgroundOnboardingInProgress)
+            XCTAssertTrue(menu.shouldDisableManageCardReaders)
+            XCTAssertNil(menu.selectedPaymentGatewayPlugin)
+            XCTAssertNil(mockPayInPersonToggleViewModel.selectedPlugin)
+        }
+    }
+
+    func test_country_change_when_support_returns_then_restores_cached_onboarding_state() {
+        // Given
+        let changes = PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>()
+        let menu = makeMenuForCountryChanges(state: .completed(plugin: .wcPayPreferred), changes: changes)
+        waitUntil { menu.shouldShowPaymentOptionsSection }
+        XCTAssertFalse(menu.shouldDisableManageCardReaders)
+
+        // When
+        sendCountry("LT", to: changes)
+
+        // Then
+        XCTAssertFalse(menu.shouldShowPaymentOptionsSection)
+        XCTAssertFalse(menu.shouldShowManagePaymentGatewaysRow)
+        XCTAssertTrue(menu.shouldDisableManageCardReaders)
+        XCTAssertNil(menu.selectedPaymentGatewayName)
+
+        // When: the use case keeps its cached state without publishing it again.
+        sendCountry("GB", to: changes)
+
+        // Then
+        XCTAssertTrue(menu.shouldShowPaymentOptionsSection)
+        XCTAssertTrue(menu.shouldShowManagePaymentGatewaysRow)
+        XCTAssertFalse(menu.shouldDisableManageCardReaders)
+        XCTAssertEqual(menu.selectedPaymentGatewayPlugin, .wcPay)
+        XCTAssertEqual(mockPayInPersonToggleViewModel.selectedPlugin, .wcPay)
+    }
+
+    private func makeMenuForCountryChanges(
+        state: CardPresentPaymentOnboardingState,
+        changes: PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>
+    ) -> InPersonPaymentsMenuViewModel {
+        let settings = MockSelectedSiteSettings()
+        settings.mockSettingsStream = changes.eraseToAnyPublisher()
+        return InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                            dependencies: .init(cardPresentPaymentsConfiguration: .init(country: .GB),
+                                                                onboardingUseCase: MockCardPresentPaymentsOnboardingUseCase(initial: state),
+                                                                cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                wooPaymentsPayoutService: nil,
+                                                                systemStatusService: systemStatusService,
+                                                                siteSettings: settings),
+                                            payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
+    }
+
+    private func sendCountry(_ country: String, to changes: PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>) {
+        let setting = SiteSetting.fake().copy(siteID: sampleStoreID,
+                                              settingID: "woocommerce_default_country",
+                                              value: country,
+                                              settingGroupKey: "general")
+        changes.send((siteID: sampleStoreID, settings: [setting], source: .storageChange))
     }
 
      func test_shouldShowTapToPaySection_false_when_built_in_reader_isnt_in_configuration() async {

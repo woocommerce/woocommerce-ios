@@ -3,7 +3,7 @@ import GRDB
 import Storage
 
 /// Checks whether a full POS catalog sync has completed for a site.
-public protocol POSCatalogSyncStatusCheckerProtocol {
+public protocol POSCatalogSyncStatusCheckerProtocol: Sendable {
     /// Whether a full catalog sync completed for the site at some point,
     /// meaning the local catalog holds a complete data set that can serve POS.
     func hasCompletedFullSync(for siteID: Int64) async -> Bool

@@ -91,8 +91,8 @@ private extension StoreConnectionErrorModal {
             comment: "Title of the warning shown when the app cannot reach the merchant's store."
         )
         static let body = NSLocalizedString(
-            "storeConnectionError.body",
-            value: "We're having trouble connecting to your store. This is usually a connection issue on your WordPress site — " +
+            "storeConnectionError.body.v2",
+            value: "We're having trouble connecting to your store. This is usually a connection issue on your WordPress site, " +
             "often caused by a security plugin, a recent plugin update, or a Jetpack connection that needs to be refreshed. " +
             "The WooCommerce app can't fix this from your phone.",
             comment: "Explanation shown when the app cannot reach the merchant's store because of a problem on their site."

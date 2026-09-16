@@ -9,6 +9,15 @@ final class CoreDataManagerTests: XCTestCase {
 
     private let modelName = "WooCommerce"
     private let storageIdentifier = "WooCommerce-\(UUID().uuidString)"
+    private var createdManagers = [CoreDataManager]()
+
+    override func tearDownWithError() throws {
+        waitForPendingWrites(in: createdManagers)
+        try removePersistentStores(from: createdManagers)
+        createdManagers.removeAll()
+        try deleteStoreFiles(at: CoreDataManager.storeURL(with: storageIdentifier))
+        try super.tearDownWithError()
+    }
 
     /// Verifies that the Store URL contains the ContextIdentifier string.
     ///
@@ -155,21 +164,16 @@ final class CoreDataManagerTests: XCTestCase {
         // When
         corruptDatabaseFile()
         manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: false)
-        manager.performAndSave({ storage in
-            self.insertAccount(to: storage)
-        }, completion: {
-            // no-op
-        }, on: .main)
 
-        // Then: wait to ensure the database is dropped before setting up the CoreData stack again.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            manager = try! self.makeManager(using: modelsInventory, deletingExistingStoreFiles: false)
-            XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 0)
-
-            // Clean up
-            let storeURL = CoreDataManager.storeURL(with: self.storageIdentifier)
-            try? self.deleteStoreFiles(at: storeURL)
+        // Then: a read waits for recovery to complete without adding new data to the recreated store.
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                XCTAssertEqual(storage.countObjects(ofType: Account.self), 0)
+            }, completion: {
+                promise(())
+            }, on: .main)
         }
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 0)
     }
 
     func test_when_the_model_is_incompatible_then_it_recovers_and_recreates_the_database() throws {
@@ -328,7 +332,28 @@ private extension CoreDataManagerTests {
         let manager = CoreDataManager(name: storageIdentifier,
                                       crashLogger: MockCrashLogger(),
                                       modelsInventory: modelsInventory)
+        createdManagers.append(manager)
         return manager
+    }
+
+    func waitForPendingWrites(in managers: [CoreDataManager]) {
+        let expectations = managers.enumerated().map { index, manager in
+            let expectation = expectation(description: "Core Data manager \(index) finishes pending writes")
+            manager.performAndSave({ _ in }, completion: {
+                expectation.fulfill()
+            }, on: .main)
+            return expectation
+        }
+        wait(for: expectations, timeout: 5)
+    }
+
+    func removePersistentStores(from managers: [CoreDataManager]) throws {
+        for manager in managers {
+            let coordinator = manager.persistentContainer.persistentStoreCoordinator
+            for store in coordinator.persistentStores {
+                try coordinator.remove(store)
+            }
+        }
     }
 
     func makeModelsInventory() throws -> ManagedObjectModelsInventory {
@@ -347,21 +372,18 @@ private extension CoreDataManagerTests {
         }
     }
 
-    // Attempts corrupting the database file by overwriting the sqlite-wal file.
-    // Our CoreData stack uses the default WAL journal mechanism
-    // so updating this file would corrupt the database.
+    // Attempts corrupting the primary database file by overwriting its header.
     func corruptDatabaseFile() {
         let storeURL = CoreDataManager.storeURL(with: storageIdentifier)
-        let walURL = storeURL.deletingPathExtension().appendingPathExtension("sqlite-wal")
         do {
             // Read the database file into memory
-            var data = try Data(contentsOf: walURL)
+            var data = try Data(contentsOf: storeURL)
             // Corrupt the data by overwriting random bytes
             for i in 0..<min(100, data.count) {
                 data[i] = 0xFF // Overwrite with invalid data
             }
             // Write the corrupted data back to the file
-            try data.write(to: walURL)
+            try data.write(to: storeURL)
             print("Database corrupted successfully")
         } catch {
             print("Error corrupting database: \(error)")

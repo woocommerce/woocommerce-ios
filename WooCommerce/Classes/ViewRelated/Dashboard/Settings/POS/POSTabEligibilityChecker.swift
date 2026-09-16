@@ -27,6 +27,7 @@ import protocol Yosemite.POSLocalCatalogEligibilityServiceProtocol
 import protocol Yosemite.POSCatalogSyncStatusCheckerProtocol
 import struct Yosemite.POSCatalogSyncStatusChecker
 
+@MainActor
 final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     private let siteID: Int64
     private let siteSettings: SelectedSiteSettingsProtocol
@@ -161,7 +162,7 @@ private extension POSTabEligibilityChecker {
         // below — already implies the store was eligible when the catalog synced. The flag is
         // a veto for stores definitely known to be ineligible, not a required positive.
         guard eligibilityService.loadLastKnownPOSEligibility(siteID: siteID) != false,
-              await cachedPluginSupportsPOS(),
+              cachedPluginSupportsPOS(),
               let localCatalogEligibilityService,
               await localCatalogEligibilityService.isLocalCatalogFeatureEnabled(),
               await syncStatusChecker.hasCompletedFullSync(for: siteID) else {

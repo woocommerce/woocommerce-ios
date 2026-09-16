@@ -1466,7 +1466,7 @@ private extension ProductFormViewController {
 
     func presentBackNavigationActionSheet(onDiscard: @escaping () -> Void = {}, onCancel: @escaping () -> Void = {}) {
         let exitForm: () -> Void = {
-            presentationStyle.createExitForm(viewController: navigationController ?? self, completion: onDiscard)
+            presentationStyle.createExitForm(viewController: self, completion: onDiscard)
         }()
         let viewControllerToPresentAlert = navigationController?.topViewController ?? self
         switch viewModel.formType {

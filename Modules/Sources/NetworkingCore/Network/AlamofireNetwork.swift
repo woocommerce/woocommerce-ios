@@ -227,9 +227,10 @@ public class AlamofireNetwork: Network {
         }
     }
 
-    public func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+    public func responseDataAndHeaders(for request: URLRequestConvertible,
+                                       isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         let convertedRequest = convertRequestIfNeeded(request)
-        await withDiscoveryIfNeeded(for: convertedRequest)
+        await withDiscoveryIfNeeded(for: convertedRequest, isolation: isolation)
         let sessionRequest = alamofireSession.request(convertedRequest)
             .validateIfRestRequest(for: convertedRequest)
         let response = await sessionRequest.serializingData().response
@@ -240,7 +241,7 @@ public class AlamofireNetwork: Network {
             convertedRequest: convertedRequest,
             failure: failure
         ) {
-            return try await responseDataAndHeaders(for: request)
+            return try await responseDataAndHeaders(for: request, isolation: isolation)
         }
 
         errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: request, failure: failure)
@@ -403,7 +404,8 @@ private extension AlamofireNetwork {
 
     /// Awaits REST API discovery for REST requests. No-op for non-REST requests.
     ///
-    func withDiscoveryIfNeeded(for request: URLRequestConvertible) async {
+    func withDiscoveryIfNeeded(for request: URLRequestConvertible,
+                               isolation: isolated (any Actor)?) async {
         guard request is RESTRequest, let discoveryTask else { return }
         await discoveryTask.value
     }

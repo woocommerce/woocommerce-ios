@@ -213,13 +213,17 @@ open class Remote: NSObject {
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: The result from the JSON parsed response for the expected type.
-    public func enqueue<M: Mapper>(_ request: Request, mapper: M) async throws -> M.Output {
-        try await enqueueWithResponseHeaders(request, mapper: mapper).data
+    public func enqueue<M: Mapper>(_ request: Request,
+                                   mapper: M,
+                                   isolation: isolated (any Actor)? = #isolation) async throws -> M.Output {
+        try await enqueueWithResponseHeaders(request, mapper: mapper, isolation: isolation).data
     }
 
-    public func enqueueWithResponseHeaders<M: Mapper>(_ request: Request, mapper: M) async throws -> (data: M.Output, headers: [String: String]?) {
+    public func enqueueWithResponseHeaders<M: Mapper>(_ request: Request,
+                                                      mapper: M,
+                                                      isolation: isolated (any Actor)? = #isolation) async throws -> (data: M.Output, headers: [String: String]?) {
         do {
-            let (data, headers) = try await network.responseDataAndHeaders(for: request)
+            let (data, headers) = try await network.responseDataAndHeaders(for: request, isolation: isolation)
             let parsedData = try validateAndParseData(data, request: request, mapper: mapper)
             return (data: parsedData, headers: headers)
         } catch {
@@ -235,9 +239,10 @@ open class Remote: NSObject {
     ///
     /// - Parameter request: Request that should be performed.
     /// - Returns: The headers from the response
-    public func enqueueWithResponseHeaders(_ request: Request) async throws -> [String: String] {
+    public func enqueueWithResponseHeaders(_ request: Request,
+                                           isolation: isolated (any Actor)? = #isolation) async throws -> [String: String] {
         do {
-            let (data, headers) = try await network.responseDataAndHeaders(for: request)
+            let (data, headers) = try await network.responseDataAndHeaders(for: request, isolation: isolation)
             do {
                 // A 2xx is not enough on its own: the Jetpack tunnel answers with a healthy status and
                 // an error body. The body decides whether the store is reachable, so it is validated

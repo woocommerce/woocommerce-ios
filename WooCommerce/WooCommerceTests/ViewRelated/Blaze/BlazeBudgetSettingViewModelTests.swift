@@ -54,10 +54,46 @@ final class BlazeBudgetSettingViewModelTests: XCTestCase {
         ) { _, _, _, _ in }
 
         // When
-        let content = viewModel.formatDayCount(3).string
+        let content = viewModel.formatDayCount(3, since: startDate).string
 
         // Then
         XCTAssertEqual(content, "3 days to Nov 4, 2024")
+    }
+
+    @MainActor
+    func test_schedule_duration_when_start_date_changes_before_apply_then_uses_pending_start_date() {
+        // Given
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "yyyy-MM-dd"
+        dateFormatter.timeZone = .current
+
+        let originalStartDate = dateFormatter.date(from: "2024-11-01")!
+        let pendingStartDate = dateFormatter.date(from: "2024-12-01")!
+        let viewModel = BlazeBudgetSettingViewModel(
+            siteID: 123,
+            dailyBudget: 11,
+            isEvergreen: false,
+            duration: 3,
+            startDate: originalStartDate
+        ) { _, _, _, _ in }
+        var formattedStartDate: Date?
+        let sut = BlazeScheduleSettingView(
+            startDate: pendingStartDate,
+            hasEndDate: true,
+            duration: 3,
+            durationTextFormatter: { startDate, duration in
+                formattedStartDate = startDate
+                return viewModel.formatDayCount(duration, since: startDate)
+            },
+            onCompletion: { _, _, _ in },
+            onDismiss: {}
+        )
+
+        // When
+        _ = sut.body
+
+        // Then
+        XCTAssertEqual(formattedStartDate, pendingStartDate)
     }
 
     func test_confirmSettings_triggers_onCompletion_with_updated_details() {

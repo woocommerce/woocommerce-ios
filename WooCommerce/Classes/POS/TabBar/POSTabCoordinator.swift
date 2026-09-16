@@ -32,6 +32,7 @@ final class POSTabViewController: UIViewController {
 
 /// Coordinator for the Point of Sale tab.
 ///
+@MainActor
 final class POSTabCoordinator {
     private let siteID: Int64
     private let tabContainerController: TabContainerController
@@ -47,7 +48,11 @@ final class POSTabCoordinator {
     private lazy var posSyncDispatcher = ForegroundPOSCatalogSyncDispatcher()
 
     /// Local catalog eligibility service - created asynchronously during init
-    private(set) var localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
+    private let localCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol?
+
+    /// Main-actor service for the authenticated session. It is attached to the local catalog
+    /// actor before that actor evaluates eligibility or starts a sync.
+    private let localCatalogSystemStatusService: POSSystemStatusServiceProtocol?
 
     /// Creates item fetch strategy factory with current local catalog eligibility
     private func createItemFetchStrategyFactory(isLocalCatalogEnabled: Bool) -> PointOfSaleItemFetchStrategyFactory {
@@ -139,6 +144,18 @@ final class POSTabCoordinator {
         self.localCatalogEligibilityService = localCatalogEligibilityService
         self.httpsConfigurationNoticeProvider = httpsConfigurationNoticeProvider
 
+        if localCatalogEligibilityService != nil {
+            self.localCatalogSystemStatusService = POSSystemStatusService(
+                credentials: credentials,
+                selectedSite: defaultSitePublisher,
+                appPasswordSupportState: isAppPasswordSupported,
+                storageManager: storageManager,
+                appPasswordSupportStateOwner: appPasswordSupportState
+            )
+        } else {
+            self.localCatalogSystemStatusService = nil
+        }
+
         tabContainerController.wrappedController = POSTabViewController()
     }
 
@@ -147,6 +164,7 @@ final class POSTabCoordinator {
     func updatePOSEligibility(isPOSTabVisible: Bool) {
         Task { @MainActor [weak self] in
             guard let self, let catalogEligibilityService = self.localCatalogEligibilityService else { return }
+            await configureLocalCatalogSystemStatusService()
 
             // If POS tab is not visible, mark as ineligible
             guard isPOSTabVisible else {
@@ -201,6 +219,7 @@ private extension POSTabCoordinator {
 
         Task { @MainActor [weak self, weak hostingController] in
             guard let self, let hostingController else { return }
+            await configureLocalCatalogSystemStatusService()
 
             // Get local catalog eligibility as bool from service
             let isLocalCatalogEligible: Bool
@@ -424,6 +443,14 @@ struct POSPresentationRootView: View {
 
 
 private extension POSTabCoordinator {
+    func configureLocalCatalogSystemStatusService() async {
+        guard let localCatalogEligibilityService,
+              let localCatalogSystemStatusService else {
+            return
+        }
+        await localCatalogEligibilityService.configure(systemStatusService: localCatalogSystemStatusService)
+    }
+
     func makeMockPOSOrderService(currency: String) -> POSOrderServiceProtocol? {
         #if DEBUG
         if ProcessConfiguration.shouldUsePOSUITestMocks {

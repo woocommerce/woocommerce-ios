@@ -38,6 +38,13 @@ public final class WordPressOrgNetwork: Network {
         self.requestConverter = RequestConverter(siteAddress: siteAddress)
     }
 
+    /// This network converts eligible Jetpack requests to direct calls just like `AlamofireNetwork`, so
+    /// only a request the converter leaves alone counts as tunnelled.
+    ///
+    public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request is JetpackRequest && !requestConverter.convertsToDirectRequest(request)
+    }
+
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
     ///
     /// - Important:
@@ -84,7 +91,8 @@ public final class WordPressOrgNetwork: Network {
             }
     }
 
-    public func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+    public func responseDataAndHeaders(for request: URLRequestConvertible,
+                                       isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         let request = requestConverter.convert(request)
         let sessionRequest = alamofireSession.request(request).validate()
         let response = await sessionRequest.serializingData().response

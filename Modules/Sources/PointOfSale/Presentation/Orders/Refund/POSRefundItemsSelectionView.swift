@@ -12,11 +12,11 @@ struct POSRefundItemsSelectionView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var refundSelectableItems: [POSRefundSelectableItem] {
-        orderListModel.ordersController.refundSelectableItems
+        orderListModel.refundSelectableItems
     }
 
     private var reviewPreparationState: POSRefundReviewPreparationState {
-        orderListModel.ordersController.refundReviewPreparationState
+        orderListModel.refundReviewPreparationState
     }
 
     /// The inline error shown above the continue button: the server's rejection copy when the
@@ -93,7 +93,7 @@ private extension POSRefundItemsSelectionView {
                 onToggle: {
                     let action = allItemsSelected ? "deselected" : "selected"
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.refundSelectAllTapped(action: action))
-                    orderListModel.ordersController.toggleAllRefundItemsSelection()
+                    orderListModel.toggleAllRefundItemsSelection()
                 }
             )
             .accessibilityLabel(Localization.selectAllAccessibilityLabel)
@@ -124,7 +124,7 @@ private extension POSRefundItemsSelectionView {
                     POSRefundItemRow(
                         item: item,
                         onToggle: {
-                            orderListModel.ordersController.toggleRefundItemSelection(at: index)
+                            orderListModel.toggleRefundItemSelection(at: index)
                         }
                     )
 

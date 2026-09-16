@@ -24,6 +24,28 @@ final class RemoteTests: XCTestCase {
         cancellables = []
     }
 
+    func test_responseDataAndHeaders_when_called_from_mainActor_then_forwards_caller_isolation() async throws {
+        // Given
+        let network: any Network = IsolationCapturingNetwork()
+
+        // When
+        let response = try await network.responseDataAndHeaders(for: request)
+
+        // Then
+        XCTAssertEqual(response.0, Data([1]))
+    }
+
+    func test_responseData_when_called_from_mainActor_then_forwards_caller_isolation() async throws {
+        // Given
+        let network: any Network = IsolationCapturingNetwork()
+
+        // When
+        let response = try await network.responseData(for: request)
+
+        // Then
+        XCTAssertEqual(response, Data([1]))
+    }
+
     /// Verifies that `enqueue:mapper:` properly wraps up the received request within an AuthenticatedRequest, with
     /// the remote credentials.
     ///
@@ -384,6 +406,31 @@ final class RemoteTests: XCTestCase {
 
         // Then
         XCTAssertEqual(recorder.successfulConnectionSiteIDs, [123])
+    }
+
+    /// A direct request authenticated with an application password never touches the Jetpack connection,
+    /// so its success must not clear a store whose tunnel is still broken.
+    ///
+    func test_enqueue_when_the_request_succeeds_directly_with_an_application_password_then_the_store_is_not_recorded_as_reachable() throws {
+        // Given
+        let network = MockNetwork()
+        network.simulatesJetpackTunnel = false
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        network.simulateResponse(requestUrlSuffix: "something", filename: "generic_success_data")
+
+        let expectationForRequest = expectation(description: "Request")
+
+        // When
+        remote.enqueue(request, mapper: DummyMapper()) { _, error in
+            XCTAssertNil(error)
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
     }
 
     /// The `(Output?, Error?)` overload parses the body even when the request failed, because the Jetpack
@@ -1579,6 +1626,12 @@ private final class BodyAndErrorNetwork: Network {
 
     var session: URLSession { URLSession(configuration: .default) }
 
+    /// Stands in for a store reached through the tunnel.
+    ///
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request is JetpackRequest
+    }
+
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         completion(data, error)
     }
@@ -1587,7 +1640,8 @@ private final class BodyAndErrorNetwork: Network {
         completion(.failure(error))
     }
 
-    func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         throw error
     }
 
@@ -1615,6 +1669,12 @@ private final class SuccessfulNetwork: Network {
 
     var session: URLSession { URLSession(configuration: .default) }
 
+    /// Stands in for a store reached through the tunnel.
+    ///
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request is JetpackRequest
+    }
+
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         completion(data, nil)
     }
@@ -1623,7 +1683,8 @@ private final class SuccessfulNetwork: Network {
         completion(.success(data))
     }
 
-    func responseDataAndHeaders(for request: URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         (data, headers)
     }
 
@@ -1635,6 +1696,32 @@ private final class SuccessfulNetwork: Network {
                                  to request: URLRequestConvertible,
                                  completion: @escaping (Data?, Error?) -> Void) {
         completion(data, nil)
+    }
+}
+
+/// Returns whether the call carried MainActor isolation in its response body.
+private struct IsolationCapturingNetwork: Network {
+    var session: URLSession { URLSession(configuration: .default) }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) { }
+
+    func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) { }
+
+    func responseDataAndHeaders(for request: URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
+        (Data([isolation === MainActor.shared ? 1 : 0]), nil)
+    }
+
+    func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {
+        Empty<Swift.Result<Data, Error>, Never>().eraseToAnyPublisher()
+    }
+
+    func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
+                                 to request: URLRequestConvertible,
+                                 completion: @escaping (Data?, Error?) -> Void) { }
+
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request is JetpackRequest
     }
 }
 

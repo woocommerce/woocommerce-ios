@@ -2,6 +2,7 @@ import Foundation
 
 /// Protocol for SiteSettingsRemote to enable testing.
 public protocol SiteSettingsRemoteProtocol {
+    @MainActor
     func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool
     func loadAnalyticsOrderDateType(for siteID: Int64) async throws -> SiteSetting
     func updateAnalyticsOrderDateType(for siteID: Int64, value: String) async throws -> SiteSetting
@@ -161,6 +162,7 @@ public class SiteSettingsRemote: Remote {
     /// - Returns: A boolean indicating the updated feature status.
     /// - Throws: Error if the request fails.
     ///
+    @MainActor
     public func setFeature(for siteID: Int64, feature: SiteSettingsFeature, enabled: Bool) async throws -> Bool {
         let value = enabled ? Constants.featureEnabledValue : Constants.featureDisabledValue
         let parameters: RequestParameterConvertibleDictionary = [Constants.valueParameter: value]

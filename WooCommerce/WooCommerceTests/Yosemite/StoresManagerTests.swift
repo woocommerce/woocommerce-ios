@@ -1066,13 +1066,13 @@ private final class MockGRDBManagerProvider: GRDBManagerProviding {
 }
 
 private final class MockGRDBManager: GRDBManagerProtocol {
-    private let onReset: () -> Void
+    private let onReset: @Sendable () -> Void
 
     var databaseConnection: GRDBDatabaseConnection {
         fatalError("MockGRDBManager.databaseConnection should not be accessed by these tests.")
     }
 
-    init(onReset: @escaping () -> Void) {
+    init(onReset: @escaping @Sendable () -> Void) {
         self.onReset = onReset
     }
 

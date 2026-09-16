@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-08-26 09:56:33+0000 */
+/* Translation-Revision-Date: 2026-09-07 16:57:51+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: sv_SE */
@@ -2159,7 +2159,6 @@ which should be translated separately and considered part of this sentence. */
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
-   Button to dismiss the Jetpack benefits screen.
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -4096,9 +4095,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation bar button title used to save changes and close the multiline text editor. */
 "MultilineEditableTextDetailView.doneButton.title" = "Klar";
 
-/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "Flera kontaktlösa kort upptäckta";
-
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Flera butiker";
 
@@ -4463,9 +4459,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for the Menu button */
 "Open menu" = "Öppna meny";
-
-/* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
-"Open wp-admin" = "Öppna wp-admin";
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Öppnar en lista med tillgängliga statusar.";
@@ -5748,9 +5741,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Coupons Search Placeholder */
 "Search all coupons" = "Sök alla rabattkoder";
-
-/* Customer Search Placeholder */
-"Search all customers" = "Sök alla kunder";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Sök alla ordrar";
@@ -9772,6 +9762,9 @@ which should be translated separately and considered part of this sentence. */
 /* A title explaining the requirement of location services for making a payment */
 "cardPresentPayment.locationRequired.title" = "Aktivera platstjänster i enhetens inställningar för att tillåta betalningar.";
 
+/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
+"cardPresentPayment.reader.multipleContactlessCardsDetected" = "Flera kort upptäckta. Prova igen med endast ett kort.";
+
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "cardPresentPayment.settingsWebView.title" = "WooCommerce-inställningar";
 
@@ -10470,6 +10463,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "Registreringsavgift: %1$@";
+
+/* WordPress.com error thrown when the store rejects the signature of a Jetpack request. */
+"dotcomError.invalidSignature.description" = "Dotcom ogiltig signatur";
 
 /* Title of the downloadable file bottom sheet action for adding document from device. */
 "downloadableFileSource.deviceDocument" = "Dokument på enhet";
@@ -11498,6 +11494,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.title" = "Du kan inte lägga till en variabel produkt direkt.";
 
+/* Shown when a bundle's products could not be loaded, so the app cannot tell whether it can be added. */
+"order.bundle.cannotCheckBundledProducts.notice.title" = "Kan inte kontrollera paketprodukterna. Försök igen.";
+
+/* Title of a notice shown while the products inside a scanned bundle are loaded. */
+"order.bundle.checkingBundledProducts.notice.title" = "Kontrollerar paketprodukterna …";
+
 /* Title for the Coupon screen during order creation */
 "order.form.coupon.add.button.title" = "Lägg till rabattkod";
 
@@ -11606,6 +11608,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.webAdmin" = "Webbadministratör";
+
+/* Message shown when a merchant tries to add a bundle holding a bookable product to an order. */
+"orderCreationProductRestrictions.bookableBundleReason" = "Paket med bokningsbara produkter stöds inte";
+
+/* Message shown when a merchant tries to add a bundle holding a subscription product to an order. */
+"orderCreationProductRestrictions.subscriptionBundleReason" = "Paket med prenumerationsprodukter stöds inte";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "orderDetail.deleteTracking.notice.title" = "Det gick inte att ta bort spårning för beställning #%1$d";
@@ -11732,6 +11740,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the section that shows the Shipping Lines when creating or editing an order */
 "orderForm.shipping" = "Frakt";
+
+/* Message of the banner shown on the Orders list when the store's currency couldn't be loaded. */
+"orderList.currencyUnavailable.banner.info" = "Vi kunde inte ladda in din butiks valuta, så beställningssumman kan visas i fel valuta.";
+
+/* Title of the button to retry loading the store's currency on the Orders list warning banner. */
+"orderList.currencyUnavailable.banner.retry" = "Försök igen";
+
+/* Title of the banner shown on the Orders list when the store's currency couldn't be loaded. */
+"orderList.currencyUnavailable.banner.title" = "Butikens valuta är inte tillgänglig";
 
 /* Discount label for payment view */
 "orderPaymentDetails.discount.title" = "Rabatt";
@@ -12514,7 +12531,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.scanToPay.navigation.title" = "Skanna för att betala";
 
 /* Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale. */
-"pointOfSale.scanToPay.orderNote" = "Kunden betalade via Skanna för att betala";
+"pointOfSale.scanToPay.orderNote.1" = "Betald via Skanna för att betala";
 
 /* Loading message shown while preparing the order for scan-to-pay (promoting it to pending). */
 "pointOfSale.scanToPay.preparing.message" = "Genererar QR-kod …";
@@ -12586,7 +12603,10 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Betala personligen";
 
 /* Title for the payment method used when manually marking an order as paid in Point of Sale. */
-"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle" = "Annat";
+"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle.1" = "Beställning markerad som betald";
+
+/* Title for the payment method used when a Point of Sale order is paid through Scan to Pay. */
+"pointOfSaleOrderController.scanToPay.paymentMethodTitle" = "Skanna för att betala";
 
 /* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
@@ -13148,12 +13168,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "Uppdatera katalog";
-
-/* Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
-"pos.itemlistview.sunsetWarning.description" = "Från och med 1 augusti kommer försäljningsplats att kräva WooCommerce 10.5.0 eller senare. Uppdatera för att säkerställa oavbruten åtkomst.";
-
-/* Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
-"pos.itemlistview.sunsetWarning.title" = "Uppdatera WooCommerce snart";
 
 /* Title at the top of the point of sale product selector screen. */
 "pos.itemlistview.title" = "Produkter";
@@ -14439,6 +14453,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message explaining unsupported bookable products for order creation */
 "productSelectorViewModel.bookableProductUnsupportedReason" = "Bokningsbara produkter stöds inte för beställningsskapande";
+
+/* Message shown when the products inside a bundle could not be loaded, so the app cannot tell whether the bundle can be added to the order. */
+"productSelectorViewModel.cannotCheckBundledProducts" = "Kan inte kontrollera paketprodukterna. Försök igen.";
 
 /* Text on the header of the Select Product screen when more than one products are selected. */
 "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld produkter valda";

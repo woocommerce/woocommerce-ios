@@ -123,7 +123,9 @@ final class PaymentMethodsViewModel: ObservableObject {
     ///
     private var collectPaymentsUseCase: CollectOrderPaymentProtocol?
 
-    private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+    private var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
+    let countryRecovery: CardPresentPaymentCountryRecovery
+    private var countrySubscriptions = Set<AnyCancellable>()
 
     struct Dependencies {
         let presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never>
@@ -135,6 +137,7 @@ final class PaymentMethodsViewModel: ObservableObject {
         let orderDurationRecorder: OrderDurationRecorderProtocol
         let featureFlagService: FeatureFlagService
         let currencySettings: CurrencySettings
+        let siteSettings: SelectedSiteSettingsProtocol
 
         init(presentNoticeSubject: PassthroughSubject<PaymentMethodsNotice, Never> = PassthroughSubject(),
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
@@ -144,7 +147,8 @@ final class PaymentMethodsViewModel: ObservableObject {
              cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration? = nil,
              orderDurationRecorder: OrderDurationRecorderProtocol = OrderDurationRecorder.shared,
              featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-             currencySettings: CurrencySettings = ServiceLocator.currencySettings) {
+             currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+             siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings) {
             self.presentNoticeSubject = presentNoticeSubject
             self.cardPresentPaymentsOnboardingPresenter = cardPresentPaymentsOnboardingPresenter
             self.stores = stores
@@ -155,6 +159,7 @@ final class PaymentMethodsViewModel: ObservableObject {
             self.orderDurationRecorder = orderDurationRecorder
             self.featureFlagService = featureFlagService
             self.currencySettings = currencySettings
+            self.siteSettings = siteSettings
         }
     }
 
@@ -179,12 +184,23 @@ final class PaymentMethodsViewModel: ObservableObject {
         stores = dependencies.stores
         storage = dependencies.storage
         analytics = dependencies.analytics
-        cardPresentPaymentsConfiguration = dependencies.cardPresentPaymentsConfiguration
+        countryRecovery = CardPresentPaymentCountryRecovery(siteID: siteID,
+                                                            configuration: dependencies.cardPresentPaymentsConfiguration,
+                                                            stores: dependencies.stores,
+                                                            settings: dependencies.siteSettings)
+        cardPresentPaymentsConfiguration = countryRecovery.configuration
         featureFlagService = dependencies.featureFlagService
         currencySettings = dependencies.currencySettings
         title = String(format: Localization.title, formattedTotal)
         cardPaymentGateway = nil
 
+        countryRecovery.objectWillChange.sink { [weak self] in
+            self?.objectWillChange.send()
+        }.store(in: &countrySubscriptions)
+        countryRecovery.$configuration.dropFirst().sink { [weak self] configuration in
+            self?.cardPresentPaymentsConfiguration = configuration
+            self?.updateCardPaymentVisibility()
+        }.store(in: &countrySubscriptions)
         bindStoreCPPState()
         updateCardPaymentVisibility()
         logOrderAndStoreCurrencyMismatch()

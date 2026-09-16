@@ -49,6 +49,8 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         let systemStatusService: SystemStatusServiceProtocol
         let noticePresenter: NoticePresenter
         let featureFlagService: FeatureFlagService
+        let stores: StoresManager
+        let siteSettings: SelectedSiteSettingsProtocol
 
         init(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
              onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol,
@@ -58,7 +60,9 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
              systemStatusService: SystemStatusServiceProtocol = SystemStatusService(stores: ServiceLocator.stores),
              analytics: Analytics = ServiceLocator.analytics,
              noticePresenter: NoticePresenter = ServiceLocator.noticePresenter,
-             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+             featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
+             stores: StoresManager = ServiceLocator.stores,
+             siteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings) {
             self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
             self.onboardingUseCase = onboardingUseCase
             self.cardReaderSupportDeterminer = cardReaderSupportDeterminer
@@ -68,14 +72,14 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
             self.analytics = analytics
             self.noticePresenter = noticePresenter
             self.featureFlagService = featureFlagService
+            self.stores = stores
+            self.siteSettings = siteSettings
         }
     }
 
     private let dependencies: Dependencies
-
-    var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration {
-        dependencies.cardPresentPaymentsConfiguration
-    }
+    let countryRecovery: CardPresentPaymentCountryRecovery
+    @Published private(set) var cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
 
     var onboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol {
         dependencies.onboardingUseCase
@@ -93,6 +97,20 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         self.siteID = siteID
         self.dependencies = dependencies
         self.payInPersonToggleViewModel = payInPersonToggleViewModel
+        countryRecovery = CardPresentPaymentCountryRecovery(siteID: siteID,
+                                                            configuration: dependencies.cardPresentPaymentsConfiguration,
+                                                            stores: dependencies.stores,
+                                                            settings: dependencies.siteSettings)
+        cardPresentPaymentsConfiguration = countryRecovery.configuration
+        countryRecovery.objectWillChange.sink { [weak self] in
+            self?.objectWillChange.send()
+        }.store(in: &cancellables)
+        countryRecovery.$configuration.dropFirst().sink { [weak self] configuration in
+            guard let self else { return }
+            cardPresentPaymentsConfiguration = configuration
+            runCardPresentPaymentsOnboardingIfPossible()
+            Task { @MainActor in await self.updateOutputProperties() }
+        }.store(in: &cancellables)
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
 
@@ -141,6 +159,7 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
     }
 
     func onAppear() async {
+        countryRecovery.recoverIfNeeded()
         runCardPresentPaymentsOnboardingIfPossible()
         await updateOutputProperties()
     }
@@ -207,10 +226,6 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
 // MARK: - Background onboarding
 private extension InPersonPaymentsMenuViewModel {
     func observeOnboardingChanges() {
-        guard cardPresentPaymentsConfiguration.isSupportedCountry else {
-            return
-        }
-
         onboardingUseCase.statePublisher
             .debounce(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .removeDuplicates()
@@ -228,6 +243,7 @@ private extension InPersonPaymentsMenuViewModel {
     }
 
     func refreshAfterNewOnboardingState(_ state: CardPresentPaymentOnboardingState) {
+        guard cardPresentPaymentsConfiguration.isSupportedCountry else { return }
         guard state != .loading else {
             backgroundOnboardingInProgress = true
             return

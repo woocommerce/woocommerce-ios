@@ -1,6 +1,7 @@
 import SwiftUI
 import XCTest
 import TestKit
+import YosemiteTestHelpers
 import protocol WooFoundation.Analytics
 @testable import Yosemite
 @testable import WooCommerce
@@ -181,6 +182,47 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
      }
 
     // MARK: - Tap to Pay tests
+    func test_onAppear_when_missing_country_recovers_then_shows_card_readers_without_recreating_menu() async {
+        // Given
+        let storage = MockStorageManager()
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.sessionManager.setStoreId(sampleStoreID)
+        let previousSettings = ServiceLocator.selectedSiteSettings
+        let settings = SelectedSiteSettings(stores: stores, storageManager: storage)
+        ServiceLocator.setSelectedSiteSettings(settings)
+        defer { ServiceLocator.setSelectedSiteSettings(previousSettings) }
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(
+            cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
+            onboardingUseCase: mockOnboardingUseCase,
+            cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+            wooPaymentsPayoutService: nil,
+            systemStatusService: systemStatusService)
+        let menu = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                                dependencies: dependencies,
+                                                payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
+        await menu.onAppear()
+        XCTAssertFalse(menu.shouldShowCardReaderSection)
+        mockOnboardingUseCase.refreshIfNecessaryWasCalled = false
+
+        // When
+        await withCheckedContinuation { continuation in
+            storage.performAndSave({ storage in
+                let setting = storage.insertNewObject(ofType: StorageSiteSetting.self)
+                setting.update(with: SiteSetting.fake().copy(siteID: self.sampleStoreID,
+                                                            settingID: "woocommerce_default_country",
+                                                            value: "GB",
+                                                            settingGroupKey: SiteSettingGroup.general.rawValue))
+            }, completion: { continuation.resume() }, on: .main)
+        }
+        settings.refresh()
+        XCTAssertEqual(SiteAddress().countryCode, .GB)
+        await menu.onAppear()
+
+        // Then
+        XCTAssertTrue(menu.shouldShowCardReaderSection)
+        XCTAssertTrue(mockOnboardingUseCase.refreshIfNecessaryWasCalled)
+    }
+
      func test_shouldShowTapToPaySection_false_when_built_in_reader_isnt_in_configuration() async {
          // Given
          let configuration = CardPresentPaymentsConfiguration(

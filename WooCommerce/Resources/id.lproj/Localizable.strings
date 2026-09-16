@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-08-25 10:58:51+0000 */
+/* Translation-Revision-Date: 2026-09-08 09:56:11+0000 */
 /* Plural-Forms: nplurals=2; plural=n > 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: id */
@@ -2159,7 +2159,6 @@ which should be translated separately and considered part of this sentence. */
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
-   Button to dismiss the Jetpack benefits screen.
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -4096,9 +4095,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation bar button title used to save changes and close the multiline text editor. */
 "MultilineEditableTextDetailView.doneButton.title" = "Selesai";
 
-/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "Beberapa Kartu Nirsentuh Terdeteksi";
-
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Beberapa Toko";
 
@@ -4463,9 +4459,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for the Menu button */
 "Open menu" = "Buka menu";
-
-/* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
-"Open wp-admin" = "Buka wp-admin";
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Membuka daftar status yang tersedia.";
@@ -5748,9 +5741,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Coupons Search Placeholder */
 "Search all coupons" = "Cari semua kupon";
-
-/* Customer Search Placeholder */
-"Search all customers" = "Cari semua pelanggan";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Cari semua pesanan";
@@ -9769,6 +9759,9 @@ which should be translated separately and considered part of this sentence. */
 /* A title explaining the requirement of location services for making a payment */
 "cardPresentPayment.locationRequired.title" = "Aktifkan layanan lokasi di pengaturan perangkat untuk mengizinkan pembayaran.";
 
+/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
+"cardPresentPayment.reader.multipleContactlessCardsDetected" = "Beberapa kartu terdeteksi. Coba lagi dengan satu kartu.";
+
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "cardPresentPayment.settingsWebView.title" = "Pengaturan WooCommerce";
 
@@ -10467,6 +10460,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "Biaya pendaftaran: %1$@";
+
+/* WordPress.com error thrown when the store rejects the signature of a Jetpack request. */
+"dotcomError.invalidSignature.description" = "Tanda Tangan Dotcom Tidak Valid";
 
 /* Title of the downloadable file bottom sheet action for adding document from device. */
 "downloadableFileSource.deviceDocument" = "Dokumen di perangkat";
@@ -11495,6 +11491,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.title" = "Produk variabel tidak dapat ditambahkan secara langsung.";
 
+/* Shown when a bundle's products could not be loaded, so the app cannot tell whether it can be added. */
+"order.bundle.cannotCheckBundledProducts.notice.title" = "Tidak dapat memeriksa produk bundel. Coba lagi.";
+
+/* Title of a notice shown while the products inside a scanned bundle are loaded. */
+"order.bundle.checkingBundledProducts.notice.title" = "Memeriksa produk bundel...";
+
 /* Title for the Coupon screen during order creation */
 "order.form.coupon.add.button.title" = "Tambah Kupon";
 
@@ -11603,6 +11605,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.webAdmin" = "Admin web";
+
+/* Message shown when a merchant tries to add a bundle holding a bookable product to an order. */
+"orderCreationProductRestrictions.bookableBundleReason" = "Bundel dengan produk yang dapat dipesan tidak didukung";
+
+/* Message shown when a merchant tries to add a bundle holding a subscription product to an order. */
+"orderCreationProductRestrictions.subscriptionBundleReason" = "Bundel dengan produk langganan tidak didukung";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "orderDetail.deleteTracking.notice.title" = "Tidak dapat menghapus pelacakan untuk pesanan #%1$d";
@@ -11729,6 +11737,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the section that shows the Shipping Lines when creating or editing an order */
 "orderForm.shipping" = "Pengiriman";
+
+/* Message of the banner shown on the Orders list when the store's currency couldn't be loaded. */
+"orderList.currencyUnavailable.banner.info" = "Kami tidak dapat memuat mata uang toko Anda, jadi total pesanan mungkin ditampilkan dalam mata uang yang salah.";
+
+/* Title of the button to retry loading the store's currency on the Orders list warning banner. */
+"orderList.currencyUnavailable.banner.retry" = "Coba lagi";
+
+/* Title of the banner shown on the Orders list when the store's currency couldn't be loaded. */
+"orderList.currencyUnavailable.banner.title" = "Mata uang toko tidak tersedia";
 
 /* Discount label for payment view */
 "orderPaymentDetails.discount.title" = "Diskon";
@@ -12511,7 +12528,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.scanToPay.navigation.title" = "Pindai untuk Membayar";
 
 /* Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale. */
-"pointOfSale.scanToPay.orderNote" = "Pelanggan membayar melalui metode Pindai untuk Membayar ";
+"pointOfSale.scanToPay.orderNote.1" = "Dibayar dengan Pindai untuk Membayar";
 
 /* Loading message shown while preparing the order for scan-to-pay (promoting it to pending). */
 "pointOfSale.scanToPay.preparing.message" = "Membuat Kode QR...";
@@ -12583,7 +12600,10 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Pembayaran Langsung";
 
 /* Title for the payment method used when manually marking an order as paid in Point of Sale. */
-"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle" = "Lainnya";
+"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle.1" = "Pesanan ditandai sebagai dibayar";
+
+/* Title for the payment method used when a Point of Sale order is paid through Scan to Pay. */
+"pointOfSaleOrderController.scanToPay.paymentMethodTitle" = "Pindai untuk Membayar";
 
 /* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
@@ -13145,12 +13165,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "Muat ulang katalog";
-
-/* Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
-"pos.itemlistview.sunsetWarning.description" = "Mulai 1 Agustus, poin penjualan akan memerlukan WooCommerce 10.5.0 atau versi yang lebih baru. Perbarui untuk memastikan akses tanpa gangguan.";
-
-/* Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
-"pos.itemlistview.sunsetWarning.title" = "Perbarui WooCommerce Segera";
 
 /* Title at the top of the point of sale product selector screen. */
 "pos.itemlistview.title" = "Produk";
@@ -14436,6 +14450,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message explaining unsupported bookable products for order creation */
 "productSelectorViewModel.bookableProductUnsupportedReason" = "Produk yang dapat dipesan tidak didukung untuk pembuatan pesanan";
+
+/* Message shown when the products inside a bundle could not be loaded, so the app cannot tell whether the bundle can be added to the order. */
+"productSelectorViewModel.cannotCheckBundledProducts" = "Tidak dapat memeriksa produk bundel. Coba lagi.";
 
 /* Text on the header of the Select Product screen when more than one products are selected. */
 "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld produk dipilih";

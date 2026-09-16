@@ -4,6 +4,7 @@ import struct Yosemite.Order
 import enum Yosemite.CardReaderSoftwareUpdateState
 import Combine
 
+@MainActor
 public protocol CardPresentPaymentFacade {
     /// `paymentEventPublisher` provides a stream of events relating to a payment, including their view models,
     /// for subscribers to display to the user. e.g. onboarding screens, connection progress, payment progress, card reader messages.

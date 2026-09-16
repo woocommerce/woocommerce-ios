@@ -10,6 +10,7 @@ import enum Yosemite.CardReaderSoftwareUpdateState
 import enum Yosemite.CardReaderReconnectionState
 import protocol Yosemite.StoresManager
 
+@MainActor
 final class CardPresentPaymentService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
 

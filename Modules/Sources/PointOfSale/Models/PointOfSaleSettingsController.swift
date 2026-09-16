@@ -71,6 +71,7 @@ protocol POSSettingsControllerProtocol {
         observeCardReader(from: cardPresentPaymentService)
     }
 
+    @MainActor
     private func observeCardReader(from service: CardPresentPaymentFacade) {
         cancellables = service.readerConnectionStatusPublisher
             .sink(receiveValue: { [weak self] connectionStatus in

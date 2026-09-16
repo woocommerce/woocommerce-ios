@@ -73,10 +73,11 @@ public protocol Network {
 
 public extension Network {
     /// Captures the caller's actor isolation, then dispatches to the conformer's checked
-    /// implementation.
+    /// implementation. `callerIsolation` deliberately has a distinct label from the requirement,
+    /// so every conformer must provide the required `isolation:` witness.
     func responseDataAndHeaders(for request: URLRequestConvertible,
-                                isolation: isolated (any Actor)? = #isolation) async throws -> (Data, ResponseHeaders?) {
-        try await self.responseDataAndHeaders(for: request, isolation: isolation)
+                                callerIsolation: isolated (any Actor)? = #isolation) async throws -> (Data, ResponseHeaders?) {
+        try await self.responseDataAndHeaders(for: request, isolation: callerIsolation)
     }
 
     /// Default implementation that returns the response body, discarding the response headers.

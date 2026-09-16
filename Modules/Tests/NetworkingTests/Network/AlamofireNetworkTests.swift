@@ -236,6 +236,7 @@ final class AlamofireNetworkTests: XCTestCase {
         let network = AlamofireNetwork(credentials: createWPComCredentials(),
                                        selectedSite: nil,
                                        appPasswordSupportState: nil,
+                                       userDefaults: userDefaults,
                                        sessionManager: createSessionWithMockURLProtocol())
         let request = createJetpackRequest(siteID: 123, path: "products")
 
@@ -248,7 +249,7 @@ final class AlamofireNetworkTests: XCTestCase {
 
     func test_usesJetpackTunnel_when_the_site_uses_application_passwords_then_it_is_false_for_a_convertible_request() {
         // Given
-        let network = createNetworkWithSelectedSite(siteID: 123)
+        let network = createNetworkWithSelectedSite(siteID: 123, userDefaults: userDefaults)
         let request = createJetpackRequest(siteID: 123, path: "products")
 
         // When
@@ -260,7 +261,7 @@ final class AlamofireNetworkTests: XCTestCase {
 
     func test_usesJetpackTunnel_when_the_site_uses_application_passwords_then_it_is_true_for_a_tunnel_only_request() {
         // Given
-        let network = createNetworkWithSelectedSite(siteID: 123)
+        let network = createNetworkWithSelectedSite(siteID: 123, userDefaults: userDefaults)
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .get,
                                      siteID: 123,
@@ -281,6 +282,7 @@ final class AlamofireNetworkTests: XCTestCase {
         let network = AlamofireNetwork(credentials: createWPComCredentials(),
                                        selectedSite: Just(site).eraseToAnyPublisher(),
                                        appPasswordSupportState: Just(true).eraseToAnyPublisher(),
+                                       userDefaults: userDefaults,
                                        sessionManager: createSessionWithMockURLProtocol())
         let request = createJetpackRequest(siteID: 123, path: "products")
 
@@ -293,7 +295,7 @@ final class AlamofireNetworkTests: XCTestCase {
 
     func test_usesJetpackTunnel_when_application_password_switching_is_off_then_it_is_true_for_a_convertible_request() {
         // Given
-        let network = createNetworkWithSelectedSite(siteID: 123, appPasswordSupport: Just(false).eraseToAnyPublisher())
+        let network = createNetworkWithSelectedSite(siteID: 123, userDefaults: userDefaults, appPasswordSupport: Just(false).eraseToAnyPublisher())
         let request = createJetpackRequest(siteID: 123, path: "products")
 
         // When

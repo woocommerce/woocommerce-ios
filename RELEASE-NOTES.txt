@@ -18,6 +18,7 @@
 
 25.6
 -----
+- [*] Age verification: no longer asks for the age range when the regulatory check fails, which avoids the code path behind a crash in Apple's age range sheet for users outside regulated regions. [https://github.com/woocommerce/woocommerce-ios/pull/17871]
 - [*] Products: Fixed a crash on iOS 26 when rapidly reopening the "View product in store" sheet or other modals from the product details screen. [https://github.com/woocommerce/woocommerce-ios/pull/17776]
 - [*] Orders: show a warning on the order list when the store's currency couldn't be loaded, instead of silently showing amounts as USD. [https://github.com/woocommerce/woocommerce-ios/pull/17761]
 - [*] Shipping Labels: Fixed purchased labels disappearing when an unfinished label has no carrier information. [https://github.com/woocommerce/woocommerce-ios/pull/17766]

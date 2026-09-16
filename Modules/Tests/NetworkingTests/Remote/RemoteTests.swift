@@ -1604,6 +1604,12 @@ private final class BodyAndErrorNetwork: Network {
 
     var session: URLSession { URLSession(configuration: .default) }
 
+    /// Stands in for a store reached through the tunnel.
+    ///
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request is JetpackRequest
+    }
+
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         completion(data, error)
     }
@@ -1639,6 +1645,12 @@ private final class SuccessfulNetwork: Network {
     }
 
     var session: URLSession { URLSession(configuration: .default) }
+
+    /// Stands in for a store reached through the tunnel.
+    ///
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request is JetpackRequest
+    }
 
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
         completion(data, nil)

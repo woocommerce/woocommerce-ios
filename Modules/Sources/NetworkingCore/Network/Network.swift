@@ -77,12 +77,6 @@ public protocol Network {
 }
 
 public extension Network {
-    /// A network that never converts requests sends every Jetpack request through the tunnel.
-    ///
-    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
-        request is JetpackRequest
-    }
-
     /// Default implementation that returns the response body, discarding the response headers.
     func responseData(for request: URLRequestConvertible) async throws -> Data {
         try await responseDataAndHeaders(for: request).0

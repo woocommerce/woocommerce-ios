@@ -12,6 +12,7 @@ protocol PluginVersionCheckerProtocol {
     func checkCompatibility() async throws -> PluginVersionResult
 }
 
+@MainActor
 final class PluginVersionChecker: PluginVersionCheckerProtocol {
     private let siteID: Int64
     private let pluginPath: String
@@ -61,15 +62,11 @@ private extension PluginVersionChecker {
     }
 
     func syncSystemInformation() async throws -> SystemInformation {
-        let stores = self.stores
-        let siteID = self.siteID
-        return try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             let action = SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 continuation.resume(with: result)
             }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
+            stores.dispatch(action)
         }
     }
 }

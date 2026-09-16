@@ -146,7 +146,7 @@ final class CoreDataManagerTests: XCTestCase {
         }
     }
 
-    func test_performAndSave_resets_the_database_if_it_is_corrupted() throws {
+    func test_initializing_CoreDataManager_resets_the_database_if_it_is_corrupted() throws {
         // Given
         let modelsInventory = try makeModelsInventory()
         var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)

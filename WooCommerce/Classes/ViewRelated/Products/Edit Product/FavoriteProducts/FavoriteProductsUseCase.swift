@@ -7,8 +7,10 @@ protocol FavoriteProductsUseCase {
 
     func removeFromFavorite(productID: Int64)
 
+    @MainActor
     func isFavorite(productID: Int64) async -> Bool
 
+    @MainActor
     func favoriteProductIDs() async -> [Int64]
 }
 

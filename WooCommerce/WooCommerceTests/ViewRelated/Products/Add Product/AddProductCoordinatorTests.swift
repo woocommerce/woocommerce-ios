@@ -6,6 +6,7 @@ import YosemiteTestHelpers
 @testable import WooCommerce
 import WordPressUI
 
+@MainActor
 final class AddProductCoordinatorTests: XCTestCase {
     private var navigationController: UINavigationController!
     private var storageManager: MockStorageManager!

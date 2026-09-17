@@ -22,7 +22,10 @@ struct ReviewsView: UIViewControllerRepresentable {
         // This makes sure that the navigation item of the hosting controller
         // is in sync with that of the wrapped controller.
         context.coordinator.parentObserver = viewController.observe(\.parent, changeHandler: { vc, _ in
-            vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
+            // UIKit changes a view controller's parent on the main thread, so the KVO handler runs there.
+            MainActor.assumeIsolated {
+                vc.parent?.navigationItem.rightBarButtonItems = vc.navigationItem.rightBarButtonItems
+            }
         })
 
         return viewController

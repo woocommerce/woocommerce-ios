@@ -257,6 +257,25 @@ public class AlamofireNetwork: Network {
         }
     }
 
+    /// A Jetpack request that the converter leaves alone goes through the tunnel; one it turns into a
+    /// `RESTRequest` goes directly to the site with an application password.
+    ///
+    /// Answered from the converter's current state, which `Remote` consults once the response is in.
+    /// Two kinds of response are therefore reported as direct even though they came from the tunnel,
+    /// and are skipped by the recorder rather than misattributed: a direct request that failed and was
+    /// retried through the tunnel, because the retry marker is cleared before the response reaches the
+    /// caller; and a request in flight when the converter was swapped on a site change or on the site
+    /// being marked unsupported for application passwords. The first stops once that mark lands, which
+    /// is immediate for a 401, 403, 429 or an application-passwords-disabled code and takes ten such
+    /// fallbacks otherwise.
+    ///
+    public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        guard request is JetpackRequest else {
+            return false
+        }
+        return !requestConverter.convertsToDirectRequest(request)
+    }
+
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.
     /// Only one value will be emitted and the request cannot be retried.
     ///

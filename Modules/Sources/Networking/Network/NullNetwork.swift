@@ -12,6 +12,12 @@ public final class NullNetwork: Network {
 
     public init() { }
 
+    /// Nothing is sent, so nothing goes through the tunnel.
+    ///
+    public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        false
+    }
+
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) { }
 
     public func responseData(for request: URLRequestConvertible,

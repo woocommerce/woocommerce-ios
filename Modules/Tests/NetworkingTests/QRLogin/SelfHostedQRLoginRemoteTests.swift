@@ -90,6 +90,19 @@ struct SelfHostedQRLoginRemoteTests {
         await expectScanError(statusCode: 500, body: Data(), expected: .internalServerError(code: nil))
     }
 
+    @Test func scan_when_html_500_then_throws_safe_unexpected_store_response() async {
+        // Given
+        let url = makeURL(path: "/qr-login-scan")
+        let session = MockURLSession()
+        let responseData = Data("<html><body>Service unavailable</body></html>".utf8)
+        session.simulateResponse(for: url.absoluteString, data: responseData, statusCode: 500)
+        let remote = makeRemote(session: session)
+        // When / Then
+        await #expect(throws: QRLoginNetworkError.unexpectedStoreResponse) {
+            _ = try await remote.scan(siteURL: siteURL, token: token, device: device)
+        }
+    }
+
     @Test func scan_when_malformed_body_then_throws_malformed() async {
         // Given — 200 OK but missing real_number
         let url = makeURL(path: "/qr-login-scan")

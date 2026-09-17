@@ -59,11 +59,11 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
                 "device": device.dictionary
             ]
         )
-        let (data, statusCode) = try await perform(request)
-        if let error = QRLoginHTTPStatusMapper.error(forStatusCode: statusCode, body: data) {
+        let response = try await perform(request)
+        if let error = QRLoginHTTPStatusMapper.error(forStatusCode: response.statusCode, body: response.data) {
             throw error
         }
-        return try QRLoginResponseBody.decode(SelfHostedQRLoginScanResponse.self, from: data)
+        return try QRLoginResponseBody.decode(SelfHostedQRLoginScanResponse.self, from: response.data)
     }
 
     public func pollSessionStatus(siteURL: URL,
@@ -82,11 +82,11 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
         request.setValue("no-cache, no-store", forHTTPHeaderField: "Cache-Control")
         request.setValue("application/json", forHTTPHeaderField: "Accept")
 
-        let (data, statusCode) = try await perform(request)
-        if let error = QRLoginHTTPStatusMapper.error(forStatusCode: statusCode, body: data) {
+        let response = try await perform(request)
+        if let error = QRLoginHTTPStatusMapper.error(forStatusCode: response.statusCode, body: response.data) {
             throw error
         }
-        return try QRLoginResponseBody.decode(SelfHostedQRLoginSessionStatus.self, from: data)
+        return try QRLoginResponseBody.decode(SelfHostedQRLoginSessionStatus.self, from: response.data)
     }
 
     public func exchange(siteURL: URL,
@@ -100,11 +100,11 @@ public final class SelfHostedQRLoginRemote: SelfHostedQRLoginRemoteProtocol {
                 "exchange_grant": exchangeGrant
             ]
         )
-        let (data, statusCode) = try await perform(request)
-        if let error = QRLoginHTTPStatusMapper.error(forStatusCode: statusCode, body: data) {
+        let response = try await perform(request)
+        if let error = QRLoginHTTPStatusMapper.error(forStatusCode: response.statusCode, body: response.data) {
             throw error
         }
-        return try QRLoginResponseBody.decode(SelfHostedQRLoginExchangeResponse.self, from: data)
+        return try QRLoginResponseBody.decode(SelfHostedQRLoginExchangeResponse.self, from: response.data)
     }
 }
 
@@ -167,18 +167,30 @@ private extension SelfHostedQRLoginRemote {
         return request
     }
 
-    func perform(_ request: URLRequest) async throws -> (Data, Int) {
+    func perform(_ request: URLRequest) async throws -> (data: Data, statusCode: Int) {
         do {
             let (data, response) = try await session.data(for: request)
             guard let http = response as? HTTPURLResponse else {
                 throw QRLoginNetworkError.malformed
             }
+            try throwIfUnexpectedStoreResponse(data: data, response: http)
             return (data, http.statusCode)
         } catch let error as QRLoginNetworkError {
             throw error
         } catch {
             throw QRLoginNetworkError.network
         }
+    }
+
+    func throwIfUnexpectedStoreResponse(data: Data, response: HTTPURLResponse) throws {
+        guard UnexpectedStoreResponseClassifier.classify(
+            responseData: data,
+            statusCode: response.statusCode,
+            contentType: response.value(forHTTPHeaderField: "Content-Type")
+        ) != nil else {
+            return
+        }
+        throw response.statusCode == 429 ? QRLoginNetworkError.rateLimited : .unexpectedStoreResponse
     }
 
     enum Paths {

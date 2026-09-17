@@ -78,10 +78,12 @@ enum PluginVersionError: Error {
 // MARK: - Plugin Version Checker Factory
 
 protocol PluginVersionCheckerFactoryProtocol {
+    @MainActor
     func makeChecker(siteID: Int64, pluginPath: String, minimumVersion: String) -> PluginVersionCheckerProtocol
 }
 
 final class PluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol {
+    @MainActor
     func makeChecker(siteID: Int64, pluginPath: String, minimumVersion: String) -> PluginVersionCheckerProtocol {
         PluginVersionChecker(siteID: siteID, pluginPath: pluginPath, minimumVersion: minimumVersion)
     }

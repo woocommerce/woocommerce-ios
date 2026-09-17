@@ -355,7 +355,7 @@ extension SettingStoreMethods {
     /// Maps the 404 a site returns for a setting missing from its REST settings API to `SettingError.settingNotExposed`.
     /// The Jetpack tunnel surfaces it as an unknown `DotcomError`; direct REST as `NetworkError.notFound`.
     ///
-    static func mapUnexposedSettingError(_ error: Error) -> Error {
+    private static func mapUnexposedSettingError(_ error: Error) -> Error {
         if case let .unknown(code, _, _)? = error as? DotcomError, code == ErrorCode.settingInvalid {
             return SettingError.settingNotExposed
         }

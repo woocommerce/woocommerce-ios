@@ -1,3 +1,4 @@
+import StoreDesignSystem
 import SwiftUI
 
 /// Tells the merchant that their store can't be reached and points them at support.
@@ -11,7 +12,7 @@ struct StoreConnectionErrorModal: View {
 
     var body: some View {
         ZStack {
-            Color.black.opacity(Layout.scrimOpacity)
+            Color.storeOverlayOpacity50
                 .ignoresSafeArea()
 
             // The card sizes to its content, and only scrolls when the content is taller than the screen,
@@ -23,37 +24,56 @@ struct StoreConnectionErrorModal: View {
                     content
                 }
             }
-            .background(Color(.tertiarySystemBackground))
-            .cornerRadius(Layout.cornerRadius)
-            .shadow(radius: Layout.shadowRadius)
-            .padding(Layout.modalPadding)
+            .background(Color.storeSurfaceBright)
+            .clipShape(RoundedRectangle(cornerRadius: StoreRadius.extraLarge))
+            .padding(StorePadding.p7)
             .frame(maxWidth: Layout.maxWidth)
         }
     }
 
     private var content: some View {
-        VStack(alignment: .leading, spacing: Layout.spacing) {
+        VStack(alignment: .leading, spacing: StoreSpacing.s5) {
             Text(Localization.title)
-                .font(.title3)
-                .bold()
-                .foregroundStyle(Color(.text))
+                .storeTextStyle(.titleLarge.emphasized)
+                .foregroundStyle(.storeOnSurface)
                 .fixedSize(horizontal: false, vertical: true)
 
             Text(Localization.body)
-                .font(.body)
-                .foregroundStyle(Color(.text))
+                .storeTextStyle(.bodyLarge)
+                .foregroundStyle(.storeOnSurfaceVariant)
                 .fixedSize(horizontal: false, vertical: true)
 
-            VStack(spacing: Layout.buttonSpacing) {
-                Button(Localization.contactSupport, action: onContactSupport)
-                    .buttonStyle(PrimaryButtonStyle())
-
-                Button(Localization.dismiss, action: onDismiss)
-                    .buttonStyle(SecondaryButtonStyle())
-            }
-            .padding(.top, Layout.buttonsTopPadding)
+            buttons
+                .padding(.top, StorePadding.p3)
         }
-        .padding(Layout.contentPadding)
+        .padding(StorePadding.p7)
+    }
+
+    /// Side by side and trailing, the way a dialog reads, falling back to a column when the titles don't
+    /// fit on one line, as with long translations or large text sizes.
+    ///
+    private var buttons: some View {
+        ViewThatFits(in: .horizontal) {
+            HStack(spacing: StoreSpacing.s3) {
+                Spacer(minLength: StoreSpacing.s0)
+                dismissButton
+                contactSupportButton
+            }
+
+            VStack(alignment: .trailing, spacing: StoreSpacing.s3) {
+                contactSupportButton
+                dismissButton
+            }
+            .frame(maxWidth: .infinity, alignment: .trailing)
+        }
+    }
+
+    private var contactSupportButton: some View {
+        StoreButton(Localization.contactSupport, variant: .filled, size: .medium, action: onContactSupport)
+    }
+
+    private var dismissButton: some View {
+        StoreButton(Localization.dismiss, variant: .outlined, size: .medium, action: onDismiss)
     }
 }
 
@@ -73,14 +93,6 @@ enum StoreConnectionErrorSupport {
 
 private extension StoreConnectionErrorModal {
     enum Layout {
-        static let scrimOpacity: CGFloat = 0.5
-        static let spacing: CGFloat = 16
-        static let buttonSpacing: CGFloat = 8
-        static let buttonsTopPadding: CGFloat = 8
-        static let contentPadding: CGFloat = 24
-        static let modalPadding: CGFloat = 24
-        static let cornerRadius: CGFloat = 10
-        static let shadowRadius: CGFloat = 10
         static let maxWidth: CGFloat = 480
     }
 

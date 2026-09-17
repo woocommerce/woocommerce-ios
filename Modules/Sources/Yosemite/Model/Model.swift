@@ -203,6 +203,7 @@ public typealias StoreConnectionErrorMonitoring = Networking.StoreConnectionErro
 public typealias Subscription = Networking.Subscription
 public typealias SubscriptionPeriod = Networking.SubscriptionPeriod
 public typealias SubscriptionStatus = Networking.SubscriptionStatus
+public typealias UnexpectedStoreResponseError = Networking.UnexpectedStoreResponseError
 public typealias SupportChatResponse = Networking.SupportChatResponse
 public typealias SupportChatMessage = Networking.SupportChatMessage
 public typealias SupportChatMessageContext = Networking.SupportChatMessageContext

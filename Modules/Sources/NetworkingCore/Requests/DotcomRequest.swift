@@ -213,6 +213,20 @@ public struct DotcomRequest: Request, RESTRequestConvertible {
                            path: wordpressApiVersion.path + pathWithoutSiteInfo,
                            parameters: requestParameters.dictionary)
     }
+
+    /// The site targeted by a WordPress REST request that can be converted to a direct request.
+    var affectedSiteID: Int64? {
+        guard availableAsRESTRequest,
+              wordpressApiVersion.isWPOrgEndpoint else {
+            return nil
+        }
+        let pathComponents = path.split(separator: "/")
+        guard pathComponents.count > 1,
+              pathComponents[0] == "sites" else {
+            return nil
+        }
+        return Int64(pathComponents[1])
+    }
 }
 
 private extension DotcomRequest {

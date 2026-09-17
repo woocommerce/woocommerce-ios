@@ -233,6 +233,61 @@ final class DotcomRequestTests: XCTestCase {
         XCTAssertEqual(params, sampleParameters)
         XCTAssertEqual(output.siteURL, sampleSiteAddress)
     }
+
+    // MARK: Affected site ID
+
+    func test_affectedSiteID_returns_site_ID_for_convertible_path_with_leading_slash() throws {
+        // Given
+        let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                        method: .get,
+                                        path: "/sites/12345/media/",
+                                        availableAsRESTRequest: true)
+
+        // Then
+        XCTAssertEqual(request.affectedSiteID, 12345)
+    }
+
+    func test_affectedSiteID_returns_nil_when_direct_request_is_unavailable() {
+        // Given
+        let request = DotcomRequest(wordpressApiVersion: .wpMark2,
+                                    method: .get,
+                                    path: "/sites/12345/media/")
+
+        // Then
+        XCTAssertNil(request.affectedSiteID)
+    }
+
+    func test_affectedSiteID_returns_nil_for_non_WPOrg_endpoint() {
+        // Given
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1,
+                                    method: .get,
+                                    path: "/sites/12345/media/")
+
+        // Then
+        XCTAssertNil(request.affectedSiteID)
+    }
+
+    func test_affectedSiteID_returns_nil_for_malformed_path() throws {
+        // Given
+        let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                        method: .get,
+                                        path: "/media/12345/",
+                                        availableAsRESTRequest: true)
+
+        // Then
+        XCTAssertNil(request.affectedSiteID)
+    }
+
+    func test_affectedSiteID_returns_nil_for_non_numeric_site_ID() throws {
+        // Given
+        let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                        method: .get,
+                                        path: "/sites/not-a-number/media/",
+                                        availableAsRESTRequest: true)
+
+        // Then
+        XCTAssertNil(request.affectedSiteID)
+    }
 }
 
 

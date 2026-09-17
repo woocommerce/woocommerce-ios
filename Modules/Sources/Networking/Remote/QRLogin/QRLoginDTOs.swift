@@ -133,7 +133,7 @@ public struct WPComQRLoginExchangeResponse: Equatable {
 /// request-side data the client knows about itself, so it carries the same
 /// shape no matter which endpoint receives it. Each field is whitelisted and
 /// capped server-side; values outside the whitelist are silently dropped.
-public struct QRLoginScanDevice: Equatable {
+public struct QRLoginScanDevice: Equatable, Sendable {
     public let os: String
     public let osVersion: String
     public let model: String

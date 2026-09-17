@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an Apple Push Notifications Service Device.
 ///
-public struct APNSDevice: GeneratedFakeable {
+public struct APNSDevice: GeneratedFakeable, Sendable {
 
     /// Push Notifications Token.
     ///

@@ -126,7 +126,7 @@ public struct SupportChatSource: Decodable, Equatable {
 
 /// Confidence level for support area classification.
 ///
-public enum SupportAreaConfidence: String, Decodable, Equatable {
+public enum SupportAreaConfidence: String, Decodable, Equatable, Sendable {
     case high
     case medium
     case low
@@ -140,7 +140,7 @@ public enum SupportAreaConfidence: String, Decodable, Equatable {
 
 /// Support area categories for ticket routing.
 ///
-public enum SupportAreaType: String, Decodable, Equatable {
+public enum SupportAreaType: String, Decodable, Equatable, Sendable {
     case mobileApp = "mobile-app"
     case cardReader = "card-reader"
     case wooPayments = "woopayments"

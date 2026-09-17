@@ -8,7 +8,7 @@ import Foundation
 ///
 /// See: https://developer.wordpress.org/rest-api/using-the-rest-api/discovery/
 ///
-public struct WordPressAPIDiscovery {
+public struct WordPressAPIDiscovery: Sendable {
     private let session: URLSessionProtocol
     private let cache: WordPressRESTAPIRootCache
 

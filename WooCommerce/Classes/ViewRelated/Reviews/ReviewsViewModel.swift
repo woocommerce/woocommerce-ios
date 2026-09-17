@@ -7,6 +7,7 @@ import class AutomatticTracks.CrashLogging
 
 /// Provides data for the Reviews screen
 ///
+@MainActor
 protocol ReviewsViewModelOutput {
     var isEmpty: Bool { get }
 
@@ -25,6 +26,7 @@ protocol ReviewsViewModelOutput {
 
 /// Handles actions related to Reviews screen
 ///
+@MainActor
 protocol ReviewsViewModelActionsHandler {
     func configureResultsController(tableView: UITableView)
 
@@ -42,6 +44,7 @@ protocol ReviewsViewModelActionsHandler {
 /// Provides data and handles actions of Reviews screen.
 /// Used as view model for `ReviewsViewController`
 ///
+@MainActor
 final class ReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHandler {
     private let siteID: Int64
 

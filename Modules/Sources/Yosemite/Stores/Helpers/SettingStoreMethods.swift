@@ -125,7 +125,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
                     onCompletion(.success(isEnabled))
                 }
             case .failure(let error):
-                onCompletion(.failure(Self.mappingUnexposedSetting(error)))
+                onCompletion(.failure(Self.mapUnexposedSettingError(error)))
             }
         }
     }
@@ -144,7 +144,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
                     onCompletion(.success(Void()))
                 }
             case .failure(let error):
-                onCompletion(.failure(Self.mappingUnexposedSetting(error)))
+                onCompletion(.failure(Self.mapUnexposedSettingError(error)))
             }
         }
     }
@@ -355,7 +355,7 @@ extension SettingStoreMethods {
     /// Maps the 404 a site returns for a setting missing from its REST settings API to `SettingError.settingNotExposed`.
     /// The Jetpack tunnel surfaces it as an unknown `DotcomError`; direct REST as `NetworkError.notFound`.
     ///
-    static func mappingUnexposedSetting(_ error: Error) -> Error {
+    static func mapUnexposedSettingError(_ error: Error) -> Error {
         if case let .unknown(code, _, _)? = error as? DotcomError, code == ErrorCode.settingInvalid {
             return SettingError.settingNotExposed
         }

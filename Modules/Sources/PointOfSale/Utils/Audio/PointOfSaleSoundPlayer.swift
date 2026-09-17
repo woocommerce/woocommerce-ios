@@ -11,11 +11,13 @@ struct PointOfSaleSound: Equatable, Hashable {
     }
 }
 
+@MainActor
 protocol PointOfSaleSoundPlayerProtocol {
     func playSound(_ sound: PointOfSaleSound) async
 }
 
-actor PointOfSaleSoundPlayer: NSObject, PointOfSaleSoundPlayerProtocol {
+@MainActor
+final class PointOfSaleSoundPlayer: NSObject, PointOfSaleSoundPlayerProtocol {
     private var playerCache: [PointOfSaleSound: AVAudioPlayer] = [:]
     private var completionHandlers: [AVAudioPlayer: () -> Void] = [:]
 
@@ -59,10 +61,8 @@ actor PointOfSaleSoundPlayer: NSObject, PointOfSaleSoundPlayerProtocol {
 }
 
 extension PointOfSaleSoundPlayer: AVAudioPlayerDelegate {
-    nonisolated func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        Task { @MainActor in
-            await handlePlayerFinished(player)
-        }
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        handlePlayerFinished(player)
     }
 
     private func handlePlayerFinished(_ player: AVAudioPlayer) {

@@ -154,7 +154,7 @@ protocol PointOfSaleAggregateModelProtocol {
          popularPurchasableItemsController: PointOfSaleItemsControllerProtocol,
          barcodeScanService: PointOfSaleBarcodeScanServiceProtocol,
          receiptSender: POSReceiptSending,
-         soundPlayer: PointOfSaleSoundPlayerProtocol = PointOfSaleSoundPlayer(),
+         soundPlayer: PointOfSaleSoundPlayerProtocol? = nil,
          paymentState: PointOfSalePaymentState = .idle,
          siteID: Int64,
          catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
@@ -177,7 +177,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.searchHistoryService = searchHistoryService
         self.popularPurchasableItemsController = popularPurchasableItemsController
         self.barcodeScanService = barcodeScanService
-        self.soundPlayer = soundPlayer
+        self.soundPlayer = soundPlayer ?? PointOfSaleSoundPlayer()
         self.siteID = siteID
         self.catalogSyncCoordinator = catalogSyncCoordinator
         self.cartProductObserver = cartProductObserver

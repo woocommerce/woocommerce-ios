@@ -312,7 +312,7 @@ private extension RetrieveProductReviewFromNoteUseCaseTests {
     enum TestData {
         static let siteID: Int64 = 398
         static var product: Yosemite.Product { Product.fake().copy(siteID: siteID, productID: 756_611) }
-        static var productReview: Yosemite.ProductReview { MockProductReview().make(siteID: siteID, reviewID: 1_981_157, productID: product.productID) }
+        static let productReview = MockProductReview().make(siteID: siteID, reviewID: 1_981_157, productID: 756_611)
         static var note: Yosemite.Note { MockNote().make(noteID: 9_981, metaSiteID: siteID, metaReviewID: productReview.reviewID) }
     }
 }

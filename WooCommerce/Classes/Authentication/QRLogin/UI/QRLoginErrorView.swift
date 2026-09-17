@@ -95,6 +95,9 @@ private extension QRLoginErrorView {
         case .unexpected:
             Content(title: Localization.unexpectedTitle,
                     body: Localization.unexpectedBody)
+        case .unexpectedStoreResponse:
+            Content(title: Localization.unexpectedStoreResponseTitle,
+                    body: Localization.unexpectedStoreResponseBody)
         case .codeAlreadyUsed:
             Content(title: Localization.codeAlreadyUsedTitle,
                     body: Localization.codeAlreadyUsedBody)
@@ -188,6 +191,11 @@ private extension QRLoginErrorView {
             value: "Something went wrong",
             comment: "QR-login error title for 5xx / malformed / unmapped server responses."
         )
+        static let unexpectedStoreResponseTitle = NSLocalizedString(
+            "qrLogin.error.unexpectedStoreResponse.title",
+            value: "Your store returned an unexpected response",
+            comment: "QR-login error title when a store returns HTML or plain text instead of a QR-login REST response."
+        )
         static let codeAlreadyUsedTitle = NSLocalizedString(
             "qrLogin.error.codeAlreadyUsed.title",
             value: "Code already used",
@@ -271,6 +279,11 @@ private extension QRLoginErrorView {
             "qrLogin.error.unexpected.body",
             value: "Your store returned an unexpected error. Please try again in a moment.",
             comment: "QR-login error body for 5xx / malformed responses."
+        )
+        static let unexpectedStoreResponseBody = NSLocalizedString(
+            "qrLogin.error.unexpectedStoreResponse.body",
+            value: "Your store returned a page instead of a sign-in response. Check your store's error logs, then try again or enter your site URL instead.",
+            comment: "QR-login error body when a store returns HTML or plain text instead of a QR-login REST response."
         )
         static let codeAlreadyUsedBody = NSLocalizedString(
             "qrLogin.error.codeAlreadyUsed.body",

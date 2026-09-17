@@ -33,6 +33,8 @@ struct QRLoginUserFacingError: Error, Equatable {
         case network
         /// "Something went wrong".
         case unexpected
+        /// The store returned HTML or plain text instead of the QR-login REST response.
+        case unexpectedStoreResponse
         /// "Code already used".
         case codeAlreadyUsed
 

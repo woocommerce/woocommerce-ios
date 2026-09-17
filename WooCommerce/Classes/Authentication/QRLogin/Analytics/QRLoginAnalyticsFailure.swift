@@ -72,6 +72,7 @@ struct QRLoginAnalyticsFailure {
         case .network: reason = .network
         case .rateLimited: reason = .rateLimited
         case .unexpected: reason = .serverError
+        case .unexpectedStoreResponse: reason = .serverError
         case .storeUnsupported: reason = .endpointMissing
         case .codeExpired: reason = .tokenRejected
         case .signInTimedOut: reason = .matchTimedOut

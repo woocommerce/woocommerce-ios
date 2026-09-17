@@ -1,36 +1,54 @@
 import Alamofire
 import Networking
+import Synchronization
 import XCTest
 
 extension MockURLProtocol {
     /// Stores the mocks for `URLRequest`s in memory to be used in `MockURLProtocol`.
+    ///
+    /// Tests write the mocks on the test thread and `startLoading()` reads them on the URL loading
+    /// thread, so the store is guarded by a lock.
+    ///
     final class Mocks {
-        private static var responsesByRequestURL: [String: (response: AnyCodable, statusCode: Int)] = [:]
+        private static let responsesByRequestURL = Mutex<[String: (response: AnyCodable, statusCode: Int)]>([:])
 
         /// Mocks the response of a given request.
         static func mockResponse(_ response: AnyCodable, statusCode: Int, for request: URLRequest) {
             guard let url = request.url?.absoluteString else {
                 return
             }
-            responsesByRequestURL[url] = (response: response, statusCode: statusCode)
+            responsesByRequestURL.withLock { $0[url] = (response: response, statusCode: statusCode) }
+        }
+
+        /// Removes every mocked response. Call from `tearDown` so mocks do not leak between tests.
+        static func reset() {
+            responsesByRequestURL.withLock { $0.removeAll() }
         }
 
         /// Returns the response for a request if it has been mocked.
         static func response(for request: URLRequest) -> (response: Data?, statusCode: Int)? {
-            guard let url = request.url?.absoluteString,
-                  let response = responsesByRequestURL[url] else {
+            guard let url = request.url?.absoluteString else {
                 return nil
             }
 
-            do {
-                let encoder = JSONEncoder()
-                let data = try encoder.encode(response.response)
-                return (response: data, statusCode: response.statusCode)
+            let encoded: (data: Data?, statusCode: Int, encodingFailure: String?)? = responsesByRequestURL.withLock { store in
+                guard let response = store[url] else {
+                    return nil
+                }
+                do {
+                    return (data: try JSONEncoder().encode(response.response), statusCode: response.statusCode, encodingFailure: nil)
+                } catch {
+                    return (data: nil, statusCode: response.statusCode, encodingFailure: "\(response)")
+                }
             }
-            catch {
-                XCTFail("Couldn't convert response to Data: \(response)")
-                return (response: nil, statusCode: response.statusCode)
+
+            guard let encoded else {
+                return nil
             }
+            if let encodingFailure = encoded.encodingFailure {
+                XCTFail("Couldn't convert response to Data: \(encodingFailure)")
+            }
+            return (response: encoded.data, statusCode: encoded.statusCode)
         }
     }
 }

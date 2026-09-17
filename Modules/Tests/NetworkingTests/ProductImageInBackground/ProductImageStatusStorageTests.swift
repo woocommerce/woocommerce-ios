@@ -130,10 +130,11 @@ class ProductImageStatusStorageTests: XCTestCase {
                 let externalData = try externalEncoder.encode([externalStatus])
                 userDefaults.set(externalData, forKey: userDefaultsKey)
 
+                let userDefaults: UserDefaults = self.userDefaults
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(
                         name: UserDefaults.didChangeNotification,
-                        object: self.userDefaults
+                        object: userDefaults
                     )
                 }
             } catch {
@@ -340,7 +341,7 @@ class ProductImageStatusStorageTests: XCTestCase {
             }
             .store(in: &cancellables)
 
-        waitForExpectations(timeout: 1, handler: nil)
+        wait(for: [expectation], timeout: 1)
 
         // Then
         XCTAssertEqual(receivedErrorInfos.count, 2)

@@ -1,4 +1,5 @@
 import Alamofire
+import Synchronization
 import Network
 import XCTest
 @testable import Networking
@@ -843,25 +844,26 @@ private final class CookieNonceAuthenticationURLProtocol: URLProtocol {
         let data: Data
     }
 
-    private static let lock = NSLock()
-    private static var stubs: [String: Stub] = [:]
-    private static var requests: [URLRequest] = []
+    /// Stubs are registered on the test thread and consumed in `startLoading()` on the URL loading thread.
+    private struct State {
+        var stubs: [String: Stub] = [:]
+        var requests: [URLRequest] = []
+    }
+
+    private static let state = Mutex(State())
 
     static var receivedRequests: [URLRequest] {
-        lock.withTestLock { requests }
+        state.withLock { $0.requests }
     }
 
     static func stub(method: String, url: URL, statusCode: Int = 200, headers: [String: String] = [:], data: Data = Data()) {
-        lock.withTestLock {
-            stubs[key(method: method, url: url)] = Stub(statusCode: statusCode, headers: headers, data: data)
+        state.withLock {
+            $0.stubs[key(method: method, url: url)] = Stub(statusCode: statusCode, headers: headers, data: data)
         }
     }
 
     static func reset() {
-        lock.withTestLock {
-            stubs.removeAll()
-            requests.removeAll()
-        }
+        state.withLock { $0 = State() }
     }
 
     override class func canInit(with request: URLRequest) -> Bool {
@@ -877,9 +879,10 @@ private final class CookieNonceAuthenticationURLProtocol: URLProtocol {
             client?.urlProtocol(self, didFailWithError: URLError(.badURL))
             return
         }
-        let stub = Self.lock.withTestLock { () -> Stub? in
-            Self.requests.append(Self.recordableRequest(from: request))
-            return Self.stubs[Self.key(method: request.httpMethod ?? "GET", url: url)]
+        let recordedRequest = Self.recordableRequest(from: request)
+        let stub = Self.state.withLock { state -> Stub? in
+            state.requests.append(recordedRequest)
+            return state.stubs[Self.key(method: request.httpMethod ?? "GET", url: url)]
         }
         guard let stub,
               let response = HTTPURLResponse(

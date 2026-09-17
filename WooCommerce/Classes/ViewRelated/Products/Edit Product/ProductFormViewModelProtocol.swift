@@ -35,6 +35,7 @@ struct ProductDuplicationSnapshot<ProductModel> {
 
 /// A view model for `ProductFormViewController` to add/edit a generic product model (e.g. `Product` or `ProductVariation`).
 ///
+@MainActor
 protocol ProductFormViewModelProtocol {
     associatedtype ProductModel: ProductFormDataModel, TaxClassRequestable
 

@@ -51,12 +51,14 @@ protocol ProductImageUploaderProtocol {
     ///   - siteID: The ID of the site to which images are uploaded to.
     ///   - localID: A temporary local ID of the product.
     ///   - remoteID: Remote product ID received from API.
+    @MainActor
     func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64)
 
     /// Saves the product remotely with the images after none is pending upload.
     /// - Parameters:
     ///   - key: identifiable information about the product.
     ///   - onProductSave: called after the product is saved remotely with the uploaded images.
+    @MainActor
     func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void)
 
@@ -81,6 +83,7 @@ protocol ProductImageUploaderProtocol {
     /// - Parameters:
     ///   - key: identifiable information about the product.
     ///   - originalImages: the image statuses before any edits.
+    @MainActor
     func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool
 
     /// Resets all internal states and tracking of image uploads for connected stores.
@@ -209,31 +212,27 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         return actionHandler
     }
 
+    @MainActor
     func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64) {
-        // Every caller is on the main thread today (view controllers and view models driven by them), but the
-        // protocol requirement stays nonisolated because `ProductFormViewModelProtocol.hasUnsavedChanges()`
-        // is not yet `@MainActor`. Depends on WOOMOB-4084.
-        MainActor.assumeIsolated {
-            let key = Key(siteID: siteID,
-                          productOrVariationID: localID,
-                          isLocalID: true)
-            guard let handler = actionHandlersByProduct[key] else {
-                return
-            }
-
-            // Update the product ID of handler to make sure that future product image uploads use the `remoteProductID` instead of `localProductID`
-            let remoteProductOrVariationID = localID.replacingID(remoteID)
-            handler.updateProductID(remoteProductOrVariationID)
-
-            actionHandlersByProduct.removeValue(forKey: key)
-            let keyWithRemoteProductID = Key(siteID: siteID,
-                                             productOrVariationID: remoteProductOrVariationID,
-                                             isLocalID: false)
-            actionHandlersByProduct[keyWithRemoteProductID] = handler
-
-            statusUpdatesExcludedProductKeys.remove(key)
-            statusUpdatesExcludedProductKeys.insert(keyWithRemoteProductID)
+        let key = Key(siteID: siteID,
+                      productOrVariationID: localID,
+                      isLocalID: true)
+        guard let handler = actionHandlersByProduct[key] else {
+            return
         }
+
+        // Update the product ID of handler to make sure that future product image uploads use the `remoteProductID` instead of `localProductID`
+        let remoteProductOrVariationID = localID.replacingID(remoteID)
+        handler.updateProductID(remoteProductOrVariationID)
+
+        actionHandlersByProduct.removeValue(forKey: key)
+        let keyWithRemoteProductID = Key(siteID: siteID,
+                                         productOrVariationID: remoteProductOrVariationID,
+                                         isLocalID: false)
+        actionHandlersByProduct[keyWithRemoteProductID] = handler
+
+        statusUpdatesExcludedProductKeys.remove(key)
+        statusUpdatesExcludedProductKeys.insert(keyWithRemoteProductID)
     }
 
     func stopEmittingErrors(key: ProductImageUploaderKey) {
@@ -259,74 +258,66 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
     }
 
+    @MainActor
     func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool {
-        // Every caller is on the main thread today (view controllers and view models driven by them), but the
-        // protocol requirement stays nonisolated because `ProductFormViewModelProtocol.hasUnsavedChanges()`
-        // is not yet `@MainActor`. Depends on WOOMOB-4084.
-        MainActor.assumeIsolated {
-            guard let handler = actionHandlersByProduct[key] else {
-                return false
+        guard let handler = actionHandlersByProduct[key] else {
+            return false
+        }
+        let productImagesSaver = imagesSaverByProduct[key]
+
+        if let productImagesSaver, productImagesSaver.imageStatusesToSave.isNotEmpty {
+            // If there are images scheduled to be saved, there are no unsaved changes if the image statuses to save match the latest image statuses.
+            return handler.productImageStatuses.images != productImagesSaver.imageStatusesToSave.images
+        } else {
+            if handler.productImageStatuses.hasPendingUpload {
+                return true
             }
-            let productImagesSaver = imagesSaverByProduct[key]
 
-            if let productImagesSaver, productImagesSaver.imageStatusesToSave.isNotEmpty {
-                // If there are images scheduled to be saved, there are no unsaved changes if the image statuses to save match the latest image statuses.
-                return handler.productImageStatuses.images != productImagesSaver.imageStatusesToSave.images
-            } else {
-                if handler.productImageStatuses.hasPendingUpload {
-                    return true
-                }
-
-                /// If there's a product saved in background, compare the images to determine unsaved changes.
-                if let savedProduct = productImagesSaver?.savedProduct {
-                    return handler.productImageStatuses.images.map { $0.imageID } != savedProduct.images.map { $0.imageID }
-                }
-
-                // Otherwise, there are unsaved changes if there is any difference in the remote image IDs between the
-                // original and latest product.
-                return handler.productImageStatuses.images.map { $0.imageID } != originalImages.map { $0.imageID }
+            /// If there's a product saved in background, compare the images to determine unsaved changes.
+            if let savedProduct = productImagesSaver?.savedProduct {
+                return handler.productImageStatuses.images.map { $0.imageID } != savedProduct.images.map { $0.imageID }
             }
+
+            // Otherwise, there are unsaved changes if there is any difference in the remote image IDs between the
+            // original and latest product.
+            return handler.productImageStatuses.images.map { $0.imageID } != originalImages.map { $0.imageID }
         }
     }
 
+    @MainActor
     func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
-        // Every caller is on the main thread today (view controllers and view models driven by them), but the
-        // protocol requirement stays nonisolated because `ProductFormViewModelProtocol.hasUnsavedChanges()`
-        // is not yet `@MainActor`. Depends on WOOMOB-4084.
-        MainActor.assumeIsolated {
-            // The product has to exist remotely in order to save its images remotely.
-            // In product creation, this save function should be called after a new product is saved remotely for the first time.
-            guard key.isLocalID == false else {
-                return onProductSave(.failure(ProductImageUploaderError.noRemoteProductIDFound))
-            }
+        // The product has to exist remotely in order to save its images remotely.
+        // In product creation, this save function should be called after a new product is saved remotely for the first time.
+        guard key.isLocalID == false else {
+            return onProductSave(.failure(ProductImageUploaderError.noRemoteProductIDFound))
+        }
 
-            guard let handler = actionHandlersByProduct[key] else {
-                return onProductSave(.failure(ProductImageUploaderError.noActionHandlerFound))
-            }
+        guard let handler = actionHandlersByProduct[key] else {
+            return onProductSave(.failure(ProductImageUploaderError.noActionHandlerFound))
+        }
 
-            let imagesSaver: ProductImagesSaver
-            if let productImagesSaver = imagesSaverByProduct[key] {
-                imagesSaver = productImagesSaver
-            } else {
-                imagesSaver = ProductImagesSaver(siteID: key.siteID,
-                                                 productOrVariationID: key.productOrVariationID,
-                                                 stores: stores)
-                imagesSaverByProduct[key] = imagesSaver
-            }
+        let imagesSaver: ProductImagesSaver
+        if let productImagesSaver = imagesSaverByProduct[key] {
+            imagesSaver = productImagesSaver
+        } else {
+            imagesSaver = ProductImagesSaver(siteID: key.siteID,
+                                             productOrVariationID: key.productOrVariationID,
+                                             stores: stores)
+            imagesSaverByProduct[key] = imagesSaver
+        }
 
-            imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler) { [weak self] result in
-                guard let self else { return }
-                onProductSave(result)
-                if case let .failure(error) = result {
-                    self.errorsSubject.send(.init(siteID: key.siteID,
-                                                  productOrVariationID: key.productOrVariationID,
-                                                  error: .failedSavingProductAfterImageUpload(error: error)))
-                }
-                self.updateProductIDOfImagesUploadedUsingLocalProductID(siteID: key.siteID,
-                                                                        productOrVariationID: key.productOrVariationID,
-                                                                        images: handler.productImageStatuses.images)
+        imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: handler) { [weak self] result in
+            guard let self else { return }
+            onProductSave(result)
+            if case let .failure(error) = result {
+                self.errorsSubject.send(.init(siteID: key.siteID,
+                                              productOrVariationID: key.productOrVariationID,
+                                              error: .failedSavingProductAfterImageUpload(error: error)))
             }
+            self.updateProductIDOfImagesUploadedUsingLocalProductID(siteID: key.siteID,
+                                                                    productOrVariationID: key.productOrVariationID,
+                                                                    images: handler.productImageStatuses.images)
         }
     }
 

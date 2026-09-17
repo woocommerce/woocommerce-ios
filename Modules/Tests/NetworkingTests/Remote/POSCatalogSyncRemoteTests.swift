@@ -1101,6 +1101,7 @@ private class MockFileManager: FileManager {
 // MARK: - Background Download State Tests
 
 extension POSCatalogSyncRemoteTests {
+    @MainActor
     @Test func downloadCatalog_saves_background_state() async throws {
         // Given
         let remote = createRemote()
@@ -1122,7 +1123,7 @@ extension POSCatalogSyncRemoteTests {
                 }
             }
 
-            Task {
+            Task { @MainActor in
                 _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
             }
         }

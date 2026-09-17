@@ -221,6 +221,20 @@ struct ConnectivityToolViewModelTests {
         #expect(properties?["test"] as? String == "analytics")
         #expect(properties?["success"] as? Bool == true)
         #expect(properties?["time_taken"] as? Double == 0.5)
+        #expect(properties?["skipped"] as? Bool == false)
+    }
+
+    @Test func test_requestResponse_event_when_test_is_skipped_then_carries_skipped_property() {
+        // Given
+        let event = WooAnalyticsEvent.ConnectivityTool.requestResponse(test: .analytics, success: true, timeTaken: 0.5, skipped: true)
+
+        // When
+        let properties = event.properties
+
+        // Then
+        #expect(properties["test"] as? String == "analytics")
+        #expect(properties["success"] as? Bool == true)
+        #expect(properties["skipped"] as? Bool == true)
     }
 
     // MARK: - testNotifications

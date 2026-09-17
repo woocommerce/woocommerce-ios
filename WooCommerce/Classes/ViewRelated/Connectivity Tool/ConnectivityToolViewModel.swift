@@ -167,6 +167,8 @@ final class ConnectivityToolViewModel {
                 // The site cannot answer this test: drop its card, keep the reason for support, move on.
                 DDLogInfo("Connectivity Tool: ⏭️ Skipped \(testCase.title): \(reason)")
                 cards.remove(at: cardIndex)
+                trackResponseEvent(for: testCase, success: true, timeTaken: timeTaken, skipped: true)
+                // `.empty` never reaches a card here; it only carries the reason into the support attachment.
                 latestTestResult.append(ConnectivityTestResult(testCase: testCase, result: .empty(reason), timeTaken: timeTaken))
                 continue
             }
@@ -520,7 +522,7 @@ final class ConnectivityToolViewModel {
 
     /// Tracks the event with the respective test response.
     ///
-    private func trackResponseEvent(for test: ConnectivityToolViewModel.ConnectivityTest, success: Bool, timeTaken: Double) {
+    private func trackResponseEvent(for test: ConnectivityToolViewModel.ConnectivityTest, success: Bool, timeTaken: Double, skipped: Bool = false) {
         let eventTest: WooAnalyticsEvent.ConnectivityTool.Test = {
             switch test {
             case .internetConnection: return .internet
@@ -532,7 +534,7 @@ final class ConnectivityToolViewModel {
             case .notifications: return .notifications
             }
         }()
-        analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken))
+        analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken, skipped: skipped))
     }
 
     private func noConnectionsIssueState() -> ConnectivityTool.Card {

@@ -165,7 +165,13 @@ struct InPersonPaymentsMenu: View {
                                                  onPluginSelected: viewModel.preferredPluginSelected)
             }
 
-            if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
+            if viewModel.countryRecovery.isLoading {
+                ProgressView(CardPresentPaymentCountryRecovery.Localization.loading)
+                    .padding()
+            }
+            if let recoveryNotice = viewModel.countryRecovery.notice {
+                PermanentNoticeView(notice: recoveryNotice)
+            } else if let onboardingNotice = viewModel.cardPresentPaymentsOnboardingNotice {
                 PermanentNoticeView(notice: onboardingNotice)
                     .transition(.opacity.animation(.easeInOut))
             }

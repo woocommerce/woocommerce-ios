@@ -106,6 +106,17 @@ struct PaymentMethodsView: View {
                     .padding(.horizontal)
                     .background(Color(.listForeground(modal: false)))
 
+                    if let message = viewModel.cardPaymentUnavailableMessage {
+                        FooterNotice(infoText: message)
+                    }
+                    if viewModel.countryRecovery.isLoading {
+                        ProgressView(CardPresentPaymentCountryRecovery.Localization.loading)
+                            .padding()
+                    }
+                    if let notice = viewModel.countryRecovery.notice {
+                        PermanentNoticeView(notice: notice)
+                    }
+
                     Button {
                         showingLearnMore = true
                         viewModel.learnMoreViewModel.learnMoreTapped()
@@ -152,6 +163,7 @@ struct PaymentMethodsView: View {
             })
         }
         .onAppear {
+            viewModel.countryRecovery.recoverIfNeeded()
             guard rootViewController != nil else {
                 return viewModel.logNoRootViewControllerError()
             }

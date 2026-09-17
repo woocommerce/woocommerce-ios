@@ -3,6 +3,7 @@
 
 25.7
 -----
+- [*] Payments: Recover missing store settings automatically and explain when an order’s currency prevents in-person card payment. [https://github.com/woocommerce/woocommerce-ios/pull/17896]
 - [Internal] POS: Moved the refund flow state out of POSOrderListController into a new POSRefundController. No user-visible change. [https://github.com/woocommerce/woocommerce-ios/pull/17864]
 - [Internal] Attribute push_notification_received/alert_pressed events to the notification's origin site instead of the selected site. [https://github.com/woocommerce/woocommerce-ios/pull/17848]
 - [*] Order Creation: Kept Popular and Last Sold suggestions stable while loading more products. [https://github.com/woocommerce/woocommerce-ios/pull/17838]

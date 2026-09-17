@@ -58,6 +58,11 @@ tags:
     visible:
       id: "products-table-view"
     timeout: 30000
+# Let the list finish re-sorting before reading the first row: the table stays visible
+# during the re-sort, so copyTextFrom can otherwise capture the previous order's first
+# row and the comparison below flakes.
+- waitForAnimationToEnd:
+    timeout: 15000
 - copyTextFrom:
     text: ".+"
     childOf:
@@ -82,6 +87,10 @@ tags:
     visible:
       id: "products-table-view"
     timeout: 30000
+# Same settle as the descending capture above, so the ascending first row is read from
+# the fully re-sorted list rather than the previous order.
+- waitForAnimationToEnd:
+    timeout: 15000
 - copyTextFrom:
     text: ".+"
     childOf:

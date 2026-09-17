@@ -18,8 +18,14 @@ tags:
     index: 0
 - tapOn:
     id: product-multiple-selection-done-button
-- swipe:
-    direction: UP
+# The order totals panel is pinned over the bottom of the form, so a blind swipe
+# can leave this row present in the hierarchy but covered: the tap is then
+# swallowed by the panel. Scroll until it is genuinely unobscured.
+- scrollUntilVisible:
+    element:
+      id: add-customer-note-button
+    direction: DOWN
+    visibilityPercentage: 100
 - tapOn:
     id: add-customer-note-button
 - tapOn:
@@ -30,38 +36,75 @@ tags:
       TEXT_TO_PASTE: Details ${SUITE_RUN_ID}
 - tapOn:
     id: edit-note-done-button
+# Verify the note on the order form, where it renders as a "Customer Note"
+# section. Order details has no customer-note section, so asserting it after
+# creation can never pass.
+- scrollUntilVisible:
+    element:
+      text: Details ${SUITE_RUN_ID}
+    direction: DOWN
+    visibilityPercentage: 100
+- assertVisible: Details ${SUITE_RUN_ID}
 - tapOn:
     id: new-order-create-button
 - extendedWaitUntil:
     visible:
       id: order-details-table-view
     timeout: 30000
-- scrollUntilVisible:
-    element:
-      text: Details ${SUITE_RUN_ID}
-    direction: DOWN
-- assertVisible: Details ${SUITE_RUN_ID}
-
 # Take a cash payment so this same run-owned order becomes receipt-eligible.
-- scrollUntilVisible:
-    element:
-      id: order-details-collect-payment-button
-    direction: DOWN
-- tapOn:
-    id: order-details-collect-payment-button
-- assertVisible:
-    id: payment-methods-header-label
+# Order details reloads asynchronously after the order is created, which moves
+# this row. A single tap therefore lands mid-reload and is swallowed roughly two
+# runs in three. Re-scroll and retry until the payment methods screen pushes.
+- repeat:
+    times: 3
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              id: payment-methods-header-label
+          commands:
+            - scrollUntilVisible:
+                element:
+                  id: order-details-collect-payment-button
+                direction: DOWN
+                visibilityPercentage: 100
+            - tapOn:
+                id: order-details-collect-payment-button
+            - waitForAnimationToEnd:
+                timeout: 5000
+- extendedWaitUntil:
+    visible:
+      id: payment-methods-header-label
+    timeout: 30000
 - tapOn:
     id: payment-methods-view-cash-row
 - assertVisible: Cash received
 - tapOn: Cash received
 - inputText: "9999"
 - tapOn: Mark Order as Complete
+# Order details reloads after the payment completes. Wait for the reloaded
+# screen to settle on the completed order before touching it, otherwise the
+# scroll and tap below race the reload and the tap lands on nothing.
 - extendedWaitUntil:
     visible:
-      text: See Receipt
+      text: Completed
     timeout: 30000
-- tapOn: See Receipt
+- scrollUntilVisible:
+    element:
+      id: order-details-see-receipt-button
+    direction: DOWN
+    visibilityPercentage: 100
+# The receipt is generated asynchronously after the order completes. The row
+# renders before its receipt is ready, so an immediate tap hits an inert
+# control and silently does nothing - no receipt screen and no error. Let the
+# screen settle, then retry the tap until the receipt actually opens.
+- waitForAnimationToEnd:
+    timeout: 10000
+# Tap by identifier. Matching the bare "See Receipt" text resolves to a label
+# whose reported bounds are relative to its cell ([0,100][94,120]), so the tap
+# landed in the navigation bar and silently did nothing.
+- tapOn:
+    id: order-details-see-receipt-button
 - extendedWaitUntil:
     visible:
       text: Receipt

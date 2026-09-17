@@ -601,6 +601,7 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.seeReceipt
         cell.rightText = nil
         cell.hideFootnote()
+        cell.accessibilityIdentifier = "order-details-see-receipt-button"
     }
 
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {

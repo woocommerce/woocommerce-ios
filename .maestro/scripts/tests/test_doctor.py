@@ -17,6 +17,26 @@ SPEC.loader.exec_module(DOCTOR)
 
 
 class DoctorTests(unittest.TestCase):
+    def test_reports_non_english_simulator_language(self) -> None:
+        completed = subprocess.CompletedProcess(
+            ["device_locale.py"],
+            1,
+            stdout="",
+            stderr=(
+                "Setup error: simulator sim-1 primary language is es-ES; "
+                "Maestro flows require English\n"
+            ),
+        )
+        with mock.patch.object(DOCTOR.subprocess, "run", return_value=completed):
+            passed, message = DOCTOR.check_simulator_locale("sim-1")
+
+        self.assertFalse(passed)
+        self.assertEqual(
+            "simulator language: Setup error: simulator sim-1 primary language is es-ES; "
+            "Maestro flows require English",
+            message,
+        )
+
     def test_reports_repository_toolchain_mismatch(self) -> None:
         completed = subprocess.CompletedProcess(
             ["check-toolchain.py"],

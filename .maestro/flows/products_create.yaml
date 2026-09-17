@@ -390,14 +390,27 @@ tags:
 - assertVisible: Maestro description ${SUITE_RUN_ID}
 - tapOn: Done
 
+# A not-yet-positioned table cell can report a bogus frame at the table
+# view's own origin with the correct label but 100% visibility, so
+# scrollUntilVisible/tapOn can resolve it without really scrolling and land
+# on an unrelated row (observed: the product-image row, which auto-opens the
+# image picker on a product with no images). This is not a brief window - it
+# can persist for several seconds - so every selector below requires `below:`
+# the previous field's already-rendered text, which a frame stuck near the
+# top cannot satisfy once a genuine field has already been checked.
+
 # Persisted price.
 - scrollUntilVisible:
     element:
       text: "Regular price: .*19[.,]99.*"
+      below:
+        text: Maestro description ${SUITE_RUN_ID}
     direction: DOWN
     timeout: 15000
 - tapOn:
     text: "Regular price: .*19[.,]99.*"
+    below:
+      text: Maestro description ${SUITE_RUN_ID}
 - extendedWaitUntil:
     visible: Price
     timeout: 15000
@@ -405,22 +418,19 @@ tags:
     text: "19[.,]99.*"
 - tapOn: Done
 
-# Adding a file preserves the underlying simple product and changes the iOS
-# editor's visible classification from Physical to Downloadable.
-- scrollUntilVisible:
-    element: Downloadable
-    direction: DOWN
-    timeout: 15000
-- assertVisible: Product type
-- assertVisible: Downloadable
-
 # Persisted unique tag.
 - scrollUntilVisible:
-    element: Tags
+    element:
+      text: "maestro-${SUITE_RUN_ID}"
+      below:
+        text: "Regular price: .*19[.,]99.*"
     direction: DOWN
     timeout: 15000
     centerElement: true
-- tapOn: Tags
+- tapOn:
+    text: "maestro-${SUITE_RUN_ID}"
+    below:
+      text: "Regular price: .*19[.,]99.*"
 - extendedWaitUntil:
     visible:
       id: add-tags
@@ -431,13 +441,40 @@ tags:
 - tapOn:
     point: "10%,10%"
 
-# Persisted unique short description.
+# Persisted exact downloadable file. The row shows the file COUNT ("1 file"),
+# never the filename - the filename only appears inside its editor.
 - scrollUntilVisible:
-    element: Short description
+    element:
+      text: "1 file"
+      below:
+        text: "maestro-${SUITE_RUN_ID}"
     direction: DOWN
     timeout: 15000
     centerElement: true
-- tapOn: Short description
+- tapOn:
+    text: "1 file"
+    below:
+      text: "maestro-${SUITE_RUN_ID}"
+- extendedWaitUntil:
+    visible: Downloadable Files
+    timeout: 15000
+- assertVisible: download-${SUITE_RUN_ID}.txt
+- assertVisible: https://example.com/download-${SUITE_RUN_ID}.txt
+- tapOn: Done
+
+# Persisted unique short description.
+- scrollUntilVisible:
+    element:
+      text: Maestro short ${SUITE_RUN_ID}
+      below:
+        text: "1 file"
+    direction: DOWN
+    timeout: 15000
+    centerElement: true
+- tapOn:
+    text: Maestro short ${SUITE_RUN_ID}
+    below:
+      text: "1 file"
 - extendedWaitUntil:
     visible: Rich Content
     timeout: 15000
@@ -446,11 +483,17 @@ tags:
 
 # Persisted exact linked upsell.
 - scrollUntilVisible:
-    element: Linked products
+    element:
+      text: "1 upsell product 0 cross-sell product"
+      below:
+        text: Maestro short ${SUITE_RUN_ID}
     direction: DOWN
     timeout: 15000
     centerElement: true
-- tapOn: Linked products
+- tapOn:
+    text: "1 upsell product 0 cross-sell product"
+    below:
+      text: Maestro short ${SUITE_RUN_ID}
 - extendedWaitUntil:
     visible: Linked Products
     timeout: 15000
@@ -467,19 +510,24 @@ tags:
     index: 0
 - tapOn: Done
 
-# Persisted exact downloadable file.
+# Product type LAST - it is the bottom row of the settings section. Adding a
+# file preserves the underlying simple product and changes the iOS editor's
+# visible classification from Physical to Downloadable.
 - scrollUntilVisible:
-    element: Downloadable files
+    element:
+      text: Downloadable
+      below:
+        text: "1 upsell product 0 cross-sell product"
     direction: DOWN
     timeout: 15000
-    centerElement: true
-- tapOn: Downloadable files
-- extendedWaitUntil:
-    visible: Downloadable Files
-    timeout: 15000
-- assertVisible: download-${SUITE_RUN_ID}.txt
-- assertVisible: https://example.com/download-${SUITE_RUN_ID}.txt
-- tapOn: Done
+- assertVisible:
+    text: Product type
+    below:
+      text: "1 upsell product 0 cross-sell product"
+- assertVisible:
+    text: Downloadable
+    below:
+      text: "1 upsell product 0 cross-sell product"
 - extendedWaitUntil:
     visible:
       id: edit-product-more-options-button

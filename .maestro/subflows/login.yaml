@@ -48,10 +48,7 @@ appId: ${APP_ID}
     visible: "Continue|Manage Privacy|Save Password.*|My store"
     timeout: 15000
 - runFlow:
-    when:
-      visible: "Save Password?"
-    commands:
-      - tapOn: "Not Now"
+    file: dismiss_save_password_prompt.yaml
 - extendedWaitUntil:
     visible: "Continue|Manage Privacy|My store"
     timeout: 15000

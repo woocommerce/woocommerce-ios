@@ -18,8 +18,14 @@ tags:
     index: 0
 - tapOn:
     id: product-multiple-selection-done-button
-- swipe:
-    direction: UP
+# The order totals panel is pinned over the bottom of the form, so a blind swipe
+# can leave this row present in the hierarchy but covered, and the tap is then
+# swallowed by the panel.
+- scrollUntilVisible:
+    element:
+      id: add-customer-note-button
+    direction: DOWN
+    visibilityPercentage: 100
 - tapOn:
     id: add-customer-note-button
 - tapOn:
@@ -30,29 +36,70 @@ tags:
       TEXT_TO_PASTE: Refund ${SUITE_RUN_ID}
 - tapOn:
     id: edit-note-done-button
+# Verify the note here, where it renders as a "Customer Note" section. Order
+# details has no customer-note section, so asserting it after creation cannot
+# pass.
+- scrollUntilVisible:
+    element:
+      text: Refund ${SUITE_RUN_ID}
+    direction: DOWN
+    visibilityPercentage: 100
+- assertVisible: Refund ${SUITE_RUN_ID}
 - tapOn:
     id: new-order-create-button
 - extendedWaitUntil:
     visible:
       id: order-details-table-view
     timeout: 30000
-- scrollUntilVisible:
-    element:
-      id: order-details-collect-payment-button
-    direction: DOWN
-- tapOn:
-    id: order-details-collect-payment-button
+# Order details reloads after creation, so a single tap is swallowed. Retry
+# until the payment methods screen pushes.
+- repeat:
+    times: 3
+    commands:
+      - runFlow:
+          when:
+            notVisible:
+              id: payment-methods-header-label
+          commands:
+            - scrollUntilVisible:
+                element:
+                  id: order-details-collect-payment-button
+                direction: DOWN
+                visibilityPercentage: 100
+            - tapOn:
+                id: order-details-collect-payment-button
+            - waitForAnimationToEnd:
+                timeout: 5000
+- extendedWaitUntil:
+    visible:
+      id: payment-methods-header-label
+    timeout: 30000
 - tapOn:
     id: payment-methods-view-cash-row
+- extendedWaitUntil:
+    visible: "Cash received"
+    timeout: 15000
 - tapOn: Cash received
 - inputText: "9999"
 - tapOn: Mark Order as Complete
+# Tap by identifier. Matching the bare "Issue Refund" text resolves to the
+# button's label, whose reported bounds are relative to its cell
+# (bounds=[0,100][346,128]), so the tap landed in the navigation bar and
+# silently did nothing.
 - extendedWaitUntil:
     visible:
-      text: Issue Refund
+      id: order-details-issue-refund-button
     timeout: 30000
-- tapOn: Issue Refund
-- assertVisible: Select all
+- scrollUntilVisible:
+    element:
+      id: order-details-issue-refund-button
+    direction: DOWN
+    visibilityPercentage: 100
+- tapOn:
+    id: order-details-issue-refund-button
+- extendedWaitUntil:
+    visible: "Select all"
+    timeout: 15000
 - tapOn: Select all
 - tapOn: Next
 - extendedWaitUntil:
@@ -60,13 +107,18 @@ tags:
       text: Refund
     timeout: 15000
 - tapOn: Refund
+# Issuing a refund raises a confirmation alert ("Are you sure you want to issue
+# a refund? This can't be undone.") with Cancel / Refund. Without confirming it
+# the refund is never submitted, so the flow waited for a result that could not
+# arrive.
+- waitForAnimationToEnd:
+    timeout: 10000
+- tapOn:
+    text: Refund
+    index: 0
+# The refunded section header is rendered upper-cased, and Maestro matches text
+# case-sensitively, so "Refunded Products" never matched.
 - extendedWaitUntil:
-    visible:
-      text: Refunded Products
+    visible: "(?i)refunded products"
     timeout: 30000
-- assertVisible: Refunded Products
-- scrollUntilVisible:
-    element:
-      text: Refund ${SUITE_RUN_ID}
-    direction: DOWN
-- assertVisible: Refund ${SUITE_RUN_ID}
+- assertVisible: "(?i)refunded products"

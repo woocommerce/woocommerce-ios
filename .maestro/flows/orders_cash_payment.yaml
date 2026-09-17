@@ -18,8 +18,14 @@ tags:
     index: 0
 - tapOn:
     id: product-multiple-selection-done-button
-- swipe:
-    direction: UP
+# The order totals panel is pinned over the bottom of the form, so a blind swipe
+# can leave this row present in the hierarchy but covered: the tap is then
+# swallowed by the panel. Scroll until it is genuinely unobscured.
+- scrollUntilVisible:
+    element:
+      id: add-customer-note-button
+    direction: DOWN
+    visibilityPercentage: 100
 - tapOn:
     id: add-customer-note-button
 - tapOn:
@@ -30,6 +36,15 @@ tags:
       TEXT_TO_PASTE: Cash ${SUITE_RUN_ID}
 - tapOn:
     id: edit-note-done-button
+# Verify the note on the order form, where it is rendered as a "Customer Note"
+# section. The order details screen has no customer-note section at all, so the
+# original post-creation assertion could never pass.
+- scrollUntilVisible:
+    element:
+      text: Cash ${SUITE_RUN_ID}
+    direction: DOWN
+    visibilityPercentage: 100
+- assertVisible: Cash ${SUITE_RUN_ID}
 - tapOn:
     id: new-order-create-button
 - extendedWaitUntil:
@@ -56,8 +71,3 @@ tags:
       text: Completed
     timeout: 30000
 - assertVisible: Completed
-- scrollUntilVisible:
-    element:
-      text: Cash ${SUITE_RUN_ID}
-    direction: DOWN
-- assertVisible: Cash ${SUITE_RUN_ID}

@@ -399,10 +399,15 @@ extension WooAnalyticsEvent {
             return properties
         }
 
-        public static func markAsPaidSuccess(millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .pointOfSaleMarkAsPaidSuccess, properties: [
+        public static func markAsPaidSuccess(order: Order,
+                                             countryCode: CountryCode,
+                                             millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .pointOfSaleMarkAsPaidSuccess, properties: paymentProperties(for: order).merging([
+                Key.countryCode: countryCode.rawValue,
+                Key.paymentMethodType: "mark_as_paid",
+                Key.gatewayID: "unknown",
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
-            ])
+            ], uniquingKeysWith: { _, new in new }))
         }
 
         static func searchButtonTapped(itemListType: ItemListType) -> WooAnalyticsEvent {

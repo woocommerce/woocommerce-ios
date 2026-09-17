@@ -37,8 +37,10 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
         didCallTrackSuccessfulCashPayment = true
     }
 
+    var markAsPaidPaymentOrder: Order?
     var didCallTrackSuccessfulMarkAsPaidPayment = false
-    func trackSuccessfulMarkAsPaidPayment() {
+    func trackSuccessfulMarkAsPaidPayment(order: Yosemite.Order) {
+        markAsPaidPaymentOrder = order
         didCallTrackSuccessfulMarkAsPaidPayment = true
     }
 

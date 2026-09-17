@@ -599,7 +599,7 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 
     func trackSuccessfulScanToPayPayment(order: Yosemite.Order) {}
 
-    func trackSuccessfulMarkAsPaidPayment() {}
+    func trackSuccessfulMarkAsPaidPayment(order: Yosemite.Order) {}
 }
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {

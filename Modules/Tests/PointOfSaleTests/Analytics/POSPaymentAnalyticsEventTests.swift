@@ -83,17 +83,29 @@ struct POSPaymentAnalyticsEventTests {
         #expect(event.properties["plugin_slug"] as? String == "unknown")
     }
 
-    @Test func test_noncanonical_success_events_then_do_not_report_payment_value() {
+    @Test func test_mark_as_paid_success_then_reports_value_with_unknown_gateway() {
+        // Given
+        let order = Order.fake().copy(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: "stripe")
+
         // When
-        let events = [
-            WooAnalyticsEvent.PointOfSale.interacCollectPaymentSuccess(forGatewayID: "stripe", countryCode: .CA, cardReaderModel: "WISEPAD_3"),
-            WooAnalyticsEvent.PointOfSale.markAsPaidSuccess(millisecondsSinceCustomerIteractionStarted: 0)
-        ]
+        let event = WooAnalyticsEvent.PointOfSale.markAsPaidSuccess(
+            order: order, countryCode: .US, millisecondsSinceCustomerIteractionStarted: 0)
 
         // Then
-        for event in events {
-            #expect(event.properties["amount_normalized"] == nil)
-            #expect(event.properties["currency"] == nil)
-        }
+        #expect(event.properties["amount_normalized"] as? Int == 1999)
+        #expect(event.properties["currency"] as? String == "USD")
+        #expect(event.properties["order_id"] as? Int64 == 42)
+        #expect(event.properties["country"] as? String == "US")
+        #expect(event.properties["payment_method_type"] as? String == "mark_as_paid")
+        #expect(event.properties["plugin_slug"] as? String == "unknown")
+    }
+
+    @Test func test_noncanonical_success_events_then_do_not_report_payment_value() {
+        // When
+        let event = WooAnalyticsEvent.PointOfSale.interacCollectPaymentSuccess(forGatewayID: "stripe", countryCode: .CA, cardReaderModel: "WISEPAD_3")
+
+        // Then
+        #expect(event.properties["amount_normalized"] == nil)
+        #expect(event.properties["currency"] == nil)
     }
 }

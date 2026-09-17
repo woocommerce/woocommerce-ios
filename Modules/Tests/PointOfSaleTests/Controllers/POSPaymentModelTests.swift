@@ -549,12 +549,14 @@ struct POSPaymentModelTests {
         orderProvider.orderToReturn = order
         let celebration = MockPaymentCaptureCelebration()
         let analytics = MockPOSAnalytics()
+        let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
 
         let sut = makePaymentController(
             orderProvider: orderProvider,
             markAsPaidHandler: handler,
             analytics: analytics,
-            celebration: celebration)
+            celebration: celebration,
+            collectOrderPaymentAnalyticsTracker: tracker)
 
         try await sut.confirmMarkAsPaidPayment()
 
@@ -562,6 +564,7 @@ struct POSPaymentModelTests {
         #expect(handler.markOrderAsPaidReceivedOrder?.orderID == order.orderID)
         #expect(sut.paymentState.markAsPaid == .paymentSuccess)
         #expect(celebration.celebrationWasCalled == true)
+        #expect(tracker.markAsPaidPaymentOrder == order)
         #expect(analytics.events.contains { $0.eventName == WooAnalyticsStat.pointOfSaleMarkAsPaidConfirmed.rawValue })
     }
 

@@ -937,7 +937,7 @@ extension POSPaymentModel {
             paymentState.markAsPaid = .processing
             try await markAsPaidHandler.markOrderAsPaid(for: order, note: note)
             try? await postPaymentStep?()
-            markAsPaidPaymentSuccess()
+            markAsPaidPaymentSuccess(order: order)
         } catch {
             // Roll back so the merchant can try again or cancel.
             paymentState.markAsPaid = .confirming
@@ -946,9 +946,9 @@ extension POSPaymentModel {
         }
     }
 
-    private func markAsPaidPaymentSuccess() {
+    private func markAsPaidPaymentSuccess(order: Order) {
         paymentState.markAsPaid = .paymentSuccess
-        collectOrderPaymentAnalyticsTracker.trackSuccessfulMarkAsPaidPayment()
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulMarkAsPaidPayment(order: order)
         celebration.celebrate()
     }
 }

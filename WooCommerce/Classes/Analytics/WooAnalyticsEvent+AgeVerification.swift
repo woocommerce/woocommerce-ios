@@ -144,6 +144,16 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .accountAgeVerificationAction, properties: [Keys.action: actionValue(for: context).rawValue])
         }
 
+        /// A tap on Contact Support from a blocking wall or the underage alert.
+        static func contactSupportTapped(screen: Screen) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .accountAgeRestrictionContactSupportTapped, properties: [Keys.screen: screen.rawValue])
+        }
+
+        /// A tap on Contact Support from the blocking wall in the given context.
+        static func contactSupportTapped(for context: SignificantChangeBlockingContext) -> WooAnalyticsEvent {
+            contactSupportTapped(screen: screenValue(for: context))
+        }
+
         /// The app handed a consent question to the system (iOS-only; on Android, Play manages the ask).
         static func consentRequested(
             changeType: ChangeType,

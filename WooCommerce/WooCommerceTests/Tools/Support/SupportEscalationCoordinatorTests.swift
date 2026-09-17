@@ -51,6 +51,33 @@ struct SupportEscalationCoordinatorTests {
         #expect(zendesk.latestInvokedTags.contains("ai_skip") == false)
     }
 
+    @Test func supportForm_when_originTag_is_set_then_includes_it_in_tags() async throws {
+        // Given
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk, originTag: "origin:age-restriction")
+
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: nil,
+                                     entryPoint: .preLogin,
+                                     hasReceivedBotResponse: false)
+        await coordinator.directTicketCreationTask?.value
+
+        // When
+        let viewModel = try #require(supportFormViewModel(from: navigationController))
+        viewModel.area = viewModel.areas.first
+        viewModel.subject = "Subject"
+        viewModel.siteAddress = "https://example.com"
+        viewModel.description = "Details"
+        await viewModel.submitSupportRequest()
+
+        // Then
+        #expect(zendesk.latestInvokedTags.contains("origin:age-restriction"))
+    }
+
     @Test func handleEscalation_when_supportAreaInfo_is_nil_and_siteAddress_is_available_then_prefills_siteAddress() async {
         // Given
         let zendesk = MockZendeskManager()
@@ -670,7 +697,8 @@ private extension SupportEscalationCoordinatorTests {
                             sessionManager: .makeForTesting(authenticated: true, defaultSite: Site.fake().copy(url: "https://example.com"))
                          ),
                          transcriptConsentPresenter: SupportEscalationCoordinator.TranscriptConsentPresenter? =
-                            SupportEscalationCoordinatorTests.sendTicketConsentPresenter) -> SupportEscalationCoordinator {
+                            SupportEscalationCoordinatorTests.sendTicketConsentPresenter,
+                         originTag: String? = nil) -> SupportEscalationCoordinator {
         SupportEscalationCoordinator(
             navigationController: navigationController,
             additionalAttachmentsProvider: additionalAttachmentsProvider,
@@ -679,7 +707,8 @@ private extension SupportEscalationCoordinatorTests {
             zendeskProvider: zendesk,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
             stores: stores,
-            transcriptConsentPresenter: transcriptConsentPresenter
+            transcriptConsentPresenter: transcriptConsentPresenter,
+            originTag: originTag
         )
     }
 

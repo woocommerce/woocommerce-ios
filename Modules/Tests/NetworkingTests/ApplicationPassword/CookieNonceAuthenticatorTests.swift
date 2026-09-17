@@ -829,6 +829,9 @@ private extension CookieNonceAuthenticatorTests {
             "<input name=\"pwd\" id=\"user_pass\" type=\"password\"></form>"
     }
 
+    /// Main-actor so that concurrent callers hand their requests to the network one after the other: the
+    /// coalescing test needs both protected requests dispatched before the first 401 starts the login sequence.
+    @MainActor
     static func responseData(for request: URLRequest, using network: WordPressOrgNetwork) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { (result: Result<Data, Swift.Error>) in
@@ -1181,10 +1184,9 @@ private final class CookieNonceLoopbackServer: @unchecked Sendable {
             self?.handle(connection)
         }
         listener.start(queue: queue)
+        let isReady = ready.wait(timeout: .now() + 5) == .success
         let failure = startupError.withLock { $0 }
-        guard ready.wait(timeout: .now() + 5) == .success,
-              failure == nil,
-              let port = listener.port else {
+        guard isReady, failure == nil, let port = listener.port else {
             listener.cancel()
             throw failure ?? URLError(.cannotConnectToHost)
         }

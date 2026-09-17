@@ -405,7 +405,7 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleMarkAsPaidSuccess, properties: paymentProperties(for: order).merging([
                 Key.countryCode: countryCode.rawValue,
                 Key.paymentMethodType: "mark_as_paid",
-                Key.gatewayID: "unknown",
+                Key.gatewayID: "other",
                 Key.millisecondsSinceCustomerInteractionStarted: "\(millisecondsSinceCustomerIteractionStarted)",
             ], uniquingKeysWith: { _, new in new }))
         }

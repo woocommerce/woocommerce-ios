@@ -83,7 +83,7 @@ struct POSPaymentAnalyticsEventTests {
         #expect(event.properties["plugin_slug"] as? String == "unknown")
     }
 
-    @Test func test_mark_as_paid_success_then_reports_value_with_unknown_gateway() {
+    @Test func test_mark_as_paid_success_then_reports_value_with_other_gateway() {
         // Given
         let order = Order.fake().copy(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: "stripe")
 
@@ -97,7 +97,7 @@ struct POSPaymentAnalyticsEventTests {
         #expect(event.properties["order_id"] as? Int64 == 42)
         #expect(event.properties["country"] as? String == "US")
         #expect(event.properties["payment_method_type"] as? String == "mark_as_paid")
-        #expect(event.properties["plugin_slug"] as? String == "unknown")
+        #expect(event.properties["plugin_slug"] as? String == "other")
     }
 
     @Test func test_noncanonical_success_events_then_do_not_report_payment_value() {

@@ -52,7 +52,11 @@ public func assertThat<T>(_ subject: Any?, isAnInstanceOf expectedType: T.Type, 
 /// Asserts that the async throws `expression` throws an error, and asserts the given Bool expression
 /// with the generated error.
 ///
-public func assertThrowsError(_ expression: () async throws -> (), errorAssert: (Error) -> Bool, file: StaticString = #filePath, line: UInt = #line) async {
+public func assertThrowsError(_ expression: () async throws -> (),
+                              errorAssert: (Error) -> Bool,
+                              file: StaticString = #filePath,
+                              line: UInt = #line,
+                              isolation: isolated (any Actor)? = #isolation) async {
     do {
         _ = try await expression()
         XCTFail("It should throw an error",

@@ -108,8 +108,11 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         countryRecovery.$configuration.dropFirst().sink { [weak self] configuration in
             guard let self else { return }
             cardPresentPaymentsConfiguration = configuration
+            // A cached state may not be published again when country support returns.
+            refreshAfterNewOnboardingState(onboardingUseCase.state)
             runCardPresentPaymentsOnboardingIfPossible()
-            Task { @MainActor in await self.updateOutputProperties() }
+            updateCardReadersSection()
+            Task { @MainActor in await self.updateTapToPaySection() }
         }.store(in: &cancellables)
         observeOnboardingChanges()
         runCardPresentPaymentsOnboardingIfPossible()
@@ -246,8 +249,6 @@ private extension InPersonPaymentsMenuViewModel {
             return
         }
 
-        // A cached state may not be published again when country support returns.
-        refreshAfterNewOnboardingState(onboardingUseCase.state)
         onboardingUseCase.refreshIfNecessary()
     }
 

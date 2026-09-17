@@ -188,16 +188,15 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         let storage = MockStorageManager()
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.sessionManager.setStoreId(sampleStoreID)
-        let previousSettings = ServiceLocator.selectedSiteSettings
         let settings = SelectedSiteSettings(stores: stores, storageManager: storage)
-        ServiceLocator.setSelectedSiteSettings(settings)
-        defer { ServiceLocator.setSelectedSiteSettings(previousSettings) }
         let dependencies = InPersonPaymentsMenuViewModel.Dependencies(
-            cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
+            cardPresentPaymentsConfiguration: .init(country: .unknown),
             onboardingUseCase: mockOnboardingUseCase,
             cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
             wooPaymentsPayoutService: nil,
-            systemStatusService: systemStatusService)
+            systemStatusService: systemStatusService,
+            stores: stores,
+            siteSettings: settings)
         let menu = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
                                                 dependencies: dependencies,
                                                 payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
@@ -216,7 +215,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
             }, completion: { continuation.resume() }, on: .main)
         }
         settings.refresh()
-        XCTAssertEqual(SiteAddress().countryCode, .GB)
+        XCTAssertEqual(SiteAddress(siteSettings: settings.siteSettings).countryCode, .GB)
         await menu.onAppear()
 
         // Then
@@ -224,12 +223,50 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         XCTAssertTrue(mockOnboardingUseCase.refreshIfNecessaryWasCalled)
     }
 
+    func test_country_change_when_settings_arrive_then_does_not_refresh_payment_gateways() async {
+        // Given
+        let settings = MockSelectedSiteSettings()
+        let changes = PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>()
+        settings.mockSettingsStream = changes.eraseToAnyPublisher()
+        let toggle = MockInPersonPaymentsCashOnDeliveryToggleRowViewModel()
+        let menu = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                                dependencies: .init(cardPresentPaymentsConfiguration: .init(country: .unknown),
+                                                                    onboardingUseCase: mockOnboardingUseCase,
+                                                                    cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                    wooPaymentsPayoutService: nil,
+                                                                    systemStatusService: MockSystemStatusService(),
+                                                                    siteSettings: settings),
+                                                payInPersonToggleViewModel: toggle)
+        let initialized = expectation(description: "Initial country visibility applied")
+        let initialSubscription = menu.$shouldShowCardReaderSection.dropFirst().first().sink { _ in initialized.fulfill() }
+        defer { initialSubscription.cancel() }
+        await fulfillment(of: [initialized], timeout: 5)
+        toggle.spyDidCallRefreshState = false
+
+        let recovered = expectation(description: "Country recovery updated visibility")
+        var refreshedPaymentGateways = false
+        let recoverySubscription = menu.$shouldShowCardReaderSection.first(where: { $0 }).sink { _ in
+            refreshedPaymentGateways = toggle.spyDidCallRefreshState
+            recovered.fulfill()
+        }
+        defer { recoverySubscription.cancel() }
+
+        // When
+        sendCountry("GB", to: changes)
+        await fulfillment(of: [recovered], timeout: 5)
+
+        // Then
+        XCTAssertTrue(menu.shouldShowCardReaderSection)
+        XCTAssertFalse(refreshedPaymentGateways)
+    }
+
     func test_country_change_when_unsupported_then_clears_onboarding_notice_and_loading() {
         for state in [CardPresentPaymentOnboardingState.pluginSetupNotCompleted(plugin: .wcPay), .loading] {
             // Given
             let changes = PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>()
             let menu = makeMenuForCountryChanges(state: state, changes: changes)
-            waitUntil { menu.cardPresentPaymentsOnboardingNotice != nil || menu.backgroundOnboardingInProgress }
+            XCTAssertEqual(menu.backgroundOnboardingInProgress, state == .loading)
+            XCTAssertEqual(menu.cardPresentPaymentsOnboardingNotice != nil, state != .loading)
 
             // When
             sendCountry("LT", to: changes)
@@ -247,7 +284,7 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
         // Given
         let changes = PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>()
         let menu = makeMenuForCountryChanges(state: .completed(plugin: .wcPayPreferred), changes: changes)
-        waitUntil { menu.shouldShowPaymentOptionsSection }
+        XCTAssertTrue(menu.shouldShowPaymentOptionsSection)
         XCTAssertFalse(menu.shouldDisableManageCardReaders)
 
         // When
@@ -276,14 +313,16 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
     ) -> InPersonPaymentsMenuViewModel {
         let settings = MockSelectedSiteSettings()
         settings.mockSettingsStream = changes.eraseToAnyPublisher()
-        return InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
-                                            dependencies: .init(cardPresentPaymentsConfiguration: .init(country: .GB),
-                                                                onboardingUseCase: MockCardPresentPaymentsOnboardingUseCase(initial: state),
-                                                                cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
-                                                                wooPaymentsPayoutService: nil,
-                                                                systemStatusService: systemStatusService,
-                                                                siteSettings: settings),
-                                            payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
+        let menu = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                                dependencies: .init(cardPresentPaymentsConfiguration: .init(country: .unknown),
+                                                                    onboardingUseCase: MockCardPresentPaymentsOnboardingUseCase(initial: state),
+                                                                    cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                    wooPaymentsPayoutService: nil,
+                                                                    systemStatusService: systemStatusService,
+                                                                    siteSettings: settings),
+                                                payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
+        sendCountry("GB", to: changes)
+        return menu
     }
 
     private func sendCountry(_ country: String, to changes: PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>) {

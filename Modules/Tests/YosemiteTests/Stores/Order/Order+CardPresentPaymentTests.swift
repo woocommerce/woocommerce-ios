@@ -52,14 +52,6 @@ final class Order_CardPresentPaymentTests: XCTestCase {
         XCTAssertEqual(order.cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: configuration, products: []), .ineligible)
     }
 
-    func test_eligibility_when_currency_is_different_than_configuration_then_is_not_eligible() {
-        // Given
-        let order = eligibleOrder.copy(currency: "EUR")
-
-        // Then
-        XCTAssertEqual(order.cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: configuration, products: []), .unsupportedCurrency("EUR"))
-    }
-
     func test_eligibility_when_there_is_a_subscription_product_then_is_not_eligible() {
         // Given
         let productID: Int64 = 1
@@ -71,14 +63,16 @@ final class Order_CardPresentPaymentTests: XCTestCase {
     }
 
     func test_eligibility_when_only_currency_is_unsupported_then_returns_currency_reason() {
-        // Given
-        let order = eligibleOrder.copy(currency: "eur")
+        for currency in ["EUR", "eur"] {
+            // Given
+            let order = eligibleOrder.copy(currency: currency)
 
-        // When
-        let result = order.cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: configuration, products: [])
+            // When
+            let result = order.cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: configuration, products: [])
 
-        // Then
-        XCTAssertEqual(result, .unsupportedCurrency("EUR"))
+            // Then
+            XCTAssertEqual(result, .unsupportedCurrency("EUR"))
+        }
     }
 
     func test_eligibility_when_order_is_paid_then_does_not_report_currency_as_the_reason() {

@@ -329,6 +329,7 @@
 		3F39F0CD2F624A4B00B68326 /* PBXFileSystemSynchronizedBuildFileExceptionSet */ = {
 			isa = PBXFileSystemSynchronizedBuildFileExceptionSet;
 			membershipExceptions = (
+				"Extensions/Dictionary+Woo.swift",
 				Notifications/PushNotificationRegistrationState.swift,
 				Notifications/PushNotificationSharedConstants.swift,
 			);

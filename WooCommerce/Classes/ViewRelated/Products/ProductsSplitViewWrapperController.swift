@@ -8,6 +8,7 @@ final class ProductsSplitViewWrapperController: UIViewController, UsesCompactLay
     private lazy var coordinator = ProductsSplitViewCoordinator(siteID: siteID,
                                                                                               splitViewController: productsSplitViewController)
     private lazy var productsSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView,
+                                                                          didCollapseHandler: handleDidCollapse,
                                                                           didExpandHandler: handleDidExpand)
 
     init(siteID: Int64) {
@@ -63,6 +64,10 @@ private extension ProductsSplitViewWrapperController {
 
     func handleDidExpand(splitViewController: UISplitViewController) {
         coordinator.didExpand()
+    }
+
+    func handleDidCollapse(splitViewController: UISplitViewController) {
+        coordinator.didCollapse()
     }
 }
 

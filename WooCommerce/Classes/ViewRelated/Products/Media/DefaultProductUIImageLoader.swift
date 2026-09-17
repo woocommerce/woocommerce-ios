@@ -33,13 +33,26 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
     private var assetUploadSubscription: AnyCancellable?
 
     /// - Parameters:
-    ///   - productImageActionHandler: if non-nil, the asset image is used after being uploaded to a remote image to avoid an extra network call.
-    ///     Set this property when images are being uploaded in the scope.
     ///   - imageService: provides images given a URL.
     ///   - phAssetImageLoaderProvider: provides a `PHAssetImageLoader` instance that loads an image given a `PHAsset` asset.
     ///     Only non-nil if `PHAsset` image request is used (e.g. image upload).
     ///     It is a callback because we lazy load `PHAssetImageLoader` to avoid triggering permission alert by initializing `PHImageManager` before it is used.
-    init(productImageActionHandler: ProductImageActionHandler? = nil,
+    init(imageService: ImageService = ServiceLocator.imageService,
+         phAssetImageLoaderProvider: (() -> PHAssetImageLoader)? = nil) {
+        self.productImageActionHandler = nil
+        self.imageService = imageService
+        self.phAssetImageLoaderProvider = phAssetImageLoaderProvider
+        self.imageStorage = ImageStorage()
+    }
+
+    /// Use when images are being uploaded in the scope: the asset image is reused after being uploaded to a remote image
+    /// to avoid an extra network call. Main-actor isolated because it subscribes to the main-actor `ProductImageActionHandler`.
+    /// - Parameters:
+    ///   - productImageActionHandler: the handler whose asset uploads are observed.
+    ///   - imageService: provides images given a URL.
+    ///   - phAssetImageLoaderProvider: see the other initializer.
+    @MainActor
+    init(productImageActionHandler: ProductImageActionHandler,
          imageService: ImageService = ServiceLocator.imageService,
          phAssetImageLoaderProvider: (() -> PHAssetImageLoader)? = nil) {
         self.productImageActionHandler = productImageActionHandler
@@ -47,7 +60,7 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         self.phAssetImageLoaderProvider = phAssetImageLoaderProvider
         self.imageStorage = ImageStorage()
 
-        assetUploadSubscription = productImageActionHandler?.addAssetUploadObserver(self) { [weak self] asset, result in
+        assetUploadSubscription = productImageActionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
             guard let self else { return }
             guard case let .success(productImage) = result else {
                 return

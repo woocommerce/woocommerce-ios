@@ -5,6 +5,7 @@ import UIKit
 /// Delegates VC construction to `ProductDetailsFactory` and applies the requested presentation style.
 class ProductDetailNativeCoordinator {
 
+    @MainActor
     func viewController(
         product: Product,
         presentationStyle: ProductDetailNavigator.Presentation,

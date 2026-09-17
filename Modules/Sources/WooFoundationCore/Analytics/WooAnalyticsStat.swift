@@ -247,8 +247,8 @@ public enum WooAnalyticsStat: String {
     case sitePickerListSavingSuccess = "site_picker_list_saving_success"
     case sitePickerListSavingFailure = "site_picker_list_saving_failure"
 
-    /// Tracked when the selected site is reset because WPCom returned an `unknown_blog` error.
-    case selectedSiteResetDueToUnknownBlog = "selected_site_reset_due_to_unknown_blog"
+    /// Tracked when the selected site is reset, with the cause recorded in the `reason` property.
+    case selectedSiteReset = "selected_site_reset"
 
     // MARK: Site creation
     //
@@ -1439,6 +1439,15 @@ public enum WooAnalyticsStat: String {
     case supportChatTicketCreationFailed = "support_chat_ticket_creation_failed"
     case supportChatResolutionButtonShown = "support_chat_resolution_button_shown"
     case supportChatMarkResolvedTapped = "support_chat_mark_resolved_tapped"
+
+    // MARK: Age verification / parental consent events
+    // Names shared with Android (`account_age_restriction_checked`, `..._dialog_shown`,
+    // `..._verification_action`); the consent request/resolution events are iOS-only.
+    case accountAgeRestrictionChecked = "account_age_restriction_checked"
+    case accountAgeRestrictionDialogShown = "account_age_restriction_dialog_shown"
+    case accountAgeVerificationAction = "account_age_verification_action"
+    case accountAgeConsentRequested = "account_age_consent_requested"
+    case accountAgeConsentResolved = "account_age_consent_resolved"
 }
 
 extension WooAnalyticsStat {
@@ -1472,6 +1481,10 @@ extension WooAnalyticsStat {
         // `site_url` with the currently selected site.
         case .wooPushTokenRegisterSuccess, .wooPushTokenRegisterError,
              .wooPushTokenDeleteSuccess, .wooPushTokenDeleteError:
+            return false
+        // Received/pressed push notification events attribute `blog_id` / `site_url` to the notification's
+        // origin site (read from the APNS payload) via a factory, so opt out of the default-site enrichment.
+        case .pushNotificationReceived, .pushNotificationAlertPressed:
             return false
         default:
             return true

@@ -1,5 +1,6 @@
 import Yosemite
 
+@MainActor
 protocol ProductImagesProductIDUpdaterProtocol {
     /// Updates the `parent_id` of the  `productImage`(media) using the provided `productID`.
     ///
@@ -13,6 +14,7 @@ protocol ProductImagesProductIDUpdaterProtocol {
                               productImage: ProductImage) async throws -> Media
 }
 
+@MainActor
 struct ProductImagesProductIDUpdater {
     private let stores: StoresManager
 
@@ -32,7 +34,6 @@ extension ProductImagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol {
 }
 
 private extension ProductImagesProductIDUpdater {
-    @MainActor // Using `@MainActor` as `Dispatcher` expects the `dispatch` method to be called in main thread.
     func updateProductIDFor(productImageID: Int64,
                             siteID: Int64,
                             productID: Int64) async throws -> Media {

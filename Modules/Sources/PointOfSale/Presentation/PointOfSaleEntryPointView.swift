@@ -164,9 +164,9 @@ public struct PointOfSaleEntryPointView: View {
         self.receiptSender = receiptSender
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
-                                                      refundsService: refundsService,
-                                                      refundSubmissionProcessor: refundSubmissionProcessor)
+                                                      refundsService: refundsService)
         self.orderListModel = POSOrderListModel(ordersController: ordersController,
+                                                refundController: POSRefundController(refundSubmissionProcessor: refundSubmissionProcessor),
                                                 receiptSender: receiptSender,
                                                 refundSubmissionModel: refundSubmissionProcessor.stateModel)
         if isLocalCatalogEligible, let grdbManager {

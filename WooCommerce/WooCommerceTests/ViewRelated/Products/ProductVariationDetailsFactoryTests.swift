@@ -3,6 +3,7 @@ import Yosemite
 import Fakes
 @testable import WooCommerce
 
+@MainActor
 final class ProductVariationDetailsFactoryTests: XCTestCase {
     func test_factory_creates_product_variation_form() throws {
         // Arrange

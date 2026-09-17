@@ -5,6 +5,7 @@ import XCTest
 import Yosemite
 import Networking
 
+@MainActor
 final class ProductImageUploaderTests: XCTestCase {
     private let siteID: Int64 = 134
     private let productID = ProductOrVariationID.product(id: 606)
@@ -53,11 +54,11 @@ final class ProductImageUploaderTests: XCTestCase {
 
     private func createImageUploader(stores: StoresManager,
                                      featureFlag: MockFeatureFlagService,
-                                     productIDUpdater: ProductImagesProductIDUpdaterProtocol = MockProductImagesProductIDUpdater()) -> ProductImageUploader {
+                                     productIDUpdater: ProductImagesProductIDUpdaterProtocol? = nil) -> ProductImageUploader {
         return ProductImageUploader(
             stores: stores,
             featureFlagService: featureFlag,
-            imagesProductIDUpdater: productIDUpdater,
+            imagesProductIDUpdater: productIDUpdater ?? MockProductImagesProductIDUpdater(),
             imageStatusStorage: storage
         )
     }

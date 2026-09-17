@@ -185,6 +185,56 @@ final class JetpackConnectionServiceTests: XCTestCase {
         XCTAssertEqual(email, testEmail)
         XCTAssertEqual(fetchCount, 2)
     }
+
+    // MARK: - isJetpackInOfflineMode
+
+    func test_isJetpackInOfflineMode_returns_true_when_offline_mode_is_active() async {
+        // Given
+        let service = makeService()
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            if case .fetchJetpackConnectionStatus(_, let completion) = action {
+                completion(.success(JetpackConnectionStatus(offlineMode: .init(isActive: true))))
+            }
+        }
+
+        // When
+        let isOffline = await service.isJetpackInOfflineMode()
+
+        // Then
+        XCTAssertTrue(isOffline)
+    }
+
+    func test_isJetpackInOfflineMode_returns_false_when_offline_mode_is_inactive() async {
+        // Given
+        let service = makeService()
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            if case .fetchJetpackConnectionStatus(_, let completion) = action {
+                completion(.success(JetpackConnectionStatus(offlineMode: .init(isActive: false))))
+            }
+        }
+
+        // When
+        let isOffline = await service.isJetpackInOfflineMode()
+
+        // Then
+        XCTAssertFalse(isOffline)
+    }
+
+    func test_isJetpackInOfflineMode_returns_false_when_fetch_fails() async {
+        // Given
+        let service = makeService()
+        stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
+            if case .fetchJetpackConnectionStatus(_, let completion) = action {
+                completion(.failure(NSError(domain: "Test", code: 403)))
+            }
+        }
+
+        // When
+        let isOffline = await service.isJetpackInOfflineMode()
+
+        // Then
+        XCTAssertFalse(isOffline)
+    }
 }
 
 // MARK: - Helpers

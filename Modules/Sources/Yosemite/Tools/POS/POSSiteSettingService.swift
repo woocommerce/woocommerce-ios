@@ -3,6 +3,7 @@ import Networking
 import struct Combine.AnyPublisher
 
 /// Protocol for POS site setting service that manages WooCommerce feature flags.
+@MainActor
 public protocol POSSiteSettingServiceProtocol {
     /// Enables or disables a specific feature in the site WC settings.
     /// - Parameters:
@@ -15,6 +16,7 @@ public protocol POSSiteSettingServiceProtocol {
 }
 
 /// Service for managing Point of Sale related site settings.
+@MainActor
 public final class POSSiteSettingService: POSSiteSettingServiceProtocol {
     private let remote: SiteSettingsRemoteProtocol
 

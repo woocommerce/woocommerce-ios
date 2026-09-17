@@ -201,13 +201,15 @@ final class NoteDetailsCommentTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureActionButtons()
-        configureTitleLabel()
-        configureDetailsLabel()
-        configureTextView()
-        configureStarView()
-        configureDefaultAppearance()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureActionButtons()
+            configureTitleLabel()
+            configureDetailsLabel()
+            configureTextView()
+            configureStarView()
+            configureDefaultAppearance()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {

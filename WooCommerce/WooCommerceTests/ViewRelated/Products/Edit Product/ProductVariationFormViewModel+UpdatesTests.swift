@@ -4,6 +4,7 @@ import XCTest
 import Yosemite
 
 /// Unit tests for update functions in `ProductVariationFormViewModel`.
+@MainActor
 final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
     func testUpdatingDescription() {
         // Arrange

@@ -3,6 +3,7 @@ import Fakes
 import Yosemite
 @testable import WooCommerce
 
+@MainActor
 final class ProductDetailsFactoryTests: XCTestCase {
     // MARK: Simple product type
 

@@ -23,7 +23,10 @@ struct ConnectivityToolViewModelTests {
         let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
 
         // When
-        let result = await sut.testAnalyticsSetting()
+        guard case let .completed(result) = await sut.testAnalyticsSetting() else {
+            Issue.record("Expected a completed analytics test")
+            return
+        }
 
         // Then
         assertState(result, is: .success)
@@ -43,7 +46,10 @@ struct ConnectivityToolViewModelTests {
         let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
 
         // When
-        let result = await sut.testAnalyticsSetting()
+        guard case let .completed(result) = await sut.testAnalyticsSetting() else {
+            Issue.record("Expected a completed analytics test")
+            return
+        }
 
         // Then
         guard case let .error(message, actions) = result else {
@@ -69,7 +75,10 @@ struct ConnectivityToolViewModelTests {
         let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
 
         // When
-        let result = await sut.testAnalyticsSetting()
+        guard case let .completed(result) = await sut.testAnalyticsSetting() else {
+            Issue.record("Expected a completed analytics test")
+            return
+        }
 
         // Then
         guard case let .error(_, actions) = result else {
@@ -77,6 +86,29 @@ struct ConnectivityToolViewModelTests {
             return
         }
         #expect(actions.contains(where: { $0.title == "View technical details" }))
+    }
+
+    @Test func test_testAnalyticsSetting_when_setting_is_not_exposed_then_skips_the_test() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.failure(SettingError.settingNotExposed))
+            default:
+                break
+            }
+        }
+        let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
+
+        // When
+        let outcome = await sut.testAnalyticsSetting()
+
+        // Then
+        guard case .skipped = outcome else {
+            Issue.record("Expected .skipped outcome but got \(outcome)")
+            return
+        }
     }
 
     // MARK: - enableAnalytics
@@ -97,7 +129,10 @@ struct ConnectivityToolViewModelTests {
         let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
 
         // Run the analytics test to get back the error state with the enable action.
-        let testResult = await sut.testAnalyticsSetting()
+        guard case let .completed(testResult) = await sut.testAnalyticsSetting() else {
+            Issue.record("Expected a completed analytics test")
+            return
+        }
         guard case let .error(_, actions) = testResult,
               let enableAction = actions.first(where: { $0.title == "Enable Analytics" }) else {
             Issue.record("Expected error card with Enable Analytics action but got \(testResult)")
@@ -141,7 +176,10 @@ struct ConnectivityToolViewModelTests {
         let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
 
         // Run the analytics test to get back the error state with the enable action.
-        let testResult = await sut.testAnalyticsSetting()
+        guard case let .completed(testResult) = await sut.testAnalyticsSetting() else {
+            Issue.record("Expected a completed analytics test")
+            return
+        }
         guard case let .error(_, actions) = testResult,
               let enableAction = actions.first(where: { $0.title == "Enable Analytics" }) else {
             Issue.record("Expected error card with Enable Analytics action but got \(testResult)")

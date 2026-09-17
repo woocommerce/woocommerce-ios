@@ -2,6 +2,7 @@ import UIKit
 
 /// Barebones Implementation of the ReceiptPrinterService that integrates with AirPrint
 /// Will be iterated in https://github.com/woocommerce/woocommerce-ios/issues/3982
+@MainActor
 public final class AirPrintReceiptPrinterService: NSObject, PrinterService {
     private var receiptContent: ReceiptContent?
 

@@ -6,8 +6,6 @@
     "Modules/Sources/Hardware/CardReader/StripeCardReader/StripeCardReaderService.swift": 43,
     "Modules/Sources/Hardware/CardReader/UnderlyingError.swift": 2,
     "Modules/Sources/Hardware/Internal/Logging.swift": 3,
-    "Modules/Sources/Hardware/Printer/AirPrintReceipt/AirPrintReceiptPrinterService.swift": 10,
-    "Modules/Sources/Hardware/Printer/StarPrinterService.swift": 5,
     "Modules/Sources/Networking/Mapper/GiftCardStatsMapper.swift": 1,
     "Modules/Sources/Networking/Mapper/ProductBundleStatsMapper.swift": 1,
     "Modules/Sources/Networking/Model/Product/ProductAddOnEnvelope.swift": 1,
@@ -395,7 +393,7 @@
     "WooCommerce/Classes/ServiceLocator/MessageComposerPresenter.swift": 7,
     "WooCommerce/Classes/ServiceLocator/ProductImageUploader.swift": 6,
     "WooCommerce/Classes/ServiceLocator/PushNotesManager.swift": 1,
-    "WooCommerce/Classes/ServiceLocator/ServiceLocator.swift": 35,
+    "WooCommerce/Classes/ServiceLocator/ServiceLocator.swift": 34,
     "WooCommerce/Classes/Spotlight/SearchableActivityConvertable.swift": 1,
     "WooCommerce/Classes/Spotlight/SpotlightManager.swift": 4,
     "WooCommerce/Classes/System/SessionManager.swift": 2,
@@ -1121,5 +1119,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 10053
+  "total": 10037
 }

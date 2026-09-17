@@ -62,24 +62,24 @@ protocol AnalyticsReportCardProtocol {
 ///
 extension AnalyticsReportCard {
     init(viewModel: AnalyticsReportCardProtocol) {
-        self.title = viewModel.title
-        self.leadingTitle = viewModel.leadingTitle
-        self.leadingValue = viewModel.leadingValue
-        self.leadingDelta = viewModel.leadingDelta?.string
-        self.leadingDeltaColor = viewModel.leadingDelta?.direction.deltaBackgroundColor
-        self.leadingDeltaTextColor = viewModel.leadingDelta?.direction.deltaTextColor
-        self.leadingChartData = viewModel.leadingChartData
-        self.leadingChartColor = viewModel.leadingDelta?.direction.chartColor
-        self.trailingTitle = viewModel.trailingTitle
-        self.trailingValue = viewModel.trailingValue
-        self.trailingDelta = viewModel.trailingDelta?.string
-        self.trailingDeltaColor = viewModel.trailingDelta?.direction.deltaBackgroundColor
-        self.trailingDeltaTextColor = viewModel.trailingDelta?.direction.deltaTextColor
-        self.trailingChartData = viewModel.trailingChartData
-        self.trailingChartColor = viewModel.trailingDelta?.direction.chartColor
-        self.isRedacted = viewModel.isRedacted
-        self.showSyncError = viewModel.showSyncError
-        self.syncErrorMessage = viewModel.syncErrorMessage
-        self.reportViewModel = viewModel.reportViewModel
+        self.init(title: viewModel.title,
+                  leadingTitle: viewModel.leadingTitle,
+                  leadingValue: viewModel.leadingValue,
+                  leadingDelta: viewModel.leadingDelta?.string,
+                  leadingDeltaColor: viewModel.leadingDelta?.direction.deltaBackgroundColor,
+                  leadingDeltaTextColor: viewModel.leadingDelta?.direction.deltaTextColor,
+                  leadingChartData: viewModel.leadingChartData,
+                  leadingChartColor: viewModel.leadingDelta?.direction.chartColor,
+                  trailingTitle: viewModel.trailingTitle,
+                  trailingValue: viewModel.trailingValue,
+                  trailingDelta: viewModel.trailingDelta?.string,
+                  trailingDeltaColor: viewModel.trailingDelta?.direction.deltaBackgroundColor,
+                  trailingDeltaTextColor: viewModel.trailingDelta?.direction.deltaTextColor,
+                  trailingChartData: viewModel.trailingChartData,
+                  trailingChartColor: viewModel.trailingDelta?.direction.chartColor,
+                  reportViewModel: viewModel.reportViewModel,
+                  isRedacted: viewModel.isRedacted,
+                  showSyncError: viewModel.showSyncError,
+                  syncErrorMessage: viewModel.syncErrorMessage)
     }
 }

@@ -21,7 +21,7 @@ struct ShippingLabelCustomsFormInput: View {
         self.packageNumber = packageNumber
         self.safeAreaInsets = safeAreaInsets
         self.viewModel = viewModel
-        self.isCollapsed = packageNumber > 1
+        self._isCollapsed = State(initialValue: packageNumber > 1)
         self.infoTooltipTapped = infoTooltipTapped
     }
 

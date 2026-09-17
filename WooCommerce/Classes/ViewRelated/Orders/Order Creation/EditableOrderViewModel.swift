@@ -2504,6 +2504,15 @@ extension EditableOrderViewModel {
                 return giftCardErrorNotice
             }
 
+            if error is UnexpectedStoreResponseError {
+                return Notice(title: Localization.unexpectedStoreResponseTitle,
+                              message: Localization.unexpectedStoreResponseRecoveryMessage,
+                              feedbackType: .error,
+                              actionTitle: Localization.retryOrderSync) {
+                    orderSynchronizer.retryTrigger.send()
+                }
+            }
+
             let errorMessage: String
             switch flow {
             case .creation:
@@ -2567,6 +2576,16 @@ private extension EditableOrderViewModel {
                                                                 comment: "Notice displayed when data cannot be synced for new order")
         static let errorMessageEditOrderSync = NSLocalizedString("Unable to save changes. Please try again.",
                                                                  comment: "Notice displayed when data cannot be synced for edited order")
+        static let unexpectedStoreResponseTitle = NSLocalizedString(
+            "com.automattic.woocommerce.editableOrderViewModel.unexpectedStoreResponse.title",
+            value: "Your store returned an unexpected server response.",
+            comment: "Title of a notice displayed when the store returns an unexpected response while syncing an order."
+        )
+        static let unexpectedStoreResponseRecoveryMessage = NSLocalizedString(
+            "com.automattic.woocommerce.editableOrderViewModel.unexpectedStoreResponse.recoveryMessage",
+            value: "Check your store’s error logs, then try again.",
+            comment: "Recovery instruction when the store returns an unexpected response while syncing an order."
+        )
 
         static let retryOrderSync = NSLocalizedString("Retry", comment: "Action button to retry syncing the draft order")
         static let dismissCouponErrorNotice = NSLocalizedString("OK", comment: "Action button to dismiss the coupon error notice")

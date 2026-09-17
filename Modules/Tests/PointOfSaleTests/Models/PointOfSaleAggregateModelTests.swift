@@ -1695,7 +1695,7 @@ private func makeLoadedOrderState(cartTotal: String = "",
 
 @MainActor
 private func makePointOfSaleAggregateModel(
-    entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+    entryPointController: POSEntryPointController? = nil,
     itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
     purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSalePurchasableItemsSearchController(),
     couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
@@ -1717,7 +1717,7 @@ private func makePointOfSaleAggregateModel(
     receiptPrinter: ReceiptPrinterServiceProtocol? = nil
 ) -> PointOfSaleAggregateModel {
     PointOfSaleAggregateModel(
-        entryPointController: entryPointController,
+        entryPointController: entryPointController ?? POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
         itemsController: itemsController,
         purchasableItemsSearchController: purchasableItemsSearchController,
         couponsController: couponsController,

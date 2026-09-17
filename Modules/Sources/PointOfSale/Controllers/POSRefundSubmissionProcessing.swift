@@ -3,7 +3,7 @@ import Observation
 import struct Yosemite.CardReaderInput
 import struct Yosemite.POSOrder
 
-public struct POSRefundPreparation: Equatable {
+public struct POSRefundPreparation: Equatable, Sendable {
     public let orderID: Int64
     public let selectableItems: [POSRefundSelectableItem]
     public let paymentMethodDescription: String

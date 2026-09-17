@@ -7,6 +7,53 @@ import Storage
 
 @MainActor
 struct OrderListViewControllerTests {
+    @Test
+    func test_restoreSelectedOrderDetails_when_second_order_is_selected_then_recreates_its_detail() async throws {
+        // Given
+        let siteID: Int64 = 3932
+        let firstOrder = MockOrders().empty().copy(siteID: siteID, orderID: 1, status: .processing, dateCreated: Date())
+        let selectedOrder = firstOrder.copy(orderID: 2, dateCreated: Date().addingTimeInterval(-60))
+        let sessionID = "orderSelectionTests.\(UUID().uuidString)"
+        let defaults = try #require(UserDefaults(suiteName: sessionID))
+        defer { defaults.removePersistentDomain(forName: sessionID) }
+        let session = SessionManager(defaults: defaults, keychainServiceName: sessionID)
+        let stores = MockStoresManager(sessionManager: session)
+        let storageManager = MockStorageManager()
+        await withCheckedContinuation { continuation in
+            storageManager.performAndSave({ storage in
+                for order in [firstOrder, selectedOrder] {
+                    let stored = storage.insertNewObject(ofType: StorageOrder.self)
+                    stored.update(with: order)
+                }
+            }, completion: { continuation.resume() }, on: .main)
+        }
+        let viewModel = OrderListViewModel(siteID: siteID, stores: stores, storageManager: storageManager, filters: nil)
+        var shownOrderIDs: [Int64] = []
+        let viewController = OrderListViewController(siteID: siteID,
+                                                     title: "Orders",
+                                                     viewModel: viewModel,
+                                                     stores: stores,
+                                                     switchDetailsHandler: { viewModels, index, _, completion in
+            if let viewModel = viewModels[safe: index] {
+                shownOrderIDs.append(viewModel.order.orderID)
+                completion?(true)
+            } else {
+                completion?(false)
+            }
+        })
+        viewController.loadViewIfNeeded()
+        try #require(viewController.firstAvailableOrder?.orderID == firstOrder.orderID)
+        viewController.showOrderDetails(selectedOrder)
+        #expect(shownOrderIDs == [selectedOrder.orderID])
+        shownOrderIDs.removeAll()
+
+        // When
+        viewController.restoreSelectedOrderDetails()
+
+        // Then
+        #expect(shownOrderIDs == [selectedOrder.orderID])
+    }
+
     @Test func empty_state_when_store_previously_qualified_for_test_order_then_uses_first_order_empty_state() throws {
         // Given
         let siteID: Int64 = 123

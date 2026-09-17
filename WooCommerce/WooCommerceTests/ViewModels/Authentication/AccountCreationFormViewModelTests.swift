@@ -243,7 +243,7 @@ private extension AccountCreationFormViewModelTests {
             case let .synchronizeAccountSettings(_, completion):
                 completion(.success(.fake()))
             case let .synchronizeSites(_, completion):
-                completion(.success(true))
+                completion(.success(.init(containsJetpackConnectionPackageSites: true, siteIDs: [])))
             default:
                 break
             }

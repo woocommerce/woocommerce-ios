@@ -6,6 +6,7 @@ import Yosemite
 /// Default implementation of the ReviewsDataSource, dequeues and
 /// populates cells to render the Product Review list
 ///
+@MainActor
 final class ReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     // MARK: - Private properties

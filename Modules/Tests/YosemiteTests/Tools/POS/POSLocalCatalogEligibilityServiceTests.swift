@@ -8,19 +8,19 @@ struct POSLocalCatalogEligibilityServiceTests {
     private let siteID: Int64 = 123
 
     // Default remote feature flag provider that returns true
-    private func makeRemoteFeatureFlagProvider(returning value: Bool = true) -> @Sendable () async -> Bool {
+    private func makeRemoteFeatureFlagProvider(returning value: Bool = true) -> @MainActor @Sendable () async -> Bool {
         return { value }
     }
 
     // Default beta feature toggle provider that returns true
-    private func makeBetaFeatureToggleProvider(returning value: Bool = true) -> @Sendable () async -> Bool {
+    private func makeBetaFeatureToggleProvider(returning value: Bool = true) -> @MainActor @Sendable () async -> Bool {
         return { value }
     }
 
     private func makeService(
-        systemStatusService: MockPOSSystemStatusService,
-        remoteFeatureFlagProvider: (@Sendable () async -> Bool)? = nil,
-        betaFeatureToggleProvider: (@Sendable () async -> Bool)? = nil,
+        systemStatusService: MockPOSSystemStatusService? = nil,
+        remoteFeatureFlagProvider: (@MainActor @Sendable () async -> Bool)? = nil,
+        betaFeatureToggleProvider: (@MainActor @Sendable () async -> Bool)? = nil,
         syncStatusChecker: POSCatalogSyncStatusCheckerProtocol? = nil
     ) -> POSLocalCatalogEligibilityService {
         POSLocalCatalogEligibilityService(
@@ -32,6 +32,26 @@ struct POSLocalCatalogEligibilityServiceTests {
     }
 
     // MARK: - Eligibility
+
+    @Test func configure_systemStatusService_attaches_the_first_session_service_only() async throws {
+        // Given
+        let firstSessionService = MockPOSSystemStatusService()
+        let laterSessionService = MockPOSSystemStatusService(
+            pluginInfoToReturn: .failure(URLError(.notConnectedToInternet))
+        )
+        let service: any POSLocalCatalogEligibilityServiceProtocol = makeService()
+        try await service.updatePOSEligibility(isEligible: true, for: siteID)
+
+        // When
+        #expect(await service.configure(systemStatusService: firstSessionService))
+        #expect(try await service.refreshEligibilityState(for: siteID) == .eligible)
+        #expect(await service.configure(systemStatusService: laterSessionService) == false)
+        #expect(try await service.refreshEligibilityState(for: siteID) == .eligible)
+
+        // Then
+        #expect(firstSessionService.loadPluginCallCount == 2)
+        #expect(laterSessionService.loadPluginCallCount == 0)
+    }
 
     @Test("Eligible when all checks pass")
     func testEligibleWhenAllChecksPass() async throws {

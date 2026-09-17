@@ -215,6 +215,44 @@ final class JetpackConnectionRemoteTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
+    func test_fetchJetpackConnectionStatus_correctly_returns_offline_mode() throws {
+        // Given
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+        let urlSuffix = "/jetpack/v4/connection"
+        network.simulateResponse(requestUrlSuffix: urlSuffix, filename: "jetpack-connection-offline-mode")
+
+        // When
+        let result: Result<JetpackConnectionStatus, Error> = waitFor { promise in
+            remote.fetchJetpackConnectionStatus(siteID: 123) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let status = try XCTUnwrap(result.get())
+        XCTAssertTrue(status.isInOfflineMode)
+    }
+
+    func test_fetchJetpackConnectionStatus_properly_relays_errors() {
+        // Given
+        let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)
+        let urlSuffix = "/jetpack/v4/connection"
+        let error = NetworkError.unacceptableStatusCode(statusCode: 500)
+        network.simulateError(requestUrlSuffix: urlSuffix, error: error)
+
+        // When
+        let result: Result<JetpackConnectionStatus, Error> = waitFor { promise in
+            remote.fetchJetpackConnectionStatus(siteID: 123) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+        XCTAssertEqual(result.failure as? NetworkError, error)
+    }
+
     func test_registerSite_correctly_returns_blogID() async throws {
         // Given
         let remote = JetpackConnectionRemote(siteURL: siteURL, network: network)

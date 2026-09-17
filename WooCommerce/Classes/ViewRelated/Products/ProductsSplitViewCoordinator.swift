@@ -3,11 +3,18 @@ import UIKit
 import Yosemite
 
 /// Coordinates the state of multiple columns (product list and secondary view) based on the secondary view.
+@MainActor
 final class ProductsSplitViewCoordinator: NSObject {
     /// Content type that is shown in the secondary view.
     enum SecondaryViewContentType: Equatable {
         case empty
         case productForm(product: Product?)
+    }
+
+    private enum CompactProductLargeTitleState: Equatable {
+        case inactive
+        case productShown
+        case returning
     }
 
     /// The source of truth of the content shown in the secondary view.
@@ -26,6 +33,8 @@ final class ProductsSplitViewCoordinator: NSObject {
     private let splitViewController: UISplitViewController
     private let primaryNavigationController: UINavigationController
     private let secondaryNavigationController: UINavigationController
+    private let usesIOS26CompactProductLargeTitleWorkaround: Bool
+    private var compactProductLargeTitleState: CompactProductLargeTitleState = .inactive
     private var swipeBackVetoAllowedStartRegion = CGRect.zero
     private lazy var swipeBackVetoGestureRecognizer: UIPanGestureRecognizer = {
         let gestureRecognizer = UIPanGestureRecognizer(target: nil, action: nil)
@@ -35,6 +44,9 @@ final class ProductsSplitViewCoordinator: NSObject {
         gestureRecognizer.delaysTouchesEnded = true
         return gestureRecognizer
     }()
+    private lazy var navigationStack = SplitViewNavigationStack(splitViewController: splitViewController,
+                                                                primaryNavigationController: primaryNavigationController,
+                                                                secondaryNavigationController: secondaryNavigationController)
     private lazy var productsViewController = ProductsViewController(siteID: siteID,
                                                                      selectedProduct: selectedProduct,
                                                                      navigateToContent: showFromProductList)
@@ -42,11 +54,19 @@ final class ProductsSplitViewCoordinator: NSObject {
 
     private var addProductCoordinator: AddProductCoordinator?
 
-    init(siteID: Int64, splitViewController: UISplitViewController) {
+    init(siteID: Int64,
+         splitViewController: UISplitViewController,
+         usesIOS26CompactProductLargeTitleWorkaround: Bool = {
+             if #available(iOS 26.0, *) {
+                 return true
+             }
+             return false
+         }()) {
         self.siteID = siteID
         self.splitViewController = splitViewController
         self.primaryNavigationController = WooTabNavigationController()
         self.secondaryNavigationController = WooNavigationController()
+        self.usesIOS26CompactProductLargeTitleWorkaround = usesIOS26CompactProductLargeTitleWorkaround
     }
 
     /// Called when the split view is ready to be shown, like after the split view is added to the view hierarchy.
@@ -58,14 +78,23 @@ final class ProductsSplitViewCoordinator: NSObject {
     /// Called when the split view is collapsing from the expanded state to determine which column to show in the collapsed mode.
     /// - Returns: The column to show when the split view is collapsed.
     func columnToShowWhenSplitViewIsCollapsing() -> UISplitViewController.Column {
-        guard let lastContentType = contentTypes.last else {
-            return .primary
+        if case .productForm? = contentTypes.last {
+            prepareProductsLargeTitleForCompactProductPresentationIfNeeded(forCollapsingSplitView: true)
         }
-        return lastContentType == .empty ? .primary : .secondary
+        navigationStack.prepareForCollapsing(showsSecondaryContent: contentTypes.last != .empty)
+        return .primary
+    }
+
+    func didCollapse() {
+        navigationStack.didCollapse()
+        refreshSwipeBackVetoRelationships()
     }
 
     /// Called when the split view transitions from collapsed to expanded mode.
     func didExpand() {
+        restoreProductsLargeTitleAfterCompactProductPresentation()
+        navigationStack.didExpand()
+
         // Auto-selects the first product if there is no content to be shown.
         if shouldAutoSelectProductInExpandedLayout() {
             showEmptyViewOrFirstProduct()
@@ -85,19 +114,24 @@ final class ProductsSplitViewCoordinator: NSObject {
         didExpand()
     }
 
+    /// Snapshots the secondary content so a layout transition that drops pushed screens can be undone.
+    ///
+    /// This tracks content rather than the secondary navigation controller's own stack, because a collapse
+    /// legitimately empties that stack by transferring the content into the primary one. Comparing raw stacks
+    /// would read the transfer as a drop and reinstate the content in both columns.
     func prepareForLayoutTransition() -> UUID {
-        secondaryStackRestorationPolicy.prepareForTransition(currentStack: secondaryNavigationController.viewControllers)
+        secondaryStackRestorationPolicy.prepareForTransition(currentStack: navigationStack.contentViewControllers)
     }
 
     func completeLayoutTransition(_ transitionID: UUID) {
         guard let stackToRestore = secondaryStackRestorationPolicy.stackToRestore(
             for: transitionID,
-            currentStack: secondaryNavigationController.viewControllers
+            currentStack: navigationStack.contentViewControllers
         ) else {
             return
         }
 
-        secondaryNavigationController.setViewControllers(stackToRestore, animated: false)
+        navigationStack.setContentViewControllers(stackToRestore, showsInCollapsedLayout: contentTypes.last != .empty)
         refreshSwipeBackVetoRelationships()
     }
 
@@ -116,15 +150,33 @@ final class ProductsSplitViewCoordinator: NSObject {
         reconcilePrimaryNavigationBarVisibility(afterShowing: productsViewController, in: primaryNavigationController)
     }
 
-    /// Hides the primary navigation bar once an interactive pop back to Product Search commits.
+    /// Hides the primary navigation bar once an interactive pop back to Product Search finishes.
     ///
     /// A cancelled gesture leaves the bar alone, because Product Detail stays on screen and keeps needing it.
     /// Extracted from the transition coordinator callback so the completed and cancelled cases can be tested.
-    func hidePrimaryNavigationBarWhenInteractionCompletes(isCancelled: Bool) {
+    func hidePrimaryNavigationBarWhenTransitionCompletes(isCancelled: Bool) {
         guard !isCancelled else {
             return
         }
         primaryNavigationController.setNavigationBarHiddenIfNeeded(true, animated: false)
+    }
+
+    func schedulePrimaryNavigationBarHide(after transitionCoordinator: UIViewControllerTransitionCoordinator) {
+        transitionCoordinator.animate(alongsideTransition: nil) { [weak self] context in
+            self?.hidePrimaryNavigationBarWhenTransitionCompletes(isCancelled: context.isCancelled)
+        }
+    }
+
+    /// Prepares the hidden Products item before a compact Product form is added to the shared navigation bar.
+    func prepareProductsLargeTitleForCompactProductPresentationIfNeeded(forCollapsingSplitView: Bool = false) {
+        guard usesIOS26CompactProductLargeTitleWorkaround,
+              splitViewController.isCollapsed || forCollapsingSplitView,
+              primaryNavigationController.topViewController === productsViewController else {
+            return
+        }
+
+        productsViewController.navigationItem.largeTitleDisplayMode = .never
+        compactProductLargeTitleState = .productShown
     }
 
     /// Returns the product form of the given product ID being displayed on the secondary column if available.
@@ -132,7 +184,7 @@ final class ProductsSplitViewCoordinator: NSObject {
         if let contentType = contentTypes.last,
             case let .productForm(product) = contentType,
             product?.productID == productID {
-            return secondaryNavigationController.topViewController as? ProductFormViewController<ProductFormViewModel>
+            return navigationStack.topContentViewController as? ProductFormViewController<ProductFormViewModel>
         }
         return nil
     }
@@ -249,7 +301,7 @@ private extension ProductsSplitViewCoordinator {
     func whenSecondaryViewProductHasNoUnsavedChanges(then closure: @escaping () -> Void) {
         // Closes the product form in the secondary view only if there are no unsaved changes or if the user chooses to discard the changes.
         // This works based on the assumption that there is only one product form in the secondary navigation stack.
-        if let lastProductFormViewController = secondaryNavigationController.viewControllers
+        if let lastProductFormViewController = navigationStack.contentViewControllers
             .compactMap({ $0 as? ProductFormViewController<ProductFormViewModel> }).last {
             return lastProductFormViewController.close(completion: {
                 closure()
@@ -265,19 +317,31 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func showSecondaryView(contentType: SecondaryViewContentType, viewController: UIViewController, replacesNavigationStack: Bool) {
+        if case .productForm = contentType {
+            prepareProductsLargeTitleForCompactProductPresentationIfNeeded()
+        }
+
         if replacesNavigationStack {
-            secondaryNavigationController.setViewControllers([viewController], animated: false)
+            navigationStack.setContentViewControllers([viewController],
+                                                      showsInCollapsedLayout: contentType != .empty,
+                                                      animated: splitViewController.isCollapsed)
             contentTypes = [contentType]
         } else {
-            secondaryNavigationController.pushViewController(viewController, animated: false)
+            navigationStack.pushContentViewController(viewController,
+                                                      showsInCollapsedLayout: contentType != .empty,
+                                                      animated: splitViewController.isCollapsed)
             contentTypes.append(contentType)
         }
 
-        splitViewController.show(.secondary)
+        if !splitViewController.isCollapsed {
+            splitViewController.show(.secondary)
+        }
     }
 
     func onSecondaryProductFormDeletion() {
-        splitViewController.show(.primary)
+        restoreProductsLargeTitleAfterCompactProductPresentation()
+        navigationStack.removeAllContent()
+        contentTypes = []
         if !splitViewController.isCollapsed {
             showEmptyViewOrFirstProduct()
         }
@@ -415,12 +479,22 @@ extension ProductsSplitViewCoordinator: UIGestureRecognizerDelegate {
             return false
         }
 
-        return secondaryNavigationController.shouldPopOnSwipeBack() == false
+        return contentRefusesSwipeBack()
+    }
+
+    /// Whether the top content screen refuses a swipe back, e.g. a product form holding unsaved changes.
+    ///
+    /// Asks the content view controller rather than the secondary navigation controller, because in a collapsed
+    /// layout the content lives in the primary stack and the secondary controller has no top view controller.
+    func contentRefusesSwipeBack() -> Bool {
+        navigationStack.topContentViewController?.shouldPopOnSwipeBack() == false
     }
 }
 
 extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
+        finishCompactProductReturnIfNeeded(afterShowing: viewController, in: navigationController)
+
         // Split-view stack updates can replace the native pop recognizers, so restore the dependency after navigation settles.
         DispatchQueue.main.async { [weak self] in
             self?.refreshSwipeBackVetoRelationships()
@@ -454,10 +528,51 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
         if let tabNavigationController = navigationController as? WooTabNavigationController {
             tabNavigationController.navigationController(navigationController, willShow: viewController, animated: animated)
         }
+
+        beginCompactProductReturnIfNeeded(showing: viewController,
+                                          in: navigationController,
+                                          animated: animated)
     }
 }
 
 private extension ProductsSplitViewCoordinator {
+    func beginCompactProductReturnIfNeeded(showing viewController: UIViewController,
+                                           in navigationController: UINavigationController,
+                                           animated: Bool) {
+        guard usesIOS26CompactProductLargeTitleWorkaround,
+              animated,
+              splitViewController.isCollapsed,
+              navigationController === primaryNavigationController,
+              viewController === productsViewController,
+              compactProductLargeTitleState == .productShown else {
+            return
+        }
+
+        compactProductLargeTitleState = .returning
+    }
+
+    func finishCompactProductReturnIfNeeded(afterShowing viewController: UIViewController,
+                                            in navigationController: UINavigationController) {
+        guard navigationController === primaryNavigationController else {
+            return
+        }
+
+        if viewController === productsViewController {
+            compactProductLargeTitleState = .inactive
+        } else if compactProductLargeTitleState == .returning {
+            productsViewController.navigationItem.largeTitleDisplayMode = .never
+            compactProductLargeTitleState = .productShown
+        }
+    }
+
+    func restoreProductsLargeTitleAfterCompactProductPresentation() {
+        guard compactProductLargeTitleState != .inactive else {
+            return
+        }
+        productsViewController.navigationItem.largeTitleDisplayMode = .always
+        compactProductLargeTitleState = .inactive
+    }
+
     /// The split-view coordinator owns these updates because, in a collapsed layout, UIKit temporarily wraps the secondary
     /// navigation controller in the primary navigation stack. Updating from the search view controller's lifecycle can
     /// force layout while the product detail item still belongs to the secondary bar.
@@ -471,18 +586,16 @@ private extension ProductsSplitViewCoordinator {
 
         // UIKit does not scrub a navigation-bar visibility animation with an interactive pop. Starting that animation in
         // `willShow` can therefore leave the product detail bar visible briefly after the swipe finishes. Wait until UIKit
-        // knows whether the gesture will finish or cancel, then hide the bar immediately only for a completed pop.
+        // finishes the complete transition, then hide the bar immediately only for a completed pop.
         //
         // IMPORTANT: This intentionally leaves navigation-bar-sized space above Product Search briefly after a back swipe.
         // Do not remove that gap by hiding the bar or forcing Search to lay out earlier in the transition. In a collapsed
         // split view, the product detail navigation item can still belong to the secondary navigation bar at that point.
-        // Forcing the primary bar to lay it out caused NSInternalInconsistencyException crashes (Sentry issue 7669931391).
+        // Doing either too early risks the NSInternalInconsistencyException in Sentry issues 7669931391 and 1523523535.
         if isShowingProductSearch,
            let transitionCoordinator = navigationController.transitionCoordinator,
            transitionCoordinator.isInteractive {
-            transitionCoordinator.notifyWhenInteractionChanges { [weak self] context in
-                self?.hidePrimaryNavigationBarWhenInteractionCompletes(isCancelled: context.isCancelled)
-            }
+            schedulePrimaryNavigationBarHide(after: transitionCoordinator)
             return
         }
 
@@ -504,7 +617,7 @@ private extension ProductsSplitViewCoordinator {
         primaryNavigationController.navigationBar.isHidden = shouldHideNavigationBar
     }
 
-    /// In the collapsed mode, the secondary navigation controller is added to the primary navigation stack and the primary navigation stack is shown.
+    /// In the collapsed mode, secondary content is transferred into the primary navigation stack.
     /// When the user taps the back button to leave the last secondary view controller (e.g. product form), we want to reset `contentTypes`
     /// while there is no proper callback that I can find other than observing the primary navigation controller's `didShow`.
     /// As a workaround, it checks the following to empty out the secondary view content types:
@@ -533,7 +646,7 @@ private extension ProductsSplitViewCoordinator {
             didDismissProductForm(product: dismissedProduct)
         }
         contentTypes = []
-        secondaryNavigationController.viewControllers = []
+        navigationStack.removeAllContent()
     }
 
     func isShowingProductListInPrimaryNavigationController() -> Bool {

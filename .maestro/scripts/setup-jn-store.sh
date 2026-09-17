@@ -11,7 +11,8 @@
 # take the admin password from the wp-admin notice the site displays.
 #
 # Usage:
-#   setup-jn-store.sh --site <domain> [--site-password <password>]
+#   setup-jn-store.sh --site <domain> [--site-password <password>] [--wpcom-user <email>]
+#                     [--admin-user <name>] [--admin-id <id>] [--env-out <path>] [--app-creds <path>]
 #
 # Credentials are resolved in this order, so a second run needs no arguments
 # beyond --site:

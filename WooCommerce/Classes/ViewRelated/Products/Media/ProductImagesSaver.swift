@@ -39,6 +39,7 @@ final class ProductImagesSaver {
     /// - Parameters:
     ///   - imageActionHandler: action handler that provides the latest image statuses and image asset upload subscription.
     ///   - onProductSave: called after the product is updated remotely with the uploaded images.
+    @MainActor
     func saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: ProductImageActionHandlerProtocol,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         /// Reset previously saved product
@@ -124,6 +125,7 @@ private extension ProductImagesSaver {
         uploadStatusesSubscription = nil
     }
 
+    @MainActor
     func observeAssetUploadsToUpdateImageStatuses(imageActionHandler: ProductImageActionHandlerProtocol) {
         assetUploadSubscription = imageActionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
             guard let self else { return }

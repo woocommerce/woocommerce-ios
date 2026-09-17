@@ -1703,6 +1703,10 @@ private final class SuccessfulNetwork: Network {
 private struct IsolationCapturingNetwork: Network {
     var session: URLSession { URLSession(configuration: .default) }
 
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        false
+    }
+
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) { }
 
     func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) { }

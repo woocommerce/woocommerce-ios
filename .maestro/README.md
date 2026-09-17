@@ -96,10 +96,9 @@ and the basic dashboard flows.
 
 It has no orders, customers, or coupons, and an unset onboarding profile, so
 `orders_list_and_search`, `dashboard_view_all_analytics`, `orders_create` and the coupon
-flows are expected to fail against it until that data is seeded, which is not yet
-automated. The negative-login fixtures (`MAESTRO_WOO_NO_JETPACK_*`,
-`MAESTRO_WOO_NOT_A_WOO_STORE_*`, `MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are not
-provisioned either and still need to be supplied by hand.
+flows fail against it. The negative-login fixtures (`MAESTRO_WOO_NO_JETPACK_*`,
+`MAESTRO_WOO_NOT_A_WOO_STORE_*`, `MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are filled in
+by hand.
 
 Jurassic Ninja sites expire after 7 days of inactivity. Re-run the script or the skill
 against a new site when that happens; the WordPress.com account already in `.env.local`

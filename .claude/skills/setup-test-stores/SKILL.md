@@ -100,7 +100,7 @@ hand against a site created in a browser.
 
 The doctor should report all credentials present. Scoping by tag is deliberate: with
 `--profile phone-full` it also demands the negative-login fixtures, which this skill does
-not yet provision, and reports them missing.
+not provision, and reports them missing.
 
 ## What the provisioned store supports
 
@@ -110,11 +110,10 @@ flows and basic dashboard flows.
 It has **no orders, customers, or coupons**, and its onboarding profile is unset, so these
 are expected to fail against it: `orders_list_and_search`, `dashboard_view_all_analytics`,
 `orders_create` (needs `MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH`), and the coupon flows.
-Seeding that data is not yet automated.
 
 The negative-login fixtures (`MAESTRO_WOO_NO_JETPACK_*`, `MAESTRO_WOO_NOT_A_WOO_STORE_*`,
-`MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are also not provisioned yet, so the login flows
-that need them remain unconfigured.
+`MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are filled in by hand, so the login flows that
+need them stay unconfigured until then.
 
 ## Notes
 

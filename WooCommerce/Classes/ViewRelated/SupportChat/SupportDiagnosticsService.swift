@@ -356,6 +356,11 @@ final class SupportDiagnosticsService {
                                                                suggestedAction: .enableAnalytics))
                     }
                 case .failure(let error):
+                    if let settingError = error as? SettingError, case .settingNotExposed = settingError {
+                        DDLogInfo("SupportDiagnostics: ⏭️ Analytics setting is not exposed by the site, skipping")
+                        continuation.resume(returning: nil)
+                        return
+                    }
                     DDLogError("SupportDiagnostics: ❌ Analytics check failed\n\(error)")
                     continuation.resume(returning: Failure(errorMessage: Localization.Error.analyticsCheckFailed,
                                                            technicalDetails: error.formattedTechnicalDetails))

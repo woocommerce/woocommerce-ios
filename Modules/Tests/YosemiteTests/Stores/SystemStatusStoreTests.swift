@@ -121,7 +121,7 @@ final class SystemStatusStoreTests: XCTestCase {
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let fetchedPlugin: SystemPlugin? = await withCheckedContinuation { continuation in
+        let fetchedPlugin: Networking.SystemPlugin? = await withCheckedContinuation { continuation in
             store.onAction(SystemStatusAction.fetchSystemPluginWithPath(siteID: self.sampleSiteID,
                                                                       pluginPath: "woocommerce-gift-cards/woocommerce-gift-cards.php") { result in
                 continuation.resume(returning: result)
@@ -144,7 +144,7 @@ final class SystemStatusStoreTests: XCTestCase {
         let store = SystemStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let fetchedPlugin: SystemPlugin? = await withCheckedContinuation { continuation in
+        let fetchedPlugin: Networking.SystemPlugin? = await withCheckedContinuation { continuation in
             store.onAction(SystemStatusAction.fetchSystemPluginWithPath(siteID: self.sampleSiteID,
                                                                       pluginPath: "woocommerce-gift-cards/woocommerce-gift-cards.php") { result in
                 continuation.resume(returning: result)

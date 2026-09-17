@@ -34,7 +34,8 @@ The flow runs after login, from `AppCoordinator`, and re-runs on every foregroun
 |---|---|
 | `AgeRangeVerificationCoordinator.swift` | Runs the age gate post-login, serializes concurrent triggers and maps outcomes to an `AppAccessDecision` (`allow` / `allowConsentGranted` / `denyAndLogout` / `restrictConsentRequired` / `restrictPendingConsent` / `restrictDeniedConsent`). |
 | `SignificantChangeConsentCoordinator.swift` | Consent state machine (`notRequired` / `required` / `granted` / `pending` / `denied` / `notAvailable`). `checkConsentIfNeeded` is read-only; `requestConsent` sends the question only on explicit user action and waits a 2 s grace window for instant answers; one long-lived listener resolves answers arriving later, matched by question UUID against the persisted pending request. |
-| `SignificantChangeConsentBlockingView.swift` | Full-screen recoverable blocker with the `approvalNeeded` / `pendingApproval` / `approvalDenied` / `approvalGranted` contexts, one action button each. Presented, updated and dismissed by `AppCoordinator`. |
+| `SignificantChangeConsentBlockingView.swift` | Full-screen recoverable blocker with the `approvalNeeded` / `pendingApproval` / `approvalDenied` / `approvalGranted` contexts, one action button each. The three blocking contexts also offer Contact Support. Presented, updated and dismissed by `AppCoordinator`. |
+| `WordPressSupportSourceTag+AgeRestriction.swift` | The `origin:age-restriction` support tag (same as Android's `HelpOrigin.AGE_RESTRICTION`) that Help & Support tickets from a wall carry. |
 
 ## Decision matrix
 
@@ -42,7 +43,7 @@ The flow runs after login, from `AppCoordinator`, and re-runs on every foregroun
 |---|---|---|
 | 1 | Feature flag off | Allow |
 | 2 | Account not under a covered regime (compliance not required) | Allow, no age prompt at all |
-| 3 | Declared range below 13 (upper bound < 13) | Log out + "Access Restricted" alert |
+| 3 | Declared range below 13 (upper bound < 13) | Log out + "Access Restricted" alert (Got it / Contact Support) |
 | 4 | Eligible (13+), not a minor | Allow |
 | 5 | Eligible minor (upper bound < 18), approval flag not set | Allow |
 | 6 | Eligible minor + approval flag, no unacknowledged significant change | Allow |
@@ -55,6 +56,7 @@ The flow runs after login, from `AppCoordinator`, and re-runs on every foregroun
 | 13 | Declined age sharing, SDK unavailable/error, unknown result, invalid UI state | Allow |
 | 14 | Minor status evidence | Requires a declared upper bound < 18 (two age gates requested: 13 and 18); the adult band and bandless responses are non-minor |
 | 15 | Blocker dismissal | Only an authoritative eligible outcome dismisses it; transient fail-open results never do |
+| 16 | Contact Support | Help & Support (Zendesk, application log attachable) opens on top of the wall, or over the logged-out UI after the underage logout. The wall keeps its context underneath; closing support lands back on it, never on store content |
 
 Notes on the matrix:
 
@@ -88,10 +90,11 @@ Tracks events are categorical by design (Legal guidance): coarse age bands only,
 | `account_age_restriction_checked` | One per completed verification flow, including re-checks while the wall is up (`trigger` tells them apart). Volume guardrail: only when the account is under a covered regime or the decision is not a plain allow, so it is never sent for non-covered accounts or unsupported OS versions. | `trigger` (`session_start` for a launch while logged in or a login, `consent_resolution`, `foreground_recheck`, `wall_action`), `age_range_outcome` (`eligible`, `age_13_17`, `below_13`, `declined_sharing`, `unavailable`, `not_applicable`, `invalid_ui_state`, `sdk_error`, `unknown`), `final_decision` (`allowed`, `restricted`, `wall_consent_required`, `wall_consent_pending`, `wall_consent_denied`), `restriction_reason` when restricted (`below_minimum_age`, `consent_required`, `consent_pending`, `consent_denied`), `significant_change_status` when the consent branch ran (`not_applicable`, `required`, `approved`, `pending`, `declined`, `unavailable`), `sdk_error_domain` + `sdk_error_code` for SDK failures |
 | `account_age_restriction_dialog_shown` | A wall or the underage alert became visible (a re-check landing on the same wall does not re-fire) | `screen` (`consent_needed`, `consent_pending`, `consent_denied`, `consent_granted`, `underage_alert`) |
 | `account_age_verification_action` | A tap on the wall | `action` (`request_approval`, `check_again`, `ask_again`, `continue`) |
+| `account_age_restriction_contact_support_tapped` | A tap on Contact Support from a wall or the underage alert | `screen` (`consent_needed`, `consent_pending`, `consent_denied`, `underage_alert`) |
 | `account_age_consent_requested` | iOS-only: the app tried to hand the consent question to the system (`not_available` also covers a missing anchor view controller) | `change_type` (`age_rating`, `manual`), `result` (`sent`, `not_available`, `failed`), `is_reask` |
 | `account_age_consent_resolved` | iOS-only: a parent/guardian answer was processed | `resolution` (`granted`, `denied`), `via` (`grace_window`, `listener`) |
 
-The first three events and their property names match Android (`woocommerce-android` PR #16377). iOS requests age gates 13 and 18 only, so it reports `age_13_17` where Android splits `13_15` / `16_17`; `trigger` is the closest iOS equivalent of Android's `is_recovery`; Android's `access_status`, `request_stage` and `retry_count` have no iOS equivalent.
+The first three events and their property names match Android (`woocommerce-android` PR #16377), and the Contact Support event name matches Android's (`woocommerce-android` PR #16523); Android has a single alert, so it carries no `screen` property there. iOS requests age gates 13 and 18 only, so it reports `age_13_17` where Android splits `13_15` / `16_17`; `trigger` is the closest iOS equivalent of Android's `is_recovery`; Android's `access_status`, `request_stage` and `retry_count` have no iOS equivalent.
 
 ## Debug tooling
 

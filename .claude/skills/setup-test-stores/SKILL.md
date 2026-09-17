@@ -43,11 +43,13 @@ hand against a site created in a browser.
    Do not ask the user to paste a password into the conversation, and never pass one as a
    command-line argument.
 
-1. **Check whether setup is already usable.** If `.maestro/.env.local` exists, read
-   `MAESTRO_WOO_LAB_JETPACK_STORE_URL` and the consumer key/secret, then probe:
+1. **Check whether setup is already usable.** If `.maestro/.env.local` exists, probe the
+   store in one bash call that sources the file, so no credential is read into the chat:
 
    ```bash
-   curl -s -o /dev/null -w '%{http_code}' -u "$CK:$CS" "$STORE/wp-json/wc/v3/products?per_page=1"
+   ( set -a; . .maestro/.env.local; set +a
+     curl -s -o /dev/null -w '%{http_code}' -u "$MAESTRO_WOO_CONSUMER_KEY:$MAESTRO_WOO_CONSUMER_SECRET" \
+       "$MAESTRO_WOO_LAB_JETPACK_STORE_URL/wp-json/wc/v3/products?per_page=1" )
    ```
 
    A `200` means the store is alive and the keys work; report that and stop, unless the

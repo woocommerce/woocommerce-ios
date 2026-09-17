@@ -12,6 +12,10 @@ public protocol StoreConnectionErrorMonitoring {
     /// current value.
     ///
     var affectedSiteIDPublisher: AnyPublisher<Int64?, Never> { get }
+
+    /// Emits safe unexpected-response events on the main queue.
+    /// This is independent of the invalid-signature state used by existing consumers.
+    var unexpectedStoreResponsePublisher: AnyPublisher<Int64, Never> { get }
 }
 
 /// Write-only counterpart used by the networking layer to report the outcome of a request.
@@ -20,6 +24,9 @@ protocol StoreConnectionErrorRecording {
     /// Records that a request for the given store was rejected with `rest_invalid_signature`.
     ///
     func recordInvalidSignature(siteID: Int64)
+
+    /// Records an unexpected non-JSON merchant response for the given store.
+    func recordUnexpectedStoreResponse(siteID: Int64)
 
     /// Records that a request for the given store succeeded, clearing any error recorded for it.
     ///
@@ -48,6 +55,7 @@ public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, 
     private var storedSiteID: Int64?
     private let lock = NSLock()
     private let subject = CurrentValueSubject<Int64?, Never>(nil)
+    private let unexpectedStoreResponseSubject = PassthroughSubject<Int64, Never>()
 
     init() {}
 
@@ -61,8 +69,16 @@ public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, 
         subject.receive(on: DispatchQueue.main).eraseToAnyPublisher()
     }
 
+    public var unexpectedStoreResponsePublisher: AnyPublisher<Int64, Never> {
+        unexpectedStoreResponseSubject.receive(on: DispatchQueue.main).eraseToAnyPublisher()
+    }
+
     func recordInvalidSignature(siteID: Int64) {
         updateAffectedSiteID(to: siteID) { $0 != siteID }
+    }
+
+    func recordUnexpectedStoreResponse(siteID: Int64) {
+        unexpectedStoreResponseSubject.send(siteID)
     }
 
     func recordSuccessfulConnection(siteID: Int64) {

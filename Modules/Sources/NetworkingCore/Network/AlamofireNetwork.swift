@@ -186,7 +186,8 @@ public class AlamofireNetwork: Network {
                             self?.responseData(for: request, completion: completion)
                         },
                         onCompletion: {
-                            completion(response.value, response.networkingError)
+                            let error = response.unexpectedStoreResponse(for: convertedRequest) ?? response.networkingError
+                            completion(error is UnexpectedStoreResponseError ? nil : response.value, error)
                         }
                     )
                 }
@@ -216,7 +217,7 @@ public class AlamofireNetwork: Network {
                             self?.responseData(for: request, completion: completion)
                         },
                         onCompletion: {
-                            if let error = response.networkingError {
+                            if let error = response.unexpectedStoreResponse(for: convertedRequest) ?? response.networkingError {
                                 completion(.failure(error))
                             } else {
                                 completion(response.result.mapError { $0 })
@@ -246,7 +247,7 @@ public class AlamofireNetwork: Network {
 
         errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: request, failure: failure)
 
-        if let error = response.networkingError {
+        if let error = response.unexpectedStoreResponse(for: convertedRequest) ?? response.networkingError {
             throw error
         }
         switch response.result {
@@ -303,7 +304,7 @@ public class AlamofireNetwork: Network {
                                 }
                             },
                             onCompletion: {
-                                if let error = response.networkingError {
+                                if let error = response.unexpectedStoreResponse(for: convertedRequest) ?? response.networkingError {
                                     promise(.success(.failure(error)))
                                 } else {
                                     promise(.success(response.result.mapError { $0 }))
@@ -331,7 +332,8 @@ public class AlamofireNetwork: Network {
                             self?.uploadMultipartFormData(multipartFormData: multipartFormData, to: request, completion: completion)
                         },
                         onCompletion: {
-                            completion(response.value, response.error)
+                            let error = response.unexpectedStoreResponse(for: convertedRequest) as Error? ?? response.error
+                            completion(error is UnexpectedStoreResponseError ? nil : response.value, error)
                         }
                     )
                 }
@@ -460,6 +462,29 @@ private extension DataRequest {
 // MARK: - Alamofire.DataResponse: Helper Methods
 //
 extension Alamofire.DataResponse {
+    /// Classify before a body can reach a mapper. Transport failures,
+    /// including cancellation, must keep their original meaning even if partial data arrived.
+    func unexpectedStoreResponse(for request: URLRequestConvertible) -> UnexpectedStoreResponseError? {
+        if let error = error?.asAFError, error.isResponseValidationError == false {
+            // An empty HTTP 429 can fail during serialization before validation. Its status is still meaningful.
+            guard case .responseSerializationFailed = error else {
+                return nil
+            }
+        }
+        guard let request = request as? Request, let response,
+              let error = UnexpectedStoreResponseClassifier.classify(
+                responseData: data ?? Data(),
+                request: request,
+                statusCode: response.statusCode,
+                contentType: response.value(forHTTPHeaderField: "Content-Type")
+              ) else {
+            return nil
+        }
+        if request is JetpackRequest {
+            JetpackTunnelRawBodyErrorLogger().logIfNeeded(responseData: data ?? Data(), request: request, transportStatus: response.statusCode)
+        }
+        return error
+    }
 
     /// Returns the Networking Layer Error (if any):
     ///
@@ -473,6 +498,10 @@ extension Alamofire.DataResponse {
     /// Precisely: Request Timeout should be a 408, but we just get a 400, with the details in the response's body.
     ///
     var networkingError: Error? {
+        if let error = error?.asAFError,
+           error.isResponseValidationError == false {
+            return error
+        }
 
         // Passthru URL Errors: These are right there, even without calling Alamofire's validation.
         if let error = error as NSError?, error.domain == NSURLErrorDomain {

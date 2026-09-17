@@ -1014,6 +1014,7 @@ public enum WooAnalyticsStat: String {
     //
     case jetpackTunnelTimeout = "jetpack_tunnel_timeout"
     case apiJSONParsingError = "api_json_parsing_error"
+    case apiUnexpectedStoreResponse = "api_unexpected_store_response"
 
     // MARK: In-app Feedback and Survey Events
     //

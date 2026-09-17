@@ -3,6 +3,7 @@ import TestKit
 import WordPressAuthenticator
 import XCTest
 import YosemiteTestHelpers
+@testable import NetworkingCore
 @testable import WooCommerce
 import Yosemite
 import protocol Storage.StorageManagerType
@@ -204,6 +205,180 @@ final class AppCoordinatorTests: XCTestCase {
 
         // Then
         assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
+    }
+
+    @MainActor
+    func test_store_response_issue_when_store_has_a_successful_request_in_background_then_foreground_shows_alert() async {
+        // Given
+        prepareSelectedStore()
+        let monitor = StoreConnectionErrorMonitor()
+        var applicationState = UIApplication.State.background
+        let appCoordinator = makeCoordinator(storeConnectionErrorMonitor: monitor, applicationState: { applicationState })
+        appCoordinator.start()
+
+        // When
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+        monitor.recordSuccessfulConnection(siteID: 123)
+        await settleStoreConnectionEvents()
+        applicationState = .active
+        NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Then
+        XCTAssertTrue(appCoordinator.tabBarController.presentedViewController is UIAlertController)
+    }
+
+    @MainActor
+    func test_store_response_issue_when_app_becomes_active_then_it_shows_one_recovery_alert() async {
+        // Given
+        prepareSelectedStore()
+        let monitor = StoreConnectionErrorMonitor()
+        var applicationState = UIApplication.State.background
+        let appCoordinator = makeCoordinator(storeConnectionErrorMonitor: monitor, applicationState: { applicationState })
+        appCoordinator.start()
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+        await settleStoreConnectionEvents()
+        XCTAssertNil(appCoordinator.tabBarController.presentedViewController)
+
+        // When
+        applicationState = .active
+        NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+        let alert = appCoordinator.tabBarController.presentedViewController
+        NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Then
+        XCTAssertTrue(alert is UIAlertController)
+        XCTAssertTrue(appCoordinator.tabBarController.presentedViewController === alert)
+        XCTAssertNil(alert?.presentedViewController)
+    }
+
+    @MainActor
+    func test_store_response_issue_when_another_store_is_selected_then_it_discards_the_stale_issue() async {
+        // Given
+        prepareSelectedStore()
+        let monitor = StoreConnectionErrorMonitor()
+        let appCoordinator = makeCoordinator(storeConnectionErrorMonitor: monitor, applicationState: { .active })
+        appCoordinator.start()
+
+        // When
+        monitor.recordUnexpectedStoreResponse(siteID: 456)
+        await settleStoreConnectionEvents()
+        sessionManager.defaultStoreID = 456
+        sessionManager.defaultSite = Site.fake().copy(siteID: 456)
+        NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Then
+        XCTAssertNil(appCoordinator.tabBarController.presentedViewController)
+    }
+
+    @MainActor
+    func test_store_response_issue_when_another_store_fails_then_it_keeps_the_selected_store_alert() async {
+        // Given
+        prepareSelectedStore()
+        let monitor = StoreConnectionErrorMonitor()
+        var applicationState = UIApplication.State.background
+        let appCoordinator = makeCoordinator(storeConnectionErrorMonitor: monitor, applicationState: { applicationState })
+        appCoordinator.start()
+
+        // When
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+        monitor.recordUnexpectedStoreResponse(siteID: 456)
+        await settleStoreConnectionEvents()
+        applicationState = .active
+        NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
+
+        // Then
+        XCTAssertTrue(appCoordinator.tabBarController.presentedViewController is UIAlertController)
+    }
+
+    @MainActor
+    func test_store_response_issue_when_alert_is_visible_then_it_drops_a_new_failure() async throws {
+        // Given
+        prepareSelectedStore()
+        let monitor = StoreConnectionErrorMonitor()
+        let appCoordinator = makeCoordinator(storeConnectionErrorMonitor: monitor, applicationState: { .active })
+        appCoordinator.start()
+
+        // When
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+        await settleStoreConnectionEvents()
+        let alert = try XCTUnwrap(appCoordinator.tabBarController.presentedViewController)
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+        await settleStoreConnectionEvents()
+
+        // Then
+        XCTAssertTrue(appCoordinator.tabBarController.presentedViewController === alert)
+    }
+
+    @MainActor
+    func test_store_response_issue_when_alert_is_dismissed_then_a_new_failure_shows_a_new_alert() async throws {
+        // Given
+        prepareSelectedStore()
+        let monitor = StoreConnectionErrorMonitor()
+        let appCoordinator = makeCoordinator(storeConnectionErrorMonitor: monitor, applicationState: { .active })
+        appCoordinator.start()
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+        await settleStoreConnectionEvents()
+        let firstAlert = try XCTUnwrap(appCoordinator.tabBarController.presentedViewController)
+        await withCheckedContinuation { continuation in
+            firstAlert.dismiss(animated: false) {
+                continuation.resume()
+            }
+        }
+
+        // When
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+        await settleStoreConnectionEvents()
+
+        // Then
+        let secondAlert = try XCTUnwrap(appCoordinator.tabBarController.presentedViewController)
+        XCTAssertTrue(secondAlert is UIAlertController)
+        XCTAssertFalse(secondAlert === firstAlert)
+    }
+
+    @MainActor
+    func test_store_response_issue_when_a_modal_is_open_then_it_presents_recovery_from_the_modal() async {
+        // Given
+        prepareSelectedStore()
+        let monitor = StoreConnectionErrorMonitor()
+        let appCoordinator = makeCoordinator(storeConnectionErrorMonitor: monitor, applicationState: { .active })
+        appCoordinator.start()
+        let modal = UIViewController()
+        await withCheckedContinuation { continuation in
+            appCoordinator.tabBarController.present(modal, animated: false) {
+                continuation.resume()
+            }
+        }
+
+        // When
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+        await settleStoreConnectionEvents()
+
+        // Then
+        XCTAssertTrue(modal.presentedViewController is UIAlertController)
+    }
+
+    @MainActor
+    func test_store_response_issue_when_tapping_contact_support_then_it_opens_support() async throws {
+        // Given
+        prepareSelectedStore()
+        let monitor = StoreConnectionErrorMonitor()
+        let appCoordinator = makeCoordinator(storeConnectionErrorMonitor: monitor, applicationState: { .active })
+        appCoordinator.start()
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+        await settleStoreConnectionEvents()
+        let alert = try XCTUnwrap(appCoordinator.tabBarController.presentedViewController as? UIAlertController)
+
+        XCTAssertEqual(alert.actions.map(\.title), ["Contact Support", "Dismiss"])
+
+        // When
+        let contactSupportActionIndex = try XCTUnwrap(alert.actions.firstIndex { $0.title == "Contact Support" })
+        alert.tapButton(atIndex: contactSupportActionIndex)
+
+        // Then
+        await until {
+            (appCoordinator.tabBarController.presentedViewController as? UINavigationController)?
+                .topViewController is SupportFormHostingController
+        }
     }
 
     func test_resetting_selected_site_while_on_tabbar_presents_store_picker() throws {
@@ -539,6 +714,8 @@ private extension AppCoordinatorTests {
                          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
                          featureFlagService: FeatureFlagService = MockFeatureFlagService(),
                          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
+                         storeConnectionErrorMonitor: StoreConnectionErrorMonitoring = StoreConnectionErrorMonitor.shared,
+                         applicationState: @escaping () -> UIApplication.State = { UIApplication.shared.applicationState },
                          themeInstaller: ThemeInstaller = DefaultThemeInstaller()
     ) -> AppCoordinator {
         return AppCoordinator(window: window ?? self.window,
@@ -551,6 +728,30 @@ private extension AppCoordinatorTests {
                               pushNotesManager: pushNotesManager,
                               featureFlagService: featureFlagService,
                               switchStoreUseCase: switchStoreUseCase,
+                              storeConnectionErrorMonitor: storeConnectionErrorMonitor,
+                              applicationState: applicationState,
                               themeInstaller: themeInstaller)
+    }
+
+    func prepareSelectedStore() {
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        sessionManager.defaultStoreID = 123
+        sessionManager.defaultSite = Site.fake().copy(siteID: 123)
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            guard case let .loadEligibilityErrorInfo(completion) = action else {
+                return
+            }
+            completion(.failure(SampleError.first))
+        }
+    }
+
+
+    @MainActor
+    func settleStoreConnectionEvents() async {
+        await withCheckedContinuation { continuation in
+            DispatchQueue.main.async {
+                continuation.resume()
+            }
+        }
     }
 }

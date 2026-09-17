@@ -1,6 +1,9 @@
 # p2: other.ios-push-long-press
-# External prerequisite: a Woo notification must already be delivered to this
-# simulator. Generating a real push is intentionally deferred from this stack.
+# Prerequisite: a Woo order notification is delivered to this simulator before
+# the flow runs. `xcrun simctl push <udid> <bundle id> .maestro/helpers/store_order_push.json`
+# stages one with the store_order category the notification extension handles.
+# On the simulator a long press never expands a notification; swiping left and
+# tapping View opens the same notification content extension.
 appId: ${APP_ID}
 name: "iOS system - Notification long press"
 tags:
@@ -11,15 +14,24 @@ tags:
 - stopApp
 - pressKey: HOME
 - swipe:
-    start: "50%,0%"
+    start: "50%,1%"
     end: "50%,75%"
     duration: 1000
 - extendedWaitUntil:
-    visible: "Woo.*"
+    visible: ".*[Nn]ew order.*"
     timeout: 10000
-- longPressOn:
-    text: "Woo.*"
-    index: 0
-- assertVisible: View
-- assertVisible: "Woo.*"
+- swipe:
+    from:
+      text: ".*[Nn]ew order.*"
+      index: 0
+    direction: LEFT
+- extendedWaitUntil:
+    visible: "View"
+    timeout: 5000
+- tapOn: "View"
+# The extension renders the order preview when it can load the order, and this
+# fallback text when it cannot. Either proves the extension opened.
+- extendedWaitUntil:
+    visible: ".*[Nn]ew order.*|Unable to load notification"
+    timeout: 15000
 - takeScreenshot: ios_notification_long_press

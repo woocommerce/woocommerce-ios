@@ -663,8 +663,9 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
         } : nil
         presentSiteCredentialLoginErrorAlert(
-            message: error.localizedDescription,
+            error: error,
             defaultAction: browserAction,
+            for: siteURL,
             in: viewController
         )
     }
@@ -676,7 +677,8 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             switch error {
             case SiteCredentialLoginError.genericFailure,
                  SiteCredentialLoginError.invalidCredentials,
-                 SiteCredentialLoginError.basicAuthenticationRequired:
+                 SiteCredentialLoginError.basicAuthenticationRequired,
+                 SiteCredentialLoginError.unexpectedStoreResponse:
                 return false
             case is SiteCredentialLoginError:
                 return true
@@ -1302,8 +1304,9 @@ private extension AuthenticationManager {
             presentApplicationPasswordWebView(for: siteURL, in: viewController)
         } : nil
         presentSiteCredentialLoginErrorAlert(
-            message: (error as NSError).localizedDescription,
+            error: error,
             defaultAction: defaultAction,
+            for: siteURL,
             in: viewController
         )
     }
@@ -1311,18 +1314,40 @@ private extension AuthenticationManager {
     /// Presents the site credential failure using the authenticator's centered, dimmed alert treatment.
     ///
     /// Without the custom presentation configuration, UIKit presents the alert as a page sheet on iOS 26.
-    private func presentSiteCredentialLoginErrorAlert(message: String,
+    private func presentSiteCredentialLoginErrorAlert(error: Error,
                                                       defaultAction: (() -> Void)?,
+                                                      for siteURL: String,
                                                       in viewController: UIViewController) {
+        let isUnexpectedStoreResponse = isUnexpectedStoreResponse(error)
+        let supportAction: (() -> Void)? = isUnexpectedStoreResponse ? { [weak self, weak viewController] in
+            guard let self, let viewController else { return }
+            self.presentSupport(
+                from: viewController,
+                sourceTag: .loginSiteAddress,
+                siteURL: URL(string: siteURL)
+            )
+        } : nil
         let alert = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
-            message: message,
-            defaultAction: defaultAction
+            message: isUnexpectedStoreResponse ? UnexpectedStoreResponseLocalization.message : error.localizedDescription,
+            defaultAction: isUnexpectedStoreResponse ? nil : defaultAction,
+            supportAction: supportAction
         )
         if let transitioningDelegate = viewController as? UIViewControllerTransitioningDelegate {
             alert.modalPresentationStyle = .custom
             alert.transitioningDelegate = transitioningDelegate
         }
         viewController.present(alert, animated: true)
+    }
+
+    private func isUnexpectedStoreResponse(_ error: Error) -> Bool {
+        guard !(error is UnexpectedStoreResponseError) else {
+            return true
+        }
+        guard let loginError = error as? SiteCredentialLoginError,
+              case .unexpectedStoreResponse = loginError else {
+            return false
+        }
+        return true
     }
 
     /// Presents app password site login using a web view.

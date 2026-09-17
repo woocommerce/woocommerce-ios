@@ -70,6 +70,26 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
     }
 
+    func test_unexpected_store_response_alert_has_only_contact_support_and_dismiss_actions() throws {
+        // Given
+        let useCase = MockApplicationPasswordUseCase(mockGenerationError: UnexpectedStoreResponseError())
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                     stores: stores,
+                                                     previousViewController: nil)
+
+        // When
+        checker.checkEligibility(for: testURL, from: navigationController, onSuccess: {})
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+
+        // Then
+        let alert = try XCTUnwrap(navigationController.presentedViewController as? UIAlertController)
+        XCTAssertEqual(alert.title, UnexpectedStoreResponseLocalization.title)
+        XCTAssertEqual(alert.message, UnexpectedStoreResponseLocalization.message)
+        XCTAssertEqual(alert.actions.map(\.title), ["Contact Support", "Dismiss"])
+    }
+
     func test_role_error_screen_is_displayed_when_the_user_is_not_eligible() {
         // Given
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)

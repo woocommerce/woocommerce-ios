@@ -1282,6 +1282,32 @@ final class AuthenticationManagerTests: XCTestCase {
         try assertCenteredFancyAlertPresented(by: presenter)
     }
 
+    func test_present_site_credential_login_failure_when_store_response_is_unexpected_then_shows_shared_message_and_support_actions() throws {
+        // Given
+        let presenter = SiteCredentialAlertPresenter()
+        navigationController.setViewControllers([presenter], animated: false)
+        let manager = AuthenticationManager()
+
+        // When
+        manager.presentSiteCredentialLoginFailure(
+            error: SiteCredentialLoginError.unexpectedStoreResponse,
+            offersBrowserAlternative: true,
+            for: "https://example.com",
+            in: presenter
+        )
+        let alert = try XCTUnwrap(presenter.presentedViewController as? FancyAlertViewController)
+        alert.loadViewIfNeeded()
+
+        // Then
+        let labels = allSubviews(in: alert.view).compactMap { $0 as? UILabel }.compactMap(\.text)
+        XCTAssertTrue(labels.contains(UnexpectedStoreResponseLocalization.message))
+
+        let contactSupportButton = try XCTUnwrap(button(withIdentifier: "fancy-alert-view-default-button", in: alert.view))
+        let cancelButton = try XCTUnwrap(button(withIdentifier: "fancy-alert-view-cancel-button", in: alert.view))
+        XCTAssertEqual(contactSupportButton.title(for: .normal), UnexpectedStoreResponseLocalization.contactSupport)
+        XCTAssertEqual(cancelButton.title(for: .normal), UnexpectedStoreResponseLocalization.dismiss)
+    }
+
     func test_authenticate_site_credentials_when_login_recovery_is_requested_then_tracks_invalid_login_page_detected() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1463,6 +1489,14 @@ private extension AuthenticationManagerTests {
         XCTAssertEqual(alert.modalPresentationStyle, .custom)
         XCTAssertTrue(alert.transitioningDelegate === presenter)
         XCTAssertTrue(alert.presentationController is FancyAlertPresentationController)
+    }
+
+    func button(withIdentifier identifier: String, in view: UIView) -> UIButton? {
+        allSubviews(in: view).first { $0.accessibilityIdentifier == identifier } as? UIButton
+    }
+
+    func allSubviews(in view: UIView) -> [UIView] {
+        [view] + view.subviews.flatMap(allSubviews(in:))
     }
 
     func siteCredentials(options: [AnyHashable: Any] = [:]) -> WordPressOrgCredentials {

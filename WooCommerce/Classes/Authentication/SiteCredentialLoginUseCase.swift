@@ -4,6 +4,7 @@ import enum NetworkingCore.CookieNonceAuthenticationFailure
 import struct NetworkingCore.CookieNonceAuthenticationEndpoints
 import enum NetworkingCore.CookieNonceAuthenticationResponseStage
 import enum NetworkingCore.CookieNonceAuthenticationRules
+import enum NetworkingCore.UnexpectedStoreResponseClassifier
 import protocol NetworkingCore.URLSessionProtocol
 
 protocol SiteCredentialLoginProtocol {
@@ -25,6 +26,7 @@ enum SiteCredentialLoginError: LocalizedError {
     case inaccessibleLoginPage
     case inaccessibleAdminPage
     case unacceptableStatusCode(code: Int)
+    case unexpectedStoreResponse
     case genericFailure(underlyingError: Error)
 
     /// Used for tracking error code
@@ -37,7 +39,8 @@ enum SiteCredentialLoginError: LocalizedError {
              .basicAuthenticationRequired,
              .invalidCredentials,
              .loginFailed,
-             .unacceptableStatusCode:
+             .unacceptableStatusCode,
+             .unexpectedStoreResponse:
             return NSError(domain: Self.errorDomain, code: errorCode, userInfo: [NSLocalizedDescriptionKey: errorMessage])
         case .genericFailure(let underlyingError):
             return underlyingError as NSError
@@ -58,6 +61,8 @@ enum SiteCredentialLoginError: LocalizedError {
             return -2
         case .unacceptableStatusCode(let code):
             return code
+        case .unexpectedStoreResponse:
+            return -3
         case .genericFailure(let underlyingError):
             return (underlyingError as NSError).code
         }
@@ -79,6 +84,8 @@ enum SiteCredentialLoginError: LocalizedError {
             return message
         case .unacceptableStatusCode(let code):
             return String(format: Localization.unacceptableStatusCode, code)
+        case .unexpectedStoreResponse:
+            return UnexpectedStoreResponseLocalization.message
         case .genericFailure:
             return ""
         }
@@ -99,6 +106,7 @@ enum SiteCredentialLoginError: LocalizedError {
              .inaccessibleLoginPage,
              .inaccessibleAdminPage,
              .unacceptableStatusCode,
+             .unexpectedStoreResponse,
              .genericFailure:
             return false
         }
@@ -328,12 +336,35 @@ private extension SiteCredentialLoginUseCase {
         endpoints: CookieNonceAuthenticationEndpoints
     ) async throws {
         let response = try await load(getRequest(url: nonceURL), using: session)
-        try validate(response.http, stage: .nonce)
         guard let responseURL = response.http.url,
-              endpoints.isExpectedNonceURL(responseURL, afterLoginAt: loginURL),
-              CookieNonceAuthenticationRules.validatedNonce(from: response.data) != nil else {
+              endpoints.isExpectedNonceURL(responseURL, afterLoginAt: loginURL) else {
             throw SiteCredentialLoginError.invalidLoginResponse
         }
+        // WordPress sends a valid plain-text REST nonce with an HTML MIME type.
+        if (200..<300).contains(response.http.statusCode),
+           CookieNonceAuthenticationRules.validatedNonce(from: response.data) != nil {
+            return
+        }
+        let existingFailure = CookieNonceAuthenticationRules.failure(
+            statusCode: response.http.statusCode,
+            authenticateHeader: response.http.value(forHTTPHeaderField: "WWW-Authenticate"),
+            locationHeader: response.http.value(forHTTPHeaderField: "Location"),
+            stage: .nonce
+        )
+        if case .basicAuthenticationRequired? = existingFailure {
+            throw SiteCredentialLoginError(.basicAuthenticationRequired)
+        }
+        if [404, 410].contains(response.http.statusCode) ||
+            CookieNonceAuthenticationRules.isRedirect(statusCode: response.http.statusCode) {
+            try validate(response.http, stage: .nonce)
+        }
+        if let error = unexpectedStoreResponseError(for: response) {
+            throw error
+        }
+        if let existingFailure {
+            throw SiteCredentialLoginError(existingFailure)
+        }
+        throw SiteCredentialLoginError.invalidLoginResponse
     }
 
     func verifyDashboard(afterLoginAt loginURL: URL, endpoints: CookieNonceAuthenticationEndpoints) async throws {
@@ -367,6 +398,20 @@ private extension SiteCredentialLoginUseCase {
         ) {
             throw SiteCredentialLoginError(failure)
         }
+    }
+
+    /// The nonce endpoint normally returns a plain-text nonce. Keep that response and normal login
+    /// pages on their existing validation path; surface HTML, server errors, and rate limits.
+    func unexpectedStoreResponseError(for response: (data: Data, http: HTTPURLResponse)) -> SiteCredentialLoginError? {
+        guard UnexpectedStoreResponseClassifier.classify(
+            responseData: response.data,
+            statusCode: response.http.statusCode,
+            contentType: response.http.value(forHTTPHeaderField: "Content-Type"),
+            expectsJSON: false
+        ) != nil else {
+            return nil
+        }
+        return .unexpectedStoreResponse
     }
 
     func credentialRequest(username: String, password: String, submissionURL: URL, nonceURL: URL) throws -> URLRequest {

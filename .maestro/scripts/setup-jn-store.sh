@@ -170,6 +170,10 @@ echo "WPCLI:ok\n";
 echo "WC:" . ( function_exists( "wc_rand_hash" ) ? "active" : "pending" ) . "\n";
 echo "JP:" . ( class_exists( "Jetpack" ) ? "active" : "pending" ) . "\n";
 echo "USER:" . ( get_user_by( "id", __ADMIN_ID__ ) ? "ok" : "MISSING" ) . "\n";')"
+    if ! printf '%s' "$STATE" | grep -q "WPCLI:ok"; then
+      ssh_failures=$(( ${ssh_failures:-0} + 1 ))
+      [ "$ssh_failures" -lt 3 ] || die "could not run wp-cli over SSH. Check the site admin password."
+    fi
     printf '%s' "$STATE" | grep -q "WC:active" \
       && printf '%s' "$STATE" | grep -q "JP:active" && break
   fi

@@ -6,7 +6,6 @@ import KeychainAccess
 
 /// DefaultApplicationPasswordUseCase Unit Tests
 ///
-@MainActor
 final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
     /// Mock Network: Allows us to inject predefined responses!
     ///

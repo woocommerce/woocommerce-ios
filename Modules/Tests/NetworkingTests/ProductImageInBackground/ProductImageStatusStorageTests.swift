@@ -130,11 +130,12 @@ class ProductImageStatusStorageTests: XCTestCase {
                 let externalData = try externalEncoder.encode([externalStatus])
                 userDefaults.set(externalData, forKey: userDefaultsKey)
 
-                let userDefaults: UserDefaults = self.userDefaults
+                // `setUp` stores `UserDefaults.standard`; the shared instance is referenced directly so the
+                // main-queue block does not have to carry a non-Sendable value across.
                 DispatchQueue.main.async {
                     NotificationCenter.default.post(
                         name: UserDefaults.didChangeNotification,
-                        object: userDefaults
+                        object: UserDefaults.standard
                     )
                 }
             } catch {

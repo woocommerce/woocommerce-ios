@@ -1593,7 +1593,7 @@ final class RemoteTests: XCTestCase {
 }
 
 private extension RemoteTests {
-    func assertRawBodyDotcomError(_ error: Error?, file: StaticString = #file, line: UInt = #line) {
+    func assertRawBodyDotcomError(_ error: Error?, file: StaticString = #filePath, line: UInt = #line) {
         guard let error,
               case let DotcomError.unknown(code, _, _) = error else {
             return XCTFail("Expected DotcomError.unknown", file: file, line: line)

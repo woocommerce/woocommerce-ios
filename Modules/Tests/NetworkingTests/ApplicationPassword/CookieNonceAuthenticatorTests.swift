@@ -7,7 +7,6 @@ import XCTest
 
 private let cookieNonceLoopbackCookiePrefix = "woocommerce_cookie_nonce_test_"
 
-@MainActor
 final class CookieNonceAuthenticatorTests: XCTestCase {
 
     private let loginURL = URL(string: "https://example.com/wp-login.php")!
@@ -713,7 +712,9 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
             loginEntryURL: siteURL.appendingPathComponent("custom-entry"),
             adminBaseURL: siteURL.appendingPathComponent("private-admin", isDirectory: true)
         )
-        let network = WordPressOrgNetwork(
+        // `WordPressOrgNetwork` is not `Sendable`; this test exercises its own request coalescing from two
+        // child tasks on purpose, so the local is marked rather than the class.
+        nonisolated(unsafe) let network = WordPressOrgNetwork(
             configuration: CookieNonceAuthenticatorConfiguration(
                 username: sampleUser,
                 password: samplePassword,
@@ -724,8 +725,8 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         let request = URLRequest(url: siteURL.appendingPathComponent("wp-json/protected"))
 
         // When
-        async let firstResponse = responseData(for: request, using: network)
-        async let secondResponse = responseData(for: request, using: network)
+        async let firstResponse = Self.responseData(for: request, using: network)
+        async let secondResponse = Self.responseData(for: request, using: network)
         let responses = try await (firstResponse, secondResponse)
 
         // Then
@@ -828,7 +829,7 @@ private extension CookieNonceAuthenticatorTests {
             "<input name=\"pwd\" id=\"user_pass\" type=\"password\"></form>"
     }
 
-    func responseData(for request: URLRequest, using network: WordPressOrgNetwork) async throws -> Data {
+    static func responseData(for request: URLRequest, using network: WordPressOrgNetwork) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { (result: Result<Data, Swift.Error>) in
                 continuation.resume(with: result)
@@ -1164,14 +1165,13 @@ private final class CookieNonceLoopbackServer: @unchecked Sendable {
         self.handler = handler
 
         let ready = DispatchSemaphore(value: 0)
-        let stateLock = NSLock()
-        var startupError: Swift.Error?
+        let startupError = Mutex<Swift.Error?>(nil)
         listener.stateUpdateHandler = { state in
             switch state {
             case .ready:
                 ready.signal()
             case .failed(let error):
-                stateLock.withTestLock { startupError = error }
+                startupError.withLock { $0 = error }
                 ready.signal()
             default:
                 break
@@ -1181,11 +1181,12 @@ private final class CookieNonceLoopbackServer: @unchecked Sendable {
             self?.handle(connection)
         }
         listener.start(queue: queue)
+        let failure = startupError.withLock { $0 }
         guard ready.wait(timeout: .now() + 5) == .success,
-              stateLock.withTestLock({ startupError == nil }),
+              failure == nil,
               let port = listener.port else {
             listener.cancel()
-            throw startupError ?? URLError(.cannotConnectToHost)
+            throw failure ?? URLError(.cannotConnectToHost)
         }
         self.listeningPort = port
     }

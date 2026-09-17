@@ -10,14 +10,22 @@ extension MockURLProtocol {
     /// thread, so the store is guarded by a lock.
     ///
     final class Mocks {
-        private static let responsesByRequestURL = Mutex<[String: (response: AnyCodable, statusCode: Int)]>([:])
+        private static let responsesByRequestURL = Mutex<[String: (response: Data?, statusCode: Int)]>([:])
 
-        /// Mocks the response of a given request.
+        /// Mocks the response of a given request. The response is encoded here, on the test thread, so only
+        /// `Data` is shared with the URL loading thread.
         static func mockResponse(_ response: AnyCodable, statusCode: Int, for request: URLRequest) {
             guard let url = request.url?.absoluteString else {
                 return
             }
-            responsesByRequestURL.withLock { $0[url] = (response: response, statusCode: statusCode) }
+            let data: Data?
+            do {
+                data = try JSONEncoder().encode(response)
+            } catch {
+                XCTFail("Couldn't convert response to Data: \(response)")
+                data = nil
+            }
+            responsesByRequestURL.withLock { $0[url] = (response: data, statusCode: statusCode) }
         }
 
         /// Removes every mocked response. Call from `tearDown` so mocks do not leak between tests.
@@ -30,25 +38,7 @@ extension MockURLProtocol {
             guard let url = request.url?.absoluteString else {
                 return nil
             }
-
-            let encoded: (data: Data?, statusCode: Int, encodingFailure: String?)? = responsesByRequestURL.withLock { store in
-                guard let response = store[url] else {
-                    return nil
-                }
-                do {
-                    return (data: try JSONEncoder().encode(response.response), statusCode: response.statusCode, encodingFailure: nil)
-                } catch {
-                    return (data: nil, statusCode: response.statusCode, encodingFailure: "\(response)")
-                }
-            }
-
-            guard let encoded else {
-                return nil
-            }
-            if let encodingFailure = encoded.encodingFailure {
-                XCTFail("Couldn't convert response to Data: \(encodingFailure)")
-            }
-            return (response: encoded.data, statusCode: encoded.statusCode)
+            return responsesByRequestURL.withLock { $0[url] }
         }
     }
 }

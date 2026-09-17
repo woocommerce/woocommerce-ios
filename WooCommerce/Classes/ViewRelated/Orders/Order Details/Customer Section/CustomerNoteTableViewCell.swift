@@ -78,11 +78,13 @@ final class CustomerNoteTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureHeadlineLabel()
-        configureBodyTextView()
-        configureEditButton()
-        configureAddButton()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureHeadlineLabel()
+            configureBodyTextView()
+            configureEditButton()
+            configureAddButton()
+        }
     }
 
     override func prepareForReuse() {

@@ -57,9 +57,11 @@ final class BillingAddressTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureLabels()
-        configureEditButton()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureLabels()
+            configureEditButton()
+        }
     }
 
     override func prepareForReuse() {

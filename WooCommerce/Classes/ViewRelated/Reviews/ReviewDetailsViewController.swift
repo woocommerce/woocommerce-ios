@@ -522,7 +522,7 @@ private extension ReviewDetailsViewController {
         case header
         case content
 
-        @MainActor var reuseIdentifier: String {
+        var reuseIdentifier: String {
             switch self {
             case .header:
                 return NoteDetailsHeaderPlainTableViewCell.reuseIdentifier

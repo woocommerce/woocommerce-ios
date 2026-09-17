@@ -18,6 +18,17 @@ open class Remote: NSObject {
     ///
     var storeConnectionErrorRecorder: StoreConnectionErrorRecording = StoreConnectionErrorMonitor.shared
 
+    /// The recorder for a response to `request`, or `nil` when the request did not go through the Jetpack
+    /// tunnel.
+    ///
+    /// A direct request authenticated with an application password is never signed, so it cannot fail
+    /// signature verification, and its success says nothing about whether the tunnel works. Recording it
+    /// would clear a store that is still unreachable through the tunnel.
+    ///
+    private func connectionErrorRecorder(for request: Request) -> StoreConnectionErrorRecording? {
+        network.usesJetpackTunnel(for: request) ? storeConnectionErrorRecorder : nil
+    }
+
     /// Designated Initializer.
     ///
     /// - Parameters:
@@ -41,7 +52,7 @@ open class Remote: NSObject {
         }
 
         do {
-            try Self.validateResponse(data, for: request, recorder: storeConnectionErrorRecorder, outcome: .succeeded)
+            try Self.validateResponse(data, for: request, recorder: connectionErrorRecorder(for: request), outcome: .succeeded)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
             handleResponseError(error: error, for: request)
@@ -62,7 +73,7 @@ open class Remote: NSObject {
         }
 
         do {
-            try Self.validateResponse(data, for: request, recorder: storeConnectionErrorRecorder, outcome: .succeeded)
+            try Self.validateResponse(data, for: request, recorder: connectionErrorRecorder(for: request), outcome: .succeeded)
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
@@ -247,7 +258,7 @@ open class Remote: NSObject {
                 // A 2xx is not enough on its own: the Jetpack tunnel answers with a healthy status and
                 // an error body. The body decides whether the store is reachable, so it is validated
                 // here even though this overload does not parse it.
-                try Self.validateResponse(data, for: request, recorder: storeConnectionErrorRecorder, outcome: .succeeded)
+                try Self.validateResponse(data, for: request, recorder: connectionErrorRecorder(for: request), outcome: .succeeded)
             } catch {
                 // Handled but deliberately not rethrown. This overload has never surfaced body-level
                 // errors to its callers and widening that is a separate change, but now that the body is
@@ -306,7 +317,7 @@ private extension Remote {
                                               completion: @escaping (Result<M.Output, Error>) -> Void) {
         // Read before hopping queues so the outcome is still recorded, and the completion still called,
         // if this remote goes away while the response is being parsed.
-        let recorder = storeConnectionErrorRecorder
+        let recorder = connectionErrorRecorder(for: request)
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let result: Result<M.Output, Error>
             do {
@@ -337,7 +348,7 @@ private extension Remote {
             return try Self.validateAndMap(data,
                                            request: request,
                                            mapper: mapper,
-                                           recorder: storeConnectionErrorRecorder,
+                                           recorder: connectionErrorRecorder(for: request),
                                            outcome: .succeeded)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
@@ -497,10 +508,10 @@ private extension Remote {
         do {
             let validator = request.responseDataValidator()
             try validator.validate(data: response)
-            Self.recordStoreConnectionFailure(error: networkError, for: request, recorder: storeConnectionErrorRecorder)
+            Self.recordStoreConnectionFailure(error: networkError, for: request, recorder: connectionErrorRecorder(for: request))
             return networkError
         } catch {
-            Self.recordStoreConnectionFailure(error: error, for: request, recorder: storeConnectionErrorRecorder)
+            Self.recordStoreConnectionFailure(error: error, for: request, recorder: connectionErrorRecorder(for: request))
             return error
         }
     }

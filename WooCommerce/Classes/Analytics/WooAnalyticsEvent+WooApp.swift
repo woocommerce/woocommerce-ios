@@ -220,11 +220,16 @@ extension WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .ordersListLoadError, properties: [:], error: error)
     }
 
-    /// Tracked when the selected site is reset because WPCom returned an `unknown_blog` error,
-    /// routing the user to the store picker.
+    enum SelectedStoreResetReason: String {
+        case unknownBlog = "unknown_blog"
+        case missingFromSitesSync = "missing_from_sites_sync"
+    }
+
+    /// Tracked when the selected site is reset, routing the user to the store picker.
+    /// The reason distinguishes site-list resets from `unknown_blog` errors.
     ///
-    static func selectedSiteResetDueToUnknownBlog() -> WooAnalyticsEvent {
-        WooAnalyticsEvent(statName: .selectedSiteResetDueToUnknownBlog, properties: [:])
+    static func selectedSiteReset(reason: SelectedStoreResetReason) -> WooAnalyticsEvent {
+        WooAnalyticsEvent(statName: .selectedSiteReset, properties: ["reason": reason.rawValue])
     }
 }
 

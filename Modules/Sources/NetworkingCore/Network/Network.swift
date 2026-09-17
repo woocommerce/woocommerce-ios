@@ -69,6 +69,15 @@ public protocol Network {
     func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                  to request: URLRequestConvertible,
                                  completion: @escaping (Data?, Error?) -> Void)
+
+    /// Whether `request` reaches the site through the Jetpack tunnel rather than directly.
+    ///
+    /// A request to a Jetpack site can go either way: through WordPress.com's tunnel, signed with the
+    /// site's Jetpack connection, or straight to the site with an application password. Only the tunnel
+    /// can fail Jetpack's signature verification, and only a tunnel success proves the connection works,
+    /// so anything judging the store's Jetpack connection needs to know which path was used.
+    ///
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool
 }
 
 public extension Network {

@@ -33,8 +33,9 @@ protocol StoreConnectionErrorRecording {
 /// background and tell the merchant what is going on instead of failing silently.
 ///
 /// The state is keyed by site so it only affects the store that is actually unreachable, and it clears
-/// itself as soon as a request to that store succeeds again — no manual reset once the merchant fixes
-/// their site. Not persisted: a relaunch starts clean and re-detects if the store is still unreachable.
+/// itself as soon as a request to that store through the Jetpack tunnel succeeds again — no manual reset
+/// once the merchant fixes their site. Not persisted: a relaunch starts clean and re-detects if the store
+/// is still unreachable.
 ///
 public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, StoreConnectionErrorRecording {
     public static let shared = StoreConnectionErrorMonitor()

@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 
 /// Coordinates the state of multiple columns (product list and secondary view) based on the secondary view.
+@MainActor
 final class ProductsSplitViewCoordinator: NSObject {
     /// Content type that is shown in the secondary view.
     enum SecondaryViewContentType: Equatable {
@@ -149,15 +150,21 @@ final class ProductsSplitViewCoordinator: NSObject {
         reconcilePrimaryNavigationBarVisibility(afterShowing: productsViewController, in: primaryNavigationController)
     }
 
-    /// Hides the primary navigation bar once an interactive pop back to Product Search commits.
+    /// Hides the primary navigation bar once an interactive pop back to Product Search finishes.
     ///
     /// A cancelled gesture leaves the bar alone, because Product Detail stays on screen and keeps needing it.
     /// Extracted from the transition coordinator callback so the completed and cancelled cases can be tested.
-    func hidePrimaryNavigationBarWhenInteractionCompletes(isCancelled: Bool) {
+    func hidePrimaryNavigationBarWhenTransitionCompletes(isCancelled: Bool) {
         guard !isCancelled else {
             return
         }
         primaryNavigationController.setNavigationBarHiddenIfNeeded(true, animated: false)
+    }
+
+    func schedulePrimaryNavigationBarHide(after transitionCoordinator: UIViewControllerTransitionCoordinator) {
+        transitionCoordinator.animate(alongsideTransition: nil) { [weak self] context in
+            self?.hidePrimaryNavigationBarWhenTransitionCompletes(isCancelled: context.isCancelled)
+        }
     }
 
     /// Prepares the hidden Products item before a compact Product form is added to the shared navigation bar.
@@ -579,18 +586,16 @@ private extension ProductsSplitViewCoordinator {
 
         // UIKit does not scrub a navigation-bar visibility animation with an interactive pop. Starting that animation in
         // `willShow` can therefore leave the product detail bar visible briefly after the swipe finishes. Wait until UIKit
-        // knows whether the gesture will finish or cancel, then hide the bar immediately only for a completed pop.
+        // finishes the complete transition, then hide the bar immediately only for a completed pop.
         //
         // IMPORTANT: This intentionally leaves navigation-bar-sized space above Product Search briefly after a back swipe.
         // Do not remove that gap by hiding the bar or forcing Search to lay out earlier in the transition. In a collapsed
         // split view, the product detail navigation item can still belong to the secondary navigation bar at that point.
-        // Forcing the primary bar to lay it out caused NSInternalInconsistencyException crashes (Sentry issue 7669931391).
+        // Doing either too early risks the NSInternalInconsistencyException in Sentry issues 7669931391 and 1523523535.
         if isShowingProductSearch,
            let transitionCoordinator = navigationController.transitionCoordinator,
            transitionCoordinator.isInteractive {
-            transitionCoordinator.notifyWhenInteractionChanges { [weak self] context in
-                self?.hidePrimaryNavigationBarWhenInteractionCompletes(isCancelled: context.isCancelled)
-            }
+            schedulePrimaryNavigationBarHide(after: transitionCoordinator)
             return
         }
 

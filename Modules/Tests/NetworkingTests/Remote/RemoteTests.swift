@@ -1723,6 +1723,10 @@ private struct IsolationCapturingNetwork: Network {
     func uploadMultipartFormData(multipartFormData: @escaping (MultipartFormData) -> Void,
                                  to request: URLRequestConvertible,
                                  completion: @escaping (Data?, Error?) -> Void) { }
+
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        request is JetpackRequest
+    }
 }
 
 private final class MockStoreConnectionErrorRecorder: StoreConnectionErrorRecording {

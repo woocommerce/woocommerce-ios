@@ -37,6 +37,7 @@ protocol ProductImageUploaderProtocol {
     /// - Parameters:
     ///   - key: identifiable information about the product.
     ///   - originalStatuses: the current image statuses of the product for initialization.
+    @MainActor
     func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler
 
     /// Replaces the local ID of the product with the remote ID from API.
@@ -50,12 +51,14 @@ protocol ProductImageUploaderProtocol {
     ///   - siteID: The ID of the site to which images are uploaded to.
     ///   - localID: A temporary local ID of the product.
     ///   - remoteID: Remote product ID received from API.
+    @MainActor
     func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64)
 
     /// Saves the product remotely with the images after none is pending upload.
     /// - Parameters:
     ///   - key: identifiable information about the product.
     ///   - onProductSave: called after the product is saved remotely with the uploaded images.
+    @MainActor
     func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void)
 
@@ -80,6 +83,7 @@ protocol ProductImageUploaderProtocol {
     /// - Parameters:
     ///   - key: identifiable information about the product.
     ///   - originalImages: the image statuses before any edits.
+    @MainActor
     func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool
 
     /// Resets all internal states and tracking of image uploads for connected stores.
@@ -164,17 +168,22 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 
     private let stores: StoresManager
     private let featureFlagService: FeatureFlagService
-    private let imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol
+    private let imagesProductIDUpdaterOverride: ProductImagesProductIDUpdaterProtocol?
+
+    @MainActor
+    private lazy var imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol = {
+        imagesProductIDUpdaterOverride ?? ProductImagesProductIDUpdater(stores: stores)
+    }()
 
     private var cancellables = Set<AnyCancellable>()
 
     init(stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol = ProductImagesProductIDUpdater(),
+         imagesProductIDUpdater: ProductImagesProductIDUpdaterProtocol? = nil,
          imageStatusStorage: ProductImageStatusStorage = ProductImageStatusStorage()) {
         self.stores = stores
         self.featureFlagService = featureFlagService
-        self.imagesProductIDUpdater = imagesProductIDUpdater
+        self.imagesProductIDUpdaterOverride = imagesProductIDUpdater
         self.imageStatusStorage = imageStatusStorage
 
         // Observe when the app enters background.
@@ -188,6 +197,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         NotificationCenter.default.removeObserver(self)
     }
 
+    @MainActor
     func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
         let actionHandler: ProductImageActionHandler
         if let handler = actionHandlersByProduct[key] {
@@ -202,6 +212,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         return actionHandler
     }
 
+    @MainActor
     func replaceLocalID(siteID: Int64, localID: ProductOrVariationID, remoteID: Int64) {
         let key = Key(siteID: siteID,
                       productOrVariationID: localID,
@@ -247,6 +258,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
     }
 
+    @MainActor
     func hasUnsavedChangesOnImages(key: ProductImageUploaderKey, originalImages: [ProductImage]) -> Bool {
         guard let handler = actionHandlersByProduct[key] else {
             return false
@@ -272,6 +284,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
         }
     }
 
+    @MainActor
     func saveProductImagesWhenNoneIsPendingUploadAnymore(key: ProductImageUploaderKey,
                                                          onProductSave: @escaping (Result<[ProductImage], Error>) -> Void) {
         // The product has to exist remotely in order to save its images remotely.
@@ -353,6 +366,7 @@ final class ProductImageUploader: ProductImageUploaderProtocol {
 private extension ProductImageUploader {
     /// Called to replace the local product ID with remote product ID for the previously uploaded images
     ///
+    @MainActor
     func updateProductIDOfImagesUploadedUsingLocalProductID(siteID: Int64,
                                                             productOrVariationID: ProductOrVariationID,
                                                             images: [ProductImage]) {
@@ -365,6 +379,7 @@ private extension ProductImageUploader {
         }
     }
 
+    @MainActor
     func observeStatusUpdates(key: Key, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addUpdateObserver(self) { [weak self] productImageStatuses in
             guard let self else { return }
@@ -386,6 +401,7 @@ private extension ProductImageUploader {
         statusUpdatesSubscriptions.insert(observationToken)
     }
 
+    @MainActor
     func observeImageUploads(key: Key, actionHandler: ProductImageActionHandler) {
         let observationToken = actionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
             guard let self else { return }

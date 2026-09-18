@@ -214,7 +214,7 @@ public class MockStoresManager: StoresManager {
     }
 
     @discardableResult
-    public func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
+    public func synchronizeEntities(preservingSelectedSite: Bool = false, onCompletion: (() -> Void)?) -> StoresManager {
         if let siteID = sessionManager.defaultStoreID {
             Task {
                 await synchronizeGeneralSiteSettings(siteID: siteID)

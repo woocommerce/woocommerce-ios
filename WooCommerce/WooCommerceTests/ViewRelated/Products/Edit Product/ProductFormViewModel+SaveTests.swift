@@ -4,6 +4,7 @@ import XCTest
 import Yosemite
 
 /// Unit tests for `ProductFormViewModel`'s `saveProductRemotely`
+@MainActor
 final class ProductFormViewModel_SaveTests: XCTestCase {
     private var storesManager: MockStoresManager!
 

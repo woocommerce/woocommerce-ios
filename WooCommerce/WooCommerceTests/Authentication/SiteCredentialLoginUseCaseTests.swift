@@ -1156,6 +1156,29 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         // Then
         assertFailure(result, matches: .unexpectedStoreResponse)
     }
+
+    func test_handleLogin_when_manualNonceRequest_returns_plain_text_200_then_returns_safe_unexpected_store_response() async {
+        // Given
+        let siteURL = "https://test.com"
+        let loginURL = siteURL + SiteCredentialLoginUseCase.Constants.loginPath
+        let nonceURL = siteURL + SiteCredentialLoginUseCase.Constants.adminPath + SiteCredentialLoginUseCase.Constants.wporgNoncePath
+        let session = MockURLSession()
+        let loginSession = MockURLSession()
+        session.simulateResponse(for: loginURL, data: Data(loginForm().utf8))
+        loginSession.simulateResponse(for: loginURL, statusCode: 302, headerFields: ["Location": nonceURL])
+        session.simulateResponse(
+            for: nonceURL,
+            data: Data("Service unavailable".utf8),
+            statusCode: 200,
+            headerFields: ["Content-Type": "text/plain"]
+        )
+
+        // When
+        let result = await performLogin(siteURL: siteURL, session: session, loginSession: loginSession)
+
+        // Then
+        assertFailure(result, matches: .unexpectedStoreResponse)
+    }
 }
 
 private final class SiteCredentialLoginTestURLProtocol: URLProtocol {

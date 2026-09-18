@@ -401,13 +401,13 @@ private extension SiteCredentialLoginUseCase {
     }
 
     /// The nonce endpoint normally returns a plain-text nonce. Keep that response and normal login
-    /// pages on their existing validation path; surface HTML, server errors, and rate limits.
+    /// pages on their existing validation path; surface other non-JSON responses, server errors, and rate limits.
     func unexpectedStoreResponseError(for response: (data: Data, http: HTTPURLResponse)) -> SiteCredentialLoginError? {
         guard UnexpectedStoreResponseClassifier.classify(
             responseData: response.data,
             statusCode: response.http.statusCode,
             contentType: response.http.value(forHTTPHeaderField: "Content-Type"),
-            expectsJSON: false
+            expectsJSON: true
         ) != nil else {
             return nil
         }

@@ -60,7 +60,7 @@ jobs:
           fi
 
           # An annotation message stops at the first line break, hence the single-line reason.
-          printf '::notice title=%s::%s\n' "$TITLE" "$REASON"
+          printf '::notice::%s — %s\n' "$TITLE" "$REASON"
           printf '### %s\n\n%s\n' "$TITLE" "$REASON" >> "$GITHUB_STEP_SUMMARY"
 
           gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --add-label "$ADD_LABEL" --remove-label "$REMOVE_LABEL"

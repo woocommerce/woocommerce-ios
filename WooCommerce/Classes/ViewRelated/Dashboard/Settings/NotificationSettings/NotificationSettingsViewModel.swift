@@ -87,7 +87,7 @@ final class NotificationSettingsViewModel: ObservableObject {
     @MainActor
     func synchronizeSites() async {
         await withCheckedContinuation { continuation in
-            stores.dispatch(AccountAction.synchronizeSites(selectedSiteID: nil) { _ in
+            stores.dispatch(AccountAction.synchronizeSites { _ in
                 continuation.resume()
             })
         }

@@ -40,9 +40,14 @@ protocol AgeRangeProviding: Sendable {
 }
 
 enum AgeRangeProviderError: Error {
+    /// The user or parent declined to share the age range.
     case declinedSharing
+    /// The DeclaredAgeRange API is missing on this OS or build.
+    /// Not Apple's `AgeRangeService.Error.notAvailable`, which arrives wrapped in `.other`.
     case notAvailable
+    /// The system returned a response this app does not recognize.
     case unknown
+    /// An error thrown by the system framework, e.g. `AgeRangeService.Error.notAvailable`.
     case other(Error)
 }
 

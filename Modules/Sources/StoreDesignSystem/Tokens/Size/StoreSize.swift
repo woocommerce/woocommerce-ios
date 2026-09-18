@@ -16,4 +16,8 @@ public enum StoreSize {
     /// `minimumTapTarget` but a distinct design dimension: the component is non-interactive,
     /// so this is not a touch-target constant.
     public static let iconContainerSize: CGFloat = 44
+
+    /// The touch target of a `StoreTopAppBar` control (48 pt): the design's icon-button box, which
+    /// also sets the bar's row height. Larger than `minimumTapTarget` by design, not by accident.
+    public static let topAppBarControlSize: CGFloat = 48
 }

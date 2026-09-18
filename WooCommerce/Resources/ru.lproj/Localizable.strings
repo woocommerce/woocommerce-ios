@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-08-25 14:57:50+0000 */
+/* Translation-Revision-Date: 2026-09-08 12:56:58+0000 */
 /* Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2); */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ru */
@@ -2159,7 +2159,6 @@ which should be translated separately and considered part of this sentence. */
    Button title for dismissing filtering a list.
    Button to dismiss the alert presented when finding a reader to connect to fails
    Button to dismiss the first created product screen
-   Button to dismiss the Jetpack benefits screen.
    Button to dismiss. Presented to users when updating the card reader software fails
    Dismiss button in inbox note row.
    Dismiss button in store picker
@@ -4096,9 +4095,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Navigation bar button title used to save changes and close the multiline text editor. */
 "MultilineEditableTextDetailView.doneButton.title" = "Готово";
 
-/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
-"Multiple Contactless Cards Detected" = "Обнаружено несколько бесконтактных карт";
-
 /* Title of multiple stores as part of Jetpack benefits. */
 "Multiple Stores" = "Несколько магазинов";
 
@@ -4463,9 +4459,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Accessibility label for the Menu button */
 "Open menu" = "Открыть меню";
-
-/* Button to open the wp-admin page to install Jetpack from the Jetpack benefits screen. */
-"Open wp-admin" = "Открыть консоль";
 
 /* Accessibility hint for the button to update the order status */
 "Opens a list of available statuses." = "Открывает список доступных статусов.";
@@ -5748,9 +5741,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Coupons Search Placeholder */
 "Search all coupons" = "Поиск всех купонов";
-
-/* Customer Search Placeholder */
-"Search all customers" = "Поиск по всем клиентам";
 
 /* Orders Search Placeholder */
 "Search all orders" = "Поиск по всем заказам";
@@ -9772,6 +9762,9 @@ which should be translated separately and considered part of this sentence. */
 /* A title explaining the requirement of location services for making a payment */
 "cardPresentPayment.locationRequired.title" = "Включите службы определения местоположения в настройках устройства, чтобы разрешить платежи.";
 
+/* Message from the in-person payment card reader when payment could not be taken because multiple cards were detected */
+"cardPresentPayment.reader.multipleContactlessCardsDetected" = "Обнаружено несколько карт. Попробуйте с помощью одной карты.";
+
 /* Navigation title for the webview shown when the merchant needs to update their store address for card reader connection */
 "cardPresentPayment.settingsWebView.title" = "Настройки WooCommerce";
 
@@ -10470,6 +10463,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Format of the sign-up fee for a subscription product on the Price Settings row. Reads like: 'Sign-up fee: $0.99'. */
 "defaultProductFormTableViewModel.subscriptionSignupFeeFormat" = "Регистрационный сбор: %1$@";
+
+/* WordPress.com error thrown when the store rejects the signature of a Jetpack request. */
+"dotcomError.invalidSignature.description" = "Недействительная подпись интернет-сервиса";
 
 /* Title of the downloadable file bottom sheet action for adding document from device. */
 "downloadableFileSource.deviceDocument" = "Документ на устройстве";
@@ -11498,6 +11494,12 @@ which should be translated separately and considered part of this sentence. */
 /* Title of a notice shown when a merchant scans a barcode for a product which is a parent to variations. It's not possible to purchase a parent product, as it simply groups its variable product children. In this case, the product is not added to the order as the merchant wanted it to be. */
 "order.barcode.scan.parent.product.notice.title" = "Невозможно добавить товар с вариантами напрямую.";
 
+/* Shown when a bundle's products could not be loaded, so the app cannot tell whether it can be added. */
+"order.bundle.cannotCheckBundledProducts.notice.title" = "Не удаётся проверить товары в комплекте. Повторите попытку.";
+
+/* Title of a notice shown while the products inside a scanned bundle are loaded. */
+"order.bundle.checkingBundledProducts.notice.title" = "Проверка товаров в комплекте…";
+
 /* Title for the Coupon screen during order creation */
 "order.form.coupon.add.button.title" = "Добавить купон";
 
@@ -11606,6 +11608,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Origin in Order Attribution Section on Order Details screen. */
 "orderAttributionInfo.webAdmin" = "Веб-администратор";
+
+/* Message shown when a merchant tries to add a bundle holding a bookable product to an order. */
+"orderCreationProductRestrictions.bookableBundleReason" = "Комплекты с бронируемыми товарами не поддерживаются";
+
+/* Message shown when a merchant tries to add a bundle holding a subscription product to an order. */
+"orderCreationProductRestrictions.subscriptionBundleReason" = "Комплекты с товарами по подписке не поддерживаются";
 
 /* Content of error presented when Delete Shipment Tracking Action Failed. It reads: Unable to delete tracking for order #{order number}. Parameters: %1$d - order number */
 "orderDetail.deleteTracking.notice.title" = "Не удаётся отменить отслеживание заказа № %1$d";
@@ -11732,6 +11740,15 @@ which should be translated separately and considered part of this sentence. */
 
 /* Heading for the section that shows the Shipping Lines when creating or editing an order */
 "orderForm.shipping" = "Доставка";
+
+/* Message of the banner shown on the Orders list when the store's currency couldn't be loaded. */
+"orderList.currencyUnavailable.banner.info" = "Не удалось загрузить валюту магазина, поэтому общая сумма заказа может быть указана в неправильной валюте.";
+
+/* Title of the button to retry loading the store's currency on the Orders list warning banner. */
+"orderList.currencyUnavailable.banner.retry" = "Повторить";
+
+/* Title of the banner shown on the Orders list when the store's currency couldn't be loaded. */
+"orderList.currencyUnavailable.banner.title" = "Валюта магазина недоступна";
 
 /* Discount label for payment view */
 "orderPaymentDetails.discount.title" = "Скидка";
@@ -12514,7 +12531,7 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSale.scanToPay.navigation.title" = "Scan to Pay";
 
 /* Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale. */
-"pointOfSale.scanToPay.orderNote" = "Клиент оплатил товар по Scan to Pay";
+"pointOfSale.scanToPay.orderNote.1" = "Оплачено с помощью Scan to Pay";
 
 /* Loading message shown while preparing the order for scan-to-pay (promoting it to pending). */
 "pointOfSale.scanToPay.preparing.message" = "Генерация QR-кода…";
@@ -12586,7 +12603,10 @@ which should be translated separately and considered part of this sentence. */
 "pointOfSaleOrderController.collectCashPayment.paymentMethodTitle" = "Очная оплата";
 
 /* Title for the payment method used when manually marking an order as paid in Point of Sale. */
-"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle" = "Другое";
+"pointOfSaleOrderController.markOrderAsPaid.paymentMethodTitle.1" = "Заказ отмечен как оплаченный";
+
+/* Title for the payment method used when a Point of Sale order is paid through Scan to Pay. */
+"pointOfSaleOrderController.scanToPay.paymentMethodTitle" = "Сканируйте для оплаты";
 
 /* Format string for displaying battery level percentage in Point of Sale settings. Please leave the %.0f%% intact, as it represents the battery percentage. */
 "pointOfSaleSettingsHardwareDetailView.batteryLevelFormat" = "%.0f%%";
@@ -13148,12 +13168,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Warning title shown when the product catalog hasn't synced in several days */
 "pos.itemlistview.staleSyncWarning.title" = "Обновить каталог";
-
-/* Message shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
-"pos.itemlistview.sunsetWarning.description" = "С 1 августа для работы с пунктом продажи требуется WooCommerce версии 10.5.0 или более поздней. Обновите приложение, чтобы избежать сбоев.";
-
-/* Warning title shown when the store's WooCommerce version is below 10.5 and POS will soon require it */
-"pos.itemlistview.sunsetWarning.title" = "Требуется обновить WooCommerce";
 
 /* Title at the top of the point of sale product selector screen. */
 "pos.itemlistview.title" = "Товары";
@@ -14439,6 +14453,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Message explaining unsupported bookable products for order creation */
 "productSelectorViewModel.bookableProductUnsupportedReason" = "Бронируемые товары не поддерживаются при создании заказа";
+
+/* Message shown when the products inside a bundle could not be loaded, so the app cannot tell whether the bundle can be added to the order. */
+"productSelectorViewModel.cannotCheckBundledProducts" = "Не удаётся проверить товары в комплекте. Повторите попытку.";
 
 /* Text on the header of the Select Product screen when more than one products are selected. */
 "productSelectorViewModel.selectProductsTitle.pluralProductSelectedFormattedText" = "%ld тов. выбрано";

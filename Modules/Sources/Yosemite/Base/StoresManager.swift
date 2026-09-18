@@ -39,9 +39,10 @@ public protocol StoresManager {
     func deauthenticate() -> StoresManager
 
     /// Synchronizes all of the Session's Entities.
+    /// Preserve the selected store when Jetpack setup has verified it but `/me/sites` may still be catching up.
     ///
     @discardableResult
-    func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager
+    func synchronizeEntities(preservingSelectedSite: Bool, onCompletion: (() -> Void)?) -> StoresManager
 
     /// Updates the Default Store as specified.
     ///
@@ -112,4 +113,11 @@ public protocol StoresManager {
     /// on web view using the current credentials.
     ///
     func shouldAuthenticateAdminPage(for site: Site) -> Bool
+}
+
+public extension StoresManager {
+    @discardableResult
+    func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
+        synchronizeEntities(preservingSelectedSite: false, onCompletion: onCompletion)
+    }
 }

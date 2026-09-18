@@ -498,17 +498,6 @@ extension Alamofire.DataResponse {
     /// Precisely: Request Timeout should be a 408, but we just get a 400, with the details in the response's body.
     ///
     var networkingError: Error? {
-        if let error = error?.asAFError,
-           error.isResponseValidationError == false {
-            guard case .responseSerializationFailed = error,
-                  let statusCode = response?.statusCode,
-                  !(200..<300).contains(statusCode) else {
-                // Preserve transport and successful-response serialization errors. Only non-2xx
-                // empty responses become NetworkErrors below, so status-specific handling remains.
-                return error
-            }
-        }
-
         // Passthru URL Errors: These are right there, even without calling Alamofire's validation.
         if let error = error as NSError?, error.domain == NSURLErrorDomain {
             return error

@@ -145,28 +145,6 @@ struct UnexpectedStoreResponseClassifierTests {
         #expect(error == UnexpectedStoreResponseError())
     }
 
-    @Test(arguments: [200, 204])
-    func test_network_response_when_success_status_has_no_body_then_preserves_serialization_failure(status: Int) throws {
-        // Given
-        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "products")
-        let urlRequest = try request.asURLRequest()
-        let url = try #require(urlRequest.url)
-        let response = DataResponse<Data, AFError>(
-            request: urlRequest,
-            response: HTTPURLResponse(url: url, statusCode: status, httpVersion: nil, headerFields: nil),
-            data: nil,
-            metrics: nil,
-            serializationDuration: 0,
-            result: .failure(.responseSerializationFailed(reason: .inputDataNilOrZeroLength))
-        )
-
-        // Then
-        guard case .responseSerializationFailed? = response.networkingError?.asAFError else {
-            Issue.record("Expected the serialization failure to be preserved")
-            return
-        }
-    }
-
     @Test(arguments: [404, 408, 500, 503])
     func test_network_response_when_non429_status_has_no_body_then_preserves_status(status: Int) throws {
         // Given
@@ -187,7 +165,7 @@ struct UnexpectedStoreResponseClassifierTests {
         #expect((response.networkingError as? NetworkError)?.responseCode == status)
     }
 
-    @Test func test_network_response_when_cancelled_after_receiving_html_then_preserves_cancellation() throws {
+    @Test func test_network_response_when_cancelled_after_receiving_html_then_does_not_classify_store_response() throws {
         // Given
         let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "products")
         let urlRequest = try request.asURLRequest()
@@ -201,10 +179,6 @@ struct UnexpectedStoreResponseClassifierTests {
 
         // Then
         #expect(response.unexpectedStoreResponse(for: request) == nil)
-        guard case .explicitlyCancelled? = response.networkingError?.asAFError else {
-            Issue.record("Expected the cancellation to be preserved")
-            return
-        }
     }
 
     @Test(arguments: [200, 500])

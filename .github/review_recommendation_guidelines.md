@@ -14,7 +14,6 @@ Request a review when the change involves:
 - unfamiliar code or an uncertain root cause;
 - large changes or changes with a wide blast radius;
 - difficult testing, rollback, or recovery;
-- any situation where the author isn't fully confident about merging independently.
 
 When in doubt, request a review.
 

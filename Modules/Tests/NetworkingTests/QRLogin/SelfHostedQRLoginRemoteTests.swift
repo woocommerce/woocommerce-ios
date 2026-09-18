@@ -108,6 +108,22 @@ struct SelfHostedQRLoginRemoteTests {
         }
     }
 
+    @Test(arguments: [401, 403])
+    func scan_when_html_client_error_then_throws_unauthorized(statusCode: Int) async {
+        // Given — HTML blocking page with auth status keeps existing mapping.
+        let url = makeURL(path: "/qr-login-scan")
+        let session = MockURLSession()
+        session.simulateResponse(for: url.absoluteString,
+                                 data: Data("<html><body>Blocked</body></html>".utf8),
+                                 statusCode: statusCode)
+        let remote = makeRemote(session: session)
+
+        // When / Then
+        await #expect(throws: QRLoginNetworkError.unauthorized) {
+            _ = try await remote.scan(siteURL: siteURL, token: token, device: device)
+        }
+    }
+
     @Test func scan_when_409_then_throws_conflict() async {
         await expectScanError(statusCode: 409, body: Data(), expected: .conflict)
     }

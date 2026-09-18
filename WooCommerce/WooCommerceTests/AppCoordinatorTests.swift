@@ -209,7 +209,7 @@ final class AppCoordinatorTests: XCTestCase {
     }
 
     @MainActor
-    func test_store_response_issue_when_store_has_a_successful_request_in_background_then_foreground_shows_alert() async {
+    func test_store_response_issue_when_store_recovers_before_foreground_then_foreground_shows_no_alert() async {
         // Given
         prepareSelectedStore()
         let monitor = StoreConnectionErrorMonitor()
@@ -225,7 +225,7 @@ final class AppCoordinatorTests: XCTestCase {
         NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Then
-        XCTAssertTrue(appCoordinator.tabBarController.presentedViewController is UIHostingController<StoreConnectionErrorModal>)
+        XCTAssertNil(appCoordinator.tabBarController.presentedViewController)
     }
 
     @MainActor

@@ -64,7 +64,7 @@ struct StoreConnectionErrorMonitorTests {
     @Test func test_recordUnexpectedStoreResponse_then_it_publishes_each_safe_issue() async {
         // Given
         let monitor = StoreConnectionErrorMonitor()
-        var emitted: [Int64] = []
+        var emitted: [Int64?] = []
         let subscription = monitor.unexpectedStoreResponsePublisher.sink { emitted.append($0) }
 
         // When
@@ -74,7 +74,7 @@ struct StoreConnectionErrorMonitorTests {
 
         // Then
         #expect(monitor.affectedSiteID == nil)
-        #expect(emitted == [123, 123])
+        #expect(emitted == [nil, 123, 123])
         subscription.cancel()
     }
 
@@ -83,7 +83,7 @@ struct StoreConnectionErrorMonitorTests {
         // Given
         let monitor = StoreConnectionErrorMonitor()
         monitor.recordUnexpectedStoreResponse(siteID: 123)
-        var emitted: [Int64] = []
+        var emitted: [Int64?] = []
         let subscription = monitor.unexpectedStoreResponsePublisher.sink { emitted.append($0) }
 
         // When
@@ -91,6 +91,47 @@ struct StoreConnectionErrorMonitorTests {
 
         // Then
         #expect(emitted == [123])
+        subscription.cancel()
+    }
+
+    @MainActor
+    @Test func test_recordSuccessfulConnection_when_an_unexpected_issue_was_recorded_then_it_clears_the_issue() async {
+        // Given
+        let monitor = StoreConnectionErrorMonitor()
+        var emitted: [Int64?] = []
+        let subscription = monitor.unexpectedStoreResponsePublisher.sink { emitted.append($0) }
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+
+        // When
+        monitor.recordSuccessfulConnection(siteID: 123)
+        await settle()
+
+        // Then
+        #expect(emitted == [nil, 123, nil])
+        subscription.cancel()
+
+        // A late subscriber must not replay the cleared issue.
+        var lateEmitted: [Int64?] = []
+        let lateSubscription = monitor.unexpectedStoreResponsePublisher.sink { lateEmitted.append($0) }
+        await settle()
+        #expect(lateEmitted == [nil])
+        lateSubscription.cancel()
+    }
+
+    @MainActor
+    @Test func test_recordSuccessfulConnection_when_another_store_reported_the_issue_then_the_issue_is_kept() async {
+        // Given
+        let monitor = StoreConnectionErrorMonitor()
+        var emitted: [Int64?] = []
+        let subscription = monitor.unexpectedStoreResponsePublisher.sink { emitted.append($0) }
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+
+        // When
+        monitor.recordSuccessfulConnection(siteID: 456)
+        await settle()
+
+        // Then
+        #expect(emitted == [nil, 123])
         subscription.cancel()
     }
 

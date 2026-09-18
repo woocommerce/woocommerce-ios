@@ -180,7 +180,6 @@ private extension AppCoordinator {
             return
         }
         pendingStoreConnectionIssueSiteID = nil
-        analytics.track(event: .RemoteRequest.unexpectedStoreResponse)
 
         let alert = UIHostingController(rootView: StoreConnectionErrorModal(
             title: UnexpectedStoreResponseLocalization.title,

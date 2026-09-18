@@ -3246,10 +3246,6 @@ extension WooAnalyticsEvent {
                               ].compactMapValues { $0 },
                               error: error)
         }
-
-        static var unexpectedStoreResponse: WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .apiUnexpectedStoreResponse)
-        }
     }
 }
 

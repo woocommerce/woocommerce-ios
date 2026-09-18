@@ -500,9 +500,11 @@ extension Alamofire.DataResponse {
     var networkingError: Error? {
         if let error = error?.asAFError,
            error.isResponseValidationError == false {
-            // An empty HTTP response is reported as a serialization failure. The response still
-            // contains the HTTP status, so let it become a NetworkError below.
-            guard case .responseSerializationFailed = error else {
+            guard case .responseSerializationFailed = error,
+                  let statusCode = response?.statusCode,
+                  !(200..<300).contains(statusCode) else {
+                // Preserve transport and successful-response serialization errors. Only non-2xx
+                // empty responses become NetworkErrors below, so status-specific handling remains.
                 return error
             }
         }

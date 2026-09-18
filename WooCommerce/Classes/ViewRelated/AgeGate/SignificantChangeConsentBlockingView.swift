@@ -104,6 +104,7 @@ struct SignificantChangeConsentBlockingView: View {
             if context.offersContactSupport {
                 Button(Localization.contactSupportButton, action: onContactSupport)
                     .buttonStyle(SecondaryButtonStyle())
+                    .disabled(isWorking)
             }
         }
         .padding(Layout.padding)

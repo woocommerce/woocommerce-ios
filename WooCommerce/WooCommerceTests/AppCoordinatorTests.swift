@@ -319,6 +319,7 @@ final class AppCoordinatorTests: XCTestCase {
 
     // MARK: - Age verification walls
 
+    @MainActor
     func test_contact_support_on_consent_blocker_presents_help_and_support_and_keeps_the_wall() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -354,6 +355,7 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertEqual(analytics.receivedProperties[eventIndex]["screen"] as? String, "consent_needed")
     }
 
+    @MainActor
     func test_contact_support_on_underage_alert_presents_help_and_support_over_the_logged_out_ui() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)

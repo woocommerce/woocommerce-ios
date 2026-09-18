@@ -78,6 +78,25 @@ struct SupportEscalationCoordinatorTests {
         #expect(zendesk.latestInvokedTags.contains("origin:age-restriction"))
     }
 
+    @Test func directTicket_when_originTag_is_set_then_includes_it_in_tags() async {
+        // Given
+        let zendesk = MockZendeskManager()
+        zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
+        zendesk.whenCreateSupportRequest(thenReturn: .success(()))
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        let coordinator = makeCoordinator(navigationController: navigationController, zendesk: zendesk, originTag: "origin:age-restriction")
+
+        // When
+        coordinator.handleEscalation(chatID: nil,
+                                     transcript: "Test transcript",
+                                     supportAreaInfo: makeHighConfidenceSupportAreaInfo(),
+                                     entryPoint: .helpAndSupport)
+        await coordinator.directTicketCreationTask?.value
+
+        // Then
+        #expect(zendesk.latestInvokedTags.contains("origin:age-restriction"))
+    }
+
     @Test func handleEscalation_when_supportAreaInfo_is_nil_and_siteAddress_is_available_then_prefills_siteAddress() async {
         // Given
         let zendesk = MockZendeskManager()

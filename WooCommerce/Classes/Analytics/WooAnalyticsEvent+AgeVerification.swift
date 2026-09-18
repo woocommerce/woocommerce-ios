@@ -144,7 +144,8 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .accountAgeVerificationAction, properties: [Keys.action: actionValue(for: context).rawValue])
         }
 
-        /// A tap on Contact Support from a blocking wall or the underage alert.
+        /// A tap on Contact Support from the underage alert. Walls go through `contactSupportTapped(for:)`,
+        /// which only maps the contexts that offer the button; `.consentGranted` never sends this event.
         static func contactSupportTapped(screen: Screen) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .accountAgeRestrictionContactSupportTapped, properties: [Keys.screen: screen.rawValue])
         }

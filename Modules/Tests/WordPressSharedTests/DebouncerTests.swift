@@ -1,6 +1,7 @@
 import XCTest
 @testable import WordPressShared
 
+@MainActor
 class DebouncerTests: XCTestCase {
 
     /// Tests that the debouncer runs within an accurate time range normally.

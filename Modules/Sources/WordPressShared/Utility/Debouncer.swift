@@ -5,6 +5,7 @@ import Foundation
 /// This class de-bounces the execution of a provided callback.
 /// It also offers a mechanism to immediately trigger the scheduled call if necessary.
 ///
+@MainActor
 public final class Debouncer {
     private var callback: (() -> Void)?
     private let delay: Double
@@ -17,7 +18,7 @@ public final class Debouncer {
         self.callback = callback
     }
 
-    deinit {
+    isolated deinit {
         if let timer, timer.fireDate >= Date() {
             timer.invalidate()
             callback?()
@@ -52,8 +53,11 @@ public final class Debouncer {
     }
 
     private func scheduleCallback() {
-        timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [callback] _ in
-            callback?()
+        timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
+            // Scheduled from the main run loop, so the timer fires on the main thread.
+            MainActor.assumeIsolated {
+                self?.callback?()
+            }
         }
     }
 }

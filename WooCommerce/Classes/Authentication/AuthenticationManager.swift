@@ -1335,6 +1335,11 @@ private extension AuthenticationManager {
     }
 
     private func presentUnexpectedStoreResponseAlert(for siteURL: String, in viewController: UIViewController) {
+        // A second rapid failure carries the identical message and actions. Dropping it keeps
+        // one alert on screen instead of a system "already presenting" warning and a lost error.
+        guard viewController.presentedViewController == nil else {
+            return
+        }
         let alert = UIHostingController(rootView: StoreConnectionErrorModal(
             title: UnexpectedStoreResponseLocalization.title,
             message: UnexpectedStoreResponseLocalization.message,

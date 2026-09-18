@@ -34,6 +34,7 @@ class RichContentFormatterTests: XCTestCase {
         XCTAssertTrue(str == sanitizedStr, "Not all paragraphs were normalized.")
     }
 
+    @MainActor
     func testResizeGalleryImageURLsForContentEmptyString() {
         XCTAssertTrue("" == RichContentFormatter.resizeGalleryImageURL("", isPrivateSite: false))
     }

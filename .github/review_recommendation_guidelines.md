@@ -11,7 +11,6 @@ Request a review when the change involves:
 - security, privacy, authentication, or sensitive data;
 - migrations or changes with data-loss potential;
 - significant cross-platform, API, or cross-team impact;
-- unfamiliar code or an uncertain root cause;
 - large changes or changes with a wide blast radius;
 - difficult testing, rollback, or recovery;
 

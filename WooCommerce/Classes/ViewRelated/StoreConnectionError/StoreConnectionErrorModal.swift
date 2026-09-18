@@ -7,18 +7,24 @@ import SwiftUI
 ///
 struct StoreConnectionErrorModal: View {
     let title: String
+    let contactSupportTitle: String
+    let dismissTitle: String
     let message: String
     let onContactSupport: () -> Void
     let onDismiss: () -> Void
 
     init(title: String = Localization.title,
          message: String = Localization.body,
+         contactSupportTitle: String = Localization.contactSupport,
+         dismissTitle: String = Localization.dismiss,
          onContactSupport: @escaping () -> Void,
          onDismiss: @escaping () -> Void) {
         self.title = title
         self.message = message
         self.onContactSupport = onContactSupport
         self.onDismiss = onDismiss
+        self.contactSupportTitle = contactSupportTitle
+        self.dismissTitle = dismissTitle
     }
 
     var body: some View {
@@ -57,10 +63,10 @@ struct StoreConnectionErrorModal: View {
                 .fixedSize(horizontal: false, vertical: true)
 
             VStack(spacing: Layout.buttonSpacing) {
-                Button(Localization.contactSupport, action: onContactSupport)
+                Button(contactSupportTitle, action: onContactSupport)
                     .buttonStyle(PrimaryButtonStyle())
 
-                Button(Localization.dismiss, action: onDismiss)
+                Button(dismissTitle, action: onDismiss)
                     .buttonStyle(SecondaryButtonStyle())
             }
             .padding(.top, Layout.buttonsTopPadding)

@@ -1338,6 +1338,8 @@ private extension AuthenticationManager {
         let alert = UIHostingController(rootView: StoreConnectionErrorModal(
             title: UnexpectedStoreResponseLocalization.title,
             message: UnexpectedStoreResponseLocalization.message,
+            contactSupportTitle: UnexpectedStoreResponseLocalization.contactSupport,
+            dismissTitle: UnexpectedStoreResponseLocalization.dismiss,
             onContactSupport: { [weak self, weak viewController] in
                 guard let self, let viewController else { return }
                 viewController.dismiss(animated: true) {

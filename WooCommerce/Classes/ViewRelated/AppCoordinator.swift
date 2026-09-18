@@ -102,6 +102,8 @@ final class AppCoordinator {
                 self.isLoggedIn = isLoggedIn
                 if !isLoggedIn || needsDefaultStore {
                     self.pendingStoreConnectionIssueSiteID = nil
+                    self.storeConnectionAlert?.dismiss(animated: false)
+                    self.storeConnectionAlert = nil
                 }
 
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
@@ -183,6 +185,8 @@ private extension AppCoordinator {
         let alert = UIHostingController(rootView: StoreConnectionErrorModal(
             title: UnexpectedStoreResponseLocalization.title,
             message: UnexpectedStoreResponseLocalization.message,
+            contactSupportTitle: UnexpectedStoreResponseLocalization.contactSupport,
+            dismissTitle: UnexpectedStoreResponseLocalization.dismiss,
             onContactSupport: { [weak self, weak presenter] in
                 self?.showSupport(
                     from: presenter,

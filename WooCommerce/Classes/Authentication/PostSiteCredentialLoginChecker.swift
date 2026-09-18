@@ -262,6 +262,8 @@ private extension PostSiteCredentialLoginChecker {
         let modal = UIHostingController(rootView: StoreConnectionErrorModal(
             title: UnexpectedStoreResponseLocalization.title,
             message: UnexpectedStoreResponseLocalization.message,
+            contactSupportTitle: UnexpectedStoreResponseLocalization.contactSupport,
+            dismissTitle: UnexpectedStoreResponseLocalization.dismiss,
             onContactSupport: { [weak navigationController] in
                 navigationController?.dismiss(animated: true) {
                     guard let navigationController else { return }

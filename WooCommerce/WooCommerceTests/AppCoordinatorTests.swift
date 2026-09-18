@@ -229,6 +229,22 @@ final class AppCoordinatorTests: XCTestCase {
     }
 
     @MainActor
+    func test_store_response_issue_when_reported_before_coordinator_starts_then_it_shows_alert() async {
+        // Given
+        prepareSelectedStore()
+        let monitor = StoreConnectionErrorMonitor()
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+        let appCoordinator = makeCoordinator(storeConnectionErrorMonitor: monitor, applicationState: { .active })
+
+        // When
+        appCoordinator.start()
+        await settleStoreConnectionEvents()
+
+        // Then
+        XCTAssertTrue(appCoordinator.tabBarController.presentedViewController is UIHostingController<StoreConnectionErrorModal>)
+    }
+
+    @MainActor
     func test_store_response_issue_when_app_becomes_active_then_it_shows_one_recovery_alert() async {
         // Given
         prepareSelectedStore()
@@ -337,6 +353,26 @@ final class AppCoordinatorTests: XCTestCase {
     }
 
     @MainActor
+    func test_store_response_issue_when_user_logs_out_then_it_dismisses_alert() async throws {
+        // Given
+        prepareSelectedStore()
+        let monitor = StoreConnectionErrorMonitor()
+        let appCoordinator = makeCoordinator(storeConnectionErrorMonitor: monitor, applicationState: { .active })
+        appCoordinator.start()
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+        await settleStoreConnectionEvents()
+        let alert = try XCTUnwrap(appCoordinator.tabBarController.presentedViewController)
+
+        // When
+        stores.deauthenticate()
+        await settleStoreConnectionEvents()
+
+        // Then
+        XCTAssertNil(alert.presentingViewController)
+        XCTAssertNil(appCoordinator.tabBarController.presentedViewController)
+    }
+
+    @MainActor
     func test_store_response_issue_when_a_modal_is_open_then_it_presents_recovery_from_the_modal() async {
         // Given
         prepareSelectedStore()
@@ -380,6 +416,8 @@ final class AppCoordinatorTests: XCTestCase {
             (appCoordinator.tabBarController.presentedViewController as? UINavigationController)?
                 .topViewController is SupportFormHostingController
         }
+        XCTAssertEqual(alert.rootView.contactSupportTitle, UnexpectedStoreResponseLocalization.contactSupport)
+        XCTAssertEqual(alert.rootView.dismissTitle, UnexpectedStoreResponseLocalization.dismiss)
     }
 
     func test_resetting_selected_site_while_on_tabbar_presents_store_picker() throws {

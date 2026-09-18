@@ -50,13 +50,13 @@ jobs:
           REASON: ${{ fromJSON(steps.claude.outputs.structured_output).reason }}
         run: |
           if [ "$REVIEW_RECOMMENDED" = "true" ]; then
-            ADD_LABEL="ai: review recommended"
-            REMOVE_LABEL="ai: review optional"
-            TITLE="Human review recommended"
+            ADD_LABEL="review: recommended"
+            REMOVE_LABEL="review: optional"
+            TITLE="Review recommended"
           else
-            ADD_LABEL="ai: review optional"
-            REMOVE_LABEL="ai: review recommended"
-            TITLE="Human review optional"
+            ADD_LABEL="review: optional"
+            REMOVE_LABEL="review: recommended"
+            TITLE="Review optional"
           fi
 
           # An annotation message stops at the first line break, hence the single-line reason.

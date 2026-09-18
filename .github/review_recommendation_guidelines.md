@@ -20,4 +20,4 @@ Request a review when the change involves:
 When in doubt, request a review.
 
 These guidelines are also read by the [review recommendation workflow](workflows/claude-review-recommendation.yml), which labels every pull
-request `ai: review recommended` or `ai: review optional`. Changing this file changes how pull requests are labeled.
+request `review: recommended` or `review: optional`. Changing this file changes how pull requests are labeled.

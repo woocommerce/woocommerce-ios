@@ -433,6 +433,23 @@ final class RemoteTests: XCTestCase {
         XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
     }
 
+    func test_enqueue_when_direct_request_returns_html_then_the_store_is_recorded_as_unexpected() throws {
+        let network = SuccessfulNetwork(data: Data("<html>Service unavailable</html>".utf8), simulatesJetpackTunnel: false)
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        let expectationForRequest = expectation(description: "Request")
+
+        remote.enqueue(request, mapper: DummyMapper()) { _, error in
+            XCTAssertTrue(error is UnexpectedStoreResponseError)
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        XCTAssertEqual(recorder.unexpectedStoreResponseSiteIDs, [123])
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+    }
+
     /// The `(Output?, Error?)` overload parses the body even when the request failed, because the Jetpack
     /// tunnel returns a body worth reading alongside an error status. A body the validator has nothing to
     /// say about must not be mistaken for the store being reachable.
@@ -1770,9 +1787,11 @@ private final class BodyAndErrorNetwork: Network {
 private final class SuccessfulNetwork: Network {
     private let data: Data
     private let headers: Network.ResponseHeaders?
+    private let simulatesJetpackTunnel: Bool
 
-    init(data: Data, headers: Network.ResponseHeaders? = [:]) {
+    init(data: Data, headers: Network.ResponseHeaders? = [:], simulatesJetpackTunnel: Bool = true) {
         self.data = data
+        self.simulatesJetpackTunnel = simulatesJetpackTunnel
         self.headers = headers
     }
 
@@ -1781,7 +1800,7 @@ private final class SuccessfulNetwork: Network {
     /// Stands in for a store reached through the tunnel.
     ///
     func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
-        request is JetpackRequest
+        simulatesJetpackTunnel && request is JetpackRequest
     }
 
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {

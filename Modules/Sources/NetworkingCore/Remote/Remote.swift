@@ -52,7 +52,7 @@ open class Remote: NSObject {
         }
 
         do {
-            try Self.validateResponse(data, for: request, recorder: connectionErrorRecorder(for: request), outcome: .succeeded)
+            try Self.validateResponse(data, for: request, recorder: connectionErrorRecorder(for: request), unexpectedResponseRecorder: storeConnectionErrorRecorder, outcome: .succeeded)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
             handleResponseError(error: error, for: request)
@@ -73,7 +73,7 @@ open class Remote: NSObject {
         }
 
         do {
-            try Self.validateResponse(data, for: request, recorder: connectionErrorRecorder(for: request), outcome: .succeeded)
+            try Self.validateResponse(data, for: request, recorder: connectionErrorRecorder(for: request), unexpectedResponseRecorder: storeConnectionErrorRecorder, outcome: .succeeded)
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
@@ -259,7 +259,7 @@ open class Remote: NSObject {
                 // A 2xx is not enough on its own: the Jetpack tunnel answers with a healthy status and
                 // an error body. The body decides whether the store is reachable, so it is validated
                 // here even though this overload does not parse it.
-                try Self.validateResponse(data, for: request, recorder: connectionErrorRecorder(for: request), outcome: .succeeded)
+                try Self.validateResponse(data, for: request, recorder: connectionErrorRecorder(for: request), unexpectedResponseRecorder: storeConnectionErrorRecorder, outcome: .succeeded)
             } catch {
                 // Handled but deliberately not rethrown. This overload has never surfaced body-level
                 // errors to its callers and widening that is a separate change, but now that the body is
@@ -299,8 +299,9 @@ private extension Remote {
                                           request: Request,
                                           mapper: M,
                                           recorder: StoreConnectionErrorRecording?,
+                                          unexpectedResponseRecorder: StoreConnectionErrorRecording,
                                           outcome: ResponseOutcome) throws -> M.Output {
-        try validateResponse(data, for: request, recorder: recorder, outcome: outcome)
+        try validateResponse(data, for: request, recorder: recorder, unexpectedResponseRecorder: unexpectedResponseRecorder, outcome: outcome)
         return try mapper.map(response: data)
     }
 
@@ -319,6 +320,7 @@ private extension Remote {
         // Read before hopping queues so the outcome is still recorded, and the completion still called,
         // if this remote goes away while the response is being parsed.
         let recorder = connectionErrorRecorder(for: request)
+        let unexpectedResponseRecorder = storeConnectionErrorRecorder
         DispatchQueue.global(qos: .userInitiated).async { [weak self] in
             let result: Result<M.Output, Error>
             do {
@@ -326,6 +328,7 @@ private extension Remote {
                                                           request: request,
                                                           mapper: mapper,
                                                           recorder: recorder,
+                                                          unexpectedResponseRecorder: unexpectedResponseRecorder,
                                                           outcome: outcome))
             } catch {
                 result = .failure(error)
@@ -350,6 +353,7 @@ private extension Remote {
                                            request: request,
                                            mapper: mapper,
                                            recorder: connectionErrorRecorder(for: request),
+                                           unexpectedResponseRecorder: storeConnectionErrorRecorder,
                                            outcome: .succeeded)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
@@ -409,6 +413,7 @@ private extension Remote {
     static func validateResponse(_ data: Data,
                                  for request: Request,
                                  recorder: StoreConnectionErrorRecording?,
+                                 unexpectedResponseRecorder: StoreConnectionErrorRecording,
                                  outcome: ResponseOutcome) throws {
         let statusCode: Int?
         if case .failed(let error) = outcome {
@@ -417,7 +422,7 @@ private extension Remote {
             statusCode = nil
         }
         if let error = unexpectedStoreResponseError(from: data, for: request, statusCode: statusCode) {
-            recordUnexpectedStoreResponse(for: request, recorder: recorder)
+            recordUnexpectedStoreResponse(for: request, recorder: unexpectedResponseRecorder)
             throw error
         }
 

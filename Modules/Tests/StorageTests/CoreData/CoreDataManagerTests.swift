@@ -396,7 +396,7 @@ private extension CoreDataManagerTests {
 private extension CoreDataManagerTests {
     func assertThat(_ manager: CoreDataManager,
                     isCompatibleWith model: NSManagedObjectModel,
-                    file: StaticString = #file,
+                    file: StaticString = #filePath,
                     line: UInt = #line) throws {
         let coordinator = manager.persistentContainer.persistentStoreCoordinator
 

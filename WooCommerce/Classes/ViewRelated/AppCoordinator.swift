@@ -215,7 +215,8 @@ private extension AppCoordinator {
             }
             DispatchQueue.main.async {
                 let supportForm = SupportFormHostingController(
-                    viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider())
+                    viewModel: .init(sourceTag: StoreConnectionErrorSupport.sourceTag,
+                                     mobileStatusReportProvider: MobileStatusReportProvider())
                 )
                 supportForm.show(from: presenter)
             }

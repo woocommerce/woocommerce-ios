@@ -200,6 +200,13 @@ private extension WordPressOrgNetwork {
     }
 
     static func unexpectedStoreResponseError(for response: DataResponse<Data, AFError>) -> UnexpectedStoreResponseError? {
+        if let error = response.error, error.isResponseValidationError == false {
+            // A response body may arrive before a connection failure or cancellation. Preserve that
+            // transport failure instead of treating its partial body as a server response.
+            guard case .responseSerializationFailed = error else {
+                return nil
+            }
+        }
         guard let httpResponse = response.response else {
             return nil
         }

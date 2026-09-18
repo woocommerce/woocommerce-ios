@@ -9,6 +9,7 @@ struct NewReviewNotificationPreferencesDetailView: NotificationDetailContent {
 
     static var navigationTitle: String { Localization.title }
 
+    var onBack: (() -> Void)?
     var onSave: (() -> Void)?
 
     init(viewModel: PushNotificationPreferencesViewModel) {
@@ -25,7 +26,7 @@ struct NewReviewNotificationPreferencesDetailView: NotificationDetailContent {
         .disabled(viewModel.isSaving)
         .navigationTitle(Self.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
-        .notificationDetailSaveToolbar(viewModel: viewModel, onSave: onSave)
+        .notificationDetailToolbar(viewModel: viewModel, onBack: onBack, onSave: onSave)
         .notice($viewModel.errorNotice)
         .onAppear {
             viewModel.detailDidAppear(notificationType: .newReview)

@@ -1318,24 +1318,43 @@ private extension AuthenticationManager {
                                                       defaultAction: (() -> Void)?,
                                                       for siteURL: String,
                                                       in viewController: UIViewController) {
-        let isUnexpectedStoreResponse = isUnexpectedStoreResponse(error)
-        let supportAction: (() -> Void)? = isUnexpectedStoreResponse ? { [weak self, weak viewController] in
-            guard let self, let viewController else { return }
-            self.presentSupport(
-                from: viewController,
-                sourceTag: .loginSiteAddress,
-                siteURL: URL(string: siteURL)
-            )
-        } : nil
+        guard !isUnexpectedStoreResponse(error) else {
+            presentUnexpectedStoreResponseAlert(for: siteURL, in: viewController)
+            return
+        }
+
         let alert = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
-            message: isUnexpectedStoreResponse ? UnexpectedStoreResponseLocalization.message : error.localizedDescription,
-            defaultAction: isUnexpectedStoreResponse ? nil : defaultAction,
-            supportAction: supportAction
+            message: error.localizedDescription,
+            defaultAction: defaultAction
         )
         if let transitioningDelegate = viewController as? UIViewControllerTransitioningDelegate {
             alert.modalPresentationStyle = .custom
             alert.transitioningDelegate = transitioningDelegate
         }
+        viewController.present(alert, animated: true)
+    }
+
+    private func presentUnexpectedStoreResponseAlert(for siteURL: String, in viewController: UIViewController) {
+        let alert = UIHostingController(rootView: StoreConnectionErrorModal(
+            title: UnexpectedStoreResponseLocalization.title,
+            message: UnexpectedStoreResponseLocalization.message,
+            onContactSupport: { [weak self, weak viewController] in
+                guard let self, let viewController else { return }
+                viewController.dismiss(animated: true) {
+                    self.presentSupport(
+                        from: viewController,
+                        sourceTag: .loginSiteAddress,
+                        siteURL: URL(string: siteURL)
+                    )
+                }
+            },
+            onDismiss: { [weak viewController] in
+                viewController?.dismiss(animated: true)
+            }
+        ))
+        alert.view.backgroundColor = .clear
+        alert.modalPresentationStyle = .overFullScreen
+        alert.modalTransitionStyle = .crossDissolve
         viewController.present(alert, animated: true)
     }
 

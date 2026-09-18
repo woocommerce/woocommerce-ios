@@ -55,16 +55,9 @@ extension FancyAlertViewController {
     }
 
     static func makeSiteCredentialLoginErrorAlert(message: String,
-                                                  defaultAction: (() -> Void)?,
-                                                  supportAction: (() -> Void)? = nil) -> FancyAlertViewController {
-        let cancelButtonTitle = supportAction == nil ? Localization.cancelButton : UnexpectedStoreResponseLocalization.dismiss
-        let cancelButton = Config.ButtonConfig(cancelButtonTitle) { controller, _ in
+                                                  defaultAction: (() -> Void)?) -> FancyAlertViewController {
+        let cancelButton = Config.ButtonConfig(Localization.cancelButton) { controller, _ in
             controller.dismiss(animated: true)
-        }
-        let supportButton: Config.ButtonConfig? = supportAction.map { action in
-            Config.ButtonConfig(UnexpectedStoreResponseLocalization.contactSupport) { controller, _ in
-                controller.dismiss(animated: true, completion: action)
-            }
         }
         let webViewButton: Config.ButtonConfig? = {
             guard let defaultAction else {
@@ -78,8 +71,8 @@ extension FancyAlertViewController {
                                                      bodyText: message,
                                                      headerImage: nil,
                                                      dividerPosition: .top,
-                                                     defaultButton: supportButton ?? cancelButton,
-                                                     cancelButton: webViewButton ?? supportButton.map { _ in cancelButton },
+                                                     defaultButton: cancelButton,
+                                                     cancelButton: webViewButton,
                                                      moreInfoButton: nil,
                                                      dismissAction: {})
 

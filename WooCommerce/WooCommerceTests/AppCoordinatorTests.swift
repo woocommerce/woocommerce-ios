@@ -1,4 +1,5 @@
 import Experiments
+import SwiftUI
 import TestKit
 import WordPressAuthenticator
 import XCTest
@@ -224,7 +225,7 @@ final class AppCoordinatorTests: XCTestCase {
         NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Then
-        XCTAssertTrue(appCoordinator.tabBarController.presentedViewController is UIAlertController)
+        XCTAssertTrue(appCoordinator.tabBarController.presentedViewController is UIHostingController<StoreConnectionErrorModal>)
     }
 
     @MainActor
@@ -246,7 +247,7 @@ final class AppCoordinatorTests: XCTestCase {
         NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Then
-        XCTAssertTrue(alert is UIAlertController)
+        XCTAssertTrue(alert is UIHostingController<StoreConnectionErrorModal>)
         XCTAssertTrue(appCoordinator.tabBarController.presentedViewController === alert)
         XCTAssertNil(alert?.presentedViewController)
     }
@@ -287,7 +288,7 @@ final class AppCoordinatorTests: XCTestCase {
         NotificationCenter.default.post(name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Then
-        XCTAssertTrue(appCoordinator.tabBarController.presentedViewController is UIAlertController)
+        XCTAssertTrue(appCoordinator.tabBarController.presentedViewController is UIHostingController<StoreConnectionErrorModal>)
     }
 
     @MainActor
@@ -331,7 +332,7 @@ final class AppCoordinatorTests: XCTestCase {
 
         // Then
         let secondAlert = try XCTUnwrap(appCoordinator.tabBarController.presentedViewController)
-        XCTAssertTrue(secondAlert is UIAlertController)
+        XCTAssertTrue(secondAlert is UIHostingController<StoreConnectionErrorModal>)
         XCTAssertFalse(secondAlert === firstAlert)
     }
 
@@ -354,7 +355,7 @@ final class AppCoordinatorTests: XCTestCase {
         await settleStoreConnectionEvents()
 
         // Then
-        XCTAssertTrue(modal.presentedViewController is UIAlertController)
+        XCTAssertTrue(modal.presentedViewController is UIHostingController<StoreConnectionErrorModal>)
     }
 
     @MainActor
@@ -366,13 +367,13 @@ final class AppCoordinatorTests: XCTestCase {
         appCoordinator.start()
         monitor.recordUnexpectedStoreResponse(siteID: 123)
         await settleStoreConnectionEvents()
-        let alert = try XCTUnwrap(appCoordinator.tabBarController.presentedViewController as? UIAlertController)
+        let alert = try XCTUnwrap(appCoordinator.tabBarController.presentedViewController as? UIHostingController<StoreConnectionErrorModal>)
 
-        XCTAssertEqual(alert.actions.map(\.title), ["Contact Support", "Dismiss"])
+        XCTAssertEqual(alert.rootView.title, UnexpectedStoreResponseLocalization.title)
+        XCTAssertEqual(alert.rootView.message, UnexpectedStoreResponseLocalization.message)
 
         // When
-        let contactSupportActionIndex = try XCTUnwrap(alert.actions.firstIndex { $0.title == "Contact Support" })
-        alert.tapButton(atIndex: contactSupportActionIndex)
+        alert.rootView.onContactSupport()
 
         // Then
         await until {

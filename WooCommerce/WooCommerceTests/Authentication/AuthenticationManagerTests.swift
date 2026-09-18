@@ -1,5 +1,6 @@
 import TestKit
 import XCTest
+import SwiftUI
 @testable import Networking
 @testable import NetworkingCore
 import WordPressAuthenticator
@@ -1295,17 +1296,11 @@ final class AuthenticationManagerTests: XCTestCase {
             for: "https://example.com",
             in: presenter
         )
-        let alert = try XCTUnwrap(presenter.presentedViewController as? FancyAlertViewController)
-        alert.loadViewIfNeeded()
+        let alert = try XCTUnwrap(presenter.presentedViewController as? UIHostingController<StoreConnectionErrorModal>)
 
         // Then
-        let labels = allSubviews(in: alert.view).compactMap { $0 as? UILabel }.compactMap(\.text)
-        XCTAssertTrue(labels.contains(UnexpectedStoreResponseLocalization.message))
-
-        let contactSupportButton = try XCTUnwrap(button(withIdentifier: "fancy-alert-view-default-button", in: alert.view))
-        let cancelButton = try XCTUnwrap(button(withIdentifier: "fancy-alert-view-cancel-button", in: alert.view))
-        XCTAssertEqual(contactSupportButton.title(for: .normal), UnexpectedStoreResponseLocalization.contactSupport)
-        XCTAssertEqual(cancelButton.title(for: .normal), UnexpectedStoreResponseLocalization.dismiss)
+        XCTAssertEqual(alert.rootView.title, UnexpectedStoreResponseLocalization.title)
+        XCTAssertEqual(alert.rootView.message, UnexpectedStoreResponseLocalization.message)
     }
 
     func test_authenticate_site_credentials_when_login_recovery_is_requested_then_tracks_invalid_login_page_detected() {

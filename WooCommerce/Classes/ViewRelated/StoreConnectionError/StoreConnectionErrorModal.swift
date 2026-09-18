@@ -6,8 +6,20 @@ import SwiftUI
 /// attention, so the warning is left only through one of its two buttons.
 ///
 struct StoreConnectionErrorModal: View {
+    let title: String
+    let message: String
     let onContactSupport: () -> Void
     let onDismiss: () -> Void
+
+    init(title: String = Localization.title,
+         message: String = Localization.body,
+         onContactSupport: @escaping () -> Void,
+         onDismiss: @escaping () -> Void) {
+        self.title = title
+        self.message = message
+        self.onContactSupport = onContactSupport
+        self.onDismiss = onDismiss
+    }
 
     var body: some View {
         ZStack {
@@ -33,13 +45,13 @@ struct StoreConnectionErrorModal: View {
 
     private var content: some View {
         VStack(alignment: .leading, spacing: Layout.spacing) {
-            Text(Localization.title)
+            Text(title)
                 .font(.title3)
                 .bold()
                 .foregroundStyle(Color(.text))
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text(Localization.body)
+            Text(message)
                 .font(.body)
                 .foregroundStyle(Color(.text))
                 .fixedSize(horizontal: false, vertical: true)

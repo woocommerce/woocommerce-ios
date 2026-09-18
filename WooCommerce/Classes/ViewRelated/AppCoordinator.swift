@@ -1,6 +1,7 @@
 import Combine
 import Experiments
 import SafariServices
+import SwiftUI
 import UIKit
 import WordPressAuthenticator
 import Yosemite
@@ -32,7 +33,7 @@ final class AppCoordinator {
     private var storeConnectionIssueSubscription: AnyCancellable?
     private var storeConnectionIssueForegroundSubscription: AnyCancellable?
     private var pendingStoreConnectionIssueSiteID: Int64?
-    private weak var storeConnectionAlert: UIAlertController?
+    private weak var storeConnectionAlert: UIViewController?
     private var isLoggedIn: Bool = false
     private let themeInstaller: ThemeInstaller
 
@@ -179,23 +180,27 @@ private extension AppCoordinator {
         pendingStoreConnectionIssueSiteID = nil
         analytics.track(event: .RemoteRequest.unexpectedStoreResponse)
 
-        let alert = UIAlertController(
+        let alert = UIHostingController(rootView: StoreConnectionErrorModal(
             title: UnexpectedStoreResponseLocalization.title,
             message: UnexpectedStoreResponseLocalization.message,
-            preferredStyle: .alert
-        )
+            onContactSupport: { [weak self, weak presenter] in
+                self?.showSupport(
+                    from: presenter,
+                    dismissing: presenter?.presentedViewController
+                )
+            },
+            onDismiss: { [weak presenter] in
+                presenter?.presentedViewController?.dismiss(animated: true)
+            }
+        ))
+        alert.view.backgroundColor = .clear
+        alert.modalPresentationStyle = .overFullScreen
+        alert.modalTransitionStyle = .crossDissolve
         storeConnectionAlert = alert
-        alert.addAction(UIAlertAction(title: UnexpectedStoreResponseLocalization.contactSupport, style: .default) { [weak self, weak presenter] _ in
-            self?.showSupport(
-                from: presenter,
-                dismissing: presenter?.presentedViewController as? UIAlertController
-            )
-        })
-        alert.addAction(UIAlertAction(title: UnexpectedStoreResponseLocalization.dismiss, style: .cancel))
         presenter.present(alert, animated: true)
     }
 
-    func showSupport(from presenter: UIViewController?, dismissing alert: UIAlertController?) {
+    func showSupport(from presenter: UIViewController?, dismissing alert: UIViewController?) {
         performAfterDismissingAlert(alert) { [weak presenter] in
             guard let presenter else {
                 return
@@ -209,7 +214,7 @@ private extension AppCoordinator {
         }
     }
 
-    private func performAfterDismissingAlert(_ alert: UIAlertController?, action: @escaping () -> Void) {
+    private func performAfterDismissingAlert(_ alert: UIViewController?, action: @escaping () -> Void) {
         guard let alert, alert.presentingViewController != nil else {
             DispatchQueue.main.async(execute: action)
             return

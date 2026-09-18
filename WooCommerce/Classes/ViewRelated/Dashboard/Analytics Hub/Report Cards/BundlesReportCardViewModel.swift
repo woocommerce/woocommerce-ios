@@ -145,24 +145,21 @@ extension AnalyticsBundlesReportCardViewModel {
 ///
 extension AnalyticsTopPerformersCard {
     init(bundlesViewModel: AnalyticsBundlesReportCardViewModel) {
-        // Header with stats
-        self.title = bundlesViewModel.title
-        self.statTitle = bundlesViewModel.bundlesSoldTitle
-        self.statValue = bundlesViewModel.bundlesSold
-        self.delta = bundlesViewModel.delta.string
-        self.deltaBackgroundColor = bundlesViewModel.delta.direction.deltaBackgroundColor
-        self.deltaTextColor = bundlesViewModel.delta.direction.deltaTextColor
-        self.isStatsRedacted = bundlesViewModel.isRedacted
-        self.showStatsError = bundlesViewModel.showStatsError
-        self.statsErrorMessage = bundlesViewModel.statsErrorMessage
-        self.reportViewModel = bundlesViewModel.reportViewModel
-
-        // Top performers list
-        self.topPerformersTitle = bundlesViewModel.title
-        self.topPerformersData = bundlesViewModel.bundlesSoldData
-        self.isTopPerformersRedacted = bundlesViewModel.isRedacted
-        self.showTopPerformersError = bundlesViewModel.showBundlesSoldError
-        self.topPerformersErrorMessage = bundlesViewModel.bundlesSoldErrorMessage
+        self.init(title: bundlesViewModel.title,
+                  statTitle: bundlesViewModel.bundlesSoldTitle,
+                  statValue: bundlesViewModel.bundlesSold,
+                  delta: bundlesViewModel.delta.string,
+                  deltaBackgroundColor: bundlesViewModel.delta.direction.deltaBackgroundColor,
+                  deltaTextColor: bundlesViewModel.delta.direction.deltaTextColor,
+                  isStatsRedacted: bundlesViewModel.isRedacted,
+                  showStatsError: bundlesViewModel.showStatsError,
+                  statsErrorMessage: bundlesViewModel.statsErrorMessage,
+                  topPerformersTitle: bundlesViewModel.title,
+                  topPerformersData: bundlesViewModel.bundlesSoldData,
+                  isTopPerformersRedacted: bundlesViewModel.isRedacted,
+                  showTopPerformersError: bundlesViewModel.showBundlesSoldError,
+                  topPerformersErrorMessage: bundlesViewModel.bundlesSoldErrorMessage,
+                  reportViewModel: bundlesViewModel.reportViewModel)
     }
 }
 

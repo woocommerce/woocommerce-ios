@@ -76,6 +76,7 @@ final class CustomerSearchUICommandTests: XCTestCase {
         XCTAssert(analyticsProvider.receivedEvents.contains("order_creation_customer_search"))
     }
 
+    @MainActor
     func test_didSelectSearchResult_then_tracks_orderCreationCustomerAdded_event() {
         // Given
         let command = CustomerSearchUICommand(

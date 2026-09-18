@@ -500,7 +500,11 @@ extension Alamofire.DataResponse {
     var networkingError: Error? {
         if let error = error?.asAFError,
            error.isResponseValidationError == false {
-            return error
+            // An empty HTTP response is reported as a serialization failure. The response still
+            // contains the HTTP status, so let it become a NetworkError below.
+            guard case .responseSerializationFailed = error else {
+                return error
+            }
         }
 
         // Passthru URL Errors: These are right there, even without calling Alamofire's validation.

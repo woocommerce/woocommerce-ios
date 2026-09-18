@@ -97,6 +97,26 @@ final class SupportFormViewModelTests: XCTestCase {
         XCTAssertTrue(zendesk.latestInvokedTags.contains(sourceTag))
     }
 
+    func test_additional_tags_are_sent_after_the_area_and_source_tags_when_creating_a_request() async {
+        // Given
+        let sourceTag = "origin:custom"
+        let additionalTags = ["rest_invalid_signature", "another_tag"]
+        let zendesk = MockZendeskManager()
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             sourceTag: sourceTag,
+                                             additionalTags: additionalTags,
+                                             zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
+        viewModel.area = viewModel.areas.first
+
+        // When
+        await viewModel.submitSupportRequest()
+
+        // Then
+        let expectedTags = (viewModel.area?.datasource.tags ?? []) + [sourceTag] + additionalTags
+        XCTAssertEqual(zendesk.latestInvokedTags, expectedTags)
+    }
+
     func test_shouldShowIdentityInput_is_true_when_triggering_onViewAppear_no_existing_identity() {
         // Given
         let zendesk = MockZendeskManager()

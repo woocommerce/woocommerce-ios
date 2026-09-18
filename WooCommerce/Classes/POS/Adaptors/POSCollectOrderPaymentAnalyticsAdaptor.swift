@@ -6,6 +6,7 @@ import PointOfSale
 /// Overrides the default event tracking for card present payments on IPP in Order Creation flow
 ///
 final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyticsTracking, CollectOrderPaymentAnalyticsTracking {
+    private var cardPaymentOrder: Order?
     private var customerInteractionStarted: Double = 0
     private var orderSync: Double = 0
     private var cardReaderReady: Double = 0
@@ -24,12 +25,27 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         connectedReader?.readerType.model
     }
 
+    private var readerTransport: String {
+        switch connectedReader?.readerType {
+        case .tapToPay:
+            return "built_in"
+        case .chipper, .stripeM2, .wisepad3:
+            return "bluetooth"
+        case .other, .none:
+            return "unknown"
+        }
+    }
+
     init(analytics: POSAnalyticsProviding,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          currentTimestamp: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {
         self.analytics = analytics
         self.configuration = configuration
         self.currentTimestamp = currentTimestamp
+    }
+
+    func prepareForCardPayment(order: Order) {
+        cardPaymentOrder = order
     }
 
     func preflightResultReceived(_ result: CardReaderPreflightResult?) {
@@ -59,6 +75,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
     }
 
     func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
+        guard let order = cardPaymentOrder else { return }
         // Property: milliseconds_since_customer_interaction_started
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
@@ -76,6 +93,8 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
             countryCode: configuration.countryCode,
             paymentMethod: capturedPaymentData.paymentMethod,
             cardReaderModel: connectedReaderModel,
+            order: order,
+            transport: readerTransport,
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction,
             millisecondsSinceOrderSyncSuccess: elapsedTimeSinceOrderSync,
             millisecondsSinceReaderReadyToCollect: elapsedTimeSinceCardReaderReady,
@@ -87,28 +106,34 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         resetProcessingPaymentTracking()
     }
 
-    func trackSuccessfulCashPayment() {
+    func trackSuccessfulCashPayment(order: Order) {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
         analytics.track(event: .PointOfSale.cashCollectPaymentSuccess(
+            order: order,
+            countryCode: configuration.countryCode,
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
         ))
         resetCheckoutTapCountTracker()
     }
 
-    func trackSuccessfulScanToPayPayment() {
+    func trackSuccessfulScanToPayPayment(order: Order) {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
         analytics.track(event: .PointOfSale.scanToPayCollectPaymentSuccess(
+            order: order,
+            countryCode: configuration.countryCode,
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
         ))
         resetCheckoutTapCountTracker()
     }
 
-    func trackSuccessfulMarkAsPaidPayment() {
+    func trackSuccessfulMarkAsPaidPayment(order: Order) {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
         analytics.track(event: .PointOfSale.markAsPaidSuccess(
+            order: order,
+            countryCode: configuration.countryCode,
             millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
         ))
         resetCheckoutTapCountTracker()

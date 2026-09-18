@@ -1,4 +1,5 @@
 import Alamofire
+import Synchronization
 import Network
 import XCTest
 @testable import Networking
@@ -6,7 +7,6 @@ import XCTest
 
 private let cookieNonceLoopbackCookiePrefix = "woocommerce_cookie_nonce_test_"
 
-@MainActor
 final class CookieNonceAuthenticatorTests: XCTestCase {
 
     private let loginURL = URL(string: "https://example.com/wp-login.php")!
@@ -712,7 +712,9 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
             loginEntryURL: siteURL.appendingPathComponent("custom-entry"),
             adminBaseURL: siteURL.appendingPathComponent("private-admin", isDirectory: true)
         )
-        let network = WordPressOrgNetwork(
+        // `WordPressOrgNetwork` is not `Sendable`; this test exercises its own request coalescing from two
+        // child tasks on purpose, so the local is marked rather than the class.
+        nonisolated(unsafe) let network = WordPressOrgNetwork(
             configuration: CookieNonceAuthenticatorConfiguration(
                 username: sampleUser,
                 password: samplePassword,
@@ -723,8 +725,8 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         let request = URLRequest(url: siteURL.appendingPathComponent("wp-json/protected"))
 
         // When
-        async let firstResponse = responseData(for: request, using: network)
-        async let secondResponse = responseData(for: request, using: network)
+        async let firstResponse = Self.responseData(for: request, using: network)
+        async let secondResponse = Self.responseData(for: request, using: network)
         let responses = try await (firstResponse, secondResponse)
 
         // Then
@@ -827,7 +829,10 @@ private extension CookieNonceAuthenticatorTests {
             "<input name=\"pwd\" id=\"user_pass\" type=\"password\"></form>"
     }
 
-    func responseData(for request: URLRequest, using network: WordPressOrgNetwork) async throws -> Data {
+    /// Main-actor so that concurrent callers hand their requests to the network one after the other: the
+    /// coalescing test needs both protected requests dispatched before the first 401 starts the login sequence.
+    @MainActor
+    static func responseData(for request: URLRequest, using network: WordPressOrgNetwork) async throws -> Data {
         try await withCheckedThrowingContinuation { continuation in
             network.responseData(for: request) { (result: Result<Data, Swift.Error>) in
                 continuation.resume(with: result)
@@ -843,25 +848,26 @@ private final class CookieNonceAuthenticationURLProtocol: URLProtocol {
         let data: Data
     }
 
-    private static let lock = NSLock()
-    private static var stubs: [String: Stub] = [:]
-    private static var requests: [URLRequest] = []
+    /// Stubs are registered on the test thread and consumed in `startLoading()` on the URL loading thread.
+    private struct State {
+        var stubs: [String: Stub] = [:]
+        var requests: [URLRequest] = []
+    }
+
+    private static let state = Mutex(State())
 
     static var receivedRequests: [URLRequest] {
-        lock.withTestLock { requests }
+        state.withLock { $0.requests }
     }
 
     static func stub(method: String, url: URL, statusCode: Int = 200, headers: [String: String] = [:], data: Data = Data()) {
-        lock.withTestLock {
-            stubs[key(method: method, url: url)] = Stub(statusCode: statusCode, headers: headers, data: data)
+        state.withLock {
+            $0.stubs[key(method: method, url: url)] = Stub(statusCode: statusCode, headers: headers, data: data)
         }
     }
 
     static func reset() {
-        lock.withTestLock {
-            stubs.removeAll()
-            requests.removeAll()
-        }
+        state.withLock { $0 = State() }
     }
 
     override class func canInit(with request: URLRequest) -> Bool {
@@ -877,9 +883,10 @@ private final class CookieNonceAuthenticationURLProtocol: URLProtocol {
             client?.urlProtocol(self, didFailWithError: URLError(.badURL))
             return
         }
-        let stub = Self.lock.withTestLock { () -> Stub? in
-            Self.requests.append(Self.recordableRequest(from: request))
-            return Self.stubs[Self.key(method: request.httpMethod ?? "GET", url: url)]
+        let recordedRequest = Self.recordableRequest(from: request)
+        let stub = Self.state.withLock { state -> Stub? in
+            state.requests.append(recordedRequest)
+            return state.stubs[Self.key(method: request.httpMethod ?? "GET", url: url)]
         }
         guard let stub,
               let response = HTTPURLResponse(
@@ -1161,14 +1168,13 @@ private final class CookieNonceLoopbackServer: @unchecked Sendable {
         self.handler = handler
 
         let ready = DispatchSemaphore(value: 0)
-        let stateLock = NSLock()
-        var startupError: Swift.Error?
+        let startupError = Mutex<Swift.Error?>(nil)
         listener.stateUpdateHandler = { state in
             switch state {
             case .ready:
                 ready.signal()
             case .failed(let error):
-                stateLock.withTestLock { startupError = error }
+                startupError.withLock { $0 = error }
                 ready.signal()
             default:
                 break
@@ -1178,11 +1184,11 @@ private final class CookieNonceLoopbackServer: @unchecked Sendable {
             self?.handle(connection)
         }
         listener.start(queue: queue)
-        guard ready.wait(timeout: .now() + 5) == .success,
-              stateLock.withTestLock({ startupError == nil }),
-              let port = listener.port else {
+        let isReady = ready.wait(timeout: .now() + 5) == .success
+        let failure = startupError.withLock { $0 }
+        guard isReady, failure == nil, let port = listener.port else {
             listener.cancel()
-            throw startupError ?? URLError(.cannotConnectToHost)
+            throw failure ?? URLError(.cannotConnectToHost)
         }
         self.listeningPort = port
     }

@@ -41,12 +41,14 @@ open class Remote: NSObject {
 
     /// Enqueues the specified Network Request and return Void if successful.
     ///
-    /// - Parameter request: Request that should be performed.
+    /// - Parameters:
+    ///   - request: Request that should be performed.
+    ///   - isolation: The caller's actor isolation, forwarded to the network so the request runs on it.
     ///
-    public func enqueue(_ request: Request) async throws {
+    public func enqueue(_ request: Request, isolation: isolated (any Actor)? = #isolation) async throws {
         let data: Data
         do {
-            data = try await network.responseData(for: request)
+            data = try await network.responseData(for: request, isolation: isolation)
         } catch {
             throw mapNetworkError(error: error, for: request)
         }
@@ -62,12 +64,14 @@ open class Remote: NSObject {
 
     /// Enqueues the specified Network Request with a generic expected result type.
     ///
-    /// - Parameter request: Request that should be performed.
+    /// - Parameters:
+    ///   - request: Request that should be performed.
+    ///   - isolation: The caller's actor isolation, forwarded to the network so the request runs on it.
     /// - Returns: The result from the JSON parsed response for the expected type.
-    public func enqueue<T: Decodable>(_ request: Request) async throws -> T {
+    public func enqueue<T: Decodable>(_ request: Request, isolation: isolated (any Actor)? = #isolation) async throws -> T {
         let data: Data
         do {
-            data = try await network.responseData(for: request)
+            data = try await network.responseData(for: request, isolation: isolation)
         } catch {
             throw mapNetworkError(error: error, for: request)
         }

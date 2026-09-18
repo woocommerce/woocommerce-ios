@@ -1,4 +1,5 @@
 import Combine
+import Synchronization
 import XCTest
 import Fakes
 import TestKit
@@ -18,11 +19,6 @@ final class RemoteTests: XCTestCase {
     private let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: 123, path: "something", parameters: [:])
 
     private var cancellables = Set<AnyCancellable>()
-
-    override func setUp() {
-        super.setUp()
-        cancellables = []
-    }
 
     func test_responseDataAndHeaders_when_called_from_mainActor_then_forwards_caller_isolation() async throws {
         // Given
@@ -849,11 +845,11 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        var notification: Notification?
+        let notifications = LockedCollector<ParsingErrorNotification>()
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
                                                      object: nil,
                                                      handler: { returnedNotification in
-            notification = returnedNotification
+            notifications.append(ParsingErrorNotification(returnedNotification))
             return true
         })
         let result: (Any?, Error?) = waitFor { promise in
@@ -869,8 +865,8 @@ final class RemoteTests: XCTestCase {
         XCTAssertNotNil(result.1)
         XCTAssertTrue(result.1 is DecodingError)
 
-        let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
-        let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+        let path = try XCTUnwrap(notifications.values.first?.path)
+        let entityName = try XCTUnwrap(notifications.values.first?.entity)
         XCTAssertEqual(path, "something")
         XCTAssertEqual(entityName, "Any")
     }
@@ -886,11 +882,11 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        var notification: Notification?
+        let notifications = LockedCollector<ParsingErrorNotification>()
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
                                                      object: nil,
                                                      handler: { returnedNotification in
-            notification = returnedNotification
+            notifications.append(ParsingErrorNotification(returnedNotification))
             return true
         })
         let result: Result<Any, Error> = waitFor { promise in
@@ -905,8 +901,8 @@ final class RemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertTrue(try XCTUnwrap(result.failure) is DecodingError)
 
-        let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
-        let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+        let path = try XCTUnwrap(notifications.values.first?.path)
+        let entityName = try XCTUnwrap(notifications.values.first?.entity)
         XCTAssertEqual(path, "something")
         XCTAssertEqual(entityName, "Any")
     }
@@ -922,11 +918,11 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        var notification: Notification?
+        let notifications = LockedCollector<ParsingErrorNotification>()
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
                                                      object: nil,
                                                      handler: { returnedNotification in
-            notification = returnedNotification
+            notifications.append(ParsingErrorNotification(returnedNotification))
             return true
         })
         let result: Result<Any, Error> = waitFor { promise in
@@ -940,8 +936,8 @@ final class RemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertTrue(try XCTUnwrap(result.failure) is DecodingError)
 
-        let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
-        let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+        let path = try XCTUnwrap(notifications.values.first?.path)
+        let entityName = try XCTUnwrap(notifications.values.first?.entity)
         XCTAssertEqual(path, "something")
         XCTAssertEqual(entityName, "Any")
     }
@@ -958,11 +954,11 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        var notification: Notification?
+        let notifications = LockedCollector<ParsingErrorNotification>()
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
                                                      object: nil,
                                                      handler: { returnedNotification in
-            notification = returnedNotification
+            notifications.append(ParsingErrorNotification(returnedNotification))
             return true
         })
         do {
@@ -971,8 +967,8 @@ final class RemoteTests: XCTestCase {
             await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
 
             // Then
-            let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
-            let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+            let path = try XCTUnwrap(notifications.values.first?.path)
+            let entityName = try XCTUnwrap(notifications.values.first?.entity)
             XCTAssertEqual(path, "something")
             XCTAssertEqual(entityName, "Any")
         }
@@ -988,11 +984,11 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        var notification: Notification?
+        let notifications = LockedCollector<ParsingErrorNotification>()
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
                                                      object: nil,
                                                      handler: { returnedNotification in
-            notification = returnedNotification
+            notifications.append(ParsingErrorNotification(returnedNotification))
             return true
         })
         do {
@@ -1001,8 +997,8 @@ final class RemoteTests: XCTestCase {
             await fulfillment(of: [expectationForNotification], timeout: Constants.expectationTimeout)
 
             // Then
-            let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
-            let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+            let path = try XCTUnwrap(notifications.values.first?.path)
+            let entityName = try XCTUnwrap(notifications.values.first?.entity)
             XCTAssertEqual(path, "something")
             XCTAssertEqual(entityName, "Array<String>")
         }
@@ -1020,11 +1016,11 @@ final class RemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "something", filename: "order")
 
         // When
-        var notification: Notification?
+        let notifications = LockedCollector<ParsingErrorNotification>()
         let expectationForNotification = expectation(forNotification: .RemoteDidReceiveJSONParsingError,
                                                      object: nil,
                                                      handler: { returnedNotification in
-            notification = returnedNotification
+            notifications.append(ParsingErrorNotification(returnedNotification))
             return true
         })
         let result: Result<Any, Error> = await waitForAsync { promise in
@@ -1038,8 +1034,8 @@ final class RemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertTrue(try XCTUnwrap(result.failure) is DecodingError)
 
-        let path = try XCTUnwrap(notification?.userInfo?["path"] as? String)
-        let entityName = try XCTUnwrap(notification?.userInfo?["entity"] as? String)
+        let path = try XCTUnwrap(notifications.values.first?.path)
+        let entityName = try XCTUnwrap(notifications.values.first?.entity)
         XCTAssertEqual(path, "something")
         XCTAssertEqual(entityName, "Any")
     }
@@ -1597,7 +1593,7 @@ final class RemoteTests: XCTestCase {
 }
 
 private extension RemoteTests {
-    func assertRawBodyDotcomError(_ error: Error?, file: StaticString = #file, line: UInt = #line) {
+    func assertRawBodyDotcomError(_ error: Error?, file: StaticString = #filePath, line: UInt = #line) {
         guard let error,
               case let DotcomError.unknown(code, _, _) = error else {
             return XCTFail("Expected DotcomError.unknown", file: file, line: line)
@@ -1615,6 +1611,33 @@ private extension RemoteTests {
 /// and uploads are not `.validate()`d, so an error status arrives with no error at all: body present,
 /// error nil.
 ///
+/// Collects values appended from the notification observer, which runs off the test's isolation.
+///
+private final class LockedCollector<Value: Sendable>: Sendable {
+    private let storage = Mutex<[Value]>([])
+
+    func append(_ value: Value) {
+        storage.withLock { $0.append(value) }
+    }
+
+    var values: [Value] {
+        storage.withLock { $0 }
+    }
+}
+
+/// The fields of a `RemoteDidReceiveJSONParsingError` notification the tests assert on, copied out of the
+/// non-Sendable `Notification` inside the observer so they can cross back to the test.
+///
+private struct ParsingErrorNotification: Sendable {
+    let path: String?
+    let entity: String?
+
+    init(_ notification: Notification) {
+        path = notification.userInfo?["path"] as? String
+        entity = notification.userInfo?["entity"] as? String
+    }
+}
+
 private final class BodyAndErrorNetwork: Network {
     private let data: Data
     private let error: Error

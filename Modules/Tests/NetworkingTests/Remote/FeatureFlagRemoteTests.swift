@@ -60,7 +60,6 @@ final class FeatureFlagRemoteTests: XCTestCase {
         })
     }
 
-    @MainActor
     func test_loadAllFeatureFlags_when_no_device_id_is_stored_then_sends_a_generated_device_id_and_persists_it() async throws {
         // Given
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: "FeatureFlagRemoteTests.\(UUID().uuidString)"))
@@ -77,7 +76,6 @@ final class FeatureFlagRemoteTests: XCTestCase {
         XCTAssertEqual(userDefaults.string(forKey: "FeatureFlagDeviceID"), sentDeviceID)
     }
 
-    @MainActor
     func test_loadAllFeatureFlags_when_a_device_id_is_stored_then_sends_the_stored_device_id() async throws {
         // Given
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: "FeatureFlagRemoteTests.\(UUID().uuidString)"))

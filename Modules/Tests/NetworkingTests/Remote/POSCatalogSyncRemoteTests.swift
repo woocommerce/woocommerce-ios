@@ -64,7 +64,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.loadProducts(modifiedAfter: Date(), siteID: sampleSiteID, pageNumber: 1)
+            _ = try await remote.loadProducts(modifiedAfter: Date(), siteID: sampleSiteID, pageNumber: 1)
         }
     }
 
@@ -259,7 +259,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.loadProductVariations(modifiedAfter: Date(), siteID: sampleSiteID, pageNumber: 1)
+            _ = try await remote.loadProductVariations(modifiedAfter: Date(), siteID: sampleSiteID, pageNumber: 1)
         }
     }
 
@@ -420,7 +420,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.loadProducts(siteID: sampleSiteID, pageNumber: 1, allowCellular: true)
+            _ = try await remote.loadProducts(siteID: sampleSiteID, pageNumber: 1, allowCellular: true)
         }
     }
 
@@ -465,7 +465,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: 1, allowCellular: true)
+            _ = try await remote.loadProductVariations(siteID: sampleSiteID, pageNumber: 1, allowCellular: true)
         }
     }
 
@@ -534,7 +534,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.notFound()) {
-            try await remote.requestCatalogGeneration(for: sampleSiteID, forceGeneration: false, allowCellular: true)
+            _ = try await remote.requestCatalogGeneration(for: sampleSiteID, forceGeneration: false, allowCellular: true)
         }
     }
 
@@ -705,7 +705,7 @@ struct POSCatalogSyncRemoteTests {
 
         // When/Then
         await #expect(throws: NetworkError.invalidURL) {
-            try await remote.downloadCatalog(for: sampleSiteID, downloadURL: emptyURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
+            _ = try await remote.downloadCatalog(for: sampleSiteID, downloadURL: emptyURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
         }
     }
 
@@ -1101,6 +1101,7 @@ private class MockFileManager: FileManager {
 // MARK: - Background Download State Tests
 
 extension POSCatalogSyncRemoteTests {
+    @MainActor
     @Test func downloadCatalog_saves_background_state() async throws {
         // Given
         let remote = createRemote()
@@ -1122,7 +1123,7 @@ extension POSCatalogSyncRemoteTests {
                 }
             }
 
-            Task {
+            Task { @MainActor in
                 _ = try? await remote.downloadCatalog(for: sampleSiteID, downloadURL: downloadURL, allowCellular: true, snapshotDate: sampleSnapshotDate)
             }
         }

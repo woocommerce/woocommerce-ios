@@ -246,7 +246,10 @@ private extension PostSiteCredentialLoginChecker {
             alert.addAction(supportAction)
         }
         if showsUnexpectedStoreResponse {
-            alert.addAction(UIAlertAction(title: UnexpectedStoreResponseLocalization.dismiss, style: .cancel))
+            alert.addAction(UIAlertAction(title: UnexpectedStoreResponseLocalization.dismiss, style: .cancel) { [weak self] _ in
+                self?.stores.deauthenticate()
+                navigationController.popToRootViewController(animated: true)
+            })
         } else {
             let restartAction = UIAlertAction(title: Localization.restartLoginButton, style: .cancel) { [weak self] _ in
                 self?.stores.deauthenticate()

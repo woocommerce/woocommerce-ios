@@ -7,7 +7,6 @@ change matches the guidelines below, taken from the
 Request a review when the change involves:
 
 - architectural decisions or a new pattern;
-- knowledge sharing or reducing single-person ownership;
 - critical merchant flows, including payments, refunds, orders, and POS;
 - security, privacy, authentication, or sensitive data;
 - migrations or changes with data-loss potential;

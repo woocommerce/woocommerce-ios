@@ -232,7 +232,7 @@ let package = Package(
                 .product(name: "Kingfisher", package: "Kingfisher")
             ],
             resources: [.process("Resources")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "WooFoundationCore",
@@ -373,7 +373,7 @@ let package = Package(
         .testTarget(
             name: "WooFoundationTests",
             dependencies: ["TestKit", .target(name: "WooFoundation")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .testTarget(
             name: "WordPressUITests",

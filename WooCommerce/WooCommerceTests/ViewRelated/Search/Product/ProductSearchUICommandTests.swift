@@ -4,6 +4,7 @@ import XCTest
 import Yosemite
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class ProductSearchUICommandTests: XCTestCase {
     private let sampleSiteID: Int64 = 134
     private var analyticsProvider: MockAnalyticsProvider!

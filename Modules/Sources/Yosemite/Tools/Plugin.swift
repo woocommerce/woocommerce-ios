@@ -1,6 +1,6 @@
 import Foundation
 
-public enum Plugin: Equatable, CaseIterable {
+public enum Plugin: Equatable, CaseIterable, Sendable {
     case blaze
     case jetpack
     case googleListingsAndAds

@@ -118,6 +118,29 @@ struct QRLoginPostExchangeServiceTests {
 
     // MARK: - Failure paths
 
+    @Test func test_complete_when_site_returns_non_json_then_shows_store_response_error_and_requires_new_scan() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let appPasswordUseCase = MockApplicationPasswordUseCase()
+        stubFetchSiteInfo(stores: stores, result: .failure(UnexpectedStoreResponseError()))
+        let service = makeService(stores: stores,
+                                  roleEligibility: StubRoleEligibilityUseCase(result: .success(())),
+                                  appPasswordUseCase: appPasswordUseCase)
+
+        // When
+        let result = try await complete(service, response: response)
+
+        // Then
+        guard case .failure(let error) = result else {
+            Issue.record("Expected store response error")
+            return
+        }
+        #expect(error.kind == .unexpectedStoreResponse)
+        #expect(error.phase == .postExchange)
+        #expect(error.primaryAction == .scanAgain)
+        #expect(appPasswordUseCase.deletePasswordCallCount == 1)
+    }
+
     @Test func complete_when_fetchSiteInfo_fails_then_revokes_ap_and_returns_siteAuthFailure() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())

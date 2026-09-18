@@ -72,6 +72,16 @@ struct QRLoginErrorMapperTests {
         #expect(mapped.kind == .unexpected)
     }
 
+    @Test func scan_non_json_store_response_maps_to_descriptive_retry() {
+        let mapped = QRLoginErrorMapper.userFacingError(
+            forScan: .unexpectedStoreResponse,
+            protocol_: .selfHosted
+        )
+
+        #expect(mapped.kind == .unexpectedStoreResponse)
+        #expect(mapped.primaryAction == .retryFailedPhase)
+    }
+
     // MARK: - /session-status (terminal HTTP errors)
 
     @Test func poll_404_self_hosted_terminal_maps_to_storeUnsupported() {

@@ -1,3 +1,4 @@
+import SwiftUI
 import UIKit
 import Yosemite
 import protocol Networking.ApplicationPasswordUseCase
@@ -115,11 +116,13 @@ private extension PostSiteCredentialLoginChecker {
                     showAlert(message: Localization.unauthorizedForAppPassword, siteURL: siteURL, in: navigationController)
                 default:
                     DDLogError("⛔️ Error generating application password: \(error)")
+                    let isUnexpectedStoreResponse = error is UnexpectedStoreResponseError
                     showAlert(
                         message: Localization.applicationPasswordError,
                         siteURL: siteURL,
                         in: navigationController,
-                        onRetry: { [weak self] in
+                        showsUnexpectedStoreResponse: isUnexpectedStoreResponse,
+                        onRetry: isUnexpectedStoreResponse ? nil : { [weak self] in
                             self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
                         }
                     )
@@ -145,13 +148,19 @@ private extension PostSiteCredentialLoginChecker {
                                              in: navigationController,
                                              onSuccess: onSuccess)
                 } else {
-                    // show generic error
                     DDLogError("⛔️ Error checking role eligibility: \(error)")
+                    let isUnexpectedStoreResponse: Bool
+                    if case .unknown(let underlyingError) = error, underlyingError is UnexpectedStoreResponseError {
+                        isUnexpectedStoreResponse = true
+                    } else {
+                        isUnexpectedStoreResponse = false
+                    }
                     self?.showAlert(
                         message: Localization.roleEligibilityCheckError,
                         siteURL: siteURL,
                         in: navigationController,
-                        onRetry: { [weak self] in
+                        showsUnexpectedStoreResponse: isUnexpectedStoreResponse,
+                        onRetry: isUnexpectedStoreResponse ? nil : { [weak self] in
                             self?.checkRoleEligibility(for: siteURL, in: navigationController, onSuccess: onSuccess)
                         }
                     )
@@ -193,24 +202,34 @@ private extension PostSiteCredentialLoginChecker {
             case .failure(let error):
                 self?.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: error))
                 DDLogError("⛔️ Error checking Woo: \(error)")
-                // show generic error
-                self?.showAlert(message: Localization.wooCheckError, siteURL: siteURL, in: navigationController, onRetry: {
-                    self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
-                })
+                let isUnexpectedStoreResponse = error is UnexpectedStoreResponseError
+                self?.showAlert(
+                    message: Localization.wooCheckError,
+                    siteURL: siteURL,
+                    in: navigationController,
+                    showsUnexpectedStoreResponse: isUnexpectedStoreResponse,
+                    onRetry: isUnexpectedStoreResponse ? nil : { [weak self] in
+                        self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
+                    }
+                )
             }
         }
         stores.dispatch(action)
     }
 
-    /// Shows an error alert with a button to restart login and an optional button to retry the failed action.
+    /// Shows a login recovery alert.
     ///
     func showAlert(message: String,
                    siteURL: String,
                    in navigationController: UINavigationController,
+                   showsUnexpectedStoreResponse: Bool = false,
                    onRetry: (() -> Void)? = nil) {
-        let alert = UIAlertController(title: message,
-                                      message: nil,
-                                      preferredStyle: .alert)
+        guard !showsUnexpectedStoreResponse else {
+            presentUnexpectedStoreResponseModal(for: siteURL, in: navigationController)
+            return
+        }
+
+        let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
         if let onRetry {
             let retryAction = UIAlertAction(title: Localization.retryButton, style: .default) { [weak alert] _ in
                 guard let alert, alert.presentingViewController != nil else {
@@ -219,10 +238,15 @@ private extension PostSiteCredentialLoginChecker {
                 alert.dismiss(animated: true, completion: onRetry)
             }
             alert.addAction(retryAction)
-        } else {
+        }
+        if onRetry == nil {
             let supportAction = UIAlertAction(title: Localization.contactSupport, style: .default) { _ in
                 navigationController.popViewController(animated: true)
-                ServiceLocator.authenticationManager.presentSupport(from: navigationController, sourceTag: .loginSiteAddress, siteURL: URL(string: siteURL))
+                ServiceLocator.authenticationManager.presentSupport(
+                    from: navigationController,
+                    sourceTag: .loginSiteAddress,
+                    siteURL: URL(string: siteURL)
+                )
             }
             alert.addAction(supportAction)
         }
@@ -232,6 +256,36 @@ private extension PostSiteCredentialLoginChecker {
         }
         alert.addAction(restartAction)
         navigationController.present(alert, animated: true)
+    }
+
+    func presentUnexpectedStoreResponseModal(for siteURL: String, in navigationController: UINavigationController) {
+        let modal = UIHostingController(rootView: StoreConnectionErrorModal(
+            title: UnexpectedStoreResponseLocalization.title,
+            message: UnexpectedStoreResponseLocalization.message,
+            contactSupportTitle: UnexpectedStoreResponseLocalization.contactSupport,
+            dismissTitle: UnexpectedStoreResponseLocalization.dismiss,
+            onContactSupport: { [weak navigationController] in
+                navigationController?.dismiss(animated: true) {
+                    guard let navigationController else { return }
+                    navigationController.popViewController(animated: true)
+                    ServiceLocator.authenticationManager.presentSupport(
+                        from: navigationController,
+                        sourceTag: .loginSiteAddress,
+                        siteURL: URL(string: siteURL)
+                    )
+                }
+            },
+            onDismiss: { [weak self, weak navigationController] in
+                navigationController?.dismiss(animated: true) {
+                    self?.stores.deauthenticate()
+                    navigationController?.popToRootViewController(animated: true)
+                }
+            }
+        ))
+        modal.view.backgroundColor = .clear
+        modal.modalPresentationStyle = .overFullScreen
+        modal.modalTransitionStyle = .crossDissolve
+        navigationController.present(modal, animated: true)
     }
 
     /// The error screen to be displayed when the user tries to log in with site credentials

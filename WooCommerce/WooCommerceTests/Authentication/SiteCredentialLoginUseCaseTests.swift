@@ -121,6 +121,31 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         )
     }
 
+    func test_handleLogin_when_nonce_has_wordpress_html_content_type_then_nonce_request_succeeds() async {
+        // Given
+        let siteURL = "https://test.com"
+        let nonceURL = siteURL + SiteCredentialLoginUseCase.Constants.adminPath + SiteCredentialLoginUseCase.Constants.wporgNoncePath
+        let session = MockURLSession()
+        let loginSession = MockURLSession()
+        session.simulateResponse(for: siteURL + SiteCredentialLoginUseCase.Constants.loginPath)
+        loginSession.simulateResponse(
+            for: siteURL + SiteCredentialLoginUseCase.Constants.loginPath,
+            statusCode: 302,
+            headerFields: ["Location": nonceURL]
+        )
+        session.simulateResponse(
+            for: nonceURL,
+            data: Data("validnonce".utf8),
+            headerFields: ["Content-Type": "text/html; charset=UTF-8"]
+        )
+
+        // When
+        let result = await performLogin(siteURL: siteURL, session: session, loginSession: loginSession)
+
+        // Then
+        XCTAssertNoThrow(try result.get())
+    }
+
     func test_handleLogin_when_loginRedirectLocation_is_relative_then_resolves_and_sets_userAgent_headers() async throws {
         // Given
         let siteURL = "https://test.com"
@@ -1017,7 +1042,7 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         XCTAssertEqual(loginSession.receivedRequests.compactMap(\.url?.absoluteString), [loginURL])
     }
 
-    func test_handleLogin_when_manualNonceRequest_returns_notFound_then_returns_inaccessibleAdminPage() async {
+    func test_handleLogin_when_manualNonceRequest_returns_html_notFound_then_returns_inaccessibleAdminPage() async {
         // Given
         let siteURL = "https://test.com"
         let session = MockURLSession()
@@ -1030,6 +1055,7 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         )
         session.simulateResponse(
             for: siteURL + SiteCredentialLoginUseCase.Constants.adminPath + SiteCredentialLoginUseCase.Constants.wporgNoncePath,
+            data: Data("<html><body>Not found</body></html>".utf8),
             statusCode: 404
         )
 
@@ -1040,7 +1066,33 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         assertFailure(result, matches: .inaccessibleAdminPage)
     }
 
-    func test_handleLogin_when_manualNonceRequest_returns_rateLimited_then_returns_unacceptableStatusCode() async {
+    func test_handleLogin_when_manualNonceRequest_requires_basic_authentication_then_returns_basic_authentication_required() async {
+        // Given
+        let siteURL = "https://test.com"
+        let nonceURL = siteURL + SiteCredentialLoginUseCase.Constants.adminPath + SiteCredentialLoginUseCase.Constants.wporgNoncePath
+        let session = MockURLSession()
+        let loginSession = MockURLSession()
+        session.simulateResponse(for: siteURL + SiteCredentialLoginUseCase.Constants.loginPath)
+        loginSession.simulateResponse(
+            for: siteURL + SiteCredentialLoginUseCase.Constants.loginPath,
+            statusCode: 302,
+            headerFields: ["Location": nonceURL]
+        )
+        session.simulateResponse(
+            for: nonceURL,
+            data: Data("<html><body>Authorization required</body></html>".utf8),
+            statusCode: 401,
+            headerFields: ["WWW-Authenticate": "Basic realm=\"store\""]
+        )
+
+        // When
+        let result = await performLogin(siteURL: siteURL, session: session, loginSession: loginSession)
+
+        // Then
+        assertFailure(result, matches: .basicAuthenticationRequired)
+    }
+
+    func test_handleLogin_when_manualNonceRequest_returns_rateLimited_then_returns_safe_unexpected_store_response() async {
         // Given
         let siteURL = "https://test.com"
         let session = MockURLSession()
@@ -1060,7 +1112,72 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         let result = await performLogin(siteURL: siteURL, session: session, loginSession: loginSession)
 
         // Then
-        assertFailure(result, matches: .unacceptableStatusCode(code: 429))
+        assertFailure(result, matches: .unexpectedStoreResponse)
+    }
+
+    func test_handleLogin_when_manualNonceRequest_returns_html_500_then_returns_safe_unexpected_store_response() async {
+        // Given
+        let siteURL = "https://test.com"
+        let loginURL = siteURL + SiteCredentialLoginUseCase.Constants.loginPath
+        let nonceURL = siteURL + SiteCredentialLoginUseCase.Constants.adminPath + SiteCredentialLoginUseCase.Constants.wporgNoncePath
+        let session = MockURLSession()
+        let loginSession = MockURLSession()
+        session.simulateResponse(for: loginURL, data: Data(loginForm().utf8))
+        loginSession.simulateResponse(for: loginURL, statusCode: 302, headerFields: ["Location": nonceURL])
+        session.simulateResponse(
+            for: nonceURL,
+            data: Data("<html><body>Service unavailable</body></html>".utf8),
+            statusCode: 500
+        )
+        // When
+        let result = await performLogin(siteURL: siteURL, session: session, loginSession: loginSession)
+
+        // Then
+        assertFailure(result, matches: .unexpectedStoreResponse)
+    }
+
+    func test_handleLogin_when_manualNonceRequest_returns_generic_html_200_then_returns_safe_unexpected_store_response() async {
+        // Given
+        let siteURL = "https://test.com"
+        let loginURL = siteURL + SiteCredentialLoginUseCase.Constants.loginPath
+        let nonceURL = siteURL + SiteCredentialLoginUseCase.Constants.adminPath + SiteCredentialLoginUseCase.Constants.wporgNoncePath
+        let session = MockURLSession()
+        let loginSession = MockURLSession()
+        session.simulateResponse(for: loginURL, data: Data(loginForm().utf8))
+        loginSession.simulateResponse(for: loginURL, statusCode: 302, headerFields: ["Location": nonceURL])
+        session.simulateResponse(
+            for: nonceURL,
+            data: Data("<html><body>Service unavailable</body></html>".utf8),
+            statusCode: 200
+        )
+        // When
+        let result = await performLogin(siteURL: siteURL, session: session, loginSession: loginSession)
+
+        // Then
+        assertFailure(result, matches: .unexpectedStoreResponse)
+    }
+
+    func test_handleLogin_when_manualNonceRequest_returns_plain_text_200_then_returns_safe_unexpected_store_response() async {
+        // Given
+        let siteURL = "https://test.com"
+        let loginURL = siteURL + SiteCredentialLoginUseCase.Constants.loginPath
+        let nonceURL = siteURL + SiteCredentialLoginUseCase.Constants.adminPath + SiteCredentialLoginUseCase.Constants.wporgNoncePath
+        let session = MockURLSession()
+        let loginSession = MockURLSession()
+        session.simulateResponse(for: loginURL, data: Data(loginForm().utf8))
+        loginSession.simulateResponse(for: loginURL, statusCode: 302, headerFields: ["Location": nonceURL])
+        session.simulateResponse(
+            for: nonceURL,
+            data: Data("Service unavailable".utf8),
+            statusCode: 200,
+            headerFields: ["Content-Type": "text/plain"]
+        )
+
+        // When
+        let result = await performLogin(siteURL: siteURL, session: session, loginSession: loginSession)
+
+        // Then
+        assertFailure(result, matches: .unexpectedStoreResponse)
     }
 }
 
@@ -1436,7 +1553,8 @@ private extension SiteCredentialLoginUseCaseTests {
              (.inaccessibleAdminPage, .inaccessibleAdminPage),
              (.inaccessibleLoginPage, .inaccessibleLoginPage),
              (.basicAuthenticationRequired, .basicAuthenticationRequired),
-             (.invalidCredentials, .invalidCredentials):
+             (.invalidCredentials, .invalidCredentials),
+             (.unexpectedStoreResponse, .unexpectedStoreResponse):
             break
         case let (.unacceptableStatusCode(actualCode), .unacceptableStatusCode(expectedCode)):
             XCTAssertEqual(actualCode, expectedCode, file: file, line: line)

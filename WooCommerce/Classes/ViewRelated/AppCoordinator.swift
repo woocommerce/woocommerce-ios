@@ -1,6 +1,7 @@
 import Combine
 import Experiments
 import SafariServices
+import SwiftUI
 import UIKit
 import WordPressAuthenticator
 import Yosemite
@@ -21,12 +22,18 @@ final class AppCoordinator {
     private let pushNotesManager: PushNotesManager
     private let featureFlagService: FeatureFlagService
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
+    private let storeConnectionErrorMonitor: StoreConnectionErrorMonitoring
+    private let applicationState: () -> UIApplication.State
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var significantChangeBlocker: SignificantChangeConsentBlockingHostingController?
     private var foregroundConsentRecheckObserver: NSObjectProtocol?
     private var authStatesSubscription: AnyCancellable?
     private var localNotificationResponsesSubscription: AnyCancellable?
+    private var storeConnectionIssueSubscription: AnyCancellable?
+    private var storeConnectionIssueForegroundSubscription: AnyCancellable?
+    private var pendingStoreConnectionIssueSiteID: Int64?
+    private weak var storeConnectionAlert: UIViewController?
     private var isLoggedIn: Bool = false
     private let themeInstaller: ThemeInstaller
 
@@ -47,6 +54,8 @@ final class AppCoordinator {
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
+         storeConnectionErrorMonitor: StoreConnectionErrorMonitoring = StoreConnectionErrorMonitor.shared,
+         applicationState: @escaping () -> UIApplication.State = { UIApplication.shared.applicationState },
          themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
         self.window = window
         self.tabBarController = {
@@ -65,6 +74,8 @@ final class AppCoordinator {
         self.pushNotesManager = pushNotesManager
         self.featureFlagService = featureFlagService
         self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: stores, storageManager: storageManager)
+        self.storeConnectionErrorMonitor = storeConnectionErrorMonitor
+        self.applicationState = applicationState
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         self.themeInstaller = themeInstaller
 
@@ -88,6 +99,12 @@ final class AppCoordinator {
         authStatesSubscription = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
             .sink {  [weak self] isLoggedIn, needsDefaultStore in
                 guard let self else { return }
+                self.isLoggedIn = isLoggedIn
+                if !isLoggedIn || needsDefaultStore {
+                    self.pendingStoreConnectionIssueSiteID = nil
+                    self.storeConnectionAlert?.dismiss(animated: false)
+                    self.storeConnectionAlert = nil
+                }
 
                 // More details about the UI states: https://github.com/woocommerce/woocommerce-ios/pull/3498
                 switch (isLoggedIn, needsDefaultStore) {
@@ -113,13 +130,106 @@ final class AppCoordinator {
                         self.synchronizeAndShowWhatsNew()
                     }
                 }
-                self.isLoggedIn = isLoggedIn
             }
 
         localNotificationResponsesSubscription = pushNotesManager.localNotificationUserResponses.sink { [weak self] response in
             self?.handleLocalNotificationResponse(response)
         }
+        storeConnectionIssueSubscription = storeConnectionErrorMonitor.unexpectedStoreResponsePublisher
+            .sink { [weak self] siteID in
+                guard let self else { return }
+                guard let siteID else {
+                    // A later success cleared the issue. Drop any pending alert for the recovered store.
+                    self.pendingStoreConnectionIssueSiteID = nil
+                    return
+                }
+                guard siteID == self.stores.sessionManager.defaultStoreID else { return }
+                self.pendingStoreConnectionIssueSiteID = siteID
+                self.presentStoreConnectionIssueIfNeeded()
+            }
+        storeConnectionIssueForegroundSubscription = NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)
+            .sink { [weak self] _ in
+                self?.presentStoreConnectionIssueIfNeeded()
+            }
         updateSitePropertiesIfNeeded()
+    }
+}
+
+private extension AppCoordinator {
+    func presentStoreConnectionIssueIfNeeded() {
+        guard let siteID = pendingStoreConnectionIssueSiteID else {
+            return
+        }
+        guard isLoggedIn,
+              stores.sessionManager.defaultStoreID == siteID else {
+            pendingStoreConnectionIssueSiteID = nil
+            return
+        }
+        guard applicationState() == .active,
+              window.rootViewController === tabBarController,
+              let presenter = window.topmostPresentedViewController else {
+            return
+        }
+        guard storeConnectionAlert?.presentingViewController == nil else {
+            pendingStoreConnectionIssueSiteID = nil
+            return
+        }
+
+        // Wait for an existing modal transition before adding the recovery alert.
+        if let transition = presenter.transitionCoordinator {
+            transition.animate(alongsideTransition: nil) { [weak self] _ in
+                DispatchQueue.main.async {
+                    self?.presentStoreConnectionIssueIfNeeded()
+                }
+            }
+            return
+        }
+        pendingStoreConnectionIssueSiteID = nil
+
+        let alert = UIHostingController(rootView: StoreConnectionErrorModal(
+            title: UnexpectedStoreResponseLocalization.title,
+            message: UnexpectedStoreResponseLocalization.message,
+            contactSupportTitle: UnexpectedStoreResponseLocalization.contactSupport,
+            dismissTitle: UnexpectedStoreResponseLocalization.dismiss,
+            onContactSupport: { [weak self, weak presenter] in
+                self?.showSupport(
+                    from: presenter,
+                    dismissing: presenter?.presentedViewController
+                )
+            },
+            onDismiss: { [weak presenter] in
+                presenter?.presentedViewController?.dismiss(animated: true)
+            }
+        ))
+        alert.view.backgroundColor = .clear
+        alert.modalPresentationStyle = .overFullScreen
+        alert.modalTransitionStyle = .crossDissolve
+        storeConnectionAlert = alert
+        presenter.present(alert, animated: true)
+    }
+
+    func showSupport(from presenter: UIViewController?, dismissing alert: UIViewController?) {
+        performAfterDismissingAlert(alert) { [weak presenter] in
+            guard let presenter else {
+                return
+            }
+            DispatchQueue.main.async {
+                let supportForm = SupportFormHostingController(
+                    viewModel: .init(sourceTag: StoreConnectionErrorSupport.sourceTag,
+                                     mobileStatusReportProvider: MobileStatusReportProvider())
+                )
+                supportForm.show(from: presenter)
+            }
+        }
+    }
+
+    private func performAfterDismissingAlert(_ alert: UIViewController?, action: @escaping () -> Void) {
+        guard let alert, alert.presentingViewController != nil else {
+            DispatchQueue.main.async(execute: action)
+            return
+        }
+
+        alert.dismiss(animated: true, completion: action)
     }
 }
 
@@ -326,6 +436,7 @@ private extension AppCoordinator {
     ///
     func displayLoggedInUI() {
         setWindowRootViewControllerAndAnimateIfNeeded(tabBarController)
+        presentStoreConnectionIssueIfNeeded()
     }
 
     /// If the app is authenticated but there is no default store ID on launch,

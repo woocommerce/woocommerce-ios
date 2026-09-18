@@ -18,7 +18,7 @@ struct ApplicationPasswordTutorialViewModel {
             return message
         case .invalidLoginResponse, .genericFailure:
             return genericMessage
-        case .inaccessibleLoginPage, .inaccessibleAdminPage, .unacceptableStatusCode:
+        case .inaccessibleLoginPage, .inaccessibleAdminPage, .unacceptableStatusCode, .unexpectedStoreResponse:
             return NSLocalizedString("This could be because your store has some extra security steps in place.",
                                      comment: "Reason for why the user could not login tin the application password tutorial screen")
         case .invalidCredentials, .basicAuthenticationRequired:

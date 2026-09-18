@@ -399,6 +399,31 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fixedNotice?.message, NSLocalizedString("Sorry, this coupon is not applicable to selected products.", comment: ""))
     }
 
+    func test_view_model_fires_store_connection_notice_when_order_sync_fails_with_an_unexpected_store_response() {
+        // Given
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+
+        // When
+        waitForExpectation { expectation in
+            self.stores.whenReceivingAction(ofType: OrderAction.self) { action in
+                switch action {
+                case let .createOrder(_, _, _, onCompletion):
+                    onCompletion(.failure(UnexpectedStoreResponseError()))
+                    expectation.fulfill()
+                default:
+                    XCTFail("Received unsupported action: \(action)")
+                }
+            }
+
+            viewModel.shippingLineViewModel.saveShippingLine(.fake())
+        }
+
+        // Then
+        XCTAssertEqual(viewModel.fixedNotice?.title, "Your store returned an unexpected server response.")
+        XCTAssertEqual(viewModel.fixedNotice?.message, "Check your store’s error logs, then try again.")
+        XCTAssertNotEqual(viewModel.fixedNotice?.title, "Unable to load taxes for order")
+    }
+
     func test_view_model_clears_error_notice_when_order_is_syncing() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)

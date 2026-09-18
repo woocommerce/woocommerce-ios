@@ -1,0 +1,37 @@
+# p2: dashboard.stats
+# Verifies the live dashboard renders stats and changes time range.
+appId: ${APP_ID}
+name: "Dashboard - Stats and chart"
+tags:
+  - smoke_core
+  - dashboard
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_dashboard.yaml
+- assertVisible:
+    id: "performance-time-range-menu"
+- assertVisible:
+    id: "performance-revenue-type-picker"
+
+- tapOn:
+    id: "performance-time-range-menu"
+- extendedWaitUntil:
+    visible:
+      id: "time-range-this-year"
+    timeout: 10000
+- tapOn:
+    id: "time-range-this-year"
+- extendedWaitUntil:
+    visible:
+      id: "revenue-value"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: "store-stats-chart"
+    direction: DOWN
+    timeout: 20000
+- assertVisible:
+    id: "store-stats-chart"
+- takeScreenshot: dashboard_stats

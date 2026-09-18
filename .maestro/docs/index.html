@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>WooCommerce iOS Maestro operations</title>
+<style>body{font:16px system-ui;line-height:1.5;margin:2rem auto;max-width:900px;padding:0 1rem}code,pre{background:#f4f4f5}pre{padding:1rem;overflow:auto}th,td{border:1px solid #bbb;padding:.4rem;text-align:left}table{border-collapse:collapse}</style>
+<h1>WooCommerce iOS Maestro operations</h1>
+<p>This repository-owned suite is a live-store release signal. XCUITest and WireMock remain the deterministic acceptance layer.</p>
+<h2>Quick start</h2>
+<pre><code>cp .maestro/env.example .maestro/.env.local
+.maestro/scripts/lint-env.py
+.maestro/scripts/doctor.sh --app /path/to/WooCommerce.app --profile core
+.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile core</code></pre>
+<h2>Profiles</h2><table><tr><th>Name</th><th>Purpose</th></tr><tr><td>core</td><td>Stable phone release signal</td></tr><tr><td>phone-full</td><td>Core, extended, and destructive phone coverage</td></tr><tr><td>release</td><td>Promoted non-quarantined release set</td></tr><tr><td>burst</td><td>Three release repetitions</td></tr><tr><td>pos-ipad</td><td>Real-eligibility iPad POS</td></tr><tr><td>ios-system</td><td>Quarantined iOS system surfaces</td></tr></table>
+<h2>Evidence</h2><p>Runs produce JUnit XML, self-contained HTML, screenshots, diagnostics, redacted logs, and a summary. Inspect the failed attempt's log, hierarchy, screenshot, and app state before changing a selector or assertion.</p>
+<h2>Security</h2><p>Credentials live only in a local ignored file or protected CI environment variables. Consumer keys are optional and are validated only for an explicit seed request.</p>
+</html>

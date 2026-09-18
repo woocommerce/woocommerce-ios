@@ -1,0 +1,52 @@
+appId: ${APP_ID}
+---
+- repeat:
+    times: 6
+    commands:
+      - swipe: { start: "50%,25%", end: "50%,80%", duration: 300 }
+- scrollUntilVisible:
+    element: "${CARD_TITLE}"
+    direction: DOWN
+    timeout: 15000
+    optional: true
+- runFlow:
+    when:
+      visible:
+        id: "selectable-item-selected-${CARD_TITLE}"
+    commands:
+      - evalScript: |
+          output['dashboardCardState_' + String(CARD_KEY)] = 'selected';
+      - runFlow:
+          file: set_dashboard_card_selection.yaml
+          env:
+            CARD_TITLE: ${CARD_TITLE}
+            DESIRED_STATE: unselected
+- runFlow:
+    when:
+      visible:
+        id: "selectable-item-unselected-${CARD_TITLE}"
+    commands:
+      - evalScript: |
+          output['dashboardCardState_' + String(CARD_KEY)] = 'unselected';
+      - runFlow:
+          file: set_dashboard_card_selection.yaml
+          env:
+            CARD_TITLE: ${CARD_TITLE}
+            DESIRED_STATE: selected
+- runFlow:
+    when:
+      visible:
+        text: "Unavailable"
+        rightOf:
+          text: "${CARD_TITLE}"
+    commands:
+      - evalScript: |
+          output['dashboardCardState_' + String(CARD_KEY)] = 'unavailable';
+          console.log('DASHBOARD_CARD_UNAVAILABLE ' + String(CARD_TITLE));
+- runFlow:
+    when:
+      notVisible: "${CARD_TITLE}"
+    commands:
+      - evalScript: |
+          output['dashboardCardState_' + String(CARD_KEY)] = 'hidden';
+          console.log('DASHBOARD_CARD_HIDDEN ' + String(CARD_TITLE));

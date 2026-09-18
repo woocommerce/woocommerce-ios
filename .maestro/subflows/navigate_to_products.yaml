@@ -1,0 +1,34 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: "tab-bar-products-item"
+- runFlow:
+    when:
+      visible: "Date: Newest to Oldest"
+    commands:
+      - swipe:
+          start: "50%,75%"
+          end: "50%,95%"
+          duration: 500
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 30000
+# Reset any product filter a previous flow may have left active (the suite shares a
+# session, so e.g. the Variable filter set by products_variations_and_tags persists).
+# This keeps the products list deterministic for every flow that enters through here.
+- tapOn:
+    id: "product-filter-button"
+- extendedWaitUntil:
+    visible: "Show Products"
+    timeout: 15000
+- runFlow:
+    when:
+      visible: "Clear all"
+    commands:
+      - tapOn: "Clear all"
+- tapOn: "Show Products"
+- extendedWaitUntil:
+    visible:
+      id: "products-table-view"
+    timeout: 30000

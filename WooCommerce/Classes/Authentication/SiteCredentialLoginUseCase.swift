@@ -263,7 +263,7 @@ private extension SiteCredentialLoginUseCase {
         )
         onResponseStageChanged(.credentials)
         let loginResponse = try await load(loginRequest, using: loginSession)
-        try validate(loginResponse.http, stage: .credentials)
+        try validate(loginResponse, stage: .credentials)
 
         if CookieNonceAuthenticationRules.isRedirect(statusCode: loginResponse.http.statusCode) {
             guard let location = loginResponse.http.value(forHTTPHeaderField: "Location"),
@@ -304,7 +304,7 @@ private extension SiteCredentialLoginUseCase {
         var redirectCount = 0
         while true {
             let response = try await load(getRequest(url: requestURL), using: session)
-            try validate(response.http, stage: stage)
+            try validate(response, stage: stage)
             guard CookieNonceAuthenticationRules.isRedirect(statusCode: response.http.statusCode) else {
                 let html = try decodedHTML(from: response.data)
                 return (response.http.url ?? requestURL, html)
@@ -345,24 +345,9 @@ private extension SiteCredentialLoginUseCase {
            CookieNonceAuthenticationRules.validatedNonce(from: response.data) != nil {
             return
         }
-        let existingFailure = CookieNonceAuthenticationRules.failure(
-            statusCode: response.http.statusCode,
-            authenticateHeader: response.http.value(forHTTPHeaderField: "WWW-Authenticate"),
-            locationHeader: response.http.value(forHTTPHeaderField: "Location"),
-            stage: .nonce
-        )
-        if case .basicAuthenticationRequired? = existingFailure {
-            throw SiteCredentialLoginError(.basicAuthenticationRequired)
-        }
-        if [404, 410].contains(response.http.statusCode) ||
-            CookieNonceAuthenticationRules.isRedirect(statusCode: response.http.statusCode) {
-            try validate(response.http, stage: .nonce)
-        }
+        try validate(response, stage: .nonce)
         if let error = unexpectedStoreResponseError(for: response) {
             throw error
-        }
-        if let existingFailure {
-            throw SiteCredentialLoginError(existingFailure)
         }
         throw SiteCredentialLoginError.invalidLoginResponse
     }
@@ -389,13 +374,21 @@ private extension SiteCredentialLoginUseCase {
         return (data, response)
     }
 
-    func validate(_ response: HTTPURLResponse, stage: CookieNonceAuthenticationResponseStage) throws {
+    func validate(
+        _ response: (data: Data, http: HTTPURLResponse),
+        stage: CookieNonceAuthenticationResponseStage
+    ) throws {
         if let failure = CookieNonceAuthenticationRules.failure(
-            statusCode: response.statusCode,
-            authenticateHeader: response.value(forHTTPHeaderField: "WWW-Authenticate"),
-            locationHeader: response.value(forHTTPHeaderField: "Location"),
+            statusCode: response.http.statusCode,
+            authenticateHeader: response.http.value(forHTTPHeaderField: "WWW-Authenticate"),
+            locationHeader: response.http.value(forHTTPHeaderField: "Location"),
             stage: stage
         ) {
+            if stage == .nonce,
+               case .unacceptableStatusCode = failure,
+               let error = unexpectedStoreResponseError(for: response) {
+                throw error
+            }
             throw SiteCredentialLoginError(failure)
         }
     }

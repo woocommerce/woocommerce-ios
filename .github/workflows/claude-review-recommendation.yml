@@ -21,7 +21,7 @@ jobs:
       - uses: anthropics/claude-code-action@a92e7c70a4da9793dc164451d829089dc057a464 # v1.0.159
         id: claude
         with:
-          anthropic_api_key: ${{ secrets.AI_CODE_REVIEW_ANTHROPIC_API_KEY }}
+          anthropic_api_key: ${{ secrets.WOO_MOBILE_CI }}
           github_token: ${{ github.token }}
           prompt: |
             Pull request: #${{ github.event.pull_request.number }} in ${{ github.repository }}

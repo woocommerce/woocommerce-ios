@@ -78,6 +78,36 @@ struct SelfHostedQRLoginRemoteTests {
         await expectScanError(statusCode: 426, body: Data(), expected: .upgradeRequired)
     }
 
+    @Test func scan_when_html_404_then_throws_notFound() async {
+        // Given
+        let url = makeURL(path: "/qr-login-scan")
+        let session = MockURLSession()
+        session.simulateResponse(for: url.absoluteString,
+                                 data: Data("<html><body>Not Found</body></html>".utf8),
+                                 statusCode: 404)
+        let remote = makeRemote(session: session)
+
+        // When / Then
+        await #expect(throws: QRLoginNetworkError.notFound) {
+            _ = try await remote.scan(siteURL: siteURL, token: token, device: device)
+        }
+    }
+
+    @Test func scan_when_html_426_then_throws_upgradeRequired() async {
+        // Given
+        let url = makeURL(path: "/qr-login-scan")
+        let session = MockURLSession()
+        session.simulateResponse(for: url.absoluteString,
+                                 data: Data("<html><body>Upgrade Required</body></html>".utf8),
+                                 statusCode: 426)
+        let remote = makeRemote(session: session)
+
+        // When / Then
+        await #expect(throws: QRLoginNetworkError.upgradeRequired) {
+            _ = try await remote.scan(siteURL: siteURL, token: token, device: device)
+        }
+    }
+
     @Test func scan_when_409_then_throws_conflict() async {
         await expectScanError(statusCode: 409, body: Data(), expected: .conflict)
     }

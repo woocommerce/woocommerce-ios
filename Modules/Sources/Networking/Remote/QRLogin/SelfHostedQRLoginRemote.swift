@@ -173,6 +173,12 @@ private extension SelfHostedQRLoginRemote {
             guard let http = response as? HTTPURLResponse else {
                 throw QRLoginNetworkError.malformed
             }
+            if http.statusCode == 404 {
+                throw QRLoginNetworkError.notFound
+            }
+            if http.statusCode == 426 {
+                throw QRLoginNetworkError.upgradeRequired
+            }
             try throwIfUnexpectedStoreResponse(data: data, response: http)
             return (data, http.statusCode)
         } catch let error as QRLoginNetworkError {

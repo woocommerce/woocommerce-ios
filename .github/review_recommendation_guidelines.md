@@ -10,7 +10,7 @@ Request a review when the change involves:
 - critical merchant flows, including payments, refunds, and orders;
 - security, privacy, authentication, or sensitive data;
 - migrations or changes with data-loss potential;
-- significant cross-platform, API, or cross-team impact;
+- significant cross-platform, API impact;
 - large changes or changes with a wide blast radius;
 - difficult testing, rollback, or recovery;
 

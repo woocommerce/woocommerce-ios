@@ -61,6 +61,10 @@ public final class WordPressOrgNetwork: Network {
             .responseData { response in
                 do {
                     try Self.validateResponse(response.data)
+                    if let error = Self.unexpectedStoreResponseError(for: response) {
+                        completion(nil, error)
+                        return
+                    }
                     completion(response.value, response.networkingError)
                 } catch {
                     completion(nil, error)
@@ -84,6 +88,10 @@ public final class WordPressOrgNetwork: Network {
             .responseData { response in
                 do {
                     try Self.validateResponse(response.data)
+                    if let error = Self.unexpectedStoreResponseError(for: response) {
+                        completion(.failure(error))
+                        return
+                    }
                     completion(response.result.mapError { $0 })
                 } catch {
                     completion(.failure(error))
@@ -98,6 +106,9 @@ public final class WordPressOrgNetwork: Network {
         let response = await sessionRequest.serializingData().response
         do {
             try Self.validateResponse(response.data)
+            if let error = Self.unexpectedStoreResponseError(for: response) {
+                throw error
+            }
             switch response.result {
                 case .success(let data):
                     return (data, response.response?.headers.dictionary)
@@ -124,6 +135,10 @@ public final class WordPressOrgNetwork: Network {
             self.alamofireSession.request(request).validate().responseData { response in
                 do {
                     try Self.validateResponse(response.data)
+                    if let error = Self.unexpectedStoreResponseError(for: response) {
+                        promise(Swift.Result.success(.failure(error)))
+                        return
+                    }
                     let result: Result<Data, Error> = response.result.mapError { $0 }
                     promise(Swift.Result.success(result))
                 } catch {
@@ -142,6 +157,10 @@ public final class WordPressOrgNetwork: Network {
             .responseData() { response in
                 do {
                     try Self.validateResponse(response.data)
+                    if let error = Self.unexpectedStoreResponseError(for: response) {
+                        completion(nil, error)
+                        return
+                    }
                     completion(response.value, response.error)
                 } catch {
                     completion(nil, error)
@@ -178,6 +197,24 @@ private extension WordPressOrgNetwork {
            error.code == "rest_cookie_invalid_nonce" {
             throw NetworkError.invalidCookieNonce
         }
+    }
+
+    static func unexpectedStoreResponseError(for response: DataResponse<Data, AFError>) -> UnexpectedStoreResponseError? {
+        if let error = response.error, error.isResponseValidationError == false {
+            // A response body may arrive before a connection failure or cancellation. Preserve that
+            // transport failure instead of treating its partial body as a server response.
+            guard case .responseSerializationFailed = error else {
+                return nil
+            }
+        }
+        guard let httpResponse = response.response else {
+            return nil
+        }
+        return UnexpectedStoreResponseClassifier.classify(
+            responseData: response.data ?? Data(),
+            statusCode: httpResponse.statusCode,
+            contentType: httpResponse.value(forHTTPHeaderField: "Content-Type")
+        )
     }
 }
 

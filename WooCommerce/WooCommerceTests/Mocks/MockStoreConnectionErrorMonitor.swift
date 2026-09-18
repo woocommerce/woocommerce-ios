@@ -9,6 +9,7 @@ import Yosemite
 ///
 final class MockStoreConnectionErrorMonitor: StoreConnectionErrorMonitoring {
     private let subject: CurrentValueSubject<Int64?, Never>
+    private let unexpectedStoreResponseSubject = PassthroughSubject<Int64, Never>()
 
     init(affectedSiteID: Int64? = nil) {
         self.subject = CurrentValueSubject(affectedSiteID)
@@ -20,6 +21,16 @@ final class MockStoreConnectionErrorMonitor: StoreConnectionErrorMonitoring {
 
     var affectedSiteIDPublisher: AnyPublisher<Int64?, Never> {
         subject.receive(on: DispatchQueue.main).eraseToAnyPublisher()
+    }
+
+    var unexpectedStoreResponsePublisher: AnyPublisher<Int64, Never> {
+        unexpectedStoreResponseSubject.receive(on: DispatchQueue.main).eraseToAnyPublisher()
+    }
+
+    /// Simulates the networking layer reporting an unexpected response.
+    ///
+    func simulateUnexpectedStoreResponse(siteID: Int64) {
+        unexpectedStoreResponseSubject.send(siteID)
     }
 
     /// Simulates the networking layer flagging or clearing a store.

@@ -52,6 +52,9 @@ enum QRLoginErrorMapper {
         case .network:
             return .init(kind: .network, phase: .scan, primaryAction: .retryFailedPhase)
 
+        case .unexpectedStoreResponse:
+            return .init(kind: .unexpected, phase: .scan, primaryAction: .retryFailedPhase)
+
         case .badRequest, .clientError, .preconditionFailed, .internalServerError, .serverError, .malformed:
             return .init(kind: .unexpected, phase: .scan, primaryAction: .retryFailedPhase)
         }
@@ -80,6 +83,9 @@ enum QRLoginErrorMapper {
             // compromised, require a fresh scan.
             return .init(kind: .codeExpired, phase: .poll, primaryAction: .scanAgain)
 
+        case .unexpectedStoreResponse:
+            return .init(kind: .unexpected, phase: .poll, primaryAction: .retryFailedPhase)
+
         case .network, .badRequest, .clientError, .preconditionFailed,
              .internalServerError, .serverError, .malformed, .upgradeRequired, .conflict:
             return nil // transient — handled by the polling loop's 4-strike budget
@@ -92,6 +98,8 @@ enum QRLoginErrorMapper {
         switch error {
         case .network:
             return .init(kind: .network, phase: .poll, primaryAction: .retryFailedPhase)
+        case .unexpectedStoreResponse:
+            return .init(kind: .unexpected, phase: .poll, primaryAction: .retryFailedPhase)
         default:
             return .init(kind: .unexpected, phase: .poll, primaryAction: .retryFailedPhase)
         }
@@ -150,6 +158,9 @@ enum QRLoginErrorMapper {
 
         case .network:
             return .init(kind: .network, phase: .exchange, primaryAction: .retryFailedPhase)
+
+        case .unexpectedStoreResponse:
+            return .init(kind: .unexpected, phase: .exchange, primaryAction: .retryFailedPhase)
 
         case .badRequest, .clientError, .conflict, .upgradeRequired, .serverError, .malformed:
             return .init(kind: .unexpected, phase: .exchange, primaryAction: .retryFailedPhase)

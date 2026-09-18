@@ -7,6 +7,9 @@ import Foundation
 /// type is intentionally protocol-agnostic so the same value works for both
 /// self-hosted and wp.com responses.
 public enum QRLoginNetworkError: Error, Equatable {
+    /// Store returned a non-JSON response.
+    case unexpectedStoreResponse
+
     /// HTTP 401 or 403 with no special body code.
     case unauthorized
     /// HTTP 404 — the merchant's WC plugin doesn't expose QR-login endpoints

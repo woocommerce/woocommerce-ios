@@ -12,14 +12,21 @@ public protocol StoreConnectionErrorMonitoring {
     /// current value.
     ///
     var affectedSiteIDPublisher: AnyPublisher<Int64?, Never> { get }
+
+    /// Emits the latest safe unexpected-response event, then future events, on the main queue.
+    /// This is independent of the invalid-signature state used by existing consumers.
+    var unexpectedStoreResponsePublisher: AnyPublisher<Int64, Never> { get }
 }
 
 /// Write-only counterpart used by the networking layer to report the outcome of a request.
 ///
-protocol StoreConnectionErrorRecording {
+protocol StoreConnectionErrorRecording: Sendable {
     /// Records that a request for the given store was rejected with `rest_invalid_signature`.
     ///
     func recordInvalidSignature(siteID: Int64)
+
+    /// Records an unexpected non-JSON merchant response for the given store.
+    func recordUnexpectedStoreResponse(siteID: Int64)
 
     /// Records that a request for the given store succeeded, clearing any error recorded for it.
     ///
@@ -37,7 +44,7 @@ protocol StoreConnectionErrorRecording {
 /// once the merchant fixes their site. Not persisted: a relaunch starts clean and re-detects if the store
 /// is still unreachable.
 ///
-public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, StoreConnectionErrorRecording {
+public final class StoreConnectionErrorMonitor: @unchecked Sendable, StoreConnectionErrorMonitoring, StoreConnectionErrorRecording {
     public static let shared = StoreConnectionErrorMonitor()
 
     /// The value itself, guarded by `lock` because the networking layer writes it from whatever queue a
@@ -48,6 +55,7 @@ public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, 
     private var storedSiteID: Int64?
     private let lock = NSLock()
     private let subject = CurrentValueSubject<Int64?, Never>(nil)
+    private let unexpectedStoreResponseSubject = CurrentValueSubject<Int64?, Never>(nil)
 
     init() {}
 
@@ -61,8 +69,19 @@ public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, 
         subject.receive(on: DispatchQueue.main).eraseToAnyPublisher()
     }
 
+    public var unexpectedStoreResponsePublisher: AnyPublisher<Int64, Never> {
+        unexpectedStoreResponseSubject
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+
     func recordInvalidSignature(siteID: Int64) {
         updateAffectedSiteID(to: siteID) { $0 != siteID }
+    }
+
+    func recordUnexpectedStoreResponse(siteID: Int64) {
+        unexpectedStoreResponseSubject.send(siteID)
     }
 
     func recordSuccessfulConnection(siteID: Int64) {

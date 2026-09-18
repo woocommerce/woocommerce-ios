@@ -52,7 +52,7 @@ public final class WordPressSiteRemote: Remote {
         let url = try await resolvedSitePagesURL(for: siteURL)
         let request = try URLRequest(url: url, method: .get)
         let mapper = WordPressPageListMapper()
-        return try await enqueue(request, mapper: mapper)
+        return try await enqueue(UnauthenticatedRequest(request: request, isMerchantRESTRequest: true), mapper: mapper)
     }
 }
 
@@ -63,7 +63,7 @@ private extension WordPressSiteRemote {
         }
         let request = try URLRequest(url: url, method: .get)
         let mapper = WordPressSiteMapper()
-        return try await enqueue(request, mapper: mapper)
+        return try await enqueue(UnauthenticatedRequest(request: request, isMerchantRESTRequest: true), mapper: mapper)
     }
 
     /// Returns the URL for the pages endpoint, using the discovered REST API root when available.

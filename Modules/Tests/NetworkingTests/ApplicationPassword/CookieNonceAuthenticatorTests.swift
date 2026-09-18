@@ -530,7 +530,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         let data = try await network.responseData(for: request)
 
         // Then
-        XCTAssertEqual(String(data: data, encoding: .utf8), "success")
+        XCTAssertEqual(String(data: data, encoding: .utf8), #"{\"status\":\"success\"}"#)
         let trace = scenario.trace
         XCTAssertEqual(trace.protectedRequestCount, 2)
         XCTAssertEqual(trace.loginEntryRequestCount, 1)
@@ -568,8 +568,8 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         let secondData = try await secondNetwork.responseData(for: request)
 
         // Then
-        XCTAssertEqual(String(data: firstData, encoding: .utf8), "success")
-        XCTAssertEqual(String(data: secondData, encoding: .utf8), "success")
+        XCTAssertEqual(String(data: firstData, encoding: .utf8), #"{\"status\":\"success\"}"#)
+        XCTAssertEqual(String(data: secondData, encoding: .utf8), #"{\"status\":\"success\"}"#)
         let trace = scenario.trace
         XCTAssertEqual(trace.loginEntryRequestCount, 2)
         XCTAssertEqual(trace.credentialRequestCount, 1)
@@ -670,7 +670,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         let data = try await network.responseData(for: request)
 
         // Then
-        XCTAssertEqual(String(data: data, encoding: .utf8), "success")
+        XCTAssertEqual(String(data: data, encoding: .utf8), #"{\"status\":\"success\"}"#)
         let trace = scenario.trace
         XCTAssertEqual(trace.protectedRequestCount, 2)
         XCTAssertEqual(trace.loginEntryRequestCount, 1)
@@ -751,7 +751,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         // Then
         XCTAssertEqual(
             [responses.0, responses.1].compactMap { String(data: $0, encoding: .utf8) },
-            ["success", "success"]
+            [#"{\"status\":\"success\"}"#, #"{\"status\":\"success\"}"#]
         )
         let trace = scenario.trace
         XCTAssertEqual(trace.protectedRequestCount, 4)
@@ -1006,7 +1006,7 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
         credentialRedirectsToAdminBase: Bool = false,
         protectedMethod: String = "GET",
         protectedTarget: String = "/wp-json/protected",
-        successfulProtectedBody: Data = Data("success".utf8)
+        successfulProtectedBody: Data = Data(#"{\"status\":\"success\"}"#.utf8)
     ) {
         self.requiredInitialProtectedRequests = requiredInitialProtectedRequests
         self.preflightBasicCredential = preflightBasicCredential

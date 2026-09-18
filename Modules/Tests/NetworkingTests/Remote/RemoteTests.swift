@@ -1853,7 +1853,7 @@ private struct IsolationCapturingNetwork: Network {
     }
 }
 
-private final class MockStoreConnectionErrorRecorder: StoreConnectionErrorRecording {
+private final class MockStoreConnectionErrorRecorder: @unchecked Sendable, StoreConnectionErrorRecording {
     private(set) var invalidSignatureSiteIDs: [Int64] = []
     private(set) var unexpectedStoreResponseSiteIDs: [Int64] = []
     private(set) var successfulConnectionSiteIDs: [Int64] = []

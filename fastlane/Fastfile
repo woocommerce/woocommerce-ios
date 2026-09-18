@@ -12,6 +12,7 @@ fastlane_require 'xcodeproj'
 
 require_relative 'helpers/release_notes_pr_helper'
 require_relative 'helpers/release_notes_ai_helper'
+require_relative 'helpers/testflight_build_helper'
 
 UI.user_error!('Please run fastlane via `bundle exec`') unless FastlaneCore::Helper.bundler?
 
@@ -919,7 +920,7 @@ platform :ios do
   end
 
   desc 'Builds for distribution to the App Store'
-  lane :build_for_app_store_connect do |fetch_code_signing: true|
+  lane :build_for_app_store_connect do |fetch_code_signing: true, build_code: nil|
     update_certs_and_profiles_app_store if fetch_code_signing
 
     gym(
@@ -927,7 +928,58 @@ platform :ios do
       workspace: WORKSPACE_PATH,
       clean: true,
       export_team_id: APP_STORE_TEAM_ID,
+      # With no `build_code`, the value from `Version.Public.xcconfig` is used as-is.
+      xcargs: build_code.nil? ? nil : { BUILD_CODE_KEY => build_code },
       export_options: { **COMMON_EXPORT_OPTIONS, method: 'app-store' }
+    )
+  end
+
+  # Builds the app and uploads it to TestFlight for internal testers.
+  #
+  # Meant to be triggered on demand from `trunk`, so a branch can be tested in a release-shaped
+  # build without waiting for the release cadence.
+  #
+  # The marketing version (`VERSION_SHORT`) is used as-is; only the build code is stamped — see
+  # `TestFlightBuildHelper.build_code`.
+  #
+  # Known gap: when `trunk`'s `VERSION_SHORT` names a version whose TestFlight train is already
+  # closed on App Store Connect, Apple rejects the upload. Pre-allocating the trunk version after
+  # each code freeze is the fix — see wordpress-mobile/WordPress-iOS#25876.
+  #
+  # @called_by CI
+  #
+  lane :build_and_upload_testflight_build do
+    # Fail before any code signing work if the build code can't be computed.
+    build_code = TestFlightBuildHelper.build_code(
+      release_version: release_version_current,
+      buildkite_build_number: ENV.fetch('BUILDKITE_BUILD_NUMBER', nil)
+    )
+
+    ensure_sentry_installed
+    xcversion # Ensure we're using the right version of Xcode, defined in `.xcode-version` file
+
+    UI.important("Building #{release_version_current} (#{build_code}) for internal TestFlight distribution")
+
+    build_for_app_store_connect(build_code: build_code)
+
+    upload_to_testflight(
+      api_key: app_store_connect_api_key,
+      changelog: TestFlightBuildHelper.changelog(
+        branch: ENV.fetch('BUILDKITE_BRANCH', nil),
+        commit: ENV.fetch('BUILDKITE_COMMIT', nil)
+      ),
+      distribute_external: false,
+      notify_external_testers: false,
+      # These builds don't go through beta review, and must not disturb a release build waiting on it.
+      submit_beta_review: false,
+      reject_build_waiting_for_review: false
+    )
+
+    sentry_debug_files_upload(
+      auth_token: get_required_env('SENTRY_AUTH_TOKEN'),
+      org_slug: 'a8c',
+      project_slug: 'woocommerce-ios',
+      path: [File.join(PROJECT_ROOT_FOLDER, 'WooCommerce.app.dSYM.zip')]
     )
   end
 

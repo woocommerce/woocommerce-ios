@@ -1,3 +1,4 @@
+import SwiftUI
 import UIKit
 import Yosemite
 import protocol Networking.ApplicationPasswordUseCase
@@ -223,9 +224,12 @@ private extension PostSiteCredentialLoginChecker {
                    in navigationController: UINavigationController,
                    showsUnexpectedStoreResponse: Bool = false,
                    onRetry: (() -> Void)? = nil) {
-        let alert = UIAlertController(title: showsUnexpectedStoreResponse ? UnexpectedStoreResponseLocalization.title : message,
-                                      message: showsUnexpectedStoreResponse ? UnexpectedStoreResponseLocalization.message : nil,
-                                      preferredStyle: .alert)
+        guard !showsUnexpectedStoreResponse else {
+            presentUnexpectedStoreResponseModal(for: siteURL, in: navigationController)
+            return
+        }
+
+        let alert = UIAlertController(title: message, message: nil, preferredStyle: .alert)
         if let onRetry {
             let retryAction = UIAlertAction(title: Localization.retryButton, style: .default) { [weak alert] _ in
                 guard let alert, alert.presentingViewController != nil else {
@@ -235,29 +239,51 @@ private extension PostSiteCredentialLoginChecker {
             }
             alert.addAction(retryAction)
         }
-        if showsUnexpectedStoreResponse || onRetry == nil {
-            let supportTitle = showsUnexpectedStoreResponse
-                ? UnexpectedStoreResponseLocalization.contactSupport
-                : Localization.contactSupport
-            let supportAction = UIAlertAction(title: supportTitle, style: .default) { _ in
+        if onRetry == nil {
+            let supportAction = UIAlertAction(title: Localization.contactSupport, style: .default) { _ in
                 navigationController.popViewController(animated: true)
-                ServiceLocator.authenticationManager.presentSupport(from: navigationController, sourceTag: .loginSiteAddress, siteURL: URL(string: siteURL))
+                ServiceLocator.authenticationManager.presentSupport(
+                    from: navigationController,
+                    sourceTag: .loginSiteAddress,
+                    siteURL: URL(string: siteURL)
+                )
             }
             alert.addAction(supportAction)
         }
-        if showsUnexpectedStoreResponse {
-            alert.addAction(UIAlertAction(title: UnexpectedStoreResponseLocalization.dismiss, style: .cancel) { [weak self] _ in
-                self?.stores.deauthenticate()
-                navigationController.popToRootViewController(animated: true)
-            })
-        } else {
-            let restartAction = UIAlertAction(title: Localization.restartLoginButton, style: .cancel) { [weak self] _ in
-                self?.stores.deauthenticate()
-                navigationController.popToRootViewController(animated: true)
-            }
-            alert.addAction(restartAction)
+        let restartAction = UIAlertAction(title: Localization.restartLoginButton, style: .cancel) { [weak self] _ in
+            self?.stores.deauthenticate()
+            navigationController.popToRootViewController(animated: true)
         }
+        alert.addAction(restartAction)
         navigationController.present(alert, animated: true)
+    }
+
+    func presentUnexpectedStoreResponseModal(for siteURL: String, in navigationController: UINavigationController) {
+        let modal = UIHostingController(rootView: StoreConnectionErrorModal(
+            title: UnexpectedStoreResponseLocalization.title,
+            message: UnexpectedStoreResponseLocalization.message,
+            onContactSupport: { [weak navigationController] in
+                navigationController?.dismiss(animated: true) {
+                    guard let navigationController else { return }
+                    navigationController.popViewController(animated: true)
+                    ServiceLocator.authenticationManager.presentSupport(
+                        from: navigationController,
+                        sourceTag: .loginSiteAddress,
+                        siteURL: URL(string: siteURL)
+                    )
+                }
+            },
+            onDismiss: { [weak self, weak navigationController] in
+                navigationController?.dismiss(animated: true) {
+                    self?.stores.deauthenticate()
+                    navigationController?.popToRootViewController(animated: true)
+                }
+            }
+        ))
+        modal.view.backgroundColor = .clear
+        modal.modalPresentationStyle = .overFullScreen
+        modal.modalTransitionStyle = .crossDissolve
+        navigationController.present(modal, animated: true)
     }
 
     /// The error screen to be displayed when the user tries to log in with site credentials

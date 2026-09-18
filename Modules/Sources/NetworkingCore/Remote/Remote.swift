@@ -52,7 +52,13 @@ open class Remote: NSObject {
         }
 
         do {
-            try Self.validateResponse(data, for: request, recorder: connectionErrorRecorder(for: request), unexpectedResponseRecorder: storeConnectionErrorRecorder, outcome: .succeeded)
+            try Self.validateResponse(
+                data,
+                for: request,
+                recorder: connectionErrorRecorder(for: request),
+                unexpectedResponseRecorder: storeConnectionErrorRecorder,
+                outcome: .succeeded
+            )
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
             handleResponseError(error: error, for: request)
@@ -73,7 +79,13 @@ open class Remote: NSObject {
         }
 
         do {
-            try Self.validateResponse(data, for: request, recorder: connectionErrorRecorder(for: request), unexpectedResponseRecorder: storeConnectionErrorRecorder, outcome: .succeeded)
+            try Self.validateResponse(
+                data,
+                for: request,
+                recorder: connectionErrorRecorder(for: request),
+                unexpectedResponseRecorder: storeConnectionErrorRecorder,
+                outcome: .succeeded
+            )
             return try JSONDecoder().decode(T.self, from: data)
         } catch {
             logJetpackTunnelRawBodyErrorIfPresent(responseData: data, request: request, transportStatus: nil)
@@ -259,7 +271,13 @@ open class Remote: NSObject {
                 // A 2xx is not enough on its own: the Jetpack tunnel answers with a healthy status and
                 // an error body. The body decides whether the store is reachable, so it is validated
                 // here even though this overload does not parse it.
-                try Self.validateResponse(data, for: request, recorder: connectionErrorRecorder(for: request), unexpectedResponseRecorder: storeConnectionErrorRecorder, outcome: .succeeded)
+                try Self.validateResponse(
+                    data,
+                    for: request,
+                    recorder: connectionErrorRecorder(for: request),
+                    unexpectedResponseRecorder: storeConnectionErrorRecorder,
+                    outcome: .succeeded
+                )
             } catch {
                 // Handled but deliberately not rethrown. This overload has never surfaced body-level
                 // errors to its callers and widening that is a separate change, but now that the body is

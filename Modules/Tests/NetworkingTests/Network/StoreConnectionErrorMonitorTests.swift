@@ -79,6 +79,22 @@ struct StoreConnectionErrorMonitorTests {
     }
 
     @MainActor
+    @Test func test_unexpectedStoreResponsePublisher_when_an_issue_was_recorded_before_subscribing_then_it_replays_the_issue() async {
+        // Given
+        let monitor = StoreConnectionErrorMonitor()
+        monitor.recordUnexpectedStoreResponse(siteID: 123)
+        var emitted: [Int64] = []
+        let subscription = monitor.unexpectedStoreResponsePublisher.sink { emitted.append($0) }
+
+        // When
+        await settle()
+
+        // Then
+        #expect(emitted == [123])
+        subscription.cancel()
+    }
+
+    @MainActor
     @Test func test_unexpected_response_when_an_invalid_signature_is_recorded_then_it_keeps_the_signature_state() async {
         // Given
         let monitor = StoreConnectionErrorMonitor()

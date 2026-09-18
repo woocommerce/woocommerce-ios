@@ -13,7 +13,7 @@ public protocol StoreConnectionErrorMonitoring {
     ///
     var affectedSiteIDPublisher: AnyPublisher<Int64?, Never> { get }
 
-    /// Emits safe unexpected-response events on the main queue.
+    /// Emits the latest safe unexpected-response event, then future events, on the main queue.
     /// This is independent of the invalid-signature state used by existing consumers.
     var unexpectedStoreResponsePublisher: AnyPublisher<Int64, Never> { get }
 }
@@ -55,7 +55,7 @@ public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, 
     private var storedSiteID: Int64?
     private let lock = NSLock()
     private let subject = CurrentValueSubject<Int64?, Never>(nil)
-    private let unexpectedStoreResponseSubject = PassthroughSubject<Int64, Never>()
+    private let unexpectedStoreResponseSubject = CurrentValueSubject<Int64?, Never>(nil)
 
     init() {}
 
@@ -70,7 +70,10 @@ public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, 
     }
 
     public var unexpectedStoreResponsePublisher: AnyPublisher<Int64, Never> {
-        unexpectedStoreResponseSubject.receive(on: DispatchQueue.main).eraseToAnyPublisher()
+        unexpectedStoreResponseSubject
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
     }
 
     func recordInvalidSignature(siteID: Int64) {

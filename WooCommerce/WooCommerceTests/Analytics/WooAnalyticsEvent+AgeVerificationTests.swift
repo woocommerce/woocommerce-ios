@@ -152,6 +152,34 @@ struct WooAnalyticsEvent_AgeVerificationTests {
         }
     }
 
+    @Test func test_contactSupportTapped_when_given_each_blocking_context_then_maps_screen() {
+        // Given
+        let cases: [(SignificantChangeBlockingContext, String)] = [
+            (.approvalNeeded, "consent_needed"),
+            (.pendingApproval, "consent_pending"),
+            (.approvalDenied, "consent_denied")
+        ]
+
+        for (context, expectedScreen) in cases {
+            // When
+            let event = WooAnalyticsEvent.AgeVerification.contactSupportTapped(for: context)
+
+            // Then
+            #expect(event.statName == .accountAgeRestrictionContactSupportTapped)
+            #expect(event.properties["screen"] as? String == expectedScreen)
+        }
+    }
+
+    @Test func test_contactSupportTapped_when_from_underage_alert_then_reports_underage_alert_screen() {
+        // When
+        let event = WooAnalyticsEvent.AgeVerification.contactSupportTapped(screen: .underageAlert)
+
+        // Then
+        #expect(event.statName == .accountAgeRestrictionContactSupportTapped)
+        #expect(event.properties["screen"] as? String == "underage_alert")
+        #expect(event.properties.count == 1)
+    }
+
     // MARK: - Consent request / resolution
 
     @Test func test_consentRequested_when_built_then_contains_only_categorical_properties() {

@@ -10,6 +10,16 @@ enum SignificantChangeBlockingContext {
     case approvalDenied
     /// The parent/guardian approved; the user acknowledges before the screen goes away.
     case approvalGranted
+
+    /// Whether the wall offers a way to reach Help & Support. The granted confirmation doesn't block anyone.
+    var offersContactSupport: Bool {
+        switch self {
+        case .approvalNeeded, .pendingApproval, .approvalDenied:
+            return true
+        case .approvalGranted:
+            return false
+        }
+    }
 }
 
 /// Full-screen, non-dismissable blocking screen for the significant-change consent flow.
@@ -17,16 +27,36 @@ enum SignificantChangeBlockingContext {
 final class SignificantChangeConsentBlockingHostingController: UIHostingController<SignificantChangeConsentBlockingView> {
     private(set) var context: SignificantChangeBlockingContext
 
-    init(context: SignificantChangeBlockingContext, detailMessage: String? = nil, onAction: @escaping () -> Void) {
+    init(
+        context: SignificantChangeBlockingContext,
+        detailMessage: String? = nil,
+        onAction: @escaping () -> Void,
+        onContactSupport: @escaping () -> Void
+    ) {
         self.context = context
-        super.init(rootView: SignificantChangeConsentBlockingView(context: context, detailMessage: detailMessage, onAction: onAction))
+        super.init(rootView: SignificantChangeConsentBlockingView(
+            context: context,
+            detailMessage: detailMessage,
+            onAction: onAction,
+            onContactSupport: onContactSupport
+        ))
         modalPresentationStyle = .fullScreen
         isModalInPresentation = true
     }
 
-    func update(context: SignificantChangeBlockingContext, detailMessage: String? = nil, onAction: @escaping () -> Void) {
+    func update(
+        context: SignificantChangeBlockingContext,
+        detailMessage: String? = nil,
+        onAction: @escaping () -> Void,
+        onContactSupport: @escaping () -> Void
+    ) {
         self.context = context
-        rootView = SignificantChangeConsentBlockingView(context: context, detailMessage: detailMessage, onAction: onAction)
+        rootView = SignificantChangeConsentBlockingView(
+            context: context,
+            detailMessage: detailMessage,
+            onAction: onAction,
+            onContactSupport: onContactSupport
+        )
     }
 
     @available(*, unavailable)
@@ -40,6 +70,8 @@ struct SignificantChangeConsentBlockingView: View {
     /// Replaces the generic `.approvalNeeded` message, e.g. a declared change's `blockerMessage`.
     var detailMessage: String? = nil
     let onAction: () -> Void
+    /// Opens Help & Support on top of the wall; the wall stays up underneath.
+    let onContactSupport: () -> Void
 
     /// Brief in-button progress after a tap. The underlying work can resolve instantly,
     /// which otherwise looks like the tap wasn't registered at all.
@@ -69,6 +101,11 @@ struct SignificantChangeConsentBlockingView: View {
                 }
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWorking))
+            if context.offersContactSupport {
+                Button(Localization.contactSupportButton, action: onContactSupport)
+                    .buttonStyle(SecondaryButtonStyle())
+                    .disabled(isWorking)
+            }
         }
         .padding(Layout.padding)
     }
@@ -207,11 +244,16 @@ private extension SignificantChangeConsentBlockingView {
             value: "Continue",
             comment: "Button on the significant-change blocking screen that dismisses it after the approval was granted."
         )
+        static let contactSupportButton = NSLocalizedString(
+            "significantChangeConsent.blocking.contactSupport.button",
+            value: "Contact Support",
+            comment: "Secondary button on the significant-change blocking screen that opens Help & Support."
+        )
     }
 }
 
 #Preview("Needed") {
-    SignificantChangeConsentBlockingView(context: .approvalNeeded, onAction: {})
+    SignificantChangeConsentBlockingView(context: .approvalNeeded, onAction: {}, onContactSupport: {})
 }
 
 #Preview("Needed with declared change") {
@@ -219,18 +261,19 @@ private extension SignificantChangeConsentBlockingView {
         context: .approvalNeeded,
         detailMessage: "We've updated the Terms of Service for this app. Because of these changes, " +
             "your parent or guardian needs to approve your continued use of the app.",
-        onAction: {}
+        onAction: {},
+        onContactSupport: {}
     )
 }
 
 #Preview("Pending") {
-    SignificantChangeConsentBlockingView(context: .pendingApproval, onAction: {})
+    SignificantChangeConsentBlockingView(context: .pendingApproval, onAction: {}, onContactSupport: {})
 }
 
 #Preview("Denied") {
-    SignificantChangeConsentBlockingView(context: .approvalDenied, onAction: {})
+    SignificantChangeConsentBlockingView(context: .approvalDenied, onAction: {}, onContactSupport: {})
 }
 
 #Preview("Granted") {
-    SignificantChangeConsentBlockingView(context: .approvalGranted, onAction: {})
+    SignificantChangeConsentBlockingView(context: .approvalGranted, onAction: {}, onContactSupport: {})
 }

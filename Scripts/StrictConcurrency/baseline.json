@@ -75,6 +75,7 @@
     "Modules/Sources/PointOfSale/Roles/Providers/DefaultPOSAccessSession.swift": 1,
     "Modules/Sources/PointOfSale/Roles/Views/POSPINHapticFeedback.swift": 4,
     "Modules/Sources/PointOfSale/Roles/Views/POSStaffSettingsView.swift": 1,
+    "Modules/Sources/PointOfSale/Utils/Audio/PointOfSaleSoundPlayer.swift": 1,
     "Modules/Sources/PointOfSale/Utils/POSBrightnessControl.swift": 10,
     "Modules/Sources/PointOfSale/Utils/POSEnvironmentKeys.swift": 7,
     "Modules/Sources/PointOfSale/Utils/POSHeaderLeadingContentKey.swift": 1,
@@ -168,7 +169,7 @@
     "Modules/Sources/Yosemite/PointOfSale/Coupons/PointOfSaleCouponService.swift": 9,
     "Modules/Sources/Yosemite/PointOfSale/Items/GRDBObservableDataSource.swift": 14,
     "Modules/Sources/Yosemite/PointOfSale/Items/PointOfSaleBarcodeScanService.swift": 2,
-    "Modules/Sources/Yosemite/PointOfSale/Items/PointOfSaleLocalSearchPurchasableItemFetchStrategy.swift": 16,
+    "Modules/Sources/Yosemite/PointOfSale/Items/PointOfSaleLocalSearchPurchasableItemFetchStrategy.swift": 12,
     "Modules/Sources/Yosemite/PointOfSale/OrderList/POSRefundsService.swift": 3,
     "Modules/Sources/Yosemite/PointOfSale/POSReceiptInformation.swift": 1,
     "Modules/Sources/Yosemite/Printer/ReceiptPrinterService.swift": 2,
@@ -257,7 +258,6 @@
     "Modules/Tests/PointOfSaleTests/Tools/POSReceiptSenderTests.swift": 4,
     "Modules/Tests/PointOfSaleTests/ViewHelpers/POSPaymentViewHelperTests.swift": 4,
     "Modules/Tests/PointOfSaleTests/ViewHelpers/TotalsViewHelperTests.swift": 5,
-    "Modules/Tests/StorageTests/GRDB/POSSearchIndexBuilderTests.swift": 23,
     "Modules/Tests/StorageTests/GRDB/PersistedProductBarcodeQueryTests.swift": 6,
     "Modules/Tests/StorageTests/GRDB/PersistedProductVariationBarcodeQueryTests.swift": 9,
     "Modules/Tests/YosemiteTests/Mocks/CardPresentPayments/MockCardReaderService.swift": 21,
@@ -293,9 +293,8 @@
     "Modules/Tests/YosemiteTests/Tools/POS/POSCartProductObserverTests.swift": 2,
     "Modules/Tests/YosemiteTests/Tools/POS/POSCatalogPersistenceServiceTests.swift": 14,
     "Modules/Tests/YosemiteTests/Tools/POS/POSCatalogSettingsServiceTests.swift": 2,
-    "Modules/Tests/YosemiteTests/Tools/POS/POSCatalogSyncCoordinatorTests.swift": 198,
-    "Modules/Tests/YosemiteTests/Tools/PluginTests.swift": 3,
-    "Modules/Tests/YosemiteTests/Tools/Plugins/PluginsServiceTests.swift": 7,
+    "Modules/Tests/YosemiteTests/Tools/POS/POSCatalogSyncCoordinatorTests.swift": 196,
+    "Modules/Tests/YosemiteTests/Tools/Plugins/PluginsServiceTests.swift": 5,
     "Modules/Tests/YosemiteTests/Tools/Refunds/RefundServiceTests.swift": 3,
     "Modules/Tests/YosemiteTests/Tools/ResultsControllerTests.swift": 10,
     "WooCommerce/Classes/AIAssistant/AIAssistantEligibilityChecker.swift": 1,
@@ -1124,5 +1123,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 10101
+  "total": 10068
 }

@@ -52,7 +52,7 @@ final class CardPresentPaymentCountryRecovery: ObservableObject {
             settings.refresh()
             updateConfiguration(settings: settings.siteSettings)
             if configuration.countryCode == .unknown {
-                notice = PermanentNotice(message: Localization.unavailable,
+                notice = PermanentNotice(message: error == nil ? Localization.countryUnavailable : Localization.settingsUnavailable,
                                          callToActionTitle: Localization.retry,
                                          callToActionHandler: { [weak self] in self?.retry() })
             }
@@ -73,9 +73,13 @@ final class CardPresentPaymentCountryRecovery: ObservableObject {
         static let loading = NSLocalizedString("cardPresentPayment.countryRecovery.loading",
                                                value: "Checking in-person payment availability…",
                                                comment: "Status while fetching store settings to check in-person payment availability.")
-        static let unavailable = NSLocalizedString("cardPresentPayment.countryRecovery.unavailable",
-                                                   value: "We couldn’t check in-person payment availability.",
-                                                   comment: "Shown when the store country is still unknown after refreshing settings.")
+        static let settingsUnavailable = NSLocalizedString("cardPresentPayment.countryRecovery.settingsUnavailable",
+                                                           value: "We couldn’t load your store settings to check in-person payment availability.",
+                                                           comment: "Shown when fetching store settings fails and the store country remains unknown.")
+        static let countryUnavailable = NSLocalizedString(
+            "cardPresentPayment.countryRecovery.countryUnavailable",
+            value: "We couldn’t identify your store’s country. Check the country in your WooCommerce store settings.",
+            comment: "Shown when fetched store settings have no recognizable country. Check the store country, then retry.")
         static let retry = NSLocalizedString("cardPresentPayment.countryRecovery.retry",
                                              value: "Retry",
                                              comment: "Retry fetching store settings to check in-person payment availability.")

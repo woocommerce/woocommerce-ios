@@ -59,7 +59,10 @@ struct CardPresentPaymentCountryRecoveryTests {
         #expect(requests == 1)
         #expect(!sut.isLoading)
         let notice = try #require(sut.notice)
+        #expect(notice.message == "We couldn’t load your store settings to check in-person payment availability.")
         notice.callToActionHandler()
+        #expect(sut.notice == nil)
+        #expect(sut.isLoading)
         #expect(requests == 2)
         settings.siteSettings = [countrySetting(.GB)]
         let finishRequest = try #require(complete)
@@ -86,7 +89,8 @@ struct CardPresentPaymentCountryRecoveryTests {
         #expect(sut.configuration.countryCode == country)
     }
 
-    @Test func test_recovery_when_response_has_no_country_then_offers_retry_without_looping() {
+    @Test(arguments: [nil, "XX"] as [String?])
+    func test_recovery_when_response_has_no_recognized_country_then_offers_retry_without_looping(country: String?) {
         // Given
         let stores = makeStores()
         var requests = 0
@@ -95,7 +99,11 @@ struct CardPresentPaymentCountryRecoveryTests {
             requests += 1
             completion(nil)
         }
-        let sut = makeRecovery(stores: stores, settings: MockSelectedSiteSettings())
+        let settings = MockSelectedSiteSettings()
+        if let country {
+            settings.siteSettings = [countrySetting(.unknown).copy(value: country)]
+        }
+        let sut = makeRecovery(stores: stores, settings: settings)
 
         // When
         sut.recoverIfNeeded()
@@ -103,7 +111,7 @@ struct CardPresentPaymentCountryRecoveryTests {
 
         // Then
         #expect(requests == 1)
-        #expect(sut.notice != nil)
+        #expect(sut.notice?.message == "We couldn’t identify your store’s country. Check the country in your WooCommerce store settings.")
         #expect(!sut.isLoading)
     }
 

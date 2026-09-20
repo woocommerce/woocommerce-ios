@@ -73,11 +73,11 @@ final class CardPresentPaymentCountryRecovery: ObservableObject {
     }
 
     enum Localization {
-        static let loading = NSLocalizedString("cardPresentPayment.countryRecovery.loading",
-                                               value: "Checking in-person payment availability…",
-                                               comment: "Status while fetching store settings to check in-person payment availability.")
-        static let settingsUnavailable = NSLocalizedString("cardPresentPayment.countryRecovery.settingsUnavailable",
-                                                           value: "We couldn’t load your store settings to check in-person payment availability.",
+        static let loading = NSLocalizedString("cardPresentPayment.countryRecovery.checkingCardPaymentAvailability",
+                                               value: "Checking card payment availability…",
+                                               comment: "Status while fetching store settings to check card payment availability.")
+        static let settingsUnavailable = NSLocalizedString("cardPresentPayment.countryRecovery.cardPaymentSettingsUnavailable",
+                                                           value: "We couldn’t load your store settings to check card payment availability.",
                                                            comment: "Shown when fetching store settings fails and the store country remains unknown.")
         static let countryUnavailable = NSLocalizedString(
             "cardPresentPayment.countryRecovery.countryUnavailable",
@@ -85,6 +85,6 @@ final class CardPresentPaymentCountryRecovery: ObservableObject {
             comment: "Shown when fetched store settings have no recognizable country. Check the store country, then retry.")
         static let retry = NSLocalizedString("cardPresentPayment.countryRecovery.retry",
                                              value: "Retry",
-                                             comment: "Retry fetching store settings to check in-person payment availability.")
+                                             comment: "Retry fetching store settings to check card payment availability.")
     }
 }

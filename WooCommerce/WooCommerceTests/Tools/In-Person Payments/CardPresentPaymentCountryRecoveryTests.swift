@@ -59,7 +59,7 @@ struct CardPresentPaymentCountryRecoveryTests {
         #expect(requests == 1)
         #expect(!sut.isLoading)
         let notice = try #require(sut.notice)
-        #expect(notice.message == "We couldn’t load your store settings to check in-person payment availability.")
+        #expect(notice.message == "We couldn’t load your store settings to check card payment availability.")
         notice.callToActionHandler()
         #expect(sut.notice == nil)
         #expect(sut.isLoading)

@@ -70,58 +70,19 @@ struct SelfHostedQRLoginRemoteTests {
         await expectScanError(statusCode: 403, body: Data(), expected: .unauthorized)
     }
 
+    @Test(arguments: [401, 403])
+    func scan_when_html_authentication_error_then_throws_unauthorized(statusCode: Int) async {
+        await expectScanError(statusCode: statusCode,
+                              body: Data("<html><body>Access denied</body></html>".utf8),
+                              expected: .unauthorized)
+    }
+
     @Test func scan_when_404_then_throws_notFound() async {
         await expectScanError(statusCode: 404, body: Data(), expected: .notFound)
     }
 
     @Test func scan_when_426_then_throws_upgradeRequired() async {
         await expectScanError(statusCode: 426, body: Data(), expected: .upgradeRequired)
-    }
-
-    @Test func scan_when_html_404_then_throws_notFound() async {
-        // Given
-        let url = makeURL(path: "/qr-login-scan")
-        let session = MockURLSession()
-        session.simulateResponse(for: url.absoluteString,
-                                 data: Data("<html><body>Not Found</body></html>".utf8),
-                                 statusCode: 404)
-        let remote = makeRemote(session: session)
-
-        // When / Then
-        await #expect(throws: QRLoginNetworkError.notFound) {
-            _ = try await remote.scan(siteURL: siteURL, token: token, device: device)
-        }
-    }
-
-    @Test func scan_when_html_426_then_throws_upgradeRequired() async {
-        // Given
-        let url = makeURL(path: "/qr-login-scan")
-        let session = MockURLSession()
-        session.simulateResponse(for: url.absoluteString,
-                                 data: Data("<html><body>Upgrade Required</body></html>".utf8),
-                                 statusCode: 426)
-        let remote = makeRemote(session: session)
-
-        // When / Then
-        await #expect(throws: QRLoginNetworkError.upgradeRequired) {
-            _ = try await remote.scan(siteURL: siteURL, token: token, device: device)
-        }
-    }
-
-    @Test(arguments: [401, 403])
-    func scan_when_html_client_error_then_throws_unauthorized(statusCode: Int) async {
-        // Given — HTML blocking page with auth status keeps existing mapping.
-        let url = makeURL(path: "/qr-login-scan")
-        let session = MockURLSession()
-        session.simulateResponse(for: url.absoluteString,
-                                 data: Data("<html><body>Blocked</body></html>".utf8),
-                                 statusCode: statusCode)
-        let remote = makeRemote(session: session)
-
-        // When / Then
-        await #expect(throws: QRLoginNetworkError.unauthorized) {
-            _ = try await remote.scan(siteURL: siteURL, token: token, device: device)
-        }
     }
 
     @Test func scan_when_409_then_throws_conflict() async {

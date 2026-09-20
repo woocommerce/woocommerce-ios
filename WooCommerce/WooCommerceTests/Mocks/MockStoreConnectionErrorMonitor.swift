@@ -23,22 +23,23 @@ final class MockStoreConnectionErrorMonitor: StoreConnectionErrorMonitoring {
         subject.receive(on: DispatchQueue.main).eraseToAnyPublisher()
     }
 
-    var unexpectedStoreResponsePublisher: AnyPublisher<Int64?, Never> {
-        unexpectedStoreResponseSubject.receive(on: DispatchQueue.main).eraseToAnyPublisher()
+    var unexpectedStoreResponsePublisher: AnyPublisher<Int64, Never> {
+        unexpectedStoreResponseSubject
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .eraseToAnyPublisher()
+    }
+
+    func acknowledgeUnexpectedStoreResponse(siteID: Int64) {
+        if unexpectedStoreResponseSubject.value == siteID {
+            unexpectedStoreResponseSubject.send(nil)
+        }
     }
 
     /// Simulates the networking layer reporting an unexpected response.
     ///
     func simulateUnexpectedStoreResponse(siteID: Int64) {
         unexpectedStoreResponseSubject.send(siteID)
-    }
-
-    /// Simulates the networking layer reporting a later success that clears the issue.
-    ///
-    func simulateSuccessfulConnection(siteID: Int64) {
-        if unexpectedStoreResponseSubject.value == siteID {
-            unexpectedStoreResponseSubject.send(nil)
-        }
     }
 
     /// Simulates the networking layer flagging or clearing a store.

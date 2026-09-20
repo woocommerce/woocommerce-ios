@@ -53,12 +53,6 @@ private extension UnexpectedStoreResponseClassifier {
             return nil
         }
 
-        // 4xx keeps existing auth/validation handling. The status mapper owns
-        // 401/403/404/426. The unexpected modal only handles 2xx non-JSON, 429, and 5xx HTML.
-        if let statusCode, (400..<500).contains(statusCode), statusCode != 429 {
-            return nil
-        }
-
         // REST objects/arrays, including malformed JSON, keep their existing decoder/error path.
         // Valid JSON scalar values are also JSON, even when a string contains HTML.
         if response.hasPrefix("{") || response.hasPrefix("[") ||

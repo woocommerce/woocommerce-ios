@@ -4,7 +4,7 @@ import Testing
 @testable import NetworkingCore
 
 struct UnexpectedStoreResponseClassifierTests {
-    @Test(arguments: [200, 500, 503])
+    @Test(arguments: [200, 403, 500, 503])
     func test_classify_when_merchant_returns_html_then_returns_safe_error(status: Int) throws {
         // Given
         let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "products")
@@ -15,19 +15,6 @@ struct UnexpectedStoreResponseClassifierTests {
 
         // Then
         #expect(error == UnexpectedStoreResponseError())
-    }
-
-    @Test(arguments: [400, 401, 403, 404, 426])
-    func test_classify_when_merchant_returns_html_client_error_then_preserves_existing_handling(status: Int) {
-        // Given
-        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "products")
-        let body = Data("<html><body>Blocked</body></html>".utf8)
-
-        // When
-        let error = UnexpectedStoreResponseClassifier.classify(responseData: body, request: request, statusCode: status)
-
-        // Then
-        #expect(error == nil)
     }
 
     @Test(arguments: ["{\"message\":\"<html>maintenance mode</html>\"}", "[1]", "\"<html>\"", "null", "false", "42"])
@@ -216,7 +203,7 @@ struct UnexpectedStoreResponseClassifierTests {
     @Test func test_classify_when_content_type_is_html_with_parameters_then_returns_safe_error() {
         // When
         let error = UnexpectedStoreResponseClassifier.classify(responseData: Data("Forbidden".utf8),
-                                                               statusCode: 500,
+                                                               statusCode: 403,
                                                                contentType: "Text/HTML; arbitrary=private-value")
 
         // Then

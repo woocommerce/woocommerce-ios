@@ -110,8 +110,7 @@ struct PaymentMethodsView: View {
                         FooterNotice(infoText: message)
                     }
                     if viewModel.countryRecovery.isLoading {
-                        ProgressView(CardPresentPaymentCountryRecovery.Localization.loading)
-                            .padding()
+                        LoadingNoticeView(message: CardPresentPaymentCountryRecovery.Localization.loading)
                     }
                     if let notice = viewModel.countryRecovery.notice {
                         PermanentNoticeView(notice: notice)

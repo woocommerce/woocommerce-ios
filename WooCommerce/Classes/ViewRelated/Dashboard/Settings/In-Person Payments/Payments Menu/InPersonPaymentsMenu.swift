@@ -166,8 +166,7 @@ struct InPersonPaymentsMenu: View {
             }
 
             if viewModel.countryRecovery.isLoading {
-                ProgressView(CardPresentPaymentCountryRecovery.Localization.loading)
-                    .padding()
+                LoadingNoticeView(message: CardPresentPaymentCountryRecovery.Localization.loading)
             }
             if let recoveryNotice = viewModel.countryRecovery.notice {
                 PermanentNoticeView(notice: recoveryNotice)

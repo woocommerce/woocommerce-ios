@@ -138,10 +138,8 @@ final class AppCoordinator {
         storeConnectionIssueSubscription = storeConnectionErrorMonitor.unexpectedStoreResponsePublisher
             .sink { [weak self] siteID in
                 guard let self else { return }
-                guard let siteID else {
-                    // A later success cleared the issue. Drop any pending alert for the recovered store.
-                    self.pendingStoreConnectionIssueSiteID = nil
-                    return
+                defer {
+                    self.storeConnectionErrorMonitor.acknowledgeUnexpectedStoreResponse(siteID: siteID)
                 }
                 guard siteID == self.stores.sessionManager.defaultStoreID else { return }
                 self.pendingStoreConnectionIssueSiteID = siteID

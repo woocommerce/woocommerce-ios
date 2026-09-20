@@ -52,6 +52,9 @@ final class CardPresentPaymentCountryRecovery: ObservableObject {
             settings.refresh()
             updateConfiguration(settings: settings.siteSettings)
             if configuration.countryCode == .unknown {
+                if error == nil {
+                    DDLogWarn("[Card payment availability] siteID=\(siteID) reason=country_unrecognized_after_settings_sync")
+                }
                 notice = PermanentNotice(message: error == nil ? Localization.countryUnavailable : Localization.settingsUnavailable,
                                          callToActionTitle: Localization.retry,
                                          callToActionHandler: { [weak self] in self?.retry() })
@@ -62,6 +65,8 @@ final class CardPresentPaymentCountryRecovery: ObservableObject {
     private func updateConfiguration(settings: [SiteSetting]) {
         let updated = CardPresentPaymentsConfiguration(country: SiteAddress(siteSettings: settings).countryCode)
         if updated != configuration {
+            DDLogInfo("[Card payment availability] siteID=\(siteID) country_changed=\(updated.countryCode) " +
+                      "supported=\(updated.isSupportedCountry)")
             configuration = updated
         }
         if updated.countryCode != .unknown {

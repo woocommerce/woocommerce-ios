@@ -36,6 +36,7 @@ private extension OrderCardPresentPaymentEligibilityStore {
         let storage = storageManager.viewStorage
 
         guard let order = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
+            DDLogWarn("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=order_not_found_in_storage")
             return onCompletion(.failure(OrderIsEligibleForCardPresentPaymentError.orderNotFoundInStorage))
         }
 

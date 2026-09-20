@@ -470,6 +470,8 @@ private extension PaymentMethodsViewModel {
     func updateCardPaymentVisibility() {
         cardPaymentUnavailableMessage = nil
         guard cardPresentPaymentsConfiguration.isSupportedCountry else {
+            DDLogInfo("[Card payment visibility] screen=collect_payment siteID=\(siteID) orderID=\(orderID) " +
+                      "reason=country_not_supported country=\(cardPresentPaymentsConfiguration.countryCode)")
             showPayWithCardRow = false
             showTapToPayRow = false
 
@@ -481,6 +483,10 @@ private extension PaymentMethodsViewModel {
             self?.orderIsEligibleForCardPresentPayment { [weak self] orderIsEligible in
                 self?.showPayWithCardRow = orderIsEligible
                 self?.showTapToPayRow = orderIsEligible && tapToPaySupportedByDevice && tapToPaySupportedByStore
+                if let self, orderIsEligible, !showTapToPayRow {
+                    DDLogInfo("[Tap to Pay visibility] screen=collect_payment siteID=\(siteID) orderID=\(orderID) " +
+                              "countrySupported=\(tapToPaySupportedByStore) deviceSupported=\(tapToPaySupportedByDevice)")
+                }
             }
         }
     }

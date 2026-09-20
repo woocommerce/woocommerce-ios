@@ -332,6 +332,10 @@ private extension InPersonPaymentsMenuViewModel {
 private extension InPersonPaymentsMenuViewModel {
     func updateCardReadersSection() {
         shouldShowCardReaderSection = isEligibleForCardPresentPayments
+        if !shouldShowCardReaderSection {
+            DDLogInfo("[Card payment visibility] screen=payments_menu siteID=\(siteID) " +
+                      "reason=country_not_supported country=\(cardPresentPaymentsConfiguration.countryCode)")
+        }
     }
 
     var isEligibleForCardPresentPayments: Bool {
@@ -349,6 +353,10 @@ private extension InPersonPaymentsMenuViewModel {
             countryEnabledForTapToPay &&
             deviceSupportsTapToPay
 
+        if isEligibleForCardPresentPayments, !shouldShowTapToPaySection {
+            DDLogInfo("[Tap to Pay visibility] screen=payments_menu siteID=\(siteID) " +
+                      "countrySupported=\(countryEnabledForTapToPay) deviceSupported=\(deviceSupportsTapToPay)")
+        }
         await updateSetUpTryTapToPay()
     }
 

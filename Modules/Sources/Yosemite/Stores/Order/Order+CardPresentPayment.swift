@@ -17,15 +17,33 @@ import protocol Storage.StorageManagerType
     ///
     func cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
                                        products: [Product]) -> OrderCardPresentPaymentEligibility {
-        guard cardPresentPaymentsConfiguration.isSupportedCountry,
-              isAmountEligibleForCardPayment,
-              isStatusEligibleForCardPayment,
-              isPaymentMethodEligibleForCardPayment,
-              !containsAnySubscription(from: products),
-              let orderCurrency = CurrencyCode(caseInsensitiveRawValue: currency) else {
+        guard cardPresentPaymentsConfiguration.isSupportedCountry else {
+            DDLogInfo("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=country_not_supported " +
+                      "country=\(cardPresentPaymentsConfiguration.countryCode)")
+            return .ineligible
+        }
+        guard isAmountEligibleForCardPayment else {
+            return .ineligible
+        }
+        guard isStatusEligibleForCardPayment else {
+            DDLogInfo("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=order_status_not_supported")
+            return .ineligible
+        }
+        guard isPaymentMethodEligibleForCardPayment else {
+            DDLogInfo("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=payment_method_not_supported")
+            return .ineligible
+        }
+        guard !containsAnySubscription(from: products) else {
+            DDLogInfo("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=subscription")
+            return .ineligible
+        }
+        guard let orderCurrency = CurrencyCode(caseInsensitiveRawValue: currency) else {
+            DDLogWarn("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=currency_unrecognized")
             return .ineligible
         }
         guard cardPresentPaymentsConfiguration.currencies.contains(orderCurrency) else {
+            DDLogInfo("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=currency_not_supported " +
+                      "country=\(cardPresentPaymentsConfiguration.countryCode.rawValue) currency=\(orderCurrency.rawValue)")
             return .unsupportedCurrency(orderCurrency.rawValue)
         }
         return .eligible
@@ -35,10 +53,16 @@ import protocol Storage.StorageManagerType
     private var isAmountEligibleForCardPayment: Bool {
         // If the order is paid, it is not eligible.
         guard datePaid == nil else {
+            DDLogInfo("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=order_already_paid")
             return false
         }
 
-        guard let totalAmount = currencyFormatter.convertToDecimal(total), totalAmount.decimalValue > 0 else {
+        guard let totalAmount = currencyFormatter.convertToDecimal(total) else {
+            DDLogWarn("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=invalid_total")
+            return false
+        }
+        guard totalAmount.decimalValue > 0 else {
+            DDLogInfo("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=non_positive_total")
             return false
         }
 
@@ -48,6 +72,9 @@ import protocol Storage.StorageManagerType
         // * orders where the merchant has applied a discount manually
         // * in general, all orders where we might want to capture a payment for less than the total order amount
         let hasBeenPartiallyCharged = totalValue != netAmount
+        if hasBeenPartiallyCharged {
+            DDLogInfo("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=remaining_amount_mismatch")
+        }
         return !hasBeenPartiallyCharged
     }
 

@@ -70,6 +70,13 @@ struct SelfHostedQRLoginRemoteTests {
         await expectScanError(statusCode: 403, body: Data(), expected: .unauthorized)
     }
 
+    @Test(arguments: [401, 403])
+    func scan_when_html_authentication_error_then_throws_unauthorized(statusCode: Int) async {
+        await expectScanError(statusCode: statusCode,
+                              body: Data("<html><body>Access denied</body></html>".utf8),
+                              expected: .unauthorized)
+    }
+
     @Test func scan_when_404_then_throws_notFound() async {
         await expectScanError(statusCode: 404, body: Data(), expected: .notFound)
     }

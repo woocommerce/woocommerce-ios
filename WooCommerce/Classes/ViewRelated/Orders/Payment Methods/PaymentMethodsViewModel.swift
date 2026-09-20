@@ -609,8 +609,8 @@ private extension PaymentMethodsViewModel {
 private extension PaymentMethodsViewModel {
     enum Localization {
         static let unsupportedOrderCurrency = NSLocalizedString(
-            "paymentMethods.unsupportedOrderCurrency",
-            value: "In-person card payments aren’t available for this order’s currency (%1$@). Choose another payment method.",
+            "paymentMethods.cardPaymentsUnavailableForOrderCurrency",
+            value: "Card payments aren’t available for this order’s currency (%1$@).",
             comment: "Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD.")
 
         static let markAsPaidError = NSLocalizedString("There was an error while marking the order as paid.",

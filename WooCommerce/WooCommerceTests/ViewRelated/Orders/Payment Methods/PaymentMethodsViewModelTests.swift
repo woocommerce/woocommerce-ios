@@ -716,7 +716,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showPayWithCardRow)
         XCTAssertFalse(viewModel.showTapToPayRow)
         XCTAssertEqual(viewModel.cardPaymentUnavailableMessage,
-                       "In-person card payments aren’t available for this order’s currency (USD). Choose another payment method.")
+                       "Card payments aren’t available for this order’s currency (USD).")
     }
 
     func test_country_changes_when_same_screen_is_retained_then_updates_card_methods_and_currency_message() {

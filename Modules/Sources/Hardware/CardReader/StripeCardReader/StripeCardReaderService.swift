@@ -86,7 +86,6 @@ extension StripeCardReaderService: CardReaderService {
                              discoveryMethod: CardReaderDiscoveryMethod,
                              minimumOperatingSystemVersionOverride: OperatingSystemVersion?) -> Bool {
         guard let deviceType = cardReaderType.toStripe() else {
-            DDLogWarn("[Card reader support] reader=\(cardReaderType.rawValue) reason=reader_type_unrecognized")
             return false
         }
 
@@ -99,20 +98,12 @@ extension StripeCardReaderService: CardReaderService {
         case .success:
             /// Note that while this will now never be nil, we can still remove this check if Stripe update `supportsReaders` to be country-aware
             if let minimumOperatingSystemVersionOverride {
-                let isSupported = ProcessInfo().isOperatingSystemAtLeast(minimumOperatingSystemVersionOverride)
-                if !isSupported {
-                    DDLogInfo("[Card reader support] reader=\(cardReaderType.rawValue) reason=os_version_not_supported " +
-                              "minimumOS=\(minimumOperatingSystemVersionOverride)")
-                }
-                return isSupported
+                return ProcessInfo().isOperatingSystemAtLeast(minimumOperatingSystemVersionOverride)
             } else {
                 return true
             }
 
-        case .failure(let error):
-            let error = error as NSError
-            DDLogWarn("[Card reader support] reader=\(cardReaderType.rawValue) reason=sdk_support_check_failed " +
-                      "domain=\(error.domain) code=\(error.code) description=\(error.localizedDescription)")
+        case .failure:
             return false
         }
     }

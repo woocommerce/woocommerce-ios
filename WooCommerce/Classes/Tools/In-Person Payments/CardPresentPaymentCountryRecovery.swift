@@ -65,8 +65,6 @@ final class CardPresentPaymentCountryRecovery: ObservableObject {
     private func updateConfiguration(settings: [SiteSetting]) {
         let updated = CardPresentPaymentsConfiguration(country: SiteAddress(siteSettings: settings).countryCode)
         if updated != configuration {
-            DDLogInfo("[Card payment availability] siteID=\(siteID) country_changed=\(updated.countryCode) " +
-                      "supported=\(updated.isSupportedCountry)")
             configuration = updated
         }
         if updated.countryCode != .unknown {

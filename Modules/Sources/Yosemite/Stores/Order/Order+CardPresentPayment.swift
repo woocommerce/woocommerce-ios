@@ -17,12 +17,8 @@ import protocol Storage.StorageManagerType
     ///
     func cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
                                        products: [Product]) -> OrderCardPresentPaymentEligibility {
-        guard cardPresentPaymentsConfiguration.isSupportedCountry else {
-            DDLogInfo("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=country_not_supported " +
-                      "country=\(cardPresentPaymentsConfiguration.countryCode)")
-            return .ineligible
-        }
-        guard isAmountEligibleForCardPayment else {
+        guard cardPresentPaymentsConfiguration.isSupportedCountry,
+              isAmountEligibleForCardPayment else {
             return .ineligible
         }
         guard isStatusEligibleForCardPayment else {

@@ -1,7 +1,7 @@
 import Combine
 import Foundation
 
-/// Read-only access to the store currently affected by a connection error.
+/// Access to store connection state and buffered unexpected-response events.
 ///
 public protocol StoreConnectionErrorMonitoring {
     /// Identifier of the store currently affected, or `nil` when no store is affected.
@@ -16,6 +16,9 @@ public protocol StoreConnectionErrorMonitoring {
     /// Emits the latest safe unexpected-response event, then future events, on the main queue.
     /// This is independent of the invalid-signature state used by existing consumers.
     var unexpectedStoreResponsePublisher: AnyPublisher<Int64, Never> { get }
+
+    /// Clears a buffered unexpected-response event after the app has consumed it.
+    func acknowledgeUnexpectedStoreResponse(siteID: Int64)
 }
 
 /// Write-only counterpart used by the networking layer to report the outcome of a request.
@@ -74,6 +77,12 @@ public final class StoreConnectionErrorMonitor: @unchecked Sendable, StoreConnec
             .compactMap { $0 }
             .receive(on: DispatchQueue.main)
             .eraseToAnyPublisher()
+    }
+
+    public func acknowledgeUnexpectedStoreResponse(siteID: Int64) {
+        if unexpectedStoreResponseSubject.value == siteID {
+            unexpectedStoreResponseSubject.send(nil)
+        }
     }
 
     func recordInvalidSignature(siteID: Int64) {

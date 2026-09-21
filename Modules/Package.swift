@@ -368,7 +368,7 @@ let package = Package(
                 "TestKit"
             ],
             resources: [.process("Resources")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .testTarget(
             name: "WooFoundationTests",

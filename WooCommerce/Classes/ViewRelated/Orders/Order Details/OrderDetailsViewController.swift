@@ -141,13 +141,7 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        if #available(iOS 26.0, *) {
-            // Work around WOOMOB-3694 by avoiding the navigation controller's refresh-control host, which can enter a recursive layout cycle.
-            // Order Details does not use large titles, so direct subview attachment preserves pull-to-refresh without that integration.
-            tableView.addSubview(refreshControl)
-        } else {
-            tableView.refreshControl = refreshControl
-        }
+        tableView.refreshControl = refreshControl
 
         tableView.dataSource = viewModel.dataSource
         tableView.accessibilityIdentifier = "order-details-table-view"

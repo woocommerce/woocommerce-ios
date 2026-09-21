@@ -54,7 +54,7 @@ public final class ProductVariationStore: Store {
                                                  variationIDs: variationIDs,
                                                  pageNumber: pageNumber,
                                                  pageSize: pageSize,
-                                                 onCompletion: onCompletion)
+                                                 onCompletion: mainActorCallback(onCompletion))
         case .createProductVariation(let siteID, let productID, let newVariation, let onCompletion):
             createProductVariation(siteID: siteID, productID: productID, newVariation: newVariation, onCompletion: onCompletion)
         case .createProductVariations(let siteID, let productID, let productVariations, let onCompletion):

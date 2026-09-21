@@ -44,9 +44,11 @@ public final class ProductCategoryStore: Store {
         case .synchronizeProductCategory(siteID: let siteID, categoryID: let CategoryID, onCompletion: let onCompletion):
             synchronizeProductCategory(siteID: siteID, categoryID: CategoryID, onCompletion: onCompletion)
         case let .updateProductCategory(category, onCompletion):
-            updateProductCategory(category, onCompletion: onCompletion)
+            updateProductCategory(category, onCompletion: mainActorCallback(onCompletion))
         case let .deleteProductCategory(siteID, categoryID, onCompletion):
-            deleteProductCategory(siteID: siteID, categoryID: categoryID, onCompletion: onCompletion)
+            deleteProductCategory(siteID: siteID,
+                                  categoryID: categoryID,
+                                  onCompletion: mainActorCallback(onCompletion))
         }
     }
 }

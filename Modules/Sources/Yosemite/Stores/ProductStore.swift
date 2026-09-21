@@ -52,9 +52,13 @@ public class ProductStore: Store {
         case .retrieveProduct(let siteID, let productID, let onCompletion):
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
-            retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+            retrieveProducts(siteID: siteID,
+                             productIDs: productIDs,
+                             pageNumber: pageNumber,
+                             pageSize: pageSize,
+                             onCompletion: mainActorCallback(onCompletion))
         case .retrieveProductsIfNeeded(let siteID, let productIDs, let onCompletion):
-            retrieveProductsIfNeeded(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
+            retrieveProductsIfNeeded(siteID: siteID, productIDs: productIDs, onCompletion: mainActorCallback(onCompletion))
         case let .retrieveProductsTransiently(siteID, currency, pageNumber, pageSize, stockStatus, productStatus, productType,
                                               productCategory, sortOrder, productIDs, excludedProductIDs, onCompletion):
             retrieveProductsTransiently(siteID: siteID,
@@ -68,9 +72,11 @@ public class ProductStore: Store {
                                         sortOrder: sortOrder,
                                         productIDs: productIDs,
                                         excludedProductIDs: excludedProductIDs,
-                                        onCompletion: onCompletion)
+                                        onCompletion: mainActorCallback(onCompletion))
         case .retrieveFirstPurchasableItemMatchFromIdentifier(siteID: let siteID, identifier: let identifier, onCompletion: let onCompletion):
-            retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID, identifier: identifier, onCompletion: onCompletion)
+            retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID,
+                                                            identifier: identifier,
+                                                            onCompletion: mainActorCallback(onCompletion))
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -95,7 +101,7 @@ public class ProductStore: Store {
                            productType: productType,
                            productCategory: productCategory,
                            excludedProductIDs: excludedProductIDs,
-                           onCompletion: onCompletion)
+                           onCompletion: mainActorCallback(onCompletion))
         case let .searchProductsTransiently(siteID, currency, keyword, filter, pageNumber, pageSize, stockStatus, productStatus,
                                             productType, productCategory, productIDs, excludedProductIDs, onCompletion):
             searchProductsTransiently(siteID: siteID,
@@ -110,7 +116,7 @@ public class ProductStore: Store {
                                       productCategory: productCategory,
                                       productIDs: productIDs,
                                       excludedProductIDs: excludedProductIDs,
-                                      onCompletion: onCompletion)
+                                      onCompletion: mainActorCallback(onCompletion))
         case .synchronizeProducts(let siteID,
                                   let pageNumber,
                                   let pageSize,
@@ -123,7 +129,7 @@ public class ProductStore: Store {
                                   let excludedProductIDs,
                                   let shouldDeleteStoredProductsOnFirstPage,
                                   let onCompletion):
-            let onCompletion: @MainActor @Sendable (Result<Bool, Error>) -> Void = onCompletion
+            let onCompletion = mainActorCallback(onCompletion)
             Task {
                 let result = await Result {
                     try await synchronizeProducts(siteID: siteID,
@@ -148,8 +154,7 @@ public class ProductStore: Store {
                                                   let additionalProductIDs,
                                                   let shouldDeleteStoredProductsOnFirstPage,
                                                   let onCompletion):
-            let onCompletion: @MainActor @Sendable (Result<(products: [Product], hasNextPage: Bool,
-                                                   missingProductIDs: [Int64]), Error>) -> Void = onCompletion
+            let onCompletion = mainActorCallback(onCompletion)
             Task {
                 let result = await Result {
                     try await synchronizeProductsForOrderCreation(
@@ -165,7 +170,7 @@ public class ProductStore: Store {
                 await onCompletion(result)
             }
         case .requestMissingProducts(let order, let onCompletion):
-            requestMissingProducts(for: order, onCompletion: onCompletion)
+            requestMissingProducts(for: order, onCompletion: mainActorCallback(onCompletion))
         case .updateProduct(let product, let onCompletion):
             updateProduct(product: product, onCompletion: onCompletion)
         case .updateProductImages(let siteID, let productID, let images, let onCompletion):
@@ -181,17 +186,33 @@ public class ProductStore: Store {
         case let .identifyLanguage(siteID, string, feature, completion):
             identifyLanguage(siteID: siteID,
                              string: string, feature: feature,
-                             completion: completion)
+                             completion: mainActorCallback(completion))
         case let .generateProductDescription(siteID, name, features, language, completion):
-            generateProductDescription(siteID: siteID, name: name, features: features, language: language, completion: completion)
+            generateProductDescription(siteID: siteID,
+                                       name: name,
+                                       features: features,
+                                       language: language,
+                                       completion: mainActorCallback(completion))
         case let .generateProductSharingMessage(siteID, url, name, description, language, completion):
-            generateProductSharingMessage(siteID: siteID, url: url, name: name, description: description, language: language, completion: completion)
+            generateProductSharingMessage(siteID: siteID,
+                                          url: url,
+                                          name: name,
+                                          description: description,
+                                          language: language,
+                                          completion: mainActorCallback(completion))
         case let .generateProductName(siteID, keywords, language, completion):
-            generateProductName(siteID: siteID, keywords: keywords, language: language, completion: completion)
+            generateProductName(siteID: siteID,
+                                keywords: keywords,
+                                language: language,
+                                completion: mainActorCallback(completion))
         case let .generateProductDetails(siteID, productName, scannedTexts, language, completion):
-            generateProductDetails(siteID: siteID, productName: productName, scannedTexts: scannedTexts, language: language, completion: completion)
+            generateProductDetails(siteID: siteID,
+                                   productName: productName,
+                                   scannedTexts: scannedTexts,
+                                   language: language,
+                                   completion: mainActorCallback(completion))
         case let .fetchNumberOfProducts(siteID, completion):
-            fetchNumberOfProducts(siteID: siteID, completion: completion)
+            fetchNumberOfProducts(siteID: siteID, completion: mainActorCallback(completion))
         case let .generateAIProduct(siteID,
                                     productName,
                                     keywords,
@@ -213,14 +234,14 @@ public class ProductStore: Store {
                               weightUnit: weightUnit,
                               categories: categories,
                               tags: tags,
-                              completion: completion)
+                              completion: mainActorCallback(completion))
         case let .fetchStockReport(siteID, stockType, pageNumber, pageSize, order, completion):
             fetchStockReport(siteID: siteID,
                              stockType: stockType,
                              pageNumber: pageNumber,
                              pageSize: pageSize,
                              order: order,
-                             completion: completion)
+                             completion: mainActorCallback(completion))
         case let .fetchProductReports(siteID, productIDs, timeZone, earliestDateToInclude, latestDateToInclude, pageSize, pageNumber, orderBy, order, completion):
             fetchProductReports(siteID: siteID,
                                 productIDs: productIDs,
@@ -231,7 +252,7 @@ public class ProductStore: Store {
                                 pageNumber: pageNumber,
                                 orderBy: orderBy,
                                 order: order,
-                                completion: completion)
+                                completion: mainActorCallback(completion))
         case let .fetchVariationReports(siteID,
                                         productIDs,
                                         variationIDs,
@@ -253,7 +274,7 @@ public class ProductStore: Store {
                                   pageNumber: pageNumber,
                                   orderBy: orderBy,
                                   order: order,
-                                  completion: completion)
+                                  completion: mainActorCallback(completion))
         }
     }
 }

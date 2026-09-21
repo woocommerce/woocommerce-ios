@@ -85,17 +85,20 @@ private extension ProductVariationStore {
                                               pageNumber: Int,
                                               pageSize: Int,
                                               onCompletion: @escaping (Result<(variations: [ProductVariation], hasNextPage: Bool), Error>) -> Void) {
-        Task { @MainActor in
-            do {
-                let variations = try await remote.loadProductVariations(for: siteID,
-                                                                        productID: productID,
-                                                                        variationIDs: variationIDs,
-                                                                        pageNumber: pageNumber,
-                                                                        pageSize: pageSize,
-                                                                        currency: currency)
-                onCompletion(.success((variations, variations.count == pageSize)))
-            } catch {
-                onCompletion(.failure(error))
+        // The action owns this callback and transfers it exactly once to the task.
+        nonisolated(unsafe) let onCompletion = onCompletion
+        Task {
+            let result = await Result {
+                try await remote.loadProductVariations(for: siteID,
+                                                       productID: productID,
+                                                       variationIDs: variationIDs,
+                                                       pageNumber: pageNumber,
+                                                       pageSize: pageSize,
+                                                       currency: currency)
+            }
+
+            await MainActor.run {
+                onCompletion(result.map { ($0, $0.count == pageSize) })
             }
         }
     }
@@ -381,6 +384,10 @@ private extension ProductVariationStore {
         }
     }
 }
+
+// ProductVariationStore only holds immutable, thread-safe collaborators. Persistence is routed through
+// ProductVariationStorageManager, so transferring the store to its tasks does not expose mutable state.
+extension ProductVariationStore: @unchecked Sendable {}
 private extension ProductVariationStore {
     /// Recursively sync all product variations starting with the given page number and using a maximum page size.
     ///

@@ -170,14 +170,20 @@ private extension ProductCategoryStore {
     /// Updates an existing product category.
     ///
     func updateProductCategory(_ category: ProductCategory, onCompletion: @escaping (Result<ProductCategory, Error>) -> Void) {
-        Task { @MainActor in
-            do {
-                let updatedCategory = try await remote.updateProductCategory(category)
-                upsertStoredProductCategoriesInBackground([updatedCategory], siteID: updatedCategory.siteID) {
-                    onCompletion(.success(updatedCategory))
+        // The action owns this callback and transfers it exactly once to the task.
+        nonisolated(unsafe) let onCompletion = onCompletion
+        Task {
+            let result = await Result { try await remote.updateProductCategory(category) }
+
+            await MainActor.run {
+                switch result {
+                case .success(let updatedCategory):
+                    upsertStoredProductCategoriesInBackground([updatedCategory], siteID: updatedCategory.siteID) {
+                        onCompletion(.success(updatedCategory))
+                    }
+                case .failure(let error):
+                    onCompletion(.failure(error))
                 }
-            } catch {
-                onCompletion(.failure(error))
             }
         }
     }
@@ -185,18 +191,29 @@ private extension ProductCategoryStore {
     /// Deletes an existing product category.
     ///
     func deleteProductCategory(siteID: Int64, categoryID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        Task { @MainActor in
-            do {
+        nonisolated(unsafe) let onCompletion = onCompletion
+        Task {
+            let result: Result<Void, Error> = await Result {
                 try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)
-                deleteUnusedStoredProductCategories(siteID: siteID) {
-                    onCompletion(.success(()))
+            }
+
+            await MainActor.run {
+                switch result {
+                case .success:
+                    deleteUnusedStoredProductCategories(siteID: siteID) {
+                        onCompletion(.success(()))
+                    }
+                case .failure(let error):
+                    onCompletion(.failure(error))
                 }
-            } catch {
-                onCompletion(.failure(error))
             }
         }
     }
 }
+
+// ProductCategoryStore only holds immutable, thread-safe collaborators. Persistence is routed through
+// StorageManager's queues, so transferring the store to its tasks does not expose mutable state.
+extension ProductCategoryStore: @unchecked Sendable {}
 
 // MARK: - Storage: ProductCategory
 //

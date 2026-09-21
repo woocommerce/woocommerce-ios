@@ -135,8 +135,7 @@ status and durations. Credential values are passed in a minimal subprocess
 environment and are never written to the summary or echoed in commands.
 
 The CI wrapper accepts `phone-full`; the scheduled
-`phone-full` lane is non-gating and feeds its JUnit to Test Analytics. The
-four-flow `release` profile remains unchanged while quarantined flows mature.
+`phone-full` lane is non-gating and feeds its JUnit to Test Analytics.
 
 ## State and destructive data
 

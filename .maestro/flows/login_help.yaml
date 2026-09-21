@@ -3,8 +3,7 @@
 appId: ${APP_ID}
 name: "Login - Help section"
 tags:
-  - smoke_extended
-  - flaky_quarantine
+  - smoke_core
   - login
 ---
 - launchApp:

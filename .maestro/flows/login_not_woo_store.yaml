@@ -5,8 +5,7 @@
 appId: ${APP_ID}
 name: "Login - Not a WooCommerce store error"
 tags:
-  - smoke_extended
-  - flaky_quarantine
+  - smoke_core
   - login
 ---
 - launchApp:

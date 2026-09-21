@@ -3,8 +3,7 @@
 appId: ${APP_ID}
 name: "Login - No Jetpack via site credentials"
 tags:
-  - smoke_extended
-  - flaky_quarantine
+  - smoke_core
   - login
 ---
 - launchApp:

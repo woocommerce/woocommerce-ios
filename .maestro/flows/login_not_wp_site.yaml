@@ -3,8 +3,7 @@
 appId: ${APP_ID}
 name: "Login - Not a WordPress site error"
 tags:
-  - smoke_extended
-  - flaky_quarantine
+  - smoke_core
   - login
 ---
 - launchApp:

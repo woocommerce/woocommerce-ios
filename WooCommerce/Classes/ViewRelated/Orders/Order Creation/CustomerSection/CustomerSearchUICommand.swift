@@ -110,15 +110,6 @@ final class CustomerSearchUICommand: SearchUICommand {
         guard showSearchFilters else {
             return nil
         }
-        var headerView: UIView?
-        MainActor.assumeIsolated {
-            headerView = makeSearchFiltersHeaderView()
-        }
-        return headerView
-    }
-
-    @MainActor
-    private func makeSearchFiltersHeaderView() -> UIView {
         let segmentedControl: UISegmentedControl = {
             let segmentedControl = UISegmentedControl()
 
@@ -171,9 +162,7 @@ final class CustomerSearchUICommand: SearchUICommand {
         let message = NSMutableAttributedString(string: format)
 
         message.replaceFirstOccurrence(of: "%@", with: boldSearchKeyword)
-        MainActor.assumeIsolated {
-            viewController.configure(.simple(message: message, image: .magnifyingGlassNotFound))
-        }
+        viewController.configure(.simple(message: message, image: .magnifyingGlassNotFound))
     }
 
     func createCellViewModel(model: Customer) -> UnderlineableTitleAndSubtitleAndDetailTableViewCell.ViewModel {
@@ -236,7 +225,7 @@ final class CustomerSearchUICommand: SearchUICommand {
 }
 
 private extension CustomerSearchUICommand {
-    func createStarterViewControllerForEmptySearch(disallowCreatingCustomer: Bool) -> UIViewController? {
+    func createStarterViewControllerForEmptySearch(disallowCreatingCustomer: Bool) -> UIViewController {
         let configuration: EmptyStateViewController.Config
 
         if disallowCreatingCustomer {
@@ -256,12 +245,9 @@ private extension CustomerSearchUICommand {
             }
         }
 
-        var emptyStateViewController: UIViewController?
-        MainActor.assumeIsolated {
-            let viewController = EmptyStateViewController(style: .list)
-            viewController.configure(configuration)
-            emptyStateViewController = viewController
-        }
+        let emptyStateViewController = EmptyStateViewController(style: .list)
+        emptyStateViewController.configure(configuration)
+
         return emptyStateViewController
     }
 

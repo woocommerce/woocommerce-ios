@@ -751,7 +751,7 @@ private extension OrderListViewController {
         NSLayoutConstraint.activate([
             childView.leadingAnchor.constraint(equalTo: tableView.leadingAnchor),
             childView.trailingAnchor.constraint(equalTo: tableView.trailingAnchor),
-            childView.topAnchor.constraint(equalTo: tableView.topAnchor),
+            childView.topAnchor.constraint(equalTo: tableView.topAnchor, constant: tableView.contentInset.top),
             childView.bottomAnchor.constraint(equalTo: tableView.bottomAnchor)
         ])
         childController.didMove(toParent: self)

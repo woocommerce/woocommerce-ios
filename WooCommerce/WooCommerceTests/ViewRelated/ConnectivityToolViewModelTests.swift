@@ -23,10 +23,7 @@ struct ConnectivityToolViewModelTests {
         let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
 
         // When
-        guard case let .completed(result) = await sut.testAnalyticsSetting() else {
-            Issue.record("Expected a completed analytics test")
-            return
-        }
+        let result = await sut.testAnalyticsSetting()
 
         // Then
         assertState(result, is: .success)
@@ -46,10 +43,7 @@ struct ConnectivityToolViewModelTests {
         let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
 
         // When
-        guard case let .completed(result) = await sut.testAnalyticsSetting() else {
-            Issue.record("Expected a completed analytics test")
-            return
-        }
+        let result = await sut.testAnalyticsSetting()
 
         // Then
         guard case let .error(message, actions) = result else {
@@ -75,10 +69,7 @@ struct ConnectivityToolViewModelTests {
         let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
 
         // When
-        guard case let .completed(result) = await sut.testAnalyticsSetting() else {
-            Issue.record("Expected a completed analytics test")
-            return
-        }
+        let result = await sut.testAnalyticsSetting()
 
         // Then
         guard case let .error(_, actions) = result else {
@@ -102,11 +93,11 @@ struct ConnectivityToolViewModelTests {
         let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
 
         // When
-        let outcome = await sut.testAnalyticsSetting()
+        let result = await sut.testAnalyticsSetting()
 
         // Then
-        guard case .skipped = outcome else {
-            Issue.record("Expected .skipped outcome but got \(outcome)")
+        guard case .skipped = result else {
+            Issue.record("Expected .skipped state but got \(result)")
             return
         }
     }
@@ -129,10 +120,7 @@ struct ConnectivityToolViewModelTests {
         let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
 
         // Run the analytics test to get back the error state with the enable action.
-        guard case let .completed(testResult) = await sut.testAnalyticsSetting() else {
-            Issue.record("Expected a completed analytics test")
-            return
-        }
+        let testResult = await sut.testAnalyticsSetting()
         guard case let .error(_, actions) = testResult,
               let enableAction = actions.first(where: { $0.title == "Enable Analytics" }) else {
             Issue.record("Expected error card with Enable Analytics action but got \(testResult)")
@@ -176,10 +164,7 @@ struct ConnectivityToolViewModelTests {
         let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
 
         // Run the analytics test to get back the error state with the enable action.
-        guard case let .completed(testResult) = await sut.testAnalyticsSetting() else {
-            Issue.record("Expected a completed analytics test")
-            return
-        }
+        let testResult = await sut.testAnalyticsSetting()
         guard case let .error(_, actions) = testResult,
               let enableAction = actions.first(where: { $0.title == "Enable Analytics" }) else {
             Issue.record("Expected error card with Enable Analytics action but got \(testResult)")

@@ -154,22 +154,17 @@ final class ConnectivityToolViewModel {
             let startTime = Date()
 
             // Run the test.
-            let outcome = await runTest(for: testCase)
+            let testResult = await runTest(for: testCase)
 
             // Time taken snapshot
             let timeTaken = Date().timeIntervalSince(startTime)
 
-            let testResult: ConnectivityToolCard.ConnectivityState
-            switch outcome {
-            case .completed(let state):
-                testResult = state
-            case .skipped(let reason):
+            if case .skipped(let reason) = testResult {
                 // The site cannot answer this test: drop its card, keep the reason for support, move on.
                 DDLogInfo("Connectivity Tool: ⏭️ Skipped \(testCase.title): \(reason)")
                 cards.remove(at: cardIndex)
                 trackResponseEvent(for: testCase, success: true, timeTaken: timeTaken, skipped: true)
-                // `.empty` never reaches a card here; it only carries the reason into the support attachment.
-                latestTestResult.append(ConnectivityTestResult(testCase: testCase, result: .empty(reason), timeTaken: timeTaken))
+                latestTestResult.append(ConnectivityTestResult(testCase: testCase, result: testResult, timeTaken: timeTaken))
                 continue
             }
 
@@ -231,22 +226,22 @@ final class ConnectivityToolViewModel {
 
     /// Perform the test for a provided test case.
     ///
-    private func runTest(for connectivityTest: ConnectivityTest) async -> TestOutcome {
+    private func runTest(for connectivityTest: ConnectivityTest) async -> ConnectivityToolCard.ConnectivityState {
         switch connectivityTest {
         case .internetConnection:
-            return .completed(await testInternetConnectivity())
+            return await testInternetConnectivity()
         case .wpComServers:
-            return .completed(await testWPComServersConnectivity())
+            return await testWPComServersConnectivity()
         case .site:
-            return .completed(await testSiteConnectivity())
+            return await testSiteConnectivity()
         case .siteOrders:
-            return .completed(await testFetchingOrders())
+            return await testFetchingOrders()
         case .loadingProducts:
-            return .completed(await testFetchingProducts())
+            return await testFetchingProducts()
         case .analyticsSetting:
             return await testAnalyticsSetting()
         case .notifications:
-            return .completed(await testNotifications())
+            return await testNotifications()
         }
     }
 
@@ -365,7 +360,7 @@ final class ConnectivityToolViewModel {
     /// Skipped when the site does not expose the setting in its REST API.
     ///
     @MainActor
-    func testAnalyticsSetting() async -> TestOutcome {
+    func testAnalyticsSetting() async -> ConnectivityToolCard.ConnectivityState {
         await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsSetting(siteID: siteID) { [weak self] result in
                 guard let self else { return }
@@ -373,7 +368,7 @@ final class ConnectivityToolViewModel {
                 case .success(let isEnabled):
                     if isEnabled {
                         DDLogInfo("Connectivity Tool: ✅ Analytics setting enabled")
-                        continuation.resume(returning: .completed(.success))
+                        continuation.resume(returning: .success)
                     } else {
                         DDLogInfo("Connectivity Tool: ⚠️ Analytics setting disabled")
                         let enableAction = ConnectivityToolCard.ConnectivityState.Action(
@@ -383,13 +378,13 @@ final class ConnectivityToolViewModel {
                                 self?.enableAnalytics()
                             }
                         )
-                        continuation.resume(returning: .completed(.error(Localization.ErrorMessage.analyticsDisabled,
-                                                                         [enableAction, self.retryAction(for: .analyticsSetting)])))
+                        continuation.resume(returning: .error(Localization.ErrorMessage.analyticsDisabled,
+                                                              [enableAction, self.retryAction(for: .analyticsSetting)]))
                     }
                 case .failure(let error):
                     if let settingError = error as? SettingError, case .settingNotExposed = settingError {
                         DDLogInfo("Connectivity Tool: ⏭️ Analytics setting is not exposed by the site")
-                        continuation.resume(returning: .skipped(reason: Constants.analyticsSettingNotExposedReason))
+                        continuation.resume(returning: .skipped(Constants.analyticsSettingNotExposedReason))
                         return
                     }
                     DDLogError("Connectivity Tool: ❌ Analytics setting check failed\n\(error)")
@@ -399,8 +394,8 @@ final class ConnectivityToolViewModel {
                         systemImage: SystemImages.viewDetails.rawValue,
                         technicalDetails: technicalDetails
                     )
-                    continuation.resume(returning: .completed(.error(Localization.ErrorMessage.analyticsCheckFailed,
-                                                                     [viewDetailsAction, self.retryAction(for: .analyticsSetting)])))
+                    continuation.resume(returning: .error(Localization.ErrorMessage.analyticsCheckFailed,
+                                                          [viewDetailsAction, self.retryAction(for: .analyticsSetting)]))
                 }
             }
             stores.dispatch(action)
@@ -648,6 +643,7 @@ fileprivate struct ConnectivityTestResult {
         case .inProgress: return "In progress"
         case .success: return "Success"
         case .empty(let message): return message
+        case .skipped(let reason): return reason
         case .error(_, let actions):
             let lines = actions.compactMap { $0.technicalDetails }
             return lines.joined(separator: "\n")
@@ -762,13 +758,6 @@ private extension ConnectivityToolViewModel {
 }
 
 extension ConnectivityToolViewModel {
-    /// Outcome of running a single connectivity test.
-    enum TestOutcome {
-        case completed(ConnectivityToolCard.ConnectivityState)
-        /// The site cannot answer this test; the reason is kept for the support attachment only.
-        case skipped(reason: String)
-    }
-
     enum ConnectivityTest: Int {
         case internetConnection
         case wpComServers

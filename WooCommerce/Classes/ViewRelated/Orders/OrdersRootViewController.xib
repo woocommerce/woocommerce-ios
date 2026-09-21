@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OrdersRootViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="stackView" destination="bmb-Ce-s8B" id="NWs-gs-wdo"/>
+                <outlet property="stackViewTopConstraint" destination="hba-lC-L9V" id="I6W-Ix-5PB"/>
                 <outlet property="view" destination="i5M-Pr-FkT" id="sfx-zR-JGt"/>
             </connections>
         </placeholder>

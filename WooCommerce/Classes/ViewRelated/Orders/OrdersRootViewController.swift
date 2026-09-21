@@ -10,6 +10,7 @@ final class OrdersRootViewController: UIViewController {
 
     // The stack view which will contain the top bar filters and the order list.
     @IBOutlet private weak var stackView: UIStackView!
+    @IBOutlet private weak var stackViewTopConstraint: NSLayoutConstraint!
 
     // MARK: Child view controller
     private lazy var orderListViewModel = OrderListViewModel(siteID: siteID, filters: filters)
@@ -463,6 +464,8 @@ private extension OrdersRootViewController {
         // The list table lives in a child controller, so register it from the root
         // controller that owns the navigation item for native large title tracking.
         setContentScrollView(ordersViewController.tableView, for: [.top, .bottom])
+        stackViewTopConstraint.isActive = false
+        stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
     }
 

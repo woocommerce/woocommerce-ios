@@ -3,6 +3,7 @@
 
 25.8
 -----
+- [*] Login: Fix account matching for www and non-www store addresses [https://github.com/woocommerce/woocommerce-ios/pull/17906]
 
 
 25.7

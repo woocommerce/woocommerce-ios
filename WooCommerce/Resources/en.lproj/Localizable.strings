@@ -59,9 +59,6 @@ which should be translated separately and considered part of this sentence. */
 /* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
 "%1$@ off · %2$@" = "%1$@ off · %2$@";
 
-/* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
-"%1$@ refund requested (%2$@)" = "%1$@ refund requested (%2$@)";
-
 /* Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected */
 "%1$@ selected" = "%1$@ selected";
 
@@ -697,9 +694,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
 "Amount (%@)" = "Amount (%@)";
-
-/* Title of shipping label eligible refund amount in Refund Shipping Label screen */
-"Amount Eligible For Refund" = "Amount Eligible For Refund";
 
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
@@ -3156,6 +3150,42 @@ which should be translated separately and considered part of this sentence. */
 
 /* Country option for a site address. */
 "Colombia" = "Colombia";
+
+/* Description shown when asking for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.description" = "A security plugin may move the WordPress dashboard. Enter the address you use to open it.";
+
+/* Placeholder for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.placeholder" = "WordPress dashboard address";
+
+/* Title shown when asking for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.title" = "Where is your store’s dashboard?";
+
+/* Browser authentication button shown during custom address recovery. */
+"com.woocommerce.siteCredentials.recovery.browserAlternative" = "Try signing in with your browser instead";
+
+/* Button returning to the username and password form. */
+"com.woocommerce.siteCredentials.recovery.cancel" = "Cancel";
+
+/* Error shown when no WordPress dashboard exists at the custom address. */
+"com.woocommerce.siteCredentials.recovery.error.adminNotFound" = "We couldn’t reach the WordPress dashboard at that address. Check it and try again.";
+
+/* Error shown when a custom WordPress address does not belong to the current site. */
+"com.woocommerce.siteCredentials.recovery.error.differentSite" = "Enter an address on the same site without changing its secure connection or port.";
+
+/* Error shown when a custom WordPress address is not a full web address. */
+"com.woocommerce.siteCredentials.recovery.error.invalidURL" = "Enter a full web address, including http:// or https://.";
+
+/* Error shown when no WordPress sign-in page exists at the custom address. */
+"com.woocommerce.siteCredentials.recovery.error.loginNotFound" = "We couldn’t find a WordPress sign-in page at that address. Check it and try again.";
+
+/* Description shown when asking for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.description" = "A security plugin may use a custom WordPress sign-in address. Enter the address you use to sign in.";
+
+/* Placeholder for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.placeholder" = "WordPress sign-in address";
+
+/* Title shown when asking for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.title" = "Where do you sign in to your store?";
 
 /* Message displayed if there are no inbox notes to display in the inbox screen. */
 "Come back soon for more tips and insights on growing your store." = "Come back soon for more tips and insights on growing your store.";
@@ -11488,9 +11518,6 @@ which should be translated separately and considered part of this sentence. */
 /* Country option for a site address. */
 "Puerto Rico" = "Puerto Rico";
 
-/* Title of shipping label purchase date in Refund Shipping Label screen */
-"Purchase Date" = "Purchase Date";
-
 /* Create Shipping Label form -> Purchase Label button */
 "Purchase Label" = "Purchase Label";
 
@@ -11933,9 +11960,6 @@ which should be translated separately and considered part of this sentence. */
 /* Error message. Presented to users after an in-person refund fails */
 "Refund failed" = "Refund failed";
 
-/* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
-"Refund Label (%1$@)" = "Refund Label (%1$@)";
-
 /* Alert title when starting the in-person refund flow without a user name. */
 "Refund payment" = "Refund payment";
 
@@ -12084,8 +12108,7 @@ which should be translated separately and considered part of this sentence. */
 /* Title of the report section on the privacy screen */
 "Reports" = "Reports";
 
-/* Navigation bar title to request a refund for a shipping label
-   Request a refund on a shipping label from the shipping label more menu action sheet */
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Request a Refund";
 
 /* Name text field placeholder in Shipping Label Address Validation when it's required
@@ -12829,11 +12852,44 @@ which should be translated separately and considered part of this sentence. */
 /* Message describing the account a user has signed in to.Reads as: Signed is as @{username}Parameters: %1$@ - user name */
 "Signed in as @%1$@" = "Signed in as @%1$@";
 
-/* PermissionKit description shown when the app age rating changes.ratingCode: %1$d is the new rating code. */
-"significantChangeConsent.ageRatingChange.description" = "App age rating changed to %1$d.";
+/* Description a parent or guardian sees in the system consent request when the app's App Store age rating changes. */
+"significantChangeConsent.ageRatingChange.request.description" = "The app's App Store age rating has increased.";
 
-/* PermissionKit description shown for a manual significant change.manualChangeID: %1$@ is a short description. */
-"significantChangeConsent.manual.description" = "Significant app update: %1$@.";
+/* Button on the significant-change blocking screen that sends the approval request again. */
+"significantChangeConsent.blocking.askAgain.button" = "Ask Again";
+
+/* Button on the significant-change blocking screen that re-checks the approval status. */
+"significantChangeConsent.blocking.checkAgain.button" = "Check Again";
+
+/* Button on the significant-change blocking screen that dismisses it after the approval was granted. */
+"significantChangeConsent.blocking.continue.button" = "Continue";
+
+/* Message of the blocking screen shown when a parent/guardian declined the approval for a significant app change. */
+"significantChangeConsent.blocking.denied.message" = "A parent or guardian declined the approval needed to continue using this app. You can send the approval request again.";
+
+/* Title of the blocking screen shown when a parent/guardian declined the approval for a significant app change. */
+"significantChangeConsent.blocking.denied.title" = "Approval Declined";
+
+/* Message of the blocking screen shown once a parent/guardian approved the significant app change, before the user continues into the app. */
+"significantChangeConsent.blocking.granted.message" = "Your parent or guardian approved the recent changes to this app. You're all set.";
+
+/* Title of the blocking screen shown once a parent/guardian approved the significant app change, before the user continues into the app. */
+"significantChangeConsent.blocking.granted.title" = "Approval Granted";
+
+/* Message of the blocking screen shown when a significant app change requires a parent/guardian approval that hasn't been requested yet. */
+"significantChangeConsent.blocking.needed.message" = "Recent changes to this app need to be approved by your parent or guardian before you can continue. Send them an approval request to proceed.";
+
+/* Title of the blocking screen shown when a significant app change requires a parent/guardian approval that hasn't been requested yet. */
+"significantChangeConsent.blocking.needed.title" = "Approval Needed";
+
+/* Message of the blocking screen shown after an approval request for a significant app change was sent to a parent/guardian and is awaiting their response. */
+"significantChangeConsent.blocking.pendingRequested.message" = "We've sent an approval request for recent changes to this app to your parent or guardian. Once they respond, tap Check Again to continue.";
+
+/* Title of the blocking screen shown after an approval request for a significant app change was sent to a parent/guardian and is awaiting their response. */
+"significantChangeConsent.blocking.pendingRequested.title" = "Approval Requested";
+
+/* Button on the significant-change blocking screen that sends the approval request to a parent/guardian. */
+"significantChangeConsent.blocking.requestApproval.button" = "Request Approval";
 
 /* Display label for simple product type. */
 "Simple" = "Simple";
@@ -12954,9 +13010,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message in the Add Edit Coupon screen when the update of the coupon goes in error. */
 "Something went wrong while updating the coupon." = "Something went wrong while updating the coupon.";
-
-/* Notice format when a shipping label refund request fails. */
-"Something went wrong with the refund. Please try again." = "Something went wrong with the refund. Please try again.";
 
 /* Error message for when we can't create variations remotely
    Error message for when we can't fetch existing variations. */
@@ -13152,6 +13205,18 @@ which should be translated separately and considered part of this sentence. */
 /* VoiceOver value announced for an unselected checkbox. */
 "storeCheckbox.accessibilityValue.unchecked" = "Unchecked";
 
+/* Explanation shown when the app cannot reach the merchant's store because of a problem on their site. */
+"storeConnectionError.body.v2" = "We're having trouble connecting to your store. This is usually a connection issue on your WordPress site, often caused by a security plugin, a recent plugin update, or a Jetpack connection that needs to be refreshed. The WooCommerce app can't fix this from your phone.";
+
+/* Title of the button that opens the support form from the store connection warning. */
+"storeConnectionError.contactSupport" = "Contact support";
+
+/* Title of the button that hides the store connection warning for the current session. */
+"storeConnectionError.dismiss" = "Dismiss";
+
+/* Title of the warning shown when the app cannot reach the merchant's store. */
+"storeConnectionError.title" = "Your store can't be reached";
+
 /* Default accessibility label for dismissing a store notice banner. */
 "storeNoticeBanner.dismiss.accessibilityLabel" = "Dismiss";
 
@@ -13241,6 +13306,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback label for a store stats widget site entity when its name is unknown. */
 "storeStatsWidget.storeEntity.fallbackName" = "Store";
+
+/* VoiceOver label of the back control in a top app bar. */
+"storeTopAppBar.navigation.back" = "Back";
+
+/* VoiceOver label of the close control in a top app bar. */
+"storeTopAppBar.navigation.close" = "Close";
 
 /* Range label for the Last Month option in the Store Stats widget */
 "storeWidgets.dateRange.lastMonth" = "Last Month";
@@ -13518,6 +13589,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic error message shown when an AI support chat request fails */
 "supportChatViewModel.aiChatConnectionErrorMessage" = "We couldn't connect to AI chat right now.";
+
+/* Error message shown when device registration for push notifications fails from support chat */
+"supportChatViewModel.deviceRegistrationErrorMessage" = "We couldn't register your device for push notifications. Please try again.";
 
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Hello! I'm your Woo Mobile Support Bot. Is there anything I can help you with today?";
@@ -16920,6 +16994,9 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Error message in the Push Notifications Benefits View for users without admin role */
 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.noPermission" = "Your account does not have permission to complete push notifications setup. Please ask your store administrator to handle this.";
 
+/* Error message in the Push Notifications Benefits View when the store's Jetpack is in Offline Mode */
+"wpcomPushNotificationsBenefitsViewModel.variantCheckError.storeInOfflineMode" = "Push notifications can’t be set up because your store is in Offline Mode. If you still need help, please contact support.";
+
 /* Title in the product description AI generator view. */
 "Write a description" = "Write a description";
 
@@ -16989,9 +17066,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "You can only add variable subscriptions in the web dashboard";
-
-/* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process.";
 
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode/ZIP in wp-admin > WooCommerce > Settings (General)" = "You can set your store's postcode/ZIP in wp-admin > WooCommerce > Settings (General)";

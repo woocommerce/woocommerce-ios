@@ -181,8 +181,12 @@ private extension QRLoginCoordinator {
     }
 
     func fallbackToSiteAddress() {
+        // The "came from QR" signal is preserved by the `.qrLoginFallback` click above,
+        // still tracked under the prologue's `login_qr` flow. The site-address screen
+        // itself must track under its own `login_site_address` flow — the merchant chose
+        // not to use QR — so no flow override is passed here. (WOOMOB-4152)
         analytics.trackClick(.qrLoginFallback)
-        NavigateToEnterSite(trackedFlow: .loginQR).execute(from: navigationController)
+        NavigateToEnterSite().execute(from: navigationController)
     }
 
     static func copyLoginURL() {

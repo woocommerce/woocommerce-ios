@@ -1,4 +1,3 @@
-
 public struct POSReceiptInformation: Equatable {
     public let storeName: String?
     public let storeAddress: String?

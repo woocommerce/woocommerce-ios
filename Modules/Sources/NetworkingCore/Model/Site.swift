@@ -1,6 +1,5 @@
 import Foundation
 import Codegen
-import struct NetworkingCore.JetpackSite
 
 /// Represents a WordPress.com Site.
 ///
@@ -97,17 +96,11 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
     ///
     public let applicationPasswordAvailable: Bool
 
-    /// Whether the site is running on Garden architecture
+    /// Whether the site URL supplied by the server used HTTP and was normalized to HTTPS.
     ///
-    public let isGarden: Bool
-
-    /// The site Garden name is present
-    ///
-    public let gardenName: String?
-
-    /// The site Garden partner if present
-    ///
-    public let gardenPartner: String?
+    /// `nil` means this information was unavailable, for example when restoring a site
+    /// from local storage created before this property existed.
+    public let wasURLNormalizedToHTTPS: Bool?
 
     /// Decodable Conformance.
     ///
@@ -117,7 +110,8 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         let siteID = try siteContainer.decode(Int64.self, forKey: .siteID)
         let name = try siteContainer.decode(String.self, forKey: .name)
         let description = try siteContainer.decode(String.self, forKey: .description)
-        let url = Self.safeURL(try siteContainer.decode(String.self, forKey: .url))
+        let originalURL = try siteContainer.decode(String.self, forKey: .url)
+        let url = originalURL.normalizedToHTTPS()
         let capabilitiesContainer = try siteContainer.nestedContainer(keyedBy: CapabilitiesKeys.self, forKey: .capabilities)
         let isSiteOwner = try capabilitiesContainer.decode(Bool.self, forKey: .isSiteOwner)
         let isAdmin = try capabilitiesContainer.decode(Bool.self, forKey: .isAdmin)
@@ -130,8 +124,8 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         let jetpackConnectionActivePlugins = try optionsContainer.decodeIfPresent([String].self, forKey: .jetpackConnectionActivePlugins) ?? []
         let timezone = try optionsContainer.decode(String.self, forKey: .timezone)
         let gmtOffset = try optionsContainer.decode(Double.self, forKey: .gmtOffset)
-        let adminURL = Self.safeURL(try optionsContainer.decode(String.self, forKey: .adminURL))
-        let loginURL = Self.safeURL(try optionsContainer.decode(String.self, forKey: .loginURL))
+        let adminURL = try optionsContainer.decode(String.self, forKey: .adminURL).normalizedToHTTPS()
+        let loginURL = try optionsContainer.decode(String.self, forKey: .loginURL).normalizedToHTTPS()
         let frameNonce = try optionsContainer.decode(String.self, forKey: .frameNonce)
         let canBlaze = optionsContainer.failsafeDecodeIfPresent(booleanForKey: .canBlaze) ?? false
         let visibility = optionsContainer.failsafeDecodeIfPresent(SiteVisibility.self, forKey: .visibility) ?? .privateSite
@@ -152,14 +146,6 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
             return jetpackModules.contains(OptionKeys.sso.rawValue) == true
         }()
 
-        let isGarden = try siteContainer.decodeIfPresent(Bool.self, forKey: .isGarden) ?? false
-        let gardenName = try siteContainer.decodeIfPresent(String.self, forKey: .gardenName)
-        let gardenPartner = try siteContainer.decodeIfPresent(String.self, forKey: .gardenPartner)
-
-        // On CIAB commerce garden sites, `woocommerce_is_active` can be false even though
-        // WooCommerce is expected to be present. Bypass the flag for these sites.
-        let effectiveWooCommerceActive = isWooCommerceActive || Site.isCIAB(isGarden: isGarden, gardenName: gardenName)
-
         self.init(siteID: siteID,
                   name: name,
                   description: description,
@@ -172,7 +158,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                   isAIAssistantFeatureActive: isAIAssistantFeatureActive,
                   isJetpackThePluginInstalled: isJetpackThePluginInstalled,
                   isJetpackConnected: isJetpackConnected,
-                  isWooCommerceActive: effectiveWooCommerceActive,
+                  isWooCommerceActive: isWooCommerceActive,
                   isWordPressComStore: isWordPressComStore,
                   jetpackConnectionActivePlugins: jetpackConnectionActivePlugins,
                   timezone: timezone,
@@ -183,9 +169,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                   wasEcommerceTrial: wasEcommerceTrial,
                   hasSSOEnabled: hasSSOEnabled,
                   applicationPasswordAvailable: false, // to be updated by fetching SiteAPI
-                  isGarden: isGarden,
-                  gardenName: gardenName,
-                  gardenPartner: gardenPartner)
+                  wasURLNormalizedToHTTPS: originalURL.requiresHTTPSNormalization)
     }
 
     /// Designated Initializer.
@@ -213,9 +197,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                 wasEcommerceTrial: Bool,
                 hasSSOEnabled: Bool,
                 applicationPasswordAvailable: Bool,
-                isGarden: Bool,
-                gardenName: String?,
-                gardenPartner: String?) {
+                wasURLNormalizedToHTTPS: Bool? = nil) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -239,9 +221,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         self.wasEcommerceTrial = wasEcommerceTrial
         self.hasSSOEnabled = hasSSOEnabled
         self.applicationPasswordAvailable = applicationPasswordAvailable
-        self.isGarden = isGarden
-        self.gardenName = gardenName
-        self.gardenPartner = gardenPartner
+        self.wasURLNormalizedToHTTPS = wasURLNormalizedToHTTPS
     }
 }
 
@@ -269,14 +249,6 @@ public extension Site {
     var isSimpleSite: Bool {
         plan == WooConstants.freePlanSlug
     }
-
-    static func isCIAB(isGarden: Bool, gardenName: String?) -> Bool {
-        isGarden && gardenName ==  Constants.commerceGardenName
-    }
-
-    var isCIAB: Bool {
-        Site.isCIAB(isGarden: isGarden, gardenName: gardenName)
-    }
 }
 
 /// Defines all of the Site CodingKeys.
@@ -295,9 +267,6 @@ private extension Site {
         case isJetpackConnected          = "jetpack_connection"
         case wasEcommerceTrial           = "was_ecommerce_trial"
         case jetpackModules = "jetpack_modules"
-        case isGarden = "is_garden"
-        case gardenName = "garden_name"
-        case gardenPartner = "garden_partner"
     }
 
     enum PlanInfo: String, CodingKey {
@@ -344,21 +313,6 @@ public enum SiteVisibility: Int, Codable, GeneratedFakeable {
 /// Computed properties
 ///
 public extension Site {
-
-    /// Force URL to use HTTPS if possible to avoid App Transport Security errors
-    private static func safeURL(_ url: String) -> String {
-        guard let originalURL = URL(string: url),
-              originalURL.scheme?.lowercased() == "http"
-        else {
-            return url
-        }
-
-        var components = URLComponents(url: originalURL, resolvingAgainstBaseURL: false)
-        components?.scheme = "https"
-
-        return components?.string ?? url
-    }
-
     /// Returns the TimeZone using the gmtOffset
     ///
     var siteTimezone: TimeZone {
@@ -380,6 +334,5 @@ public extension Site {
 private extension Site {
     enum Constants {
         static let aiAssistantFeature = "ai-assistant"
-        static let commerceGardenName = "commerce"
     }
 }

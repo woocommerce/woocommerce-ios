@@ -7,7 +7,7 @@ import Storage
 public final class SystemStatusStore: Store {
     private let remote: SystemStatusRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = SystemStatusRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -20,7 +20,7 @@ public final class SystemStatusStore: Store {
 
     /// Receives and executes Actions.
     ///
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? SystemStatusAction else {
             assertionFailure("SystemPluginStore receives an unsupported action!")
             return
@@ -42,7 +42,7 @@ public final class SystemStatusStore: Store {
 // MARK: - Network request
 //
 private extension SystemStatusStore {
-    func synchronizeSystemInformation(siteID: Int64, completionHandler: @escaping (Result<SystemInformation, Error>) -> Void) {
+    func synchronizeSystemInformation(siteID: Int64, completionHandler: @escaping @Sendable (Result<SystemInformation, Error>) -> Void) {
         remote.loadSystemInformation(for: siteID) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -59,7 +59,7 @@ private extension SystemStatusStore {
         }
     }
 
-    func fetchSystemStatusReport(siteID: Int64, completionHandler: @escaping (Result<SystemStatusReport, Error>) -> Void) {
+    func fetchSystemStatusReport(siteID: Int64, completionHandler: @escaping @Sendable (Result<SystemStatusReport, Error>) -> Void) {
         remote.fetchSystemStatusReport(for: siteID, completion: completionHandler)
     }
 }
@@ -87,7 +87,7 @@ private extension SystemStatusStore {
         dispatcher.dispatch(action)
     }
 
-    func fetchSystemPluginWithPath(siteID: Int64, pluginPath: String, onCompletion: @escaping (SystemPlugin?) -> Void) {
+    func fetchSystemPluginWithPath(siteID: Int64, pluginPath: String, onCompletion: @escaping @Sendable (SystemPlugin?) -> Void) {
         let viewStorage = storageManager.viewStorage
         onCompletion(viewStorage.loadSystemPlugin(siteID: siteID, path: pluginPath)?.toReadOnly())
     }

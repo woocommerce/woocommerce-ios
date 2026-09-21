@@ -61,5 +61,4 @@ final class PaymentsRouteTests: XCTestCase {
         XCTAssertFalse(reportedHandled)
         XCTAssertFalse(deepLinkNavigator.spyDidNavigate)
     }
-
 }

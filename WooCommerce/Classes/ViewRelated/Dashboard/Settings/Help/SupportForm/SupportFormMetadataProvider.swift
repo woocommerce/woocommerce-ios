@@ -1,12 +1,14 @@
 import Foundation
 import CoreTelephony
 import Yosemite
+import class UIKit.UIDevice
 import class WordPressAuthenticator.AuthenticatorAnalyticsTracker
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.ConnectivityObserver
 
 /// Helper that provides general device & site zendesk metadata.
 ///
+@MainActor
 class SupportFormMetadataProvider {
 
     /// Dependencies
@@ -24,18 +26,27 @@ class SupportFormMetadataProvider {
     ///
     private let systemStatusReportViewModel: SystemStatusReportViewModel
 
+    /// Pre-fetched system status report string, if available.
+    ///
+    private let prefetchedSystemStatusReport: String?
+
     internal init(applicationLogProvider: ApplicationLogProvider = ServiceLocator.applicationLogProvider,
                   stores: StoresManager = ServiceLocator.stores,
                   sessionManager: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
                   storageManager: StorageManagerType = ServiceLocator.storageManager,
-                  connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver) {
+                  connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
+                  systemStatusReport: String? = nil) {
         self.applicationLogProvider = applicationLogProvider
         self.stores = stores
         self.sessionManager = sessionManager
         self.storageManager = storageManager
         self.connectivityObserver = connectivityObserver
         self.pluginResultsController = Self.createPluginResultsController(sessionManager: sessionManager, storageManager: storageManager)
+        self.prefetchedSystemStatusReport = systemStatusReport
         self.systemStatusReportViewModel = Self.createSSRViewModel(sessionManager: sessionManager)
+        if systemStatusReport == nil {
+            systemStatusReportViewModel.fetchReport()
+        }
     }
 
     /// Common system & site  tags. Used in Zendesk Forms.
@@ -58,7 +69,6 @@ class SupportFormMetadataProvider {
             site.plan.isNotEmpty ? site.plan : nil,
             stores.isAuthenticatedWithoutWPCom ? Constants.authenticatedWithApplicationPasswordTag : nil,
             stores.requestAuthenticationMode == .appPasswordsWithJetpack ? Constants.jetpackSiteUsingAppPasswords : nil,
-            site.isCIAB ? Constants.ciabTag : nil
         ].compactMap { $0 } + getIPPTags()
     }
 
@@ -69,7 +79,7 @@ class SupportFormMetadataProvider {
             ZendeskFieldsIDs.appVersion: Bundle.main.version,
             ZendeskFieldsIDs.deviceFreeSpace: getDeviceFreeSpace(),
             ZendeskFieldsIDs.logs: getLogFile(),
-            ZendeskFieldsIDs.legacyLogs: systemStatusReportViewModel.statusReport,
+            ZendeskFieldsIDs.legacyLogs: prefetchedSystemStatusReport ?? systemStatusReportViewModel.statusReport,
             ZendeskFieldsIDs.currentSite: getCurrentSiteDescription(),
             ZendeskFieldsIDs.sourcePlatform: Constants.sourcePlatform,
             ZendeskFieldsIDs.appLanguage: Locale.preferredLanguage,
@@ -110,7 +120,6 @@ private extension SupportFormMetadataProvider {
     ///
     private static func createSSRViewModel(sessionManager: SessionManagerProtocol) -> SystemStatusReportViewModel {
         let viewModel = SystemStatusReportViewModel(siteID: sessionManager.defaultSite?.siteID ?? 0)
-        viewModel.fetchReport()
         return viewModel
     }
 
@@ -143,26 +152,7 @@ private extension SupportFormMetadataProvider {
     /// Get the device free space: EG `56.34 GB`
     ///
     func getDeviceFreeSpace() -> String {
-        guard let resourceValues = try? URL(fileURLWithPath: "/").resourceValues(forKeys: [.volumeAvailableCapacityKey]),
-              let capacityBytes = resourceValues.volumeAvailableCapacity else {
-            return Constants.unknownValue
-        }
-
-        // format string using human readable units. ex: 1.5 GB
-        // Since ByteCountFormatter.string translates the string and has no locale setting,
-        // do the byte conversion manually so the Free Space is in English.
-        let sizeAbbreviations = ["bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"]
-        var sizeAbbreviationsIndex = 0
-        var capacity = Double(capacityBytes)
-
-        while capacity > 1024 {
-            capacity /= 1024
-            sizeAbbreviationsIndex += 1
-        }
-
-        let formattedCapacity = String(format: "%4.2f", capacity)
-        let sizeAbbreviation = sizeAbbreviations[sizeAbbreviationsIndex]
-        return "\(formattedCapacity) \(sizeAbbreviation)"
+        UIDevice.current.freeDiskSpaceInEnglish ?? Constants.unknownValue
     }
 
     /// Gets the content of the main/first log file. Trimmed with a character limit.
@@ -180,7 +170,6 @@ private extension SupportFormMetadataProvider {
 
         return "\(site.url) (\(site.description))"
     }
-
 }
 
 // MARK: Definitions
@@ -211,7 +200,6 @@ private extension SupportFormMetadataProvider {
         static let networkWWAN = "Mobile"
         static let sourcePlatform = "mobile_-_woo_ios"
         static let jetpackSiteUsingAppPasswords = "jetpack_site_using_app_passwords"
-        static let ciabTag = "commerce_in_a_box"
     }
 
     /// Payments extensions Slugs

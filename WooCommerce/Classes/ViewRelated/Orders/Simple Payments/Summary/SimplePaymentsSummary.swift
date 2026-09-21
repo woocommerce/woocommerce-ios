@@ -235,7 +235,6 @@ private struct NoteSection: View {
                 }
 
                 noteContent()
-
             }
             .padding()
             .padding(.horizontal, insets: safeAreaInsets)
@@ -252,7 +251,6 @@ private struct NoteSection: View {
 
             Text(viewModel.noteContent)
                 .bodyStyle()
-
         } else {
 
             Button(action: {
@@ -292,7 +290,6 @@ private struct TakePaymentSection: View {
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: viewModel.showLoadingIndicator))
             .padding()
             .accessibilityIdentifier(SimplePaymentsSummary.Accessibility.takePaymentButton)
-
         }
         .background(Color(.listForeground(modal: false)).ignoresSafeArea())
     }
@@ -365,7 +362,7 @@ struct SimplePaymentsSummary_Preview: PreviewProvider {
             .previewDisplayName("Accessibility")
     }
 
-    static private func createSampleViewModel(noteContent: String? = nil) -> SimplePaymentsSummaryViewModel {
+    private static func createSampleViewModel(noteContent: String? = nil) -> SimplePaymentsSummaryViewModel {
         let taxAmount = "$2.3"
         let taxLine: SimplePaymentsSummaryViewModel.TaxLine = .init(id: Int64.random(in: 0 ..< Int64.max),
                                                                     title: "State Tax (5.55%)",

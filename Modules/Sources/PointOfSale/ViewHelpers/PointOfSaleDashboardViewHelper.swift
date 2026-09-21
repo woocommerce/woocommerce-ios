@@ -1,27 +1,21 @@
 import Foundation
-import SwiftUI
 
 struct PointOfSaleDashboardViewHelper {
     static func determineViewState(
         eligibilityState: POSEligibilityState?,
-        itemsContainerState: ItemsContainerState,
-        horizontalSizeClass: UserInterfaceSizeClass?
+        itemsContainerState: ItemsContainerState
     ) -> PointOfSaleDashboardView.ViewState {
 
-        guard case .regular = horizontalSizeClass else {
-            return .unsupportedWidth
-        }
-
         guard let eligibilityState else {
-            return .loading(isCatalogSyncing: itemsContainerState.isCatalogSyncing)
+            return .loading(catalogSyncState: itemsContainerState.catalogSyncState)
         }
 
         switch eligibilityState {
         case .eligible:
             // Check items container state
             switch itemsContainerState {
-            case let .loading(isCatalogSyncing):
-                return .loading(isCatalogSyncing: isCatalogSyncing)
+            case let .loading(catalogSyncState):
+                return .loading(catalogSyncState: catalogSyncState)
             case .error(let error):
                 return .error(error)
             case .content:
@@ -31,12 +25,27 @@ struct PointOfSaleDashboardViewHelper {
             return .ineligible(reason: reason)
         }
     }
+
+    /// Whether the compact-layout cart button should be shown below the item list.
+    ///
+    static func showsCompactCartButton(cartIsEmpty: Bool, floatingControlSuppressed: Bool) -> Bool {
+        !cartIsEmpty && !floatingControlSuppressed
+    }
+
+    /// Whether a barcode scan should auto-open the compact-layout cart sheet.
+    ///
+    /// On compact layout (ie Phone POS) the cart is a sheet, so a scan's outcome (loading row,
+    /// resolved product, or error row) is invisible until the sheet opens. On regular layout
+    /// the cart pane is always visible.
+    static func shouldAutoOpenCartOnScan(isPhoneLayout: Bool, orderStage: PointOfSaleOrderStage) -> Bool {
+        isPhoneLayout && orderStage == .building
+    }
 }
 
 extension PointOfSaleDashboardView.ViewState {
     var showsFloatingControl: Bool {
         switch self {
-        case .content, .unsupportedWidth:
+        case .content:
             return true
         case .error(let error):
             // Hide floating controls for initial catalog sync errors

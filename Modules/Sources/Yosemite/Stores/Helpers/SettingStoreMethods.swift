@@ -19,6 +19,8 @@ internal protocol SettingStoreMethodsProtocol {
     func isFeatureEnabled(siteID: Int64, feature: SiteSettingsFeature) async throws -> Bool
     func retrieveAnalyticsOrderDateType(siteID: Int64) async throws -> AnalyticsOrderDateType
     func updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType) async throws
+    func retrieveAnalyticsImportUpdateMode(siteID: Int64) async throws -> AnalyticsImportUpdateMode
+    func updateAnalyticsImportUpdateMode(siteID: Int64, value: AnalyticsImportUpdateMode) async throws
 }
 
 internal class SettingStoreMethods: SettingStoreMethodsProtocol {
@@ -37,7 +39,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Synchronizes the general site settings associated with the provided Site ID (if any!).
     ///
     func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        siteSettingsRemote.loadGeneralSettings(for: siteID) { [weak self] (settings, error) in
+        siteSettingsRemote.loadGeneralSettings(for: siteID) { [weak self] settings, error in
             guard let settings else {
                 onCompletion(error)
                 return
@@ -52,7 +54,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Synchronizes the product site settings associated with the provided Site ID (if any!).
     ///
     func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        siteSettingsRemote.loadProductSettings(for: siteID) { [weak self] (settings, error) in
+        siteSettingsRemote.loadProductSettings(for: siteID) { [weak self] settings, error in
             guard let settings else {
                 onCompletion(error)
                 return
@@ -123,7 +125,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
                     onCompletion(.success(isEnabled))
                 }
             case .failure(let error):
-                onCompletion(.failure(error))
+                onCompletion(.failure(Self.mapUnexposedSettingError(error)))
             }
         }
     }
@@ -142,7 +144,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
                     onCompletion(.success(Void()))
                 }
             case .failure(let error):
-                onCompletion(.failure(error))
+                onCompletion(.failure(Self.mapUnexposedSettingError(error)))
             }
         }
     }
@@ -192,6 +194,24 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
         _ = try await parseAndCacheAnalyticsOrderDateType(setting, siteID: siteID)
     }
 
+    /// Retrieves the WooCommerce Analytics scheduled-import setting (`woocommerce_analytics_scheduled_import`).
+    ///
+    /// Throws `SettingError.parseError` if the response value cannot be mapped to a known mode.
+    ///
+    func retrieveAnalyticsImportUpdateMode(siteID: Int64) async throws -> AnalyticsImportUpdateMode {
+        let setting = try await siteSettingsRemote.loadAnalyticsScheduledImport(for: siteID)
+        return try await parseAndCacheAnalyticsImportUpdateMode(setting, siteID: siteID)
+    }
+
+    /// Updates the WooCommerce Analytics scheduled-import setting (`woocommerce_analytics_scheduled_import`).
+    ///
+    /// Throws `SettingError.parseError` if the response value cannot be mapped to a known mode.
+    ///
+    func updateAnalyticsImportUpdateMode(siteID: Int64, value: AnalyticsImportUpdateMode) async throws {
+        let setting = try await siteSettingsRemote.updateAnalyticsScheduledImport(for: siteID, value: value.rawValue)
+        _ = try await parseAndCacheAnalyticsImportUpdateMode(setting, siteID: siteID)
+    }
+
     /// Parses the response value into `AnalyticsOrderDateType` and, only on success, caches the SiteSetting locally.
     /// Throws `SettingError.parseError` (without writing to cache) when the value can't be mapped to a known case.
     private func parseAndCacheAnalyticsOrderDateType(_ setting: Networking.SiteSetting, siteID: Int64) async throws -> AnalyticsOrderDateType {
@@ -200,6 +220,16 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
         }
         await upsertSingleStoredSetting(siteID: siteID, readOnlySiteSetting: setting)
         return dateType
+    }
+
+    /// Parses the response value into `AnalyticsImportUpdateMode` and, only on success, caches the SiteSetting locally.
+    /// Treats an empty value, which is what the networking model emits for a `null` setting value, as `.immediate`.
+    private func parseAndCacheAnalyticsImportUpdateMode(_ setting: Networking.SiteSetting, siteID: Int64) async throws -> AnalyticsImportUpdateMode {
+        guard let mode = AnalyticsImportUpdateMode(backendValue: setting.value) else {
+            throw SettingError.parseError
+        }
+        await upsertSingleStoredSetting(siteID: siteID, readOnlySiteSetting: setting.copy(value: mode.rawValue))
+        return mode
     }
 }
 
@@ -249,7 +279,7 @@ private extension SettingStoreMethods {
         // Now, remove any objects that exist in storageSiteSettings but not in readOnlySiteSettings
         if let storageSiteSettings {
             storageSiteSettings.forEach({ storageItem in
-                if readOnlySiteSettings.first(where: { $0.settingID == storageItem.settingID } ) == nil {
+                if !readOnlySiteSettings.contains(where: { $0.settingID == storageItem.settingID }) {
                     storage.deleteObject(storageItem)
                 }
             })
@@ -316,5 +346,24 @@ extension SettingStoreMethods {
 
     private enum SettingValue {
         static let yes = "yes"
+    }
+
+    private enum ErrorCode {
+        static let settingInvalid = "rest_setting_setting_invalid"
+    }
+
+    /// Maps the 404 a site returns for a setting missing from its REST settings API to `SettingError.settingNotExposed`.
+    /// The Jetpack tunnel surfaces it as an unknown `DotcomError`; direct REST as `NetworkError.notFound`.
+    ///
+    private static func mapUnexposedSettingError(_ error: Error) -> Error {
+        if case let .unknown(code, _, _)? = error as? DotcomError, code == ErrorCode.settingInvalid {
+            return SettingError.settingNotExposed
+        }
+        if let networkError = error as? NetworkError,
+           case .notFound = networkError,
+           networkError.errorCode == ErrorCode.settingInvalid {
+            return SettingError.settingNotExposed
+        }
+        return error
     }
 }

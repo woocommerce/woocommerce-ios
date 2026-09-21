@@ -120,7 +120,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                               predefinedOption: WooShippingPredefinedSavedOption?,
                               completion: @escaping (Result<WooShippingCreatePackageResponse, Error>) -> Void) {
         do {
-            var customPackageList: [[String: Any]] = []
+            var customPackageList: [RequestParameterDictionary] = []
             var predefinedOptionDictionary: [String: [String]] = [:]
 
             if let customPackage {
@@ -132,7 +132,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                 throw ShippingError.missingPackage
             }
 
-            let parameters: [String: Any] = [
+            let parameters: RequestParameterConvertibleDictionary = [
                 ParameterKey.custom: customPackageList,
                 ParameterKey.predefined: predefinedOptionDictionary
             ]
@@ -185,7 +185,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                packages: [ShippingLabelPackageSelected],
                                completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         do {
-            let parameters: [String: Any] = [
+            let parameters: RequestParameterConvertibleDictionary = [
                 ParameterKey.orderID: orderID,
                 ParameterKey.originAddress: try originAddress.toDictionary(),
                 ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
@@ -215,7 +215,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     public func loadPackages(siteID: Int64,
                              completion: @escaping (Result<WooShippingPackagesResponse, Error>) -> Void) {
         do {
-            let parameters: [String: Any] = [
+            let parameters: RequestParameterConvertibleDictionary = [
                 ParameterKey.featuresSupported: [Values.upsdap, Values.fedex]
             ]
             let path = Path.packages
@@ -257,7 +257,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     public func updateAccountSettings(siteID: Int64,
                                       settings: ShippingLabelAccountSettings,
                                       completion: @escaping (Result<Bool, Error>) -> Void) {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.selectedPaymentMethodID: settings.selectedPaymentMethodID,
             ParameterKey.emailReceipts: settings.isEmailReceiptsEnabled,
             ParameterKey.enabled: true // This is needed due to the bug WOOSHIP-1410
@@ -291,25 +291,22 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                       package: WooShippingPackagePurchase,
                                       markOrderComplete: Bool?,
                                       completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
-        let userMeta: [String: Any]? = {
-            guard let markOrderComplete else {
-                return nil
-            }
-            return [ParameterKey.lastOrderCompleted: markOrderComplete]
-        }()
         do {
-            let parameters: [String: Any] = [
+            let userMeta: RequestParameterDictionary? = markOrderComplete.map {
+                [ParameterKey.lastOrderCompleted: .bool($0)]
+            }
+            let parameters: RequestParameterConvertibleDictionary = ([
                 ParameterKey.async: true,
                 ParameterKey.originAddress: try originAddress.toDictionary(),
                 ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
-                ParameterKey.packages: [ try package.toDictionary() ],
+                ParameterKey.packages: [try package.toDictionary()],
                 ParameterKey.selectedRate: try package.encodedShipmentRate(),
                 ParameterKey.selectedRateOptions: package.selectedRateOptions,
                 ParameterKey.featuresSupported: [Values.upsdap, Values.fedex],
                 ParameterKey.hazmat: package.encodedHazmat(),
                 ParameterKey.customs: try package.encodedCustomsForm(),
-                ParameterKey.userMeta: userMeta,
-            ].compactMapValues { $0 }
+                ParameterKey.userMeta: userMeta.map { RequestParameterValue.dictionary($0) }
+            ] as OptionalRequestParameterConvertibleDictionary).compactMapValues { $0 }
             let path = "\(Path.purchase)/\(orderID)"
             let request = JetpackRequest(wooApiVersion: .wooShipping,
                                          method: .post,
@@ -357,7 +354,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                            labelIDs: [Int64],
                            paperSize: ShippingLabelPaperSize,
                            completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.paperSize: paperSize.rawValue,
             ParameterKey.labelIDCSV: labelIDs.map(String.init).joined(separator: ",")
         ]
@@ -397,7 +394,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                   address: WooShippingAddress,
                                   completion: @escaping (Result<WooShippingAddressValidationSuccess, Error>) -> Void) {
         do {
-            let parameters = [
+            let parameters: RequestParameterConvertibleDictionary = [
                 ParameterKey.address: try address.toDictionary()
             ]
             let path = "\(Path.normalizeAddress)"
@@ -425,7 +422,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                     isVerified: Bool,
                                     completion: @escaping (Result<WooShippingOriginAddressUpdate, Error>) -> Void) {
         do {
-            let parameters: [String: Any] = [
+            let parameters: RequestParameterConvertibleDictionary = [
                 ParameterKey.address: try address.toDictionary(),
                 ParameterKey.isVerified: isVerified
             ]
@@ -472,7 +469,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                          isVerified: Bool,
                                          completion: @escaping (Result<WooShippingDestinationAddressUpdate, Error>) -> Void) {
         do {
-            let parameters: [String: Any] = [
+            let parameters: RequestParameterConvertibleDictionary = [
                 ParameterKey.address: try address.toDictionary(),
                 ParameterKey.isVerified: isVerified
             ]
@@ -500,7 +497,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                            completion: @escaping (Result<WooShippingConfig, Error>) -> Void) {
         do {
             let path = Path.config(orderID: orderID)
-            let parameters = [
+            let parameters: RequestParameterConvertibleDictionary = [
                 ParameterKey.fields: WooShippingConfigMapper.fieldsToLoad
             ]
             let request = JetpackRequest(wooApiVersion: .wooShipping,
@@ -571,7 +568,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
                                         originAddress: WooShippingAddress,
                                         completion: @escaping(Result<Bool, Error>) -> Void) {
         do {
-            let parameters: [String: Any] = [
+            let parameters: RequestParameterConvertibleDictionary = [
                 ParameterKey.originAddress: try originAddress.toDictionary(),
                 ParameterKey.confirmed: true
             ]
@@ -588,7 +585,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     ///
     public func acceptFedExTermsOfService(siteID: Int64,
                                           completion: @escaping(Result<Bool, Error>) -> Void) {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.confirmed: true
         ]
         acceptCarrierTermsOfService(siteID: siteID, path: Path.fedexCarrierStrategy, parameters: parameters, completion: completion)
@@ -597,7 +594,7 @@ public final class WooShippingRemote: Remote, WooShippingRemoteProtocol {
     /// Sends a carrier ToS acceptance request.
     private func acceptCarrierTermsOfService(siteID: Int64,
                                              path: String,
-                                             parameters: [String: Any],
+                                             parameters: RequestParameterConvertibleDictionary,
                                              completion: @escaping(Result<Bool, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .wooShipping,
                                      method: .post,

@@ -3,6 +3,7 @@ import UIKit
 import WooAIAssistant
 @testable import WooCommerce
 
+@Suite(.timeLimit(.minutes(1)))
 @MainActor
 struct AIAssistantSessionStoreTests {
 
@@ -88,7 +89,6 @@ private func makeStubDependencies() -> AIAssistantDependencyAdaptor {
         analytics: StubAnalytics(),
         externalNavigation: StubNavigation(),
         externalViews: StubExternalViews(),
-        jwtProvider: StubJWT(),
         chatService: StubChatService(),
         toolRegistry: StubToolRegistry(),
         safetyPolicy: DefaultSafetyPolicy(),
@@ -104,22 +104,19 @@ private struct StubAnalytics: AssistantAnalyticsProviding {
     func track(event: String, properties: [String: String]) {}
 }
 
+@MainActor
 private struct StubNavigation: AssistantExternalNavigationProviding {
-    func openOrder(siteID: Int64, orderID: Int64) {}
-    func openProduct(siteID: Int64, productID: Int64) {}
-    func openCustomer(siteID: Int64, customerID: Int64) {}
+    func openOrder(orderID: Int64) {}
+    func openProduct(productID: Int64) {}
+    func openProductVariation(productID: Int64, variationID: Int64) {}
+    func openCustomer(customerID: Int64) {}
 }
 
 private struct StubExternalViews: AssistantExternalViewProviding {}
 
-private struct StubJWT: AssistantJWTProviding {
-    func currentJWT() async throws -> String { "stub" }
-}
-
 private struct StubChatService: AIChatService {
     func streamTurn(messages: [OpenAIChat.Message],
-                    tools: [OpenAIChat.ToolDefinition]?,
-                    toolChoice: OpenAIChat.ToolChoice?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
+                    tools: [OpenAIChat.ToolDefinition]?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
         AsyncThrowingStream { $0.finish() }
     }
 }

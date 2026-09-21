@@ -214,7 +214,6 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertNotNil(firstResult)
         XCTAssertNotNil(secondResult)
     }
-
 }
 
 // MARK: - Utils
@@ -234,7 +233,8 @@ private extension AnnouncementsStoreTests {
                                     Feature.fake().copy(title: "foo",
                                                         subtitle: "bar",
                                                         icons: [FeatureIcon.fake().copy(iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")],
-                                                        iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")])
+                                                        iconUrl: "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
+                                 ])
     }
 
     func makeStorageAnnouncement(displayed: Bool = false) -> StorageAnnouncement {

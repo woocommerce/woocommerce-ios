@@ -220,7 +220,7 @@ private extension CustomFieldsListViewModel {
     func observePendingChanges() {
         $pendingChanges
             .combineLatest($originalCustomFields)
-            .map { (pendingChanges, originalFields) in
+            .map { pendingChanges, originalFields in
                 return originalFields
                     .filter { field in !pendingChanges.deletedFieldIds.contains(where: { $0 == field.fieldID }) }
                     .map { field in pendingChanges.editedFields.first(where: { $0.fieldID == field.fieldID }) ?? field }
@@ -302,10 +302,10 @@ extension CustomFieldsListViewModel {
                                        deletedFieldIds: deletedFieldIds ?? self.deletedFieldIds)
         }
 
-        func asDictionary() -> [[String: Any?]] {
+        func asDictionary() -> [RequestParameterDictionary] {
             return editedFields.map { $0.asDictionary() } +
                 addedFields.map { $0.asDictionary() } +
-                deletedFieldIds.map { ["id": $0, "value": nil] }
+                deletedFieldIds.map { ["id": .int64($0), "value": .null] }
         }
     }
 }

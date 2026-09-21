@@ -22,9 +22,13 @@ struct ApiCredentials {
     ///
     static let tracksPrefix: String = "<#Tracks Prefix#>"
 
-    /// Sentry API Key
+    /// Sentry DSN
     ///
     static let sentryDSN: String = "<#Sentry DSN#>"
+
+    /// Sentry DSN for non-production builds
+    ///
+    static let sentryDSNInternal: String = "<#Sentry DSN Internal#>"
 
     /// Zendesk App ID
     ///

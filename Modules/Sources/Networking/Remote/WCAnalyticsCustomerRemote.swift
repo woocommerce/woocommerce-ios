@@ -24,7 +24,7 @@ public class WCAnalyticsCustomerRemote: Remote {
                                 filter: String,
                                 filterEmpty: FilterEmpty? = nil,
                                 completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = ([
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.orderBy: orderby.rawValue,
@@ -32,7 +32,7 @@ public class WCAnalyticsCustomerRemote: Remote {
             ParameterKey.filterEmpty: filterEmpty?.rawValue,
             ParameterKey.search: keyword,
             ParameterKey.searchBy: filter
-        ].compactMapValues { $0 }
+        ] as OptionalRequestParameterConvertibleDictionary).compactMapValues { $0 }
 
         enqueueRequest(with: parameters, siteID: siteID, completion: completion)
     }
@@ -46,19 +46,21 @@ public class WCAnalyticsCustomerRemote: Remote {
                               order: Order,
                               filterEmpty: FilterEmpty? = nil,
                               completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = ([
             ParameterKey.page: String(pageNumber),
             ParameterKey.perPage: String(pageSize),
             ParameterKey.orderBy: orderby.rawValue,
             ParameterKey.order: order.rawValue,
             ParameterKey.filterEmpty: filterEmpty?.rawValue
-        ].compactMapValues { $0 }
+        ] as OptionalRequestParameterConvertibleDictionary).compactMapValues { $0 }
         enqueueRequest(with: parameters, siteID: siteID, completion: completion)
     }
 }
 
 private extension WCAnalyticsCustomerRemote {
-    func enqueueRequest(with parameters: [String: Any], siteID: Int64, completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
+    func enqueueRequest(with parameters: RequestParameterConvertibleDictionary,
+                        siteID: Int64,
+                        completion: @escaping (Result<[WCAnalyticsCustomer], Error>) -> Void) {
         let path = "customers"
         let request = JetpackRequest(
             wooApiVersion: .wcAnalytics,

@@ -11,7 +11,7 @@ final class BookingsTabViewHostingController: UIHostingController<BookingsTabVie
         configureTabBarItem()
     }
 
-    @MainActor @preconcurrency required dynamic init?(coder aDecoder: NSCoder) {
+    @MainActor @preconcurrency dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -64,7 +64,7 @@ struct BookingsTabView: View {
                     .frame(height: OfflineBannerView.height)
             }
         }
-        .onChange(of: selectedBooking) { _, newValue in
+        .onChange(of: selectedBooking) { _, _ in
             bookingListContainerViewModel.selectedBookingChanged()
         }
     }

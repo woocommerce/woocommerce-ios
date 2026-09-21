@@ -7,11 +7,9 @@ import Yosemite
 final class MockPushNotificationsManager: PushNotesManager {
 
     func disableInAppNotifications() {
-
     }
 
     func enableInAppNotifications() {
-
     }
 
     var foregroundNotifications: AnyPublisher<WooCommerce.PushNotification, Never> {
@@ -43,6 +41,7 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     private let mockedDeviceID: String?
+    let deviceToken: String?
     let wooPushNotificationToken: String?
     private(set) var siteIDsRegisteredForWooPNs: [Int64]
     let hasStoredSiteIDsRegisteredForWooPNs: Bool
@@ -74,10 +73,12 @@ final class MockPushNotificationsManager: PushNotesManager {
     private(set) var registeredSiteIDsForSelfDrivenPushNotifications: [Int64] = []
 
     init(mockedDeviceID: String? = nil,
+         deviceToken: String? = nil,
          wooPushNotificationToken: String? = nil,
          siteIDsRegisteredForWooPNs: [Int64] = [],
          hasStoredSiteIDsRegisteredForWooPNs: Bool? = nil) {
         self.mockedDeviceID = mockedDeviceID
+        self.deviceToken = deviceToken
         self.wooPushNotificationToken = wooPushNotificationToken
         self.siteIDsRegisteredForWooPNs = siteIDsRegisteredForWooPNs
         self.hasStoredSiteIDsRegisteredForWooPNs = hasStoredSiteIDsRegisteredForWooPNs ?? !siteIDsRegisteredForWooPNs.isEmpty
@@ -94,11 +95,9 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     func resetBadgeCountForAllStores(onCompletion: @escaping () -> Void) {
-
     }
 
     func reloadBadgeCount() {
-
     }
 
     @MainActor
@@ -122,7 +121,6 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     func unregisterForRemoteNotifications(onCompletion: @escaping () -> Void) {
-
     }
 
     func ensureAuthorizationIsRequested(includesProvisionalAuth: Bool, onCompletion: ((Bool) -> ())?) {
@@ -132,11 +130,9 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     func registrationDidFail(with error: Error) {
-
     }
 
     func registerDeviceToken(with tokenData: Data) {
-
     }
 
     func handleRemoteNotificationInTheBackground(userInfo: [AnyHashable: Any]) async -> UIBackgroundFetchResult {
@@ -144,7 +140,6 @@ final class MockPushNotificationsManager: PushNotesManager {
     }
 
     func handleUserResponseToNotification(_ response: UNNotificationResponse) async {
-
     }
 
     func handleNotificationInTheForeground(_ notification: UNNotification) async -> UNNotificationPresentationOptions {

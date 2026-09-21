@@ -108,8 +108,8 @@ import WordPressUI
 
     /// Attempts to process the specified URL as a WordPress Authentication Link. Returns *true* on success.
     ///
-    @objc public func handleWordPressAuthUrl(_ url: URL, rootViewController: UIViewController, automatedTesting: Bool = false) -> Bool {
-        return WordPressAuthenticator.openAuthenticationURL(url, fromRootViewController: rootViewController, automatedTesting: automatedTesting)
+    @objc public func handleWordPressAuthUrl(_ url: URL, rootViewController: UIViewController, restoresSiteAddress: Bool, automatedTesting: Bool = false) -> Bool {
+        return WordPressAuthenticator.openAuthenticationURL(url, fromRootViewController: rootViewController, restoresSiteAddress: restoresSiteAddress, automatedTesting: automatedTesting)
     }
 
     // MARK: - Helpers for presenting the login flow
@@ -131,6 +131,36 @@ import WordPressUI
 
         if let loginNavController = controller as? LoginNavigationController, let loginPrologueViewController = loginNavController.viewControllers.first as? LoginPrologueViewController {
             loginPrologueViewController.showCancel = showCancel
+        }
+
+        controller.modalPresentationStyle = .fullScreen
+        return controller
+    }
+
+    /// WooCommerce addition — a `loginUI` variant whose primary-CTA callback can take over navigation.
+    ///
+    /// Returning `true` from `onPrimaryLoginCTA` tells the prologue the host app handled navigation,
+    /// so it skips its default login action (used to route into the QR-login flow). Returning `false`
+    /// lets the default login navigation proceed.
+    ///
+    /// - Parameters:
+    ///   - showCancel: Whether a cancel CTA is shown on the login prologue screen.
+    ///   - restrictToWPCom: Whether only WordPress.com login is enabled.
+    ///   - onPrimaryLoginCTA: Called when the primary login CTA on the prologue is tapped.
+    /// - Returns: The root view controller for the login flow.
+    public class func loginUI(showCancel: Bool = false,
+                              restrictToWPCom: Bool = false,
+                              onPrimaryLoginCTA: @escaping @MainActor () async -> Bool) -> UIViewController? {
+        let storyboard = Storyboard.login.instance
+        guard let controller = storyboard.instantiateInitialViewController() else {
+            assertionFailure("Cannot instantiate initial login controller from Login.storyboard")
+            return nil
+        }
+
+        if let loginNavController = controller as? LoginNavigationController,
+           let loginPrologueViewController = loginNavController.viewControllers.first as? LoginPrologueViewController {
+            loginPrologueViewController.showCancel = showCancel
+            loginPrologueViewController.onPrimaryLoginCTA = onPrimaryLoginCTA
         }
 
         controller.modalPresentationStyle = .fullScreen
@@ -324,12 +354,13 @@ import WordPressUI
     ///
     /// - Parameters:
     ///     - url: The authentication URL
-    ///     - rootViewController: The view controller to act as the presenter for the signin view controller.  By convention this is the app's root vc.
-    ///     - automatedTesting: for calling this method for automated testing.  It won't sync the account or load any other VCs.
+    ///     - rootViewController: The view controller to act as the presenter for the signin view controller. By convention this is the app's root vc.
+    ///     - automatedTesting: for calling this method for automated testing. It won't sync the account or load any other VCs.
     ///
     @objc public class func openAuthenticationURL(
         _ url: URL,
         fromRootViewController rootViewController: UIViewController,
+        restoresSiteAddress: Bool,
         automatedTesting: Bool = false) -> Bool {
 
         guard let queryDictionary = url.query?.dictionaryFromQueryString() else {
@@ -342,10 +373,13 @@ import WordPressUI
             return false
         }
 
-        guard let flowRawValue = queryDictionary.string(forKey: "flow") else {
-            WPAuthenticatorLogError("Magic link error: we couldn't retrieve the flow from the sign-in URL.")
-            return false
-        }
+        // A magic-login callback is a login unless it explicitly says `signup`,
+        // so default a missing `flow` to `login`. The email magic-link login
+        // always sets it (the `auth/send-login-email` request injects
+        // `flow=login`), but the wp.com QR-login `/exchange` endpoint mints its
+        // magic link without `flow` — without this default that callback would
+        // be dropped.
+        let flowRawValue = queryDictionary.string(forKey: "flow") ?? "login"
 
         let loginFields = LoginFields()
 
@@ -354,7 +388,7 @@ import WordPressUI
         }
 
         // We could just use the flow, but since `MagicLinkFlow` is an ObjC enum, it always
-        // allows a `default` value.  By mapping the ObjC enum to a Swift enum we can avoid that afterwards.
+        // allows a `default` value. By mapping the ObjC enum to a Swift enum we can avoid that afterwards.
         let flow: NUXLinkAuthViewController.Flow
 
         switch MagicLinkFlow(rawValue: flowRawValue) {
@@ -365,6 +399,12 @@ import WordPressUI
         case .login:
             flow = .login
             loginFields.meta.emailMagicLinkSource = .login
+            // Restore the entered store address only for the email magic-link flow. QR login shares
+            // this case (its callback carries no `flow`) but never saved an address, so it must not
+            // consume a stale one — hence the explicit opt-in rather than always consuming here.
+            if restoresSiteAddress, let siteAddress = MagicLinkSiteAddressStorage.shared.consume() {
+                loginFields.siteAddress = siteAddress
+            }
             Self.track(.loginMagicLinkOpened)
         default:
             WPAuthenticatorLogError("Magic link error: the flow should be either `signup` or `login`. We can't handle an unsupported flow.")
@@ -428,7 +468,7 @@ import WordPressUI
 
         if isSiteURLSchemeEmpty {
             path = "https://\(path)"
-        } else if path.isWordPressComPath() && path.range(of: "http://") != nil {
+        } else if path.isWordPressComPath() && path.contains("http://") {
             path = path.replacingOccurrences(of: "http://", with: "https://")
         }
 
@@ -474,14 +514,14 @@ import WordPressUI
 public extension WordPressAuthenticator {
 
     func getAppleIDCredentialState(for userID: String, completion: @escaping (ASAuthorizationAppleIDProvider.CredentialState, Error?) -> Void) {
-        AppleAuthenticator.sharedInstance.getAppleIDCredentialState(for: userID) { (state, error) in
+        AppleAuthenticator.sharedInstance.getAppleIDCredentialState(for: userID) { state, error in
             // If credentialState == .notFound, error will have a value.
             completion(state, error)
         }
     }
 
     func startObservingAppleIDCredentialRevoked(completion: @escaping () -> Void) {
-        appleIDCredentialObserver = NotificationCenter.default.addObserver(forName: AppleAuthenticator.credentialRevokedNotification, object: nil, queue: nil) { (_) in
+        appleIDCredentialObserver = NotificationCenter.default.addObserver(forName: AppleAuthenticator.credentialRevokedNotification, object: nil, queue: nil) { _ in
             completion()
         }
     }

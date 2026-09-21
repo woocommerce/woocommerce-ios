@@ -2,6 +2,7 @@ import Testing
 import protocol WooFoundation.Analytics
 @testable import WooCommerce
 
+@Suite(.timeLimit(.minutes(1)))
 struct AIAssistantAnalyticsAdaptorTests {
 
     @Test

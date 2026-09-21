@@ -3,5 +3,4 @@ import CoreData
 
 @objc(SiteSummaryStats)
 public class SiteSummaryStats: NSManagedObject {
-
 }

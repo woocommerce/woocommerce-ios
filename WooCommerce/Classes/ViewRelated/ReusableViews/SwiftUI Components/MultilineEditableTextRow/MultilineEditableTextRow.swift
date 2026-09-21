@@ -50,7 +50,6 @@ struct MultilineEditableTextRow: View {
             Text(placeholder)
                 .rowTextStyle()
                 .foregroundStyle(Color(.textSubtle))
-
         } else {
             Text(value)
                 .multilineTextAlignment(.leading)

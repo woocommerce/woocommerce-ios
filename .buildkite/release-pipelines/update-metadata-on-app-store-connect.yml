@@ -7,6 +7,8 @@ agents:
 env:
   IMAGE_ID: $IMAGE_ID
 
+priority: 1
+
 steps:
   - label: Update Metadata on App Store Connect
     plugins: [$CI_TOOLKIT]
@@ -14,13 +16,10 @@ steps:
       echo '--- :robot_face: Use bot for Git operations'
       source use-bot-for-git
 
-      .buildkite/commands/checkout-release-branch.sh "$RELEASE_VERSION"
+      checkout_release_branch "$RELEASE_VERSION"
 
       echo '--- :ruby: Setup Ruby Tools'
       install_gems
-
-      echo '--- :closed_lock_with_key: Access Secrets'
-      bundle exec fastlane run configure_apply
 
       echo '--- :shipit: Update Release Notes and Other App Store Metadata'
       bundle exec fastlane update_metadata_on_app_store_connect skip_confirm:true with_screenshots:"${WITH_SCREENSHOTS:-false}"

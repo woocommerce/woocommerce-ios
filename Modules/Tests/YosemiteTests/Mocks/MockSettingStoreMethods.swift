@@ -21,6 +21,11 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
     var updateAnalyticsOrderDateTypeResult: Result<Void, Error> = .success(())
     var updateAnalyticsOrderDateTypeReceivedSiteID: Int64?
     var updateAnalyticsOrderDateTypeReceivedValue: AnalyticsOrderDateType?
+    var retrieveAnalyticsImportUpdateModeResult: Result<AnalyticsImportUpdateMode, Error> = .success(.immediate)
+    var retrieveAnalyticsImportUpdateModeReceivedSiteID: Int64?
+    var updateAnalyticsImportUpdateModeResult: Result<Void, Error> = .success(())
+    var updateAnalyticsImportUpdateModeReceivedSiteID: Int64?
+    var updateAnalyticsImportUpdateModeReceivedValue: AnalyticsImportUpdateMode?
 
     func synchronizeGeneralSiteSettings(siteID: Int64,
                                       onCompletion: @escaping (Error?) -> Void) {
@@ -107,6 +112,27 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
         updateAnalyticsOrderDateTypeReceivedSiteID = siteID
         updateAnalyticsOrderDateTypeReceivedValue = value
         switch updateAnalyticsOrderDateTypeResult {
+        case .success:
+            return
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func retrieveAnalyticsImportUpdateMode(siteID: Int64) async throws -> AnalyticsImportUpdateMode {
+        retrieveAnalyticsImportUpdateModeReceivedSiteID = siteID
+        switch retrieveAnalyticsImportUpdateModeResult {
+        case .success(let mode):
+            return mode
+        case .failure(let error):
+            throw error
+        }
+    }
+
+    func updateAnalyticsImportUpdateMode(siteID: Int64, value: AnalyticsImportUpdateMode) async throws {
+        updateAnalyticsImportUpdateModeReceivedSiteID = siteID
+        updateAnalyticsImportUpdateModeReceivedValue = value
+        switch updateAnalyticsImportUpdateModeResult {
         case .success:
             return
         case .failure(let error):

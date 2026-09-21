@@ -12,7 +12,7 @@ struct ConfigurableBundleProductView: View {
     }
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             VStack(alignment: .leading) {
                 ScrollView {
                     VStack(spacing: Layout.noSpacing) {

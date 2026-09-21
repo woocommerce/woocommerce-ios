@@ -1,6 +1,38 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 25.7
+Age verification is now clearer: if parental consent is pending or denied, you'll see a screen explaining what to do next, not just a log out. If a connection issue stops your store loading, the app tells you what's happening and offers support, so you're not left guessing.
+
+## 25.6
+More fixes for your store: orders paid via Scan to Pay or Mark as Paid show the correct payment method. You’ll see a warning if your store’s currency can’t load. Purchased shipping labels now appear reliably, and rejected site logins show an error. We also fixed an iOS 26 crash, a Settings layout issue, and other product and order problems.
+
+## 25.5
+You can now see product prices and SKUs in your product list, and Dashboard stats stay visible even when there’s no revenue on the chosen dates. Refunds for gift card payments are now handled from your store admin. Plus, fixes across orders, payments, POS, and in-app displays keep your store running smoothly.
+
+## 25.4
+Order statuses now show in your store's language everywhere you view orders. New order notifications look right in dark mode, and login issues are fixed for stores with certain hosting. Returning from product or order details no longer crashes in specific iOS versions.
+
+## 25.3
+Running your store is now smoother: Point of Sale opens instantly offline after syncing, and product details update each time you reopen them. Creating orders and accepting payments works as expected on iPhone, and shop layouts and links display better at large font sizes.
+
+## 25.2
+Your "Report Crashes" privacy setting now follows you across devices and reinstalls. Shipping Labels now require a valid phone number before confirming. It's now easier to connect your card reader in landscape, and refund details in POS appear clearly while loading and in dark mode.
+
+## 25.1
+Phone POS is now available for UK-based stores. Product search when creating orders is easier with a new Products/SKU filter, and your payments balance summary splits out Total and Available funds. Product titles and order creation layouts are tidier, and picking images or viewing actions on iPad won’t crash your flow.
+
+## 25.0
+Now you can log in easily with a QR-code. Duplicating a product opens the new copy and preserves original images. Refunds for orders with multiple shipping lines, or duplicate line items, now work as they should. Your POS catalog downloads more quickly, and you'll see smoother resizing of the app on iPad.
+## 24.9
+Big news if you’re in Canada — Point of Sale is now available on iPad, and the refund flow is smoother for everyone. You can use our new troubleshooting and AI help tools in the support area. Plus, configure your Store Stats widget, try a new Trends widget on your lock screen, and more fixes for your daily tasks.
+
+## 24.8
+Managing your store is now even more convenient. With our new AI Assistant, selected stores can take action and run store tasks right from their pocket. Plus, we fixed issues in the customer form on iPad, making it smoother to add new customers. Enjoy these enhancements as you continue to grow your business.
+
+## 24.7
+Get deeper insights with a revamped Performance card. Quickly switch between Gross, Net, and Total revenue, and choose which order date (paid, placed, or completed) drives your totals. We’ve also improved shipping label flows with FedEx TOS handling, refreshed POS empty states, and expanded POS availability to Puerto Rico.
+
 ## 24.6
 This update enhances Point of Sale reliability with clearer card reader status during reconnections, automatic price updates at checkout, and visual refinements for iOS 26. We've also added a login troubleshooting tool to help diagnose connection issues faster, plus a handy clear button in search fields for quicker navigation.
 

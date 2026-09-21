@@ -2,6 +2,11 @@ import UIKit
 import WordPressShared
 import WordPressUI
 
+/// WooCommerce addition. Screens that keep the shared navigation bar hidden adopt this so the prologue skips re-showing the bar when they are pushed.
+public protocol LoginNavigationBarHiding: AnyObject {
+    var prefersNavigationBarHidden: Bool { get }
+}
+
 class LoginPrologueViewController: LoginViewController {
 
     @IBOutlet private weak var topContainerView: UIView!
@@ -22,6 +27,11 @@ class LoginPrologueViewController: LoginViewController {
     // Called when login button is tapped
     var onLoginButtonTapped: (() -> Void)?
 
+    /// WooCommerce addition. Called when the primary login CTA on the prologue is tapped. Return
+    /// `true` when the host app has taken over navigation, so the prologue skips its default login
+    /// action (used to route into the QR-login flow).
+    var onPrimaryLoginCTA: (@MainActor () async -> Bool)?
+
     private let configuration = WordPressAuthenticator.shared.configuration
     private let style = WordPressAuthenticator.shared.style
 
@@ -31,7 +41,7 @@ class LoginPrologueViewController: LoginViewController {
     })
 
     /// We can't rely on `isMovingToParent` to know if we need to track the `.prologue` step
-    /// because for the root view in an App, it's always `false`.  We're relying this variiable
+    /// because for the root view in an App, it's always `false`. We're relying on this variable
     /// instead, since the `.prologue` step only needs to be tracked once.
     ///
     private var prologueFlowTracked = false
@@ -86,7 +96,7 @@ class LoginPrologueViewController: LoginViewController {
         super.viewDidAppear(animated)
 
         // We've found some instances where the iCloud Keychain login flow was being started
-        // when the device was idle and the app was logged out and in the background.  I couldn't
+        // when the device was idle and the app was logged out and in the background. I couldn't
         // find precise reproduction steps for this issue but my guess is that some background
         // operation is triggering a call to this method while the app is in the background.
         // The proposed solution is based off this StackOverflow reply:
@@ -117,11 +127,20 @@ class LoginPrologueViewController: LoginViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
+        if let incoming = navigationController?.topViewController as? LoginNavigationBarHiding,
+           incoming.prefersNavigationBarHidden {
+            return
+        }
+
         self.navigationController?.setNavigationBarHidden(false, animated: animated)
     }
 
     override var supportedInterfaceOrientations: UIInterfaceOrientationMask {
         return UIDevice.isPad() ? .all : .portrait
+    }
+
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
     }
 
     override func traitCollectionDidChange(_ previousTraitCollection: UITraitCollection?) {
@@ -180,8 +199,13 @@ class LoginPrologueViewController: LoginViewController {
         let createTitle = NSLocalizedString("Sign up for WordPress.com", comment: "Button title. Tapping begins the process of creating a WordPress.com account.")
 
         buttonViewController.setupTopButton(title: loginTitle, isPrimary: false, accessibilityIdentifier: "Prologue Log In Button") { [weak self] in
-            self?.onLoginButtonTapped?()
-            self?.loginTapped()
+            Task { @MainActor [weak self] in
+                guard await self?.onPrimaryLoginCTA?() != true else {
+                    return
+                }
+                self?.onLoginButtonTapped?()
+                self?.loginTapped()
+            }
         }
 
         if configuration.enableSignUp {
@@ -286,7 +310,7 @@ class LoginPrologueViewController: LoginViewController {
                                  configureBodyFontForTitle: true,
                                  accessibilityIdentifier: "Prologue Self Hosted Button",
                                  style: secondaryButtonStyle,
-                                 onTap: siteAddressTapCallback())
+                                 onTap: primaryLoginCallback(default: siteAddressTapCallback()))
         }()
 
         let createSiteButton: StackedButton? = {
@@ -340,6 +364,20 @@ class LoginPrologueViewController: LoginViewController {
     private func siteAddressTapCallback() -> NUXButtonViewController.CallBackType {
         return { [weak self] in
             self?.siteAddressTapped()
+        }
+    }
+
+    /// Wraps a prologue button's default action so the host app can intercept the primary login
+    /// CTA via `onPrimaryLoginCTA` — returning `true` to take over navigation and skip
+    /// `defaultAction` (e.g. routing to QR login).
+    private func primaryLoginCallback(default defaultAction: @escaping NUXButtonViewController.CallBackType) -> NUXButtonViewController.CallBackType {
+        return { [weak self] in
+            Task { @MainActor [weak self] in
+                guard await self?.onPrimaryLoginCTA?() != true else {
+                    return
+                }
+                defaultAction()
+            }
         }
     }
 
@@ -631,7 +669,6 @@ extension LoginPrologueViewController {
         configureViewLoading(false)
         socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
     }
-
 }
 
 // MARK: - AppleAuthenticatorDelegate
@@ -657,7 +694,6 @@ extension LoginPrologueViewController: AppleAuthenticatorDelegate {
     func authFailedWithError(message: String) {
         displayErrorAlert(message, sourceTag: .loginApple)
     }
-
 }
 
 // MARK: - GoogleAuthenticatorLoginDelegate
@@ -709,7 +745,6 @@ extension LoginPrologueViewController: GoogleAuthenticatorLoginDelegate {
         socialErrorVC.modalPresentationStyle = .fullScreen
         present(socialErrorNav, animated: true)
     }
-
 }
 
 // MARK: - Button View Sizing
@@ -746,5 +781,4 @@ private extension LoginPrologueViewController {
         static let ipadPortrait: CGFloat = 0.1667
         static let ipadLandscape: CGFloat = 0.25
     }
-
 }

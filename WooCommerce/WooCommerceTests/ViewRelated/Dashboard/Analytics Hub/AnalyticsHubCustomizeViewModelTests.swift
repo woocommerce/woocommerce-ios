@@ -107,5 +107,4 @@ final class AnalyticsHubCustomizeViewModelTests: XCTestCase {
         assertEqual("revenue,orders", eventProperties["enabled_cards"] as? String)
         assertEqual("products", eventProperties["disabled_cards"] as? String)
     }
-
 }

@@ -567,10 +567,83 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     }
 }
 
+// MARK: - Focused-card mode
+
+extension AnalyticsHubViewModelTests {
+
+    func test_enabledCards_when_focusedCard_is_set_then_returns_only_that_card() {
+        // Given
+        let vm = createFocusedViewModel(focusedCard: .revenue)
+
+        // Then
+        XCTAssertEqual(vm.enabledCards, [.revenue])
+    }
+
+    func test_isFocusedCardMode_when_focusedCard_is_set_then_returns_true() {
+        // Given
+        let vm = createFocusedViewModel(focusedCard: .orders)
+
+        // Then
+        XCTAssertTrue(vm.isFocusedCardMode)
+    }
+
+    func test_isFocusedCardMode_when_focusedCard_is_nil_then_returns_false() {
+        // Given
+        let vm = createViewModel()
+
+        // Then
+        XCTAssertFalse(vm.isFocusedCardMode)
+    }
+
+    func test_enabledCards_when_focusedCard_is_unsupported_on_store_then_returns_empty() {
+        // Given – JCP store cannot display the sessions card
+        let jcpStores = MockStoresManager(sessionManager: .makeForTesting(
+            authenticated: true,
+            defaultSite: .fake().copy(isJetpackThePluginInstalled: false, isJetpackConnected: true)))
+        let vm = createFocusedViewModel(focusedCard: .sessions, stores: jcpStores)
+
+        // Then
+        XCTAssertTrue(vm.enabledCards.isEmpty)
+    }
+
+    @MainActor
+    func test_loadAnalyticsCardSettings_when_focusedCard_is_set_then_does_not_dispatch_load_action() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(adminURL: sampleAdminURL)))
+        var dispatchedLoad = false
+        stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
+            if case .loadAnalyticsHubCards = action {
+                dispatchedLoad = true
+            }
+        }
+        let vm = createFocusedViewModel(focusedCard: .revenue, stores: stores)
+
+        // When
+        await vm.loadAnalyticsCardSettings()
+
+        // Then
+        XCTAssertFalse(dispatchedLoad)
+        XCTAssertEqual(vm.enabledCards, [.revenue])
+    }
+}
+
 private extension AnalyticsHubViewModelTests {
     func createViewModel(stores: MockStoresManager? = nil, storage: MockStorageManager? = nil) -> AnalyticsHubViewModel {
         AnalyticsHubViewModel(siteID: sampleSiteID,
                               statsTimeRange: .thisMonth,
+                              usageTracksEventEmitter: eventEmitter,
+                              stores: stores ?? self.stores,
+                              storage: storage ?? MockStorageManager(),
+                              analytics: analytics)
+    }
+
+    func createFocusedViewModel(focusedCard: AnalyticsCard.CardType,
+                                selectionType: AnalyticsHubTimeRangeSelection.SelectionType = .today,
+                                stores: MockStoresManager? = nil,
+                                storage: MockStorageManager? = nil) -> AnalyticsHubViewModel {
+        AnalyticsHubViewModel(siteID: sampleSiteID,
+                              selectionType: selectionType,
+                              focusedCard: focusedCard,
                               usageTracksEventEmitter: eventEmitter,
                               stores: stores ?? self.stores,
                               storage: storage ?? MockStorageManager(),

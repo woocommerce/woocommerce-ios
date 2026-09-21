@@ -307,7 +307,7 @@ final class StatsStoreV4Tests: XCTestCase {
                                                               latestDateToInclude: DateFormatter.dateFromString(with: "2020-07-22T12:00:00"),
                                                               quantity: quantity,
                                                               forceRefresh: false,
-                                                              saveInStorage: true) { result in
+                                                              saveInStorage: true) { _ in
                 promise(())
             }
             store.onAction(action)

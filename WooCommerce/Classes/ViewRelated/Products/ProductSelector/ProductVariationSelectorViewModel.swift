@@ -8,6 +8,8 @@ import WooFoundation
 ///
 final class ProductVariationSelectorViewModel: ObservableObject {
     private let siteID: Int64
+    private let currency: String?
+    private let parentProduct: Product?
 
     /// Storage to fetch product variation list
     ///
@@ -42,6 +44,11 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     private let productAttributes: [ProductAttribute]
 
+    /// Whether the parent product is a subscription product. Used to decide if variation rows
+    /// should surface subscription details, rather than relying on leftover `_subscription_*` meta data.
+    ///
+    private let isSubscriptionProduct: Bool
+
     /// All purchasable product variations for the product.
     ///
     @Published private var productVariations: [ProductVariation] = []
@@ -72,9 +79,9 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     ///
     @Published private(set) var syncStatus: SyncStatus?
 
-    /// SyncCoordinator: Keeps tracks of which pages have been refreshed, and encapsulates the "What should we sync now" logic.
+    /// Keeps track of synchronized pages and whether the API reports another page.
     ///
-    private let syncingCoordinator = SyncingCoordinator()
+    private let paginationTracker = PaginationTracker()
 
     /// Tracks if the infinite scroll indicator should be displayed
     ///
@@ -122,6 +129,9 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          productID: Int64,
          productName: String,
          productAttributes: [ProductAttribute],
+         isSubscriptionProduct: Bool = false,
+         currency: String? = nil,
+         parentProduct: Product? = nil,
          allowedProductVariationIDs: [Int64] = [],
          selectedProductVariationIDs: [Int64] = [],
          orderSyncState: Published<OrderSyncState>.Publisher? = nil,
@@ -130,9 +140,12 @@ final class ProductVariationSelectorViewModel: ObservableObject {
          onVariationSelectionStateChanged: ((ProductVariation, Product, Bool) -> Void)? = nil,
          onSelectionsCleared: (() -> Void)? = nil) {
         self.siteID = siteID
+        self.currency = currency
+        self.parentProduct = parentProduct
         self.productID = productID
         self.productName = productName
         self.productAttributes = productAttributes
+        self.isSubscriptionProduct = isSubscriptionProduct
         self.orderSyncState = orderSyncState
         self.storageManager = storageManager
         self.stores = stores
@@ -141,7 +154,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
         self.selectedProductVariationIDs = selectedProductVariationIDs
         self.onSelectionsCleared = onSelectionsCleared
 
-        configureSyncingCoordinator()
+        configurePaginationTracker()
         configureProductVariationsResultsController()
         configureFirstPageLoad()
         bindSelectionDisabledState()
@@ -149,6 +162,7 @@ final class ProductVariationSelectorViewModel: ObservableObject {
 
     convenience init(siteID: Int64,
                      product: Product,
+                     currency: String? = nil,
                      allowedProductVariationIDs: [Int64] = [],
                      selectedProductVariationIDs: [Int64] = [],
                      orderSyncState: Published<OrderSyncState>.Publisher? = nil,
@@ -160,6 +174,9 @@ final class ProductVariationSelectorViewModel: ObservableObject {
                   productID: product.productID,
                   productName: product.name,
                   productAttributes: product.attributesForVariations,
+                  isSubscriptionProduct: product.productType.isSubscription,
+                  currency: currency,
+                  parentProduct: product,
                   allowedProductVariationIDs: allowedProductVariationIDs,
                   selectedProductVariationIDs: selectedProductVariationIDs,
                   orderSyncState: orderSyncState,
@@ -188,9 +205,20 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     func changeSelectionStateForVariation(with variationID: Int64, selected: Bool) {
         // Fetch parent product
         // Needed because the parent product contains the product name & attributes.
-        try? productResultsController.performFetch()
+        let parentProduct: Product?
+        if currency != nil {
+            parentProduct = self.parentProduct
+        } else {
+            do {
+                try productResultsController.performFetch()
+            } catch {
+                DDLogError("⛔️ Error fetching the parent product while selecting a variation: \(error)")
+                return
+            }
+            parentProduct = productResultsController.fetchedObjects.first
+        }
 
-        guard let parentProduct = productResultsController.fetchedObjects.first,
+        guard let parentProduct,
               let selectedVariation = productVariations.first(where: { $0.productVariationID == variationID }) else {
             return
         }
@@ -217,12 +245,49 @@ final class ProductVariationSelectorViewModel: ObservableObject {
     }
 }
 
-// MARK: - SyncingCoordinatorDelegate & Sync Methods
-extension ProductVariationSelectorViewModel: SyncingCoordinatorDelegate {
+// MARK: - PaginationTrackerDelegate & Sync Methods
+extension ProductVariationSelectorViewModel: PaginationTrackerDelegate {
     /// Sync product variations from remote.
     ///
-    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: ((Bool) -> Void)?) {
+    func sync(pageNumber: Int, pageSize: Int, reason: String? = nil, onCompletion: SyncCompletion?) {
         transitionToSyncingState()
+        if let currency {
+            let action = ProductVariationAction.retrieveProductVariationsTransiently(siteID: siteID,
+                                                                                    productID: productID,
+                                                                                    currency: currency,
+                                                                                    variationIDs: allowedProductVariationIDs,
+                                                                                    pageNumber: pageNumber,
+                                                                                    pageSize: pageSize) { [weak self] result in
+                guard let self else { return }
+                switch result {
+                case let .success((variations, hasNextPage)):
+                    let variations = variations.filter(\.purchasable)
+                    if pageNumber == PaginationTracker.Defaults.pageFirstIndex {
+                        productVariations = variations
+                    } else {
+                        let existingIDs = Set(productVariations.map(\.productVariationID))
+                        productVariations += variations.filter { !existingIDs.contains($0.productVariationID) }
+                    }
+                    transitionToResultsUpdatedState()
+                    onCompletion?(.success(hasNextPage))
+                    if variations.isEmpty && hasNextPage {
+                        DispatchQueue.main.async { [weak self] in
+                            self?.syncNextPage()
+                        }
+                    }
+                case let .failure(error):
+                    notice = NoticeFactory.productVariationSyncNotice { [weak self] in
+                        self?.sync(pageNumber: pageNumber, pageSize: pageSize, onCompletion: nil)
+                    }
+                    transitionToResultsUpdatedState()
+                    DDLogError("⛔️ Error retrieving transient product variations: \(error)")
+                    onCompletion?(.failure(error))
+                }
+            }
+            stores.dispatch(action)
+            return
+        }
+
         let action = ProductVariationAction.synchronizeProductVariationsSubset(siteID: siteID,
                                                                                productID: productID,
                                                                                variationIDs: allowedProductVariationIDs,
@@ -241,7 +306,7 @@ extension ProductVariationSelectorViewModel: SyncingCoordinatorDelegate {
             }
 
             self.transitionToResultsUpdatedState()
-            onCompletion?(result.isSuccess)
+            onCompletion?(result)
         }
         stores.dispatch(action)
     }
@@ -249,14 +314,13 @@ extension ProductVariationSelectorViewModel: SyncingCoordinatorDelegate {
     /// Sync first page of product variations from remote if needed.
     ///
     func syncFirstPage() {
-        syncingCoordinator.synchronizeFirstPage()
+        paginationTracker.syncFirstPage()
     }
 
     /// Sync next page of product variations from remote.
     ///
     func syncNextPage() {
-        let lastIndex = productVariationsResultsController.numberOfObjects - 1
-        syncingCoordinator.ensureNextPageIsSynchronized(lastVisibleIndex: lastIndex)
+        paginationTracker.ensureNextPageIsSynced()
     }
 }
 
@@ -284,6 +348,12 @@ private extension ProductVariationSelectorViewModel {
     /// Performs initial fetch from storage and updates sync status accordingly.
     ///
     func configureProductVariationsResultsController() {
+        guard currency == nil else {
+            observeSelections()
+            transitionToResultsUpdatedState()
+            return
+        }
+
         updateProductVariationsResultsController()
         transitionToResultsUpdatedState()
     }
@@ -300,10 +370,10 @@ private extension ProductVariationSelectorViewModel {
         }
     }
 
-    /// Setup: Syncing Coordinator
+    /// Setup: Pagination tracker
     ///
-    func configureSyncingCoordinator() {
-        syncingCoordinator.delegate = self
+    func configurePaginationTracker() {
+        paginationTracker.delegate = self
     }
 
     /// Performs initial sync on first page load
@@ -334,8 +404,10 @@ private extension ProductVariationSelectorViewModel {
                 let selectedState: ProductRow.SelectedState = selectedIDs.contains(variation.productVariationID) ? .selected : .notSelected
                 return ProductRowViewModel(productVariation: variation,
                                            name: ProductVariationFormatter().generateName(for: variation, from: self.productAttributes),
+                                           isSubscriptionProduct: self.isSubscriptionProduct,
                                            displayMode: .stock,
-                                           selectedState: selectedState)
+                                           selectedState: selectedState,
+                                           currency: self.currency)
             }
         }.assign(to: &$productVariationRows)
     }

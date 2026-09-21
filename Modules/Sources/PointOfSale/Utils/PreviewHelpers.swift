@@ -52,9 +52,13 @@ import protocol Yosemite.POSOrderListFetchStrategyFactoryProtocol
 import protocol Yosemite.POSOrderListFetchStrategy
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.POSRefundsServiceProtocol
-import struct Yosemite.POSRefundableItem
-import struct Yosemite.POSRefundAmounts
 import struct Yosemite.POSItemIdentifier
+import protocol Yosemite.ReceiptPrinterServiceProtocol
+import enum Yosemite.PrinterConnectionStatus
+import struct Yosemite.PrinterDevice
+import struct Yosemite.ReceiptContent
+import struct Yosemite.ReceiptStoreInformation
+import struct Yosemite.CardPresentTransactionDetails
 
 // MARK: - PreviewProvider helpers
 //
@@ -110,7 +114,7 @@ struct PointOfSalePreviewPurchasableItemFetchStrategy: PointOfSalePurchasableIte
 }
 
 final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerProtocol {
-    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
+    @Published var itemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
     var currentDebounceStrategy: SearchDebounceStrategy { .immediate }
@@ -124,7 +128,7 @@ final class PointOfSalePreviewCouponsController: PointOfSaleCouponsControllerPro
 }
 
 final class PointOfSalePreviewItemsController: PointOfSaleSearchingItemsControllerProtocol {
-    @Published var itemsViewState: ItemsViewState = ItemsViewState(containerState: .loading(),
+    @Published var itemsViewState = ItemsViewState(containerState: .loading(),
                                                                    itemsStack: ItemsStackState(root: .loading([]),
                                                                                                itemStates: [:]))
 
@@ -234,7 +238,7 @@ struct POSPreviewHelpers {
         siteID: Int64 = 1,
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
         isLocalCatalogEligible: Bool = false,
-        sunsetWarningChecker: POSSunsetWarningChecking? = nil
+        receiptPrinter: ReceiptPrinterServiceProtocol? = nil
     ) -> PointOfSaleAggregateModel {
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
@@ -254,14 +258,17 @@ struct POSPreviewHelpers {
             siteID: siteID,
             catalogSyncCoordinator: catalogSyncCoordinator,
             isLocalCatalogEligible: isLocalCatalogEligible,
-            sunsetWarningChecker: sunsetWarningChecker
+            receiptPrinter: receiptPrinter
         )
     }
 
+    @MainActor
     static func makePreviewOrdersModel(state: POSOrderListState) -> POSOrderListModel {
         return POSOrderListModel(
             ordersController: POSConfigurablePreviewOrderListController(state: state),
-            receiptSender: POSReceiptSenderPreview())
+            refundController: POSPreviewRefundController(),
+            receiptSender: POSReceiptSenderPreview(),
+            refundSubmissionModel: POSRefundSubmissionModel())
     }
 
     static func makePreviewOrders() -> [POSOrder] {
@@ -506,13 +513,11 @@ struct POSPreviewHelpers {
 
 
 // MARK: - Preview Orders Controller
-final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
-    var refundSelectableItems: [POSRefundSelectableItem]
+final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol, POSOrderSelectionHandling {
     let ordersViewState: POSOrderListState
 
     init(state: POSOrderListState) {
         self.ordersViewState = state
-        self.refundSelectableItems = []
     }
 
     var selectedOrder: POSOrder? {
@@ -520,8 +525,15 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     }
 
     var isLoadingOrderRefunds = false
+    var orderDetailsItemsState: POSOrderDetailsItemsState {
+        .loaded(
+            lineItems: displayedLineItems,
+            customAmounts: displayedCustomAmounts,
+            refundedItems: selectedOrder?.refunds.flatMap(\.items) ?? []
+        )
+    }
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
-    var refundActionAvailability: RefundActionAvailability { .available }
+    var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
 
     func loadOrders() async {}
     func loadNextOrders() async {}
@@ -530,13 +542,27 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func updateOrder(orderID: Int64) async throws {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
-    func startRefundFlow() async -> StartRefundFlowResult { .hasItemsToRefund }
-    func toggleRefundItemSelection(at index: Int) {}
-    func clearRefundSelection() {}
-    func toggleAllRefundItemsSelection() {}
-    func preparePOSRefundReviewData() -> POSRefundReviewData? { nil }
-    func processRefund(reason: String?) async throws {}
     func loadOrderRefunds() async {}
+}
+
+final class POSPreviewRefundController: POSRefundControllerProtocol {
+    var selectableItems: [POSRefundSelectableItem] = []
+    var hasLoadedSelectableItems: Bool { !selectableItems.isEmpty }
+    var hasModifiedSelection = false
+    var reviewPreparationState: POSRefundReviewPreparationState = .idle
+    var requiresCardPresentRefund = false
+
+    func preloadRefund(for order: POSOrder) async {}
+    func startRefundFlow(for order: POSOrder) async -> StartRefundFlowResult { .hasItemsToRefund }
+    func refreshRefundableItems() async -> StartRefundFlowResult { .hasItemsToRefund }
+    func toggleItemSelection(at index: Int) {}
+    func toggleAllItemsSelection() {}
+    func clearSelection() {}
+    func reset() {}
+    func prepareReview() async -> POSRefundReviewPreparationResult { .preparationError }
+    func processRefund(reason: String?) async throws -> POSRefundSubmissionResult {
+        POSRefundSubmissionResult(refundedOrderID: 0)
+    }
 }
 
 // MARK: - Barcode Scan Service
@@ -546,8 +572,9 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
     }
 }
 
+@MainActor
 final class PointOfSalePreviewTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
-    func checkEligibility() async -> POSEligibilityState { .eligible }
+    func checkEligibility(forceRemoteCheck: Bool) async -> POSEligibilityState { .eligible }
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState { .eligible }
 }
 
@@ -567,6 +594,10 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
     func trackCheckoutTapped() {}
 
     func trackSuccessfulCashPayment() {}
+
+    func trackSuccessfulScanToPayPayment() {}
+
+    func trackSuccessfulMarkAsPaidPayment() {}
 }
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {
@@ -581,20 +612,20 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
     func updatePOSOrder(orderID: Int64, recipientEmail: String) async throws {}
 
     func markOrderAsCompletedWithCashPayment(order: Yosemite.Order, changeDueAmount: String?) async throws {}
+
+    func markOrderAsCompletedManually(order: Yosemite.Order) async throws {}
+
+    func promoteOrderToPending(order: Yosemite.Order) async throws -> Yosemite.Order { order }
+
+    func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {}
+
+    func recordScanToPayPaymentMethod(order: Yosemite.Order) async throws {}
 }
 
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {
     func providePointOfSaleRefunds(for order: Yosemite.POSOrder) async throws -> Yosemite.POSRefundsResult {
         POSRefundsResult(refunds: [], isFullyRefunded: false, supportsAutomaticRefund: true)
     }
-
-    func calculateRefundAmounts(for items: [Yosemite.POSRefundableItem]) -> Yosemite.POSRefundAmounts {
-        let subtotal = items.reduce(Decimal.zero) { $0 + $1.lineItemTotal }
-        let tax = items.reduce(Decimal.zero) { $0 + $1.totalTax }
-        return POSRefundAmounts(subtotal: subtotal, tax: tax)
-    }
-
-    func createRefund(orderID: Int64, items: [Yosemite.POSRefundableItem], reason: String?, isAutomaticRefund: Bool) async throws {}
 
     func loadOrderRefunds(for order: Yosemite.POSOrder) async throws -> [Yosemite.POSOrderRefund] { [] }
 }
@@ -723,23 +754,14 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     let fullSyncStateModel = POSCatalogSyncStateModel()
 
     func loadLastFullSyncState(for siteID: Int64) async -> POSCatalogSyncState {
-        return await fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID)
-    }
-
-    func isSyncStale(for siteID: Int64, maxDays: Int) async -> Bool {
-        return false
-    }
-
-    func hoursSinceLastSync(for siteID: Int64) async -> Int? {
-        // Preview implementation - return 48 hours for testing stale warning
-        return 48
+        return await fullSyncStateModel.state[siteID] ?? .syncCompleted(siteID: siteID, syncDate: Date())
     }
 
     func stopOngoingSyncs(for siteID: Int64) async {
         // Preview implementation - no-op
     }
 
-    func processBackgroundDownload(fileURL: URL, siteID: Int64) async throws {
+    func processBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws {
         // no-op
     }
 
@@ -750,6 +772,65 @@ final class POSPreviewCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol 
     func startBackgroundFTSRebuildIfNeeded(for siteID: Int64) async {
         // no-op
     }
+}
+
+final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
+    private let devices: [PrinterDevice]
+    private let keepDiscovering: Bool
+    private let failsToConnect: Bool
+    private let failsDiscovery: Bool
+
+    /// - Parameters:
+    ///   - devices: printers the discovery stream yields, so previews can land on the found states.
+    ///   - keepDiscovering: when `true` the stream stays open after yielding, keeping the live
+    ///     scanning indicator visible instead of ending the scan.
+    ///   - failsToConnect: when `true`, `connect(to:)` throws so previews can land on the error state.
+    ///   - failsDiscovery: when `true`, `discover()` throws so previews can land on the error state.
+    init(devices: [PrinterDevice] = [],
+         keepDiscovering: Bool = false,
+         failsToConnect: Bool = false,
+         failsDiscovery: Bool = false) {
+        self.devices = devices
+        self.keepDiscovering = keepDiscovering
+        self.failsToConnect = failsToConnect
+        self.failsDiscovery = failsDiscovery
+    }
+
+    func connectionStatusUpdates() -> AsyncStream<PrinterConnectionStatus> {
+        AsyncStream { $0.yield(.idle) }
+    }
+
+    func discover() -> AsyncThrowingStream<PrinterDevice, Error> {
+        AsyncThrowingStream { continuation in
+            if failsDiscovery {
+                continuation.finish(throwing: NSError(domain: "POSReceiptPrinterPreviewService", code: 0))
+                return
+            }
+            for device in devices {
+                continuation.yield(device)
+            }
+            if !keepDiscovering {
+                continuation.finish()
+            }
+        }
+    }
+
+    func stopDiscovery() async {}
+
+    func connect(to printer: PrinterDevice) async throws {
+        if failsToConnect {
+            throw NSError(domain: "POSReceiptPrinterPreviewService", code: 0)
+        }
+    }
+
+    func disconnect() async {}
+
+    func printReceipt(content: ReceiptContent,
+                      storeInformation: ReceiptStoreInformation,
+                      cardDetails: CardPresentTransactionDetails?) async throws {}
+
+    func printReceipt(order: Order,
+                      storeInformation: ReceiptStoreInformation) async throws {}
 }
 
 #endif

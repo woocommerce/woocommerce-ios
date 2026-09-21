@@ -101,7 +101,8 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
         let action = OrderAction.createSimplePaymentsOrder(siteID: siteID,
                                                            status: .pending,
                                                            amount: trialPaymentAmount,
-                                                           taxable: false) { [weak self] result in
+                                                           taxable: false,
+                                                           currency: currencySettings.currencyCode.rawValue) { [weak self] result in
             guard let self else { return }
             self.loading = false
 
@@ -144,7 +145,7 @@ final class SetUpTapToPayTryPaymentPromptViewModel: PaymentSettingsFlowPresented
                                                           reason: Localization.paymentRefundReason,
                                                           automaticallyRefundsPayment: true,
                                                           items: refundableOrderItems,
-                                                          shippingLine: summaryViewModel.order.shippingLines.first,
+                                                          shippingLines: summaryViewModel.order.shippingLines,
                                                           fees: summaryViewModel.order.fees,
                                                           currencyFormatter: CurrencyFormatter(currencySettings: ServiceLocator.currencySettings))
                 let refund = refundUseCase.createRefund()

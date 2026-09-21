@@ -71,7 +71,6 @@ final class MockUserNotificationsCenterAdapter: UserNotificationsCenterAdapter {
     }
 
     func removePendingNotificationRequests(withIdentifiers: [String]) {
-
     }
 }
 

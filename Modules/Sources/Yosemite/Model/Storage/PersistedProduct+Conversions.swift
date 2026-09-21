@@ -62,7 +62,6 @@ extension PersistedProduct {
             variationIDs: variationIDs
         )
     }
-
 }
 
 // MARK: - POSProduct Storage Extensions

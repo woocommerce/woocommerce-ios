@@ -22,10 +22,17 @@ struct MockProductActionHandler: MockActionHandler {
         switch action {
             case .requestMissingProducts(let order, let onCompletion):
                 requestMissingProducts(for: order, onCompletion: onCompletion)
+            case .retrieveProduct(let siteID, let productID, let onCompletion):
+                retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
             case .retrieveProducts(let siteID, let productIDs, _, _, let onCompletion):
                 retrieveProducts(siteId: siteID, productIds: productIDs, onCompletion: onCompletion)
             case .synchronizeProducts(let siteID, _, _, _, _, _, _, _, _, let excludedProductIDs, _, let onCompletion):
                 synchronizeProducts(siteID: siteID, excludedProductIDs: excludedProductIDs, onCompletion: onCompletion)
+            case .synchronizeProductsForOrderCreation(let siteID, _, _, _, _, _, let onCompletion):
+                let products = objectGraph.products(forSiteId: siteID, without: [])
+                upsert(products: products) {
+                    onCompletion(.success((products, false, [])))
+                }
             default: unimplementedAction(action: action)
         }
     }
@@ -46,6 +53,15 @@ struct MockProductActionHandler: MockActionHandler {
         let products = objectGraph.products(forSiteId: siteId, productIds: productIds)
         upsert(products: products) {
             onCompletion(.success((products, false)))
+        }
+    }
+
+    func retrieveProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, Error>) -> Void) {
+        guard let product = objectGraph.products(forSiteId: siteID, productIds: [productID]).first else {
+            return onCompletion(.failure(ProductLoadError.notFound))
+        }
+        upsert(products: [product]) {
+            onCompletion(.success(product))
         }
     }
 

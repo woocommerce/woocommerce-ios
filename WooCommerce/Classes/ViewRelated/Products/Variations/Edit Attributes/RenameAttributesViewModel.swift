@@ -14,7 +14,6 @@ final class RenameAttributesViewModel {
     init(attributeName: String) {
         self.originalAttributeName = attributeName
     }
-
 }
 
 // MARK: - Actions

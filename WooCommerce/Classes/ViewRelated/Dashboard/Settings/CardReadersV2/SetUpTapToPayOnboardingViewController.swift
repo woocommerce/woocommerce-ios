@@ -17,7 +17,7 @@ final class SetUpTapToPayOnboardingViewController: UIHostingController<SetUpTapT
 
         viewModel.showSupport = { [weak self] in
             guard let self else { return }
-            let supportForm = SupportFormHostingController(viewModel: .init())
+            let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
             supportForm.show(from: self)
         }
 
@@ -34,7 +34,7 @@ final class SetUpTapToPayOnboardingViewController: UIHostingController<SetUpTapT
         self.init(viewModel: viewModel, onWillDisappear: nil)
     }
 
-    @objc required dynamic init?(coder aDecoder: NSCoder) {
+    @objc dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 

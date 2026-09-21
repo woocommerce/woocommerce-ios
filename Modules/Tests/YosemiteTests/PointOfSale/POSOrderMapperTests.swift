@@ -89,6 +89,110 @@ struct POSOrderMapperTests {
         #expect(result.formattedPaymentTotal == "$25.99")
     }
 
+    // MARK: - Order Totals
+
+    @Test
+    func order_throws_total_formatting_error_when_total_is_invalid() throws {
+        // Given
+        let order = makeOrder(orderID: 45, total: "invalid")
+
+        // When
+        do {
+            _ = try sut.map(order: order)
+            Issue.record("Expected order total formatting error")
+        } catch POSOrderMappingError.totalFormattingFailed(let orderID, let total, let currency) {
+            // Then
+            #expect(orderID == 45)
+            #expect(total == "invalid")
+            #expect(currency == "USD")
+        } catch {
+            Issue.record("Unexpected error: \(error)")
+        }
+    }
+
+    @Test
+    func order_throws_total_tax_formatting_error_when_total_tax_is_invalid() throws {
+        // Given
+        let order = makeOrder(orderID: 46, totalTax: "invalid")
+
+        // When
+        do {
+            _ = try sut.map(order: order)
+            Issue.record("Expected order total tax formatting error")
+        } catch POSOrderMappingError.totalTaxFormattingFailed(let orderID, let totalTax, let currency) {
+            // Then
+            #expect(orderID == 46)
+            #expect(totalTax == "invalid")
+            #expect(currency == "USD")
+        } catch {
+            Issue.record("Unexpected error: \(error)")
+        }
+    }
+
+    // MARK: - Product Line Items
+
+    @Test
+    func lineItems_throw_invalid_tax_error_when_total_tax_is_invalid() throws {
+        // Given
+        let item = makeOrderItem(itemID: 11, totalTax: "")
+        let order = makeOrder(orderID: 42, items: [item])
+
+        // When
+        do {
+            _ = try sut.map(order: order)
+            Issue.record("Expected invalid tax error")
+        } catch POSOrderItemMappingError.invalidTaxValue(let orderID, let itemID, let value) {
+            // Then
+            #expect(orderID == 42)
+            #expect(itemID == 11)
+            #expect(value.isEmpty)
+        } catch {
+            Issue.record("Unexpected error: \(error)")
+        }
+    }
+
+    @Test
+    func lineItems_throw_total_formatting_error_when_total_is_invalid() throws {
+        // Given
+        let item = makeOrderItem(itemID: 12, total: "invalid")
+        let order = makeOrder(orderID: 43, items: [item])
+
+        // When
+        do {
+            _ = try sut.map(order: order)
+            Issue.record("Expected total formatting error")
+        } catch POSOrderItemMappingError.totalFormattingFailed(let orderID, let itemID, let total, let currency) {
+            // Then
+            #expect(orderID == 43)
+            #expect(itemID == 12)
+            #expect(total == "invalid")
+            #expect(currency == "USD")
+        } catch {
+            Issue.record("Unexpected error: \(error)")
+        }
+    }
+
+    @Test
+    func lineItems_throw_price_formatting_error_when_price_is_invalid() throws {
+        // Given
+        let item = makeOrderItem(itemID: 13, price: NSDecimalNumber.notANumber)
+        let order = makeOrder(orderID: 44, items: [item])
+
+        // When
+        do {
+            _ = try sut.map(order: order)
+            Issue.record("Expected price formatting error")
+        } catch POSOrderItemMappingError.priceFormattingFailed(let orderID, let itemID, let price, let currency) {
+            // Then
+            #expect(orderID == 44)
+            #expect(itemID == 13)
+            #expect(price == NSDecimalNumber.notANumber)
+            #expect(currency == "USD")
+        } catch {
+            Issue.record("Unexpected error: \(error)")
+        }
+    }
+
     // MARK: - formattedNetAmount Logic Tests
 
     @Test

@@ -65,10 +65,6 @@ struct ShippingLabelPackageList: View {
                     }
                 }
 
-                NavigationLink(destination: ShippingLabelAddNewPackage(viewModel: viewModel.addNewPackageViewModel),
-                               isActive: $isShowingNewPackageCreation) {
-                    EmptyView()
-                }
                 BottomButtonView(style: LinkButtonStyle(),
                                  title: Localization.createPackageButton,
                                  image: .plusImage,
@@ -76,6 +72,9 @@ struct ShippingLabelPackageList: View {
                                     ServiceLocator.analytics.track(.shippingLabelAddPackageTapped)
                                     self.isShowingNewPackageCreation = true
                                  })
+                .navigationDestination(isPresented: $isShowingNewPackageCreation) {
+                    ShippingLabelAddNewPackage(viewModel: viewModel.addNewPackageViewModel)
+                }
             }
         }
     }

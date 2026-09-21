@@ -90,7 +90,7 @@ public enum BottomSheetProductType: Hashable, Identifiable {
             return NSLocalizedString(
                 "bottomSheetProductType.variable.title",
                 value: "Variable product",
-                comment: "Action sheet option when the user wants to change the Product type to varible product")
+                comment: "Action sheet option when the user wants to change the Product type to variable product")
         case .grouped:
             return NSLocalizedString(
                 "bottomSheetProductType.grouped.title",

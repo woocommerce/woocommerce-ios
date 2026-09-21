@@ -13,5 +13,4 @@ final class TapToPayEducationContactlessLimitViewModelTests: XCTestCase {
         let sut = TapToPayEducationContactlessLimitViewModel(configuration: .init(country: .US))
         assertEqual("In United States, cards may only be used with Tap to Pay for transactions up to the contactless limit.", sut.contactlessLimitDetails)
     }
-
 }

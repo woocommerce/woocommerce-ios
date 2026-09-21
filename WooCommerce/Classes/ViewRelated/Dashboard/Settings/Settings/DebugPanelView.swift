@@ -1,12 +1,15 @@
 import SwiftUI
 import Yosemite
-import ParcelFittingCheck
 
 struct DebugPanelView: View {
+    @Environment(\.dismiss) private var dismiss
+
     @State private var announcementToPresent: Announcement?
     @State private var announcementError: String?
 
     @State private var minimumWooVersionOverride: String = UserDefaults.standard[.debugMinWooVersionForSelfDrivenPushNotifications] ?? ""
+
+    @State private var manualSignificantChangeID: String = UserDefaults.standard[.debugManualSignificantChangeID] ?? ""
 
     var body: some View {
         List {
@@ -34,12 +37,33 @@ struct DebugPanelView: View {
                 Text("Override Feature Flags")
             }
 
-            Section("Parcel Fitting Check") {
-                Button("Open AR Parcel Sizing (Custom flow)") {
-                    presentDebugSizing()
+            #if DEBUG || ALPHA
+            NavigationLink("Design System") {
+                DesignSystemDemoView()
+            }
+            #endif
+
+            Section("Age Verification") {
+                VStack(alignment: .leading) {
+                    Text("Manual significant change ID")
+                    TextField("e.g. test-change-1", text: $manualSignificantChangeID)
+                        .textFieldStyle(.roundedBorder)
+                        .autocorrectionDisabled()
+                        .textInputAutocapitalization(.never)
+                        .onChange(of: manualSignificantChangeID) { _, newValue in
+                            let trimmed = newValue.trimmingCharacters(in: .whitespaces)
+                            UserDefaults.standard[.debugManualSignificantChangeID] = trimmed.isEmpty ? nil : trimmed
+                        }
+                    Text("A non-empty id is treated as an undeclared significant change on the next age verification " +
+                         "(relaunch or re-login). Needs a device with a sandbox minor account to reach the consent flow.")
+                        .font(.footnote)
+                        .foregroundStyle(.secondary)
                 }
-                Button("Open AR Fit Check (Carrier flow)") {
-                    presentDebugFitCheck()
+
+                Button("Reset significant change consent state") {
+                    UserDefaultsSignificantChangeConsentStore.resetAll()
+                    AgeRatingChangeDetector.resetCache()
+                    ServiceLocator.noticePresenter.enqueue(notice: Notice(title: "Significant change consent state cleared"))
                 }
             }
 
@@ -92,40 +116,19 @@ struct DebugPanelView: View {
         }
         .contentMargins(20)
         .navigationTitle("Debug Panel")
+        .toolbar {
+            ToolbarItem(placement: .confirmationAction) {
+                Button("Done") {
+                    dismiss()
+                }
+            }
+        }
         .sheet(item: $announcementToPresent) { announcement in
             ViewControllerContainer(WhatsNewFactory.whatsNew(announcement) {
                 announcementToPresent = nil
             })
             .ignoresSafeArea()
         }
-    }
-
-    private func presentDebugSizing() {
-        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
-        let unit: UnitLength = .fromStoreUnit(ServiceLocator.shippingSettingsService.dimensionUnit ?? "in")
-        ParcelFittingCheckPresenter.presentSizing(from: presenter, unit: unit, onConfirm: { _ in })
-    }
-
-    private func presentDebugFitCheck() {
-        guard let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
-        let unit: UnitLength = .fromStoreUnit(ServiceLocator.shippingSettingsService.dimensionUnit ?? "in")
-        let carriers: [ParcelPresetCarrier] = [
-            ParcelPresetCarrier(id: "usps", name: "USPS", packages: [
-                ParcelPresetPackage(id: "usps_small_flat_rate", name: "Small Flat Rate Box",
-                                    length: 8.6, width: 5.4, height: 1.6),
-                ParcelPresetPackage(id: "usps_medium_flat_rate", name: "Medium Flat Rate Box",
-                                    length: 11.0, width: 8.5, height: 5.5),
-                ParcelPresetPackage(id: "usps_large_flat_rate", name: "Large Flat Rate Box",
-                                    length: 12.0, width: 12.0, height: 6.0),
-            ]),
-            ParcelPresetCarrier(id: "upsdap", name: "UPS", packages: [
-                ParcelPresetPackage(id: "ups_small", name: "Small Box",
-                                    length: 13.0, width: 11.0, height: 2.0),
-                ParcelPresetPackage(id: "ups_medium", name: "Medium Box",
-                                    length: 16.0, width: 11.0, height: 3.0),
-            ]),
-        ]
-        ParcelFittingCheckPresenter.presentFitCheck(from: presenter, unit: unit, carriers: carriers, onConfirm: { _ in })
     }
 
     private func fetchTestAnnouncement() {

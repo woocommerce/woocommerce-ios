@@ -14,7 +14,6 @@ final class WordPressThemeMapperTests: XCTestCase {
         XCTAssertEqual(theme.description, "Maywood is a refined theme designed for restaurants and food-related businesses seeking a modern look.")
         XCTAssertEqual(theme.demoURI, "")
     }
-
 }
 
 // MARK: - Test Helpers

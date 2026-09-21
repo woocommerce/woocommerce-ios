@@ -4,7 +4,7 @@ struct PointOfSaleCardPresentPaymentFoundMultipleReadersAlertViewModel: Identifi
     let readerIDs: [String]
     let connect: (String) -> Void
     let cancelSearch: () -> Void
-    // An unchanging, psuedo-random ID helps us correctly compare two copies which may have different closures.
+    // An unchanging, pseudo-random ID helps us correctly compare two copies which may have different closures.
     // This relies on the closures being immutable
     let id = UUID()
 

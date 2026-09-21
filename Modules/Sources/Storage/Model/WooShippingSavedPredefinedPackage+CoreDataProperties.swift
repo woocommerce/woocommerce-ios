@@ -12,9 +12,7 @@ extension WooShippingSavedPredefinedPackage {
     @NSManaged public var providerID: String?
     @NSManaged public var package: WooShippingPredefinedPackage?
     @NSManaged public var packagesResponse: WooShippingPackagesResponse?
-
 }
 
 extension WooShippingSavedPredefinedPackage: Identifiable {
-
 }

@@ -12,6 +12,7 @@ final class POSSettingsLocalCatalogViewModel {
 
     private(set) var isLoading: Bool = false
     private(set) var isRefreshingCatalog: Bool = false
+    private(set) var catalogRefreshProgress: POSCatalogSyncProgress?
     let deviceHasCellularCapability: Bool = CellularCapabilityChecker.deviceHasCellularCapability()
 
     var catalogRefreshError: POSIdentifiableErrorState? = nil
@@ -83,15 +84,24 @@ final class POSSettingsLocalCatalogViewModel {
     @MainActor
     func refreshCatalog() async {
         isRefreshingCatalog = true
+        catalogRefreshProgress = nil
         catalogRefreshError = nil
 
         do {
             try await catalogSyncCoordinator.performFullSync(for: siteID, regenerateCatalog: true)
             isRefreshingCatalog = false
+            catalogRefreshProgress = nil
             await loadCatalogData()
+        } catch POSCatalogSyncError.syncAlreadyInProgress {
+            DDLogInfo("POSSettingsLocalCatalog: Refresh requested while catalog sync is already in progress")
+        } catch POSCatalogSyncError.requestCancelled {
+            DDLogInfo("POSSettingsLocalCatalog: Catalog refresh cancelled")
+            isRefreshingCatalog = false
+            catalogRefreshProgress = nil
         } catch {
             DDLogError("⛔️ POSSettingsLocalCatalog: Failed to refresh catalog: \(error)")
             isRefreshingCatalog = false
+            catalogRefreshProgress = nil
             catalogRefreshError = POSIdentifiableErrorState(errorState: .errorOnRefreshingCatalog(error: error))
         }
     }
@@ -115,12 +125,19 @@ final class POSSettingsLocalCatalogViewModel {
                     // Sync finished - clear the refreshing state if it was set
                     if isRefreshingCatalog {
                         isRefreshingCatalog = false
+                        catalogRefreshProgress = nil
                         // Reload catalog data to show updated info
                         await loadCatalogData()
                     }
                 case .syncStarted, .initialSyncStarted:
-                    // Sync is running - keep spinner active
-                    break
+                    // Sync is running - keep spinner active until progress is available
+                    if isRefreshingCatalog {
+                        catalogRefreshProgress = nil
+                    }
+                case .syncProgress(_, let progress), .initialSyncProgress(_, let progress):
+                    if isRefreshingCatalog {
+                        catalogRefreshProgress = progress
+                    }
                 case .syncNeverDone:
                     // No sync has been done
                     break

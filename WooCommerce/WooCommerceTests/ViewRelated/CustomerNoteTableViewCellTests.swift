@@ -3,47 +3,50 @@ import XCTest
 
 final class CustomerNoteTableViewCellTests: XCTestCase {
 
-    private var cell: CustomerNoteTableViewCell?
-
     private let headlineMock = "Lorem ipsum"
 
     private let bodyMock = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
 
-    override func setUp() {
-        super.setUp()
-        let nib = Bundle.main.loadNibNamed("CustomerNoteTableViewCell", owner: self, options: nil)
-        cell = nib?.first as? CustomerNoteTableViewCell
-        cell?.headline = headlineMock
-        cell?.body = bodyMock
-    }
-
-    override func tearDown() {
-        cell = nil
-        super.tearDown()
-    }
-
-    func testHeadlineLabelStyleIsSetToHeadline() {
+    @MainActor
+    func testHeadlineLabelStyleIsSetToHeadline() throws {
+        let cell = try makeSUT()
         let mockLabel = UILabel()
         mockLabel.applyHeadlineStyle()
 
-        XCTAssertEqual(cell?.getHeadlineLabel().font, mockLabel.font)
-        XCTAssertEqual(cell?.getHeadlineLabel().textColor, mockLabel.textColor)
+        XCTAssertEqual(cell.getHeadlineLabel().font, mockLabel.font)
+        XCTAssertEqual(cell.getHeadlineLabel().textColor, mockLabel.textColor)
     }
 
-    func testBodyLabelStyleIsSetToBody() {
+    @MainActor
+    func testBodyLabelStyleIsSetToBody() throws {
+        let cell = try makeSUT()
         let mockLabel = UILabel()
         mockLabel.applyBodyStyle()
 
-        XCTAssertEqual(cell?.getBodyTextView().font, mockLabel.font)
-        XCTAssertEqual(cell?.getBodyTextView().textColor, mockLabel.textColor)
+        XCTAssertEqual(cell.getBodyTextView().font, mockLabel.font)
+        XCTAssertEqual(cell.getBodyTextView().textColor, mockLabel.textColor)
     }
 
-    func testHeadlineLabelValues() {
-        XCTAssertEqual(cell?.getHeadlineLabel().text, headlineMock)
+    @MainActor
+    func testHeadlineLabelValues() throws {
+        let cell = try makeSUT()
+        XCTAssertEqual(cell.getHeadlineLabel().text, headlineMock)
     }
 
-    func testBodyLabelValues() {
-        XCTAssertEqual(cell?.getBodyTextView().text, bodyMock)
+    @MainActor
+    func testBodyLabelValues() throws {
+        let cell = try makeSUT()
+        XCTAssertEqual(cell.getBodyTextView().text, bodyMock)
     }
+}
 
+private extension CustomerNoteTableViewCellTests {
+    @MainActor
+    func makeSUT() throws -> CustomerNoteTableViewCell {
+        let nib = Bundle.main.loadNibNamed("CustomerNoteTableViewCell", owner: self, options: nil)
+        let cell = try XCTUnwrap(nib?.first as? CustomerNoteTableViewCell)
+        cell.headline = headlineMock
+        cell.body = bodyMock
+        return cell
+    }
 }

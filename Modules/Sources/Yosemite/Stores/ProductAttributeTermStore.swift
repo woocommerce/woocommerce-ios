@@ -9,7 +9,7 @@ public final class ProductAttributeTermStore: Store {
     /// Set the size of the page size request for this store
     var pageSizeRequest = Constants.defaultMaxPageSize
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductAttributeTermRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

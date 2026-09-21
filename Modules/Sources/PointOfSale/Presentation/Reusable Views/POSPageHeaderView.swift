@@ -11,11 +11,13 @@ struct POSPageHeaderBackButtonConfiguration {
     let state: State
     let action: () -> Void
     let buttonIcon: String?
+    let accessibilityIdentifier: String?
 
-    init(state: State, action: @escaping () -> Void, buttonIcon: String? = nil) {
+    init(state: State, action: @escaping () -> Void, buttonIcon: String? = nil, accessibilityIdentifier: String? = nil) {
         self.state = state
         self.action = action
         self.buttonIcon = buttonIcon
+        self.accessibilityIdentifier = accessibilityIdentifier
     }
 }
 
@@ -93,54 +95,12 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
                 leadingContent
 
-                VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                    HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
-                        if showsBackButton {
-                            backButton
-                        }
-                        ForEach(0..<items.count, id: \.self) { index in
-                            VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                                HStack(spacing: POSSpacing.small) {
-                                    if items[index].title.isNotEmpty {
-                                        Button(action: {
-                                            items[index].action?()
-                                        }) {
-                                            Text(items[index].title)
-                                                .font(.posHeadingBold)
-                                                .lineLimit(1)
-                                                .minimumScaleFactor(0.5)
-                                                .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                                .foregroundColor(items[index].isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
-                                        }
-                                        .disabled(items[index].isSelected)
-                                        .accessibilityElement()
-                                        .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
-                                        .accessibilityLabel(items[index].title)
-                                    }
-
-                                    if items[index].isLoading {
-                                        ProgressView()
-                                            .progressViewStyle(.circular)
-                                            .scaleEffect(0.7)
-                                            .transition(.opacity.combined(with: .scale))
-                                    }
-                                }
-
-                                if let subtitle = items[index].subtitle {
-                                    Text(subtitle)
-                                        .font(.posBodyLargeRegular())
-                                        .lineLimit(1)
-                                        .minimumScaleFactor(0.5)
-                                        .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
-                                        .foregroundColor(.posOnSurface)
-                                }
-                            }
-                        }
-                    }
+                if shouldShowItemsContent {
+                    itemsContent
                 }
 
                 if items.isNotEmpty {
-                    Spacer()
+                    Spacer(minLength: 0)
                 }
 
                 trailingContent
@@ -154,8 +114,79 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
     }
 
+    @ViewBuilder
+    private var itemsContent: some View {
+        ViewThatFits(in: .horizontal) {
+            itemsRow
+
+            ScrollView(.horizontal, showsIndicators: false) {
+                itemsRow
+            }
+        }
+    }
+
+    private var itemsRow: some View {
+        VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+            HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+                if showsBackButton {
+                    backButton
+                }
+                ForEach(0..<items.count, id: \.self) { index in
+                    VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+                        HStack(spacing: POSSpacing.small) {
+                            if items[index].title.isNotEmpty {
+                                Button(action: {
+                                    items[index].action?()
+                                }) {
+                                    titleText(items[index].title, isSelected: items[index].isSelected)
+                                }
+                                .disabled(items[index].isSelected)
+                                .accessibilityElement()
+                                .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
+                                .accessibilityLabel(items[index].title)
+                            }
+
+                            if items[index].isLoading {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                                    .scaleEffect(0.7)
+                                    .transition(.opacity.combined(with: .scale))
+                            }
+                        }
+
+                        if let subtitle = items[index].subtitle {
+                            subtitleText(subtitle)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private func titleText(_ title: String, isSelected: Bool) -> some View {
+        Text(title)
+            .font(.posHeadingBold)
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
+            .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+            .foregroundColor(isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+    }
+
+    private func subtitleText(_ subtitle: String) -> some View {
+        Text(subtitle)
+            .font(.posBodyLargeRegular())
+            .lineLimit(1)
+            .fixedSize(horizontal: true, vertical: false)
+            .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
+            .foregroundColor(.posOnSurface)
+    }
+
     private var shouldHaveLeadingPaddingForItems: Bool {
-        items.isNotEmpty  || showsBackButton
+        items.isNotEmpty || showsBackButton
+    }
+
+    private var shouldShowItemsContent: Bool {
+        items.isNotEmpty || showsBackButton
     }
 
     @ViewBuilder
@@ -170,7 +201,6 @@ private enum Constants {
     static let horizontalSpacing: CGFloat = POSSpacing.medium
     static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
 }
-
 
 struct POSHeaderBackButtonConfigurationKey: EnvironmentKey {
     static let defaultValue: POSPageHeaderBackButtonConfiguration? = nil

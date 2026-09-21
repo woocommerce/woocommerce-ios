@@ -169,11 +169,11 @@ final class ResultsControllerUIKitTests: XCTestCase {
         let _ = storageManager.insertSampleAccount()
         storageManager.viewStorage.saveIfNeeded()
 
-        tableView.onInsertedSections = { indexSet in
+        tableView.onInsertedSections = { _ in
             expectation.fulfill()
         }
 
-        tableView.onDeletedSections = { indexSet in
+        tableView.onDeletedSections = { _ in
             XCTFail()
         }
 
@@ -190,11 +190,11 @@ final class ResultsControllerUIKitTests: XCTestCase {
         let first = storageManager.insertSampleAccount()
         storageManager.viewStorage.saveIfNeeded()
 
-        tableView.onInsertedSections = { indexSet in
+        tableView.onInsertedSections = { _ in
             XCTFail()
         }
 
-        tableView.onDeletedSections = { indexSet in
+        tableView.onDeletedSections = { _ in
             expectation.fulfill()
         }
 

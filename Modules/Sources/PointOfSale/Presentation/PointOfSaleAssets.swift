@@ -13,6 +13,10 @@ enum PointOfSaleAssets: CaseIterable {
     case readerDisconnected
     case successCheck
     case gears
+    case printer
+    case coupons
+    case shoppingBags
+    case location
     case barcodeFieldScreenshot
     case starBsh20SetupBarcode
     case tera12002DHIDBarcode
@@ -54,6 +58,14 @@ enum PointOfSaleAssets: CaseIterable {
             "pos-success-check"
         case .gears:
             "pos-gears"
+        case .printer:
+            "pos-printer"
+        case .coupons:
+            "pos-coupons"
+        case .shoppingBags:
+            "pos-shopping-bags"
+        case .location:
+            "pos-location"
         case .barcodeFieldScreenshot:
             "barcode-field-screenshot"
         case .starBsh20SetupBarcode:

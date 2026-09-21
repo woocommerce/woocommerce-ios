@@ -165,11 +165,6 @@
             value = ""
             isEnabled = "NO">
          </EnvironmentVariable>
-         <EnvironmentVariable
-            key = "iap-debug-site-id"
-            value = ""
-            isEnabled = "NO">
-         </EnvironmentVariable>
       </EnvironmentVariables>
    </LaunchAction>
    <ProfileAction

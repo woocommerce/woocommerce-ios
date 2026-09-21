@@ -38,5 +38,4 @@ final class UserAgentTests: XCTestCase {
         let userAgent = try XCTUnwrap(WKWebView().value(forKey: "_userAgent") as? String)
         XCTAssertEqual(regulardExpression.numberOfMatches(in: userAgent, range: NSMakeRange(0, userAgent.count)), 1)
     }
-
 }

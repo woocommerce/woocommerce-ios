@@ -85,38 +85,39 @@ final class BlazeRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
-        XCTAssertEqual(request.parameters?["origin"] as? String, campaign.origin)
-        XCTAssertEqual(request.parameters?["origin_version"] as? String, campaign.originVersion)
-        XCTAssertEqual(request.parameters?["payment_method_id"] as? String, campaign.paymentMethodID)
-        XCTAssertEqual(request.parameters?["start_date"] as? String, startDateString)
-        XCTAssertEqual(request.parameters?["end_date"] as? String, endDateString)
-        XCTAssertEqual(request.parameters?["time_zone"] as? String, campaign.timeZone)
+        let parameters = try XCTUnwrap(request.jsonBodyParameters)
+        XCTAssertEqual(parameters["origin"] as? String, campaign.origin)
+        XCTAssertEqual(parameters["origin_version"] as? String, campaign.originVersion)
+        XCTAssertEqual(parameters["payment_method_id"] as? String, campaign.paymentMethodID)
+        XCTAssertEqual(parameters["start_date"] as? String, startDateString)
+        XCTAssertEqual(parameters["end_date"] as? String, endDateString)
+        XCTAssertEqual(parameters["time_zone"] as? String, campaign.timeZone)
 
-        let requestedBudget = try XCTUnwrap(request.parameters?["budget"] as? [String: Any])
+        let requestedBudget = try XCTUnwrap(parameters["budget"] as? [String: Any])
         XCTAssertEqual(requestedBudget["amount"] as? Double, budget.amount)
         XCTAssertEqual(requestedBudget["currency"] as? String, budget.currency)
         XCTAssertEqual(requestedBudget["mode"] as? String, budget.mode.rawValue)
-        XCTAssertEqual(request.parameters?["is_evergreen"] as? Bool, isEvergreen)
+        XCTAssertEqual(parameters["is_evergreen"] as? Bool, isEvergreen)
 
-        XCTAssertEqual(request.parameters?["site_name"] as? String, campaign.siteName)
-        XCTAssertEqual(request.parameters?["text_snippet"] as? String, campaign.textSnippet)
-        XCTAssertEqual(request.parameters?["target_url"] as? String, campaign.targetUrl)
-        XCTAssertEqual(request.parameters?["url_params"] as? String, campaign.urlParams)
+        XCTAssertEqual(parameters["site_name"] as? String, campaign.siteName)
+        XCTAssertEqual(parameters["text_snippet"] as? String, campaign.textSnippet)
+        XCTAssertEqual(parameters["target_url"] as? String, campaign.targetUrl)
+        XCTAssertEqual(parameters["url_params"] as? String, campaign.urlParams)
 
-        let mainImageDict = try XCTUnwrap(request.parameters?["main_image"] as? [String: Any])
+        let mainImageDict = try XCTUnwrap(parameters["main_image"] as? [String: Any])
         XCTAssertEqual(mainImageDict["url"] as? String, mainImage.url)
         XCTAssertEqual(mainImageDict["mime_type"] as? String, mainImage.mimeType)
 
-        let targetingDict = try XCTUnwrap(request.parameters?["targeting"] as? [String: Any])
+        let targetingDict = try XCTUnwrap(parameters["targeting"] as? [String: Any])
         XCTAssertEqual(targetingDict["locations"] as? [Int64], targeting.locations)
         XCTAssertEqual(targetingDict["languages"] as? [String], targeting.languages)
         XCTAssertNil(targetingDict["devices"])
         XCTAssertEqual(targetingDict["page_topics"] as? [String], targeting.pageTopics)
 
-        XCTAssertEqual(request.parameters?["target_urn"] as? String, campaign.targetUrn)
-        XCTAssertEqual(request.parameters?["type"] as? String, campaign.type)
-        XCTAssertNil(request.parameters?["objective"])
-        XCTAssertEqual(request.parameters?["accepted_tos"] as? Bool, campaign.acceptedTOS)
+        XCTAssertEqual(parameters["target_urn"] as? String, campaign.targetUrn)
+        XCTAssertEqual(parameters["type"] as? String, campaign.type)
+        XCTAssertNil(parameters["objective"])
+        XCTAssertEqual(parameters["accepted_tos"] as? Bool, campaign.acceptedTOS)
     }
 
     func test_createCampaign_sends_objective_if_not_nil() async throws {
@@ -589,13 +590,14 @@ final class BlazeRemoteTests: XCTestCase {
 
         // Then
         let request = try XCTUnwrap(network.requestsForResponseData.first as? DotcomRequest)
-        XCTAssertEqual(request.parameters?["start_date"] as? String, startDateString)
-        XCTAssertEqual(request.parameters?["end_date"] as? String, endDateString)
-        XCTAssertEqual(request.parameters?["time_zone"] as? String, input.timeZone)
-        XCTAssertEqual(request.parameters?["total_budget"] as? Double, input.totalBudget)
-        XCTAssertEqual(request.parameters?["is_evergreen"] as? Bool, true)
+        let parameters = try XCTUnwrap(request.jsonBodyParameters)
+        XCTAssertEqual(parameters["start_date"] as? String, startDateString)
+        XCTAssertEqual(parameters["end_date"] as? String, endDateString)
+        XCTAssertEqual(parameters["time_zone"] as? String, input.timeZone)
+        XCTAssertEqual(parameters["total_budget"] as? Double, input.totalBudget)
+        XCTAssertEqual(parameters["is_evergreen"] as? Bool, true)
 
-        let targetingDict = try XCTUnwrap(request.parameters?["targeting"] as? [String: Any])
+        let targetingDict = try XCTUnwrap(parameters["targeting"] as? [String: Any])
         XCTAssertNil(targetingDict["locations"])
         XCTAssertEqual(targetingDict["languages"] as? [String], targeting.languages)
         XCTAssertNil(targetingDict["devices"])

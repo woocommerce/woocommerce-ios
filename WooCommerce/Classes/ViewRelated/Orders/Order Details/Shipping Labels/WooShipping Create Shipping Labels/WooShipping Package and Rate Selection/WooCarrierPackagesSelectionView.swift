@@ -12,7 +12,7 @@ struct WooShippingCarrierPackages: Identifiable {
 }
 
 struct WooPackageGroup {
-    let id: UUID = UUID()
+    let id = UUID()
     let name: String
     let packages: [any WooShippingPackageDataRepresentable]
 }

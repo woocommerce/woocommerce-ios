@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct MessageSegmentTests {
     @Test
     func test_messageSegment_id_returns_segment_id_for_each_case() {
@@ -30,7 +31,7 @@ struct MessageSegmentTests {
             .confirmation(id: confirmationID,
                           proposalID: UUID(),
                           toolName: "orders_update",
-                          preview: "Mark order #1 completed",
+                          preview: ConfirmationPreview(summary: .raw("Mark order #1 completed")),
                           status: .pending)
         ]
 

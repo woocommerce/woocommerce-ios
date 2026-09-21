@@ -42,6 +42,5 @@ final class BulkUpdateOptionsModel {
             // If at least ony value is different, even if it is missing (nil/empty)
             return .mixed
         }
-
     }
 }

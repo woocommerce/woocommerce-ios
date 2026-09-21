@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct WCRESTClientRetryTests {
     @Test
     func test_request_when_5xx_then_retries_twice_then_returns_transportError() async {
@@ -14,7 +15,7 @@ struct WCRESTClientRetryTests {
         let recorder = SleepRecorder()
         let client = RetryingWCRESTClient(inner: stub,
                                           policy: .default,
-                                          sleep: recorder.record)
+                                          sleep: { try await recorder.record($0) })
 
         // When
         let response = await client.request(method: "GET",
@@ -36,7 +37,7 @@ struct WCRESTClientRetryTests {
         let recorder = SleepRecorder()
         let client = RetryingWCRESTClient(inner: stub,
                                           policy: .default,
-                                          sleep: recorder.record)
+                                          sleep: { try await recorder.record($0) })
 
         // When
         let response = await client.request(method: "GET",
@@ -81,7 +82,7 @@ struct WCRESTClientRetryTests {
         let recorder = SleepRecorder()
         let client = RetryingWCRESTClient(inner: stub,
                                           policy: .default,
-                                          sleep: recorder.record)
+                                          sleep: { try await recorder.record($0) })
 
         // When
         let response = await client.request(method: "GET",
@@ -103,7 +104,7 @@ struct WCRESTClientRetryTests {
         let recorder = SleepRecorder()
         let client = RetryingWCRESTClient(inner: stub,
                                           policy: .default,
-                                          sleep: recorder.record)
+                                          sleep: { try await recorder.record($0) })
 
         // When
         let response = await client.request(method: "POST",
@@ -127,7 +128,7 @@ struct WCRESTClientRetryTests {
         let recorder = SleepRecorder()
         let client = RetryingWCRESTClient(inner: stub,
                                           policy: .default,
-                                          sleep: recorder.record)
+                                          sleep: { try await recorder.record($0) })
 
         // When
         let response = await client.request(method: "GET",

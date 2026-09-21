@@ -10,18 +10,28 @@ struct AIAssistantChatScreen: View {
 
     @State private var controller: AssistantController?
     @State private var navigationHost: AIAssistantNavigationHost?
+    @State private var externalNavigation: AssistantExternalNavigationProviding?
+    @State private var externalViews: AssistantExternalViewProviding?
     @State private var appPasswordSupportState = ApplicationPasswordsExperimentState()
+    @State private var isPresentingFeedbackSurvey = false
 
     var body: some View {
         Group {
-            if let navigationHost, let controller {
+            if let navigationHost, let controller, let externalNavigation, let externalViews {
                 AIAssistantChatNavHost(host: navigationHost) {
-                    AssistantChatView(controller: controller, onClose: onClose)
+                    AssistantChatView(controller: controller,
+                                      onClose: onClose,
+                                      onFeedbackTap: { isPresentingFeedbackSurvey = true })
+                        .environment(\.assistantExternalNavigation, externalNavigation)
+                        .environment(\.assistantExternalViews, externalViews)
                 }
                 .ignoresSafeArea()
             } else {
                 Color.assistantSurface.ignoresSafeArea()
             }
+        }
+        .sheet(isPresented: $isPresentingFeedbackSurvey) {
+            Survey(source: .aiAssistantFeedback)
         }
         .onAppear {
             buildControllerIfNeeded()
@@ -42,5 +52,7 @@ struct AIAssistantChatScreen: View {
         }
         navigationHost = session.navigationHost
         controller = session.controller
+        externalNavigation = session.externalNavigation
+        externalViews = session.externalViews
     }
 }

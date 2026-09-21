@@ -1,12 +1,12 @@
 import Combine
 import Yosemite
-import Experiments
 import class WordPressShared.EmailFormatValidator
 import protocol Storage.StorageManagerType
+import SwiftUI
 
 /// Protocol to describe viewmodel of editable address
 ///
-protocol AddressFormViewModelProtocol: ObservableObject {
+protocol AddressFormViewModelProtocol: AnyObject, Observable {
 
     /// Site ID
     ///
@@ -32,10 +32,6 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     /// Trigger to perform any one time setups.
     ///
     var onLoadTrigger: PassthroughSubject<Void, Never> { get }
-
-    /// Define if the view should show a search button to look for the addresses.
-    ///
-    var showSearchButton: Bool { get }
 
     /// Define if the view should show placeholders instead of the real elements.
     ///
@@ -114,10 +110,6 @@ protocol AddressFormViewModelProtocol: ObservableObject {
     /// Creates a view model to be used when selecting a state for secondary fields
     ///
     func createSecondaryStateViewModel() -> StateSelectorViewModel
-
-    /// Triggers the logic to fill Customer Order details when a Customer is selected
-    ///
-    func customerSelectedFromSearch(customer: Customer)
 }
 
 /// Type to hold values from all the form fields
@@ -183,10 +175,9 @@ struct AddressFormFields {
         didSet {
             self.country = selectedCountry?.name ?? ""
 
-            // When a country is selected, check if the new country has a state list.
-            // If it has, clear the selected state and its name in fields.
-            // If it doesn't only clear the selected state.
-            if selectedCountry?.states.isEmpty == false {
+            // When the country actually changes, reset both the picked state and the free-text state value
+            // so a previous country's state isn't carried into a different country's address.
+            if oldValue?.code != selectedCountry?.code {
                 self.state = ""
             }
             self.selectedState = nil

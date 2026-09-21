@@ -152,7 +152,7 @@ private extension ReviewDetailsViewController {
     /// Synchronizes the Notifications associated to the active WordPress.com account.
     ///
     func synchronizeReview(reviewID: Int64, onCompletion: @escaping () -> Void) {
-        let action = ProductReviewAction.retrieveProductReview(siteID: siteID, reviewID: reviewID) { (productReview, error) in
+        let action = ProductReviewAction.retrieveProductReview(siteID: siteID, reviewID: reviewID) { _, error in
             if let error {
                 DDLogError("⛔️ Error synchronizing product review [\(reviewID)]: \(error)")
                 ServiceLocator.analytics.track(.reviewLoadFailed,
@@ -451,32 +451,32 @@ private extension ReviewDetailsViewController {
             return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
                                                              reviewID: reviewID,
                                                              isApproved: true,
-                                                             onCompletion: {(_, error) in onCompletion(error)})]
+                                                             onCompletion: {_, error in onCompletion(error)})]
         case .hold:
             return [ProductReviewAction.updateApprovalStatus(siteID: siteID,
                                                              reviewID: reviewID,
                                                              isApproved: false,
-                                                             onCompletion: {(_, error) in onCompletion(error)})]
+                                                             onCompletion: {_, error in onCompletion(error)})]
         case .spam:
             return [ProductReviewAction.updateSpamStatus(siteID: siteID,
                                                              reviewID: reviewID,
                                                              isSpam: true,
-                                                             onCompletion: {(_, error) in onCompletion(error)})]
+                                                             onCompletion: {_, error in onCompletion(error)})]
         case .unspam:
             return [ProductReviewAction.updateSpamStatus(siteID: siteID,
                                                              reviewID: reviewID,
                                                              isSpam: false,
-                                                             onCompletion: {(_, error) in onCompletion(error)})]
+                                                             onCompletion: {_, error in onCompletion(error)})]
         case .trash:
             return [ProductReviewAction.updateTrashStatus(siteID: siteID,
                                                              reviewID: reviewID,
                                                              isTrashed: true,
-                                                             onCompletion: {(_, error) in onCompletion(error)})]
+                                                             onCompletion: {_, error in onCompletion(error)})]
         case .untrash:
             return [ProductReviewAction.updateTrashStatus(siteID: siteID,
                                                              reviewID: reviewID,
                                                              isTrashed: false,
-                                                             onCompletion: {(_, error) in onCompletion(error)})]
+                                                             onCompletion: {_, error in onCompletion(error)})]
         }
     }
 
@@ -491,7 +491,7 @@ private extension ReviewDetailsViewController {
                                        withProperties: ["remote_review_id": productReview.reviewID,
                                                         "remote_note_id": note.noteID])
 
-        let action = NotificationAction.updateReadStatus(noteID: note.noteID, read: true) { (error) in
+        let action = NotificationAction.updateReadStatus(noteID: note.noteID, read: true) { error in
             if let error {
                 DDLogError("⛔️ Error marking single notification as read: \(error)")
                 ServiceLocator.analytics.track(.reviewMarkReadFailed,
@@ -531,5 +531,4 @@ private extension ReviewDetailsViewController {
             }
         }
     }
-
 }

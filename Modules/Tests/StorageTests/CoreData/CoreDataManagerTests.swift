@@ -7,14 +7,26 @@ import CoreData
 ///
 final class CoreDataManagerTests: XCTestCase {
 
-    private let storageIdentifier = "WooCommerce"
+    private let modelName = "WooCommerce"
+    private let storageIdentifier = "WooCommerce-\(UUID().uuidString)"
+    private var createdManagers = [CoreDataManager]()
+
+    override func tearDownWithError() throws {
+        waitForPendingWrites(in: createdManagers)
+        try removePersistentStores(from: createdManagers)
+        createdManagers.removeAll()
+        try deleteStoreFiles(at: CoreDataManager.storeURL(with: storageIdentifier))
+        try super.tearDownWithError()
+    }
 
     /// Verifies that the Store URL contains the ContextIdentifier string.
     ///
-    func test_storeUrl_maps_to_sqlite_file_with_context_identifier() {
-        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
-        XCTAssertEqual(manager.storeURL.lastPathComponent, "WooCommerce.sqlite")
-        XCTAssertEqual(manager.storeDescription.url?.lastPathComponent, "WooCommerce.sqlite")
+    func test_storeUrl_maps_to_sqlite_file_with_context_identifier() throws {
+        let manager = try makeManager(using: makeModelsInventory(), deletingExistingStoreFiles: true)
+        let expectedStoreFileName = "\(storageIdentifier).sqlite"
+
+        XCTAssertEqual(manager.storeURL.lastPathComponent, expectedStoreFileName)
+        XCTAssertEqual(manager.storeDescription.url?.lastPathComponent, expectedStoreFileName)
     }
 
     /// Verifies that the PersistentContainer properly loads the sqlite database.
@@ -22,21 +34,20 @@ final class CoreDataManagerTests: XCTestCase {
     func test_persistentContainer_loads_expected_data_model_and_sqlite_database() throws {
         // Given
         let modelsInventory = try makeModelsInventory()
-
-        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
+        let manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
 
         // When
         let container = manager.persistentContainer
 
         // Then
         XCTAssertEqual(container.managedObjectModel, modelsInventory.currentModel)
-        XCTAssertEqual(container.persistentStoreCoordinator.persistentStores.first?.url?.lastPathComponent, "WooCommerce.sqlite")
+        XCTAssertEqual(container.persistentStoreCoordinator.persistentStores.first?.url?.lastPathComponent, "\(storageIdentifier).sqlite")
     }
 
     /// Verifies that the ContextManager's viewContext matches the PersistenContainer.viewContext
     ///
-    func test_viewContext_property_returns_persistentContainer_main_context() {
-        let manager = CoreDataManager(name: storageIdentifier, crashLogger: MockCrashLogger())
+    func test_viewContext_property_returns_persistentContainer_main_context() throws {
+        let manager = try makeManager(using: makeModelsInventory(), deletingExistingStoreFiles: true)
         XCTAssertEqual(manager.viewStorage as? NSManagedObjectContext, manager.persistentContainer.viewContext)
     }
 
@@ -118,7 +129,7 @@ final class CoreDataManagerTests: XCTestCase {
 
         // Action
         let result: Result<Int64, Error> = waitFor { promise in
-            manager.performAndSave({ storage -> Int64 in
+            manager.performAndSave({ _ -> Int64 in
                 XCTAssertFalse(Thread.current.isMainThread, "Write operations should be performed in the background.")
                 throw CoreDataManagerTestsError.unexpectedFailure
             }, completion: { result in
@@ -135,7 +146,7 @@ final class CoreDataManagerTests: XCTestCase {
         }
     }
 
-    func test_performAndSave_resets_the_database_if_it_is_corrupted() throws {
+    func test_initializing_CoreDataManager_resets_the_database_if_it_is_corrupted() throws {
         // Given
         let modelsInventory = try makeModelsInventory()
         var manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: true)
@@ -153,21 +164,16 @@ final class CoreDataManagerTests: XCTestCase {
         // When
         corruptDatabaseFile()
         manager = try makeManager(using: modelsInventory, deletingExistingStoreFiles: false)
-        manager.performAndSave({ storage in
-            self.insertAccount(to: storage)
-        }, completion: {
-            // no-op
-        }, on: .main)
 
-        // Then: wait to ensure the database is dropped before setting up the CoreData stack again.
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.3) {
-            manager = try! self.makeManager(using: modelsInventory, deletingExistingStoreFiles: false)
-            XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 0)
-
-            // Clean up
-            let storeURL = CoreDataManager.storeURL(with: self.storageIdentifier)
-            try? self.deleteStoreFiles(at: storeURL)
+        // Then: a read waits for recovery to complete without adding new data to the recreated store.
+        waitFor { promise in
+            manager.performAndSave({ storage in
+                XCTAssertEqual(storage.countObjects(ofType: Account.self), 0)
+            }, completion: {
+                promise(())
+            }, on: .main)
         }
+        XCTAssertEqual(manager.viewStorage.countObjects(ofType: Account.self), 0)
     }
 
     func test_when_the_model_is_incompatible_then_it_recovers_and_recreates_the_database() throws {
@@ -326,11 +332,32 @@ private extension CoreDataManagerTests {
         let manager = CoreDataManager(name: storageIdentifier,
                                       crashLogger: MockCrashLogger(),
                                       modelsInventory: modelsInventory)
+        createdManagers.append(manager)
         return manager
     }
 
+    func waitForPendingWrites(in managers: [CoreDataManager]) {
+        let expectations = managers.enumerated().map { index, manager in
+            let expectation = expectation(description: "Core Data manager \(index) finishes pending writes")
+            manager.performAndSave({ _ in }, completion: {
+                expectation.fulfill()
+            }, on: .main)
+            return expectation
+        }
+        wait(for: expectations, timeout: 5)
+    }
+
+    func removePersistentStores(from managers: [CoreDataManager]) throws {
+        for manager in managers {
+            let coordinator = manager.persistentContainer.persistentStoreCoordinator
+            for store in coordinator.persistentStores {
+                try coordinator.remove(store)
+            }
+        }
+    }
+
     func makeModelsInventory() throws -> ManagedObjectModelsInventory {
-        try ManagedObjectModelsInventory.from(packageName: storageIdentifier, bundle: .storage)
+        try ManagedObjectModelsInventory.from(packageName: modelName, bundle: .storage)
     }
 
     func deleteStoreFiles(at storeURL: URL) throws {
@@ -345,21 +372,18 @@ private extension CoreDataManagerTests {
         }
     }
 
-    // Attempts corrupting the database file by overwriting the sqlite-wal file.
-    // Our CoreData stack uses the default WAL journal mechanism
-    // so updating this file would corrupt the database.
+    // Attempts corrupting the primary database file by overwriting its header.
     func corruptDatabaseFile() {
         let storeURL = CoreDataManager.storeURL(with: storageIdentifier)
-        let walURL = storeURL.deletingPathExtension().appendingPathExtension("sqlite-wal")
         do {
             // Read the database file into memory
-            var data = try Data(contentsOf: walURL)
+            var data = try Data(contentsOf: storeURL)
             // Corrupt the data by overwriting random bytes
             for i in 0..<min(100, data.count) {
                 data[i] = 0xFF // Overwrite with invalid data
             }
             // Write the corrupted data back to the file
-            try data.write(to: walURL)
+            try data.write(to: storeURL)
             print("Database corrupted successfully")
         } catch {
             print("Error corrupting database: \(error)")
@@ -372,7 +396,7 @@ private extension CoreDataManagerTests {
 private extension CoreDataManagerTests {
     func assertThat(_ manager: CoreDataManager,
                     isCompatibleWith model: NSManagedObjectModel,
-                    file: StaticString = #file,
+                    file: StaticString = #filePath,
                     line: UInt = #line) throws {
         let coordinator = manager.persistentContainer.persistentStoreCoordinator
 

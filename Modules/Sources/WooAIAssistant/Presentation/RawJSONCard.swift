@@ -22,30 +22,40 @@ struct RawJSONCard: View {
     }
 
     var body: some View {
-        CardShell(label: toolName) {
-            VStack(alignment: .leading, spacing: AssistantSpacing.small) {
-                Text(prettyJSON)
-                    .font(.assistantMonospaced)
-                    .foregroundStyle(Color.primary)
-                    .lineLimit(isExpanded ? nil : Self.collapsedLines)
-                    .textSelection(.enabled)
-                    .frame(maxWidth: .infinity, alignment: .leading)
+        VStack(alignment: .leading, spacing: AssistantSpacing.small) {
+            Text(toolName)
+                .font(.footnote.weight(.semibold))
+                .foregroundStyle(Color.assistantMuted)
 
-                if shouldOfferExpand {
-                    Button {
-                        withAnimation(.smooth(duration: AssistantMotion.snap)) {
-                            isExpanded.toggle()
-                        }
-                    } label: {
-                        Text(isExpanded ? Localization.showLess : Localization.showAll)
-                            .font(.assistantCaption)
-                            .foregroundStyle(Color(.accent))
-                            .frame(minHeight: 44)
+            Text(prettyJSON)
+                .font(.assistantMonospaced)
+                .foregroundStyle(Color.primary)
+                .lineLimit(isExpanded ? nil : Self.collapsedLines)
+                .textSelection(.enabled)
+                .frame(maxWidth: .infinity, alignment: .leading)
+
+            if shouldOfferExpand {
+                Button {
+                    withAnimation(.smooth(duration: AssistantMotion.snap)) {
+                        isExpanded.toggle()
                     }
-                    .buttonStyle(.plain)
+                } label: {
+                    Text(isExpanded ? Localization.showLess : Localization.showAll)
+                        .font(.assistantCaption)
+                        .foregroundStyle(Color(.accent))
+                        .frame(minHeight: 44)
                 }
+                .buttonStyle(.plain)
             }
         }
+        .padding(AssistantSpacing.large)
+        .frame(maxWidth: .infinity, alignment: .leading)
+        .background(Color.assistantSurfaceElevated)
+        .clipShape(RoundedRectangle(cornerRadius: AssistantRadius.card))
+        .overlay(
+            RoundedRectangle(cornerRadius: AssistantRadius.card)
+                .stroke(Color(.separator).opacity(0.5), lineWidth: 1)
+        )
     }
 
     private static func encodePretty(_ payload: AnyCodableJSON) -> String {

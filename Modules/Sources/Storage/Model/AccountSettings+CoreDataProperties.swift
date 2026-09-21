@@ -13,4 +13,7 @@ extension AccountSettings {
     @NSManaged public var firstName: String?
     @NSManaged public var lastName: String?
 
+    /// Three-state crash reporting opt out: `nil` means no choice has been recorded on the account yet.
+    ///
+    @NSManaged public var crashReportingOptOut: NSNumber?
 }

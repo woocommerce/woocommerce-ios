@@ -67,7 +67,7 @@ final class DataStoreTests: XCTestCase {
         XCTAssertEqual(persistedCountries[2].code, "US")
         XCTAssertEqual(persistedCountries[2].name, "United States (US)")
 
-        let states = persistedCountries[2].states.sorted { (lhs, rhs) -> Bool in
+        let states = persistedCountries[2].states.sorted { lhs, rhs -> Bool in
             lhs.name < rhs.name
         }
         XCTAssertEqual(states.count, 54)

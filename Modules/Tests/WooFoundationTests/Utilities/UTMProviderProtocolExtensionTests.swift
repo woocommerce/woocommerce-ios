@@ -148,5 +148,4 @@ final class UTMProviderProtocolExtensionTests: XCTestCase {
         // Then
         assertThat(query, contains: "utm_campaign=campaign_name")
     }
-
 }

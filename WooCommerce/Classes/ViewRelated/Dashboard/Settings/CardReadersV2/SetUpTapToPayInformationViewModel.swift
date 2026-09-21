@@ -157,13 +157,13 @@ final class SetUpTapToPayInformationViewModel: PaymentSettingsFlowPresentedViewM
 
 private extension [CardReader] {
     func includesBluetoothReader() -> Bool {
-        return self.first(where: { reader in
+        return self.contains(where: { reader in
             switch reader.readerType {
             case .tapToPay:
                 return false
             default:
                 return true
             }
-        }) != nil
+        })
     }
 }

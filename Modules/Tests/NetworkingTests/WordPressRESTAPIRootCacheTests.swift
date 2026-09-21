@@ -40,6 +40,26 @@ struct WordPressRESTAPIRootCacheTests {
         #expect(sut.root(for: siteURL) == updated)
     }
 
+    @Test func test_removeRoot_when_value_matches_then_removes_stored_value() {
+        let siteURL = "https://example.com"
+        let root = "https://example.com/wp-json/"
+        sut.setRoot(root, for: siteURL)
+
+        sut.removeRoot(root, for: siteURL)
+
+        #expect(sut.root(for: siteURL) == nil)
+    }
+
+    @Test func test_removeRoot_when_value_does_not_match_then_preserves_newer_value() {
+        let siteURL = "https://example.com"
+        let currentRoot = "https://example.com/wp-json/"
+        sut.setRoot(currentRoot, for: siteURL)
+
+        sut.removeRoot("https://example.com/?rest_route=/", for: siteURL)
+
+        #expect(sut.root(for: siteURL) == currentRoot)
+    }
+
     @Test func test_root_normalizes_trailing_slash_in_site_url() {
         // Given
         sut.setRoot("https://example.com/wp-json/", for: "https://example.com")

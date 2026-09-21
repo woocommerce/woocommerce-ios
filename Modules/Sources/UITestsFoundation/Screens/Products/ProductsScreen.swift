@@ -108,7 +108,9 @@ public final class ProductsScreen: ScreenObject {
     @discardableResult
     public func verifyProductList(products: [ProductData]) throws -> Self {
         app.assertTextVisibilityCount(textToFind: products[0].name, expectedCount: 1)
-        app.assertElement(matching: products[0].name, existsOnCellWithIdentifier: products[0].stock_status)
+        // The cell's detail line is a single label composing stock status, price and SKU (e.g. "On back order • $150.00"),
+        // so only the stock status part is matched here.
+        app.assertStaticText(containing: products[0].stock_status, existsOnCellWithIdentifier: products[0].name)
         let productListTable = app.tables["products-table-view"]
         XCTAssertEqual(products.count, productListTable.cells.count, "Expected '\(products.count)' products but found '\(productListTable.cells.count)' instead!")
 

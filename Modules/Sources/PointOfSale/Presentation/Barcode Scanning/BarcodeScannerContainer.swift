@@ -66,6 +66,7 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     private let onScan: (Result<String, HIDBarcodeParserError>) -> Void
     private let voiceOverStateProvider: VoiceOverStateProvider
     private let analytics: POSAnalyticsProviding
+    private var isObserving = false
 
     // Public initializer for production use
     init(
@@ -80,11 +81,10 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
         self.analytics = analytics
         super.init(rootView: EmptyView())
 
-        setupInitialObserver()
         observeVoiceOverChanges()
     }
 
-    @MainActor required dynamic init?(coder aDecoder: NSCoder) {
+    @MainActor dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -94,10 +94,6 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     }
 
     // MARK: - Observer Management
-
-    private func setupInitialObserver() {
-        switchToAppropriateObserver()
-    }
 
     private func observeVoiceOverChanges() {
         NotificationCenter.default.addObserver(
@@ -109,6 +105,7 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     }
 
     @objc private func voiceOverStatusChanged() {
+        guard isObserving else { return }
         switchToAppropriateObserver()
     }
 
@@ -145,6 +142,10 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
 
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
+        guard !isObserving else { return }
+
+        isObserving = true
+        switchToAppropriateObserver()
 
         if voiceOverStateProvider.isVoiceOverRunning {
             becomeFirstResponder()
@@ -153,10 +154,14 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
+        guard isObserving else { return }
 
         if voiceOverStateProvider.isVoiceOverRunning {
             resignFirstResponder()
         }
+
+        isObserving = false
+        cleanupObservers()
     }
 
     /// Handles the end of keyboard press events, interpreting them as barcode input.

@@ -67,6 +67,19 @@ final class WooPaymentsPayoutsCurrencyOverviewViewModelTests: XCTestCase {
         assertEqual(sut.availableBalance, "$12.35")
     }
 
+    func test_totalBalance_is_sum_of_available_and_pending_balances() {
+        // Given
+        let overview = WooPaymentsPayoutsOverviewByCurrency.fake().copy(currency: .USD,
+                                                                        pendingBalanceAmount: .init(string: "0.47"),
+                                                                        availableBalance: .init(string: "12.35"))
+
+        // When
+        sut = WooPaymentsPayoutsCurrencyOverviewViewModel(overview: overview, locale: Locale(identifier: "en-ca"))
+
+        // Then
+        assertEqual(sut.totalBalance, "$12.82")
+    }
+
     func test_when_currency_doesnt_match_site_settings_amounts_formatted_using_system_locale_currency_formatter() {
         // Given
         let overview = WooPaymentsPayoutsOverviewByCurrency.fake().copy(currency: .CAD, availableBalance: .init(string: "12.35"))
@@ -77,5 +90,4 @@ final class WooPaymentsPayoutsCurrencyOverviewViewModelTests: XCTestCase {
         // Then
         assertEqual(sut.availableBalance, "CA$12.35")
     }
-
 }

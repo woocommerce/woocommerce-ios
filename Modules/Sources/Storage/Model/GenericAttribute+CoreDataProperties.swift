@@ -12,5 +12,4 @@ extension GenericAttribute {
     @NSManaged public var key: String
     @NSManaged public var value: String
     @NSManaged public var productVariation: ProductVariation?
-
 }

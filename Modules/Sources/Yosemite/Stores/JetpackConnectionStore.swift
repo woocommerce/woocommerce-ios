@@ -12,7 +12,7 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
     /// periphery: ignore - kept with strong reference to keep network requests alive.
     private var siteRemote: SiteRemote?
 
-    public override init(dispatcher: Dispatcher) {
+    override public init(dispatcher: Dispatcher) {
         super.init(dispatcher: dispatcher)
     }
 
@@ -21,13 +21,13 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
         updateRemote(with: siteURL, network: network)
     }
 
-    public override func registerSupportedActions(in dispatcher: Dispatcher) {
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: JetpackConnectionAction.self)
     }
 
     /// Called whenever a given Action is dispatched.
     ///
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? JetpackConnectionAction else {
             assertionFailure("JetpackConnectionStore received an unsupported action")
             return
@@ -46,6 +46,8 @@ public final class JetpackConnectionStore: DeauthenticatedStore {
                                       completion: completion)
         case .fetchJetpackConnectionData(let siteID, let completion):
             fetchJetpackConnectionData(siteID: siteID, completion: completion)
+        case .fetchJetpackConnectionStatus(let siteID, let completion):
+            fetchJetpackConnectionStatus(siteID: siteID, completion: completion)
         case .registerSite(let completion):
             registerSite(completion: completion)
         case .provisionConnection(let completion):
@@ -133,6 +135,14 @@ private extension JetpackConnectionStore {
             return
         }
         jetpackConnectionRemote.fetchJetpackConnectionData(siteID: siteID, completion: completion)
+    }
+
+    func fetchJetpackConnectionStatus(siteID: Int64, completion: @escaping (Result<JetpackConnectionStatus, Error>) -> Void) {
+        guard let jetpackConnectionRemote else {
+            completion(.failure(JetpackConnectionStoreError.remoteNotConfigured))
+            return
+        }
+        jetpackConnectionRemote.fetchJetpackConnectionStatus(siteID: siteID, completion: completion)
     }
 
     func registerSite(completion: @escaping (Result<Int64, Error>) -> Void) {

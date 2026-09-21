@@ -4,8 +4,11 @@ struct POSErrorXMark: View {
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
 
     private let size: POSErrorAndAlertIconSize
-    init(size: POSErrorAndAlertIconSize = .large) {
+    private let color: Color
+
+    init(size: POSErrorAndAlertIconSize = .large, color: Color = .posAlert) {
         self.size = size
+        self.color = color
     }
 
     var body: some View {
@@ -14,7 +17,7 @@ struct POSErrorXMark: View {
             .aspectRatio(contentMode: .fit)
             .frame(maxHeight: size.dimension)
             .font(.system(size: size.dimension))
-            .foregroundStyle(Color.posAlert)
+            .foregroundStyle(color)
             .accessibilityHidden(true)
             .renderedIf(!dynamicTypeSize.isAccessibilitySize)
     }

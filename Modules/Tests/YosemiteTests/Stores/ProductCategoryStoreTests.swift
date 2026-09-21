@@ -225,7 +225,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // When dispatching a `addProductCategory` action
         var result: Result<Networking.ProductCategory, Error>?
-        waitForExpectation { (exp) in
+        waitForExpectation { exp in
             let action = ProductCategoryAction.addProductCategory(siteID: sampleSiteID, name: "Dress", parentID: 0) { aResult in
                 result = aResult
                 exp.fulfill()
@@ -248,7 +248,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // When dispatching a `addProductCategory` action
         var result: Result<Networking.ProductCategory, Error>?
-        waitForExpectation { (exp) in
+        waitForExpectation { exp in
             let action = ProductCategoryAction.addProductCategory(siteID: sampleSiteID, name: "Dress", parentID: 0) { aResult in
                 result = aResult
                 exp.fulfill()
@@ -268,7 +268,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
         // When dispatching a `addProductCategory` action
         var result: Result<Networking.ProductCategory, Error>?
-        waitForExpectation { (exp) in
+        waitForExpectation { exp in
             let action = ProductCategoryAction.addProductCategory(siteID: sampleSiteID, name: "Dress", parentID: 0) { aResult in
                 result = aResult
                 exp.fulfill()
@@ -319,7 +319,7 @@ final class ProductCategoryStoreTests: XCTestCase {
                 return
             }
 
-            let action = ProductCategoryAction.synchronizeProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { result in
+            let action = ProductCategoryAction.synchronizeProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { _ in
                 promise(self.viewStorage.loadProductCategory(siteID: self.sampleSiteID, categoryID: 104))
             }
 

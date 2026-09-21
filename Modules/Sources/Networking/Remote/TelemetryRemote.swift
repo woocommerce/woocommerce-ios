@@ -17,9 +17,11 @@ public class TelemetryRemote: Remote {
     ///
     public func sendTelemetry(for siteID: Int64, versionString: String, installationDate: Date?, completion: @escaping (Result<Void, Error>) -> Void) {
         let path = "tracker"
-        let parameters = ["platform": "ios",
-                          "version": versionString,
-                          "installation_date": installationDate?.ISO8601Format()].compactMapValues { $0 } as [String: Any]
+        let parameters: RequestParameterConvertibleDictionary = ([
+            "platform": "ios",
+            "version": versionString,
+            "installation_date": installationDate?.ISO8601Format()
+        ] as OptionalRequestParameterConvertibleDictionary).compactMapValues { $0 }
         let request = JetpackRequest(wooApiVersion: .wcTelemetry,
                                      method: .post,
                                      siteID: siteID,

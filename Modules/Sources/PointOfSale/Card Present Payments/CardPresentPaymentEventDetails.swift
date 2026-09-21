@@ -54,6 +54,7 @@ public enum CardPresentPaymentEventDetails {
     case processing
     case displayReaderMessage(message: String)
     case cancelledOnReader
+    case paymentCancellationConfirmation(onDismiss: () -> Void)
     case validatingOrder(cancelPayment: () -> Void)
 
     case locationRequestPreAlert(requestPermission: () -> Void)

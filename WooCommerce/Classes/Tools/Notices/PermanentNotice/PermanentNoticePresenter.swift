@@ -55,7 +55,7 @@ private extension PermanentNoticePresenter {
             viewController.view.leadingAnchor.constraint(equalTo: hostingView.leadingAnchor, constant: 0),
             viewController.view.trailingAnchor.constraint(equalTo: hostingView.trailingAnchor, constant: 0),
             viewController.view.bottomAnchor.constraint(equalTo: hostingView.bottomAnchor, constant: 0),
-            ])
+        ])
     }
 
     func animatePresentation(of hostingController: UIViewController, in viewController: UIViewController) {

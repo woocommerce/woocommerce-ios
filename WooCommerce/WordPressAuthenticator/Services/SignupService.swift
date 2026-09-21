@@ -97,7 +97,6 @@ class SignupService: SocialUserCreating {
             failure(error ?? SignupError.unknown)
         })
     }
-
 }
 
 // MARK: - Private

@@ -4,7 +4,7 @@
         "method": "GET",
         "queryParameters": {
           "fields": {
-            "equalTo": "ID,name,description,URL,options,jetpack,jetpack_connection,capabilities,was_ecommerce_trial,plan,jetpack_modules,is_garden,garden_name,garden_partner"
+            "equalTo": "ID,name,description,URL,options,jetpack,jetpack_connection,capabilities,was_ecommerce_trial,plan,jetpack_modules"
           },
           "options": {
             "equalTo": "timezone,is_wpcom_store,woocommerce_is_active,gmt_offset,jetpack_connection_active_plugins,admin_url,login_url,frame_nonce,blog_public,can_blaze"
@@ -19,7 +19,7 @@
                       "ID": 161477129,
                       "name": "Your WooCommerce Store",
                       "description": "",
-                      "URL": "http:\/\/yourwoosite.com",
+                      "URL": "https:\/\/yourwoosite.com",
                       "capabilities": {
                         "edit_pages": true,
                         "edit_posts": true,
@@ -57,15 +57,12 @@
                       "jetpack": true,
                       "jetpack_connection": true,
                       "was_ecommerce_trial": false,
-                      "is_garden": false,
-                      "garden_name": null,
-                      "garden_partner": null,
                       "options": {
                         "timezone": "",
                         "gmt_offset": 0,
                         "blog_public": 1,
-                        "admin_url": "http:\/\/yourwoosite.com/wp-admin/",
-                        "login_url": "http:\/\/yourwoosite.com/wp-login.php",
+                        "admin_url": "https:\/\/yourwoosite.com/wp-admin/",
+                        "login_url": "https:\/\/yourwoosite.com/wp-login.php",
                         "is_wpcom_store": false,
                         "woocommerce_is_active": true,
                         "can_blaze": false,

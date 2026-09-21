@@ -150,7 +150,7 @@ final class StorePickerViewController: UIViewController {
         }
     }
 
-    private lazy var closeAccountCoordinator: CloseAccountCoordinator =
+    private lazy var closeAccountCoordinator =
     CloseAccountCoordinator(sourceViewController: self) { [weak self] in
         guard let self else { throw CloseAccountError.presenterDeallocated }
         return try await self.closeAccount()
@@ -428,33 +428,18 @@ extension StorePickerViewController {
 //
 private extension StorePickerViewController {
 
-    /// Sets the first available Store as the default one. If possible!
+    /// Preselects a Store when there is an unambiguous choice.
     ///
     func preselectStoreIfPossible() {
 
-        guard case let .available(sites) = viewModel.state, let firstSite = sites.first(where: { $0.isWooCommerceActive }) else {
+        guard case let .available(sites) = viewModel.state else {
             return
         }
         guard currentlySelectedSite == nil else {
             return
         }
 
-        // If there is a defaultSite already set, select it
-        if let site = ServiceLocator.stores.sessionManager.defaultSite {
-            currentlySelectedSite = site
-            return
-        }
-
-        // If a site address was passed in credentials, select it
-        if case let .wpcom(_, _, siteAddress) = ServiceLocator.stores.sessionManager.defaultCredentials,
-           let site = sites.filter({ $0.url == siteAddress }).first,
-           site.isWooCommerceActive {
-            currentlySelectedSite = site
-            return
-        }
-
-        // Otherwise select the first site in the list
-        currentlySelectedSite = firstSite
+        currentlySelectedSite = viewModel.siteToPreselect(from: sites)
     }
 
     /// Reloads the UI.
@@ -841,7 +826,7 @@ private extension StorePickerViewController {
                         self?.dismiss()
                     }
                 } else {
-                    let underlyingError = (error as? RoleEligibilityError)?.underlyingError ?? error
+                    let underlyingError = error.underlyingError ?? error
                     let isPermissionError = underlyingError is DotcomError
                     self.displayUnknownErrorModal(isPermissionError: isPermissionError)
                 }

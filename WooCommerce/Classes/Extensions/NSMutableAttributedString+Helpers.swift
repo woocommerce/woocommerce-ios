@@ -56,7 +56,6 @@ extension NSMutableAttributedString {
                                value: NSUnderlineStyle.single.rawValue,
                                range: range)
         }
-
     }
 
     /// Highlight the given substring (case insensitive). It does nothing if the given substring cannot be found in the original string.

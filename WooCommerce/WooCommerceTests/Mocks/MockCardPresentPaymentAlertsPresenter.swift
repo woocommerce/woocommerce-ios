@@ -36,8 +36,9 @@ final class MockCardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPrese
         // no-op
     }
 
+    private(set) var spyDismissCallCount = 0
     func dismiss() {
-        // no-op
+        spyDismissCallCount += 1
     }
 }
 

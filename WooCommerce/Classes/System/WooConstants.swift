@@ -66,6 +66,10 @@ public enum WooConstants {
     ///
     static let storeInfoWidgetKind = "StoreInfoWidget"
 
+    /// Store Trends Widget Identifier.
+    ///
+    static let storeTrendsWidgetKind = "StoreTrendsWidget"
+
     /// App link Widget Identifier.
     ///
     static let appLinkWidgetKind = "AppLinkWidget"
@@ -83,7 +87,20 @@ public enum WooConstants {
     static let appLoginURLPrefix = "woocommerce://app-login"
     static let appMagicLoginURLPrefix = "woocommerce://magic-login"
 
+    /// QR login deep link prefix
+    ///
+    static let qrLoginURLPrefix = "woocommerce://qr-login"
+
+    /// Web page the merchant opens on a computer to display a login QR code.
+    /// Surfaced (and copied to the clipboard) from the QR-login prologue.
+    ///
+    static let qrLoginInstructionsURL = "https://woo.com/mobilelogin"
+
     static let wooPaymentsPluginPath = "woocommerce-payments/woocommerce-payments.php"
+
+    /// wp-admin path to the WooCommerce plugin update page.
+    ///
+    static let wooCommercePluginUpdatePath = "plugin-install.php?tab=plugin-information&plugin=woocommerce"
 
     /// Key used to identify track events sent between the phone and the watch.
     ///
@@ -202,9 +219,9 @@ extension WooConstants {
         case inAppFeedback = "https://automattic.survey.fm/woo-app-general-feedback-user-survey"
 #endif
 
-        /// URL for the products feedback survey
+        /// URL for the AI Assistant beta feedback survey
         ///
-        case productsFeedback = "https://automattic.survey.fm/woo-app-feature-feedback-products"
+        case aiAssistantFeedback = "https://automattic.survey.fm/woo-mobile-ai-assistant"
 
         /// URL for the order add-on i1 feedback survey
         ///
@@ -257,12 +274,6 @@ extension WooConstants {
         /// Temporary redirect URL for authenticated web view when authenticating WPCom automatically
         ///
         case wpcomTempRedirectURL = "https://wordpress.com/mobile-redirect"
-
-#if DEBUG
-        case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-testing"
-#else
-        case orderCreationFeedback = "https://automattic.survey.fm/woo-app-order-creation-production"
-#endif
 
         /// URL for the Enable Cash on Delivery (or Pay in Person) onboarding step's learn more link using the Stripe plugin
         ///

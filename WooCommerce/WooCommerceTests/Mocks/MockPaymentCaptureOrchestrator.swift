@@ -1,6 +1,7 @@
 import Foundation
 @testable import WooCommerce
 import Yosemite
+import WooFoundation
 
 final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     var mockCollectPaymentHandler: ((_ onPreparingReader: () -> Void,
@@ -16,12 +17,16 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     var spyCollectPaymentGatewayAccount: PaymentGatewayAccount? = nil
     var spyCollectPaymentMethodTypes: [PaymentMethodType]? = nil
     var spyCollectPaymentStripeSmallestCurrencyUnitMultiplier: Decimal? = nil
+    var spyCollectPaymentCountryCode: CountryCode? = nil
+    var spyTerminalPaymentPreparationEnabled: Bool?
     var spyChannel: PaymentChannel? = nil
     func collectPayment(for order: Order,
                         orderTotal: NSDecimalNumber,
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        countryCode: CountryCode,
+                        terminalPaymentPreparationEnabled: Bool,
                         channel: PaymentChannel,
                         onPreparingReader: () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
@@ -35,6 +40,8 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         spyCollectPaymentGatewayAccount = paymentGatewayAccount
         spyCollectPaymentMethodTypes = paymentMethodTypes
         spyCollectPaymentStripeSmallestCurrencyUnitMultiplier = stripeSmallestCurrencyUnitMultiplier
+        spyCollectPaymentCountryCode = countryCode
+        spyTerminalPaymentPreparationEnabled = terminalPaymentPreparationEnabled
         spyChannel = channel
 
         mockCollectPaymentHandler?(onPreparingReader,
@@ -53,29 +60,15 @@ final class MockPaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     }
 
     var spyDidCallCancelPayment = false
+    var mockCancelPaymentResult: Result<Void, Error> = .success(())
+    var mockCancelPaymentHandler: ((@escaping (Result<Void, Error>) -> Void) -> Void)?
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         spyDidCallCancelPayment = true
-    }
-
-    var spyDidCallEmailReceipt = false
-    var spyEmailReceiptOrder: Order? = nil
-    var spyEmailReceiptParams: CardPresentReceiptParameters? = nil
-    func emailReceipt(for order: Order,
-                      params: CardPresentReceiptParameters,
-                      onContent: @escaping (String) -> Void) {
-        spyDidCallEmailReceipt = true
-        spyEmailReceiptOrder = order
-        spyEmailReceiptParams = params
-    }
-
-    var spyDidCallSaveReceipt = false
-    var spySaveReceiptOrder: Order? = nil
-    var spySaveReceiptParams: CardPresentReceiptParameters? = nil
-    func saveReceipt(for order: Order,
-                     params: CardPresentReceiptParameters) {
-        spyDidCallSaveReceipt = true
-        spySaveReceiptOrder = order
-        spySaveReceiptParams = params
+        if let mockCancelPaymentHandler {
+            mockCancelPaymentHandler(onCompletion)
+        } else {
+            onCompletion(mockCancelPaymentResult)
+        }
     }
 
     func presentBackendReceipt(for order: Yosemite.Order, onCompletion: @escaping (Result<Yosemite.Receipt, Error>) -> Void) {

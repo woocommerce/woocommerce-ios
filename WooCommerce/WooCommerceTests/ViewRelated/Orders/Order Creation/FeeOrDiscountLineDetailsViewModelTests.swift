@@ -75,6 +75,32 @@ final class FeeOrDiscountLineDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currencyPosition, .rightSpace)
     }
 
+    func test_signedFinalAmountString_returns_signed_currency_amount() {
+        // Given
+        let customSettings = CurrencySettings(currencyCode: .QAR,
+                                              currencyPosition: .right,
+                                              thousandSeparator: ",",
+                                              decimalSeparator: ".",
+                                              numberOfDecimals: 2)
+        let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,
+                                                          baseAmount: 0,
+                                                          initialTotal: .zero,
+                                                          lineType: .discount,
+                                                          locale: usLocale,
+                                                          storeCurrencySettings: customSettings,
+                                                          didSelectSave: { _ in })
+        let rightToLeftMark = "\u{200F}"
+        let leftToRightIsolate = "\u{2066}"
+        let popDirectionalIsolate = "\u{2069}"
+
+        // When
+        viewModel.updateAmount("12.34")
+
+        // Then
+        XCTAssertEqual("\(rightToLeftMark)\(leftToRightIsolate)-12.34\(popDirectionalIsolate)\(customSettings.currencySymbol)",
+                       viewModel.signedFinalAmountString)
+    }
+
     func test_view_model_formats_amount_with_grouping_separators_correctly() {
         // Given
         let viewModel = FeeOrDiscountLineDetailsViewModel(isExistingLine: false,

@@ -24,7 +24,6 @@ extension WCAnalyticsCustomer {
     @NSManaged public var city: String?
     @NSManaged public var postcode: String?
     @NSManaged public var searchResults: Set<WCAnalyticsCustomerSearchResult>?
-
 }
 
 // MARK: Generated accessors for searchResults
@@ -41,9 +40,7 @@ extension WCAnalyticsCustomer {
 
     @objc(removeSearchResults:)
     @NSManaged public func removeFromSearchResults(_ values: NSSet)
-
 }
 
 extension WCAnalyticsCustomer: Identifiable {
-
 }

@@ -12,11 +12,14 @@ struct TopPerformersDashboardView: View {
     private let onViewAllAnalytics: (_ siteID: Int64,
                                      _ timeZone: TimeZone,
                                      _ timeRange: StatsTimeRangeV4) -> Void
+    private let onAnalyticsImportUpdateModeInfoTapped: () -> Void
 
     init(viewModel: TopPerformersDashboardViewModel,
-         onViewAllAnalytics: @escaping (Int64, TimeZone, StatsTimeRangeV4) -> Void) {
+         onViewAllAnalytics: @escaping (Int64, TimeZone, StatsTimeRangeV4) -> Void,
+         onAnalyticsImportUpdateModeInfoTapped: @escaping () -> Void) {
         self.viewModel = viewModel
         self.onViewAllAnalytics = onViewAllAnalytics
+        self.onAnalyticsImportUpdateModeInfoTapped = onAnalyticsImportUpdateModeInfoTapped
     }
 
     var body: some View {
@@ -61,7 +64,6 @@ struct TopPerformersDashboardView: View {
                     .redacted(reason: viewModel.periodViewModel.redacted.actionButton ? [.placeholder] : [])
                     .shimmering(active: viewModel.periodViewModel.redacted.actionButton)
             }
-
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -175,9 +177,26 @@ private extension TopPerformersDashboardView {
     }
 
     var timestampView: some View {
-        Text(Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp))
-            .footnoteStyle()
-            .frame(maxWidth: .infinity, alignment: .center)
+        HStack(alignment: .center, spacing: Layout.timestampInfoSpacing) {
+            Text(viewModel.shouldShowScheduledAnalyticsImportInfo ?
+                 Localization.scheduledUpdatesDelayText :
+                 Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp))
+                .footnoteStyle()
+
+            if viewModel.shouldShowAnalyticsImportUpdateModeInfoButton {
+                Button {
+                    viewModel.trackAnalyticsImportUpdateModeInfoTapped()
+                    onAnalyticsImportUpdateModeInfoTapped()
+                } label: {
+                    Image(systemName: "info.circle")
+                        .font(.footnote)
+                        .foregroundStyle(Color.accentColor)
+                }
+                .buttonStyle(.plain)
+                .accessibilityLabel(Localization.scheduledUpdatesInfoAccessibilityLabel)
+            }
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     func productDetailView(for item: TopEarnerStatsItem) -> UIViewController {
@@ -193,6 +212,7 @@ private extension TopPerformersDashboardView {
         static let padding: CGFloat = 16
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let hideIconVerticalPadding: CGFloat = 8
+        static let timestampInfoSpacing: CGFloat = 4
     }
 
     enum Localization {
@@ -215,15 +235,26 @@ private extension TopPerformersDashboardView {
             let format = NSLocalizedString("Last Updated: %@", comment: "Time for when the top performers card was last updated")
             return String.localizedStringWithFormat(format, time)
         }
+        static let scheduledUpdatesDelayText = NSLocalizedString(
+            "topPerformersDashboardView.scheduledUpdatesDelayText",
+            value: "Stats may be up to 12 hours delayed",
+            comment: "Text shown on the Top Performers card instead of the last updated timestamp when analytics updates are scheduled."
+        )
         static let unavailableAnalytics = NSLocalizedString(
             "topPerformersDashboardView.unavailableAnalyticsView.title",
             value: "Unable to display your store's top performers",
             comment: "Title when the Top Performers card is disabled because the analytics feature is unavailable"
+        )
+        static let scheduledUpdatesInfoAccessibilityLabel = NSLocalizedString(
+            "topPerformersDashboardView.scheduledUpdatesInfoAccessibilityLabel",
+            value: "Analytics update details",
+            comment: "Accessibility label for the info button next to the Top Performers card's last updated timestamp."
         )
     }
 }
 
 #Preview {
     TopPerformersDashboardView(viewModel: .init(siteID: 123, usageTracksEventEmitter: .init()),
-                               onViewAllAnalytics: { _, _, _ in })
+                               onViewAllAnalytics: { _, _, _ in },
+                               onAnalyticsImportUpdateModeInfoTapped: {})
 }

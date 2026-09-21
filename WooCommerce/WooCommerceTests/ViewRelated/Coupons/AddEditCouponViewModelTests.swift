@@ -27,7 +27,6 @@ final class AddEditCouponViewModelTests: XCTestCase {
         let dictionary = "ABCDEFGHJKMNPQRSTUVWXYZ23456789"
         XCTAssertEqual(viewModel.codeField.count, 8)
         XCTAssertTrue(viewModel.codeField.allSatisfy(dictionary.contains))
-
     }
 
     func test_populatedCoupon_return_expected_coupon_during_editing() {

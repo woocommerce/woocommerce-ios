@@ -3,6 +3,10 @@ import Networking
 
 public enum SettingError: Error {
     case parseError
+
+    /// The site does not register the setting in its REST settings API (404 `rest_setting_setting_invalid`).
+    /// Hosts that hide a settings section from wp-admin also hide it from the API.
+    case settingNotExposed
 }
 
 /// SettingAction: Defines all of the Actions supported by the SettingStore.
@@ -56,4 +60,12 @@ public enum SettingAction: Action {
     /// Updates the WooCommerce Analytics order date-type setting (`woocommerce_date_type`).
     ///
     case updateAnalyticsOrderDateType(siteID: Int64, value: AnalyticsOrderDateType, onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Retrieves the WooCommerce Analytics scheduled-import setting (`woocommerce_analytics_scheduled_import`).
+    ///
+    case retrieveAnalyticsImportUpdateMode(siteID: Int64, onCompletion: (Result<AnalyticsImportUpdateMode, Error>) -> Void)
+
+    /// Updates the WooCommerce Analytics scheduled-import setting (`woocommerce_analytics_scheduled_import`).
+    ///
+    case updateAnalyticsImportUpdateMode(siteID: Int64, value: AnalyticsImportUpdateMode, onCompletion: (Result<Void, Error>) -> Void)
 }

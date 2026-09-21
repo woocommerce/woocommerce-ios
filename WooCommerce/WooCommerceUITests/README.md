@@ -63,7 +63,7 @@ The following flows are covered/planned to be covered by UI tests. Tests that ar
     - [ ] New order results in a push notification
     - [ ] Orders push notification opens the correct order
     - [ ] Reviews push notification opens the correct review
-7. Universal Links and Deeplinks - Tests are temporarily disabled, will re-enable/remove when [Issue 9706](https://github.com/woocommerce/woocommerce-ios/issues/9706) is resolved.
+7. Universal Links and Deeplinks
     - [x] Universal Link to Payments screen
     - [x] Universal Link to an Order
 8. Settings
@@ -88,7 +88,7 @@ You can run the tests locally with these steps:
 3. Select the `WooCommerceUITests` scheme in Xcode.
 4. Navigate to Product > Test to run all the tests, or use the Test Navigator to run specific tests or test suites.
 
-We also run the UI tests on Buildkite on every commit. See the [Buildkite config](../../.buildkite/pipeline.yml) for more details.
+Buildkite runs UI tests on `trunk` and `release/*` branches. For PRs, add the `run ui tests` label before the CI run, or retrigger CI after adding it, to opt in to the iPhone and iPad UI-test jobs. See the [Buildkite config](../../.buildkite/pipeline.yml) for more details.
 
 ## Adding tests
 

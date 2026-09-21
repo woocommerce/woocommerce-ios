@@ -313,7 +313,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
             remote.loadCarriersAndRates(siteID: self.sampleSiteID,
                                         orderID: self.sampleOrderID,
                                         originAddress: ShippingLabelAddress.fake(), destinationAddress: ShippingLabelAddress.fake(),
-                                        packages: [ShippingLabelPackageSelected.fake()]) { (result) in
+                                        packages: [ShippingLabelPackageSelected.fake()]) { result in
                 promise(result)
             }
         }
@@ -458,7 +458,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
                                          originAddress: ShippingLabelAddress.fake(),
                                          destinationAddress: ShippingLabelAddress.fake(),
                                          packages: [ShippingLabelPackagePurchase.fake()],
-                                         emailCustomerReceipt: true) { (result) in
+                                         emailCustomerReceipt: true) { result in
                 promise(result)
             }
         }
@@ -516,7 +516,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         let result: Result<[ShippingLabelStatusPollingResponse], Error> = waitFor { promise in
             remote.checkLabelStatus(siteID: self.sampleSiteID,
                                     orderID: self.sampleOrderID,
-                                    labelIDs: [sampleLabelID]) { (result) in
+                                    labelIDs: [sampleLabelID]) { result in
                 promise(result)
             }
         }
@@ -537,7 +537,7 @@ final class ShippingLabelRemoteTests: XCTestCase {
         let result: Result<[ShippingLabelStatusPollingResponse], Error> = waitFor { promise in
             remote.checkLabelStatus(siteID: self.sampleSiteID,
                                     orderID: self.sampleOrderID,
-                                    labelIDs: [sampleLabelID]) { (result) in
+                                    labelIDs: [sampleLabelID]) { result in
                 promise(result)
             }
         }

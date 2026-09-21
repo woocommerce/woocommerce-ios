@@ -3,7 +3,7 @@ import SwiftUI
 
 /// Hosting Controller for the Support Form.
 ///
-final class SupportFormHostingController: UIHostingController<SupportForm> {
+final class SupportFormHostingController: TabBarHidingHostingController<SupportForm> {
 
     /// Custom notice presenter,
     ///
@@ -18,10 +18,9 @@ final class SupportFormHostingController: UIHostingController<SupportForm> {
         rootView.onDismiss = { [weak self] in
             self?.dismissView()
         }
-        hidesBottomBarWhenPushed = true
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -156,6 +155,12 @@ struct SupportForm: View {
                             )
                             .cornerRadius(Layout.cornerRadius)
                             .accessibilityLabel(Localization.message)
+
+                        if viewModel.shouldShowTranscriptDisclosure {
+                            Text(Localization.transcriptDisclosure)
+                                .foregroundStyle(Color(.secondaryLabel))
+                                .captionStyle()
+                        }
                     }
                     .accessibilityElement(children: .contain)
                 }
@@ -167,7 +172,9 @@ struct SupportForm: View {
                 Divider()
 
                 Button {
-                    viewModel.submitSupportRequest()
+                    Task {
+                        await viewModel.submitSupportRequest()
+                    }
                 } label: {
                     Text(Localization.submitRequest)
                 }
@@ -229,6 +236,11 @@ private extension SupportForm {
         static let subject = NSLocalizedString("Subject", comment: "Subject title on the support form")
         static let siteAddress = NSLocalizedString("Site Address", comment: "Site Address title on the support form")
         static let message = NSLocalizedString("Message", comment: "Message on the support form")
+        static let transcriptDisclosure = NSLocalizedString(
+            "supportForm.aiChatTranscriptDisclosure",
+            value: "Your AI support chat transcript will also be included with this request.",
+            comment: "Disclosure below the support form message editor when an AI chat transcript will be included"
+        )
         static let submitRequest = NSLocalizedString("Submit Support Request", comment: "Button title to submit a support request.")
 
         static let supportRequestSent = NSLocalizedString(
@@ -304,7 +316,7 @@ struct SupportFormProvider: PreviewProvider {
                 .init(title: "WooPayments", datasource: MockDataSource()),
                 .init(title: "WooCommerce Plugins", datasource: MockDataSource()),
                 .init(title: "Other Plugins", datasource: MockDataSource()),
-            ]))
+            ], mobileStatusReportProvider: MobileStatusReportProvider()))
         }
     }
 }

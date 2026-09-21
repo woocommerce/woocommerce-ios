@@ -8,7 +8,7 @@ public final class PaymentGatewayStore: Store {
 
     private let remote: PaymentGatewayRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = PaymentGatewayRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

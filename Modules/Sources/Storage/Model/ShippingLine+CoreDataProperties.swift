@@ -16,7 +16,6 @@ extension ShippingLine {
     @NSManaged public var order: Order?
     @NSManaged public var taxes: Set<ShippingLineTax>?
     @NSManaged public var refund: Refund?
-
 }
 
 // MARK: Generated accessors for taxes
@@ -33,5 +32,4 @@ extension ShippingLine {
 
     @objc(removeTaxes:)
     @NSManaged public func removeFromTaxes(_ values: NSSet)
-
 }

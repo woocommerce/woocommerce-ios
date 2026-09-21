@@ -7,7 +7,7 @@ import Storage
 public class CommentStore: Store {
     private let remote: CommentRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = CommentRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -66,7 +66,7 @@ private extension CommentStore {
     }
 
     func moderateComment(siteID: Int64, commentID: Int64, status: CommentStatus, onCompletion: @escaping (CommentStatus?, Error?) -> Void) {
-        remote.moderateComment(siteID: siteID, commentID: commentID, status: status) { (updatedStatus, error) in
+        remote.moderateComment(siteID: siteID, commentID: commentID, status: status) { updatedStatus, error in
             onCompletion(updatedStatus, error)
         }
     }

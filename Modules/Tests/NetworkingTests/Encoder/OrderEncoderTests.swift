@@ -12,7 +12,7 @@ final class OrderEncoderTests: XCTestCase {
         ])
 
         // When
-        let parameters = try order.items.map { try $0.toDictionary() }
+        let parameters = try order.items.map { try $0.toJSONObjectDictionary() }
 
         // Then
         let bundleConfiguration = try XCTUnwrap((parameters.first?["bundle_configuration"] as? [[String: Any]])?.first)
@@ -28,7 +28,7 @@ final class OrderEncoderTests: XCTestCase {
         ])
 
         // When
-        let parameters = try order.items.map { try $0.toDictionary() }
+        let parameters = try order.items.map { try $0.toJSONObjectDictionary() }
 
         // Then
         let bundleConfiguration = try XCTUnwrap((parameters.first?["bundle_configuration"] as? [[String: Any]])?.first)

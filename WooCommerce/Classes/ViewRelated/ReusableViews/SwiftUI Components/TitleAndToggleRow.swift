@@ -16,7 +16,7 @@ struct TitleAndToggleRow: View {
 
     var body: some View {
         toggle
-            .toggleStyle(SwitchToggleStyle.init(tint: isEnabled ? Color(.primary) : Color(.switchDisabledColor)))
+            .toggleStyle(SwitchToggleStyle(tint: isEnabled ? Color(.primary) : Color(.switchDisabledColor)))
             .fixedSize(horizontal: false, vertical: true)
     }
 

@@ -7,7 +7,7 @@ import Storage
 public final class ProductAttributeStore: Store {
     private let remote: ProductAttributesRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductAttributesRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -46,7 +46,7 @@ private extension ProductAttributeStore {
     /// Synchronizes global product attributes associated with a given Site ID.
     ///
     func synchronizeProductAttributes(siteID: Int64, onCompletion: @escaping (Result<[ProductAttribute], Error>) -> Void) {
-        remote.loadAllProductAttributes(for: siteID) { [weak self] (result) in
+        remote.loadAllProductAttributes(for: siteID) { [weak self] result in
             switch result {
             case .success(let productAttributes):
                 self?.upsertStoredProductAttributesInBackground(productAttributes,
@@ -63,7 +63,7 @@ private extension ProductAttributeStore {
     /// Create a new global product attribute associated with a given Site ID.
     ///
     func addProductAttribute(siteID: Int64, name: String, onCompletion: @escaping (Result<ProductAttribute, Error>) -> Void) {
-        remote.createProductAttribute(for: siteID, name: name) { [weak self] (result) in
+        remote.createProductAttribute(for: siteID, name: name) { [weak self] result in
             switch result {
             case .success(let productAttribute):
                 self?.upsertStoredProductAttributesInBackground([productAttribute], siteID: siteID, onCompletion: {
@@ -78,7 +78,7 @@ private extension ProductAttributeStore {
     /// Update a global product attribute associated with a given Site ID.
     ///
     func updateProductAttribute(siteID: Int64, attributeID: Int64, name: String, onCompletion: @escaping (Result<ProductAttribute, Error>) -> Void) {
-        remote.updateProductAttribute(for: siteID, productAttributeID: attributeID, name: name) { [weak self] (result) in
+        remote.updateProductAttribute(for: siteID, productAttributeID: attributeID, name: name) { [weak self] result in
             switch result {
             case .success(let productAttribute):
                 self?.upsertStoredProductAttributesInBackground([productAttribute], siteID: siteID, onCompletion: {
@@ -93,7 +93,7 @@ private extension ProductAttributeStore {
     /// Delete a global product attribute associated with a given Site ID.
     ///
     func deleteProductAttribute(siteID: Int64, attributeID: Int64, onCompletion: @escaping (Result<ProductAttribute, Error>) -> Void) {
-        remote.deleteProductAttribute(for: siteID, productAttributeID: attributeID) { [weak self] (result) in
+        remote.deleteProductAttribute(for: siteID, productAttributeID: attributeID) { [weak self] result in
             switch result {
             case .success(let productAttribute):
                 self?.deleteStoredProductAttribute(siteID: siteID, attributeID: attributeID) {

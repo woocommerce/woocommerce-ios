@@ -90,6 +90,12 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var isPOSTabVisible: Bool?
 
+    /// The last definite POS entry eligibility result from an online check.
+    /// `nil` when no definite result has been recorded. Indeterminate results
+    /// (e.g. offline) leave this value untouched.
+    ///
+    public var lastKnownPOSEligibility: Bool?
+
     /// The last time POS was opened for this store.
     ///
     public var lastPOSOpenedDate: Date?
@@ -102,17 +108,15 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
     ///
     public var syncPOSCatalogOverCellular: Bool
 
-    /// The last time the sunset warning banner was dismissed for this store.
-    /// Used to throttle the banner to once every 14 days.
+    /// The last time the POS catalog file was blocked by the host during a sync attempt.
     ///
-    public var lastSunsetWarningDismissedDate: Date?
+    public var posCatalogFileBlockedByHostAt: Date?
 
-    /// Whether this site is eligible for the In-Person Payments country expansion (RSM-637).
-    /// `nil` until the eligibility refresher has run for the first time. Cached based on
-    /// the relevant remote feature flag (`inPersonPaymentsCountryExpansion` or
-    /// `inPersonPaymentsCountryExpansionEUExtended`) for the site's country, with US/PR/CA/GB
-    /// short-circuited to `true`.
-    public var isCardPresentPaymentsCountryExpansionEligible: Bool?
+    /// Whether the site last reported an HTTP URL that the app had to normalize to HTTPS.
+    public var requiresHTTPSConfigurationUpdate: Bool?
+
+    /// The last time the merchant dismissed the HTTPS configuration warning for this store.
+    public var lastHTTPSConfigurationWarningDismissedDate: Date?
 
     public init(storeID: String? = nil,
                 isTelemetryAvailable: Bool = false,
@@ -135,11 +139,13 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                 favoriteProductIDs: [Int64] = [],
                 searchTermsByKey: [String: [String]] = [:],
                 isPOSTabVisible: Bool? = nil,
+                lastKnownPOSEligibility: Bool? = nil,
                 lastPOSOpenedDate: Date? = nil,
                 firstPOSCatalogSyncDate: Date? = nil,
                 syncPOSCatalogOverCellular: Bool = true,
-                lastSunsetWarningDismissedDate: Date? = nil,
-                isCardPresentPaymentsCountryExpansionEligible: Bool? = nil) {
+                posCatalogFileBlockedByHostAt: Date? = nil,
+                requiresHTTPSConfigurationUpdate: Bool? = nil,
+                lastHTTPSConfigurationWarningDismissedDate: Date? = nil) {
         self.storeID = storeID
         self.isTelemetryAvailable = isTelemetryAvailable
         self.telemetryLastReportedTime = telemetryLastReportedTime
@@ -161,11 +167,13 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
         self.favoriteProductIDs = favoriteProductIDs
         self.searchTermsByKey = searchTermsByKey
         self.isPOSTabVisible = isPOSTabVisible
+        self.lastKnownPOSEligibility = lastKnownPOSEligibility
         self.lastPOSOpenedDate = lastPOSOpenedDate
         self.firstPOSCatalogSyncDate = firstPOSCatalogSyncDate
         self.syncPOSCatalogOverCellular = syncPOSCatalogOverCellular
-        self.lastSunsetWarningDismissedDate = lastSunsetWarningDismissedDate
-        self.isCardPresentPaymentsCountryExpansionEligible = isCardPresentPaymentsCountryExpansionEligible
+        self.posCatalogFileBlockedByHostAt = posCatalogFileBlockedByHostAt
+        self.requiresHTTPSConfigurationUpdate = requiresHTTPSConfigurationUpdate
+        self.lastHTTPSConfigurationWarningDismissedDate = lastHTTPSConfigurationWarningDismissedDate
     }
 
     public func erasingSelectedTaxRateID() -> GeneralStoreSettings {
@@ -189,10 +197,12 @@ public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
                              favoriteProductIDs: favoriteProductIDs,
                              searchTermsByKey: searchTermsByKey,
                              isPOSTabVisible: isPOSTabVisible,
+                             lastKnownPOSEligibility: lastKnownPOSEligibility,
                              lastPOSOpenedDate: lastPOSOpenedDate,
                              firstPOSCatalogSyncDate: firstPOSCatalogSyncDate,
-                             lastSunsetWarningDismissedDate: lastSunsetWarningDismissedDate,
-                             isCardPresentPaymentsCountryExpansionEligible: isCardPresentPaymentsCountryExpansionEligible)
+                             posCatalogFileBlockedByHostAt: posCatalogFileBlockedByHostAt,
+                             requiresHTTPSConfigurationUpdate: requiresHTTPSConfigurationUpdate,
+                             lastHTTPSConfigurationWarningDismissedDate: lastHTTPSConfigurationWarningDismissedDate)
     }
 }
 
@@ -228,14 +238,14 @@ extension GeneralStoreSettings {
         self.searchTermsByKey = try container.decodeIfPresent([String: [String]].self, forKey: .searchTermsByKey) ?? [:]
 
         self.isPOSTabVisible = try container.decodeIfPresent(Bool.self, forKey: .isPOSTabVisible)
+        self.lastKnownPOSEligibility = try container.decodeIfPresent(Bool.self, forKey: .lastKnownPOSEligibility)
         self.lastPOSOpenedDate = try container.decodeIfPresent(Date.self, forKey: .lastPOSOpenedDate)
         self.firstPOSCatalogSyncDate = try container.decodeIfPresent(Date.self, forKey: .firstPOSCatalogSyncDate)
         self.syncPOSCatalogOverCellular = try container.decodeIfPresent(Bool.self, forKey: .syncPOSCatalogOverCellular) ?? true
-        self.lastSunsetWarningDismissedDate = try container.decodeIfPresent(Date.self, forKey: .lastSunsetWarningDismissedDate)
-        self.isCardPresentPaymentsCountryExpansionEligible = try container.decodeIfPresent(
-            Bool.self,
-            forKey: .isCardPresentPaymentsCountryExpansionEligible
-        )
+        self.posCatalogFileBlockedByHostAt = try container.decodeIfPresent(Date.self, forKey: .posCatalogFileBlockedByHostAt)
+        self.requiresHTTPSConfigurationUpdate = try container.decodeIfPresent(Bool.self, forKey: .requiresHTTPSConfigurationUpdate)
+        self.lastHTTPSConfigurationWarningDismissedDate = try container.decodeIfPresent(Date.self,
+                                                                                          forKey: .lastHTTPSConfigurationWarningDismissedDate)
 
         // Decode new properties with `decodeIfPresent` and provide a default value if necessary.
     }

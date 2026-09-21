@@ -154,7 +154,6 @@ final class TwoFAViewController: LoginViewController {
             tableView.reloadData()
         }
     }
-
 }
 
 // MARK: - Validation and Login
@@ -285,7 +284,6 @@ private extension TwoFAViewController {
         loginFields.multifactorCode = codeField?.nonNilTrimmedText() ?? ""
         configureSubmitButton(animating: false)
     }
-
 }
 
 // MARK: - Security Keys
@@ -373,7 +371,6 @@ extension TwoFAViewController: UITextFieldDelegate {
         validateForm()
         return true
     }
-
 }
 
 // MARK: - UITableViewDataSource
@@ -390,7 +387,6 @@ extension TwoFAViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
         return cell
     }
-
 }
 
 // MARK: - Keyboard Notifications
@@ -404,7 +400,6 @@ extension TwoFAViewController: NUXKeyboardResponder {
     @objc func handleKeyboardWillHide(_ notification: Foundation.Notification) {
         keyboardWillHide(notification)
     }
-
 }
 
 // MARK: - Application state changes
@@ -452,7 +447,6 @@ private extension TwoFAViewController {
             break
         }
     }
-
 }
 
 // MARK: - Table Management

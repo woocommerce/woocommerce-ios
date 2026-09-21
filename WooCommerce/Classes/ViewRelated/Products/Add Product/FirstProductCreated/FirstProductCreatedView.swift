@@ -35,7 +35,7 @@ final class FirstProductCreatedHostingController: UIHostingController<FirstProdu
     }
 
     @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -87,10 +87,7 @@ struct FirstProductCreatedView: View {
                 .buttonStyle(PrimaryButtonStyle())
                 .padding(.horizontal)
                 .renderedIf(viewModel.showShareProductButton)
-                .sharePopover(isPresented: $viewModel.isSharePopoverPresented) {
-                    viewModel.shareSheet
-                }
-                .shareSheet(isPresented: $viewModel.isShareSheetPresented) {
+                .shareView(isPresented: $viewModel.isShareViewPresented) {
                     viewModel.shareSheet
                 }
 

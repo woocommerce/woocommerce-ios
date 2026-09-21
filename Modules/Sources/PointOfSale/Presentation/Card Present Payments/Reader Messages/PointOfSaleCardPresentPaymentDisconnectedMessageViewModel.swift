@@ -1,10 +1,16 @@
 import Foundation
 
 struct PointOfSaleCardPresentPaymentReaderDisconnectedMessageViewModel {
-    let title = Localization.title
-    let connectReaderButtonTitle = Localization.collectPayment
-    var instruction: String {
-        Localization.instruction
+    let title: String
+    let connectReaderButtonTitle: String
+    let instruction: String
+
+    init(title: String = Localization.title,
+         connectReaderButtonTitle: String = Localization.collectPayment,
+         instruction: String = Localization.instruction) {
+        self.title = title
+        self.connectReaderButtonTitle = connectReaderButtonTitle
+        self.instruction = instruction
     }
 }
 

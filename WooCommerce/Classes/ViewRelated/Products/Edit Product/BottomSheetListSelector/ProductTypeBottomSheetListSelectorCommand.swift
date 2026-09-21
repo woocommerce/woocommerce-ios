@@ -1,4 +1,6 @@
+import UIKit
 import Yosemite
+import WooFoundation
 
 /// `BottomSheetListSelectorCommand` for selecting a product type for the selected Product.
 ///
@@ -16,9 +18,9 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
             .simple(isVirtual: false),
             .simple(isVirtual: true),
             isEligibleForSubscriptionProducts ? .subscription : nil,
-            siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.variableProducts) ? .variable : nil,
+            .variable,
             isEligibleForSubscriptionProducts ? .variableSubscription : nil,
-            siteCIABEligibilityChecker.isFeatureSupportedForCurrentSite(.groupedProducts) ? .grouped : nil,
+            .grouped,
             .affiliate
         ].compactMap { $0 }
 
@@ -35,16 +37,16 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     private let source: Source
     private let onSelection: (BottomSheetProductType) -> Void
     private let isEligibleForSubscriptionProducts: Bool
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
+    private let backgroundColor: UIColor
 
     init(source: Source,
          subscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol,
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
+         backgroundColor: UIColor = .listForeground(modal: false),
          onSelection: @escaping (BottomSheetProductType) -> Void) {
         self.source = source
         self.onSelection = onSelection
         self.isEligibleForSubscriptionProducts = subscriptionProductsEligibilityChecker.isSiteEligible()
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
+        self.backgroundColor = backgroundColor
         if case let .editForm(selected) = source {
             self.selected = selected
         } else {
@@ -55,11 +57,12 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
     func configureCell(cell: ImageAndTitleAndTextTableViewCell, model: BottomSheetProductType) {
         let viewModel = ImageAndTitleAndTextTableViewCell.ViewModel(title: model.actionSheetTitle,
                                                                     text: model.actionSheetDescription,
-                                                                    image: model.actionSheetImage,
-                                                                    imageTintColor: .gray(.shade20),
+                                                                    image: model.actionSheetImage.withRenderingMode(.alwaysTemplate),
+                                                                    imageTintColor: .systemColor(.secondaryLabel),
                                                                     numberOfLinesForTitle: 0,
                                                                     numberOfLinesForText: 0)
         cell.updateUI(viewModel: viewModel)
+        cell.updateBackgroundColor(backgroundColor)
     }
 
     func handleSelectedChange(selected: BottomSheetProductType) {

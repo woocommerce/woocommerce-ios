@@ -125,6 +125,24 @@ struct POSOrderPriceChangeDetectorTests {
         // Then
         #expect(result == true)
     }
+
+    // MARK: - Regression tests
+
+    /// Regression: `subtotalTax = ""` (empty string) previously caused a crash.
+    /// `NSDecimalNumber(string: "")` silently returns `.notANumber`, which raises an
+    /// `NSDecimalNumberOverflowException` when passed to `.adding(...)`. The fix switches
+    /// to `Decimal(string:)` which returns `nil` for empty/invalid input and falls back to 0.
+    @Test func detectsPriceChange_when_subtotalTax_is_empty_string_then_does_not_crash_and_returns_false() {
+        // Given: tax-exempt item where the server returns an empty subtotalTax
+        let cart = makeCart(price: "10.00", productID: 42)
+        let order = makeOrder(productID: 42, quantity: 1, subtotal: "10.00", subtotalTax: "")
+
+        // When: this must not crash (NSDecimalNumber overflow was the regression)
+        let result = sut.detectsPriceChange(cart: cart, order: order)
+
+        // Then: prices match, so no change is flagged
+        #expect(result == false)
+    }
 }
 
 // MARK: - Helpers

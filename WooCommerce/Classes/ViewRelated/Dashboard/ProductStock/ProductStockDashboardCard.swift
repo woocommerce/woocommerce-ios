@@ -1,4 +1,3 @@
-import Kingfisher
 import SwiftUI
 import struct Yosemite.ProductReport
 import struct Yosemite.DashboardCard
@@ -8,7 +7,6 @@ import WooFoundation
 ///
 struct ProductStockDashboardCard: View {
     @ObservedObject private var viewModel: ProductStockDashboardCardViewModel
-    @ScaledMetric private var scale: CGFloat = 1.0
     @State private var selectedItem: ProductReport?
 
     init(viewModel: ProductStockDashboardCardViewModel) {
@@ -30,7 +28,7 @@ struct ProductStockDashboardCard: View {
             if !viewModel.analyticsEnabled {
                 UnavailableAnalyticsView(title: Localization.unavailableAnalytics)
                     .padding(.horizontal, Layout.padding)
-            } else if viewModel.syncingError != nil {
+            } else if viewModel.syncingError != nil && viewModel.reports.isEmpty {
                 DashboardCardErrorView(onRetry: {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.cardRetryTapped(type: .stock))
                     Task {
@@ -45,18 +43,26 @@ struct ProductStockDashboardCard: View {
                     stockList
                 } else {
                     emptyView
+                        .padding(.horizontal, Layout.padding)
                 }
             }
-            .padding(.horizontal, Layout.padding)
-            .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
-            .shimmering(active: viewModel.syncingData)
-            .renderedIf(viewModel.syncingError == nil)
+            .redacted(reason: viewModel.syncingData && viewModel.reports.isEmpty ? [.placeholder] : [])
+            .shimmering(active: viewModel.syncingData && viewModel.reports.isEmpty)
+            .renderedIf(viewModel.syncingError == nil || viewModel.reports.isNotEmpty)
+
+            timestampView
+                .padding(.horizontal, Layout.padding)
+                .renderedIf(viewModel.lastUpdatedTimestamp.isNotEmpty)
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
         .clipShape(RoundedRectangle(cornerSize: Layout.cornerSize))
         .padding(.horizontal, Layout.padding)
-        .sheet(item: $selectedItem) { item in
+        .sheet(item: $selectedItem, onDismiss: {
+            Task {
+                await viewModel.onProductDetailDismissed()
+            }
+        }) { item in
             ViewControllerContainer(productDetailView(for: item))
         }
     }
@@ -109,7 +115,6 @@ private extension ProductStockDashboardCard {
                 Image(systemName: "line.3.horizontal.decrease")
                     .foregroundStyle(Color(.secondaryLabel))
             }
-
         }
     }
 
@@ -124,50 +129,33 @@ private extension ProductStockDashboardCard {
                     .subheadlineStyle()
                     .fontWeight(.semibold)
             }
+            .padding(.horizontal, Layout.padding)
             ForEach(viewModel.reports) { element in
-                Button {
-                    ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .stock))
-
-                    selectedItem = element
-                } label: {
-                    HStack(alignment: .top) {
-                        // Thumbnail image
-                        KFImage(element.imageURL)
-                            .placeholder { Image(uiImage: .productPlaceholderImage)
-                                    .foregroundColor(Color(.listIcon))
-                            }
-                            .resizable()
-                            .frame(width: Layout.thumbnailSize * scale,
-                                   height: Layout.thumbnailSize * scale)
-                            .clipShape(RoundedRectangle(cornerSize: Layout.thumbnailCornerSize))
-
-                        // Details
-                        VStack {
-                            HStack(alignment: .firstTextBaseline) {
-                                VStack(alignment: .leading) {
-                                    Text(element.name)
-                                        .bodyStyle()
-                                        .multilineTextAlignment(.leading)
-                                    Text(element.itemsSold == 0 ? Localization.subtitleZero :
-                                            String.pluralize(element.itemsSold,
-                                                                  singular: Localization.subtitleSingular,
-                                                                  plural: Localization.subtitlePlural))
-                                    .subheadlineStyle()
-                                    .multilineTextAlignment(.leading)
-                                }
-                                Spacer()
-                                Text("\(element.stockQuantity ?? 0)")
-                                    .foregroundStyle(Color(.error))
-                                    .bodyStyle()
-                                    .fontWeight(.semibold)
-                            }
-                            Divider()
-                                .renderedIf(element != viewModel.reports.last)
-                        }
+                ProductStockRow(
+                    data: rowData(for: element),
+                    showDivider: element != viewModel.reports.last,
+                    tapHandler: {
+                        ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .stock))
+                        selectedItem = element
                     }
-                }
+                )
             }
         }
+    }
+
+    func rowData(for element: ProductReport) -> ProductStockRow.RowData {
+        let subtitle = element.itemsSold == 0
+            ? Localization.subtitleZero
+            : String.pluralize(element.itemsSold,
+                               singular: Localization.subtitleSingular,
+                               plural: Localization.subtitlePlural)
+        return ProductStockRow.RowData(
+            imageURL: element.imageURL,
+            name: element.name,
+            subtitle: subtitle,
+            accessoryText: "\(element.stockQuantity ?? 0)",
+            accessoryIsError: true
+        )
     }
 
     var emptyView: some View {
@@ -179,6 +167,19 @@ private extension ProductStockDashboardCard {
         }
         .padding(Layout.padding)
         .frame(maxWidth: .infinity)
+    }
+
+    var timestampView: some View {
+        HStack(spacing: Layout.timestampSpacing) {
+            Image(systemName: "exclamationmark.circle")
+                .foregroundStyle(Color(.error))
+                .renderedIf(viewModel.isShowingStaleData)
+            Text(viewModel.isShowingStaleData ?
+                 Localization.refreshFailedText(time: viewModel.lastUpdatedTimestamp) :
+                 Localization.lastUpdatedText(time: viewModel.lastUpdatedTimestamp))
+                .footnoteStyle()
+        }
+        .frame(maxWidth: .infinity, alignment: .center)
     }
 
     func productDetailView(for item: ProductReport) -> UIViewController {
@@ -201,8 +202,7 @@ private extension ProductStockDashboardCard {
         static let padding: CGFloat = 16
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
         static let hideIconVerticalPadding: CGFloat = 8
-        static let thumbnailSize: CGFloat = 40
-        static let thumbnailCornerSize = CGSize(width: 4.0, height: 4.0)
+        static let timestampSpacing: CGFloat = 4
     }
 
     enum Localization {
@@ -226,6 +226,22 @@ private extension ProductStockDashboardCard {
             value: "Stock levels",
             comment: "Header label on the Stock section on the My Store screen"
         )
+        static func lastUpdatedText(time: String) -> String {
+            let format = NSLocalizedString(
+                "productStockDashboardCard.lastUpdated",
+                value: "Last Updated: %1$@",
+                comment: "Time when the Stock dashboard card was last updated"
+            )
+            return String.localizedStringWithFormat(format, time)
+        }
+        static func refreshFailedText(time: String) -> String {
+            let format = NSLocalizedString(
+                "productStockDashboardCard.refreshFailed",
+                value: "Couldn't refresh · Last Updated: %1$@",
+                comment: "Message on the Stock dashboard card when a refresh fails; includes the last updated time"
+            )
+            return String.localizedStringWithFormat(format, time)
+        }
         static let subtitleSingular = NSLocalizedString(
             "productStockDashboardCard.item.subtitle.singular",
             value: "%1$d item sold last 30 days",

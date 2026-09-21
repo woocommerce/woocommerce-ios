@@ -29,7 +29,7 @@ struct BoldableTextParser {
         var elements: [BoldableElement] = []
 
         var startingIndex = string.startIndex
-        matches.enumerated().forEach { index, match in
+        matches.enumerated().forEach { _, match in
             // Each `NSTextCheckingResult` has two ranges: the first one (index 0) is the range that includes the bold marks (**..**).
             // The second one (index 1) is the range that excludes the bold marks, which corresponds to the bolded substring.
             guard match.numberOfRanges == 2 else {

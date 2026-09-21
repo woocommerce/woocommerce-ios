@@ -47,16 +47,17 @@ final class SurveyViewControllerTests: XCTestCase {
             .tagSiteInfo(siteID: siteID, storeUUID: storeUUID, storeURL: testURL))
     }
 
-    func test_it_loads_the_correct_product_feedback_survey() throws {
+    func test_it_loads_the_correct_aiAssistantFeedback_survey() throws {
         // Given
-        let viewController = SurveyViewController(survey: .productsFeedback, onCompletion: {})
+        let viewController = SurveyViewController(survey: .aiAssistantFeedback, onCompletion: {})
+
         // When
         _ = try XCTUnwrap(viewController.view)
         let mirror = try self.mirror(of: viewController)
 
         // Then
         XCTAssertTrue(mirror.webView.isLoading)
-        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.productsFeedback
+        XCTAssertEqual(mirror.webView.url, WooConstants.URLs.aiAssistantFeedback
             .asURL()
             .tagPlatform("ios")
             .tagAppVersion(Bundle.main.bundleVersion())

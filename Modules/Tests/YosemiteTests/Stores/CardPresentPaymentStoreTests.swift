@@ -4,6 +4,7 @@ import Fakes
 import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Networking
+@testable import NetworkingCore
 @testable import Storage
 @testable import Hardware
 
@@ -90,6 +91,25 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     // MARK: - CardPresentPaymentAction.startCardReaderDiscovery
 
+    func test_retrievePaymentIntent_action_returns_refreshed_intent_from_service() throws {
+        // Given
+        let clientSecret = "pi_client_secret"
+        let intent = PaymentIntent.fake().copy(status: .succeeded)
+        mockCardReaderService.whenRetrievingPaymentIntent(
+            thenReturn: Just(intent).setFailureType(to: Error.self).eraseToAnyPublisher()
+        )
+
+        // When
+        let result: Result<PaymentIntent, Error> = waitFor { promise in
+            let action = CardPresentPaymentAction.retrievePaymentIntent(clientSecret: clientSecret, onCompletion: promise)
+            self.cardPresentStore.onAction(action)
+        }
+
+        // Then
+        XCTAssertEqual(try result.get().id, intent.id)
+        XCTAssertEqual(mockCardReaderService.retrievedPaymentIntentClientSecret, clientSecret)
+    }
+
     /// Verifies that CardPresentPaymentAction.startCardReaderDiscovery hits the `start` method in the service.
     ///
     func test_start_discovery_action_hits_start_in_service() {
@@ -172,7 +192,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     }
 
     func test_cancel_discovery_action_hits_cancel_in_service() {
-        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { result in
+        let action = CardPresentPaymentAction.cancelCardReaderDiscovery { _ in
             //
         }
 
@@ -241,7 +261,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     }
 
     func test_disconnect_action_hits_disconnect_in_service() {
-        let action = CardPresentPaymentAction.disconnect(onCompletion: { result in
+        let action = CardPresentPaymentAction.disconnect(onCompletion: { _ in
             //
         })
 
@@ -601,11 +621,11 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     ///
     func test_collectPayment_calls_onProcessingCompletion_but_not_onCompletion_after_card_reader_capturePayment_success() {
         // Given
-        let intent = PaymentIntent.fake()
+        let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .visa)))
         mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher())
-        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { _ in
             // Card is not removed.
         })
 
@@ -614,11 +634,12 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             let action = CardPresentPaymentAction
                 .collectPayment(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
-                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
-
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
+                                countryCode: .US,
+                                terminalPaymentPreparationEnabled: false) { _ in
                 } onProcessingCompletion: { intent in
                     promise(intent)
-                } onCompletion: { result in
+                } onCompletion: { _ in
                     XCTFail("Payment collection is not complete until the card removal step completes.")
                 }
             cardPresentStore.onAction(action)
@@ -634,7 +655,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     ///
     func test_collectPayment_calls_onCompletion_after_card_reader_capturePayment_success_and_card_removal_and_site_capturePayment() throws {
         // Given
-        let intent = PaymentIntent.fake()
+        let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .visa)))
         mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
             .setFailureType(to: Error.self)
             .eraseToAnyPublisher())
@@ -649,8 +670,10 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             let action = CardPresentPaymentAction
                 .collectPayment(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
-                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
-                } onProcessingCompletion: { intent in
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
+                                countryCode: .US,
+                                terminalPaymentPreparationEnabled: false) { _ in
+                } onProcessingCompletion: { _ in
                 } onCompletion: { result in
                     promise(result)
                 }
@@ -661,6 +684,167 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let finalIntent = try XCTUnwrap(result.get())
         XCTAssertEqual(finalIntent.id, intent.id)
         XCTAssertEqual(finalIntent.status, intent.status)
+
+        let requestedPaths = network.requestsForResponseData.compactMap { ($0 as? JetpackRequest)?.path }
+        XCTAssertEqual(requestedPaths, [
+            "payments/orders/\(sampleOrderID)/capture_terminal_payment"
+        ])
+    }
+
+    func test_collectPayment_prepares_au_eftpos_payment_before_site_capturePayment() throws {
+        // Given
+        let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .eftposAu)))
+        mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher())
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+            promise(.success(()))
+        })
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/prepare_terminal_payment",
+                                 filename: "wcpay-payment-intent-requires-confirmation")
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "wcpay-payment-intent-succeeded")
+
+        // When
+        let result: Result<PaymentIntent, Error> = waitFor { [self] promise in
+            let action = CardPresentPaymentAction
+                .collectPayment(siteID: sampleSiteID,
+                                orderID: sampleOrderID,
+                                parameters: .init(amount: 2.5, currency: "AUD", stripeSmallestCurrencyUnitMultiplier: 100),
+                                countryCode: .AU,
+                                terminalPaymentPreparationEnabled: true) { _ in
+                } onProcessingCompletion: { _ in
+                } onCompletion: { result in
+                    promise(result)
+                }
+            cardPresentStore.onAction(action)
+        }
+
+        // Then
+        let finalIntent = try XCTUnwrap(result.get())
+        XCTAssertEqual(finalIntent.id, intent.id)
+
+        let requestedPaths = network.requestsForResponseData.compactMap { ($0 as? JetpackRequest)?.path }
+        XCTAssertEqual(requestedPaths, [
+            "payments/orders/\(sampleOrderID)/prepare_terminal_payment",
+            "payments/orders/\(sampleOrderID)/capture_terminal_payment"
+        ])
+    }
+
+    func test_collectPayment_prepares_au_card_payment_with_eftpos_available_before_site_capturePayment() throws {
+        // Given
+        let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .visa,
+                                                                                                    availableNetworks: [.visa, .eftposAu])))
+        mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher())
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+            promise(.success(()))
+        })
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/prepare_terminal_payment",
+                                 filename: "wcpay-payment-intent-requires-confirmation")
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "wcpay-payment-intent-succeeded")
+
+        // When
+        let result: Result<PaymentIntent, Error> = waitFor { [self] promise in
+            let action = CardPresentPaymentAction
+                .collectPayment(siteID: sampleSiteID,
+                                orderID: sampleOrderID,
+                                parameters: .init(amount: 2.5, currency: "AUD", stripeSmallestCurrencyUnitMultiplier: 100),
+                                countryCode: .AU,
+                                terminalPaymentPreparationEnabled: true) { _ in
+                } onProcessingCompletion: { _ in
+                } onCompletion: { result in
+                    promise(result)
+                }
+            cardPresentStore.onAction(action)
+        }
+
+        // Then
+        let finalIntent = try XCTUnwrap(result.get())
+        XCTAssertEqual(finalIntent.id, intent.id)
+
+        let requestedPaths = network.requestsForResponseData.compactMap { ($0 as? JetpackRequest)?.path }
+        XCTAssertEqual(requestedPaths, [
+            "payments/orders/\(sampleOrderID)/prepare_terminal_payment",
+            "payments/orders/\(sampleOrderID)/capture_terminal_payment"
+        ])
+    }
+
+    func test_collectPayment_skips_preparing_au_card_payment_when_eftpos_is_not_available() throws {
+        // Given
+        let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .visa,
+                                                                                                    availableNetworks: [.visa])))
+        mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher())
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+            promise(.success(()))
+        })
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "wcpay-payment-intent-succeeded")
+
+        // When
+        let result: Result<PaymentIntent, Error> = waitFor { [self] promise in
+            let action = CardPresentPaymentAction
+                .collectPayment(siteID: sampleSiteID,
+                                orderID: sampleOrderID,
+                                parameters: .init(amount: 2.5, currency: "AUD", stripeSmallestCurrencyUnitMultiplier: 100),
+                                countryCode: .AU,
+                                terminalPaymentPreparationEnabled: true) { _ in
+                } onProcessingCompletion: { _ in
+                } onCompletion: { result in
+                    promise(result)
+                }
+            cardPresentStore.onAction(action)
+        }
+
+        // Then
+        let finalIntent = try XCTUnwrap(result.get())
+        XCTAssertEqual(finalIntent.id, intent.id)
+
+        let requestedPaths = network.requestsForResponseData.compactMap { ($0 as? JetpackRequest)?.path }
+        XCTAssertEqual(requestedPaths, [
+            "payments/orders/\(sampleOrderID)/capture_terminal_payment"
+        ])
+    }
+
+    func test_collectPayment_skips_preparing_interac_payment_when_terminal_payment_preparation_is_disabled() throws {
+        // Given
+        let intent = paymentIntent(collectedPaymentMethod: .interacPresent(details: cardPresentDetails(brand: .interac)))
+        mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher())
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+            promise(.success(()))
+        })
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/capture_terminal_payment",
+                                 filename: "wcpay-payment-intent-succeeded")
+
+        // When
+        let result: Result<PaymentIntent, Error> = waitFor { [self] promise in
+            let action = CardPresentPaymentAction
+                .collectPayment(siteID: sampleSiteID,
+                                orderID: sampleOrderID,
+                                parameters: .init(amount: 2.5, currency: "CAD", stripeSmallestCurrencyUnitMultiplier: 100),
+                                countryCode: .CA,
+                                terminalPaymentPreparationEnabled: false) { _ in
+                } onProcessingCompletion: { _ in
+                } onCompletion: { result in
+                    promise(result)
+                }
+            cardPresentStore.onAction(action)
+        }
+
+        // Then
+        let finalIntent = try XCTUnwrap(result.get())
+        XCTAssertEqual(finalIntent.id, intent.id)
+
+        let requestedPaths = network.requestsForResponseData.compactMap { ($0 as? JetpackRequest)?.path }
+        XCTAssertEqual(requestedPaths, [
+            "payments/orders/\(sampleOrderID)/capture_terminal_payment"
+        ])
     }
 
     /// Verifies that `onCompletion` is called with an error after card reader finishes capturing payment, the card is removed successfully
@@ -668,7 +852,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     ///
     func test_collectPayment_calls_onCompletion_with_failure_after_card_reader_capturePayment_success_but_site_capturePayment_failure() throws {
         // Given
-        let intent = PaymentIntent.fake()
+        let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .visa)))
         // Success on client-side processing.
         mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
             .setFailureType(to: Error.self)
@@ -685,8 +869,10 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             let action = CardPresentPaymentAction
                 .collectPayment(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
-                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
-                } onProcessingCompletion: { intent in
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
+                                countryCode: .US,
+                                terminalPaymentPreparationEnabled: false) { _ in
+                } onProcessingCompletion: { _ in
                 } onCompletion: { result in
                     promise(result)
                 }
@@ -700,12 +886,48 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         }
     }
 
+    func test_collectPayment_calls_onCompletion_with_failure_when_prepare_terminal_payment_fails_before_processing_completion() throws {
+        // Given
+        let intent = paymentIntent(collectedPaymentMethod: .interacPresent(details: cardPresentDetails(brand: .interac)))
+        mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
+            .setFailureType(to: Error.self)
+            .eraseToAnyPublisher())
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+            promise(.success(()))
+        })
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/prepare_terminal_payment",
+                                 filename: "generic_error")
+
+        // When
+        let result: Result<PaymentIntent, Error> = waitFor { [self] promise in
+            let action = CardPresentPaymentAction
+                .collectPayment(siteID: sampleSiteID,
+                                orderID: sampleOrderID,
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
+                                countryCode: .CA,
+                                terminalPaymentPreparationEnabled: true) { _ in
+                } onProcessingCompletion: { _ in
+                    XCTFail("`onProcessingCompletion` should only be called after the payment intent is prepared and confirmed.")
+                } onCompletion: { result in
+                    promise(result)
+                }
+            cardPresentStore.onAction(action)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? ServerSidePaymentCaptureError)
+        guard case .terminalPaymentPreparation = error else {
+            return XCTFail("Unexpected terminal payment preparation error: \(error)")
+        }
+        XCTAssertFalse(mockCardReaderService.didHitWaitForInsertedCardToBeRemoved)
+    }
+
     /// Verifies that `CardReaderEvent.cardRemovedAfterPaymentCapture` is sent after card reader finishes capturing payment, the card is removed successfully
     /// and before the site captures payment.
     ///
     func test_collectPayment_sends_cardRemovedAfterPaymentCapture_event_after_card_removal_and_before_site_capturePayment_completion() {
         // Given
-        let intent = PaymentIntent.fake()
+        let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .visa)))
         // Success on client-side processing.
         mockCardReaderService.whenCapturingPayment(thenReturn: Just(intent)
             .setFailureType(to: Error.self)
@@ -722,13 +944,15 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             let action = CardPresentPaymentAction
                 .collectPayment(siteID: self.sampleSiteID,
                                 orderID: self.sampleOrderID,
-                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
+                                countryCode: .US,
+                                terminalPaymentPreparationEnabled: false) { cardReaderEvent in
                     cardReaderEvents.append(cardReaderEvent)
                     if cardReaderEvent == .cardRemovedAfterClientSidePaymentCapture {
                         promise(())
                     }
-                } onProcessingCompletion: { intent in
-                } onCompletion: { result in
+                } onProcessingCompletion: { _ in
+                } onCompletion: { _ in
                 }
             self.cardPresentStore.onAction(action)
         }
@@ -747,7 +971,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         let error = UnderlyingError.readerBusy
         mockCardReaderService.whenCapturingPayment(thenReturn: Fail<PaymentIntent, Error>(error: error)
             .eraseToAnyPublisher())
-        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { promise in
+        mockCardReaderService.whenWaitForInsertedCardToBeRemoved(thenReturn: Future<Void, Never> { _ in
             // Card is not removed.
         })
 
@@ -756,8 +980,10 @@ final class CardPresentPaymentStoreTests: XCTestCase {
             let action = CardPresentPaymentAction
                 .collectPayment(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
-                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100)) { cardReaderEvent in
-                } onProcessingCompletion: { intent in
+                                parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
+                                countryCode: .US,
+                                terminalPaymentPreparationEnabled: false) { _ in
+                } onProcessingCompletion: { _ in
                     XCTFail("`onProcessingCompletion` should only be called when payment capture succeeds.")
                 } onCompletion: { result in
                     promise(result)
@@ -768,6 +994,44 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         // Then
         let errorFromResult = try XCTUnwrap(result.failure)
         XCTAssertEqual(errorFromResult as? UnderlyingError, error)
+    }
+
+    func test_cancelPayment_keeps_payment_subscription_alive_when_reader_cancellation_fails() throws {
+        // Given
+        let capturePaymentSubject = PassthroughSubject<PaymentIntent, Error>()
+        let cancellationError = UnderlyingError.readerBusy
+        let paymentError = UnderlyingError.commandNotAllowed
+        mockCardReaderService.whenCapturingPayment(thenReturn: capturePaymentSubject.eraseToAnyPublisher())
+        mockCardReaderService.whenCancelingPaymentIntent(thenReturn: Future { promise in
+            promise(.failure(cancellationError))
+        })
+
+        let paymentCompleted = expectation(description: "Ongoing payment publisher remains subscribed")
+        var receivedPaymentError: Error?
+        let collectAction = CardPresentPaymentAction.collectPayment(
+            siteID: sampleSiteID,
+            orderID: sampleOrderID,
+            parameters: .init(amount: 2.5, currency: "USD", stripeSmallestCurrencyUnitMultiplier: 100),
+            countryCode: .US,
+            terminalPaymentPreparationEnabled: false,
+            onCardReaderMessage: { _ in },
+            onProcessingCompletion: { _ in },
+            onCompletion: { result in
+                receivedPaymentError = result.failure
+                paymentCompleted.fulfill()
+            })
+        cardPresentStore.onAction(collectAction)
+
+        // When
+        let cancellationResult: Result<Void, Error> = waitFor { promise in
+            self.cardPresentStore.onAction(CardPresentPaymentAction.cancelPayment(onCompletion: promise))
+        }
+        capturePaymentSubject.send(completion: .failure(paymentError))
+        wait(for: [paymentCompleted], timeout: Constants.expectationTimeout)
+
+        // Then
+        XCTAssertEqual(cancellationResult.failure as? UnderlyingError, cancellationError)
+        XCTAssertEqual(receivedPaymentError as? UnderlyingError, paymentError)
     }
 
     func test_selectedPaymentGatewayAccount_when_sent_use_before_then_returns_the_same_account() {
@@ -965,5 +1229,25 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
         // Then
         XCTAssertNil(mockCardReaderConfigProvider.currentSiteID)
+    }
+}
+
+private extension CardPresentPaymentStoreTests {
+    func paymentIntent(collectedPaymentMethod: PaymentMethod?) -> PaymentIntent {
+        PaymentIntent.fake().copy(collectedPaymentMethod: collectedPaymentMethod)
+    }
+
+    func cardPresentDetails(brand: CardBrand, availableNetworks: [CardBrand]? = nil) -> CardPresentTransactionDetails {
+        CardPresentTransactionDetails(last4: "1234",
+                                      expMonth: 12,
+                                      expYear: 2030,
+                                      cardholderName: nil,
+                                      brand: brand,
+                                      availableNetworks: availableNetworks,
+                                      generatedCard: nil,
+                                      receipt: nil,
+                                      emvAuthData: nil,
+                                      wallet: nil,
+                                      network: nil)
     }
 }

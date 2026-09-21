@@ -13,7 +13,7 @@ final class ProductSelectorViewController: UIHostingController<ProductSelectorVi
     }
 
     @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -49,6 +49,8 @@ struct ProductSelectorView: View {
 
     @Environment(\.horizontalSizeClass) var horizontalSizeClass
 
+    @Environment(\.verticalSizeClass) var verticalSizeClass
+
     @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
 
     @ScaledMetric private var scale: CGFloat = 1.0
@@ -78,6 +80,35 @@ struct ProductSelectorView: View {
             return configuration.title
         }
         return viewModel.selectProductsTitle
+    }
+
+    /// In vertically compact environments the keyboard leaves roughly 100pt of usable height,
+    /// so secondary header rows give way to the results list while the merchant is typing.
+    private var isHeaderCollapsedForKeyboard: Bool {
+        verticalSizeClass == .compact && searchHeaderisBeingEdited
+    }
+
+    /// The filter picker is revealed only when the merchant is actively searching or has chosen a
+    /// non-default filter, so the row stays minimal during browsing while still being discoverable
+    /// once the merchant engages with search.
+    private var shouldShowProductSearchFilter: Bool {
+        searchHeaderisBeingEdited || viewModel.searchTerm.isNotEmpty || viewModel.productSearchFilter != .all
+    }
+
+    /// In vertically compact environments the picker sits inline with the search field to trade
+    /// unavailable height for the abundant width, so the search row never grows to two rows there.
+    private var productSelectorHeaderSearchRowHeight: CGFloat {
+        let rowHeight = Constants.minimumRowHeight * scale
+        return shouldShowProductSearchFilter && verticalSizeClass != .compact ? rowHeight * 2 : rowHeight
+    }
+
+    /// In vertically compact environments the keyboard covers the multi-selection button, so it is
+    /// removed from the layout while the search field is focused to leave the remaining height to the results list.
+    private var shouldShowDoneButton: Bool {
+        guard configuration.multipleSelectionEnabled && viewModel.syncApproach == .onButtonTap else {
+            return false
+        }
+        return !isHeaderCollapsedForKeyboard
     }
 
     var body: some View {
@@ -115,7 +146,7 @@ struct ProductSelectorView: View {
                     .buttonStyle(PrimaryButtonStyle())
                     .padding(Constants.defaultPadding)
                     .accessibilityIdentifier(Constants.doneButtonAccessibilityIdentifier)
-                    .renderedIf(configuration.multipleSelectionEnabled && viewModel.syncApproach == .onButtonTap)
+                    .renderedIf(shouldShowDoneButton)
                 }
                 .if(configuration.treatsAllProductsAsSimple == false) { view in
                     view.navigationDestination(isPresented: $viewModel.isShowingProductVariationList) {
@@ -139,8 +170,13 @@ struct ProductSelectorView: View {
                 .background(Color(.listForeground(modal: false)).ignoresSafeArea())
 
             case .empty:
-                EmptyState(title: Localization.emptyStateMessage, image: .productBlouseImage)
-                    .frame(maxHeight: .infinity)
+                // A scroll view here mirrors the results case: it absorbs all vertical compression when
+                // the keyboard shows, so the fixed-height header rows never overflow into the navigation bar.
+                ScrollView {
+                    EmptyState(title: Localization.emptyStateMessage, image: .productBlouseImage)
+                        .frame(maxWidth: .infinity)
+                        .containerRelativeFrame(.vertical)
+                }
             case .loading:
                 List(viewModel.ghostRows) { rowViewModel in
                     ProductRow(viewModel: rowViewModel)
@@ -155,6 +191,10 @@ struct ProductSelectorView: View {
                 EmptyView()
             }
         }
+        // Anchors the content to the top when the keyboard-shrunk safe area cannot fit the fixed-height
+        // header rows, so they overflow below (behind the keyboard) instead of above the navigation bar.
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .scrollDismissesKeyboard(.interactively)
         .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
         .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)
@@ -195,7 +235,7 @@ struct ProductSelectorView: View {
 
     private func updateSyncApproach(for horizontalSizeClass: UserInterfaceSizeClass?) {
         guard let horizontalSizeClass,
-              let presentationStyle else {
+              presentationStyle != nil else {
             return
         }
 
@@ -244,8 +284,13 @@ struct ProductSelectorView: View {
                            viewModel: rowViewModel)
                 .accessibilityHint(configuration.productRowAccessibilityHint)
 
+                ProgressView()
+                    .renderedIf(rowViewModel.selectedState == .verifying)
+
                 ConfigurationIndicator()
-                    .renderedIf(rowViewModel.isConfigurable && configuration.treatsAllProductsAsSimple == false)
+                    .renderedIf(rowViewModel.isConfigurable
+                                && configuration.treatsAllProductsAsSimple == false
+                                && rowViewModel.selectedState != .verifying)
                     .onAppear {
                         guard !hasTrackedBundleProductConfigureCTAShownEvent else {
                             return
@@ -260,6 +305,10 @@ struct ProductSelectorView: View {
                     }
             }
             .onTapGesture {
+                guard rowViewModel.selectedState != .verifying else {
+                    return
+                }
+
                 if let configure = rowViewModel.configure, rowViewModel.isConfigurable,
                    configuration.treatsAllProductsAsSimple == false {
                     configure()
@@ -285,13 +334,17 @@ struct ProductSelectorView: View {
 private extension ProductSelectorView {
     @ViewBuilder var productSelectorHeader: some View {
         if horizontalSizeClass == .regular {
-            productSelectorHeaderTitleRow
+            if !isHeaderCollapsedForKeyboard {
+                productSelectorHeaderTitleRow
+            }
             productSelectorHeaderSearchRow
                 .padding(.bottom, Constants.defaultPadding)
                 .background(Color(.listForeground(modal: false)))
         } else {
             productSelectorHeaderSearchRow
-            productSelectorHeaderTitleRow
+            if !isHeaderCollapsedForKeyboard {
+                productSelectorHeaderTitleRow
+            }
         }
         Divider()
     }
@@ -332,27 +385,44 @@ private extension ProductSelectorView {
         .background(Color(.listForeground(modal: false)))
     }
 
+    // The search field keeps a single structural position across size class changes so it is not
+    // recreated on rotation, which would drop keyboard focus and skip the editing-ended callback.
     @ViewBuilder private var productSelectorHeaderSearchRow: some View {
-        GeometryReader { geometry in
-            HStack {
-                SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
-                    searchHeaderisBeingEdited = isEditing
-                })
-                .submitLabel(.done)
-                .accessibilityIdentifier("product-selector-search-bar")
-                Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
-                    ForEach(ProductSearchFilter.productSelectorOptions, id: \.self) { option in Text(option.title) }
+        VStack(spacing: 0) {
+            HStack(spacing: 0) {
+                searchHeader
+                if verticalSizeClass == .compact && shouldShowProductSearchFilter {
+                    productSearchFilterPicker
+                        .frame(width: Constants.inlineSearchFilterWidth)
+                        .padding(.trailing, Constants.defaultPadding)
+                        .transition(.opacity)
                 }
-                .if(geometry.size.width <= Constants.headerSearchRowWidth) { $0.pickerStyle(.menu) }
-                .if(geometry.size.width > Constants.headerSearchRowWidth) { $0.pickerStyle(.segmented) }
-                .padding(.trailing)
-                .renderedIf(searchHeaderisBeingEdited)
+            }
+            if verticalSizeClass != .compact && shouldShowProductSearchFilter {
+                productSearchFilterPicker
+                    .padding(.horizontal, Constants.defaultPadding)
+                    .padding(.bottom, Constants.productSearchFilterBottomPadding)
+                    .transition(.opacity)
             }
         }
-        // The GeometryReader will take all available space if not constrained vertically, while adjusting automatically horizontally,
-        // so we need to set a desired height for this view.
-        .frame(height: Constants.minimumRowHeight * scale)
+        .frame(height: productSelectorHeaderSearchRowHeight)
+        .animation(.easeInOut(duration: 0.2), value: shouldShowProductSearchFilter)
         .background(Color(.listForeground(modal: false)))
+    }
+
+    private var searchHeader: some View {
+        SearchHeader(text: $viewModel.searchTerm, placeholder: Localization.searchPlaceholder, onEditingChanged: { isEditing in
+            searchHeaderisBeingEdited = isEditing
+        })
+        .submitLabel(.done)
+        .accessibilityIdentifier("product-selector-search-bar")
+    }
+
+    private var productSearchFilterPicker: some View {
+        Picker(selection: $viewModel.productSearchFilter, label: EmptyView()) {
+            ForEach(ProductSearchFilter.productSelectorOptions, id: \.self) { option in Text(option.title) }
+        }
+        .pickerStyle(.segmented)
     }
 }
 
@@ -392,6 +462,8 @@ private extension ProductSelectorView {
         static let dividerHeight: CGFloat = 1
         static let defaultPadding: CGFloat = 16
         static let minimumRowHeight: CGFloat = 48
+        static let productSearchFilterBottomPadding: CGFloat = 8
+        static let inlineSearchFilterWidth: CGFloat = 250
         static let headerSearchRowWidth: CGFloat = 450
         static let doneButtonAccessibilityIdentifier: String = "product-multiple-selection-done-button"
         static let productRowAccessibilityIdentifier: String = "product-item"

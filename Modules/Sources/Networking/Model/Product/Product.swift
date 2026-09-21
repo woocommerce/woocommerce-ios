@@ -452,7 +452,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
         let virtual = try container.decode(Bool.self, forKey: .virtual)
 
         let downloadable = try container.decode(Bool.self, forKey: .downloadable)
-        let downloads = try container.decode([ProductDownload].self, forKey: .downloads)
+        let downloads = try container.decodeIfPresent([ProductDownload].self, forKey: .downloads) ?? []
         let downloadLimit = try container.decode(Int64.self, forKey: .downloadLimit)
         let downloadExpiry = try container.decode(Int64.self, forKey: .downloadExpiry)
 
@@ -518,18 +518,18 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
 
         let ratingCount = try container.decode(Int.self, forKey: .ratingCount)
 
-        let relatedIDs = try container.decode([Int64].self, forKey: .relatedIDs)
-        let upsellIDs = try container.decode([Int64].self, forKey: .upsellIDs)
-        let crossSellIDs = try container.decode([Int64].self, forKey: .crossSellIDs)
+        let relatedIDs = try container.decodeIfPresent([Int64].self, forKey: .relatedIDs) ?? []
+        let upsellIDs = try container.decodeIfPresent([Int64].self, forKey: .upsellIDs) ?? []
+        let crossSellIDs = try container.decodeIfPresent([Int64].self, forKey: .crossSellIDs) ?? []
         let parentID = try container.decode(Int64.self, forKey: .parentID)
 
         let purchaseNote = try container.decodeIfPresent(String.self, forKey: .purchaseNote)
-        let categories = try container.decode([ProductCategory].self, forKey: .categories)
-        let tags = try container.decode([ProductTag].self, forKey: .tags)
-        let images = try container.decode([ProductImage].self, forKey: .images)
+        let categories = try container.decodeIfPresent([ProductCategory].self, forKey: .categories) ?? []
+        let tags = try container.decodeIfPresent([ProductTag].self, forKey: .tags) ?? []
+        let images = try container.decodeIfPresent([ProductImage].self, forKey: .images) ?? []
 
-        let attributes = try container.decode([ProductAttribute].self, forKey: .attributes)
-        let defaultAttributes = try container.decode([ProductDefaultAttribute].self, forKey: .defaultAttributes)
+        let attributes = try container.decodeIfPresent([ProductAttribute].self, forKey: .attributes) ?? []
+        let defaultAttributes = try container.decodeIfPresent([ProductDefaultAttribute].self, forKey: .defaultAttributes) ?? []
 
         // Even though WooCommerce Core returns a list of variation IDs,
         // some plugins alter the field value to include the entire variation response and we need to extract the IDs.
@@ -547,7 +547,7 @@ public struct Product: Codable, GeneratedCopiable, Equatable, GeneratedFakeable 
             }
         }()
 
-        let groupedProducts = try container.decode([Int64].self, forKey: .groupedProducts)
+        let groupedProducts = try container.decodeIfPresent([Int64].self, forKey: .groupedProducts) ?? []
 
         let menuOrder = try container.decode(Int.self, forKey: .menuOrder)
 

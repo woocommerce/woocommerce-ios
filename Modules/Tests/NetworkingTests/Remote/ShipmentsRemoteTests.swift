@@ -35,7 +35,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load shipment tracking information")
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_multiple")
-        remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { (shipmentTrackings, error) in
+        remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { shipmentTrackings, error in
             XCTAssertNil(error)
             XCTAssertNotNil(shipmentTrackings)
             XCTAssertEqual(shipmentTrackings?.count, 4)
@@ -53,7 +53,7 @@ final class ShipmentsRemoteTests: XCTestCase {
 
         remote.loadShipmentTrackings(for: sampleSiteID,
                                      orderID: sampleOrderID,
-                                     completion: { (shipmentTrackings, error) in
+                                     completion: { shipmentTrackings, error in
             XCTAssertNil(shipmentTrackings)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -69,7 +69,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load shipment tracking information contains errors")
 
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound())
-        remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { (shipmentTrackings, error) in
+        remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { shipmentTrackings, error in
             XCTAssertNil(shipmentTrackings)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -86,7 +86,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load shipment tracking information")
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", filename: "shipment_tracking_plugin_not_active")
-        remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { (shipmentTrackings, error) in
+        remote.loadShipmentTrackings(for: sampleSiteID, orderID: sampleOrderID, completion: { shipmentTrackings, error in
             XCTAssertNil(shipmentTrackings)
             XCTAssertNotNil(error)
 
@@ -118,7 +118,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                                       orderID: orderID,
                                       trackingProvider: "Some provider",
                                       dateShipped: "2019-04-01",
-                                      trackingNumber: "1111") { (shipmentTracking, error) in
+                                      trackingNumber: "1111") { shipmentTracking, error in
             XCTAssertNil(error)
             XCTAssertNotNil(shipmentTracking)
             XCTAssertEqual(shipmentTracking?.orderID, orderID)
@@ -138,7 +138,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                                       orderID: sampleOrderID,
                                       trackingProvider: "Some provider",
                                       dateShipped: "2019-04-01",
-                                      trackingNumber: "11111") { (shipmentTracking, error) in
+                                      trackingNumber: "11111") { shipmentTracking, error in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -159,7 +159,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                                       orderID: sampleOrderID,
                                       trackingProvider: "Some provider",
                                       dateShipped: "2019-04-01",
-                                      trackingNumber: "1111") { (shipmentTracking, error) in
+                                      trackingNumber: "1111") { shipmentTracking, error in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -180,7 +180,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                                       orderID: sampleOrderID,
                                       trackingProvider: "some tracking provider",
                                       dateShipped: "2019-04-01",
-                                      trackingNumber: "1111") { (shipmentTracking, error) in
+                                      trackingNumber: "1111") { shipmentTracking, error in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
 
@@ -213,7 +213,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                                                         trackingProvider: "Some provider",
                                                         trackingNumber: "1111",
                                                         trackingURL: "https://somewhere.online.net.com?q=%1$s",
-                                                        dateShipped: "12345") { (shipmentTracking, error) in
+                                                        dateShipped: "12345") { shipmentTracking, error in
             XCTAssertNil(error)
             XCTAssertNotNil(shipmentTracking)
             XCTAssertEqual(shipmentTracking?.orderID, orderID)
@@ -234,7 +234,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                                                         trackingProvider: "Some provider",
                                                         trackingNumber: "11111",
                                                         trackingURL: "https://somewhere.online.net.com?q=%1$s",
-                                                        dateShipped: "12345") { (shipmentTracking, error) in
+                                                        dateShipped: "12345") { shipmentTracking, error in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -256,7 +256,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                                                         trackingProvider: "Some provider",
                                                         trackingNumber: "1111",
                                                         trackingURL: "https://somewhere.online.net.com?q=%1$s",
-                                                        dateShipped: "1234") { (shipmentTracking, error) in
+                                                        dateShipped: "1234") { shipmentTracking, error in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -278,7 +278,7 @@ final class ShipmentsRemoteTests: XCTestCase {
                                                         trackingProvider: "some tracking provider",
                                                         trackingNumber: "1111",
                                                         trackingURL: "https://somewhere.online.net.com?q=%1$s",
-                                                        dateShipped: "1234") { (shipmentTracking, error) in
+                                                        dateShipped: "1234") { shipmentTracking, error in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
 
@@ -322,7 +322,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Delete shipment tracking information contains errors")
 
-        remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: "trackingID") { (shipmentTracking, error) in
+        remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: "trackingID") { shipmentTracking, error in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -339,7 +339,7 @@ final class ShipmentsRemoteTests: XCTestCase {
 
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/", error: NetworkError.notFound())
 
-        remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: "1111") { (shipmentTracking, error) in
+        remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: "1111") { shipmentTracking, error in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -358,7 +358,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let trackingID = "trackingID"
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/\(trackingID)", filename: "shipment_tracking_plugin_not_active")
-        remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: trackingID) { (shipmentTracking, error) in
+        remote.deleteShipmentTracking(for: sampleSiteID, orderID: sampleOrderID, trackingID: trackingID) { shipmentTracking, error in
             XCTAssertNil(shipmentTracking)
             XCTAssertNotNil(error)
 
@@ -383,7 +383,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load shipment tracking providers information")
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", filename: "shipment_tracking_providers")
-        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (groups, error) in
+        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { groups, error in
             XCTAssertNil(error)
             XCTAssertNotNil(groups)
             XCTAssertEqual(groups?.count, 19)
@@ -399,7 +399,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let remote = ShipmentsRemote(network: network)
         let expectation = self.expectation(description: "Load shipment tracking providers information contains errors")
 
-        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
+        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { shipmentTrackingGroups, error in
             XCTAssertNil(shipmentTrackingGroups)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -416,7 +416,7 @@ final class ShipmentsRemoteTests: XCTestCase {
 
         network.simulateError(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", error: NetworkError.notFound())
 
-        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
+        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { shipmentTrackingGroups, error in
             XCTAssertNil(shipmentTrackingGroups)
             XCTAssertNotNil(error)
             expectation.fulfill()
@@ -433,7 +433,7 @@ final class ShipmentsRemoteTests: XCTestCase {
         let expectation = self.expectation(description: "Load shipment tracking information")
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/shipment-trackings/providers", filename: "shipment_tracking_plugin_not_active")
-        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { (shipmentTrackingGroups, error) in
+        remote.loadShipmentTrackingProviderGroups(for: sampleSiteID, orderID: sampleOrderID) { shipmentTrackingGroups, error in
             XCTAssertNil(shipmentTrackingGroups)
             XCTAssertNotNil(error)
 

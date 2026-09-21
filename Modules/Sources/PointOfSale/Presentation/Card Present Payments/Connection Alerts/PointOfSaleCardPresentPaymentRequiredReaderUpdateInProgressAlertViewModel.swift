@@ -8,7 +8,7 @@ struct PointOfSaleCardPresentPaymentRequiredReaderUpdateInProgressAlertViewModel
     let progressSubtitle: String = Localization.messageRequired
     let cancelButtonTitle: String
     let cancelReaderUpdate: (() -> Void)?
-    // An unchanging, psuedo-random ID helps us correctly compare two copies which may have different closures.
+    // An unchanging, pseudo-random ID helps us correctly compare two copies which may have different closures.
     // This relies on the closures being immutable
     let id = UUID()
 

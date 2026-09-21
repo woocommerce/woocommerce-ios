@@ -92,7 +92,6 @@ extension Yosemite.POSOrder {
         formattedPaymentTotal: CopiableProp<String> = .copy,
         formattedNetAmount: NullableCopiableProp<String> = .copy,
         datePaid: NullableCopiableProp<Date> = .copy,
-        paymentStatusMetadata: NullableCopiableProp<String> = .copy,
         lineItemQuantitiesByProductOrVariationID: CopiableProp<[Int64: Decimal]> = .copy
     ) -> Yosemite.POSOrder {
         let id = id ?? self.id
@@ -112,7 +111,6 @@ extension Yosemite.POSOrder {
         let formattedPaymentTotal = formattedPaymentTotal ?? self.formattedPaymentTotal
         let formattedNetAmount = formattedNetAmount ?? self.formattedNetAmount
         let datePaid = datePaid ?? self.datePaid
-        let paymentStatusMetadata = paymentStatusMetadata ?? self.paymentStatusMetadata
         let lineItemQuantitiesByProductOrVariationID = lineItemQuantitiesByProductOrVariationID ?? self.lineItemQuantitiesByProductOrVariationID
 
         return Yosemite.POSOrder(
@@ -133,7 +131,6 @@ extension Yosemite.POSOrder {
             formattedPaymentTotal: formattedPaymentTotal,
             formattedNetAmount: formattedNetAmount,
             datePaid: datePaid,
-            paymentStatusMetadata: paymentStatusMetadata,
             lineItemQuantitiesByProductOrVariationID: lineItemQuantitiesByProductOrVariationID
         )
     }

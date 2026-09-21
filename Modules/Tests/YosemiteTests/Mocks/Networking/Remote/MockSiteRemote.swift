@@ -50,7 +50,6 @@ final class MockSiteRemote {
     func whenUpdatingSiteTitle(thenReturn result: Result<Void, Error>) {
         updateSiteTitleResult = result
     }
-
 }
 
 extension MockSiteRemote: SiteRemoteProtocol {

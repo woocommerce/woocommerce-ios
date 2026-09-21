@@ -8,7 +8,7 @@ struct PromotableProductType: Equatable {
     ///
     let productType: ProductType
 
-    /// Wether the product is available in the store
+    /// Whether the product is available in the store
     ///
     let isAvailable: Bool
 

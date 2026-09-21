@@ -5,8 +5,7 @@ actor MockAIChatService: AIChatService {
     var scriptedTurns: [[ChatStreamEvent]] = []
     var streamError: Error?
     private(set) var capturedRequests: [(messages: [OpenAIChat.Message],
-                                          tools: [OpenAIChat.ToolDefinition]?,
-                                          toolChoice: OpenAIChat.ToolChoice?)] = []
+                                          tools: [OpenAIChat.ToolDefinition]?)] = []
 
     func setScriptedTurns(_ turns: [[ChatStreamEvent]]) {
         scriptedTurns = turns
@@ -17,13 +16,11 @@ actor MockAIChatService: AIChatService {
     }
 
     nonisolated func streamTurn(messages: [OpenAIChat.Message],
-                                tools: [OpenAIChat.ToolDefinition]?,
-                                toolChoice: OpenAIChat.ToolChoice?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
+                                tools: [OpenAIChat.ToolDefinition]?) -> AsyncThrowingStream<ChatStreamEvent, Error> {
         AsyncThrowingStream { continuation in
             Task {
                 let events = await self.consumeNextTurn(messages: messages,
-                                                        tools: tools,
-                                                        toolChoice: toolChoice)
+                                                        tools: tools)
                 for event in events.events {
                     continuation.yield(event)
                 }
@@ -37,9 +34,8 @@ actor MockAIChatService: AIChatService {
     }
 
     private func consumeNextTurn(messages: [OpenAIChat.Message],
-                                 tools: [OpenAIChat.ToolDefinition]?,
-                                 toolChoice: OpenAIChat.ToolChoice?) -> (events: [ChatStreamEvent], error: Error?) {
-        capturedRequests.append((messages, tools, toolChoice))
+                                 tools: [OpenAIChat.ToolDefinition]?) -> (events: [ChatStreamEvent], error: Error?) {
+        capturedRequests.append((messages, tools))
         let events: [ChatStreamEvent]
         if scriptedTurns.isEmpty {
             events = [.completed(nil)]

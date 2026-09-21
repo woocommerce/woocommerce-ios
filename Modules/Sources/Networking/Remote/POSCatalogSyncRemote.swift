@@ -1,5 +1,7 @@
 // periphery:ignore:all
 import Foundation
+import CocoaLumberjackSwift
+import enum NetworkingCore.POSCatalogFileError
 
 /// Protocol for POS Catalog Sync Remote operations.
 public protocol POSCatalogSyncRemoteProtocol {
@@ -43,10 +45,12 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to download catalog for.
     ///   - downloadURL: Download URL of the catalog file.
     ///   - allowCellular: Should cellular data be used if required.
+    ///   - snapshotDate: Server-derived snapshot date to persist for background resume handling.
     /// - Returns: List of products and variations in the POS catalog.
     func downloadCatalog(for siteID: Int64,
                          downloadURL: String,
-                         allowCellular: Bool) async throws -> POSCatalogResponse
+                         allowCellular: Bool,
+                         snapshotDate: Date) async throws -> POSCatalogResponse
 
     /// Parses a downloaded catalog file.
     /// Used for processing background downloads after app wake.
@@ -73,20 +77,6 @@ public protocol POSCatalogSyncRemoteProtocol {
     ///   - allowCellular: Should cellular data be used if required.
     /// - Returns: Paginated list of POS product variations.
     func loadProductVariations(siteID: Int64, pageNumber: Int, allowCellular: Bool) async throws -> PagedItems<POSProductVariation>
-
-    /// Gets the total count of products for the specified site.
-    ///
-    /// - Parameters:
-    ///   - siteID: Site ID to get product count for.
-    /// - Returns: Total number of products.
-    func getProductCount(siteID: Int64) async throws -> Int
-
-    /// Gets the total count of product variations for the specified site.
-    ///
-    /// - Parameters:
-    ///   - siteID: Site ID to get variation count for.
-    /// - Returns: Total number of variations.
-    func getProductVariationCount(siteID: Int64) async throws -> Int
 }
 
 /// POS Catalog Sync: Remote Endpoints
@@ -198,7 +188,7 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///
     public func requestCatalogGeneration(for siteID: Int64, forceGeneration: Bool, allowCellular: Bool) async throws -> POSCatalogRequestResponse {
         let path = "catalog/create"
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.catalogProductFields: POSProduct.requestFields.joined(separator: ","),
             ParameterKey.catalogVariationFields: POSProductVariation.requestFields.joined(separator: ",")
         ]
@@ -223,12 +213,14 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID to download catalog for.
     ///   - downloadURL: Download URL of the catalog file.
     ///   - allowCellular: Should cellular data be used if required.
+    ///   - snapshotDate: Server-derived snapshot date to persist for background resume handling.
     /// - Returns: List of products and variations in the POS catalog.
     /// - Note: Uses background download with URLSessionConfiguration.background to support app suspension.
     public func downloadCatalog(for siteID: Int64,
                                 downloadURL: String,
-                                allowCellular: Bool) async throws -> POSCatalogResponse {
-        guard let url = URL(string: downloadURL) else {
+                                allowCellular: Bool,
+                                snapshotDate: Date) async throws -> POSCatalogResponse {
+        guard let url = URL(string: downloadURL.normalizedToHTTPS()) else {
             throw NetworkError.invalidURL
         }
 
@@ -237,16 +229,25 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         // Save download state so we can resume if app is terminated
         let downloadState = BackgroundDownloadState(
             sessionIdentifier: sessionIdentifier,
-            siteID: siteID
+            siteID: siteID,
+            downloadStartedAt: snapshotDate
         )
         backgroundDownloadStateStore.save(downloadState)
 
-        let fileURL = try await backgroundDownloader.downloadFile(from: url,
-                                                                   sessionIdentifier: sessionIdentifier,
-                                                                   allowCellular: allowCellular)
+        let downloadResult = try await backgroundDownloader.downloadFile(from: url,
+                                                                         sessionIdentifier: sessionIdentifier,
+                                                                         allowCellular: allowCellular)
+
+        if let statusCode = downloadResult.statusCode, !(200..<300).contains(statusCode) {
+            throw POSCatalogFileError.downloadFailed(statusCode: statusCode,
+                                                     contentType: downloadResult.contentType)
+        }
 
         // Download completed - parse the file
-        let catalogResponse = try await parseDownloadedCatalog(from: fileURL, siteID: siteID)
+        let catalogResponse = try await parseDownloadedCatalog(from: downloadResult.fileURL,
+                                                               siteID: siteID,
+                                                               statusCode: downloadResult.statusCode,
+                                                               contentType: downloadResult.contentType)
 
         // Clear the saved state since we successfully completed
         backgroundDownloadStateStore.clear()
@@ -260,6 +261,10 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
     ///   - siteID: Site ID for proper mapping.
     /// - Returns: Parsed POS catalog.
     public func parseDownloadedCatalog(from fileURL: URL, siteID: Int64) async throws -> POSCatalogResponse {
+        try await parseDownloadedCatalog(from: fileURL, siteID: siteID, statusCode: nil, contentType: nil)
+    }
+
+    private func parseDownloadedCatalog(from fileURL: URL, siteID: Int64, statusCode: Int?, contentType: String?) async throws -> POSCatalogResponse {
         let data = try Data(contentsOf: fileURL)
 
         // Clean up downloaded files, but only if they're in our Documents directory.
@@ -269,7 +274,15 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         }
 
         let mapper = ListMapper<POSCatalogItem>(siteID: siteID)
-        let items = try mapper.map(response: data)
+        let items: [POSCatalogItem]
+        do {
+            items = try mapper.map(response: data)
+        } catch {
+            throw POSCatalogFileError.invalidResponse(statusCode: statusCode,
+                                                      contentType: contentType,
+                                                      hasHTMLBody: Self.hasHTMLBody(data),
+                                                      underlyingError: error)
+        }
 
         var products: [POSProduct] = []
         var variations: [POSProductVariation] = []
@@ -301,6 +314,23 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         }
 
         try? fileManager.removeItem(at: fileURL)
+    }
+
+    /// Returns true when the file body looks like HTML: the first non-whitespace byte is `<`.
+    /// The expected catalog payload is a JSON array, so an HTML body usually means the host
+    /// served an error page instead of the file. This is the only response fact available for
+    /// background downloads, which don't retain status code or content type.
+    static func hasHTMLBody(_ data: Data) -> Bool {
+        var bytes = data[...]
+        let utf8BOM: [UInt8] = [0xEF, 0xBB, 0xBF]
+        if bytes.starts(with: utf8BOM) {
+            bytes = bytes.dropFirst(utf8BOM.count)
+        }
+        let whitespace: Set<UInt8> = [0x20, 0x09, 0x0A, 0x0D] // space, tab, LF, CR
+        guard let firstByte = bytes.first(where: { !whitespace.contains($0) }) else {
+            return false
+        }
+        return firstByte == UInt8(ascii: "<")
     }
 
     /// Loads POS products for full sync.
@@ -369,62 +399,6 @@ public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
         let (variations, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
 
         return createPagedItems(items: variations, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
-    }
-
-    // MARK: - Count Endpoints
-
-    /// Gets the total count of products for the specified site.
-    ///
-    /// - Parameters:
-    ///   - siteID: Site ID to get product count for.
-    /// - Returns: Total number of products.
-    public func getProductCount(siteID: Int64) async throws -> Int {
-        let path = Path.products
-        let parameters = [
-            ParameterKey.page: String(1),
-            ParameterKey.perPage: String(1),
-            ParameterKey.fields: POSProductVariation.requestFields.first ?? "",
-            ParameterKey.posProductsOnly: String(true)
-        ]
-
-        let request = JetpackRequest(
-            wooApiVersion: .mark3,
-            method: .get,
-            siteID: siteID,
-            path: path,
-            parameters: parameters,
-            availableAsRESTRequest: true
-        )
-        let responseHeaders = try await enqueueWithResponseHeaders(request)
-
-        return totalItemsCount(from: responseHeaders) ?? 0
-    }
-
-    /// Gets the total count of product variations for the specified site.
-    ///
-    /// - Parameters:
-    ///   - siteID: Site ID to get variation count for.
-    /// - Returns: Total number of variations.
-    public func getProductVariationCount(siteID: Int64) async throws -> Int {
-        let path = Path.variations
-        let parameters = [
-            ParameterKey.page: String(1),
-            ParameterKey.perPage: String(1),
-            ParameterKey.fields: POSProductVariation.requestFields.first ?? "",
-            ParameterKey.posProductsOnly: String(true)
-        ]
-
-        let request = JetpackRequest(
-            wooApiVersion: .mark3,
-            method: .get,
-            siteID: siteID,
-            path: path,
-            parameters: parameters,
-            availableAsRESTRequest: true
-        )
-        let responseHeaders = try await enqueueWithResponseHeaders(request)
-
-        return totalItemsCount(from: responseHeaders) ?? 0
     }
 }
 
@@ -512,7 +486,7 @@ public enum POSCatalogStatus: String, Decodable {
 public enum POSCatalogItem: Decodable {
     case product(POSProduct)
     case variation(POSProductVariation)
-    /// Items with malformed data that fail to decode are skipped during parsing
+    /// Items with malformed data that fail to decode are skipped during parsing, and logged
     case unsupported
 
     private enum CodingKeys: String, CodingKey {
@@ -528,12 +502,14 @@ public enum POSCatalogItem: Decodable {
             do {
                 self = .variation(try container.decode(POSProductVariation.self, forKey: .data))
             } catch {
+                DDLogWarn("⚠️ POS catalog item skipped (type: \(type)): \(error)")
                 self = .unsupported
             }
         } else {
             do {
                 self = .product(try container.decode(POSProduct.self, forKey: .data))
             } catch {
+                DDLogWarn("⚠️ POS catalog item skipped (type: \(type)): \(error)")
                 self = .unsupported
             }
         }

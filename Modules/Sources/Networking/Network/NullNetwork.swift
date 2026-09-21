@@ -12,14 +12,20 @@ public final class NullNetwork: Network {
 
     public init() { }
 
+    /// Nothing is sent, so nothing goes through the tunnel.
+    ///
+    public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        false
+    }
+
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) { }
 
     public func responseData(for request: URLRequestConvertible,
                              completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-
     }
 
-    public func responseDataAndHeaders(for request: any URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+    public func responseDataAndHeaders(for request: any URLRequestConvertible,
+                                       isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         throw NetworkError.notFound()
     }
 

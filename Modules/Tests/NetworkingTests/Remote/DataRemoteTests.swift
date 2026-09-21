@@ -28,7 +28,7 @@ class DataRemoteTests: XCTestCase {
 
         // When
         let result: Result<[Country], Error> = waitFor { promise in
-            remote.loadCountries(siteID: self.sampleSiteID) { (result) in
+            remote.loadCountries(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
         }
@@ -49,7 +49,7 @@ class DataRemoteTests: XCTestCase {
 
         // When
         let result: Result<[Country], Error> = waitFor { promise in
-            remote.loadCountries(siteID: self.sampleSiteID) { (result) in
+            remote.loadCountries(siteID: self.sampleSiteID) { result in
                 promise(result)
             }
         }

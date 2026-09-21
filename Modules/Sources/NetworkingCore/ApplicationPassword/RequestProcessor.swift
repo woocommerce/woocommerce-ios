@@ -7,7 +7,8 @@ protocol RequestProcessorDelegate: AnyObject {
 
 /// Authenticates and retries requests
 ///
-final class RequestProcessor: RequestInterceptor {
+/// Alamofire can invoke interceptors from multiple queues; mutable retry state is synchronized by `RequestProcessorState`.
+final class RequestProcessor: RequestInterceptor, @unchecked Sendable {
     private let notificationCenter: NotificationCenter
 
     private let state: RequestProcessorState
@@ -55,15 +56,29 @@ extension RequestProcessor: RequestRetrier {
 
         let shouldRetryRequest = state.shouldRetry(urlRequest)
 
-        guard shouldRetryRequest, state.authenticator.canGenerateApplicationPassword() else {
+        guard shouldRetryRequest else {
             completion(.doNotRetry)
             return
         }
 
-        let shouldStartAuthentication = state.enqueueRetry(completion)
+        if state.authenticator.canGenerateApplicationPassword() {
+            let shouldStartAuthentication = state.enqueueRetry(completion)
 
-        if shouldStartAuthentication {
-            generateApplicationPassword()
+            if shouldStartAuthentication {
+                generateApplicationPassword()
+            }
+            return
+        }
+
+        guard state.authenticator.canValidateApplicationPassword() else {
+            completion(.doNotRetry)
+            return
+        }
+
+        let shouldStartValidation = state.enqueueRetry(completion)
+
+        if shouldStartValidation {
+            validateApplicationPassword()
         }
     }
 }
@@ -98,6 +113,26 @@ private extension RequestProcessor {
                         self.notifyFailureIfNeeded(error, for: siteID)
                     }
                 }
+            }
+        }
+    }
+
+    func validateApplicationPassword() {
+        Task(priority: .medium) { @MainActor [weak self] in
+            guard let self else { return }
+            let authenticator = self.state.authenticator
+            do {
+                let result = try await authenticator.validateApplicationPassword()
+                self.state.setAuthenticating(false)
+
+                if case let .invalid(error) = result {
+                    self.notificationCenter.post(name: .ApplicationPasswordInvalidated, object: error, userInfo: nil)
+                }
+
+                self.completeRequests(false)
+            } catch {
+                self.state.setAuthenticating(false)
+                self.completeRequests(false)
             }
         }
     }
@@ -182,6 +217,10 @@ public extension NSNotification.Name {
     /// Posted when generating an application password fails
     ///
     static let ApplicationPasswordsGenerationFailed = NSNotification.Name(rawValue: "ApplicationPasswordsGenerationFailed")
+
+    /// Posted when the stored application password is rejected by the site.
+    ///
+    static let ApplicationPasswordInvalidated = NSNotification.Name(rawValue: "ApplicationPasswordInvalidated")
 
     /// Posted when site is flagged as unsupported for app password
     ///

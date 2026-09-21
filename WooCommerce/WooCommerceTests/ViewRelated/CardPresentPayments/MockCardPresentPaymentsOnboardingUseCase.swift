@@ -33,6 +33,11 @@ final class MockCardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboard
         skipPendingRequirementsWasCalled = true
     }
 
+    var skipOverdueRequirementsWasCalled = false
+    func skipOverdueRequirements() {
+        skipOverdueRequirementsWasCalled = true
+    }
+
     var selectPluginWasCalled = false
     var spySelectedPlugin: CardPresentPaymentsPlugin? = nil
     func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin) {

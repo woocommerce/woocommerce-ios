@@ -3,10 +3,12 @@ import UserNotifications
 import Yosemite
 import Experiments
 
+@MainActor
 protocol POSNotificationScheduling {
     func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async
 }
 
+@MainActor
 final class POSNotificationScheduler: POSNotificationScheduling {
     enum MerchantType {
         case potentialMerchant
@@ -60,6 +62,8 @@ final class POSNotificationScheduler: POSNotificationScheduling {
     }
 
     func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async {
+        guard stores.isAuthenticated else { return }
+
         let isScheduled = await isNotificationAlreadyScheduled(for: merchantType)
         guard !isScheduled else { return }
         guard isCountryEligible() else { return }
@@ -82,6 +86,7 @@ final class POSNotificationScheduler: POSNotificationScheduling {
         }
     }
 
+    @MainActor
     private func isNotificationAlreadyScheduled(for merchantType: MerchantType) async -> Bool {
         // Check if the specific notification type is already scheduled
         let isCurrentMerchantTypeScheduled = await checkIfScheduled(for: merchantType)
@@ -98,40 +103,51 @@ final class POSNotificationScheduler: POSNotificationScheduling {
         return isCurrentMerchantScheduled
     }
 
+    @MainActor
     private func checkIfScheduled(for merchantType: MerchantType) async -> Bool {
-        await withCheckedContinuation { continuation in
-            let action: AppSettingsAction
-            switch merchantType {
-            case .potentialMerchant:
-                action = AppSettingsAction.getPOSSurveyPotentialMerchantNotificationScheduled { isScheduled in
-                    continuation.resume(returning: isScheduled)
-                }
-            case .currentMerchant:
-                action = AppSettingsAction.getPOSSurveyCurrentMerchantNotificationScheduled { isScheduled in
-                    continuation.resume(returning: isScheduled)
-                }
+        var isScheduled = false
+        let action: AppSettingsAction
+        switch merchantType {
+        case .potentialMerchant:
+            action = AppSettingsAction.getPOSSurveyPotentialMerchantNotificationScheduled { scheduled in
+                isScheduled = scheduled
             }
-            Task { @MainActor in
-                stores.dispatch(action)
+        case .currentMerchant:
+            action = AppSettingsAction.getPOSSurveyCurrentMerchantNotificationScheduled { scheduled in
+                isScheduled = scheduled
             }
         }
+        stores.dispatch(action)
+        return isScheduled
     }
 
+    @MainActor
     private func hasOpenedPOSAtLeastOnce() async -> Bool {
-        await withCheckedContinuation { continuation in
-            let action = AppSettingsAction.getHasPOSBeenOpenedAtLeastOnce { hasOpened in
-                continuation.resume(returning: hasOpened)
-            }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
+        var hasOpenedPOS = false
+        let action = AppSettingsAction.getHasPOSBeenOpenedAtLeastOnce { hasOpened in
+            hasOpenedPOS = hasOpened
         }
+        stores.dispatch(action)
+        return hasOpenedPOS
     }
 
+    @MainActor
     private func scheduleLocalNotification(for merchantType: POSNotificationScheduler.MerchantType) async {
+        guard let surveyURL = URL(string: merchantType.surveyURL) else {
+            assertionFailure("Invalid POS survey URL: \(merchantType.surveyURL)")
+            return
+        }
+
+        let sessionManager = stores.sessionManager
+        let taggedSurveyURL = surveyURL
+            .tagPlatform("ios")
+            .tagAppVersion(Bundle.main.bundleVersion())
+            .tagSiteInfo(siteID: sessionManager.defaultSite?.siteID,
+                         storeUUID: sessionManager.defaultStoreUUID,
+                         storeURL: sessionManager.defaultSite?.url)
 
         let payload: [AnyHashable: Any] = [
-            LocalNotification.UserInfoKey.surveyURL: merchantType.surveyURL
+            LocalNotification.UserInfoKey.surveyURL: taggedSurveyURL.absoluteString
         ]
 
         let notification = LocalNotification(
@@ -146,21 +162,13 @@ final class POSNotificationScheduler: POSNotificationScheduling {
 
         await pushNotificationsManager.requestLocalNotification(notification, trigger: trigger)
 
-        await withCheckedContinuation { continuation in
-            let action: AppSettingsAction
-            switch merchantType {
-            case .potentialMerchant:
-                action = AppSettingsAction.setPOSSurveyPotentialMerchantNotificationScheduled { _ in
-                    continuation.resume()
-                }
-            case .currentMerchant:
-                action = AppSettingsAction.setPOSSurveyCurrentMerchantNotificationScheduled { _ in
-                    continuation.resume()
-                }
-            }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
+        let action: AppSettingsAction
+        switch merchantType {
+        case .potentialMerchant:
+            action = AppSettingsAction.setPOSSurveyPotentialMerchantNotificationScheduled { _ in }
+        case .currentMerchant:
+            action = AppSettingsAction.setPOSSurveyCurrentMerchantNotificationScheduled { _ in }
         }
+        stores.dispatch(action)
     }
 }

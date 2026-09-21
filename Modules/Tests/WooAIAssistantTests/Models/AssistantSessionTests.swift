@@ -1,6 +1,7 @@
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct AssistantSessionTests {
     @Test
     func test_assistantSession_when_constructed_with_session_id_only_then_task_id_is_nil() {

@@ -1,4 +1,6 @@
 import XCTest
+import Combine
+import Yosemite
 import YosemiteTestHelpers
 @testable import WooCommerce
 
@@ -65,6 +67,67 @@ final class WooShippingCustomsItemViewModelTests: XCTestCase {
         // Then
         XCTAssertTrue(viewModel.weightPerUnit.isEmpty, "Weight should be empty it the initial value is zero")
         XCTAssertFalse(viewModel.isValidWeight, "isValidWeight should be false when the weight is zero")
+    }
+
+    func test_description_is_invalid_when_length_limit_is_required_and_description_exceeds_30_characters() {
+        // Given
+        let lengthLimitRequiredSubject = CurrentValueSubject<Bool, Never>(true)
+
+        let viewModel = WooShippingCustomsItemViewModel(
+            itemName: "Above The Clouds PET Kiss Cut Tape",
+            itemProductID: 22,
+            itemQuantity: 1,
+            itemValue: 10,
+            itemWeight: 1,
+            currencySymbol: "$",
+            isDescriptionLengthLimitRequired: lengthLimitRequiredSubject.eraseToAnyPublisher()
+        )
+
+        // Then
+        XCTAssertTrue(viewModel.isDescriptionTooLong)
+        XCTAssertFalse(viewModel.isValidDescription)
+    }
+
+    func test_description_is_valid_when_length_limit_is_not_required_and_description_exceeds_30_characters() {
+        // Given
+        let lengthLimitRequiredSubject = CurrentValueSubject<Bool, Never>(false)
+
+        let viewModel = WooShippingCustomsItemViewModel(
+            itemName: "Above The Clouds PET Kiss Cut Tape",
+            itemProductID: 22,
+            itemQuantity: 1,
+            itemValue: 10,
+            itemWeight: 1,
+            currencySymbol: "$",
+            isDescriptionLengthLimitRequired: lengthLimitRequiredSubject.eraseToAnyPublisher()
+        )
+
+        // Then
+        XCTAssertFalse(viewModel.isDescriptionTooLong)
+        XCTAssertTrue(viewModel.isValidDescription)
+    }
+
+    func test_requiredInformationIsEntered_is_false_when_length_limit_is_required_and_description_exceeds_30_characters() {
+        // Given
+        let storageManager = MockStorageManager()
+        storageManager.insertSampleCountries(readOnlyCountries: [Country(code: "US", name: "United States", states: [])])
+        let originCountryCodeSubject = CurrentValueSubject<String?, Never>("US")
+        let lengthLimitRequiredSubject = CurrentValueSubject<Bool, Never>(true)
+
+        let viewModel = WooShippingCustomsItemViewModel(
+            itemName: "Above The Clouds PET Kiss Cut Tape",
+            itemProductID: 22,
+            itemQuantity: 1,
+            itemValue: 10,
+            itemWeight: 1,
+            currencySymbol: "$",
+            originCountryCode: originCountryCodeSubject.eraseToAnyPublisher(),
+            isDescriptionLengthLimitRequired: lengthLimitRequiredSubject.eraseToAnyPublisher(),
+            storageManager: storageManager
+        )
+
+        // Then
+        XCTAssertFalse(viewModel.requiredInformationIsEntered)
     }
 
     func test_isNumberValid_whenGivenValidTariffNumbers_shouldReturnTrue() {

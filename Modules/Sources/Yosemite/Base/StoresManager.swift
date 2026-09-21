@@ -27,15 +27,22 @@ public protocol StoresManager {
     @discardableResult
     func authenticate(credentials: Credentials) -> StoresManager
 
+    /// Switches the internal state to Authenticated with transient cookie-nonce endpoint configuration.
+    ///
+    @discardableResult
+    func authenticate(credentials: Credentials,
+                      cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager
+
     /// Switches the state to a Deauthenticated one.
     ///
     @discardableResult
     func deauthenticate() -> StoresManager
 
     /// Synchronizes all of the Session's Entities.
+    /// Preserve the selected store when Jetpack setup has verified it but `/me/sites` may still be catching up.
     ///
     @discardableResult
-    func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager
+    func synchronizeEntities(preservingSelectedSite: Bool, onCompletion: (() -> Void)?) -> StoresManager
 
     /// Updates the Default Store as specified.
     ///
@@ -98,8 +105,19 @@ public protocol StoresManager {
     ///
     func listenToWPCOMInvalidWPCOMTokenNotification()
 
+    /// Resets the selected store upon receiving `RemoteDidReceiveUnknownBlogError` notification
+    ///
+    func listenToUnknownBlogNotification()
+
     /// Whether the stores should attempt to authenticate the current site 's admin page
     /// on web view using the current credentials.
     ///
     func shouldAuthenticateAdminPage(for site: Site) -> Bool
+}
+
+public extension StoresManager {
+    @discardableResult
+    func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
+        synchronizeEntities(preservingSelectedSite: false, onCompletion: onCompletion)
+    }
 }

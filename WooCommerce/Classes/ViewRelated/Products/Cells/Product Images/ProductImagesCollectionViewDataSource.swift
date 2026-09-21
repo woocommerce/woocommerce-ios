@@ -29,7 +29,6 @@ extension ProductImagesCollectionViewDataSource: UICollectionViewDataSource {
         configure(collectionView: collectionView, cell, for: item, at: indexPath)
         return cell
     }
-
 }
 
 // MARK: - Support methods for UICollectionViewDataSource

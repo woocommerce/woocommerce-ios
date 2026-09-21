@@ -1,4 +1,5 @@
 import XCTest
+import WooFoundation
 @testable import WooCommerce
 @testable import Yosemite
 
@@ -93,32 +94,75 @@ final class ProductsTabProductViewModelTests: XCTestCase {
         XCTAssertTrue(detailsText.contains(expectedStockDetail))
     }
 
-    func test_details_contain_sku_when_isSKUShown_is_true() {
+    func test_details_when_sku_is_hidden_then_omits_sku_line() {
         // Given
         let sku = "pear"
-        let product = productMock(name: "Yay").copy(sku: sku)
+        let product = productWith(price: "6", sku: sku)
 
         // When
-        let viewModel = ProductsTabProductViewModel(product: product, isSKUShown: true)
-        let detailsText = viewModel.detailsAttributedString.string
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    isSKUShown: false,
+                                                    isPriceShown: true,
+                                                    currencySettings: usdCurrencySettings)
+
+        // Then
+        XCTAssertEqual(viewModel.detailsAttributedString.string, "\(Localization.inStock) • $6.00")
+    }
+
+    func test_details_when_price_and_sku_are_shown_then_formats_complete_layout() {
+        // Given
+        let sku = "pear"
+        let product = productWith(price: "6", sku: sku)
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    isSKUShown: true,
+                                                    isPriceShown: true,
+                                                    currencySettings: usdCurrencySettings)
 
         // Then
         let expectedSKU = String.localizedStringWithFormat(Localization.skuFormat, sku)
-        XCTAssertTrue(detailsText.contains(expectedSKU))
+        XCTAssertEqual(viewModel.detailsAttributedString.string, "\(Localization.inStock) • $6.00\n\(expectedSKU)")
     }
 
-    func test_details_do_not_contain_sku_when_isSKUShown_is_false() {
+    func test_details_when_price_is_hidden_then_omits_price() {
         // Given
-        let sku = "pear"
-        let product = productMock(name: "Yay").copy(sku: sku)
+        let product = productWith(price: "6")
 
         // When
-        let viewModel = ProductsTabProductViewModel(product: product, isSKUShown: false)
-        let detailsText = viewModel.detailsAttributedString.string
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    isPriceShown: false,
+                                                    currencySettings: usdCurrencySettings)
 
         // Then
-        let skuText = String.localizedStringWithFormat(Localization.skuFormat, sku)
-        XCTAssertFalse(detailsText.contains(skuText))
+        XCTAssertEqual(viewModel.detailsAttributedString.string, Localization.inStock)
+    }
+
+    func test_details_when_price_is_empty_then_omits_price_and_separator() {
+        // Given
+        let product = productWith(price: "")
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    isPriceShown: true,
+                                                    currencySettings: usdCurrencySettings)
+
+        // Then
+        XCTAssertEqual(viewModel.detailsAttributedString.string, Localization.inStock)
+    }
+
+    func test_details_when_sku_is_empty_then_omits_sku_line() {
+        // Given
+        let product = productWith(price: "6", sku: "")
+
+        // When
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    isSKUShown: true,
+                                                    isPriceShown: true,
+                                                    currencySettings: usdCurrencySettings)
+
+        // Then
+        XCTAssertEqual(viewModel.detailsAttributedString.string, "\(Localization.inStock) • $6.00")
     }
 
     func test_details_for_product_bundle_contain_bundle_stock_status_when_bundle_not_in_stock() {
@@ -216,7 +260,30 @@ extension ProductsTabProductViewModelTests {
 }
 
 private extension ProductsTabProductViewModelTests {
+    var usdCurrencySettings: CurrencySettings {
+        CurrencySettings(currencyCode: .USD,
+                         currencyPosition: .left,
+                         thousandSeparator: "",
+                         decimalSeparator: ".",
+                         numberOfDecimals: 2)
+    }
+
+    func productWith(price: String, sku: String = "") -> ProductListItem {
+        Product.fake().copy(productTypeKey: ProductType.simple.rawValue,
+                            statusKey: ProductStatus.published.rawValue,
+                            sku: sku,
+                            price: price,
+                            manageStock: false,
+                            stockStatusKey: ProductStockStatus.inStock.rawValue,
+                            variations: []).toListItem()
+    }
+
     enum Localization {
+        static let inStock = NSLocalizedString(
+            "string.createStockText.inStock",
+            value: "In stock",
+            comment: "Label about product's inventory stock status shown on Products tab"
+        )
         static let skuFormat = NSLocalizedString("SKU: %1$@", comment: "Label about the SKU of a product in the product list. Reads, `SKU: productSku`")
     }
 }

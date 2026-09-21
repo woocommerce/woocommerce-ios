@@ -28,8 +28,44 @@ struct BatchedRequestLoaderTests {
         let result = try await sut.loadAll(makeRequest: makeRequest)
 
         // Then
-        #expect(result == expectedItems)
+        #expect(result.items == expectedItems)
         #expect(await callCount.value == 2) // batchSize = 2, so it fetches pages 1 and 2
+    }
+
+    @Test func loadAll_returns_earliest_server_date_across_pages() async throws {
+        // Given
+        let sut = BatchedRequestLoader(batchSize: 3)
+        let earlier = Date(timeIntervalSince1970: 1_000)
+        let later = Date(timeIntervalSince1970: 2_000)
+
+        let makeRequest: (Int) async throws -> PagedItems<String> = { pageNumber in
+            // Page 2 carries the earliest server date; the loader should surface that one.
+            let serverDate = pageNumber == 2 ? earlier : later
+            return PagedItems(items: ["page \(pageNumber)"],
+                              hasMorePages: pageNumber < 3,
+                              totalItems: 3,
+                              serverDate: serverDate)
+        }
+
+        // When
+        let result = try await sut.loadAll(makeRequest: makeRequest)
+
+        // Then
+        #expect(result.serverDate == earlier)
+    }
+
+    @Test func loadAll_returns_nil_server_date_when_no_page_provides_one() async throws {
+        // Given
+        let sut = BatchedRequestLoader(batchSize: 2)
+        let makeRequest: (Int) async throws -> PagedItems<String> = { pageNumber in
+            PagedItems(items: pageNumber == 1 ? ["a"] : [], hasMorePages: false, totalItems: 1)
+        }
+
+        // When
+        let result = try await sut.loadAll(makeRequest: makeRequest)
+
+        // Then
+        #expect(result.serverDate == nil)
     }
 
     // MARK: - Retry Logic Tests
@@ -70,7 +106,7 @@ struct BatchedRequestLoaderTests {
         let result = try await sut.loadAll(makeRequest: makeRequest)
 
         // Then
-        #expect(result == ["page 1 success", "page 2 success", "page 3 success"])
+        #expect(result.items == ["page 1 success", "page 2 success", "page 3 success"])
         #expect(await attemptCountForPage1.value == 1) // Page 1 succeeded immediately
         #expect(await attemptCountForPage2.value == 2) // Page 2 failed once, then succeeded
         #expect(await attemptCountForPage3.value == 1) // Page 3 succeeded immediately
@@ -87,7 +123,7 @@ struct BatchedRequestLoaderTests {
         )
 
         let attemptCount = Counter()
-        let makeRequest: (Int) async throws -> PagedItems<String> = { pageNumber in
+        let makeRequest: (Int) async throws -> PagedItems<String> = { _ in
             await attemptCount.increment()
             throw NetworkError.unacceptableStatusCode(statusCode: 401, response: nil)
         }
@@ -111,7 +147,7 @@ struct BatchedRequestLoaderTests {
 
         let attemptCount = Counter()
         let expectedError = URLError(.networkConnectionLost)
-        let makeRequest: (Int) async throws -> PagedItems<String> = { pageNumber in
+        let makeRequest: (Int) async throws -> PagedItems<String> = { _ in
             await attemptCount.increment()
             throw expectedError
         }

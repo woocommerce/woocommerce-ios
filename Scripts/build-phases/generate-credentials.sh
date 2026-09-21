@@ -7,18 +7,25 @@ if [[ $ACTION == 'indexbuild' ]]; then
   exit 0
 fi
 
-DERIVED_PATH=${SOURCE_ROOT}/DerivedSources
-CLASSES_DERIVED_PATH=${SOURCE_ROOT}/DerivedSources/WooCommerce
-WATCH_DERIVED_PATH=${SOURCE_ROOT}/DerivedSources/WatchApp
 SCRIPT_PATH=${SOURCE_ROOT}/Credentials/replace_secrets.rb
-
 CREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl
 CREDS_TEMPLATE_PATH=${SOURCE_ROOT}/Credentials/Templates/ApiCredentials-Template.swift
-
-BASH_INPUT_PATH=${SOURCE_ROOT}/Credentials/bash_secrets.tpl
-BASH_OUTPUT_PATH=${DERIVED_PATH}/bash_secrets
-
 SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.json"
+
+## Collect output paths from the per-target build phase's `outputPaths`.
+## Xcode exposes them as SCRIPT_OUTPUT_FILE_N (with SCRIPT_OUTPUT_FILE_COUNT).
+##
+if [[ -z "${SCRIPT_OUTPUT_FILE_COUNT:-}" || "${SCRIPT_OUTPUT_FILE_COUNT}" -lt 1 ]]; then
+    echo "error: generate-credentials.sh expects at least one output file declared via the build phase's outputPaths." >&2
+    exit 1
+fi
+
+OUTPUT_PATHS=()
+for (( i=0; i<SCRIPT_OUTPUT_FILE_COUNT; i++ )); do
+    var="SCRIPT_OUTPUT_FILE_${i}"
+    OUTPUT_PATHS+=("${!var}")
+    mkdir -p "$(dirname "${!var}")"
+done
 
 ## Validate Secrets!
 ##
@@ -28,37 +35,16 @@ if [ ! -f "$SECRETS_PATH" ]; then
 
     echo ">> Using Templated Secrets"
 
-    ## Generate the Derived folders, if needed
-    ##
-    mkdir -p "${DERIVED_PATH}"
-    mkdir -p "${CLASSES_DERIVED_PATH}"
-    mkdir -p "${WATCH_DERIVED_PATH}"
-
-    ## Create credentials files from the template (if needed)
-    ##
-    for TARGET_PATH in ${CLASSES_DERIVED_PATH} ${WATCH_DERIVED_PATH}; do
-        if [ ! -f "${TARGET_PATH}/ApiCredentials.swift" ]; then
-            echo ">> Creating Credentials File from Template: ${CREDS_TEMPLATE_PATH} -> ${TARGET_PATH}"
-            cp "${CREDS_TEMPLATE_PATH}" "${TARGET_PATH}/ApiCredentials.swift"
+    for OUTPUT_PATH in "${OUTPUT_PATHS[@]}"; do
+        if [ ! -f "${OUTPUT_PATH}" ]; then
+            echo ">> Creating Credentials File from Template: ${CREDS_TEMPLATE_PATH} -> ${OUTPUT_PATH}"
+            cp "${CREDS_TEMPLATE_PATH}" "${OUTPUT_PATH}"
         fi
     done
-
-    ## Create a bash secrets file from the template (if needed)
-    ##
-    if [ ! -f "$BASH_OUTPUT_PATH" ]; then
-        echo ">> Creating Bash Secrets File from Template: ${BASH_INPUT_PATH}"
-        cp "${BASH_INPUT_PATH}" "${BASH_OUTPUT_PATH}"
-    fi
 
 else
 
     echo ">> Loading Secrets ${SECRETS_PATH}"
-
-    ## Generate the Derived folders, if needed
-    ##
-    mkdir -p "${DERIVED_PATH}"
-    mkdir -p "${CLASSES_DERIVED_PATH}"
-    mkdir -p "${WATCH_DERIVED_PATH}"
 
     if which rbenv; then
       # Fix an issue where, depending on the shell you are using on your machine and your rbenv setup,
@@ -70,16 +56,9 @@ else
       rbenv rehash
     fi
 
-    ## Generate ApiCredentials.swift into per-target DerivedSources folders
-    ##
-    for TARGET_PATH in ${CLASSES_DERIVED_PATH} ${WATCH_DERIVED_PATH}; do
-        echo ">> Generating Credentials ${TARGET_PATH}/ApiCredentials.swift"
-        ruby "${SCRIPT_PATH}" -i "${CREDS_INPUT_PATH}" -s "${SECRETS_PATH}" > "${TARGET_PATH}/ApiCredentials.swift"
+    for OUTPUT_PATH in "${OUTPUT_PATHS[@]}"; do
+        echo ">> Generating Credentials ${OUTPUT_PATH}"
+        ruby "${SCRIPT_PATH}" -i "${CREDS_INPUT_PATH}" -s "${SECRETS_PATH}" > "${OUTPUT_PATH}"
     done
-
-    ## Generate bash_secrets
-    ##
-    echo ">> Generating Credentials ${BASH_OUTPUT_PATH}"
-    ruby "${SCRIPT_PATH}" -i "${BASH_INPUT_PATH}" -s "${SECRETS_PATH}" > "${BASH_OUTPUT_PATH}"
 
 fi

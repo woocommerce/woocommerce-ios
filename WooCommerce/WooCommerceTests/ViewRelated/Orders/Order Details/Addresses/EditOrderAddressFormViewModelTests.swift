@@ -172,7 +172,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         )
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Unsupported Action")
@@ -232,7 +232,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // When
         let showPlaceholdersStates: [Bool] = waitFor { promise in
-            viewModel.$showPlaceholders
+            viewModel.showPlaceholdersPublisher
                 .dropFirst() // Drop initial value
                 .collect(2)  // Expect two state changes
                 .sink { emittedValues in
@@ -273,7 +273,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, fields, _):
+                case let .updateOrder(_, order, _, fields, _, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -299,7 +299,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, fields, _):
+                case let .updateOrder(_, order, _, fields, _, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -324,7 +324,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, fields, _):
+                case let .updateOrder(_, order, _, fields, _, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -354,6 +354,37 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fields.state, newState.name)
     }
 
+    func test_changing_selectedCountry_to_a_country_without_states_clears_the_state_text() {
+        // Given
+        var fields = AddressFormFields()
+        fields.selectedCountry = Country(code: "US",
+                                         name: "United States",
+                                         states: [StateOfACountry(code: "NY", name: "New York")])
+        fields.selectedState = StateOfACountry(code: "NY", name: "New York")
+        XCTAssertEqual(fields.state, "New York")
+
+        // When
+        fields.selectedCountry = Country(code: "GB", name: "United Kingdom", states: [])
+
+        // Then
+        XCTAssertEqual(fields.state, "")
+        XCTAssertNil(fields.selectedState)
+    }
+
+    func test_re_setting_selectedCountry_to_same_country_preserves_state_text() {
+        // Given
+        var fields = AddressFormFields()
+        let unitedKingdom = Country(code: "GB", name: "United Kingdom", states: [])
+        fields.selectedCountry = unitedKingdom
+        fields.state = "Greater London"
+
+        // When
+        fields.selectedCountry = unitedKingdom
+
+        // Then
+        XCTAssertEqual(fields.state, "Greater London")
+    }
+
     func test_view_model_updates_billing_and_shipping_address_fields_when_use_as_toggle_is_on() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -366,7 +397,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let update: (order: Order, fields: [OrderUpdateField]) = waitFor { promise in
             stores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, fields, _):
+                case let .updateOrder(_, order, _, fields, _, _):
                     promise((order, fields))
                 default:
                     XCTFail("Unsupported Action")
@@ -386,7 +417,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, order, _, _, onCompletion):
+            case let .updateOrder(_, order, _, _, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Unsupported Action")
@@ -409,7 +440,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Unsupported Action")
@@ -454,7 +485,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let billingAddress: Address? = waitFor { promise in
             self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, _, _):
+                case let .updateOrder(_, order, _, _, _, _):
                     promise(order.billingAddress)
                 default:
                     XCTFail("Unsupported Action")
@@ -481,7 +512,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let shippingAddress: Address? = waitFor { promise in
             self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, _, _):
+                case let .updateOrder(_, order, _, _, _, _):
                     promise(order.shippingAddress)
                 default:
                     XCTFail("Unsupported Action")
@@ -508,7 +539,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         let billingAddress: Address? = waitFor { promise in
             self.testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
                 switch action {
-                case let .updateOrder(_, order, _, _, _):
+                case let .updateOrder(_, order, _, _, _, _):
                     promise(order.billingAddress)
                 default:
                     XCTFail("Unsupported Action")
@@ -547,7 +578,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, order, _, _, onCompletion):
+            case let .updateOrder(_, order, _, _, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Unsupported Action")
@@ -575,7 +606,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, order, _, _, onCompletion):
+            case let .updateOrder(_, order, _, _, _, onCompletion):
                 onCompletion(.success(order))
             default:
                 XCTFail("Unsupported Action")
@@ -603,7 +634,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Unsupported Action")
@@ -631,7 +662,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         testingStores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
-            case let .updateOrder(_, _, _, _, onCompletion):
+            case let .updateOrder(_, _, _, _, _, onCompletion):
                 onCompletion(.failure(NSError(domain: "", code: 0)))
             default:
                 XCTFail("Unsupported Action")
@@ -716,76 +747,6 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
 
         // Then
         XCTAssertEqual(notice, AddressFormViewModel.NoticeFactory.createInvalidEmailNotice())
-    }
-
-    func test_OrderAddressForm_billing_fields_are_updated_when_customerSelectedFromSearch() {
-        // Given
-        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)
-        let customer = Customer.fake().copy(
-            email: "scrambled@scrambled.com",
-            firstName: "Johnny",
-            lastName: "Appleseed",
-            billing: sampleAddressWithEmptyNullableFields(),
-            shipping: sampleAddressWithEmptyNullableFields()
-        )
-
-        // When
-        viewModel.customerSelectedFromSearch(customer: customer)
-
-        // Then
-        XCTAssertEqual(viewModel.fields.email, customer.billing?.email)
-        XCTAssertEqual(viewModel.fields.firstName, customer.firstName)
-        XCTAssertEqual(viewModel.fields.lastName, customer.lastName)
-        XCTAssertEqual(viewModel.fields.company, customer.billing?.company)
-        XCTAssertEqual(viewModel.fields.address1, customer.billing?.address1)
-        XCTAssertEqual(viewModel.fields.address2, customer.billing?.address2)
-        XCTAssertEqual(viewModel.fields.city, customer.billing?.city)
-        XCTAssertEqual(viewModel.fields.state, customer.billing?.state)
-        XCTAssertEqual(viewModel.fields.postcode, customer.billing?.postcode)
-        XCTAssertEqual(viewModel.fields.country, customer.billing?.country)
-        XCTAssertEqual(viewModel.fields.phone, customer.billing?.phone)
-    }
-
-    func test_OrderAddressForm_shipping_fields_are_updated_when_customerSelectedFromSearch() {
-        // Given
-        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping)
-        let customer = Customer.fake().copy(
-            email: "scrambled@scrambled.com",
-            firstName: "Johnny",
-            lastName: "Appleseed",
-            billing: sampleAddressWithEmptyNullableFields(),
-            shipping: sampleAddressWithEmptyNullableFields()
-        )
-
-        // When
-        viewModel.customerSelectedFromSearch(customer: customer)
-
-        // Then
-        XCTAssertEqual(viewModel.fields.email, customer.shipping?.email)
-        XCTAssertEqual(viewModel.fields.firstName, customer.firstName)
-        XCTAssertEqual(viewModel.fields.lastName, customer.lastName)
-        XCTAssertEqual(viewModel.fields.company, customer.shipping?.company)
-        XCTAssertEqual(viewModel.fields.address1, customer.shipping?.address1)
-        XCTAssertEqual(viewModel.fields.address2, customer.shipping?.address2)
-        XCTAssertEqual(viewModel.fields.city, customer.shipping?.city)
-        XCTAssertEqual(viewModel.fields.state, customer.shipping?.state)
-        XCTAssertEqual(viewModel.fields.postcode, customer.shipping?.postcode)
-        XCTAssertEqual(viewModel.fields.country, customer.shipping?.country)
-        XCTAssertEqual(viewModel.fields.phone, customer.shipping?.phone)
-    }
-
-    func test_OrderAddressForm_shows_different_address_form_fields_when_addresses_differ_and_customerSelectedFromSearch() {
-        // Given
-        let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .billing)
-        let billing = sampleAddressWithEmptyNullableFields()
-        let shipping = Address.fake().copy(address1: "123 different fake street")
-        let customer = Customer.fake().copy(billing: billing, shipping: shipping)
-
-        // When
-        viewModel.customerSelectedFromSearch(customer: customer)
-
-        // Then
-        XCTAssertTrue(viewModel.showDifferentAddressForm)
     }
 }
 

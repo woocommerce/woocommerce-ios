@@ -8,7 +8,7 @@ public final class ProductVariationStore: Store {
     private let remote: ProductVariationsRemoteProtocol
     private let productVariationStorageManager: ProductVariationStorageManager
 
-    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductVariationsRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote)
     }
@@ -47,6 +47,14 @@ public final class ProductVariationStore: Store {
                                          onCompletion: onCompletion)
         case .retrieveProductVariation(let siteID, let productID, let variationID, let onCompletion):
             retrieveProductVariation(siteID: siteID, productID: productID, variationID: variationID, onCompletion: onCompletion)
+        case let .retrieveProductVariationsTransiently(siteID, productID, currency, variationIDs, pageNumber, pageSize, onCompletion):
+            retrieveProductVariationsTransiently(siteID: siteID,
+                                                 productID: productID,
+                                                 currency: currency,
+                                                 variationIDs: variationIDs,
+                                                 pageNumber: pageNumber,
+                                                 pageSize: pageSize,
+                                                 onCompletion: onCompletion)
         case .createProductVariation(let siteID, let productID, let newVariation, let onCompletion):
             createProductVariation(siteID: siteID, productID: productID, newVariation: newVariation, onCompletion: onCompletion)
         case .createProductVariations(let siteID, let productID, let productVariations, let onCompletion):
@@ -69,6 +77,28 @@ public final class ProductVariationStore: Store {
 // MARK: - Services!
 //
 private extension ProductVariationStore {
+
+    func retrieveProductVariationsTransiently(siteID: Int64,
+                                              productID: Int64,
+                                              currency: String,
+                                              variationIDs: [Int64],
+                                              pageNumber: Int,
+                                              pageSize: Int,
+                                              onCompletion: @escaping (Result<(variations: [ProductVariation], hasNextPage: Bool), Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let variations = try await remote.loadProductVariations(for: siteID,
+                                                                        productID: productID,
+                                                                        variationIDs: variationIDs,
+                                                                        pageNumber: pageNumber,
+                                                                        pageSize: pageSize,
+                                                                        currency: currency)
+                onCompletion(.success((variations, variations.count == pageSize)))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
 
     /// Synchronizes all the product reviews associated with a given Site ID (if any!).
     ///
@@ -104,7 +134,7 @@ private extension ProductVariationStore {
                                         variationIDs: variationIDs,
                                         context: nil,
                                         pageNumber: pageNumber,
-                                        pageSize: pageSize) { [weak self] (productVariations, error) in
+                                        pageSize: pageSize) { [weak self] productVariations, error in
             guard let productVariations else {
                 onCompletion(.failure(error ?? ProductVariationLoadError.unexpected))
                 return
@@ -195,7 +225,6 @@ private extension ProductVariationStore {
                                                                productID: productID) { [weak self] in
                     guard let storageProductVariation = self?.storageManager.viewStorage.loadProductVariations(siteID: siteID, productID: productID) else {
                         return onCompletion(.failure(ProductVariationLoadError.notFoundInStorage))
-
                     }
                     onCompletion(.success(storageProductVariation.map { $0.toReadOnly() }))
                 }
@@ -266,7 +295,7 @@ private extension ProductVariationStore {
     ///
     func updateProductVariations(siteID: Int64,
                                  productID: Int64,
-                                 productVariations: [ProductVariation],
+                                 productVariations: [PartialProductVariationUpdate],
                                  onCompletion: @escaping (Result<[ProductVariation], ProductUpdateError>) -> Void) {
         remote.updateProductVariations(siteID: siteID,
                                        productID: productID,

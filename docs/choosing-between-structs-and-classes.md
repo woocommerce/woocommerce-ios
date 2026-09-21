@@ -15,6 +15,6 @@ But consider using `class` instead if:
 When using classes, these should be marked as `final` by default so their behavior cannot be altered by subclassing and/or overriding. There's a few reasons for that:
 
 - It favors composition over inheritance
-- The class could be missused or abused when subclassed or overriden, which could be problematic if the class is doing anything important. By making it `final` we disallow this at compiler time, and enforce that the class has to be used as it was written.
+- The class could be misused or abused when subclassed or overridden, which could be problematic if the class is doing anything important. By making it `final` we disallow this at compiler time, and enforce that the class has to be used as it was written.
 - Marking a class as `final` tells the Swift compiler that the class methods should be called directly rather than looking them up in a method table (static vs dynamic dispatch), which [reduces function call overhead and increases performance](https://developer.apple.com/swift/blog/?id=27)
 - If inheritance is necessary later on, it can always be allowed, but the `final` modifier will create a reminder of its necessity and refactoring

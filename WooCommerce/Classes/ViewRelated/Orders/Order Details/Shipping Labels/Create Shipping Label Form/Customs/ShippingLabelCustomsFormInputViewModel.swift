@@ -233,7 +233,7 @@ private extension ShippingLabelCustomsFormInputViewModel {
                     !self.checkMissingITNForDestination(itn) &&
                     !self.checkMissingITN(itn, for: classesAbove2500usd) &&
                     !self.checkInvalidITN(itn) &&
-                    itemsValidation.values.first(where: { !$0 }) == nil
+                    !itemsValidation.values.contains(where: { !$0 })
             }
             .removeDuplicates()
             .assign(to: &$validForm)
@@ -266,14 +266,12 @@ private extension ShippingLabelCustomsFormInputViewModel {
     ///
     func configureClassesAbove2500usd() {
         classesAbove2500usd = itemTariffNumbersAndValues.values
-            .reduce([String: Decimal]()) { accumulator, item in
-                var result = accumulator
+            .reduce(into: [String: Decimal]()) { result, item in
                 if let currentTotal = result[item.hsTariffNumber] {
                     result[item.hsTariffNumber] = currentTotal + item.totalValue
                 } else {
                     result[item.hsTariffNumber] = item.totalValue
                 }
-                return result
             }
             .filter { $0.value > Constants.minimumValueRequiredForITNValidation }
             .keys

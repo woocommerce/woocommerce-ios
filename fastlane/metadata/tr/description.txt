@@ -7,10 +7,10 @@ Anında sipariş oluşturun
 Birkaç ürünü oluşturduktan sonra iş çok basittir. Kataloğunuzdan öğeler seçip, gönderim bilgisini ve müşteri ayrıntılarını girerek, stok durumunuzla eşitlenen bir siparişi hızlı bir şekilde oluşturun.
 
 Şahsen ödemeleri alın
-WooCommerce Şahsen Ödemeler özelliğini ve bir kart okuyucuyu (ABD, Birleşik Krallık ve Kanada'da mevcuttur) kullanarak şahsen yapılan fiziksel ödemeleri alın. Yeni bir sipariş başlatın veya ödeme bekleyen mevcut bir sipariş bulun, ardından ödemeyi sorunsuzca kabul edin.
+WooCommerce Şahsen Ödemeler ile Avustralya, Kanada, Finlandiya, İrlanda, Lüksemburg, Hollanda, Yeni Zelanda, Singapur, Birleşik Krallık ve ABD'de bir kart okuyucu kullanarak fiziksel ödemeler alın. Tap to Pay on iPhone, Birleşik Krallık ve ABD'de kullanılabilir. Yeni bir sipariş başlatın veya ödeme bekleyen mevcut bir sipariş bulun, ardından ödemeyi sorunsuz bir şekilde kabul edin.
 
-Hem çevrimiçi hem çevrimdışı çalışın
-WooCommerce POS ile herhangi bir tableti güçlü bir satış noktasına dönüştürün. Tüm çevrimiçi ve fiziksel satışlarınız gerçek zamanlı olarak senkronize edildiğinde ürünleri arayın, barkodu tarayın, kuponları uygulayın ve e-posta makbuzları gönderin. ABD ve Birleşik krallık'ta mevcut.
+Tıklamalardan gerçek dünyaya geçin
+WooCommerce POS ile herhangi bir tableti güçlü bir satış noktasına dönüştürün. Tüm çevrimiçi ve fiziksel satışlarınız gerçek zamanlı olarak senkronize edildiğinde ürünleri arayın, barkodu tarayın, kuponları uygulayın ve e-posta makbuzları gönderin. Avustralya, Kanada, Finlandiya, İrlanda, Lüksemburg, Hollanda, Yeni Zelanda, Singapur, Birleşik Krallık ve ABD'de mevcuttur.
 
 Her satıştan haberdar olun
 Artık aktif olarak satış yaptığınız için hiçbir siparişi veya yorumu kaçırmayın. Gerçek zamanlı uyarıları etkinleştirerek hiçbir şeyi kaçırmayın ve her yeni satışla birlikte duyacağınız o bağımlılık yaratan "yazarkasa" sesine odaklanın!

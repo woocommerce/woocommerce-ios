@@ -46,6 +46,22 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
                                             configuration: configuration)
     }
 
+    /// Builds a view model backed by a fresh storage containing only the given gateway (or none.)
+    private func makeSut(gateway: PaymentGateway?) -> InPersonPaymentsCashOnDeliveryToggleRowViewModel {
+        let storageManager = MockStorageManager()
+        if let gateway {
+            storageManager.insertSamplePaymentGateway(readOnlyGateway: gateway)
+        }
+        let dependencies = InPersonPaymentsCashOnDeliveryToggleRowViewModel.Dependencies(
+            stores: stores,
+            storageManager: storageManager,
+            noticePresenter: noticePresenter,
+            analytics: analytics
+        )
+        return InPersonPaymentsCashOnDeliveryToggleRowViewModel(dependencies: dependencies,
+                                                                configuration: configuration)
+    }
+
     // MARK: - Analytics tests
     func test_updateCashOnDeliverySetting_enabled_tracks_paymentsHubCashOnDeliveryToggled_event() throws {
         // Given
@@ -165,6 +181,149 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
         assertEqual("Dotcom Invalid REST Route", eventProperties[AnalyticProperties.errorDescriptionKey] as? String)
         assertEqual("payments_hub", eventProperties[AnalyticProperties.sourceKey] as? String)
+    }
+
+    // MARK: - Toggle confirmation tests
+    func test_cashOnDeliveryToggleRequested_then_nothing_changes_before_the_user_confirms() {
+        // Given
+        assertEmpty(analyticsProvider.receivedEvents)
+
+        // When
+        sut.cashOnDeliveryToggleRequested(enabled: true)
+
+        // Then
+        assertEmpty(stores.receivedActions)
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains(AnalyticEvents.paymentsHubCashOnDeliveryToggled))
+        XCTAssertFalse(sut.cashOnDeliveryEnabledState)
+        XCTAssertNotNil(sut.pendingToggleConfirmation)
+    }
+
+    func test_cashOnDeliveryToggleRequested_enabled_when_gateway_has_custom_title_then_confirmation_warns_about_rename() throws {
+        // Given
+        let sut = makeSut(gateway: PaymentGateway.fake().copy(siteID: sampleStoreID,
+                                                              gatewayID: "cod",
+                                                              title: "Cash on delivery"))
+
+        // When
+        sut.cashOnDeliveryToggleRequested(enabled: true)
+
+        // Then
+        let confirmation = try XCTUnwrap(sut.pendingToggleConfirmation)
+        assertEqual("Enable Pay In Person?", confirmation.title)
+        XCTAssertTrue(confirmation.message.contains("renames it from “Cash on delivery” to “Pay in Person”"))
+        assertEqual("Enable", confirmation.confirmButtonTitle)
+        assertEqual("Cancel", confirmation.cancelButtonTitle)
+        XCTAssertTrue(confirmation.targetState)
+    }
+
+    func test_cashOnDeliveryToggleRequested_enabled_when_title_is_already_pay_in_person_then_confirmation_omits_rename() throws {
+        // Given
+        let sut = makeSut(gateway: PaymentGateway.fake().copy(siteID: sampleStoreID,
+                                                              gatewayID: "cod",
+                                                              title: "PAY IN PERSON"))
+
+        // When
+        sut.cashOnDeliveryToggleRequested(enabled: true)
+
+        // Then
+        let confirmation = try XCTUnwrap(sut.pendingToggleConfirmation)
+        XCTAssertFalse(confirmation.message.contains("renames"))
+    }
+
+    func test_cashOnDeliveryToggleRequested_enabled_when_no_gateway_stored_then_confirmation_omits_rename() throws {
+        // Given
+        let sut = makeSut(gateway: nil)
+
+        // When
+        sut.cashOnDeliveryToggleRequested(enabled: true)
+
+        // Then
+        let confirmation = try XCTUnwrap(sut.pendingToggleConfirmation)
+        XCTAssertFalse(confirmation.message.contains("renames"))
+    }
+
+    func test_cashOnDeliveryToggleRequested_disabled_then_confirmation_warns_about_disabling_at_checkout() throws {
+        // When
+        sut.cashOnDeliveryToggleRequested(enabled: false)
+
+        // Then
+        let confirmation = try XCTUnwrap(sut.pendingToggleConfirmation)
+        assertEqual("Disable Pay In Person?", confirmation.title)
+        assertEqual("This disables the Cash on Delivery payment method at your store’s checkout, " +
+                    "so customers won’t be able to select it.", confirmation.message)
+        assertEqual("Disable", confirmation.confirmButtonTitle)
+        assertEqual("Cancel", confirmation.cancelButtonTitle)
+        XCTAssertFalse(confirmation.targetState)
+    }
+
+    func test_confirmCashOnDeliveryToggle_tracks_toggled_event_and_dispatches_the_gateway_update() throws {
+        // Given
+        sut.cashOnDeliveryToggleRequested(enabled: true)
+
+        // When
+        sut.confirmCashOnDeliveryToggle(targetState: true)
+
+        // Then
+        XCTAssertNil(sut.pendingToggleConfirmation)
+        XCTAssertTrue(sut.cashOnDeliveryEnabledState)
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(AnalyticEvents.paymentsHubCashOnDeliveryToggled))
+        let action = try XCTUnwrap(stores.receivedActions.compactMap { $0 as? PaymentGatewayAction }.first)
+        guard case .updatePaymentGateway(let gateway, _) = action else {
+            return XCTFail("Expected updatePaymentGateway, got \(action)")
+        }
+        XCTAssertTrue(gateway.enabled)
+    }
+
+    func test_confirmCashOnDeliveryToggle_when_alert_dismissal_already_cleared_the_confirmation_then_the_update_still_happens() throws {
+        // Given the alert's isPresented binding may clear the pending confirmation before the button action runs
+        sut.cashOnDeliveryToggleRequested(enabled: true)
+        sut.dismissCashOnDeliveryToggleConfirmation()
+
+        // When
+        sut.confirmCashOnDeliveryToggle(targetState: true)
+
+        // Then
+        XCTAssertTrue(sut.cashOnDeliveryEnabledState)
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains(AnalyticEvents.paymentsHubCashOnDeliveryToggled))
+        let action = try XCTUnwrap(stores.receivedActions.compactMap { $0 as? PaymentGatewayAction }.first)
+        guard case .updatePaymentGateway(let gateway, _) = action else {
+            return XCTFail("Expected updatePaymentGateway, got \(action)")
+        }
+        XCTAssertTrue(gateway.enabled)
+    }
+
+    func test_confirmCashOnDeliveryToggle_enabled_when_no_site_is_selected_then_the_toggle_state_reverts() {
+        // Given a stores manager with no selected site
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        let dependencies = InPersonPaymentsCashOnDeliveryToggleRowViewModel.Dependencies(
+            stores: stores,
+            storageManager: storageManager,
+            noticePresenter: noticePresenter,
+            analytics: analytics
+        )
+        let sut = InPersonPaymentsCashOnDeliveryToggleRowViewModel(dependencies: dependencies,
+                                                                   configuration: configuration)
+
+        // When
+        sut.confirmCashOnDeliveryToggle(targetState: true)
+
+        // Then
+        XCTAssertFalse(sut.cashOnDeliveryEnabledState)
+        assertEmpty(stores.receivedActions)
+    }
+
+    func test_dismissCashOnDeliveryToggleConfirmation_then_the_gateway_is_left_untouched() {
+        // Given
+        sut.cashOnDeliveryToggleRequested(enabled: true)
+
+        // When
+        sut.dismissCashOnDeliveryToggleConfirmation()
+
+        // Then
+        XCTAssertNil(sut.pendingToggleConfirmation)
+        XCTAssertFalse(sut.cashOnDeliveryEnabledState)
+        assertEmpty(stores.receivedActions)
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains(AnalyticEvents.paymentsHubCashOnDeliveryToggled))
     }
 
     func test_learnMoreTapped_tracks_paymentsHubCashOnDeliveryToggleLearnMoreTapped_event() throws {

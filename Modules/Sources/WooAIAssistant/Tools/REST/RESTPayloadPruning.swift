@@ -8,7 +8,6 @@ enum RESTPayloadPruning {
         "meta_data",
         "yoast_head",
         "yoast_head_json",
-        "permalink",
         "product_permalink",
         "reviewer_avatar_urls"
     ]
@@ -17,8 +16,6 @@ enum RESTPayloadPruning {
         "description",
         "short_description"
     ]
-
-    private static let maxFreeTextLength = 280
 
     static func prune(_ value: AnyCodableJSON) -> AnyCodableJSON {
         switch value {
@@ -45,13 +42,9 @@ enum RESTPayloadPruning {
         while let range = stripped.range(of: "<[^>]+>", options: .regularExpression) {
             stripped.removeSubrange(range)
         }
-        let normalized = stripped
+        return stripped
             .replacingOccurrences(of: "&nbsp;", with: " ")
             .replacingOccurrences(of: "&amp;", with: "&")
             .trimmingCharacters(in: .whitespacesAndNewlines)
-        if normalized.count > maxFreeTextLength {
-            return String(normalized.prefix(maxFreeTextLength)) + "..."
-        }
-        return normalized
     }
 }

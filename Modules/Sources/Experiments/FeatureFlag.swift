@@ -6,29 +6,9 @@ public enum FeatureFlag: Int, CaseIterable {
     /// `An enum with no cases cannot declare a raw type`
     case null
 
-    /// Barcode scanner for product inventory management
-    ///
-    case barcodeScanner
-
-    /// Product Reviews
-    ///
-    case reviews
-
-    /// Displays the Inbox option under the Hub Menu and the Dynamic Dashboard
-    ///
-    case inbox
-
-    /// Displays the call to actions in the Inbox Notes under the Hub Menu and the Dynamic Dashboard
-    ///
-    case showInboxCTA
-
     /// Enable optimistic updates for orders
     ///
     case updateOrderOptimistically
-
-    /// Enables searching products by partial SKU for WC version 6.6+.
-    ///
-    case searchProductsBySKU
 
     /// Enables Tap to Pay on iPhone flow in In-Person Payments, on eligible devices.
     /// This flag needs to be retained, as we cannot enable TTPoI on the Enterprise certificate,
@@ -71,89 +51,14 @@ public enum FeatureFlag: Int, CaseIterable {
     /// - Note: The app will ignore this if `performanceMonitoring` is `false`.
     case performanceMonitoringViewController
 
-    /// Whether to enable the new support request form.
-    ///
-    case supportRequests
-
-    /// Whether to enable Jetpack setup for users authenticated with application passwords.
-    ///
-    case jetpackSetupWithApplicationPassword
-
-    /// Enables the ability to add products to orders by SKU scanning
-    ///
-    case addProductToOrderViaSKUScanner
-
-    /// Enables manual error handling for site credential login.
-    ///
-    case manualErrorHandlingForSiteCredentialLogin
-
-    /// Enables EU Bound notifications inside the Shipping Labels feature
-    ///
-    case euShippingNotification
-
-    /// Enables the improvements in the customer selection logic when creating an order
-    ///
-    case betterCustomerSelectionInOrder
-
-    /// Enables the hazmat shipping selection during the Shipping Labels package details
-    ///
-    case hazmatShipping
-
-    /// Enables gift card support in order creation/editing
-    ///
-    case giftCardInOrderForm
-
-    /// Enables bundle product configuration support in order creation/editing.
-    ///
-    case productBundlesInOrderForm
 
     /// Enables the custom login UI when user enters an existing email address during account creation.
     ///
     case customLoginUIForAccountCreation
 
-    /// Enables the Scan to Update Inventory feature.
-    ///
-    case scanToUpdateInventory
-
-    /// Displays the Products tab in a split view
-    ///
-    case splitViewInProductsTab
-
-    /// Enables visibility of Subscription product details when creating an order, within product selection, and order details.
-    ///
-    case subscriptionsInOrderCreationUI
-
-    /// Enables a new customer creation flow in order creation for subscriptions support.
-    ///
-    case subscriptionsInOrderCreationCustomers
-
     /// Enables the Point Of Sale when remote feature flag is disabled.
     ///
     case pointOfSale
-
-    /// Enables Google ads campaign creation on web view
-    ///
-    case googleAdsCampaignCreationOnWebView
-
-    /// Supports evergreen campaigns for Blaze
-    ///
-    case blazeEvergreenCampaigns
-
-    /// Enables revamped shipping label flow for Woo Shipping extension
-    ///
-    case revampedShippingLabelCreation
-
-    /// Enables selecting objectives during Blaze campaign creation.
-    ///
-    case blazeCampaignObjective
-
-    /// Supports hiding sites from the store picker
-    ///
-    case hideSitesInStorePicker
-
-    /// Supports managing filer history on order and product lists
-    ///
-    case filterHistoryOnOrderAndProductLists
 
     /// Supports uploading product images in background
     ///
@@ -163,45 +68,33 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case productImageOptimizedHandling
 
-    /// Shows inventory levels and inventory status in POS item cards
-    ///
-    case inventoryProductLabelsInPOS
-
-    /// Enables displaying Point Of Sale details in order list and order details
-    ///
-    case pointOfSaleOrdersi1
-
-    /// Enables displaying Point Of Sale as a filter in order list
-    ///
-    case pointOfSaleOrdersi2
-
     /// Enables the CTA to search for an address in the map in order details > shipping address.
     ///
     case orderAddressMapSearch
 
-    /// Enables the entry point for Point of Sale Orders
-    ///
-    case pointOfSaleHistoricalOrdersi1
-
-    /// Enables FTS (Full-Text Search) for Point of Sale local catalog search.
-    ///
-    case pointOfSaleFTSSearch
-
-    /// Enables a new Bookings tab for CIAB sites
+    /// Legacy Bookings tab flag.
     ///
     case ciabBookings
 
-    /// Enables using the catalog API endpoint for Point of Sale catalog full sync
+    /// Enables POS staff roles and permissions (PIN access, lock screen, capability-based gating)
     ///
-    case pointOfSaleCatalogAPI
-
-    /// Enables the refunds functionality within POS
-    ///
-    case pointOfSaleRefundsi1
+    case pointOfSaleRoles
 
     /// Enables adding custom amounts to the cart in Point of Sale
     ///
     case pointOfSaleCustomAmounts
+
+    /// Enables Scan to Pay as a secondary payment method in Point of Sale.
+    /// When enabled, the merchant can have the customer pay by scanning a QR code that
+    /// opens the order's gateway-hosted payment page on their phone.
+    ///
+    case pointOfSaleScanToPay
+
+    /// Enables "Mark order as paid" as a secondary payment method in Point of Sale.
+    /// Used when the merchant has collected payment out-of-band (external reader, gift card,
+    /// account credit, etc.) and just needs the order marked as completed.
+    ///
+    case pointOfSaleMarkOrderAsPaid
 
     /// Enables self driven push token registration
     ///
@@ -211,16 +104,12 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case clientSideDashboardBanner
 
-    /// Enables configurable store stats widgets
-    ///
-    case configurableStoreStatsWidgets
-
     /// Enables age range verification features
     /// https://developer.apple.com/news/?id=2ezb6jhj
     ///
     case ageRangeRequirementsCompliance
 
-    /// Enables the reschedule booking entry point in booking details
+    /// Legacy booking reschedule entry point flag.
     ///
     case ciabBookingReschedule
 
@@ -228,11 +117,23 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case loggedOutFFPanel
 
-    /// Enables the AI-powered support chat
-    ///
-    case aiSupportChat
-
     /// Enables the WooAI Assistant.
     ///
     case wooAIAssistant
+
+    /// Enables AR parcel fitting for shipping
+    ///
+    case arParcelFitting
+
+    /// Enables smarter (AI-powered) push notifications.
+    ///
+    case smarterNotifications
+
+    /// Enables Star Micronics receipt printer support in Point of Sale.
+    /// Gates the feature's runtime behavior (printer setup and printing from the
+    /// order-complete screen) while it lands across stacked PRs. The StarIO10 SDK is
+    /// linked unconditionally; this flag only controls whether the feature is reachable.
+    /// Off by default until the stack is ready to enable for internal builds.
+    ///
+    case starReceiptPrinterSupport
 }

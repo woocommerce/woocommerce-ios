@@ -1,0 +1,59 @@
+{
+    "data": [
+        {
+            "user_id": 12,
+            "display_name": "Morgan Manager",
+            "preset": "pos_manager",
+            "capabilities": {
+                "woocommerce_pos_process_sales": true,
+                "woocommerce_pos_view_orders": true,
+                "woocommerce_pos_apply_coupons": true,
+                "woocommerce_pos_create_coupons": true,
+                "woocommerce_pos_issue_refunds": true,
+                "woocommerce_pos_view_settings": true,
+                "woocommerce_pos_edit_settings": true,
+                "woocommerce_pos_manage_staff": true,
+                "woocommerce_pos_exit": true
+            },
+            "pin": {
+                "algo": "pbkdf2-sha256",
+                "iterations": 100000,
+                "salt": "RkFLRS1URVNULVNBTFQtbm90LWEtcmVhbC1waW4tbWFuYWdlcg==",
+                "hash": "RkFLRS1URVNULUhBU0gtbm90LWEtcmVhbC1waW4tbWFuYWdlcg=="
+            }
+        },
+        {
+            "user_id": 34,
+            "display_name": "Casey Cashier",
+            "preset": "pos_cashier",
+            "capabilities": {
+                "woocommerce_pos_process_sales": true,
+                "woocommerce_pos_view_orders": true,
+                "woocommerce_pos_apply_coupons": true
+            },
+            "pin": {
+                "algo": "pbkdf2-sha256",
+                "iterations": 100000,
+                "salt": "RkFLRS1URVNULVNBTFQtbm90LWEtcmVhbC1waW4tY2FzaGllcg==",
+                "hash": "RkFLRS1URVNULUhBU0gtbm90LWEtcmVhbC1waW4tY2FzaGllcg=="
+            }
+        },
+        {
+            "user_id": 1,
+            "display_name": "Avery Admin",
+            "preset": "pos_admin",
+            "capabilities": {
+                "woocommerce_pos_process_sales": true,
+                "woocommerce_pos_view_orders": true,
+                "woocommerce_pos_apply_coupons": true,
+                "woocommerce_pos_create_coupons": true,
+                "woocommerce_pos_issue_refunds": true,
+                "woocommerce_pos_view_settings": true,
+                "woocommerce_pos_edit_settings": true,
+                "woocommerce_pos_manage_staff": true,
+                "woocommerce_pos_exit": true
+            },
+            "pin": null
+        }
+    ]
+}

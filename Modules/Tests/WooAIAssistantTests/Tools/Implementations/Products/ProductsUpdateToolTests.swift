@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ProductsUpdateToolTests {
     @Test
     func test_productsUpdate_when_name_set_then_sends_minimal_body() async throws {
@@ -29,12 +30,9 @@ struct ProductsUpdateToolTests {
     }
 
     @Test
-    func test_productsUpdate_when_field_outside_allowlist_then_dropped_silently() async throws {
+    func test_productsUpdate_when_field_outside_allowlist_then_returns_invalidToolCall() async {
         // Given
-        let body = """
-        {"id": 12, "name": "X", "type": "simple"}
-        """
-        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
         let tool = ProductsUpdateTool.make()
 
         // When
@@ -44,14 +42,14 @@ struct ProductsUpdateToolTests {
         let result = await tool.executor(arguments, client)
 
         // Then
-        guard case .success = result else {
-            Issue.record("expected success, got \(result)")
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed, got \(result)")
             return
         }
-        let call = try #require(await client.calls.first)
-        let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
-        #expect(parsed["categories"] == nil)
-        #expect(parsed["tags"] == nil)
+        #expect(failed.kind == .invalidToolCall)
+        #expect(failed.reason.contains("categories"))
+        #expect(failed.reason.contains("tags"))
+        #expect(await client.calls.isEmpty)
     }
 
     @Test

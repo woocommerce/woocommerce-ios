@@ -333,12 +333,12 @@ typedef int32_t WPMediaRequestID;
 /**
  *  Sets the sorting order the assets are show based on creationDate
  *
- *  @param ascending the order wich assets are retrieved, based on the creationDate. The default value is YES
+ *  @param ascending the order which assets are retrieved, based on the creationDate. The default value is YES
  */
 - (void)setAscendingOrdering:(BOOL)ascending;
 
 /**
- *  The sorting order on wich the assets are returned
+ *  The sorting order on which the assets are returned
  *
  *  @return if the assets are return in ascending order
  */

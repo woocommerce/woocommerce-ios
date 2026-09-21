@@ -1,12 +1,18 @@
 {
-  "images" : [
+  "images": [
     {
-      "filename" : "tap-to-pay-education-contactless-cards-gb.pdf",
-      "idiom" : "universal"
+      "filename": "tap-to-pay-education-contactless-cards-gb@2x.png",
+      "idiom": "universal",
+      "scale": "2x"
+    },
+    {
+      "filename": "tap-to-pay-education-contactless-cards-gb@3x.png",
+      "idiom": "universal",
+      "scale": "3x"
     }
   ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
+  "info": {
+    "author": "xcode",
+    "version": 1
   }
 }

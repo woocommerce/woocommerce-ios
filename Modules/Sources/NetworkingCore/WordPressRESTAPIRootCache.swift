@@ -1,9 +1,10 @@
 import Foundation
 
-/// Protocol for reading the discovered WordPress REST API root URL for a given site.
+/// Protocol for accessing the discovered WordPress REST API root URL for a given site.
 ///
 public protocol RESTAPIRootCaching {
     func root(for siteURL: String) -> String?
+    func removeRoot(_ root: String, for siteURL: String)
 }
 
 /// Thread-safe in-memory cache for discovered WordPress REST API root URLs.
@@ -23,6 +24,14 @@ public final class WordPressRESTAPIRootCache: RESTAPIRootCaching {
 
     public func setRoot(_ root: String, for siteURL: String) {
         queue.async(flags: .barrier) { self.cache[siteURL.trimSlashes().lowercased()] = root }
+    }
+
+    public func removeRoot(_ root: String, for siteURL: String) {
+        queue.async(flags: .barrier) {
+            let key = siteURL.trimSlashes().lowercased()
+            guard self.cache[key] == root else { return }
+            self.cache[key] = nil
+        }
     }
 
     public func reset() {

@@ -1,0 +1,29 @@
+{
+    "priority": 1,
+    "request": {
+        "method": "POST",
+        "urlPath": "/oauth2/token",
+        "bodyPatterns": [
+            {
+                "matches": ".*username=[^&]+.*"
+            },
+            {
+                "matches": ".*password=blockedAcct(&.*|$)"
+            },
+            {
+                "matches": ".*client_secret=.*"
+            }
+        ]
+    },
+    "response": {
+        "status": 400,
+        "jsonBody": {
+            "error": "invalid_request",
+            "error_description": "Your account has been blocked as a security precaution. To continue, you must reset your password."
+        },
+        "headers": {
+            "Content-Type": "application/json",
+            "Connection": "keep-alive"
+        }
+    }
+}

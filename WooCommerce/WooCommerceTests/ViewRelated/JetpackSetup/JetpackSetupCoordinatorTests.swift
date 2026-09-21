@@ -1,6 +1,8 @@
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
+import protocol Networking.ApplicationPasswordUseCase
+import enum Networking.NetworkError
 import WordPressAuthenticator
 
 final class JetpackSetupCoordinatorTests: XCTestCase {
@@ -26,13 +28,14 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_startSetup_when_feature_flag_disabled_then_presents_benefit_modal() {
+    func test_startSetup_when_not_eligible_then_presents_benefit_modal() {
         // Given
         let testSite = Site.fake()
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: false)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = false
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
-                                                  featureFlagService: featureFlagService)
+                                                  pushNotificationEligibilityChecker: eligibilityChecker)
 
         // When
         coordinator.startSetup()
@@ -188,15 +191,16 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         }
     }
 
-    func test_startSetup_when_feature_flag_enabled_then_presents_email_login_directly() throws {
+    func test_startSetup_when_eligible_then_presents_email_login_directly() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
                                                   stores: stores,
-                                                  featureFlagService: featureFlagService)
+                                                  pushNotificationEligibilityChecker: eligibilityChecker)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case let .fetchJetpackConnectionData(_, completion):
@@ -218,15 +222,16 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(loginViewController.topViewController is WPComEmailLoginHostingController)
     }
 
-    func test_startSetup_when_feature_flag_enabled_then_does_not_present_benefit_modal() {
+    func test_startSetup_when_eligible_then_does_not_present_benefit_modal() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let testSite = Site.fake().copy(siteID: WooConstants.placeholderStoreID)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
                                                   stores: stores,
-                                                  featureFlagService: featureFlagService)
+                                                  pushNotificationEligibilityChecker: eligibilityChecker)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case let .fetchJetpackConnectionData(_, completion):
@@ -247,15 +252,16 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertFalse(navigationController.presentedViewController is JetpackBenefitsHostingController)
     }
 
-    func test_startSetup_when_feature_flag_enabled_and_wpcom_credentials_then_presents_setup_steps_directly() {
+    func test_startSetup_when_eligible_and_wpcom_credentials_then_presents_setup_steps_directly() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true))
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
                                                   stores: stores,
-                                                  featureFlagService: featureFlagService)
+                                                  pushNotificationEligibilityChecker: eligibilityChecker)
 
         // When
         coordinator.startSetup()
@@ -267,15 +273,16 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue((navigationController.presentedViewController as? UINavigationController)?.topViewController is JetpackSetupHostingController)
     }
 
-    func test_startSetup_when_feature_flag_enabled_and_no_wpcom_credentials_then_proceeds_with_connection_check() {
+    func test_startSetup_when_eligible_and_no_wpcom_credentials_then_proceeds_with_connection_check() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
-        let featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true)
         let coordinator = JetpackSetupCoordinator(site: testSite,
                                                   rootViewController: navigationController,
                                                   stores: stores,
-                                                  featureFlagService: featureFlagService)
+                                                  pushNotificationEligibilityChecker: eligibilityChecker)
         stores.whenReceivingAction(ofType: JetpackConnectionAction.self) { action in
             switch action {
             case let .fetchJetpackConnectionData(_, completion):
@@ -362,6 +369,108 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let loginViewController = navigationController.topmostPresentedViewController as! LoginNavigationController
         XCTAssertTrue(loginViewController.topViewController is WPComMagicLinkHostingController)
     }
+
+    func test_authenticateUserAndRefreshSite_when_wporg_endpoints_exist_then_uses_them_to_delete_application_password() throws {
+        // Given
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString,
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, endpoints in
+                capturedEndpoints = endpoints
+                return MockJetpackSetupApplicationPasswordUseCase()
+            })
+        )
+        defer { sessionManager.reset() }
+        let previousCredentials = Credentials.wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        sessionManager.defaultCredentials = previousCredentials
+        sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: previousCredentials)
+        let syncedSite = Site.fake().copy(siteID: 123, url: "https://example.com")
+        let stores = MockJetpackSetupStoresManager(sessionManager: sessionManager, siteSyncResult: .success(syncedSite))
+        let coordinator = JetpackSetupCoordinator(
+            site: syncedSite,
+            rootViewController: navigationController,
+            stores: stores
+        )
+        // When
+        try completeJetpackSetup(coordinator)
+
+        // Then
+        waitUntil {
+            capturedEndpoints != nil
+        }
+        XCTAssertEqual(capturedEndpoints, endpoints)
+        XCTAssertEqual(stores.preservingSelectedSite, true)
+    }
+
+    func test_authenticateUserAndRefreshSite_when_sync_fails_and_user_cancels_then_restores_wporg_endpoints() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        defer { sessionManager.reset() }
+        let previousCredentials = Credentials.wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        sessionManager.defaultCredentials = previousCredentials
+        sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: previousCredentials)
+        let site = Site.fake().copy(siteID: 123, url: "https://example.com")
+        let stores = MockJetpackSetupStoresManager(
+            sessionManager: sessionManager,
+            siteSyncResult: .failure(TestError.siteSynchronization)
+        )
+        let coordinator = JetpackSetupCoordinator(
+            site: site,
+            rootViewController: navigationController,
+            stores: stores
+        )
+        // When
+        try completeJetpackSetup(coordinator)
+        waitUntil {
+            self.navigationController.topmostPresentedViewController is UIAlertController
+        }
+        let alert = try XCTUnwrap(navigationController.topmostPresentedViewController as? UIAlertController)
+        alert.tapButton(atIndex: 1)
+
+        // Then
+        XCTAssertEqual(sessionManager.defaultCredentials, previousCredentials)
+        XCTAssertEqual(sessionManager.cookieNonceAuthenticationEndpoints(for: previousCredentials), endpoints)
+        XCTAssertEqual(stores.authenticatedCookieNonceAuthenticationEndpoints, endpoints)
+    }
+
+    private func completeJetpackSetup(_ coordinator: JetpackSetupCoordinator) throws {
+        let url = try XCTUnwrap(URL(string: "\(dotcomAuthScheme)://magic-login?token=test"))
+        XCTAssertTrue(coordinator.handleAuthenticationUrl(url, dotcomAuthScheme: dotcomAuthScheme))
+        waitUntil {
+            (self.navigationController.topmostPresentedViewController as? UINavigationController)?.topViewController
+                is JetpackSetupHostingController
+        }
+        let setupNavigationController = try XCTUnwrap(
+            navigationController.topmostPresentedViewController as? UINavigationController
+        )
+        let setupViewController = try XCTUnwrap(setupNavigationController.topViewController as? JetpackSetupHostingController)
+        let viewModel = try XCTUnwrap(
+            Mirror(reflecting: setupViewController).descendant("viewModel") as? JetpackSetupViewModel
+        )
+        viewModel.navigateToStore()
+    }
 }
 
 private extension MockStoresManager {
@@ -376,6 +485,79 @@ private extension MockStoresManager {
                 break
             }
         }
-
     }
+}
+
+private final class MockJetpackSetupStoresManager: DefaultStoresManager {
+    private let siteSyncResult: Result<Site, Error>
+    private(set) var preservingSelectedSite: Bool?
+    private(set) var authenticatedCookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?
+
+    init(sessionManager: SessionManager, siteSyncResult: Result<Site, Error>) {
+        self.siteSyncResult = siteSyncResult
+        super.init(sessionManager: sessionManager)
+    }
+
+    override func dispatch(_ action: Action) {
+        if let action = action as? JetpackConnectionAction {
+            switch action {
+            case let .loadWPComAccount(_, onCompletion):
+                onCompletion(Account(userID: 123, displayName: "Test", email: "test@example.com", username: "test", gravatarUrl: nil))
+            case let .fetchJetpackConnectionData(_, completion):
+                completion(.failure(NetworkError.notFound()))
+            default:
+                break
+            }
+            return
+        }
+        if let action = action as? SiteAction {
+            switch action {
+            case let .syncSiteByDomain(_, completion):
+                completion(siteSyncResult)
+            default:
+                break
+            }
+        }
+    }
+
+    @discardableResult
+    override func authenticate(credentials: Credentials,
+                               cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
+        authenticatedCookieNonceAuthenticationEndpoints = cookieNonceAuthenticationEndpoints
+        return super.authenticate(
+            credentials: credentials,
+            cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints
+        )
+    }
+
+    @discardableResult
+    override func synchronizeEntities(preservingSelectedSite: Bool = false, onCompletion: (() -> Void)?) -> StoresManager {
+        self.preservingSelectedSite = preservingSelectedSite
+        onCompletion?()
+        return self
+    }
+
+    override func updateDefaultStore(storeID: Int64) { }
+
+    override func updateDefaultStore(_ site: Site) { }
+
+    override func listenToWPCOMInvalidWPCOMTokenNotification() { }
+
+    override func listenToUnknownBlogNotification() { }
+}
+
+private final class MockJetpackSetupApplicationPasswordUseCase: ApplicationPasswordUseCase {
+    var applicationPassword: ApplicationPassword? { nil }
+    var canRegenerateApplicationPassword: Bool { false }
+
+    func generateNewPassword() async throws -> ApplicationPassword {
+        throw TestError.applicationPasswordGeneration
+    }
+
+    func deletePassword(locally: Bool) async throws { }
+}
+
+private enum TestError: Error {
+    case applicationPasswordGeneration
+    case siteSynchronization
 }

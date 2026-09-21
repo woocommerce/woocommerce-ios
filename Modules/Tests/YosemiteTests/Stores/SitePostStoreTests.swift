@@ -43,7 +43,7 @@ final class SitePostStoreTests: XCTestCase {
         let postID: Int64 = 7
 
         network.simulateResponse(requestUrlSuffix: "sites/\(sampleSiteID)/posts/\(postID)", filename: "site-post")
-        let action = SitePostAction.retrieveSitePostPassword(siteID: sampleSiteID, postID: postID) { (password, error) in
+        let action = SitePostAction.retrieveSitePostPassword(siteID: sampleSiteID, postID: postID) { password, error in
             XCTAssertNil(error)
             XCTAssertNotNil(password)
             XCTAssertEqual(password, "woooooooo!")
@@ -76,5 +76,4 @@ final class SitePostStoreTests: XCTestCase {
         // Assert
         XCTAssertEqual(try XCTUnwrap(result?.get()), newPassword)
     }
-
 }

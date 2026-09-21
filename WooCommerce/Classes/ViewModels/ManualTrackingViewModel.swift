@@ -107,13 +107,12 @@ final class AddTrackingViewModel: ManualTrackingViewModel {
 
     var sections: [AddEditTrackingSection] {
         let trackingRows: [AddEditTrackingRow] = [.shippingProvider,
-                                                      .trackingNumber,
-                                                      .dateShipped,
-                                                      .datePicker]
+                                                  .trackingNumber,
+                                                  .dateShipped,
+                                                  .datePicker]
 
         return [
             AddEditTrackingSection(rows: trackingRows)]
-
     }
 
     var shipmentProvider: ShipmentTrackingProvider?
@@ -171,7 +170,7 @@ extension AddTrackingViewModel {
     private func loadSelectedShipmentProvider() {
         let siteID = order.siteID
 
-        let action = AppSettingsAction.loadTrackingProvider(siteID: siteID) { [weak self] (provider, providerGroup, error) in
+        let action = AppSettingsAction.loadTrackingProvider(siteID: siteID) { [weak self] provider, providerGroup, error in
             guard let error else {
                 self?.shipmentProvider = provider
                 self?.shipmentProviderGroupName = providerGroup?.name
@@ -220,7 +219,6 @@ final class AddCustomTrackingViewModel: ManualTrackingViewModel {
 
         return [
             AddEditTrackingSection(rows: trackingRows)]
-
     }
 
     var shipmentProvider: ShipmentTrackingProvider?
@@ -285,7 +283,7 @@ extension AddCustomTrackingViewModel {
     private func loadSelectedCustomShipmentProvider() {
         let siteID = order.siteID
 
-        let action = AppSettingsAction.loadCustomTrackingProvider(siteID: siteID) { [weak self] (provider, error) in
+        let action = AppSettingsAction.loadCustomTrackingProvider(siteID: siteID) { [weak self] provider, error in
             guard let error else {
                 self?.providerName = provider?.name
                 self?.trackingLink = provider?.url

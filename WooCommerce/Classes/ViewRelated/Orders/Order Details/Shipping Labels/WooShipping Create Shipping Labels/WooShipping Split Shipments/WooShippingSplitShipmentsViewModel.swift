@@ -77,7 +77,7 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     private let purchasedIcon = UIImage(systemName: "checkmark.circle.fill")?.withRenderingMode(.alwaysTemplate)
 
     var topTabItems: [TopTabItem<EmptyView>] {
-        shipments.enumerated().map { (index, item) in
+        shipments.enumerated().map { index, item in
             return TopTabItem(name: String.localizedStringWithFormat(Localization.shipmentFormat, index + 1),
                               icon: item.isPurchased ? purchasedIcon : nil,
                               content: { EmptyView() })
@@ -160,30 +160,38 @@ final class WooShippingSplitShipmentsViewModel: ObservableObject {
     }
 
     func didPurchaseLabel(for shipmentIndex: Int, label: ShippingLabel) {
-        let currentShipment = shipments[shipmentIndex]
+        guard let shipmentArrayIndex = shipments.firstIndex(where: { $0.index == shipmentIndex }) else {
+            return
+        }
+
+        let currentShipment = shipments[shipmentArrayIndex]
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: false, currency: order.currency)
         }
-        shipments[shipmentIndex] = Shipment(index: shipmentIndex,
-                                            contents: updatedContents,
-                                            purchasedLabel: label,
-                                            currency: order.currency,
-                                            currencySettings: currencySettings,
-                                            shippingSettingsService: shippingSettingsService)
+        shipments[shipmentArrayIndex] = Shipment(index: currentShipment.index,
+                                                 contents: updatedContents,
+                                                 purchasedLabel: label,
+                                                 currency: order.currency,
+                                                 currencySettings: currencySettings,
+                                                 shippingSettingsService: shippingSettingsService)
         shipmentsSavedInRemote = shipments
     }
 
     func didRequestRefund(for shipmentIndex: Int) {
-        let currentShipment = shipments[shipmentIndex]
+        guard let shipmentArrayIndex = shipments.firstIndex(where: { $0.index == shipmentIndex }) else {
+            return
+        }
+
+        let currentShipment = shipments[shipmentArrayIndex]
         let updatedContents = currentShipment.contents.map {
             CollapsibleShipmentItemCardViewModel(item: $0.packageItem, isSelectable: true, currency: order.currency)
         }
-        shipments[shipmentIndex] = Shipment(index: shipmentIndex,
-                                            contents: updatedContents,
-                                            purchasedLabel: nil,
-                                            currency: order.currency,
-                                            currencySettings: currencySettings,
-                                            shippingSettingsService: shippingSettingsService)
+        shipments[shipmentArrayIndex] = Shipment(index: currentShipment.index,
+                                                 contents: updatedContents,
+                                                 purchasedLabel: nil,
+                                                 currency: order.currency,
+                                                 currencySettings: currencySettings,
+                                                 shippingSettingsService: shippingSettingsService)
         shipmentsSavedInRemote = shipments
     }
 
@@ -727,7 +735,6 @@ private extension WooShippingSplitShipmentsViewModel {
                 comment: "Instructions to ask customer to select items to split during shipping label creation. " +
                 "The placeholder is title of a button to move items to a new shipment ."
             )
-
         }
         static func itemsCount(_ count: Decimal) -> String {
             return String.pluralize(count, singular: Localization.itemsCountSingularFormat, plural: Localization.itemsCountPluralFormat)

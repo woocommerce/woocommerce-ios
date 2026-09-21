@@ -50,5 +50,4 @@ final class ShippingMethodsRemoteTests: XCTestCase {
             _ = try await remote.loadShippingMethods(for: self.sampleSiteID)
         }, errorAssert: { ($0 as? NetworkError) == expectedError })
     }
-
 }

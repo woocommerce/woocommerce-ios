@@ -6,7 +6,7 @@ final class DiscountTypeBottomSheetListSelectorCommandTests: XCTestCase {
     func test_callback_is_called_on_selection() {
         // Given
         var selectedActions = [Coupon.DiscountType]()
-        let command = DiscountTypeBottomSheetListSelectorCommand(selected: .percent) { (selected) in
+        let command = DiscountTypeBottomSheetListSelectorCommand(selected: .percent) { selected in
             selectedActions.append(selected)
         }
 

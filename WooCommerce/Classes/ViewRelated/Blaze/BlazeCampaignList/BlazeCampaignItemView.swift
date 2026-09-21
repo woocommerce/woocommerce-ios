@@ -104,7 +104,6 @@ struct BlazeCampaignItemView: View {
                 .accessibilityElement(children: .combine)
 
                 Spacer()
-
             }
         }
         .fixedSize(horizontal: false, vertical: true)

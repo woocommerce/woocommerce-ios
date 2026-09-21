@@ -33,5 +33,4 @@ final class ProductTaxClassListSelectorDataSourceTests: XCTestCase {
 
         XCTAssertEqual(cell.bodyLabel.text, taxClass.name)
     }
-
 }

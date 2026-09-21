@@ -3,7 +3,7 @@ import SwiftUI
 /// Environment AppBindings setup
 ///
 private enum AppBindingsKey: EnvironmentKey {
-    static let defaultValue: AppBindings = AppBindings()
+    static let defaultValue = AppBindings()
 }
 
 extension EnvironmentValues {

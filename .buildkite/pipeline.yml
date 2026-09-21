@@ -20,6 +20,47 @@ steps:
       - github_commit_status:
           context: Build
 
+  - label: ":warning: Build Warning Baseline"
+    key: build-warning-baseline
+    command: .buildkite/commands/build-warning-baseline.sh
+    if: build.pull_request.id != null
+    # Advisory-only: if the baseline can't be produced, the comparison step
+    # reports it as unavailable instead of the PR build going red.
+    soft_fail: true
+    plugins: [$CI_TOOLKIT]
+
+  - label: ":warning: Build Warning Count"
+    command: .buildkite/commands/comment-build-warning-increase.sh
+    depends_on:
+      - build
+      - build-warning-baseline
+    # Run even when a dependency fails: the script reports missing data as
+    # unavailable and only clears the comment after a valid clean comparison.
+    allow_dependency_failure: true
+    if: build.pull_request.id != null
+    # Advisory-only, like the baseline step: a failure here should never
+    # turn the PR build red.
+    soft_fail: true
+    plugins: [$CI_TOOLKIT]
+
+  #################
+  # Strict-concurrency warning baseline guard
+  #
+  # Advisory during the pilot: soft_fail means a warning increase reports on the PR
+  # without blocking the merge. No depends_on — it needs its own clean build with
+  # complete concurrency checking and cannot reuse build-products.tar.
+  #################
+  - label: ":swift: Strict Concurrency Baseline Guard"
+    key: strict_concurrency
+    soft_fail: true
+    command: .buildkite/commands/strict-concurrency-guard.sh
+    plugins: [$CI_TOOLKIT]
+    artifact_paths:
+      - strict-concurrency-current.json
+    notify:
+      - github_commit_status:
+          context: Strict Concurrency Baseline Guard
+
   #################
   # Create Prototype Build
   #################
@@ -68,6 +109,16 @@ steps:
     notify:
       - github_commit_status:
           context: WordPressAuthenticator Unit Tests
+
+  #################
+  # Ruby Automation Tests (Fastlane helpers)
+  #################
+  - label: ":ruby: Ruby Automation Tests"
+    command: .buildkite/commands/run-ruby-automation-tests.sh
+    plugins: [$CI_TOOLKIT]
+    notify:
+      - github_commit_status:
+          context: Ruby Automation Tests
 
   #################
   # Linters
@@ -136,8 +187,8 @@ steps:
   - label: ":microscope: UI Tests (iPhone)"
     command: .buildkite/commands/run-ui-tests.sh UITests "iPhone 17"
     depends_on: build
-    # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    if: build.branch == "trunk" || build.branch =~ /^release\//
+    # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
+    if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
     plugins:
       - $CI_TOOLKIT
       - ${TEST_COLLECTOR}:
@@ -155,8 +206,8 @@ steps:
   - label: ":microscope: UI Tests (iPad)"
     command: .buildkite/commands/run-ui-tests.sh UITests "iPad Pro 13-inch (M5)"
     depends_on: build
-    # Only run on `trunk` and `release/*` -- See p91TBi-cBM-p2#comment-13736
-    if: build.branch == "trunk" || build.branch =~ /^release\//
+    # Run on `trunk` and `release/*`, and on PRs with the `run ui tests` label.
+    if: build.branch == "trunk" || build.branch =~ /^release\// || (build.pull_request.id != null && build.pull_request.labels includes "run ui tests")
     plugins:
       - $CI_TOOLKIT
       - ${TEST_COLLECTOR}:

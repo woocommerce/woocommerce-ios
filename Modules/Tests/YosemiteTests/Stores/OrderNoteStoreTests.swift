@@ -62,7 +62,7 @@ class OrderNoteStoreTests: XCTestCase {
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { orderNotes, error in
             XCTAssertNil(error)
             guard let orderNotes else {
                 XCTFail()
@@ -89,7 +89,7 @@ class OrderNoteStoreTests: XCTestCase {
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderNote.self), 0)
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { orderNotes, error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderNote.self), 19)
             XCTAssertNotNil(orderNotes)
             XCTAssertNil(error)
@@ -112,7 +112,7 @@ class OrderNoteStoreTests: XCTestCase {
         orderStore.upsertStoredOrder(readOnlyOrder: sampleOrder(), in: viewStorage)
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "order-notes")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.OrderNote.self), 0)
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { orderNotes, error in
             XCTAssertNotNil(orderNotes)
             XCTAssertNil(error)
 
@@ -200,7 +200,7 @@ class OrderNoteStoreTests: XCTestCase {
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders/\(sampleOrderID)/notes/", filename: "generic_error")
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { orderNotes, error in
             XCTAssertNil(orderNotes)
             XCTAssertNotNil(error)
             guard let _ = error else {
@@ -220,7 +220,7 @@ class OrderNoteStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve order notes empty response")
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { (orderNotes, error) in
+        let action = OrderNoteAction.retrieveOrderNotes(siteID: sampleSiteID, orderID: sampleOrderID) { orderNotes, error in
             XCTAssertNotNil(error)
             XCTAssertNil(orderNotes)
             guard let _ = error else {
@@ -246,7 +246,7 @@ class OrderNoteStoreTests: XCTestCase {
             let action = OrderNoteAction.addOrderNote(siteID: self.sampleSiteID,
                                                       orderID: self.sampleOrderID,
                                                       isCustomerNote: true,
-                                                      note: "This order would be so much better with ketchup.") { (orderNote, error) in
+                                                      note: "This order would be so much better with ketchup.") { orderNote, error in
                 promise((orderNote, error))
             }
             orderNoteStore.onAction(action)
@@ -273,7 +273,7 @@ class OrderNoteStoreTests: XCTestCase {
             let action = OrderNoteAction.addOrderNote(siteID: self.sampleSiteID,
                                                       orderID: self.sampleOrderID,
                                                       isCustomerNote: true,
-                                                      note: "") { (orderNote, error) in
+                                                      note: "") { orderNote, error in
                 promise((orderNote, error))
             }
             orderNoteStore.onAction(action)
@@ -297,7 +297,7 @@ class OrderNoteStoreTests: XCTestCase {
             let action = OrderNoteAction.addOrderNote(siteID: self.sampleSiteID,
                                                       orderID: self.sampleOrderID,
                                                       isCustomerNote: true,
-                                                      note: "") { (orderNote, error) in
+                                                      note: "") { orderNote, error in
                 promise((orderNote, error))
             }
             orderNoteStore.onAction(action)
@@ -319,7 +319,7 @@ class OrderNoteStoreTests: XCTestCase {
             let action = OrderNoteAction.addOrderNote(siteID: self.sampleSiteID,
                                                       orderID: self.sampleOrderID,
                                                       isCustomerNote: true,
-                                                      note: "") { (orderNote, error) in
+                                                      note: "") { orderNote, error in
                 promise((orderNote, error))
             }
             orderNoteStore.onAction(action)
@@ -423,5 +423,4 @@ private extension OrderNoteStoreTests {
                        phone: "333-333-3333",
                        email: "scrambled@scrambled.com")
     }
-
 }

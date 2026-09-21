@@ -54,7 +54,6 @@ final class ProductPurchaseNoteViewController: UIViewController {
 
         configureTextViewFirstResponder()
     }
-
 }
 
 // MARK: - View Configuration
@@ -151,7 +150,7 @@ private extension ProductPurchaseNoteViewController {
 
         let cellViewModel = TextViewTableViewCell.ViewModel(text: productSettings.purchaseNote?.strippedHTML,
                                                             placeholder: placeholder,
-                                                            onTextChange: { [weak self] (text) in
+                                                            onTextChange: { [weak self] text in
             self?.productSettings.purchaseNote = text
         })
         cell.configure(with: cellViewModel)

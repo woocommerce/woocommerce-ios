@@ -80,5 +80,4 @@ import NSObject_SafeExpectations
         self.quotaSpaceAllowed = json.number(forKeyPath: "quota.space_allowed")
         self.quotaSpaceUsed = json.number(forKeyPath: "quota.space_used")
     }
-
 }

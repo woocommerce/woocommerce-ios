@@ -11,6 +11,7 @@ struct POSConnectivityView: View {
         ZStack(alignment: .top) {
             if isVisible {
                 noConnectionBanner
+                    .padding(.top, POSPadding.small)
                     .transition(.asymmetric(insertion: .push(from: .top), removal: .move(edge: .top)))
             }
         }
@@ -32,7 +33,7 @@ struct POSConnectivityView: View {
                 .foregroundColor(Color.posOnSecondaryContainer)
                 .font(.posBodySmallBold())
 
-            Text(Localization.title)
+            Text(POSConnectivityErrorNotice.title)
                 .foregroundColor(Color.posOnSecondaryContainer)
                 .font(.posBodySmallBold())
         }
@@ -58,14 +59,6 @@ private extension POSConnectivityView {
         static let horizontalPadding: CGFloat = POSPadding.large
         static let verticalPadding: CGFloat = POSPadding.small
         static let connectivityAnimationDuration: CGFloat = 1.0
-    }
-
-    enum Localization {
-        static let title = NSLocalizedString(
-            "pos.connectivity.title",
-            value: "No internet connection",
-            comment: "Title shown on a toast view that appears when there's no internet connection"
-        )
     }
 }
 

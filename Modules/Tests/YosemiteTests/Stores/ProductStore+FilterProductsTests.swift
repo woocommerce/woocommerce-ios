@@ -159,7 +159,6 @@ final class ProductStore_FilterProductsTests: XCTestCase {
             }
 
             productStore.onAction(action)
-
         }
 
         self.assertParamValues(stockStatusValue: nil,
@@ -190,7 +189,6 @@ final class ProductStore_FilterProductsTests: XCTestCase {
             }
 
             productStore.onAction(action)
-
         }
 
         self.assertParamValues(stockStatusValue: nil,

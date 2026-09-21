@@ -13,9 +13,7 @@ extension SiteSummaryStats {
     @NSManaged public var date: String
     @NSManaged public var visitors: Int64
     @NSManaged public var views: Int64
-
 }
 
 extension SiteSummaryStats: Identifiable {
-
 }

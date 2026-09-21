@@ -139,7 +139,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
         let action = OrderAction.updateOrder(siteID: order.siteID, order: modifiedOrder, giftCard: nil, fields: orderFields) { [weak self] result in
             guard let self else { return }
 
-            self.performingNetworkRequest.send(false)
+            self.performingNetworkRequest = false
             switch result {
             case .success(let updatedOrder):
                 self.onOrderUpdate?(updatedOrder)
@@ -157,7 +157,7 @@ final class EditOrderAddressFormViewModel: AddressFormViewModel, AddressFormView
             onFinish(result.isSuccess)
         }
 
-        performingNetworkRequest.send(true)
+        performingNetworkRequest = true
         stores.dispatch(action)
     }
 

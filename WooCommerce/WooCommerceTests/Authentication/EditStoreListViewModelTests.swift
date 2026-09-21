@@ -398,6 +398,90 @@ struct EditStoreListViewModelTests {
         #expect(notificationManager.unmarkedSiteIDs == [site1.siteID])
     }
 
+    @MainActor
+    @Test func saveChanges_when_self_driven_unregistration_succeeds_then_tracks_delete_success_with_target_site_properties() async throws {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        let notificationManager = MockPushNotificationsManager(
+            wooPushNotificationToken: "99",
+            siteIDsRegisteredForWooPNs: [site1.siteID]
+        )
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .unregisterFromSelfDrivenPushNotifications(_, _, _, onCompletion):
+                onCompletion(.success(()))
+            default:
+                break
+            }
+        }
+
+        let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
+                                               displayedSites: [site1, site2],
+                                               currentlySelectedSite: nil,
+                                               stores: stores,
+                                               pushNotificationManager: notificationManager,
+                                               userDefaults: userDefaults,
+                                               analytics: analytics,
+                                               onCompletion: {})
+
+        // When
+        viewModel.toggleSelection(site1)
+        await viewModel.saveChanges()
+
+        // Then — the event attributes properties to the hidden site, not the selected one.
+        let successIndex = try #require(analyticsProvider.receivedEvents.firstIndex(of: "woo_push_token_delete_success"))
+        let successProperties = analyticsProvider.receivedProperties[successIndex]
+        #expect(successProperties["blog_id"] as? Int64 == site1.siteID)
+        #expect(analyticsProvider.receivedEvents.contains("woo_push_token_delete_error") == false)
+    }
+
+    @MainActor
+    @Test func saveChanges_when_self_driven_unregistration_fails_then_tracks_delete_error_with_error_properties() async throws {
+        // Given
+        let userDefaults = UserDefaults(suiteName: UUID().uuidString)!
+        let notificationManager = MockPushNotificationsManager(
+            wooPushNotificationToken: "99",
+            siteIDsRegisteredForWooPNs: [site1.siteID]
+        )
+        let analyticsProvider = MockAnalyticsProvider()
+        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
+
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            switch action {
+            case let .unregisterFromSelfDrivenPushNotifications(_, _, _, onCompletion):
+                onCompletion(.failure(NSError(domain: "test", code: 500)))
+            default:
+                break
+            }
+        }
+
+        let viewModel = EditStoreListViewModel(availableSites: [site1, site2],
+                                               displayedSites: [site1, site2],
+                                               currentlySelectedSite: nil,
+                                               stores: stores,
+                                               pushNotificationManager: notificationManager,
+                                               userDefaults: userDefaults,
+                                               analytics: analytics,
+                                               onCompletion: {})
+
+        // When
+        viewModel.toggleSelection(site1)
+        await viewModel.saveChanges()
+
+        // Then — the event carries the hidden site's identifier plus the generic error fields.
+        let errorIndex = try #require(analyticsProvider.receivedEvents.firstIndex(of: "woo_push_token_delete_error"))
+        let errorProperties = analyticsProvider.receivedProperties[errorIndex]
+        #expect(errorProperties["blog_id"] as? Int64 == site1.siteID)
+        #expect(errorProperties["error_domain"] as? String == "test")
+        #expect(errorProperties["error_code"] as? String == "500")
+        #expect(analyticsProvider.receivedEvents.contains("woo_push_token_delete_success") == false)
+    }
+
     // MARK: - Self-driven push notification registration for newly enabled sites
 
     @MainActor

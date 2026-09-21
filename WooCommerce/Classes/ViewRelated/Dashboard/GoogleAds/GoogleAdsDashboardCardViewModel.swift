@@ -13,6 +13,7 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     private let stores: StoresManager
     private let analytics: Analytics
     private let eligibilityChecker: GoogleAdsEligibilityChecker
+    private let timeZone: TimeZone
 
     var shouldShowErrorState: Bool {
         syncingError != nil
@@ -40,11 +41,13 @@ final class GoogleAdsDashboardCardViewModel: ObservableObject {
     init(siteID: Int64,
          eligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         timeZone: TimeZone = .siteTimezone) {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
         self.eligibilityChecker = eligibilityChecker
+        self.timeZone = timeZone
         trackEntryPointDisplayedIfNeeded()
     }
 
@@ -122,12 +125,19 @@ private extension GoogleAdsDashboardCardViewModel {
 
     @MainActor
     func retrieveCampaignStats() async throws -> GoogleAdsCampaignStats {
-        try await withCheckedThrowingContinuation { continuation in
+        // Use midnight in the store timezone so negative offsets do not serialize the lower bound as 1969-12-31.
+        var calendar = Calendar(identifier: .gregorian)
+        calendar.timeZone = timeZone
+        let epoch = Date(timeIntervalSince1970: 0)
+        let fallbackDate = epoch.addingTimeInterval(TimeInterval(-timeZone.secondsFromGMT(for: epoch)))
+        let earliestDateToInclude = calendar.date(from: DateComponents(year: 1970, month: 1, day: 1)) ?? fallbackDate
+
+        return try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(GoogleAdsAction.retrieveCampaignStats(
                 siteID: siteID,
-                timeZone: TimeZone.siteTimezone,
-                earliestDateToInclude: Date(),
-                latestDateToInclude: Date.distantPast) { result in
+                timeZone: timeZone,
+                earliestDateToInclude: earliestDateToInclude,
+                latestDateToInclude: Date.now) { result in
                     continuation.resume(with: result)
                 }
             )

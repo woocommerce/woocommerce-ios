@@ -41,6 +41,10 @@ struct MockSettingActionHandler: MockActionHandler {
             onCompletion(.success(.paid))
         case .updateAnalyticsOrderDateType(_, _, let onCompletion):
             onCompletion(.success(()))
+        case .retrieveAnalyticsImportUpdateMode(_, let onCompletion):
+            onCompletion(.success(.immediate))
+        case .updateAnalyticsImportUpdateMode(_, _, let onCompletion):
+            onCompletion(.success(()))
         default: unimplementedAction(action: action)
         }
     }

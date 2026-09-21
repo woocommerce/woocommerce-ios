@@ -12,7 +12,6 @@ extension WooShippingPackagesResponse {
     @NSManaged public var allPredefinedOptions: NSOrderedSet?
     @NSManaged public var customPackages: Set<WooShippingCustomPackage>?
     @NSManaged public var savedPredefinedPackages: Set<WooShippingSavedPredefinedPackage>?
-
 }
 
 // MARK: Generated accessors for allPredefinedOptions
@@ -47,7 +46,6 @@ extension WooShippingPackagesResponse {
 
     @objc(removeAllPredefinedOptions:)
     @NSManaged public func removeFromAllPredefinedOptions(_ values: NSOrderedSet)
-
 }
 
 // MARK: Generated accessors for customPackages
@@ -64,7 +62,6 @@ extension WooShippingPackagesResponse {
 
     @objc(removeCustomPackages:)
     @NSManaged public func removeFromCustomPackages(_ values: NSSet)
-
 }
 
 // MARK: Generated accessors for savedPredefinedPackages
@@ -81,9 +78,7 @@ extension WooShippingPackagesResponse {
 
     @objc(removeSavedPredefinedPackages:)
     @NSManaged public func removeFromSavedPredefinedPackages(_ values: NSSet)
-
 }
 
 extension WooShippingPackagesResponse: Identifiable {
-
 }

@@ -9,6 +9,8 @@ protocol OrderDetailsPaymentAlertsProtocol {
 
     func tapOrInsertCard(title: String, amount: String, inputMethods: CardReaderInput, onCancel: @escaping () -> Void)
 
+    func cardInserted(title: String, amount: String, onCancel: @escaping () -> Void)
+
     func displayReaderMessage(message: String)
 
     func processingPayment(title: String)

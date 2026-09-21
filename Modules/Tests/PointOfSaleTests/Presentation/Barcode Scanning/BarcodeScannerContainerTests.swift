@@ -14,6 +14,7 @@ struct BarcodeScannerContainerTests {
             onScan: { _ in },
             voiceOverStateProvider: mockProvider
         )
+        show(container)
 
         // Then - Should have GameController observer
         #expect(container.gameControllerObserver != nil)
@@ -30,6 +31,7 @@ struct BarcodeScannerContainerTests {
             onScan: { _ in },
             voiceOverStateProvider: mockProvider
         )
+        show(container)
 
         // Then - Should have UIKit observer
         #expect(container.gameControllerObserver == nil)
@@ -46,6 +48,7 @@ struct BarcodeScannerContainerTests {
             onScan: { _ in },
             voiceOverStateProvider: mockProvider
         )
+        show(container)
 
         // When - Initially should use GameController
         #expect(container.gameControllerObserver != nil && container.uiKitObserver == nil)
@@ -81,6 +84,7 @@ struct BarcodeScannerContainerTests {
             onScan: { _ in },
             voiceOverStateProvider: mockProvider
         )
+        show(container)
 
         // When - Switch between observers multiple times
         #expect(container.gameControllerObserver != nil && container.uiKitObserver == nil)
@@ -108,6 +112,45 @@ struct BarcodeScannerContainerTests {
 
         // Then - Should end up with the correct final observer
         #expect(container.gameControllerObserver == nil && container.uiKitObserver != nil)
+    }
+
+    @Test("Container only observes keyboard input while visible")
+    func container_starts_and_stops_observers_with_view_appearance() {
+        // Given
+        let container = GameControllerBarcodeScannerHostingController(
+            configuration: .default,
+            analytics: MockPOSAnalytics(),
+            onScan: { _ in },
+            voiceOverStateProvider: MockVoiceOverStateProvider(isRunning: false)
+        )
+
+        // Then
+        #expect(container.gameControllerObserver == nil)
+        #expect(container.uiKitObserver == nil)
+
+        // When
+        show(container)
+
+        // Then
+        #expect(container.gameControllerObserver != nil)
+        #expect(container.uiKitObserver == nil)
+
+        // When
+        hide(container)
+
+        // Then
+        #expect(container.gameControllerObserver == nil)
+        #expect(container.uiKitObserver == nil)
+    }
+
+    private func show(_ container: UIViewController) {
+        container.beginAppearanceTransition(true, animated: false)
+        container.endAppearanceTransition()
+    }
+
+    private func hide(_ container: UIViewController) {
+        container.beginAppearanceTransition(false, animated: false)
+        container.endAppearanceTransition()
     }
 }
 

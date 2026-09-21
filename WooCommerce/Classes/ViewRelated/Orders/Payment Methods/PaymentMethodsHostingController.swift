@@ -30,7 +30,7 @@ final class PaymentMethodsHostingController: UIHostingController<HostedPaymentMe
         }
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -107,11 +107,7 @@ extension PaymentMethodsHostingController: UIAdaptivePresentationControllerDeleg
         actionSheet.addDestructiveActionWithTitle(Localization.dismissOrder, handler: onDismiss)
         actionSheet.addCancelActionWithTitle(Localization.cancelTitle)
 
-        if let popoverController = actionSheet.popoverPresentationController {
-            popoverController.sourceView = viewController.view
-            popoverController.sourceRect = viewController.view.bounds
-            popoverController.permittedArrowDirections = []
-        }
+        actionSheet.centerActionSheet(in: viewController.view)
 
         viewController.present(actionSheet, animated: true)
     }

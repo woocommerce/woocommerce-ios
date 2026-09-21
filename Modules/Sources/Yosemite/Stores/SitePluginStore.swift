@@ -15,7 +15,7 @@ public final class SitePluginStore: Store {
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
-    public override convenience init(dispatcher: Dispatcher,
+    override public convenience init(dispatcher: Dispatcher,
                             storageManager: StorageManagerType,
                             network: Network) {
         let remote = SitePluginsRemote(network: network)
@@ -27,13 +27,13 @@ public final class SitePluginStore: Store {
 
     /// Registers to support `SitePluginAction`
     ///
-    public override func registerSupportedActions(in dispatcher: Dispatcher) {
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: SitePluginAction.self)
     }
 
     /// Receives and executes actions
     ///
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? SitePluginAction else {
             assertionFailure("SitePluginStore receives an unsupported action!")
             return
@@ -55,7 +55,7 @@ public final class SitePluginStore: Store {
 // MARK: - Network request
 //
 private extension SitePluginStore {
-    func synchronizeSitePlugins(siteID: Int64, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeSitePlugins(siteID: Int64, completionHandler: @escaping @Sendable (Result<Void, Error>) -> Void) {
         remote.loadPlugins(for: siteID) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -95,7 +95,7 @@ private extension SitePluginStore {
         }
     }
 
-    func getPluginDetails(siteID: Int64, pluginName: String, onCompletion: @escaping (Result<SitePlugin, Error>) -> Void) {
+    func getPluginDetails(siteID: Int64, pluginName: String, onCompletion: @escaping @Sendable (Result<SitePlugin, Error>) -> Void) {
         remote.getPluginDetails(for: siteID, pluginName: pluginName) { [weak self] result in
             guard let self else { return }
             switch result {

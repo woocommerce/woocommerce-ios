@@ -1,6 +1,7 @@
 import Foundation
 @testable import PointOfSale
 
+@MainActor
 final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     var initialVisibility: Bool = false
     var visibility: Bool = false
@@ -10,13 +11,11 @@ final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         initialVisibility
     }
 
-    @MainActor
     func checkVisibility() async -> Bool {
         visibility
     }
 
-    @MainActor
-    func checkEligibility() async -> POSEligibilityState {
+    func checkEligibility(forceRemoteCheck: Bool) async -> POSEligibilityState {
         eligibility
     }
 

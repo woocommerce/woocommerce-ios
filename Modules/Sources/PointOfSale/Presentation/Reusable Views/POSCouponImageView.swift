@@ -2,6 +2,7 @@ import SwiftUI
 
 enum POSCouponImageState {
     case success
+    case applied
     case error
     case normal
     case expired
@@ -18,7 +19,7 @@ struct POSCouponImageView: View {
 
     private var foregroundColor: Color {
         switch state {
-        case .success:
+        case .success, .applied:
             return .posSuccess
         case .error:
             return .posError
@@ -29,7 +30,7 @@ struct POSCouponImageView: View {
 
     private var tagColor: Color {
         switch state {
-        case .success:
+        case .success, .applied:
             return .posOnSuccess
         case .error:
             return .posOnError
@@ -40,11 +41,20 @@ struct POSCouponImageView: View {
         }
     }
 
+    private var systemImageName: String {
+        switch state {
+        case .applied:
+            return "checkmark"
+        case .success, .error, .normal, .expired:
+            return "tag"
+        }
+    }
+
     var body: some View {
         Rectangle()
             .foregroundColor(foregroundColor)
             .overlay {
-                Image(systemName: "tag")
+                Image(systemName: systemImageName)
                     .font(.posBodyXLargeRegular)
                     .foregroundColor(tagColor)
             }
@@ -72,6 +82,13 @@ private extension POSCouponImageView {
                 .font(.caption)
                 .foregroundStyle(.secondary)
             POSCouponImageView(size: 100, state: .success)
+        }
+
+        VStack(alignment: .leading) {
+            Text("Applied")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            POSCouponImageView(size: 100, state: .applied)
         }
 
         VStack(alignment: .leading) {

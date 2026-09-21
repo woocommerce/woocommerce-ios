@@ -170,7 +170,7 @@ private extension LinkedProductsListSelectorViewController {
     }
 
     func observeLinkedProductIDs() {
-        productIDsSubscription = dataSource.productIDs.sink { [weak self] productIDs in
+        productIDsSubscription = dataSource.productIDs.sink { [weak self] _ in
             self?.paginatedListSelector.updateResultsController()
             self?.updateNavigationRightBarButtonItem()
         }

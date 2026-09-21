@@ -11,7 +11,6 @@ extension WooShippingCarrierPredefinedOptions {
     @NSManaged public var carrierID: String?
     @NSManaged public var packagesResponse: WooShippingPackagesResponse?
     @NSManaged public var predefinedOptions: NSOrderedSet?
-
 }
 
 // MARK: Generated accessors for predefinedOptions
@@ -46,9 +45,7 @@ extension WooShippingCarrierPredefinedOptions {
 
     @objc(removePredefinedOptions:)
     @NSManaged public func removeFromPredefinedOptions(_ values: NSOrderedSet)
-
 }
 
 extension WooShippingCarrierPredefinedOptions: Identifiable {
-
 }

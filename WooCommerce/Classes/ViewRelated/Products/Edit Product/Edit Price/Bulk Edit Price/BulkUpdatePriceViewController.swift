@@ -7,7 +7,7 @@ import Combine
 //
 final class BulkUpdatePriceViewController: UIViewController {
 
-    @IBOutlet weak private var tableView: UITableView!
+    @IBOutlet private weak var tableView: UITableView!
     @IBOutlet weak var saveButtonToBottom: NSLayoutConstraint!
     @IBOutlet weak var saveButton: ButtonActivityIndicator!
 

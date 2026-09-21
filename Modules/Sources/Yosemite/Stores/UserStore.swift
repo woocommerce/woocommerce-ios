@@ -8,7 +8,7 @@ public final class UserStore: Store {
     private let remote: UserRemote
     private let ipRemote: IPLocationRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = UserRemote(network: network)
         self.ipRemote = IPLocationRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -16,13 +16,13 @@ public final class UserStore: Store {
 
     /// Registers to support `UserAction`
     ///
-    public override func registerSupportedActions(in dispatcher: Dispatcher) {
+    override public func registerSupportedActions(in dispatcher: Dispatcher) {
         dispatcher.register(processor: self, for: UserAction.self)
     }
 
     /// Receives and executes actions
     ///
-    public override func onAction(_ action: Action) {
+    override public func onAction(_ action: Action) {
         guard let action = action as? UserAction else {
             assertionFailure("UserStore receives an unsupported action!")
             return

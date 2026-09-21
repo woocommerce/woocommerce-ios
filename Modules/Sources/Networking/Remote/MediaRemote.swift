@@ -35,9 +35,9 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
     public func loadMedia(siteID: Int64,
                           mediaID: Int64,
                           completion: @escaping (Result<WordPressMedia, Error>) -> Void) {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
-        ].compactMapValues { $0 }
+        ]
 
         let path = "sites/\(siteID)/media/\(mediaID)"
         do {
@@ -70,13 +70,13 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
                                  pageNumber: Int = Default.pageNumber,
                                  pageSize: Int = 25,
                                  completion: @escaping (Result<[WordPressMedia], Error>) -> Void) {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = ([
             ParameterKey.dotOrgPageSize: pageSize,
             ParameterKey.pageNumber: pageNumber,
             ParameterKey.fieldsWordPressSite: ParameterValue.wordPressMediaFields,
             ParameterKey.mediaType: imagesOnly ? "image" : nil,
             ParameterKey.wordPressMediaParent: productID
-        ].compactMapValues { $0 }
+        ] as OptionalRequestParameterConvertibleDictionary).compactMapValues { $0 }
 
         let path = "sites/\(siteID)/media"
         do {
@@ -120,7 +120,7 @@ public class MediaRemote: Remote, MediaRemoteProtocol {
             let mapper = WordPressMediaMapper()
 
             enqueueMultipartFormDataUpload(request, mapper: mapper, multipartFormData: { multipartFormData in
-                formParameters.forEach { (key, value) in
+                formParameters.forEach { key, value in
                     multipartFormData.append(Data(value.utf8), withName: key)
                 }
 

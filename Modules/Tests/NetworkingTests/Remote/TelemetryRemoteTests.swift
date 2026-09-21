@@ -103,7 +103,7 @@ final class TelemetryRemoteTests: XCTestCase {
 
         // When
         waitFor { promise in
-            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2", installationDate: installationDate) { result in
+            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2", installationDate: installationDate) { _ in
                 promise(())
             }
         }
@@ -119,7 +119,7 @@ final class TelemetryRemoteTests: XCTestCase {
 
         // When
         waitFor { promise in
-            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2", installationDate: nil) { result in
+            remote.sendTelemetry(for: self.sampleSiteID, versionString: "1.2", installationDate: nil) { _ in
                 promise(())
             }
         }

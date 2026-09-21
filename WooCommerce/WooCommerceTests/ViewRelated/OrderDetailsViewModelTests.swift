@@ -80,6 +80,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_syncShippingLabels_without_a_non_virtual_product_does_not_dispatch_actions() async throws {
         // Given
+        configureDefaultStoreCountry("US")
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
@@ -90,9 +91,10 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
     }
 
-    func test_syncShippingLabels_with_legacy_extension_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
+    func test_syncShippingLabels_with_legacy_extension_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6)])
+        configureDefaultStoreCountry("US")
 
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
@@ -101,11 +103,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.LegacyWCShip, thenReturn: plugin)
         whenSyncingLegacyShippingLabels(thenReturn: .success([]))
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         await viewModel.syncShippingLabelsOrShipments()
@@ -144,9 +144,10 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
-    func test_syncShippingLabels_with_wooShipping_extension_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
+    func test_syncShippingLabels_with_wooShipping_extension_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6)])
+        configureDefaultStoreCountry("US")
 
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
@@ -155,11 +156,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, thenReturn: plugin)
         whenSyncingShipments(thenReturn: .success([]))
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         await viewModel.syncShippingLabelsOrShipments()
@@ -188,71 +187,53 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
-    func test_syncShippingLabels_with_wooShipping_extension_and_feature_flag_disabled_dispatches_actions_correctly() async throws {
-        // Given
-        configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6)])
+    func test_syncShippingLabels_when_store_country_is_not_supported_does_not_dispatch_actions() async throws {
+        for storeCountry in ["FR", "DE", "BR", "IN"] {
+            // Given
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesShipmentSync: true)
 
-        storesManager.reset()
-        XCTAssertEqual(storesManager.receivedActions.count, 0)
+            // When
+            await viewModel.syncShippingLabelsOrShipments()
 
-        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true)
-        whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, thenReturn: plugin)
-        whenSyncingLegacyShippingLabels(thenReturn: .success([]))
-
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: false)
-        let viewModel = OrderDetailsViewModel(order: order,
-                                              stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
-
-        // When
-        await viewModel.syncShippingLabelsOrShipments()
-
-        // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 3)
-
-        // SystemStatusAction.fetchSystemPlugin
-        let firstAction = try XCTUnwrap(storesManager.receivedActions[0] as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID, path, _) = firstAction else {
-            XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
-            return
+            // Then
+            XCTAssertEqual(storesManager.receivedActions.count, 0, "Expected no actions for \(storeCountry)")
         }
+    }
 
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.LegacyWCShip)
+    func test_syncShippingLabels_when_store_country_is_unknown_dispatches_actions() async throws {
+        for storeCountry in [nil, ""] {
+            // Given
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesShipmentSync: true)
 
-        // SystemStatusAction.fetchSystemPlugin
-        let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID, path, _) = secondAction else {
-            XCTFail("Expected \(secondAction) to be \(SystemStatusAction.self)")
-            return
+            // When
+            await viewModel.syncShippingLabelsOrShipments()
+
+            // Then
+            XCTAssertEqual(storesManager.receivedActions.count, 2, "Expected fail-open plugin fetch and shipment sync for \(String(describing: storeCountry))")
+
+            let action = try XCTUnwrap(storesManager.receivedActions[1] as? WooShippingAction)
+            guard case let WooShippingAction.syncShipments(siteID, orderID, _) = action else {
+                XCTFail("Expected \(action) to be \(WooShippingAction.self)")
+                return
+            }
+
+            XCTAssertEqual(siteID, order.siteID)
+            XCTAssertEqual(orderID, order.orderID)
         }
-
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.WooShipping)
-
-        // ShippingLabelAction.synchronizeShippingLabels
-        let thirdAction = try XCTUnwrap(storesManager.receivedActions[2] as? ShippingLabelAction)
-        guard case let ShippingLabelAction.synchronizeShippingLabels(siteID, orderID, _) = thirdAction else {
-            XCTFail("Expected \(thirdAction) to be \(ShippingLabelAction.self)")
-            return
-        }
-
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(orderID, order.orderID)
     }
 
     // MARK: - `checkShippingLabelCreationEligibility`
 
     func test_checkShippingLabelCreationEligibility_without_a_non_virtual_product_returns_false() async throws {
         // Given
+        configureDefaultStoreCountry("US")
         storesManager.reset()
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         let isEligible = await viewModel.checkShippingLabelCreationEligibility()
@@ -264,15 +245,14 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_checkShippingLabelCreationEligibility_with_a_non_virtual_product_returns_value_from_action() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+        configureDefaultStoreCountry("US")
         let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.LegacyWCShip, siteID: order.siteID, isActive: true)
         whenFetchingSystemPlugin(thenReturn: plugin)
         whenCheckingShippingLabelCreationEligibility(thenReturn: true)
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         let isEligible = await viewModel.checkShippingLabelCreationEligibility()
@@ -283,14 +263,13 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_checkShippingLabelCreationEligibility_without_a_non_virtual_product_does_not_dispatch_actions() async throws {
         // Given
+        configureDefaultStoreCountry("US")
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         _ = await viewModel.checkShippingLabelCreationEligibility()
@@ -299,9 +278,10 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
     }
 
-    func test_checkShippingLabelCreationEligibility_with_legacy_extension_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
+    func test_checkShippingLabelCreationEligibility_with_legacy_extension_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+        configureDefaultStoreCountry("US")
 
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
@@ -312,11 +292,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         whenFetchingSystemPlugin(path: path, thenReturn: plugin)
         whenCheckingLegacyShippingLabelCreationEligibility(thenReturn: true)
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         _ = await viewModel.checkShippingLabelCreationEligibility()
@@ -355,9 +333,10 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
-    func test_checkShippingLabelCreationEligibility_with_wooshipping_and_feature_flag_enabled_dispatches_actions_correctly() async throws {
+    func test_checkShippingLabelCreationEligibility_with_wooshipping_dispatches_actions_correctly() async throws {
         // Given
         configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+        configureDefaultStoreCountry("US")
 
         storesManager.reset()
         XCTAssertEqual(storesManager.receivedActions.count, 0)
@@ -368,11 +347,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         whenFetchingSystemPlugin(path: path, thenReturn: plugin)
         whenCheckingShippingLabelCreationEligibility(thenReturn: true)
 
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
         let viewModel = OrderDetailsViewModel(order: order,
                                               stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
+                                              storageManager: storageManager)
 
         // When
         _ = await viewModel.checkShippingLabelCreationEligibility()
@@ -401,112 +378,283 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
-    func test_checkShippingLabelCreationEligibility_when_feature_flag_disabled_dispatches_actions_correctly() async throws {
-        // Given
-        configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+    func test_checkShippingLabelCreationEligibility_when_store_country_is_not_supported_returns_false_without_dispatching_actions() async throws {
+        for storeCountry in ["FR", "DE", "BR", "IN"] {
+            // Given
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesEligibilityCheck: true)
 
-        storesManager.reset()
-        XCTAssertEqual(storesManager.receivedActions.count, 0)
+            // When
+            let isEligible = await viewModel.checkShippingLabelCreationEligibility()
 
-        // Make sure the are plugins synced
-        let path = SitePlugin.SupportedPluginPath.WooShipping
-        let plugin = insertSystemPlugin(path: path, siteID: order.siteID, isActive: true)
-        whenFetchingSystemPlugin(path: path, thenReturn: plugin)
-        whenCheckingLegacyShippingLabelCreationEligibility(thenReturn: true)
-
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: false)
-        let viewModel = OrderDetailsViewModel(order: order,
-                                              stores: storesManager,
-                                              storageManager: storageManager,
-                                              featureFlagService: featureFlagService)
-
-        // When
-        _ = await viewModel.checkShippingLabelCreationEligibility()
-
-        // Then
-        XCTAssertEqual(storesManager.receivedActions.count, 3)
-
-        // SystemStatusAction.fetchSystemPlugin
-        let firstAction = try XCTUnwrap(storesManager.receivedActions[0] as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: path, onCompletion: _) = firstAction else {
-            XCTFail("Expected \(firstAction) to be \(SystemStatusAction.self)")
-            return
+            // Then
+            XCTAssertFalse(isEligible, "Expected ineligible for \(storeCountry)")
+            XCTAssertEqual(storesManager.receivedActions.count, 0, "Expected no actions for \(storeCountry)")
         }
+    }
 
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.LegacyWCShip)
+    func test_checkShippingLabelCreationEligibility_when_store_country_is_unknown_defers_to_eligibility_check() async throws {
+        for storeCountry in [nil, "", "us", "Pr"] {
+            // Given
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesEligibilityCheck: true)
 
-        // SystemStatusAction.fetchSystemPlugin
-        let secondAction = try XCTUnwrap(storesManager.receivedActions[1] as? SystemStatusAction)
-        guard case let SystemStatusAction.fetchSystemPluginWithPath(siteID: siteID, pluginPath: path, onCompletion: _) = secondAction else {
-            XCTFail("Expected \(secondAction) to be \(SystemStatusAction.self)")
-            return
+            // When
+            let isEligible = await viewModel.checkShippingLabelCreationEligibility()
+
+            // Then
+            XCTAssertTrue(isEligible, "Expected fail-open eligibility result from action for \(String(describing: storeCountry))")
+            XCTAssertEqual(storesManager.receivedActions.count, 2, "Expected plugin fetch and eligibility check for \(String(describing: storeCountry))")
         }
+    }
 
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(path, SitePlugin.SupportedPluginPath.WooShipping)
+    func test_checkShippingLabelCreationEligibility_when_store_country_is_supported_dispatches_action() async throws {
+        for storeCountry in ["US", "PR", "VI", "GU", "AS", "MP", "UM", "FM", "MH"] {
+            // Given
+            let viewModel = configureShippingLabelContext(storeCountry: storeCountry,
+                                                          handlesEligibilityCheck: true)
 
-        // WooShippingAction.checkCreationEligibility
-        let thirdAction = try XCTUnwrap(storesManager.receivedActions[2] as? ShippingLabelAction)
-        guard case let ShippingLabelAction.checkCreationEligibility(siteID, orderID, _) = thirdAction else {
-            XCTFail("Expected \(thirdAction) to be \(ShippingLabelAction.self)")
-            return
+            // When
+            let isEligible = await viewModel.checkShippingLabelCreationEligibility()
+
+            // Then
+            XCTAssertTrue(isEligible, "Expected eligible result from action for \(storeCountry)")
+            XCTAssertEqual(storesManager.receivedActions.count, 2, "Expected plugin fetch and eligibility check for \(storeCountry)")
+
+            let action = try XCTUnwrap(storesManager.receivedActions[1] as? WooShippingAction)
+            guard case let WooShippingAction.checkCreationEligibility(siteID, orderID, _) = action else {
+                XCTFail("Expected \(action) to be \(WooShippingAction.self)")
+                return
+            }
+
+            XCTAssertEqual(siteID, order.siteID)
+            XCTAssertEqual(orderID, order.orderID)
         }
-
-        XCTAssertEqual(siteID, order.siteID)
-        XCTAssertEqual(orderID, order.orderID)
     }
 
     func test_there_should_not_be_edit_order_action_if_order_is_not_synced() {
         // Given
-        let order = Order.fake().copy(total: "10.0")
+        let sessionManager = SessionManager.makeForTesting(cachedWooCommerceVersion: "11.1.0")
+        let storesManager = MockStoresManager(sessionManager: sessionManager)
+        let order = Order.fake().copy(currency: "USD", total: "10.0")
 
         // When
-        let viewModel = OrderDetailsViewModel(order: order)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              siteCurrencyProvider: { _ in CurrencyCode.GBP.rawValue })
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.disabledForSyncing)
     }
 
-    // Context: https://github.com/woocommerce/woocommerce-ios/issues/14304
-    func test_there_should_not_be_an_edit_order_action_if_order_currency_doesnt_match_site_currency() {
+    func test_edit_order_action_is_blocked_for_currency_mismatch_when_woocommerce_version_is_unknown() {
         // Given
-        let gbp = CurrencySettings(currencyCode: .GBP,
-                                   currencyPosition: .left,
-                                   thousandSeparator: "",
-                                   decimalSeparator: ".",
-                                   numberOfDecimals: 2)
-        ServiceLocator.setCurrencySettings(gbp)
-
         let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
-
         let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
 
         // When
-        let viewModel = OrderDetailsViewModel(order: usdOrder, syncStateController: syncStateController)
+        let viewModel = OrderDetailsViewModel(order: usdOrder,
+                                              stores: storesManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in CurrencyCode.GBP.rawValue })
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.showNoticeForCurrencyConflict)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
     }
 
-    func test_the_edit_order_action_should_be_enabled_when_the_order_is_synced_and_matches_site_currency() {
+    func test_edit_order_action_is_blocked_for_currency_mismatch_when_woocommerce_version_is_older_than_11_1() {
         // Given
-        let usd = CurrencySettings(currencyCode: .USD,
-                                   currencyPosition: .left,
-                                   thousandSeparator: "",
-                                   decimalSeparator: ".",
-                                   numberOfDecimals: 2)
-        ServiceLocator.setCurrencySettings(usd)
-
         let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+        let currencySetting = SiteSetting.fake().copy(siteID: usdOrder.siteID,
+                                                      settingID: CurrencySettings.Constants.currencyCodeKey,
+                                                      value: CurrencyCode.GBP.rawValue,
+                                                      settingGroupKey: SiteSettingGroup.general.rawValue)
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: currencySetting)
+        let pluginsService = MockPluginsService()
+        pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: "11.0.9", active: true))
 
+        // When
+        let viewModel = OrderDetailsViewModel(order: usdOrder,
+                                              storageManager: storageManager,
+                                              syncStateController: syncStateController,
+                                              pluginsService: pluginsService)
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.showNoticeForCurrencyConflict)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_enabled_for_currency_mismatch_when_woocommerce_version_is_at_least_11_1() {
+        for version in ["11.1.0", "11.1.0-dev", "11.1.1", "12.0.0"] {
+            // Given
+            let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
+            let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+            let pluginsService = MockPluginsService()
+            pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: version, active: true))
+
+            // When
+            let viewModel = OrderDetailsViewModel(order: usdOrder,
+                                                  syncStateController: syncStateController,
+                                                  siteCurrencyProvider: { _ in CurrencyCode.GBP.rawValue },
+                                                  pluginsService: pluginsService)
+
+            // Then
+            XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.enabled,
+                           "Expected WooCommerce \(version) to support editing an order in another currency")
+            XCTAssertEqual(viewModel.editOrderRequestCurrency, CurrencyCode.USD.rawValue)
+        }
+    }
+
+    func test_edit_order_action_uses_active_stored_woocommerce_version_instead_of_inactive_or_session_versions() {
+        // Given
+        let order = Order.fake().copy(currency: "USD", total: "10.0")
+        let sessionManager = SessionManager.makeForTesting(cachedWooCommerceVersion: "11.0.0")
+        let storesManager = MockStoresManager(sessionManager: sessionManager)
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+        let inactivePlugin = SystemPlugin.fake().copy(siteID: order.siteID,
+                                                      plugin: "woocommerce/woocommerce.php",
+                                                      version: "11.0.0",
+                                                      active: false)
+        let activePlugin = SystemPlugin.fake().copy(siteID: order.siteID,
+                                                    plugin: "woocommerce/woocommerce.php",
+                                                    version: "11.1.0-dev-31112307844-gb1a51de3",
+                                                    active: true)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: inactivePlugin)
+        storageManager.insertSampleSystemPlugin(readOnlySystemPlugin: activePlugin)
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in CurrencyCode.GBP.rawValue })
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, .enabled)
+        XCTAssertEqual(viewModel.editOrderRequestCurrency, CurrencyCode.USD.rawValue)
+    }
+
+    func test_edit_order_action_does_not_use_session_woocommerce_version_when_site_has_no_stored_version() {
+        // Given
+        let order = Order.fake().copy(currency: "USD", total: "10.0")
+        let sessionManager = SessionManager.makeForTesting(cachedWooCommerceVersion: "11.1.0")
+        let storesManager = MockStoresManager(sessionManager: sessionManager)
         let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
 
         // When
-        let viewModel = OrderDetailsViewModel(order: usdOrder, syncStateController: syncStateController)
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in CurrencyCode.GBP.rawValue })
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, .showNoticeForCurrencyConflict)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_enabled_when_site_currency_is_missing() {
+        // Given
+        let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: usdOrder,
+                                              stores: storesManager,
+                                              storageManager: storageManager,
+                                              syncStateController: syncStateController)
 
         // Then
         XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.enabled)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_enabled_when_order_currency_is_empty() {
+        // Given
+        let order = Order.fake().copy(currency: "", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in CurrencyCode.GBP.rawValue })
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.enabled)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_blocked_when_order_currency_is_unsupported_and_differs_from_site_currency() {
+        // Given
+        let order = Order.fake().copy(currency: "XBT", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+        let pluginsService = MockPluginsService()
+        pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: "11.1.0", active: true))
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in CurrencyCode.USD.rawValue },
+                                              pluginsService: pluginsService)
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, .showNoticeForCurrencyConflict)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_blocked_when_site_currency_is_unsupported_and_differs_from_order_currency() {
+        // Given
+        let order = Order.fake().copy(currency: "USD", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+        let pluginsService = MockPluginsService()
+        pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: "11.1.0", active: true))
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in "XBT" },
+                                              pluginsService: pluginsService)
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, .showNoticeForCurrencyConflict)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_enabled_when_matching_currency_is_unsupported() {
+        // Given
+        let order = Order.fake().copy(currency: "XBT", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in "xbt" })
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, .enabled)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
+    }
+
+    func test_edit_order_action_is_enabled_when_order_is_synced_and_matches_site_currency() {
+        // Given
+        let usdOrder = Order.fake().copy(currency: "usd", total: "10.0")
+        let syncStateController = OrderDetailsSyncStateController(syncState: .synced)
+
+        // When
+        let viewModel = OrderDetailsViewModel(order: usdOrder,
+                                              stores: storesManager,
+                                              syncStateController: syncStateController,
+                                              siteCurrencyProvider: { _ in CurrencyCode.USD.rawValue })
+
+        // Then
+        XCTAssertEqual(viewModel.editButtonBehaviour, OrderDetailsViewModel.EditButtonBehaviour.enabled)
+        XCTAssertNil(viewModel.editOrderRequestCurrency)
     }
 
     func test_paymentMethodsViewModel_title_contains_formatted_order_amount() {
@@ -648,10 +796,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     // MARK: - `isWooShippingSupported`
 
-    func test_isWooShippingSupported_returns_true_with_expected_feature_flag_and_version() async {
+    func test_isWooShippingSupported_returns_true_when_plugin_is_active_and_version_is_supported() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
-        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
         let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true, version: "1.0.5")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
@@ -662,24 +809,9 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(isWooShippingSupported)
     }
 
-    func test_isWooShippingSupported_returns_false_when_feature_flag_disabled() async {
-        // Given
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: false)
-        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
-        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true, version: "1.0.5")
-        whenFetchingSystemPlugin(thenReturn: plugin)
-
-        // When
-        let isWooShippingSupported = await viewModel.isWooShippingSupported()
-
-        // Then
-        XCTAssertFalse(isWooShippingSupported)
-    }
-
     func test_isWooShippingSupported_returns_false_when_woo_shipping_plugin_not_active() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
-        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
         let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: false, version: "1.0.5")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
@@ -729,8 +861,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     func test_isWooShippingSupported_returns_false_when_woo_shipping_plugin_is_not_minimum_version() async {
         // Given
-        let featureFlagService = MockFeatureFlagService(revampedShippingLabelCreation: true)
-        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager, featureFlagService: featureFlagService)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
         let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: false, version: "1.0.4")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
@@ -758,6 +889,42 @@ private extension OrderDetailsViewModelTests {
         products.forEach { product in
             storageManager.insertSampleProduct(readOnlyProduct: product)
         }
+    }
+
+    func configureDefaultStoreCountry(_ country: String) {
+        let setting = SiteSetting.fake().copy(siteID: order.siteID,
+                                              settingID: "woocommerce_default_country",
+                                              value: country,
+                                              settingGroupKey: "general")
+        storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
+    }
+
+    func configureShippingLabelContext(storeCountry: String?,
+                                       handlesEligibilityCheck: Bool = false,
+                                       handlesShipmentSync: Bool = false) -> OrderDetailsViewModel {
+        storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
+        storageManager = MockStorageManager()
+        configureOrderWithProductsInStorage(products: [.fake().copy(productID: 6, virtual: false)])
+
+        if let storeCountry {
+            configureDefaultStoreCountry(storeCountry)
+        }
+
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true)
+        whenFetchingSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, thenReturn: plugin)
+        if handlesEligibilityCheck {
+            whenCheckingShippingLabelCreationEligibility(thenReturn: true)
+        }
+        if handlesShipmentSync {
+            whenSyncingShipments(thenReturn: .success([]))
+        }
+        storesManager.reset()
+
+        let viewModel = OrderDetailsViewModel(order: order,
+                                              stores: storesManager,
+                                              storageManager: storageManager)
+        self.viewModel = viewModel
+        return viewModel
     }
 
     func whenFetchingSystemPlugin(path: String? = nil, thenReturn plugin: SystemPlugin?) {

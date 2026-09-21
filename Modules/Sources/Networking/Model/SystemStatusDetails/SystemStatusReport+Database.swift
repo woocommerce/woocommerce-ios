@@ -3,7 +3,7 @@ import Foundation
 public extension SystemStatusReport {
     /// Subtype for details about database in system status.
     ///
-    struct Database: Decodable {
+    struct Database: Decodable, Sendable {
         public let wcDatabaseVersion: String
         public let databasePrefix: String
         public let databaseTables: DatabaseTables
@@ -19,23 +19,45 @@ public extension SystemStatusReport {
 
     /// Subtype for details about database size in system status.
     ///
-    struct DatabaseSize: Decodable {
+    struct DatabaseSize: Decodable, Sendable {
         public let data: Double
         public let index: Double
     }
 
     /// Subtype for details about database tables in system status.
     ///
-    struct DatabaseTables: Decodable {
+    struct DatabaseTables: Decodable, Sendable {
         public let woocommerce: [String: DatabaseTable]
         public let other: [String: DatabaseTable]
     }
 
     /// Subtype for details about a database table.
     ///
-    struct DatabaseTable: Decodable {
-        public let data: String
-        public let index: String
-        public let engine: String
+    struct DatabaseTable: Decodable, Sendable {
+        public let data: String?
+        public let index: String?
+        public let engine: String?
+
+        public var formattedString: String {
+            let formattedData: String = {
+                if let data {
+                    "Data: \(data)MB"
+                } else {
+                    "Data: null"
+                }
+            }()
+
+            let formattedIndex: String = {
+                if let index {
+                    "Index: \(index)MB"
+                } else {
+                    "Index: null"
+                }
+            }()
+
+            let formattedEngine = "Engine: \(engine ?? "null")"
+
+            return [formattedData, formattedIndex, formattedEngine].joined(separator: " + ")
+        }
     }
 }

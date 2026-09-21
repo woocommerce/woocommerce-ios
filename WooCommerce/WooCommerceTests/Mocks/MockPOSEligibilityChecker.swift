@@ -4,11 +4,11 @@ import enum PointOfSale.POSIneligibleReason
 import protocol PointOfSale.POSEntryPointEligibilityCheckerProtocol
 @testable import WooCommerce
 
+@MainActor
 final class MockPOSEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     var eligibility: POSEligibilityState = .eligible
 
-    @MainActor
-    func checkEligibility() async -> POSEligibilityState {
+    func checkEligibility(forceRemoteCheck: Bool) async -> POSEligibilityState {
         eligibility
     }
 

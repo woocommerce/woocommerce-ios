@@ -3,33 +3,21 @@ import TestKit
 import Foundation
 @testable import PointOfSale
 import enum Yosemite.POSOrderListServiceError
-import struct NetworkingCore.Order
-import Observation
 import struct Yosemite.POSOrder
 import struct Yosemite.POSOrderItem
+import struct Yosemite.POSOrderCustomAmount
 import enum Yosemite.OrderStatusEnum
-import typealias Yosemite.OrderItemAttribute
-@testable import struct Yosemite.POSRefund
 @testable import struct Yosemite.POSRefundItem
 import struct Yosemite.POSOrderRefund
-@testable import struct Yosemite.POSRefundsResult
-@testable import struct Yosemite.POSRefundableItem
-import class WooFoundation.CurrencySettings
-import class WooFoundation.CurrencyFormatter
 
 @Suite(.timeLimit(.minutes(5)))
+@MainActor
 final class POSOrderListControllerTests {
     private let orderListService = MockPOSOrderListService()
     private let refundsService = MockPOSRefundsService()
     private lazy var fetchStrategyFactory = MockPOSOrderListFetchStrategyFactory(orderService: orderListService)
-    private lazy var featureFlags = MockFeatureFlagService()
-    private lazy var currencySettingsProvider = MockCurrencySettingsProvider()
-    private lazy var currencyFormatter = CurrencyFormatter(currencySettings: currencySettingsProvider.currencySettings)
     private lazy var sut = POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory,
-                                                   refundsService: refundsService,
-                                                   featureFlags: featureFlags,
-                                                   currencySettingsProvider: currencySettingsProvider,
-                                                   currencyFormatter: currencyFormatter)
+                                                   refundsService: refundsService)
 
     @Test func loadOrders_requests_first_page_after_loading_two_pages() async throws {
         try #require(sut.ordersViewState.isLoading)
@@ -385,762 +373,10 @@ final class POSOrderListControllerTests {
         #expect(sut.selectedOrder?.customerEmail == "selected-updated@example.com")
     }
 
-    @MainActor
-    @Test func refundActionAvailability_when_feature_flag_disabled_then_unavailable() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = false
-        let order = makeOrder(id: 1) // completed by default
 
-        // When
-        sut.selectOrder(order)
-
-        // Then
-        #expect(sut.refundActionAvailability == .unavailable)
-    }
-
-    @MainActor
-    @Test func refundActionAvailability_when_no_selected_order_then_unavailable() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-
-        // When / Then
-        #expect(sut.refundActionAvailability == .unavailable)
-    }
-
-    @MainActor
-    @Test func refundActionAvailability_when_order_completed_then_available() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let order = makeOrder(id: 1, status: .completed)
-
-        // When
-        sut.selectOrder(order)
-
-        // Then
-        #expect(sut.refundActionAvailability == .available)
-    }
-
-    @MainActor
-    @Test func refundActionAvailability_when_order_not_completed_then_unavailable() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let order = makeOrder(id: 1, status: .processing)
-
-        // When
-        sut.selectOrder(order)
-
-        // Then
-        #expect(sut.refundActionAvailability == .unavailable)
-    }
-
-    // MARK: - Refund Item Selection Tests
-
-    @MainActor
-    @Test func startRefundFlow_when_product_has_multiple_quantities_then_creates_one_row_per_unit() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, name: "Item A", quantity: 3, formattedPrice: "$10.00", formattedTotal: "$30.00"),
-            makePOSOrderItem(itemID: 2, name: "Item B", quantity: 1, formattedPrice: "$5.00")
-        ])
-
-        // When
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // Then
-        #expect(sut.refundSelectableItems.count == 4)
-    }
-
-    @MainActor
-    @Test func startRefundFlow_then_all_items_are_selected_by_default() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
-        ])
-
-        // When
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // Then
-        #expect(sut.refundSelectableItems.count == 2)
-        for item in sut.refundSelectableItems {
-            #expect(item.isSelected)
-        }
-    }
-
-    @MainActor
-    @Test func startRefundFlow_when_no_selected_order_then_items_remain_empty() async throws {
-        // When
-        _ = await sut.startRefundFlow()
-
-        // Then
-        #expect(sut.refundSelectableItems.isEmpty)
-    }
-
-    @MainActor
-    @Test func startRefundFlow_when_item_partially_refunded_then_excludes_refunded_quantity() async throws {
-        // Given: Order has 3 units of item, 1 was previously refunded
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -1, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 3, formattedPrice: "$10.00", formattedTotal: "$30.00")
-        ])
-
-        // When
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // Then: Should only show 2 available (3 - 1 refunded)
-        #expect(sut.refundSelectableItems.count == 2)
-    }
-
-    @MainActor
-    @Test func startRefundFlow_when_item_fully_refunded_then_excludes_item_entirely() async throws {
-        // Given: Order has 2 units of item, both were previously refunded
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -2, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00"),
-            makePOSOrderItem(itemID: 2, quantity: 1, formattedPrice: "$5.00")
-        ])
-
-        // When
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // Then: Should only show item 2 (item 1 is fully refunded)
-        #expect(sut.refundSelectableItems.count == 1)
-        #expect(sut.refundSelectableItems[0].itemID == 2)
-    }
-
-    @MainActor
-    @Test func startRefundFlow_when_multiple_refunds_exist_then_aggregates_refunded_quantities() async throws {
-        // Given: Order has 5 units of item, refunded across two separate refunds (2 + 2 = 4)
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [
-                POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -2, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)]),
-                POSRefund(items: [POSRefundItem(refundedItemID: 1, quantity: -2, name: "", formattedPrice: "", formattedTotal: "", imageSrc: nil)])
-            ],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 5, formattedPrice: "$10.00", formattedTotal: "$50.00")
-        ])
-
-        // When
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // Then: Should only show 1 available (5 - 4 refunded)
-        #expect(sut.refundSelectableItems.count == 1)
-    }
-
-    @MainActor
-    @Test func toggleRefundItemSelection_then_toggles_item_at_index() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // When
-        sut.toggleRefundItemSelection(at: 0)
-        let isSelectedAfterToggle = sut.refundSelectableItems[0].isSelected
-
-        // Then
-        #expect(isSelectedAfterToggle == false)
-    }
-
-    @Test func toggleRefundItemSelection_when_index_out_of_bounds_then_does_not_crash() async throws {
-        // When
-        let items = await MainActor.run {
-            sut.toggleRefundItemSelection(at: 999)
-            return sut.refundSelectableItems
-        }
-
-        // Then
-        #expect(items.isEmpty)
-    }
-
-    @MainActor
-    @Test func clearRefundSelection_then_removes_all_items() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-        try #require(sut.refundSelectableItems.count == 2)
-
-        // When
-        sut.clearRefundSelection()
-
-        // Then
-        #expect(sut.refundSelectableItems.isEmpty)
-    }
-
-    @MainActor
-    @Test func toggleAllRefundItemsSelection_when_all_selected_then_deselects_all() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // When
-        sut.toggleAllRefundItemsSelection()
-
-        // Then
-        for item in sut.refundSelectableItems {
-            #expect(item.isSelected == false)
-        }
-    }
-
-    @MainActor
-    @Test func toggleAllRefundItemsSelection_when_some_deselected_then_selects_all() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-        sut.toggleRefundItemSelection(at: 0) // Deselect first item
-
-        // When
-        sut.toggleAllRefundItemsSelection()
-
-        // Then
-        for item in sut.refundSelectableItems {
-            #expect(item.isSelected == true)
-        }
-    }
-
-    @MainActor
-    @Test func toggleAllRefundItemsSelection_when_none_selected_then_selects_all() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, formattedPrice: "$10.00", formattedTotal: "$20.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-        sut.toggleAllRefundItemsSelection() // Deselect all
-
-        // When
-        sut.toggleAllRefundItemsSelection() // Should select all
-
-        // Then
-        for item in sut.refundSelectableItems {
-            #expect(item.isSelected == true)
-        }
-    }
-
-    // MARK: - Prepare Refund Review Data Tests
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_when_no_selected_order_then_returns_nil() async throws {
-        // When
-        _ = await sut.startRefundFlow()
-
-        // Then
-        #expect(sut.preparePOSRefundReviewData() == nil)
-    }
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_when_no_items_selected_then_returns_nil() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        // When
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-        sut.toggleAllRefundItemsSelection() // Deselect all
-
-        // Then
-        #expect(sut.preparePOSRefundReviewData() == nil)
-    }
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_then_returns_correct_items_count() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 3, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        // When
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // Then
-        #expect(sut.preparePOSRefundReviewData()?.itemsCount == 3)
-    }
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_then_returns_correct_subtotal() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00"),
-            makePOSOrderItem(itemID: 2, quantity: 1, price: 5.50, formattedPrice: "$5.50")
-        ])
-
-        // When
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // Then
-        // 2 × $10.00 + 1 × $5.50 = $25.50
-        #expect(sut.preparePOSRefundReviewData()?.formattedItemsSubtotal == "$25.50")
-    }
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_when_full_refund_then_uses_original_tax() async throws {
-        // Given - item with quantity 2 and totalTax of $1.50 (for both units)
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, totalTax: 1.50, formattedPrice: "$10.00")
-        ])
-
-        // When - all items selected (full refund)
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // Then - should use original totalTax directly ($1.50)
-        #expect(sut.preparePOSRefundReviewData()?.formattedTax == "$1.50")
-    }
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_when_partial_refund_then_calculates_proportional_tax() async throws {
-        // Given - item with quantity 2 and totalTax of $1.50 (for both units)
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, totalTax: 1.50, formattedPrice: "$10.00")
-        ])
-
-        // When - only 1 of 2 items selected (partial refund)
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-        sut.toggleRefundItemSelection(at: 0) // Deselect first item, leaving 1 selected
-
-        // Then - should calculate proportionally: $1.50 / 2 × 1 = $0.75
-        #expect(sut.preparePOSRefundReviewData()?.formattedTax == "$0.75")
-    }
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_then_returns_correct_total() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, totalTax: 1.00, formattedPrice: "$10.00")
-        ])
-
-        // When
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // Then - $10.00 + $1.00 = $11.00
-        #expect(sut.preparePOSRefundReviewData()?.formattedRefundTotal == "$11.00")
-    }
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_then_returns_via_payment_method_title() async throws {
-        // Given
-        let order = makeOrder(paymentMethodTitle: "WooCommerce In-Person Payments", lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        // When
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // Then
-        #expect(sut.preparePOSRefundReviewData()?.paymentMethodDescription == "Via WooCommerce In-Person Payments")
-    }
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_then_refund_reason_is_nil_by_default() async throws {
-        // Given
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        // When
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // Then
-        #expect(sut.preparePOSRefundReviewData()?.refundReason == nil)
-    }
-
-    // MARK: - Currency Formatting Tests
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_with_EUR_currency_then_formats_with_comma_decimal_separator() async throws {
-        // Given - EUR with comma decimal separator and dot thousand separator
-        let eurSettings = CurrencySettings(
-            currencyCode: .EUR,
-            currencyPosition: .rightSpace,
-            thousandSeparator: ".",
-            decimalSeparator: ",",
-            numberOfDecimals: 2
-        )
-        let controller = makeController(currencySettings: eurSettings)
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, price: 1172.02, totalTax: 234.40, formattedPrice: "1.172,02 €")
-        ])
-
-        // When
-        controller.selectOrder(order)
-        _ = await controller.startRefundFlow()
-        let reviewData = controller.preparePOSRefundReviewData()
-
-        // Then - 2 × €1,172.02 = €2,344.04, tax = €234.40, total = €2,578.44
-        // Note: CurrencyFormatter uses non-breaking space (\u{00A0}) before currency symbol
-        #expect(reviewData?.formattedItemsSubtotal == "2.344,04\u{00A0}€")
-        #expect(reviewData?.formattedTax == "234,40\u{00A0}€")
-        #expect(reviewData?.formattedRefundTotal == "2.578,44\u{00A0}€")
-    }
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_with_JPY_currency_then_formats_without_decimals() async throws {
-        // Given - JPY with no decimals
-        let jpySettings = CurrencySettings(
-            currencyCode: .JPY,
-            currencyPosition: .left,
-            thousandSeparator: ",",
-            decimalSeparator: ".",
-            numberOfDecimals: 0
-        )
-        let controller = makeController(currencySettings: jpySettings)
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 2344, totalTax: 234, formattedPrice: "¥2,344")
-        ])
-
-        // When
-        controller.selectOrder(order)
-        _ = await controller.startRefundFlow()
-        let reviewData = controller.preparePOSRefundReviewData()
-
-        // Then
-        #expect(reviewData?.formattedItemsSubtotal == "¥2,344")
-        #expect(reviewData?.formattedTax == "¥234")
-        #expect(reviewData?.formattedRefundTotal == "¥2,578")
-    }
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_with_GBP_and_large_values_then_formats_correctly() async throws {
-        // Given - GBP with large values
-        let gbpSettings = CurrencySettings(
-            currencyCode: .GBP,
-            currencyPosition: .left,
-            thousandSeparator: ",",
-            decimalSeparator: ".",
-            numberOfDecimals: 2
-        )
-        let controller = makeController(currencySettings: gbpSettings)
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 12345.67, totalTax: 2469.13, formattedPrice: "£12,345.67")
-        ])
-
-        // When
-        controller.selectOrder(order)
-        _ = await controller.startRefundFlow()
-        let reviewData = controller.preparePOSRefundReviewData()
-
-        // Then
-        #expect(reviewData?.formattedItemsSubtotal == "£12,345.67")
-        #expect(reviewData?.formattedTax == "£2,469.13")
-        #expect(reviewData?.formattedRefundTotal == "£14,814.80")
-    }
-
-    @MainActor
-    @Test func preparePOSRefundReviewData_with_USD_and_large_value_from_screenshot_then_formats_correctly() async throws {
-        // Given - USD with value from screenshot: $2,344.04
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 2344.04, totalTax: 234.40, formattedPrice: "$2,344.04")
-        ])
-
-        // When
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-        let reviewData = sut.preparePOSRefundReviewData()
-
-        // Then
-        #expect(reviewData?.formattedItemsSubtotal == "$2,344.04")
-        #expect(reviewData?.formattedTax == "$234.40")
-        #expect(reviewData?.formattedRefundTotal == "$2,578.44")
-    }
-
-    // MARK: - Process Refund Tests
-
-    @MainActor
-    @Test func processRefund_then_calls_service_with_correct_order_id() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        let order = makeOrder(id: 123, lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // When
-        try await sut.processRefund(reason: .none)
-
-        // Then
-        #expect(refundsService.createRefundCalled == true)
-        #expect(refundsService.spyCreateRefundOrderID == 123)
-    }
-
-    @MainActor
-    @Test func processRefund_then_calls_service_with_selected_items() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00"),
-            makePOSOrderItem(itemID: 2, quantity: 1, price: 5.00, formattedPrice: "$5.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-        sut.toggleRefundItemSelection(at: 0) // Deselect first item of itemID 1
-
-        // When
-        try await sut.processRefund(reason: .none)
-
-        // Then
-        let items = try #require(refundsService.spyCreateRefundItems)
-        #expect(items.count == 2)
-        #expect(items.contains(where: { $0.itemID == 1 }))
-        #expect(items.contains(where: { $0.itemID == 2 }))
-    }
-
-    @MainActor
-    @Test func processRefund_then_calls_service_with_reason() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // When
-        try await sut.processRefund(reason: "Customer changed their mind")
-
-        // Then
-        #expect(refundsService.spyCreateRefundReason == "Customer changed their mind")
-    }
-
-    @MainActor
-    @Test func processRefund_when_successful_then_clears_selection() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 2, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-        try #require(sut.refundSelectableItems.count == 2)
-
-        // When
-        try await sut.processRefund(reason: .none)
-
-        // Then
-        #expect(sut.refundSelectableItems.isEmpty)
-    }
-
-    @MainActor
-    @Test func processRefund_when_service_throws_then_propagates_error() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        struct TestError: Error {}
-        refundsService.createRefundErrorToThrow = TestError()
-
-        // When / Then
-        var thrownError: Error?
-        do {
-            try await sut.processRefund(reason: .none)
-        } catch {
-            thrownError = error
-        }
-
-        #expect(thrownError is TestError)
-    }
-
-    @MainActor
-    @Test func processRefund_then_converts_items_with_correct_properties() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 42, quantity: 3, price: 15.50, totalTax: 1.55, formattedPrice: "$15.50")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // When
-        try await sut.processRefund(reason: .none)
-
-        // Then
-        let items = try #require(refundsService.spyCreateRefundItems)
-        #expect(items.count == 3)
-
-        let firstItem = items[0]
-        #expect(firstItem.itemID == 42)
-        #expect(firstItem.lineItemTotal == 46.50)
-        #expect(firstItem.totalTax == 1.55)
-        #expect(firstItem.originalQuantity == 3)
-    }
-
-    @MainActor
-    @Test func processRefund_when_supportsAutomaticRefund_is_true_then_calls_service_with_automatic_refund_true() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // When
-        try await sut.processRefund(reason: .none)
-
-        // Then
-        #expect(refundsService.spyCreateRefundAutomaticRefund == true)
-    }
-
-    @MainActor
-    @Test func processRefund_when_supportsAutomaticRefund_is_false_then_calls_service_with_automatic_refund_false() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: false
-        )
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
-        ])
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // When
-        try await sut.processRefund(reason: .none)
-
-        // Then
-        #expect(refundsService.spyCreateRefundAutomaticRefund == false)
-    }
-
-    @MainActor
-    @Test func processRefund_when_successful_then_updates_order() async throws {
-        // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
-            refunds: [],
-            isFullyRefunded: false,
-            supportsAutomaticRefund: true
-        )
-
-        let order = makeOrder(lineItems: [
-            makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
-        ])
-        orderListService.orderPages = [[order]]
-        orderListService.loadOrderResult = order
-
-        await sut.loadOrders()
-
-        sut.selectOrder(order)
-        _ = await sut.startRefundFlow()
-
-        // When
-        try await sut.processRefund(reason: .none)
-
-        // Then
-        #expect(orderListService.loadOrderWasCalled == true)
-        #expect(orderListService.lastLoadOrderID == order.id)
-    }
-
-    @MainActor
     @Test func test_loadOrderRefunds_when_order_has_refunds_then_enriches_refunds_with_items() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        let order = POSOrderTestFactory.makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
         refundsService.loadOrderRefundsResultToReturn = [
             POSOrderRefund(refundID: 1, formattedTotal: "-$15.00", items: [
@@ -1167,7 +403,107 @@ final class POSOrderListControllerTests {
         #expect(refundedItems?.count == 2)
     }
 
-    @MainActor
+    @Test func test_orderDetailsItemsState_when_refunded_order_selected_then_starts_loading_before_request() async throws {
+        // Given
+        let items = [POSOrderTestFactory.makePOSOrderItem(itemID: 1), POSOrderTestFactory.makePOSOrderItem(itemID: 2)]
+        let order = POSOrderTestFactory.makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+
+        // When
+        sut.selectOrder(order)
+
+        // Then
+        guard case .loading(let rowCount) = sut.orderDetailsItemsState else {
+            Issue.record("Expected loading item state, but got \(sut.orderDetailsItemsState)")
+            return
+        }
+        #expect(rowCount == 2)
+        #expect(sut.isLoadingOrderRefunds)
+    }
+
+    @Test func test_orderDetailsItemsState_when_refund_response_has_no_items_then_finishes_loading() async throws {
+        // Given
+        let items = [POSOrderTestFactory.makePOSOrderItem(itemID: 1), POSOrderTestFactory.makePOSOrderItem(itemID: 2)]
+        let order = POSOrderTestFactory.makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then
+        guard case .loaded(let lineItems, let customAmounts, let refundedItems) = sut.orderDetailsItemsState else {
+            Issue.record("Expected loaded item state, but got \(sut.orderDetailsItemsState)")
+            return
+        }
+        #expect(lineItems.count == 2)
+        #expect(customAmounts.isEmpty)
+        #expect(refundedItems.isEmpty)
+        #expect(!sut.isLoadingOrderRefunds)
+    }
+
+    @Test func test_orderDetailsItemsState_when_reselecting_loaded_refunded_order_then_uses_cached_refunds() async throws {
+        // Given
+        let order = POSOrderTestFactory.makeOrder(
+            lineItems: [POSOrderTestFactory.makePOSOrderItem(itemID: 1), POSOrderTestFactory.makePOSOrderItem(itemID: 2)],
+            refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")]
+        )
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1,
+                              quantity: -1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ]
+        await sut.loadOrderRefunds()
+
+        // When
+        sut.selectOrder(order)
+
+        // Then
+        guard case .loaded(_, _, let refundedItems) = sut.orderDetailsItemsState else {
+            Issue.record("Expected loaded item state, but got \(sut.orderDetailsItemsState)")
+            return
+        }
+        #expect(refundedItems.count == 1)
+        #expect(!sut.isLoadingOrderRefunds)
+    }
+
+    @Test func test_orderDetailsItemsState_when_refund_details_loaded_then_filters_refunded_line_items() async throws {
+        // Given
+        let order = POSOrderTestFactory.makeOrder(
+            lineItems: [POSOrderTestFactory.makePOSOrderItem(itemID: 1), POSOrderTestFactory.makePOSOrderItem(itemID: 2)],
+            refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")]
+        )
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1,
+                              quantity: -1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then
+        guard case .loaded(let lineItems, _, let refundedItems) = sut.orderDetailsItemsState else {
+            Issue.record("Expected loaded item state, but got \(sut.orderDetailsItemsState)")
+            return
+        }
+        #expect(lineItems.map(\.itemID) == [2])
+        #expect(refundedItems.compactMap(\.refundedItemID) == [1])
+    }
+
     @Test func test_loadOrderRefunds_when_no_selected_order_then_selectedOrder_is_nil() async throws {
         // Given — no order selected
 
@@ -1178,10 +514,9 @@ final class POSOrderListControllerTests {
         #expect(sut.selectedOrder == nil)
     }
 
-    @MainActor
     @Test func test_loadOrderRefunds_when_order_has_no_refunds_then_refunds_unchanged() async throws {
         // Given
-        let order = makeOrder(refunds: [])
+        let order = POSOrderTestFactory.makeOrder(refunds: [])
         sut.selectOrder(order)
 
         // When
@@ -1191,10 +526,9 @@ final class POSOrderListControllerTests {
         #expect(sut.selectedOrder?.refunds.flatMap { $0.items }.isEmpty == true)
     }
 
-    @MainActor
     @Test func test_loadOrderRefunds_when_service_throws_then_refunds_unchanged() async throws {
         // Given
-        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        let order = POSOrderTestFactory.makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
         refundsService.loadOrderRefundsErrorToThrow = NSError(domain: "test", code: 1)
 
@@ -1205,11 +539,97 @@ final class POSOrderListControllerTests {
         #expect(sut.selectedOrder?.refunds.first?.items.isEmpty == true)
     }
 
-    @MainActor
+    @Test func test_selectOrder_when_reselecting_after_failed_refund_load_then_retries_loading() async throws {
+        // Given — a refund details fetch that failed
+        let order = POSOrderTestFactory.makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsErrorToThrow = NSError(domain: "test", code: 1)
+        await sut.loadOrderRefunds()
+        try #require(!sut.isLoadingOrderRefunds)
+
+        // When — the order is selected again after the failure
+        refundsService.loadOrderRefundsErrorToThrow = nil
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1,
+                              quantity: -1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ]
+        sut.selectOrder(order)
+
+        // Then — the failed state is cleared so the loading skeleton shows and a retry succeeds
+        #expect(sut.isLoadingOrderRefunds)
+        await sut.loadOrderRefunds()
+        #expect(!sut.isLoadingOrderRefunds)
+        #expect(sut.selectedOrder?.refunds.flatMap(\.items).count == 1)
+    }
+
+    @Test func test_updateOrder_when_refund_details_cached_then_drops_cache_and_shows_loading() async throws {
+        // Given — a selected refunded order with loaded refund details
+        let order = POSOrderTestFactory.makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1,
+                              quantity: -1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ]
+        await sut.loadOrderRefunds()
+        try #require(!sut.isLoadingOrderRefunds)
+
+        // When — the order is refetched with an extra refund whose details are summary-only
+        let refreshedOrder = order.copy(refunds: .some([
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00"),
+            POSOrderRefund(refundID: 2, formattedTotal: "-$5.00")
+        ]))
+        orderListService.loadOrderResult = refreshedOrder
+        try await sut.updateOrder(orderID: order.id)
+
+        // Then — the cached details are dropped and the details section is loading again
+        #expect(sut.isLoadingOrderRefunds)
+        guard case .loading = sut.orderDetailsItemsState else {
+            Issue.record("Expected loading item state, but got \(sut.orderDetailsItemsState)")
+            return
+        }
+    }
+
+    @Test func test_selectOrder_when_payload_refunds_carry_items_then_caches_them_for_summary_reselection() async throws {
+        // Given — an order whose payload refunds already include item details
+        let orderWithItems = POSOrderTestFactory.makeOrder(refunds: [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
+                POSRefundItem(refundedItemID: 1,
+                              quantity: -1,
+                              name: "Item A",
+                              formattedPrice: "$10.00",
+                              formattedTotal: "-$10.00",
+                              imageSrc: nil)
+            ])
+        ])
+        sut.selectOrder(orderWithItems)
+        try #require(!sut.isLoadingOrderRefunds)
+
+        // When — the same order is reselected from summary data, as a list refresh would provide
+        let summaryOrder = orderWithItems.copy(refunds: .some([
+            POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")
+        ]))
+        sut.selectOrder(summaryOrder)
+
+        // Then — the cached details are reapplied without re-showing the loading skeleton
+        #expect(!sut.isLoadingOrderRefunds)
+        #expect(sut.selectedOrder?.refunds.flatMap(\.items).count == 1)
+    }
+
     @Test func test_selectOrder_then_new_order_has_no_refunded_items() async throws {
         // Given: Load some refunded products first
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let order = makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        let order = POSOrderTestFactory.makeOrder(refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
         refundsService.loadOrderRefundsResultToReturn = [
             POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
@@ -1225,18 +645,16 @@ final class POSOrderListControllerTests {
         try #require(sut.selectedOrder?.refunds.flatMap { $0.items }.count == 1)
 
         // When
-        sut.selectOrder(makeOrder(id: 2))
+        sut.selectOrder(POSOrderTestFactory.makeOrder(id: 2))
 
         // Then
         #expect(sut.selectedOrder?.refunds.flatMap { $0.items }.isEmpty == true)
     }
 
-    @MainActor
     @Test func test_loadOrderRefunds_when_selected_order_changes_during_fetch_then_discards_stale_result() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let orderA = makeOrder(id: 1, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
-        let orderB = makeOrder(id: 2, refunds: [POSOrderRefund(refundID: 2, formattedTotal: "-$5.00")])
+        let orderA = POSOrderTestFactory.makeOrder(id: 1, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        let orderB = POSOrderTestFactory.makeOrder(id: 2, refunds: [POSOrderRefund(refundID: 2, formattedTotal: "-$5.00")])
         sut.selectOrder(orderA)
         refundsService.loadOrderRefundsResultToReturn = [
             POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
@@ -1260,12 +678,10 @@ final class POSOrderListControllerTests {
         #expect(sut.selectedOrder?.refunds.flatMap { $0.items }.isEmpty == true)
     }
 
-    @MainActor
     @Test func test_displayedLineItems_when_loading_refunds_then_returns_all_items() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let items = [makePOSOrderItem(itemID: 1), makePOSOrderItem(itemID: 2)]
-        let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        let items = [POSOrderTestFactory.makePOSOrderItem(itemID: 1), POSOrderTestFactory.makePOSOrderItem(itemID: 2)]
+        let order = POSOrderTestFactory.makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
 
         var displayedLineItemsCountWhileLoading: Int?
@@ -1280,12 +696,10 @@ final class POSOrderListControllerTests {
         #expect(displayedLineItemsCountWhileLoading == 2)
     }
 
-    @MainActor
     @Test func test_displayedLineItems_when_refunds_loaded_then_filters_fully_refunded_items() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let items = [makePOSOrderItem(itemID: 1, quantity: 2), makePOSOrderItem(itemID: 2, quantity: 1)]
-        let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        let items = [POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 2), POSOrderTestFactory.makePOSOrderItem(itemID: 2, quantity: 1)]
+        let order = POSOrderTestFactory.makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
         refundsService.loadOrderRefundsResultToReturn = [
             POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
@@ -1306,12 +720,10 @@ final class POSOrderListControllerTests {
         #expect(sut.displayedLineItems.first?.itemID == 1)
     }
 
-    @MainActor
     @Test func test_displayedLineItems_when_partially_refunded_then_includes_item() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = true
-        let items = [makePOSOrderItem(itemID: 1, quantity: 3)]
-        let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        let items = [POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 3)]
+        let order = POSOrderTestFactory.makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
         refundsService.loadOrderRefundsResultToReturn = [
             POSOrderRefund(refundID: 1, formattedTotal: "-$10.00", items: [
@@ -1332,81 +744,109 @@ final class POSOrderListControllerTests {
         #expect(sut.displayedLineItems.first?.itemID == 1)
     }
 
-    @MainActor
-    @Test func test_displayedLineItems_when_feature_flag_disabled_then_returns_all_items() async throws {
+    @Test func test_displayedCustomAmounts_when_fee_fully_refunded_then_filters_it_out() async throws {
         // Given
-        featureFlags.isPointOfSaleRefundsi1Enabled = false
-        let items = [makePOSOrderItem(itemID: 1), makePOSOrderItem(itemID: 2)]
-        let order = makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
+        let customAmount = POSOrderTestFactory.makePOSOrderCustomAmount(id: 777, name: "Discount Fee")
+        let order = POSOrderTestFactory.makeOrder(
+            lineItems: [],
+            customAmounts: [customAmount],
+            refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$5.00")]
+        )
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$5.00", items: [
+                POSRefundItem(refundedItemID: 777,
+                              quantity: 1,
+                              name: "Discount Fee",
+                              formattedPrice: "$5.00",
+                              formattedTotal: "-$5.00",
+                              imageSrc: nil,
+                              isLumpSum: true)
+            ])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then
+        #expect(sut.displayedCustomAmounts.isEmpty)
+    }
+
+    @Test func test_displayedCustomAmounts_when_other_fee_unrefunded_then_keeps_it() async throws {
+        // Given - one fee refunded, another not
+        let order = POSOrderTestFactory.makeOrder(
+            lineItems: [],
+            customAmounts: [
+                POSOrderTestFactory.makePOSOrderCustomAmount(id: 777, name: "Discount Fee"),
+                POSOrderTestFactory.makePOSOrderCustomAmount(id: 888, name: "Tip")
+            ],
+            refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$5.00")]
+        )
+        sut.selectOrder(order)
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$5.00", items: [
+                POSRefundItem(refundedItemID: 777,
+                              quantity: 1,
+                              name: "Discount Fee",
+                              formattedPrice: "$5.00",
+                              formattedTotal: "-$5.00",
+                              imageSrc: nil,
+                              isLumpSum: true)
+            ])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then
+        #expect(sut.displayedCustomAmounts.count == 1)
+        #expect(sut.displayedCustomAmounts.first?.id == 888)
+    }
+
+    @Test func test_displayedCustomAmounts_when_fee_lines_absent_from_refund_response_then_fee_remains_visible() async throws {
+        // Given - simulates an older WooCommerce store whose refund response omits `fee_lines`,
+        // so the loaded refund has no entry pointing back to the original fee id. The fee
+        // can't be filtered out and stays visible (documented limitation).
+        let customAmount = POSOrderTestFactory.makePOSOrderCustomAmount(id: 777, name: "Discount Fee")
+        let order = POSOrderTestFactory.makeOrder(
+            lineItems: [],
+            customAmounts: [customAmount],
+            refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$5.00")]
+        )
+        sut.selectOrder(order)
+        // No POSRefundItem with refundedItemID = 777 is returned, mirroring an empty fee_lines
+        // server response.
+        refundsService.loadOrderRefundsResultToReturn = [
+            POSOrderRefund(refundID: 1, formattedTotal: "-$5.00", items: [])
+        ]
+
+        // When
+        await sut.loadOrderRefunds()
+
+        // Then
+        #expect(sut.displayedCustomAmounts.count == 1)
+        #expect(sut.displayedCustomAmounts.first?.id == 777)
+    }
+
+    @Test func test_displayedCustomAmounts_when_order_has_no_refunds_then_returns_all_custom_amounts() async throws {
+        // Given
+        let customAmount = POSOrderTestFactory.makePOSOrderCustomAmount(id: 777, name: "Discount Fee")
+        let order = POSOrderTestFactory.makeOrder(lineItems: [], customAmounts: [customAmount])
+
+        // When
+        sut.selectOrder(order)
+
+        // Then
+        #expect(sut.displayedCustomAmounts.count == 1)
+    }
+
+    @Test func test_displayedLineItems_when_no_items_refunded_then_returns_all_items() async throws {
+        // Given
+        let items = [POSOrderTestFactory.makePOSOrderItem(itemID: 1), POSOrderTestFactory.makePOSOrderItem(itemID: 2)]
+        let order = POSOrderTestFactory.makeOrder(lineItems: items, refunds: [POSOrderRefund(refundID: 1, formattedTotal: "-$10.00")])
         sut.selectOrder(order)
 
         // When/Then — all items returned regardless of refunds
         #expect(sut.displayedLineItems.count == 2)
-    }
-}
-
-private extension POSOrderListControllerTests {
-    func makeController(currencySettings: CurrencySettings) -> POSOrderListController {
-        let provider = MockCurrencySettingsProvider(currencySettings: currencySettings)
-        let formatter = CurrencyFormatter(currencySettings: currencySettings)
-        return POSOrderListController(
-            orderListFetchStrategyFactory: fetchStrategyFactory,
-            refundsService: refundsService,
-            featureFlags: featureFlags,
-            currencySettingsProvider: provider,
-            currencyFormatter: formatter
-        )
-    }
-
-    func makeOrder(id: Int64 = 1,
-                   status: OrderStatusEnum = .completed,
-                   paymentMethodID: String = "woocommerce_payments",
-                   paymentMethodTitle: String = "cod",
-                   lineItems: [POSOrderItem] = [],
-                   refunds: [POSOrderRefund] = []) -> POSOrder {
-        POSOrder(
-            id: id,
-            number: "\(id)",
-            dateCreated: Date(),
-            status: status,
-            formattedTotal: "$25.99",
-            formattedSubtotal: "$25.99",
-            customerEmail: "customer1@example.com",
-            paymentMethodID: paymentMethodID,
-            paymentMethodTitle: paymentMethodTitle,
-            lineItems: lineItems,
-            refunds: refunds,
-            formattedDiscountTotal: nil,
-            formattedTotalTax: "$0.00",
-            formattedPaymentTotal: "$25.99",
-            formattedNetAmount: nil,
-            datePaid: status == .completed || status == .processing ? Date() : nil
-        )
-    }
-
-    func makePOSOrderItem(
-        itemID: Int64 = 1,
-        name: String = "Test Item",
-        quantity: Decimal = 1,
-        price: Decimal = 10.00,
-        total: Decimal? = nil,
-        totalTax: Decimal = 0,
-        formattedPrice: String = "$10.00",
-        formattedTotal: String? = nil,
-        imageSrc: String? = nil,
-        attributes: [OrderItemAttribute] = []
-    ) -> POSOrderItem {
-        POSOrderItem(
-            itemID: itemID,
-            name: name,
-            quantity: quantity,
-            price: price,
-            total: total ?? (price * quantity),
-            totalTax: totalTax,
-            formattedPrice: formattedPrice,
-            formattedTotal: formattedTotal ?? formattedPrice,
-            imageSrc: imageSrc,
-            attributes: attributes
-        )
     }
 }

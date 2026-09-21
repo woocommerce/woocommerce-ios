@@ -46,7 +46,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
         let isInteractiveDismissable: Bool
 
         var body: some View {
-            NavigationView {
+            NavigationStack {
                 primaryView({ // presentSecondaryView
                     isShowingSecondaryView = true
                 })
@@ -56,13 +56,12 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
                     }
                 }
                 .sheet(isPresented: $isShowingSecondaryView) {
-                    NavigationView {
+                    NavigationStack {
                         secondaryView($isShowingSecondaryView)
                     }
                     .interactiveDismissDisabled(!isInteractiveDismissable)
                 }
             }
-            .navigationViewStyle(.stack)
             .onAppear {
                 isShowingSecondaryView = false
             }
@@ -77,7 +76,7 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
 
         var body: some View {
             HStack(spacing: 0) {
-                NavigationView {
+                NavigationStack {
                     secondaryView($isShowingSecondaryView)
                         .toolbar {
                             ToolbarItem(placement: .navigationBarLeading) {
@@ -85,15 +84,14 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
                             }
                         }
                 }
-                .navigationViewStyle(.stack)
                 .layoutPriority(1)
 
                 Divider()
+                    .ignoresSafeArea(edges: .vertical)
 
-                NavigationView {
+                NavigationStack {
                     primaryView(nil)
                 }
-                .navigationViewStyle(.stack)
                 .frame(minWidth: 400)
             }
             .onAppear {

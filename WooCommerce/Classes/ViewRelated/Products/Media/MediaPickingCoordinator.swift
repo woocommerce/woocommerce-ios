@@ -118,7 +118,7 @@ private extension MediaPickingCoordinator {
     func cameraAction(origin: UIViewController) -> UIAlertAction {
         let title = NSLocalizedString("Take a photo",
                                       comment: "Menu option for taking an image or video with the device's camera.")
-        return UIAlertAction(title: title, style: .default) { [weak self] action in
+        return UIAlertAction(title: title, style: .default) { [weak self] _ in
             self?.showMediaPicker(source: .camera, from: origin)
         }
     }
@@ -127,7 +127,7 @@ private extension MediaPickingCoordinator {
     func photoLibraryAction(origin: UIViewController) -> UIAlertAction {
         let title = NSLocalizedString("Choose from device",
                                       comment: "Menu option for selecting media from the device's photo library.")
-        return UIAlertAction(title: title, style: .default) { [weak self] action in
+        return UIAlertAction(title: title, style: .default) { [weak self] _ in
             self?.showMediaPicker(source: .photoLibrary, from: origin)
         }
     }
@@ -136,7 +136,7 @@ private extension MediaPickingCoordinator {
     func siteMediaLibraryAction(origin: UIViewController) -> UIAlertAction {
         let title = NSLocalizedString("WordPress Media Library",
                                       comment: "Menu option for selecting media from the site's media library.")
-        return UIAlertAction(title: title, style: .default) { [weak self] action in
+        return UIAlertAction(title: title, style: .default) { [weak self] _ in
             self?.showMediaPicker(source: .siteMediaLibrary, from: origin)
         }
     }

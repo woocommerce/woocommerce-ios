@@ -11,7 +11,6 @@ extension ShipmentTrackingProviderGroup {
     @NSManaged public var siteID: Int64
     @NSManaged public var name: String?
     @NSManaged public var providers: Set<ShipmentTrackingProvider>?
-
 }
 
 // MARK: Generated accessors for providers
@@ -28,5 +27,4 @@ extension ShipmentTrackingProviderGroup {
 
     @objc(removeProviders:)
     @NSManaged public func removeFromProviders(_ values: NSSet)
-
 }

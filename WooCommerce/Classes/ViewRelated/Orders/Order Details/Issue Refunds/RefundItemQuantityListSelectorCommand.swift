@@ -47,5 +47,4 @@ private extension RefundItemQuantityListSelectorCommand {
     enum Localization {
         static let selectQuantityTitle = NSLocalizedString("Quantity to refund", comment: "Navigation title on the quantity item selector screen")
     }
-
 }

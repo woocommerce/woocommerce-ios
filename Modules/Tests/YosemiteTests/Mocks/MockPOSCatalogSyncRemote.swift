@@ -31,6 +31,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     let includeStatusTracker = IncludeStatusTracker()
     private(set) var lastCatalogRequestForceGeneration: Bool?
     private(set) var lastCatalogDownloadAllowCellular: Bool?
+    private(set) var lastCatalogDownloadSnapshotDate: Date?
 
     // Fallback result when no specific page result is configured
     private let fallbackResult = PagedItems(items: [] as [POSProduct], hasMorePages: false, totalItems: 0)
@@ -220,8 +221,9 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         }
     }
 
-    func downloadCatalog(for siteID: Int64, downloadURL: String, allowCellular: Bool) async throws -> POSCatalogResponse {
+    func downloadCatalog(for siteID: Int64, downloadURL: String, allowCellular: Bool, snapshotDate: Date) async throws -> POSCatalogResponse {
         lastCatalogDownloadAllowCellular = allowCellular
+        lastCatalogDownloadSnapshotDate = snapshotDate
         switch catalogDownloadResult {
         case .success(let response):
             return response
@@ -243,52 +245,6 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         switch parseDownloadedCatalogResult {
         case .success(let response):
             return response
-        case .failure(let error):
-            throw error
-        }
-    }
-
-    // MARK: - Protocol Methods - Catalog size
-
-    // MARK: - getProductCount tracking
-    private(set) var getProductCountCallCount = 0
-    private(set) var lastProductCountSiteID: Int64?
-    var getProductCountResult: Result<Int, Error> = .success(0)
-    var productCountDelay: UInt64 = 0
-
-    // MARK: - getProductVariationCount tracking
-    private(set) var getProductVariationCountCallCount = 0
-    private(set) var lastVariationCountSiteID: Int64?
-    var getProductVariationCountResult: Result<Int, Error> = .success(0)
-    var variationCountDelay: UInt64 = 0
-
-    func getProductCount(siteID: Int64) async throws -> Int {
-        getProductCountCallCount += 1
-        lastProductCountSiteID = siteID
-
-        if productCountDelay > 0 {
-            try await Task.sleep(nanoseconds: productCountDelay)
-        }
-
-        switch getProductCountResult {
-        case .success(let count):
-            return count
-        case .failure(let error):
-            throw error
-        }
-    }
-
-    func getProductVariationCount(siteID: Int64) async throws -> Int {
-        getProductVariationCountCallCount += 1
-        lastVariationCountSiteID = siteID
-
-        if variationCountDelay > 0 {
-            try await Task.sleep(nanoseconds: variationCountDelay)
-        }
-
-        switch getProductVariationCountResult {
-        case .success(let count):
-            return count
         case .failure(let error):
             throw error
         }

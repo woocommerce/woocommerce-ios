@@ -119,12 +119,21 @@ public final class MediaAssetExporter: MediaExporter {
         options.isNetworkAccessAllowed = true
 
         // Export the video.
-        let (exportSession, info) = await requestVideo(asset: asset, options: options, destinationURL: destinationURL)
-        guard let exportSession, exportSession.progress == 1.0 else {
+        let (exportSession, info) = await requestVideoExportSession(asset: asset, options: options)
+        guard let exportSession else {
             guard let error = info?[PHImageErrorKey] as? Error else {
                 throw AssetExportError.failedToExportVideo
             }
             throw error
+        }
+
+        DDLogDebug("🚀 Video export starts")
+        try await exportSession.export(to: destinationURL, as: .mp4)
+        DDLogDebug("🎉 Video exporting done!")
+        DDLogDebug("⏳ Exporting video progress: \(exportSession.progress)")
+
+        guard exportSession.progress == 1.0 else {
+            throw AssetExportError.failedToExportVideo
         }
 
         let finalMedia = UploadableMedia(localURL: destinationURL,
@@ -139,30 +148,20 @@ private extension MediaAssetExporter {
     func requestImage(asset: PHAsset, options: PHImageRequestOptions?) async -> (Data?, String?, CGImagePropertyOrientation, [AnyHashable: Any]?) {
         await withCheckedContinuation { continuation in
             imageManager.requestImageDataAndOrientation(for: asset,
-                                                        options: options) { (data, uti, orientation, info) in
+                                                        options: options) { data, uti, orientation, info in
                 continuation.resume(returning: (data, uti, orientation, info))
             }
         }
     }
 
-    func requestVideo(asset: PHAsset, options: PHVideoRequestOptions?, destinationURL: URL) async -> (AVAssetExportSession?, [AnyHashable: Any]?) {
+    func requestVideoExportSession(asset: PHAsset, options: PHVideoRequestOptions?) async -> (AVAssetExportSession?, [AnyHashable: Any]?) {
         await withCheckedContinuation { continuation in
             imageManager.requestExportSession(forVideo: asset, options: options, exportPreset: AVAssetExportPresetHighestQuality) { exportSession, info in
-                guard let exportSession else {
+                if exportSession == nil {
                     DDLogError("⛔️ Could not create export session for the selected video")
-                    return continuation.resume(returning: (exportSession, info))
                 }
 
-                exportSession.outputURL = destinationURL
-                exportSession.outputFileType = AVFileType.mp4 // default type
-
-                DDLogDebug("🚀 Video export starts")
-                exportSession.exportAsynchronously() {
-                    DDLogDebug("🎉 Video exporting done!")
-                    continuation.resume(returning: (exportSession, info))
-                }
-
-                DDLogDebug("⏳ Exporting video progress: \(exportSession.progress)")
+                continuation.resume(returning: (exportSession, info))
             }
         }
     }

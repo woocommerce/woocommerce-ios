@@ -94,9 +94,9 @@ public struct ProductBundleItem: Codable, Equatable, Hashable, GeneratedCopiable
         let defaultQuantity = try container.decode(Decimal.self, forKey: .defaultQuantity)
         let isOptional = try container.decode(Bool.self, forKey: .isOptional)
         let overridesVariations = try container.decode(Bool.self, forKey: .overridesVariations)
-        let allowedVariations = try container.decode([Int64].self, forKey: .allowedVariations)
+        let allowedVariations = try container.decodeIfPresent([Int64].self, forKey: .allowedVariations) ?? []
         let overridesDefaultVariationAttributes = try container.decode(Bool.self, forKey: .overridesDefaultVariationAttributes)
-        let defaultVariationAttributes = try container.decode([ProductVariationAttribute].self, forKey: .defaultVariationAttributes)
+        let defaultVariationAttributes = try container.decodeIfPresent([ProductVariationAttribute].self, forKey: .defaultVariationAttributes) ?? []
         let pricedIndividually = try container.decode(Bool.self, forKey: .pricedIndividually)
 
         self.init(bundledItemID: bundledItemID,

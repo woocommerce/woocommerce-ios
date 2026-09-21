@@ -18,11 +18,11 @@ final class WordPressSiteRemoteTests: XCTestCase {
 
     // MARK: - fetchSiteInfo
 
-    /// Verifies that fetchSiteInfo properly parses the sample response using the discovered wp-json root.
+    /// Verifies that fetchSiteInfo properly parses the sample response using the cached wp-json root.
     ///
-    func test_fetchSiteInfo_when_discovery_returns_wp_json_root_then_uses_wp_json_url() async throws {
+    func test_fetchSiteInfo_when_cache_contains_wp_json_root_then_uses_wp_json_url() async throws {
         // Given
-        let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"))
+        let remote = makeRemote(cachedRoot: "https://test.com/wp-json/")
         network.simulateResponse(requestUrlSuffix: "test.com/wp-json/", filename: "wordpress-site-info")
 
         // When
@@ -32,12 +32,12 @@ final class WordPressSiteRemoteTests: XCTestCase {
         XCTAssertEqual(site.name, "My WordPress Site")
     }
 
-    /// Verifies that fetchSiteInfo falls back to ?rest_route=/ when discovery returns nil.
+    /// Verifies that fetchSiteInfo uses the root returned by discovery.
     ///
-    func test_fetchSiteInfo_when_discovery_fails_then_falls_back_to_rest_route() async throws {
+    func test_fetchSiteInfo_when_discovery_returns_custom_root_then_uses_discovered_url() async throws {
         // Given
-        let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: nil))
-        network.simulateResponse(requestUrlSuffix: "?rest_route=/", filename: "wordpress-site-info")
+        let remote = makeRemote(cachedRoot: nil) { _ in "https://test.com/custom-json/" }
+        network.simulateResponse(requestUrlSuffix: "custom-json/", filename: "wordpress-site-info")
 
         // When
         let site = try await remote.fetchSiteInfo(for: sampleSiteURL)
@@ -46,11 +46,48 @@ final class WordPressSiteRemoteTests: XCTestCase {
         XCTAssertEqual(site.name, "My WordPress Site")
     }
 
+    /// Verifies that fetchSiteInfo falls back to /wp-json/ when discovery returns nil.
+    ///
+    func test_fetchSiteInfo_when_discovery_fails_then_falls_back_to_wp_json() async throws {
+        // Given
+        let remote = makeRemote(cachedRoot: nil)
+        network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info")
+
+        // When
+        let site = try await remote.fetchSiteInfo(for: sampleSiteURL)
+
+        // Then
+        XCTAssertEqual(site.name, "My WordPress Site")
+    }
+
+    func test_fetchSiteInfo_when_cached_root_fails_then_retries_with_newly_discovered_root() async throws {
+        // Given
+        let cache = MockRESTAPIRootCache(stubbedRoot: "https://test.com/?rest_route=/")
+        let replacementRoot = "https://test.com/wp-json/"
+        let remote = makeRemote(cache: cache) { _ in
+            cache.stubbedRoot = replacementRoot
+            return replacementRoot
+        }
+        network.simulateError(
+            requestUrlSuffix: "?rest_route=/",
+            error: NetworkError.unacceptableStatusCode(statusCode: 403)
+        )
+        network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info")
+
+        // When
+        let site = try await remote.fetchSiteInfo(for: sampleSiteURL)
+
+        // Then
+        XCTAssertEqual(site.name, "My WordPress Site")
+        XCTAssertEqual(cache.root(for: sampleSiteURL), replacementRoot)
+        XCTAssertEqual(network.requestsForResponseData.count, 2)
+    }
+
     /// Verifies that fetchSiteInfo properly parses the sample response (default behavior).
     ///
     func test_fetchSiteInfo_properly_returns_site() async throws {
-        let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: nil))
-        network.simulateResponse(requestUrlSuffix: "?rest_route=/", filename: "wordpress-site-info")
+        let remote = makeRemote(cachedRoot: nil)
+        network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info")
 
         // When
         let site = try await remote.fetchSiteInfo(for: sampleSiteURL)
@@ -62,8 +99,8 @@ final class WordPressSiteRemoteTests: XCTestCase {
     /// Verifies that fetchSiteInfo properly relays Networking Layer errors.
     ///
     func test_fetchSiteInfo_properly_relays_networking_errors() async {
-        let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: nil))
-        network.simulateError(requestUrlSuffix: "?rest_route=/", error: NetworkError.notFound())
+        let remote = makeRemote(cachedRoot: nil)
+        network.simulateError(requestUrlSuffix: "wp-json/", error: NetworkError.notFound())
 
         // When
         var fetchError: Error?
@@ -84,7 +121,7 @@ final class WordPressSiteRemoteTests: XCTestCase {
     ///
     func test_fetchSitePages_when_discovery_returns_wp_json_root_then_uses_wp_json_url() async throws {
         // Given
-        let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"))
+        let remote = makeRemote(cachedRoot: "https://test.com/wp-json/")
         network.simulateResponse(requestUrlSuffix: "wp-json/wp/v2/pages?_fields=id,title,link", filename: "wp-page-list-success")
 
         // When
@@ -102,7 +139,7 @@ final class WordPressSiteRemoteTests: XCTestCase {
     ///
     func test_fetchSitePages_when_discovery_returns_rest_route_root_then_appends_pages_path() async throws {
         // Given
-        let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/?rest_route=/"))
+        let remote = makeRemote(cachedRoot: "https://test.com/?rest_route=/")
         network.simulateResponse(requestUrlSuffix: "?rest_route=/wp/v2/pages?_fields=id,title,link", filename: "wp-page-list-success")
 
         // When
@@ -116,12 +153,12 @@ final class WordPressSiteRemoteTests: XCTestCase {
         ])
     }
 
-    /// Verifies that fetchSitePages falls back to the ?rest_route= path when discovery returns nil.
+    /// Verifies that fetchSitePages falls back to the /wp-json/ path when discovery returns nil.
     ///
-    func test_fetchSitePages_when_discovery_fails_then_falls_back_to_rest_route() async throws {
+    func test_fetchSitePages_when_discovery_fails_then_falls_back_to_wp_json() async throws {
         // Given
-        let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: nil))
-        network.simulateResponse(requestUrlSuffix: "?rest_route=/wp/v2/pages?_fields=id,title,link", filename: "wp-page-list-success")
+        let remote = makeRemote(cachedRoot: nil)
+        network.simulateResponse(requestUrlSuffix: "wp-json/wp/v2/pages?_fields=id,title,link", filename: "wp-page-list-success")
 
         // When
         let list = try await remote.fetchSitePages(for: sampleSiteURL)
@@ -137,8 +174,8 @@ final class WordPressSiteRemoteTests: XCTestCase {
     /// Verifies that fetchSitePages properly parses the sample response.
     ///
     func test_fetchSitePages_properly_returns_page_list() async throws {
-        let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: nil))
-        network.simulateResponse(requestUrlSuffix: "?rest_route=/wp/v2/pages?_fields=id,title,link", filename: "wp-page-list-success")
+        let remote = makeRemote(cachedRoot: nil)
+        network.simulateResponse(requestUrlSuffix: "wp-json/wp/v2/pages?_fields=id,title,link", filename: "wp-page-list-success")
 
         // When
         let list = try await remote.fetchSitePages(for: sampleSiteURL)
@@ -154,8 +191,8 @@ final class WordPressSiteRemoteTests: XCTestCase {
     /// Verifies that fetchSitePages properly relays Networking Layer errors.
     ///
     func test_fetchSitePages_properly_relays_networking_errors() async {
-        let remote = WordPressSiteRemote(network: network, apiRootCache: MockRESTAPIRootCache(stubbedRoot: nil))
-        network.simulateError(requestUrlSuffix: "?rest_route=/wp/v2/pages?_fields=id,title,link", error: NetworkError.notFound())
+        let remote = makeRemote(cachedRoot: nil)
+        network.simulateError(requestUrlSuffix: "wp-json/wp/v2/pages?_fields=id,title,link", error: NetworkError.notFound())
 
         // When
         var fetchError: Error?
@@ -168,5 +205,21 @@ final class WordPressSiteRemoteTests: XCTestCase {
         // Then
         XCTAssertNotNil(fetchError)
         XCTAssertTrue(fetchError is NetworkError)
+    }
+}
+
+private extension WordPressSiteRemoteTests {
+    func makeRemote(cachedRoot: String?,
+                    discovery: @escaping (String) async -> String? = { _ in nil }) -> WordPressSiteRemote {
+        makeRemote(cache: MockRESTAPIRootCache(stubbedRoot: cachedRoot), discovery: discovery)
+    }
+
+    func makeRemote(cache: RESTAPIRootCaching,
+                    discovery: @escaping (String) async -> String? = { _ in nil }) -> WordPressSiteRemote {
+        WordPressSiteRemote(
+            network: network,
+            apiRootCache: cache,
+            discoverRESTAPIRoot: discovery
+        )
     }
 }

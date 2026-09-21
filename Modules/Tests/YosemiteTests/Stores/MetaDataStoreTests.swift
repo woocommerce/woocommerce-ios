@@ -17,7 +17,7 @@ final class MetaDataStoreTests: XCTestCase {
     private let sampleSiteID: Int64 = 1234
     private let sampleOrderID: Int64 = 1
     private let sampleProductID: Int64 = 2
-    private let newMetadataArray = [["id": 1234, "key": "newValue"]]
+    private let newMetadataArray: [RequestParameterDictionary] = [["id": .int(1234), "key": .string("newValue")]]
     private let returnMetaDataArray = [MetaData(metadataID: 1234, key: "key", value: "newValue")]
 
     override func setUp() {
@@ -64,7 +64,7 @@ final class MetaDataStoreTests: XCTestCase {
 
     func test_updateOrderMetaData_returns_error_on_failure() throws {
         // Given
-        let metadata = [["key": "newValue"]]
+        let metadata: [RequestParameterDictionary] = [["key": .string("newValue")]]
         remote.whenUpdatingMetaData(thenReturn: .failure(NetworkError.timeout()))
         let store = MetaDataStore(dispatcher: Dispatcher(),
                                   storageManager: storageManager,
@@ -105,7 +105,7 @@ final class MetaDataStoreTests: XCTestCase {
             store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
                                                          parentItemID: self.sampleOrderID,
                                                          metaDataType: .order,
-                                                         metadata: [["id": 1, "value": nil]],
+                                                         metadata: [["id": .int(1), "value": .null]],
                                                          onCompletion: { _ in promise(()) }))
         }
 
@@ -145,7 +145,7 @@ final class MetaDataStoreTests: XCTestCase {
 
     func test_updateProductMetaData_returns_error_on_failure() throws {
         // Given
-        let metadata = [["key": "value"]]
+        let metadata: [RequestParameterDictionary] = [["key": .string("value")]]
         remote.whenUpdatingMetaData(thenReturn: .failure(NetworkError.timeout()))
         let store = MetaDataStore(dispatcher: Dispatcher(),
                                   storageManager: storageManager,
@@ -188,7 +188,7 @@ final class MetaDataStoreTests: XCTestCase {
             store.onAction(MetaDataAction.updateMetaData(siteID: self.sampleSiteID,
                                                          parentItemID: self.sampleProductID,
                                                          metaDataType: .product,
-                                                         metadata: [["id": 1, "value": nil]],
+                                                         metadata: [["id": .int(1), "value": .null]],
                                                          onCompletion: { _ in promise(()) }))
         }
 

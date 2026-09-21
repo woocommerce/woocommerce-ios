@@ -4,13 +4,38 @@ import struct WooFoundation.WooAnalyticsEvent
 struct POSRefundItemsSelectionView: View {
     let onClose: () -> Void
     let onContinue: () -> Void
+    let onRefreshItems: () -> Void
 
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posModalParentSize) private var parentSize
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var refundSelectableItems: [POSRefundSelectableItem] {
-        orderListModel.ordersController.refundSelectableItems
+        orderListModel.refundSelectableItems
+    }
+
+    private var reviewPreparationState: POSRefundReviewPreparationState {
+        orderListModel.refundReviewPreparationState
+    }
+
+    /// The inline error shown above the continue button: the server's rejection copy when the
+    /// preview failed with an actionable code, or the generic copy for other preview failures.
+    private var previewErrorMessage: String? {
+        guard case .previewError(let message, _) = reviewPreparationState else {
+            return nil
+        }
+        return message ?? Localization.previewError
+    }
+
+    /// What the failed preview offers the cashier next. A recognised rejection is deterministic,
+    /// so the same request cannot succeed: the way forward is a reloaded item list, or changing
+    /// the selection. Only unrecognised failures, network errors among them, keep the retry.
+    private var previewRecovery: POSRefundRecovery? {
+        guard case .previewError(_, let recovery) = reviewPreparationState else {
+            return nil
+        }
+        return recovery
     }
 
     private var selectedItems: [POSRefundSelectableItem] {
@@ -29,19 +54,26 @@ struct POSRefundItemsSelectionView: View {
     var body: some View {
         VStack(spacing: POSSpacing.none) {
             headerView
-            itemsHeaderView
 
-            Divider()
-                .overlay(Color.posOutlineVariant.opacity(0.5))
+            VStack(spacing: POSSpacing.none) {
+                itemsHeaderView
 
-            itemsList
+                Divider()
+                    .overlay(Color.posOutlineVariant.opacity(0.5))
 
-            continueButton
+                itemsList
+            }
+            .padding(.horizontal, POSPadding.xLarge)
+            .padding(.bottom, POSPadding.xLarge)
+            .frame(maxHeight: .infinity)
+
+            actionsFooter
+                .posPhoneFullScreenButtonPadding(horizontalSizeClass: horizontalSizeClass,
+                                                 maxWidth: .infinity)
         }
-        .padding(POSPadding.xLarge)
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurfaceBright)
-        .clipShape(RoundedRectangle(cornerRadius: POSRefundModalLayout.cornerRadius))
-        .frame(width: parentSize.width - (POSRefundModalLayout.horizontalPadding * 2))
+        .posRefundModalFrame(parentSize: parentSize, horizontalSizeClass: horizontalSizeClass)
     }
 }
 
@@ -49,22 +81,9 @@ struct POSRefundItemsSelectionView: View {
 
 private extension POSRefundItemsSelectionView {
     var headerView: some View {
-        HStack {
-            Text(Localization.title)
-                .font(.posHeadingBold)
-                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .lineLimit(1)
-            Spacer()
-            Button {
-                onClose()
-            } label: {
-                Text(Image(systemName: "xmark"))
-                    .font(.posButtonSymbolLarge)
-            }
-            .accessibilityLabel(Localization.closeButtonAccessibilityLabel)
-        }
-        .foregroundColor(Color.posOnSurface)
-        .padding(.bottom, POSPadding.xLarge)
+        POSRefundNavigationHeader(title: Localization.title,
+                                  backAction: onClose,
+                                  backAccessibilityLabel: Localization.backButtonAccessibilityLabel)
     }
 
     var itemsHeaderView: some View {
@@ -74,7 +93,7 @@ private extension POSRefundItemsSelectionView {
                 onToggle: {
                     let action = allItemsSelected ? "deselected" : "selected"
                     analytics.track(event: WooAnalyticsEvent.PointOfSale.refundSelectAllTapped(action: action))
-                    orderListModel.ordersController.toggleAllRefundItemsSelection()
+                    orderListModel.toggleAllRefundItemsSelection()
                 }
             )
             .accessibilityLabel(Localization.selectAllAccessibilityLabel)
@@ -105,7 +124,7 @@ private extension POSRefundItemsSelectionView {
                     POSRefundItemRow(
                         item: item,
                         onToggle: {
-                            orderListModel.ordersController.toggleRefundItemSelection(at: index)
+                            orderListModel.toggleRefundItemSelection(at: index)
                         }
                     )
 
@@ -118,13 +137,55 @@ private extension POSRefundItemsSelectionView {
         }
     }
 
-    var continueButton: some View {
-        Button(Localization.continueButton) {
-            onContinue()
+    var actionsFooter: some View {
+        VStack(spacing: POSSpacing.small) {
+            if let previewErrorMessage {
+                Text(previewErrorMessage)
+                    .font(.posBodyMediumRegular())
+                    .foregroundStyle(Color.posError)
+                    .multilineTextAlignment(.center)
+            }
+
+            recoveryButton
+
+            Button(Localization.continueButton) {
+                onContinue()
+            }
+            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: reviewPreparationState == .loading))
+            .disabled(isContinueDisabled)
         }
-        .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .disabled(!hasSelectedItems)
-        .padding(.top, POSPadding.medium)
+    }
+
+    @ViewBuilder
+    var recoveryButton: some View {
+        switch previewRecovery {
+        case .retry:
+            Button(Localization.retryButton) {
+                onContinue()
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        case .refreshItems:
+            Button(Localization.reviewRemainingItemsButton) {
+                onRefreshItems()
+            }
+            .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+        case .dismiss, nil:
+            EmptyView()
+        }
+    }
+
+    /// A failed preview always disables Continue: the same selection produces the same answer, so
+    /// the cashier moves on by changing the selection or through the recovery button above it.
+    var isContinueDisabled: Bool {
+        guard hasSelectedItems else {
+            return true
+        }
+        switch reviewPreparationState {
+        case .loading, .previewError:
+            return true
+        case .idle:
+            return false
+        }
     }
 }
 
@@ -143,11 +204,26 @@ private extension POSRefundItemsSelectionView {
             value: "Continue",
             comment: "Button to continue with selected items for refund"
         )
+        static let previewError = NSLocalizedString(
+            "pos.refundItemsSelectionView.previewError",
+            value: "Couldn't calculate the refund total. Please try again.",
+            comment: "Error shown on the refund item-selection step when fetching the server-calculated refund total fails"
+        )
+        static let retryButton = NSLocalizedString(
+            "pos.refundItemsSelectionView.retryButton",
+            value: "Retry",
+            comment: "Button to retry fetching the server-calculated refund total on the refund item-selection step"
+        )
+        static let reviewRemainingItemsButton = NSLocalizedString(
+            "pos.refundItemsSelectionView.reviewRemainingItemsButton",
+            value: "Review remaining items",
+            comment: "Button to reload the refundable items after the store rejected the refund because the order changed"
+        )
 
-        static let closeButtonAccessibilityLabel = NSLocalizedString(
-            "pos.refundItemsSelectionView.closeButton.accessibilityLabel",
-            value: "Close",
-            comment: "Accessibility label for close button on refund items selection modal"
+        static let backButtonAccessibilityLabel = NSLocalizedString(
+            "pos.refundItemsSelectionView.backButton.accessibilityLabel",
+            value: "Back",
+            comment: "Accessibility label for the back button on the refund items selection screen"
         )
 
         static let itemsHeaderTitle = NSLocalizedString(
@@ -174,7 +250,8 @@ private extension POSRefundItemsSelectionView {
 #Preview("POSRefundItemsSelectionView") {
     POSRefundItemsSelectionView(
         onClose: { },
-        onContinue: { }
+        onContinue: { },
+        onRefreshItems: { }
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: POSPreviewHelpers.loadedState()))
 }

@@ -19,6 +19,7 @@ final class TopPerformersDashboardViewModel: ObservableObject {
     @Published var selectedItem: TopEarnerStatsItem?
     @Published private(set) var syncingError: Error?
     @Published private(set) var analyticsEnabled = true
+    @Published private(set) var analyticsImportUpdateMode: AnalyticsImportUpdateMode?
 
     let siteID: Int64
     let siteTimezone: TimeZone
@@ -166,6 +167,14 @@ final class TopPerformersDashboardViewModel: ObservableObject {
         /// tracks `used_analytics`
         usageTracksEventEmitter.interacted()
     }
+
+    func trackAnalyticsImportUpdateModeInfoTapped() {
+        trackInteraction()
+    }
+
+    func setAnalyticsImportUpdateMode(_ mode: AnalyticsImportUpdateMode) {
+        analyticsImportUpdateMode = mode
+    }
 }
 
 // MARK: - Data for `TopPerformersDashboardView`
@@ -197,6 +206,14 @@ extension TopPerformersDashboardViewModel {
             return nil
         }
         return Localization.addCustomRange
+    }
+
+    var shouldShowScheduledAnalyticsImportInfo: Bool {
+        analyticsImportUpdateMode == .scheduled
+    }
+
+    var shouldShowAnalyticsImportUpdateModeInfoButton: Bool {
+        analyticsImportUpdateMode != nil
     }
 }
 

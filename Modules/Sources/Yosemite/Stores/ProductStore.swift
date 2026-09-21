@@ -9,7 +9,7 @@ public class ProductStore: Store {
     private let generativeContentRemote: GenerativeContentRemoteProtocol
     private let productVariationStorageManager: ProductVariationStorageManager
 
-    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = ProductsRemote(network: network)
         let generativeContentRemote = GenerativeContentRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, generativeContentRemote: generativeContentRemote)
@@ -43,6 +43,8 @@ public class ProductStore: Store {
         switch action {
         case .addProduct(let product, let onCompletion):
             addProduct(product: product, onCompletion: onCompletion)
+        case .duplicateProduct(let siteID, let productID, let onCompletion):
+            duplicateProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .deleteProduct(let siteID, let productID, let onCompletion):
             deleteProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .resetStoredProducts(let onCompletion):
@@ -51,6 +53,22 @@ public class ProductStore: Store {
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
             retrieveProducts(siteID: siteID, productIDs: productIDs, pageNumber: pageNumber, pageSize: pageSize, onCompletion: onCompletion)
+        case .retrieveProductsIfNeeded(let siteID, let productIDs, let onCompletion):
+            retrieveProductsIfNeeded(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
+        case let .retrieveProductsTransiently(siteID, currency, pageNumber, pageSize, stockStatus, productStatus, productType,
+                                              productCategory, sortOrder, productIDs, excludedProductIDs, onCompletion):
+            retrieveProductsTransiently(siteID: siteID,
+                                        currency: currency,
+                                        pageNumber: pageNumber,
+                                        pageSize: pageSize,
+                                        stockStatus: stockStatus,
+                                        productStatus: productStatus,
+                                        productType: productType,
+                                        productCategory: productCategory,
+                                        sortOrder: sortOrder,
+                                        productIDs: productIDs,
+                                        excludedProductIDs: excludedProductIDs,
+                                        onCompletion: onCompletion)
         case .retrieveFirstPurchasableItemMatchFromIdentifier(siteID: let siteID, identifier: let identifier, onCompletion: let onCompletion):
             retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID, identifier: identifier, onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
@@ -78,6 +96,21 @@ public class ProductStore: Store {
                            productCategory: productCategory,
                            excludedProductIDs: excludedProductIDs,
                            onCompletion: onCompletion)
+        case let .searchProductsTransiently(siteID, currency, keyword, filter, pageNumber, pageSize, stockStatus, productStatus,
+                                            productType, productCategory, productIDs, excludedProductIDs, onCompletion):
+            searchProductsTransiently(siteID: siteID,
+                                      currency: currency,
+                                      keyword: keyword,
+                                      filter: filter,
+                                      pageNumber: pageNumber,
+                                      pageSize: pageSize,
+                                      stockStatus: stockStatus,
+                                      productStatus: productStatus,
+                                      productType: productType,
+                                      productCategory: productCategory,
+                                      productIDs: productIDs,
+                                      excludedProductIDs: excludedProductIDs,
+                                      onCompletion: onCompletion)
         case .synchronizeProducts(let siteID,
                                   let pageNumber,
                                   let pageSize,
@@ -104,6 +137,28 @@ public class ProductStore: Store {
                                                                     excludedProductIDs: excludedProductIDs,
                                                                     shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage)
                     onCompletion(.success(hasNextPage))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
+        case .synchronizeProductsForOrderCreation(let siteID,
+                                                  let pageNumber,
+                                                  let pageSize,
+                                                  let sortOrder,
+                                                  let additionalProductIDs,
+                                                  let shouldDeleteStoredProductsOnFirstPage,
+                                                  let onCompletion):
+            Task { @MainActor in
+                do {
+                    let result = try await synchronizeProductsForOrderCreation(
+                        siteID: siteID,
+                        pageNumber: pageNumber,
+                        pageSize: pageSize,
+                        sortOrder: sortOrder,
+                        additionalProductIDs: additionalProductIDs,
+                        shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage
+                    )
+                    onCompletion(.success(result))
                 } catch {
                     onCompletion(.failure(error))
                 }
@@ -207,6 +262,85 @@ public class ProductStore: Store {
 //
 private extension ProductStore {
 
+    func retrieveProductsTransiently(siteID: Int64,
+                                     currency: String,
+                                     pageNumber: Int,
+                                     pageSize: Int,
+                                     stockStatus: ProductStockStatus?,
+                                     productStatus: ProductStatus?,
+                                     productType: ProductType?,
+                                     productCategory: ProductCategory?,
+                                     sortOrder: ProductsSortOrder,
+                                     productIDs: [Int64],
+                                     excludedProductIDs: [Int64],
+                                     onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let products = try await remote.loadAllProducts(for: siteID,
+                                                                context: nil,
+                                                                pageNumber: pageNumber,
+                                                                pageSize: pageSize,
+                                                                stockStatus: stockStatus,
+                                                                productStatus: productStatus,
+                                                                productType: productType,
+                                                                productCategory: productCategory,
+                                                                orderBy: sortOrder.remoteOrderKey,
+                                                                order: sortOrder.remoteOrder,
+                                                                productIDs: productIDs,
+                                                                excludedProductIDs: excludedProductIDs,
+                                                                currency: currency)
+                onCompletion(.success((products, products.count == pageSize)))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
+    func searchProductsTransiently(siteID: Int64,
+                                   currency: String,
+                                   keyword: String,
+                                   filter: ProductSearchFilter,
+                                   pageNumber: Int,
+                                   pageSize: Int,
+                                   stockStatus: ProductStockStatus?,
+                                   productStatus: ProductStatus?,
+                                   productType: ProductType?,
+                                   productCategory: ProductCategory?,
+                                   productIDs: [Int64],
+                                   excludedProductIDs: [Int64],
+                                   onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let products: [Product]
+                if filter == .sku {
+                    products = try await remote.searchProductsBySKU(for: siteID,
+                                                                    keyword: keyword,
+                                                                    pageNumber: pageNumber,
+                                                                    pageSize: pageSize,
+                                                                    productIDs: productIDs,
+                                                                    currency: currency)
+                } else {
+                    let fields: [ProductSearchField] = filter == .name ? [.name] : []
+                    products = try await remote.searchProducts(for: siteID,
+                                                               keyword: keyword,
+                                                               searchFields: fields,
+                                                               pageNumber: pageNumber,
+                                                               pageSize: pageSize,
+                                                               stockStatus: stockStatus,
+                                                               productStatus: productStatus,
+                                                               productType: productType,
+                                                               productCategory: productCategory,
+                                                               productIDs: productIDs,
+                                                               excludedProductIDs: excludedProductIDs,
+                                                               currency: currency)
+                }
+                onCompletion(.success((products, products.count == pageSize)))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
     /// Deletes all of the Stored Products.
     ///
     func resetStoredProducts(onCompletion: @escaping () -> Void) {
@@ -242,7 +376,9 @@ private extension ProductStore {
                                             productStatus: productStatus,
                                             productType: productType,
                                             productCategory: productCategory,
-                                            excludedProductIDs: excludedProductIDs)
+                                            productIDs: [],
+                                            excludedProductIDs: excludedProductIDs,
+                                            currency: nil)
         }
         Task { @MainActor in
             do {
@@ -256,7 +392,9 @@ private extension ProductStore {
                     products = try await remote.searchProductsBySKU(for: siteID,
                                                                     keyword: keyword,
                                                                     pageNumber: pageNumber,
-                                                                    pageSize: pageSize)
+                                                                    pageSize: pageSize,
+                                                                    productIDs: [],
+                                                                    currency: nil)
                 }
                 await upsertSearchResultsInBackground(siteID: siteID, keyword: keyword, filter: filter, readOnlyProducts: products)
                 let hasNextPage = products.count == pageSize
@@ -309,7 +447,8 @@ private extension ProductStore {
                                                             orderBy: sortOrder.remoteOrderKey,
                                                             order: sortOrder.remoteOrder,
                                                             productIDs: productIDs,
-                                                            excludedProductIDs: excludedProductIDs)
+                                                            excludedProductIDs: excludedProductIDs,
+                                                            currency: nil)
 
             let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
             await upsertStoredProductsInBackground(readOnlyProducts: products,
@@ -326,6 +465,78 @@ private extension ProductStore {
             throw error
         } catch {
             throw error
+        }
+    }
+
+    /// Loads the catalog page and additional order-suggestion products concurrently, then persists their deduplicated result in one update.
+    /// The catalog page is required and determines pagination. If only the additional request fails, matching products already in storage are retained.
+    func synchronizeProductsForOrderCreation(
+        siteID: Int64,
+        pageNumber: Int,
+        pageSize: Int,
+        sortOrder: ProductsSortOrder,
+        additionalProductIDs: [Int64],
+        shouldDeleteStoredProductsOnFirstPage: Bool
+    ) async throws -> (products: [Networking.Product], hasNextPage: Bool, missingProductIDs: [Int64]) {
+        let cachedAdditionalProducts = await loadCachedProducts(siteID: siteID, productIDs: additionalProductIDs)
+
+        async let pageProductsRequest = remote.loadAllProducts(for: siteID,
+                                                               context: nil,
+                                                               pageNumber: pageNumber,
+                                                               pageSize: pageSize,
+                                                               stockStatus: nil,
+                                                               productStatus: nil,
+                                                               productType: nil,
+                                                               productCategory: nil,
+                                                               orderBy: sortOrder.remoteOrderKey,
+                                                               order: sortOrder.remoteOrder,
+                                                               productIDs: [],
+                                                               excludedProductIDs: [],
+                                                               currency: nil)
+        async let additionalProductsRequest: Result<[Networking.Product], Error> = {
+            do {
+                let products = try await remote.loadProducts(for: siteID,
+                                                            by: additionalProductIDs,
+                                                            pageNumber: ProductsRemote.Default.pageNumber,
+                                                            pageSize: additionalProductIDs.count)
+                return .success(products)
+            } catch {
+                return .failure(error)
+            }
+        }()
+
+        let pageProducts = try await pageProductsRequest
+        let additionalProductsResult = await additionalProductsRequest
+        let additionalProducts: [Networking.Product]
+        switch additionalProductsResult {
+        case let .success(products):
+            additionalProducts = products
+        case let .failure(error):
+            DDLogError("⛔️ Error retrieving additional products during order creation: \(error)")
+            additionalProducts = cachedAdditionalProducts
+        }
+
+        var mergedProducts = pageProducts
+        var mergedProductIDs = Set(pageProducts.map(\.productID))
+        mergedProducts.append(contentsOf: additionalProducts.filter { mergedProductIDs.insert($0.productID).inserted })
+
+        let shouldDeleteExistingProducts = pageNumber == Default.firstPageNumber && shouldDeleteStoredProductsOnFirstPage
+        await upsertStoredProductsInBackground(readOnlyProducts: mergedProducts,
+                                               siteID: siteID,
+                                               shouldDeleteExistingProducts: shouldDeleteExistingProducts)
+        let missingProductIDs = shouldDeleteExistingProducts && additionalProductsResult.isSuccess
+            ? additionalProductIDs.filter { !mergedProductIDs.contains($0) } : []
+        return (mergedProducts, pageProducts.count == pageSize, missingProductIDs)
+    }
+
+    /// Reads immutable product snapshots on the view storage's queue.
+    func loadCachedProducts(siteID: Int64, productIDs: [Int64]) async -> [Networking.Product] {
+        let storage = storageManager.viewStorage
+        return await withCheckedContinuation { continuation in
+            storage.perform {
+                let products = storage.loadProducts(siteID: siteID, productsIDs: productIDs).map { $0.toReadOnly() }
+                continuation.resume(returning: products)
+            }
         }
     }
 
@@ -358,6 +569,51 @@ private extension ProductStore {
     /// Retrieves multiple products with a given siteID + productIDs.
     /// - Note: This is NOT a wrapper for retrieving a single product.
     ///
+    func retrieveProductsIfNeeded(siteID: Int64, productIDs: [Int64], onCompletion: @escaping (Result<[Product], Error>) -> Void) {
+        let storedProducts = storageManager.viewStorage.loadProducts(siteID: siteID, productsIDs: productIDs).map { $0.toReadOnly() }
+        let storedProductIDs = storedProducts.map { $0.productID }
+        let missingIDs = productIDs.filter { storedProductIDs.contains($0) == false }
+
+        guard !missingIDs.isEmpty else {
+            return onCompletion(.success(storedProducts))
+        }
+
+        recursivelyRetrieveProducts(siteID: siteID,
+                                    productIDs: missingIDs,
+                                    pageNumber: ProductsRemote.Default.pageNumber,
+                                    retrievedProducts: []) { result in
+            onCompletion(result.map { storedProducts + $0 })
+        }
+    }
+
+    /// Recursively retrieves products starting with the given page number, until there are no more pages left.
+    ///
+    func recursivelyRetrieveProducts(siteID: Int64,
+                                     productIDs: [Int64],
+                                     pageNumber: Int,
+                                     retrievedProducts: [Product],
+                                     onCompletion: @escaping (Result<[Product], Error>) -> Void) {
+        retrieveProducts(siteID: siteID,
+                         productIDs: productIDs,
+                         pageNumber: pageNumber,
+                         pageSize: ProductsRemote.Default.pageSize) { [weak self] result in
+            switch result {
+            case .success((let products, let hasNextPage)):
+                let retrievedProducts = retrievedProducts + products
+                guard hasNextPage else {
+                    return onCompletion(.success(retrievedProducts))
+                }
+                self?.recursivelyRetrieveProducts(siteID: siteID,
+                                                  productIDs: productIDs,
+                                                  pageNumber: pageNumber + 1,
+                                                  retrievedProducts: retrievedProducts,
+                                                  onCompletion: onCompletion)
+            case .failure(let error):
+                onCompletion(.failure(error))
+            }
+        }
+    }
+
     func retrieveProducts(siteID: Int64,
                           productIDs: [Int64],
                           pageNumber: Int,
@@ -407,7 +663,6 @@ private extension ProductStore {
                     onCompletion(.success(storageProduct.toReadOnly()))
                 }
             }
-
         }
     }
 
@@ -473,10 +728,17 @@ private extension ProductStore {
         }
     }
 
+    /// Duplicates a product using the WooCommerce core endpoint.
+    func duplicateProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Int64, ProductDuplicateError>) -> Void) {
+        remote.duplicateProduct(siteID: siteID, productID: productID) { result in
+            onCompletion(result.mapError(ProductDuplicateError.init))
+        }
+    }
+
     /// Delete an existing product.
     ///
     func deleteProduct(siteID: Int64, productID: Int64, onCompletion: @escaping (Result<Product, ProductUpdateError>) -> Void) {
-        remote.deleteProduct(for: siteID, productID: productID) { (result) in
+        remote.deleteProduct(for: siteID, productID: productID) { result in
             switch result {
             case .failure(let error):
                 onCompletion(.failure(ProductUpdateError(error: error)))
@@ -962,7 +1224,7 @@ extension ProductStore {
 
         // Now, remove any objects that exist in storageProduct.attributes but not in readOnlyProduct.attributes
         storageProduct.attributes?.forEach { storageAttribute in
-            if readOnlyProduct.attributes.first(where: { $0.attributeID == storageAttribute.attributeID && $0.name == storageAttribute.name } ) == nil {
+            if !readOnlyProduct.attributes.contains(where: { $0.attributeID == storageAttribute.attributeID && $0.name == storageAttribute.name }) {
                 storageProduct.removeFromAttributes(storageAttribute)
                 storage.deleteObject(storageAttribute)
             }
@@ -989,8 +1251,8 @@ extension ProductStore {
 
         // Now, remove any objects that exist in storageProduct.defaultAttributes but not in readOnlyProduct.defaultAttributes
         storageProduct.defaultAttributes?.forEach { storageDefaultAttribute in
-            if readOnlyProduct.defaultAttributes.first(where: {
-                $0.attributeID == storageDefaultAttribute.attributeID && $0.name == storageDefaultAttribute.name } ) == nil {
+            if !readOnlyProduct.defaultAttributes.contains(where: {
+                $0.attributeID == storageDefaultAttribute.attributeID && $0.name == storageDefaultAttribute.name }) {
                     storageProduct.removeFromDefaultAttributes(storageDefaultAttribute)
                     storage.deleteObject(storageDefaultAttribute)
             }
@@ -1190,7 +1452,7 @@ extension ProductStore {
 
         // Now, remove any objects that exist in `storageProduct.customFields` but not in `readOnlyProduct.customFields`
         storageProduct.customFields?.forEach { storageCustomField in
-            if readOnlyProduct.customFields.first(where: { $0.metadataID == storageCustomField.metadataID } ) == nil {
+            if !readOnlyProduct.customFields.contains(where: { $0.metadataID == storageCustomField.metadataID }) {
                 storageProduct.removeFromCustomFields(storageCustomField)
                 storage.deleteObject(storageCustomField)
             }
@@ -1340,7 +1602,9 @@ private extension ProductStore {
         try await remote.searchProductsBySKU(for: siteID,
                                              keyword: keyword,
                                              pageNumber: Remote.Default.firstPageNumber,
-                                             pageSize: ProductsRemote.Default.pageSize)
+                                             pageSize: ProductsRemote.Default.pageSize,
+                                             productIDs: [],
+                                             currency: nil)
     }
 
     func searchProductsByGlobalUniqueIdentifier(for siteID: Int64, keyword: String) async throws -> [Product] {
@@ -1359,6 +1623,44 @@ extension ProductStore {
     ///
     func upsertStoredProduct(readOnlyProduct: Networking.Product, in storage: StorageType) {
         upsertStoredProducts(readOnlyProducts: [readOnlyProduct], in: storage)
+    }
+}
+
+/// An error that occurs while duplicating a Product with the WooCommerce core endpoint.
+///
+public enum ProductDuplicateError: Error, Equatable {
+    /// The core duplication endpoint is conclusively unavailable on this store.
+    case endpointUnavailable
+
+    /// Any other failure. The underlying error is retained because duplication is non-idempotent and must not be retried with the legacy flow.
+    case unknown(error: AnyError)
+
+    init(error: Error) {
+        if let dotcomError = error as? DotcomError,
+           case .noRestRoute = dotcomError {
+            self = .endpointUnavailable
+            return
+        }
+
+        if let networkError = error as? NetworkError,
+           case .notFound = networkError,
+           networkError.errorCode == "rest_no_route" {
+            self = .endpointUnavailable
+            return
+        }
+
+        self = .unknown(error: error.toAnyError)
+    }
+}
+
+extension ProductDuplicateError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .endpointUnavailable:
+            return nil
+        case .unknown(let error):
+            return error.localizedDescription
+        }
     }
 }
 

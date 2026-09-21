@@ -22,7 +22,7 @@ public class WordPressComLanguageDatabase: NSObject {
 
     /// Designated Initializer: will load the languages contained within the `Languages.json` file.
     ///
-    public override init() {
+    override public init() {
         // Parse the json file
         let path = Bundle.wordPressSharedBundle.path(forResource: filename, ofType: "json")
         let raw = try! Data(contentsOf: URL(fileURLWithPath: path!))
@@ -99,7 +99,7 @@ public class WordPressComLanguageDatabase: NSObject {
         let search = languageCodeReplacements[slug] ?? slug
 
         // Use lazy evaluation so we stop filtering as soon as we got the first match
-        return all.lazy.filter({ $0.slug == search }).first
+        return all.lazy.first(where: { $0.slug == search })
     }
 
     /// Overrides the device language. For testing purposes only.

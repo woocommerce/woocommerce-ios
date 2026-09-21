@@ -6,10 +6,14 @@ struct PointOfSalePaymentSuccessView: View {
     let successAction: PaymentFlowAction
     let onSuccessScreenBarcodeScanned: ((Result<String, HIDBarcodeParserError>) -> Void)?
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     @State private var isViewLoaded: Bool = false
+    @State private var showPrinterSetupModal: Bool = false
     @AccessibilityFocusState private var isTitleFocused: Bool
     @Environment(\.posNavigationRouter) private var router
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
+    @Environment(\.posAnalytics) private var analytics
 
     private var isBarcodeScanningEnabled: Bool {
         onSuccessScreenBarcodeScanned != nil && !router.isNavigated
@@ -26,7 +30,6 @@ struct PointOfSalePaymentSuccessView: View {
         .barcodeScanning(enabled: .constant(isBarcodeScanningEnabled)) { barcode in
             onSuccessScreenBarcodeScanned?(barcode)
         }
-        .accessibilityIdentifier("pos-payment-success-view")
         .onAppear {
             Task { @MainActor in
                 withAnimation(.spring(response: 0.6, dampingFraction: 0.8).delay(0.1)) {
@@ -34,6 +37,32 @@ struct PointOfSalePaymentSuccessView: View {
                 }
                 isTitleFocused = true
             }
+        }
+        .posModal(isPresented: $showPrinterSetupModal) {
+            if let controller = posModel.settingsController.printerConnectionController {
+                POSPrinterSetupModal(isPresented: $showPrinterSetupModal, controller: controller)
+            }
+        }
+        .onChange(of: showPrinterSetupModal) { _, isShowing in
+            // The setup modal auto-dismisses when a printer connects, so the modal closing with a
+            // printer connected means setup succeeded — print the receipt the merchant asked for.
+            Task {
+                await printCoordinator.setupModalVisibilityChanged(
+                    isPresented: isShowing,
+                    isPrinterConnected: posModel.isReceiptPrinterConnected)
+            }
+        }
+    }
+
+    private var printCoordinator: POSPrintReceiptCoordinator {
+        POSPrintReceiptCoordinator(analytics: analytics,
+                                   printReceipt: { try await posModel.printReceipt() },
+                                   presentPrinterSetup: { showPrinterSetupModal = true })
+    }
+
+    private func handlePrintReceiptTap() {
+        Task {
+            await printCoordinator.printButtonTapped(isPrinterConnected: posModel.isReceiptPrinterConnected)
         }
     }
 
@@ -55,6 +84,7 @@ struct PointOfSalePaymentSuccessView: View {
                         .foregroundStyle(Color.posOnSurface)
                         .accessibilityAddTraits(.isHeader)
                         .accessibilityFocused($isTitleFocused)
+                        .accessibilityIdentifier("pos-payment-success-view")
                         .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                         .opacity(isViewLoaded ? 1 : 0)
 
@@ -79,8 +109,18 @@ struct PointOfSalePaymentSuccessView: View {
 
                 Spacer().frame(height: POSSpacing.xxLarge)
 
-                PaymentsActionButtons(successAction: successAction)
-                    .containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
+                // iPad: buttons take half the screen width (count:2 span:1).
+                // Phone: half the screen width is ~190pt, too narrow for "New order" /
+                // "Email receipt" — let them span the container minus standard insets instead.
+                PaymentsActionButtons(successAction: successAction,
+                                      showsPrintReceipt: posModel.receiptPrinter != nil,
+                                      printReceiptAction: handlePrintReceiptTap)
+                    .if(horizontalSizeClass != .compact) { view in
+                        view.containerRelativeFrame(.horizontal, count: 2, span: 1, spacing: POSSpacing.none)
+                    }
+                    .if(horizontalSizeClass == .compact) { view in
+                        view.padding(.horizontal, POSPadding.large)
+                    }
                     .frame(maxWidth: .infinity, alignment: .center)
                     .offset(y: isViewLoaded ? 0 : -Constants.animationOffset)
                     .opacity(isViewLoaded ? 1 : 0)
@@ -88,10 +128,8 @@ struct PointOfSalePaymentSuccessView: View {
                 Spacer()
             }
             .multilineTextAlignment(.center)
-
         }
     }
-
 }
 
 private extension PointOfSalePaymentSuccessView {
@@ -112,6 +150,9 @@ private extension PointOfSalePaymentSuccessView {
 
 #if DEBUG
 #Preview {
+    let model = POSPreviewHelpers.makePreviewAggregateModel(
+        receiptPrinter: POSReceiptPrinterPreviewService()
+    )
     PointOfSalePaymentSuccessView(
         viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",
                                                       paymentMethod: .card),
@@ -119,5 +160,6 @@ private extension PointOfSalePaymentSuccessView {
         successAction: PaymentFlowAction(title: "New order", action: {}, analyticsEvent: nil),
         onSuccessScreenBarcodeScanned: nil
     )
+    .environment(model)
 }
 #endif

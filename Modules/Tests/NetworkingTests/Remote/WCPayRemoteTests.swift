@@ -615,6 +615,32 @@ final class WCPayRemoteTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    func test_prepareTerminalPayment_sends_request_and_parses_response() throws {
+        let remote = WCPayRemote(network: network)
+
+        network.simulateResponse(requestUrlSuffix: "payments/orders/\(sampleOrderID)/prepare_terminal_payment",
+                                 filename: "wcpay-payment-intent-requires-confirmation")
+
+        let result: Result<RemotePaymentIntent, Error> = waitFor { promise in
+            remote.prepareTerminalPayment(for: self.sampleSiteID,
+                                          orderID: self.sampleOrderID,
+                                          paymentIntentID: self.samplePaymentIntentID).sink { result in
+                promise(result)
+            }.store(in: &self.subscriptions)
+        }
+
+        XCTAssertTrue(result.isSuccess)
+        let paymentIntent = try result.get()
+        XCTAssertEqual(paymentIntent.status, .requiresConfirmation)
+        XCTAssertEqual(paymentIntent.id, self.samplePaymentIntentID)
+
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.method, .post)
+        XCTAssertEqual(request.path, "payments/orders/\(sampleOrderID)/prepare_terminal_payment")
+        XCTAssertEqual(request.parameters["_fields"] as? String, "id,status")
+        XCTAssertEqual(request.parameters["payment_intent_id"] as? String, samplePaymentIntentID)
+    }
+
     func test_loadDefaultReaderLocation_properly_returns_location() throws {
         let remote = WCPayRemote(network: network)
         let expectedLocationID = "tml_0123456789abcd"

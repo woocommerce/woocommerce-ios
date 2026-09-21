@@ -1,7 +1,9 @@
 import Foundation
 
-public protocol OrdersRemoteProtocol {
-    func loadOrders(
+/// Order fetching for the Bookings feature. `meta_data` in responses from this protocol is limited to
+/// `_payment_status` — the only metadata key Bookings consumes (via `BookingOrderInfo`).
+public protocol BookingOrdersRemoteProtocol {
+    func loadBookingOrders(
         for siteID: Int64,
         orderIDs: [Int64]
     ) async throws -> [Order]
@@ -9,7 +11,7 @@ public protocol OrdersRemoteProtocol {
 
 /// Order: Remote Endpoints
 ///
-public class OrdersRemote: Remote, OrdersRemoteProtocol {
+public class OrdersRemote: Remote, BookingOrdersRemoteProtocol {
     /// The source of the order creation.
     public enum OrderCreationSource {
         case storeManagement
@@ -21,9 +23,9 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
     ///     - statuses: Filters the Orders by the specified Status, if any.
-    ///     - after: If given, limit response to orders published after a given compliant date.  Passing a local date is fine. This
+    ///     - after: If given, limit response to orders published after a given compliant date. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
-    ///     - before: If given, limit response to resources published before a given compliant date.. Passing a local date is fine. This
+    ///     - before: If given, limit response to resources published before a given compliant date. Passing a local date is fine. This
     ///               method will convert it to UTC ISO 8601 before calling the REST API.
     ///     - modifiedAfter: If given, limit response to resources modified after a given compliant date. Passing a local date is fine.
     ///     This method will convert it to UTC ISO 8601 before calling the REST API.
@@ -48,13 +50,13 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         let utcDateFormatter = DateFormatter.Defaults.iso8601
 
         let statusesString: String? = statuses?.isEmpty == true ? Defaults.statusAny : statuses?.joined(separator: ",")
-        let parameters: [String: Any] = {
-            var parameters = [
+        let parameters: RequestParameterConvertibleDictionary = {
+            var parameters: RequestParameterConvertibleDictionary = [
                 ParameterKeys.page: String(pageNumber),
                 ParameterKeys.perPage: String(pageSize),
                 ParameterKeys.statusKey: statusesString ?? Defaults.statusAny,
                 ParameterKeys.usesGMTDates: true,
-                ParameterKeys.fields: ParameterValues.fieldValues,
+                ParameterKeys.fields: ParameterValues.listFieldValues,
             ]
 
             if let after {
@@ -118,7 +120,12 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
-    /// Retrieves specific `Order`s.
+    /// Retrieves specific `Order`s for the Bookings feature.
+    ///
+    /// `meta_data` in the response is limited to `_payment_status` — the only metadata key Bookings
+    /// consumes (via `BookingOrderInfo`). If another feature needs to fetch orders by IDs with other
+    /// metadata-derived `Order` properties (custom fields, attribution, charge ID, subscription renewal),
+    /// add a separate method with the appropriate `include_meta` value instead of reusing this one.
     ///
     /// - Parameters:
     ///     - siteID: Site for which we'll fetch remote orders.
@@ -126,7 +133,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
     /// - Returns: Array of orders.
     /// - Throws: Network or parsing errors.
     ///
-    public func loadOrders(
+    public func loadBookingOrders(
         for siteID: Int64,
         orderIDs: [Int64]
     ) async throws -> [Order] {
@@ -134,10 +141,11 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
             return []
         }
 
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
             ParameterKeys.perPage: String(orderIDs.count),
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.includeMeta: ParameterValues.paymentStatusIncludedMetaKeys
         ]
 
         let path = Constants.ordersPath
@@ -193,7 +201,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.listFieldValues
         ]
 
         let path = Constants.ordersPath
@@ -227,8 +235,8 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
         do {
             let path = Constants.ordersPath
             let mapper = OrderMapper(siteID: siteID)
-            let parameters: [String: Any] = try {
-                var params: [String: Any] = try fields.reduce(into: [:]) { params, field in
+            let parameters: RequestParameterConvertibleDictionary = try {
+                var params: RequestParameterConvertibleDictionary = try fields.reduce(into: [:]) { params, field in
                     switch field {
                     case .feeLines:
                         params[Order.CodingKeys.feeLines.rawValue] = try order.fees.compactMap { try $0.toDictionary() }
@@ -259,13 +267,15 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
 
                 // Custom amount isn't supported for gift cards.
                 if let giftCard {
-                    params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
+                    let giftCardParameter: RequestParameterValue = [NestedFieldKeys.giftCardCode: giftCard]
+                    params[Order.CodingKeys.giftCards.rawValue] = [giftCardParameter]
                 }
 
                 // Set source type to mark the order as created from mobile
-                params[Order.CodingKeys.metadata.rawValue] = try [MetaData(metadataID: 0,
-                                                                                key: OrderAttributionInfo.Keys.sourceType.rawValue,
-                                                                                value: OrderAttributionInfo.Values.mobileAppSourceType).toDictionary()]
+                let sourceTypeMetadata = MetaData(metadataID: 0,
+                                                  key: OrderAttributionInfo.Keys.sourceType.rawValue,
+                                                  value: OrderAttributionInfo.Values.mobileAppSourceType)
+                params[Order.CodingKeys.metadata.rawValue] = try [sourceTypeMetadata.toDictionary()]
 
                 if let createdViaValue = source.createdViaValue {
                     params[Order.CodingKeys.createdVia.rawValue] = createdViaValue
@@ -321,6 +331,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
     ///     - giftCard: Optional gift card to apply to the order.
     ///     - cashPaymentChangeDueAmount: Optional change due amount from cash payment.
     ///     - fields: Fields from the order to be updated.
+    ///     - requestCurrency: Optional currency used to calculate prices while updating the order.
     ///     - completion: Closure to be executed upon completion.
     ///
     public func updateOrder(from siteID: Int64,
@@ -328,12 +339,13 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                             giftCard: String?,
                             cashPaymentChangeDueAmount: String? = nil,
                             fields: [UpdateOrderField],
+                            requestCurrency: String? = nil,
                             completion: @escaping (Result<Order, Error>) -> Void) {
         do {
             let path = "\(Constants.ordersPath)/\(order.orderID)"
             let mapper = OrderMapper(siteID: siteID)
-            let parameters: [String: Any] = try {
-                var params: [String: Any] = try fields.reduce(into: [:]) { params, field in
+            let parameters: RequestParameterConvertibleDictionary = try {
+                var params: RequestParameterConvertibleDictionary = try fields.reduce(into: [:]) { params, field in
                     switch field {
                     case .customerNote:
                         params[Order.CodingKeys.customerNote.rawValue] = order.customerNote
@@ -367,7 +379,8 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
 
                 // Custom amount isn't supported for gift cards.
                 if let giftCard {
-                    params[Order.CodingKeys.giftCards.rawValue] = try [[NestedFieldKeys.giftCardCode: giftCard].toDictionary()]
+                    let giftCardParameter: RequestParameterValue = [NestedFieldKeys.giftCardCode: giftCard]
+                    params[Order.CodingKeys.giftCards.rawValue] = [giftCardParameter]
                 }
 
                 if let cashPaymentChangeDueAmount {
@@ -387,6 +400,7 @@ public class OrdersRemote: Remote, OrdersRemoteProtocol {
                                          siteID: siteID,
                                          path: path,
                                          parameters: parameters,
+                                         queryParameters: requestCurrency.map { [ParameterKeys.currency: .string($0)] },
                                          availableAsRESTRequest: true)
             enqueue(request, mapper: mapper, completion: completion)
         } catch {
@@ -494,11 +508,27 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
         }
     }
 
+    public func addPOSOrderNote(siteID: Int64,
+                                orderID: Int64,
+                                isCustomerNote: Bool,
+                                note: String) async throws -> OrderNote {
+        try await withCheckedThrowingContinuation { continuation in
+            addOrderNote(for: siteID, orderID: orderID, isCustomerNote: isCustomerNote, with: note) { orderNote, error in
+                if let orderNote {
+                    continuation.resume(returning: orderNote)
+                } else {
+                    continuation.resume(throwing: error ?? POSOrdersRemoteError.addOrderNoteFailed)
+                }
+            }
+        }
+    }
+
     public func updatePOSOrderEmail(siteID: Int64, orderID: Int64, emailAddress: String) async throws {
-        let parameters: [String: Any] = [
-            "billing": [
-                "email": emailAddress
-            ]
+        let billing: RequestParameterValue = [
+            "email": emailAddress
+        ]
+        let parameters: RequestParameterConvertibleDictionary = [
+            "billing": billing
         ]
 
         let path = "\(Constants.ordersPath)/\(orderID)"
@@ -513,12 +543,12 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
     }
 
     public func loadPOSOrders(siteID: Int64, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
             ParameterKeys.usesGMTDates: true,
-            ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.fields: ParameterValues.posOrderFieldValues,
             ParameterKeys.createdVia: ParameterValues.posFilter
         ]
 
@@ -529,19 +559,20 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                    path: path,
                                    parameters: parameters,
                                    availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
-        let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let mapper = ListMapper<LossyPOSOrder>(siteID: siteID)
+        let (lossyOrders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let orders = lossyOrders.compactMap(\.order)
         return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 
     public func searchPOSOrders(siteID: Int64, searchTerm: String, pageNumber: Int, pageSize: Int) async throws -> PagedItems<Order> {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.keyword: searchTerm,
             ParameterKeys.page: String(pageNumber),
             ParameterKeys.perPage: String(pageSize),
             ParameterKeys.statusKey: Defaults.statusAny,
             ParameterKeys.usesGMTDates: true,
-            ParameterKeys.fields: ParameterValues.fieldValues,
+            ParameterKeys.fields: ParameterValues.posOrderFieldValues,
             ParameterKeys.createdVia: ParameterValues.posFilter
         ]
         let path = Constants.ordersPath
@@ -551,8 +582,9 @@ extension OrdersRemote: POSOrdersRemoteProtocol {
                                    path: path,
                                    parameters: parameters,
                                    availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
-        let (orders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let mapper = ListMapper<LossyPOSOrder>(siteID: siteID)
+        let (lossyOrders, responseHeaders) = try await enqueueWithResponseHeaders(request, mapper: mapper)
+        let orders = lossyOrders.compactMap(\.order)
         return createPagedItems(items: orders, responseHeaders: responseHeaders, currentPageNumber: pageNumber)
     }
 }
@@ -593,18 +625,35 @@ public extension OrdersRemote {
         static let product = "product"
         static let createdVia = "created_via"
         static let decimalPlaces = "dp"
+        static let currency = "currency"
+        /// Limits which keys are returned in `meta_data`. Available since WooCommerce 7.0; older stores ignore it and return all metadata.
+        static let includeMeta = "include_meta"
     }
 
     enum ParameterValues {
         static let fieldValues: String = commonOrderFieldValues.joined(separator: ",")
+        /// Field values for order list and search fetches, which exclude `meta_data` because no list UI consumes
+        /// metadata-derived properties and its size is unbounded (plugins can attach hundreds of entries per order).
+        /// The order details screen re-syncs the single order with the full `fieldValues` before displaying
+        /// metadata-derived content (custom fields, attribution, charge ID, subscriptions).
+        static let listFieldValues: String = commonOrderFieldValues.filter { $0 != metaDataField }.joined(separator: ",")
+        private static let metaDataField = "meta_data"
         private static let commonOrderFieldValues = [
             "id", "parent_id", "number", "status", "currency", "currency_symbol", "customer_id", "customer_note", "date_created_gmt", "date_modified_gmt",
             "date_paid_gmt", "discount_total", "discount_tax", "shipping_total", "shipping_tax", "total", "total_tax", "payment_method", "payment_method_title",
-            "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", "meta_data",
+            "payment_url", "line_items", "shipping", "billing", "coupon_lines", "shipping_lines", "refunds", "fee_lines", "order_key", "tax_lines", metaDataField,
             "is_editable", "needs_payment", "needs_processing", "gift_cards", "created_via"
         ]
         static let dateModifiedField = "date_modified_gmt"
         static let posFilter = "pos-rest-api"
+        /// Order fetches whose consumers only need `_payment_status` from order metadata (e.g. `BookingOrderInfo`)
+        /// limit `meta_data` to that key to keep responses small on stores with heavy metadata.
+        static let paymentStatusIncludedMetaKeys = "_payment_status"
+        /// POS order lists don't consume any order metadata (see `POSOrderMapper`), so `meta_data` is
+        /// excluded from the requested fields to keep responses small on stores with heavy metadata.
+        static let posOrderFieldValues: String = commonOrderFieldValues
+            .filter { $0 != "meta_data" }
+            .joined(separator: ",")
     }
 
     enum NestedFieldKeys {
@@ -650,23 +699,27 @@ public extension OrdersRemote {
     /// - Returns: The loaded Order.
     /// - Throws: Network or parsing errors.
     func loadPOSOrder(siteID: Int64, orderID: Int64) async throws -> Order {
+        let parameters: RequestParameterConvertibleDictionary = [
+            ParameterKeys.decimalPlaces: OrdersRemote.Defaults.decimalPoints
+        ]
         let path = "\(Constants.ordersPath)/\(orderID)"
         let request = JetpackRequest(wooApiVersion: .mark3,
                                    method: .get,
                                    siteID: siteID,
                                    path: path,
+                                   parameters: parameters,
                                    availableAsRESTRequest: true)
         let mapper = OrderMapper(siteID: siteID)
 
         return try await enqueue(request, mapper: mapper)
     }
 
-    public func loadPOSOrders(siteID: Int64, orderIDs: [Int64]) async throws -> [Order] {
+    func loadPOSOrders(siteID: Int64, orderIDs: [Int64]) async throws -> [Order] {
         guard !orderIDs.isEmpty else { return [] }
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKeys.include: Set(orderIDs).map(String.init).joined(separator: ","),
             ParameterKeys.perPage: String(orderIDs.count),
-            ParameterKeys.fields: ParameterValues.fieldValues
+            ParameterKeys.fields: ParameterValues.posOrderFieldValues
         ]
         let path = Constants.ordersPath
         let request = JetpackRequest(wooApiVersion: .mark3,
@@ -675,8 +728,9 @@ public extension OrdersRemote {
                                      path: path,
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
-        let mapper = OrderListMapper(siteID: siteID)
-        return try await enqueue(request, mapper: mapper)
+        let mapper = ListMapper<LossyPOSOrder>(siteID: siteID)
+        let lossyOrders = try await enqueue(request, mapper: mapper)
+        return lossyOrders.compactMap(\.order)
     }
 }
 

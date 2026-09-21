@@ -59,4 +59,84 @@ final class FeatureFlagRemoteTests: XCTestCase {
             ($0 as? NetworkError) == .notFound()
         })
     }
+
+    @MainActor
+    func test_loadAllFeatureFlags_when_no_device_id_is_stored_then_sends_a_generated_device_id_and_persists_it() async throws {
+        // Given
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: "FeatureFlagRemoteTests.\(UUID().uuidString)"))
+        let remote = FeatureFlagRemote(network: network, userDefaults: userDefaults)
+        network.simulateResponse(requestUrlSuffix: "mobile/feature-flags", filename: "feature-flags-load-all")
+
+        // When
+        _ = try await remote.loadAllFeatureFlags()
+
+        // Then
+        let queryParameters = try XCTUnwrap(network.queryParametersDictionary)
+        let sentDeviceID = try XCTUnwrap(queryParameters["device_id"] as? String)
+        XCTAssertFalse(sentDeviceID.isEmpty)
+        XCTAssertEqual(userDefaults.string(forKey: "FeatureFlagDeviceID"), sentDeviceID)
+    }
+
+    @MainActor
+    func test_loadAllFeatureFlags_when_a_device_id_is_stored_then_sends_the_stored_device_id() async throws {
+        // Given
+        let userDefaults = try XCTUnwrap(UserDefaults(suiteName: "FeatureFlagRemoteTests.\(UUID().uuidString)"))
+        userDefaults.set("stored-device-id", forKey: "FeatureFlagDeviceID")
+        let remote = FeatureFlagRemote(network: network, userDefaults: userDefaults)
+        network.simulateResponse(requestUrlSuffix: "mobile/feature-flags", filename: "feature-flags-load-all")
+
+        // When
+        _ = try await remote.loadAllFeatureFlags()
+
+        // Then
+        let queryParameters = try XCTUnwrap(network.queryParametersDictionary)
+        XCTAssertEqual(queryParameters["device_id"] as? String, "stored-device-id")
+    }
+
+    // MARK: - RemoteFeatureFlag rawValue mapping
+
+    func test_rawValue_when_woo_mobile_ai_assistant_then_maps_to_wooAIAssistant_case() {
+        // Given
+        let key = "woo_mobile_ai_assistant"
+
+        // When
+        let flag = RemoteFeatureFlag(rawValue: key)
+
+        // Then
+        XCTAssertEqual(flag, .wooAIAssistant)
+    }
+
+    func test_rawValue_when_retired_ipp_country_expansion_key_then_returns_nil() {
+        let retiredKeys = [
+            "woo_ipp_country_expansion",
+            "woo_ipp_country_expansion_eu_extended",
+            "woo_ipp_australia_woopayments"
+        ]
+
+        for key in retiredKeys {
+            XCTAssertNil(RemoteFeatureFlag(rawValue: key))
+        }
+    }
+
+    func test_rawValue_when_smarter_notifications_then_maps_to_smarterNotifications_case() {
+        // Given
+        let key = "smarter_notifications"
+
+        // When
+        let flag = RemoteFeatureFlag(rawValue: key)
+
+        // Then
+        XCTAssertEqual(flag, .smarterNotifications)
+    }
+
+    func test_rawValue_when_unknown_key_then_returns_nil() {
+        // Given
+        let key = "definitely_not_a_known_flag"
+
+        // When
+        let flag = RemoteFeatureFlag(rawValue: key)
+
+        // Then
+        XCTAssertNil(flag)
+    }
 }

@@ -58,10 +58,12 @@ struct POSSearchField: View {
             .autocorrectionDisabled()
             .textInputAutocapitalization(.never)
             .focused($isSearchFieldFocused)
-            .onChange(of: searchTerm) { oldValue, newValue in
+            .onChange(of: searchTerm) { _, newValue in
                 handleSearchTermChange(newValue)
             }
+            .accessibilityIdentifier("pos-search-field")
         }
+        .frame(maxWidth: .infinity)
         .onChange(of: keyboardObserver.isKeyboardVisible) { _, isVisible in
             guard isVisible == false else { return }
             analytics.track(.pointOfSaleKeyboardDismissedInSearch)

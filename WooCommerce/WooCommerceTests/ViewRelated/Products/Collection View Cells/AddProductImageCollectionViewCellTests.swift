@@ -35,6 +35,4 @@ final class AddProductImageCollectionViewCellTests: XCTestCase {
         XCTAssertEqual(cell?.contentView.layer.borderColor, borderColor)
         XCTAssertEqual(cell?.contentView.layer.masksToBounds, maskToBounds)
     }
-
-
 }

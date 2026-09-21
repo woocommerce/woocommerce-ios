@@ -32,7 +32,7 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
                                               items: [
             MockRefunds.sampleRefundItem(productID: 1, quantity: -3),
             MockRefunds.sampleRefundItem(productID: 2, quantity: -2),
-        ])
+                                              ])
 
         // When
         let result = sut.isAnythingToRefund(from: order, with: [refund], currencyFormatter: currencyFormatter)
@@ -55,7 +55,7 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
                                               items: [
             MockRefunds.sampleRefundItem(productID: 1, quantity: -3),
             MockRefunds.sampleRefundItem(productID: 2, quantity: -2),
-        ])
+                                              ])
 
         // When
         let result = sut.isAnythingToRefund(from: order, with: [refund], currencyFormatter: currencyFormatter)
@@ -76,7 +76,7 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
         let refund = MockRefunds.sampleRefund(amount: orderTotal,
                                               items: [
             MockRefunds.sampleRefundItem(productID: 1, quantity: -3)
-        ])
+                                              ])
 
         // When
         let result = sut.isAnythingToRefund(from: order, with: [refund], currencyFormatter: currencyFormatter)
@@ -142,6 +142,23 @@ final class OrderRefundsOptionsDeterminerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(result, expectedResult)
+    }
+
+    func test_determineRefundableOrderItems_when_duplicate_product_line_has_refunded_item_id_returns_unrefunded_duplicate() {
+        // Given
+        let productID: Int64 = 5
+        let refundedItem = MockOrderItem.sampleItem(itemID: 101, productID: productID, quantity: 1)
+        let unrefundedItem = MockOrderItem.sampleItem(itemID: 102, productID: productID, quantity: 1)
+        let order = Order.fake().copy(items: [refundedItem, unrefundedItem])
+        let refund = MockRefunds.sampleRefund(items: [
+            MockRefunds.sampleRefundItem(productID: productID, refundedItemID: "101", quantity: -1)
+        ])
+
+        // When
+        let result = sut.determineRefundableOrderItems(from: order, with: [refund])
+
+        // Then
+        XCTAssertEqual(result, [RefundableOrderItem(item: unrefundedItem, quantity: 1)])
     }
 
     func shouldRefundCustomAmountsByDefault_when_the_order_has_only_items_return_false() {

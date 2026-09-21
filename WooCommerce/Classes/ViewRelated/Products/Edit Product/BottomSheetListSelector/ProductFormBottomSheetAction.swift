@@ -76,7 +76,6 @@ extension ProductFormBottomSheetAction {
             return NSLocalizedString("productFormBottomSheetAction.customFieldsTitle",
                                      value: "Custom Fields",
                                      comment: "Title of the product form bottom sheet action for custom fields")
-
         }
     }
 

@@ -61,7 +61,7 @@ final class AztecEditorViewController: UIViewController, Editor {
     /// Aztec's Format Bar (toolbar above the keyboard)
     ///
     private lazy var formatBar: Aztec.FormatBar = {
-        let toolbar = formatBarFactory.formatBar() { [weak self] (formatBarItem, formatBar) in
+        let toolbar = formatBarFactory.formatBar() { [weak self] formatBarItem, formatBar in
             guard let self else {
                 return
             }

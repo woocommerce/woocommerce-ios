@@ -70,7 +70,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
 
         let expectationForKeyboardFrame = expectation(description: "Wait for keyboard frame updates")
 
-        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
+        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (_: CGRect) in
             expectationForKeyboardFrame.fulfill()
         }
         keyboardFrameObserver.startObservingKeyboardFrame()
@@ -88,7 +88,7 @@ final class KeyboardFrameObserverTests: XCTestCase {
 
         let expectationForKeyboardFrame = expectation(description: "Wait for keyboard frame updates")
 
-        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (keyboardFrame: CGRect) in
+        let keyboardFrameObserver = KeyboardFrameObserver(notificationCenter: notificationCenter) { (_: CGRect) in
             expectationForKeyboardFrame.fulfill()
         }
         keyboardFrameObserver.startObservingKeyboardFrame()

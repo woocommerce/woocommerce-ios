@@ -9,6 +9,39 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
     ///
     private let applicationPassword = ApplicationPassword(wpOrgUsername: "username", password: .init("password"), uuid: "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
 
+    func test_wporg_credentials_and_custom_endpoints_reach_final_application_password_use_case_factory() throws {
+        // Given
+        let credentials: Credentials = .wporg(username: "merchant", password: "secret", siteAddress: "https://example.com")
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        var capturedUsername: String?
+        var capturedPassword: String?
+        var capturedSiteAddress: String?
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+
+        // When
+        _ = DefaultRequestAuthenticator(
+            credentials: credentials,
+            cookieNonceAuthenticationEndpoints: endpoints,
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { username, password, siteAddress, endpoints in
+                capturedUsername = username
+                capturedPassword = password
+                capturedSiteAddress = siteAddress
+                capturedEndpoints = endpoints
+                return MockApplicationPasswordUseCase()
+            })
+        )
+
+        // Then
+        XCTAssertEqual(capturedUsername, "merchant")
+        XCTAssertEqual(capturedPassword, "secret")
+        XCTAssertEqual(capturedSiteAddress, "https://example.com")
+        XCTAssertEqual(capturedEndpoints, endpoints)
+    }
+
     func test_authenticateRequest_returns_unauthenticated_request_for_non_REST_request_without_WPCOM_credentials() throws {
         // Given
         let authenticator = DefaultRequestAuthenticator(credentials: nil)
@@ -44,7 +77,6 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
         let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let wooAPIVersion = WooAPIVersion.mark1
-        let basePath = RESTRequest.Settings.basePath
         let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
 
         // When
@@ -52,10 +84,27 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let updatedRequest = try authenticator.authenticate(request)
 
         // Then
-        let expectedURL = "https://test.com/\(basePath)\(wooAPIVersion.path)test"
+        let expectedURL = "https://test.com/wp-json\(wooAPIVersion.path)test"
         assertEqual(expectedURL, updatedRequest.url?.absoluteString)
         let authorizationValue = try XCTUnwrap(updatedRequest.allHTTPHeaderFields?["Authorization"])
         XCTAssertTrue(authorizationValue.hasPrefix("Basic"))
+    }
+
+    func test_authenticatedRequest_attaches_application_password_when_http_site_url_is_normalized_to_https() throws {
+        // Given
+        let siteURL = "http://test.com/"
+        let credentials: Credentials = .applicationPassword(username: "admin", password: "supersecret", siteAddress: siteURL)
+        let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
+        let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
+        let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: .mark1, method: .get, path: "test")
+
+        // When
+        let request = try restRequest.asURLRequest()
+        let updatedRequest = try authenticator.authenticate(request)
+
+        // Then
+        XCTAssertEqual(updatedRequest.url?.scheme, "https")
+        XCTAssertTrue(try XCTUnwrap(updatedRequest.value(forHTTPHeaderField: "Authorization")).hasPrefix("Basic"))
     }
 
     func test_authenticatedRequest_returns_REST_request_with_authorization_header_if_authenticated_with_application_password() throws {
@@ -65,7 +114,6 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
         let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let wooAPIVersion = WooAPIVersion.mark1
-        let basePath = RESTRequest.Settings.basePath
         let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
 
         // When
@@ -73,7 +121,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let updatedRequest = try authenticator.authenticate(request)
 
         // Then
-        let expectedURL = "https://test.com/\(basePath)\(wooAPIVersion.path)test"
+        let expectedURL = "https://test.com/wp-json\(wooAPIVersion.path)test"
         assertEqual(expectedURL, updatedRequest.url?.absoluteString)
         let authorizationValue = try XCTUnwrap(updatedRequest.allHTTPHeaderFields?["Authorization"])
         XCTAssertTrue(authorizationValue.hasPrefix("Basic"))
@@ -86,7 +134,6 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let useCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
         let authenticator = DefaultRequestAuthenticator(credentials: credentials, applicationPasswordUseCase: useCase)
         let wooAPIVersion = WooAPIVersion.mark1
-        let basePath = RESTRequest.Settings.basePath
         let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
 
         // When
@@ -101,7 +148,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let updatedRequest = try authenticator.authenticate(request)
 
         // Then
-        let expectedURL = "https://test.com/\(basePath)\(wooAPIVersion.path)test"
+        let expectedURL = "https://test.com/wp-json\(wooAPIVersion.path)test"
         assertEqual(expectedURL, updatedRequest.url?.absoluteString)
         let authorizationValue = try XCTUnwrap(updatedRequest.allHTTPHeaderFields?["Authorization"])
         XCTAssertTrue(authorizationValue.hasPrefix("Basic"))
@@ -142,7 +189,6 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let useCase = MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword)
         let authenticator = DefaultRequestAuthenticator(credentials: credentials, selectedSite: selectedSite, applicationPasswordUseCase: useCase)
         let wooAPIVersion = WooAPIVersion.mark1
-        let basePath = RESTRequest.Settings.basePath
         let restRequest = RESTRequest(siteURL: siteURL, wooApiVersion: wooAPIVersion, method: .get, path: "test")
 
         // When
@@ -150,7 +196,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         let updatedRequest = try authenticator.authenticate(request)
 
         // Then
-        let expectedURL = "https://test.com/\(basePath)\(wooAPIVersion.path)test"
+        let expectedURL = "https://test.com/wp-json\(wooAPIVersion.path)test"
         assertEqual(expectedURL, updatedRequest.url?.absoluteString)
         let authorizationValue = try XCTUnwrap(updatedRequest.allHTTPHeaderFields?["Authorization"])
         XCTAssertTrue(authorizationValue.hasPrefix("Basic"))

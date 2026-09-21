@@ -23,7 +23,6 @@ final class BlazePaymentInfoMapperTests: XCTestCase {
         XCTAssertEqual(method.info.nickname, "")
         XCTAssertEqual(method.info.cardholderName, "John Doe")
     }
-
 }
 
 private extension BlazePaymentInfoMapperTests {

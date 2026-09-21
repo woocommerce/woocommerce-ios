@@ -50,6 +50,17 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
     // MARK: - Output properties
     @Published var cashOnDeliveryEnabledState: Bool = false
 
+    /// Confirmation the user must accept before the toggle change is applied. Non-nil while the alert is shown.
+    @Published var pendingToggleConfirmation: ToggleConfirmation?
+
+    struct ToggleConfirmation: Equatable {
+        let title: String
+        let message: String
+        let confirmButtonTitle: String
+        let cancelButtonTitle: String
+        let targetState: Bool
+    }
+
     // MARK: - Configuration properties
     private var siteID: Int64? {
         stores.sessionManager.defaultStoreID
@@ -117,6 +128,54 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
 
     // MARK: - Toggle Cash on Delivery Payment Gateway
 
+    /// Called when the user flips the toggle. Asks for confirmation instead of applying the change directly.
+    func cashOnDeliveryToggleRequested(enabled: Bool) {
+        pendingToggleConfirmation = makeToggleConfirmation(enabled: enabled)
+    }
+
+    /// Called when the user confirms the pending toggle change from the confirmation alert.
+    /// Takes the target state as a parameter rather than reading `pendingToggleConfirmation`,
+    /// because alert dismissal clears that property and its ordering relative to the button
+    /// action is undocumented.
+    func confirmCashOnDeliveryToggle(targetState: Bool) {
+        pendingToggleConfirmation = nil
+        // Optimistically reflects the new state while the update is in flight; failure handlers revert it.
+        cashOnDeliveryEnabledState = targetState
+        updateCashOnDeliverySetting(enabled: targetState)
+    }
+
+    /// Called when the confirmation alert is dismissed without confirming. The gateway is left untouched.
+    func dismissCashOnDeliveryToggleConfirmation() {
+        pendingToggleConfirmation = nil
+    }
+
+    private func makeToggleConfirmation(enabled: Bool) -> ToggleConfirmation {
+        guard enabled else {
+            return ToggleConfirmation(title: Localization.disableConfirmationTitle,
+                                      message: Localization.disableConfirmationMessage,
+                                      confirmButtonTitle: Localization.disableConfirmationButton,
+                                      cancelButtonTitle: Localization.confirmationCancelButton,
+                                      targetState: false)
+        }
+        return ToggleConfirmation(title: Localization.enableConfirmationTitle,
+                                  message: enableConfirmationMessage,
+                                  confirmButtonTitle: Localization.enableConfirmationButton,
+                                  cancelButtonTitle: Localization.confirmationCancelButton,
+                                  targetState: true)
+    }
+
+    /// Enabling overwrites the gateway's customer-facing title with "Pay in Person", so the message warns
+    /// about the rename when the store currently uses a different title.
+    private var enableConfirmationMessage: String {
+        let defaultTitle = PaymentGateway.defaultPayInPersonTitle
+        guard let currentTitle = cashOnDeliveryGateway?.title.trimmingCharacters(in: .whitespacesAndNewlines),
+              currentTitle.isEmpty == false,
+              currentTitle.localizedCaseInsensitiveCompare(defaultTitle) != .orderedSame else {
+            return Localization.enableConfirmationMessage
+        }
+        return String.localizedStringWithFormat(Localization.enableConfirmationMessageRenameFormat, currentTitle, defaultTitle)
+    }
+
     func updateCashOnDeliverySetting(enabled: Bool) {
         trackCashOnDeliveryToggled(enabled: enabled)
         switch enabled {
@@ -129,6 +188,8 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
 
     private func enableCashOnDeliveryGateway() {
         guard let siteID else {
+            // Reverts the optimistic toggle state, since no update will be attempted.
+            updateCashOnDeliveryEnabledState()
             return
         }
 
@@ -160,6 +221,8 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModel: ObservableObject, 
 
     private func disableCashOnDeliveryGateway() {
         guard let cashOnDeliveryGateway else {
+            // Reverts the optimistic toggle state, since no update will be attempted.
+            updateCashOnDeliveryEnabledState()
             return
         }
 
@@ -253,22 +316,76 @@ private extension InPersonPaymentsCashOnDeliveryToggleRowViewModel {
 }
 
 private enum Localization {
+    static let enableConfirmationTitle = NSLocalizedString(
+        "menu.payments.payInPerson.toggle.enableConfirmation.title",
+        value: "Enable Pay In Person?",
+        comment: "Title of the confirmation alert shown when the merchant turns on the Pay In Person checkout " +
+        "payment option in the Payments menu")
+
+    static let enableConfirmationMessage = NSLocalizedString(
+        "menu.payments.payInPerson.toggle.enableConfirmation.message",
+        value: "This enables the Cash on Delivery payment method at your store’s checkout.",
+        comment: "Message of the confirmation alert shown when the merchant turns on the Pay In Person checkout " +
+        "payment option and the payment method already has the default Pay in Person title")
+
+    static let enableConfirmationMessageRenameFormat = NSLocalizedString(
+        "menu.payments.payInPerson.toggle.enableConfirmation.messageRenameWithTitles",
+        value: "This enables the Cash on Delivery payment method at your store’s checkout and renames it " +
+        "from “%1$@” to “%2$@” for your customers, including on your website’s checkout.",
+        comment: "Message of the confirmation alert shown when the merchant turns on the Pay In Person checkout " +
+        "payment option and the payment method has a custom title which will be replaced. " +
+        "%1$@ is a placeholder for the payment method's current customer-facing title, e.g. \"Cash on delivery\". " +
+        "%2$@ is a placeholder for the title it will be renamed to, e.g. \"Pay in Person\".")
+
+    static let enableConfirmationButton = NSLocalizedString(
+        "menu.payments.payInPerson.toggle.enableConfirmation.confirmButton",
+        value: "Enable",
+        comment: "Confirmation button of the alert shown when the merchant turns on the Pay In Person checkout " +
+        "payment option in the Payments menu")
+
+    static let disableConfirmationTitle = NSLocalizedString(
+        "menu.payments.payInPerson.toggle.disableConfirmation.title",
+        value: "Disable Pay In Person?",
+        comment: "Title of the confirmation alert shown when the merchant turns off the Pay In Person checkout " +
+        "payment option in the Payments menu")
+
+    static let disableConfirmationMessage = NSLocalizedString(
+        "menu.payments.payInPerson.toggle.disableConfirmation.message",
+        value: "This disables the Cash on Delivery payment method at your store’s checkout, " +
+        "so customers won’t be able to select it.",
+        comment: "Message of the confirmation alert shown when the merchant turns off the Pay In Person checkout " +
+        "payment option in the Payments menu")
+
+    static let disableConfirmationButton = NSLocalizedString(
+        "menu.payments.payInPerson.toggle.disableConfirmation.confirmButton",
+        value: "Disable",
+        comment: "Confirmation button of the alert shown when the merchant turns off the Pay In Person checkout " +
+        "payment option in the Payments menu")
+
+    static let confirmationCancelButton = NSLocalizedString(
+        "menu.payments.payInPerson.toggle.confirmation.cancelButton",
+        value: "Cancel",
+        comment: "Cancel button of the confirmation alert shown when the merchant toggles the Pay In Person " +
+        "checkout payment option in the Payments menu. Tapping it leaves the payment method unchanged.")
+
     static let enableCashOnDeliveryFailureNoticeTitle = NSLocalizedString(
-        "Failed to enable Pay in Person. Please try again later.",
-        comment: "Error displayed when the attempt to enable a Pay in Person checkout payment option fails")
+        "menu.payments.payInPerson.toggle.enableFailureNotice.title",
+        value: "Failed to enable Pay In Person. Please try again later.",
+        comment: "Error displayed when the attempt to enable a Pay In Person checkout payment option fails")
 
     static let disableCashOnDeliveryFailureNoticeTitle = NSLocalizedString(
-        "Failed to disable Pay in Person. Please try again later.",
-        comment: "Error displayed when the attempt to disable a Pay in Person checkout payment option fails")
+        "menu.payments.payInPerson.toggle.disableFailureNotice.title",
+        value: "Failed to disable Pay In Person. Please try again later.",
+        comment: "Error displayed when the attempt to disable a Pay In Person checkout payment option fails")
 
     static let cashOnDeliveryFailureNoticeRetryTitle = NSLocalizedString(
         "Retry",
         comment: "Retry Action on error displayed when the attempt to toggle a Pay in Person checkout payment option fails")
 
     static let toggleEnableCashOnDeliveryLearnMoreFormat = NSLocalizedString(
-        "menu.payments.payInPerson.learnMore.description",
-        value: "The Pay in Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@",
-        comment: "A label prompting users to learn more about adding Pay in Person to their checkout. " +
+        "menu.payments.payInPerson.learnMore.description.payInPersonCasing",
+        value: "The Pay In Person checkout option lets you accept payments for website orders, on collection or delivery. %1$@",
+        comment: "A label prompting users to learn more about adding Pay In Person to their checkout. " +
         "%1$@ is a placeholder that always replaced with \"Learn more\" string, " +
         "which should be translated separately and considered part of this sentence.")
 

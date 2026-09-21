@@ -1,0 +1,25 @@
+{
+  "configurations" : [
+    {
+      "id" : "1F4E5C2A-9D8F-4B7C-A1E2-3D4F5A6B7C8D",
+      "name" : "Test Scheme Action",
+      "options" : {
+
+      }
+    }
+  ],
+  "defaultOptions" : {
+    "codeCoverage" : false,
+    "performanceAntipatternCheckerEnabled" : true
+  },
+  "testTargets" : [
+    {
+      "target" : {
+        "containerPath" : "container:",
+        "identifier" : "ParcelFittingCheckTests",
+        "name" : "ParcelFittingCheckTests"
+      }
+    }
+  ],
+  "version" : 1
+}

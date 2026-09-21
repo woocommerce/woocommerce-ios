@@ -19,40 +19,29 @@ final class OrderListViewModel {
     private let notificationCenter: NotificationCenter
     private let cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration
     private let featureFlagService: FeatureFlagService
+    private let selectedSiteSettings: SelectedSiteSettingsProtocol
 
     /// Used for cancelling the observer for Remote Notifications when `self` is deallocated.
     ///
     private var foregroundNotificationsSubscription: AnyCancellable?
 
-    /// The block called if self requests a resynchronization of the first page. The
-    /// resynchronization should only be done if the view is visible.
+    /// Emits when the stored order statuses change, so visible cells can be refreshed.
     ///
-    var onShouldResynchronizeIfViewIsVisible: (() -> ())?
+    private let statusesDidChangeSubject = PassthroughSubject<Void, Never>()
+
+    /// Publisher that fires when the stored order statuses change.
+    ///
+    var statusesDidChange: AnyPublisher<Void, Never> {
+        statusesDidChangeSubject.eraseToAnyPublisher()
+    }
+
+    /// The block called if self requests a resynchronization of the first page.
+    ///
+    var onShouldResynchronize: ((OrderListSyncActionUseCase.SyncReason) -> Void)?
 
     /// The block called if new filters are applied
     ///
     var onShouldResynchronizeIfNewFiltersAreApplied: (() -> ())?
-
-    /// URL to site
-    var siteURL: URL? {
-        guard let site = stores.sessionManager.defaultSite else {
-            return nil
-        }
-        return URL(string: site.url)
-    }
-
-    /// Whether the entry point to test order should be displayed on the empty state screen.
-    ///
-    var shouldEnableTestOrder: Bool {
-        guard let site = stores.sessionManager.defaultSite,
-              let url = siteURL,
-              UIApplication.shared.canOpenURL(url) else {
-            return false
-        }
-
-        /// Enabled if site is launched, has published at least 1 product and set up payments.
-        return (site.visibility == .publicSite) && hasAnyPaymentGateways && hasAnyPublishedProducts
-    }
 
     /// Filters applied to the order list.
     ///
@@ -65,26 +54,10 @@ final class OrderListViewModel {
     }
 
     private let siteID: Int64
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     /// Used for tracking whether the app was _previously_ in the background.
     ///
     private var isAppActive: Bool = true
-
-    /// Checks whether the site has set up any payment method.
-    ///
-    private var hasAnyPaymentGateways: Bool {
-        storageManager.viewStorage.loadAllPaymentGateways(siteID: siteID)
-            .contains(where: { $0.enabled })
-    }
-
-    /// Checks whether the site has published any product.
-    ///
-    private var hasAnyPublishedProducts: Bool {
-        (storageManager.viewStorage.loadProducts(siteID: siteID) ?? [])
-            .map { $0.toReadOnly() }
-            .contains(where: { $0.productStatus == .published })
-    }
 
     private var isIPPSupportedCountry: Bool {
         cardPresentPaymentsConfiguration.isSupportedCountry
@@ -107,6 +80,10 @@ final class OrderListViewModel {
         return statusResultsController.fetchedObjects
     }
 
+    /// Minimum quiet period before a burst of order notifications triggers a single resynchronization.
+    ///
+    private let pushNotificationSyncInterval: DispatchQueue.SchedulerTimeType.Stride
+
     private let snapshotsProvider: FetchResultSnapshotsProvider<StorageOrder>
 
     /// Emits snapshots of orders that should be displayed in the table view.
@@ -116,11 +93,15 @@ final class OrderListViewModel {
 
     /// Set when sync fails, and used to display the corresponding error loading data banner
     ///
-    @Published var dataLoadingError: Error? = nil
+    @Published var dataLoadingError: Error? = nil {
+        didSet { updateTopBanner() }
+    }
 
     /// Determines what top banner should be shown
     ///
     @Published private(set) var topBanner: TopBanner = .none
+
+    private var siteSettingsSubscription: AnyCancellable?
 
     init(siteID: Int64,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
@@ -129,9 +110,10 @@ final class OrderListViewModel {
          analytics: Analytics = ServiceLocator.analytics,
          pushNotificationsManager: PushNotesManager = ServiceLocator.pushNotesManager,
          notificationCenter: NotificationCenter = .default,
+         pushNotificationSyncInterval: DispatchQueue.SchedulerTimeType.Stride = .seconds(1),
          filters: FilterOrderListViewModel.Filters?,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+         selectedSiteSettings: SelectedSiteSettingsProtocol = ServiceLocator.selectedSiteSettings) {
         self.siteID = siteID
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.stores = stores
@@ -139,13 +121,13 @@ final class OrderListViewModel {
         self.analytics = analytics
         self.pushNotificationsManager = pushNotificationsManager
         self.notificationCenter = notificationCenter
+        self.pushNotificationSyncInterval = pushNotificationSyncInterval
         self.filters = filters
         self.featureFlagService = featureFlagService
-        self.ciabEligibilityChecker = ciabEligibilityChecker
+        self.selectedSiteSettings = selectedSiteSettings
         self.snapshotsProvider = FetchResultSnapshotsProvider<StorageOrder>(storageManager: storageManager,
                                                                             query: Self.createQuery(siteID: siteID,
-                                                                                                    filters: filters,
-                                                                                                    isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB))
+                                                                                                    filters: filters))
     }
 
     deinit {
@@ -170,24 +152,6 @@ final class OrderListViewModel {
         bindTopBannerState()
     }
 
-    /// Handles extra syncing upon pull-to-refresh.
-    func onPullToRefresh() {
-        /// syncs payment gateways
-        stores.dispatch(PaymentGatewayAction.synchronizePaymentGateways(siteID: siteID, onCompletion: { _ in }))
-
-        /// syncs first published product
-        stores.dispatch(ProductAction.synchronizeProducts(siteID: siteID,
-                                                          pageNumber: Store.Default.firstPageNumber,
-                                                          pageSize: 1,
-                                                          stockStatus: nil,
-                                                          productStatus: .published,
-                                                          productType: nil,
-                                                          productCategory: nil,
-                                                          sortOrder: .dateDescending,
-                                                          shouldDeleteStoredProductsOnFirstPage: false,
-                                                          onCompletion: { _ in }))
-    }
-
     /// Starts the snapshotsProvider, logging any errors.
     private func startReceivingSnapshots() {
         do {
@@ -209,7 +173,7 @@ final class OrderListViewModel {
         }
 
         isAppActive = true
-        onShouldResynchronizeIfViewIsVisible?()
+        onShouldResynchronize?(.viewWillAppear)
     }
 
     /// Returns what `OrderAction` should be used when synchronizing.
@@ -220,8 +184,7 @@ final class OrderListViewModel {
                                lastFullSyncTimestamp: Date?,
                                completionHandler: @escaping (TimeInterval, Error?) -> Void) -> OrderAction {
         let useCase = OrderListSyncActionUseCase(siteID: siteID,
-                                                 filters: filters,
-                                                 ciabEligibilityChecker: ciabEligibilityChecker)
+                                                 filters: filters)
         return useCase.actionFor(pageNumber: pageNumber,
                                  pageSize: pageSize,
                                  reason: reason,
@@ -232,13 +195,11 @@ final class OrderListViewModel {
     }
 
     private static func createQuery(siteID: Int64,
-                                     filters: FilterOrderListViewModel.Filters?,
-                                     isCIAB: Bool) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
+                                     filters: FilterOrderListViewModel.Filters?) -> FetchResultSnapshotsProvider<StorageOrder>.Query {
         let predicateStatus: NSPredicate = {
             let excludeSearchCache = NSPredicate(format: "exclusiveForSearch = false")
             let excludeNonMatchingStatus = filters?.orderStatus.map { statuses in
-                let resolved = isCIAB ? CIABOrderStatusMapper.resolveFilterStatuses(statuses) : statuses
-                return NSPredicate(format: "statusKey IN %@", resolved.map { $0.rawValue })
+                return NSPredicate(format: "statusKey IN %@", statuses.map { $0.rawValue })
             }
 
             let predicates = [excludeSearchCache, excludeNonMatchingStatus].compactMap { $0 }
@@ -299,16 +260,22 @@ private extension OrderListViewModel {
     /// Watch for "new order" Remote Notifications that are received while the app is in the
     /// foreground.
     ///
-    /// A refresh will be requested when receiving them.
+    /// A refresh will be requested when receiving them. Notifications for other stores are ignored,
+    /// and a burst of new orders is coalesced into a single resynchronization rather than one per
+    /// notification.
     ///
     func observeForegroundRemoteNotifications() {
-        foregroundNotificationsSubscription = pushNotificationsManager.foregroundNotifications.sink { [weak self] notification in
-            guard notification.kind == .storeOrder else {
-                return
+        foregroundNotificationsSubscription = pushNotificationsManager.foregroundNotifications
+            .filter { [weak self] notification in
+                guard let self, notification.kind == .storeOrder else {
+                    return false
+                }
+                return notification.resolvedSiteID(stores: stores) == siteID
             }
-
-            self?.onShouldResynchronizeIfViewIsVisible?()
-        }
+            .debounce(for: pushNotificationSyncInterval, scheduler: DispatchQueue.main)
+            .sink { [weak self] _ in
+                self?.onShouldResynchronize?(.pushNotification)
+            }
     }
 
     func stopObservingForegroundRemoteNotifications() {
@@ -322,6 +289,13 @@ private extension OrderListViewModel {
     /// Setup: Status Results Controller
     ///
     func setupStatusResultsController() {
+        statusResultsController.onDidChangeContent = { [weak self] in
+            self?.statusesDidChangeSubject.send()
+        }
+        statusResultsController.onDidResetContent = { [weak self] in
+            self?.statusesDidChangeSubject.send()
+        }
+
         do {
             try statusResultsController.performFetch()
         } catch {
@@ -333,18 +307,54 @@ private extension OrderListViewModel {
 // MARK: - Banners
 
 extension OrderListViewModel {
-    /// Figures out if should show a data loading error as top banner based on the view model internal state.
+    /// Sets up the header banner. The header has a single banner slot, fed by two independent inputs: the orders
+    /// load error (`dataLoadingError`, via its `didSet`) and the store-currency state (site settings, via the sink
+    /// below). Both call `updateTopBanner()`, which owns the precedence between them.
     ///
     private func bindTopBannerState() {
-        $dataLoadingError
-            .map { loadingError -> TopBanner in
-                if let error = loadingError {
-                    return .error(error)
-                } else {
-                    return .none
-                }
+        siteSettingsSubscription = selectedSiteSettings.settingsStream
+            .sink { [weak self] _ in
+                self?.updateTopBanner()
             }
-            .assign(to: &$topBanner)
+        updateTopBanner()
+    }
+
+    /// Resolves the header's single banner slot: a data-loading error takes precedence over the currency warning.
+    ///
+    private func updateTopBanner() {
+        let banner: TopBanner
+        if let dataLoadingError {
+            banner = .error(dataLoadingError)
+        } else if selectedSiteSettings.isUsingFallbackCurrency {
+            banner = .currencyUnavailable
+        } else {
+            banner = .none
+        }
+
+        if banner != topBanner {
+            topBanner = banner
+            if banner == .currencyUnavailable {
+                analytics.track(.ordersListCurrencyUnavailableBannerShown)
+            }
+        }
+    }
+
+    /// Re-syncs general site settings so the store currency can be resolved. The banner is hidden immediately;
+    /// once the sync completes, `settingsStream` re-emits and the banner re-appears if the currency is still
+    /// unavailable.
+    ///
+    func retryStoreCurrencySync() {
+        analytics.track(.ordersListCurrencyUnavailableBannerRetryTapped)
+        topBanner = .none
+
+        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
+            guard let self else { return }
+            if let error {
+                DDLogError("⛔️ Retrying store currency sync failed for siteID \(self.siteID): \(error)")
+            }
+            self.selectedSiteSettings.refresh()
+        }
+        stores.dispatch(action)
     }
 }
 
@@ -360,7 +370,7 @@ extension OrderListViewModel {
 
         return OrderListCellViewModel(order: order,
                                       currencySettings: ServiceLocator.currencySettings,
-                                      isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB)
+                                      siteStatuses: currentSiteStatuses)
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.
@@ -392,11 +402,17 @@ extension OrderListViewModel {
     ///
     enum TopBanner: Equatable {
         case error(Error)
+        case currencyUnavailable
         case none
 
         static func ==(lhs: TopBanner, rhs: TopBanner) -> Bool {
             switch (lhs, rhs) {
-            case (.error, .error),
+            case let (.error(lhsError), .error(rhsError)):
+                // Compare the payloads so that a different error re-renders the banner (which shows
+                // error-specific title/info), while repeated identical errors still dedup to avoid churn.
+                return (lhsError as NSError).domain == (rhsError as NSError).domain
+                    && (lhsError as NSError).code == (rhsError as NSError).code
+            case (.currencyUnavailable, .currencyUnavailable),
                 (.none, .none):
                 return true
             default:

@@ -20,7 +20,6 @@ struct Survey: UIViewControllerRepresentable {
 
     func makeUIViewController(context: Context) -> SurveyCoordinatingController {
         return SurveyCoordinatingController(survey: source, onDismiss: onDismiss)
-
     }
 
     func updateUIViewController(_ uiViewController: SurveyCoordinatingController, context: Context) {

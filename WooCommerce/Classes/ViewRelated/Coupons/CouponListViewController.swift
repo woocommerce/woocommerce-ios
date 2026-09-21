@@ -165,7 +165,7 @@ private extension CouponListViewController {
             guard let self else { return }
             self.dismiss(animated: true)
         })
-        present(addEditHostingController, animated: true)
+        presentIfIdle(addEditHostingController)
     }
 }
 
@@ -254,7 +254,6 @@ private extension CouponListViewController {
         }
 
         emptyStateViewController.configure(configuration)
-
     }
 
 

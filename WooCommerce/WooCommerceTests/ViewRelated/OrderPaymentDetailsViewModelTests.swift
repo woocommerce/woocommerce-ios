@@ -81,7 +81,9 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     }
 
     func test_discount_value_matches_expectation() {
-        let expectedValue = "-" + CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(order.discountTotal, with: order.currency)!
+        let expectedValue = CurrencyFormatter(currencySettings: CurrencySettings()).formatAmount(order.discountTotal,
+                                                                                                  with: order.currency,
+                                                                                                  isNegative: true)!
         XCTAssertEqual(viewModel.discountValue, expectedValue)
     }
 
@@ -129,13 +131,58 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.totalValue, expectedValue)
     }
 
-    /// Test the `paymentSummary` calculated property
-    /// returns nil if the order is paid but the payment method title is an empty string
+    func test_totalValue_when_order_currency_matches_store_default_then_shows_no_currency_code() {
+        // Given — a USD order on a store whose default currency is USD
+        let store = CurrencySettings() // defaults to USD
+        let usdOrder = MockOrders().sampleOrder().copy(currency: "USD", total: "31.20")
+        let viewModel = OrderPaymentDetailsViewModel(order: usdOrder, currencySettings: store)
+        let expected = CurrencyFormatter(currencySettings: store).formatAmount("31.20", with: "USD")
+
+        // When / Then
+        XCTAssertEqual(viewModel.totalValue, expected)
+        XCTAssertFalse(viewModel.totalValue.contains("USD"))
+    }
+
+    func test_totalValue_when_order_currency_differs_from_store_default_then_appends_currency_code() {
+        // Given — a CAD order on a store whose default currency is USD
+        let store = CurrencySettings() // defaults to USD
+        let cadOrder = MockOrders().sampleOrder().copy(currency: "CAD", total: "31.20")
+        let viewModel = OrderPaymentDetailsViewModel(order: cadOrder, currencySettings: store)
+        let baseAmount = CurrencyFormatter(currencySettings: store).formatAmount("31.20", with: "CAD") ?? ""
+
+        // When
+        let totalValue = viewModel.totalValue
+
+        // Then — the "$" symbol is disambiguated with the ISO code
+        XCTAssertEqual(totalValue, baseAmount + "\u{00a0}CAD")
+    }
+
+    /// Test that the `paymentSummary` calculated property returns a date-only summary
+    /// when the order is paid but the payment method title is an empty string.
     ///
-    func test_order_payment_method_title_returns_nil_when_order_paid_and_payment_method_title_is_blank() {
-        let expected = ""
-        XCTAssertEqual(orderPaidWithNoPaymentMethod.paymentMethodTitle, expected)
-        XCTAssertNil(orderPaidWithNoPaymentMethodViewModel.paymentSummary)
+    func test_paymentSummary_when_order_paid_and_payment_method_title_is_blank_then_returns_date_only_summary() throws {
+        // Given
+        let datePaid = try XCTUnwrap(orderPaidWithNoPaymentMethod.datePaid)
+        let styleDate = datePaid.toStringInSiteTimeZone(dateStyle: .medium, timeStyle: .none)
+        let expected = String.localizedStringWithFormat(
+            NSLocalizedString("orderPaymentDetails.paymentSummary.dateOnly", value: "Payment on %1$@", comment: ""),
+            styleDate)
+
+        // Then
+        XCTAssertEqual(orderPaidWithNoPaymentMethod.paymentMethodTitle, "")
+        XCTAssertEqual(orderPaidWithNoPaymentMethodViewModel.paymentSummary, expected)
+    }
+
+    func test_paymentSummary_when_reverted_to_pending_and_payment_method_title_is_blank_then_returns_awaiting_payment() {
+        // Given
+        let order = MockOrders().orderRevertedToPendingWithNoPaymentMethod()
+        let viewModel = OrderPaymentDetailsViewModel(order: order)
+
+        // Then
+        XCTAssertTrue(order.needsPayment)
+        XCTAssertNotNil(order.datePaid)
+        XCTAssertEqual(order.paymentMethodTitle, "")
+        XCTAssertEqual(viewModel.paymentSummary, "Awaiting payment")
     }
 
     /// The `paymentMethodTitle` is used in the `paymentSummary`.
@@ -194,7 +241,10 @@ final class OrderPaymentDetailsViewModelTests: XCTestCase {
     }
 
     func test_giftCards_text_matches_expectation() {
-        let expectedText = NSLocalizedString("Gift Cards", comment: "Gift Cards label for payment view") + " (ABCD)"
+        let expectedText = NSLocalizedString(
+            "orderPaymentDetails.giftCards.title",
+            value: "Gift Cards",
+            comment: "Gift Cards label for payment view") + " (ABCD)"
         XCTAssertEqual(orderWithGiftCardsViewModel.giftCardsText, expectedText)
     }
 

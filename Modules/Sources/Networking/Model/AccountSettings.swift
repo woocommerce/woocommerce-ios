@@ -13,6 +13,11 @@ public struct AccountSettings: Decodable, Equatable, GeneratedFakeable {
     ///
     public let tracksOptOut: Bool
 
+    /// Crash reporting opt out dotcom setting for the Woo mobile apps.
+    /// Three-state: `nil` means no choice has been recorded on the account yet.
+    ///
+    public let crashReportingOptOut: Bool?
+
     /// First name of the Account
     ///
     public let firstName: String?
@@ -24,9 +29,10 @@ public struct AccountSettings: Decodable, Equatable, GeneratedFakeable {
 
     /// Default initializer for AccountSettings.
     ///
-    public init(userID: Int64, tracksOptOut: Bool, firstName: String?, lastName: String?) {
+    public init(userID: Int64, tracksOptOut: Bool, crashReportingOptOut: Bool?, firstName: String?, lastName: String?) {
         self.userID = userID
         self.tracksOptOut = tracksOptOut
+        self.crashReportingOptOut = crashReportingOptOut
         self.firstName = firstName
         self.lastName = lastName
     }
@@ -41,10 +47,11 @@ public struct AccountSettings: Decodable, Equatable, GeneratedFakeable {
 
         let container = try decoder.container(keyedBy: CodingKeys.self)
         let tracksOptOut = try container.decode(Bool.self, forKey: .tracksOptOut)
+        let crashReportingOptOut = try container.decodeIfPresent(Bool.self, forKey: .crashReportingOptOut)
         let firstName = try container.decodeIfPresent(String.self, forKey: .firstName)
         let lastName = try container.decodeIfPresent(String.self, forKey: .lastName)
 
-        self.init(userID: userID, tracksOptOut: tracksOptOut, firstName: firstName, lastName: lastName)
+        self.init(userID: userID, tracksOptOut: tracksOptOut, crashReportingOptOut: crashReportingOptOut, firstName: firstName, lastName: lastName)
     }
 }
 
@@ -54,10 +61,11 @@ public struct AccountSettings: Decodable, Equatable, GeneratedFakeable {
 private extension AccountSettings {
 
     enum CodingKeys: String, CodingKey {
-        case userID         = "UserID"
-        case tracksOptOut   = "tracks_opt_out"
-        case firstName      = "first_name"
-        case lastName       = "last_name"
+        case userID                 = "UserID"
+        case tracksOptOut           = "tracks_opt_out"
+        case crashReportingOptOut   = "woomobile_crash_reporting_opt_out"
+        case firstName              = "first_name"
+        case lastName               = "last_name"
     }
 }
 

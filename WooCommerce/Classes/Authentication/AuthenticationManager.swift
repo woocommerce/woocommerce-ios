@@ -1,6 +1,7 @@
 import Foundation
 import SafariServices
 import KeychainAccess
+import SwiftUI
 import WordPressAuthenticator
 import WordPressUI
 import Yosemite
@@ -8,11 +9,10 @@ import UIKit
 import class Networking.UserAgent
 import enum Experiments.ABTest
 import struct Networking.Settings
-import protocol Experiments.FeatureFlagService
 import protocol Storage.StorageManagerType
 import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
-import class Networking.DefaultApplicationPasswordUseCase
+import struct Networking.ApplicationPasswordUseCaseFactory
 import protocol Experiments.ABTestVariationProvider
 import protocol WooFoundation.Analytics
 import struct Experiments.CachedABTestVariationProvider
@@ -21,6 +21,16 @@ import struct NetworkingCore.WordPressAPIDiscovery
 /// Encapsulates all of the interactions with the WordPress Authenticator
 ///
 class AuthenticationManager: Authentication {
+    typealias SiteCredentialLoginUseCaseFactory = (
+        _ siteURL: String,
+        _ endpoints: CookieNonceAuthenticationEndpoints?,
+        _ verifyAdminDashboard: Bool
+    ) -> SiteCredentialLoginProtocol
+
+    static let defaultSiteCredentialLoginUseCaseFactory: SiteCredentialLoginUseCaseFactory = { siteURL, endpoints, verifyAdminDashboard in
+        SiteCredentialLoginUseCase(siteURL: siteURL, endpoints: endpoints, verifyAdminDashboard: verifyAdminDashboard)
+    }
+
     var displayAuthenticatorIfLoggedOut: (() -> UINavigationController?)?
 
     /// Store Picker Coordinator
@@ -49,8 +59,6 @@ class AuthenticationManager: Authentication {
 
     private let stores: StoresManager
 
-    private let featureFlagService: FeatureFlagService
-
     private let analytics: Analytics
 
     private let abTestVariationProvider: ABTestVariationProvider
@@ -59,27 +67,46 @@ class AuthenticationManager: Authentication {
     private var postSiteCredentialLoginChecker: PostSiteCredentialLoginChecker?
 
     /// Keeps a reference to the use case
-    private var siteCredentialLoginUseCase: SiteCredentialLoginUseCase?
+    private var siteCredentialLoginUseCase: SiteCredentialLoginProtocol?
+
+    /// Keeps a reference to the QR-login coordinator while the flow is active.
+    private var qrLoginCoordinator: QRLoginCoordinator?
+
+    /// Availability gate for the QR-login prologue / deep link entry.
+    private let qrLoginAvailability: QRLoginAvailabilityProvider
 
     /// Injected for unit test purposes
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol?
 
     private let userDefaults: UserDefaults
 
+    private let runtimeCookieJar: HTTPCookieStorage
+
+    private let siteCredentialLoginUseCaseFactory: SiteCredentialLoginUseCaseFactory
+
+    private let applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory
+
     init(stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          analytics: Analytics = ServiceLocator.analytics,
          abTestVariationProvider: ABTestVariationProvider = CachedABTestVariationProvider(),
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
-         userDefaults: UserDefaults = .standard) {
+         userDefaults: UserDefaults = .standard,
+         qrLoginAvailability: QRLoginAvailabilityProvider = QRLoginAvailability(),
+         runtimeCookieJar: HTTPCookieStorage = .shared,
+         applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory = .init(),
+         siteCredentialLoginUseCaseFactory: @escaping SiteCredentialLoginUseCaseFactory
+             = AuthenticationManager.defaultSiteCredentialLoginUseCaseFactory) {
         self.stores = stores
         self.storageManager = storageManager
-        self.featureFlagService = featureFlagService
         self.analytics = analytics
         self.abTestVariationProvider = abTestVariationProvider
         self.switchStoreUseCase = switchStoreUseCase
         self.userDefaults = userDefaults
+        self.qrLoginAvailability = qrLoginAvailability
+        self.runtimeCookieJar = runtimeCookieJar
+        self.siteCredentialLoginUseCaseFactory = siteCredentialLoginUseCaseFactory
+        self.applicationPasswordUseCaseFactory = applicationPasswordUseCaseFactory
     }
 
     /// Initializes the WordPress Authenticator.
@@ -91,29 +118,86 @@ class AuthenticationManager: Authentication {
 
     /// Returns the Login Flow view controller.
     ///
+    /// When QR login is available, the primary "Log in" CTA on the standard prologue routes to
+    /// the QR-login prologue — pushed onto the same navigation stack — rather than the standard
+    /// site-address flow. The standard prologue stays as the app's first screen.
+    ///
     func authenticationUI() -> UIViewController {
-        let loginViewController: UIViewController = {
-            let loginUI = WordPressAuthenticator.loginUI(onLoginButtonTapped: { [weak self] in
-                guard let self else { return }
-                // Resets Apple ID at the beginning of the authentication.
-                self.appleUserID = nil
-
+        let loginUI = WordPressAuthenticator.loginUI(onPrimaryLoginCTA: { [weak self] in
+            guard let self else { return false }
+            // Resets Apple ID at the beginning of the authentication.
+            self.appleUserID = nil
+            guard await self.qrLoginAvailability.isAvailableForPrologue(),
+                  let navigationController = self.displayAuthenticatorIfLoggedOut?() else {
                 self.analytics.track(.loginPrologueContinueTapped)
-            })
-            guard let loginVC = loginUI else {
-                fatalError("Cannot instantiate login UI from WordPressAuthenticator")
+                return false
             }
-            return loginVC
-        }()
-        return loginViewController
+            // Reuse a coordinator only while its QR screens are still live (e.g.
+            // a rapid second tap); release a stale one an error-screen restart
+            // left behind, or its tap is swallowed forever.
+            if let existingCoordinator = self.qrLoginCoordinator {
+                guard existingCoordinator.isNavigationStackShowingQRFlow == false else {
+                    return true
+                }
+                self.qrLoginCoordinator = nil
+            }
+            // Track the click while the active flow is still `prologue`;
+            // the QR coordinator's `start()` switches it to `login_qr`.
+            DefaultQRLoginAnalyticsTracking().trackClick(.loginWithQR)
+            self.makeQRLoginCoordinator(mode: .camera, navigationController: navigationController).start()
+            return true
+        })
+        guard let loginVC = loginUI else {
+            fatalError("Cannot instantiate login UI from WordPressAuthenticator")
+        }
+        return loginVC
+    }
+
+    /// Builds a `QRLoginCoordinator` wired with the shared site-address
+    /// fallback and success handlers, and retains it as `qrLoginCoordinator`.
+    /// Starting it is the caller's responsibility.
+    @MainActor
+    private func makeQRLoginCoordinator(mode: QRLoginCoordinator.Mode,
+                                        navigationController: UINavigationController) -> QRLoginCoordinator {
+        let coordinator = QRLoginCoordinator(
+            mode: mode,
+            navigationController: navigationController,
+            onEnterSiteURL: { [weak navigationController] in
+                guard let navigationController else { return }
+                NavigateToEnterSite().execute(from: navigationController)
+            },
+            onShowHelp: { [weak self, weak navigationController] in
+                guard let self, let navigationController else { return }
+                let presenter = navigationController.topViewController ?? navigationController
+                self.presentSupport(from: presenter, sourceTag: .loginWithQRCode, siteURL: nil)
+            },
+            onSuccess: { [weak self, weak navigationController] in
+                guard let self, let navigationController else { return }
+                self.startStorePicker(with: WooConstants.placeholderStoreID, in: navigationController)
+            },
+            onFinished: { [weak self] in
+                // Release the coordinator once its UI is left for good, so a
+                // later deep link doesn't reuse a stale, dismissed instance.
+                self?.qrLoginCoordinator = nil
+            }
+        )
+        qrLoginCoordinator = coordinator
+        return coordinator
     }
 
     /// Handles an Authentication URL Callback. Returns *true* on success.
     ///
-    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) -> Bool {
+    @MainActor
+    func handleAuthenticationUrl(_ url: URL, options: [UIApplication.OpenURLOptionsKey: Any], rootViewController: UIViewController) async -> Bool {
         if WordPressAuthenticator.shared.isWordPressAuthUrl(url) {
             return WordPressAuthenticator.shared.handleWordPressAuthUrl(url,
-                                                                        rootViewController: rootViewController)
+                                                                        rootViewController: rootViewController,
+                                                                        restoresSiteAddress: true)
+        }
+
+        if isQRLoginUrl(url),
+           let handled = await handleQRLoginUrl(url) {
+            return handled
         }
 
         if isAppLoginUrl(url) {
@@ -180,6 +264,110 @@ class AuthenticationManager: Authentication {
     private func isAppLoginUrl(_ url: URL) -> Bool {
         let expectedPrefix = WooConstants.appLoginURLPrefix
         return url.absoluteString.hasPrefix(expectedPrefix)
+    }
+
+    /// Case-insensitive match for `woocommerce://qr-login` deep links
+    /// (scheme + host check is case-insensitive). Uses a
+    /// prefix check — matching `isAppLoginUrl` — because `URL.host` is
+    /// unreliable for custom-scheme URLs across Foundation versions.
+    private func isQRLoginUrl(_ url: URL) -> Bool {
+        url.absoluteString.lowercased().hasPrefix(WooConstants.qrLoginURLPrefix)
+    }
+
+    /// Handles an inbound `woocommerce://qr-login?...` URL by driving the QR
+    /// coordinator's deep-link flow.
+    ///
+    /// Returns `nil` when the feature isn't available — the caller falls
+    /// through to the standard handlers so the user lands on the regular
+    /// prologue instead of a no-op.
+    ///
+    /// Token / grant lifetime is not managed here: clearing the URL from the
+    /// launch state is the OS / scene-delegate's job; this method makes a
+    /// best-effort to not retain the payload anywhere persistent.
+    @MainActor
+    private func handleQRLoginUrl(_ url: URL) async -> Bool? {
+        // The merchant chose this path by opening the link, so we just need
+        // the remote flag (or debug override) on — bucket and camera are
+        // bypassed. `false` (flag off, or not loaded yet) falls through to
+        // the standard handlers.
+        guard await qrLoginAvailability.isAvailableForDeepLink() else {
+            return nil
+        }
+
+        guard let navigationController = displayAuthenticatorIfLoggedOut?() else {
+            DDLogWarn("QR-login deep link: cannot display authenticator UI.")
+            return false
+        }
+
+        let payload = QRLoginPayloadParser().parse(url)
+        if let qrLoginCoordinator {
+            // Displaying the authenticator already built the QR-login UI
+            // and started a coordinator on the prologue. Reuse it for the
+            // deep-link payload — starting a second coordinator would
+            // orphan the first and leave a dead prologue underneath the
+            // number-match screen.
+            qrLoginCoordinator.presentDeepLink(payload: payload)
+        } else {
+            // The legacy authenticator UI is the root; start a standalone
+            // deep-link coordinator on its navigation stack.
+            makeQRLoginCoordinator(mode: .deepLink(payload: payload),
+                                   navigationController: navigationController).start()
+        }
+        return true
+    }
+
+    /// Handles a `woocommerce://qr-login` deep link that arrived while the
+    /// merchant is already signed in. Shows a warning; confirming
+    /// signs the merchant out and resumes the QR sign-in, cancelling keeps the
+    /// current session. Returns `true` when the URL was a QR-login deep link
+    /// this method took over, `false` otherwise (the caller then drops it).
+    @MainActor
+    func handleSignedInQRLoginDeepLink(_ url: URL, rootViewController: UIViewController) async -> Bool {
+        guard isQRLoginUrl(url) else {
+            return false
+        }
+        guard await qrLoginAvailability.isAvailableForDeepLink() else {
+            return false
+        }
+        presentSessionReplaceWarning(for: url, from: rootViewController)
+        return true
+    }
+
+    @MainActor
+    private func presentSessionReplaceWarning(for url: URL, from presentingViewController: UIViewController) {
+        let analytics = DefaultQRLoginAnalyticsTracking()
+        analytics.setFlow(.loginQR)
+        analytics.trackStep(.qrSessionReplaceWarning)
+
+        let warningView = QRLoginSessionReplaceView(
+            onConfirm: { [weak self] in
+                analytics.trackClick(.submit)
+                presentingViewController.dismiss(animated: true) {
+                    self?.signOutAndResumeQRLogin(url: url)
+                }
+            },
+            onCancel: {
+                analytics.trackClick(.dismiss)
+                presentingViewController.dismiss(animated: true)
+            }
+        )
+        let hostingController = UIHostingController(rootView: warningView)
+        hostingController.modalPresentationStyle = .fullScreen
+        presentingViewController.present(hostingController, animated: true)
+    }
+
+    /// Signs the merchant out and resumes the QR sign-in. `deauthenticate()` is
+    /// best-effort local teardown that always leaves the app signed out, so the
+    /// QR sign-in can always resume. The deep link is re-handled on a later
+    /// main-actor turn, once `AppCoordinator` has reacted to the deauthentication
+    /// and installed the logged-out login UI — re-handling synchronously would
+    /// race that Combine-driven swap.
+    @MainActor
+    private func signOutAndResumeQRLogin(url: URL) {
+        ServiceLocator.stores.deauthenticate()
+        Task { @MainActor [weak self] in
+            _ = await self?.handleQRLoginUrl(url)
+        }
     }
 
     /// Injects `loggedOutAppSettings`
@@ -373,20 +561,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                    onLoading: @escaping (Bool) -> Void,
                                    onSuccess: @escaping () -> Void,
                                    onFailure: @escaping  (Error, Bool) -> Void) {
-        let useCase = SiteCredentialLoginUseCase(siteURL: credentials.siteURL)
-        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error in
+        let useCase = siteCredentialLoginUseCaseFactory(
+            credentials.siteURL,
+            credentials.authenticationEndpoints,
+            false
+        )
+        useCase.setupHandlers(onLoginSuccess: onSuccess, onLoginFailure: { [weak self] error, _, _ in
             guard let self else { return }
             onLoading(false)
             onFailure(error, false)
-            let challengeType: String? = {
-                if case .basicAuthenticationRequired = error {
-                    return "basic_auth"
-                }
-                return nil
-            }()
-            self.analytics.track(event: .Login.siteCredentialFailed(step: .authentication,
-                                                                    error: error.underlyingError,
-                                                                    challengeType: challengeType))
+            self.trackSiteCredentialLoginFailure(error)
         })
         self.siteCredentialLoginUseCase = useCase
 
@@ -394,13 +578,100 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         onLoading(true)
     }
 
-    func handleSiteCredentialLoginFailure(error: Error,
-                                          for siteURL: String,
-                                          in viewController: UIViewController) {
-        guard featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin) else {
+    /// Authenticates site credentials against explicitly configured endpoints, asking the merchant where
+    /// the sign-in page or the dashboard lives when the standard addresses do not work.
+    ///
+    func authenticateSiteCredentials(credentials: WordPressOrgCredentials,
+                                     loginURL: String?,
+                                     adminURL: String?,
+                                     endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
+                                     onLoading: @escaping (Bool) -> Void,
+                                     onSuccess: @escaping (WordPressOrgCredentials) -> Void,
+                                     onRecovery: @escaping (SiteCredentialRecovery) -> Void,
+                                     onFailure: @escaping (Error, Bool, String?, Bool) -> Void) {
+        let endpoints: CookieNonceAuthenticationEndpoints
+        do {
+            endpoints = try siteCredentialRecoveryEndpoints(
+                siteURL: credentials.siteURL,
+                loginURL: loginURL,
+                adminURL: adminURL
+            )
+        } catch let error as SiteCredentialRecoveryValidationError {
+            onRecovery(error.recovery)
+            return
+        } catch {
+            onFailure(SiteCredentialLoginError.invalidLoginResponse, false, nil, false)
             return
         }
 
+        let useCase = siteCredentialLoginUseCaseFactory(
+            credentials.siteURL,
+            endpoints,
+            endpointUnderVerification == .admin
+        )
+        useCase.setupHandlers(onLoginSuccess: {
+            // Deliberately no `onLoading(false)` here, unlike the failure branch below. The credential
+            // transaction succeeding only starts the sign-in: `onSuccess` goes on to run the application
+            // password, role eligibility and WooCommerce installation checks, and the form has to stay
+            // disabled until one of those navigates away.
+            onSuccess(credentials.replacingAuthenticationEndpoints(with: endpoints))
+        }, onLoginFailure: { [weak self] error, loginEntryVerified, offersBrowserAlternative in
+            onLoading(false)
+            let normalizedLoginURL = endpoints.loginEntryURL.absoluteString
+            let normalizedAdminURL = endpoints.adminBaseURL.absoluteString
+            switch error {
+            case .inaccessibleLoginPage where endpointUnderVerification != .admin:
+                let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil
+                onRecovery(.login(draftURL: normalizedLoginURL, error: inlineError))
+                self?.analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
+            case .invalidLoginResponse where endpointUnderVerification != .admin && loginEntryVerified == false:
+                let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil
+                onRecovery(.login(draftURL: normalizedLoginURL, error: inlineError))
+                self?.analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
+            case .inaccessibleAdminPage where loginEntryVerified:
+                let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .admin ? .notFound : nil
+                onRecovery(.admin(verifiedLoginURL: normalizedLoginURL,
+                                  draftURL: normalizedAdminURL,
+                                  error: inlineError))
+            default:
+                let incorrectCredentials = if case .invalidCredentials = error { true } else { false }
+                onFailure(error,
+                          incorrectCredentials,
+                          loginEntryVerified ? normalizedLoginURL : nil,
+                          offersBrowserAlternative)
+                self?.trackSiteCredentialLoginFailure(error)
+            }
+        })
+        siteCredentialLoginUseCase = useCase
+        onLoading(true)
+        useCase.handleLogin(username: credentials.username, password: credentials.password)
+    }
+
+    func presentSiteCredentialBrowserAlternative(for siteURL: String, in viewController: UIViewController) {
+        presentAppPasswordTutorial(error: SiteCredentialLoginError.inaccessibleLoginPage, for: siteURL, in: viewController)
+    }
+
+    /// Presents the failure without ever navigating to the browser flow on its own. The browser alternative
+    /// is only ever offered as a button the merchant has to tap.
+    ///
+    func presentSiteCredentialLoginFailure(error: Error,
+                                           offersBrowserAlternative: Bool,
+                                           for siteURL: String,
+                                           in viewController: UIViewController) {
+        let browserAction: (() -> Void)? = offersBrowserAlternative ? { [weak self, weak viewController] in
+            guard let self, let viewController else { return }
+            presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
+        } : nil
+        presentSiteCredentialLoginErrorAlert(
+            message: error.localizedDescription,
+            defaultAction: browserAction,
+            in: viewController
+        )
+    }
+
+    func handleSiteCredentialLoginFailure(error: Error,
+                                          for siteURL: String,
+                                          in viewController: UIViewController) {
         let isAppPasswordAuthError = {
             switch error {
             case SiteCredentialLoginError.genericFailure,
@@ -530,8 +801,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the Support new request, from a given ViewController, with a specified SourceTag.
     ///
     func presentSupportRequest(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag) {
-        let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag.origin))
-        supportForm.show(from: sourceViewController)
+        Task { @MainActor in
+            let supportForm = SupportFormHostingController(viewModel: .init(sourceTag: sourceTag.origin,
+                                                                            mobileStatusReportProvider: MobileStatusReportProvider()))
+            supportForm.show(from: sourceViewController)
+        }
     }
 
     /// Indicates if the Login Epilogue should be presented.
@@ -551,9 +825,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     ///
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
         if let wporg = credentials.wporg {
-            ServiceLocator.stores.authenticate(credentials: .wporg(username: wporg.username,
-                                                                   password: wporg.password,
-                                                                   siteAddress: wporg.siteURL))
+            stores.authenticate(
+                credentials: .wporg(username: wporg.username, password: wporg.password, siteAddress: wporg.siteURL),
+                cookieNonceAuthenticationEndpoints: wporg.authenticationEndpoints
+            )
             return onCompletion()
         }
 
@@ -585,12 +860,12 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     func handleSiteInfoFailure(siteURL: String, error: Error, completion: @escaping (Bool) -> Void) {
         DDLogError("⚠️ Site info check failed for \(siteURL): \(error.localizedDescription)")
 
-        let discovery = WordPressAPIDiscovery()
+        let resolver = WordPressAPIDiscovery()
         Task { @MainActor in
-            let discoveredRoot = await discovery.discoverRESTAPIRootURL(for: siteURL)
-            let hasRESTAPI = discoveredRoot != nil
+            let resolvedRoot = await resolver.resolveRESTAPIRootURL(for: siteURL)
+            let hasRESTAPI = resolvedRoot != nil
 
-            DDLogInfo("🔍 API discovery for \(siteURL): REST API \(hasRESTAPI ? "found" : "not found")")
+            DDLogInfo("🔍 API root resolution for \(siteURL): REST API \(hasRESTAPI ? "found" : "not found")")
             completion(hasRESTAPI)
         }
     }
@@ -636,8 +911,107 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 }
 
+// MARK: - Application password
+extension AuthenticationManager {
+    func makeApplicationPasswordUseCase(for credentials: WordPressOrgCredentials) throws -> ApplicationPasswordUseCase {
+        if let siteURL = URL(string: credentials.siteURL) {
+            runtimeCookieJar.removeCookies(forHostOf: siteURL)
+        }
+        return try applicationPasswordUseCaseFactory.makeForWordPressOrg(
+            username: credentials.username,
+            password: credentials.password,
+            siteAddress: credentials.siteURL,
+            authenticationEndpoints: credentials.authenticationEndpoints
+        )
+    }
+
+    static func credentials(for applicationPassword: ApplicationPassword, siteURL: String) -> Credentials {
+        .applicationPassword(
+            username: applicationPassword.wpOrgUsername,
+            password: applicationPassword.password.secretValue,
+            siteAddress: siteURL
+        )
+    }
+}
+
+/// Signals that a candidate endpoint was rejected locally, before any request was made.
+///
+private struct SiteCredentialRecoveryValidationError: Error {
+    let recovery: SiteCredentialRecovery
+}
+
 // MARK: - Private helpers
 private extension AuthenticationManager {
+
+    /// Builds normalized, same-site endpoints from the addresses the merchant supplied so far.
+    ///
+    /// Throws `SiteCredentialRecoveryValidationError` when a supplied address cannot be used, so the caller
+    /// can ask for it again instead of starting a doomed login.
+    ///
+    func siteCredentialRecoveryEndpoints(siteURL: String,
+                                         loginURL: String?,
+                                         adminURL: String?) throws -> CookieNonceAuthenticationEndpoints {
+        guard let canonicalURL = URL(string: siteURL) else {
+            throw SiteCredentialLoginError.invalidLoginResponse
+        }
+        var endpoints = try CookieNonceAuthenticationEndpoints(siteURL: canonicalURL)
+        if let loginURL {
+            guard let url = URL(string: loginURL), url.scheme != nil, url.host != nil else {
+                throw recoveryValidation(.login, .invalidURL, loginURL, endpoints)
+            }
+            do {
+                endpoints = try CookieNonceAuthenticationEndpoints(siteURL: endpoints.siteURL, loginEntryURL: url)
+            } catch let error as CookieNonceAuthenticationEndpoints.ValidationError {
+                throw recoveryValidation(.login, recoveryError(error), loginURL, endpoints)
+            }
+        }
+        if let adminURL {
+            guard let url = URL(string: adminURL), url.scheme != nil, url.host != nil else {
+                throw recoveryValidation(.admin, .invalidURL, adminURL, endpoints)
+            }
+            do {
+                endpoints = try CookieNonceAuthenticationEndpoints(
+                    siteURL: endpoints.siteURL,
+                    loginEntryURL: endpoints.loginEntryURL,
+                    adminBaseURL: url
+                )
+            } catch let error as CookieNonceAuthenticationEndpoints.ValidationError {
+                throw recoveryValidation(.admin, recoveryError(error), adminURL, endpoints)
+            }
+        }
+        return endpoints
+    }
+
+    func recoveryError(_ error: CookieNonceAuthenticationEndpoints.ValidationError) -> SiteCredentialRecoveryError {
+        switch error {
+        case .invalidURL, .unsupportedScheme, .missingHost:
+            .invalidURL
+        case .userInfoNotAllowed, .queryNotAllowed, .originMismatch, .insecureDowngrade:
+            .differentSite
+        }
+    }
+
+    func recoveryValidation(_ endpoint: SiteCredentialRecoveryEndpoint,
+                            _ error: SiteCredentialRecoveryError,
+                            _ draftURL: String,
+                            _ endpoints: CookieNonceAuthenticationEndpoints) -> SiteCredentialRecoveryValidationError {
+        let recovery: SiteCredentialRecovery = switch endpoint {
+        case .login: .login(draftURL: draftURL, error: error)
+        case .admin: .admin(verifiedLoginURL: endpoints.loginEntryURL.absoluteString, draftURL: draftURL, error: error)
+        }
+        return SiteCredentialRecoveryValidationError(recovery: recovery)
+    }
+
+    func trackSiteCredentialLoginFailure(_ error: SiteCredentialLoginError) {
+        let challengeType: String? = if case .basicAuthenticationRequired = error {
+            "basic_auth"
+        } else {
+            nil
+        }
+        analytics.track(event: .Login.siteCredentialFailed(step: .authentication,
+                                                           error: error.underlyingError,
+                                                           challengeType: challengeType))
+    }
 
     func getAvailableStores() async -> [Site] {
         let storePickerViewModel = StorePickerViewModel(configuration: .switchingStores,
@@ -686,6 +1060,19 @@ private extension AuthenticationManager {
                           source: SignInSource? = nil,
                           in navigationController: UINavigationController,
                           onDismiss: @escaping () -> Void = {}) {
+        // Reaching the store picker means a sign-in completed and the login surface
+        // (including any QR-login flow) is being replaced — release the QR-login
+        // coordinator here. This is the "or replaced on a successful sign-in" half
+        // promised in `QRLoginCoordinator.handleEnterSiteURL`: the site-address
+        // fallback never calls `finish()`. `startStorePicker` is the single chokepoint
+        // every successful sign-in funnels through (wp.com & wp-org epilogues,
+        // application-password recovery, QR success), so clearing here covers them all.
+        // Without it, the stale coordinator (this is a process-lifetime singleton)
+        // makes the prologue "Log in" CTA a silent no-op after a later logout
+        // (`authenticationUI()` returns early while `qrLoginCoordinator != nil`) and
+        // poisons later `woocommerce://qr-login` deep links.
+        qrLoginCoordinator = nil
+
         // Start the store picker
         let config = StorePickerConfiguration.login
         storePickerCoordinator = StorePickerCoordinator(navigationController,
@@ -761,19 +1148,23 @@ private extension AuthenticationManager {
                 DDLogInfo("⚠️ No navigation controller found")
                 return
             }
-            let credentials: Credentials = .applicationPassword(
-                username: applicationPassword.wpOrgUsername,
-                password: applicationPassword.password.secretValue,
-                siteAddress: siteURL
-            )
-            let useCase = OneTimeApplicationPasswordUseCase(applicationPassword: applicationPassword,
-                                                            siteAddress: siteURL)
-            /// IMPORTANT: authenticate after creating the use case above to make sure that
-            /// the application password is saved into keychain.
-            ServiceLocator.stores.authenticate(credentials: credentials)
-            self?.checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
+            guard let self else {
+                return
+            }
+            didAuthorizeApplicationPassword(applicationPassword, for: siteURL, in: navigationController)
         })
         return controller
+    }
+
+    func didAuthorizeApplicationPassword(_ applicationPassword: ApplicationPassword,
+                                         for siteURL: String,
+                                         in navigationController: UINavigationController) {
+        let credentials = Self.credentials(for: applicationPassword, siteURL: siteURL)
+        let useCase = OneTimeApplicationPasswordUseCase(applicationPassword: applicationPassword, siteAddress: siteURL)
+        /// IMPORTANT: authenticate after creating the use case above to make sure that
+        /// the application password is saved into keychain.
+        stores.authenticate(credentials: credentials)
+        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
     }
 
     /// The error screen to be displayed when Jetpack setup for a site is required.
@@ -809,27 +1200,57 @@ private extension AuthenticationManager {
                               connectionMissingOnly: site.hasJetpack && site.isJetpackActive,
                               in: navigationController)
     }
+}
 
+extension AuthenticationManager {
     /// Checks if the authenticated user is eligible to use the app and navigates to the home screen.
+    /// Internal so tests can verify that the authentication callback forwards its validated endpoint context.
     ///
     func didAuthenticateUser(to siteURL: String,
                              with siteCredentials: WordPressOrgCredentials,
                              in navigationController: UINavigationController) {
-        guard let useCase = try? DefaultApplicationPasswordUseCase(
+        let useCase: ApplicationPasswordUseCase
+        do {
+            useCase = try makeApplicationPasswordUseCase(for: siteCredentials)
+        } catch {
+            // Authenticated credentials without a constructible canonical site cannot safely enter the eligibility flow.
+            // Nothing further along clears the sign-in loading state, so plainly returning would strand the merchant on a
+            // credential form whose fields, submit button and back button all stay disabled. Report the broken invariant
+            // and restart login, which is the same escape the post-login eligibility alerts already offer.
+            ServiceLocator.crashLogging.logError(error,
+                                                 userInfo: ["site_url": siteURL],
+                                                 level: .error)
+            stores.deauthenticate()
+            navigationController.popToRootViewController(animated: true)
+            return
+        }
+        let credentials = Credentials.wporg(
             username: siteCredentials.username,
             password: siteCredentials.password,
             siteAddress: siteCredentials.siteURL
-        ) else {
-            return assertionFailure("⛔️ Error creating application password use case")
+        )
+        let endpointPersistence = siteCredentials.authenticationEndpoints.flatMap {
+            SiteCredentialAuthenticationEndpointPersistence(credentials: credentials, endpoints: $0)
         }
-        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController, previousViewController: nil)
+        checkSiteCredentialLogin(
+            to: siteURL,
+            with: useCase,
+            in: navigationController,
+            authenticationEndpointPersistence: endpointPersistence,
+            previousViewController: nil
+        )
     }
+}
 
+private extension AuthenticationManager {
     func checkSiteCredentialLogin(to siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
                                   in navigationController: UINavigationController,
+                                  authenticationEndpointPersistence: SiteCredentialAuthenticationEndpointPersistence? = nil,
                                   previousViewController: UIViewController? = nil) {
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                     stores: stores,
+                                                     authenticationEndpointPersistence: authenticationEndpointPersistence,
                                                      previousViewController: previousViewController)
         checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
             guard let self else { return }
@@ -852,13 +1273,16 @@ private extension AuthenticationManager {
             self?.analytics.track(event: .ApplicationPasswordAuthorization.explanationContinueButtonTapped())
         }
         tutorialVC.contactSupportButtonTapped = { [weak self] in
-            let supportController = SupportFormHostingController(viewModel: .init(sourceTag: WordPressSupportSourceTag.loginUsernamePassword.origin))
-            supportController.show(from: viewController)
-            self?.analytics.track(event: .ApplicationPasswordAuthorization.explanationContactSupportTapped())
+            Task { @MainActor in
+                let supportController = SupportFormHostingController(
+                    viewModel: .init(sourceTag: WordPressSupportSourceTag.loginUsernamePassword.origin,
+                                     mobileStatusReportProvider: MobileStatusReportProvider())
+                )
+                supportController.show(from: viewController)
+                self?.analytics.track(event: .ApplicationPasswordAuthorization.explanationContactSupportTapped())
+            }
         }
         viewController.show(tutorialVC, sender: viewController)
-
-        analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
     }
 
     /// Presents login error alert before redirecting user to the site login using a web view.
@@ -877,12 +1301,28 @@ private extension AuthenticationManager {
             guard let self else { return }
             presentApplicationPasswordWebView(for: siteURL, in: viewController)
         } : nil
-        let alertController = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
+        presentSiteCredentialLoginErrorAlert(
             message: (error as NSError).localizedDescription,
+            defaultAction: defaultAction,
+            in: viewController
+        )
+    }
+
+    /// Presents the site credential failure using the authenticator's centered, dimmed alert treatment.
+    ///
+    /// Without the custom presentation configuration, UIKit presents the alert as a page sheet on iOS 26.
+    private func presentSiteCredentialLoginErrorAlert(message: String,
+                                                      defaultAction: (() -> Void)?,
+                                                      in viewController: UIViewController) {
+        let alert = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
+            message: message,
             defaultAction: defaultAction
         )
-
-        viewController.present(alertController, animated: true)
+        if let transitioningDelegate = viewController as? UIViewControllerTransitioningDelegate {
+            alert.modalPresentationStyle = .custom
+            alert.transitioningDelegate = transitioningDelegate
+        }
+        viewController.present(alert, animated: true)
     }
 
     /// Presents app password site login using a web view.

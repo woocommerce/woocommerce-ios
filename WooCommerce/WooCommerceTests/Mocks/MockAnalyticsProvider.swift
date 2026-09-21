@@ -24,14 +24,28 @@ public class MockAnalyticsProvider: NSObject, AnalyticsProvider, WPAnalyticsTrac
 
     var userID: String?
     var userOptedIn = true
+    var defersRefreshUserDataCompletion = false
+    private(set) var refreshUserDataCallCount = 0
+    private var refreshUserDataCompletion: (() -> Void)?
 }
 
 // MARK: - AnalyticsProvider Conformance
 //
 public extension MockAnalyticsProvider {
 
-    func refreshUserData() {
+    func refreshUserData(completion: @escaping () -> Void) {
+        refreshUserDataCallCount += 1
         userID = "aGeneratedUserGUID"
+        if defersRefreshUserDataCompletion {
+            refreshUserDataCompletion = completion
+        } else {
+            completion()
+        }
+    }
+
+    func completeRefreshUserData() {
+        refreshUserDataCompletion?()
+        refreshUserDataCompletion = nil
     }
 
     func track(_ eventName: String) {

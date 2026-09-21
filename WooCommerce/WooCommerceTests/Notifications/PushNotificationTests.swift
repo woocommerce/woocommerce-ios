@@ -17,7 +17,7 @@ final class PushNotificationTests: XCTestCase {
             "alert": [
                 "body": "New order for $2.00 on the store",
                 "title": "You have a new order! 🎉"
-                ]
+            ]
         ],
         "type": "store_order",
         "blog_id": "205617935",
@@ -107,6 +107,93 @@ final class PushNotificationTests: XCTestCase {
         XCTAssertEqual(notification.meta?.identifier(forKey: .order), 306)
     }
 
+    func test_resolved_site_id_when_selected_site_uses_site_credentials_then_returns_placeholder_id() throws {
+        // Given
+        let notification = try XCTUnwrap(WooCommerce.PushNotification.from(userInfo: userInfo))
+        let stores = makeStores(defaultStoreID: WooConstants.placeholderStoreID)
+
+        // When
+        let siteID = notification.resolvedSiteID(stores: stores)
+
+        // Then
+        XCTAssertEqual(siteID, WooConstants.placeholderStoreID)
+    }
+
+    func test_resolved_site_id_when_selected_site_uses_wpcom_then_returns_notification_site_id() throws {
+        // Given
+        let notification = try XCTUnwrap(WooCommerce.PushNotification.from(userInfo: userInfo))
+        let stores = makeStores(defaultStoreID: 123)
+
+        // When
+        let siteID = notification.resolvedSiteID(stores: stores)
+
+        // Then
+        XCTAssertEqual(siteID, notification.siteID)
+    }
+
+    func test_resolved_site_id_when_there_is_no_selected_site_then_returns_notification_site_id() throws {
+        // Given
+        let notification = try XCTUnwrap(WooCommerce.PushNotification.from(userInfo: userInfo))
+        let stores = makeStores(defaultStoreID: nil)
+
+        // When
+        let siteID = notification.resolvedSiteID(stores: stores)
+
+        // Then
+        XCTAssertEqual(siteID, notification.siteID)
+    }
+
+    // MARK: Store Stock
+    //
+    func test_store_stock_user_info_is_parsed_correctly() throws {
+        // Given — mirrors the real server payload: `note_id` is null for Woo-driven
+        // stock notifications (they are not WPCom-stored notes).
+        let expectedSiteID: Int64 = 205617935
+        let expectedProductID = 42
+        let noteData: [String: Any] = [
+            "notes": [
+                [
+                    "id": NSNull(),
+                    "type": "store_stock",
+                    "meta": [
+                        "ids": [
+                            "site": expectedSiteID,
+                            "product": expectedProductID
+                        ]
+                    ]
+                ]
+            ]
+        ]
+
+        let jsonData = try JSONSerialization.data(withJSONObject: noteData)
+        let compressedData = try (jsonData as NSData).compressed(using: .zlib)
+        var dataWithHeader = Data([0x78, 0x9C])
+        dataWithHeader.append(compressedData as Data)
+        let base64Encoded = dataWithHeader.base64EncodedString()
+
+        let userInfo: [AnyHashable: Any] = [
+            "blog": expectedSiteID,
+            "note_full_data": base64Encoded,
+            "aps": [
+                "alert": [
+                    "title": "Low stock alert"
+                ]
+            ],
+            "type": "store_stock",
+            "note_id": NSNull()
+        ]
+
+        // When
+        let notification = try XCTUnwrap(PushNotification.from(userInfo: userInfo))
+
+        // Then
+        XCTAssertNil(notification.noteID)
+        XCTAssertEqual(notification.kind, Note.Kind.storeStock)
+        XCTAssertEqual(notification.siteID, expectedSiteID)
+        XCTAssertEqual(notification.meta?.identifier(forKey: .product), expectedProductID)
+        XCTAssertEqual(notification.meta?.identifier(forKey: .site), Int(expectedSiteID))
+    }
+
     // MARK: Blaze
     //
     func test_blaze_rejected_note_user_info_is_parsed_correctly() throws {
@@ -139,6 +226,18 @@ final class PushNotificationTests: XCTestCase {
         XCTAssertEqual(notification.siteID, Int64(236807409))
         XCTAssertEqual(notification.title, "Your campaign \"Fly High\" ended on 21 Mar 2024. See how it performed.")
         XCTAssertEqual(notification.kind, Note.Kind.blazePerformedNote)
+    }
+}
+
+// MARK: Helpers
+//
+private extension PushNotificationTests {
+    /// Returns a `StoresManager` whose session points at the given store.
+    ///
+    func makeStores(defaultStoreID: Int64?) -> MockStoresManager {
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultStoreID = defaultStoreID
+        return MockStoresManager(sessionManager: sessionManager)
     }
 }
 

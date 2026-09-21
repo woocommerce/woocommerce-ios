@@ -70,7 +70,7 @@ final class OrderNotificationViewModel {
     /// Fetches WPCom credentials if possible.
     /// We only care `WPCom` because other forms of auth do not support notifications.
     ///
-    static private func fetchCredentials() -> Credentials? {
+    private static func fetchCredentials() -> Credentials? {
         let keychain = Keychain(service: WooConstants.keychainServiceName)
         guard let authToken = keychain[WooConstants.authToken] else {
             return nil

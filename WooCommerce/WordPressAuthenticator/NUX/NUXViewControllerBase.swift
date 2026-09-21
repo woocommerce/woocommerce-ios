@@ -315,7 +315,7 @@ extension NUXViewControllerBase where Self: UIViewController, Self: UIViewContro
             view.centerYAnchor.constraint(equalTo: helpButton.topAnchor, constant: yConstant),
             view.widthAnchor.constraint(equalToConstant: Constants.notificationIndicatorSize.width),
             view.heightAnchor.constraint(equalToConstant: Constants.notificationIndicatorSize.height)
-            ])
+        ])
     }
 
     // MARK: - UIViewControllerTransitioningDelegate

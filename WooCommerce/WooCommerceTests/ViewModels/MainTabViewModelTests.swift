@@ -72,7 +72,6 @@ final class MainTabViewModelTests: XCTestCase {
         var returnedType: NotificationBadgeType?
         viewModel.onMenuBadgeShouldBeDisplayed = { type in
             returnedType = type
-
         }
 
         // When
@@ -105,7 +104,6 @@ final class MainTabViewModelTests: XCTestCase {
         var onMenuBadgeShouldBeHiddenWasCalled = false
         viewModel.onMenuBadgeShouldBeHidden = {
             onMenuBadgeShouldBeHiddenWasCalled = true
-
         }
 
         // When

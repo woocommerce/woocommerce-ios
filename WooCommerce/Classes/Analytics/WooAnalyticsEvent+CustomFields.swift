@@ -116,8 +116,6 @@ extension WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .customFieldEditorDoneTapped,
                               properties: [:])
         }
-
-
     }
 }
 

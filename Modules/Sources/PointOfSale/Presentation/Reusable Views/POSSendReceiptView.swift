@@ -21,8 +21,12 @@ struct POSSendReceiptView: View {
         self.onSendReceipt = onSendReceipt
     }
 
+    private var trimmedEmail: String {
+        textFieldInput.trimmingCharacters(in: .whitespacesAndNewlines)
+    }
+
     private var isEmailValid: Bool {
-        EmailFormatValidator.validate(string: textFieldInput)
+        EmailFormatValidator.validate(string: trimmedEmail)
     }
 
     var body: some View {
@@ -54,7 +58,7 @@ struct POSSendReceiptView: View {
             buttonState = .loading
             do {
                 errorMessage = nil
-                try await onSendReceipt(textFieldInput)
+                try await onSendReceipt(trimmedEmail)
 
                 withAnimation {
                     buttonState = .success
@@ -96,7 +100,7 @@ private extension POSSendReceiptView {
 
 #if DEBUG
 #Preview {
-    POSSendReceiptView(isShowingSendReceiptView: .constant(true)) { email in
+    POSSendReceiptView(isShowingSendReceiptView: .constant(true)) { _ in
         try await Task.sleep(nanoseconds: 500_000_000) // 0.5 seconds
     }
 }

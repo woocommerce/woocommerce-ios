@@ -47,7 +47,6 @@ final class DecodingError_CodingPathTests: XCTestCase {
         assertEqual("name", error.debugPath)
         assertEqual(mockDebugDescription, error.contextDebugDescription)
     }
-
 }
 
 private extension DecodingError_CodingPathTests {

@@ -6,7 +6,6 @@ import UIKit
 /// Without SwiftUI Lifecycle, advertising and handling External Events wastes resources, and will have unpredictable results.)
 /// Instead, we call `registerUserActivity` on this empty VC from the new View Model.
 class InPersonPaymentsMenuViewController: UIViewController {
-
 }
 
 // MARK: - SearchableActivity Conformance

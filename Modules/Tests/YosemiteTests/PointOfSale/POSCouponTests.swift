@@ -1,3 +1,4 @@
+import Fakes
 import Foundation
 import Testing
 @testable import Yosemite
@@ -36,5 +37,39 @@ struct POSCouponTests {
 
         // Then
         #expect(coupon.isExpired == true, "A coupon expiring at the current time should be considered expired")
+    }
+
+    @Test(arguments: [Coupon.DiscountType.percent, .fixedCart])
+    func test_appliesToWholeCart_when_cart_wide_type_and_no_restrictions_then_returns_true(discountType: Coupon.DiscountType) {
+        // Given
+        let coupon = Coupon.fake().copy(discountType: discountType, productIds: [], productCategories: [])
+
+        // Then
+        #expect(coupon.appliesToWholeCart == true)
+    }
+
+    @Test(arguments: [Coupon.DiscountType.fixedProduct, .other])
+    func test_appliesToWholeCart_when_product_scoped_type_then_returns_false(discountType: Coupon.DiscountType) {
+        // Given
+        let coupon = Coupon.fake().copy(discountType: discountType, productIds: [], productCategories: [])
+
+        // Then
+        #expect(coupon.appliesToWholeCart == false)
+    }
+
+    @Test func test_appliesToWholeCart_when_restricted_to_products_then_returns_false() {
+        // Given
+        let coupon = Coupon.fake().copy(discountType: .percent, productIds: [42], productCategories: [])
+
+        // Then
+        #expect(coupon.appliesToWholeCart == false)
+    }
+
+    @Test func test_appliesToWholeCart_when_restricted_to_categories_then_returns_false() {
+        // Given
+        let coupon = Coupon.fake().copy(discountType: .fixedCart, productIds: [], productCategories: [7])
+
+        // Then
+        #expect(coupon.appliesToWholeCart == false)
     }
 }

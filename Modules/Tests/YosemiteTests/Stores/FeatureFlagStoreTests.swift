@@ -226,4 +226,89 @@ final class FeatureFlagStoreTests: XCTestCase {
         XCTAssertFalse(isEnabled)
         XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 2)
     }
+
+    func test_loadRemoteFeatureFlagsInEffect_reports_nothing_when_no_fetch_has_succeeded() throws {
+        // Given
+        // No fetch has been performed.
+
+        // When
+        let values: [RemoteFeatureFlag: Bool]? = waitFor { promise in
+            self.store.onAction(FeatureFlagAction.loadRemoteFeatureFlagsInEffect { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertNil(values)
+        XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 0)
+    }
+
+    func test_loadRemoteFeatureFlagsInEffect_reports_nothing_when_the_only_fetch_failed() throws {
+        // Given
+        remote.whenLoadingAllFeatureFlags(thenReturn: .failure(NetworkError.timeout()))
+        waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: false, useCache: true) { _ in
+                    promise(())
+                })
+        }
+
+        // When
+        let values: [RemoteFeatureFlag: Bool]? = waitFor { promise in
+            self.store.onAction(FeatureFlagAction.loadRemoteFeatureFlagsInEffect { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertNil(values)
+    }
+
+    func test_loadRemoteFeatureFlagsInEffect_reports_fetched_values_without_fetching_again() throws {
+        // Given
+        remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true,
+                                                                .pointOfSale: false]))
+        waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: false, useCache: true) { _ in
+                    promise(())
+                })
+        }
+
+        // When
+        let values: [RemoteFeatureFlag: Bool]? = waitFor { promise in
+            self.store.onAction(FeatureFlagAction.loadRemoteFeatureFlagsInEffect { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertEqual(values, [.storeCreationCompleteNotification: true, .pointOfSale: false])
+        XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 1)
+    }
+
+    /// An expired cache is not consulted by `isRemoteFeatureFlagEnabled`, so reporting its values would describe
+    /// behaviour the app is not exhibiting.
+    func test_loadRemoteFeatureFlagsInEffect_reports_nothing_rather_than_the_aged_out_values() throws {
+        // Given
+        remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true]))
+        waitFor { promise in
+            self.store.onAction(FeatureFlagAction
+                .isRemoteFeatureFlagEnabled(.storeCreationCompleteNotification, defaultValue: false, useCache: true) { _ in
+                    promise(())
+                })
+        }
+        currentDate = currentDate.addingTimeInterval(25 * 60 * 60)
+
+        // When
+        let values: [RemoteFeatureFlag: Bool]? = waitFor { promise in
+            self.store.onAction(FeatureFlagAction.loadRemoteFeatureFlagsInEffect { result in
+                promise(result)
+            })
+        }
+
+        // Then - the aged-out values are not reported, and no fetch was triggered to find out
+        XCTAssertNil(values)
+        XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 1)
+    }
 }

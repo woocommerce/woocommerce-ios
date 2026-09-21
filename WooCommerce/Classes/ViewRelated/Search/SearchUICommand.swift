@@ -3,6 +3,7 @@ import UIKit
 import Yosemite
 
 /// An interface for search UI associated with a generic model and cell view model.
+@MainActor
 protocol SearchUICommand {
     associatedtype Model
     associatedtype CellViewModel
@@ -21,6 +22,10 @@ protocol SearchUICommand {
     /// Hides the navigation bar.
     ///
     var hideNavigationBar: Bool { get }
+
+    /// Whether navigation bar visibility changes should be animated.
+    ///
+    var animateNavigationBarVisibilityChanges: Bool { get }
 
     /// Makes the search bar first responder on start, focusing on there.
     ///
@@ -148,6 +153,10 @@ extension SearchUICommand {
     }
 
     var hideNavigationBar: Bool {
+        true
+    }
+
+    var animateNavigationBarVisibilityChanges: Bool {
         true
     }
 

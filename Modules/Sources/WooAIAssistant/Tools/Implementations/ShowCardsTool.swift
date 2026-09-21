@@ -13,21 +13,33 @@ public enum ShowCardsTool {
         description: """
         Render rich cards for specific entities the user should see. Call \
         this whenever you would otherwise mention an order/product/customer \
-        ID in prose. Supported families: order, product, product_variation, \
-        customer. `product_variation` references require both `id` and \
-        `parent_id` (the parent product's id). Order/product/customer \
-        references need only `id`. Up to 10 references per call. Prefer 1-5 \
-        for list-style answers; summarize the rest in prose. Cards render \
+        ID in prose. Supported families: order, product, variation, \
+        customer, analytics_stats. A `variation` reference's `id` is the \
+        combined `{parentProductId}/{variationId}` (e.g. `821/822`), and should \
+        be used only for explicit variation-level questions about sizes, \
+        colors, options, or known variation IDs. For broad product inventory \
+        lists, render product references. Order/product/customer references \
+        use a plain numeric `id`. Up to 10 \
+        references per call. Prefer 1-5 for list-style answers; summarize the \
+        rest in prose. A single call may mix families when the user asks for \
+        different entity types. Cards render \
         the entity's full detail to the user, but the model-visible result \
         is a compact summary only. Model-visible fields per family: order \
-        has id, number, status, total, currency, date_created, customer_name; \
-        product has id, name, sku, price, stock_status; product_variation \
-        adds parent_id; customer has id, first_name, last_name, email, \
-        orders_count. For any other field (line items, payment method, \
-        billing/shipping address, phone, recent-order details, etc.) use \
-        the appropriate get or list tool from the catalog. Cards rendered \
+        has id, number, status, total, currency, date_created, customer_name, \
+        customer_id, payment_method_title, line_items_count, line_items \
+        (each with id, name, quantity, sku, total, product_id, variation_id - \
+        capped at 5 per order); product has id, name, sku, price, stock_status, \
+        type, manage_stock, on_sale, stock_quantity, variations_count; \
+        variation adds parent_id; customer has id, first_name, \
+        last_name, email, orders_count. For any other field (full descriptions, \
+        billing/shipping address, phone, recent-order details beyond the first \
+        five line items, etc.) use the appropriate get or list tool from the \
+        catalog. Cards rendered \
         in this turn remain referenced; reuse their ids in follow-up tool \
-        calls.
+        calls. After a successful `analytics_orders` call, call this tool \
+        with family `analytics_stats` and the exact `card_id` string returned \
+        in that tool's result as the `id` - do not construct the analytics id \
+        yourself.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -48,17 +60,17 @@ public enum ShowCardsTool {
                                 "enum": .array([
                                     .string("order"),
                                     .string("product"),
-                                    .string("product_variation"),
-                                    .string("customer")
+                                    .string("variation"),
+                                    .string("customer"),
+                                    .string("analytics_stats")
                                 ])
                             ]),
                             "id": .object([
                                 "type": .string("string"),
-                                "pattern": .string("^[1-9][0-9]*$")
-                            ]),
-                            "parent_id": .object([
-                                "type": .string("string"),
-                                "pattern": .string("^[1-9][0-9]*$")
+                                "description": .string("Entity id. For variation, the combined " +
+                                    "{parentProductId}/{variationId} (e.g. 821/822). For analytics_stats, " +
+                                    "pass the exact `card_id` string returned by the analytics tool's result " +
+                                    "verbatim - do not construct it.")
                             ])
                         ])
                     ])

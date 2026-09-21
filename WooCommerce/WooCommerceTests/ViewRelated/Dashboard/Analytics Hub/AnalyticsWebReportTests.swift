@@ -213,5 +213,4 @@ final class AnalyticsWebReportTests: XCTestCase {
         let expectedQueryItem = URLQueryItem(name: "period", value: "year")
         XCTAssertTrue(try XCTUnwrap(reportQueryItems).contains(expectedQueryItem))
     }
-
 }

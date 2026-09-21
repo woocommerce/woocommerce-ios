@@ -10,6 +10,9 @@ public struct PaymentIntent: Identifiable, GeneratedCopiable, GeneratedFakeable 
     /// The status of the Payment Intent
     public let status: PaymentIntentStatus
 
+    /// The client secret used to retrieve the latest state of the PaymentIntent from Stripe.
+    public let clientSecret: String?
+
     /// When the PaymentIntent was created
     public let created: Date
 
@@ -27,20 +30,27 @@ public struct PaymentIntent: Identifiable, GeneratedCopiable, GeneratedFakeable 
     // Charges that were created by this PaymentIntent, if any.
     public let charges: [Charge]
 
+    /// Payment method collected for this PaymentIntent before confirmation, if available.
+    public let collectedPaymentMethod: PaymentMethod?
+
     public init(id: String,
                 status: PaymentIntentStatus,
+                clientSecret: String? = nil,
                 created: Date,
                 amount: UInt,
                 currency: String,
                 metadata: [String: String]?,
-                charges: [Charge]) {
+                charges: [Charge],
+                collectedPaymentMethod: PaymentMethod? = nil) {
         self.id = id
         self.status = status
+        self.clientSecret = clientSecret
         self.created = created
         self.amount = amount
         self.currency = currency
         self.metadata = metadata
         self.charges = charges
+        self.collectedPaymentMethod = collectedPaymentMethod
     }
 }
 
@@ -133,11 +143,9 @@ public extension PaymentIntent {
 }
 
 public extension PaymentIntent {
-    /// Returns the payment method from a PaymentIntent if available, typically after the payment is processed.
-    /// Before the payment is processed, `nil` is returned.
-    /// - Returns: an optional payment method that is set after the payment is processed.
+    /// Returns the payment method from a PaymentIntent if available, preferring the collected payment method before charges exist.
     func paymentMethod() -> PaymentMethod? {
-        charges.first?.paymentMethod
+        collectedPaymentMethod ?? charges.first?.paymentMethod
     }
 }
 

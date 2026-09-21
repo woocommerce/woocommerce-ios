@@ -3,11 +3,12 @@ import Yosemite
 
 /// Controller to wrap the products split view
 ///
-final class ProductsSplitViewWrapperController: UIViewController {
+final class ProductsSplitViewWrapperController: UIViewController, UsesCompactLayoutInNarrowWindow {
     private let siteID: Int64
-    private lazy var coordinator: ProductsSplitViewCoordinator = ProductsSplitViewCoordinator(siteID: siteID,
+    private lazy var coordinator = ProductsSplitViewCoordinator(siteID: siteID,
                                                                                               splitViewController: productsSplitViewController)
     private lazy var productsSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView,
+                                                                          didCollapseHandler: handleDidCollapse,
                                                                           didExpandHandler: handleDidExpand)
 
     init(siteID: Int64) {
@@ -30,6 +31,22 @@ final class ProductsSplitViewWrapperController: UIViewController {
         coordinator.start()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+
+        coordinator.refreshExpandedLayoutIfNeeded()
+    }
+
+    override func viewWillTransition(to size: CGSize, with transitionCoordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: transitionCoordinator)
+
+        // Split-view transitions can drop pushed product screens and their swipe-veto relationships, so preserve the secondary stack.
+        let transitionID = coordinator.prepareForLayoutTransition()
+        transitionCoordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            self?.coordinator.completeLayoutTransition(transitionID)
+        }
+    }
+
     override var shouldShowOfflineBanner: Bool {
         return true
     }
@@ -48,10 +65,15 @@ private extension ProductsSplitViewWrapperController {
     func handleDidExpand(splitViewController: UISplitViewController) {
         coordinator.didExpand()
     }
+
+    func handleDidCollapse(splitViewController: UISplitViewController) {
+        coordinator.didCollapse()
+    }
 }
 
 private extension ProductsSplitViewWrapperController {
     func configureTabBarItem() {
+        title = Localization.tabTitle
         tabBarItem.title = Localization.tabTitle
         tabBarItem.image = .productImage
         tabBarItem.accessibilityIdentifier = "tab-bar-products-item"
@@ -67,6 +89,16 @@ private extension ProductsSplitViewWrapperController {
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(contentView)
+    }
+}
+
+extension ProductsSplitViewWrapperController: TabReselectionHandling {
+    /// Returns the products list (primary column) to its root on re-selection. Leaves an active search intact.
+    func handleTabReselection() {
+        guard let primaryNavigationController = productsSplitViewController.viewController(for: .primary) as? UINavigationController else {
+            return
+        }
+        primaryNavigationController.popToRootOrScrollToTop(animated: true)
     }
 }
 

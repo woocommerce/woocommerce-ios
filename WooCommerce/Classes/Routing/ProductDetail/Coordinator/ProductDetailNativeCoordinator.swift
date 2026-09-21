@@ -5,14 +5,17 @@ import UIKit
 /// Delegates VC construction to `ProductDetailsFactory` and applies the requested presentation style.
 class ProductDetailNativeCoordinator {
 
+    @MainActor
     func viewController(
         product: Product,
         presentationStyle: ProductDetailNavigator.Presentation,
         isReadOnly: Bool,
-        onDelete: (() -> Void)? = nil) -> UIViewController {
+        onDelete: (() -> Void)? = nil,
+        onDuplicate: @escaping ProductDuplicateNavigationHandler) -> UIViewController {
             return ProductDetailsFactory.productDetails(product: product,
                                                         presentationStyle: presentationStyle.asProductFormPresentationStyle,
                                                         forceReadOnly: isReadOnly,
-                                                        onDeleteCompletion: onDelete ?? {})
+                                                        onDeleteCompletion: onDelete ?? {},
+                                                        onDuplicateCompletion: onDuplicate)
         }
 }

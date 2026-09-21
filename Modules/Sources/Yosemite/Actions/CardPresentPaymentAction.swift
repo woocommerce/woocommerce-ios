@@ -3,6 +3,7 @@
 
 import Combine
 import Foundation
+import enum WooFoundation.CountryCode
 
 public enum CardPresentPaymentAction: Action {
     /// Sets the store to use a given payment gateway
@@ -60,6 +61,8 @@ public enum CardPresentPaymentAction: Action {
     case collectPayment(siteID: Int64,
                         orderID: Int64,
                         parameters: PaymentParameters,
+                        countryCode: CountryCode,
+                        terminalPaymentPreparationEnabled: Bool,
                         onCardReaderMessage: (CardReaderEvent) -> Void,
                         onProcessingCompletion: (PaymentIntent) -> Void,
                         onCompletion: (Result<PaymentIntent, Error>) -> Void)
@@ -69,9 +72,14 @@ public enum CardPresentPaymentAction: Action {
 
     case retryPayment(siteID: Int64,
                       orderID: Int64,
+                      countryCode: CountryCode,
+                      terminalPaymentPreparationEnabled: Bool,
                       onCardReaderMessage: (CardReaderEvent) -> Void,
                       onProcessingCompletion: (PaymentIntent) -> Void,
                       onCompletion: (Result<PaymentIntent, Error>) -> Void)
+
+    /// Retrieves the latest state of a PaymentIntent from Stripe using its client secret.
+    case retrievePaymentIntent(clientSecret: String, onCompletion: (Result<PaymentIntent, Error>) -> Void)
 
     /// Refund payment of an order, client side. Only for use on Interac payments
     ///

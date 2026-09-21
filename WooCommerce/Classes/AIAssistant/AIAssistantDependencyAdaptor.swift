@@ -12,7 +12,6 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
     let analytics: AssistantAnalyticsProviding
     let externalNavigation: AssistantExternalNavigationProviding
     let externalViews: AssistantExternalViewProviding
-    let jwtProvider: AssistantJWTProviding
 
     let chatService: AIChatService
     let toolRegistry: ToolRegistry
@@ -34,19 +33,15 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
             .map { $0?.toJetpackSite() }
             .eraseToAnyPublisher()
 
-        // LLM endpoint goes plain WPCOM, WC REST goes through the Jetpack tunnel.
-        let wpcomNetwork = AlamofireNetwork(credentials: credentials,
-                                            selectedSite: nil,
-                                            appPasswordSupportState: nil)
         let restNetwork = AlamofireNetwork(credentials: credentials,
                                            selectedSite: defaultSitePublisher,
                                            appPasswordSupportState: appPasswordSupport)
 
-        let jwtAdaptor = AIAssistantJWTAdaptor(blogID: siteID, network: wpcomNetwork)
-        let chatService = makeJetpackAIChatService(jwtProvider: jwtAdaptor)
+        let chatService = AIApiProxyChatService(tokenProvider: AIApiProxyTokenAdaptor(credentials: credentials))
 
         let restClient = WCRESTClientAdaptor(network: restNetwork, siteID: siteID)
         let toolRegistry = RESTToolRegistry(client: restClient, tools: Self.defaultTools())
+        let snapshotResolver = DefaultConfirmationSnapshotResolver(client: restClient)
 
         let siteURL = URL(string: site.url) ?? URL(fileURLWithPath: "/")
         let context = AssistantContext(siteID: siteID,
@@ -59,10 +54,9 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
                                                                        navigationHost: navigationHost,
                                                                        stores: stores),
             externalViews: AIAssistantExternalViewsAdaptor(),
-            jwtProvider: jwtAdaptor,
             chatService: chatService,
             toolRegistry: toolRegistry,
-            safetyPolicy: DefaultSafetyPolicy(),
+            safetyPolicy: DefaultSafetyPolicy(snapshotResolver: snapshotResolver),
             systemPromptProvider: { AssistantSystemPrompt.build() },
             maxIterations: AgenticLoopOrchestrator.defaultMaxIterations,
             context: context
@@ -84,7 +78,6 @@ struct AIAssistantDependencyAdaptor: AssistantDependencyProviding {
             ProductVariationsBulkUpdateTool.make(),
             CustomersListTool.make(),
             AnalyticsOrdersTool.make(),
-            AnalyticsRevenueTool.make(),
             ShowCardsTool.make()
         ]
     }

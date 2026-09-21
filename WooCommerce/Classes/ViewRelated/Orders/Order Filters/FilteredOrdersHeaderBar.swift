@@ -69,7 +69,6 @@ final class FilteredOrdersHeaderBar: UIView {
     @IBAction private func filterButtonTapped(_ sender: Any) {
         onAction?()
     }
-
 }
 // MARK: - Dynamic type support
 /// The `Last updated: time` tends to get truncated at larger text sizes by the filter button.
@@ -87,8 +86,13 @@ extension FilteredOrdersHeaderBar {
 // MARK: - Setup
 private extension FilteredOrdersHeaderBar {
     func configureBackground() {
-        backgroundColor = .listForeground(modal: false)
-        bottomBorder.backgroundColor = UIColor.divider.cgColor
+        if #available(iOS 26.0, *) {
+            backgroundColor = .clear
+            bottomBorder.backgroundColor = UIColor.clear.cgColor
+        } else {
+            backgroundColor = .listForeground(modal: false)
+            bottomBorder.backgroundColor = UIColor.divider.cgColor
+        }
         layer.addSublayer(bottomBorder)
     }
 

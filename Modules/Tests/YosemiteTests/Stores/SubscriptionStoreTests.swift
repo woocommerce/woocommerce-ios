@@ -125,5 +125,4 @@ final class SubscriptionStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
-
 }

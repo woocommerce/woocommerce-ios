@@ -12,7 +12,7 @@ final class BundledProductsListViewController: UIHostingController<BundledProduc
         title = viewModel.title
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }

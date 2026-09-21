@@ -24,13 +24,13 @@ protocol CardPresentPaymentsModalViewModelContent {
     /// The title in the bottom section of the modal. Right below the image
     var bottomTitle: String? { get }
 
-    /// The attributed title in the bottom section of the modal. Prefered over bottomTitle if defined
+    /// The attributed title in the bottom section of the modal. Preferred over bottomTitle if defined
     var bottomAttributedTitle: NSAttributedString? { get }
 
     /// The subtitle in the bottom section of the modal. Right below the image
     var bottomSubtitle: String? { get }
 
-    /// The attributed title in the bottom section of the modal. Prefered over bottomTitle if defined
+    /// The attributed title in the bottom section of the modal. Preferred over bottomTitle if defined
     var bottomAttributedSubtitle: NSAttributedString? { get }
 
     /// The accessibilityLabel to be provided to VoiceOver
@@ -108,7 +108,6 @@ enum PaymentsModalActionsMode {
 
     /// Two action buttons and an auxiliary button
     case twoActionAndAuxiliary
-
 }
 
 extension CardPresentPaymentsModalViewModelUIKitActions {

@@ -251,12 +251,6 @@ extension UIImage {
         return UIImage(named: "connect-wpcom")!
     }
 
-    /// Create order image
-    ///
-    static var createOrderImage: UIImage {
-        return UIImage(named: "create-order")!
-    }
-
     /// Gear Icon - used in `UIBarButtonItem`
     ///
     static var gearBarButtonItemImage: UIImage {
@@ -1205,7 +1199,7 @@ extension UIImage {
         let rect = CGRect(origin: .zero, size: size)
         let vectorImage = UIImage(named: "woo-logo")!
         let renderer = UIGraphicsImageRenderer(size: size)
-        let im2 = renderer.image { ctx in
+        let im2 = renderer.image { _ in
             vectorImage.draw(in: rect)
         }
 

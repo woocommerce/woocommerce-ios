@@ -16,7 +16,6 @@ struct TapToPayAwarenessMomentDeterminerTests {
         sut = TapToPayAwarenessMomentDeterminer(cardReaderSupportDeterminer: cardReaderSupportDeterminer,
                                                 cardPresentPaymentsOnboarding: cardPresentPaymentsOnboardingUseCase,
                                                 userDefaults: userDefaults)
-
     }
 
     // MARK: - Should Present

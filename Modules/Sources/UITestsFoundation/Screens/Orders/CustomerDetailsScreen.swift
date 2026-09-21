@@ -67,5 +67,4 @@ public final class CustomerDetailsScreen: ScreenObject {
 
         return addressToggle.value as! String == value
     }
-
 }

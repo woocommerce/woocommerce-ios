@@ -12,7 +12,6 @@ extension WooShippingShipment {
     @NSManaged public var shippingLabel: ShippingLabel?
     @NSManaged public var items: Set<WooShippingShipmentItem>?
     @NSManaged public var order: Order?
-
 }
 
 // MARK: Generated accessors for items
@@ -29,5 +28,4 @@ extension WooShippingShipment {
 
     @objc(removeItems:)
     @NSManaged public func removeFromItems(_ values: NSSet)
-
 }

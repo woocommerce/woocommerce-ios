@@ -257,7 +257,6 @@ extension GetStartedViewController: UITableViewDataSource {
         configure(cell, for: row, at: indexPath)
         return cell
     }
-
 }
 
 // MARK: - Private methods
@@ -639,7 +638,6 @@ private extension GetStartedViewController {
                                   success: { [weak self] in
                                     self?.didRequestSignupLink()
                                     self?.configureSubmitButton(animating: false)
-
             }, failure: { [weak self] (error: Error) in
                 WPAuthenticatorLogError("Request for signup link email failed.")
 
@@ -677,13 +675,16 @@ private extension GetStartedViewController {
         }
 
         configureViewLoading(true)
+        // Capture before the async request so the save doesn't depend on `self` surviving:
+        // if the screen deallocates first, `self?.loginFields.siteAddress` would be nil and clear it.
+        let siteAddress = loginFields.siteAddress
         let service = WordPressComAccountService()
         service.requestAuthenticationLink(for: email,
                                           jetpackLogin: loginFields.meta.jetpackLogin,
                                           success: { [weak self] in
+                                            MagicLinkSiteAddressStorage.shared.save(siteAddress)
                                             self?.didRequestAuthenticationLink()
                                             self?.configureViewLoading(false)
-
             }, failure: { [weak self] (error: Error) in
                 guard let self else {
                     return
@@ -929,7 +930,6 @@ extension GetStartedViewController: AppleAuthenticatorDelegate {
         displayErrorAlert(message, sourceTag: .loginApple)
         tracker.set(flow: .wpCom)
     }
-
 }
 
 // MARK: - LoginFacadeDelegate
@@ -942,7 +942,6 @@ extension GetStartedViewController {
         configureViewLoading(false)
         socialNeedsMultifactorCode(forUserID: userID, andNonceInfo: nonceInfo)
     }
-
 }
 
 // MARK: - UITextFieldDelegate
@@ -959,7 +958,6 @@ extension GetStartedViewController: UITextFieldDelegate {
         }
         return true
     }
-
 }
 
 // MARK: - Keyboard Notifications

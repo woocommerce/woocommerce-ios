@@ -2,6 +2,7 @@ import UIKit
 import Foundation
 import BackgroundTasks
 import Network
+import Yosemite
 
 final class BackgroundTaskRefreshDispatcher {
     enum BackgroundTaskType: Codable, CaseIterable {
@@ -10,6 +11,12 @@ final class BackgroundTaskRefreshDispatcher {
     }
 
     private let schedule = BackgroundTaskSchedule()
+
+    private let storeConnectionErrorMonitor: StoreConnectionErrorMonitoring
+
+    init(storeConnectionErrorMonitor: StoreConnectionErrorMonitoring = StoreConnectionErrorMonitor.shared) {
+        self.storeConnectionErrorMonitor = storeConnectionErrorMonitor
+    }
 
     /// Schedule the app refresh background task.
     ///
@@ -25,11 +32,6 @@ final class BackgroundTaskRefreshDispatcher {
     /// Sets earliestBeginDate to nil (no delay) if preferred run date is in the past
     ///
     private func scheduleNextTask() {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI) else {
-            scheduleTask(type: .ordersAndDashboardSync, earliestBeginDate: Date(timeIntervalSinceNow: 30 * 60))
-            return
-        }
-
         let nextTask = schedule.getNextTask()
         let preferredDate = schedule.preferredRunDate(for: nextTask)
         let earliestBeginDate = preferredDate > Date() ? preferredDate : nil
@@ -93,6 +95,18 @@ final class BackgroundTaskRefreshDispatcher {
         schedule.setNextPreferredRunDate(for: type)
         scheduleNextTask()
 
+        // The store is rejecting our requests for a reason only the merchant can fix on their site, so
+        // syncing now would just fail. Skip this run rather than retrying it silently. The task is still
+        // scheduled above, so it runs again on the next cycle, and the flag clears once the merchant opens
+        // the app and a request to the store succeeds. Reported as a success because the skip is the
+        // intended outcome: a store can stay broken for days, and a run of failures would make iOS
+        // throttle background refresh for the app.
+        guard storeConnectionErrorMonitor.affectedSiteID != siteID else {
+            DDLogInfo("Background refresh skipped: store \(siteID) is currently unreachable")
+            backgroundTask.setTaskCompleted(success: true)
+            return
+        }
+
         switch type {
         case .ordersAndDashboardSync:
             handleOrdersAndDashboardSync(backgroundTask: backgroundTask, siteID: siteID)
@@ -148,7 +162,6 @@ final class BackgroundTaskRefreshDispatcher {
                 UserDefaults.standard[.lastBackgroundRefreshCompletionTime] = Date.now
 
                 backgroundTask.setTaskCompleted(success: true)
-
             } catch {
                 ServiceLocator.analytics.track(event: .BackgroundUpdates.dataSyncError(error))
                 backgroundTask.setTaskCompleted(success: false)

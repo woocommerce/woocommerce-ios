@@ -72,4 +72,24 @@ public enum NotificationAction: Action {
                                                    tokenID: Int64,
                                                    availableAsRESTRequest: Bool,
                                                    onCompletion: (Result<Void, Error>) -> Void)
+
+    /// Loads the current user's push notification preferences for a site.
+    ///
+    /// - Parameter siteID: The site to query.
+    ///
+    case loadPushNotificationPreferences(siteID: Int64,
+                                         onCompletion: (Result<PushNotificationPreferences, Error>) -> Void)
+
+    /// Sends a partial update to the current user's push notification preferences and returns the
+    /// full, server-merged result. Only the fields set on `changes` are sent over the wire; the
+    /// server deep-merges them with the stored preferences.
+    ///
+    /// - Parameters:
+    ///   - siteID: The site to update.
+    ///   - changes: A `PushNotificationPreferences` value with only the fields the caller wants to
+    ///     change set; everything else should be `nil`.
+    ///
+    case updatePushNotificationPreferences(siteID: Int64,
+                                           changes: PushNotificationPreferences,
+                                           onCompletion: (Result<PushNotificationPreferences, Error>) -> Void)
 }

@@ -173,6 +173,5 @@ private enum Localization {
             comment: "Message displayed when a contactless transaction fails due to PIN issues. Provides steps to retry using " +
                      "another contactless payment method or alternative payment options."
         )
-
     }
 }

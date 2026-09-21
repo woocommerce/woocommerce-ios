@@ -80,5 +80,4 @@ final class PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests: X
         // Then
         XCTAssertTrue(autoDismissWorkItem.isCancelled)
     }
-
 }

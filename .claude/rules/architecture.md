@@ -51,6 +51,7 @@ ServiceLocator.stores.dispatch(action)
 ## Code Generation
 - `GeneratedCopiable`: conform your struct/class, then run codegen to get `copy()` methods
 - `GeneratedFakeable`: conform then run codegen to get `.fake()` test factory methods
+- Design System demo token catalogs (`WooCommerce/Classes/ViewRelated/DesignSystemDemo/Catalog/TokenCatalogs.generated.swift`): regenerated from the StoreDesignSystem token definitions — run codegen after adding/renaming/removing any token. `StoreTokenCatalogTests` fails until the catalogs are regenerated.
 - Run codegen: `pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && swift package plugin --allow-writing-to-directory .. --allow-writing-to-package-directory sourcery-command --disableCache && popd`
 
 ---

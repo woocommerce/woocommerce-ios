@@ -30,7 +30,11 @@ class PrivacySettingsViewController: UIViewController {
     ///
     private var reportCrashes = CrashLoggingSettings.didOptIn {
         didSet {
-            CrashLoggingSettings.didOptIn = reportCrashes
+            guard oldValue != reportCrashes else {
+                return
+            }
+            configureSections()
+            tableView.reloadData()
         }
     }
 
@@ -88,6 +92,8 @@ private extension PrivacySettingsViewController {
             case .success(let accountSettings):
                 // Switch is off when opting out of Tracks
                 self?.collectInfo = !accountSettings.tracksOptOut
+                UpdateCrashReportingSettingUseCase().handleRemoteValue(accountSettings.crashReportingOptOut)
+                self?.reportCrashes = CrashLoggingSettings.didOptIn
             case .failure:
                 self?.presentErrorFetchingAccountSettingsNotice()
             }
@@ -170,6 +176,8 @@ private extension PrivacySettingsViewController {
         // switch
         cell.isOn = collectInfo
         cell.onChange = { [weak self] newValue in
+            // This event will only report if the user has Analytics currently on
+            ServiceLocator.analytics.track(.settingsCollectInfoToggled)
             self?.collectInfoWasUpdated(newValue: newValue)
         }
     }
@@ -214,7 +222,9 @@ private extension PrivacySettingsViewController {
         // switch
         cell.isOn = reportCrashes
         cell.onChange = { [weak self] newValue in
-            self?.reportCrashes = newValue
+            // This event will only report if the user has Analytics currently on
+            ServiceLocator.analytics.track(.settingsReportCrashesToggled)
+            self?.reportCrashesWasUpdated(newValue: newValue)
         }
     }
 
@@ -292,15 +302,29 @@ private extension PrivacySettingsViewController {
             } catch {
                 Task { @MainActor in
                     collectInfo = !newValue // Revert to the previous value to keep the UI consistent.
-                    presentErrorUpdatingAccountSettingsNotice(optInValue: newValue)
+                    presentErrorUpdatingSettingNotice { [weak self] in
+                        self?.collectInfo = newValue
+                        self?.collectInfoWasUpdated(newValue: newValue)
+                    }
                 }
             }
         }
     }
 
     func reportCrashesWasUpdated(newValue: Bool) {
-        // This event will only report if the user has Analytics currently on
-        ServiceLocator.analytics.track(.settingsReportCrashesToggled)
+        reportCrashes = newValue
+
+        let useCase = UpdateCrashReportingSettingUseCase()
+        Task { @MainActor in
+            do {
+                try await useCase.update(optOut: !newValue)
+            } catch {
+                reportCrashes = !newValue // Revert to the previous value to keep the UI consistent.
+                presentErrorUpdatingSettingNotice { [weak self] in
+                    self?.reportCrashesWasUpdated(newValue: newValue)
+                }
+            }
+        }
     }
 
     /// Presents a URL modally.
@@ -341,19 +365,17 @@ private extension PrivacySettingsViewController {
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }
 
-    /// Presents an error notice when failing to update the account settings.
-    /// Receives the intended analytics `optInValue`as a parameter to be able to resubmit the request upon a retry.
+    /// Presents an error notice when failing to update a privacy setting.
+    /// Receives a `retry` closure to be able to resubmit the intended update.
     ///
-    func presentErrorUpdatingAccountSettingsNotice(optInValue: Bool) {
+    func presentErrorUpdatingSettingNotice(retry: @escaping () -> Void) {
         // Needed to treat every notice as unique. When not unique the notice presenter won't display subsequent error notices.
         let info = NoticeNotificationInfo(identifier: UUID().uuidString)
         let notice = Notice(title: Localization.errorUpdatingAnalyticsState,
                             feedbackType: .error,
                             notificationInfo: info,
-                            actionTitle: Localization.retry) { [weak self] in
-            guard let self else { return }
-            self.collectInfo = optInValue
-            self.collectInfoWasUpdated(newValue: optInValue)
+                            actionTitle: Localization.retry) {
+            retry()
         }
         ServiceLocator.noticePresenter.enqueue(notice: notice)
     }

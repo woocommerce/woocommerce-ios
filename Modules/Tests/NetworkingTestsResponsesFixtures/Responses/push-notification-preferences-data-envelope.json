@@ -1,0 +1,18 @@
+{
+  "data": {
+    "store_order": {
+      "enabled": true,
+      "min_amount": null
+    },
+    "store_review": {
+      "enabled": true,
+      "max_rating": null
+    },
+    "store_stock": {
+      "enabled": true,
+      "low_stock": true,
+      "out_of_stock": true,
+      "on_backorder": true
+    }
+  }
+}

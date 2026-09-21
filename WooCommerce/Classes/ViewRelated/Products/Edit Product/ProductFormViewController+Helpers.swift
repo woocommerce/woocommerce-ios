@@ -22,11 +22,11 @@ extension ProductFormViewController {
                                                 message: body,
                                                 preferredStyle: .alert)
         let cancel = UIAlertAction(title: Localization.Alert.productTypeChangeCancelButton,
-                                   style: .cancel) { (action) in
+                                   style: .cancel) { _ in
                                        completion(false)
                                    }
         let confirm = UIAlertAction(title: Localization.Alert.productTypeChangeConfirmButton,
-                                    style: .default) { (action) in
+                                    style: .default) { _ in
                                         completion(true)
                                     }
         alertController.addAction(cancel)
@@ -72,13 +72,31 @@ extension ProductFormViewController {
                                                 message: Localization.Alert.productDeleteConfirmationMessage,
                                                 preferredStyle: .alert)
         let cancel = UIAlertAction(title: Localization.Alert.productDeleteConfirmationCancelButton,
-                                   style: .cancel) { (action) in
+                                   style: .cancel) { _ in
                                        completion(false)
                                    }
         let confirm = UIAlertAction(title: Localization.Alert.productDeleteConfirmationConfirmButton,
-                                    style: .default) { (action) in
+                                    style: .default) { _ in
                                         completion(true)
                                     }
+        alertController.addAction(cancel)
+        alertController.addAction(confirm)
+        present(alertController, animated: true)
+    }
+
+    /// Product duplication confirmation alert shown when the form has unsaved changes.
+    func presentProductDuplicationConfirmationAlert(completion: @escaping (_ isConfirmed: Bool) -> Void) {
+        let alertController = UIAlertController(title: Localization.Alert.productDuplicationConfirmationTitle,
+                                                message: Localization.Alert.productDuplicationConfirmationMessage,
+                                                preferredStyle: .alert)
+        let cancel = UIAlertAction(title: Localization.Alert.productDuplicationConfirmationCancelButton,
+                                   style: .cancel) { _ in
+            completion(false)
+        }
+        let confirm = UIAlertAction(title: Localization.Alert.productDuplicationConfirmationConfirmButton,
+                                    style: .destructive) { _ in
+            completion(true)
+        }
         alertController.addAction(cancel)
         alertController.addAction(confirm)
         present(alertController, animated: true)
@@ -91,11 +109,11 @@ extension ProductFormViewController {
                                                 message: Localization.Alert.variationDeleteConfirmationMessage,
                                                 preferredStyle: .alert)
         let cancel = UIAlertAction(title: Localization.Alert.variationDeleteConfirmationCancelButton,
-                                   style: .cancel) { (action) in
+                                   style: .cancel) { _ in
             completion(false)
         }
         let confirm = UIAlertAction(title: Localization.Alert.variationDeleteConfirmationConfirmButton,
-                                    style: .default) { (action) in
+                                    style: .default) { _ in
             completion(true)
         }
         alertController.addAction(cancel)
@@ -137,8 +155,7 @@ private extension ProductFormViewController {
     func displayInProgressView(title: String, message: String) {
         let viewProperties = InProgressViewProperties(title: title, message: message)
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
-        inProgressViewController.modalPresentationStyle = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab) ?
-            .overFullScreen: .overCurrentContext
+        inProgressViewController.modalPresentationStyle = .overFullScreen
 
         navigationController?.present(inProgressViewController, animated: true, completion: nil)
     }
@@ -178,6 +195,28 @@ private enum Localization {
             NSLocalizedString("Cancel", comment: "Cancel button on the alert when the user is cancelling the action on moving a product to the trash")
         static let productDeleteConfirmationConfirmButton =
             NSLocalizedString("Move to Trash", comment: "Confirmation button on the alert when the user is moving a product to the trash")
+
+        // Product duplication
+        static let productDuplicationConfirmationTitle = NSLocalizedString(
+            "productFormViewController.productDuplicationConfirmation.title",
+            value: "Discard changes and duplicate?",
+            comment: "Title of the confirmation alert shown before duplicating a product with unsaved changes."
+        )
+        static let productDuplicationConfirmationMessage = NSLocalizedString(
+            "productFormViewController.productDuplicationConfirmation.message",
+            value: "Your unsaved changes will be lost. The duplicate will use the last saved version.",
+            comment: "Message explaining that product duplication uses the last saved version instead of unsaved changes."
+        )
+        static let productDuplicationConfirmationCancelButton = NSLocalizedString(
+            "productFormViewController.productDuplicationConfirmation.cancel",
+            value: "Cancel",
+            comment: "Button that cancels product duplication and keeps unsaved changes."
+        )
+        static let productDuplicationConfirmationConfirmButton = NSLocalizedString(
+            "productFormViewController.productDuplicationConfirmation.confirm",
+            value: "Discard & duplicate",
+            comment: "Destructive button that confirms duplication using the last saved product version."
+        )
 
         // Variation deletion
         static let variationDeleteConfirmationTitle = NSLocalizedString("Remove variation",

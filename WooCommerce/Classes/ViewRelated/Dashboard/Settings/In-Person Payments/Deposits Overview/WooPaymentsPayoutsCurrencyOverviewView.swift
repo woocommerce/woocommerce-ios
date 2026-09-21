@@ -19,15 +19,14 @@ struct WooPaymentsPayoutsCurrencyOverviewView: View {
         VStack {
             Grid(alignment: .leading) {
                 GridRow {
+                    AccountSummaryItem(title: Localization.totalBalance, amount: viewModel.totalBalance)
                     AccountSummaryItem(title: Localization.availableFunds, amount: viewModel.availableBalance)
-                    AccountSummaryItem(title: Localization.pendingFunds, amount: viewModel.pendingBalance)
                     isExpanded ? Image(systemName: "chevron.up")
                         .accessibilityAddTraits(.isButton)
                         .accessibilityLabel(Text(Localization.hidePayoutDetailAccessibilityLabel)) :
                     Image(systemName: "chevron.down")
                         .accessibilityAddTraits(.isButton)
                         .accessibilityLabel(Text(Localization.showPayoutDetailAccessibilityLabel))
-
                 }
                 .contentShape(Rectangle())
                 .onTapGesture {
@@ -154,11 +153,11 @@ private extension WooPaymentsPayoutsCurrencyOverviewView {
             value: "Available funds",
             comment: "Title for available funds overview in WooPayments Payouts view. " +
             "This shows the balance which can be paid out.")
-        static let pendingFunds = NSLocalizedString(
-            "payouts.currency.overview.pendingFunds",
-            value: "Pending funds",
-            comment: "Title for pending funds overview in WooPayments Payouts view. " +
-            "This shows the balance which will be made available for pay out later.")
+        static let totalBalance = NSLocalizedString(
+            "payouts.currency.overview.totalBalance",
+            value: "Total balance",
+            comment: "Title for total balance overview in WooPayments Payouts view. " +
+            "This shows the combined available and pending balance, matching the WooPayments plugin wording.")
         static let lastPayoutHeader = NSLocalizedString(
             "payouts.currency.overview.lastPayout",
             value: "Last Payout",

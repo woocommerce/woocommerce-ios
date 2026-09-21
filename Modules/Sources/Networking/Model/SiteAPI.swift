@@ -17,6 +17,10 @@ public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
     ///
     public let applicationPasswordAvailable: Bool
 
+    /// Available REST API routes.
+    ///
+    public let routes: [String]
+
     /// Highest Woo API version installed on the site
     ///
     public var highestWooVersion: WooAPIVersion {
@@ -59,15 +63,18 @@ public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
         let authentication = try? siteAPIContainer.decode(Authentication.self, forKey: .authentication)
         let applicationPasswordAvailable = authentication?.applicationPasswords?.endpoints?.authorization != nil
 
-        self.init(siteID: siteID, namespaces: namespaces, applicationPasswordAvailable: applicationPasswordAvailable)
+        let routes = (try? siteAPIContainer.decodeIfPresent([String: AnyDecodable].self, forKey: .routes))?.keys.sorted() ?? []
+
+        self.init(siteID: siteID, namespaces: namespaces, applicationPasswordAvailable: applicationPasswordAvailable, routes: routes)
     }
 
     /// Designated Initializer.
     ///
-    public init(siteID: Int64, namespaces: [String], applicationPasswordAvailable: Bool) {
+    public init(siteID: Int64, namespaces: [String], applicationPasswordAvailable: Bool, routes: [String] = []) {
         self.siteID = siteID
         self.namespaces = namespaces
         self.applicationPasswordAvailable = applicationPasswordAvailable
+        self.routes = routes
     }
 }
 
@@ -78,6 +85,7 @@ private extension SiteAPI {
 
     enum SiteAPIKeys: String, CodingKey {
         case namespaces
+        case routes
         case authentication
     }
 

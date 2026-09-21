@@ -45,7 +45,6 @@ extension CoreDataIterativeMigrator {
                                      targetVersion: targetVersionAndModel.version,
                                      targetModel: targetVersionAndModel.model)
             }
-
         }
 
         /// Returns an inclusive list of models between the source and target models. The response
@@ -124,6 +123,5 @@ extension CoreDataIterativeMigrator {
 
             return modelsToMigrate
         }
-
     }
 }

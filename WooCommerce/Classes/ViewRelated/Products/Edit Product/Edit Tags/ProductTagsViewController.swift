@@ -38,7 +38,7 @@ final class ProductTagsViewController: UIViewController, GhostableViewController
 
     /// Keyboard management
     ///
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
         self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
     }
 
@@ -256,7 +256,7 @@ private extension ProductTagsViewController {
     func createNewTagsRemotely() {
         configureRightBarButtonItemAsSpinner()
 
-        let action = ProductTagAction.addProductTags(siteID: product.siteID, tags: allTags) { [weak self] (result) in
+        let action = ProductTagAction.addProductTags(siteID: product.siteID, tags: allTags) { [weak self] result in
             guard let self else {
                 return
             }
@@ -271,7 +271,6 @@ private extension ProductTagsViewController {
         }
         ServiceLocator.stores.dispatch(action)
     }
-
 }
 
 // MARK: Error handling
@@ -337,10 +336,13 @@ private extension ProductTagsViewController {
     }
 
     func complete(tag: String) {
-        var tags = completeTags
-        tags.append(tag)
-        tags.append("")
-        textView.text = tags.joined(separator: ", ")
+        let text = textView.text as NSString
+        let lastCommaRange = text.range(of: ",", options: .backwards)
+        let partialTagLocation = lastCommaRange.location == NSNotFound ? 0 : NSMaxRange(lastCommaRange)
+        let partialTagRange = NSRange(location: partialTagLocation, length: text.length - partialTagLocation)
+
+        textView.selectedRange = partialTagRange
+        textView.insertText(partialTagLocation == 0 ? "\(tag), " : " \(tag), ")
         updateSuggestions()
     }
 
@@ -348,7 +350,7 @@ private extension ProductTagsViewController {
         var fetchedTags = fetchedTags
         return tags.compactMap { tagName -> ProductTag? in
             let first = fetchedTags.first(where: { $0.name.lowercased() == tagName.lowercased() })
-            fetchedTags.removeAll(where: { (productTag) -> Bool in
+            fetchedTags.removeAll(where: { productTag -> Bool in
                 first?.name.lowercased() == productTag.name.lowercased()
             })
             return first
@@ -361,10 +363,9 @@ private extension ProductTagsViewController {
 extension ProductTagsViewController: UITextViewDelegate {
     func textViewDidChange(_ textView: UITextView) {
         guard textView.markedTextRange == nil else {
-            // Don't try to normalize if we're still in multistage input
+            // Don't update suggestions while we're still in multistage input.
             return
         }
-        normalizeText()
         updateSuggestions()
     }
 
@@ -376,28 +377,16 @@ extension ProductTagsViewController: UITextViewDelegate {
             partialTag.isEmpty {
             // Don't allow a second comma if the last tag is blank
             return false
-        } else if
-            range.length == 1 && text.isEmpty, // Deleting last character
-            range.location > 0, // Not at the beginning
-            range.location + range.length == original.length, // At the end
-            original.substring(with: NSRange(location: range.location - 1, length: 1)) == "," { // Previous is a comma
-            // Delete the comma as well
-            textView.text = original.substring(to: range.location - 1) + original.substring(from: range.location + range.length)
-            textView.selectedRange = NSRange(location: range.location - 1, length: 0)
-            textViewDidChange(textView)
-            return false
         } else if range.length == 0, // Inserting
             text == ",", // a comma
             range.location == original.length { // at the end
             // Append a space
-            textView.text = original.replacingCharacters(in: range, with: ", ")
-            textViewDidChange(textView)
+            insertTagSeparator(in: textView)
             return false
         } else if text == "\n", // return
             range.location == original.length, // at the end
             !partialTag.isEmpty { // with some (partial) tag typed
-            textView.text = original.replacingCharacters(in: range, with: ", ")
-            textViewDidChange(textView)
+            insertTagSeparator(in: textView)
             return false
         } else if text == "\n" { // return anywhere else
                 return false
@@ -405,12 +394,10 @@ extension ProductTagsViewController: UITextViewDelegate {
         return true
     }
 
-    private func normalizeText() {
-        // Remove any space before a comma, and allow one space at most after.
-        let regexp = try! NSRegularExpression(pattern: "\\s*(,(\\s|(\\s(?=\\s)))?)\\s*", options: [])
-        let text = textView.text ?? ""
-        let range = NSRange(location: 0, length: (text as NSString).length)
-        textView.text = regexp.stringByReplacingMatches(in: text, options: [], range: range, withTemplate: "$1")
+    private func insertTagSeparator(in textView: UITextView) {
+        DispatchQueue.main.async { [weak textView] in
+            textView?.insertText(", ")
+        }
     }
 
     /// Normalize tags for initial set up.

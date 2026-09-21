@@ -16,7 +16,7 @@ final class WPComPushNotificationsBenefitsHostingController: UIHostingController
         viewModel.updateCoordinator(coordinator)
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -179,7 +179,8 @@ struct WPComPushNotificationsBenefitsView: View {
         NavigationStack {
             SupportForm(
                 isPresented: $showSupport,
-                viewModel: SupportFormViewModel(sourceTag: WPComConnectionSetupViewModel.supportSourceTag)
+                viewModel: SupportFormViewModel(sourceTag: WPComConnectionSetupViewModel.supportSourceTag,
+                                                mobileStatusReportProvider: MobileStatusReportProvider())
             )
             .toolbar {
                 ToolbarItem(placement: .cancellationAction) {

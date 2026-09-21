@@ -27,10 +27,10 @@ final class MetaDataRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "products/\(parentID)", filename: "meta-data-products-orders-update")
 
         // When
-        let metadata: [[String: Any?]] = [
+        let metadata: [RequestParameterDictionary] = [
             ["id": 1, "key": "lorem_key_1", "value": "Lorem ipsum"],
             ["id": 2, "key": "ipsum_key_2", "value": "dolor sit amet"],
-            ["id": 3, "value": nil]
+            ["id": 3, "value": .null]
         ]
 
         let result = try await remote.updateMetaData(for: siteID, for: parentID, type: type, metadata: metadata)
@@ -55,10 +55,10 @@ final class MetaDataRemoteTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/\(parentID)", filename: "meta-data-products-orders-update")
 
         // When
-        let metadata: [[String: Any?]] = [
+        let metadata: [RequestParameterDictionary] = [
             ["id": 1, "key": "lorem_key_1", "value": "Lorem ipsum"],
             ["id": 2, "key": "ipsum_key_2", "value": "dolor sit amet"],
-            ["id": 3, "value": nil]
+            ["id": 3, "value": .null]
         ]
 
         let result = try await remote.updateMetaData(for: siteID, for: parentID, type: type, metadata: metadata)

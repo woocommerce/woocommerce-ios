@@ -3,6 +3,7 @@ import XCTest
 import Yosemite
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class CustomerSearchUICommandTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
     private var analyticsProvider: MockAnalyticsProvider!
@@ -25,9 +26,9 @@ final class CustomerSearchUICommandTests: XCTestCase {
         XCTAssertEqual(predicate?.predicateFormat, expectedQuery)
     }
 
-    func test_searchResultsPredicate_when_better_customer_selection_is_enabled_and_keyword_is_empty_then_returns_nil() {
+    func test_searchResultsPredicate_when_keyword_is_empty_then_returns_nil() {
         // Given
-        let command = CustomerSearchUICommand(siteID: sampleSiteID, featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true)) { _ in }
+        let command = CustomerSearchUICommand(siteID: sampleSiteID) { _ in }
 
         // When
         let predicate = command.searchResultsPredicate(keyword: "")
@@ -94,8 +95,7 @@ final class CustomerSearchUICommandTests: XCTestCase {
         // Given
         let command = CustomerSearchUICommand(siteID: sampleSiteID,
                                               loadResultsWhenSearchTermIsEmpty: true,
-                                              stores: stores,
-                                              featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true)) { _ in }
+                                              stores: stores) { _ in }
 
         var invocationCount = 0
         stores.whenReceivingAction(ofType: CustomerAction.self) { action in
@@ -123,8 +123,7 @@ final class CustomerSearchUICommandTests: XCTestCase {
         // Given
         let command = CustomerSearchUICommand(siteID: sampleSiteID,
                                               loadResultsWhenSearchTermIsEmpty: false,
-                                              stores: stores,
-                                              featureFlagService: MockFeatureFlagService(betterCustomerSelectionInOrder: true)) { _ in }
+                                              stores: stores) { _ in }
 
         var invocationCount = 0
         stores.whenReceivingAction(ofType: CustomerAction.self) { action in

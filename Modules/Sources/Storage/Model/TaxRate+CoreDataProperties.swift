@@ -23,5 +23,4 @@ extension TaxRate {
     @NSManaged public var compound: Bool
     @NSManaged public var city: String?
     @NSManaged public var cities: [String]?
-
 }

@@ -8,7 +8,7 @@ final class StoreOnboardingStoreLaunchedHostingController: UIHostingController<S
     }
 
     @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 }
@@ -63,6 +63,9 @@ struct StoreOnboardingStoreLaunchedView: View {
                         showsShareSheet = true
                     }
                     .buttonStyle(PrimaryButtonStyle())
+                    .shareView(isPresented: $showsShareSheet) {
+                        ShareSheet(activityItems: [siteURL])
+                    }
 
                     // Continue button.
                     Button(Localization.continueButtonTitle) {
@@ -73,9 +76,6 @@ struct StoreOnboardingStoreLaunchedView: View {
                 .padding(insets: Layout.buttonContainerPadding)
             }
             .background(Color(.systemBackground))
-        }
-        .shareSheet(isPresented: $showsShareSheet) {
-            ShareSheet(activityItems: [siteURL])
         }
         .navigationBarHidden(true)
     }

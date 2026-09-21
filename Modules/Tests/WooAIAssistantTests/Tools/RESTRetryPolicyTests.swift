@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct RESTRetryPolicyTests {
     @Test
     func test_shouldRetry_when_get_and_5xx_then_retries_until_max() {

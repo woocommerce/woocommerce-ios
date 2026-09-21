@@ -1,4 +1,5 @@
 import XCTest
+import struct NetworkingCore.Note
 @testable import WooCommerce
 
 final class NotificationServiceSuppressionTests: XCTestCase {
@@ -19,20 +20,20 @@ final class NotificationServiceSuppressionTests: XCTestCase {
         super.tearDown()
     }
 
-    // MARK: - shouldSuppressWPComNotification
+    // MARK: - shouldSuppressNotification
 
     func test_shouldSuppress_returns_true_when_site_is_registered_and_both_keys_present() {
         state.markSiteAsRegisteredForWooPNs(42)
 
         let userInfo: [AnyHashable: Any] = ["blog": Int64(42), "note_id": Int64(1)]
 
-        XCTAssertTrue(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertTrue(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_false_when_site_is_not_registered() {
         let userInfo: [AnyHashable: Any] = ["blog": Int64(42), "note_id": Int64(1)]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_false_when_noteID_is_missing() {
@@ -40,7 +41,7 @@ final class NotificationServiceSuppressionTests: XCTestCase {
 
         let userInfo: [AnyHashable: Any] = ["blog": Int64(42)]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_false_when_siteID_is_missing() {
@@ -48,7 +49,7 @@ final class NotificationServiceSuppressionTests: XCTestCase {
 
         let userInfo: [AnyHashable: Any] = ["note_id": Int64(1)]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_false_when_userInfo_is_empty() {
@@ -56,15 +57,15 @@ final class NotificationServiceSuppressionTests: XCTestCase {
 
         let userInfo: [AnyHashable: Any] = [:]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
-    func test_shouldSuppress_returns_false_when_siteID_is_wrong_type() {
+    func test_shouldSuppress_returns_false_when_wpcom_duplicate_siteID_is_numeric_string() {
         state.markSiteAsRegisteredForWooPNs(42)
 
         let userInfo: [AnyHashable: Any] = ["blog": "42", "note_id": Int64(1)]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_false_for_different_registered_site() {
@@ -72,7 +73,7 @@ final class NotificationServiceSuppressionTests: XCTestCase {
 
         let userInfo: [AnyHashable: Any] = ["blog": Int64(42), "note_id": Int64(1)]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_true_for_one_of_multiple_registered_sites() {
@@ -82,7 +83,7 @@ final class NotificationServiceSuppressionTests: XCTestCase {
 
         let userInfo: [AnyHashable: Any] = ["blog": Int64(20), "note_id": Int64(5)]
 
-        XCTAssertTrue(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertTrue(state.shouldSuppressNotification(userInfo: userInfo))
     }
 
     func test_shouldSuppress_returns_false_after_site_is_unregistered() {
@@ -91,6 +92,105 @@ final class NotificationServiceSuppressionTests: XCTestCase {
 
         let userInfo: [AnyHashable: Any] = ["blog": Int64(42), "note_id": Int64(1)]
 
-        XCTAssertFalse(state.shouldSuppressWPComNotification(userInfo: userInfo))
+        XCTAssertFalse(state.shouldSuppressNotification(userInfo: userInfo))
+    }
+
+    func test_shouldSuppress_returns_false_when_connected_sites_have_not_been_synchronized_or_are_cleared() {
+        let userInfo: [AnyHashable: Any] = ["blog": Int64(42)]
+
+        XCTAssertFalse(state.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo))
+
+        state.updateConnectedSiteIDs([])
+        state.clearConnectedSiteIDs()
+
+        XCTAssertFalse(state.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo))
+    }
+
+    func test_shouldSuppress_returns_true_when_authoritative_empty_connected_site_list_omits_notification_site() {
+        state.updateConnectedSiteIDs([])
+
+        let userInfo: [AnyHashable: Any] = ["blog": Int64(42)]
+
+        XCTAssertTrue(state.shouldSuppressNotification(userInfo: userInfo))
+        XCTAssertEqual(state.connectedSiteIDs, [])
+    }
+
+    func test_shouldSuppress_returns_true_when_disconnected_siteID_is_numeric_string() {
+        state.updateConnectedSiteIDs([])
+
+        let userInfo: [AnyHashable: Any] = ["blog": "42"]
+
+        XCTAssertTrue(state.shouldSuppressNotification(userInfo: userInfo))
+    }
+
+    func test_shouldSuppress_allows_notification_after_site_reconnects() {
+        let userInfo: [AnyHashable: Any] = ["blog": Int64(42)]
+        state.updateConnectedSiteIDs([1])
+        XCTAssertTrue(state.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo))
+
+        state.updateConnectedSiteIDs([1, 42])
+
+        XCTAssertFalse(state.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo))
+    }
+
+    // MARK: - Unknown notification type gate (RSM-3048)
+
+    func test_isKnownNotificationType_returns_true_when_type_is_missing() {
+        let userInfo: [AnyHashable: Any] = ["blog": Int64(42)]
+
+        XCTAssertTrue(PushNotificationSharedConstants.isKnownNotificationType(in: userInfo))
+    }
+
+    func test_isKnownNotificationType_returns_true_for_store_order() {
+        let userInfo: [AnyHashable: Any] = ["type": "store_order", "blog": Int64(42)]
+
+        XCTAssertTrue(PushNotificationSharedConstants.isKnownNotificationType(in: userInfo))
+    }
+
+    func test_isKnownNotificationType_returns_true_for_store_stock() {
+        let userInfo: [AnyHashable: Any] = ["type": "store_stock", "blog": Int64(42)]
+
+        XCTAssertTrue(PushNotificationSharedConstants.isKnownNotificationType(in: userInfo))
+    }
+
+    func test_isKnownNotificationType_returns_true_for_badge_reset() {
+        let userInfo: [AnyHashable: Any] = ["type": "badge-reset"]
+
+        XCTAssertTrue(PushNotificationSharedConstants.isKnownNotificationType(in: userInfo))
+    }
+
+    func test_isKnownNotificationType_returns_true_for_zendesk() {
+        let userInfo: [AnyHashable: Any] = ["type": "zendesk"]
+
+        XCTAssertTrue(PushNotificationSharedConstants.isKnownNotificationType(in: userInfo))
+    }
+
+    func test_isKnownNotificationType_returns_false_for_unknown_type() {
+        let userInfo: [AnyHashable: Any] = ["type": "unknown_future_type", "blog": Int64(42)]
+
+        XCTAssertFalse(PushNotificationSharedConstants.isKnownNotificationType(in: userInfo))
+    }
+
+    func test_isKnownNotificationType_returns_true_when_type_is_not_a_string() {
+        let userInfo: [AnyHashable: Any] = ["type": 42]
+
+        XCTAssertTrue(PushNotificationSharedConstants.isKnownNotificationType(in: userInfo),
+                      "Non-string `type` is treated as absent, matching the local-notification fall-through.")
+    }
+
+    // MARK: - Parity with Note.Kind
+
+    /// Drift tripwire: every `Note.Kind` case (except `.unknown`) must be in the shared known-types set,
+    /// otherwise newly-added Note kinds would be silently discarded by the gate. See RSM-3048.
+    func test_knownPushNotificationTypes_contains_every_NoteKind_raw_value_except_unknown() {
+        let expected = Note.Kind.allCases
+            .filter { $0 != .unknown }
+            .map(\.rawValue)
+
+        let missing = expected.filter { !PushNotificationSharedConstants.knownPushNotificationTypes.contains($0) }
+
+        XCTAssertTrue(missing.isEmpty,
+                      "Note.Kind raw values missing from PushNotificationSharedConstants.knownPushNotificationTypes: \(missing). " +
+                      "Add them to the shared set or remove the corresponding Note.Kind case.")
     }
 }

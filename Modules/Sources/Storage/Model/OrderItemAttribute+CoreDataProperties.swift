@@ -12,5 +12,4 @@ extension OrderItemAttribute {
     @NSManaged public var name: String
     @NSManaged public var value: String
     @NSManaged public var orderItem: OrderItem?
-
 }

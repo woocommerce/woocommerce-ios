@@ -1,5 +1,4 @@
 import Foundation
-import Experiments
 import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
@@ -69,7 +68,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     }
 
     /// We need to recreate the view model every time the budget screen is opened to get the updated target options.
-    lazy private(set) var budgetSettingViewModel: BlazeBudgetSettingViewModel = {
+    private(set) lazy var budgetSettingViewModel: BlazeBudgetSettingViewModel = {
         BlazeBudgetSettingViewModel(siteID: siteID,
                                     dailyBudget: dailyBudget,
                                     isEvergreen: isEvergreen,
@@ -104,42 +103,44 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         })
     }
 
-    lazy private(set) var campaignObjectiveViewModel: BlazeCampaignObjectivePickerViewModel = {
+    private(set) lazy var campaignObjectiveViewModel: BlazeCampaignObjectivePickerViewModel = {
         BlazeCampaignObjectivePickerViewModel(siteID: siteID, selectedObjective: campaignObjective) { [weak self] selectedObjective in
             self?.campaignObjective = selectedObjective
             self?.campaignObjectiveText = selectedObjective?.title
         }
     }()
 
-    lazy private(set) var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel = {
+    private(set) lazy var targetLanguageViewModel: BlazeTargetLanguagePickerViewModel = {
         BlazeTargetLanguagePickerViewModel(siteID: siteID, selectedLanguages: languages) { [weak self] selectedLanguages in
             self?.languages = selectedLanguages
             self?.updateTargetLanguagesText()
         }
     }()
 
-    lazy private(set) var targetDeviceViewModel: BlazeTargetDevicePickerViewModel = {
+    private(set) lazy var targetDeviceViewModel: BlazeTargetDevicePickerViewModel = {
         BlazeTargetDevicePickerViewModel(siteID: siteID, selectedDevices: devices) { [weak self] selectedDevices in
             self?.devices = selectedDevices
             self?.updateTargetDevicesText()
         }
     }()
 
-    lazy private(set) var targetTopicViewModel: BlazeTargetTopicPickerViewModel = {
+    private(set) lazy var targetTopicViewModel: BlazeTargetTopicPickerViewModel = {
         BlazeTargetTopicPickerViewModel(siteID: siteID, selectedTopics: pageTopics) { [weak self] topics in
             self?.pageTopics = topics
             self?.updateTargetTopicText()
         }
     }()
 
-    lazy private(set) var targetLocationViewModel: BlazeTargetLocationPickerViewModel = {
+    private(set) lazy var targetLocationViewModel: BlazeTargetLocationPickerViewModel = {
         BlazeTargetLocationPickerViewModel(siteID: siteID, selectedLocations: locations) { [weak self] locations in
             self?.locations = locations
             self?.updateTargetLocationText()
         }
     }()
 
-    var confirmPaymentViewModel: BlazeConfirmPaymentViewModel? {
+    @Published private(set) var confirmPaymentViewModel: BlazeConfirmPaymentViewModel?
+
+    private func makeConfirmPaymentViewModel() -> BlazeConfirmPaymentViewModel? {
         guard let image else {
             return nil
         }
@@ -152,7 +153,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         })
     }
 
-    lazy private(set) var adDestinationViewModel: BlazeAdDestinationSettingViewModel? = {
+    private(set) lazy var adDestinationViewModel: BlazeAdDestinationSettingViewModel? = {
         // Only create viewModel (and thus show the ad destination setting) if these two URLs exist.
         guard let productURL, let siteURL else {
             DDLogError("Error: unable to create BlazeAdDestinationSettingViewModel because productURL and/or siteURL is empty.")
@@ -222,8 +223,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     @Published var isShowingMissingObjectiveAlert = false
     @Published var isShowingMissingImageErrorAlert = false
     @Published var isShowingMissingDestinationURLAlert = false
-    @Published var isShowingPaymentInfo = false
-
     /// ResultController to get the product for the given product ID
     ///
     private lazy var productsResultsController: GenericResultsController<StorageProduct, BlazeCampaignProduct> = {
@@ -276,7 +275,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
     private let locale: Locale
     private let userDefaults: UserDefaults
     private let analytics: Analytics
-    private let featureFlagService: FeatureFlagService
 
     private var didTrackOnAppear = false
 
@@ -288,7 +286,6 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
          locale: Locale = .current,
          userDefaults: UserDefaults = .standard,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          onCompletion: @escaping () -> Void) {
         self.siteID = siteID
         self.productID = productID
@@ -298,12 +295,10 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
         self.locale = locale
         self.userDefaults = userDefaults
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.completionHandler = onCompletion
         self.targetUrn = String(format: Constants.targetUrnFormat, siteID, productID)
 
-        // sets isEvergreen = true by default if evergreen campaigns are supported
-        self.isEvergreen = featureFlagService.isFeatureFlagEnabled(.blazeEvergreenCampaigns)
+        self.isEvergreen = true
 
         product = productsResultsController.fetchedObjects.first
 
@@ -382,8 +377,7 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             return isShowingMissingDestinationURLAlert = true
         }
 
-        if featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective),
-           campaignObjective == nil {
+        if campaignObjective == nil {
             return isShowingMissingObjectiveAlert = true
         }
 
@@ -395,7 +389,11 @@ final class BlazeCampaignCreationFormViewModel: ObservableObject {
             isEvergreen: isEvergreen,
             objective: campaignObjective?.id
         ))
-        isShowingPaymentInfo = true
+
+        guard let confirmPaymentViewModel = makeConfirmPaymentViewModel() else {
+            return
+        }
+        self.confirmPaymentViewModel = confirmPaymentViewModel
     }
 }
 
@@ -540,9 +538,6 @@ private extension BlazeCampaignCreationFormViewModel {
 
 private extension BlazeCampaignCreationFormViewModel {
     func initializeCampaignObjective() {
-        guard featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective) else {
-            return
-        }
         guard let savedID = userDefaults.retrieveSavedObjectiveID(for: siteID) else {
             return
         }

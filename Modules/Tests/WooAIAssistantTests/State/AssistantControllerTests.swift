@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 @MainActor
 struct AssistantControllerTests {
 
@@ -185,7 +186,7 @@ struct AssistantControllerTests {
                             .confirmation(id: UUID(),
                                           proposalID: proposalID,
                                           toolName: "orders_update",
-                                          preview: "Set order to completed",
+                                          preview: ConfirmationPreview(summary: .raw("Set order to completed")),
                                           status: .pending)
                         ])
         ])

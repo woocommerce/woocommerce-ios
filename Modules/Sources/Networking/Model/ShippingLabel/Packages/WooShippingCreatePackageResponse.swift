@@ -29,7 +29,7 @@ extension WooShippingCreatePackageResponse: Decodable {
         //
         let rawPredefinedOptions: [String: [String]] = container.failsafeDecodeIfPresent([String: [String]].self, forKey: .predefined) ?? [:]
 
-        let predefinedOptions = rawPredefinedOptions.map { (carrier, packageIDs) in
+        let predefinedOptions = rawPredefinedOptions.map { carrier, packageIDs in
             WooShippingPredefinedSavedOption(id: carrier, predefinedPackageIDs: packageIDs)
         }
 

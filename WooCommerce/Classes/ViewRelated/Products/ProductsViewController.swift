@@ -1,4 +1,3 @@
-import Experiments
 import UIKit
 import SwiftUI
 import WordPressUI
@@ -82,11 +81,34 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     @IBOutlet private weak var toolbarBottomSeparator: UIView!
     @IBOutlet private weak var toolbarBottomSeparatorHeightConstraint: NSLayoutConstraint!
 
+    private var hasConfiguredLiquidGlassHeaderOverlay = false
+    private var liquidGlassHeaderBackgroundView: UIView?
+
     // Used to trick the navigation bar for large title (ref: issue 3 in p91TBi-45c-p2).
     private let hiddenScrollView = UIScrollView()
 
     /// The filter CTA in the top toolbar.
-    private lazy var filterButton: UIButton = UIButton(frame: .zero)
+    private lazy var filterButton = UIButton(frame: .zero)
+
+    private var usesLargeTitleWorkaround: Bool {
+        if #available(iOS 26.0, *) {
+            return false
+        } else {
+            return true
+        }
+    }
+
+    private var headerBackgroundColor: UIColor {
+        .listBackground
+    }
+
+    private var toolbarBackgroundColor: UIColor {
+        if #available(iOS 26.0, *) {
+            return .clear
+        } else {
+            return headerBackgroundColor
+        }
+    }
 
     /// The bulk edit CTA in the navbar.
     private lazy var bulkEditButton: UIBarButtonItem = {
@@ -100,7 +122,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Container of the top banner that shows that the Products feature is still work in progress.
     ///
-    private lazy var topBannerContainerView: SwappableSubviewContainerView = SwappableSubviewContainerView()
+    private lazy var topBannerContainerView = SwappableSubviewContainerView()
 
     /// Top banner that shows that the Products feature is still work in progress.
     ///
@@ -162,7 +184,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     private let imageUploader = ServiceLocator.productImageUploader
     private var activeUploadIds: [Int64] = []
 
-    private var filters: FilterProductListViewModel.Filters = FilterProductListViewModel.Filters() {
+    private var filters = FilterProductListViewModel.Filters() {
         didSet {
             Task { @MainActor in
                 if filters != oldValue ||
@@ -197,13 +219,10 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private var subscriptions: Set<AnyCancellable> = []
 
-    private var addProductCoordinator: AddProductCoordinator?
-
     /// Tracks if the swipe actions have been glanced to the user.
     ///
     private var swipeActionsGlanced = false
 
-    private let isSplitViewEnabled: Bool
     private let navigateToContent: (NavigationContentType) -> Void
     private let selectedProduct: AnyPublisher<Product?, Never>
     private let onTableViewEditingEnd: PassthroughSubject<Void, Never> = .init()
@@ -217,16 +236,15 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     init(siteID: Int64,
          selectedProduct: AnyPublisher<Product?, Never>,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          navigateToContent: @escaping (NavigationContentType) -> Void) {
         self.siteID = siteID
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
         self.selectedProduct = selectedProduct
-        self.isSplitViewEnabled = featureFlagService.isFeatureFlagEnabled(.splitViewInProductsTab)
         self.navigateToContent = navigateToContent
         self.paginationTracker = PaginationTracker()
         super.init(nibName: type(of: self).nibName, bundle: nil)
 
+        configureTitle()
         configureTabBarItem()
     }
 
@@ -244,6 +262,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         configureTableView()
         configureHiddenScrollView()
         configureToolbar()
+        configureLiquidGlassTabBarUnderlap()
         configureScrollWatcher()
         configurePaginationTracker()
         registerTableViewCells()
@@ -271,7 +290,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
             self.displayGhostContent(over: tableView)
         }
 
-        navigationController?.navigationBar.removeShadow()
+        if #unavailable(iOS 26.0) {
+            navigationController?.navigationBar.removeShadow()
+        }
 
         reloadFavoriteProductsIfNeeded()
     }
@@ -280,12 +301,28 @@ final class ProductsViewController: UIViewController, GhostableViewController {
         super.viewWillDisappear(animated)
 
         finishBulkEditing()
+
+        // On iOS 26, keeping the native refresh control attached during a navigation transition can cause
+        // UINavigationController's refresh control host and content overlay updates to recursively trigger each other.
+        // Detach it while this screen is covered, then restore it once the products list is fully visible again.
+        if #available(iOS 26.0, *) {
+            uninstallRefreshControl()
+        }
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+
+        if #available(iOS 26.0, *) {
+            installRefreshControl()
+        }
     }
 
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
         updateTableHeaderViewHeight()
+        updateLiquidGlassHeaderOverlayLayout()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -294,10 +331,16 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     /// Selects the first product if one is available. Invoked when no product is selected when data is loaded in split view expanded mode.
     func selectFirstProductIfAvailable() {
+        loadViewIfNeeded()
         guard let firstProduct = resultsController.safeObject(at: IndexPath(row: 0, section: 0)) else {
             return
         }
         didSelectProduct(product: firstProduct)
+    }
+
+    func hasFirstProductAvailable() -> Bool {
+        loadViewIfNeeded()
+        return resultsController.safeObject(at: IndexPath(row: 0, section: 0)) != nil
     }
 
     func startProductCreation() {
@@ -355,7 +398,6 @@ private extension ProductsViewController {
                 // Reset button state on finishing the task
                 self.configureLeftBarBarButtomItemAsScanningButtonIfApplicable()
             }
-
         }, onPermissionsDenied: {
             ServiceLocator.analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .productList,
                                                                                                            reason: .cameraAccessNotPermitted))
@@ -384,23 +426,6 @@ private extension ProductsViewController {
         guard let sourceView else {
             return
         }
-        guard isSplitViewEnabled else {
-            guard let navigationController else {
-                return
-            }
-
-            let source: AddProductCoordinator.Source = .productsTab
-            let coordinatingController = AddProductCoordinator(siteID: siteID,
-                                                               source: source,
-                                                               sourceView: sourceView,
-                                                               sourceNavigationController: navigationController,
-                                                               isFirstProduct: isFirstProduct)
-
-            coordinatingController.start()
-            self.addProductCoordinator = coordinatingController
-            return
-        }
-
         navigateToContent(.addProduct(sourceView: sourceView, isFirstProduct: isFirstProduct))
     }
 }
@@ -423,7 +448,7 @@ private extension ProductsViewController {
         tableView.setEditing(true, animated: true)
 
         // Disable pull-to-refresh while editing
-        refreshControl.removeFromSuperview()
+        uninstallRefreshControl()
 
         configureNavigationBarForEditing()
         showOrHideToolbar()
@@ -441,7 +466,7 @@ private extension ProductsViewController {
         bulkEditButton.isEnabled = false
 
         // Enable pull-to-refresh
-        tableView.addSubview(refreshControl)
+        installRefreshControl()
 
         configureNavigationBar()
         showOrHideToolbar()
@@ -608,13 +633,16 @@ private extension ProductsViewController {
     /// Set the title.
     ///
     func configureNavigationBar() {
+        configureTitle()
+        configureNavigationBarLeftButtonItems()
+        configureNavigationBarRightButtonItems()
+    }
+
+    func configureTitle() {
         navigationItem.title = NSLocalizedString(
             "Products",
             comment: "Title that appears on top of the Product List screen (plural form of the word Product)."
         )
-
-        configureNavigationBarLeftButtonItems()
-        configureNavigationBarRightButtonItems()
     }
 
     func configureNavigationBarLeftButtonItems() {
@@ -708,16 +736,20 @@ private extension ProductsViewController {
         tableView.allowsMultipleSelectionDuringEditing = true
         tableView.accessibilityIdentifier = "products-table-view"
 
-        // Adds the refresh control to table view manually so that the refresh control always appears below the navigation bar title in
-        // large or normal size to be consistent with Dashboard and Orders tab with large titles workaround.
-        // If we do `tableView.refreshControl = refreshControl`, the refresh control appears in the navigation bar when large title is shown.
-        tableView.addSubview(refreshControl)
+        installRefreshControl()
 
         let headerContainer = UIView(frame: CGRect(x: 0, y: 0, width: Int(tableView.frame.width), height: Int(Constants.headerDefaultHeight)))
-        headerContainer.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        if #available(iOS 26.0, *) {
+            headerContainer.backgroundColor = .clear
+        } else {
+            headerContainer.backgroundColor = headerBackgroundColor
+        }
         headerContainer.addSubview(topStackView)
         headerContainer.pinSubviewToSafeArea(topStackView, insets: Constants.headerContainerInsets)
         let bottomBorderView = UIView.createBorderView()
+        if #available(iOS 26.0, *) {
+            bottomBorderView.isHidden = true
+        }
         headerContainer.addSubview(bottomBorderView)
         NSLayoutConstraint.activate([
             bottomBorderView.constrainToSuperview(attribute: .leading),
@@ -730,7 +762,46 @@ private extension ProductsViewController {
         stateCoordinator.transitionToResultsUpdatedState(hasData: !isEmpty)
     }
 
+    private func installRefreshControl() {
+        if #available(iOS 26.0, *) {
+            tableView.refreshControl = refreshControl
+        } else {
+            tableView.addSubview(refreshControl)
+        }
+    }
+
+    private func uninstallRefreshControl() {
+        if #available(iOS 26.0, *) {
+            tableView.refreshControl = nil
+        } else {
+            refreshControl.removeFromSuperview()
+        }
+    }
+
+    private func configureLiquidGlassTabBarUnderlap() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        setContentScrollView(tableView, for: [.top, .bottom])
+    }
+
+    private func updateToolbarOverscrollPosition(from scrollView: UIScrollView) {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        let transform = CGAffineTransform(translationX: 0, y: scrollView.topOverscrollDistance)
+        liquidGlassHeaderBackgroundView?.transform = transform
+        toolbar.transform = transform
+        toolbarBottomSeparator.transform = transform
+    }
+
     private func configureHiddenScrollView() {
+        guard usesLargeTitleWorkaround else {
+            return
+        }
+
         // Configure large title using the `hiddenScrollView` trick.
         hiddenScrollView.configureForLargeTitleWorkaround()
         // Adds the "hidden" scroll view to the root of the UIViewController for large title workaround.
@@ -745,6 +816,7 @@ private extension ProductsViewController {
     private func configureToolbar() {
         setupToolbar()
         showOrHideToolbar()
+        configureLiquidGlassHeaderOverlay()
     }
 
     private func setupToolbar() {
@@ -765,11 +837,90 @@ private extension ProductsViewController {
             $0.configuration = configuration
         }
 
-        toolbar.backgroundColor = .systemColor(.secondarySystemGroupedBackground)
+        toolbar.backgroundColor = toolbarBackgroundColor
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
 
-        toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
+        if #available(iOS 26.0, *) {
+            toolbarBottomSeparator.backgroundColor = .clear
+        } else {
+            toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
+        }
         toolbarBottomSeparatorHeightConstraint.constant = 1.0 / UIScreen.main.scale
+    }
+
+    private func configureLiquidGlassHeaderOverlay() {
+        guard #available(iOS 26.0, *),
+              !hasConfiguredLiquidGlassHeaderOverlay,
+              let stackView = toolbar.superview as? UIStackView,
+              toolbarBottomSeparator.superview === stackView else {
+            return
+        }
+
+        hasConfiguredLiquidGlassHeaderOverlay = true
+
+        stackView.removeArrangedSubview(toolbar)
+        toolbar.removeFromSuperview()
+        stackView.removeArrangedSubview(toolbarBottomSeparator)
+        toolbarBottomSeparator.removeFromSuperview()
+
+        let backgroundView = UIView.makePinnedHeaderBackgroundView(color: headerBackgroundColor)
+        liquidGlassHeaderBackgroundView = backgroundView
+        view.addSubview(backgroundView)
+        view.addSubview(toolbar)
+        view.addSubview(toolbarBottomSeparator)
+
+        NSLayoutConstraint.activate([
+            backgroundView.topAnchor.constraint(equalTo: toolbar.topAnchor),
+            backgroundView.leadingAnchor.constraint(equalTo: toolbar.leadingAnchor),
+            backgroundView.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor),
+            backgroundView.bottomAnchor.constraint(equalTo: toolbarBottomSeparator.bottomAnchor),
+            toolbar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            toolbar.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            toolbar.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            toolbarBottomSeparator.topAnchor.constraint(equalTo: toolbar.bottomAnchor),
+            toolbarBottomSeparator.leadingAnchor.constraint(equalTo: toolbar.leadingAnchor),
+            toolbarBottomSeparator.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor)
+        ])
+
+        updateLiquidGlassHeaderVisibility()
+        updateLiquidGlassHeaderOverlayLayout()
+    }
+
+    private func updateLiquidGlassHeaderOverlayLayout() {
+        guard #available(iOS 26.0, *),
+              hasConfiguredLiquidGlassHeaderOverlay else {
+            return
+        }
+
+        let targetSize = CGSize(width: view.bounds.width, height: UIView.layoutFittingCompressedSize.height)
+        let toolbarHeight = toolbar.isHidden ? 0 : toolbar.systemLayoutSizeFitting(targetSize,
+                                                                                   withHorizontalFittingPriority: .required,
+                                                                                   verticalFittingPriority: .fittingSizeLevel).height
+        let separatorHeight = toolbar.isHidden ? 0 : toolbarBottomSeparatorHeightConstraint.constant
+        let height = toolbarHeight + separatorHeight
+
+        let previousTopInset = tableView.contentInset.top
+        if abs(previousTopInset - height) > 0.5 {
+            var contentInset = tableView.contentInset
+            contentInset.top = height
+            tableView.contentInset = contentInset
+            if !tableView.isTracking && !tableView.isDragging && !tableView.isDecelerating {
+                tableView.contentOffset.y -= height - previousTopInset
+            }
+        }
+
+        var verticalScrollIndicatorInsets = tableView.verticalScrollIndicatorInsets
+        verticalScrollIndicatorInsets.top = height
+        tableView.verticalScrollIndicatorInsets = verticalScrollIndicatorInsets
+    }
+
+    private func updateLiquidGlassHeaderVisibility() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        toolbarBottomSeparator.isHidden = toolbar.isHidden
+        liquidGlassHeaderBackgroundView?.isHidden = toolbar.isHidden
     }
 
     func configureScrollWatcher() {
@@ -797,10 +948,14 @@ private extension ProductsViewController {
     func showOrHideToolbar() {
         guard !tableView.isEditing else {
             toolbar.isHidden = true
+            updateLiquidGlassHeaderVisibility()
+            updateLiquidGlassHeaderOverlayLayout()
             return
         }
 
         toolbar.isHidden = filters.numberOfActiveFilters == 0 ? isEmpty : false
+        updateLiquidGlassHeaderVisibility()
+        updateLiquidGlassHeaderOverlayLayout()
     }
 }
 
@@ -826,27 +981,6 @@ private extension ProductsViewController {
         }
     }
 
-    /// Request a new product banner from `ProductsTopBannerFactory` and wire actionButtons actions
-    /// To show a top banner, we can dispatch a loadFeedbackVisibility action from AppSettingsStore and update the top banner accordingly
-    /// Ref: https://github.com/woocommerce/woocommerce-ios/issues/6682
-    ///
-    func requestAndShowNewTopBannerView(for bannerType: ProductsTopBannerFactory.BannerType) {
-        let isExpanded = topBannerView?.isExpanded ?? false
-        ProductsTopBannerFactory.topBanner(isExpanded: isExpanded,
-                                           type: bannerType,
-                                           expandedStateChangeHandler: { [weak self] in
-            self?.updateTableHeaderViewHeight()
-        }, onGiveFeedbackButtonPressed: { [weak self] in
-            self?.presentProductsFeedback()
-        }, onDismissButtonPressed: { [weak self] in
-            self?.hideTopBannerView()
-        }, onCompletion: { [weak self] topBannerView in
-            self?.topBannerContainerView.updateSubview(topBannerView)
-            self?.topBannerView = topBannerView
-            self?.updateTableHeaderViewHeight()
-        })
-    }
-
     /// Request a new error loading data banner from `ErrorTopBannerFactory` and display it in the table header
     ///
     func requestAndShowErrorTopBannerView(for error: Error) {
@@ -861,7 +995,9 @@ private extension ProductsViewController {
             },
             onContactSupportButtonPressed: { [weak self] in
                 guard let self else { return }
-                let supportForm = SupportFormHostingController(viewModel: .init())
+                let supportForm = SupportFormHostingController(
+                    viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider())
+                )
                 supportForm.show(from: self)
             })
         topBannerContainerView.updateSubview(errorBanner)
@@ -906,6 +1042,9 @@ private extension ProductsViewController {
             ServiceLocator.crashLogging.logError(error)
         }
 
+        guard let tableView else {
+            return
+        }
         tableView.reloadData()
     }
 
@@ -924,6 +1063,9 @@ private extension ProductsViewController {
     /// Manages view components and reload tableview
     ///
     func reloadTableAndView() {
+        guard let tableView else {
+            return
+        }
         showOrHideToolbar()
         addOrRemoveOverlay()
         tableView.reloadData()
@@ -948,7 +1090,7 @@ private extension ProductsViewController {
     /// If no info are stored (so there is a failure), we resynchronize the syncingCoordinator for updating the screen using the default sort/filters.
     ///
     func syncProductsSettings() {
-        syncLocalProductsSettings { [weak self] (result) in
+        syncLocalProductsSettings { [weak self] result in
             guard let self else { return }
 
             if result.isFailure {
@@ -1031,7 +1173,7 @@ private extension ProductsViewController {
 
     func listenToSelectedProductToAutoScrollWhenProductChanges(product: Product) {
         selectedProductListener = .init(storageManager: ServiceLocator.storageManager, readOnlyEntity: product)
-        selectedProductListener?.onUpsert = { [weak self] product in
+        selectedProductListener?.onUpsert = { [weak self] _ in
             guard let self,
                   let selectedIndexPath = tableView.indexPathForSelectedRow,
                   !isIndexPathVisible(selectedIndexPath) else {
@@ -1108,7 +1250,10 @@ extension ProductsViewController: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
         let product = resultsController.listItem(at: indexPath)
         let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
-        let viewModel = ProductsTabProductViewModel(product: product, hasPendingUploads: hasPendingUploads)
+        let viewModel = ProductsTabProductViewModel(product: product,
+                                                    hasPendingUploads: hasPendingUploads,
+                                                    isSKUShown: true,
+                                                    isPriceShown: true)
         cell.update(viewModel: viewModel, imageService: imageService)
 
         return cell
@@ -1128,7 +1273,7 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        if (splitViewController?.isCollapsed == true || !isSplitViewEnabled) &&
+        if splitViewController?.isCollapsed == true &&
             !tableView.isEditing {
             tableView.deselectRow(at: indexPath, animated: true)
         }
@@ -1140,9 +1285,7 @@ extension ProductsViewController: UITableViewDelegate {
             updatedSelectedItems()
         } else {
             ServiceLocator.analytics.track(event:
-                    .Products.productListProductTapped(
-                        productType: product.productType,
-                        horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+                    .Products.productListProductTapped(productType: product.productType))
 
             didSelectProduct(product: product)
         }
@@ -1182,6 +1325,12 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        updateToolbarOverscrollPosition(from: scrollView)
+
+        guard usesLargeTitleWorkaround else {
+            return
+        }
+
         hiddenScrollView.updateFromScrollViewDidScrollEventForLargeTitleWorkaround(scrollView)
     }
 
@@ -1220,12 +1369,6 @@ extension ProductsViewController: UITableViewDelegate {
 
 private extension ProductsViewController {
     func didSelectProduct(product: Product) {
-        guard isSplitViewEnabled else {
-            let viewController = ProductDetailNavigator.shared.makeDestination(product: product,
-                                                                               isReadOnly: false)
-            navigationController?.pushViewController(viewController, animated: true)
-            return
-        }
         navigateToContent(.productForm(product: product))
     }
 }
@@ -1268,8 +1411,7 @@ private extension ProductsViewController {
         ServiceLocator.analytics.track(event: .ProductListFilter.productListViewFilterOptionsTapped(source: .productsTab))
         let viewModel = FilterProductListViewModel(
             filters: filters,
-            siteID: siteID,
-            site: ServiceLocator.stores.sessionManager.defaultSite
+            siteID: siteID
         )
         let filterProductListViewController = FilterListViewController(viewModel: viewModel, onFilterAction: { [weak self] filters in
             ServiceLocator.analytics.track(event: .ProductListFilter.productFilterListShowProductsButtonTapped(source: .productsTab, filters: filters))
@@ -1285,13 +1427,6 @@ private extension ProductsViewController {
     func clearFilter(sourceBarButtonItem: UIBarButtonItem? = nil, sourceView: UIView? = nil) {
         ServiceLocator.analytics.track(.productListClearFiltersTapped)
         filters = FilterProductListViewModel.Filters()
-    }
-
-    /// Presents productsFeedback survey.
-    ///
-    func presentProductsFeedback() {
-        let navigationController = SurveyCoordinatingController(survey: .productsFeedback)
-        present(navigationController, animated: true, completion: nil)
     }
 }
 
@@ -1476,15 +1611,15 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                                               productStatusFilter: filters.productStatus,
                                                               productTypeFilter: filters.promotableProductType?.productType,
                                                               productCategoryFilter: filters.productCategory,
-                                                              favoriteProduct: filters.favoriteProduct != nil) { (error) in
+                                                              favoriteProduct: filters.favoriteProduct != nil) { _ in
         }
         ServiceLocator.stores.dispatch(action)
     }
 
-    /// Fetch local Products Settings (eg.  sort order or filters stored in Products settings)
+    /// Fetch local Products Settings (eg. sort order or filters stored in Products settings)
     ///
     private func syncLocalProductsSettings(onCompletion: @escaping (Result<StoredProductSettings.Setting, Error>) -> Void) {
-        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] (result) in
+        let action = AppSettingsAction.loadProductsSettings(siteID: siteID) { [weak self] result in
             switch result {
             case .success(let settings):
                 self?.syncProductCategoryFilterRemotely(from: settings) { [weak self] settings in

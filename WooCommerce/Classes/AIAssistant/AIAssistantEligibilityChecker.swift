@@ -1,29 +1,38 @@
 import Experiments
 import Foundation
-import enum NetworkingCore.Credentials
-import struct Yosemite.Site
+import Yosemite
 
 protocol AIAssistantEligibilityCheckerProtocol {
     func isEligible(for site: Site?) -> Bool
+    func isEligible(for site: Site?, useCache: Bool) async -> Bool
 }
 
 struct AIAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol {
     private let featureFlagService: FeatureFlagService
-    private let credentialsProvider: () -> Credentials?
+    private let remoteFeatureFlagService: RemoteFeatureFlagServiceProtocol
 
     init(featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         credentialsProvider: @escaping () -> Credentials? = { ServiceLocator.stores.sessionManager.defaultCredentials }) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.featureFlagService = featureFlagService
-        self.credentialsProvider = credentialsProvider
+        self.remoteFeatureFlagService = RemoteFeatureFlagService(stores: stores)
     }
 
     func isEligible(for site: Site?) -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.wooAIAssistant), let site else {
+        localEligibility(for: site)
+    }
+
+    func isEligible(for site: Site?, useCache: Bool = true) async -> Bool {
+        guard localEligibility(for: site) else {
             return false
         }
-        guard case .wpcom = credentialsProvider() else {
+        return await remoteFeatureFlagService.isEnabled(.wooAIAssistant, defaultValue: true, useCache: useCache)
+    }
+
+    private func localEligibility(for site: Site?) -> Bool {
+        guard featureFlagService.isFeatureFlagEnabled(.wooAIAssistant) else {
             return false
         }
+        guard let site else { return false }
         return site.isWordPressComStore || site.isAIAssistantFeatureActive
     }
 }

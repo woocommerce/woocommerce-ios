@@ -107,7 +107,7 @@ final class ProductVariationGeneratorTests: XCTestCase {
             ProductAttribute.fake().copy(attributeID: 1, name: "Size", options: ["S", "M"]),
             ProductAttribute.fake().copy(attributeID: 2, name: "Color", options: ["Red", "Green"]),
             ProductAttribute.fake().copy(attributeID: 3, name: "Fabric", options: ["Cotton", "Nylon"]),
-        ])
+                                          ])
 
         // When
         let variations = ProductVariationGenerator.generateVariations(for: product, excluding: [])

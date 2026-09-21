@@ -4,11 +4,13 @@ import XCTest
 import Yosemite
 import WooFoundation
 import YosemiteTestHelpers
+import enum NetworkingCore.DotcomError
 @testable import WooCommerce
 import protocol Storage.StorageManagerType
 import protocol Storage.StorageType
 
 private typealias Dependencies = RefundSubmissionUseCase<MockCardReaderSettingsAlerts, MockCardPresentPaymentAlertsPresenter>.Dependencies
+private typealias RefundDetails = RefundSubmissionUseCase<MockCardReaderSettingsAlerts, MockCardPresentPaymentAlertsPresenter>.Details
 
 final class RefundSubmissionUseCaseTests: XCTestCase {
     private var stores: MockStoresManager!
@@ -19,6 +21,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
     private var knownCardReaderProvider: MockKnownReaderProvider!
     private var onboardingPresenter: MockCardPresentPaymentsOnboardingPresenter!
     private var storageManager: MockStorageManager!
+    private var refundService: MockRefundService!
 
     override func setUp() {
         super.setUp()
@@ -31,9 +34,11 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         knownCardReaderProvider = MockKnownReaderProvider()
         onboardingPresenter = MockCardPresentPaymentsOnboardingPresenter()
         storageManager = MockStorageManager()
+        refundService = MockRefundService()
     }
 
     override func tearDown() {
+        refundService = nil
         storageManager = nil
         onboardingPresenter = nil
         knownCardReaderProvider = nil
@@ -61,13 +66,172 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
                 promise(())
             }
         }
 
         // Then
         XCTAssertFalse(stores.receivedActions.contains(where: { $0 is CardPresentPaymentAction }))
+    }
+
+    func test_submitRefund_with_server_line_items_creates_computed_refund_with_restock_instead_of_classic_create() throws {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .success(.fake())
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertEqual(refundService.spyCreateRefundRestockItems, true)
+        // The server owns the math: the submission path never sends an amount override.
+        XCTAssertEqual(try XCTUnwrap(refundService.spyCreateRefundAmount), nil)
+        let dispatchedV3Create = stores.receivedActions.contains(where: { action in
+            guard let refundAction = action as? RefundAction, case .createRefund = refundAction else {
+                return false
+            }
+            return true
+        })
+        XCTAssertFalse(dispatchedV3Create)
+    }
+
+    // Regression test for WOOMOB-3522: the create response is sufficient, so submission must not
+    // dispatch an additional `retrieveRefund` action.
+    func test_submitRefund_regression_with_server_line_items_does_not_retrieve_refund_after_creation() {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .success(MockRefunds.sampleRefund(isAutomated: true))
+
+        // When
+        waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertFalse(didDispatchRetrieveRefund)
+    }
+
+    func test_submitRefund_with_server_line_items_relays_create_failure() throws {
+        // Given
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .failure(NSError(domain: "test", code: 1))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isFailure)
+    }
+
+    func test_submitRefund_with_server_line_items_maps_rejection_code_to_RefundAPIError() throws {
+        // Given a computed create the server rejects because the order changed in the meantime
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        refundService.createRefundResult = .failure(DotcomError.unknown(code: "woocommerce_rest_refund_exceeds_remaining", message: nil, data: nil))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then the typed rejection (with its user-facing copy) is relayed
+        XCTAssertEqual(result.failure as? RefundAPIError, .refundExceedsRemaining)
+    }
+
+    func test_submitRefund_with_server_line_items_keeps_unmapped_error_code_unchanged() throws {
+        // Given a rejection code that indicates a client bug rather than an actionable state change
+        let details = RefundDetails(order: .fake().copy(siteID: Mocks.siteID, total: "2.28"),
+                                    charge: nil,
+                                    amount: "2.28",
+                                    paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID),
+                                    serverLineItems: [.quantityBased(lineItemID: 10, quantity: 2)])
+        let useCase = createUseCase(details: details)
+        let error = DotcomError.unknown(code: "woocommerce_rest_invalid_line_item", message: nil, data: nil)
+        refundService.createRefundResult = .failure(error)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then the original error keeps the generic path
+        XCTAssertNil(result.failure as? RefundAPIError)
+        XCTAssertEqual(result.failure as? DotcomError, error)
+    }
+
+    func test_submitRefund_with_classic_create_maps_rejection_code_to_RefundAPIError() throws {
+        // Given the classic v3 create fails with an actionable rejection code
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: nil,
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockServerSideRefund(refund: nil, error: DotcomError.unknown(code: "woocommerce_rest_order_not_refundable", message: nil, data: nil))
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? RefundAPIError, .orderNotRefundable)
+    }
+
+    // Regression test for WOOMOB-3522: the create response is sufficient, so submission must not
+    // dispatch an additional `retrieveRefund` action.
+    func test_submitRefund_regression_with_classic_create_does_not_retrieve_refund_after_creation() {
+        // Given
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: nil,
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockServerSideRefund(refund: MockRefunds.sampleRefund(isAutomated: true), error: nil)
+
+        // When
+        waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
+                promise(())
+            }
+        }
+
+        // Then
+        XCTAssertFalse(didDispatchRetrieveRefund)
     }
 
     func test_submitRefund_with_interac_payment_method_dispatches_CardPresentPaymentActions() throws {
@@ -90,6 +254,43 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertTrue(stores.receivedActions.contains(where: { $0 is CardPresentPaymentAction }))
     }
 
+    func test_submitRefund_with_cardInserted_reader_event_shows_cardInserted_alert() {
+        // Given
+        let useCase = createUseCase(details: interacRefundDetails())
+        mockCardPresentPaymentActions(returnCardReaderMessage: .cardInserted)
+        mockServerSideRefund(result: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertTrue(alerts.cardInsertedWasCalled)
+    }
+
+    func test_submitRefund_with_removeCardRequested_reader_event_shows_reader_message() {
+        // Given
+        let useCase = createUseCase(details: interacRefundDetails())
+        mockCardPresentPaymentActions(returnCardReaderMessage: .removeCardRequested("Remove card"))
+        mockServerSideRefund(result: .success(()))
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        XCTAssertTrue(alerts.displayReaderMessageWasCalled)
+        XCTAssertEqual(alerts.spyDisplayReaderMessage, "Remove card")
+    }
+
     func test_submitRefund_with_non_interac_payment_method_does_not_call_showOnboardingIfRequired() throws {
         // Given
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
@@ -106,13 +307,38 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
         // When
         waitFor { promise in
-            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { _ in
                 promise(())
             }
         }
 
         // Then
         XCTAssertFalse(onboardingPresenter.spyShowOnboardingWasCalled)
+    }
+
+    func test_submitRefund_with_missing_server_side_refund_response_returns_failure() throws {
+        // Given
+        let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
+                                                   charge: .fake().copy(paymentMethodDetails: .cardPresent(
+                                                    details: .init(brand: .visa,
+                                                                   last4: "9969",
+                                                                   funding: .credit,
+                                                                   receipt: .init(accountType: .credit,
+                                                                                  applicationPreferredName: "Stripe Credit",
+                                                                                  dedicatedFileName: "A000000003101001")))),
+                                                   amount: "2.28",
+                                                   paymentGatewayAccount: createPaymentGatewayAccount(siteID: Mocks.siteID)))
+        mockServerSideRefund(refund: nil, error: nil)
+
+        // When
+        let result = waitFor { promise in
+            useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? RefundSubmissionUseCaseSubmissionError, .missingCreatedRefund)
     }
 
     func test_submitRefund_with_interac_payment_method_calls_showOnboardingIfRequired() throws {
@@ -393,15 +619,47 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 }
 
 private extension RefundSubmissionUseCaseTests {
+    var didDispatchRetrieveRefund: Bool {
+        stores.receivedActions.contains { action in
+            guard let refundAction = action as? RefundAction,
+                  case .retrieveRefund = refundAction else {
+                return false
+            }
+            return true
+        }
+    }
+
+    func interacRefundDetails(siteID: Int64 = Mocks.siteID) -> RefundDetails {
+        .init(order: .fake().copy(siteID: siteID, total: "2.28"),
+              charge: .fake().copy(paymentMethodDetails: .interacPresent(
+                details: .init(brand: .visa,
+                               last4: "9969",
+                               funding: .credit,
+                               receipt: .init(accountType: .credit,
+                                              applicationPreferredName: "Stripe Credit",
+                                              dedicatedFileName: "A000000003101001")))),
+              amount: "2.28",
+              paymentGatewayAccount: createPaymentGatewayAccount(siteID: siteID))
+    }
+
     func mockServerSideRefund(result: Result<Void, Error>) {
+        let refund: Refund?
+        let error: Error?
+        switch result {
+        case .success:
+            refund = .fake()
+            error = nil
+        case .failure(let failure):
+            refund = nil
+            error = failure
+        }
+        mockServerSideRefund(refund: refund, error: error)
+    }
+
+    func mockServerSideRefund(refund: Refund?, error: Error?) {
         stores.whenReceivingAction(ofType: RefundAction.self) { action in
             if case let .createRefund(_, _, _, completion) = action {
-                switch result {
-                case .success:
-                    completion(.fake(), nil)
-                case .failure(let error):
-                    completion(nil, error)
-                }
+                completion(refund, error)
             }
         }
     }
@@ -459,11 +717,12 @@ private extension RefundSubmissionUseCaseTests {
                 onboardingPresenter,
             stores: stores,
             storageManager: storageManager,
-            analytics: analytics)
+            analytics: analytics,
+            refundService: refundService)
 
         return RefundSubmissionUseCase(
             details: details,
-            rootViewController: .init(),
+            rootViewController: NullViewControllerPresenting(),
             alerts: alerts,
             cardPresentConfiguration: Mocks.configuration,
             cardReaderConnectionAlerts: cardReaderConnectionAlerts,

@@ -66,7 +66,7 @@ class NewNoteViewController: UIViewController {
         let action = OrderNoteAction.addOrderNote(siteID: viewModel.order.siteID,
                                                   orderID: viewModel.orderID,
                                                   isCustomerNote: isCustomerNote,
-                                                  note: noteText) { [weak self] (orderNote, error) in
+                                                  note: noteText) { [weak self] orderNote, error in
             if let error {
                 DDLogError("⛔️ Error adding a note: \(error.localizedDescription)")
                 self?.viewModel.track(.orderNoteAddFailed, withError: error)
@@ -146,7 +146,7 @@ private extension NewNoteViewController {
         let cellViewModel = TextViewTableViewCell.ViewModel(icon: .asideImage,
                                                             iconAccessibilityLabel: iconAccessibilityLabel,
                                                             iconTint: isCustomerNote ? .primary : .textSubtle,
-                                                            onTextChange: { [weak self] (text) in
+                                                            onTextChange: { [weak self] text in
                                                                 self?.navigationItem.rightBarButtonItem?.isEnabled = !text.isEmpty
                                                                 self?.noteText = text
         })

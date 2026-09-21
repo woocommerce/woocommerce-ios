@@ -146,6 +146,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    @MainActor
     private lazy var productImageActionHandler: ProductImageActionHandler = {
         let key = ProductImageUploaderKey(siteID: siteID,
                                           productOrVariationID: .product(id: localProductID),
@@ -249,7 +250,6 @@ final class ProductDetailPreviewViewModel: ObservableObject {
             let updatedProduct = remoteProduct.copy(images: images)
             analytics.track(event: .ProductCreationAI.saveAsDraftSuccess())
             onProductCreated(updatedProduct)
-
         } catch {
             DDLogError("⛔️ Error saving product with AI: \(error)")
             analytics.track(event: .ProductCreationAI.saveAsDraftFailed(error: error))
@@ -625,7 +625,7 @@ private extension ProductDetailPreviewViewModel {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductCategoryAction.synchronizeProductCategories(siteID: siteID,
                                                                                fromPageNumber: Default.firstPageNumber,
-                                                                               onCompletion: { result in
+                                                                               onCompletion: { _ in
                 continuation.resume()
             }))
         }
@@ -654,7 +654,7 @@ private extension ProductDetailPreviewViewModel {
     func synchronizeAllTags() async throws {
         try await withCheckedThrowingContinuation { continuation in
             stores.dispatch(ProductTagAction.synchronizeAllProductTags(siteID: siteID,
-                                                                       onCompletion: { result in
+                                                                       onCompletion: { _ in
                 continuation.resume()
             }))
         }
@@ -681,6 +681,7 @@ private extension ProductDetailPreviewViewModel {
 
     /// Sets up image uploader to upload packaging image if it's available.
     ///
+    @MainActor
     func uploadPackagingImageIfNeeded() {
         guard case let .success(packagingImage) = imageState else {
             return
@@ -699,6 +700,7 @@ private extension ProductDetailPreviewViewModel {
 
     /// Replaces the actual product ID for pending images for background upload.
     ///
+    @MainActor
     func replaceProductID(newID: Int64) {
         productImageUploader.replaceLocalID(siteID: siteID,
                                             localID: .product(id: localProductID),

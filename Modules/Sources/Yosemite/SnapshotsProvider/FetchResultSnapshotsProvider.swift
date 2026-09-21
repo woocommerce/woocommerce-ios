@@ -378,9 +378,9 @@ private extension FetchResultSnapshotsProvider {
     /// we would get a crash like this when something changes in the database:
     ///
     /// ```
-    /// [error] error: Serious application error.  Exception was caught during Core Data change
-    /// processing.  This is usually a bug within an observer of
-    /// NSManagedObjectContextObjectsDidChangeNotification.  Object's persistent store is not
+    /// [error] error: Serious application error. Exception was caught during Core Data change
+    /// processing. This is usually a bug within an observer of
+    /// NSManagedObjectContextObjectsDidChangeNotification. Object's persistent store is not
     /// reachable from this NSManagedObjectContext's coordinator with userInfo (null)
     /// ```
     ///

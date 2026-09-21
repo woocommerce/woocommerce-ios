@@ -64,7 +64,7 @@ struct POSProductsNetworkingTests {
         _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID, productTypes: [.simple, .variable], pageNumber: 1)
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        let queryParametersDictionary = try #require(network.queryParametersDictionary)
         #expect(queryParametersDictionary["downloadable"] as? String == "false")
         #expect(queryParametersDictionary["include_types"] as? String == "simple,variable")
     }
@@ -126,7 +126,7 @@ struct POSProductsNetworkingTests {
             pageNumber: 1)
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        let queryParametersDictionary = try #require(network.queryParametersDictionary)
         #expect(queryParametersDictionary["downloadable"] as? String == "false")
         #expect(queryParametersDictionary["include_types"] as? String == "simple,variable")
         #expect(queryParametersDictionary["search"] as? String == "search terms")
@@ -145,7 +145,7 @@ struct POSProductsNetworkingTests {
             pageNumber: 1)
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        let queryParametersDictionary = try #require(network.queryParametersDictionary)
         #expect(queryParametersDictionary["search"] as? String == searchQuery)
         #expect(queryParametersDictionary["search_name_or_sku"] as? String == searchQuery)
         #expect(queryParametersDictionary["search_fields"] as? [String] == ["name", "sku", "global_unique_id"])
@@ -205,7 +205,7 @@ struct POSProductsNetworkingTests {
         _ = try? await remote.loadProductsForPointOfSale(for: sampleSiteID)
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        let queryParametersDictionary = try #require(network.queryParametersDictionary)
         #expect(queryParametersDictionary["_fields"] as? String == POSProduct.requestFields.joined(separator: ","))
     }
 
@@ -217,7 +217,7 @@ struct POSProductsNetworkingTests {
         _ = try? await remote.searchProductsForPointOfSale(for: sampleSiteID, query: "search")
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        let queryParametersDictionary = try #require(network.queryParametersDictionary)
         #expect(queryParametersDictionary["_fields"] as? String == POSProduct.requestFields.joined(separator: ","))
     }
 
@@ -294,7 +294,7 @@ struct POSProductsNetworkingTests {
                                                          pageNumber: 1)
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        let queryParametersDictionary = try #require(network.queryParametersDictionary)
         #expect(queryParametersDictionary["pos_products_only"] as? String == "true")
     }
 
@@ -309,7 +309,7 @@ struct POSProductsNetworkingTests {
                                                                  perPage: 25)
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        let queryParametersDictionary = try #require(network.queryParametersDictionary)
         #expect(queryParametersDictionary["pos_products_only"] as? String == "true")
     }
 
@@ -324,7 +324,7 @@ struct POSProductsNetworkingTests {
                                                             pageNumber: 1)
 
         // Then
-        let queryParametersDictionary = try #require(network.queryParametersDictionary as? [String: any Hashable])
+        let queryParametersDictionary = try #require(network.queryParametersDictionary)
         #expect(queryParametersDictionary["pos_products_only"] as? String == "true")
     }
 

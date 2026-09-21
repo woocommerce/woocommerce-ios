@@ -125,6 +125,8 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
     private let siteID: Int64
 
+    private let stores: StoresManager
+
     /// Current top banner that is displayed.
     ///
     private var topBannerView: UIView?
@@ -140,10 +142,6 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     ///
     private var selectedOrderID: Int64?
 
-    /// Banner variation that will be shown as In-Person Payments feedback banner. If any.
-    ///
-    private var inPersonPaymentsSurveyVariation: SurveyViewController.Source?
-
     /// Notice presentation handler
     ///
     private var noticePresenter: NoticePresenter = DefaultNoticePresenter()
@@ -155,9 +153,11 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     init(siteID: Int64,
          title: String,
          viewModel: OrderListViewModel,
+         stores: StoresManager = ServiceLocator.stores,
          switchDetailsHandler: @escaping ([OrderDetailsViewModel], Int, Bool, ((Bool) -> Void)?) -> Void) {
         self.siteID = siteID
         self.viewModel = viewModel
+        self.stores = stores
         self.switchDetailsHandler = switchDetailsHandler
 
         super.init(nibName: type(of: self).nibName, bundle: nil)
@@ -183,6 +183,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         registerTableViewHeadersAndCells()
         configureTableView()
+        configureLiquidGlassTabBarUnderlap()
 
         configureViewModel()
         configureSyncingCoordinator()
@@ -207,15 +208,19 @@ final class OrderListViewController: UIViewController, GhostableViewController {
 
         syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
 
-        // Fix any incomplete animation of the refresh control
-        // when switching tabs mid-animation
-        refreshControl.resetAnimation(in: tableView)
-
         // Fix any _incomplete_ animation if the orders were deleted and refetched from
         // a different location (or Orders tab).
         //
         // We can remove this once we've replaced XLPagerTabStrip.
         tableView.reloadData()
+    }
+
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+
+        // Do not carry an active refresh animation across tab or navigation transitions.
+        // The underlying synchronization continues and updates the list when it completes.
+        refreshControl.endRefreshing()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -280,17 +285,17 @@ private extension OrderListViewController {
     /// Initialize ViewModel operations
     ///
     func configureViewModel() {
-        viewModel.onShouldResynchronizeIfViewIsVisible = { [weak self] in
+        viewModel.onShouldResynchronize = { [weak self] reason in
             guard let self else { return }
 
-            // Avoid synchronizing if the view is not visible. The refresh will be handled in
-            // `viewWillAppear` instead.
-            guard self.viewIfLoaded?.window != nil else { return }
+            // New-order notifications should update storage even when Orders is not visible,
+            // so the latest data is ready when the merchant returns to the list.
+            guard reason == .pushNotification || self.viewIfLoaded?.window != nil else { return }
 
             // Send a delegate event in case the updated happened while the app was in the background.
             self.delegate?.orderListViewControllerSyncTimestampChanged(lastFullSyncTimestamp)
 
-            self.syncingCoordinator.resynchronize(reason: SyncReason.viewWillAppear.rawValue)
+            self.syncingCoordinator.resynchronize(reason: reason.rawValue)
         }
 
         viewModel.onShouldResynchronizeIfNewFiltersAreApplied = { [weak self] in
@@ -314,6 +319,22 @@ private extension OrderListViewController {
             }
         }.store(in: &cancellables)
 
+        /// Reconfigure visible cells when the stored order statuses change, so status labels
+        /// pick up the latest server-provided names (e.g. after the first sync completes).
+        viewModel.statusesDidChange
+            .sink { [weak self] in
+                guard let self, let dataSource = self.dataSource else {
+                    return
+                }
+                var snapshot = dataSource.snapshot()
+                guard snapshot.itemIdentifiers.isEmpty == false else {
+                    return
+                }
+                snapshot.reconfigureItems(snapshot.itemIdentifiers)
+                dataSource.apply(snapshot, animatingDifferences: false)
+            }
+            .store(in: &cancellables)
+
         /// Update the top banner when needed
         viewModel.$topBanner
             .sink { [weak self] topBannerType in
@@ -323,6 +344,8 @@ private extension OrderListViewController {
                     self.hideTopBannerView()
                 case .error(let error):
                     self.setErrorTopBanner(for: error)
+                case .currencyUnavailable:
+                    self.setCurrencyUnavailableTopBanner()
                 }
             }
             .store(in: &cancellables)
@@ -353,6 +376,14 @@ private extension OrderListViewController {
         tableView.allowsFocus = supportsFocus()
     }
 
+    func configureLiquidGlassTabBarUnderlap() {
+        guard #available(iOS 26.0, *) else {
+            return
+        }
+
+        view.pinSubviewBottomToBottomAnchorReplacingSafeArea(tableView)
+    }
+
     /// Registers all of the available table view cells and headers
     ///
     func registerTableViewHeadersAndCells() {
@@ -370,7 +401,6 @@ extension OrderListViewController {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.orderListViewControllerWillSynchronizeOrders(self)
         NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-        viewModel.onPullToRefresh()
         syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
             sender.endRefreshing()
         }
@@ -450,7 +480,6 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                         self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason, retryTimeout: false, onCompletion: onCompletion)
                         ServiceLocator.analytics.track(event: .ConnectivityTool.automaticTimeoutRetry())
-
                     } else {
                         self.viewModel.dataLoadingError = error
                     }
@@ -472,7 +501,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                 onCompletion?(error == nil)
         }
 
-        ServiceLocator.stores.dispatch(action)
+        stores.dispatch(action)
     }
 
     /// Sets the current top banner in the table view header
@@ -575,12 +604,12 @@ private extension OrderListViewController {
     /// Checks to see if there is a selected order ID, and selects its order.
     /// Otherwise, try to select first item.
     ///
-    func checkSelectedItem() {
+    func checkSelectedItem(forceShowingDetails: Bool = false) {
         guard let orderID = selectedOrderID else {
             selectFirstItemIfPossible()
             return
         }
-        let selected = selectOrderFromListIfPossible(for: orderID)
+        let selected = selectOrderFromListIfPossible(for: orderID, isTriggeredByUserAction: forceShowingDetails)
         if !selected {
             selectedIndexPath = nil
             switchDetailsHandler([], 0, true, nil)
@@ -623,6 +652,11 @@ private extension OrderListViewController {
 }
 
 extension OrderListViewController {
+    /// Recreates the selected detail without changing the selected row.
+    func restoreSelectedOrderDetails() {
+        checkSelectedItem(forceShowingDetails: true)
+    }
+
     /// Adds ability to select any order
     /// Used when opening an order with deep link
     /// - Parameter orderID: ID of the order to select in the list.
@@ -750,28 +784,6 @@ private extension OrderListViewController {
     ///
     func noOrdersAvailableConfig() -> EmptyStateViewController.Config {
 
-        let analytics = ServiceLocator.analytics
-        if viewModel.shouldEnableTestOrder, let url = viewModel.siteURL {
-
-            analytics.track(event: .TestOrder.entryPointDisplayed())
-            return .withButton(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
-                               image: .boxesImage,
-                               details: Localization.createTestOrderDetail,
-                               buttonTitle: Localization.tryTestOrder,
-                               onTap: { [weak self] _ in
-                guard let self else { return }
-                analytics.track(event: .TestOrder.tryTestOrderTapped())
-                let hostingController = CreateTestOrderHostingController {
-                    analytics.track(event: .TestOrder.testOrderStarted())
-                    UIApplication.shared.open(url)
-                }
-                self.present(UINavigationController(rootViewController: hostingController), animated: true)
-            }, onPullToRefresh: { [weak self] refreshControl in
-                self?.pullToRefresh(sender: refreshControl)
-            })
-        }
-
-        /// Otherwise, show link to Woo blog.
         return .withLink(message: NSAttributedString(string: Localization.allOrdersEmptyStateMessage),
                          image: .boxesImage,
                          details: Localization.allOrdersEmptyStateDetail,
@@ -794,7 +806,7 @@ private extension OrderListViewController {
             image: .magnifyingGlassNotFound,
             details: "",
             buttonTitle: Localization.clearButton,
-            onTap: { [weak self] button in
+            onTap: { [weak self] _ in
                 self?.delegate?.clearFilters()
             },
             onPullToRefresh: { [weak self] refreshControl in
@@ -823,8 +835,7 @@ extension OrderListViewController: UITableViewDelegate {
 
         selectedIndexPath = indexPath
         let order = orderDetailsViewModel.order
-        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order,
-                                                                                 horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+        ServiceLocator.analytics.track(event: WooAnalyticsEvent.Orders.orderOpen(order: order))
         selectedOrderID = order.orderID
         let allViewModels = allViewModels()
         let currentIndex = allViewModels.firstIndex(where: { $0.order.orderID == order.orderID })
@@ -959,9 +970,31 @@ private extension OrderListViewController {
         },
         onContactSupportButtonPressed: { [weak self] in
             guard let self else { return }
-            let supportForm = SupportFormHostingController(viewModel: .init())
+            let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
             supportForm.show(from: self)
         })
+        showTopBannerView()
+    }
+
+    /// Sets the `topBannerView` property to a warning banner shown when the store currency couldn't be loaded.
+    ///
+    func setCurrencyUnavailableTopBanner() {
+        let retryAction = TopBannerViewModel.ActionButton(title: Localization.currencyUnavailableRetry) { [weak self] _ in
+            self?.viewModel.retryStoreCurrencySync()
+        }
+        let bannerViewModel = TopBannerViewModel(title: Localization.currencyUnavailableTitle,
+                                                 infoText: Localization.currencyUnavailableInfo,
+                                                 icon: .infoOutlineImage,
+                                                 isExpanded: true,
+                                                 shouldResizeInfo: false,
+                                                 topButton: .chevron(handler: { [weak self] in
+                                                     self?.tableView.updateHeaderHeight()
+                                                 }),
+                                                 actionButtons: [retryAction],
+                                                 type: .warning)
+        let banner = TopBannerView(viewModel: bannerViewModel)
+        banner.translatesAutoresizingMaskIntoConstraints = false
+        topBannerView = banner
         showTopBannerView()
     }
 
@@ -992,20 +1025,30 @@ private extension OrderListViewController {
         static let allOrdersEmptyStateDetail = NSLocalizedString("Explore how you can increase your store sales.",
                                                                  comment: "The detailed message shown in the Orders → All Orders tab if the list is empty.")
         static let learnMore = NSLocalizedString("Learn more", comment: "Title of button shown in the Orders → All Orders tab if the list is empty.")
-        static let createTestOrderDetail = NSLocalizedString(
-            "Run a test order to ensure your WooCommerce process delivers a seamless customer experience.",
-            comment: "Message shown in Orders → All Orders tab if the list is empty and the site has been launched"
-        )
-        static let tryTestOrder = NSLocalizedString(
-            "Try a Test Order",
-            comment: "Title of button shown in Orders → All Orders tab if the list is empty and the site has been launched"
-        )
         static let filteredOrdersEmptyStateMessage = NSLocalizedString("We're sorry, we couldn't find any order that match %@",
                    comment: "Message for empty Orders filtered results. The %@ is a placeholder for the filters entered by the user.")
         static let clearButton = NSLocalizedString("Clear Filters",
                                  comment: "Action to remove filters orders on the placeholder overlay when no orders match the filter on the Order List")
 
         static let markCompleted = NSLocalizedString("Mark Completed", comment: "Title for the swipe order action to mark it as completed")
+
+        static let currencyUnavailableTitle = NSLocalizedString(
+            "orderList.currencyUnavailable.banner.title",
+            value: "Store currency unavailable",
+            comment: "Title of the banner shown on the Orders list when the store's currency couldn't be loaded."
+        )
+
+        static let currencyUnavailableInfo = NSLocalizedString(
+            "orderList.currencyUnavailable.banner.info",
+            value: "We couldn't load your store's currency, so order totals may be shown in the wrong currency.",
+            comment: "Message of the banner shown on the Orders list when the store's currency couldn't be loaded."
+        )
+
+        static let currencyUnavailableRetry = NSLocalizedString(
+            "orderList.currencyUnavailable.banner.retry",
+            value: "Retry",
+            comment: "Title of the button to retry loading the store's currency on the Orders list warning banner."
+        )
 
         static let shareFeedbackButton = NSLocalizedString("Share feedback",
                                                            comment: "Title of the feedback action button on the In-Person Payments feedback banner"

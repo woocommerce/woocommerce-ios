@@ -54,6 +54,5 @@ final class MockProductVariation {
                                 maxAllowedQuantity: nil,
                                 groupOfQuantity: nil,
                                 overrideProductQuantities: nil)
-
     }
 }

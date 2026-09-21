@@ -46,7 +46,7 @@ struct POSTotalsSectionView: View {
                 titleFont: .posBodyLargeBold
             )
 
-            if let paidAmount {
+            if paidAmount != nil {
                 sectionDivider
                 paidAmountRow
 
@@ -143,7 +143,7 @@ struct POSTotalsSectionView: View {
                 } label: {
                     Text(Localization.viewDetailsLabel)
                         .font(.posBodyMediumRegular())
-                        .foregroundStyle(Color.posPrimary)
+                        .foregroundStyle(Color.posLink)
                         .underline()
                 }
             }

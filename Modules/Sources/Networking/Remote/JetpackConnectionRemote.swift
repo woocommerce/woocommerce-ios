@@ -26,7 +26,7 @@ public final class JetpackConnectionRemote: Remote {
     /// Installs Jetpack the plugin to the current site.
     ///
     public func installJetpackPlugin(siteID: Int64, completion: @escaping (Result<SitePlugin, Error>) -> Void) {
-        let parameters: [String: Any] = [Field.slug.rawValue: Constants.jetpackPluginSlug]
+        let parameters: RequestParameterConvertibleDictionary = [Field.slug.rawValue: Constants.jetpackPluginSlug]
         let request = JetpackRequest(wooApiVersion: .none, method: .post, siteID: siteID, path: Path.plugins, parameters: parameters, availableAsRESTRequest: true)
         let mapper = SitePluginMapper()
         enqueue(request, mapper: mapper, completion: completion)
@@ -36,7 +36,7 @@ public final class JetpackConnectionRemote: Remote {
     ///
     public func activateJetpackPlugin(siteID: Int64, completion: @escaping (Result<SitePlugin, Error>) -> Void) {
         let path = "\(Path.plugins)/\(Constants.jetpackPluginName)"
-        let parameters: [String: Any] = [Field.status.rawValue: Constants.activeStatus]
+        let parameters: RequestParameterConvertibleDictionary = [Field.status.rawValue: Constants.activeStatus]
         let request = JetpackRequest(wooApiVersion: .none,
                                      method: .post,
                                      siteID: siteID,
@@ -70,7 +70,7 @@ public final class JetpackConnectionRemote: Remote {
         let session = URLSession(configuration: configuration, delegate: self, delegateQueue: nil)
         do {
             let request = try URLRequest(url: url, method: .get)
-            let task = session.dataTask(with: request) { [weak self] data, response, error in
+            let task = session.dataTask(with: request) { [weak self] _, _, error in
                 if let result = self?.accountConnectionURL {
                     DispatchQueue.main.async {
                         completion(.success(result))
@@ -96,6 +96,16 @@ public final class JetpackConnectionRemote: Remote {
     public func fetchJetpackConnectionData(siteID: Int64, completion: @escaping (Result<JetpackConnectionData, Error>) -> Void) {
         let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: Path.jetpackConnectionData, availableAsRESTRequest: true)
         let mapper = JetpackConnectionDataMapper()
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    /// Fetches the site's Jetpack connection status, including Offline Mode.
+    /// Unlike `fetchJetpackConnectionData`, this endpoint is not gated by Jetpack capabilities,
+    /// so it stays reachable when the site is in Offline Mode.
+    ///
+    public func fetchJetpackConnectionStatus(siteID: Int64, completion: @escaping (Result<JetpackConnectionStatus, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: Path.jetpackConnection, availableAsRESTRequest: true)
+        let mapper = JetpackConnectionStatusMapper()
         enqueue(request, mapper: mapper, completion: completion)
     }
 
@@ -146,6 +156,7 @@ extension JetpackConnectionRemote: URLSessionDataDelegate {
 
 private extension JetpackConnectionRemote {
     enum Path {
+        static let jetpackConnection = "/jetpack/v4/connection"
         static let jetpackConnectionURL = "/jetpack/v4/connection/url"
         static let jetpackConnectionData = "/jetpack/v4/connection/data"
         static let jetpackConnectionRegister = "/jetpack/v4/connection/register"

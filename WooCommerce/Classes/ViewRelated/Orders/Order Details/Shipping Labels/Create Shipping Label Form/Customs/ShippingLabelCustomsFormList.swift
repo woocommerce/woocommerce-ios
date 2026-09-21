@@ -20,7 +20,7 @@ final class ShippingCustomsFormListHostingController: UIHostingController<Shippi
         }
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -63,7 +63,7 @@ struct ShippingLabelCustomsFormList: View {
                         .highlight(on: $isShippingNoticeBannerHighlighted, color: Color(.accent))
                         .id(shippingNoticeBannerID)
 
-                    ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { (index, item) in
+                    ForEach(Array(viewModel.inputViewModels.enumerated()), id: \.offset) { index, item in
                         ShippingLabelCustomsFormInput(isCollapsible: viewModel.multiplePackagesDetected,
                                                       packageNumber: index + 1,
                                                       safeAreaInsets: geometry.safeAreaInsets,

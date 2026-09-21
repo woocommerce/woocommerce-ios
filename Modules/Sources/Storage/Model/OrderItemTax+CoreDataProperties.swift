@@ -12,5 +12,4 @@ extension OrderItemTax {
     @NSManaged public var subtotal: String?
     @NSManaged public var total: String?
     @NSManaged public var item: OrderItem?
-
 }

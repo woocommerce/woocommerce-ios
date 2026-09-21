@@ -74,7 +74,7 @@ final class MockNotification: UNNotification {
 
 final class MockNotificationResponse: UNNotificationResponse {
     init?(actionIdentifier: String = "", requestIdentifier: String = "", notificationUserInfo: [AnyHashable: Any] = [:]) {
-        let request = UNNotificationRequest.init(identifier: requestIdentifier,
+        let request = UNNotificationRequest(identifier: requestIdentifier,
                                                  content: MockNotificationContent(userInfo: notificationUserInfo),
                                                  trigger: nil)
         super.init(coder: MockUserNotificationCoder(actionIdentifier: actionIdentifier, request: request))

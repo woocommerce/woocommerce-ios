@@ -173,7 +173,7 @@ struct POSListEmptyViewModel: POSListEmptyViewModelProtocol {
     var icon: Image {
         switch itemListType {
         case .coupons(search: false):
-            SharedImageAsset.coupons.decorativeImage
+            PointOfSaleAssets.coupons.decorativeImage
         default:
             PointOfSaleAssets.magnifierNotFound.decorativeImage
         }

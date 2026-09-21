@@ -17,7 +17,7 @@ public final class AnnouncementsRemote: Remote, AnnouncementsRemoteProtocol {
     public func loadAnnouncements(appVersion: String,
                                   locale: String,
                                   onCompletion: @escaping (Result<[Announcement], Error>) -> Void) {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             Key.appID: Constants.WooCommerceAppId,
             Key.appVersion: appVersion,
             Key.locale: locale

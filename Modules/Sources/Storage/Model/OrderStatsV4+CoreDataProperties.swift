@@ -13,7 +13,6 @@ extension OrderStatsV4 {
     @NSManaged public var timeRange: String
     @NSManaged public var totals: OrderStatsV4Totals?
     @NSManaged public var intervals: Set<OrderStatsV4Interval>?
-
 }
 
 // MARK: Generated accessors for intervals
@@ -30,5 +29,4 @@ extension OrderStatsV4 {
 
     @objc(removeIntervals:)
     @NSManaged public func removeFromIntervals(_ values: NSSet)
-
 }

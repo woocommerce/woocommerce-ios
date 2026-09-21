@@ -45,7 +45,7 @@ final class CoreDataIterativeMigrator {
             return (true, ["No store exists at URL \(sourceStoreURL).  Skipping migration."])
         }
 
-        // Get the persistent store's metadata.  The metadata is used to
+        // Get the persistent store's metadata. The metadata is used to
         // get information about the store's managed object model.
         let sourceMetadata =
             try NSPersistentStoreCoordinator.metadataForPersistentStore(ofType: storeType, at: sourceStoreURL, options: nil)
@@ -201,5 +201,4 @@ private extension CoreDataIterativeMigrator {
         DDLogInfo("Source model \(sourceVersion.name) found in available versions. Will use iterative migration.")
         return false
     }
-
 }

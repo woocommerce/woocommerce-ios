@@ -6,5 +6,4 @@ import Foundation
 // No other changes are necessary.
 
 extension FileManager: FileManagerProtocol {
-
 }

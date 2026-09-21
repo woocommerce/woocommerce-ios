@@ -3,5 +3,4 @@ import CoreData
 
 @objc(ShippingLineTax)
 public class ShippingLineTax: NSManagedObject {
-
 }

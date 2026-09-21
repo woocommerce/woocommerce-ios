@@ -4,6 +4,13 @@ import Foundation
 struct TotalsViewHelper {
     private let paymentViewHelper = POSPaymentViewHelper()
 
+    enum BottomControlState: Equatable {
+        case hidden
+        case checkoutMethods([POSCheckoutPaymentMethod])
+        case cashAndOtherMethods
+        case readerAndOtherMethods
+    }
+
     func shouldShowReconnectingMessage(readerConnectionStatus: CardPresentPaymentReaderConnectionStatus,
                                        paymentState: PointOfSalePaymentState) -> Bool {
         guard case .reconnecting = readerConnectionStatus else {
@@ -11,7 +18,7 @@ struct TotalsViewHelper {
         }
 
         switch paymentState.activePaymentMethod {
-        case .cash:
+        case .cash, .scanToPay, .markAsPaid:
             return false
         case .card:
             switch paymentState.card {
@@ -54,6 +61,62 @@ struct TotalsViewHelper {
                                                              isZeroTotal: isZeroTotal)
     }
 
+    func bottomControlState(orderState: PointOfSaleOrderState,
+                            paymentState: PointOfSalePaymentState,
+                            cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus,
+                            tapToPayAvailabilityState: POSTapToPayAvailabilityState?,
+                            hasOtherPaymentMethodsAvailable: Bool,
+                            isTapToPayHeroVisible: Bool,
+                            isBluetoothReaderSelected: Bool) -> BottomControlState {
+        if isTapToPayHeroVisible {
+            return .cashAndOtherMethods
+        }
+
+        guard shouldShowCollectCashPaymentButton(orderState: orderState,
+                                                 paymentState: paymentState,
+                                                 cardReaderConnectionStatus: cardReaderConnectionStatus) else {
+            return .hidden
+        }
+
+        let isReaderDisconnected = paymentViewHelper.shouldShowDisconnectedMessage(
+            readerConnectionStatus: cardReaderConnectionStatus,
+            paymentState: paymentState
+        )
+
+        switch tapToPayAvailabilityState {
+        case .available:
+            if isBluetoothReaderSelected || !isReaderDisconnected {
+                return .cashAndOtherMethods
+            }
+        case .unavailable, nil:
+            if hasOtherPaymentMethodsAvailable {
+                return isReaderDisconnected ? .readerAndOtherMethods : .cashAndOtherMethods
+            }
+        case .unknown:
+            break
+        }
+
+        return .checkoutMethods(checkoutPaymentMethods(tapToPayAvailabilityState: tapToPayAvailabilityState,
+                                                       isReaderDisconnected: isReaderDisconnected))
+    }
+
+    private func checkoutPaymentMethods(tapToPayAvailabilityState: POSTapToPayAvailabilityState?,
+                                        isReaderDisconnected: Bool) -> [POSCheckoutPaymentMethod] {
+        var methods: [POSCheckoutPaymentMethod] = []
+        if tapToPayAvailabilityState == .available {
+            methods.append(.tapToPay)
+        }
+        if isReaderDisconnected {
+            methods.append(.cardReader)
+        }
+        methods.append(.cashPayment)
+        return methods
+    }
+
+    func shouldShowCardReaderInOtherPaymentMethods(bottomControlState: BottomControlState) -> Bool {
+        bottomControlState != .readerAndOtherMethods
+    }
+
     func shouldShowTotalDiscountField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {
         let hasCoupons = cart.coupons.isNotEmpty
         let orderIsLoading = orderTotals == nil
@@ -64,5 +127,17 @@ struct TotalsViewHelper {
         }
 
         return orderIsLoading || hasDiscounts
+    }
+
+    func shouldShowCustomAmountsField(cart: Cart, orderTotals: PointOfSaleOrderTotals?) -> Bool {
+        let hasCustomAmounts = cart.customAmounts.isNotEmpty
+        let orderIsLoading = orderTotals == nil
+        let hasCustomAmountsTotal = orderTotals?.customAmountsTotal != nil
+
+        guard hasCustomAmounts else {
+            return false
+        }
+
+        return orderIsLoading || hasCustomAmountsTotal
     }
 }

@@ -49,6 +49,9 @@ public struct PaymentIntentParameters {
     ///
     public let paymentMethodTypes: [PaymentMethodType]
 
+    /// Capture method preference for card-present payments.
+    public let cardPresentCaptureMethod: CardPresentCaptureMethod?
+
     public init(amount: Decimal,
                 currency: String,
                 stripeSmallestCurrencyUnitMultiplier: Decimal,
@@ -57,6 +60,7 @@ public struct PaymentIntentParameters {
                 statementDescription: String? = nil,
                 receiptEmail: String? = nil,
                 paymentMethodTypes: [PaymentMethodType] = [],
+                cardPresentCaptureMethod: CardPresentCaptureMethod? = nil,
                 metadata: [String: String]? = nil) {
         self.amount = amount
         self.currency = currency
@@ -66,6 +70,7 @@ public struct PaymentIntentParameters {
         self.statementDescription = statementDescription
         self.receiptEmail = receiptEmail
         self.paymentMethodTypes = paymentMethodTypes
+        self.cardPresentCaptureMethod = cardPresentCaptureMethod
         self.metadata = metadata
     }
 }
@@ -80,6 +85,7 @@ extension PaymentIntentParameters: Equatable {
         lhs.statementDescription == rhs.statementDescription &&
         lhs.receiptEmail == rhs.receiptEmail &&
         lhs.metadata == rhs.metadata &&
-        lhs.paymentMethodTypes == rhs.paymentMethodTypes
+        lhs.paymentMethodTypes == rhs.paymentMethodTypes &&
+        lhs.cardPresentCaptureMethod == rhs.cardPresentCaptureMethod
     }
 }

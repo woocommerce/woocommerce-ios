@@ -9,6 +9,7 @@ import YosemiteTestHelpers
 import Yosemite
 
 /// Unit tests for observables (`observableProduct`, `productName`, `isUpdateEnabled`)
+@MainActor
 final class ProductFormViewModel_ObservablesTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
     private var productSubscription: AnyCancellable?
@@ -131,7 +132,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler)
         var isProductUpdated: Bool?
-        productSubscription = viewModel.observableProduct.sink { product in
+        productSubscription = viewModel.observableProduct.sink { _ in
             isProductUpdated = true
         }
 
@@ -172,7 +173,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                              formType: .edit,
                                              productImageActionHandler: productImageActionHandler)
         var isProductUpdated: Bool?
-        productSubscription = viewModel.observableProduct.sink { product in
+        productSubscription = viewModel.observableProduct.sink { _ in
             isProductUpdated = true
         }
 
@@ -212,7 +213,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
         viewModel.resetPassword("134")
 
         var isProductUpdated: Bool?
-        productSubscription = viewModel.observableProduct.sink { product in
+        productSubscription = viewModel.observableProduct.sink { _ in
             isProductUpdated = true
         }
 
@@ -256,7 +257,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
                                              productImageActionHandler: productImageActionHandler,
                                              productImagesUploader: mockProductImageUploader)
         var isProductUpdated: Bool?
-        productSubscription = viewModel.observableProduct.sink { product in
+        productSubscription = viewModel.observableProduct.sink { _ in
             isProductUpdated = true
         }
 

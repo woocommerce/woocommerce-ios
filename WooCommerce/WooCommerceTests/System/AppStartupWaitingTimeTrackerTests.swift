@@ -62,7 +62,6 @@ final class AppStartupWaitingTimeTrackerTests: XCTestCase {
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents.count, 0)
     }
-
 }
 
 private extension AppStartupWaitingTimeTrackerTests {

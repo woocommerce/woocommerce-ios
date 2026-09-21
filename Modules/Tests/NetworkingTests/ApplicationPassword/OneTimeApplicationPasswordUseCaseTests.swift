@@ -62,6 +62,98 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
         }
     }
 
+    // MARK: - Validate Password Tests
+
+    func test_validateApplicationPassword_returns_valid_when_introspection_succeeds() async throws {
+        // Given
+        simulateIntrospectResponse(uuid: "test-uuid")
+        let sut = createSUT(password: createTestPassword())
+
+        // When
+        let result = try await sut.validateApplicationPassword()
+
+        // Then
+        guard case .valid = result else {
+            return XCTFail("Expected valid application password")
+        }
+        XCTAssertEqual(mockSession.requestCount, 1)
+        XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, introspectURL())
+        XCTAssertEqual(mockSession.lastRequest?.value(forHTTPHeaderField: "Authorization"), "Basic dGVzdHVzZXI6c2VjcmV0")
+    }
+
+    func test_validateApplicationPassword_normalizes_HTTP_site_address_to_HTTPS() async throws {
+        // Given
+        simulateIntrospectResponse(uuid: "test-uuid")
+        let sut = createSUT(password: createTestPassword(), siteAddress: "http://test.com")
+
+        // When
+        _ = try await sut.validateApplicationPassword()
+
+        // Then
+        XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, introspectURL())
+    }
+
+    func test_validateApplicationPassword_throws_notSupported_when_password_is_missing() async {
+        // Given
+        let sut = createSUT()
+
+        // When/Then
+        do {
+            _ = try await sut.validateApplicationPassword()
+            XCTFail("Expected notSupported error to be thrown")
+        } catch {
+            XCTAssertEqual(error as? ApplicationPasswordUseCaseError, .notSupported)
+        }
+    }
+
+    func test_validateApplicationPassword_returns_invalid_when_introspection_returns_unauthorized_status() async throws {
+        // Given
+        mockSession.simulateResponse(for: introspectURL(), statusCode: 401)
+        let sut = createSUT(password: createTestPassword())
+
+        // When
+        let result = try await sut.validateApplicationPassword()
+
+        // Then
+        guard case .invalid(let error) = result else {
+            return XCTFail("Expected invalid application password")
+        }
+        XCTAssertEqual((error as? NetworkError)?.responseCode, 401)
+    }
+
+    func test_validateApplicationPassword_returns_invalid_when_introspection_returns_incorrect_password_code() async throws {
+        // Given
+        let response = try JSONSerialization.data(withJSONObject: ["code": "incorrect_password"])
+        mockSession.simulateResponse(for: introspectURL(), data: response, statusCode: 400)
+        let sut = createSUT(password: createTestPassword())
+
+        // When
+        let result = try await sut.validateApplicationPassword()
+
+        // Then
+        guard case .invalid(let error) = result else {
+            return XCTFail("Expected invalid application password")
+        }
+        XCTAssertEqual((error as? NetworkError)?.errorCode, "incorrect_password")
+    }
+
+    func test_validateApplicationPassword_throws_when_introspection_fails_with_unrelated_server_error() async throws {
+        // Given
+        mockSession.simulateResponse(for: introspectURL(), statusCode: 500)
+        let sut = createSUT(password: createTestPassword())
+
+        // When
+        var thrownError: NetworkError?
+        do {
+            _ = try await sut.validateApplicationPassword()
+        } catch {
+            thrownError = error as? NetworkError
+        }
+
+        // Then
+        XCTAssertEqual(thrownError?.responseCode, 500)
+    }
+
     // MARK: - Delete Password Tests
 
     func test_deletePassword_locally_true_removes_from_storage_and_calls_api() async throws {
@@ -142,6 +234,26 @@ final class OneTimeApplicationPasswordUseCaseTests: XCTestCase {
         XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, deleteURL)
     }
 
+    func test_deletePassword_when_discovery_returns_HTTP_root_then_uses_HTTPS_url() async throws {
+        // Given
+        let deleteUUID = "fetched-uuid-456"
+        simulateIntrospectResponse(uuid: deleteUUID)
+        simulateDeleteResponse(for: deleteUUID)
+        let sut = OneTimeApplicationPasswordUseCase(
+            applicationPassword: createTestPassword(),
+            siteAddress: siteAddress,
+            injectedStorage: storage,
+            session: mockSession,
+            discovery: { _ in "http://test.com/wp-json/" }
+        )
+
+        // When
+        try await sut.deletePassword(locally: true)
+
+        // Then
+        XCTAssertEqual(mockSession.lastRequest?.url?.absoluteString, deleteURL(for: deleteUUID))
+    }
+
     func test_deletePassword_when_discovery_returns_rest_route_root_then_uses_rest_route_url() async throws {
         // Given
         let deleteUUID = "fetched-uuid-789"
@@ -212,7 +324,7 @@ private extension OneTimeApplicationPasswordUseCaseTests {
     }
 
     func simulateDeleteResponse(for uuid: String) {
-        let deleteURL = "\(siteAddress)/?rest_route=/wp/v2/users/me/application-passwords/\(uuid)"
+        let deleteURL = "\(siteAddress)/wp-json/wp/v2/users/me/application-passwords/\(uuid)"
         let deleteResponse = """
         {
             "data": {
@@ -224,7 +336,7 @@ private extension OneTimeApplicationPasswordUseCaseTests {
     }
 
     func simulateIntrospectResponse(uuid: String, name: String = "test-password") {
-        let introspectURL = "\(siteAddress)/?rest_route=/wp/v2/users/me/application-passwords/introspect"
+        let introspectURL = "\(siteAddress)/wp-json/wp/v2/users/me/application-passwords/introspect"
         let introspectResponse = """
         {
             "uuid": "\(uuid)",
@@ -239,10 +351,10 @@ private extension OneTimeApplicationPasswordUseCaseTests {
     }
 
     func deleteURL(for uuid: String) -> String {
-        return "\(siteAddress)/?rest_route=/wp/v2/users/me/application-passwords/\(uuid)"
+        return "\(siteAddress)/wp-json/wp/v2/users/me/application-passwords/\(uuid)"
     }
 
     func introspectURL() -> String {
-        return "\(siteAddress)/?rest_route=/wp/v2/users/me/application-passwords/introspect"
+        return "\(siteAddress)/wp-json/wp/v2/users/me/application-passwords/introspect"
     }
 }

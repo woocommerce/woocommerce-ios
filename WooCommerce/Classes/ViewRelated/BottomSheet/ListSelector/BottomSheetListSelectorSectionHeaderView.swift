@@ -14,17 +14,23 @@ final class BottomSheetListSelectorSectionHeaderView: UITableViewHeaderFooterVie
         configureSubtitle()
     }
 
-    func configure(title: String?, subtitle: String?) {
+    func configure(title: String?, subtitle: String?, backgroundColor: UIColor = .listForeground(modal: false)) {
         self.title.text = title
         self.title.numberOfLines = 0
         self.subtitle.text = subtitle
         self.subtitle.numberOfLines = 0
+        configureMainView(backgroundColor: backgroundColor)
     }
 }
 
 private extension BottomSheetListSelectorSectionHeaderView {
-    func configureMainView() {
-        contentView.backgroundColor = .listForeground(modal: false)
+    func configureMainView(backgroundColor: UIColor = .listForeground(modal: false)) {
+        self.backgroundColor = backgroundColor
+        contentView.backgroundColor = backgroundColor
+
+        var backgroundConfiguration = UIBackgroundConfiguration.listHeader()
+        backgroundConfiguration.backgroundColor = backgroundColor
+        self.backgroundConfiguration = backgroundConfiguration
     }
 
     func configureTitle() {

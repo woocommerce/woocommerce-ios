@@ -2,29 +2,38 @@ import SwiftUI
 import Yosemite
 import WooFoundation
 import NetworkingCore
-import Experiments
 
-/// Used in Last Order Dashboard card
-///
 struct LastOrderDashboardRow: View {
-    let viewModel: LastOrderDashboardRowViewModel
+    let data: RowData
+    let showDivider: Bool
+    let paddedRow: Bool
     let tapHandler: (() -> Void)
+
+    init(data: RowData,
+         showDivider: Bool = true,
+         paddedRow: Bool = false,
+         tapHandler: @escaping () -> Void) {
+        self.data = data
+        self.showDivider = showDivider
+        self.paddedRow = paddedRow
+        self.tapHandler = tapHandler
+    }
 
     var body: some View {
         Button {
             tapHandler()
         } label: {
-            VStack {
+            VStack(spacing: paddedRow ? 0 : nil) {
                 HStack {
                     VStack(alignment: .leading, spacing: Layout.spacing) {
                         HStack(spacing: Layout.spacing) {
-                            Text(viewModel.number)
+                            Text(data.number)
                                 .subheadlineStyle()
 
-                            Text(viewModel.date)
+                            Text(data.date)
                                 .subheadlineStyle()
                         }
-                        Text(viewModel.customerName)
+                        Text(data.customerName)
                             .bodyStyle()
                     }
 
@@ -32,26 +41,24 @@ struct LastOrderDashboardRow: View {
 
                     VStack(alignment: .trailing, spacing: Layout.spacing) {
                         HStack(spacing: Layout.badgeSpacing) {
-                            Text(viewModel.statusDescription)
+                            Text(data.statusDescription)
                                 .foregroundStyle(.black)
                                 .footnoteStyle()
                                 .padding(.horizontal, Layout.Status.hPadding)
                                 .padding(.vertical, Layout.Status.vPadding)
-                                .background(viewModel.statusBackgroundColor)
+                                .background(data.statusBackgroundColor)
                                 .cornerRadius(Layout.Status.cornerRadius)
-                                if let fulfillmentText = viewModel.fulfillmentBadgeText,
-                                   viewModel.isFulfillmentStatusRequired {
-                                    Text(fulfillmentText)
-                                        .foregroundStyle(.black)
-                                        .footnoteStyle()
-                                        .padding(.horizontal, Layout.Status.hPadding)
-                                        .padding(.vertical, Layout.Status.vPadding)
-                                        .background(viewModel.fulfillmentBadgeBackgroundColor)
-                                        .cornerRadius(Layout.Status.cornerRadius)
-                                }
-                            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.pointOfSaleOrdersi1),
-                               viewModel.isPOSOrder {
-                                Text(viewModel.salesChannelText)
+                            if let fulfillmentText = data.fulfillmentBadgeText {
+                                Text(fulfillmentText)
+                                    .foregroundStyle(.black)
+                                    .footnoteStyle()
+                                    .padding(.horizontal, Layout.Status.hPadding)
+                                    .padding(.vertical, Layout.Status.vPadding)
+                                    .background(data.fulfillmentBadgeBackgroundColor ?? .clear)
+                                    .cornerRadius(Layout.Status.cornerRadius)
+                            }
+                            if let salesChannelText = data.salesChannelText {
+                                Text(salesChannelText)
                                     .foregroundStyle(Color(uiColor: Layout.salesChannelLabelTextColor))
                                     .footnoteStyle()
                                     .padding(.horizontal, Layout.Status.hPadding)
@@ -61,16 +68,37 @@ struct LastOrderDashboardRow: View {
                             }
                         }
 
-                        Text(viewModel.total)
+                        Text(data.total)
                             .bodyStyle()
                     }
                 }
                 .padding(.horizontal, Layout.padding)
+                .padding(.vertical, paddedRow ? Layout.chatRowVerticalPadding : 0)
+                // Make the whole row width the tap target, not just the rendered text.
+                .frame(maxWidth: .infinity, alignment: .leading)
+                .contentShape(Rectangle())
 
-                Divider()
-                    .padding(.leading, Layout.padding)
+                if showDivider {
+                    Divider()
+                        .padding(.leading, Layout.padding)
+                }
             }
         }
+        .buttonStyle(.plain)
+    }
+}
+
+extension LastOrderDashboardRow {
+    struct RowData: Equatable {
+        let number: String
+        let date: String
+        let customerName: String
+        let total: String
+        let statusDescription: String
+        let statusBackgroundColor: Color
+        let fulfillmentBadgeText: String?
+        let fulfillmentBadgeBackgroundColor: Color?
+        let salesChannelText: String?
     }
 }
 
@@ -79,6 +107,7 @@ struct LastOrderDashboardRow: View {
 private extension LastOrderDashboardRow {
     enum Layout {
         static let padding: CGFloat = 16
+        static let chatRowVerticalPadding: CGFloat = 12
         static let spacing: CGFloat = 8
         static let badgeSpacing: CGFloat = 6
         static let salesChannelLabelBackgroundColor = UIColor.withColorStudio(.wooCommercePurple, shade: .shade10)
@@ -95,20 +124,29 @@ private extension LastOrderDashboardRow {
 struct LastOrderDashboardRowViewModel {
     private let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
     let order: Order
-    private let isCIAB: Bool
+    private let siteStatuses: [OrderStatus]
 
-    init(order: Order, isCIAB: Bool = false) {
+    init(order: Order, siteStatuses: [OrderStatus] = []) {
         self.order = order
-        self.isCIAB = isCIAB
+        self.siteStatuses = siteStatuses
+    }
+
+    var rowData: LastOrderDashboardRow.RowData {
+        LastOrderDashboardRow.RowData(
+            number: number,
+            date: date,
+            customerName: customerName,
+            total: total,
+            statusDescription: statusDescription,
+            statusBackgroundColor: statusBackgroundColor,
+            fulfillmentBadgeText: nil,
+            fulfillmentBadgeBackgroundColor: nil,
+            salesChannelText: isPOSOrder ? salesChannelText : nil
+        )
     }
 
     var isPOSOrder: Bool {
         order.salesChannel == .pointOfSale
-    }
-
-    var isFulfillmentStatusRequired: Bool {
-        /// isCIAB gating is pending a planned refactoring
-        isCIAB && order.fulfillmentStatus != .unknown
     }
 
     var salesChannelText: String {
@@ -127,7 +165,7 @@ struct LastOrderDashboardRowViewModel {
     }
 
     var statusDescription: String {
-        isCIAB ? CIABOrderStatusMapper.displayName(for: order.status) : order.status.description
+        siteStatuses.displayName(for: order.status)
     }
 
     /// The value will only include the year if the `createdDate` is not from the current year.
@@ -148,18 +186,7 @@ struct LastOrderDashboardRowViewModel {
     }
 
     var statusBackgroundColor: Color {
-        let displayStatus = isCIAB ? CIABOrderStatusMapper.displayStatus(for: order.status) : order.status
-        return Color(uiColor: displayStatus.backgroundColor)
-    }
-
-    /// Returns the fulfillment badge text for CIAB orders, or `nil` if the badge should not be shown.
-    var fulfillmentBadgeText: String? {
-        order.fulfillmentStatus.badgeText()
-    }
-
-    /// Background color for the fulfillment badge.
-    var fulfillmentBadgeBackgroundColor: Color {
-        order.fulfillmentStatus.badgeBackgroundSwiftUIColor
+        Color(uiColor: order.status.backgroundColor)
     }
 }
 

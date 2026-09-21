@@ -33,7 +33,6 @@ struct ItemToFulfillRow: View, Identifiable {
                     showingMoveItemDialog = true
                     ServiceLocator.analytics.track(.shippingLabelMoveItemTapped)
                 }
-
             }, label: {
                 Text(Localization.moveButton)
                     .font(.footnote)

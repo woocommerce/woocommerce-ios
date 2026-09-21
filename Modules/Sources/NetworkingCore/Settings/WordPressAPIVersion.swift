@@ -3,7 +3,7 @@ import Foundation
 
 /// Defines the supported WordPress API Versions.
 ///
-public enum WordPressAPIVersion: String, CaseIterable {
+public enum WordPressAPIVersion: String, CaseIterable, Sendable {
 
     /// WordPress.com Endpoint Mark 1.1
     ///

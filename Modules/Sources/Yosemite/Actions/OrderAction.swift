@@ -94,7 +94,12 @@ public enum OrderAction: Action {
 
     /// Updates the specified fields from an order.
     ///
-    case updateOrder(siteID: Int64, order: Order, giftCard: String?, fields: [OrderUpdateField], onCompletion: (Result<Order, Error>) -> Void)
+    case updateOrder(siteID: Int64,
+                     order: Order,
+                     giftCard: String?,
+                     fields: [OrderUpdateField],
+                     requestCurrency: String? = nil,
+                     onCompletion: (Result<Order, Error>) -> Void)
 
     /// Updates the specified fields from an order **optimistically**.
     ///
@@ -102,7 +107,12 @@ public enum OrderAction: Action {
 
     /// Creates a simple payments order with a specific amount value and  tax status.
     ///
-    case createSimplePaymentsOrder(siteID: Int64, status: OrderStatusEnum, amount: String, taxable: Bool, onCompletion: (Result<Order, Error>) -> Void)
+    case createSimplePaymentsOrder(siteID: Int64,
+                                   status: OrderStatusEnum,
+                                   amount: String,
+                                   taxable: Bool,
+                                   currency: String,
+                                   onCompletion: (Result<Order, Error>) -> Void)
 
     /// Creates a manual order with the provided order details.
     ///

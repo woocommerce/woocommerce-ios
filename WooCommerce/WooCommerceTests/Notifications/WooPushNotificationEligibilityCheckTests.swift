@@ -9,7 +9,7 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
 
     override func setUp() {
         super.setUp()
-        storesManager = MockStoresManager(sessionManager: .testingInstance)
+        storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         featureFlagService = MockFeatureFlagService()
     }
 
@@ -65,6 +65,8 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
             case let .isRemoteFeatureFlagEnabled(_, defaultValue, _, completion):
                 capturedDefaultValue = defaultValue
                 completion(defaultValue)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
 
@@ -88,6 +90,8 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
             case let .isRemoteFeatureFlagEnabled(featureFlag, _, _, completion):
                 capturedFeatureFlag = featureFlag
                 completion(false)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
 
@@ -111,6 +115,8 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
             case let .isRemoteFeatureFlagEnabled(_, _, useCache, completion):
                 capturedUseCache = useCache
                 completion(false)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
 
@@ -119,6 +125,22 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
 
         // Then
         XCTAssertEqual(capturedUseCache, true)
+    }
+
+    func test_checkEligibility_when_stores_are_not_authenticated_returns_false_without_dispatching_action() async {
+        // Given
+        storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        let checker = WooPushNotificationEligibilityCheck(
+            featureFlagService: featureFlagService,
+            stores: storesManager
+        )
+
+        // When
+        let result = await checker.checkEligibility()
+
+        // Then
+        XCTAssertFalse(result)
+        XCTAssertTrue(storesManager.receivedActions.isEmpty)
     }
 }
 
@@ -130,6 +152,8 @@ private extension WooPushNotificationEligibilityCheckTests {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 completion(isEnabled)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
             }
         }
     }

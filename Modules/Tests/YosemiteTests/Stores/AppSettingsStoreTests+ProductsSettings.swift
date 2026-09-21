@@ -56,7 +56,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
 
         // When
         let result: Result<StoredProductSettings.Setting, Error> = waitFor { promise in
-            let initialReadAction = AppSettingsAction.loadProductsSettings(siteID: siteID) { (result) in
+            let initialReadAction = AppSettingsAction.loadProductsSettings(siteID: siteID) { result in
                 promise(result)
             }
             self.subject.onAction(initialReadAction)
@@ -70,7 +70,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                                    productStatusFilter: productSettings.productStatusFilter,
                                                                    productTypeFilter: productSettings.productTypeFilter,
                                                                    productCategoryFilter: productSettings.productCategoryFilter,
-                                                                   favoriteProduct: productSettings.favoriteProduct) { (error) in
+                                                                   favoriteProduct: productSettings.favoriteProduct) { error in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction)
@@ -78,7 +78,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
 
         // Then
         let result2: Result<StoredProductSettings.Setting, Error> = waitFor { promise in
-            let readAction = AppSettingsAction.loadProductsSettings(siteID: siteID) { (result) in
+            let readAction = AppSettingsAction.loadProductsSettings(siteID: siteID) { result in
                 promise(result)
             }
             self.subject.onAction(readAction)
@@ -118,7 +118,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                                     productStatusFilter: productSettings1.productStatusFilter,
                                                                     productTypeFilter: productSettings1.productTypeFilter,
                                                                     productCategoryFilter: productSettings1.productCategoryFilter,
-                                                                    favoriteProduct: productSettings1.favoriteProduct) { (error) in
+                                                                    favoriteProduct: productSettings1.favoriteProduct) { error in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction1)
@@ -129,14 +129,14 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
                                                                     productStatusFilter: productSettings2.productStatusFilter,
                                                                     productTypeFilter: productSettings2.productTypeFilter,
                                                                     productCategoryFilter: productSettings2.productCategoryFilter,
-                                                                    favoriteProduct: productSettings2.favoriteProduct) { (error) in
+                                                                    favoriteProduct: productSettings2.favoriteProduct) { error in
             XCTAssertNil(error)
         }
         subject.onAction(writeAction2)
 
         // Then
         let result1: Result<StoredProductSettings.Setting, Error> = waitFor { promise in
-            let initialReadAction = AppSettingsAction.loadProductsSettings(siteID: siteID1) { (result) in
+            let initialReadAction = AppSettingsAction.loadProductsSettings(siteID: siteID1) { result in
                 promise(result)
             }
             self.subject.onAction(initialReadAction)
@@ -145,7 +145,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
         XCTAssertEqual(try result1.get(), productSettings1)
 
         let result2: Result<StoredProductSettings.Setting, Error> = waitFor { promise in
-            let readAction = AppSettingsAction.loadProductsSettings(siteID: siteID2) { (result) in
+            let readAction = AppSettingsAction.loadProductsSettings(siteID: siteID2) { result in
                 promise(result)
             }
             self.subject.onAction(readAction)

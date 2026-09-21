@@ -14,7 +14,7 @@ struct PaymentReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer {
     private let cardPresentPluginsDataProvider: CardPresentPluginsDataProviderProtocol
 
     private static var defaultDataProvider: CardPresentPluginsDataProviderProtocol {
-        let configurationLoader = CardPresentConfigurationLoader(stores: ServiceLocator.stores)
+        let configurationLoader = CardPresentConfigurationLoader()
         return CardPresentPluginsDataProvider(configurationLoader: configurationLoader)
     }
 

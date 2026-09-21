@@ -47,7 +47,12 @@ view_changes_checker.check
 
 pr_size_checker.check_diff_size(
   max_size: 300,
-  file_selector: ->(path) { !path.include?('Tests/') }
+  file_selector: ->(path) { !path.include?('Tests/') },
+  # Exclude blank lines and Swift comment lines from the size metric
+  line_selector: lambda { |line|
+    stripped = line.strip
+    !(stripped.empty? || stripped.start_with?('//', '/*', '*', '*/'))
+  }
 )
 
 # skip remaining checks if the PR is still a Draft

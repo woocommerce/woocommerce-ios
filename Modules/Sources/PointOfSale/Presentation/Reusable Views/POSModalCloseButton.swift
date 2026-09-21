@@ -3,29 +3,61 @@ import SwiftUI
 extension View {
     func posModalCloseButton(
         action: @escaping (() -> Void),
-        accessibilityLabel: String = POSModalCloseButton.Localization.defaultAccessibilityLabel) -> some View {
+        accessibilityLabel: String = POSModalCloseButton.Localization.defaultAccessibilityLabel,
+        accessibilityIdentifier: String? = nil,
+        fontStyle: POSFontStyle = .posButtonSymbolMedium,
+        foregroundColor: Color = .posOnSurface) -> some View {
         self.modifier(
             POSModalCloseButtonModifier(
                 closeAction: action,
-                accessibilityLabel: accessibilityLabel)
+                accessibilityLabel: accessibilityLabel,
+                accessibilityIdentifier: accessibilityIdentifier,
+                fontStyle: fontStyle,
+                foregroundColor: foregroundColor)
             )
     }
 }
 
 struct POSModalCloseButton: View {
     let accessibilityLabel: String
+    let accessibilityIdentifier: String?
+    let fontStyle: POSFontStyle
+    let foregroundColor: Color
     let closeAction: () -> Void
+
+    init(accessibilityLabel: String = Localization.defaultAccessibilityLabel,
+         accessibilityIdentifier: String? = nil,
+         fontStyle: POSFontStyle = .posButtonSymbolMedium,
+         foregroundColor: Color = .posOnSurface,
+         closeAction: @escaping () -> Void) {
+        self.accessibilityLabel = accessibilityLabel
+        self.accessibilityIdentifier = accessibilityIdentifier
+        self.fontStyle = fontStyle
+        self.foregroundColor = foregroundColor
+        self.closeAction = closeAction
+    }
 
     var body: some View {
         HStack {
             Spacer()
-            Button(action: closeAction, label: {
-                Text(Image(systemName: "xmark"))
-                    .font(.posButtonSymbolMedium)
-            })
-            .foregroundColor(Color.posOnSurface)
-            .accessibilityLabel(accessibilityLabel)
-            .accessibilitySortPriority(-1)
+            button
+        }
+    }
+
+    @ViewBuilder
+    private var button: some View {
+        let button = Button(action: closeAction, label: {
+            Text(Image(systemName: "xmark"))
+                .font(fontStyle)
+        })
+        .foregroundColor(foregroundColor)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilitySortPriority(-1)
+
+        if let accessibilityIdentifier {
+            button.accessibilityIdentifier(accessibilityIdentifier)
+        } else {
+            button
         }
     }
 }
@@ -33,10 +65,17 @@ struct POSModalCloseButton: View {
 struct POSModalCloseButtonModifier: ViewModifier {
     let closeAction: () -> Void
     let accessibilityLabel: String
+    let accessibilityIdentifier: String?
+    let fontStyle: POSFontStyle
+    let foregroundColor: Color
 
     func body(content: Content) -> some View {
         VStack(spacing: 0) {
-            POSModalCloseButton(accessibilityLabel: accessibilityLabel, closeAction: closeAction)
+            POSModalCloseButton(accessibilityLabel: accessibilityLabel,
+                                accessibilityIdentifier: accessibilityIdentifier,
+                                fontStyle: fontStyle,
+                                foregroundColor: foregroundColor,
+                                closeAction: closeAction)
 
             Spacer()
 

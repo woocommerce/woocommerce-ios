@@ -3,5 +3,4 @@ import CoreData
 
 @objc(SitePlugin)
 public class SitePlugin: NSManagedObject {
-
 }

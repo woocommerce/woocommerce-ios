@@ -78,6 +78,16 @@ struct PaymentMethodsView: View {
                                 sharingPaymentLink = true
                                 viewModel.trackCollectByPaymentLink()
                             }
+                            .shareView(isPresented: $sharingPaymentLink) {
+                                // If paymentLink is available it already contains a valid URL.
+                                // CompactMap is required due to Swift URL APIs.
+                                ShareSheet(activityItems: [viewModel.paymentLink].compactMap { $0 } ) { _, completed, _, _ in
+                                    if completed {
+                                        dismiss()
+                                        viewModel.performLinkSharedTasks()
+                                    }
+                                }
+                            }
                         }
 
                         if viewModel.showScanToPayRow {
@@ -118,16 +128,6 @@ struct PaymentMethodsView: View {
             ToolbarItem(placement: .confirmationAction) {
                 ProgressView()
                     .renderedIf(viewModel.showLoadingIndicator)
-            }
-        }
-        .shareSheet(isPresented: $sharingPaymentLink) {
-            // If paymentLink is available it already contains a valid URL.
-            // CompactMap is required due to Swift URL APIs.
-            ShareSheet(activityItems: [viewModel.paymentLink].compactMap { $0 } ) { _, completed, _, _ in
-                if completed {
-                    dismiss()
-                    viewModel.performLinkSharedTasks()
-                }
             }
         }
         .sheet(isPresented: $showingScanToPayView) {

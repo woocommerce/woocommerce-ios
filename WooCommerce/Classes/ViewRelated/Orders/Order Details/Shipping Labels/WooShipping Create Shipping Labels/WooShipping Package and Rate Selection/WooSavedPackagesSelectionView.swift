@@ -1,3 +1,4 @@
+import ParcelFittingCheck
 import SwiftUI
 
 enum WooShippingPackageSource {
@@ -87,6 +88,38 @@ struct WooShippingPackageData: WooShippingPackageDataRepresentable {
                   weight: weight,
                   source: source,
                   packageType: packageType)
+    }
+
+    static func from(_ result: ParcelFittingResult,
+                      carriers: [ParcelPresetCarrier]) -> WooShippingPackageData {
+        switch result {
+        case .carrierPackage(let package, _):
+            let carrier = carriers.first { $0.packages.contains { $0.id == package.id } }
+            let source: WooShippingPackageSource = carrier.map {
+                .predefined(sourceTitle: $0.name, sourceID: $0.id)
+            } ?? .custom
+            return WooShippingPackageData(
+                id: package.id,
+                name: package.name,
+                length: ParcelDimensions.formatValue(package.length),
+                width: ParcelDimensions.formatValue(package.width),
+                height: ParcelDimensions.formatValue(package.height),
+                weight: "",
+                source: source,
+                packageType: "box"
+            )
+        case .customDimensions(let dims):
+            return WooShippingPackageData(
+                id: "custom_box",
+                name: "",
+                length: ParcelDimensions.formatValue(dims.length),
+                width: ParcelDimensions.formatValue(dims.width),
+                height: ParcelDimensions.formatValue(dims.height),
+                weight: "",
+                source: .custom,
+                packageType: "box"
+            )
+        }
     }
 }
 

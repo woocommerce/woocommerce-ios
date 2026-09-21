@@ -23,6 +23,10 @@ enum SettingsUpdateSource {
 protocol SelectedSiteSettingsProtocol {
     var settingsStream: AnyPublisher<(siteID: Int64, settings: [SiteSetting], source: SettingsUpdateSource), Never> { get }
     var siteSettings: [SiteSetting] { get }
+
+    /// `true` when the store currency isn't available from synced site settings, so currency formatting
+    /// is falling back to defaults (USD). See WOOMOB-3897.
+    var isUsingFallbackCurrency: Bool { get }
     func refresh()
 }
 
@@ -47,6 +51,10 @@ final class SelectedSiteSettings: NSObject, SelectedSiteSettingsProtocol {
 
     public private(set) var siteSettings: [Yosemite.SiteSetting] = []
 
+    var isUsingFallbackCurrency: Bool {
+        !siteSettings.contains { $0.settingID == CurrencySettings.Constants.currencyCodeKey }
+    }
+
     init(stores: StoresManager = ServiceLocator.stores, storageManager: StorageManagerType = ServiceLocator.storageManager) {
         self.stores = stores
         self.storageManager = storageManager
@@ -69,7 +77,7 @@ extension SelectedSiteSettings {
     /// Setup: ResultsController
     ///
     private func configureResultsController() {
-        resultsController.onDidChangeObject = { [weak self] (object, indexPath, type, newIndexPath) in
+        resultsController.onDidChangeObject = { [weak self] object, _, _, _ in
             guard let self else { return }
             ServiceLocator.currencySettings.updateCurrencyOptions(with: object)
             self.siteSettings = self.resultsController.fetchedObjects
@@ -104,49 +112,5 @@ extension SelectedSiteSettings {
 
         // Needed to correcly format the widget data.
         UserDefaults.group?[.defaultStoreCurrencySettings] = try? JSONEncoder().encode(ServiceLocator.currencySettings)
-    }
-}
-
-extension CurrencySettings {
-    /// Convenience Initializer:
-    /// This is the preferred way to create an instance with the settings coming from the site.
-    ///
-    convenience init(siteSettings: [Yosemite.SiteSetting]) {
-        self.init()
-
-        siteSettings.forEach { updateCurrencyOptions(with: $0) }
-    }
-
-    func updateCurrencyOptions(with siteSetting: Yosemite.SiteSetting) {
-        let value = siteSetting.value
-
-        switch siteSetting.settingID {
-        case Constants.currencyCodeKey:
-            if let currencyCode = CurrencyCode(rawValue: value) {
-                self.currencyCode = currencyCode
-            }
-        case Constants.currencyPositionKey:
-            if let currencyPosition = CurrencyPosition(rawValue: value) {
-                self.currencyPosition = currencyPosition
-            }
-        case Constants.thousandSeparatorKey:
-            self.groupingSeparator = value
-        case Constants.decimalSeparatorKey:
-            self.decimalSeparator = value
-        case Constants.numberOfDecimalsKey:
-            if let numberOfDecimals = Int(value) {
-                self.fractionDigits = numberOfDecimals
-            }
-        default:
-            break
-        }
-    }
-
-    enum Constants {
-        static let currencyCodeKey = "woocommerce_currency"
-        static let currencyPositionKey = "woocommerce_currency_pos"
-        static let thousandSeparatorKey = "woocommerce_price_thousand_sep"
-        static let decimalSeparatorKey = "woocommerce_price_decimal_sep"
-        static let numberOfDecimalsKey = "woocommerce_price_num_decimals"
     }
 }

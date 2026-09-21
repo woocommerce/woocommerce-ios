@@ -55,8 +55,8 @@ public final class SingleOrderScreen: ScreenObject {
         XCTAssertTrue(app.otherElements.containing(orderTotalPredicate).element.exists)
 
         // Check name on order summary
-        orderDetailTableView.assertElement(matching: "summary-table-view-cell",
-                                           existsOnCellWithIdentifier: "\(order.billing.first_name) \(order.billing.last_name)")
+        orderDetailTableView.assertStaticText(withLabel: "\(order.billing.first_name) \(order.billing.last_name)",
+                                              existsOnCellWithIdentifier: "summary-table-view-cell")
 
         // Check product(s) on order
         for product in order.line_items {

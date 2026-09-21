@@ -4,6 +4,7 @@ import Photos
 import XCTest
 import Yosemite
 
+@MainActor
 final class ProductImagesSaverTests: XCTestCase {
     private let siteID: Int64 = 134
     private let productID: Int64 = 606
@@ -264,7 +265,7 @@ final class ProductImagesSaverTests: XCTestCase {
         // When
         waitFor { promise in
             // Saves product images.
-            imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: actionHandler) { result in
+            imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: actionHandler) { _ in
                 promise(())
             }
         }
@@ -293,7 +294,7 @@ final class ProductImagesSaverTests: XCTestCase {
         // When
         waitFor { promise in
             // Saves product images.
-            imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: actionHandler) { result in
+            imagesSaver.saveProductImagesWhenNoneIsPendingUploadAnymore(imageActionHandler: actionHandler) { _ in
                 promise(())
             }
         }
@@ -308,7 +309,7 @@ final class ProductImagesSaverTests: XCTestCase {
 private extension ProductImagesSaverTests {
     func waitForImageStatusesUpdate(actionHandler: ProductImageActionHandler) {
         waitFor { promise in
-            actionHandler.addUpdateObserver(self) { statuses in
+            actionHandler.addUpdateObserver(self) { _ in
                 promise(())
             }
         }

@@ -1,4 +1,6 @@
 import Foundation
+import UIKit
+import Yosemite
 import class Networking.UserAgent
 import struct NetworkingCore.WordPressAPIDiscovery
 import protocol NetworkingCore.URLSessionProtocol
@@ -73,6 +75,11 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
     ///
     @Published var cards: [PreLoginCheckCard] = []
 
+    /// Whether the chat button should be shown.
+    /// True when bot chat is supported and all tests have completed.
+    ///
+    @Published private(set) var showChatButton = false
+
     /// The site URL being tested.
     ///
     let siteURL: URL
@@ -124,6 +131,7 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
         cards = []
         restAPIRootURL = nil
         restAPIRootJSON = nil
+        showChatButton = false
 
         for testCase in ConnectivityTest.allCases {
             let cardIndex = cards.count
@@ -137,6 +145,9 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
 
             trackResponseEvent(for: testCase, success: state.isSuccess, timeTaken: timeTaken)
         }
+
+        // Show the support chat button after all tests complete
+        showChatButton = true
     }
 
     /// Generates a text description of test results for support attachment.
@@ -150,6 +161,24 @@ final class PreLoginConnectivityToolViewModel: ObservableObject {
         guard !logs.isEmpty else { return nil }
         let header = "# Connectivity Diagnosis Report\n**Site:** \(siteURL.absoluteString)"
         return header + "\n\n" + logs.joined(separator: "\n\n")
+    }
+
+    /// Creates a SupportChatViewModel with the current troubleshooting context.
+    ///
+    func makeSupportChatViewModel(onContactHumanSupport: @escaping SupportChatViewModel.ContactHumanSupportCallback) -> SupportChatViewModel {
+        var context: RequestParameterDictionary = [:]
+
+        if let troubleshootingDescription = troubleshootingDescription() {
+            context["troubleshootingResults"] = .string(troubleshootingDescription)
+        }
+
+        context["site_url"] = .string(siteURL.absoluteString)
+
+        return SupportChatViewModel(
+            entryPoint: .preLogin,
+            initialContext: context,
+            onContactHumanSupport: onContactHumanSupport
+        )
     }
 }
 

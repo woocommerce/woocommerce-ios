@@ -20,12 +20,27 @@ final class TracksProviderThreadSafetyTests: XCTestCase {
                 allDone.fulfill()
             }
             DispatchQueue.global().async {
-                provider.refreshUserData()
-                allDone.fulfill()
+                provider.refreshUserData {
+                    allDone.fulfill()
+                }
             }
         }
 
         // Then — reaching here without EXC_BAD_ACCESS or NSGenericException means the fix works
         wait(for: [allDone], timeout: 30.0)
+    }
+
+    func test_refreshUserData_calls_completion_after_queued_refresh() {
+        // Given
+        let provider = TracksProvider()
+        let refreshCompleted = expectation(description: "Refresh completed")
+
+        // When
+        provider.refreshUserData {
+            refreshCompleted.fulfill()
+        }
+
+        // Then
+        wait(for: [refreshCompleted], timeout: 5.0)
     }
 }

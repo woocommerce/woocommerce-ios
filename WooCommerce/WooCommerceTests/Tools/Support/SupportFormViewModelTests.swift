@@ -7,7 +7,8 @@ final class SupportFormViewModelTests: XCTestCase {
 
     func test_submit_button_is_disabled_when_area_and_subject_and_description_are_empty() {
         // Given
-        let viewModel = SupportFormViewModel(areas: Self.sampleAreas())
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
 
         // When
         viewModel.area = nil
@@ -21,7 +22,8 @@ final class SupportFormViewModelTests: XCTestCase {
 
     func test_submit_button_is_disabled_when_area_is_empty_and_subject_is_not_empty_and_description_is_empty() {
         // Given
-        let viewModel = SupportFormViewModel(areas: Self.sampleAreas())
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
 
         // When
         viewModel.area = nil
@@ -35,7 +37,8 @@ final class SupportFormViewModelTests: XCTestCase {
 
     func test_submit_button_is_disabled_when_area_is_empty_and_subject_is_empty_and_description_is_not_empty() {
         // Given
-        let viewModel = SupportFormViewModel(areas: Self.sampleAreas())
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
 
         // When
         viewModel.area = nil
@@ -49,7 +52,8 @@ final class SupportFormViewModelTests: XCTestCase {
 
     func test_submit_button_is_disabled_when_site_address_is_empty() {
         // Given
-        let viewModel = SupportFormViewModel(areas: Self.sampleAreas())
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
 
         // When
         viewModel.area = viewModel.areas.first
@@ -63,7 +67,8 @@ final class SupportFormViewModelTests: XCTestCase {
 
     func test_submit_button_is_enabled_when_all_fields_are_not_empty() {
         // Given
-        let viewModel = SupportFormViewModel(areas: Self.sampleAreas())
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
 
         // When
         viewModel.area = viewModel.areas.first
@@ -75,24 +80,48 @@ final class SupportFormViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.submitButtonDisabled)
     }
 
-    func test_source_tag_is_properly_sent_when_creating_a_request() {
+    func test_source_tag_is_properly_sent_when_creating_a_request() async {
         // Given
         let sourceTag = "custom-tag"
         let zendesk = MockZendeskManager()
-        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(), sourceTag: sourceTag, zendeskProvider: zendesk)
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             sourceTag: sourceTag,
+                                             zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
         viewModel.area = viewModel.areas.first
 
         // When
-        viewModel.submitSupportRequest()
+        await viewModel.submitSupportRequest()
 
         // Then
         XCTAssertTrue(zendesk.latestInvokedTags.contains(sourceTag))
     }
 
+    func test_additional_tags_are_sent_after_the_area_and_source_tags_when_creating_a_request() async {
+        // Given
+        let sourceTag = "origin:custom"
+        let additionalTags = ["rest_invalid_signature", "another_tag"]
+        let zendesk = MockZendeskManager()
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             sourceTag: sourceTag,
+                                             additionalTags: additionalTags,
+                                             zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
+        viewModel.area = viewModel.areas.first
+
+        // When
+        await viewModel.submitSupportRequest()
+
+        // Then
+        let expectedTags = (viewModel.area?.datasource.tags ?? []) + [sourceTag] + additionalTags
+        XCTAssertEqual(zendesk.latestInvokedTags, expectedTags)
+    }
+
     func test_shouldShowIdentityInput_is_true_when_triggering_onViewAppear_no_existing_identity() {
         // Given
         let zendesk = MockZendeskManager()
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
 
         // When
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: false)
@@ -107,7 +136,8 @@ final class SupportFormViewModelTests: XCTestCase {
     func test_shouldShowIdentityInput_is_false_when_triggering_onViewAppear_with_existing_identity() {
         // Given
         let zendesk = MockZendeskManager()
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
 
         // When
         zendesk.mockIdentity(name: "Test", email: "test@example.com", haveUserIdentity: true)
@@ -120,7 +150,8 @@ final class SupportFormViewModelTests: XCTestCase {
     func test_submitIdentityInfo_sets_shouldShowErrorAlert_to_true_when_fails() async {
         // Given
         let zendesk = MockZendeskManager()
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
 
         // When
         zendesk.whenCreateIdentity(thenReturn: .failure(NSError(domain: "Test", code: 500)))
@@ -130,52 +161,51 @@ final class SupportFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowErrorAlert)
     }
 
-    func test_submitSupportRequest_sets_shouldShowSuccessAlert_to_true_when_succeeds() {
+    func test_submitSupportRequest_sets_shouldShowSuccessAlert_to_true_when_succeeds() async {
         // Given
         let zendesk = MockZendeskManager()
         let area = SupportFormViewModel.Area(title: "Area 1", datasource: MockDataSource())
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
         XCTAssertFalse(viewModel.shouldShowSuccessAlert)
 
         // When
         zendesk.whenCreateSupportRequest(thenReturn: .success(()))
         viewModel.selectArea(area)
-        viewModel.submitSupportRequest()
+        await viewModel.submitSupportRequest()
 
         // Then
-        waitUntil {
-            viewModel.shouldShowSuccessAlert == true
-        }
+        XCTAssertTrue(viewModel.shouldShowSuccessAlert)
     }
 
-    func test_submitSupportRequest_sets_shouldShowErrorAlert_to_true_when_fails() {
+    func test_submitSupportRequest_sets_shouldShowErrorAlert_to_true_when_fails() async {
         // Given
         let zendesk = MockZendeskManager()
         let area = SupportFormViewModel.Area(title: "Area 1", datasource: MockDataSource())
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
         XCTAssertFalse(viewModel.shouldShowErrorAlert)
 
         // When
         zendesk.whenCreateSupportRequest(thenReturn: .failure(NSError(domain: "Test", code: 500)))
         viewModel.selectArea(area)
-        viewModel.submitSupportRequest()
+        await viewModel.submitSupportRequest()
 
         // Then
-        waitUntil {
-            viewModel.shouldShowErrorAlert == true
-        }
+        XCTAssertTrue(viewModel.shouldShowErrorAlert)
     }
 
-    func test_site_address_is_sent_when_submitting_request() {
+    func test_site_address_is_sent_when_submitting_request() async {
         // Given
         let zendesk = MockZendeskManager()
         let area = SupportFormViewModel.Area(title: "Area 1", datasource: MockDataSource())
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk)
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider())
 
         // When
         viewModel.selectArea(area)
         viewModel.siteAddress = "site-address"
-        viewModel.submitSupportRequest()
+        await viewModel.submitSupportRequest()
 
         // Then
         XCTAssertTrue(zendesk.latestInvokedCustomFields.values.contains("site-address"))
@@ -185,13 +215,98 @@ final class SupportFormViewModelTests: XCTestCase {
         // Given
         let zendesk = MockZendeskManager()
         let defaultSite = Site.fake().copy(url: "site-address")
-        let viewModel = SupportFormViewModel(zendeskProvider: zendesk, defaultSite: defaultSite)
+        let viewModel = SupportFormViewModel(zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider(),
+                                             defaultSite: defaultSite)
 
         // When
         viewModel.onViewAppear()
 
         // Then
         XCTAssertEqual(viewModel.siteAddress, defaultSite.url)
+    }
+
+    func test_transcript_context_does_not_enable_submit_when_editable_message_is_empty() {
+        // Given
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider(),
+                                             transcript: "Formatted transcript")
+
+        // When
+        viewModel.area = viewModel.areas.first
+        viewModel.subject = "Subject"
+        viewModel.siteAddress = "site-address"
+        viewModel.description = ""
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowTranscriptDisclosure)
+        XCTAssertTrue(viewModel.submitButtonDisabled)
+    }
+
+    func test_submitSupportRequest_appends_immutable_transcript_after_user_message() async {
+        // Given
+        let zendesk = MockZendeskManager()
+        let transcript = "Transcript header\n\nTest transcript"
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider(),
+                                             transcript: transcript)
+        viewModel.area = viewModel.areas.first
+        viewModel.subject = "Subject"
+        viewModel.siteAddress = "site-address"
+        viewModel.description = "Additional details"
+
+        // When
+        await viewModel.submitSupportRequest()
+
+        // Then
+        XCTAssertEqual(zendesk.latestSupportRequest?.description, "Additional details\n\n\(transcript)")
+        XCTAssertEqual(zendesk.latestSupportRequest?.description.components(separatedBy: "Test transcript").count, 2)
+    }
+
+    func test_submitSupportRequest_when_transcript_is_whitespace_then_does_not_add_disclosure_or_transcript_separator() async {
+        // Given
+        let zendesk = MockZendeskManager()
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             zendeskProvider: zendesk,
+                                             mobileStatusReportProvider: MockMobileStatusReportProvider(),
+                                             transcript: " \n ")
+        viewModel.area = viewModel.areas.first
+        viewModel.description = "Additional details"
+
+        // When
+        await viewModel.submitSupportRequest()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowTranscriptDisclosure)
+        XCTAssertEqual(zendesk.latestSupportRequest?.description, "Additional details")
+    }
+
+    func test_submitSupportRequest_includes_diagnostic_and_application_log_attachments() async {
+        // Given
+        let zendesk = MockZendeskManager()
+        let diagnostic = ZendeskAttachment(data: Data("Diagnostic".utf8),
+                                           filename: "connectivitytest_log.txt",
+                                           contentType: "text/plain")
+        let attachmentProvider = DefaultSupportRequestAttachmentProvider(
+            applicationLogProvider: MockApplicationLogProvider(logs: "Application log")
+        )
+        let reportProvider = MockMobileStatusReportProvider()
+        let viewModel = SupportFormViewModel(areas: Self.sampleAreas(),
+                                             zendeskProvider: zendesk,
+                                             attachmentProvider: attachmentProvider,
+                                             mobileStatusReportProvider: reportProvider,
+                                             attachments: [diagnostic])
+        viewModel.area = viewModel.areas.first
+
+        // When
+        await viewModel.submitSupportRequest()
+
+        // Then
+        XCTAssertEqual(zendesk.latestSupportRequest?.attachments.map(\.filename),
+                       ["connectivitytest_log.txt", "application_log.txt", "mobile_status_report.txt"])
+        XCTAssertEqual(zendesk.latestSupportRequest?.customFields[MobileStatusReportZendesk.customFieldID],
+                       reportProvider.report)
     }
 }
 

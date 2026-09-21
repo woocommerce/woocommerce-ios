@@ -251,7 +251,7 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         self.blazeEligibilityChecker = blazeEligibilityChecker
         self.favoriteProductsUseCase = favoriteProductsUseCase ?? DefaultFavoriteProductsUseCase(siteID: product.siteID)
 
-        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] allStatuses in
+        self.cancellable = productImageActionHandler.addUpdateObserver(self) { [weak self] _ in
             guard let self else { return }
             self.isUpdateEnabledSubject.send(self.hasUnsavedChanges())
         }
@@ -262,10 +262,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         updateBlazeEligibility()
     }
 
-    deinit {
-        cancellable?.cancel()
-    }
-
     func hasUnsavedChanges() -> Bool {
         let hasProductChangesExcludingImages = product.product.copy(images: []) != originalProduct.product.copy(images: [])
         let hasImageChanges = productImagesUploader
@@ -274,6 +270,29 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
                                                   isLocalID: !product.existsRemotely),
                                        originalImages: originalProduct.images)
         return hasProductChangesExcludingImages || hasImageChanges || password != originalPassword || isNewTemplateProduct()
+    }
+
+    /// Re-fetches the product from the server so the detail screen reflects remote changes (e.g. new reviews or
+    /// an updated price) made since it was cached. The fresh product is only applied when there are no unsaved
+    /// local edits, so an in-progress edit is never clobbered.
+    func refreshProduct() {
+        guard originalProduct.product.existsRemotely else {
+            return
+        }
+        let productID = originalProduct.productID
+        let siteID = originalProduct.siteID
+        Task { @MainActor [weak self] in
+            guard let self else { return }
+            do {
+                let refreshedProduct = try await self.remoteActionUseCase.retrieveProduct(id: productID, siteID: siteID)
+                guard !self.hasUnsavedChanges() else {
+                    return
+                }
+                self.originalProduct = EditableProductModel(product: refreshedProduct)
+            } catch {
+                DDLogError("⛔️ Error refreshing product on product detail: \(error)")
+            }
+        }
     }
 }
 
@@ -325,7 +344,7 @@ extension ProductFormViewModel {
     }
 
     func canDuplicateProduct() -> Bool {
-        formType == .edit
+        formType == .edit && originalProduct.product.existsRemotely
     }
 }
 
@@ -542,7 +561,7 @@ extension ProductFormViewModel {
         }()
         let subscription = product.subscription?.copy(trialLength: trialLength,
                                                       trialPeriod: trialPeriod,
-                                                      oneTimeShipping: oneTimeShipping ?? nil)
+                                                      oneTimeShipping: oneTimeShipping)
         product = EditableProductModel(product: product.product.copy(subscription: subscription))
     }
 
@@ -624,17 +643,29 @@ extension ProductFormViewModel {
         }
     }
 
-    func duplicateProduct(onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+    func productDuplicationSnapshot() -> ProductDuplicationSnapshot<ProductModel>? {
+        guard canDuplicateProduct() else {
+            return nil
+        }
+        return ProductDuplicationSnapshot(product: originalProduct, password: originalPassword)
+    }
 
-        remoteActionUseCase.duplicateProduct(originalProduct: product,
-                                             password: password) { [weak self] result in
-            guard let self else { return }
+    func duplicateProduct(from snapshot: ProductDuplicationSnapshot<ProductModel>,
+                          onCompletion: @escaping (Result<ProductModel, ProductUpdateError>) -> Void) {
+        guard formType == .edit, snapshot.product.product.existsRemotely else {
+            return
+        }
+
+        remoteActionUseCase.duplicateProduct(originalProduct: snapshot.product,
+                                             password: snapshot.password) { [weak self] result in
+            guard self != nil else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
             case .success(let data):
-                self.resetProduct(data.product)
-                self.resetPassword(data.password)
+                // Do not reset this form's baseline to the duplicate. This form still represents the original
+                // product; rebinding `originalProduct`/`originalPassword` to the duplicate corrupts change
+                // tracking and can leak the duplicate's images into the original via the shared image action handler.
                 onCompletion(.success(data.product))
             }
         }
@@ -661,7 +692,6 @@ private extension ProductFormViewModel {
         let hasProductChanges = productModelToSave.product.copy(images: []) != originalProduct.product.copy(images: [])
         let hasUploadedImageChanges = productModelToSave.images.map(\.imageID) != originalProduct.images.map(\.imageID)
         return hasProductChanges || hasUploadedImageChanges || password != originalPassword || isNewTemplateProduct()
-
     }
 
     func replaceProductID(productIDBeforeSave: Int64) {
@@ -717,8 +747,7 @@ extension ProductFormViewModel {
         let hasLinkedProducts = product.upsellIDs.isNotEmpty || product.crossSellIDs.isNotEmpty
         let hasMinMaxQuantityRules = product.canEditQuantityRules
         analytics.track(event: .ProductDetail.loaded(hasLinkedProducts: hasLinkedProducts,
-                                                                      hasMinMaxQuantityRules: hasMinMaxQuantityRules,
-                                                                      horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+                                                     hasMinMaxQuantityRules: hasMinMaxQuantityRules))
     }
 }
 
@@ -842,7 +871,6 @@ private extension ProductFormViewModel {
     func configureResultsController() {
         blazeCampaignResultsController.onDidChangeContent = { [weak self] in
             self?.updateBlazeCampaignResult()
-
         }
         blazeCampaignResultsController.onDidResetContent = { [weak self] in
             self?.updateBlazeCampaignResult()
@@ -880,7 +908,6 @@ private extension ProductFormViewModel {
 // MARK: Favorite
 //
 extension ProductFormViewModel {
-    @MainActor
     func isFavorite() async -> Bool {
         await favoriteProductsUseCase.isFavorite(productID: product.productID)
     }

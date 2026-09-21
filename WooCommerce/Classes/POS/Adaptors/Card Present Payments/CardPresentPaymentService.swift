@@ -114,6 +114,7 @@ final class CardPresentPaymentService: CardPresentPaymentFacade {
                     let connectedReader = CardPresentPaymentCardReader(name: cardReader.name ?? cardReader.id,
                                                                        batteryLevel: cardReader.batteryLevel,
                                                                        softwareVersion: cardReader.softwareVersion)
+                    self.readerConnectionStatusSubject.send(.connected(connectedReader))
                     self.paymentEventSubject.send(.show(eventDetails: .connectionSuccess(done: { [weak self] in
                         self?.paymentEventSubject.send(.idle)
                     })))

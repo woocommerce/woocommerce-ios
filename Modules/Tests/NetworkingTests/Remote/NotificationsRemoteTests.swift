@@ -52,7 +52,7 @@ final class NotificationsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-hashes")
 
-        remote.loadHashes { (notes, error) in
+        remote.loadHashes { notes, error in
             XCTAssertNotNil(notes)
             XCTAssertNil(error)
             XCTAssertEqual(notes?.count, 40)
@@ -71,7 +71,7 @@ final class NotificationsRemoteTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "notifications", filename: "generic_error")
 
-        remote.loadHashes { (notes, error) in
+        remote.loadHashes { notes, error in
             XCTAssertNotNil(error)
             XCTAssertNil(notes)
 

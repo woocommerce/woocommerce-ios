@@ -2,10 +2,17 @@ import SwiftUI
 
 struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var modalParentSize: CGSize = UIScreen.main.bounds.size
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
+
+    /// On phone we standardize the modal experience: every posModal renders as a full-screen
+    /// take-over rather than a centered card, matching the rest of the phone-prototype UI.
+    private var isFullScreen: Bool {
+        modalManager.isFullScreen || horizontalSizeClass == .compact
+    }
 
     func body(content: Content) -> some View {
         content
@@ -26,16 +33,24 @@ struct POSRootModalViewModifier: ViewModifier {
                         }
                     // Don't scale/fade in the backdrop
                         .animation(nil, value: modalManager.isPresented)
+                    // Phone full-screen: paint the bright surface as a sibling above the dim
+                    // backdrop so the screen reads as a single solid take-over, with no
+                    // backdrop showing through above the status bar.
+                    if isFullScreen {
+                        Color.posSurfaceBright
+                            .edgesIgnoringSafeArea(.all)
+                            .animation(nil, value: modalManager.isPresented)
+                    }
                     ZStack {
                         modalManager.getContent()
                             .environment(\.posModalParentSize, modalParentSize)
                             .environment(\.posModalDismissAction, { modalManager.dismiss() })
-                            .background(Color.posSurfaceBright)
-                            .cornerRadius(modalManager.isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
-                            .posShadow(modalManager.isFullScreen ? .none : .large,
-                                       cornerRadius: modalManager.isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
-                            .padding(modalManager.isFullScreen ? POSPadding.none : POSPadding.medium)
-                            .ignoresSafeArea(.container, edges: modalManager.isFullScreen ? .all : [])
+                            .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
+                            .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
+                            .posShadow(isFullScreen ? .none : .large,
+                                       cornerRadius: isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
+                            .padding(isFullScreen ? POSPadding.none : POSPadding.medium)
+                            .ignoresSafeArea(.container, edges: isFullScreen ? [.horizontal, .bottom] : [])
                     }
                     .zIndex(1)
                     // Scale the modal container in and out, fading appropriately.
@@ -145,7 +160,7 @@ extension View {
     /// - Parameters:
     ///   - isPresented: Binding to control when the modal is shown.
     ///   - content: Content to show – note this will not update in response to changes outside the scope of the view builder
-    /// - Returns: a modified view which can show the modal content specifed, when applicable.
+    /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<ModalContent: View>(isPresented: Binding<Bool>,
                                       onDismiss: (() -> Void)? = nil,
                                       @ViewBuilder content: @escaping () -> ModalContent) -> some View {
@@ -165,7 +180,7 @@ extension View {
     /// - Parameters:
     ///   - item: Binding to control when the modal is shown. When non-nil, the item is used to build the content.
     ///   - content: Content to show
-    /// - Returns: a modified view which can show the modal content specifed, when applicable.
+    /// - Returns: a modified view which can show the modal content specified, when applicable.
     func posModal<Item: Identifiable & Equatable, ModalContent: View>(
         item: Binding<Item?>,
         onDismiss: (() -> Void)? = nil,

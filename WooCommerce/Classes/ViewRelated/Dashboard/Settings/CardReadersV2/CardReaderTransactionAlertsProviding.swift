@@ -56,4 +56,14 @@ protocol CardReaderTransactionAlertsProviding<AlertDetails> {
     /// An alert to notify the merchant that the transaction was cancelled using a button on the reader
     ///
     func cancelledOnReader() -> AlertDetails?
+
+    /// An alert confirming that an app-initiated cancellation completed after native Tap to Pay UI was shown.
+    ///
+    func paymentCancellationConfirmation(onDismiss: @escaping () -> Void) -> AlertDetails?
+}
+
+extension CardReaderTransactionAlertsProviding {
+    func paymentCancellationConfirmation(onDismiss: @escaping () -> Void) -> AlertDetails? {
+        nil
+    }
 }

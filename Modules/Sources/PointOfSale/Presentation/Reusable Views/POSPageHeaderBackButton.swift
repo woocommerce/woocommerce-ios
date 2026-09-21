@@ -22,6 +22,7 @@ struct POSPageHeaderBackButton: View {
                 .padding(.horizontal, backButtonPadding)
         }
         .disabled(configuration.state == .disabled || configuration.state == .shimmering)
+        .accessibilityIdentifier(configuration.accessibilityIdentifier ?? Constants.defaultAccessibilityIdentifier)
         .if(configuration.state == .shimmering) { view in
             view.shimmering()
         }
@@ -31,5 +32,6 @@ struct POSPageHeaderBackButton: View {
 private extension POSPageHeaderBackButton {
     enum Constants {
         static let defaultBackButtonIcon = "chevron.backward"
+        static let defaultAccessibilityIdentifier = "pos-header-back-button"
     }
 }

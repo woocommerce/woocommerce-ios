@@ -6,10 +6,12 @@ final class MockURLSession: URLSessionProtocol {
     var errors: [String: Error] = [:]
 
     private(set) var lastRequest: URLRequest?
+    private(set) var receivedRequests: [URLRequest] = []
     private(set) var requestCount = 0
 
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
         lastRequest = request
+        receivedRequests.append(request)
         requestCount += 1
 
         let key = request.url?.absoluteString ?? ""

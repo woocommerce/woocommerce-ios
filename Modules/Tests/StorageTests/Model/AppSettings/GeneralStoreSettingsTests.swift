@@ -7,7 +7,9 @@ final class GeneralStoreSettingsTests: XCTestCase {
             isTelemetryAvailable: true,
             telemetryLastReportedTime: .init(),
             areSimplePaymentTaxesEnabled: true,
-            preferredInPersonPaymentGateway: "woocommerce-payments")
+            preferredInPersonPaymentGateway: "woocommerce-payments",
+            requiresHTTPSConfigurationUpdate: true,
+            lastHTTPSConfigurationWarningDismissedDate: .init(timeIntervalSince1970: 123))
         let encoded = try JSONEncoder().encode(expected)
         let decoded = try JSONDecoder().decode(GeneralStoreSettings.self, from: encoded)
         XCTAssertEqual(expected, decoded)

@@ -1,5 +1,4 @@
 import SwiftUI
-import WooFoundation
 
 struct PointOfSaleCardPresentPaymentConnectingLocationPreAlertView: View {
     let viewModel: PointOfSaleCardPresentPaymentConnectingLocationPreAlertViewModel
@@ -11,7 +10,7 @@ struct PointOfSaleCardPresentPaymentConnectingLocationPreAlertView: View {
             Spacer()
 
             VStack(spacing: PointOfSaleReaderConnectionModalLayout.imageTextSpacing) {
-                SharedImageAsset.location.decorativeImage
+                PointOfSaleAssets.location.decorativeImage
                     .matchedGeometryEffect(id: animation.iconTransitionId, in: animation.namespace, properties: .position)
 
                 VStack(spacing: PointOfSaleReaderConnectionModalLayout.textSpacing) {

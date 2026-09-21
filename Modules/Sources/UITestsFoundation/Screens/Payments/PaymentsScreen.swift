@@ -19,7 +19,7 @@ public final class PaymentsScreen: ScreenObject {
     }
 
     private let learnMoreButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.textViews["Learn more about In‑Person Payments"].firstMatch
+        $0.staticTexts["Learn more about In‑Person Payments"].firstMatch
     }
 
     private let IPPDocumentationHeaderTextGetter: (XCUIApplication) -> XCUIElement = {

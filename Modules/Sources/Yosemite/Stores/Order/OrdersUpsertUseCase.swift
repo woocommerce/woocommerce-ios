@@ -19,13 +19,23 @@ struct OrdersUpsertUseCase {
 
     /// Updates or inserts the given `Networking.Order` objects.
     ///
-    /// - Parameter insertingSearchResults: Indicates if the "Newly Inserted Entities" should be
-    ///                                     marked as "Search Results Only".
+    /// - Parameters:
+    ///     - insertingSearchResults: Indicates if the "Newly Inserted Entities" should be
+    ///                               marked as "Search Results Only".
+    ///     - includingMetadataDerivedFields: Indicates if the orders were fetched with the `meta_data` field.
+    ///                                       Pass `false` for orders from list/search fetches, which omit `meta_data`
+    ///                                       to reduce response size — previously stored metadata-derived values
+    ///                                       (custom fields, attribution info, charge ID, fulfillment status,
+    ///                                       renewal subscription ID) are then preserved instead of overwritten.
     ///
     @discardableResult
-    func upsert(_ readOnlyOrders: [Networking.Order], insertingSearchResults: Bool = false) -> [Storage.Order] {
+    func upsert(_ readOnlyOrders: [Networking.Order],
+                insertingSearchResults: Bool = false,
+                includingMetadataDerivedFields: Bool = true) -> [Storage.Order] {
         let storageOrders = readOnlyOrders.map { readOnlyOrder in
-            upsert(readOnlyOrder, insertingSearchResults: insertingSearchResults)
+            upsert(readOnlyOrder,
+                   insertingSearchResults: insertingSearchResults,
+                   includingMetadataDerivedFields: includingMetadataDerivedFields)
         }
 
         do {
@@ -45,10 +55,16 @@ struct OrdersUpsertUseCase {
         return storageOrders
     }
 
-    private func upsert(_ readOnlyOrder: Networking.Order, insertingSearchResults: Bool = false) -> Storage.Order {
+    private func upsert(_ readOnlyOrder: Networking.Order,
+                        insertingSearchResults: Bool = false,
+                        includingMetadataDerivedFields: Bool = true) -> Storage.Order {
         let storageOrder = storage.loadOrder(siteID: readOnlyOrder.siteID, orderID: readOnlyOrder.orderID)
             ?? storage.insertNewObject(ofType: Storage.Order.self)
-        storageOrder.update(with: readOnlyOrder)
+        if includingMetadataDerivedFields {
+            storageOrder.update(with: readOnlyOrder)
+        } else {
+            updatePreservingMetadataDerivedAttributes(storageOrder, with: readOnlyOrder)
+        }
 
         // Are we caching Search Results? Did this order exist before?
         storageOrder.exclusiveForSearch = insertingSearchResults && (storageOrder.isInserted || storageOrder.exclusiveForSearch)
@@ -59,11 +75,28 @@ struct OrdersUpsertUseCase {
         handleOrderShippingLines(readOnlyOrder, storageOrder, storage)
         handleOrderRefundsCondensed(readOnlyOrder, storageOrder, storage)
         handleOrderTaxes(readOnlyOrder, storageOrder, storage)
-        handleOrderCustomFields(readOnlyOrder, storageOrder, storage)
+        if includingMetadataDerivedFields {
+            handleOrderCustomFields(readOnlyOrder, storageOrder, storage)
+        }
         handleOrderGiftCards(readOnlyOrder, storageOrder, storage)
-        handleOrderAttributionInfo(readOnlyOrder, storageOrder, storage)
+        if includingMetadataDerivedFields {
+            handleOrderAttributionInfo(readOnlyOrder, storageOrder, storage)
+        }
 
         return storageOrder
+    }
+
+    /// Updates the storage order while keeping the scalar attributes that are derived from order metadata,
+    /// for orders fetched without the `meta_data` field (their decoded metadata-derived values are always empty).
+    ///
+    private func updatePreservingMetadataDerivedAttributes(_ storageOrder: Storage.Order, with readOnlyOrder: Networking.Order) {
+        let chargeID = storageOrder.chargeID
+        let fulfillmentStatusKey = storageOrder.fulfillmentStatusKey
+        let renewalSubscriptionID = storageOrder.renewalSubscriptionID
+        storageOrder.update(with: readOnlyOrder)
+        storageOrder.chargeID = chargeID
+        storageOrder.fulfillmentStatusKey = fulfillmentStatusKey
+        storageOrder.renewalSubscriptionID = renewalSubscriptionID
     }
 
     /// Updates, inserts, or prunes the provided StorageOrder's items using the provided read-only Order's items
@@ -90,7 +123,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageOrder.items but not in readOnlyOrder.items
         storageOrder.orderItemsArray.forEach { storageItem in
-            if readOnlyOrder.items.first(where: { $0.itemID == storageItem.itemID } ) == nil {
+            if !readOnlyOrder.items.contains(where: { $0.itemID == storageItem.itemID }) {
                 storageOrder.removeFromItems(storageItem)
                 storage.deleteObject(storageItem)
             }
@@ -150,7 +183,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageOrderItem.taxes but not in readOnlyOrderItem.taxes
         storageItem.taxes?.forEach { storageTax in
-            if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+            if !readOnlyItem.taxes.contains(where: { $0.taxID == storageTax.taxID }) {
                 storageItem.removeFromTaxes(storageTax)
                 storage.deleteObject(storageTax)
             }
@@ -173,7 +206,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageOrder.coupons but not in readOnlyOrder.coupons
         storageOrder.coupons?.forEach { storageCoupon in
-            if readOnlyOrder.coupons.first(where: { $0.couponID == storageCoupon.couponID } ) == nil {
+            if !readOnlyOrder.coupons.contains(where: { $0.couponID == storageCoupon.couponID }) {
                 storageOrder.removeFromCoupons(storageCoupon)
                 storage.deleteObject(storageCoupon)
             }
@@ -196,7 +229,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageOrder.fees but not in readOnlyOrder.fees
         storageOrder.fees?.forEach { storageFee in
-            if readOnlyOrder.fees.first(where: { $0.feeID == storageFee.feeID } ) == nil {
+            if !readOnlyOrder.fees.contains(where: { $0.feeID == storageFee.feeID }) {
                 storageOrder.removeFromFees(storageFee)
                 storage.deleteObject(storageFee)
             }
@@ -219,7 +252,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageOrder.OrderRefundCondensed but not in readOnlyOrder.OrderRefundCondensed
         storageOrder.refunds?.forEach { storageRefunds in
-            if readOnlyOrder.refunds.first(where: { $0.refundID == storageRefunds.refundID } ) == nil {
+            if !readOnlyOrder.refunds.contains(where: { $0.refundID == storageRefunds.refundID }) {
                 storageOrder.removeFromRefunds(storageRefunds)
                 storage.deleteObject(storageRefunds)
             }
@@ -244,7 +277,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageOrder.shippingLines but not in readOnlyOrder.shippingLines
         storageOrder.shippingLines?.forEach { storageShippingLine in
-            if readOnlyOrder.shippingLines.first(where: { $0.shippingID == storageShippingLine.shippingID } ) == nil {
+            if !readOnlyOrder.shippingLines.contains(where: { $0.shippingID == storageShippingLine.shippingID }) {
                 storageOrder.removeFromShippingLines(storageShippingLine)
                 storage.deleteObject(storageShippingLine)
             }
@@ -268,7 +301,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in storageItem.taxes but not in readOnlyItem.taxes
         storageItem.taxes?.forEach { storageTax in
-            if readOnlyItem.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+            if !readOnlyItem.taxes.contains(where: { $0.taxID == storageTax.taxID }) {
                 storageItem.removeFromTaxes(storageTax)
                 storage.deleteObject(storageTax)
             }
@@ -291,7 +324,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in `storageOrder.taxes` but not in `readOnlyOrder.taxes`
         storageOrder.taxes?.forEach { storageTax in
-            if readOnlyOrder.taxes.first(where: { $0.taxID == storageTax.taxID } ) == nil {
+            if !readOnlyOrder.taxes.contains(where: { $0.taxID == storageTax.taxID }) {
                 storageOrder.removeFromTaxes(storageTax)
                 storage.deleteObject(storageTax)
             }
@@ -315,7 +348,7 @@ struct OrdersUpsertUseCase {
 
         // Now, remove any objects that exist in `storageOrder.customFields` but not in `readOnlyOrder.customFields`
         storageOrder.customFields?.forEach { storageCustomField in
-            if readOnlyOrder.customFields.first(where: { $0.metadataID == storageCustomField.metadataID } ) == nil {
+            if !readOnlyOrder.customFields.contains(where: { $0.metadataID == storageCustomField.metadataID }) {
                 storageOrder.removeFromCustomFields(storageCustomField)
                 storage.deleteObject(storageCustomField)
             }

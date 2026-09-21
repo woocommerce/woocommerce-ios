@@ -17,7 +17,7 @@ struct ManualProductTypeOptions: View {
 
         self.supportedProductCategories = BottomSheetProductCategory.allCases.filter { category in
             // Only show a product category if at least one of its product types can be found in `supportedProductTypes`
-            category.productTypes.first { supportedProductTypes.contains($0) } != nil
+            category.productTypes.contains { supportedProductTypes.contains($0) }
         }
     }
 

@@ -6,6 +6,7 @@ import Yosemite
 /// Default implementation of the ReviewsDataSource, dequeues and
 /// populates cells to render the Product Review list
 ///
+@MainActor
 final class ReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     // MARK: - Private properties
@@ -190,13 +191,13 @@ private extension ReviewsDataSource {
     private func product(id productID: Int64) -> Product? {
         let products = productsResultsController.fetchedObjects
 
-        return products.filter { $0.productID == productID }.first
+        return products.first(where: { $0.productID == productID })
     }
 
     private func notification(id reviewID: Int64) -> Note? {
         let notifications = notificationsResultsController.fetchedObjects
 
-        return notifications.filter { $0.meta.identifier(forKey: .comment) == Int(reviewID) }.first
+        return notifications.first(where: { $0.meta.identifier(forKey: .comment) == Int(reviewID) })
     }
 }
 

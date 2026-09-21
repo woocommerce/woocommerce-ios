@@ -4,50 +4,45 @@ import XCTest
 @testable import Yosemite
 
 final class ProductReviewsViewModelTests: XCTestCase {
-    private var mockDataSource: ReviewsDataSourceProtocol!
-    private var viewModel: ProductReviewsViewModel!
     private let productID: Int64 = 12345
 
-    override func setUp() {
-        super.setUp()
-        mockDataSource = MockProductReviewsDataSource()
-        viewModel = ProductReviewsViewModel(siteID: 2, data: mockDataSource)
-    }
-
-    override func tearDown() {
-        viewModel = nil
-        mockDataSource = nil
-        super.tearDown()
-    }
-
+    @MainActor
     func test_dataSource_returns_injected_ProductReviewsDataSource() {
+        let (viewModel, _) = makeSUT()
         let dataSource = viewModel.dataSource
         XCTAssertNotNil(dataSource as? MockProductReviewsDataSource)
     }
 
+    @MainActor
     func test_delegate_returns_injected_ProductReviewsDelegate() {
+        let (viewModel, _) = makeSUT()
         let delegate = viewModel.delegate
         XCTAssertNotNil(delegate as? MockProductReviewsDataSource)
     }
 
+    @MainActor
     func test_isEmpty_returns_the_same_as_the_dataSource() {
+        let (viewModel, mockDataSource) = makeSUT()
         XCTAssertEqual(viewModel.isEmpty, mockDataSource.isEmpty)
     }
 
+    @MainActor
     func test_configure_resultsController_starts_forwarding_events_and_starts_observing_reviews_in_dataSource() {
+        let (viewModel, mockDataSource) = makeSUT()
         let table = UITableView()
-        let ds = mockDataSource as! MockProductReviewsDataSource
 
         viewModel.configureResultsController(tableView: table)
 
-        XCTAssertTrue(ds.startForwardingEventsWasHit && ds.startObservingWasHit)
+        XCTAssertTrue(mockDataSource.startForwardingEventsWasHit && mockDataSource.startObservingWasHit)
     }
 
+    @MainActor
     func test_sync_data_hits_expected_reviews_and_products_actions() {
+        let (viewModel, _) = makeSUT()
         let storesManager = MockProductReviewsStoresManager()
         ServiceLocator.setStores(storesManager)
 
-        waitForExpectation { (expectation) in
+        waitForExpectation { expectation in
             viewModel.synchronizeReviews(pageNumber: 1, pageSize: 25, productID: productID) {
                 if storesManager.syncReviewsIsHit {
                     XCTAssertTrue(storesManager.syncReviewsIsHit)
@@ -60,9 +55,19 @@ final class ProductReviewsViewModelTests: XCTestCase {
     }
 }
 
+private extension ProductReviewsViewModelTests {
+    @MainActor
+    func makeSUT() -> (viewModel: ProductReviewsViewModel, mockDataSource: MockProductReviewsDataSource) {
+        let mockDataSource = MockProductReviewsDataSource()
+        let viewModel = ProductReviewsViewModel(siteID: 2, data: mockDataSource)
+        return (viewModel, mockDataSource)
+    }
+}
+
 
 // MARK: - Mocks
 
+@MainActor
 final class MockProductReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     private lazy var reviews: [ProductReview] = {
@@ -117,7 +122,6 @@ final class MockProductReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
                    with syncingCoordinator: SyncingCoordinator) {}
 
     func refreshDataObservers() {}
-
 }
 
 final class MockProductReviewsStoresManager: DefaultStoresManager {

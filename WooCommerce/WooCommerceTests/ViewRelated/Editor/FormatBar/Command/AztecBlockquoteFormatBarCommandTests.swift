@@ -38,5 +38,4 @@ final class AztecBlockquoteFormatBarCommandTests: XCTestCase {
                              formatBar: formatBar)
         XCTAssertEqual(editorView.getHTML(), originalHTML)
     }
-
 }

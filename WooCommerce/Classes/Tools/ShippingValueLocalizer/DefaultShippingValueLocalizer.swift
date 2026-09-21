@@ -59,7 +59,7 @@ private extension DefaultShippingValueLocalizer {
     ///     - from: The current `Locale` of the input string.
     ///     - to: The `Locale` to be used for localizing the input string.
     ///
-    /// - Returns: The input string localized to the target locale. Returns `nil` if the localization is unsucessful.
+    /// - Returns: The input string localized to the target locale. Returns `nil` if the localization is unsuccessful.
     ///
     func localizedString(using string: String,
                                 from sourceLocale: Locale,

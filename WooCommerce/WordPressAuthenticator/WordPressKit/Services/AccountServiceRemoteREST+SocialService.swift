@@ -34,12 +34,12 @@ extension AccountServiceRemoteREST {
         ] as [String: AnyObject]
 
         if let connectParameters {
-            params.merge(connectParameters, uniquingKeysWith: { (current, _) in current })
+            params.merge(connectParameters, uniquingKeysWith: { current, _ in current })
         }
 
-        wordPressComRESTAPI.post(path, parameters: params, success: { (_, _) in
+        wordPressComRESTAPI.post(path, parameters: params, success: { _, _ in
             success()
-        }, failure: { (error, _) in
+        }, failure: { error, _ in
             failure(error)
         })
     }
@@ -50,7 +50,7 @@ extension AccountServiceRemoteREST {
     ///     - email Email from Apple account.
     ///     - fullName User's full name from Apple account.
     /// - Returns: Dictionary with endpoint parameters, to be used when connecting to social service.
-    static public func appleSignInParameters(email: String, fullName: String) -> [String: AnyObject] {
+    public static func appleSignInParameters(email: String, fullName: String) -> [String: AnyObject] {
         return [
             "user_email": email as AnyObject,
             "user_name": fullName as AnyObject
@@ -73,9 +73,9 @@ extension AccountServiceRemoteREST {
             "service": service.rawValue
         ] as [String: AnyObject]
 
-        wordPressComRESTAPI.post(path, parameters: params, success: { (_, _) in
+        wordPressComRESTAPI.post(path, parameters: params, success: { _, _ in
             success()
-        }, failure: { (error, _) in
+        }, failure: { error, _ in
             failure(error)
         })
     }

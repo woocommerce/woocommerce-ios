@@ -22,6 +22,5 @@ extension CreateOrderAppIntent {
     enum Localization {
         // Here to be added to Localizable.strings so it can be looked up by the `LocalizedStringResource` above
         static let title = NSLocalizedString("Create order", comment: "Title for the Create Order iOS Shortcut")
-
     }
 }

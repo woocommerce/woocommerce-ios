@@ -168,8 +168,8 @@ struct CouponRestrictions: View {
                                         categoryListConfig: categoryListConfig,
                                         viewModel: viewModel.categorySelectorViewModel)
             }
-            LazyNavigationLink(destination: CouponAllowedEmails(viewModel: viewModel.allowedEmailsViewModel), isActive: $showingAllowedEmails) {
-                EmptyView()
+            .navigationDestination(isPresented: $showingAllowedEmails) {
+                CouponAllowedEmails(viewModel: viewModel.allowedEmailsViewModel)
             }
         }
         .navigationTitle(Localization.usageRestriction)

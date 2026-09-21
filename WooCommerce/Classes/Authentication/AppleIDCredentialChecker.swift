@@ -73,7 +73,7 @@ private extension AppleIDCredentialChecker {
         }
 
         // Get the Apple User ID state. If not authorized, log out the account.
-        authenticator.getAppleIDCredentialState(for: appleUserID) { [weak self] (state, error) in
+        authenticator.getAppleIDCredentialState(for: appleUserID) { [weak self] state, error in
             DDLogDebug("checkAppleIDCredentialState: Apple ID state: \(state.rawValue)")
 
             switch state {

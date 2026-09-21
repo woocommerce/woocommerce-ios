@@ -4,81 +4,51 @@ import enum WooFoundation.CurrencyCode
 
 /// Validator for POS country and currency support.
 ///
-/// Single source of truth for the supported country/currency pairings. The 13 expansion
-/// countries (RSM-637) are accepted only when the supplied
-/// ``CardPresentPaymentsCountryExpansionEligibilityServiceProtocol`` reports the site as
-/// eligible. US/PR/GB are always supported.
+/// Single source of truth for the supported country/currency pairings.
 public enum POSCountryCurrencyValidator {
     /// Supported countries for POS feature.
-    /// Always includes US, PR, and GB. The 13 expansion countries are added when the supplied
-    /// eligibility service reports the site as eligible.
-    public static func supportedCountries(
-        siteID: Int64,
-        eligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
-    ) -> [CountryCode] {
-        var countries: [CountryCode] = [.US, .PR, .GB]
-        if eligibilityService.isEligible(siteID: siteID) {
-            countries.append(contentsOf: expansionCountries)
-        }
-        return countries
+    public static var supportedCountries: [CountryCode] {
+        [.US, .PR, .GB, .CA, .FI, .IE, .LU, .NL, .SG, .NZ, .AU]
     }
 
     /// Supported currencies per country for POS feature.
-    /// Always includes US/USD, PR/USD, and GB/GBP. Expansion entries are added when the supplied
-    /// eligibility service reports the site as eligible.
-    public static func supportedCurrencies(
-        siteID: Int64,
-        eligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
-    ) -> [CountryCode: [CurrencyCode]] {
-        var map: [CountryCode: [CurrencyCode]] = [
+    public static var supportedCurrencies: [CountryCode: [CurrencyCode]] {
+        [
             .US: [.USD],
             .PR: [.USD],
-            .GB: [.GBP]
+            .GB: [.GBP],
+            .CA: [.CAD],
+            .FI: [.EUR],
+            .IE: [.EUR],
+            .LU: [.EUR],
+            .NL: [.EUR],
+            .SG: [.SGD],
+            .NZ: [.NZD],
+            .AU: [.AUD]
         ]
-        if eligibilityService.isEligible(siteID: siteID) {
-            for country in eeaEuroCountries {
-                map[country] = [.EUR]
-            }
-            map[.SG] = [.SGD]
-            map[.NZ] = [.NZD]
-        }
-        return map
     }
 
     /// Validates if a country and currency combination is eligible for POS.
     /// - Parameters:
     ///   - countryCode: The store's country code.
     ///   - currencyCode: The store's currency code.
-    ///   - siteID: The site ID, used to look up per-site expansion eligibility.
-    ///   - eligibilityService: The cached expansion eligibility for this site.
     /// - Returns: Eligibility state with reason if ineligible.
     public static func validate(
         countryCode: CountryCode,
-        currencyCode: CurrencyCode,
-        siteID: Int64,
-        eligibilityService: CardPresentPaymentsCountryExpansionEligibilityServiceProtocol
+        currencyCode: CurrencyCode
     ) -> ValidationResult {
-        let supportedCountries = self.supportedCountries(siteID: siteID, eligibilityService: eligibilityService)
         // Check country first
         guard supportedCountries.contains(countryCode) else {
             return .ineligible(reason: .unsupportedCountry(supportedCountries: supportedCountries))
         }
 
         // Check currency for the country
-        let supportedCurrenciesForCountry = supportedCurrencies(siteID: siteID, eligibilityService: eligibilityService)[countryCode] ?? []
+        let supportedCurrenciesForCountry = supportedCurrencies[countryCode] ?? []
         guard supportedCurrenciesForCountry.contains(currencyCode) else {
             return .ineligible(reason: .unsupportedCurrency(countryCode: countryCode, supportedCurrencies: supportedCurrenciesForCountry))
         }
 
         return .eligible
-    }
-
-    private static let eeaEuroCountries: [CountryCode] = [
-        .AT, .BE, .FI, .FR, .DE, .IE, .IT, .LU, .NL, .PT, .ES
-    ]
-
-    private static var expansionCountries: [CountryCode] {
-        eeaEuroCountries + [.SG, .NZ]
     }
 }
 

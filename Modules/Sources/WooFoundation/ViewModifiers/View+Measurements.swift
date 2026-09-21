@@ -48,10 +48,10 @@ public extension View {
                     .onAppear {
                         callback(proxy.frame(in: .global))
                     }
-                    .onChange(of: proxy.size.height) { _, newHeight in
+                    .onChange(of: proxy.size.height) { _, _ in
                         callback(proxy.frame(in: .global))
                     }
-                    .onChange(of: proxy.frame(in: .global)) { _, newHeight in
+                    .onChange(of: proxy.frame(in: .global)) { _, _ in
                         callback(proxy.frame(in: .global))
                     }
             }

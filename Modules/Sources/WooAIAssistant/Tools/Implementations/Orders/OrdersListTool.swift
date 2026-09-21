@@ -13,9 +13,11 @@ public enum OrdersListTool {
         description: """
         List orders, optionally filtered by status, date range, or customer. \
         Use to find specific orders, list pending fulfilment, or pull the most \
-        recent N. For aggregate sales numbers prefer analytics_orders / \
-        analytics_revenue. For prose questions about a specific order's \
-        payment method, customer email, etc., call orders_get with the ID. \
+        recent N. For latest/last single-order questions, use per_page=1, \
+        orderby=date, order=desc, then pass the result to `show_cards`. \
+        For aggregate sales numbers prefer analytics_orders. For prose \
+        questions about a specific order's payment method, customer email, \
+        etc., call orders_get with the ID. \
         After calling, pass results to `show_cards` to render rather than \
         re-fetching each order with orders_get. If a search returns no \
         matches, do not retry with synonyms or broader terms - say no match \
@@ -47,11 +49,11 @@ public enum OrdersListTool {
                 ]),
                 "after": .object([
                     "type": .string("string"),
-                    "description": .string("ISO-8601 lower bound on date_modified.")
+                    "description": .string("YYYY-MM-DD lower bound on date_created.")
                 ]),
                 "before": .object([
                     "type": .string("string"),
-                    "description": .string("ISO-8601 upper bound on date_modified.")
+                    "description": .string("YYYY-MM-DD upper bound on date_created.")
                 ]),
                 "orderby": .object([
                     "type": .string("string"),
@@ -95,7 +97,7 @@ public enum OrdersListTool {
         }
     }
 
-    private static func query(from args: Args) -> [String: String] {
+    private static func query(from args: Args) -> RESTToolDispatch.DecodedArguments<[String: String]> {
         var query: [String: String] = [
             "orderby": args.orderby ?? "date",
             "order": args.order ?? "desc",
@@ -109,21 +111,52 @@ public enum OrdersListTool {
         if let include = args.include, !include.isEmpty {
             query["include"] = include.map(String.init).joined(separator: ",")
         }
-        if let after = args.after { query["after"] = after }
-        if let before = args.before { query["before"] = before }
+        // The model passes bare YYYY-MM-DD per the prompt's `# Today` anchors; the
+        // orders endpoint rejects those, so pad to inclusive ISO-8601 day boundaries.
+        if let after = args.after {
+            guard let lower = RESTDateBounds.lowerBound(after) else {
+                return .failure(.init(toolName: name,
+                                      kind: .invalidToolCall,
+                                      reason: "after must be YYYY-MM-DD"))
+            }
+            query["after"] = lower
+        }
+        if let before = args.before {
+            guard let upper = RESTDateBounds.upperBound(before) else {
+                return .failure(.init(toolName: name,
+                                      kind: .invalidToolCall,
+                                      reason: "before must be YYYY-MM-DD"))
+            }
+            query["before"] = upper
+        }
         if let page = args.page, page > 1 { query["page"] = String(page) }
-        return query
+        return .success(query)
     }
 
+    private static let allowedArguments: Set<String> = [
+        "status", "search", "customer", "include", "after", "before",
+        "orderby", "order", "page", "per_page"
+    ]
+
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
         case .failure(let failed): return .failed(failed)
         }
+        let resolvedQuery: [String: String]
+        switch query(from: args) {
+        case .success(let value): resolvedQuery = value
+        case .failure(let failed): return .failed(failed)
+        }
         let response = await client.request(method: "GET",
                                             path: "wc/v3/orders",
-                                            query: query(from: args),
+                                            query: resolvedQuery,
                                             body: nil)
         guard HTTPStatusClassification.isSuccess(response.statusCode) else {
             return .failed(RESTToolDispatch.failed(from: response, toolName: name))

@@ -13,14 +13,18 @@ struct HubMenu: View {
     /// Set from the hosting controller to open Google Ads campaigns.
     var googleAdsCampaignHandler: () -> Void = {}
 
+    var httpsConfigurationHelpHandler: () -> Void = {}
+
     @ObservedObject private var iO = Inject.observer
 
     @ObservedObject private var viewModel: HubMenuViewModel
 
-    @State private var safariSheetURL: URL?
+    @ObservedObject private var httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel
 
-    init(viewModel: HubMenuViewModel) {
+    init(viewModel: HubMenuViewModel,
+         httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel) {
         self.viewModel = viewModel
+        self.httpsConfigurationWarningViewModel = httpsConfigurationWarningViewModel
     }
 
     var body: some View {
@@ -28,6 +32,14 @@ struct HubMenu: View {
             /// TODO: switch to `navigationDestination(item:destination)`
             /// when we drop support for iOS 16.
             menuList
+                .safeAreaInset(edge: .top, spacing: 0) {
+                    if httpsConfigurationWarningViewModel.isVisible {
+                        HTTPSConfigurationWarningBanner(
+                            onAction: httpsConfigurationHelpHandler,
+                            onDismiss: httpsConfigurationWarningViewModel.dismiss
+                        )
+                    }
+                }
                 .navigationDestination(for: HubMenuNavigationDestination.self) { destination in
                     detailView(destination: destination)
                 }
@@ -45,14 +57,6 @@ struct HubMenu: View {
         switch menu.id {
         case HubMenuViewModel.GoogleAds.id:
             googleAdsCampaignHandler()
-        case HubMenuViewModel.WoocommerceAdmin.id:
-            // On CIAB sites, open WC Admin in a Safari sheet instead of the in-app webview.
-            // The in-app webview hides the Admin navigation sidebar, which breaks WC Admin
-            // navigation on CIAB sites where the full admin experience is expected.
-            if viewModel.isCIABSite() {
-                safariSheetURL = viewModel.woocommerceAdminURL
-                return
-            }
         case HubMenuViewModel.Settings.id:
             ServiceLocator.analytics.track(.hubMenuSettingsTapped)
         case HubMenuViewModel.Blaze.id:
@@ -107,7 +111,6 @@ private extension HubMenu {
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
         .accentColor(Color(.listSelectedBackground))
-        .safariSheet(url: $safariSheetURL)
     }
 
     @ViewBuilder
@@ -132,14 +135,15 @@ private extension HubMenu {
             switch destination {
             case .settings:
                 ViewControllerContainer(SettingsViewController())
+                    // SwiftUI would otherwise size the representable to the safe area, hard-clipping
+                    // the list above the iOS 26 floating tab bar.
+                    .ignoresSafeArea(.container, edges: .bottom)
                     .navigationTitle(HubMenuViewModel.Localization.settings)
             case .payments:
                 paymentsView
             case .blaze:
                 BlazeCampaignListHostingControllerRepresentable(siteID: viewModel.siteID)
             case .wooCommerceAdmin:
-                // Note: On CIAB sites, WC Admin is opened in a Safari sheet instead (see handleTap).
-                // This in-app webview path is only used for non-CIAB sites.
                 webView(url: viewModel.woocommerceAdminURL,
                         title: HubMenuViewModel.Localization.woocommerceAdmin,
                         shouldAuthenticate: viewModel.shouldAuthenticateAdminPage)
@@ -396,17 +400,21 @@ private extension HubMenu {
 
 struct HubMenu_Previews: PreviewProvider {
     static var previews: some View {
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()),
+                httpsConfigurationWarningViewModel: .init())
             .environment(\.colorScheme, .light)
 
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()),
+                httpsConfigurationWarningViewModel: .init())
             .environment(\.colorScheme, .dark)
 
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()),
+                httpsConfigurationWarningViewModel: .init())
             .previewLayout(.fixed(width: 312, height: 528))
             .environment(\.sizeCategory, .accessibilityExtraExtraExtraLarge)
 
-        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()))
+        HubMenu(viewModel: .init(siteID: 123, tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker()),
+                httpsConfigurationWarningViewModel: .init())
             .previewLayout(.fixed(width: 1024, height: 768))
     }
 }

@@ -343,6 +343,69 @@ class CurrencyFormatterTests: XCTestCase {
         XCTAssertEqual(expectedResult, actualResult)
     }
 
+    func test_formatCurrency_when_locale_is_ltr_and_currency_symbol_is_rtl_then_keeps_negative_amount_ltr() {
+        // Given
+        let currencyPosition = CurrencySettings.CurrencyPosition.right
+        let currencyCode = CurrencyCode.QAR
+        let amount = "1,234.56"
+        let symbol = sampleCurrencySettings.symbol(from: currencyCode)
+        let rightToLeftMark = "\u{200F}"
+        let leftToRightIsolate = "\u{2066}"
+        let popDirectionalIsolate = "\u{2069}"
+
+        // When
+        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings)
+            .formatCurrency(using: amount,
+                            currencyPosition: currencyPosition,
+                            currencySymbol: symbol,
+                            isNegative: true,
+                            locale: Locale(identifier: "en_GB"))
+
+        // Then
+        XCTAssertEqual("\(rightToLeftMark)\(leftToRightIsolate)-1,234.56\(popDirectionalIsolate)\(symbol)", actualResult)
+    }
+
+    func test_formatCurrency_when_locale_is_rtl_and_currency_symbol_is_ltr_then_keeps_negative_amount_ltr() {
+        // Given
+        let currencyPosition = CurrencySettings.CurrencyPosition.right
+        let currencyCode = CurrencyCode.USD
+        let amount = "1,234.56"
+        let symbol = sampleCurrencySettings.symbol(from: currencyCode)
+        let leftToRightMark = "\u{200E}"
+
+        // When
+        let actualResult = CurrencyFormatter(currencySettings: sampleCurrencySettings)
+            .formatCurrency(using: amount,
+                            currencyPosition: currencyPosition,
+                            currencySymbol: symbol,
+                            isNegative: true,
+                            locale: Locale(identifier: "ar"))
+
+        // Then
+        XCTAssertEqual("\(leftToRightMark)-1,234.56\(symbol)", actualResult)
+    }
+
+    func test_formatAmount_when_locale_is_arabic_then_keeps_store_currency_position() {
+        // Given
+        let settings = CurrencySettings(currencyCode: .QAR,
+                                        currencyPosition: .rightSpace,
+                                        thousandSeparator: ",",
+                                        decimalSeparator: ".",
+                                        numberOfDecimals: 2)
+        let formatter = CurrencyFormatter(currencySettings: settings)
+        let rightToLeftMark = "\u{200F}"
+        let leftToRightIsolate = "\u{2066}"
+        let popDirectionalIsolate = "\u{2069}"
+
+        // When
+        let actualResult = formatter.formatAmount(NSDecimalNumber(string: "1234.56"),
+                                                  locale: Locale(identifier: "ar"),
+                                                  isNegative: true)
+
+        // Then
+        XCTAssertEqual("\(rightToLeftMark)\(leftToRightIsolate)-1,234.56\(popDirectionalIsolate) \(settings.currencySymbol)", actualResult)
+    }
+
     // MARK: - Human readable formatter tests
 
 
@@ -502,6 +565,80 @@ class CurrencyFormatterTests: XCTestCase {
 
         let amount = CurrencyFormatter(currencySettings: sampleCurrencySettings).formatAmount(inputValue, with: "USD", locale: locale)
         XCTAssertEqual(amount, expectedResult)
+    }
+
+    // MARK: - Currency code annotation for non-default currencies
+
+    func test_formatAmount_annotating_when_currency_matches_store_default_then_does_not_append_code() {
+        // Given
+        let usdStore = CurrencySettings() // defaults to USD
+        let formatter = CurrencyFormatter(currencySettings: usdStore)
+
+        // When
+        let formatted = formatter.formatAmount("10.00", with: "USD", annotatingNonDefaultCurrencyCode: true, locale: sampleLocale)
+
+        // Then
+        XCTAssertEqual(formatted, "$10.00")
+    }
+
+    func test_formatAmount_annotating_when_currency_differs_from_store_default_then_appends_code() {
+        // Given
+        let usdStore = CurrencySettings() // defaults to USD
+        let formatter = CurrencyFormatter(currencySettings: usdStore)
+
+        // When
+        let formatted = formatter.formatAmount("10.00", with: "CAD", annotatingNonDefaultCurrencyCode: true, locale: sampleLocale)
+
+        // Then — same "$" symbol, disambiguated with the ISO code
+        XCTAssertEqual(formatted, "$10.00\u{00a0}CAD")
+    }
+
+    func test_formatAmount_annotating_when_currency_code_is_lowercased_then_matches_and_appends_uppercased_code() {
+        // Given
+        let usdStore = CurrencySettings() // defaults to USD
+        let formatter = CurrencyFormatter(currencySettings: usdStore)
+
+        // When
+        let formatted = formatter.formatAmount("10.00", with: "cad", annotatingNonDefaultCurrencyCode: true, locale: sampleLocale)
+
+        // Then
+        XCTAssertEqual(formatted, "$10.00\u{00a0}CAD")
+    }
+
+    func test_formatAmount_annotating_when_annotation_is_disabled_then_does_not_append_code() {
+        // Given
+        let usdStore = CurrencySettings() // defaults to USD
+        let formatter = CurrencyFormatter(currencySettings: usdStore)
+
+        // When
+        let formatted = formatter.formatAmount("10.00", with: "CAD", annotatingNonDefaultCurrencyCode: false, locale: sampleLocale)
+
+        // Then
+        XCTAssertEqual(formatted, "$10.00")
+    }
+
+    func test_formatAmount_annotating_when_currency_code_is_unrecognized_then_returns_amount_without_code() {
+        // Given
+        let usdStore = CurrencySettings() // defaults to USD
+        let formatter = CurrencyFormatter(currencySettings: usdStore)
+
+        // When
+        let formatted = formatter.formatAmount("10.00", with: "ZZZ", annotatingNonDefaultCurrencyCode: true, locale: sampleLocale)
+
+        // Then — an unrecognized code is ignored (falls back to the store symbol), no annotation appended
+        XCTAssertEqual(formatted, "$10.00")
+    }
+
+    func test_formatAmount_annotating_when_amount_is_negative_and_currency_differs_then_appends_code_after_amount() {
+        // Given
+        let usdStore = CurrencySettings() // defaults to USD
+        let formatter = CurrencyFormatter(currencySettings: usdStore)
+
+        // When
+        let formatted = formatter.formatAmount("-10.00", with: "CAD", annotatingNonDefaultCurrencyCode: true, locale: sampleLocale)
+
+        // Then
+        XCTAssertEqual(formatted, "-$10.00\u{00a0}CAD")
     }
 }
 

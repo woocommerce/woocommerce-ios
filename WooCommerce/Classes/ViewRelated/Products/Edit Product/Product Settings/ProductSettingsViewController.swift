@@ -47,11 +47,10 @@ final class ProductSettingsViewController: UIViewController {
         viewModel.onReload = {  [weak self] in
             self?.tableView.reloadData()
         }
-        viewModel.onPasswordRetrieved = { [weak self] (passwordRetrieved) in
+        viewModel.onPasswordRetrieved = { [weak self] passwordRetrieved in
             self?.onPasswordCompletion(passwordRetrieved)
         }
     }
-
 }
 
 // MARK: - View Configuration

@@ -229,7 +229,7 @@ private final class ErrorViewModel: ULErrorViewModel {
 
     let image: UIImage = .loginNoJetpackError
 
-    let text: NSAttributedString = NSAttributedString(string: "woocommerce")
+    let text = NSAttributedString(string: "woocommerce")
 
     let isAuxiliaryButtonHidden: Bool = false
 

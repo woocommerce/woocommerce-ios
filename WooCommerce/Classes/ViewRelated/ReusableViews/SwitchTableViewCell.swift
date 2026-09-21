@@ -93,7 +93,7 @@ private extension SwitchTableViewCell {
 
     func setupGestureRecognizers() {
         let gestureRecognizer = UITapGestureRecognizer()
-        gestureRecognizer.on { [weak self] gesture in
+        gestureRecognizer.on { [weak self] _ in
             self?.contentViewWasPressed()
         }
 

@@ -55,7 +55,7 @@ final class ProductSettingsViewModel {
             /// If user is not on WC 8.1, and if the password is empty/nil,
             /// and user is authenticated with WP.com, enter here, otherwise we skip this.
             else if (product.password == nil || product.password?.isEmpty == true) && ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
-                retrieveProductPassword(siteID: product.siteID, productID: product.productID) { [weak self] (password, error) in
+                retrieveProductPassword(siteID: product.siteID, productID: product.productID) { [weak self] password, error in
                     guard let self else {
                         return
                     }
@@ -76,7 +76,7 @@ final class ProductSettingsViewModel {
     func handleCellTap(at indexPath: IndexPath, sourceViewController: UIViewController) {
         let section = sections[indexPath.section]
         let row = section.rows[indexPath.row]
-        row.handleTap(sourceViewController: sourceViewController) { [weak self] (settings) in
+        row.handleTap(sourceViewController: sourceViewController) { [weak self] settings in
             guard let self else {
                 return
             }
@@ -95,7 +95,7 @@ final class ProductSettingsViewModel {
 // MARK: Syncing data. Yosemite related stuff
 private extension ProductSettingsViewModel {
     func retrieveProductPassword(siteID: Int64, productID: Int64, onCompletion: ((String?, Error?) -> ())? = nil) {
-        let action = SitePostAction.retrieveSitePostPassword(siteID: siteID, postID: productID) { (password, error) in
+        let action = SitePostAction.retrieveSitePostPassword(siteID: siteID, postID: productID) { password, error in
             guard let _ = password else {
                 DDLogError("⛔️ Error fetching product password: \(error.debugDescription)")
                 onCompletion?(nil, error)

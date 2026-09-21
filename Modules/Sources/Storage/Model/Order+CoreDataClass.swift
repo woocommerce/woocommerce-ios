@@ -4,5 +4,4 @@ import CoreData
 
 @objc(Order)
 public class Order: NSManagedObject {
-
 }

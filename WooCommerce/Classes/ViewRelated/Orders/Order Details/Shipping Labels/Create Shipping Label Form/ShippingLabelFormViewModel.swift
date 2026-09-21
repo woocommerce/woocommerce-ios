@@ -3,9 +3,6 @@ import Yosemite
 import Combine
 import WooFoundation
 import protocol Storage.StorageManagerType
-import protocol Experiments.FeatureFlagService
-
-
 /// Provides view data for Create Shipping Label, and handles init/UI/navigation actions needed.
 ///
 final class ShippingLabelFormViewModel {
@@ -167,7 +164,7 @@ final class ShippingLabelFormViewModel {
 
     /// Current `ViewModel` state.
     ///
-    private(set) var state: State = State() {
+    private(set) var state = State() {
         didSet {
             onChange?()
         }
@@ -177,10 +174,6 @@ final class ShippingLabelFormViewModel {
     ///
     @Published private(set) var shouldPresentEUShippingNotice: Bool = false
 
-    /// Flag to indicate if the `.euShippingNotification` feature is activated.
-    ///
-    private let isEUShippingNotificationEnabled: Bool
-
     var subscriptions = Set<AnyCancellable>()
 
     init(order: Order,
@@ -188,7 +181,6 @@ final class ShippingLabelFormViewModel {
          destinationAddress: Address?,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          userDefaults: UserDefaults) {
 
         self.siteID = order.siteID
@@ -209,8 +201,6 @@ final class ShippingLabelFormViewModel {
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
-        self.isEUShippingNotificationEnabled = featureFlagService.isFeatureFlagEnabled(.euShippingNotification)
-
         state.sections = generateInitialSections()
         syncShippingLabelAccountSettings()
         syncPackageDetails()
@@ -454,7 +444,7 @@ final class ShippingLabelFormViewModel {
         }
 
         let currencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings)
-        let discount = currencyFormatter.formatAmount(Decimal(discountValue)) ?? nil
+        let discount = currencyFormatter.formatAmount(Decimal(discountValue))
 
         return discount
     }
@@ -481,7 +471,7 @@ final class ShippingLabelFormViewModel {
     func filteredCountries(for type: ShipType) -> [Country] {
         switch type {
         case .origin:
-            return countries.filter { Constants.acceptedUSPSCountries.contains($0.code) }
+            return countries.filter { USPSDomesticMailCountries.rawCountryCodes.contains($0.code) }
         case .destination:
             return countries
         }
@@ -529,7 +519,7 @@ private extension ShippingLabelFormViewModel {
         }
 
         var summarySection: Section?
-        if rows.allSatisfy({ (row) -> Bool in
+        if rows.allSatisfy({ row -> Bool in
             row.dataState == .validated && row.displayMode == .editable
         }) {
             summarySection = Section(title: Localization.orderSummaryHeader.uppercased(),
@@ -556,7 +546,7 @@ private extension ShippingLabelFormViewModel {
             return
         }
         // Add customs row if customs form is required
-        if customsFormRequired, rows.firstIndex(where: { $0.type == .customs }) == nil {
+        if customsFormRequired, !rows.contains(where: { $0.type == .customs }) {
             guard let packageDetailsRow = rows.first(where: { $0.type == .packageDetails }),
                   let packageDetailsRowIndex = rows.firstIndex(of: packageDetailsRow) else {
                 return
@@ -743,7 +733,7 @@ private extension ShippingLabelFormViewModel {
 extension ShippingLabelFormViewModel {
     func fetchCountries() {
         try? resultsController.performFetch()
-        let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] (result) in
+        let action = DataAction.synchronizeCountries(siteID: siteID) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success:
@@ -773,7 +763,7 @@ extension ShippingLabelFormViewModel {
 
         updateValidatingAddressState(true, type: type)
 
-        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
+        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] result in
 
             guard let self else { return }
             switch result {
@@ -846,7 +836,7 @@ extension ShippingLabelFormViewModel {
             return
         }
 
-        let packages = selectedPackages.enumerated().compactMap { (index, package) -> ShippingLabelPackagePurchase? in
+        let packages = selectedPackages.enumerated().compactMap { _, package -> ShippingLabelPackagePurchase? in
             guard let selectedRate = selectedRates.first(where: { $0.packageID == package.id }),
                   let details = selectedPackagesDetails.first(where: { $0.id == package.id }) else {
                 return nil
@@ -926,10 +916,6 @@ extension ShippingLabelFormViewModel {
     }
 
     private func verifyEUShippingNoticeDismissState(onCompletion: @escaping (Bool) -> Void) {
-        guard isEUShippingNotificationEnabled else {
-            return onCompletion(false)
-        }
-
         let action = AppSettingsAction.loadEUShippingNoticeDismissState { result in
             switch result {
             case .success(let dismissed):
@@ -973,21 +959,6 @@ private extension ShippingLabelFormViewModel {
     }
 
     enum Constants {
-        /// This is hardcoded for now based on: https://git.io/JBuja.
-        /// It would be great if this can be fetched remotely.
-        ///
-        static let acceptedUSPSCountries = [
-            "US", // United States
-            "PR", // Puerto Rico
-            "VI", // Virgin Islands
-            "GU", // Guam
-            "AS", // American Samoa
-            "UM", // United States Minor Outlying Islands
-            "MH", // Marshall Islands
-            "FM", // Micronesia
-            "MP" // Northern Mariana Islands
-        ]
-
         /// Country code for US - to check for international shipment
         ///
         static let usCountryCode = "US"

@@ -1,4 +1,6 @@
+import EventHorizonSDK
 import SwiftUI
+import ParcelFittingCheck
 
 struct WooShippingSelectedPackageView: View {
     let package: WooShippingPackageDataRepresentable
@@ -7,8 +9,11 @@ struct WooShippingSelectedPackageView: View {
     @Environment(\.shippingWeightUnit) private var weightUnit
 
     @State private var showPackageSelection = false
+    @State private var showARResults = false
 
-    /// Closure to perform when a new package is selected.
+    let lastARState: ARSelectionState?
+    let arAnalytics: ParcelFittingAnalyticsTracking
+    weak var parcelFittingDelegate: ParcelFittingDelegate?
     let updateSelectedPackage: (WooShippingPackageDataRepresentable) -> Void
 
     var body: some View {
@@ -18,7 +23,11 @@ struct WooShippingSelectedPackageView: View {
                     .headlineStyle()
                 Spacer()
                 PencilEditButton {
-                    showPackageSelection = true
+                    if lastARState != nil {
+                        showARResults = true
+                    } else {
+                        showPackageSelection = true
+                    }
                 }
                 .buttonStyle(TextButtonStyle())
             }
@@ -31,9 +40,53 @@ struct WooShippingSelectedPackageView: View {
             shipmentWeight
         }
         .sheet(isPresented: $showPackageSelection) {
-            WooShippingAddPackageView(selectedPackage: package) { newPackage in
-                updateSelectedPackage(newPackage)
-                showPackageSelection = false
+            WooShippingAddPackageView(
+                selectedPackage: package,
+                addPackageAction: { newPackage in
+                    showPackageSelection = false
+                    updateSelectedPackage(newPackage)
+                },
+                arAnalytics: arAnalytics,
+                arDelegate: parcelFittingDelegate
+            )
+        }
+        .fullScreenCover(isPresented: $showARResults) {
+            if let arState = lastARState {
+                NavigationView {
+                    ARParcelFittingResultsView(
+                        viewModel: ARParcelFittingResultsViewModel(
+                            measuredDimensions: arState.measurement,
+                            unit: arState.dimensionUnit,
+                            carriers: arState.carriers,
+                            analytics: arAnalytics
+                        ),
+                        starredPackageIDs: arState.starredPackageIDs,
+                        delegate: parcelFittingDelegate,
+                        onConfirm: { result in
+                            showARResults = false
+                            parcelFittingDelegate?.parcelFittingDidConfirm(
+                                result,
+                                carriers: arState.carriers,
+                                starredPackageIDs: arState.starredPackageIDs,
+                                dimensionUnit: arState.dimensionUnit
+                            )
+                        },
+                        onBrowseAllPackages: {
+                            showARResults = false
+                            showPackageSelection = true
+                        }
+                    )
+                    .toolbar {
+                        ToolbarItem(placement: .cancellationAction) {
+                            Button(Localization.done) {
+                                arAnalytics.track(Event.arfittingResultsDoneTapped)
+                                showARResults = false
+                            }
+                        }
+                    }
+                }
+                .navigationViewStyle(.stack)
+                .tint(Color(.withColorStudio(.wooCommercePurple, shade: .shade60)))
             }
         }
     }
@@ -99,6 +152,8 @@ private extension WooShippingSelectedPackageView {
                                                                    source: .predefined(sourceTitle: "USPS Priority Mail Flat Rate Boxes", sourceID: "usps"),
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"),
+                                   lastARState: nil,
+                                   arAnalytics: ParcelFittingAnalyticsAdaptor(),
                                    updateSelectedPackage: { _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")
@@ -113,6 +168,8 @@ private extension WooShippingSelectedPackageView {
                                                                    source: .custom,
                                                                    packageType: "box"),
                                    totalWeight: .constant("6"),
+                                   lastARState: nil,
+                                   arAnalytics: ParcelFittingAnalyticsAdaptor(),
                                    updateSelectedPackage: { _ in })
     .shippingDimensionsUnit("in")
     .shippingWeightUnit("lb")

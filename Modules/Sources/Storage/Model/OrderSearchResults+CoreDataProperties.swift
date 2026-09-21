@@ -10,7 +10,6 @@ extension OrderSearchResults {
 
     @NSManaged public var keyword: String?
     @NSManaged public var orders: Set<Order>?
-
 }
 
 // MARK: Generated accessors for orders
@@ -27,5 +26,4 @@ extension OrderSearchResults {
 
     @objc(removeOrders:)
     @NSManaged public func removeFromOrders(_ values: NSSet)
-
 }

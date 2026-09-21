@@ -3,6 +3,7 @@ import Yosemite
 
 /// View model for `SystemStatusReportView`
 ///
+@MainActor
 final class SystemStatusReportViewModel: ObservableObject {
     /// ID of the site to fetch system status report for
     ///
@@ -28,12 +29,8 @@ final class SystemStatusReportViewModel: ObservableObject {
     func fetchReport() {
         errorFetchingReport = false
         let action = SystemStatusAction.fetchSystemStatusReport(siteID: siteID) { [weak self] result in
-            guard let self else { return }
-            switch result {
-            case .success(let status):
-                self.statusReport = self.formatReport(with: status)
-            case .failure:
-                self.errorFetchingReport = true
+            Task { @MainActor in
+                self?.handleFetchedReport(result)
             }
         }
         stores.dispatch(action)
@@ -41,10 +38,21 @@ final class SystemStatusReportViewModel: ObservableObject {
 }
 
 private extension SystemStatusReportViewModel {
+    func handleFetchedReport(_ result: Result<SystemStatusReport, Error>) {
+        switch result {
+        case .success(let status):
+            statusReport = Self.formatReport(with: status)
+        case .failure:
+            errorFetchingReport = true
+        }
+    }
+}
+
+extension SystemStatusReportViewModel {
     /// Format system status to match with Core's report.
     /// Not localizing content and keep English by default.
     ///
-    func formatReport(with systemStatus: SystemStatusReport) -> String {
+    nonisolated static func formatReport(with systemStatus: SystemStatusReport) -> String {
         var lines = ["### System Status Report generated via the WooCommerce iOS app ###"]
 
         // Environment
@@ -94,11 +102,11 @@ private extension SystemStatusReportViewModel {
             ])
 
             for (tableName, content) in database.databaseTables.woocommerce {
-                lines.append("\(tableName): Data: \(content.data)MB + Index: \(content.index)MB + Engine \(content.engine)")
+                lines.append("\(tableName): \(content.formattedString)")
             }
 
             for (tableName, content) in database.databaseTables.other {
-                lines.append("\(tableName): Data: \(content.data)MB + Index: \(content.index)MB + Engine \(content.engine)")
+                lines.append("\(tableName): \(content.formattedString)")
             }
         }
 

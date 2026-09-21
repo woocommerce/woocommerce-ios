@@ -14,6 +14,17 @@ import protocol WooFoundation.Analytics
 import protocol WooFoundation.ConnectivityObserver
 import UserNotifications
 
+@MainActor
+protocol SupportDiagnosticsServicing {
+    var formattedSystemStatusReport: String? { get }
+
+    func runTests(_ tests: [SupportDiagnosticsService.Test]) async -> [SupportDiagnosticsService.Result]
+    func enableAnalytics() async throws
+    func registerDevice() async throws
+    func enableOrderNotifications(settings: NotificationSettings) async throws
+    func openNotificationSettings() -> URL?
+}
+
 /// Service for running diagnostics and executing fix actions in Support Chat.
 /// This service is standalone and does not share code with ConnectivityToolViewModel.
 ///
@@ -24,9 +35,9 @@ final class SupportDiagnosticsService {
 
     /// Diagnostic tests that can be run.
     ///
-    enum Test: CaseIterable {
+    enum Test: String, CaseIterable {
         case internetConnection
-        case wpComServers
+        case wpComServers = "wpcomServers"
         case site
         case siteOrders
         case loadingProducts
@@ -51,7 +62,6 @@ final class SupportDiagnosticsService {
                 return Localization.Test.notifications
             }
         }
-
     }
 
     /// Actions that can fix diagnostic issues.
@@ -61,7 +71,9 @@ final class SupportDiagnosticsService {
         case registerDevice
         case enableOrderNotifications(settings: NotificationSettings)
         case setupJetpack
+        case updateWooCommercePlugin
         case openNotificationSettings
+        case openPushNotificationPreferences
         case retryDiagnostics
 
         var title: String {
@@ -74,8 +86,12 @@ final class SupportDiagnosticsService {
                 return Localization.Action.enableOrderNotifications
             case .setupJetpack:
                 return Localization.Action.setupJetpack
+            case .updateWooCommercePlugin:
+                return Localization.Action.updateWooCommercePlugin
             case .openNotificationSettings:
                 return Localization.Action.openSettings
+            case .openPushNotificationPreferences:
+                return Localization.Action.openPushNotificationPreferences
             case .retryDiagnostics:
                 return Localization.Action.retryDiagnostics
             }
@@ -87,7 +103,9 @@ final class SupportDiagnosticsService {
                 return "checkmark.circle"
             case .setupJetpack:
                 return "bolt.fill"
-            case .openNotificationSettings:
+            case .updateWooCommercePlugin:
+                return "arrow.up.circle"
+            case .openNotificationSettings, .openPushNotificationPreferences:
                 return "gear"
             case .retryDiagnostics:
                 return "arrow.clockwise"
@@ -129,6 +147,11 @@ final class SupportDiagnosticsService {
             Result(test: test, isSuccess: true, errorMessage: nil, technicalDetails: nil, suggestedAction: nil)
         }
 
+        /// The site cannot answer the test. Counts as a pass, with the reason kept for the support context.
+        static func notApplicable(test: Test, reason: String) -> Result {
+            Result(test: test, isSuccess: true, errorMessage: nil, technicalDetails: reason, suggestedAction: nil)
+        }
+
         static func failure(test: Test, failure: Failure) -> Result {
             Result(test: test,
                    isSuccess: false,
@@ -160,10 +183,16 @@ final class SupportDiagnosticsService {
     private let systemStatusRemote: SystemStatusRemote
     private let ordersRemote: OrdersRemote
     private let productsRemote: ProductsRemote
+    private let pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking
+    private let pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol
 
     /// Active plugins from site status, cached after site test.
     ///
     private(set) var activeSystemPlugins: [SystemPlugin] = []
+
+    /// Formatted system status report, cached after site test.
+    ///
+    private(set) var formattedSystemStatusReport: String?
 
     private var isJetpackPluginActive: Bool {
         activeSystemPlugins.contains { $0.plugin.hasPrefix("jetpack/") }
@@ -176,6 +205,8 @@ final class SupportDiagnosticsService {
          connectivityObserver: ConnectivityObserver = ServiceLocator.connectivityObserver,
          userNotificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
+         pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking = WooPushNotificationEligibilityCheck(),
+         pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol = PluginVersionCheckerFactory(),
          network: Network? = nil) {
         let network = network ?? AlamofireNetwork(credentials: session.defaultCredentials,
                                                    selectedSite: nil,
@@ -189,6 +220,8 @@ final class SupportDiagnosticsService {
         self.connectivityObserver = connectivityObserver
         self.userNotificationCenter = userNotificationCenter
         self.pushNotesManager = pushNotesManager
+        self.pushNotificationEligibilityChecker = pushNotificationEligibilityChecker
+        self.pluginVersionCheckerFactory = pluginVersionCheckerFactory
         self.siteID = session.defaultStoreID ?? .zero
         self.siteURL = session.defaultSite?.url
     }
@@ -202,8 +235,7 @@ final class SupportDiagnosticsService {
         var results: [Result] = []
 
         for test in tests {
-            let failure = await runTest(test)
-            let result = failure.map { Result.failure(test: test, failure: $0) } ?? Result.success(test: test)
+            let result = await runTest(test)
             results.append(result)
 
             if !result.isSuccess {
@@ -223,28 +255,32 @@ final class SupportDiagnosticsService {
         return await runTests(tests)
     }
 
-    /// Runs a single test and returns failure details if the test failed, nil if successful.
+    /// Runs a single test and returns its result.
     ///
-    private func runTest(_ test: Test) async -> Failure? {
+    private func runTest(_ test: Test) async -> Result {
         switch test {
         case .internetConnection:
-            return checkInternetConnection()
+            return result(for: test, failure: checkInternetConnection())
         case .wpComServers:
-            return await checkWPComServers()
+            return result(for: test, failure: await checkWPComServers())
         case .site:
-            return await checkSite()
+            return result(for: test, failure: await checkSite())
         case .siteOrders:
-            return await checkSiteOrders()
+            return result(for: test, failure: await checkSiteOrders())
         case .loadingProducts:
-            return await checkLoadingProducts()
+            return result(for: test, failure: await checkLoadingProducts())
         case .analyticsSetting:
             return await checkAnalyticsSetting()
         case .notifications:
-            return await checkNotifications()
+            return result(for: test, failure: await checkNotifications())
         }
     }
 
-    // MARK: - Individual Checks (return nil on success, Failure on error)
+    private func result(for test: Test, failure: Failure?) -> Result {
+        failure.map { Result.failure(test: test, failure: $0) } ?? Result.success(test: test)
+    }
+
+    // MARK: - Individual Checks (return nil on success, Failure on error; the analytics check returns a Result)
 
     private func checkInternetConnection() -> Failure? {
         let status = connectivityObserver.currentStatus
@@ -267,7 +303,7 @@ final class SupportDiagnosticsService {
                 case .failure(let error):
                     DDLogError("SupportDiagnostics: ❌ WPCom connection\n\(error)")
                     continuation.resume(returning: Failure(errorMessage: Localization.Error.wpcomConnection,
-                                                           technicalDetails: String(describing: error)))
+                                                           technicalDetails: error.formattedTechnicalDetails))
                 }
             }
         }
@@ -281,11 +317,12 @@ final class SupportDiagnosticsService {
                 case .success(let report):
                     DDLogInfo("SupportDiagnostics: ✅ Site connection")
                     self.activeSystemPlugins = report.activePlugins
+                    self.formattedSystemStatusReport = SystemStatusReportViewModel.formatReport(with: report)
                     continuation.resume(returning: nil)
                 case .failure(let error):
                     DDLogError("SupportDiagnostics: ❌ Site connection\n\(error)")
                     continuation.resume(returning: Failure(errorMessage: self.errorMessage(for: error),
-                                                           technicalDetails: String(describing: error)))
+                                                           technicalDetails: error.formattedTechnicalDetails))
                 }
             }
         }
@@ -298,7 +335,7 @@ final class SupportDiagnosticsService {
             return nil
         } catch {
             DDLogError("SupportDiagnostics: ❌ Site Orders\n\(error)")
-            return Failure(errorMessage: errorMessage(for: error), technicalDetails: String(describing: error))
+            return Failure(errorMessage: errorMessage(for: error), technicalDetails: error.formattedTechnicalDetails)
         }
     }
 
@@ -309,27 +346,34 @@ final class SupportDiagnosticsService {
             return nil
         } catch {
             DDLogError("SupportDiagnostics: ❌ Loading products\n\(error)")
-            return Failure(errorMessage: errorMessage(for: error), technicalDetails: String(describing: error))
+            return Failure(errorMessage: errorMessage(for: error), technicalDetails: error.formattedTechnicalDetails)
         }
     }
 
-    private func checkAnalyticsSetting() async -> Failure? {
+    /// Returns a not-applicable pass when the site does not expose the setting in its REST API.
+    ///
+    private func checkAnalyticsSetting() async -> Result {
         await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsSetting(siteID: siteID) { result in
                 switch result {
                 case .success(let isEnabled):
                     if isEnabled {
                         DDLogInfo("SupportDiagnostics: ✅ Analytics enabled")
-                        continuation.resume(returning: nil)
+                        continuation.resume(returning: .success(test: .analyticsSetting))
                     } else {
                         DDLogInfo("SupportDiagnostics: ⚠️ Analytics disabled")
-                        continuation.resume(returning: Failure(errorMessage: Localization.Error.analyticsDisabled,
-                                                               suggestedAction: .enableAnalytics))
+                        let failure = Failure(errorMessage: Localization.Error.analyticsDisabled, suggestedAction: .enableAnalytics)
+                        continuation.resume(returning: .failure(test: .analyticsSetting, failure: failure))
                     }
                 case .failure(let error):
+                    if let settingError = error as? SettingError, case .settingNotExposed = settingError {
+                        DDLogInfo("SupportDiagnostics: ⏭️ Analytics setting is not exposed by the site, not applicable")
+                        continuation.resume(returning: .notApplicable(test: .analyticsSetting, reason: Constants.analyticsSettingNotExposedReason))
+                        return
+                    }
                     DDLogError("SupportDiagnostics: ❌ Analytics check failed\n\(error)")
-                    continuation.resume(returning: Failure(errorMessage: Localization.Error.analyticsCheckFailed,
-                                                           technicalDetails: String(describing: error)))
+                    let failure = Failure(errorMessage: Localization.Error.analyticsCheckFailed, technicalDetails: error.formattedTechnicalDetails)
+                    continuation.resume(returning: .failure(test: .analyticsSetting, failure: failure))
                 }
             }
             stores.dispatch(action)
@@ -337,13 +381,7 @@ final class SupportDiagnosticsService {
     }
 
     private func checkNotifications() async -> Failure? {
-        // Sub-check 1: Jetpack plugin is active
-        if !isJetpackPluginActive {
-            DDLogError("SupportDiagnostics: ❌ Jetpack not active")
-            return Failure(errorMessage: Localization.Error.jetpackNotActive, suggestedAction: .setupJetpack)
-        }
-
-        // Sub-check 2: iOS notification permission
+        // Sub-check 1: iOS notification permission
         let permissionResult = await checkNotificationPermission()
         if case .failure = permissionResult {
             DDLogInfo("SupportDiagnostics: ⚠️ Notifications not authorized")
@@ -351,31 +389,115 @@ final class SupportDiagnosticsService {
                            suggestedAction: .openNotificationSettings)
         }
 
+        let isEligibleForWooDrivenPushNotifications = await pushNotificationEligibilityChecker.checkEligibility()
+
+        // Sub-check 2: if not eligible for Woo-driven PN
+        if !isEligibleForWooDrivenPushNotifications {
+            // Subcheck 1: does device have Jetpack?
+            if !isJetpackPluginActive {
+                DDLogError("SupportDiagnostics: ❌ Jetpack not active")
+                return Failure(errorMessage: Localization.Error.jetpackNotActive, suggestedAction: .setupJetpack)
+            }
+            return await checkWPComPushNotifications()
+        }
+
         // Sub-check 3: Self-driven push notifications
         if pushNotesManager.siteIDsRegisteredForWooPNs.contains(siteID) {
             DDLogInfo("SupportDiagnostics: ✅ Site registered for self-driven push notifications")
+            if let failure = await checkPushNotificationPreferences() {
+                return failure
+            }
             return nil
-        }
-
-        // Sub-check 4: WPCom notification config
-        let configResult = await checkNotificationConfig()
-        switch configResult {
-        case .success:
-            DDLogInfo("SupportDiagnostics: ✅ Notification settings configured")
-            return nil
-        case .failure(let configError):
-            DDLogInfo("SupportDiagnostics: ⚠️ Notification config issue: \(configError)")
-            switch configError {
-            case .deviceNotRegistered:
+        } else if isJetpackPluginActive, !stores.isAuthenticatedWithoutWPCom {
+            // User has Jetpack and authenticated with WPCom
+            return await checkWPComPushNotifications()
+        } else {
+            // Check requirements for Woo PNs
+            do {
+                let minimumVersion = WooPluginRequirements.minimumVersion
+                let pluginVersionChecker = pluginVersionCheckerFactory.makeChecker(
+                    siteID: siteID,
+                    pluginPath: WooPluginRequirements.pluginPath,
+                    minimumVersion: minimumVersion
+                )
+                let result = try await pluginVersionChecker.checkCompatibility()
+                if case .incompatible(let currentVersion, _) = result {
+                    DDLogError("SupportDiagnostics: ❌ Unable to register self-driven push token: " +
+                               "WooCommerce plugin version \(currentVersion) is below required \(minimumVersion)")
+                    return notificationFailure(
+                        for: .wooCommercePluginUpdateRequired(currentVersion: currentVersion, requiredVersion: minimumVersion)
+                    )
+                } else {
+                    DDLogError("SupportDiagnostics: ❌ device is not registered")
+                    return Failure(errorMessage: Localization.Error.deviceNotRegistered,
+                                   suggestedAction: .registerDevice)
+                }
+            } catch {
+                DDLogError("SupportDiagnostics: ❌ device is not registered")
                 return Failure(errorMessage: Localization.Error.deviceNotRegistered,
                                suggestedAction: .registerDevice)
-            case .orderNotificationsDisabled(let settings):
-                return Failure(errorMessage: Localization.Error.orderNotificationsDisabled,
-                               suggestedAction: .enableOrderNotifications(settings: settings))
-            case .requestFailed(let error):
-                return Failure(errorMessage: Localization.Error.notificationConfigCheckFailed,
-                               technicalDetails: String(describing: error))
             }
+        }
+    }
+
+    private func checkWPComPushNotifications() async -> Failure? {
+        // Registered with WPCom?
+        if pushNotesManager.deviceID == nil {
+            DDLogError("SupportDiagnostics: ❌ device is not registered")
+            return Failure(errorMessage: Localization.Error.deviceNotRegistered,
+                           suggestedAction: .registerDevice)
+        } else {
+            // WPCom notification config
+            let configResult = await checkNotificationConfig()
+            switch configResult {
+            case .success:
+                DDLogInfo("SupportDiagnostics: ✅ Notification settings configured")
+                return nil
+            case .failure(let configError):
+                DDLogInfo("SupportDiagnostics: ⚠️ Notification config issue: \(configError)")
+                switch configError {
+                case .deviceNotRegistered:
+                    return Failure(errorMessage: Localization.Error.deviceNotRegistered,
+                                   suggestedAction: .registerDevice)
+                case .orderNotificationsDisabled(let settings):
+                    return Failure(errorMessage: Localization.Error.orderNotificationsDisabled,
+                                   suggestedAction: .enableOrderNotifications(settings: settings))
+                case .requestFailed(let error):
+                    return Failure(errorMessage: Localization.Error.notificationConfigCheckFailed,
+                                   technicalDetails: error.formattedTechnicalDetails)
+                }
+            }
+        }
+    }
+
+    private func checkPushNotificationPreferences() async -> Failure? {
+        do {
+            let preferences = try await loadPushNotificationPreferences()
+            if preferences.hasDisabledNotifications {
+                DDLogInfo("SupportDiagnostics: ⚠️ Some push notification preferences are disabled")
+                return Failure(errorMessage: Localization.Error.pushNotificationPreferencesDisabled,
+                               suggestedAction: .openPushNotificationPreferences)
+            }
+        } catch {
+            DDLogError("SupportDiagnostics: ❌ Failed to load push notification preferences\n\(error)")
+        }
+        return nil
+    }
+
+    private func loadPushNotificationPreferences() async throws -> PushNotificationPreferences {
+        try await withCheckedThrowingContinuation { continuation in
+            let action = NotificationAction.loadPushNotificationPreferences(siteID: siteID) { result in
+                continuation.resume(with: result)
+            }
+            stores.dispatch(action)
+        }
+    }
+
+    private func notificationFailure(for error: NotificationRegistrationError) -> Failure {
+        switch error {
+        case .wooCommercePluginUpdateRequired(_, let requiredVersion):
+            return Failure(errorMessage: Localization.Error.wooCommercePluginUpdateRequired(requiredVersion: requiredVersion),
+                           suggestedAction: .updateWooCommercePlugin)
         }
     }
 
@@ -525,7 +647,13 @@ final class SupportDiagnosticsService {
         case orderNotificationsDisabled(settings: NotificationSettings)
         case requestFailed(Error)
     }
+
+    enum NotificationRegistrationError: Error, Equatable {
+        case wooCommercePluginUpdateRequired(currentVersion: String, requiredVersion: String)
+    }
 }
+
+extension SupportDiagnosticsService: SupportDiagnosticsServicing {}
 
 // MARK: - Generating Context
 
@@ -538,6 +666,15 @@ extension SupportDiagnosticsService {
         return results.enumerated().map { index, result in
             "## \(index + 1). " + result.troubleshootingDescription()
         }.joined(separator: "\n\n")
+    }
+}
+
+// MARK: - Constants
+
+private extension SupportDiagnosticsService {
+    enum Constants {
+        /// Not user facing: sent in the chat troubleshooting context when the analytics check does not apply.
+        static let analyticsSettingNotExposedReason = "Not applicable: the site does not expose the analytics setting in its REST API"
     }
 }
 
@@ -604,10 +741,20 @@ private extension SupportDiagnosticsService {
                 value: "Setup Jetpack",
                 comment: "Action button to start the Jetpack setup flow"
             )
+            static let updateWooCommercePlugin = NSLocalizedString(
+                "supportDiagnosticsService.action.updateWooCommercePlugin",
+                value: "Update WooCommerce",
+                comment: "Action button to update the WooCommerce plugin"
+            )
             static let openSettings = NSLocalizedString(
                 "supportDiagnosticsService.action.openSettings",
                 value: "Open Settings",
                 comment: "Action button to open device notification settings"
+            )
+            static let openPushNotificationPreferences = NSLocalizedString(
+                "supportDiagnosticsService.action.openPushNotificationPreferences",
+                value: "Notification Preferences",
+                comment: "Action button to open the store push notification preferences screen"
             )
             static let retryDiagnostics = NSLocalizedString(
                 "supportDiagnosticsService.action.retryDiagnostics",
@@ -679,11 +826,27 @@ private extension SupportDiagnosticsService {
                 value: "Your device doesn't appear to be registered for push notifications.",
                 comment: "Message when the device is not registered for push notifications"
             )
+            static func wooCommercePluginUpdateRequired(requiredVersion: String) -> String {
+                let format = NSLocalizedString(
+                    "supportDiagnosticsService.error.wooCommercePluginUpdateRequired",
+                    value: "Your WooCommerce plugin needs to be updated to enable push notifications.\n\n" +
+                    "Update WooCommerce to version %1$@ or newer, then try registering again.",
+                    comment: "Message when WooCommerce plugin must be updated for push notifications. " +
+                    "%1$@ is the required WooCommerce plugin version."
+                )
+                return String.localizedStringWithFormat(format, requiredVersion)
+            }
             static let orderNotificationsDisabled = NSLocalizedString(
                 "supportDiagnosticsService.error.orderNotificationsDisabled",
                 value: "Order notifications are not enabled for this store.\n\n" +
                 "Enable them to receive alerts when new orders come in.",
                 comment: "Message when order notifications are disabled"
+            )
+            static let pushNotificationPreferencesDisabled = NSLocalizedString(
+                "supportDiagnosticsService.error.pushNotificationPreferencesDisabled",
+                value: "Some push notification preferences are disabled for this store.\n\n" +
+                "Open your preferences to choose which notifications you want to receive.",
+                comment: "Message when some store push notification preferences are disabled"
             )
             static let notificationConfigCheckFailed = NSLocalizedString(
                 "supportDiagnosticsService.error.notificationConfigCheckFailed",
@@ -691,5 +854,13 @@ private extension SupportDiagnosticsService {
                 comment: "Message when the notification config check fails"
             )
         }
+    }
+}
+
+private extension PushNotificationPreferences {
+    var hasDisabledNotifications: Bool {
+        storeOrder?.enabled == false ||
+        storeReview?.enabled == false ||
+        storeStock?.enabled == false
     }
 }

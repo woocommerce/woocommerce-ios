@@ -105,7 +105,6 @@ struct CustomerDetailView: View {
                     }
                     .accessibilityLabel(Localization.newOrder)
                     .renderedIf(viewModel.canCreateNewOrder)
-
                 }
             }
 
@@ -199,7 +198,7 @@ private extension CustomerDetailView {
 private extension Text {
     /// Styles the text based on whether there is a provided value.
     ///
-    @ViewBuilder func style(for value: String?) -> some View {
+    @MainActor @ViewBuilder func style(for value: String?) -> some View {
         if value != nil {
             self.bodyStyle()
         } else {

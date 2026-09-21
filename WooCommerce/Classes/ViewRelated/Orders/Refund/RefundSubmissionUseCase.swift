@@ -45,11 +45,15 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 
     private let storageManager: StorageManagerType
 
+    /// Async service for the server-calculated refund endpoints. Only required when
+    /// `details.serverLineItems` is set.
+    private let refundService: RefundServiceProtocol?
+
     /// Analytics manager.
     private let analytics: Analytics
 
-    /// View controller used to present alerts.
-    private var rootViewController: UIViewController
+    /// View controller presenter used to present alerts.
+    private var rootViewController: ViewControllerPresenting
 
     /// Stores the card reader listener subscription while trying to connect to one.
     private var readerSubscription: AnyCancellable?
@@ -101,6 +105,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         let stores: StoresManager
         let storageManager: StorageManagerType
         let analytics: Analytics
+        let refundService: RefundServiceProtocol?
 
         init(currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
              currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -108,7 +113,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
              cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting = CardPresentPaymentsOnboardingPresenter(),
              stores: StoresManager = ServiceLocator.stores,
              storageManager: StorageManagerType = ServiceLocator.storageManager,
-             analytics: Analytics = ServiceLocator.analytics) {
+             analytics: Analytics = ServiceLocator.analytics,
+             refundService: RefundServiceProtocol? = nil) {
             self.currencyFormatter = currencyFormatter
             self.currencySettings = currencySettings
             self.knownReaderProvider = knownReaderProvider
@@ -116,11 +122,12 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
             self.stores = stores
             self.storageManager = storageManager
             self.analytics = analytics
+            self.refundService = refundService
         }
     }
 
     init(details: Details,
-         rootViewController: UIViewController,
+         rootViewController: ViewControllerPresenting,
          alerts: OrderDetailsPaymentAlertsProtocol,
          cardPresentConfiguration: CardPresentPaymentsConfiguration,
          cardReaderConnectionAlerts: AlertProvider,
@@ -143,6 +150,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         self.stores = dependencies.stores
         self.storageManager = dependencies.storageManager
         self.analytics = dependencies.analytics
+        self.refundService = dependencies.refundService
     }
 
     /// Starts the refund submission flow.
@@ -221,6 +229,22 @@ extension RefundSubmissionUseCase {
 
         /// Payment Gateway Account for the site (i.e. that can be used to refund).
         let paymentGatewayAccount: PaymentGatewayAccount?
+
+        /// When set, the refund is submitted via the server-computed `compute_totals` create
+        /// instead of the classic `RefundAction.createRefund` path.
+        let serverLineItems: [ComputedRefundLineItem]?
+
+        init(order: Order,
+             charge: WCPayCharge?,
+             amount: String,
+             paymentGatewayAccount: PaymentGatewayAccount?,
+             serverLineItems: [ComputedRefundLineItem]? = nil) {
+            self.order = order
+            self.charge = charge
+            self.amount = amount
+            self.paymentGatewayAccount = paymentGatewayAccount
+            self.serverLineItems = serverLineItems
+        }
     }
 }
 
@@ -321,6 +345,13 @@ private extension RefundSubmissionUseCase {
                                         onCancel: { [weak self] in
                 self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
             })
+        }, onCardInserted: { [weak self] in
+            guard let self else { return }
+            self.alerts.cardInserted(title: RefundSubmissionUseCaseDefinitions.Localization.refundPaymentTitle(username: self.order.billingAddress?.firstName),
+                                     amount: self.formattedAmount,
+                                     onCancel: { [weak self] in
+                self?.cancelRefund(charge: charge, paymentGatewayAccount: paymentGatewayAccount, onCompletion: onCompletion)
+            })
         }, onProcessingMessage: { [weak self] in
             // Shows waiting message.
             self?.alerts.processingPayment(
@@ -358,7 +389,7 @@ private extension RefundSubmissionUseCase {
         if let cardReaderError = error as? CardReaderServiceError,
            case .refundPayment(_, let shouldRetry) = cardReaderError,
            shouldRetry == false {
-            alerts.nonRetryableError(from: rootViewController, error: error) {
+            alerts.nonRetryableError(from: rootViewController as? UIViewController, error: error) {
                 onCompletion(.failure(error))
             }
         } else {
@@ -390,21 +421,43 @@ private extension RefundSubmissionUseCase {
     ///   - refund: the refund to submit.
     ///   - onCompletion: called when the submission completes.
     func submitRefundToSite(refund: Refund, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        if let serverLineItems = details.serverLineItems, let refundService {
+            Task {
+                await submitComputedRefundToSite(refund: refund, lineItems: serverLineItems, refundService: refundService, onCompletion: onCompletion)
+            }
+            return
+        }
+        if details.serverLineItems != nil {
+            // Refuse rather than fall through. `details.amount` is the server preview total while
+            // the refund's line items carry locally computed totals, so submitting here would
+            // record a refund whose total need not equal the sum of its lines. A misconfigured
+            // caller must fail loudly instead of booking money against inconsistent figures.
+            DDLogError("⛔️ Server refund line items provided without a RefundService — refusing to submit")
+            return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.missingRefundService))
+        }
 
         let action = RefundAction.createRefund(siteID: details.order.siteID, orderID: details.order.orderID, refund: refund) { [weak self]
             refundData, error  in
 
             guard let self else { return }
 
-            if let refundData {
-                // Workaround for https://github.com/woocommerce/woocommerce/issues/33389. This can be removed when the related API issue is fixed
-                self.retrieveUpdatedRefundData(refund: refundData)
-            }
             if let error {
                 DDLogError("Error creating refund: \(refund)\nWith Error: \(error)")
                 self.trackCreateRefundRequestFailed(error: error)
+                // Surfaces server rejections with actionable codes (e.g. `refund_exceeds_remaining`)
+                // as typed errors carrying user-facing copy; other errors stay unchanged.
+                if let rejection = RefundAPIError(error) {
+                    return onCompletion(.failure(rejection))
+                }
                 return onCompletion(.failure(error))
             }
+
+            guard refundData != nil else {
+                DDLogError("Error creating refund: \(refund)\nWith Error: missing created refund response")
+                self.trackCreateRefundRequestFailed(error: RefundSubmissionUseCaseSubmissionError.missingCreatedRefund)
+                return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.missingCreatedRefund))
+            }
+
             onCompletion(.success(()))
             self.trackCreateRefundRequestSuccess()
         }
@@ -412,16 +465,32 @@ private extension RefundSubmissionUseCase {
         trackCreateRefundRequest()
     }
 
-    /// Retrieves the up-to-date refund data
-    /// - Parameters:
-    ///   - refund: the refund to retrieve details from.
-    private func retrieveUpdatedRefundData(refund: Refund) {
-        let action = RefundAction.retrieveRefund(siteID: details.order.siteID, orderID: details.order.orderID, refundID: refund.refundID) { (_, error) in
-                if let error {
-                    DDLogError("Error retrieving refund: \(String(describing: refund))\nWith Error: \(error)")
-                }
+    @MainActor
+    private func submitComputedRefundToSite(refund: Refund,
+                                            lineItems: [ComputedRefundLineItem],
+                                            refundService: RefundServiceProtocol,
+                                            onCompletion: @escaping (Result<Void, Error>) -> Void) async {
+        trackCreateRefundRequest()
+        do {
+            _ = try await refundService.createRefund(siteID: details.order.siteID,
+                                                     orderID: details.order.orderID,
+                                                     reason: refund.reason,
+                                                     automaticRefund: refund.createAutomated ?? false,
+                                                     restockItems: true,
+                                                     amountOverride: nil,
+                                                     lineItems: lineItems)
+            onCompletion(.success(()))
+            trackCreateRefundRequestSuccess()
+        } catch {
+            DDLogError("Error creating server-computed refund: \(refund)\nWith Error: \(error)")
+            trackCreateRefundRequestFailed(error: error)
+            // Surfaces server rejections with actionable codes (e.g. `refund_exceeds_remaining`)
+            // as typed errors carrying user-facing copy; other errors stay unchanged.
+            if let rejection = RefundAPIError(error) {
+                return onCompletion(.failure(rejection))
             }
-            stores.dispatch(action)
+            onCompletion(.failure(error))
+        }
     }
 }
 
@@ -510,6 +579,10 @@ enum RefundSubmissionUseCaseSubmissionError: Error, Equatable {
     case invalidRefundAmount
     case unknownPaymentGatewayAccount
     case canceledByUser
+    case missingCreatedRefund
+    /// Server-computed line items were supplied without the service needed to submit them, so the
+    /// refund cannot be sent through the path its amount was calculated for.
+    case missingRefundService
 }
 
 private enum RefundSubmissionUseCaseDefinitions {

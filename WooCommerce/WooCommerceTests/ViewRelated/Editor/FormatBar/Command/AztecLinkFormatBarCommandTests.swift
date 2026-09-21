@@ -34,5 +34,4 @@ final class AztecLinkFormatBarCommandTests: XCTestCase {
         let presentedViewController = (viewController.presentedViewController as? UINavigationController)?.viewControllers.first
         XCTAssertTrue(presentedViewController is LinkSettingsViewController)
     }
-
 }

@@ -3,5 +3,4 @@ import CoreData
 
 @objc(OrderRefundCondensed)
 public class OrderRefundCondensed: NSManagedObject {
-
 }

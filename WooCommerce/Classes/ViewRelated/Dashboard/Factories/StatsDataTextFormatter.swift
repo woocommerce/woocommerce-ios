@@ -314,7 +314,7 @@ private extension StatsDataTextFormatter {
     /// Retrieves the visitor count for the provided site stats and a specific interval.
     ///
     static func visitorCount(at selectedIndex: Int, siteStats: SiteVisitStats?) -> Double? {
-        let siteStatsItems = siteStats?.items?.sorted(by: { (lhs, rhs) -> Bool in
+        let siteStatsItems = siteStats?.items?.sorted(by: { lhs, rhs -> Bool in
             return lhs.period < rhs.period
         }) ?? []
         if selectedIndex < siteStatsItems.count {

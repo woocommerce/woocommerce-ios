@@ -37,7 +37,6 @@ struct BookingDateTimeFilterView: View {
             Section {
                 dateRow(type: .fromDate, displayedDate: $fromDate, selectedDate: selectedFromDate)
                 timeRow(type: .fromTime, displayedDate: $fromDate, selectedDate: selectedFromDate)
-
             } header: {
                 Text(Localization.from.uppercased())
                     .footnoteStyle()

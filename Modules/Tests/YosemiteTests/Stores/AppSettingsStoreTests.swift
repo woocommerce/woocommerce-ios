@@ -153,12 +153,11 @@ final class AppSettingsStoreTests: XCTestCase {
                                  providerName: TestConstants.newProviderName) { error in
                                     XCTAssertNil(error)
                                     let fileData = self.fileStorage?.data.values.first as? [PreselectedProvider]
-                                    let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first
+                                    let updatedProvider = fileData?.first(where: { $0.siteID == TestConstants.siteID})
 
                                     if updatedProvider?.providerName == TestConstants.newProviderName {
                                         expectation.fulfill()
                                     }
-
         }
 
         subject?.onAction(action)
@@ -175,12 +174,11 @@ final class AppSettingsStoreTests: XCTestCase {
                                  providerURL: TestConstants.newProviderURL) { error in
                                     XCTAssertNil(error)
                                     let fileData = self.fileStorage?.data.values.first as? [PreselectedProvider]
-                                    let updatedProvider = fileData?.filter({ $0.siteID == TestConstants.siteID}).first
+                                    let updatedProvider = fileData?.first(where: { $0.siteID == TestConstants.siteID})
 
                                     if updatedProvider?.providerName == TestConstants.newProviderName {
                                         expectation.fulfill()
                                     }
-
         }
 
         subject?.onAction(action)
@@ -1817,6 +1815,38 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(isAllowed)
     }
 
+    // MARK: - POS Catalog File Blocked Tests
+
+    func test_getPOSCatalogFileBlockedByHost_when_no_block_is_recorded_then_returns_false() throws {
+        // When
+        let isBlocked: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSCatalogFileBlockedByHost(siteID: TestConstants.siteID) { isBlocked in
+                promise(isBlocked)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertFalse(isBlocked)
+    }
+
+    func test_getPOSCatalogFileBlockedByHost_when_a_block_is_recorded_then_returns_true() throws {
+        // Given
+        mockSiteSpecificAppSettingsStoreMethods.mockPOSCatalogFileBlockedByHostAt = Date()
+
+        // When
+        let isBlocked: Bool = waitFor { promise in
+            let action = AppSettingsAction.getPOSCatalogFileBlockedByHost(siteID: TestConstants.siteID) { isBlocked in
+                promise(isBlocked)
+            }
+            self.subject?.onAction(action)
+        }
+
+        // Then
+        XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.isPOSCatalogFileBlockedByHostCalled)
+        XCTAssertTrue(isBlocked)
+    }
+
     func test_setPOSLocalCatalogCellularDataAllowed_saves_value_successfully() throws {
         // When
         waitFor { promise in
@@ -1846,6 +1876,44 @@ extension AppSettingsStoreTests {
         // Then
         XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.setPOSLocalCatalogCellularDataAllowedCalled)
         XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.mockPOSLocalCatalogCellularDataAllowed, false)
+    }
+
+    func test_setHTTPSConfigurationUpdateRequired_persists_requirement() {
+        // When
+        subject?.onAction(AppSettingsAction.setHTTPSConfigurationUpdateRequired(siteID: TestConstants.siteID, required: true))
+
+        // Then
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.storeSettings.requiresHTTPSConfigurationUpdate, true)
+    }
+
+    func test_dismissHTTPSConfigurationWarning_persists_dismissal_date() {
+        // Given
+        let date = Date(timeIntervalSince1970: 123)
+
+        // When
+        subject?.onAction(AppSettingsAction.dismissHTTPSConfigurationWarning(siteID: TestConstants.siteID, time: date))
+
+        // Then
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.storeSettings.lastHTTPSConfigurationWarningDismissedDate, date)
+    }
+
+    func test_getHTTPSConfigurationWarningState_returns_persisted_state() {
+        // Given
+        let date = Date(timeIntervalSince1970: 123)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(requiresHTTPSConfigurationUpdate: true,
+                                                                                     lastHTTPSConfigurationWarningDismissedDate: date)
+        var returnedRequirement: Bool?
+        var returnedDate: Date?
+
+        // When
+        subject?.onAction(AppSettingsAction.getHTTPSConfigurationWarningState(siteID: TestConstants.siteID) { requirement, dismissalDate in
+            returnedRequirement = requirement
+            returnedDate = dismissalDate
+        })
+
+        // Then
+        XCTAssertEqual(returnedRequirement, true)
+        XCTAssertEqual(returnedDate, date)
     }
 }
 

@@ -46,7 +46,7 @@ final class KeyboardStateProvider: KeyboardStateProviding {
     ///
     /// This is kept up to date whenever we receive keyboard notifications.
     ///
-    private(set) var state: KeyboardState = KeyboardState(isVisible: false, frameEnd: .zero)
+    private(set) var state = KeyboardState(isVisible: false, frameEnd: .zero)
 
     /// NSNotification observers that will be removed on deinit
     private var observations = [Any]()

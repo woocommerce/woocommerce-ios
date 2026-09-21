@@ -6,6 +6,7 @@ import protocol WooFoundation.ConnectivityObserver
 @testable import Networking
 @testable import WooCommerce
 
+@Suite(.serialized)
 @MainActor
 struct SupportDiagnosticsServiceTests {
 
@@ -22,7 +23,7 @@ struct SupportDiagnosticsServiceTests {
         let tests = issueType.testsToRun
 
         // Then
-        let expected: [Test] = [.internetConnection, .wpComServers, .site, .siteOrders]
+        let expected: [Test] = [.internetConnection, .site, .siteOrders]
         #expect(tests == expected)
     }
 
@@ -34,7 +35,7 @@ struct SupportDiagnosticsServiceTests {
         let tests = issueType.testsToRun
 
         // Then
-        let expected: [Test] = [.internetConnection, .wpComServers, .site, .loadingProducts]
+        let expected: [Test] = [.internetConnection, .site, .loadingProducts]
         #expect(tests == expected)
     }
 
@@ -46,7 +47,7 @@ struct SupportDiagnosticsServiceTests {
         let tests = issueType.testsToRun
 
         // Then
-        let expected: [Test] = [.internetConnection, .wpComServers, .site, .analyticsSetting]
+        let expected: [Test] = [.internetConnection, .site, .analyticsSetting]
         #expect(tests == expected)
     }
 
@@ -58,7 +59,7 @@ struct SupportDiagnosticsServiceTests {
         let tests = issueType.testsToRun
 
         // Then
-        let expected: [Test] = [.internetConnection, .wpComServers, .site, .notifications]
+        let expected: [Test] = [.internetConnection, .site, .notifications]
         #expect(tests == expected)
     }
 
@@ -154,6 +155,31 @@ struct SupportDiagnosticsServiceTests {
         #expect(results[0].errorMessage?.contains("not enabled") == true)
     }
 
+    @Test func test_testAnalyticsSetting_when_setting_is_not_exposed_then_returns_not_applicable_success() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.failure(SettingError.settingNotExposed))
+            default:
+                break
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        let results = await sut.runTests([Test.analyticsSetting])
+
+        // Then
+        #expect(results.count == 1)
+        #expect(results[0].isSuccess == true)
+        #expect(results[0].test == Test.analyticsSetting)
+        #expect(results[0].errorMessage == nil)
+        #expect(results[0].technicalDetails?.hasPrefix("Not applicable") == true)
+        #expect(results[0].troubleshootingDescription().contains("Not applicable") == true)
+    }
+
     @Test func test_testAnalyticsSetting_when_request_fails_then_returns_failure_with_technical_details() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -181,7 +207,9 @@ struct SupportDiagnosticsServiceTests {
 
     @Test func test_testNotifications_when_jetpack_not_active_then_returns_failure_with_setupJetpack_action() async {
         // Given
-        let sut = makeSUT()
+        let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockUserNotificationCenter.authorizationStatus = .authorized
+        let sut = makeSUT(userNotificationCenter: mockUserNotificationCenter)
         // activeSystemPlugins is empty by default, so Jetpack is not active
 
         // When
@@ -212,13 +240,23 @@ struct SupportDiagnosticsServiceTests {
 
     @Test func test_testNotifications_when_registered_for_self_driven_PN_then_returns_success() async {
         // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(Self.enabledPushNotificationPreferences()))
+            }
+        }
         let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
         mockUserNotificationCenter.authorizationStatus = .authorized
         let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [123])
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
         let network = makeNetworkWithJetpackActive()
         let sut = makeSUT(
+            stores: stores,
             userNotificationCenter: mockUserNotificationCenter,
             pushNotesManager: mockPushNotesManager,
+            pushNotificationEligibilityChecker: eligibilityChecker,
             network: network,
             siteID: 123
         )
@@ -232,15 +270,83 @@ struct SupportDiagnosticsServiceTests {
         #expect(results[1].isSuccess == true)
     }
 
-    @Test func test_testNotifications_when_device_not_registered_then_returns_failure_with_registerDevice_action() async {
+    @Test func test_testNotifications_when_registered_for_self_driven_PN_and_some_preferences_disabled_then_returns_failure_with_openPreferences_action() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.success(PushNotificationPreferences(storeOrder: .init(enabled: false),
+                                                                  storeReview: .init(enabled: true),
+                                                                  storeStock: .init(enabled: true))))
+            }
+        }
+        let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockUserNotificationCenter.authorizationStatus = .authorized
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [123])
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
+        let network = makeNetworkWithJetpackActive()
+        let sut = makeSUT(
+            stores: stores,
+            userNotificationCenter: mockUserNotificationCenter,
+            pushNotesManager: mockPushNotesManager,
+            pushNotificationEligibilityChecker: eligibilityChecker,
+            network: network,
+            siteID: 123
+        )
+
+        // When
+        let results = await sut.runTests([Test.site, Test.notifications])
+
+        // Then
+        #expect(results.count == 2)
+        #expect(results[1].isSuccess == false)
+        #expect(results[1].suggestedAction == Action.openPushNotificationPreferences)
+    }
+
+    @Test func test_testNotifications_when_registered_for_self_driven_PN_and_preferences_fetch_fails_then_returns_success() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: NotificationAction.self) { action in
+            if case let .loadPushNotificationPreferences(_, onCompletion) = action {
+                onCompletion(.failure(NSError(domain: "Test", code: 500)))
+            }
+        }
+        let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockUserNotificationCenter.authorizationStatus = .authorized
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [123])
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
+        let network = makeNetworkWithJetpackActive()
+        let sut = makeSUT(
+            stores: stores,
+            userNotificationCenter: mockUserNotificationCenter,
+            pushNotesManager: mockPushNotesManager,
+            pushNotificationEligibilityChecker: eligibilityChecker,
+            network: network,
+            siteID: 123
+        )
+
+        // When
+        let results = await sut.runTests([Test.site, Test.notifications])
+
+        // Then
+        #expect(results.count == 2)
+        #expect(results[1].isSuccess == true)
+    }
+
+    @Test func test_testNotifications_when_not_eligible_for_self_driven_PN_and_device_not_registered_then_returns_failure_with_registerDevice_action() async {
         // Given
         let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
         mockUserNotificationCenter.authorizationStatus = .authorized
         let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: nil)
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = false
         let network = makeNetworkWithJetpackActive()
         let sut = makeSUT(
             userNotificationCenter: mockUserNotificationCenter,
             pushNotesManager: mockPushNotesManager,
+            pushNotificationEligibilityChecker: eligibilityChecker,
             network: network
         )
 
@@ -252,6 +358,134 @@ struct SupportDiagnosticsServiceTests {
         #expect(results[0].isSuccess == true)
         #expect(results[1].isSuccess == false)
         #expect(results[1].suggestedAction == Action.registerDevice)
+    }
+
+    @Test func test_testNotifications_when_eligible_for_self_driven_PN_and_site_not_registered_then_returns_failure_with_registerDevice_action() async {
+        // Given
+        let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockUserNotificationCenter.authorizationStatus = .authorized
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
+        let network = makeNetworkWithJetpackActive()
+        let sut = makeSUT(
+            userNotificationCenter: mockUserNotificationCenter,
+            pushNotesManager: mockPushNotesManager,
+            pushNotificationEligibilityChecker: eligibilityChecker,
+            network: network
+        )
+
+        // When
+        let results = await sut.runTests([Test.site, Test.notifications])
+
+        // Then
+        #expect(results.count == 2)
+        #expect(results[0].isSuccess == true)
+        #expect(results[1].isSuccess == false)
+        #expect(results[1].suggestedAction == Action.registerDevice)
+    }
+
+    @Test func test_testNotifications_when_eligible_for_self_driven_PN_site_not_registered_and_WPCom_notifications_enabled_then_returns_success() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            if case let .loadNotificationSettings(_, onCompletion) = action {
+                onCompletion(.success(NotificationSettings(deviceID: 123, enabledSites: [123], disabledSites: [])))
+            }
+        }
+        let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockUserNotificationCenter.authorizationStatus = .authorized
+        let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: "123", siteIDsRegisteredForWooPNs: [])
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
+        let pluginVersionChecker = MockPluginVersionChecker()
+        var didCheckPluginVersion = false
+        pluginVersionChecker.onCheckCompatibility = {
+            didCheckPluginVersion = true
+        }
+        let pluginVersionCheckerFactory = MockPluginVersionCheckerFactory(checker: pluginVersionChecker)
+        let network = makeNetworkWithJetpackActive()
+        let sut = makeSUT(
+            stores: stores,
+            userNotificationCenter: mockUserNotificationCenter,
+            pushNotesManager: mockPushNotesManager,
+            pushNotificationEligibilityChecker: eligibilityChecker,
+            pluginVersionCheckerFactory: pluginVersionCheckerFactory,
+            network: network
+        )
+
+        // When
+        let results = await sut.runTests([Test.site, Test.notifications])
+
+        // Then
+        #expect(results.count == 2)
+        #expect(results[0].isSuccess == true)
+        #expect(results[1].isSuccess == true)
+        #expect(didCheckPluginVersion == false)
+    }
+
+    @Test func test_testNotifications_when_eligible_for_self_driven_PN_site_not_registered_and_WPCom_order_notifications_disabled_then_returns_failure() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        let settings = NotificationSettings(deviceID: 123, enabledSites: [], disabledSites: [123])
+        stores.whenReceivingAction(ofType: AccountAction.self) { action in
+            if case let .loadNotificationSettings(_, onCompletion) = action {
+                onCompletion(.success(settings))
+            }
+        }
+        let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockUserNotificationCenter.authorizationStatus = .authorized
+        let mockPushNotesManager = MockPushNotificationsManager(mockedDeviceID: "123", siteIDsRegisteredForWooPNs: [])
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
+        let network = makeNetworkWithJetpackActive()
+        let sut = makeSUT(
+            stores: stores,
+            userNotificationCenter: mockUserNotificationCenter,
+            pushNotesManager: mockPushNotesManager,
+            pushNotificationEligibilityChecker: eligibilityChecker,
+            network: network
+        )
+
+        // When
+        let results = await sut.runTests([Test.site, Test.notifications])
+
+        // Then
+        #expect(results.count == 2)
+        #expect(results[0].isSuccess == true)
+        #expect(results[1].isSuccess == false)
+        #expect(results[1].suggestedAction == Action.enableOrderNotifications(settings: settings))
+    }
+
+    @Test func test_testNotifications_when_eligible_for_self_driven_PN_and_plugin_is_outdated_then_returns_failure_with_updatePlugin_action() async {
+        // Given
+        let mockUserNotificationCenter = MockUserNotificationsCenterAdapter()
+        mockUserNotificationCenter.authorizationStatus = .authorized
+        let mockPushNotesManager = MockPushNotificationsManager(siteIDsRegisteredForWooPNs: [])
+        let eligibilityChecker = MockWooPushNotificationEligibilityChecker()
+        eligibilityChecker.isEligible = true
+        let pluginVersionChecker = MockPluginVersionChecker()
+        pluginVersionChecker.result = .success(.incompatible(currentVersion: "10.0.0", requiredVersion: WooPluginRequirements.minimumVersion))
+        let pluginVersionCheckerFactory = MockPluginVersionCheckerFactory(checker: pluginVersionChecker)
+        let network = makeNetworkWithJetpackActive()
+        let sut = makeSUT(
+            userNotificationCenter: mockUserNotificationCenter,
+            pushNotesManager: mockPushNotesManager,
+            pushNotificationEligibilityChecker: eligibilityChecker,
+            pluginVersionCheckerFactory: pluginVersionCheckerFactory,
+            network: network,
+            isWPCom: false
+        )
+
+        // When
+        let results = await sut.runTests([Test.site, Test.notifications])
+
+        // Then
+        #expect(results.count == 2)
+        #expect(results[0].isSuccess == true)
+        #expect(results[1].isSuccess == false)
+        #expect(results[1].suggestedAction == Action.updateWooCommercePlugin)
+        #expect(results[1].errorMessage?.contains(WooPluginRequirements.minimumVersion) == true)
     }
 
     // MARK: - Sequential Test Execution
@@ -377,17 +611,22 @@ struct SupportDiagnosticsServiceTests {
         connectivityObserver: ConnectivityObserver? = nil,
         userNotificationCenter: UserNotificationsCenterAdapter? = nil,
         pushNotesManager: PushNotesManager? = nil,
+        pushNotificationEligibilityChecker: WooPushNotificationEligibilityChecking? = nil,
+        pluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol? = nil,
         network: MockNetwork? = nil,
+        isWPCom: Bool = true,
         siteID: Int64 = 123
     ) -> SupportDiagnosticsService {
         let site = Site.fake().copy(siteID: siteID)
-        let session = SessionManager.makeForTesting(authenticated: true, defaultSite: site)
+        let session = SessionManager.makeForTesting(authenticated: true, isWPCom: isWPCom, defaultSite: site)
         return SupportDiagnosticsService(
             session: session,
             stores: stores ?? MockStoresManager(sessionManager: session),
             connectivityObserver: connectivityObserver ?? MockConnectivityObserver(),
             userNotificationCenter: userNotificationCenter ?? MockUserNotificationsCenterAdapter(),
             pushNotesManager: pushNotesManager ?? MockPushNotificationsManager(),
+            pushNotificationEligibilityChecker: pushNotificationEligibilityChecker ?? MockWooPushNotificationEligibilityChecker(),
+            pluginVersionCheckerFactory: pluginVersionCheckerFactory ?? MockPluginVersionCheckerFactory(),
             network: network
         )
     }
@@ -396,5 +635,23 @@ struct SupportDiagnosticsServiceTests {
         let network = MockNetwork()
         network.simulateResponse(requestUrlSuffix: "system_status", filename: "system-status-with-jetpack-active")
         return network
+    }
+
+    private static func enabledPushNotificationPreferences() -> PushNotificationPreferences {
+        PushNotificationPreferences(storeOrder: .init(enabled: true),
+                                    storeReview: .init(enabled: true),
+                                    storeStock: .init(enabled: true))
+    }
+}
+
+private final class MockPluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol {
+    private let checker: MockPluginVersionChecker
+
+    init(checker: MockPluginVersionChecker = MockPluginVersionChecker()) {
+        self.checker = checker
+    }
+
+    func makeChecker(siteID: Int64, pluginPath: String, minimumVersion: String) -> PluginVersionCheckerProtocol {
+        checker
     }
 }

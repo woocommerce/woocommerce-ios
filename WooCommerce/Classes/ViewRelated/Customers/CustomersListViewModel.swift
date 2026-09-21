@@ -154,7 +154,7 @@ extension CustomersListViewModel: PaginationTrackerDelegate {
 
         searchTermPublisher
             .combineLatest(searchFilterPublisher.prepend(searchFilter)) // Use configured filter as initial value
-            .sink { [weak self] (searchTerm, searchFilter) in
+            .sink { [weak self] searchTerm, searchFilter in
                 guard let self else { return }
                 self.updatePredicate(searchTerm: searchTerm)
                 self.updateResults()

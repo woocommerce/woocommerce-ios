@@ -145,7 +145,11 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
     func test_actions_for_a_subscription_ProductVariation() {
         // Arrange
         let productVariation = Fixtures.subscriptionProductVariation
-        let model = EditableProductVariationModel(productVariation: productVariation)
+        let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  parentProductType: .variableSubscription,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: nil)
 
         // Action
         let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
@@ -167,6 +171,26 @@ final class ProductVariationFormActionsFactoryTests: XCTestCase {
 
         let expectedBottomSheetActions: [ProductFormBottomSheetAction] = []
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
+    }
+
+    func test_actions_for_a_ProductVariation_with_stale_subscription_metadata_but_non_subscription_parent_excludes_subscription_rows() {
+        // Arrange
+        // A variation of a non-subscription variable product can retain `_subscription_*` metadata;
+        // it must not surface subscription action rows.
+        let productVariation = Fixtures.subscriptionProductVariation
+        let model = EditableProductVariationModel(productVariation: productVariation,
+                                                  parentProductType: .variable,
+                                                  allAttributes: [],
+                                                  parentProductSKU: nil,
+                                                  parentProductDisablesQuantityRules: nil)
+
+        // Action
+        let factory = ProductVariationFormActionsFactory(productVariation: model, editable: true)
+
+        // Assert
+        let settingsSectionActions = factory.settingsSectionActions()
+        XCTAssertFalse(settingsSectionActions.contains(.subscriptionFreeTrial(editable: true)))
+        XCTAssertFalse(settingsSectionActions.contains(.subscriptionExpiry(editable: true)))
     }
 
     func test_actions_for_a_physical_ProductVariation_with_quantity_rules() {

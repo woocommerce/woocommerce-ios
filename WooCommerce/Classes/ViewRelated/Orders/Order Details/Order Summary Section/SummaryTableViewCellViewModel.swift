@@ -21,7 +21,6 @@ struct SummaryTableViewCellViewModel {
     init(order: Order,
          status: OrderStatus?,
          isEditButtonVisible: Bool = true,
-         isCIAB: Bool = false,
          calendar: Calendar = .current) {
 
         billingAddress = order.billingAddress
@@ -29,18 +28,11 @@ struct SummaryTableViewCellViewModel {
         salesChannel = order.salesChannel?.description
 
         let orderStatus = status?.status ?? order.status
-        let statusTitle = status?.name ?? order.status.rawValue
-        if isCIAB {
-            presentation = OrderStatusPresentation(
-                style: CIABOrderStatusMapper.displayStatus(for: orderStatus),
-                title: CIABOrderStatusMapper.displayName(for: orderStatus)
-            )
-        } else {
-            presentation = OrderStatusPresentation(
-                style: orderStatus,
-                title: statusTitle
-            )
-        }
+        let statusTitle = status?.name ?? order.status.localizedName
+        presentation = OrderStatusPresentation(
+            style: orderStatus,
+            title: statusTitle
+        )
 
         self.isEditButtonVisible = isEditButtonVisible
         self.calendar = calendar

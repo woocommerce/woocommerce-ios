@@ -122,7 +122,6 @@ private extension CustomerSelectorViewController {
                     } else {
                         if configuration.disallowCreatingCustomer {
                             self.showEmptyState(with: self.emptyStateWithNoCreationConfiguration())
-
                         } else {
                             self.showEmptyState(with: self.emptyStateConfiguration())
                         }

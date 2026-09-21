@@ -28,7 +28,6 @@ private class CaptureLogs: NSObject, WordPressLoggingDelegate {
     func logVerbose(_ str: String) {
         verboseLogs.append(str)
     }
-
 }
 
 class LoggingTest: XCTestCase {
@@ -66,5 +65,4 @@ class LoggingTest: XCTestCase {
         XCTAssertNoThrow(WPAuthenticatorLogInfo("this log should not be printed"))
         XCTAssertEqual(self.logger.infoLogs.count, 0)
     }
-
 }

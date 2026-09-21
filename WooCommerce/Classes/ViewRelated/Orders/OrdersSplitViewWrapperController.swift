@@ -3,11 +3,18 @@ import Yosemite
 
 /// Controller to wrap the orders split view
 ///
-final class OrdersSplitViewWrapperController: UIViewController {
+final class OrdersSplitViewWrapperController: UIViewController, UsesCompactLayoutInNarrowWindow {
     private let siteID: Int64
 
-    private lazy var ordersSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView)
+    private lazy var ordersSplitViewController = WooSplitViewController(columnForCollapsingHandler: handleCollapsingSplitView,
+                                                                        didCollapseHandler: handleDidCollapse,
+                                                                        didExpandHandler: handleDidExpand)
     private lazy var ordersViewController = OrdersRootViewController(siteID: siteID, switchDetailsHandler: handleSwitchingDetails)
+    private let primaryNavigationController = WooTabNavigationController()
+    private let secondaryNavigationController = WooNavigationController()
+    private lazy var navigationStack = SplitViewNavigationStack(splitViewController: ordersSplitViewController,
+                                                                primaryNavigationController: primaryNavigationController,
+                                                                secondaryNavigationController: secondaryNavigationController)
 
     init(siteID: Int64) {
         self.siteID = siteID
@@ -32,10 +39,11 @@ final class OrdersSplitViewWrapperController: UIViewController {
             DDLogError("## Notification with [\(String(describing: notification.noteID))] lacks its OrderID!")
             return
         }
+        let notificationSiteID = notification.resolvedSiteID()
 
         // workaround - delay to ensure the transition to the secondary column works after switching stores
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.2) { [self] in
-            presentDetails(for: Int64(orderID), siteID: notification.siteID, note: notification.note)
+            presentDetails(for: Int64(orderID), siteID: notificationSiteID, note: notification.note)
         }
     }
 
@@ -49,14 +57,12 @@ final class OrdersSplitViewWrapperController: UIViewController {
                 return
             }
             let loaderViewController = OrderLoaderViewController(orderID: orderID, siteID: Int64(siteID), note: note)
-            let loaderNavigationController = WooNavigationController(rootViewController: loaderViewController)
-            return showSecondaryView(loaderNavigationController)
+            return showSecondaryView(loaderViewController)
         }
     }
 
     private func orderLoaderAlreadyShownInSecondaryView(for orderID: Int64) -> Bool {
-        guard let navigationController = ordersSplitViewController.viewController(for: .secondary) as? WooNavigationController,
-              let loaderController = navigationController.topViewController as? OrderLoaderViewController else {
+        guard let loaderController = navigationStack.topContentViewController as? OrderLoaderViewController else {
             return false
         }
         return loaderController.orderID == orderID
@@ -77,22 +83,44 @@ private extension OrdersSplitViewWrapperController {
         let config = EmptyStateViewController.Config.simpleImageWithDescription(image: .shoppingBagsImage,
                                                                                details: Localization.emptyOrderDetails)
         emptyStateViewController.configure(config)
-        let navigationController = WooNavigationController(rootViewController: emptyStateViewController)
-        showSecondaryView(navigationController)
+        showSecondaryView(emptyStateViewController, showsInCollapsedLayout: false)
     }
 
     func isShowingEmptyView() -> Bool {
-        (ordersSplitViewController.viewController(for: .secondary) as? UINavigationController)?
-            .viewControllers.contains(where: { $0 is EmptyStateViewController }) == true
+        navigationStack.contentViewControllers.contains(where: { $0 is EmptyStateViewController })
     }
 
-    func showSecondaryView(_ viewController: UIViewController) {
+    func showSecondaryView(_ viewController: UIViewController,
+                           showsInCollapsedLayout: Bool = true,
+                           onCompletion: (() -> Void)? = nil) {
         // added to remove double details presented bug #11752 https://github.com/woocommerce/woocommerce-ios/pull/11753#discussion_r1463020153
         // - white debugging noticed that ordersViewController.navigationController had multiple orders in the view controllers list
         ordersViewController.navigationController?.popToRootViewController(animated: false)
 
-        ordersSplitViewController.setViewController(viewController, for: .secondary)
-        ordersSplitViewController.show(.secondary)
+        navigationStack.setContentViewControllers([viewController],
+                                                  showsInCollapsedLayout: showsInCollapsedLayout,
+                                                  animated: ordersSplitViewController.isCollapsed && showsInCollapsedLayout)
+        if !ordersSplitViewController.isCollapsed {
+            ordersSplitViewController.show(.secondary)
+        }
+        completeAfterShowingSecondary(onCompletion)
+    }
+
+    func completeAfterShowingSecondary(_ completion: (() -> Void)?) {
+        guard let completion else {
+            return
+        }
+
+        if let transitionCoordinator = ordersSplitViewController.transitionCoordinator,
+           transitionCoordinator.animate(alongsideTransition: nil, completion: { _ in
+                completion()
+           }) {
+            return
+        }
+
+        DispatchQueue.main.async {
+            completion()
+        }
     }
 
     /// This is to update the order detail in split view
@@ -130,50 +158,60 @@ private extension OrdersSplitViewWrapperController {
         // The up and down arrows are enabled when there is more than one item in `viewModels`.
         guard
             let viewModel = viewModels[safe: currentIndex],
-            let secondaryNavigationController = ordersSplitViewController.viewController(for: .secondary) as? UINavigationController,
-            let existingOrderDetailsViewController = secondaryNavigationController.topViewController as? OrderDetailsViewController,
+            let existingOrderDetailsViewController = navigationStack.topContentViewController as? OrderDetailsViewController,
             existingOrderDetailsViewController.isQuickOrderNavigationSupported() == orderDetailsViewController.isQuickOrderNavigationSupported()
         else {
             // When showing an order without quick navigation, it simply sets the order details to the secondary view.
-            let orderDetailsNavigationController = WooNavigationController(rootViewController: orderDetailsViewController)
-            showSecondaryView(orderDetailsNavigationController)
-            onCompletion?(true)
+            showSecondaryView(orderDetailsViewController) {
+                onCompletion?(true)
+            }
             return
         }
 
         if !existingOrderDetailsViewController.isPresentingViewModelOrder(viewModel) {
-            secondaryNavigationController.replaceTopViewController(
-                with: orderDetailsViewController,
-                animated: false
-            )
+            navigationStack.replaceTopContentViewController(with: orderDetailsViewController, showsInCollapsedLayout: true)
             ordersViewController.onOrderSelected(id: viewModel.order.orderID)
         }
 
-        ordersSplitViewController.show(.secondary)
-        onCompletion?(true)
+        if !ordersSplitViewController.isCollapsed {
+            ordersSplitViewController.show(.secondary)
+        }
+        completeAfterShowingSecondary {
+            onCompletion?(true)
+        }
     }
 }
 
 private extension OrdersSplitViewWrapperController {
     func configureSplitView() {
-        let ordersNavigationController = WooTabNavigationController()
-        ordersNavigationController.viewControllers = [ordersViewController]
-        ordersSplitViewController.setViewController(ordersNavigationController, for: .primary)
+        primaryNavigationController.viewControllers = [ordersViewController]
+        ordersSplitViewController.setViewController(primaryNavigationController, for: .primary)
 
+        ordersSplitViewController.setViewController(secondaryNavigationController, for: .secondary)
         showEmptyView()
     }
 
-    func handleCollapsingSplitView(splitViewController: UISplitViewController) -> UISplitViewController.Column {
-        if let navigationController = splitViewController.viewController(for: .secondary) as? UINavigationController,
-           navigationController.viewControllers.contains(where: { $0 is OrderDetailsViewController }) {
-            return .secondary
-        }
+    func handleCollapsingSplitView(splitViewController _: UISplitViewController) -> UISplitViewController.Column {
+        navigationStack.prepareForCollapsing(showsSecondaryContent: !isShowingEmptyView())
         return .primary
+    }
+
+    func handleDidExpand(splitViewController _: UISplitViewController) {
+        navigationStack.didExpand()
+        if navigationStack.contentViewControllers.isEmpty {
+            showEmptyView()
+            ordersViewController.restoreSelectedOrderDetails()
+        }
+    }
+
+    func handleDidCollapse(splitViewController _: UISplitViewController) {
+        navigationStack.didCollapse()
     }
 
     /// Set up properties for `self` as a root tab bar controller.
     ///
     func configureTabBarItem() {
+        title = Localization.ordersTabTitle
         tabBarItem.title = Localization.ordersTabTitle
         tabBarItem.image = .pagesImage
         tabBarItem.accessibilityIdentifier = "tab-bar-orders-item"
@@ -187,6 +225,13 @@ private extension OrdersSplitViewWrapperController {
 
         contentView.translatesAutoresizingMaskIntoConstraints = false
         view.pinSubviewToAllEdges(contentView)
+    }
+}
+
+extension OrdersSplitViewWrapperController: TabReselectionHandling {
+    /// Returns the orders list (primary column) to its root when the Orders tab is re-selected.
+    func handleTabReselection() {
+        primaryNavigationController.popToRootOrScrollToTop(animated: true)
     }
 }
 

@@ -53,13 +53,15 @@ struct InPersonPaymentsCodPaymentGatewayNotSetUp_Previews: PreviewProvider {
 
 private enum Localization {
     static let title = NSLocalizedString(
-        "Do you want to add Pay in Person to your web checkout?",
+        "inPersonPayments.cashOnDelivery.notSetUp.title",
+        value: "Do you want to add Pay In Person to your web checkout?",
         comment: "Title for the card present payments onboarding step encouraging the merchant to enable the " +
-        "Pay in Person payment gateway.")
+        "Pay In Person payment gateway.")
 
     static let message = NSLocalizedString(
-        "Enabling \"Pay in Person\" lets customers pay you for online orders at delivery via cash or card.",
-        comment: "The message explaining what will happen when the merchant enables the Pay in Person payment " +
+        "inPersonPayments.cashOnDelivery.notSetUp.message",
+        value: "Enabling Pay In Person lets customers pay you for online orders at delivery via cash or card.",
+        comment: "The message explaining what will happen when the merchant enables the Pay In Person payment " +
         "gateway during card present payments onboarding.")
 
     static let secondaryMessage = NSLocalizedString(
@@ -73,8 +75,9 @@ private enum Localization {
         "Pay in Person payment gateway")
 
     static let enableButton = NSLocalizedString(
-        "Enable Pay in Person",
-        comment: "Title for the button to enable the Pay in Person payment gateway during card present " +
+        "inPersonPayments.cashOnDelivery.notSetUp.enableButton",
+        value: "Enable Pay In Person",
+        comment: "Title for the button to enable the Pay In Person payment gateway during card present " +
         "payments onboarding.")
 
     static let cashOnDeliveryLearnMore = NSLocalizedString(

@@ -38,7 +38,7 @@ struct ProductCategoryListMapper: Mapper {
             }()
             return categories
                 .filter { $0.error == nil }
-                .compactMap { (categoryCreated) -> ProductCategory? in
+                .compactMap { categoryCreated -> ProductCategory? in
                     if let name = categoryCreated.name, let slug = categoryCreated.slug {
                         return ProductCategory(categoryID: categoryCreated.categoryID,
                                                siteID: categoryCreated.siteID,

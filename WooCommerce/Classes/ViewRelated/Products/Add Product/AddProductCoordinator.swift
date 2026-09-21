@@ -41,6 +41,7 @@ final class AddProductCoordinator: Coordinator {
     private let analytics: Analytics
     private let navigateToProductForm: ((UIViewController) -> Void)?
     private let onDeleteCompletion: () -> Void
+    private let onDuplicateCompletion: ((Product) -> Void)?
 
     /// ResultController to to track the current product count.
     ///
@@ -62,7 +63,6 @@ final class AddProductCoordinator: Coordinator {
 
     private var addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol
     private var addProductWithAIBottomSheetPresenter: BottomSheetPresenter?
-    private let siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private let wooSubscriptionProductsEligibilityChecker: WooSubscriptionProductsEligibilityCheckerProtocol
 
@@ -74,12 +74,12 @@ final class AddProductCoordinator: Coordinator {
          sourceNavigationController: UINavigationController,
          storage: StorageManagerType = ServiceLocator.storageManager,
          addProductWithAIEligibilityChecker: ProductCreationAIEligibilityCheckerProtocol = ProductCreationAIEligibilityChecker(),
-         siteCIABEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker(),
          productImageUploader: ProductImageUploaderProtocol = ServiceLocator.productImageUploader,
          analytics: Analytics = ServiceLocator.analytics,
          isFirstProduct: Bool,
          navigateToProductForm: ((UIViewController) -> Void)? = nil,
-         onDeleteCompletion: @escaping () -> Void = {}) {
+         onDeleteCompletion: @escaping () -> Void = {},
+         onDuplicateCompletion: ((Product) -> Void)? = nil) {
         self.siteID = siteID
         self.source = source
         switch sourceView {
@@ -98,29 +98,33 @@ final class AddProductCoordinator: Coordinator {
         self.storage = storage
         self.addProductWithAIEligibilityChecker = addProductWithAIEligibilityChecker
         self.wooSubscriptionProductsEligibilityChecker = WooSubscriptionProductsEligibilityChecker(siteID: siteID, storage: storage)
-        self.siteCIABEligibilityChecker = siteCIABEligibilityChecker
         self.analytics = analytics
         self.isFirstProduct = isFirstProduct
         self.navigateToProductForm = navigateToProductForm
         self.onDeleteCompletion = onDeleteCompletion
+        self.onDuplicateCompletion = onDuplicateCompletion
     }
 
     func start() {
         switch source {
         case .productsTab:
-            analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped(horizontalSizeClass: UITraitCollection.current.horizontalSizeClass))
+            analytics.track(event: .ProductsOnboarding.productListAddProductButtonTapped())
         default:
             break
         }
 
         analytics.track(event: .ProductCreation.addProductStarted(source: source, storeHasProducts: storeHasProducts))
 
-        if shouldSkipBottomSheet {
-            presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
-        } else if shouldShowAIActionSheet {
-            presentActionSheetWithAI()
-        } else {
-            presentProductTypeBottomSheet()
+        // `Coordinator.start()` is a nonisolated requirement, but every coordinator is started from UI code.
+        // Check that assumption at runtime until the `Coordinator` protocol is `@MainActor`. Depends on WOOMOB-4085.
+        MainActor.assumeIsolated {
+            if shouldSkipBottomSheet {
+                presentProductForm(bottomSheetProductType: .simple(isVirtual: false))
+            } else if shouldShowAIActionSheet {
+                presentActionSheetWithAI()
+            } else {
+                presentProductTypeBottomSheet()
+            }
         }
     }
 }
@@ -156,17 +160,19 @@ private extension AddProductCoordinator {
 
     /// Presents a bottom sheet for users to choose if what kind of product they want to create.
     ///
+    @MainActor
     func presentProductTypeBottomSheet() {
         let subtitle = NSLocalizedString("Select a product type",
                                          comment: "Message subtitle of bottom sheet for selecting a product type to create a product")
         let viewProperties = BottomSheetListSelectorViewProperties(
             subtitle: subtitle,
-            accessibilityIdentifier: Accessibility.createProductSheetIdentifier
+            accessibilityIdentifier: Accessibility.createProductSheetIdentifier,
+            backgroundColor: .basicBackground
         )
         let command = ProductTypeBottomSheetListSelectorCommand(
             source: .creationForm,
             subscriptionProductsEligibilityChecker: wooSubscriptionProductsEligibilityChecker,
-            siteCIABEligibilityChecker: siteCIABEligibilityChecker
+            backgroundColor: .basicBackground
         ) { [weak self] selectedBottomSheetProductType in
             guard let self else { return }
             self.analytics.track(event: .ProductCreation
@@ -187,6 +193,7 @@ private extension AddProductCoordinator {
 
     /// Presents a new product based on the provided bottom sheet type.
     ///
+    @MainActor
     func presentProductForm(bottomSheetProductType: BottomSheetProductType) {
         guard let product = ProductFactory().createNewProduct(type: bottomSheetProductType.productType,
                                                               isVirtual: bottomSheetProductType.isVirtual,
@@ -199,6 +206,7 @@ private extension AddProductCoordinator {
 
     /// Presents an action sheet with the option to start product creation with AI
     ///
+    @MainActor
     func presentActionSheetWithAI() {
         let isEligibleForWooSubscriptionProducts = wooSubscriptionProductsEligibilityChecker.isSiteEligible()
         let productTypes: [BottomSheetProductType] = [
@@ -233,6 +241,7 @@ private extension AddProductCoordinator {
         analytics.track(event: .ProductCreationAI.entryPointDisplayed())
     }
 
+    @MainActor
     func startProductCreationWithAI() {
         let viewController = AddProductWithAIContainerHostingController(viewModel: .init(siteID: siteID,
                                                                                          source: source,
@@ -250,6 +259,7 @@ private extension AddProductCoordinator {
 
     /// Presents a product onto the current navigation stack.
     ///
+    @MainActor
     func presentProduct(_ product: Product, formType: ProductFormType = .add, isAIContent: Bool = false) {
         let model = EditableProductModel(product: product)
         let currencyCode = ServiceLocator.currencySettings.currencyCode
@@ -272,13 +282,22 @@ private extension AddProductCoordinator {
                                                  showShareProductButton: viewModel.canShareProduct())
             }
         }
+        let onDuplicateCompletion = self.onDuplicateCompletion
         let viewController = ProductFormViewController(viewModel: viewModel,
                                                        isAIContent: isAIContent,
                                                        eventLogger: ProductFormEventLogger(),
                                                        productImageActionHandler: productImageActionHandler,
                                                        currency: currency,
                                                        presentationStyle: .navigationStack,
-                                                       onDeleteCompletion: onDeleteCompletion)
+                                                       onDeleteCompletion: onDeleteCompletion,
+                                                       onDuplicateCompletion: { sourceViewController, duplicatedProduct in
+            if let onDuplicateCompletion {
+                onDuplicateCompletion(duplicatedProduct)
+            } else {
+                ProductDetailNavigator.shared.replaceDestination(sourceViewController: sourceViewController,
+                                                                 with: duplicatedProduct)
+            }
+        })
         // Since the Add Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         viewController.hidesBottomBarWhenPushed = true
         if let navigateToProductForm {
@@ -303,20 +322,21 @@ private extension AddProductCoordinator {
     }
 
     func buildBottomSheetPresenter() -> BottomSheetPresenter {
-        BottomSheetPresenter(configure: { bottomSheet in
+        let navigationController = navigationController
+        return BottomSheetPresenter(configure: { bottomSheet in
             var sheet = bottomSheet
             sheet.prefersEdgeAttachedInCompactHeight = true
 
             // Sets detents for the sheet.
-            // Skips large detent if the device is iPad.
-            let traitCollection = UIScreen.main.traitCollection
-            let isIPad = traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular
-            if isIPad {
+            // Skips large detent when the current window has enough room.
+            let traitCollection = navigationController.topmostPresentedViewController.traitCollection
+            let isRegularWindow = traitCollection.horizontalSizeClass == .regular && traitCollection.verticalSizeClass == .regular
+            if isRegularWindow {
                 sheet.detents = [.medium()]
             } else {
                 sheet.detents = [.large(), .medium()]
             }
-            sheet.prefersGrabberVisible = !isIPad
+            sheet.prefersGrabberVisible = !isRegularWindow
         })
     }
 }

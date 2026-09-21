@@ -18,7 +18,8 @@ public enum OrdersUpdateTool {
         cannot set status to "refunded"; the merchant taps an order to issue a refund. \
         Only call when the merchant has explicitly requested a change. Do NOT call to \
         trigger side effects (e.g. flipping a status to send a customer email) or to \
-        answer information questions.
+        answer information questions. After a successful update, call `show_cards` \
+        with family `order` and the updated id so the merchant sees the new state.
         """,
         parametersSchema: .object([
             "type": .string("object"),
@@ -35,10 +36,13 @@ public enum OrdersUpdateTool {
                 ]),
                 "customer_note": .object([
                     "type": .string("string"),
+                    "maxLength": .int(Int64(OrderWriteArgumentValidation.customerNoteMaxLength)),
                     "description": .string("Internal note shown to the customer in their account.")
                 ]),
                 "billing_email": .object([
                     "type": .string("string"),
+                    "maxLength": .int(Int64(OrderWriteArgumentValidation.billingEmailMaxLength)),
+                    "format": .string("email"),
                     "description": .string("Replacement billing email (mapped to billing.email).")
                 ])
             ]),
@@ -62,8 +66,14 @@ public enum OrdersUpdateTool {
     }
 
     private static let allowedStatuses = AllowedOrderUpdateStatuses.values
+    private static let allowedArguments: Set<String> = ["id", "status", "customer_note", "billing_email"]
 
     private static let execute: @Sendable (String, WCRESTClient) async -> ToolResult = { arguments, client in
+        if let failed = ToolArgumentValidation.validate(arguments: arguments,
+                                                        allowed: allowedArguments,
+                                                        toolName: name) {
+            return .failed(failed)
+        }
         let args: Args
         switch RESTToolDispatch.decodeArguments(Args.self, from: arguments, toolName: name) {
         case .success(let value): args = value
@@ -78,6 +88,10 @@ public enum OrdersUpdateTool {
             return .failed(.init(toolName: name,
                                  kind: .invalidToolCall,
                                  reason: "status must be one of: \(allowedStatuses.sorted().joined(separator: ", "))"))
+        }
+        if let reason = OrderWriteArgumentValidation.validate(customerNote: args.customerNote,
+                                                              billingEmail: args.billingEmail) {
+            return .failed(.init(toolName: name, kind: .invalidToolCall, reason: reason))
         }
         var body: [String: Any] = [:]
         if let status = args.status { body["status"] = status }
@@ -102,7 +116,6 @@ public enum OrdersUpdateTool {
                                                           body: payload,
                                                           client: client,
                                                           toolName: name,
-                                                          family: .order,
                                                           summarize: OrderSummary.make)
     }
 }

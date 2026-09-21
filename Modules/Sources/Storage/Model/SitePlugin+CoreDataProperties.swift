@@ -22,5 +22,4 @@ extension SitePlugin {
     @NSManaged public var requiresWPVersion: String
     @NSManaged public var requiresPHPVersion: String
     @NSManaged public var textDomain: String
-
 }

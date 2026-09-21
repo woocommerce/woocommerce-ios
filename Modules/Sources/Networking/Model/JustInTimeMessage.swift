@@ -112,7 +112,6 @@ extension JustInTimeMessage {
 
             self.message = try container.decode(String.self, forKey: JustInTimeMessage.Content.CodingKeys.message)
             self.description = try container.decode(String.self, forKey: JustInTimeMessage.Content.CodingKeys.description)
-
         }
 
         public func encode(to encoder: Encoder) throws {
@@ -147,7 +146,6 @@ extension JustInTimeMessage {
 
             self.message = try container.decode(String.self, forKey: JustInTimeMessage.CTA.CodingKeys.message)
             self.link = try container.decode(String.self, forKey: JustInTimeMessage.CTA.CodingKeys.link)
-
         }
 
         public func encode(to encoder: Encoder) throws {

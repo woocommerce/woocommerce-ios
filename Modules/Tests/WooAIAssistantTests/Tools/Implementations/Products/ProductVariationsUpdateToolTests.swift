@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct ProductVariationsUpdateToolTests {
     @Test
     func test_productVariationsUpdate_when_regular_price_set_then_path_includes_both_ids() async throws {
@@ -28,7 +29,7 @@ struct ProductVariationsUpdateToolTests {
     }
 
     @Test
-    func test_productVariationsUpdate_when_success_then_card_family_is_productVariation() async throws {
+    func test_productVariationsUpdate_when_success_then_uiStructured_is_nil() async {
         // Given
         let body = """
         {"id": 33, "regular_price": "29.99"}
@@ -44,8 +45,7 @@ struct ProductVariationsUpdateToolTests {
             Issue.record("expected success, got \(result)")
             return
         }
-        let cards = try #require(success.uiStructured?.cards)
-        #expect(cards.allSatisfy { $0.family == .productVariation })
+        #expect(success.uiStructured == nil)
     }
 
     @Test
@@ -87,9 +87,9 @@ struct ProductVariationsUpdateToolTests {
     }
 
     @Test
-    func test_productVariationsUpdate_when_field_outside_allowlist_then_dropped_silently() async throws {
+    func test_productVariationsUpdate_when_field_outside_allowlist_then_returns_invalidToolCall() async {
         // Given
-        let client = MockWCRESTClient(response: StubResponses.ok(#"{"id":33}"#))
+        let client = MockWCRESTClient(response: StubResponses.ok("{}"))
         let tool = ProductVariationsUpdateTool.make()
 
         // When
@@ -99,15 +99,45 @@ struct ProductVariationsUpdateToolTests {
         let result = await tool.executor(arguments, client)
 
         // Then
-        guard case .success = result else {
-            Issue.record("expected success, got \(result)")
+        guard case .failed(let failed) = result else {
+            Issue.record("expected failed, got \(result)")
             return
         }
-        let call = try #require(await client.calls.first)
-        let parsed = try #require(call.body.flatMap { try? JSONSerialization.jsonObject(with: $0) as? [String: Any] })
-        #expect(parsed["weight"] == nil)
-        #expect(parsed["dimensions"] == nil)
-        #expect(parsed["regular_price"] as? String == "1.00")
+        #expect(failed.kind == .invalidToolCall)
+        #expect(await client.calls.isEmpty)
+    }
+
+    @Test
+    func test_variations_update_when_write_succeeds_then_summary_uses_variation_detail_projection_with_attributes_and_image() async throws {
+        // Given
+        let body = """
+        {
+            "id": 33, "regular_price": "29.99", "stock_status": "instock",
+            "attributes": [{"id": 7, "name": "Color", "option": "Red"}],
+            "image": {"id": 9, "src": "v.jpg"}
+        }
+        """
+        let client = MockWCRESTClient(response: StubResponses.ok(body))
+        let tool = ProductVariationsUpdateTool.make()
+
+        // When
+        let result = await tool.executor(#"{"product_id": 12, "id": 33, "regular_price": "29.99"}"#, client)
+
+        // Then
+        guard case .success(let success) = result, case .object(let summary) = success.structured else {
+            Issue.record("expected success object")
+            return
+        }
+        guard case .array(let attrs) = summary["attributes"], case .object(let firstAttr) = attrs.first else {
+            Issue.record("expected attributes")
+            return
+        }
+        #expect(firstAttr["option"] == .string("Red"))
+        guard case .object(let image) = summary["image"] else {
+            Issue.record("expected image")
+            return
+        }
+        #expect(image["src"] == .string("v.jpg"))
     }
 
     @Test

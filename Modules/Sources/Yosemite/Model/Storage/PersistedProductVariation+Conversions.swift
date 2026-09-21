@@ -52,7 +52,6 @@ extension PersistedProductVariation {
             image: image?.toProductImage()
         )
     }
-
 }
 
 // MARK: - POSProductVariation Storage Extensions

@@ -145,7 +145,7 @@ final class ProductCategoryListViewModel {
         self.onReloadNeeded = onReloadNeeded
     }
 
-    /// The invokation of this method will trigger a reload of the list without performing any new fetch,
+    /// The invocation of this method will trigger a reload of the list without performing any new fetch,
     /// neither local or remote.
     ///
     func reloadData() {

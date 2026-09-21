@@ -71,7 +71,6 @@ struct WooShippingRefundView: View {
         } message: {
             Text(Localization.ErrorAlert.message)
         }
-
     }
 }
 

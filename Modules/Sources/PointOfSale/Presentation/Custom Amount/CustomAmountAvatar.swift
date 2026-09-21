@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// Square avatar that renders the first letter of a custom amount's name on
-/// the standard POS surface-container background. Used in place of the generic
+/// a muted gray surface, matching the no-image product placeholder so the tile
+/// reads as a distinct element against the card. Used in place of the generic
 /// `tag` glyph wherever a single custom amount appears as a row, so multiple
 /// custom amounts on the same screen are distinct at a glance.
 ///
@@ -12,7 +13,7 @@ struct CustomAmountAvatar: View {
 
     var body: some View {
         ZStack {
-            Color.posSurfaceContainerLow
+            Color.posSurfaceDim
 
             Text(initial)
                 .font(.posBodyXLargeBold)

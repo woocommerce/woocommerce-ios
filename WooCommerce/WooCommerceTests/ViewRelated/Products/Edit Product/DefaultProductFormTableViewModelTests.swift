@@ -333,6 +333,50 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
         XCTAssertFalse(hasOneTimeShippingEnabledLabel)
     }
 
+    // MARK: Price row subscription gating
+
+    func test_price_row_shows_recurring_price_for_subscription_product() throws {
+        // Given
+        let subscription = ProductSubscription.fake().copy(period: .month, periodInterval: "1")
+        let product = Product.fake().copy(productTypeKey: ProductType.subscription.rawValue,
+                                          regularPrice: "60",
+                                          subscription: subscription)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "$",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        let priceDetails = try XCTUnwrap(priceRowDetails(in: tableViewModel))
+        XCTAssertTrue(priceDetails.contains("every"))
+    }
+
+    func test_price_row_shows_plain_price_for_simple_product_with_stale_subscription_metadata() throws {
+        // Given
+        // A simple product can retain `_subscription_*` metadata after being changed away from a
+        // subscription type; the price row must show a plain regular price, not a recurring one.
+        let subscription = ProductSubscription.fake().copy(period: .month, periodInterval: "1")
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue,
+                                          regularPrice: "60",
+                                          subscription: subscription)
+        let model = EditableProductModel(product: product)
+        let actionsFactory = ProductFormActionsFactory(product: model, formType: .edit)
+
+        // When
+        let tableViewModel = DefaultProductFormTableViewModel(product: model,
+                                                              actionsFactory: actionsFactory,
+                                                              currency: "$",
+                                                              isDescriptionAIEnabled: true)
+
+        // Then
+        let priceDetails = try XCTUnwrap(priceRowDetails(in: tableViewModel))
+        XCTAssertFalse(priceDetails.contains("every"))
+    }
+
     // MARK: Subscription free trial
 
     func test_subscription_free_trial_row_returns_expected_details_with_singular_format() throws {
@@ -839,6 +883,21 @@ final class DefaultProductFormTableViewModelTests: XCTestCase {
 }
 
 private extension DefaultProductFormTableViewModelTests {
+    /// Returns the `details` string of the price settings row, searching all settings sections.
+    func priceRowDetails(in tableViewModel: DefaultProductFormTableViewModel) -> String? {
+        for section in tableViewModel.sections {
+            guard case let .settings(rows) = section else {
+                continue
+            }
+            for row in rows {
+                if case let .price(viewModel, _) = row {
+                    return viewModel.details
+                }
+            }
+        }
+        return nil
+    }
+
     enum Localization {
         static let priceFormat = NSLocalizedString("Regular price: %1$@ every %2$@",
                                                    comment: "Description of the subscription price for a product, with the price and billing frequency. " +

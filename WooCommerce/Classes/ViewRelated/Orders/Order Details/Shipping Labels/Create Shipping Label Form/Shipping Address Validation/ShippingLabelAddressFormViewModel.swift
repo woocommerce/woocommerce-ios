@@ -35,7 +35,7 @@ final class ShippingLabelAddressFormViewModel {
 
     /// Current `ViewModel` state.
     ///
-    private var state: State = State() {
+    private var state = State() {
         didSet {
             updateSections()
             onChange?(nil)
@@ -314,7 +314,7 @@ extension ShippingLabelAddressFormViewModel {
 
         state.isLoading = true
         let addressToBeVerified = ShippingLabelAddressVerification(address: address, type: type)
-        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] (result) in
+        let action = ShippingLabelAction.validateAddress(siteID: siteID, address: addressToBeVerified) { [weak self] result in
             switch result {
             case .success:
                 ServiceLocator.analytics.track(.shippingLabelAddressValidationSucceeded)

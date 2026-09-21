@@ -46,7 +46,7 @@ public struct ProductVariationFormatter {
     ///
     public func generateAttributes(for variation: ProductVariationFormattable, from allAttributes: [ProductAttribute]) -> [VariationAttributeViewModel] {
         return allAttributes
-            .sorted(by: { (lhs, rhs) -> Bool in
+            .sorted(by: { lhs, rhs -> Bool in
                 lhs.position < rhs.position
             })
             .map { attribute -> VariationAttributeViewModel in

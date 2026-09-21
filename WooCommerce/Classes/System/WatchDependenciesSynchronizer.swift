@@ -78,7 +78,7 @@ final class WatchDependenciesSynchronizer: NSObject, WCSessionDelegate {
         let configurationDependencies = Publishers.CombineLatest($enablesCrashReports, $account)
 
         let watchDependencies = Publishers.CombineLatest(requiredDependencies, configurationDependencies)
-            .map { (required, configuration) -> WatchDependencies? in
+            .map { required, configuration -> WatchDependencies? in
 
                 let (storeID, storeName, credentials, currencySettings) = required
                 let (enablesCrashReports, account) = configuration

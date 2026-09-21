@@ -5,7 +5,18 @@ extension WooAnalyticsEvent {
         private enum Keys: String {
             case type
             case state
+            case carrier
             case unfulfilledShipmentsCount = "unfulfilled_shipments_count"
+        }
+
+        enum Carrier: String {
+            case upsdap
+            case fedex
+        }
+
+        enum CarrierTermsState: String {
+            case shown
+            case accepted
         }
 
         enum AddressType: String {
@@ -97,6 +108,13 @@ extension WooAnalyticsEvent {
         /// When a shipping label refund is requested
         static func refundRequested(error: Error? = nil) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .wooShippingRefundRequested, properties: [:], error: error)
+        }
+
+        /// When the carrier Terms of Service sheet is shown, or the merchant accepts it.
+        static func carrierTermsOfService(carrier: Carrier, state: CarrierTermsState) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .wooShippingCarrierTermsOfService,
+                              properties: [Keys.carrier.rawValue: carrier.rawValue,
+                                           Keys.state.rawValue: state.rawValue])
         }
     }
 }

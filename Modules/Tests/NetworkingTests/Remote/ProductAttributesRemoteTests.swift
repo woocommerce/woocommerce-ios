@@ -191,5 +191,4 @@ final class ProductAttributesRemoteTests: XCTestCase {
         XCTAssertNil(try? result.get())
         XCTAssertNotNil(result.failure)
     }
-
 }

@@ -13,6 +13,7 @@ struct MockStripeCardPresentDetails {
     public let receipt: StripeTerminal.ReceiptDetails?
     public let emvAuthData: String?
     public let wallet: StripeTerminal.SCPWallet?
+    public let networks: StripeTerminal.SCPNetworks?
     public let network: NSNumber?
 }
 
@@ -27,6 +28,7 @@ extension MockStripeCardPresentDetails {
                                      receipt: nil,
                                      emvAuthData: "authdata",
                                      wallet: nil,
+                                     networks: nil,
                                      network: NSNumber(integerLiteral: 1))
     }
 }

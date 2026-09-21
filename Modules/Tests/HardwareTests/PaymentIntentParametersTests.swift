@@ -1,5 +1,8 @@
 import XCTest
+import StripeTerminal
 @testable import Hardware
+
+private typealias PaymentIntentParameters = Hardware.PaymentIntentParameters
 
 final class PaymentIntentParametersTests: XCTestCase {
     func test_validEmail_is_saved() {
@@ -136,6 +139,19 @@ final class PaymentIntentParametersTests: XCTestCase {
         let stripeParameters = params.toStripe()
 
         XCTAssertNil(stripeParameters?.statementDescriptor)
+    }
+
+    func test_cardPresentCaptureMethod_sets_cardPresent_capture_method_option() throws {
+        let params = PaymentIntentParameters(amount: 100,
+                                             currency: "aud",
+                                             stripeSmallestCurrencyUnitMultiplier: 100,
+                                             paymentMethodTypes: [.cardPresent],
+                                             cardPresentCaptureMethod: .manualPreferred)
+
+        let stripeParameters = try XCTUnwrap(params.toStripe())
+
+        XCTAssertEqual(stripeParameters.paymentMethodOptionsParameters.cardPresentParameters.captureMethod,
+                       NSNumber(value: StripeTerminal.CardPresentCaptureMethod.manualPreferred.rawValue))
     }
 
     func test_cardReaderMetadata_is_passed_to_paymentIntent_when_sent_toStripe_then_stripeParameters_contains_cardReaderMetadata() {

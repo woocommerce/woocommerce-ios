@@ -1,0 +1,58 @@
+{
+    "data": {
+        "breakdown": {
+            "products": {
+                "items": [
+                    {
+                        "id": 1,
+                        "name": "Product",
+                        "quantity": 2,
+                        "subtotal": "20.00",
+                        "tax": "2.00",
+                        "total": "22.00",
+                        "product_id": 10
+                    }
+                ],
+                "subtotal": "20.00",
+                "tax": "2.00",
+                "total": "22.00"
+            },
+            "shipping": {
+                "items": [
+                    {
+                        "id": 2,
+                        "name": "Flat rate",
+                        "quantity": null,
+                        "subtotal": "3.00",
+                        "tax": "0.30",
+                        "total": "3.30",
+                        "product_id": null
+                    }
+                ],
+                "subtotal": "3.00",
+                "tax": "0.30",
+                "total": "3.30"
+            },
+            "fees": {
+                "items": [
+                    {
+                        "id": 3,
+                        "name": "Custom amount",
+                        "quantity": null,
+                        "subtotal": "4.00",
+                        "tax": "0.40",
+                        "total": "4.40",
+                        "product_id": null
+                    }
+                ],
+                "subtotal": "4.00",
+                "tax": "0.40",
+                "total": "4.40"
+            }
+        },
+        "subtotal": "27.00",
+        "tax": "2.70",
+        "total": "29.70",
+        "max_refundable": "50.00"
+    }
+}

@@ -9,7 +9,7 @@ final class CreateProductVariationTests: XCTestCase {
         let newVariation = CreateProductVariation.fake().copy(subscription: .fake())
 
         // When
-        let parameters = try newVariation.toDictionary()
+        let parameters = try newVariation.toJSONObjectDictionary()
 
         // Then
         let metadata =  try XCTUnwrap(parameters["meta_data"] as? [[String: Any]])
@@ -41,10 +41,9 @@ final class CreateProductVariationTests: XCTestCase {
         let newVariation = CreateProductVariation.fake()
 
         // When
-        let parameters = try newVariation.toDictionary()
+        let parameters = try newVariation.toJSONObjectDictionary()
 
         // Then
         XCTAssertNil(parameters["meta_data"])
     }
-
 }

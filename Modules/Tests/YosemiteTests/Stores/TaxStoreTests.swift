@@ -68,7 +68,7 @@ final class TaxStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxClass.self), 0)
 
-        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { _, error in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TaxClass.self), 3)
             XCTAssertNil(error)
 
@@ -90,7 +90,7 @@ final class TaxStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxClass.self), 0)
 
-        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { _, error in
             XCTAssertNil(error)
 
             let storedTaxClass = self.viewStorage.loadTaxClass(slug: remoteTaxClass.slug)
@@ -113,7 +113,7 @@ final class TaxStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "generic_error")
 
-        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { _, error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -127,7 +127,7 @@ final class TaxStoreTests: XCTestCase {
     func testRetrieveTaxClassesReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve tax class empty response")
 
-        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { _, error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -143,7 +143,7 @@ final class TaxStoreTests: XCTestCase {
         let remoteTaxClass = sampleTaxClass()
 
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
-        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { (taxClasses, error) in
+        let action = TaxAction.retrieveTaxClasses(siteID: sampleSiteID) { taxClasses, error in
             XCTAssertNil(error)
             XCTAssertNotNil(taxClasses?.first)
             XCTAssertEqual(taxClasses?.first, remoteTaxClass)
@@ -164,7 +164,7 @@ final class TaxStoreTests: XCTestCase {
 
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 2020, taxClass: "standard")
         network.simulateResponse(requestUrlSuffix: "taxes/classes", filename: "taxes-classes")
-        let action = TaxAction.requestMissingTaxClasses(for: product) { (taxClass, error) in
+        let action = TaxAction.requestMissingTaxClasses(for: product) { taxClass, _ in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.TaxClass.self), 3)
 
             XCTAssertEqual(taxClass?.slug, product.taxClass)

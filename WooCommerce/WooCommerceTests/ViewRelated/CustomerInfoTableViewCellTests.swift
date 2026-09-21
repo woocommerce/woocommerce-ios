@@ -3,62 +3,69 @@ import XCTest
 
 final class CustomerInfoTableViewCellTests: XCTestCase {
 
-    private var cell: CustomerInfoTableViewCell?
-
     private let titleMock = "Lorem ipsum"
 
     private let nameMock = "Dolor Sit"
 
     private let addressMock = "Lorem ipsum dolor sit amet 5, San Francisco"
 
-    override func setUp() {
-        super.setUp()
-        let nib = Bundle.main.loadNibNamed("CustomerInfoTableViewCell", owner: self, options: nil)
-        cell = nib?.first as? CustomerInfoTableViewCell
-        cell?.title = titleMock
-        cell?.name = nameMock
-        cell?.address = addressMock
-    }
-
-    override func tearDown() {
-        cell = nil
-        super.tearDown()
-    }
-
-    func testTitleLabelStyleIsSetToHeadline() {
+    @MainActor
+    func testTitleLabelStyleIsSetToHeadline() throws {
+        let cell = try makeSUT()
         let mockLabel = UILabel()
         mockLabel.applyHeadlineStyle()
 
-        XCTAssertEqual(cell?.getTitleLabel().font, mockLabel.font)
-        XCTAssertEqual(cell?.getTitleLabel().textColor, mockLabel.textColor)
+        XCTAssertEqual(cell.getTitleLabel().font, mockLabel.font)
+        XCTAssertEqual(cell.getTitleLabel().textColor, mockLabel.textColor)
     }
 
-    func testNameLabelStyleIsSetToBody() {
+    @MainActor
+    func testNameLabelStyleIsSetToBody() throws {
+        let cell = try makeSUT()
         let mockLabel = UILabel()
         mockLabel.applyBodyStyle()
 
-        XCTAssertEqual(cell?.getNameLabel().font, mockLabel.font)
-        XCTAssertEqual(cell?.getNameLabel().textColor, mockLabel.textColor)
+        XCTAssertEqual(cell.getNameLabel().font, mockLabel.font)
+        XCTAssertEqual(cell.getNameLabel().textColor, mockLabel.textColor)
     }
 
-    func testAddressLabelStyleIsSetToBody() {
+    @MainActor
+    func testAddressLabelStyleIsSetToBody() throws {
+        let cell = try makeSUT()
         let mockLabel = UILabel()
         mockLabel.applyBodyStyle()
 
-        XCTAssertEqual(cell?.getAddressLabel().font, mockLabel.font)
-        XCTAssertEqual(cell?.getAddressLabel().textColor, mockLabel.textColor)
+        XCTAssertEqual(cell.getAddressLabel().font, mockLabel.font)
+        XCTAssertEqual(cell.getAddressLabel().textColor, mockLabel.textColor)
     }
 
-    func testTitleLabelValues() {
-        XCTAssertEqual(cell?.getTitleLabel().text, titleMock)
+    @MainActor
+    func testTitleLabelValues() throws {
+        let cell = try makeSUT()
+        XCTAssertEqual(cell.getTitleLabel().text, titleMock)
     }
 
-    func testNameLabelValues() {
-        XCTAssertEqual(cell?.getNameLabel().text, nameMock)
+    @MainActor
+    func testNameLabelValues() throws {
+        let cell = try makeSUT()
+        XCTAssertEqual(cell.getNameLabel().text, nameMock)
     }
 
-    func testAddressLabelValues() {
-        XCTAssertEqual(cell?.getAddressLabel().text, addressMock)
+    @MainActor
+    func testAddressLabelValues() throws {
+        let cell = try makeSUT()
+        XCTAssertEqual(cell.getAddressLabel().text, addressMock)
     }
+}
 
+private extension CustomerInfoTableViewCellTests {
+    @MainActor
+    func makeSUT() throws -> CustomerInfoTableViewCell {
+        let nib = Bundle.main.loadNibNamed("CustomerInfoTableViewCell", owner: self, options: nil)
+        let cell = try XCTUnwrap(nib?.first as? CustomerInfoTableViewCell)
+        cell.title = titleMock
+        cell.name = nameMock
+        cell.address = addressMock
+        return cell
+    }
 }

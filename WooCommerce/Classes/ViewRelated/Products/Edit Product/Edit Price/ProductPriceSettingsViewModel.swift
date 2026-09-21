@@ -135,7 +135,7 @@ final class ProductPriceSettingsViewModel: ProductPriceSettingsViewModelOutput {
     var sections: [Section] {
         // Price section
         let priceRows: [Row] = {
-            if product.subscription == nil {
+            if !product.isSubscriptionProduct {
                 return [.price]
             }
             return [.price, .subscriptionPeriod, .subscriptionSignupFee]
@@ -186,7 +186,7 @@ extension ProductPriceSettingsViewModel: ProductPriceSettingsActionHandler {
     // MARK: - Initialization
 
     func retrieveProductTaxClass(completion: @escaping () -> Void) {
-        let action = TaxAction.requestMissingTaxClasses(for: product) { [weak self] (taxClass, error) in
+        let action = TaxAction.requestMissingTaxClasses(for: product) { [weak self] taxClass, _ in
             self?.taxClass = taxClass ?? self?.standardTaxClass
             completion()
         }

@@ -7,7 +7,7 @@ import Storage
 public final class ShippingLabelStore: Store {
     private let remote: ShippingLabelRemoteProtocol
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ShippingLabelRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }

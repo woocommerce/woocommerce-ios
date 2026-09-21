@@ -98,5 +98,4 @@ final class RevenueReportCardViewModelTests: XCTestCase {
         XCTAssertFalse(vm.showSyncError)
         XCTAssertNotNil(vm.reportViewModel)
     }
-
 }

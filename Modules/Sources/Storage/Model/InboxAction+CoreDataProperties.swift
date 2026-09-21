@@ -14,9 +14,7 @@ extension InboxAction {
     @NSManaged public var status: String?
     @NSManaged public var url: String?
     @NSManaged public var inboxNote: InboxNote
-
 }
 
 extension InboxAction: Identifiable {
-
 }

@@ -33,7 +33,7 @@ public final class PasswordScreen: ScreenObject {
     public func enterValidPassword() throws -> TwoFAScreen {
         try proceedWith(password: "pw")
 
-        return try TwoFAScreen()
+        return try TwoFAScreen(app: app)
     }
 
     public func enterInvalidPassword() throws -> PasswordScreen {
@@ -48,17 +48,6 @@ public final class PasswordScreen: ScreenObject {
     public func proceedWith(password: String) throws {
         passwordField.enterText(text: password)
         continueButton.tap()
-
-        // As of Xcode 14.3, the Simulator might ask to save the password which, of course, we don't want to do.
-        if app.staticTexts["Save Password?"].waitForExistence(timeout: 15) {
-            // There should be no need to wait for this button to exist since it's part of the same
-            // alert where "Save Password" is.
-            let dismissButton = app.buttons["Not Now"]
-            // Additionally wait for existence of the button to account for animations, even though the test runner should wait for the app
-            // to idle before moving on.
-            XCTAssertTrue(dismissButton.waitForExistence(timeout: 2))
-            dismissButton.tap()
-        }
     }
 
     @discardableResult

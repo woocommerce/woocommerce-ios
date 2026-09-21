@@ -91,13 +91,22 @@ struct AssistantChatScenarioBuilder {
 
         case .pendingConfirmation:
             let proposalID = UUID()
+            let preview = ConfirmationPreview(
+                summary: .raw("Update order #3479"),
+                fields: [
+                    ConfirmationPreviewField(name: "status",
+                                             label: .raw("Status"),
+                                             value: .raw("completed"),
+                                             priorValue: .raw("processing"))
+                ]
+            )
             let messages: [ChatMessage] = [
                 MockAssistantController.userMessage("Mark order 3479 as completed"),
                 MockAssistantController.assistantConfirmation(
                     text: "I'll mark order #3479 as completed.",
                     proposalID: proposalID,
                     tool: "orders_update",
-                    preview: "Update order #3479: status processing -> completed",
+                    preview: preview,
                     status: .pending
                 )
             ]
@@ -106,13 +115,22 @@ struct AssistantChatScenarioBuilder {
 
         case .pendingConfirmationBulk:
             let proposalID = UUID()
+            let preview = ConfirmationPreview(
+                summary: .raw("Update 12 orders"),
+                fields: [
+                    ConfirmationPreviewField(name: "status",
+                                             label: .raw("Status"),
+                                             value: .raw("completed (emails customers)"))
+                ],
+                isBulk: true
+            )
             let messages: [ChatMessage] = [
                 MockAssistantController.userMessage("Move all 12 processing orders to completed"),
                 MockAssistantController.assistantConfirmation(
                     text: "I'll move 12 orders from processing to completed.",
                     proposalID: proposalID,
                     tool: "orders_bulk_update",
-                    preview: "Update 12 orders: status -> completed (emails customers)",
+                    preview: preview,
                     status: .pending
                 )
             ]

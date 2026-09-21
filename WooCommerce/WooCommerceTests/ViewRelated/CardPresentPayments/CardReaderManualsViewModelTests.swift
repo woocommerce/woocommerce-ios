@@ -85,7 +85,7 @@ class CardReaderManualsViewModelTests: XCTestCase {
                         settingGroupKey: SiteSettingGroup.general.rawValue
                     )
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
-        let viewModel = CardReaderManualsViewModel.init()
+        let viewModel = CardReaderManualsViewModel()
 
         // When
         let availableReaderTypes: [CardReaderType] = []

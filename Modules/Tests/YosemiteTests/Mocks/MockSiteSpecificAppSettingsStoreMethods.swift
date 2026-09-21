@@ -38,18 +38,9 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
     var getPOSLocalCatalogCellularDataAllowedCalled = false
     var setPOSLocalCatalogCellularDataAllowedCalled = false
     var mockPOSLocalCatalogCellularDataAllowed: Bool?
-
-    // POS sunset warning properties
-    var getSunsetWarningLastDismissedDateCalled = false
-    var setSunsetWarningLastDismissedDateCalled = false
-    var mockSunsetWarningLastDismissedDate: Date?
-
-    // Card-present payments country expansion eligibility (RSM-637)
-    var loadCardPresentPaymentsCountryExpansionEligibilityCalled = false
-    var saveCardPresentPaymentsCountryExpansionEligibilityCalled = false
-    var mockCardPresentPaymentsCountryExpansionEligibility: Bool?
-    var spySavedCardPresentPaymentsCountryExpansionEligibility: Bool?
-    var spySavedCardPresentPaymentsCountryExpansionEligibilitySiteID: Int64?
+    var setPOSCatalogFileBlockedByHostAtCalled = false
+    var isPOSCatalogFileBlockedByHostCalled = false
+    var mockPOSCatalogFileBlockedByHostAt: Date?
 
     func getStoreSettings(for siteID: Int64) -> GeneralStoreSettings {
         getStoreSettingsCalled = true
@@ -139,26 +130,17 @@ final class MockSiteSpecificAppSettingsStoreMethods: SiteSpecificAppSettingsStor
         return mockPOSLocalCatalogCellularDataAllowed ?? false
     }
 
-    func getSunsetWarningLastDismissedDate(siteID: Int64) -> Date? {
-        getSunsetWarningLastDismissedDateCalled = true
-        return mockSunsetWarningLastDismissedDate
+    func setPOSCatalogFileBlockedByHostAt(siteID: Int64, date: Date?) {
+        setPOSCatalogFileBlockedByHostAtCalled = true
+        mockPOSCatalogFileBlockedByHostAt = date
     }
 
-    func setSunsetWarningLastDismissedDate(siteID: Int64, date: Date) {
-        setSunsetWarningLastDismissedDateCalled = true
-        mockSunsetWarningLastDismissedDate = date
+    func getPOSCatalogFileBlockedByHostAt(siteID: Int64) -> Date? {
+        mockPOSCatalogFileBlockedByHostAt
     }
 
-    // Card-present payments country expansion eligibility methods
-    func loadCardPresentPaymentsCountryExpansionEligibility(siteID: Int64) -> Bool? {
-        loadCardPresentPaymentsCountryExpansionEligibilityCalled = true
-        return mockCardPresentPaymentsCountryExpansionEligibility
-    }
-
-    func saveCardPresentPaymentsCountryExpansionEligibility(siteID: Int64, isEligible: Bool) {
-        saveCardPresentPaymentsCountryExpansionEligibilityCalled = true
-        spySavedCardPresentPaymentsCountryExpansionEligibility = isEligible
-        spySavedCardPresentPaymentsCountryExpansionEligibilitySiteID = siteID
-        mockCardPresentPaymentsCountryExpansionEligibility = isEligible
+    func isPOSCatalogFileBlockedByHost(siteID: Int64) -> Bool {
+        isPOSCatalogFileBlockedByHostCalled = true
+        return mockPOSCatalogFileBlockedByHostAt != nil
     }
 }

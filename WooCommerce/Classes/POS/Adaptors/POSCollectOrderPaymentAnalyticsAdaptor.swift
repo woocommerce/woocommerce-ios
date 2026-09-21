@@ -15,6 +15,8 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
 
     private let analytics: POSAnalyticsProviding
 
+    private let currentTimestamp: () -> TimeInterval
+
     private var paymentGatewayAccount: PaymentGatewayAccount?
     private let configuration: CardPresentPaymentsConfiguration
     private var connectedReader: CardReader?
@@ -23,9 +25,11 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
     }
 
     init(analytics: POSAnalyticsProviding,
-         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration) {
+         configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
+         currentTimestamp: @escaping () -> TimeInterval = { Date().timeIntervalSince1970 }) {
         self.analytics = analytics
         self.configuration = configuration
+        self.currentTimestamp = currentTimestamp
     }
 
     func preflightResultReceived(_ result: CardReaderPreflightResult?) {
@@ -41,7 +45,18 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         }
     }
 
-    func trackProcessingCompletion(intent: Yosemite.PaymentIntent) { }
+    func trackProcessingCompletion(intent: Yosemite.PaymentIntent) {
+        guard let paymentMethod = intent.paymentMethod(),
+              case .interacPresent = paymentMethod else {
+            return
+        }
+
+        analytics.track(event: .PointOfSale.interacCollectPaymentSuccess(
+            forGatewayID: paymentGatewayAccount?.gatewayID,
+            countryCode: configuration.countryCode,
+            cardReaderModel: connectedReaderModel
+        ))
+    }
 
     func trackSuccessfulCardPayment(capturedPaymentData: CardPresentCapturedPaymentData) {
         // Property: milliseconds_since_customer_interaction_started
@@ -81,19 +96,63 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         resetCheckoutTapCountTracker()
     }
 
-    func trackPaymentFailure(with error: any Error) { }
-    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) { }
-    func trackEmailTapped() { }
-    func trackReceiptPrintTapped() { }
-    func trackReceiptPrintSuccess() { }
-    func trackReceiptPrintCanceled() { }
-    func trackReceiptPrintFailed(error: any Error) { }
+    func trackSuccessfulScanToPayPayment() {
+        let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
+
+        analytics.track(event: .PointOfSale.scanToPayCollectPaymentSuccess(
+            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
+        ))
+        resetCheckoutTapCountTracker()
+    }
+
+    func trackSuccessfulMarkAsPaidPayment() {
+        let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
+
+        analytics.track(event: .PointOfSale.markAsPaidSuccess(
+            millisecondsSinceCustomerIteractionStarted: elapsedTimeSinceCustomerInteraction
+        ))
+        resetCheckoutTapCountTracker()
+    }
+
+    func trackPaymentFailure(with error: any Error) {
+        analytics.track(event: .PointOfSale.cardPresentCollectPaymentFailed(
+            forGatewayID: paymentGatewayAccount?.gatewayID,
+            error: error,
+            countryCode: configuration.countryCode,
+            cardReaderModel: connectedReaderModel,
+            millisecondsSinceCustomerIteractionStarted: calculateElapsedTimeInMilliseconds(since: customerInteractionStarted),
+            millisecondsSinceOrderSyncSuccess: calculateElapsedTimeInMilliseconds(since: orderSync),
+            millisecondsSinceReaderReadyToCollect: calculateElapsedTimeInMilliseconds(since: cardReaderReady),
+            millisecondsSinceCardTapped: calculateElapsedTimeInMilliseconds(since: cardReaderTapped),
+            checkoutTapCount: checkoutTapCount
+        ))
+
+        // The checkout tap count is deliberately not reset:
+        // the merchant can retry after a failure, and we want the count to reflect every attempt made for the same customer interaction.
+        resetProcessingPaymentTracking()
+    }
+
+    func trackPaymentCancelation(cancelationSource: WooAnalyticsEvent.InPersonPayments.CancellationSource) {
+        analytics.track(event: .PointOfSale.cardPresentCollectPaymentCanceled(
+            forGatewayID: paymentGatewayAccount?.gatewayID,
+            countryCode: configuration.countryCode,
+            cardReaderModel: connectedReaderModel,
+            cancellationSource: cancelationSource.rawValue,
+            millisecondsSinceCustomerIteractionStarted: calculateElapsedTimeInMilliseconds(since: customerInteractionStarted),
+            millisecondsSinceOrderSyncSuccess: calculateElapsedTimeInMilliseconds(since: orderSync),
+            millisecondsSinceReaderReadyToCollect: calculateElapsedTimeInMilliseconds(since: cardReaderReady),
+            millisecondsSinceCardTapped: calculateElapsedTimeInMilliseconds(since: cardReaderTapped),
+            checkoutTapCount: checkoutTapCount
+        ))
+
+        resetProcessingPaymentTracking()
+    }
 
     func trackCustomerInteractionStarted() {
         // Any action that is considered as user starting an iteraction resets any ongoing counter
         resetAllCountersOnInteractionStarted()
         analytics.track(.pointOfSaleInteractionWithCustomerStarted)
-        customerInteractionStarted = Date().timeIntervalSince1970
+        customerInteractionStarted = currentTimestamp()
     }
 
     func trackOrderSyncSuccess() {
@@ -125,7 +184,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
     }
 
     private func trackElapsedTimeFromOrderSyncToCardReady() {
-        let elapsedTime = cardReaderReady - orderSync
+        let elapsedTime = calculateElapsedTimeInSeconds(from: orderSync, to: cardReaderReady)
         analytics.track(event: .PointOfSale.cardReaderReadyForCardPayment(waitingTime: elapsedTime))
     }
 }
@@ -133,12 +192,25 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
 // Helpers
 private extension POSCollectOrderPaymentAnalyticsAdaptor {
     func trackCurrentTime() -> Double {
-        Date().timeIntervalSince1970
+        currentTimestamp()
     }
 
     func calculateElapsedTimeInMilliseconds(since start: Double) -> Double {
-        let end = Date().timeIntervalSince1970
+        guard start > 0 else {
+            return 0
+        }
+
+        let end = currentTimestamp()
         return floor((end - start) * 1000)
+    }
+
+    /// Both markers are Unix timestamps: subtracting an unset one reports the wall clock as if it were a duration.
+    func calculateElapsedTimeInSeconds(from start: Double, to end: Double) -> Double {
+        guard start > 0, end > 0 else {
+            return 0
+        }
+
+        return end - start
     }
 
     private func resetProcessingPaymentTracking() {

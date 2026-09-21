@@ -1,0 +1,19 @@
+{
+    "id": 3946,
+    "name": "Product (Copy)",
+    "slug": "",
+    "status": "draft",
+    "meta_data": [
+        {
+            "key": "custom_key",
+            "value": "custom_value"
+        }
+    ],
+    "images": [
+        {
+            "id": 12,
+            "src": "https://example.com/image.jpg"
+        }
+    ],
+    "variations": [3947, 3948]
+}

@@ -56,6 +56,7 @@ extension Networking.AccountSettings {
         .init(
             userID: .fake(),
             tracksOptOut: .fake(),
+            crashReportingOptOut: .fake(),
             firstName: .fake(),
             lastName: .fake()
         )
@@ -1758,7 +1759,8 @@ extension Networking.SiteAPI {
         .init(
             siteID: .fake(),
             namespaces: .fake(),
-            applicationPasswordAvailable: .fake()
+            applicationPasswordAvailable: .fake(),
+            routes: .fake()
         )
     }
 }

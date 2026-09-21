@@ -56,7 +56,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         // Act
         let viewModel = ProductShippingSettingsViewModel(product: model)
         waitForExpectation { expectation in
-            viewModel.completeUpdating { (weight, dimensions, oneTimeShipping, shippingClass, shippingClassID, hasUnsavedChanges) in
+            viewModel.completeUpdating { weight, dimensions, oneTimeShipping, shippingClass, shippingClassID, hasUnsavedChanges in
                 // Assert
                 XCTAssertEqual(weight, product.weight)
                 XCTAssertEqual(dimensions, product.dimensions)
@@ -88,7 +88,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         let retrievedShippingClass = ProductShippingClass(count: 0, descriptionHTML: nil, name: "60 Days", shippingClassID: 2, siteID: 0, slug: "90-day")
         viewModel.onShippingClassRetrieved(shippingClass: retrievedShippingClass)
         waitForExpectation { expectation in
-            viewModel.completeUpdating { (weight, dimensions, oneTimeShipping, shippingClass, shippingClassID, hasUnsavedChanges) in
+            viewModel.completeUpdating { weight, dimensions, oneTimeShipping, shippingClass, shippingClassID, hasUnsavedChanges in
                 // Assert
                 XCTAssertEqual(weight, product.weight)
                 XCTAssertEqual(dimensions, product.dimensions)
@@ -121,7 +121,7 @@ final class ProductShippingSettingsViewModelTests: XCTestCase {
         viewModel.handleOneTimeShippingChange(true)
         viewModel.handleShippingClassChange(nil)
         waitForExpectation { expectation in
-            viewModel.completeUpdating { (weight, dimensions, oneTimeShipping, shippingClass, shippingClassID, hasUnsavedChanges) in
+            viewModel.completeUpdating { weight, dimensions, oneTimeShipping, shippingClass, shippingClassID, hasUnsavedChanges in
                 // Assert
                 XCTAssertEqual(weight, "-1.2")
                 XCTAssertEqual(dimensions, ProductDimensions(length: "", width: "3.2", height: "9.888"))

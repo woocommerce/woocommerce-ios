@@ -14,9 +14,7 @@ extension WooShippingCustomPackage {
     @NSManaged public var name: String?
     @NSManaged public var rawType: String?
     @NSManaged public var packagesResponse: WooShippingPackagesResponse?
-
 }
 
 extension WooShippingCustomPackage: Identifiable {
-
 }

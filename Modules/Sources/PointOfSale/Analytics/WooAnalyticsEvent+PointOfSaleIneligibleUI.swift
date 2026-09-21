@@ -24,6 +24,8 @@ extension WooAnalyticsEvent {
 private extension POSIneligibleReason {
     var analyticsValue: String {
         switch self {
+        case .noInternetConnection:
+            return "no_internet_connection"
         case .unsupportedCurrency:
             return "store_currency"
         case .unsupportedWooCommerceVersion:
@@ -32,9 +34,12 @@ private extension POSIneligibleReason {
             return "feature_switch_disabled"
         case .wooCommercePluginNotFound:
             return "unknown_wc_plugin"
-        case .siteSettingsNotAvailable,
-             .selfDeallocated:
-            return "other"
+        case .unsupportedCountry:
+            return "store_country"
+        case .siteSettingsNotAvailable:
+            return "site_settings_unavailable"
+        case .selfDeallocated:
+            return "self_deallocated"
         }
     }
 }

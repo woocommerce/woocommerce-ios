@@ -66,32 +66,32 @@ ContextA8C is an Automattic MCP server that gives AI tools access to Slack, P2s,
 ```bash
 # Build
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator build
+  -destination 'platform=iOS Simulator,name=iPhone 16' build
 
 # Run all unit tests
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator build test
+  -destination 'platform=iOS Simulator,name=iPhone 16' build test
 
 # Run single test class
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"WooCommerceTests/SomeTestClass"
 
 # Run single test method
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"WooCommerceTests/SomeTestClass/test_method_name"
 
 # Run module tests - use the module's own scheme for faster builds
 # When changes only affect a specific module (e.g. Yosemite, PointOfSale),
 # use that module's scheme instead of WooCommerce. Available schemes: Yosemite, PointOfSale, etc.
 xcodebuild -workspace WooCommerce.xcworkspace -scheme Yosemite \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"YosemiteTests/SomeTestClass"
 
 # Only use the WooCommerce scheme when changes span the main app target
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"WooCommerceTests"
 
 # Lint (SwiftLint via BuildTools plugin)
@@ -104,13 +104,20 @@ pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
   swift package plugin --allow-writing-to-directory .. \
   --allow-writing-to-package-directory swiftlint --working-directory .. --quiet --fix && popd
 
-# Code generation (Sourcery for Copiable/Fakeable)
+# Code generation (Sourcery for Copiable/Fakeable and the Design System demo token catalogs
+# — run after changing StoreDesignSystem tokens)
 pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
   swift package plugin --allow-writing-to-directory .. \
   --allow-writing-to-package-directory sourcery-command --disableCache && popd
 ```
 
 If the simulator `iPhone 16` is not available, discover what's installed: `xcrun simctl list devices available | grep -E "iPhone [0-9]" | tail -5`
+
+Do not add `-sdk iphonesimulator` to these commands.
+It overrides the SDK for *every* target in the `WooCommerce` scheme — including the watchOS `WatchWidgetsExtension` —
+which then compiles the wrong `#if os(watchOS)` branch of `WooCommerce/StoreWidgets/StoreWidgetTheme.swift`
+and fails with `reference to member 'accent' cannot be resolved`.
+`-destination` already selects the platform per target, so it is sufficient on its own.
 
 ## Architecture
 
@@ -181,17 +188,17 @@ When working on POS, you can build and test the module in isolation for faster f
 ```bash
 # Build PointOfSale module only
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   build-for-testing -only-testing:"PointOfSaleTests"
 
 # Run POS tests only
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"PointOfSaleTests"
 
 # Run a specific POS test class
 xcodebuild -workspace WooCommerce.xcworkspace -scheme WooCommerce \
-  -destination 'platform=iOS Simulator,name=iPhone 16' -sdk iphonesimulator \
+  -destination 'platform=iOS Simulator,name=iPhone 16' \
   test -only-testing:"PointOfSaleTests/SomeTestClass"
 ```
 
@@ -210,6 +217,18 @@ Modules/Sources/PointOfSale/
 Modules/Tests/PointOfSaleTests/  # POS unit tests
 WooCommerce/Classes/POS/         # App-target POS integration (POSTabCoordinator, adaptors)
 ```
+
+## Design System (StoreDesignSystem)
+
+`Modules/Sources/StoreDesignSystem/` is the Woo Mobile Design System module: tokens (`Tokens/` — color, typography, icons, spacing, padding, radius, size, stroke, motion) and `Store*` components (`Components/<Name>/`). Figma source: the "Mobile Design System" file. The in-app gallery lives in Debug Panel → Design System (`WooCommerce/Classes/ViewRelated/DesignSystemDemo/`).
+
+- **New SwiftUI views use `StoreDesignSystem`**: `Store*` components, `.storeTextStyle(_:)`, `Color.store*`, `StoreSpacing`/`StorePadding`/`StoreRadius`/`StoreIcon`. No hardcoded sizes, colors, or system fonts alongside them.
+- **Do not mix legacy styling with DS tokens** in one view: a view is either legacy (`Color(.text)`, `.headline`, `.withColorStudio`) or design-system, never both.
+- **Adding a component**: `Components/<Name>/Store<Name>.swift` plus closed variant/tone types, tokens only, a demo view in `DesignSystemDemo/` registered in `DesignSystemDemoView`, `#Preview` blocks, and Swift Testing coverage in `Modules/Tests/StoreDesignSystemTests/`. Before implementing, read the component spec through the Figma MCP connection: take the Figma node link from the ticket or issue description when present, otherwise ask the user for it. Figma links are not committed to this repository.
+
+## WooAIAssistant Module
+
+The WooAIAssistant module (`Modules/Sources/WooAIAssistant/`) is a self-contained feature module that ships an in-app conversational agent for merchants. The architecture is designed to be flexible: it can integrate REST tools, MCP tools, or both, and the chat endpoint is swappable without touching the agentic loop. The module renders rich entity cards that integrate with existing app views and screens. See `Modules/Sources/WooAIAssistant/AGENTS.md` for architecture, decisions, and anti-patterns. Live evaluation runs through the `/woo-ai-smoke` skill.
 
 ## Git Conventions
 
@@ -237,7 +256,7 @@ Stars indicate priority. `[Internal]` for changes not visible to users.
 
 ## Testing
 
-- **Prefer Swift Testing** (`@Test`, `#expect()`) for new test files
+- **New test files should only use Swift Testing** (`@Test`, `#expect()`). If this is not possible for any reason, share explicitly what the limitation is.
 - When adding to existing XCTest classes, follow that class's framework
 - **Naming**: snake_case — `test_<operation>_when_<condition>_then_<expected_result>()`
 - **Structure**: Given / When / Then blocks with comments

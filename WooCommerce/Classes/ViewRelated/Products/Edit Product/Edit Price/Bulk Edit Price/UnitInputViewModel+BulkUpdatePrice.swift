@@ -11,7 +11,7 @@ extension UnitInputViewModel {
         let currencyFormatter = CurrencyFormatter(currencySettings: currencySettings)
         let currencyCode = currencySettings.currencyCode
         let unit = currencySettings.symbol(from: currencyCode)
-        /// Depending on the currency settings we might have different decimal seperator or number of digits
+        /// Depending on the currency settings we might have different decimal separator or number of digits
         let formattedPlaceholder = currencyFormatter.localize(Decimal.zero,
                                                               decimalSeparator: currencySettings.decimalSeparator,
                                                               fractionDigits: currencySettings.fractionDigits,
@@ -24,26 +24,10 @@ extension UnitInputViewModel {
                                     "The price for bulk updating all variations. Editable.",
                                     comment: "VoiceOver accessibility hint, informing the user that this field allows to enter the price to use for"
                                     + " bulk updating all variations"),
-                                  unitPosition: currencySettings.currencyUnitPosition,
+                                  unitPosition: currencySettings.priceInputUnitPosition,
                                   keyboardType: .decimalPad,
                                   inputFormatter: PriceInputFormatter(),
                                   style: .secondary,
                                   onInputChange: onInputChange)
-    }
-}
-
-private extension CurrencySettings {
-    /// The placement of the currency symbol accordig to the currency settings
-    var currencyUnitPosition: UnitInputViewModel.UnitPosition {
-        switch currencyPosition {
-        case .left:
-            return .beforeInputWithoutSpace
-        case .leftSpace:
-            return .beforeInput
-        case .right:
-            return .afterInputWithoutSpace
-        case .rightSpace:
-            return .afterInput
-        }
     }
 }

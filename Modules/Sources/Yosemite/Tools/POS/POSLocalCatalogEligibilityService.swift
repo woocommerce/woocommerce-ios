@@ -3,13 +3,10 @@ import Alamofire
 import WooFoundationCore
 
 public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServiceProtocol {
-    private let catalogSizeChecker: POSCatalogSizeCheckerProtocol
-    private let systemStatusService: POSSystemStatusServiceProtocol
-    private let catalogSizeLimit: Int
-    private let isLocalCatalogFeatureFlagEnabled: Bool
-    private let isCatalogAPIFeatureFlagEnabled: Bool
-    private let remoteFeatureFlagProvider: @Sendable () async -> Bool
-    private let betaFeatureToggleProvider: @Sendable () async -> Bool
+    private var systemStatusService: POSSystemStatusServiceProtocol?
+    private let remoteFeatureFlagProvider: @MainActor @Sendable () async -> Bool
+    private let betaFeatureToggleProvider: @MainActor @Sendable () async -> Bool
+    private let syncStatusChecker: POSCatalogSyncStatusCheckerProtocol?
 
     // Eligibility states cached per site
     private var eligibilityStates: [Int64: POSLocalCatalogEligibilityState] = [:]
@@ -22,32 +19,36 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
 
     /// Initialize eligibility service
     /// - Parameters:
-    ///   - catalogSizeChecker: Service to check catalog size for sites
     ///   - systemStatusService: Service to check WooCommerce plugin version
-    ///   - isLocalCatalogFeatureFlagEnabled: Whether the local catalog feature flag is enabled
     ///   - remoteFeatureFlagProvider: Async closure that fetches the remote feature flag value
     ///   - betaFeatureToggleProvider: Async closure that fetches the beta feature toggle value from app settings
-    ///   - catalogSizeLimit: Maximum allowed catalog size (products + variations)
+    ///   - syncStatusChecker: Checks whether a full catalog sync completed for a site.
+    ///     Used to keep the local catalog usable when remote eligibility checks fail (e.g. offline).
     public init(
-        catalogSizeChecker: POSCatalogSizeCheckerProtocol,
-        systemStatusService: POSSystemStatusServiceProtocol,
-        isLocalCatalogFeatureFlagEnabled: Bool,
-        isCatalogAPIFeatureFlagEnabled: Bool = false,
-        remoteFeatureFlagProvider: @escaping @Sendable () async -> Bool,
-        betaFeatureToggleProvider: @escaping @Sendable () async -> Bool,
-        catalogSizeLimit: Int? = nil
+        systemStatusService: POSSystemStatusServiceProtocol? = nil,
+        remoteFeatureFlagProvider: @escaping @MainActor @Sendable () async -> Bool,
+        betaFeatureToggleProvider: @escaping @MainActor @Sendable () async -> Bool,
+        syncStatusChecker: POSCatalogSyncStatusCheckerProtocol? = nil
     ) {
-        self.catalogSizeChecker = catalogSizeChecker
         self.systemStatusService = systemStatusService
-        self.isLocalCatalogFeatureFlagEnabled = isLocalCatalogFeatureFlagEnabled
-        self.isCatalogAPIFeatureFlagEnabled = isCatalogAPIFeatureFlagEnabled
         self.remoteFeatureFlagProvider = remoteFeatureFlagProvider
         self.betaFeatureToggleProvider = betaFeatureToggleProvider
-        self.catalogSizeLimit = catalogSizeLimit ?? Constants.defaultCatalogSizeLimit
+        self.syncStatusChecker = syncStatusChecker
         // Eagerly start fetching the remote flag in the background
         Task {
             await self.fetchRemoteFlag()
         }
+    }
+
+    /// Attaches the service once. A local catalog eligibility actor belongs to one authenticated
+    /// session, so a later coordinator must not replace its status service with another session.
+    @discardableResult
+    public func configure(systemStatusService: POSSystemStatusServiceProtocol) async -> Bool {
+        guard self.systemStatusService == nil else {
+            return false
+        }
+        self.systemStatusService = systemStatusService
+        return true
     }
 
     /// Get catalog eligibility for a specific site
@@ -56,7 +57,7 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         guard await betaFeatureToggleProvider() else {
             // If the user changes the toggle, we should respond to that immediately, ignoring the cache. It's cheap to check.
             DDLogInfo("📋 POSLocalCatalogEligibilityService: Local catalog beta toggle disabled for site \(siteID)")
-            return .ineligible(reason: .featureFlagDisabled)
+            return .ineligible(reason: .betaFeatureDisabled)
         }
 
         if let cached = eligibilityStates[siteID] {
@@ -64,6 +65,11 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
         }
         // Not cached yet, refresh and return
         return try await refreshEligibilityState(for: siteID)
+    }
+
+    /// The cached state without evaluating: `catalogEligibility(for:)` refreshes on a miss, which can fetch.
+    public func cachedCatalogEligibility(for siteID: Int64) -> POSLocalCatalogEligibilityState? {
+        eligibilityStates[siteID]
     }
 
     /// Fetch and cache the remote feature flag value
@@ -84,8 +90,18 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
     ///   - isEligible: Whether POS is eligible
     ///   - siteID: The site ID to refresh eligibility for
     public func updatePOSEligibility(isEligible: Bool, for siteID: Int64) async throws {
+        let previousEligibility = posEligibilityStates[siteID]
         // Store the POS eligibility state for this site
         posEligibilityStates[siteID] = isEligible
+
+        // When nothing changed and an eligible state is already cached, keep it so POS entry
+        // (like Android) doesn't wait on remote re-checks that a previous refresh already ran.
+        // Cached ineligible states always re-validate, so recoverable conditions (e.g. the beta
+        // toggle turning on, or a transient check failure) are picked up without an app restart.
+        if previousEligibility == isEligible, eligibilityStates[siteID] == .eligible {
+            return
+        }
+
         // Refresh eligibility for the current site now that POS eligibility has changed
         try await refreshEligibilityState(for: siteID)
     }
@@ -110,19 +126,22 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             return state
         }
 
-        let (isLocalCatalogFeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled) = await featureFlagSettings()
-        guard isLocalCatalogFeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled else {
-            let state = POSLocalCatalogEligibilityState.ineligible(reason: .featureFlagDisabled)
+        let (isRemoteEnabled, isBetaToggleEnabled) = await betaFeatureAvailability()
+        guard isRemoteEnabled, isBetaToggleEnabled else {
+            let state = POSLocalCatalogEligibilityState.ineligible(reason: .betaFeatureDisabled)
             eligibilityStates[siteID] = state
-            DDLogInfo("📋 POSLocalCatalogEligibilityService: Local catalog feature flags disabled for site \(siteID) " +
-                      "(local: \(isLocalCatalogFeatureFlagEnabled), remote: \(isRemoteEnabled), betaToggle: \(isBetaToggleEnabled))")
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: Local catalog disabled for site \(siteID) " +
+                      "(remote flag: \(isRemoteEnabled), beta toggle: \(isBetaToggleEnabled))")
             return state
         }
 
-        // Check WooCommerce version:
-        // - Paginated sync requires 10.3.0+
-        // - Catalog API requires 10.5.0+,
-        let minimumVersion = isCatalogAPIFeatureFlagEnabled ? Constants.wcPluginMinimumVersionForCatalogAPI : Constants.wcPluginMinimumVersionForLocalCatalog
+        // Check WooCommerce version: local catalog requires 10.5.0+ (Catalog API)
+        let minimumVersion = Constants.wcPluginMinimumVersionForLocalCatalog
+        guard let systemStatusService else {
+            DDLogInfo("📋 POSLocalCatalogEligibilityService: System status service is not configured for site \(siteID)")
+            return .ineligible(reason: .posTabNotEligible)
+        }
+
         do {
             let pluginInfo = try await systemStatusService.loadWooCommercePluginAndPOSFeatureSwitch(siteID: siteID)
 
@@ -145,81 +164,42 @@ public actor POSLocalCatalogEligibilityService: POSLocalCatalogEligibilityServic
             }
 
             DDLogInfo("📋 POSLocalCatalogEligibilityService: WooCommerce version \(wcPlugin.version) meets minimum requirement for site \(siteID)")
+            eligibilityStates[siteID] = .eligible
+            return .eligible
         } catch AFError.explicitlyCancelled, is CancellationError {
             throw POSCatalogSyncError.requestCancelled
         } catch {
+            // Loading the plugin info for the version check failed (e.g. offline or a server
+            // error) — the version itself could not be determined. A completed full sync implies
+            // the version requirement was met when the catalog was synced, so this should not
+            // drop POS to remote mode. The tolerant result is not cached so the next refresh
+            // re-validates.
+            if await syncStatusChecker?.hasCompletedFullSync(for: siteID) == true {
+                DDLogInfo("📋 POSLocalCatalogEligibilityService: Failed to load plugin info for the version check " +
+                          "for site \(siteID), using previously synced catalog: \(error)")
+                return .eligible
+            }
             let errorString = String(describing: error)
             let state = POSLocalCatalogEligibilityState.ineligible(
-                reason: .catalogSizeCheckFailed(underlyingError: errorString)
+                reason: .versionCheckFailed(underlyingError: errorString)
             )
             eligibilityStates[siteID] = state
             DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check WooCommerce version for site \(siteID): \(error)")
             return state
         }
-
-        // Catalog API supports stores of any size, so we skip the size check
-        if isCatalogAPIFeatureFlagEnabled {
-            DDLogInfo("📋 POSLocalCatalogEligibilityService: Using catalog API, skipping size check for site \(siteID)")
-            eligibilityStates[siteID] = .eligible
-            return .eligible
-        }
-
-        // Fetch remote catalog size and check against limit (paginated sync only)
-        // Once pointOfSaleCatalogAPI is enabled and file approach is working, catalog size won't apply
-        do {
-            let size = try await catalogSizeChecker.checkCatalogSize(for: siteID)
-
-            if size.totalCount > catalogSizeLimit {
-                let state = POSLocalCatalogEligibilityState.ineligible(
-                    reason: .catalogSizeTooLarge(totalCount: size.totalCount, limit: catalogSizeLimit)
-                )
-                eligibilityStates[siteID] = state
-                DDLogInfo("📋 POSLocalCatalogEligibilityService: Site \(siteID) catalog size \(size.totalCount) exceeds limit \(catalogSizeLimit)")
-                return state
-            }
-
-            DDLogInfo("📋 POSLocalCatalogEligibilityService: Site \(siteID) catalog size \(size.totalCount) is within limit \(catalogSizeLimit)")
-            eligibilityStates[siteID] = .eligible
-            return .eligible
-
-        } catch AFError.explicitlyCancelled, is CancellationError {
-            throw POSCatalogSyncError.requestCancelled
-        } catch {
-            let errorString = String(describing: error)
-            let state = POSLocalCatalogEligibilityState.ineligible(
-                reason: .catalogSizeCheckFailed(underlyingError: errorString)
-            )
-            eligibilityStates[siteID] = state
-            DDLogError("📋 POSLocalCatalogEligibilityService: Failed to check catalog size for site \(siteID): \(error)")
-            return state
-        }
     }
 
-    private func featureFlagSettings() async -> (Bool, Bool, Bool) {
-        // Check feature flags - local, remote, and beta toggle must all be enabled
+    /// Whether the local catalog feature is enabled based on locally available signals only.
+    public func isLocalCatalogFeatureEnabled() async -> Bool {
+        let (isRemoteEnabled, isBetaToggleEnabled) = await betaFeatureAvailability()
+        return isRemoteEnabled && isBetaToggleEnabled
+    }
+
+    private func betaFeatureAvailability() async -> (Bool, Bool) {
+        // The remote feature flag and the user-facing beta toggle must both be enabled
         let isRemoteEnabled = await isRemoteCatalogFeatureFlagEnabled()
         let isBetaToggleEnabled = await betaFeatureToggleProvider()
-        return (isLocalCatalogFeatureFlagEnabled, isRemoteEnabled, isBetaToggleEnabled)
-    }
-}
-
-// MARK: - Factory Method
-
-public extension POSLocalCatalogEligibilityService {
-    /// Creates a remote feature flag provider closure for POS local catalog
-    /// - Parameter dispatcher: The dispatcher to use for fetching the remote flag
-    /// - Returns: A closure that fetches the remote feature flag value, defaulting to true if unavailable
-    static func makeRemoteFeatureFlagProvider(dispatcher: Dispatcher) -> @Sendable () async -> Bool {
-        return {
-            await withCheckedContinuation { continuation in
-                Task { @MainActor in
-                    let action = FeatureFlagAction.isRemoteFeatureFlagEnabled(.posLocalCatalogM1, defaultValue: true) { isEnabled in
-                        continuation.resume(returning: isEnabled)
-                    }
-                    dispatcher.dispatch(action)
-                }
-            }
-        }
+        return (isRemoteEnabled, isBetaToggleEnabled)
     }
 }
 
@@ -227,8 +207,6 @@ public extension POSLocalCatalogEligibilityService {
 
 private extension POSLocalCatalogEligibilityService {
     enum Constants {
-        static let defaultCatalogSizeLimit = 1000
-        static let wcPluginMinimumVersionForLocalCatalog = "10.3.0-beta"
-        static let wcPluginMinimumVersionForCatalogAPI = "10.5.0"
+        static let wcPluginMinimumVersionForLocalCatalog = "10.5.0"
     }
 }

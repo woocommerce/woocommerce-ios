@@ -17,23 +17,49 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
     @Published private(set) var selectedStockType: StockType = .lowStock
     @Published private(set) var analyticsEnabled = true
 
+    var lastUpdatedTimestamp: String {
+        guard let lastSuccessfulRefresh else {
+            return ""
+        }
+        let formatter = lastSuccessfulRefresh.isSameDay(as: currentDate()) ?
+            DateFormatter.timeFormatter :
+            DateFormatter.dateAndTimeFormatter
+        return formatter.string(from: lastSuccessfulRefresh)
+    }
+
+    var isShowingStaleData: Bool {
+        syncingError != nil && reports.isNotEmpty
+    }
+
     let siteID: Int64
     private let stores: StoresManager
     private let analytics: Analytics
+    private let currentDate: () -> Date
 
     /// In-memory list of loaded reports by product IDs.
     private var savedReports: [Int64: ProductReport] = [:]
+    private var lastSuccessfulRefresh: Date?
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         currentDate: @escaping () -> Date = Date.init) {
         self.siteID = siteID
         self.analytics = analytics
         self.stores = stores
+        self.currentDate = currentDate
 
         Task { @MainActor in
             selectedStockType = await loadLastSelectedStockType()
         }
+    }
+
+    @MainActor
+    func reloadDataIfNeeded(forceRefresh: Bool = false) async {
+        guard forceRefresh || shouldRefreshData else {
+            return
+        }
+        await reloadData()
     }
 
     @MainActor
@@ -50,6 +76,7 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
             .sorted { ($0.stockQuantity ?? 0) < ($1.stockQuantity ?? 0) }
 
             analyticsEnabled = true
+            lastSuccessfulRefresh = currentDate()
             analytics.track(event: .DynamicDashboard.cardLoadingCompleted(type: .stock))
         } catch {
             switch error {
@@ -69,6 +96,11 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
         onDismiss?()
     }
 
+    @MainActor
+    func onProductDetailDismissed() async {
+        await reloadData()
+    }
+
     func updateStockType(_ type: StockType) {
         selectedStockType = type
         stores.dispatch(AppSettingsAction.setLastSelectedStockType(siteID: siteID, type: type.rawValue))
@@ -79,6 +111,13 @@ final class ProductStockDashboardCardViewModel: ObservableObject {
 }
 
 private extension ProductStockDashboardCardViewModel {
+    var shouldRefreshData: Bool {
+        guard let lastSuccessfulRefresh else {
+            return true
+        }
+        return currentDate().timeIntervalSince(lastSuccessfulRefresh) >= Constants.refreshInterval
+    }
+
     @MainActor
     func loadLastSelectedStockType() async -> StockType {
         await withCheckedContinuation { continuation in
@@ -249,5 +288,6 @@ private extension ProductStockDashboardCardViewModel {
         static let pageNumber = 1
         static let maxItemCount = 3
         static let dayInSeconds: TimeInterval = 86400
+        static let refreshInterval: TimeInterval = 5 * 60
     }
 }

@@ -4,7 +4,7 @@ import WebKit
 final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPrintInteractionControllerDelegate {
     @IBOutlet private weak var webView: WKWebView!
 
-    private var printController: UIPrintInteractionController = UIPrintInteractionController.shared
+    private var printController = UIPrintInteractionController.shared
 
     private lazy var activityIndicator: UIActivityIndicatorView = {
         let indicator = UIActivityIndicatorView(style: .medium)
@@ -71,6 +71,8 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
     }
 
     private func configureNavigation() {
+        title = Localization.title
+
         let printButton = UIBarButtonItem(image: UIImage(systemName: "printer"),
                                           style: .plain,
                                           target: self,
@@ -81,7 +83,9 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
     @objc private func printReceipt() {
         ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintTapped(countryCode: nil,
                                                                                    cardReaderModel: nil,
-                                                                                   source: .backend))
+                                                                                   source: .backend,
+                                                                                   currency: viewModel.currency,
+                                                                                   paymentMethod: viewModel.paymentMethod))
         guard let _ = URL(string: viewModel.receiptURLString) else {
             return
         }
@@ -93,14 +97,25 @@ final class ReceiptViewController: UIViewController, WKNavigationDelegate, UIPri
 
         printController.present(animated: true, completionHandler: { [weak self] _, isCompleted, error in
             if let error {
-                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error, source: .backend))
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintFailed(error: error,
+                                                                                            source: .backend,
+                                                                                            currency: self?.viewModel.currency,
+                                                                                            paymentMethod: self?.viewModel.paymentMethod))
                 DDLogError("Failed to print receipt for orderID \(String(describing: self?.viewModel.orderID)). Error: \(error)")
             }
             switch isCompleted {
             case true:
-                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: nil, cardReaderModel: nil, source: .backend))
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintSuccess(countryCode: nil,
+                                                                                            cardReaderModel: nil,
+                                                                                            source: .backend,
+                                                                                            currency: self?.viewModel.currency,
+                                                                                            paymentMethod: self?.viewModel.paymentMethod))
             case false:
-                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: nil, cardReaderModel: nil, source: .backend))
+                ServiceLocator.analytics.track(event: .InPersonPayments.receiptPrintCanceled(countryCode: nil,
+                                                                                             cardReaderModel: nil,
+                                                                                             source: .backend,
+                                                                                             currency: self?.viewModel.currency,
+                                                                                             paymentMethod: self?.viewModel.paymentMethod))
             }
             self?.dismiss(animated: true)
         })
@@ -157,9 +172,17 @@ extension ReceiptViewController {
 extension ReceiptViewController {
     enum Constants {
         static let pointsPerInch: Int = 72
-        static let maximumReceiptContentWidth: CGFloat = CGFloat(4 * pointsPerInch)
-        static let maximumReceiptContentHeight: CGFloat = CGFloat(11 * pointsPerInch)
-        static let defaultRollCutterMargin: CGFloat = CGFloat(1 * pointsPerInch)
+        static let maximumReceiptContentWidth = CGFloat(4 * pointsPerInch)
+        static let maximumReceiptContentHeight = CGFloat(11 * pointsPerInch)
+        static let defaultRollCutterMargin = CGFloat(1 * pointsPerInch)
         static let margin: CGFloat = 16
+    }
+
+    enum Localization {
+        static let title = NSLocalizedString(
+            "receiptViewController.title",
+            value: "Receipt",
+            comment: "Title of the view containing a receipt preview."
+        )
     }
 }

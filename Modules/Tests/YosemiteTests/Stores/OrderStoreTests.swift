@@ -343,7 +343,7 @@ final class OrderStoreTests: XCTestCase {
         let firstAction = OrderAction.searchOrders(siteID: sampleSiteID,
                                                    keyword: defaultSearchKeyword,
                                                    pageNumber: defaultPageNumber,
-                                                   pageSize: defaultPageSize) { error in
+                                                   pageSize: defaultPageSize) { _ in
             orderStore.onAction(nestedAction)
         }
 
@@ -362,7 +362,7 @@ final class OrderStoreTests: XCTestCase {
         let remoteOrder = sampleOrder()
 
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { order, error in
             XCTAssertNil(error)
             XCTAssertEqual(order, remoteOrder)
 
@@ -384,7 +384,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
 
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { order, error in
             XCTAssertNotNil(order)
             XCTAssertNil(error)
 
@@ -408,7 +408,7 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "date-modified-gmt")
 
         let dateModified = DateFormatter.Defaults.dateTimeFormatter.date(from: "2023-03-29T03:23:02")
-        let order = sampleOrder().copy(dateModified: dateModified)
+        let order = sampleOrder().copy(dateModified: dateModified).withMetadataDerivedValues()
         storageManager.insertSampleOrder(readOnlyOrder: order)
 
         // When
@@ -416,7 +416,7 @@ final class OrderStoreTests: XCTestCase {
         let storedOrder = self.viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)?.toReadOnly()
 
         let fetchedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (order, error) in
+            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { order, _ in
                 promise(order)
             }
 
@@ -434,11 +434,11 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        storageManager.insertSampleOrder(readOnlyOrder: sampleOrderMutated())
+        storageManager.insertSampleOrder(readOnlyOrder: sampleOrderMutated().withMetadataDerivedValues())
 
         // When
         let fetchedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { (order, error) in
+            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { order, _ in
                 promise(order)
             }
 
@@ -448,6 +448,34 @@ final class OrderStoreTests: XCTestCase {
         // Then
         let expectedOrder = sampleOrder()
         assertEqual(expectedOrder, fetchedOrder)
+    }
+
+    /// Orders stored from list and search fetches carry no metadata-derived values (those fetches omit
+    /// `meta_data`), so the date-modified shortcut is skipped and the order is synced in full.
+    ///
+    func test_retrieveOrder_when_stored_order_lacks_metadata_then_fetches_full_order_from_remote() {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // `sampleOrder()` has no custom fields, attribution info, charge ID, or renewal subscription ID —
+        // matching an order stored from a list fetch.
+        storageManager.insertSampleOrder(readOnlyOrder: sampleOrder())
+
+        // When
+        let fetchedOrder: Yosemite.Order? = waitFor { promise in
+            let action = OrderAction.retrieveOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID) { order, _ in
+                promise(order)
+            }
+
+            orderStore.onAction(action)
+        }
+
+        // Then
+        // The full order from remote is returned, and the order request is the only request made
+        // (no `date_modified_gmt` probe beforehand).
+        assertEqual(sampleOrder(), fetchedOrder)
+        XCTAssertEqual(network.requestsForResponseData.count, 1)
     }
 
     // MARK: - OrderAction.retrieveOrderRemotely
@@ -495,6 +523,32 @@ final class OrderStoreTests: XCTestCase {
         let predicate = NSPredicate(format: "orderID = %ld", remoteOrder.orderID)
         let storedOrder = viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)
         XCTAssertEqual(storedOrder?.toReadOnly(), remoteOrder)
+    }
+
+    func test_retrieveOrderRemotely_deletes_existing_stored_order_when_remote_order_is_autoDraft() throws {
+        // Given
+        let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let requestedOrderID = sampleOrderID + 1
+        network.simulateResponse(requestUrlSuffix: "orders/\(requestedOrderID)", filename: "order-auto-draft-status")
+
+        let existingOrder = sampleOrder().copy(orderID: requestedOrderID, status: .autoDraft)
+        storageManager.insertSampleOrder(readOnlyOrder: existingOrder)
+        viewStorage.saveIfNeeded()
+
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
+
+        // When
+        let result = waitFor { promise in
+            orderStore.onAction(OrderAction.retrieveOrderRemotely(siteID: self.sampleSiteID, orderID: requestedOrderID) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let retrievedOrder = try XCTUnwrap(result.get())
+        XCTAssertEqual(retrievedOrder.status, .autoDraft)
+        XCTAssertNil(viewStorage.loadOrder(siteID: sampleSiteID, orderID: requestedOrderID))
+        XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 
     func test_retrieveOrderRemotely_does_not_return_existing_order_in_storage_and_replaces_order_in_storage() throws {
@@ -591,7 +645,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.toReadOnly(), remoteOrder)
     }
 
-    /// Verifies that `upsertStoredOrder` doesnt mark a Pre Existant order as "Search Results" (since it's been already
+    /// Verifies that `upsertStoredOrder` doesn't mark a Pre Existant order as "Search Results" (since it's been already
     /// retrieved for "Regular Scroll" display).
     ///
     func testUpsertStoredOrderDoesntMarkPreExistantOrdersAsSearchResults() {
@@ -670,7 +724,7 @@ final class OrderStoreTests: XCTestCase {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "orders/963", filename: "generic_error")
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { order, error in
             XCTAssertNil(order)
             XCTAssertNotNil(error)
 
@@ -687,7 +741,7 @@ final class OrderStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Retrieve single order empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { order, error in
             XCTAssertNotNil(error)
             XCTAssertNil(order)
 
@@ -709,7 +763,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 1)
 
         network.simulateError(requestUrlSuffix: "orders/963", error: NetworkError.notFound())
-        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { (order, error) in
+        let action = OrderAction.retrieveOrder(siteID: sampleSiteID, orderID: sampleOrderID) { order, error in
             XCTAssertNotNil(error)
             XCTAssertNil(order)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
@@ -978,12 +1032,12 @@ final class OrderStoreTests: XCTestCase {
 
         // Track Events: Upsert == 1 / Delete == 0
         var numberOfUpsertEvents = 0
-        entityListener.onUpsert = { upserted in
+        entityListener.onUpsert = { _ in
             numberOfUpsertEvents += 1
         }
 
-        // We expect *never* to get a deletion event
-        entityListener.onDelete = {
+        // We expect *never* to get a replacement event
+        entityListener.onReplace = { _ in
             XCTFail()
         }
 
@@ -1018,7 +1072,11 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
-        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, status: .autoDraft, amount: "125.50", taxable: false) { _ in }
+        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID,
+                                                           status: .autoDraft,
+                                                           amount: "125.50",
+                                                           taxable: false,
+                                                           currency: "USD") { _ in }
         store.onAction(action)
 
         // Then
@@ -1040,7 +1098,11 @@ final class OrderStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
 
         // When
-        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, status: .autoDraft, amount: "125.50", taxable: true) { _ in }
+        let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID,
+                                                           status: .autoDraft,
+                                                           amount: "125.50",
+                                                           taxable: true,
+                                                           currency: "USD") { _ in }
         store.onAction(action)
 
         // Then
@@ -1056,6 +1118,24 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(received, expected)
     }
 
+    func test_create_simple_payments_order_sends_currency_when_provided() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders", filename: "order")
+
+        // When
+        let action = OrderAction.createSimplePaymentsOrder(siteID: sampleSiteID,
+                                                           status: .pending,
+                                                           amount: "0.50",
+                                                           taxable: false,
+                                                           currency: "USD") { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.parameters["currency"] as? String, "USD")
+    }
+
     func test_create_pending_simple_payments_order_stores_orders_correctly() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1063,7 +1143,11 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let storedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, status: .pending, amount: "125.50", taxable: false) { _ in
+            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID,
+                                                               status: .pending,
+                                                               amount: "125.50",
+                                                               taxable: false,
+                                                               currency: "USD") { _ in
                 let order = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)?.toReadOnly()
                 promise(order)
             }
@@ -1081,7 +1165,11 @@ final class OrderStoreTests: XCTestCase {
 
         // When
         let storedOrder: Yosemite.Order? = waitFor { promise in
-            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID, status: .autoDraft, amount: "125.50", taxable: false) { _ in
+            let action = OrderAction.createSimplePaymentsOrder(siteID: self.sampleSiteID,
+                                                               status: .autoDraft,
+                                                               amount: "125.50",
+                                                               taxable: false,
+                                                               currency: "USD") { _ in
                 let order = self.storageManager.viewStorage.loadOrder(siteID: self.sampleSiteID, orderID: self.sampleOrderID)?.toReadOnly()
                 promise(order)
             }
@@ -1364,6 +1452,25 @@ final class OrderStoreTests: XCTestCase {
         ]
         // Updating an order will also contain `dp` (decimal point), but in this case we're only interested in `gift_cards`
         XCTAssertTrue(receivedKeys.contains(expectedKeys))
+    }
+
+    func test_update_order_with_request_currency_forwards_currency_as_query_parameter() throws {
+        // Given
+        let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "orders/963", filename: "order")
+
+        // When
+        let action = OrderAction.updateOrder(siteID: sampleSiteID,
+                                             order: sampleOrder(),
+                                             giftCard: nil,
+                                             fields: [],
+                                             requestCurrency: "EUR") { _ in }
+        store.onAction(action)
+
+        // Then
+        let request = try XCTUnwrap(network.requestsForResponseData.last as? JetpackRequest)
+        XCTAssertEqual(request.queryParameters.dictionary, ["currency": "EUR"])
+        XCTAssertNil(request.requestParameters.dictionary?["currency"])
     }
 
     func test_update_order_with_gift_card_returns_notApplied_error_when_error_response_does_not_include_gift_card() throws {
@@ -1666,16 +1773,16 @@ final class OrderStoreTests: XCTestCase {
         let lineItems = try XCTUnwrap(network.queryParametersDictionary?["line_items"] as? [[String: Any]])
         XCTAssertEqual(lineItems.count, 3)
 
-        let removedBundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 6 })
-        XCTAssertEqual(removedBundleOrderItem["quantity"] as? Int64, 0)
+        let removedBundleOrderItem = try XCTUnwrap(lineItems.first { requestInt64Value($0["id"]) == 6 })
+        XCTAssertEqual(requestInt64Value(removedBundleOrderItem["quantity"]), 0)
         XCTAssertNil(removedBundleOrderItem["bundle_configuration"])
 
-        let updatedBundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 0 })
-        XCTAssertEqual(updatedBundleOrderItem["quantity"] as? Int64, 2)
+        let updatedBundleOrderItem = try XCTUnwrap(lineItems.first { requestInt64Value($0["id"]) == 0 })
+        XCTAssertEqual(requestInt64Value(updatedBundleOrderItem["quantity"]), 2)
         XCTAssertNotNil(updatedBundleOrderItem["bundle_configuration"])
 
-        let removedChildBundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 7 })
-        XCTAssertEqual(removedChildBundleOrderItem["quantity"] as? Int64, 0)
+        let removedChildBundleOrderItem = try XCTUnwrap(lineItems.first { requestInt64Value($0["id"]) == 7 })
+        XCTAssertEqual(requestInt64Value(removedChildBundleOrderItem["quantity"]), 0)
         XCTAssertNil(removedChildBundleOrderItem["bundle_configuration"])
     }
 
@@ -1700,12 +1807,12 @@ final class OrderStoreTests: XCTestCase {
         let lineItems = try XCTUnwrap(network.queryParametersDictionary?["line_items"] as? [[String: Any]])
         XCTAssertEqual(lineItems.count, 2)
 
-        let bundleOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 0 })
-        XCTAssertEqual(bundleOrderItem["quantity"] as? Int64, 2)
+        let bundleOrderItem = try XCTUnwrap(lineItems.first { requestInt64Value($0["id"]) == 0 })
+        XCTAssertEqual(requestInt64Value(bundleOrderItem["quantity"]), 2)
         XCTAssertNotNil(bundleOrderItem["bundle_configuration"])
 
-        let anotherOrderItem = try XCTUnwrap(lineItems.first { ($0["id"] as? Int64) == 7 })
-        XCTAssertEqual(anotherOrderItem["quantity"] as? Int64, 3)
+        let anotherOrderItem = try XCTUnwrap(lineItems.first { requestInt64Value($0["id"]) == 7 })
+        XCTAssertEqual(requestInt64Value(anotherOrderItem["quantity"]), 3)
     }
 }
 
@@ -1995,5 +2102,32 @@ private extension OrderStoreTests {
 
     func sampleAppliedGiftCards() -> [Networking.OrderGiftCard] {
         return [Networking.OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)]
+    }
+
+    func requestInt64Value(_ value: Any?) -> Int64? {
+        switch value {
+        case let value as Int64:
+            return value
+        case let value as Int:
+            return Int64(value)
+        case let value as UInt where value <= UInt(Int64.max):
+            return Int64(value)
+        case let value as UInt64 where value <= UInt64(Int64.max):
+            return Int64(value)
+        case let value as NSNumber:
+            return value.int64Value
+        default:
+            return nil
+        }
+    }
+}
+
+private extension Networking.Order {
+    /// Returns a copy with a `chargeID`, marking the order as containing metadata-derived values so its
+    /// stored copy is eligible for the date-modified shortcut in `retrieveOrder`.
+    /// `MockStorageManager.insertSampleOrder` persists only scalar attributes (no relationships),
+    /// so the scalar `chargeID` is used as the marker.
+    func withMetadataDerivedValues() -> Networking.Order {
+        copy(chargeID: "ch_123")
     }
 }

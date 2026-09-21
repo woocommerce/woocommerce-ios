@@ -75,7 +75,6 @@ final class ProductFormActionsFactory_NonEmptyBottomSheetActionsTests: XCTestCas
                                                                           .editCustomFields]
         XCTAssertEqual(factory.bottomSheetActions(), expectedBottomSheetActions)
     }
-
 }
 
 private extension ProductFormActionsFactory_NonEmptyBottomSheetActionsTests {

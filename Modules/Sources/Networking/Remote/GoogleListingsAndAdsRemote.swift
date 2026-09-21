@@ -69,14 +69,13 @@ public final class GoogleListingsAndAdsRemote: Remote, GoogleListingsAndAdsRemot
         let dateFormatter = DateFormatter.Defaults.iso8601WithoutTimeZone
         dateFormatter.timeZone = timeZone
 
-        var parameters: [String: Any] = [
+        var parameters: RequestParameterConvertibleDictionary = ([
             ParameterKeys.after: dateFormatter.string(from: earliestDateToInclude),
             ParameterKeys.before: dateFormatter.string(from: latestDateToInclude),
             ParameterKeys.totals: totals.map { $0.rawValue }.joined(separator: ","),
-            ParameterKeys.orderby: orderby.rawValue
-        ]
-        // Only include this parameter if the value is non-nil.
-        parameters[ParameterKeys.nextPageToken] = nextPageToken
+            ParameterKeys.orderby: orderby.rawValue,
+            ParameterKeys.nextPageToken: nextPageToken
+        ] as OptionalRequestParameterConvertibleDictionary).compactMapValues { $0 }
 
         // Only include `ids` parameter if the list is not empty.
         if campaignIDs.isEmpty == false {

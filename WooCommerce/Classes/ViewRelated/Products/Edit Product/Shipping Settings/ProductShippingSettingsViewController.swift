@@ -87,7 +87,7 @@ private extension ProductShippingSettingsViewController {
 
         let action = ProductShippingClassAction
             .retrieveProductShippingClass(siteID: viewModel.product.siteID,
-                                          remoteID: viewModel.product.shippingClassID) { [weak self] (shippingClass, error) in
+                                          remoteID: viewModel.product.shippingClassID) { [weak self] shippingClass, error in
                                             guard let shippingClass, error == nil else {
                                                 return
                                             }

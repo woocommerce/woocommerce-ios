@@ -89,7 +89,6 @@ private extension BookingListContainerView {
                         .font(.body)
                         .foregroundStyle(Color.accentColor)
                 }
-
             }
             .padding()
             .background(Color(.listForeground(modal: false)))

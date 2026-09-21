@@ -68,7 +68,7 @@ struct WatchCrashLoggingStack: CrashLoggingStack {
 class WatchCrashLoggingDataProvider: CrashLoggingDataProvider {
 
     var sentryDSN: String {
-        ApiCredentials.sentryDSN
+        BuildConfiguration.current.isProduction ? ApiCredentials.sentryDSN : ApiCredentials.sentryDSNInternal
     }
 
     var userHasOptedOut: Bool = false

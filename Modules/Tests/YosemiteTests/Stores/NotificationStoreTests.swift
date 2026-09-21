@@ -46,7 +46,7 @@ final class NotificationStoreTests: XCTestCase {
 
         network.simulateResponse(requestUrlSuffix: "notifications", filename: "notifications-load-all")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Note.self), 0)
-        let action = NotificationAction.synchronizeNotifications() { (error) in
+        let action = NotificationAction.synchronizeNotifications() { error in
             XCTAssertNil(error)
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), MockNetwork.notificationLoadAllJSONCount)
 
@@ -102,14 +102,14 @@ final class NotificationStoreTests: XCTestCase {
         /// This call is expected to just request the Hashes, and not to perform a 4th network call (because everything
         /// will be up to date. Supposedly.)
         ///
-        let nestedSyncAction = NotificationAction.synchronizeNotifications() { (error) in
+        let nestedSyncAction = NotificationAction.synchronizeNotifications() { _ in
             XCTAssertEqual(self.network.requestsForResponseData.count, 3)
             expectation.fulfill()
         }
 
         /// Initial Sync
         ///
-        let initialSyncAction = NotificationAction.synchronizeNotifications() { (error) in
+        let initialSyncAction = NotificationAction.synchronizeNotifications() { _ in
             XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Note.self), MockNetwork.notificationLoadAllJSONCount)
             notificationStore.onAction(nestedSyncAction)
         }
@@ -154,7 +154,7 @@ final class NotificationStoreTests: XCTestCase {
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "notifications/seen", filename: "generic_success")
-        let action = NotificationAction.updateLastSeen(timestamp: "2018-11-05T16:03:15+00:00") { (error) in
+        let action = NotificationAction.updateLastSeen(timestamp: "2018-11-05T16:03:15+00:00") { error in
             XCTAssertNil(error)
             expectation.fulfill()
         }
@@ -170,7 +170,7 @@ final class NotificationStoreTests: XCTestCase {
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "notifications/seen", filename: "generic_error")
-        let action = NotificationAction.updateLastSeen(timestamp: "2018-11-05T16:03:15+00:00") { (error) in
+        let action = NotificationAction.updateLastSeen(timestamp: "2018-11-05T16:03:15+00:00") { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -185,7 +185,7 @@ final class NotificationStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Update last seen empty response")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = NotificationAction.updateLastSeen(timestamp: "2018-11-05T16:03:15+00:00") { (error) in
+        let action = NotificationAction.updateLastSeen(timestamp: "2018-11-05T16:03:15+00:00") { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -206,7 +206,7 @@ final class NotificationStoreTests: XCTestCase {
         let expectedNote = sampleNotificationMutated()
 
         network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_success")
-        let action = NotificationAction.updateReadStatus(noteID: originalNote.noteID, read: true) { [weak self] (error) in
+        let action = NotificationAction.updateReadStatus(noteID: originalNote.noteID, read: true) { [weak self] error in
             XCTAssertNil(error)
             let storageNote = self?.viewStorage.loadNotification(noteID: originalNote.noteID)
             XCTAssertEqual(storageNote?.toReadOnly().read, expectedNote.read)
@@ -229,7 +229,7 @@ final class NotificationStoreTests: XCTestCase {
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_error")
-        let action = NotificationAction.updateReadStatus(noteID: 9999, read: true) { (error) in
+        let action = NotificationAction.updateReadStatus(noteID: 9999, read: true) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -244,7 +244,7 @@ final class NotificationStoreTests: XCTestCase {
         let expectation = self.expectation(description: "Update notification read status empty response")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
-        let action = NotificationAction.updateReadStatus(noteID: 9999, read: true) { (error) in
+        let action = NotificationAction.updateReadStatus(noteID: 9999, read: true) { error in
             XCTAssertNotNil(error)
             expectation.fulfill()
         }
@@ -300,7 +300,7 @@ final class NotificationStoreTests: XCTestCase {
         let originalNote = sampleNotification()
 
         network.simulateResponse(requestUrlSuffix: "notifications/read", filename: "generic_error")
-        let action = NotificationAction.updateReadStatus(noteID: originalNote.noteID, read: true) { [weak self] (error) in
+        let action = NotificationAction.updateReadStatus(noteID: originalNote.noteID, read: true) { [weak self] error in
             XCTAssertNotNil(error)
 
             let storageNote = self?.viewStorage.loadNotification(noteID: originalNote.noteID)
@@ -365,7 +365,7 @@ final class NotificationStoreTests: XCTestCase {
         let (device, error): (DotcomDevice?, Error?) = waitFor { promise in
             let action = NotificationAction.registerDevice(device: self.sampleAPNSDevice(),
                                                            applicationId: self.sampleApplicationID,
-                                                           applicationVersion: self.sampleApplicationVersion) { (device, error) in
+                                                           applicationVersion: self.sampleApplicationVersion) { device, error in
                 promise((device, error))
             }
             noteStore.onAction(action)
@@ -389,7 +389,7 @@ final class NotificationStoreTests: XCTestCase {
         let (device, error): (DotcomDevice?, Error?) = waitFor { promise in
             let action = NotificationAction.registerDevice(device: self.sampleAPNSDevice(),
                                                            applicationId: self.sampleApplicationID,
-                                                           applicationVersion: self.sampleApplicationVersion) { (device, error) in
+                                                           applicationVersion: self.sampleApplicationVersion) { device, error in
                 promise((device, error))
             }
             noteStore.onAction(action)
@@ -569,6 +569,120 @@ final class NotificationStoreTests: XCTestCase {
     }
 
 
+    // MARK: - NotificationAction.loadPushNotificationPreferences
+
+    /// Verifies that `loadPushNotificationPreferences` returns the decoded preferences on success.
+    ///
+    func test_loadPushNotificationPreferences_handles_successful_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/preferences",
+                                 filename: "push-notification-preferences")
+
+        // When
+        let result: Result<PushNotificationPreferences, Error> = waitFor { promise in
+            let action = NotificationAction.loadPushNotificationPreferences(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success(let preferences):
+            XCTAssertEqual(preferences.storeOrder?.enabled, true)
+            XCTAssertEqual(preferences.storeReview?.enabled, true)
+            XCTAssertEqual(preferences.storeReview?.maxRating, 5)
+            XCTAssertEqual(preferences.storeStock?.enabled, true)
+            XCTAssertEqual(preferences.storeStock?.onBackorder, false)
+        case .failure(let error):
+            XCTFail("Expected success but got error: \(error)")
+        }
+    }
+
+    /// Verifies that `loadPushNotificationPreferences` surfaces an error when the backend returns an error.
+    ///
+    func test_loadPushNotificationPreferences_handles_failure_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/preferences", filename: "generic_error")
+
+        // When
+        let result: Result<PushNotificationPreferences, Error> = waitFor { promise in
+            let action = NotificationAction.loadPushNotificationPreferences(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success:
+            XCTFail("Expected failure but got success")
+        case .failure(let error):
+            XCTAssertNotNil(error)
+        }
+    }
+
+
+    // MARK: - NotificationAction.updatePushNotificationPreferences
+
+    /// Verifies that `updatePushNotificationPreferences` returns the server-merged preferences on success.
+    ///
+    func test_updatePushNotificationPreferences_handles_successful_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/preferences",
+                                 filename: "push-notification-preferences")
+        let changes = PushNotificationPreferences(storeStock: .init(onBackorder: false))
+
+        // When
+        let result: Result<PushNotificationPreferences, Error> = waitFor { promise in
+            let action = NotificationAction.updatePushNotificationPreferences(siteID: self.sampleSiteID,
+                                                                              changes: changes) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success(let preferences):
+            XCTAssertEqual(preferences.storeOrder?.enabled, true)
+            XCTAssertEqual(preferences.storeReview?.maxRating, 5)
+            XCTAssertEqual(preferences.storeStock?.onBackorder, false)
+        case .failure(let error):
+            XCTFail("Expected success but got error: \(error)")
+        }
+    }
+
+    /// Verifies that `updatePushNotificationPreferences` surfaces an error when the backend returns an error.
+    ///
+    func test_updatePushNotificationPreferences_handles_failure_response() {
+        // Given
+        let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        network.simulateResponse(requestUrlSuffix: "wc-push-notifications/preferences", filename: "generic_error")
+        let changes = PushNotificationPreferences(storeOrder: .init(enabled: false))
+
+        // When
+        let result: Result<PushNotificationPreferences, Error> = waitFor { promise in
+            let action = NotificationAction.updatePushNotificationPreferences(siteID: self.sampleSiteID,
+                                                                              changes: changes) { result in
+                promise(result)
+            }
+            noteStore.onAction(action)
+        }
+
+        // Then
+        switch result {
+        case .success:
+            XCTFail("Expected failure but got success")
+        case .failure(let error):
+            XCTAssertNotNil(error)
+        }
+    }
+
+
     // MARK: - NotificationAction.updateLocalDeletedStatus
 
     /// Verifies that `markLocalNoteAsDeleted` works as expected.
@@ -593,7 +707,6 @@ final class NotificationStoreTests: XCTestCase {
 
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
-
 }
 
 // MARK: - Private Methods

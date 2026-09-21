@@ -11,7 +11,7 @@ extension User {
 
     /// Checks whether the user's roles are eligible to access the store.
     public func hasEligibleRoles() -> Bool {
-        roles.compactMap { Role(rawValue: $0) }.firstIndex { $0.isEligible() } != nil
+        roles.compactMap { Role(rawValue: $0) }.contains { $0.isEligible() }
     }
 }
 

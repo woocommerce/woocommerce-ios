@@ -155,7 +155,6 @@ private extension BookingDetailsView {
             } onCommit: { newNote in
                 await viewModel.updateNote(to: newNote)
             }
-
         }
     }
 
@@ -267,7 +266,6 @@ extension BookingDetailsView {
             cancellingBooking = false
         }
     }
-
 }
 
 extension BookingDetailsView {

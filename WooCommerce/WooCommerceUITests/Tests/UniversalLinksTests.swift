@@ -14,7 +14,7 @@ final class UniversalLinksTests: XCTestCase {
     func test_load_payments_universal_link() throws {
         try LoginFlow.login()
 
-        try ExternalAppScreen().openUniversalLinkFromSafariApp(linkedScreen: "payments")
+        try ExternalAppScreen().openUniversalLink(linkedScreen: "payments")
         try PaymentsScreen().verifyPaymentsScreenLoaded()
     }
 
@@ -24,7 +24,7 @@ final class UniversalLinksTests: XCTestCase {
             try LoginFlow.login()
             let order = try GetMocks.readSingleOrderData()
 
-            try ExternalAppScreen().openUniversalLinkFromSafariApp(linkedScreen: "orders")
+            try ExternalAppScreen().openUniversalLink(linkedScreen: "orders")
             try SingleOrderScreen().verifySingleOrder(order: order)
         }
     }

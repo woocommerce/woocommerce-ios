@@ -479,7 +479,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         viewModel.handleSalePriceChange(salePrice)
 
         let expectation = self.expectation(description: "Wait for error")
-        viewModel.completeUpdating(onCompletion: { (_, _, _, _, _, _, _, _, _, _) in
+        viewModel.completeUpdating(onCompletion: { _, _, _, _, _, _, _, _, _, _ in
             XCTFail("Completion block should not be called")
         }, onError: { error in
             XCTAssertEqual(error, .salePriceWithoutRegularPrice)
@@ -503,7 +503,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         viewModel.handleSalePriceChange(salePrice)
 
         let expectation = self.expectation(description: "Wait for error")
-        viewModel.completeUpdating(onCompletion: { (_, _, _, _, _, _, _, _, _, _) in
+        viewModel.completeUpdating(onCompletion: { _, _, _, _, _, _, _, _, _, _ in
             XCTFail("Completion block should not be called")
         }, onError: { error in
             // Assert
@@ -523,7 +523,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
         // Act
         let result = waitFor { promise in
-            viewModel.completeUpdating { (_, _, _, _, _, _, _, _, _, _) in
+            viewModel.completeUpdating { _, _, _, _, _, _, _, _, _, _ in
                 XCTFail("Completion block should not be called")
             } onError: { error in
                 promise(error)
@@ -547,13 +547,13 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         viewModel.handleSalePriceChange(salePrice)
 
         let expectation = self.expectation(description: "Wait for error")
-        viewModel.completeUpdating(onCompletion: { (finalRegularPrice, _, _, _, finalSalePrice, _, _, _, _, _) in
+        viewModel.completeUpdating(onCompletion: { finalRegularPrice, _, _, _, finalSalePrice, _, _, _, _, _ in
             expectation.fulfill()
 
             // Assert
             XCTAssertEqual(finalRegularPrice, regularPrice)
             XCTAssertEqual(finalSalePrice, salePrice)
-        }, onError: { error in
+        }, onError: { _ in
             XCTFail("Completion block should not be called")
         })
         waitForExpectations(timeout: Constants.expectationTimeout, handler: nil)
@@ -670,7 +670,10 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         // Arrange
         let saleStartDate: Date? = nil
         let saleEndDate: Date? = nil
-        let product = Product.fake().copy(dateOnSaleStart: saleStartDate, dateOnSaleEnd: saleEndDate, subscription: .fake())
+        let product = Product.fake().copy(dateOnSaleStart: saleStartDate,
+                                          dateOnSaleEnd: saleEndDate,
+                                          productTypeKey: ProductType.subscription.rawValue,
+                                          subscription: .fake())
         let model = EditableProductModel(product: product)
         let viewModel = ProductPriceSettingsViewModel(product: model)
 
@@ -684,6 +687,21 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
             Section(title: ProductPriceSettingsViewModel.Strings.taxSectionTitle, rows: [.taxStatus, .taxClass])
         ]
         XCTAssertEqual(sections, initialSections)
+    }
+
+    func test_price_section_excludes_subscription_rows_if_product_is_simple_with_stale_subscription_metadata() {
+        // Arrange
+        // A non-subscription product can retain `_subscription_*` metadata after being changed
+        // away from a subscription type; the price editor must not surface subscription rows for it.
+        let product = Product.fake().copy(productTypeKey: ProductType.simple.rawValue, subscription: .fake())
+        let model = EditableProductModel(product: product)
+        let viewModel = ProductPriceSettingsViewModel(product: model)
+
+        // Act
+        let sections = viewModel.sections
+
+        // Assert
+        XCTAssertEqual(sections.first, Section(title: ProductPriceSettingsViewModel.Strings.priceSectionTitle, rows: [.price]))
     }
 
     func testTappingScheduleSaleFromRowTogglesPickerRowInSalesSection() {

@@ -143,7 +143,6 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
                                 cancelUpdate?()
                                 dependencies.dismissReaderConnectionModal()
                             })))
-
             }
 
         case .updateFailed(let tryAgain, let cancelUpdate):
@@ -248,6 +247,12 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
             self = .message(.cancelledOnReader(
                 viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel(
                     tryPaymentAgainButtonAction: dependencies.tryPaymentAgainBackToCheckoutAction))
+            )
+
+        case .paymentCancellationConfirmation(let onDismiss):
+            self = .message(.paymentCancellationConfirmation(
+                viewModel: PointOfSaleCardPresentPaymentCancelledOnReaderMessageViewModel(
+                    paymentCancellationConfirmationAction: onDismiss))
             )
 
             /// Not-yet supported types

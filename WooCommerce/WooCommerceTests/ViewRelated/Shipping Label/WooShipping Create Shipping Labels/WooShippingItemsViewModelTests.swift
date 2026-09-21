@@ -70,7 +70,6 @@ final class WooShippingItemsViewModelTests: XCTestCase {
         // Then
         assertEqual("13 oz • £22.50", viewModel.itemsDetailLabel)
     }
-
 }
 
 private extension WooShippingItemsViewModelTests {

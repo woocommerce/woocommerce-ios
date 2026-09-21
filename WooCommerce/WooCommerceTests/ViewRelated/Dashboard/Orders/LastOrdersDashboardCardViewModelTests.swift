@@ -182,6 +182,72 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
     }
 
     @MainActor
+    func test_title_when_known_status_is_stored_then_returns_server_name() {
+        // Given
+        insertOrderStatuses([OrderStatus(name: "Server Processing", siteID: sampleSiteID, slug: "processing", total: 0)])
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+
+        // When
+        let title = viewModel.title(for: .processing)
+
+        // Then — the stored server name is preferred over the app-localized name
+        XCTAssertEqual(title, "Server Processing")
+    }
+
+    @MainActor
+    func test_title_when_status_not_stored_then_falls_back_to_localizedName() {
+        // Given — no statuses stored, so nothing matches `.processing`
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+
+        // When
+        let title = viewModel.title(for: .processing)
+
+        // Then
+        XCTAssertEqual(title, OrderStatusEnum.processing.localizedName)
+    }
+
+    @MainActor
+    func test_title_when_any_row_then_returns_localized_any_case() {
+        // Given
+        let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,
+                                                         stores: stores,
+                                                         storageManager: storageManager)
+
+        // When
+        let title = viewModel.title(for: .any)
+
+        // Then
+        XCTAssertEqual(title, "Any")
+    }
+
+    func test_LastOrderDashboardRowViewModel_statusDescription_when_matching_site_status_then_uses_server_name() {
+        // Given
+        let order = Order.fake().copy(siteID: sampleSiteID, status: .processing)
+        let siteStatuses = [OrderStatus(name: "Server Processing", siteID: sampleSiteID, slug: "processing", total: 0)]
+
+        // When
+        let rowViewModel = LastOrderDashboardRowViewModel(order: order, siteStatuses: siteStatuses)
+
+        // Then
+        XCTAssertEqual(rowViewModel.statusDescription, "Server Processing")
+    }
+
+    func test_LastOrderDashboardRowViewModel_statusDescription_when_no_matching_site_status_then_falls_back_to_localizedName() {
+        // Given
+        let order = Order.fake().copy(siteID: sampleSiteID, status: .processing)
+
+        // When — no site statuses provided
+        let rowViewModel = LastOrderDashboardRowViewModel(order: order)
+
+        // Then
+        XCTAssertEqual(rowViewModel.statusDescription, OrderStatusEnum.processing.localizedName)
+    }
+
+    @MainActor
     func test_fetch_orders_request_asks_to_skip_saving_orders() async {
         // Given
         let viewModel = LastOrdersDashboardCardViewModel(siteID: sampleSiteID,

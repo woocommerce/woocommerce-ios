@@ -88,5 +88,4 @@ private extension TitleAndEditableValueTableViewCellTests {
             value: try XCTUnwrap(mirror.descendant("value") as? UITextField)
         )
     }
-
 }

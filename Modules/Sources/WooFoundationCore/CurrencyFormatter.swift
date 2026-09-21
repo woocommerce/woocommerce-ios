@@ -110,7 +110,7 @@ public class CurrencyFormatter {
     ///     - currencyPosition: the currency position enum, either right, left, right_space, or left_space.
     ///     - currencySymbol: the currency symbol as a string, to be used with the amount.
     ///     - isNegative: whether the value is negative or not.
-    ///     - locale: the locale that is used to format the currency amount string.
+    ///     - locale: Locale used to protect signed numeric values in right-to-left language contexts. Currency order is derived from store settings.
     ///
     public func formatCurrency(using amount: String,
                                currencyPosition position: CurrencySettings.CurrencyPosition,
@@ -118,46 +118,57 @@ public class CurrencyFormatter {
                                isNegative: Bool,
                                locale: Locale = .current) -> String {
         let space = "\u{00a0}" // unicode equivalent of &nbsp;
-        let negative = isNegative ? "-" : ""
 
-        // Remove all occurences of the minus sign from the string amount.
+        // Remove all occurrences of the minus sign from the string amount.
         // We want to position the minus sign manually.
         let amount = amount.replacingOccurrences(of: "-", with: "")
 
-        // We're relying on the phone's Locale to assist with language direction
-        let languageCode = locale.language.languageCode?.identifier
-
-        // Detect the language direction
-        var languageDirection: Locale.LanguageDirection = .unknown
-        if let language = languageCode {
-            languageDirection = Locale.Language(identifier: language).characterDirection
+        if isNegative && BidirectionalText.containsStrongRightToLeftCharacter(in: symbol) {
+            return formatNegativeCurrencyWithStrongRightToLeftSymbol(using: amount,
+                                                                     currencyPosition: position,
+                                                                     currencySymbol: symbol,
+                                                                     space: space)
         }
 
-        // For left-to-right languages, such as English
-        guard languageDirection == .rightToLeft else {
-            switch position {
-            case .left:
-                return negative + symbol + amount
-            case .right:
-                return negative + amount + symbol
-            case .leftSpace:
-                return negative + symbol + space + amount
-            case .rightSpace:
-                return negative + amount + space + symbol
-            }
-        }
+        let negative = isNegative ? negativePrefix(for: locale) : ""
 
-        // For right-to-left languages, such as Arabic
         switch position {
         case .left:
-            return amount + negative + symbol
+            return negative + symbol + amount
         case .right:
-            return symbol + negative + amount
+            return negative + amount + symbol
         case .leftSpace:
-            return amount + negative + space + symbol
+            return negative + symbol + space + amount
         case .rightSpace:
-            return symbol + space + negative + amount
+            return negative + amount + space + symbol
         }
+    }
+
+    private func formatNegativeCurrencyWithStrongRightToLeftSymbol(using amount: String,
+                                                                   currencyPosition position: CurrencySettings.CurrencyPosition,
+                                                                   currencySymbol symbol: String,
+                                                                   space: String) -> String {
+        // Preserve the symbol's RTL base direction while keeping the signed Western-number amount together.
+        let signedAmount = BidirectionalText.isolateLeftToRight("-\(amount)")
+
+        switch position {
+        case .left:
+            return BidirectionalText.rightToLeftMark + symbol + signedAmount
+        case .right:
+            return BidirectionalText.rightToLeftMark + signedAmount + symbol
+        case .leftSpace:
+            return BidirectionalText.rightToLeftMark + symbol + space + signedAmount
+        case .rightSpace:
+            return BidirectionalText.rightToLeftMark + signedAmount + space + symbol
+        }
+    }
+
+    private func negativePrefix(for locale: Locale) -> String {
+        guard locale.usesRightToLeftLanguage else {
+            return "-"
+        }
+
+        return BidirectionalText.leftToRightMark + "-"
     }
 
     /// Applies currency option settings to the amount (as String) for the given currency.
@@ -180,6 +191,38 @@ public class CurrencyFormatter {
                             with: currency ?? currencySettings.currencyCode.rawValue,
                             locale: locale,
                             isNegative: isNegative)
+    }
+
+    /// Applies currency option settings to the amount (as String) and, when `currency` differs from the
+    /// store's default currency, appends its ISO code (e.g. "$10.00 CAD") so that amounts in a non-default
+    /// currency are unambiguous.
+    ///
+    /// Many currencies share the same symbol (USD, CAD, AUD, MXN… all render as "$"), so a bare symbol can't
+    /// tell them apart. When `currency` matches the store default this behaves exactly like
+    /// `formatAmount(_:with:)`; otherwise the ISO code is appended after the formatted amount.
+    ///
+    /// - Parameters:
+    ///     - amount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
+    ///     - currency: a 3-letter code for the currency the amount is in. e.g. "CAD"
+    ///     - annotatingNonDefaultCurrencyCode: when `true`, appends the ISO code for currencies other than the store default.
+    ///     - locale: the locale that is used to format the currency amount string.
+    ///
+    public func formatAmount(_ amount: String,
+                             with currency: String,
+                             annotatingNonDefaultCurrencyCode: Bool,
+                             locale: Locale = .current) -> String? {
+        guard let formattedAmount = formatAmount(amount, with: currency, locale: locale) else {
+            return nil
+        }
+
+        guard annotatingNonDefaultCurrencyCode,
+              let code = CurrencyCode(caseInsensitiveRawValue: currency),
+              code != currencySettings.currencyCode else {
+            return formattedAmount
+        }
+
+        // Non-breaking space keeps the amount and its code together on one line.
+        return "\(formattedAmount)\u{00a0}\(code.rawValue)"
     }
 
     /// Formats the provided `amount` param into a human readable value and applies the currency option
@@ -342,5 +385,15 @@ public class CurrencyFormatter {
                      locale: locale,
                      numberOfDecimals: numberOfDecimals,
                      isNegative: isNegative)
+    }
+}
+
+private extension Locale {
+    var usesRightToLeftLanguage: Bool {
+        guard let languageCode = language.languageCode?.identifier else {
+            return false
+        }
+
+        return Locale.Language(identifier: languageCode).characterDirection == .rightToLeft
     }
 }

@@ -72,7 +72,7 @@ final class OrderStatusListViewModel {
     /// Return the index of the current order status.
     ///
     func indexOfCurrentOrderStatus() -> IndexPath? {
-        guard let foundStatus = dataSource.statuses().filter({ $0.status == status }).first else {
+        guard let foundStatus = dataSource.statuses().first(where: { $0.status == status }) else {
             return nil
         }
         guard let row = dataSource.statuses().firstIndex(of: foundStatus) else {

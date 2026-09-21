@@ -108,7 +108,7 @@ private extension PrintShippingLabelCoordinator {
     func presentAirPrint(printData: ShippingLabelPrintData) {
         let printController = UIPrintInteractionController()
         printController.printingItem = printData.data
-        printController.present(animated: true) { [weak self] (_, completed, _) in
+        printController.present(animated: true) { [weak self] _, completed, _ in
             if completed {
                 self?.showCustomsFormPrintingIfNeeded()
             }

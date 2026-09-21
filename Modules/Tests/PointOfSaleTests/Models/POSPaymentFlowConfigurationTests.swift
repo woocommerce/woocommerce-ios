@@ -55,5 +55,4 @@ struct POSPaymentFlowConfigurationTests {
         config.intentCreationErrorExitAction.action()
         #expect(called == true)
     }
-
 }

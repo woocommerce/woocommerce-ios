@@ -81,7 +81,6 @@ final class ShippingLabelAccountSettingsMapperTests: XCTestCase {
         XCTAssertEqual(settings.addPaymentMethodURL, URL(string: "https://wordpress.com/me/purchases/add-credit-card"))
         XCTAssertFalse(settings.lastOrderCompleted)
     }
-
 }
 
 /// Private Helpers

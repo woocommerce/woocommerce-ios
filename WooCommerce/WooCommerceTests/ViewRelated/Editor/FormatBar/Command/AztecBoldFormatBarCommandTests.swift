@@ -38,5 +38,4 @@ final class AztecBoldFormatBarCommandTests: XCTestCase {
                              formatBar: formatBar)
         XCTAssertEqual(editorView.getHTML(), unboldedHTML)
     }
-
 }

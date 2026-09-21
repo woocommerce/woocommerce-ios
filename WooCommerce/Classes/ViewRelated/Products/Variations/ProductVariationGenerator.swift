@@ -34,10 +34,11 @@ struct ProductVariationGenerator {
         return buildVariations(from: uniqueCombinations, for: product)
     }
 
-    /// Generates all posible combination for a product attributes.
+    /// Generates all possible combinations for a product attributes.
     ///
     private static func getCombinations(from product: Product) -> [Combination] {
         // Iterates through attributes while receiving the previous combinations list.
+        // swiftlint:disable:next reduce_into
         product.attributes.reduce([Combination(options: [])]) { combinations, attribute in
             combinations.flatMap { combination in
                 // When receiving a previous combination list, we add each attribute to each previous combination util we finish with them.

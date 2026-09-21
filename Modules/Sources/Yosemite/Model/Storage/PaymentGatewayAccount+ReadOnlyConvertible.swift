@@ -26,7 +26,7 @@ extension Storage.PaymentGatewayAccount: ReadOnlyConvertible {
     /// Returns a ReadOnly version for Yosemite.
     ///
     public func toReadOnly() -> Yosemite.PaymentGatewayAccount {
-        let accountStatus = Yosemite.WCPayAccountStatusEnum.init(rawValue: status)
+        let accountStatus = Yosemite.WCPayAccountStatusEnum(rawValue: status)
 
         return PaymentGatewayAccount(siteID: siteID,
                                      gatewayID: gatewayID,

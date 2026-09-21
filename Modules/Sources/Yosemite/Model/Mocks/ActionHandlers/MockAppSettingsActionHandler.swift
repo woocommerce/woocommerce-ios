@@ -65,7 +65,10 @@ struct MockAppSettingsActionHandler: MockActionHandler {
                 .getPOSSurveyPotentialMerchantNotificationScheduled,
                 .getHasPOSBeenOpenedAtLeastOnce,
                 .setHasPOSBeenOpenedAtLeastOnce,
-                .setPOSLastOpenedDate:
+                .setPOSLastOpenedDate,
+                .setHTTPSConfigurationUpdateRequired,
+                .getHTTPSConfigurationWarningState,
+                .dismissHTTPSConfigurationWarning:
             break
         default: unimplementedAction(action: action)
         }

@@ -1,5 +1,4 @@
 import SwiftUI
-import WooFoundation
 
 struct POSErrorView: View {
     @Environment(\.keyboardObserver) private var keyboard
@@ -44,6 +43,7 @@ struct POSErrorView: View {
                 .foregroundStyle(Color.posOnSurface)
                 .font(.posBodyLargeRegular())
                 .padding([.leading, .trailing])
+                .fixedSize(horizontal: false, vertical: true)
 
             if viewModel.primaryButton != nil || viewModel.secondaryButton != nil {
                 Spacer().frame(height: PointOfSaleEmptyErrorStateViewLayout.textAndButtonSpacing)
@@ -94,7 +94,7 @@ struct POSErrorViewModel {
         self.secondaryButton = secondaryButton
         switch error.errorType {
         case .couponsDisabled:
-            self.imageAsset = SharedImageAsset.coupons.decorativeImage
+            self.imageAsset = PointOfSaleAssets.coupons.decorativeImage
         default:
             self.imageAsset = nil
         }

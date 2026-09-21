@@ -12,8 +12,8 @@ import class Networking.ProductsRemote
 import class Networking.UserAgent
 import struct Networking.SystemPlugin
 import protocol WooFoundation.Analytics
-import protocol Experiments.FeatureFlagService
 
+@MainActor
 final class ConnectivityToolViewModel {
 
     /// Cards to be rendered by the view.
@@ -41,19 +41,6 @@ final class ConnectivityToolViewModel {
     ///
     @Published private(set) var showChatButton = false
 
-    /// Whether the contact support button should be shown.
-    /// True when bot chat is NOT supported and all tests have completed.
-    ///
-    @Published private(set) var showContactSupportButton = false
-
-    /// Whether the AI support chat is supported.
-    /// Only available when the feature flag is enabled and user is authenticated with WPCom
-    /// (not application password), since the chatbot requires WPCom authentication.
-    ///
-    var isBotChatSupported: Bool {
-        featureFlagService.isFeatureFlagEnabled(.aiSupportChat) && stores.isAuthenticatedWithoutWPCom == false
-    }
-
     /// Remote used to check the connection to WPCom servers.
     ///
     private let announcementsRemote: AnnouncementsRemote
@@ -78,10 +65,6 @@ final class ConnectivityToolViewModel {
     ///
     private let analytics: Analytics
 
-    /// Feature flag service for checking AI support chat availability.
-    ///
-    private let featureFlagService: FeatureFlagService
-
     /// Adapter for checking notification authorization status.
     ///
     let userNotificationCenter: UserNotificationsCenterAdapter
@@ -103,6 +86,10 @@ final class ConnectivityToolViewModel {
     ///
     private var activeSystemPlugins: [SystemPlugin] = []
 
+    /// Formatted system status report, cached after the site connectivity test.
+    ///
+    private(set) var formattedSystemStatusReport: String?
+
     /// Whether Jetpack is among the active plugins from the system status report.
     /// Populated after the site connectivity test. Internal for testability.
     ///
@@ -117,7 +104,6 @@ final class ConnectivityToolViewModel {
     init(session: SessionManagerProtocol = ServiceLocator.stores.sessionManager,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          userNotificationCenter: UserNotificationsCenterAdapter = UNUserNotificationCenter.current(),
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          network: Network? = nil) {
@@ -130,7 +116,6 @@ final class ConnectivityToolViewModel {
         self.productsRemote = ProductsRemote(network: network)
         self.stores = stores
         self.analytics = analytics
-        self.featureFlagService = featureFlagService
         self.userNotificationCenter = userNotificationCenter
         self.pushNotesManager = pushNotesManager
         self.siteURL = session.defaultSite?.url
@@ -142,8 +127,7 @@ final class ConnectivityToolViewModel {
     }
 
     private func updateShowChatButton() {
-        showChatButton = allTestsCompleted && isBotChatSupported
-        showContactSupportButton = allTestsCompleted && !isBotChatSupported
+        showChatButton = allTestsCompleted
     }
 
     /// Sequentially runs all connectivity tests defined in `ConnectivityTest`.
@@ -152,7 +136,8 @@ final class ConnectivityToolViewModel {
     private func startConnectivityTest(sinceTest: ConnectivityTest = .internetConnection) async {
         let supportedTests: [ConnectivityTest] = {
             if stores.isAuthenticatedWithoutWPCom == false {
-                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting, .notifications]
+                // Push notification diagnostics are temporarily hidden until the check is updated.
+                [.internetConnection, .wpComServers, .site, .siteOrders, .loadingProducts, .analyticsSetting]
             } else {
                 [.internetConnection, .site, .siteOrders, .loadingProducts, .analyticsSetting]
             }
@@ -173,6 +158,15 @@ final class ConnectivityToolViewModel {
 
             // Time taken snapshot
             let timeTaken = Date().timeIntervalSince(startTime)
+
+            if case .skipped(let reason) = testResult {
+                // The site cannot answer this test: drop its card, keep the reason for support, move on.
+                DDLogInfo("Connectivity Tool: ⏭️ Skipped \(testCase.title): \(reason)")
+                cards.remove(at: cardIndex)
+                trackResponseEvent(for: testCase, success: true, timeTaken: timeTaken, skipped: true)
+                latestTestResult.append(ConnectivityTestResult(testCase: testCase, result: testResult, timeTaken: timeTaken))
+                continue
+            }
 
             // Update the test card with the test result.
             cards[cardIndex] = cards[cardIndex].updatingState(testResult)
@@ -210,24 +204,22 @@ final class ConnectivityToolViewModel {
     /// Creates a SupportChatViewModel with the current troubleshooting context.
     ///
     @MainActor
-    func makeSupportChatViewModel(onContactHumanSupport: @escaping (_ transcript: String) -> Void) -> SupportChatViewModel {
-        var context: [String: Any] = [:]
+    func makeSupportChatViewModel(onContactHumanSupport: @escaping SupportChatViewModel.ContactHumanSupportCallback) -> SupportChatViewModel {
+        var context: RequestParameterDictionary = [:]
 
         if let troubleshootingDescription = troubleshootingDescription() {
-            context["troubleshooting_results"] = troubleshootingDescription
+            context["troubleshootingResults"] = .string(troubleshootingDescription)
         }
 
         if let site = stores.sessionManager.defaultSite {
-            context["site_id"] = site.siteID
-            context["site_url"] = site.url
+            context["selectedSiteID"] = .int64(site.siteID)
+            context["site_url"] = .string(site.url)
         }
-
-        context["app_version"] = Bundle.main.marketingVersion
-        context["ios_version"] = UIDevice.current.systemVersion
 
         return SupportChatViewModel(
             entryPoint: .connectivityTool,
             initialContext: context,
+            systemStatusReport: formattedSystemStatusReport,
             onContactHumanSupport: onContactHumanSupport
         )
     }
@@ -327,6 +319,7 @@ final class ConnectivityToolViewModel {
                 case .success(let report):
                     DDLogInfo("Connectivity Tool: ✅ Site connection")
                     self.activeSystemPlugins = report.activePlugins
+                    self.formattedSystemStatusReport = SystemStatusReportViewModel.formatReport(with: report)
                 case .failure(let error):
                     DDLogError("Connectivity Tool: ❌ Site connection\n\(error)")
                 }
@@ -364,6 +357,7 @@ final class ConnectivityToolViewModel {
     }
 
     /// Test whether WooCommerce Analytics is enabled on the site.
+    /// Skipped when the site does not expose the setting in its REST API.
     ///
     @MainActor
     func testAnalyticsSetting() async -> ConnectivityToolCard.ConnectivityState {
@@ -385,18 +379,23 @@ final class ConnectivityToolViewModel {
                             }
                         )
                         continuation.resume(returning: .error(Localization.ErrorMessage.analyticsDisabled,
-                                                                    [enableAction, self.retryAction(for: .analyticsSetting)]))
+                                                              [enableAction, self.retryAction(for: .analyticsSetting)]))
                     }
                 case .failure(let error):
+                    if let settingError = error as? SettingError, case .settingNotExposed = settingError {
+                        DDLogInfo("Connectivity Tool: ⏭️ Analytics setting is not exposed by the site")
+                        continuation.resume(returning: .skipped(Constants.analyticsSettingNotExposedReason))
+                        return
+                    }
                     DDLogError("Connectivity Tool: ❌ Analytics setting check failed\n\(error)")
-                    let technicalDetails = String(describing: error)
+                    let technicalDetails = error.formattedTechnicalDetails
                     let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
                         title: Localization.Action.viewDetails,
                         systemImage: SystemImages.viewDetails.rawValue,
                         technicalDetails: technicalDetails
                     )
                     continuation.resume(returning: .error(Localization.ErrorMessage.analyticsCheckFailed,
-                                                                [viewDetailsAction, self.retryAction(for: .analyticsSetting)]))
+                                                          [viewDetailsAction, self.retryAction(for: .analyticsSetting)]))
                 }
             }
             stores.dispatch(action)
@@ -497,7 +496,7 @@ final class ConnectivityToolViewModel {
 
         case (let error, _):
             message = Localization.ErrorMessage.generic
-            let technicalDetails = String(describing: error)
+            let technicalDetails = error.formattedTechnicalDetails
             let viewDetailsTitle = Localization.Action.viewDetails
             let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
                 title: viewDetailsTitle,
@@ -518,7 +517,7 @@ final class ConnectivityToolViewModel {
 
     /// Tracks the event with the respective test response.
     ///
-    private func trackResponseEvent(for test: ConnectivityToolViewModel.ConnectivityTest, success: Bool, timeTaken: Double) {
+    private func trackResponseEvent(for test: ConnectivityToolViewModel.ConnectivityTest, success: Bool, timeTaken: Double, skipped: Bool = false) {
         let eventTest: WooAnalyticsEvent.ConnectivityTool.Test = {
             switch test {
             case .internetConnection: return .internet
@@ -530,7 +529,7 @@ final class ConnectivityToolViewModel {
             case .notifications: return .notifications
             }
         }()
-        analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken))
+        analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken, skipped: skipped))
     }
 
     private func noConnectionsIssueState() -> ConnectivityTool.Card {
@@ -644,6 +643,7 @@ fileprivate struct ConnectivityTestResult {
         case .inProgress: return "In progress"
         case .success: return "Success"
         case .empty(let message): return message
+        case .skipped(let reason): return reason
         case .error(_, let actions):
             let lines = actions.compactMap { $0.technicalDetails }
             return lines.joined(separator: "\n")
@@ -745,6 +745,8 @@ private extension ConnectivityToolViewModel {
 private extension ConnectivityToolViewModel {
     enum Constants {
         static let jetpackPluginSlug = "jetpack/"
+        /// Not user facing: recorded in the support attachment when the analytics test is skipped.
+        static let analyticsSettingNotExposedReason = "Skipped: the site does not expose the analytics setting in its REST API"
     }
 
     enum SystemImages: String {
@@ -842,6 +844,6 @@ extension ConnectivityTool.Card {
     /// Updates a card state to a new given state.
     ///
     func updatingState(_ newState: ConnectivityToolCard.ConnectivityState) -> ConnectivityTool.Card {
-        Self.init(testCase: testCase, title: title, icon: icon, state: newState)
+        Self(testCase: testCase, title: title, icon: icon, state: newState)
     }
 }

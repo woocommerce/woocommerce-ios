@@ -48,13 +48,13 @@ struct CustomFieldViewModel: Identifiable, Equatable {
         )
     }
 
-    func asDictionary() -> [String: Any] {
-        var json: [String: Any] = [:]
-            if let fieldID {
-                json["id"] = fieldID
-            }
-            json["key"] = key
-            json["value"] = value
+    func asDictionary() -> RequestParameterDictionary {
+        var json: RequestParameterDictionary = [:]
+        if let fieldID {
+            json["id"] = .int64(fieldID)
+        }
+        json["key"] = .string(key)
+        json["value"] = .string(value)
         return json
     }
 }

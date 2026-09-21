@@ -2,7 +2,6 @@
 // DO NOT EDIT
 import Codegen
 import Foundation
-import struct NetworkingCore.JetpackSite
 
 // swiftlint:disable line_length
 
@@ -396,7 +395,8 @@ extension NetworkingCore.OrderFeeLine {
         total: CopiableProp<String> = .copy,
         totalTax: CopiableProp<String> = .copy,
         taxes: CopiableProp<[OrderItemTax]> = .copy,
-        attributes: CopiableProp<[OrderItemAttribute]> = .copy
+        attributes: CopiableProp<[OrderItemAttribute]> = .copy,
+        refundedItemID: NullableCopiableProp<Int64> = .copy
     ) -> NetworkingCore.OrderFeeLine {
         let feeID = feeID ?? self.feeID
         let name = name ?? self.name
@@ -406,6 +406,7 @@ extension NetworkingCore.OrderFeeLine {
         let totalTax = totalTax ?? self.totalTax
         let taxes = taxes ?? self.taxes
         let attributes = attributes ?? self.attributes
+        let refundedItemID = refundedItemID ?? self.refundedItemID
 
         return NetworkingCore.OrderFeeLine(
             feeID: feeID,
@@ -415,7 +416,8 @@ extension NetworkingCore.OrderFeeLine {
             total: total,
             totalTax: totalTax,
             taxes: taxes,
-            attributes: attributes
+            attributes: attributes,
+            refundedItemID: refundedItemID
         )
     }
 }
@@ -813,7 +815,8 @@ extension NetworkingCore.Refund {
         isAutomated: NullableCopiableProp<Bool> = .copy,
         createAutomated: NullableCopiableProp<Bool> = .copy,
         items: CopiableProp<[OrderItemRefund]> = .copy,
-        shippingLines: NullableCopiableProp<[ShippingLine]> = .copy
+        shippingLines: NullableCopiableProp<[ShippingLine]> = .copy,
+        feeLines: CopiableProp<[OrderFeeLine]> = .copy
     ) -> NetworkingCore.Refund {
         let refundID = refundID ?? self.refundID
         let orderID = orderID ?? self.orderID
@@ -826,6 +829,7 @@ extension NetworkingCore.Refund {
         let createAutomated = createAutomated ?? self.createAutomated
         let items = items ?? self.items
         let shippingLines = shippingLines ?? self.shippingLines
+        let feeLines = feeLines ?? self.feeLines
 
         return NetworkingCore.Refund(
             refundID: refundID,
@@ -838,7 +842,8 @@ extension NetworkingCore.Refund {
             isAutomated: isAutomated,
             createAutomated: createAutomated,
             items: items,
-            shippingLines: shippingLines
+            shippingLines: shippingLines,
+            feeLines: feeLines
         )
     }
 }
@@ -1006,9 +1011,7 @@ extension NetworkingCore.Site {
         wasEcommerceTrial: CopiableProp<Bool> = .copy,
         hasSSOEnabled: CopiableProp<Bool> = .copy,
         applicationPasswordAvailable: CopiableProp<Bool> = .copy,
-        isGarden: CopiableProp<Bool> = .copy,
-        gardenName: NullableCopiableProp<String> = .copy,
-        gardenPartner: NullableCopiableProp<String> = .copy
+        wasURLNormalizedToHTTPS: NullableCopiableProp<Bool> = .copy
     ) -> NetworkingCore.Site {
         let siteID = siteID ?? self.siteID
         let name = name ?? self.name
@@ -1033,9 +1036,7 @@ extension NetworkingCore.Site {
         let wasEcommerceTrial = wasEcommerceTrial ?? self.wasEcommerceTrial
         let hasSSOEnabled = hasSSOEnabled ?? self.hasSSOEnabled
         let applicationPasswordAvailable = applicationPasswordAvailable ?? self.applicationPasswordAvailable
-        let isGarden = isGarden ?? self.isGarden
-        let gardenName = gardenName ?? self.gardenName
-        let gardenPartner = gardenPartner ?? self.gardenPartner
+        let wasURLNormalizedToHTTPS = wasURLNormalizedToHTTPS ?? self.wasURLNormalizedToHTTPS
 
         return NetworkingCore.Site(
             siteID: siteID,
@@ -1061,9 +1062,7 @@ extension NetworkingCore.Site {
             wasEcommerceTrial: wasEcommerceTrial,
             hasSSOEnabled: hasSSOEnabled,
             applicationPasswordAvailable: applicationPasswordAvailable,
-            isGarden: isGarden,
-            gardenName: gardenName,
-            gardenPartner: gardenPartner
+            wasURLNormalizedToHTTPS: wasURLNormalizedToHTTPS
         )
     }
 }

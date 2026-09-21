@@ -12,7 +12,7 @@ struct ConnectWPComCard: View {
     @ScaledMetric private var scale: CGFloat = 1.0
 
     var body: some View {
-        HStack {
+        HStack(alignment: .top) {
             Image(uiImage: .connectWPComImage)
                 .resizable()
                 .aspectRatio(contentMode: .fit)
@@ -25,17 +25,15 @@ struct ConnectWPComCard: View {
                     .font(.callout)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
-            VStack {
-                Menu {
-                    Button(Localization.hideButton) {
-                        hideAction()
-                    }
-                } label: {
-                    Image(systemName: "ellipsis")
-                        .foregroundStyle(Color.secondary)
-                        .padding(.leading, Layout.padding)
+            Menu {
+                Button(Localization.hideButton) {
+                    hideAction()
                 }
-                Spacer()
+            } label: {
+                Image(systemName: "ellipsis")
+                    .foregroundStyle(Color.secondary)
+                    .padding(.leading, Layout.padding)
+                    .padding(.vertical, Layout.hideIconVerticalPadding)
             }
         }
         .padding(Layout.padding)
@@ -52,6 +50,7 @@ struct ConnectWPComCard: View {
 private extension ConnectWPComCard {
     enum Layout {
         static let padding: CGFloat = 16
+        static let hideIconVerticalPadding: CGFloat = 8
         static let iconHeight: CGFloat = 35
         static let cornerSize = CGSize(width: 8.0, height: 8.0)
     }

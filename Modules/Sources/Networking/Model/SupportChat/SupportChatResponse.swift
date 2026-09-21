@@ -79,21 +79,32 @@ public struct SupportChatMessage: Decodable, Equatable {
 public struct SupportChatMessageContext: Decodable, Equatable {
     public let sources: [SupportChatSource]
     public let flags: SupportChatFlags?
+    public let supportArea: SupportChatSupportArea?
+    public let isResolved: Bool
 
-    public init(sources: [SupportChatSource], flags: SupportChatFlags?) {
+    public init(sources: [SupportChatSource],
+                flags: SupportChatFlags?,
+                supportArea: SupportChatSupportArea? = nil,
+                isResolved: Bool = false) {
         self.sources = sources
         self.flags = flags
+        self.supportArea = supportArea
+        self.isResolved = isResolved
     }
 
     public init(from decoder: Decoder) throws {
         let container = try decoder.container(keyedBy: CodingKeys.self)
         self.sources = (try? container.decode([SupportChatSource].self, forKey: .sources)) ?? []
         self.flags = try? container.decode(SupportChatFlags.self, forKey: .flags)
+        self.supportArea = try? container.decode(SupportChatSupportArea.self, forKey: .supportArea)
+        self.isResolved = (try? container.decode(Bool.self, forKey: .isResolved)) ?? false
     }
 
     enum CodingKeys: String, CodingKey {
         case sources
         case flags
+        case supportArea = "support_area"
+        case isResolved = "is_resolved"
     }
 }
 
@@ -110,6 +121,54 @@ public struct SupportChatSource: Decodable, Equatable {
         self.url = url
         self.heading = heading
         self.content = content
+    }
+}
+
+/// Confidence level for support area classification.
+///
+public enum SupportAreaConfidence: String, Decodable, Equatable {
+    case high
+    case medium
+    case low
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = SupportAreaConfidence(rawValue: rawValue.lowercased()) ?? .low
+    }
+}
+
+/// Support area categories for ticket routing.
+///
+public enum SupportAreaType: String, Decodable, Equatable {
+    case mobileApp = "mobile-app"
+    case cardReader = "card-reader"
+    case wooPayments = "woopayments"
+    case wooCommercePlugin = "woocommerce-plugin"
+    case otherExtensionPlugin = "other-extension-plugin"
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.singleValueContainer()
+        let rawValue = try container.decode(String.self)
+        self = SupportAreaType(rawValue: rawValue.lowercased()) ?? .mobileApp
+    }
+}
+
+/// Support area classification returned by the bot for ticket routing.
+///
+public struct SupportChatSupportArea: Decodable, Equatable {
+    public let area: SupportAreaType
+    public let topic: String?
+    public let confidence: SupportAreaConfidence
+
+    public var isHighConfidence: Bool {
+        confidence == .high
+    }
+
+    public init(area: SupportAreaType, topic: String? = nil, confidence: SupportAreaConfidence) {
+        self.area = area
+        self.topic = topic
+        self.confidence = confidence
     }
 }
 

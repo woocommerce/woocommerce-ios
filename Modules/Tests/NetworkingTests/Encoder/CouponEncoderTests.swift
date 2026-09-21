@@ -34,7 +34,7 @@ final class CouponEncoderTests: XCTestCase {
         )
 
         // When
-        let parameters = try coupon.toDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
+        let parameters = try coupon.toJSONObjectDictionary(keyEncodingStrategy: .convertToSnakeCase, dateFormatter: dateFormatter)
 
         // Then
         XCTAssertEqual(parameters["code"] as? String, "free shipping")

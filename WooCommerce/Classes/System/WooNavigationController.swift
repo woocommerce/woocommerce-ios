@@ -3,11 +3,15 @@ import UIKit
 import protocol WooFoundation.ConnectivityObserver
 import enum WooFoundation.ConnectivityStatus
 
+extension Notification.Name {
+    static let wooNavigationControllerDidShowViewController = Notification.Name("WooNavigationControllerDidShowViewController")
+}
+
 /// Subclass to set Woo styling. Removes back button text on managed view controllers.
 ///
 class WooNavigationController: UINavigationController {
 
-    weak override var delegate: UINavigationControllerDelegate? {
+    override weak var delegate: UINavigationControllerDelegate? {
         get {
             return navigationDelegate.forwardDelegate
         }
@@ -39,10 +43,22 @@ class WooNavigationController: UINavigationController {
         }
         return super.shouldPopOnBackButton()
     }
+
+    override func shouldPopOnSwipeBack() -> Bool {
+        topViewController?.shouldPopOnSwipeBack() ?? super.shouldPopOnSwipeBack()
+    }
+
+    override func gestureRecognizerShouldBegin(_ gestureRecognizer: UIGestureRecognizer) -> Bool {
+        guard gestureRecognizer === interactivePopGestureRecognizer else {
+            return super.gestureRecognizerShouldBegin(gestureRecognizer)
+        }
+
+        return viewControllers.count > 1 && shouldPopOnSwipeBack()
+    }
 }
 
 extension WooNavigationController {
-    public override func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
+    override public func navigationBar(_ navigationBar: UINavigationBar, shouldPop item: UINavigationItem) -> Bool {
         checkIfNavigationBarShouldPop(item: item)
     }
 }
@@ -54,7 +70,7 @@ extension WooNavigationController {
 /// Make sure to implement the method in ALL subclasses of `WooNavigationController`,
 /// otherwise it will break the interactive pop gesture.
 ///
-private class WooNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
+final class WooNavigationControllerDelegate: NSObject, UINavigationControllerDelegate {
 
     private let connectivityObserver: ConnectivityObserver
     private weak var currentController: UIViewController?
@@ -83,6 +99,7 @@ private class WooNavigationControllerDelegate: NSObject, UINavigationControllerD
         currentController = viewController
         configureOfflineBanner(for: viewController)
         forwardDelegate?.navigationController?(navigationController, didShow: viewController, animated: animated)
+        NotificationCenter.default.post(name: .wooNavigationControllerDidShowViewController, object: navigationController)
     }
 
     /// Forwards the event to the children delegate.
@@ -116,9 +133,41 @@ private extension WooNavigationControllerDelegate {
         connectivityObserver.statusPublisher
             .sink { [weak self] status in
                 guard let self, let currentController = self.currentController else { return }
-                self.configureOfflineBanner(for: currentController, status: status)
+                self.configureOfflineBannerWhenNavigationIsStable(for: currentController, status: status)
             }
             .store(in: &subscriptions)
+    }
+
+    /// Connectivity can change while a navigation transition is updating content overlay insets.
+    /// Updating the safe area at the same time can cause UIKit to recursively lay out the navigation hierarchy.
+    func configureOfflineBannerWhenNavigationIsStable(for viewController: UIViewController, status: ConnectivityStatus) {
+        guard isVisibleTopViewController(viewController) else {
+            return
+        }
+
+        guard let transitionCoordinator = viewController.navigationController?.transitionCoordinator else {
+            return configureOfflineBanner(for: viewController, status: status)
+        }
+
+        let scheduledAlongsideTransition = transitionCoordinator.animate(alongsideTransition: nil) { [weak self, weak viewController] _ in
+            guard let self, let viewController, self.isVisibleTopViewController(viewController) else {
+                return
+            }
+            self.configureOfflineBanner(for: viewController, status: status)
+        }
+
+        if !scheduledAlongsideTransition {
+            configureOfflineBanner(for: viewController, status: status)
+        }
+    }
+
+    func isVisibleTopViewController(_ viewController: UIViewController) -> Bool {
+        guard viewController.viewIfLoaded?.window != nil,
+              let navigationController = viewController.navigationController else {
+            return false
+        }
+
+        return navigationController.topViewController === viewController
     }
 
     /// Shows or hides offline banner based on the input connectivity status and
@@ -143,7 +192,7 @@ private extension WooNavigationControllerDelegate {
         // Only add banner view if it's not already added.
         guard let navigationController = viewController.navigationController,
               let view = viewController.view,
-              view.subviews.first(where: { $0 is OfflineBannerView }) == nil else {
+              !view.subviews.contains(where: { $0 is OfflineBannerView }) else {
             return
         }
 

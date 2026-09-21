@@ -93,5 +93,4 @@ struct PointOfSaleBarcodeScannerSetupScanTesterTests {
         // Then it provides the correct barcode asset
         #expect(sut.barcode == .testEan13Barcode)
     }
-
 }

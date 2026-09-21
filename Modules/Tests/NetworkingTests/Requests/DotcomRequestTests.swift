@@ -111,6 +111,19 @@ final class DotcomRequestTests: XCTestCase {
         }
     }
 
+    func test_asURLRequest_when_parameters_contain_non_finite_number_then_throws_error() {
+        // Given
+        let request = DotcomRequest(wordpressApiVersion: .mark1_1,
+                                    method: .post,
+                                    path: sampleRPC,
+                                    parameters: ["value": Double.nan])
+
+        // Then
+        XCTAssertThrowsError(try request.asURLRequest()) { error in
+            XCTAssertEqual(error as? RequestParameterError, .nonFiniteNumber(path: "parameters.value"))
+        }
+    }
+
     // MARK: `RESTRequest` conversion
 
     func test_it_is_converted_into_RESTRequest_for_wpMark2_when_availableAsRESTRequest_is_true() throws {
@@ -160,6 +173,23 @@ final class DotcomRequestTests: XCTestCase {
 
         // Then
         XCTAssertNil(request.asRESTRequest(with: sampleSiteAddress))
+    }
+
+    func test_converting_into_RESTRequest_when_parameters_are_invalid_returns_request_that_throws_validation_error() throws {
+        // Given
+        let request = try DotcomRequest(wordpressApiVersion: .wpMark2,
+                                        method: .post,
+                                        path: sampleRPC,
+                                        parameters: ["value": .double(Double.nan)],
+                                        availableAsRESTRequest: true)
+
+        // When
+        let restRequest = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress))
+
+        // Then
+        XCTAssertThrowsError(try restRequest.asURLRequest()) { error in
+            XCTAssertEqual(error as? RequestParameterError, .nonFiniteNumber(path: "parameters.value"))
+        }
     }
 
     func test_the_converted_RESTRequest_path_does_not_have_sites_component_for_a_path_with_front_slash() throws {
@@ -213,9 +243,9 @@ private extension DotcomRequestTests {
     /// Encodes the specified collection of Parameters for the URLRequest's httpBody
     ///
     func encodeAsBodyString(parameters: [String: String]) -> String {
-        return parameters.reduce("") { (output, parameter) in
+        return parameters.reduce(into: "") { output, parameter in
             let prefix = output.isEmpty ? "" : "&"
-            return output + prefix + parameter.key + "=" + parameter.value
+            output += prefix + parameter.key + "=" + parameter.value
         }
     }
 }

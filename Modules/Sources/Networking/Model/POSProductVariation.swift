@@ -104,7 +104,7 @@ public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, Genera
                     }
                     return false
                 })
-        ]) ?? false
+            ]) ?? false
         let stockQuantity = container.failsafeDecodeIfPresent(decimalForKey: .stockQuantity)
         let typeKey = try container.decode(String.self, forKey: .typeKey)
         let stockStatusKey = try container.decode(String.self, forKey: .stockStatusKey)

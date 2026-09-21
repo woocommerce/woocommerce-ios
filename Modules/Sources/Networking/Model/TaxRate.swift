@@ -24,7 +24,7 @@ public struct TaxRate: Decodable, Equatable, GeneratedFakeable, GeneratedCopiabl
     ///
     public let state: String
 
-    /// Tax rate postcode.  Deprecated in WooCommerce 5.3 (use postcodes)
+    /// Tax rate postcode. Deprecated in WooCommerce 5.3 (use postcodes)
     ///
     public let postcode: String
 

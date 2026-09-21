@@ -24,7 +24,9 @@ extension DashboardCard.CardType {
             Localization.coupons
         case .googleAds:
             Localization.googleAds
-        case .shareStore, .newCardsNotice, .inAppFeedback, .connectWPCom, .aiAssistant:
+        case .aiAssistant:
+            Localization.aiAssistant
+        case .shareStore, .newCardsNotice, .inAppFeedback, .connectWPCom:
             "" // these cards don't have title
         }
     }
@@ -81,6 +83,11 @@ private extension DashboardCard.CardType {
             "dashboardCard.name.googleAdsCampaigns",
             value: "Google Ads campaigns",
             comment: "Name for the Google Ads campaigns dashboard card in the Customize Dashboard screen"
+        )
+        static let aiAssistant = NSLocalizedString(
+            "dashboardCard.name.aiAssistant",
+            value: "AI Assistant",
+            comment: "Name for the AI Assistant dashboard card in the Customize Dashboard screen"
         )
     }
 }

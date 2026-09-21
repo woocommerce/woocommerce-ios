@@ -1,5 +1,6 @@
-import SwiftUI
 import Combine
+import ParcelFittingCheck
+import SwiftUI
 
 struct WooShippingAddPackageView: View {
     enum PackageProviderType: CaseIterable {
@@ -21,6 +22,8 @@ struct WooShippingAddPackageView: View {
     @ObservedObject var customPackageViewModel: WooShippingAddCustomPackageViewModel
 
     let addPackageAction: (WooShippingPackageDataRepresentable) -> Void
+    let arAnalytics: ParcelFittingAnalyticsTracking
+    weak var arDelegate: ParcelFittingDelegate?
 
     @State private var cancellable: AnyCancellable?
 
@@ -29,8 +32,12 @@ struct WooShippingAddPackageView: View {
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     init(selectedPackage: WooShippingPackageDataRepresentable? = nil,
-         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void) {
+         addPackageAction: @escaping (WooShippingPackageDataRepresentable) -> Void,
+         arAnalytics: ParcelFittingAnalyticsTracking = ParcelFittingAnalyticsAdaptor(),
+         arDelegate: ParcelFittingDelegate? = nil) {
         self.addPackageAction = addPackageAction
+        self.arAnalytics = arAnalytics
+        self.arDelegate = arDelegate
         packagesViewModel = WooShippingAddPackageViewModel(selectedPackage: selectedPackage)
         switch selectedPackage?.source {
         case .custom:
@@ -55,6 +62,15 @@ struct WooShippingAddPackageView: View {
                     }, label: {
                         Text(Localization.cancel)
                     })
+                }
+                if packagesViewModel.isARParcelFittingAvailable {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button {
+                            presentARFlow()
+                        } label: {
+                            Image(systemName: "camera")
+                        }
+                    }
                 }
             }
             .navigationTitle(packagesViewModel.previousSelectedPackage != nil ? Localization.editPackage :  Localization.addPackage)
@@ -109,6 +125,21 @@ struct WooShippingAddPackageView: View {
                 packagesViewModel.selectedPackageType = .custom
             })
         }
+    }
+
+    private func presentARFlow() {
+        guard let arDelegate,
+              let presenter = UIApplication.wooKeyWindow?.topmostPresentedViewController else { return }
+
+        ParcelFittingCheckPresenter.presentUnifiedFlow(
+            from: presenter,
+            unit: packagesViewModel.arDimensionUnit,
+            carriers: packagesViewModel.parcelPresetCarriers,
+            starredPackageIDs: packagesViewModel.starredCarriersPackages,
+            tintColor: .withColorStudio(.wooCommercePurple, shade: .shade60),
+            analytics: arAnalytics,
+            delegate: arDelegate
+        )
     }
 
     private var packageTypeSelectorView: some View {

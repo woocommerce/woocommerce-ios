@@ -226,7 +226,6 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-
     }
 
     func test_viewModel_has_no_unsaved_changes_after_updating_invalid_downloadFileName() {
@@ -257,7 +256,6 @@ final class ProductDownloadFileViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertTrue(viewModel.hasUnsavedChanges())
-
     }
 
     func test_viewModel_has_no_unsaved_changes_after_updating_invalid_downloadFileUrl() {

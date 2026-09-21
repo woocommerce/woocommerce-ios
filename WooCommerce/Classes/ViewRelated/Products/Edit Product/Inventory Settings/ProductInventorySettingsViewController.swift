@@ -269,7 +269,7 @@ private extension ProductInventorySettingsViewController {
 
     func configureSKU(cell: TitleAndTextFieldTableViewCell) {
         var cellViewModel = Product.createSKUViewModel(sku: viewModel.sku) { [weak self] value in
-            self?.viewModel.handleSKUChange(value) { [weak self] (isValid, shouldBringUpKeyboard) in
+            self?.viewModel.handleSKUChange(value) { [weak self] isValid, shouldBringUpKeyboard in
                 self?.handleSKUValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
             }
         }
@@ -412,7 +412,7 @@ private extension ProductInventorySettingsViewController {
     }
 
     func onSKUBarcodeScanned(barcode: String) {
-        viewModel.handleSKUFromBarcodeScanner(barcode) { [weak self] (isValid, shouldBringUpKeyboard) in
+        viewModel.handleSKUFromBarcodeScanner(barcode) { [weak self] isValid, shouldBringUpKeyboard in
             self?.handleSKUValidation(isValid: isValid, shouldBringUpKeyboard: shouldBringUpKeyboard)
         }
     }
@@ -431,7 +431,6 @@ private extension ProductInventorySettingsViewController {
         if shouldBringUpKeyboard {
             getTitleAndTextFieldCell(from: .globalUniqueIdentifier)?.textFieldBecomeFirstResponder()
         }
-
     }
 }
 
@@ -448,7 +447,6 @@ private extension ProductInventorySettingsViewController {
             return nil
         }
         return tableView.cellForRow(at: indexPath) as? TitleAndTextFieldTableViewCell
-
     }
 }
 

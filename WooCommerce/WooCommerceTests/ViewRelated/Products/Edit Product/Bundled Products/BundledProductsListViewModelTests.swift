@@ -79,7 +79,7 @@ final class BundledProductsListViewModelTests: XCTestCase {
 
             viewModel = BundledProductsListViewModel(siteID: self.sampleSiteID,
                                                      bundleItems: [ProductBundleItem.fake().copy(productID: 12),
-                                                                       ProductBundleItem.fake().copy(productID: 13)],
+                                                                   ProductBundleItem.fake().copy(productID: 13)],
                                                      storageManager: self.storageManager,
                                                      stores: self.stores)
         }

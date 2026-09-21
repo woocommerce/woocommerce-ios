@@ -18,7 +18,6 @@ extension OrderTaxLine {
     @NSManaged public var ratePercent: Double
     @NSManaged public var attributes: Set<OrderItemAttribute>?
     @NSManaged public var order: Order
-
 }
 
 // MARK: Generated accessors for attributes
@@ -35,5 +34,4 @@ extension OrderTaxLine {
 
     @objc(removeAttributes:)
     @NSManaged public func removeFromAttributes(_ values: NSSet)
-
 }

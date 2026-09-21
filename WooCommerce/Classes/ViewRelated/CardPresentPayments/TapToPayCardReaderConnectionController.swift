@@ -388,7 +388,7 @@ private extension TapToPayCardReaderConnectionController {
     }
 
     func observePermissionChanges() {
-        locationService.observePermissionChanges { [weak self] permission in
+        locationService.observePermissionChanges { [weak self] _ in
             guard let self else { return }
             locationService.stopObservingPermissionChanges()
             if case .requestLocationPermission = state {
@@ -611,10 +611,12 @@ private extension TapToPayCardReaderConnectionController {
         if let adminUrl {
             if isWPCOMStore() {
                 return { [weak self] in
+                    self?.analyticsTracker.cardReaderLocationMissingTapped()
                     self?.alertsPresenter.presentWCSettingsWebView(adminURL: adminUrl, completion: retrySearch)
                 }
             } else {
                 return { [weak self] in
+                    self?.analyticsTracker.cardReaderLocationMissingTapped()
                     UIApplication.shared.open(adminUrl)
                     self?.showIncompleteAddressErrorWithRefreshButton()
                 }

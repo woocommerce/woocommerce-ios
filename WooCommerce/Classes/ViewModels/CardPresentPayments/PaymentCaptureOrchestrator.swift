@@ -17,6 +17,8 @@ protocol PaymentCaptureOrchestrating {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        countryCode: CountryCode,
+                        terminalPaymentPreparationEnabled: Bool,
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
@@ -30,10 +32,6 @@ protocol PaymentCaptureOrchestrating {
                       onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void)
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void)
-
-    func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void)
-
-    func saveReceipt(for order: Order, params: CardPresentReceiptParameters)
 
     func presentBackendReceipt(for order: Order, onCompletion: @escaping (Result<Receipt, Error>) -> Void)
 }
@@ -72,6 +70,8 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        countryCode: CountryCode,
+                        terminalPaymentPreparationEnabled: Bool,
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
@@ -80,17 +80,21 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                         onDisplayMessage: @escaping (String) -> Void,
                         onProcessingCompletion: @escaping (PaymentIntent) -> Void,
                         onCompletion: @escaping (Result<CardPresentCapturedPaymentData, Error>) -> Void) {
+        let readerEventFilter = CardReaderEventPresentationFilter()
         handlersForActivePayment = PaymentHandlers(onPreparingReader: onPreparingReader,
                                                    onWaitingForInput: onWaitingForInput,
                                                    onCardInserted: onCardInserted,
                                                    onProcessingMessage: onProcessingMessage,
                                                    onDisplayMessage: onDisplayMessage,
-                                                   onProcessingCompletion: onProcessingCompletion)
+                                                   onProcessingCompletion: onProcessingCompletion,
+                                                   readerEventFilter: readerEventFilter,
+                                                   countryCode: countryCode,
+                                                   terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled)
         onPreparingReader()
 
         let parameters = paymentParameters(order: order,
                                            orderTotal: orderTotal,
-                                           country: paymentGatewayAccount.country,
+                                           countryCode: countryCode,
                                            statementDescriptor: paymentGatewayAccount.statementDescriptor,
                                            paymentMethodTypes: paymentMethodTypes,
                                            stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
@@ -105,11 +109,16 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
             siteID: order.siteID,
             orderID: order.orderID,
             parameters: parameters,
+            countryCode: countryCode,
+            terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled,
             onCardReaderMessage: { event in
+                guard let event = readerEventFilter.filter(event) else { return }
                 switch event {
                 case .waitingForInput(let inputMethods):
                     onWaitingForInput(inputMethods)
                 case .displayMessage(let message):
+                    onDisplayMessage(message.text)
+                case .removeCardRequested(let message):
                     onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
                     onProcessingMessage()
@@ -123,6 +132,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                 onProcessingCompletion(intent)
             },
             onCompletion: { [weak self] result in
+                readerEventFilter.reset()
                 self?.allowPassPresentation()
                 self?.completePaymentIntentCapture(
                     order: order,
@@ -142,15 +152,21 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
         }
 
         handlers.onPreparingReader()
+        handlers.readerEventFilter.reset()
 
         let retryPaymentAction = CardPresentPaymentAction.retryPayment(
             siteID: order.siteID,
             orderID: order.orderID,
+            countryCode: handlers.countryCode,
+            terminalPaymentPreparationEnabled: handlers.terminalPaymentPreparationEnabled,
             onCardReaderMessage: { event in
+                guard let event = handlers.readerEventFilter.filter(event) else { return }
                 switch event {
                 case .waitingForInput(let inputMethods):
                     handlers.onWaitingForInput(inputMethods)
                 case .displayMessage(let message):
+                    handlers.onDisplayMessage(message.text)
+                case .removeCardRequested(let message):
                     handlers.onDisplayMessage(message)
                 case .cardDetailsCollected, .cardRemovedAfterClientSidePaymentCapture:
                     handlers.onProcessingMessage()
@@ -164,6 +180,7 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                 handlers.onProcessingCompletion(intent)
             },
             onCompletion: { [weak self] result in
+                handlers.readerEventFilter.reset()
                 self?.allowPassPresentation()
                 self?.completePaymentIntentCapture(
                     order: order,
@@ -176,18 +193,11 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
     }
 
     func cancelPayment(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+        handlersForActivePayment?.readerEventFilter.reset()
         let action = CardPresentPaymentAction.cancelPayment() { [weak self] result in
             self?.allowPassPresentation()
             onCompletion(result)
         }
-        stores.dispatch(action)
-    }
-
-    func emailReceipt(for order: Order, params: CardPresentReceiptParameters, onContent: @escaping (String) -> Void) {
-        let action = ReceiptAction.generateContent(order: order, parameters: params) { emailContent in
-            onContent(emailContent)
-        }
-
         stores.dispatch(action)
     }
 
@@ -200,12 +210,6 @@ final class PaymentCaptureOrchestrator: PaymentCaptureOrchestrating {
                 onCompletion(.failure(error))
             }
         }
-        stores.dispatch(action)
-    }
-
-    func saveReceipt(for order: Order, params: CardPresentReceiptParameters) {
-        let action = ReceiptAction.saveReceipt(order: order, parameters: params)
-
         stores.dispatch(action)
     }
 }
@@ -277,7 +281,6 @@ private extension PaymentCaptureOrchestrator {
             }
 
             celebrate() // plays a sound, haptic
-            saveReceipt(for: order, params: receiptParameters)
             onCompletion(.success(.init(paymentMethod: paymentMethod,
                                         receiptParameters: receiptParameters)))
             self.handlersForActivePayment = nil
@@ -286,7 +289,7 @@ private extension PaymentCaptureOrchestrator {
 
     func paymentParameters(order: Order,
                            orderTotal: NSDecimalNumber,
-                           country: String,
+                           countryCode: CountryCode,
                            statementDescriptor: String?,
                            paymentMethodTypes: [PaymentMethodType],
                            stripeSmallestCurrencyUnitMultiplier: Decimal,
@@ -304,20 +307,39 @@ private extension PaymentCaptureOrchestrator {
         return PaymentParameters(amount: orderTotal as Decimal,
                                  currency: order.currency,
                                  stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
-                                 applicationFee: applicationFee(for: orderTotal, country: country),
+                                 applicationFee: applicationFee(for: orderTotal, countryCode: countryCode),
                                  receiptDescription: receiptDescription(orderNumber: order.number),
                                  statementDescription: statementDescriptor,
                                  receiptEmail: paymentReceiptEmailParameterDeterminer.receiptEmail(from: order),
                                  paymentMethodTypes: paymentMethodTypes,
+                                 cardPresentCaptureMethod: cardPresentCaptureMethod(for: countryCode),
                                  metadata: metadata)
     }
 
-    private func applicationFee(for orderTotal: NSDecimalNumber, country: String) -> Decimal? {
-        guard country.uppercased() == CountryCode.CA.rawValue else {
+    private func cardPresentCaptureMethod(for countryCode: CountryCode) -> CardPresentCaptureMethod? {
+        switch countryCode {
+        case .AU, .CA:
+            return .manualPreferred
+        default:
+            return nil
+        }
+    }
+
+    private func applicationFee(for orderTotal: NSDecimalNumber, countryCode: CountryCode) -> Decimal? {
+        let flatFee: NSDecimalNumber
+        let percentageFee: NSDecimalNumber
+        switch countryCode {
+        case .CA:
+            flatFee = Constants.canadaFlatFee
+            percentageFee = Constants.canadaPercentageFee
+        case .AU:
+            flatFee = Constants.australiaFlatFee
+            percentageFee = Constants.australiaPercentageFee
+        default:
             return nil
         }
 
-        let fee = orderTotal.multiplying(by: Constants.canadaPercentageFee).adding(Constants.canadaFlatFee)
+        let fee = orderTotal.multiplying(by: percentageFee).adding(flatFee)
 
         let numberHandler = NSDecimalNumberHandler(roundingMode: .plain,
                                                    scale: 2,
@@ -356,6 +378,8 @@ private extension PaymentCaptureOrchestrator {
     enum Constants {
         static let canadaFlatFee = NSDecimalNumber(string: "0.15")
         static let canadaPercentageFee = NSDecimalNumber(0)
+        static let australiaFlatFee = NSDecimalNumber(string: "0.10")
+        static let australiaPercentageFee = NSDecimalNumber(string: "0.017")
     }
 }
 
@@ -391,5 +415,8 @@ private extension PaymentCaptureOrchestrator {
         let onProcessingMessage: () -> Void
         let onDisplayMessage: (String) -> Void
         let onProcessingCompletion: (PaymentIntent) -> Void
+        let readerEventFilter: CardReaderEventPresentationFilter
+        let countryCode: CountryCode
+        let terminalPaymentPreparationEnabled: Bool
     }
 }

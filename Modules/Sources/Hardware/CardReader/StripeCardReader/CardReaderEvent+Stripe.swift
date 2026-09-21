@@ -12,7 +12,14 @@ extension CardReaderEvent {
     /// Factory method
     /// - Parameter readerInputOptions: An instance of a StripeTerminal.ReaderDisplayMessage
     static func make(displayMessage: ReaderDisplayMessage) -> Self {
-        return .displayMessage(displayMessage.localizedMessage)
+        switch displayMessage {
+        case .removeCard:
+            return .removeCardRequested(displayMessage.localizedMessage)
+        case .multipleContactlessCardsDetected:
+            return .displayMessage(.multipleContactlessCardsDetected(displayMessage.localizedMessage))
+        default:
+            return .displayMessage(.generic(displayMessage.localizedMessage))
+        }
     }
 }
 #endif

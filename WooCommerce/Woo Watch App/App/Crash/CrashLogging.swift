@@ -147,7 +147,7 @@ extension CrashLogging {
     /// Causes the Crash Logging System to refresh its knowledge about the current state of the system.
     ///
     /// This is required in situations like login / logout, when the system otherwise might not
-    /// know a change has occured.
+    /// know a change has occurred.
     ///
     /// Calling this method in these situations prevents
     public func setNeedsDataRefresh() {

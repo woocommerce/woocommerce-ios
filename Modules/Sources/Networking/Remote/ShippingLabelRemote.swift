@@ -75,7 +75,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                                    shippingLabelIDs: [Int64],
                                    paperSize: ShippingLabelPaperSize,
                                    completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.paperSize: paperSize.rawValue,
             ParameterKey.labelIDCSV: shippingLabelIDs.map(String.init).joined(separator: ","),
             ParameterKey.captionCSV: "",
@@ -162,7 +162,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                               predefinedOption: ShippingLabelPredefinedOption?,
                               completion: @escaping (Result<Bool, Error>) -> Void) {
         do {
-            var customPackageList: [[String: Any]] = []
+            var customPackageList: [RequestParameterDictionary] = []
             var predefinedOptionDictionary: [String: [String]] = [:]
 
             if let customPackage {
@@ -175,9 +175,9 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                 throw ShippingLabelError.missingPackage
             }
 
-            let parameters: [String: Any] = [
-                ParameterKey.custom: customPackageList,
-                ParameterKey.predefined: predefinedOptionDictionary
+            let parameters: RequestParameterDictionary = [
+                ParameterKey.custom: RequestParameterValue.array(customPackageList),
+                ParameterKey.predefined: RequestParameterValue.dictionary(predefinedOptionDictionary)
             ]
             let path = Path.packages
             let request = JetpackRequest(wooApiVersion: .wcConnectV1,
@@ -208,10 +208,10 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                                      packages: [ShippingLabelPackageSelected],
                                      completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
         do {
-            let parameters: [String: Any] = [
-                ParameterKey.originAddress: try originAddress.toDictionary(),
-                ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
-                ParameterKey.packages: try packages.map { try $0.toDictionary() }
+            let parameters: RequestParameterDictionary = [
+                ParameterKey.originAddress: .dictionary(try originAddress.toDictionary()),
+                ParameterKey.destinationAddress: .dictionary(try destinationAddress.toDictionary()),
+                ParameterKey.packages: RequestParameterValue.array(try packages.map { try $0.toDictionary() })
             ]
             let path = "\(Path.shippingLabels)/\(orderID)/rates"
             let request = JetpackRequest(wooApiVersion: .wcConnectV1,
@@ -249,7 +249,7 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
     ///     - settings: The shipping label account settings to update remotely.
     ///     - completion: Closure to be executed upon completion.
     public func updateShippingLabelAccountSettings(siteID: Int64, settings: ShippingLabelAccountSettings, completion: @escaping (Result<Bool, Error>) -> Void) {
-        let parameters: [String: Any] = [
+        let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.selectedPaymentMethodID: settings.selectedPaymentMethodID,
             ParameterKey.emailReceipts: settings.isEmailReceiptsEnabled,
             ParameterKey.paperSize: settings.paperSize.rawValue
@@ -304,13 +304,13 @@ public final class ShippingLabelRemote: Remote, ShippingLabelRemoteProtocol {
                                       emailCustomerReceipt: Bool,
                                       completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
         do {
-            let parameters: [String: Any] = [
-                ParameterKey.async: true,
-                ParameterKey.originAddress: try originAddress.toDictionary(),
-                ParameterKey.destinationAddress: try destinationAddress.toDictionary(),
-                ParameterKey.packages: try packages.map { try $0.toDictionary() },
-                ParameterKey.emailReceipt: emailCustomerReceipt,
-                ParameterKey.source: "wc-ios"
+            let parameters: RequestParameterDictionary = [
+                ParameterKey.async: .bool(true),
+                ParameterKey.originAddress: .dictionary(try originAddress.toDictionary()),
+                ParameterKey.destinationAddress: .dictionary(try destinationAddress.toDictionary()),
+                ParameterKey.packages: RequestParameterValue.array(try packages.map { try $0.toDictionary() }),
+                ParameterKey.emailReceipt: .bool(emailCustomerReceipt),
+                ParameterKey.source: .string("wc-ios")
             ]
             let path = "\(Path.shippingLabels)/\(orderID)"
             let request = JetpackRequest(wooApiVersion: .wcConnectV1,

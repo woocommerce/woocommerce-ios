@@ -108,7 +108,7 @@ class StoreOnboardingViewModel: ObservableObject {
                 }
                 return true
             }
-            .map { [siteID] (noTasksAvailable, completedDict) in
+            .map { [siteID] noTasksAvailable, completedDict in
                 !(noTasksAvailable || (completedDict[String(siteID)] == true))
             }
             .assign(to: &$canShowInDashboard)

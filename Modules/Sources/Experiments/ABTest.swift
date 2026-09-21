@@ -6,6 +6,9 @@ public enum ABTest: String, Codable, CaseIterable {
     /// Mocks for unit testing
     case mockLoggedIn, mockLoggedOut
 
+    /// AR parcel fitting experiment
+    case arParcelFitting = "woocommerceios_shipping_ar_parcel_fitting"
+
     /// Returns a variation for the given experiment
     ///
     public var variation: Variation? {
@@ -22,6 +25,8 @@ public enum ABTest: String, Codable, CaseIterable {
             return .loggedIn
         case .mockLoggedOut:
             return .loggedOut
+        case .arParcelFitting:
+            return .loggedIn
         }
     }
 
@@ -39,15 +44,15 @@ public extension ABTest {
     static func start(for context: ExperimentContext) async {
         let experiments = ABTest.genuineCases.filter { $0.context == context }
 
+        // Strongly capture `ExPlat.shared` so it can't be released on a background thread.
+        guard !experiments.isEmpty, let explat = ExPlat.shared else {
+            return
+        }
+
         await withCheckedContinuation { continuation in
-            guard !experiments.isEmpty else {
-                return continuation.resume(returning: ())
-            }
+            explat.register(experiments: experiments.map { $0.rawValue })
 
-            let experimentNames = experiments.map { $0.rawValue }
-            ExPlat.shared?.register(experiments: experimentNames)
-
-            ExPlat.shared?.refresh {
+            explat.refresh {
                 continuation.resume(returning: ())
             }
         } as Void

@@ -76,5 +76,4 @@ final class DashboardCustomizationViewModelTests: XCTestCase {
         let expectedCards = [stats.copy(enabled: true), onboarding.copy(enabled: false), blaze]
         assertEqual(expectedCards, actualCards)
     }
-
 }

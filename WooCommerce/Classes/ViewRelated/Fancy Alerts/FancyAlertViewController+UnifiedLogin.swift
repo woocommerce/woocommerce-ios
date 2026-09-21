@@ -38,7 +38,6 @@ extension FancyAlertViewController {
 
         let controller = FancyAlertViewController.controllerWithConfiguration(configuration: config)
         return controller
-
     }
 
     static func makeConnectAccountToWPComSiteAlert() -> FancyAlertViewController {

@@ -27,7 +27,6 @@ public class MockStoresManager: StoresManager {
     private let productActionHandler: MockProductActionHandler
     private let productReviewActionHandler: MockProductReviewActionHandler
     private let productVariationActionHandler: MockProductVariationActionHandler
-    private let receiptActionHandler: MockReceiptActionHandler
     private let refundActionHandler: MockRefundActionHandler
     private let settingActionHandler: MockSettingActionHandler
     private let shipmentActionHandler: MockShipmentActionHandler
@@ -61,7 +60,6 @@ public class MockStoresManager: StoresManager {
         orderNoteActionHandler = MockOrderNoteActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         productActionHandler = MockProductActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         productVariationActionHandler = MockProductVariationActionHandler(objectGraph: objectGraph, storageManager: storageManager)
-        receiptActionHandler = MockReceiptActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         refundActionHandler = MockRefundActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         shippingLabelActionHandler = MockShippingLabelActionHandler(objectGraph: objectGraph, storageManager: storageManager)
         shipmentActionHandler = MockShipmentActionHandler(objectGraph: objectGraph, storageManager: storageManager)
@@ -95,8 +93,8 @@ public class MockStoresManager: StoresManager {
 
     /// A mock session manager that aligns with our mock object graph
     ///
-    private(set)
-    lazy public var sessionManager: SessionManagerProtocol = {
+    public private(set)
+    lazy var sessionManager: SessionManagerProtocol = {
         return MockSessionManager(objectGraph: objectGraph)
     }()
 
@@ -145,8 +143,6 @@ public class MockStoresManager: StoresManager {
             userActionHandler.handle(action: action)
         case let action as AnnouncementsAction:
             announcementsActionHandler.handle(action: action)
-        case let action as ReceiptAction:
-            receiptActionHandler.handle(action: action)
         case let action as OrderCardPresentPaymentEligibilityAction:
             orderCardPresentPaymentEligibilityActionHandler.handle(action: action)
         case let action as SystemStatusAction:
@@ -171,6 +167,16 @@ public class MockStoresManager: StoresManager {
             switch action {
             case let .isRemoteFeatureFlagEnabled(_, _, _, completion):
                 completion(true)
+            case let .loadRemoteFeatureFlagsInEffect(completion):
+                completion(nil)
+            }
+        case let action as StoreOnboardingTasksAction:
+            switch action {
+            case let .loadOnboardingTasks(_, completion):
+                // No onboarding tasks: the mocked store reads as fully set up, so the dashboard
+                // onboarding card stays out of screenshots. Without this the dashboard's reload
+                // dispatches an unhandled action and the mock asserts, crashing the app.
+                completion(.success([]))
             }
         default:
             let message = "⚠️ [MockStoresManager] Unhandled action type: \(action.identifier) \(String(describing: action))"
@@ -197,12 +203,18 @@ public class MockStoresManager: StoresManager {
     }
 
     @discardableResult
+    public func authenticate(credentials: Credentials,
+                             cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
+        return self
+    }
+
+    @discardableResult
     public func deauthenticate() -> StoresManager {
         return self
     }
 
     @discardableResult
-    public func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
+    public func synchronizeEntities(preservingSelectedSite: Bool = false, onCompletion: (() -> Void)?) -> StoresManager {
         if let siteID = sessionManager.defaultStoreID {
             Task {
                 await synchronizeGeneralSiteSettings(siteID: siteID)
@@ -258,6 +270,10 @@ public class MockStoresManager: StoresManager {
     }
 
     public func listenToWPCOMInvalidWPCOMTokenNotification() {
+        // no-op
+    }
+
+    public func listenToUnknownBlogNotification() {
         // no-op
     }
 

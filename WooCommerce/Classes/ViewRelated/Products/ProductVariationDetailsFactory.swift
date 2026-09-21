@@ -11,6 +11,7 @@ struct ProductVariationDetailsFactory {
     ///   - currencySettings: site currency settings.
     ///   - forceReadOnly: force the product variation details to be presented in read only mode.
     ///   - onCompletion: called when the view controller is created and ready for display.
+    @MainActor
     static func productVariationDetails(productVariation: ProductVariation,
                                         parentProduct: Product,
                                         presentationStyle: ProductFormPresentationStyle,
@@ -29,6 +30,7 @@ struct ProductVariationDetailsFactory {
 }
 
 private extension ProductVariationDetailsFactory {
+    @MainActor
     static func productVariationDetails(productVariation: ProductVariation,
                                         parentProduct: Product,
                                         presentationStyle: ProductFormPresentationStyle,
@@ -56,7 +58,8 @@ private extension ProductVariationDetailsFactory {
         vc = ProductFormViewController(viewModel: viewModel,
                                        eventLogger: ProductFormEventLogger(),
                                        productImageActionHandler: productImageActionHandler,
-                                       presentationStyle: presentationStyle)
+                                       presentationStyle: presentationStyle,
+                                       onDuplicateCompletion: { _, _ in })
         // Since the edit Product UI could hold local changes, disables the bottom bar (tab bar) to simplify app states.
         vc.hidesBottomBarWhenPushed = true
         return vc

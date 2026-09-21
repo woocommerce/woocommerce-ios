@@ -12,6 +12,8 @@ final class POSSettingsStoreViewModel: ObservableObject {
     @Published var receiptInformation = POSReceiptInformation.empty
     @Published var shouldShowReceiptInformation: Bool = false
 
+    let receiptSettingsAdminURL: String
+
     private let siteID: Int64
     private let settingsService: PointOfSaleSettingsServiceProtocol
     private let pluginsService: PluginsServiceProtocol
@@ -22,12 +24,14 @@ final class POSSettingsStoreViewModel: ObservableObject {
          settingsService: PointOfSaleSettingsServiceProtocol,
          pluginsService: PluginsServiceProtocol,
          defaultSiteName: String?,
-         siteSettings: [SiteSetting]) {
+         siteSettings: [SiteSetting],
+         receiptSettingsAdminURL: String) {
         self.siteID = siteID
         self.settingsService = settingsService
         self.pluginsService = pluginsService
         self.defaultSiteName = defaultSiteName
         self.siteSettings = siteSettings
+        self.receiptSettingsAdminURL = receiptSettingsAdminURL
     }
 
     var storeName: String {
@@ -36,6 +40,13 @@ final class POSSettingsStoreViewModel: ObservableObject {
         } else {
             return Localization.storeNameNotSet
         }
+    }
+
+    /// The configured store name for a printed receipt, or `nil` when unset. Unlike `storeName`,
+    /// this omits the "Not set" UI placeholder so the receipt header is dropped rather than printing
+    /// a settings-screen placeholder to a customer.
+    var receiptStoreName: String? {
+        defaultSiteName
     }
 
     var storeAddress: String {
@@ -75,7 +86,6 @@ final class POSSettingsStoreViewModel: ObservableObject {
                                                             minimumRequired: minimumVersion)
         return isSupported
     }
-
 }
 
 private extension POSSettingsStoreViewModel {

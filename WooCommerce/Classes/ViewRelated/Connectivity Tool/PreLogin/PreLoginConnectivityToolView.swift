@@ -8,6 +8,9 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
 
     private let viewModel: PreLoginConnectivityToolViewModel
 
+    /// Retains the support escalation coordinator while the flow is active.
+    private var supportEscalationCoordinator: SupportEscalationCoordinator?
+
     init(siteURL: URL) {
         viewModel = PreLoginConnectivityToolViewModel(siteURL: siteURL)
         let view = PreLoginConnectivityToolView(viewModel: viewModel)
@@ -18,29 +21,66 @@ final class PreLoginConnectivityToolViewController: UIHostingController<PreLogin
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        rootView.onContactSupportTapped = { [weak self] in
-            self?.showContactSupportForm()
+        rootView.onChatWithSupportTapped = { [weak self] in
+            self?.showSupportChat()
         }
     }
 
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
-    private func showContactSupportForm() {
-        let attachments: [ZendeskAttachment] = {
-            guard let description = viewModel.troubleshootingDescription(),
-                  let data = description.data(using: .utf8) else { return [] }
-            return [
-                ZendeskAttachment(
-                    data: data,
-                    filename: "prelogin_connectivitytest_log.md",
-                    contentType: "text/markdown"
-                )
-            ]
-        }()
-        let supportController = SupportFormHostingController(viewModel: SupportFormViewModel(attachments: attachments))
-        supportController.show(from: self)
+    private func showSupportChat() {
+        var viewModelHolder: SupportChatViewModel?
+        let chatViewModel = viewModel.makeSupportChatViewModel { [weak self] chatID, transcript, supportAreaInfo, entryPoint, hasReceivedBotResponse in
+            self?.navigationController?.popViewController(animated: true)
+            self?.handleContactHumanSupport(chatID: chatID,
+                                            transcript: transcript,
+                                            supportAreaInfo: supportAreaInfo,
+                                            entryPoint: entryPoint,
+                                            hasReceivedBotResponse: hasReceivedBotResponse,
+                                            onTicketCreated: { [weak viewModelHolder] in
+                                                viewModelHolder?.markChatTicketCreated()
+                                            })
+        }
+        viewModelHolder = chatViewModel
+
+        let chatController = SupportChatHostingController(viewModel: chatViewModel)
+        chatController.show(from: self)
+    }
+
+    private func handleContactHumanSupport(chatID: Int64?,
+                                           transcript: String,
+                                           supportAreaInfo: SupportAreaInfo?,
+                                           entryPoint: SupportChatViewModel.EntryPoint,
+                                           hasReceivedBotResponse: Bool,
+                                           onTicketCreated: @escaping () -> Void) {
+        supportEscalationCoordinator = SupportEscalationCoordinator(
+            navigationController: navigationController,
+            additionalAttachmentsProvider: { [weak self] in
+                self?.buildTroubleshootingAttachment() ?? []
+            },
+            mobileStatusReportProvider: MobileStatusReportProvider(),
+            onTicketCreated: onTicketCreated
+        )
+        supportEscalationCoordinator?.handleEscalation(chatID: chatID,
+                                                       transcript: transcript,
+                                                       supportAreaInfo: supportAreaInfo,
+                                                       entryPoint: entryPoint,
+                                                       siteAddress: viewModel.siteURL.absoluteString,
+                                                       hasReceivedBotResponse: hasReceivedBotResponse)
+    }
+
+    private func buildTroubleshootingAttachment() -> [ZendeskAttachment] {
+        guard let description = viewModel.troubleshootingDescription(),
+              let data = description.data(using: .utf8) else {
+            return []
+        }
+        return [ZendeskAttachment(
+            data: data,
+            filename: "prelogin_connectivitytest_log.md",
+            contentType: "text/markdown"
+        )]
     }
 }
 
@@ -50,8 +90,8 @@ struct PreLoginConnectivityToolView: View {
 
     @ObservedObject var viewModel: PreLoginConnectivityToolViewModel
 
-    /// Closure invoked when the "Contact Support" button is tapped.
-    var onContactSupportTapped: (() -> Void)?
+    /// Closure invoked when the AI-backed "Contact Support" button is tapped.
+    var onChatWithSupportTapped: (() -> Void)?
 
     var body: some View {
         VStack(spacing: .zero) {
@@ -71,11 +111,13 @@ struct PreLoginConnectivityToolView: View {
                 }
             }
 
-            Button(Localization.contactSupport) {
-                onContactSupportTapped?()
+            if viewModel.showChatButton {
+                Button(Localization.contactSupport) {
+                    onChatWithSupportTapped?()
+                }
+                .buttonStyle(SecondaryButtonStyle())
+                .padding()
             }
-            .buttonStyle(SecondaryButtonStyle())
-            .padding()
         }
         .background(Color(uiColor: .listForeground(modal: false)))
         .navigationTitle(Localization.title)

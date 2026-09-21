@@ -6,9 +6,9 @@ import Storage
 //
 public class BookingStore: Store {
     private let remote: BookingsRemoteProtocol
-    private let ordersRemote: OrdersRemoteProtocol
+    private let ordersRemote: BookingOrdersRemoteProtocol
 
-    public override convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public convenience init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         let remote = BookingsRemote(network: network)
         let ordersRemote = OrdersRemote(network: network)
         self.init(dispatcher: dispatcher, storageManager: storageManager, network: network, remote: remote, ordersRemote: ordersRemote)
@@ -18,7 +18,7 @@ public class BookingStore: Store {
                 storageManager: StorageManagerType,
                 network: Network,
                 remote: BookingsRemoteProtocol,
-                ordersRemote: OrdersRemoteProtocol) {
+                ordersRemote: BookingOrdersRemoteProtocol) {
         self.remote = remote
         self.ordersRemote = ordersRemote
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -128,7 +128,7 @@ private extension BookingStore {
                                                                 searchQuery: nil,
                                                                 order: order)
 
-                let orders = try await ordersRemote.loadOrders(
+                let orders = try await ordersRemote.loadBookingOrders(
                     for: siteID,
                     orderIDs: bookings.map { $0.orderID }
                 )
@@ -168,7 +168,7 @@ private extension BookingStore {
                     return
                 }
 
-                let orders = try await ordersRemote.loadOrders(
+                let orders = try await ordersRemote.loadBookingOrders(
                     for: siteID,
                     orderIDs: [booking.orderID]
                 )
@@ -232,7 +232,7 @@ private extension BookingStore {
                                                                 filters: filters,
                                                                 searchQuery: searchQuery,
                                                                 order: order)
-                let orders = try await ordersRemote.loadOrders(
+                let orders = try await ordersRemote.loadBookingOrders(
                     for: siteID,
                     orderIDs: bookings.map { $0.orderID }
                 )

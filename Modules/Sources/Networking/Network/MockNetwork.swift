@@ -30,6 +30,11 @@ class MockNetwork: Network {
     /// Response headers to be returned with the response data.
     var responseHeaders: [String: String]?
 
+    /// Whether Jetpack requests count as sent through the tunnel. Set to `false` to simulate a site the
+    /// app reaches directly with an application password.
+    ///
+    var simulatesJetpackTunnel = true
+
     /// Number of notification objects in notifications-load-all.json file.
     ///
     static let notificationLoadAllJSONCount = 46
@@ -47,6 +52,10 @@ class MockNetwork: Network {
     }
 
     var session: URLSession { URLSession(configuration: .default) }
+
+    func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
+        simulatesJetpackTunnel && request is JetpackRequest
+    }
 
     /// Whenever the Request's URL matches any of the "Mocked Up Patterns", we'll return the specified response file, loaded as *Data*.
     /// Otherwise, an error will be relayed back (.notFound!).
@@ -81,7 +90,8 @@ class MockNetwork: Network {
         completion(.success(data))
     }
 
-    func responseDataAndHeaders(for request: any URLRequestConvertible) async throws -> (Data, ResponseHeaders?) {
+    func responseDataAndHeaders(for request: any URLRequestConvertible,
+                                isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
         requestsForResponseData.append(request)
 
         if let error = error(for: request) {
@@ -180,8 +190,7 @@ private extension MockNetwork {
         } else {
             if let filename = responseMap.filter({ searchPath.hasSuffix($0.key) })
                 // In cases where a suffix is a substring of another suffix, the longer suffix is preferred in matched results.
-                .sorted(by: { $0.key.count > $1.key.count })
-                .first?.value {
+                .max(by: { $0.key.count < $1.key.count })?.value {
                 return filename
             }
         }

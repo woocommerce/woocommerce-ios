@@ -1,9 +1,9 @@
 import Networking
 import Codegen
 
-/// Store sytem information entity.
+/// Store system information entity.
 ///
-public struct SystemInformation: GeneratedFakeable, GeneratedCopiable {
+public struct SystemInformation: Sendable, GeneratedFakeable, GeneratedCopiable {
     /// Store UUID
     ///
     public let storeID: String?

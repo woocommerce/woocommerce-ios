@@ -5,6 +5,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
+@MainActor
 final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
     private var storesManager: MockStoresManager!
     private var subscriptions: Set<AnyCancellable> = []
@@ -45,7 +46,7 @@ final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
 
         // When
         waitFor { promise in
-            viewModel.saveProductRemotely(status: .published) { result in
+            viewModel.saveProductRemotely(status: .published) { _ in
                 promise(())
             }
         }
@@ -91,7 +92,7 @@ final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
 
         let _: Void = waitFor { promise in
             productImageUploader.whenHasUnsavedChangesOnImagesIsCalled(thenReturn: false)
-            viewModel.saveProductRemotely(status: .published) { result in
+            viewModel.saveProductRemotely(status: .published) { _ in
                 promise(())
             }
             XCTAssertEqual(isUpdateEnabledValues, [true, false])
@@ -143,7 +144,7 @@ final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
         XCTAssertEqual(isUpdateEnabledValues, [false])
 
         let _: Void = waitFor { promise in
-            viewModel.saveProductRemotely(status: .published) { result in
+            viewModel.saveProductRemotely(status: .published) { _ in
                 promise(())
             }
             XCTAssertEqual(isUpdateEnabledValues, [false])

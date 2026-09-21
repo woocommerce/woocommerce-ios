@@ -77,7 +77,7 @@ struct DefaultImageService: ImageService {
         imageView.kf.setImage(with: url,
                               placeholder: placeholder,
                               options: options,
-                              progressBlock: progressBlock) { (result) in
+                              progressBlock: progressBlock) { result in
             switch result {
             case .success(let imageResult):
                 let image = imageResult.image

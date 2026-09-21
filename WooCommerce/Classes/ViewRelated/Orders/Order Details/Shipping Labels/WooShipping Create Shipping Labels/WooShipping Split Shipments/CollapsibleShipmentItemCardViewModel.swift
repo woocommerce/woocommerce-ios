@@ -73,7 +73,7 @@ private extension CollapsibleShipmentItemCardViewModel {
         }
 
         childItemRows.forEach({
-            $0.onSelectedChange = { [weak self] row in
+            $0.onSelectedChange = { [weak self] _ in
                 guard let self else { return }
 
                 // Check if all child items are selected

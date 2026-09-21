@@ -12,6 +12,12 @@ public protocol ProductVariationsRemoteProtocol {
                                   pageNumber: Int,
                                   pageSize: Int,
                                   completion: @escaping ([ProductVariation]?, Error?) -> Void)
+    func loadProductVariations(for siteID: Int64,
+                               productID: Int64,
+                               variationIDs: [Int64],
+                               pageNumber: Int,
+                               pageSize: Int,
+                               currency: String?) async throws -> [ProductVariation]
     func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
                                       pageNumber: Int) async throws -> PagedItems<POSProductVariation>
@@ -32,7 +38,7 @@ public protocol ProductVariationsRemoteProtocol {
                                      completion: @escaping (Result<ProductVariation, Error>) -> Void)
     func updateProductVariations(siteID: Int64,
                                  productID: Int64,
-                                 productVariations: [ProductVariation],
+                                 productVariations: [PartialProductVariationUpdate],
                                  completion: @escaping (Result<[ProductVariation], Error>) -> Void)
     func deleteProductVariation(siteID: Int64, productID: Int64, variationID: Int64, completion: @escaping (Result<ProductVariation, Error>) -> Void)
 }
@@ -69,6 +75,23 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                                pageSize: pageSize)
         let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
         enqueue(request, mapper: mapper, completion: completion)
+    }
+
+    public func loadProductVariations(for siteID: Int64,
+                                      productID: Int64,
+                                      variationIDs: [Int64] = [],
+                                      pageNumber: Int,
+                                      pageSize: Int,
+                                      currency: String? = nil) async throws -> [ProductVariation] {
+        let request = productVariationsRequest(for: siteID,
+                                               productID: productID,
+                                               variationIDs: variationIDs,
+                                               context: nil,
+                                               pageNumber: pageNumber,
+                                               pageSize: pageSize,
+                                               currency: currency)
+        let mapper = ProductVariationListMapper(siteID: siteID, productID: productID)
+        return try await enqueue(request, mapper: mapper)
     }
 
     /// Retrieves all of the `ProductVariation`s available in POS.
@@ -113,7 +136,8 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
                                           context: String?,
                                           pageNumber: Int,
                                           pageSize: Int,
-                                          posProductsOnly: Bool = false) -> JetpackRequest {
+                                          posProductsOnly: Bool = false,
+                                          currency: String? = nil) -> JetpackRequest {
         let stringOfVariationIDs = variationIDs.map { String($0) }
             .joined(separator: ",")
         let stringOfRequiredFields = fields.joined(separator: ",")
@@ -127,7 +151,8 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
             ParameterKey.status: status?.rawValue,
             ParameterKey.orderBy: orderBy?.rawValue,
             ParameterKey.order: order?.rawValue,
-            ParameterKey.posProductsOnly: String(posProductsOnly)
+            ParameterKey.posProductsOnly: String(posProductsOnly),
+            ParameterKey.currency: currency
         ]
             .compactMapValues { $0 }
 
@@ -206,12 +231,13 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
 
         do {
             let parameters = try productVariations.map { try $0.toDictionary() }
+            let requestParameters: RequestParameterConvertibleDictionary = ["create": parameters]
             let path = "\(Path.products)/\(productID)/variations/batch"
             let request = JetpackRequest(wooApiVersion: .mark3,
                                          method: .post,
                                          siteID: siteID,
                                          path: path,
-                                         parameters: ["create": parameters],
+                                         parameters: requestParameters,
                                          availableAsRESTRequest: true)
             let mapper = ProductVariationsBulkCreateMapper(siteID: siteID, productID: productID)
 
@@ -287,17 +313,18 @@ public class ProductVariationsRemote: Remote, ProductVariationsRemoteProtocol {
     ///
     public func updateProductVariations(siteID: Int64,
                                         productID: Int64,
-                                        productVariations: [ProductVariation],
+                                        productVariations: [PartialProductVariationUpdate],
                                         completion: @escaping (Result<[ProductVariation], Error>) -> Void) {
 
         do {
             let parameters = try productVariations.map { try $0.toDictionary() }
+            let requestParameters: RequestParameterConvertibleDictionary = ["update": parameters]
             let path = "\(Path.products)/\(productID)/variations/batch"
             let request = JetpackRequest(wooApiVersion: .mark3,
                                          method: .post,
                                          siteID: siteID,
                                          path: path,
-                                         parameters: ["update": parameters],
+                                         parameters: requestParameters,
                                          availableAsRESTRequest: true)
             let mapper = ProductVariationsBulkUpdateMapper(siteID: siteID, productID: productID)
 
@@ -355,6 +382,7 @@ public extension ProductVariationsRemote {
         static let orderBy: String    = "orderby"
         static let order: String      = "order"
         static let posProductsOnly: String = "pos_products_only"
+        static let currency = "currency"
     }
 
     enum OrderByField: String {
@@ -366,7 +394,6 @@ public extension ProductVariationsRemote {
         case ascending = "asc"
         case descending = "desc"
     }
-
 }
 
 private extension ProductVariationsRemote {

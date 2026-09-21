@@ -3,9 +3,9 @@
 ///
 public protocol AnalyticsProvider {
 
-    /// Refresh the tracking metadata for the current user
+    /// Refresh the tracking metadata for the current user and notify the caller when the refresh has completed.
     ///
-    func refreshUserData()
+    func refreshUserData(completion: @escaping () -> Void)
 
     /// Track a spcific event without any associated properties
     ///

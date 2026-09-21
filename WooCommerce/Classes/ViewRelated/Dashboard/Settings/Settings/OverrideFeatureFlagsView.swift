@@ -62,7 +62,6 @@ struct OverrideFeatureFlagsView: View {
             ToolbarItem(placement: .topBarTrailing) {
                 Button {
                     ServiceLocator.featureFlagOverrideStore.removeAllOverrides()
-                    StoreWidgetsFeatureFlagSynchronizer.sync()
                     refreshID = UUID()
                 } label: {
                     Text("Reset All")
@@ -133,7 +132,6 @@ fileprivate struct FeatureFlagRow: View {
                     } else {
                         overrideValue = newValue
                         ServiceLocator.featureFlagOverrideStore.setOverrideValue(newValue, for: featureFlag)
-                        StoreWidgetsFeatureFlagSynchronizer.sync()
                     }
                 }
             )) { EmptyView() }
@@ -143,7 +141,6 @@ fileprivate struct FeatureFlagRow: View {
     private func resetValue() {
         overrideValue = nil
         ServiceLocator.featureFlagOverrideStore.setOverrideValue(nil, for: featureFlag)
-        StoreWidgetsFeatureFlagSynchronizer.sync()
     }
 }
 

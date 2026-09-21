@@ -3,6 +3,7 @@ import SwiftUI
 
 struct CouponCardView: View {
     private let coupon: POSCoupon
+    private let isApplied: Bool
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
@@ -11,14 +12,15 @@ struct CouponCardView: View {
         min(Constants.productCardSize * scale, Constants.maximumProductCardSize)
     }
 
-    init(coupon: POSCoupon) {
+    init(coupon: POSCoupon, isApplied: Bool = false) {
         self.coupon = coupon
+        self.isApplied = isApplied
     }
 
     var body: some View {
         HStack(spacing: Constants.cardSpacing) {
             POSCouponImageView(size: dimension,
-                               state: coupon.isExpired ? .expired : .normal)
+                               state: imageState)
 
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(coupon.code)
@@ -46,6 +48,7 @@ struct CouponCardView: View {
         .frame(maxWidth: .infinity, minHeight: dynamicTypeSize.isAccessibilitySize ? nil : dimension)
         .background(cardBackgroundColor)
         .posItemCardBorderStyles()
+        .accessibilityValue(accessibilityValue)
     }
 }
 
@@ -58,6 +61,23 @@ private extension CouponCardView {
             value: "Expired on %@",
             comment: "Expiration date for a given coupon, displayed in the coupon card. Reads as 'Expired · 18 April 2025'."
         )
+
+        static let appliedAccessibilityValue = NSLocalizedString(
+            "couponCardView.appliedAccessibilityValue",
+            value: "Applied",
+            comment: "Accessibility value read for a coupon card in the coupon list when the coupon is already applied to the cart."
+        )
+    }
+
+    var imageState: POSCouponImageState {
+        if coupon.isExpired {
+            return .expired
+        }
+        return isApplied ? .applied : .normal
+    }
+
+    var accessibilityValue: String {
+        imageState == .applied ? Localization.appliedAccessibilityValue : ""
     }
 
     func formattedExpirationText(date: Date) -> String {
@@ -94,6 +114,17 @@ private extension CouponCardView {
                 code: "Coupon-123",
                 summary: "10% off - All Products"
             ))
+        }
+
+        VStack(alignment: .leading) {
+            Text("Applied Coupon")
+                .font(.caption)
+                .foregroundStyle(.secondary)
+            CouponCardView(coupon: .init(
+                id: .init(underlyingType: .coupon, itemID: 3),
+                code: "Applied-Coupon-123",
+                summary: "10% off - All Products"
+            ), isApplied: true)
         }
 
         VStack(alignment: .leading) {

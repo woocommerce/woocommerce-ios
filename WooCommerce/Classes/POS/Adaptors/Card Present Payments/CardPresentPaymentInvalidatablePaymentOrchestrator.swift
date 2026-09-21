@@ -1,5 +1,6 @@
 import Foundation
 import Yosemite
+import WooFoundation
 
 final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOrchestrating {
     private var invalidated: Bool = false
@@ -14,6 +15,8 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
                         paymentGatewayAccount: PaymentGatewayAccount,
                         paymentMethodTypes: [PaymentMethodType],
                         stripeSmallestCurrencyUnitMultiplier: Decimal,
+                        countryCode: CountryCode,
+                        terminalPaymentPreparationEnabled: Bool,
                         channel: PaymentChannel,
                         onPreparingReader: @escaping () -> Void,
                         onWaitingForInput: @escaping (CardReaderInput) -> Void,
@@ -30,6 +33,8 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
                                            paymentGatewayAccount: paymentGatewayAccount,
                                            paymentMethodTypes: paymentMethodTypes,
                                            stripeSmallestCurrencyUnitMultiplier: stripeSmallestCurrencyUnitMultiplier,
+                                           countryCode: countryCode,
+                                           terminalPaymentPreparationEnabled: terminalPaymentPreparationEnabled,
                                            channel: channel,
                                            onPreparingReader: onPreparingReader,
                                            onWaitingForInput: onWaitingForInput,
@@ -51,17 +56,6 @@ final class CardPresentPaymentInvalidatablePaymentOrchestrator: PaymentCaptureOr
 
     func cancelPayment(onCompletion: @escaping (Result<Void, any Error>) -> Void) {
         paymentOrchestrator.cancelPayment(onCompletion: onCompletion)
-    }
-
-    func emailReceipt(for order: Order,
-                      params: CardPresentReceiptParameters,
-                      onContent: @escaping (String) -> Void) {
-        paymentOrchestrator.emailReceipt(for: order, params: params, onContent: onContent)
-    }
-
-    func saveReceipt(for order: Order,
-                     params: CardPresentReceiptParameters) {
-        paymentOrchestrator.saveReceipt(for: order, params: params)
     }
 
     func presentBackendReceipt(for order: Order,

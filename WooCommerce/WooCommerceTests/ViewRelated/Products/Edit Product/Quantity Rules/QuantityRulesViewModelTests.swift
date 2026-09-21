@@ -41,7 +41,7 @@ final class QuantityRulesViewModelTests: XCTestCase {
         var passedMaxQuantity: String?
         var passedGroupOfValue: String?
 
-        let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2") { rules, hasUnchangedValues in
+        let viewModel = QuantityRulesViewModel(minQuantity: "4", maxQuantity: "200", groupOf: "2") { rules, _ in
             passedMinQuantity = rules.minQuantity
             passedMaxQuantity = rules.maxQuantity
             passedGroupOfValue = rules.groupOf

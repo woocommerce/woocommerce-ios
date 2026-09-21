@@ -120,7 +120,7 @@ extension EditProductCategoryListViewController {
 
     @objc private func addButtonTapped() {
         ServiceLocator.analytics.track(.productCategorySettingsAddButtonTapped)
-        let viewModel = AddEditProductCategoryViewModel(siteID: siteID) { [weak self] (newCategory) in
+        let viewModel = AddEditProductCategoryViewModel(siteID: siteID) { [weak self] newCategory in
             defer {
                 self?.dismiss(animated: true, completion: nil)
             }

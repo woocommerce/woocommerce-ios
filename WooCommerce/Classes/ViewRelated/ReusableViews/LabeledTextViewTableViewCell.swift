@@ -13,7 +13,6 @@ final class LabeledTextViewTableViewCell: UITableViewCell {
         var onNameChange: ((_ text: String) -> Void)? = nil
         var onTextDidBeginEditing: (() -> Void)? = nil
         var style: Style = .headline
-
     }
 
     @IBOutlet weak var productStatusBadgeHolder: UIView! // container with extra top margin for badge alignment

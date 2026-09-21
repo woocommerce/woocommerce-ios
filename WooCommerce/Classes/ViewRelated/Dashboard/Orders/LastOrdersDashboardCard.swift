@@ -49,7 +49,6 @@ struct LastOrdersDashboardCard: View {
                     .redacted(reason: viewModel.syncingData ? [.placeholder] : [])
                     .shimmering(active: viewModel.syncingData)
             }
-
         }
         .padding(.vertical, Layout.padding)
         .background(Color(.listForeground(modal: false)))
@@ -61,7 +60,7 @@ struct LastOrdersDashboardCard: View {
 private extension LastOrdersDashboardCard {
     var emptyView: some View {
         VStack(spacing: 0) {
-            LastOrdersDashboardEmptyView(orderStatus: viewModel.selectedOrderStatus)
+            LastOrdersDashboardEmptyView(statusName: viewModel.selectedOrderStatusDisplayName)
                 .frame(maxWidth: .infinity)
 
             Divider()
@@ -125,21 +124,20 @@ private extension LastOrdersDashboardCard {
                             await viewModel.updateOrderStatus(status)
                         }
                     } label: {
-                        SelectableItemRow(title: status.description, selected: status.status == viewModel.selectedOrderStatus)
+                        SelectableItemRow(title: viewModel.title(for: status), selected: status.status == viewModel.selectedOrderStatus)
                     }
                 }
             } label: {
                 Image(systemName: "line.3.horizontal.decrease")
                     .foregroundStyle(Color(.secondaryLabel))
             }
-
         }
     }
 
     var orderList: some View {
         VStack(alignment: .leading, spacing: Layout.padding) {
             ForEach(viewModel.rows) { element in
-                LastOrderDashboardRow(viewModel: element, tapHandler: {
+                LastOrderDashboardRow(data: element.rowData, tapHandler: {
                     ServiceLocator.analytics.track(event: .DynamicDashboard.dashboardCardInteracted(type: .lastOrders))
 
                     onViewOrderDetail(element.order)

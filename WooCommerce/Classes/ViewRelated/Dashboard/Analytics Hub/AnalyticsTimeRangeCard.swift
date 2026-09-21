@@ -46,6 +46,7 @@ struct AnalyticsTimeRangeCard: View {
                     }
                 }
                 .wooNavigationBarStyle()
+                .interactiveDismissDisabled()
                 .sheet(isPresented: $showCustomRangeSelectionView) {
                     RangedDatePicker(startDate: selectionType.startDate, endDate: selectionType.endDate) { start, end in
                         showTimeRangeSelectionView = false // Dismiss the initial sheet for a smooth transition

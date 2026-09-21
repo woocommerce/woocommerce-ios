@@ -43,5 +43,4 @@ final class AztecInsertMoreFormatBarCommandTests: XCTestCase {
                              formatBar: formatBar)
         XCTAssertEqual(editorView.getHTML(), formattedHTML)
     }
-
 }

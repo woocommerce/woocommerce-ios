@@ -21,6 +21,7 @@ final class CardPresentRefundOrchestrator {
     ///   - charge: details about how the order was charged to verify refund.
     ///   - paymentGatewayAccount: payment gateway (e.g. WCPay or Stripe extension).
     ///   - onWaitingForInput: called when the card reader is waiting for card input.
+    ///   - onCardInserted: called when a card is inserted into the reader.
     ///   - onProcessingMessage: called when the refund is processing.
     ///   - onDisplayMessage: called when the card reader sends a message to display to the user.
     ///   - onCompletion: called when the refund completes.
@@ -28,6 +29,7 @@ final class CardPresentRefundOrchestrator {
                 charge: WCPayCharge,
                 paymentGatewayAccount: PaymentGatewayAccount,
                 onWaitingForInput: @escaping (CardReaderInput) -> Void,
+                onCardInserted: @escaping () -> Void,
                 onProcessingMessage: @escaping () -> Void,
                 onDisplayMessage: @escaping (String) -> Void,
                 onCompletion: @escaping (Result<Void, Error>) -> Void) {
@@ -37,13 +39,19 @@ final class CardPresentRefundOrchestrator {
 
         /// Refunds payment in-person with a card reader.
         let refundParameters = RefundParameters(chargeId: charge.id, amount: amount, currency: charge.currency)
+        let readerEventFilter = CardReaderEventPresentationFilter()
         let refundAction = CardPresentPaymentAction.refundPayment(parameters: refundParameters,
                                                                   onCardReaderMessage: { event in
+            guard let event = readerEventFilter.filter(event) else { return }
             switch event {
             case .waitingForInput(let inputMethods):
                 onWaitingForInput(inputMethods)
             case .displayMessage(let message):
+                onDisplayMessage(message.text)
+            case .removeCardRequested(let message):
                 onDisplayMessage(message)
+            case .cardInserted:
+                onCardInserted()
             case .cardDetailsCollected:
                 onProcessingMessage()
             default:
@@ -51,6 +59,7 @@ final class CardPresentRefundOrchestrator {
             }
         }, onCompletion: { [weak self] result in
             guard let self else { return }
+            readerEventFilter.reset()
             self.allowPassPresentation()
             onProcessingMessage()
             onCompletion(result)

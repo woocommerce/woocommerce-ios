@@ -39,7 +39,7 @@ final class ProductImageStatus_HelpersTests: XCTestCase {
         let productImage = ProductImage(imageID: 17, dateCreated: Date(), dateModified: Date(), src: "", name: nil, alt: nil)
 
         let statuses: [ProductImageStatus] = [.remote(image: productImage, siteID: siteID, productID: productID),
-            .remote(image: productImage, siteID: siteID, productID: productID)]
+                                              .remote(image: productImage, siteID: siteID, productID: productID)]
         XCTAssertFalse(statuses.hasPendingUpload)
     }
 

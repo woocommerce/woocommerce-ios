@@ -36,7 +36,7 @@ final class ShippingLabelPackageListViewModel: ObservableObject {
 
     lazy var addNewPackageViewModel = ShippingLabelAddNewPackageViewModel(siteID: siteID,
                                                                           packagesResponse: packagesResponse,
-                                                                          onCompletion: { [weak self] (customPackage, predefinedOption, packagesResponse) in
+                                                                          onCompletion: { [weak self] customPackage, predefinedOption, packagesResponse in
                                                                             guard let self else { return }
                                                                             self.handleNewPackage(customPackage, predefinedOption, packagesResponse)
                                                                           })
@@ -121,7 +121,7 @@ extension ShippingLabelPackageListViewModel {
 
         addNewPackageViewModel = .init(siteID: siteID,
                                        packagesResponse: packagesResponse,
-                                       onCompletion: { [weak self] (customPackage, predefinedOption, packagesResponse) in
+                                       onCompletion: { [weak self] customPackage, predefinedOption, packagesResponse in
                                          guard let self else { return }
                                          self.handleNewPackage(customPackage, predefinedOption, packagesResponse)
                                        })

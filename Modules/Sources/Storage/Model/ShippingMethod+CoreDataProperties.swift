@@ -11,9 +11,7 @@ extension ShippingMethod {
     @NSManaged public var siteID: Int64
     @NSManaged public var methodID: String?
     @NSManaged public var title: String?
-
 }
 
 extension ShippingMethod: Identifiable {
-
 }

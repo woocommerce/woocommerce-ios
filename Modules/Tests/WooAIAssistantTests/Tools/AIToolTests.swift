@@ -2,6 +2,7 @@ import Foundation
 import Testing
 @testable import WooAIAssistant
 
+@Suite(.timeLimit(.minutes(1)))
 struct AIToolTests {
     @Test
     func test_aiTool_when_constructed_then_exposes_name_description_schema_and_safetyLevel() {

@@ -10,9 +10,15 @@ import struct Yosemite.POSItemIdentifier
 @testable import struct Yosemite.POSSimpleProduct
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
+import struct Yosemite.POSReceiptInformation
+import protocol Yosemite.PointOfSaleSettingsServiceProtocol
 import protocol Yosemite.POSSearchHistoryProviding
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
+import enum Yosemite.POSCatalogSyncState
+import protocol Yosemite.ReceiptPrinterServiceProtocol
+import struct Yosemite.PrinterDevice
 import enum Yosemite.POSItemType
+import enum WooFoundationCore.WooAnalyticsStat
 import Combine
 
 @MainActor
@@ -86,6 +92,7 @@ struct PointOfSaleAggregateModelTests {
 
             // Then
             #expect(cart.purchasableItems.count == 1)
+            #expect(cart.latestScannedItemID == loadingItem.id)
             let item = try #require(cart.purchasableItems.first)
             #expect(item.id == loadingItem.id)
             guard case .loading = item.state else {
@@ -105,6 +112,7 @@ struct PointOfSaleAggregateModelTests {
             // Then
             #expect(cart.purchasableItems.count == 1)
             let item = try #require(cart.purchasableItems.first)
+            #expect(item.id == loadingItem.id)
             guard case .loaded(let loadedItem) = item.state else {
                 throw CartTestError.unexpectedItemStateInCart
             }
@@ -256,46 +264,43 @@ struct PointOfSaleAggregateModelTests {
             #expect(sut.cart.customAmounts.first?.id == second.id)
         }
 
-        @Test func presentAddCustomAmount_sets_sheet_presented_and_clears_editing_target() async throws {
-            // Given
+        @Test func editingCustomAmount_starts_nil() async throws {
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
-            sut.presentEditCustomAmount(POSCustomAmount(name: "Existing", amount: "5.00", isTaxable: true))
-            try #require(sut.editingCustomAmount != nil)
 
-            // When
-            sut.presentAddCustomAmount()
-
-            // Then
-            #expect(sut.isCustomAmountSheetPresented == true)
             #expect(sut.editingCustomAmount == nil)
         }
 
-        @Test func presentEditCustomAmount_sets_sheet_presented_and_records_editing_target() async throws {
+        @Test func editingCustomAmount_set_to_value_then_nil_drives_modal_lifecycle() async throws {
             // Given
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
-            let target = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true)
+            let customAmount = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: false)
 
-            // When
-            sut.presentEditCustomAmount(target)
+            // When set to a value
+            sut.editingCustomAmount = customAmount
 
             // Then
-            #expect(sut.isCustomAmountSheetPresented == true)
-            #expect(sut.editingCustomAmount == target)
+            #expect(sut.editingCustomAmount == customAmount)
+
+            // When cleared
+            sut.editingCustomAmount = nil
+
+            // Then
+            #expect(sut.editingCustomAmount == nil)
         }
 
-        @Test func dismissCustomAmountSheet_after_edit_clears_both_sheet_and_editing_target() async throws {
-            // Given
+        @Test func upsertCustomAmount_does_not_mutate_editingCustomAmount() async throws {
+            // Given - the cart-edit modal is open on one entry
             let sut = makePointOfSaleAggregateModel(analytics: analytics)
-            sut.presentEditCustomAmount(POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: true))
-            try #require(sut.isCustomAmountSheetPresented == true)
-            try #require(sut.editingCustomAmount != nil)
+            let original = POSCustomAmount(name: "Service fee", amount: "10.00", isTaxable: false)
+            sut.upsertCustomAmount(original, mode: .add)
+            sut.editingCustomAmount = original
 
-            // When
-            sut.dismissCustomAmountSheet()
+            // When the merchant submits an updated value
+            let updated = POSCustomAmount(id: original.id, name: "Service fee", amount: "12.00", isTaxable: false)
+            sut.upsertCustomAmount(updated, mode: .edit)
 
-            // Then
-            #expect(sut.isCustomAmountSheetPresented == false)
-            #expect(sut.editingCustomAmount == nil)
+            // Then upsert leaves editingCustomAmount alone — dismissal is the caller's responsibility
+            #expect(sut.editingCustomAmount == original)
         }
 
         @Test func removeAllItemsFromCart_clears_custom_amounts_too() async throws {
@@ -425,6 +430,45 @@ struct PointOfSaleAggregateModelTests {
             #expect(cardPresentPaymentService.collectPaymentChannel == .pos)
         }
 
+        @Test func cancelInFlightCheckout_whileSyncing_prevents_card_collection_when_sync_finishes() async throws {
+            // Given
+            let cardPresentPaymentService = MockCardPresentPaymentService()
+            let orderController = MockPointOfSaleOrderController()
+            let itemsController = MockPointOfSaleItemsController()
+            var releaseSyncOrder: (() -> Void)?
+            var checkoutTask: Task<Void, Never>?
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+            orderController.orderStateToReturn = makeLoadedOrderState(orderTotal: "$1.00", orderTotalDecimal: 1)
+            let sut = makePointOfSaleAggregateModel(
+                itemsController: itemsController,
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController)
+            sut.addToCart(makePurchasableItem())
+
+            // When
+            await fireOnce { fire in
+                orderController.onSyncOrderCalled = {
+                    await withCheckedContinuation { continuation in
+                        releaseSyncOrder = {
+                            continuation.resume()
+                        }
+                        fire()
+                    }
+                }
+                checkoutTask = Task { @MainActor in
+                    await sut.checkOut()
+                }
+            }
+
+            sut.cancelInFlightCheckout()
+            releaseSyncOrder?()
+            await checkoutTask?.value
+
+            // Then
+            #expect(sut.orderStage == .building)
+            #expect(cardPresentPaymentService.collectPaymentWasCalled == false)
+        }
+
         @Test func sendReceipt_when_invoked_then_calls_receiptSender() async throws {
             // Given
             let receiptSender = MockPOSReceiptSender()
@@ -482,6 +526,77 @@ struct PointOfSaleAggregateModelTests {
                 #expect(nsError.domain == expectedError.domain)
                 #expect(nsError.code == expectedError.code)
             }
+        }
+
+        @Test func printReceipt_when_invoked_then_prints_current_order_on_printer() async throws {
+            // Given
+            let printer = MockReceiptPrinterService()
+            let order = Order.fake().copy(orderID: 42)
+            orderController.orderStateToReturn = makeLoadedOrderState(
+                orderTotal: "$10.00",
+                orderTotalDecimal: 10,
+                order: order)
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                receiptPrinter: printer)
+
+            // Trigger checkout to set currentOrder in the payment controller
+            await sut.checkOut()
+
+            // When
+            try await sut.printReceipt()
+
+            // Then
+            #expect(printer.printedOrder?.orderID == 42)
+            #expect(printer.printedStoreInformation != nil)
+        }
+
+        @Test func printReceipt_refreshes_store_information_before_printing() async throws {
+            // Given a connected printer, a current order, and store settings that changed this session
+            let printer = MockReceiptPrinterService()
+            let order = Order.fake().copy(orderID: 42)
+            orderController.orderStateToReturn = makeLoadedOrderState(
+                orderTotal: "$10.00",
+                orderTotalDecimal: 10,
+                order: order)
+            cardPresentPaymentService.connectedReader = .init(name: "Test reader", batteryLevel: 0.7)
+
+            let settingsService = MockPointOfSaleSettingsService()
+            settingsService.retrievePointOfSaleSettingsResult = .success(
+                POSReceiptInformation(storeName: nil,
+                                      storeAddress: nil,
+                                      phone: "555-0100",
+                                      email: nil,
+                                      refundReturnsPolicy: nil))
+            let pluginsService = MockPluginsService()
+            pluginsService.setMockPlugin(.wooCommerce, systemPlugin: .fake().copy(version: "99.0.0", active: true))
+            let settingsController = MockPOSSettingsController()
+            settingsController.storeViewModel = POSSettingsStoreViewModel(
+                siteID: 123,
+                settingsService: settingsService,
+                pluginsService: pluginsService,
+                defaultSiteName: "Sample Store",
+                siteSettings: [],
+                receiptSettingsAdminURL: "")
+
+            let sut = makePointOfSaleAggregateModel(
+                cardPresentPaymentService: cardPresentPaymentService,
+                orderController: orderController,
+                settingsController: settingsController,
+                receiptPrinter: printer)
+
+            // Trigger checkout to set currentOrder in the payment controller
+            await sut.checkOut()
+
+            // When
+            try await sut.printReceipt()
+
+            // Then the settings are re-fetched and the fresh values reach the printout
+            #expect(settingsService.retrievePointOfSaleSettingsWasCalled == true)
+            #expect(printer.printedStoreInformation?.phone == "555-0100")
         }
 
         @Test func when_pointOfSaleClosed_then_order_is_cleared_up() async throws {
@@ -630,9 +745,9 @@ struct PointOfSaleAggregateModelTests {
                 orderController: orderController)
 
             // When / Then
-            await withCheckedContinuation { continuation in
+            await fireOnce { fire in
                 cardPresentPaymentService.onCancelPaymentCalled = {
-                    continuation.resume()
+                    fire()
                 }
                 sut.startCashPayment()
 
@@ -932,7 +1047,7 @@ struct PointOfSaleAggregateModelTests {
                 orderController: orderController)
             let configuration = MockOnboardingViewContainerConfiguration()
             configuration.state = .pluginNotActivated(plugin: .stripe)
-            let factory = CardPresentPaymentOnboardingViewContainer.init(configuration: configuration)
+            let factory = CardPresentPaymentOnboardingViewContainer(configuration: configuration)
             cardPresentPaymentService.paymentEvent = .idle
             try #require(sut.cardPresentPaymentOnboardingViewContainer == nil)
 
@@ -1056,7 +1171,7 @@ struct PointOfSaleAggregateModelTests {
 
             let configuration = MockOnboardingViewContainerConfiguration()
             configuration.state = .noConnectionError
-            let factory = CardPresentPaymentOnboardingViewContainer.init(configuration: configuration)
+            let factory = CardPresentPaymentOnboardingViewContainer(configuration: configuration)
 
             cardPresentPaymentService.paymentEvent = .showOnboarding(factory: factory, onCancel: {})
 
@@ -1064,7 +1179,7 @@ struct PointOfSaleAggregateModelTests {
             sut.cancelCardPaymentsOnboarding()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_dismissed" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "payments_onboarding_dismissed" }))
             let eventProperties = try #require(analytics.events.map(\.properties).first(where: { $0.keys.contains("onboarding_state")
             }))
             #expect(eventProperties["onboarding_state"] as? String == "no_connection_error")
@@ -1085,10 +1200,10 @@ struct PointOfSaleAggregateModelTests {
             sut.trackCardPaymentsOnboardingShown()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "payments_onboarding_shown" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "payments_onboarding_shown" }))
         }
 
-        @Test func connectCardReader_when_tapped_then_tracks_event() {
+        @Test func connectCardReader_when_tapped_then_tracks_discovery_tapped_event() {
             // Given
             let itemsController = MockPointOfSaleItemsController()
             let sut = makePointOfSaleAggregateModel(
@@ -1101,7 +1216,7 @@ struct PointOfSaleAggregateModelTests {
             sut.connectCardReader()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "card_reader_connection_tapped" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "card_reader_discovery_tapped" }))
         }
 
         @Test func disconnectCardReader_when_tapped_then_tracks_event() {
@@ -1117,7 +1232,7 @@ struct PointOfSaleAggregateModelTests {
             sut.disconnectCardReader()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "card_reader_disconnect_tapped" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "card_reader_disconnect_tapped" }))
         }
 
         @Test func cancelReconnection_calls_cardPresentPaymentService_cancelReconnection() async {
@@ -1130,9 +1245,9 @@ struct PointOfSaleAggregateModelTests {
                 analytics: analytics)
 
             // When
-            await withCheckedContinuation { continuation in
+            await fireOnce { fire in
                 cardPresentPaymentService.onCancelReconnectionCalled = {
-                    continuation.resume()
+                    fire()
                 }
                 sut.cancelReconnection()
             }
@@ -1166,7 +1281,7 @@ struct PointOfSaleAggregateModelTests {
             await sut.cancelCashPayment()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "back_to_checkout_from_cash" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "back_to_checkout_from_cash" }))
         }
 
         @Test func startCashPayment_when_invoked_tracks_expected_event() throws {
@@ -1177,7 +1292,7 @@ struct PointOfSaleAggregateModelTests {
             sut.startCashPayment()
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "checkout_cash_payment_tapped" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "checkout_cash_payment_tapped" }))
         }
 
         @Test func collectCashPayment_when_invoked_tracks_expected_event() async throws {
@@ -1205,12 +1320,105 @@ struct PointOfSaleAggregateModelTests {
             barcodeScanService.errorToThrow = .notFound(scannedCode: "123456")
 
             // When & Then
-            await withCheckedContinuation { continuation in
+            await fireOnce { fire in
                 soundPlayer.onPlaySound = { sound in
                     #expect(sound == .barcodeScanFailure)
-                    continuation.resume()
+                    fire()
                 }
                 sut.barcodeScanned(.success("123456"))
+            }
+        }
+
+        @Test func barcodeScanned_when_scan_succeeds_then_updates_latest_scanned_item_id() async {
+            // Given
+            let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
+            #expect(sut.cart.latestScannedItemID == nil)
+
+            // When
+            await waitForScannedItemChange(on: sut) {
+                sut.barcodeScanned(.success("123456"))
+            }
+
+            // Then
+            #expect(sut.cart.latestScannedItemID != nil)
+        }
+
+        @Test func barcodeScanned_when_parse_fails_then_updates_latest_scanned_item_id() async {
+            // Given
+            let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
+            #expect(sut.cart.latestScannedItemID == nil)
+
+            // When
+            await waitForScannedItemChange(on: sut) {
+                sut.barcodeScanned(.failure(.scanTooShort(barcode: "1")))
+            }
+
+            // Then
+            #expect(sut.cart.latestScannedItemID != nil)
+        }
+
+        @Test func barcodeScanned_when_scanned_twice_then_sets_distinct_latest_scanned_item_ids() async {
+            // Given
+            let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
+
+            // When: two scans of the same barcode.
+            await waitForScannedItemChange(on: sut) {
+                sut.barcodeScanned(.success("123456"))
+            }
+            let firstScannedItemID = sut.cart.latestScannedItemID
+            await waitForScannedItemChange(on: sut) {
+                sut.barcodeScanned(.success("123456"))
+            }
+            let secondScannedItemID = sut.cart.latestScannedItemID
+
+            // Then
+            #expect(firstScannedItemID != nil)
+            #expect(secondScannedItemID != nil)
+            #expect(firstScannedItemID != secondScannedItemID)
+        }
+
+        @Test func barcodeScanned_when_lookup_fails_then_preserves_latest_scanned_item_id() async {
+            // Given
+            let soundPlayer = MockPointOfSaleSoundPlayer()
+            let barcodeScanService = MockPointOfSaleBarcodeScanService()
+            barcodeScanService.errorToThrow = .notFound(scannedCode: "123456")
+            let sut = makePointOfSaleAggregateModel(
+                barcodeScanService: barcodeScanService,
+                soundPlayer: soundPlayer)
+
+            // When: capture the loading item's ID, then wait for the failed lookup to complete
+            // (the failure sound is the last step of that path).
+            var loadingItemID: UUID?
+            await fireOnce { fire in
+                withObservationTracking {
+                    _ = sut.cart.latestScannedItemID
+                } onChange: {
+                    Task { @MainActor in
+                        loadingItemID = sut.cart.latestScannedItemID
+                    }
+                }
+                soundPlayer.onPlaySound = { _ in
+                    fire()
+                }
+                sut.barcodeScanned(.success("123456"))
+            }
+
+            // Then
+            #expect(loadingItemID != nil)
+            #expect(sut.cart.latestScannedItemID == loadingItemID)
+        }
+
+        private func waitForScannedItemChange(on sut: PointOfSaleAggregateModel, when action: () -> Void) async {
+            await withCheckedContinuation { continuation in
+                withObservationTracking {
+                    _ = sut.cart.latestScannedItemID
+                } onChange: {
+                    Task { @MainActor in
+                        // Task needed because onChange fires with willSet semantics.
+                        continuation.resume()
+                    }
+                }
+                action()
             }
         }
     }
@@ -1262,52 +1470,198 @@ struct PointOfSaleAggregateModelTests {
         }
     }
 
-    @MainActor struct SunsetWarningTests {
-        @Test func showSunsetWarning_defaults_to_false() {
+    @MainActor struct StaleSyncWarningTests {
+        @Test func checkStaleSyncStatus_when_called_concurrently_then_tracks_shown_event_once() async {
             // Given
+            let analytics = MockPOSAnalytics()
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.lastSyncDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            // When - both tab views drive this check concurrently; it must only track once
+            async let firstCheck: Void = sut.checkStaleSyncStatus()
+            async let secondCheck: Void = sut.checkStaleSyncStatus()
+            _ = await (firstCheck, secondCheck)
+
+            // Then
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown.rawValue
+            }
+            #expect(shownEvents.count == 1)
+        }
+
+        @Test func checkStaleSyncStatus_when_warning_is_dismissed_then_does_not_track_shown_event() async {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.lastSyncDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
+            let sut = makePointOfSaleAggregateModel(analytics: analytics,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+            sut.dismissStaleSyncWarning()
+
+            // When
+            await sut.checkStaleSyncStatus()
+
+            // Then
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown.rawValue
+            }
+            #expect(shownEvents.isEmpty)
+        }
+
+        @Test func staleSyncWarning_when_full_sync_completes_then_hides_warning() async {
+            // Given
+            let siteID: Int64 = 123
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.lastSyncDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
+            let sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            await sut.checkStaleSyncStatus()
+            #expect(sut.showStaleSyncWarning == true)
+
+            // When
+            coordinator.fullSyncStateModel.updateState(.syncCompleted(siteID: siteID, syncDate: Date()), for: siteID)
+
+            // Then
+            #expect(sut.showStaleSyncWarning == false)
+        }
+
+        @Test func staleSyncWarning_when_full_sync_fails_then_keeps_warning() async {
+            // Given
+            let siteID: Int64 = 123
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.lastSyncDate = Date().addingTimeInterval(-8 * 24 * 60 * 60)
+            let sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            await sut.checkStaleSyncStatus()
+            #expect(sut.showStaleSyncWarning == true)
+
+            // When
+            coordinator.fullSyncStateModel.updateState(.syncFailed(siteID: siteID, error: NSError(domain: "test", code: 1)), for: siteID)
+
+            // Then
+            #expect(sut.showStaleSyncWarning == true)
+        }
+
+        @Test func staleSyncWarning_when_fresh_full_sync_fails_then_does_not_show_warning() async {
+            // Given
+            let siteID: Int64 = 123
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.lastSyncDate = Date()
+            let sut = makePointOfSaleAggregateModel(siteID: siteID,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            await sut.checkStaleSyncStatus()
+            #expect(sut.showStaleSyncWarning == false)
+
+            // When
+            coordinator.fullSyncStateModel.updateState(.syncFailed(siteID: siteID, error: NSError(domain: "test", code: 1)), for: siteID)
+
+            // Then
+            #expect(sut.showStaleSyncWarning == false)
+        }
+
+        @Test func staleSyncWarning_when_never_synced_then_does_not_show_warning_or_track_shown_event() async {
+            // Given - no full sync has ever completed (no sync date)
+            let analytics = MockPOSAnalytics()
+            let coordinator = MockPOSCatalogSyncCoordinator()
+            coordinator.lastSyncDate = nil
+            let sut = makePointOfSaleAggregateModel(analytics: analytics,
+                                                    catalogSyncCoordinator: coordinator,
+                                                    isLocalCatalogEligible: true)
+
+            // When
+            await sut.checkStaleSyncStatus()
+
+            // Then
+            #expect(sut.showStaleSyncWarning == false)
+            let shownEvents = analytics.events.filter {
+                $0.eventName == WooAnalyticsStat.pointOfSaleLocalCatalogStaleWarningShown.rawValue
+            }
+            #expect(shownEvents.isEmpty)
+        }
+    }
+
+    @MainActor struct ReceiptPrinterTests {
+        @Test func receiptPrinter_is_nil_by_default() async {
+            // Given, When
             let sut = makePointOfSaleAggregateModel()
 
             // Then
-            #expect(sut.showSunsetWarning == false)
+            #expect(sut.receiptPrinter == nil)
         }
 
-        @Test func checkSunsetWarningStatus_when_checker_returns_true_then_showSunsetWarning_is_true() async {
+        @Test func receiptPrinter_exposes_the_injected_backend() async {
             // Given
-            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
-            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
+            let printer = MockReceiptPrinterService()
 
             // When
-            await sut.checkSunsetWarningStatus()
+            let sut = makePointOfSaleAggregateModel(receiptPrinter: printer)
 
             // Then
-            #expect(sut.showSunsetWarning == true)
+            #expect(sut.receiptPrinter === printer)
+        }
+    }
+
+    @MainActor struct ReceiptPrinterConnectionTests {
+        @Test func isReceiptPrinterConnected_when_no_printer_controller_then_false() async {
+            // Given
+            let settingsController = MockPOSSettingsController()
+
+            // When
+            let sut = makePointOfSaleAggregateModel(settingsController: settingsController)
+
+            // Then
+            #expect(sut.isReceiptPrinterConnected == false)
         }
 
-        @Test func checkSunsetWarningStatus_when_checker_returns_false_then_showSunsetWarning_is_false() async {
+        @Test func isReceiptPrinterConnected_when_printer_disconnected_then_false() async {
             // Given
-            let checker = MockPOSSunsetWarningChecker(shouldShow: false)
-            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
+            let settingsController = MockPOSSettingsController()
+            settingsController.printerConnectionController = POSPrinterConnectionController(service: MockReceiptPrinterService())
 
             // When
-            await sut.checkSunsetWarningStatus()
+            let sut = makePointOfSaleAggregateModel(settingsController: settingsController)
 
             // Then
-            #expect(sut.showSunsetWarning == false)
+            #expect(sut.isReceiptPrinterConnected == false)
         }
 
-        @Test func dismissSunsetWarning_sets_showSunsetWarning_to_false_and_records_dismissal() async {
+        @Test func isReceiptPrinterConnected_when_printer_connected_then_true() async {
             // Given
-            let checker = MockPOSSunsetWarningChecker(shouldShow: true)
-            let sut = makePointOfSaleAggregateModel(sunsetWarningChecker: checker)
-            await sut.checkSunsetWarningStatus()
-            #expect(sut.showSunsetWarning == true)
+            let controller = POSPrinterConnectionController(service: MockReceiptPrinterService())
+            controller.connect(to: PrinterDevice(id: "1", name: "Star TSP100"))
+            await waitForConnection(of: controller)
+            let settingsController = MockPOSSettingsController()
+            settingsController.printerConnectionController = controller
 
             // When
-            sut.dismissSunsetWarning()
+            let sut = makePointOfSaleAggregateModel(settingsController: settingsController)
 
             // Then
-            #expect(sut.showSunsetWarning == false)
-            #expect(checker.recordDismissalCalled == true)
+            #expect(sut.isReceiptPrinterConnected == true)
+        }
+    }
+}
+
+@MainActor
+private func waitForConnection(of controller: POSPrinterConnectionController) async {
+    while !controller.isConnected {
+        await withCheckedContinuation { continuation in
+            withObservationTracking {
+                _ = controller.isConnected
+                _ = controller.connectedPrinter
+            } onChange: {
+                Task { @MainActor in continuation.resume() }
+            }
         }
     }
 }
@@ -1341,7 +1695,7 @@ private func makeLoadedOrderState(cartTotal: String = "",
 
 @MainActor
 private func makePointOfSaleAggregateModel(
-    entryPointController: POSEntryPointController = POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
+    entryPointController: POSEntryPointController? = nil,
     itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
     purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSalePurchasableItemsSearchController(),
     couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
@@ -1359,10 +1713,11 @@ private func makePointOfSaleAggregateModel(
     paymentState: PointOfSalePaymentState = .idle,
     siteID: Int64 = 123,
     catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
-    sunsetWarningChecker: POSSunsetWarningChecking? = nil
+    isLocalCatalogEligible: Bool = false,
+    receiptPrinter: ReceiptPrinterServiceProtocol? = nil
 ) -> PointOfSaleAggregateModel {
     PointOfSaleAggregateModel(
-        entryPointController: entryPointController,
+        entryPointController: entryPointController ?? POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
         itemsController: itemsController,
         purchasableItemsSearchController: purchasableItemsSearchController,
         couponsController: couponsController,
@@ -1380,6 +1735,22 @@ private func makePointOfSaleAggregateModel(
         paymentState: paymentState,
         siteID: siteID,
         catalogSyncCoordinator: catalogSyncCoordinator,
-        sunsetWarningChecker: sunsetWarningChecker
+        isLocalCatalogEligible: isLocalCatalogEligible,
+        receiptPrinter: receiptPrinter
     )
+}
+
+private final class MockPointOfSaleSettingsService: PointOfSaleSettingsServiceProtocol {
+    var retrievePointOfSaleSettingsWasCalled = false
+    var retrievePointOfSaleSettingsResult: Result<POSReceiptInformation, Error> = .success(.empty)
+
+    func retrievePointOfSaleSettings() async throws -> POSReceiptInformation {
+        retrievePointOfSaleSettingsWasCalled = true
+        switch retrievePointOfSaleSettingsResult {
+        case .success(let receiptInfo):
+            return receiptInfo
+        case .failure(let error):
+            throw error
+        }
+    }
 }

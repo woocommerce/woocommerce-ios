@@ -1,0 +1,13 @@
+{
+  "store_order": {
+    "enabled": true,
+    "min_amount": 25.5
+  },
+  "store_review": {
+    "enabled": true
+  },
+  "future_type": {
+    "enabled": true,
+    "some_new_field": 42
+  }
+}

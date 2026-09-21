@@ -222,6 +222,17 @@ public class AppSettingsStore: Store {
             setTelemetryLastReportedTime(siteID: siteID, time: time)
         case .getTelemetryInfo(siteID: let siteID, onCompletion: let onCompletion):
             getTelemetryInfo(siteID: siteID, onCompletion: onCompletion)
+        case let .setHTTPSConfigurationUpdateRequired(siteID, required):
+            let settings = siteSpecificAppSettingsStoreMethods.getStoreSettings(for: siteID)
+            let updatedSettings = settings.copy(requiresHTTPSConfigurationUpdate: .some(required))
+            siteSpecificAppSettingsStoreMethods.setStoreSettings(settings: updatedSettings, for: siteID, onCompletion: nil)
+        case let .getHTTPSConfigurationWarningState(siteID, onCompletion):
+            let settings = siteSpecificAppSettingsStoreMethods.getStoreSettings(for: siteID)
+            onCompletion(settings.requiresHTTPSConfigurationUpdate, settings.lastHTTPSConfigurationWarningDismissedDate)
+        case let .dismissHTTPSConfigurationWarning(siteID, time):
+            let settings = siteSpecificAppSettingsStoreMethods.getStoreSettings(for: siteID)
+            let updatedSettings = settings.copy(lastHTTPSConfigurationWarningDismissedDate: .some(time))
+            siteSpecificAppSettingsStoreMethods.setStoreSettings(settings: updatedSettings, for: siteID, onCompletion: nil)
         case let .setSimplePaymentsTaxesToggleState(siteID, isOn, onCompletion):
             setSimplePaymentsTaxesToggleState(siteID: siteID, isOn: isOn, onCompletion: onCompletion)
         case let .getSimplePaymentsTaxesToggleState(siteID, onCompletion):
@@ -336,6 +347,8 @@ public class AppSettingsStore: Store {
             setPOSLocalCatalogCellularDataAllowed(siteID: siteID, allowed: allowed, onCompletion: onCompletion)
         case .getPOSLocalCatalogCellularDataAllowed(let siteID, let onCompletion):
             getPOSLocalCatalogCellularDataAllowed(siteID: siteID, onCompletion: onCompletion)
+        case .getPOSCatalogFileBlockedByHost(let siteID, let onCompletion):
+            getPOSCatalogFileBlockedByHost(siteID: siteID, onCompletion: onCompletion)
         }
     }
 }
@@ -397,7 +410,6 @@ private extension AppSettingsStore {
         } catch {
             onCompletion(.failure(error))
         }
-
     }
 
     /// Loads the current Order Add-Ons beta feature switch state from `GeneralAppSettings`
@@ -457,7 +469,6 @@ private extension AppSettingsStore {
         } catch {
             onCompletion(.failure(error))
         }
-
     }
 
     /// Loads the EU Shipping Notice dismissal state from `GeneralAppSettings`
@@ -505,7 +516,7 @@ private extension AppSettingsStore {
 
     /// Loads the most recently remembered card reader, if any (i.e. to reconnect to automatically)
     /// NOTE: We now only persist one card reader maximum.
-    /// E.g.  "CHB204909005931"
+    /// E.g. "CHB204909005931"
     ///
     func loadCardReader(onCompletion: (Result<String?, Error>) -> Void) {
         /// NOTE: We now only persist one card reader maximum, although for backwards compatibility
@@ -580,7 +591,7 @@ private extension AppSettingsStore {
     func storeInPersonPaymentsTransactionIfFirst(siteID: Int64, using cardReaderType: CardReaderType) {
         let storeSettings = getStoreSettings(for: siteID)
         let updatedDictionary = storeSettings.firstInPersonPaymentsTransactionsByReaderType
-            .merging([StorageCardReaderType(from: cardReaderType): Date()]) { (current, _) in
+            .merging([StorageCardReaderType(from: cardReaderType): Date()]) { current, _ in
                 // We never want to update stored value, because we keep the first transaction date for each site/reader pair.
                 return current
             }
@@ -610,7 +621,6 @@ private extension AppSettingsStore {
                     providerName: providerName,
                     fileURL: selectedProvidersURL,
                     onCompletion: onCompletion)
-
     }
 
     func addCustomTrackingProvider(siteID: Int64,
@@ -652,9 +662,9 @@ private extension AppSettingsStore {
             return
         }
 
-        let providerName = allSavedProviders.filter {
+        let providerName = allSavedProviders.first(where: {
             $0.siteID == siteID
-        }.first?.providerName
+        })?.providerName
 
         guard let name = providerName else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
@@ -678,13 +688,13 @@ private extension AppSettingsStore {
             return
         }
 
-        let providerName = allSavedProviders.filter {
+        let providerName = allSavedProviders.first(where: {
             $0.siteID == siteID
-        }.first?.providerName
+        })?.providerName
 
-        let providerURL = allSavedProviders.filter {
+        let providerURL = allSavedProviders.first(where: {
             $0.siteID == siteID
-        }.first?.providerURL
+        })?.providerURL
 
         guard let name = providerName else {
             let error = AppSettingsStoreErrors.readPreselectedProvider
@@ -1470,6 +1480,10 @@ private extension AppSettingsStore {
     func getPOSLocalCatalogCellularDataAllowed(siteID: Int64, onCompletion: (Bool) -> Void) {
         let allowed = siteSpecificAppSettingsStoreMethods.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         onCompletion(allowed)
+    }
+
+    func getPOSCatalogFileBlockedByHost(siteID: Int64, onCompletion: (Bool) -> Void) {
+        onCompletion(siteSpecificAppSettingsStoreMethods.isPOSCatalogFileBlockedByHost(siteID: siteID))
     }
 }
 

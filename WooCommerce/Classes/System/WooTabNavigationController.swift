@@ -20,6 +20,10 @@ final class WooTabNavigationController: WooNavigationController {
     }
 
     private func updateNavigationBarAppearance(largeTitleDisplayMode: UINavigationItem.LargeTitleDisplayMode) {
+        guard #unavailable(iOS 26.0) else {
+            return
+        }
+
         let appearance = UINavigationBar.appearance().standardAppearance.copy()
         switch largeTitleDisplayMode {
         case .always:

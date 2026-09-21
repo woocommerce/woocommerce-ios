@@ -1,7 +1,17 @@
 {
   "images" : [
     {
-      "filename" : "pos-error.pdf",
+      "filename" : "pos-error-light.pdf",
+      "idiom" : "universal"
+    },
+    {
+      "appearances" : [
+        {
+          "appearance" : "luminosity",
+          "value" : "dark"
+        }
+      ],
+      "filename" : "pos-error-dark.pdf",
       "idiom" : "universal"
     }
   ],

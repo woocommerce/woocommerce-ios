@@ -127,6 +127,10 @@ final class TapToPayCardReaderPaymentAlertsProvider: CardReaderTransactionAlerts
     func cancelledOnReader() -> CardPresentPaymentsModalViewModel? {
         return nil
     }
+
+    func paymentCancellationConfirmation(onDismiss: @escaping () -> Void) -> CardPresentPaymentsModalViewModel? {
+        CardPresentModalTapToPayPaymentCancelled(onDismiss: onDismiss)
+    }
 }
 
 private extension TapToPayCardReaderPaymentAlertsProvider {

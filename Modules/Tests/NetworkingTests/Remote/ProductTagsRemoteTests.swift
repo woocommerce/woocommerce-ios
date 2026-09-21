@@ -83,7 +83,7 @@ final class ProductTagsRemoteTests: XCTestCase {
         // When
         var result: Result<[ProductTag], Error>?
         waitForExpectation { exp in
-            remote.createProductTags(for: sampleSiteID, names: ["Round toe", "Flat"]) { (aResult) in
+            remote.createProductTags(for: sampleSiteID, names: ["Round toe", "Flat"]) { aResult in
                 result = aResult
                 exp.fulfill()
             }
@@ -105,7 +105,7 @@ final class ProductTagsRemoteTests: XCTestCase {
         // When
         var result: Result<[ProductTag], Error>?
         waitForExpectation { exp in
-            remote.createProductTags(for: sampleSiteID, names: ["Leather Shoes"]) { (aResult) in
+            remote.createProductTags(for: sampleSiteID, names: ["Leather Shoes"]) { aResult in
                 result = aResult
                 exp.fulfill()
             }
@@ -128,7 +128,7 @@ final class ProductTagsRemoteTests: XCTestCase {
         // When
         var result: Result<[ProductTag], Error>?
         waitForExpectation { exp in
-            remote.deleteProductTags(for: sampleSiteID, ids: [35]) { (aResult) in
+            remote.deleteProductTags(for: sampleSiteID, ids: [35]) { aResult in
                 result = aResult
                 exp.fulfill()
             }
@@ -150,7 +150,7 @@ final class ProductTagsRemoteTests: XCTestCase {
         // When
         var result: Result<[ProductTag], Error>?
         waitForExpectation { exp in
-            remote.deleteProductTags(for: sampleSiteID, ids: [35]) { (aResult) in
+            remote.deleteProductTags(for: sampleSiteID, ids: [35]) { aResult in
                 result = aResult
                 exp.fulfill()
             }
@@ -160,5 +160,4 @@ final class ProductTagsRemoteTests: XCTestCase {
         XCTAssertNil(try? result?.get())
         XCTAssertNotNil(result?.failure)
     }
-
 }

@@ -138,7 +138,7 @@ final class AddAttributeOptionsViewModel {
 
     /// Current `ViewModel` state.
     ///
-    private var state: State = State() {
+    private var state = State() {
         didSet {
             updateSections()
             onChange?()

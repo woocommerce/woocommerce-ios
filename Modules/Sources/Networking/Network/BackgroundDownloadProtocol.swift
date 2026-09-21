@@ -8,8 +8,8 @@ public protocol BackgroundDownloadProtocol {
     ///   - url: The URL to download from.
     ///   - sessionIdentifier: Unique identifier for the background session.
     ///   - allowCellular: Whether cellular data should be allowed for this download.
-    /// - Returns: Local file URL where the downloaded content is stored.
-    func downloadFile(from url: URL, sessionIdentifier: String, allowCellular: Bool) async throws -> URL
+    /// - Returns: Local file URL where the downloaded content is stored, plus response metadata.
+    func downloadFile(from url: URL, sessionIdentifier: String, allowCellular: Bool) async throws -> BackgroundDownloadResult
 
     /// Sets up background app suspension handling.
     /// - Parameter completionHandler: Handler to call when background download completes.
@@ -41,6 +41,21 @@ public struct BackgroundDownloadProgress {
         self.bytesDownloaded = bytesDownloaded
         self.totalBytes = totalBytes
         self.progress = totalBytes > 0 ? Double(bytesDownloaded) / Double(totalBytes) : 0.0
+    }
+}
+
+/// Result of a completed background download.
+public struct BackgroundDownloadResult {
+    public let fileURL: URL
+    public let statusCode: Int?
+    public let contentType: String?
+
+    public init(fileURL: URL,
+                statusCode: Int?,
+                contentType: String?) {
+        self.fileURL = fileURL
+        self.statusCode = statusCode
+        self.contentType = contentType
     }
 }
 

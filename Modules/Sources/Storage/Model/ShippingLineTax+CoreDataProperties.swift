@@ -11,5 +11,4 @@ extension ShippingLineTax {
     @NSManaged public var total: String?
     @NSManaged public var subtotal: String?
     @NSManaged public var shipping: ShippingLine?
-
 }

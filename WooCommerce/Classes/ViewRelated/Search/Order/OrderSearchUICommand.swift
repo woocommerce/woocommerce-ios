@@ -1,3 +1,4 @@
+import Combine
 import Foundation
 import UIKit
 import Yosemite
@@ -23,26 +24,51 @@ final class OrderSearchUICommand: SearchUICommand {
 
     var resynchronizeModels: (() -> Void) = {}
 
+    /// Emits when the stored order statuses change, so the search results table can be reloaded.
+    ///
+    private let reloadUISubject = PassthroughSubject<Void, Never>()
+
+    var reloadUIRequests: AnyPublisher<Void, Never> {
+        reloadUISubject.eraseToAnyPublisher()
+    }
+
     private let siteID: Int64
     private let storageManager: StorageManagerType
     private let analytics: Analytics
     private let stores: StoresManager
-    private let ciabEligibilityChecker: CIABEligibilityCheckerProtocol
 
     private let onSelectSearchResult: ((Order, UIViewController) -> Void)
+
+    /// Used for looking up the `OrderStatus` to show in the search result cells.
+    ///
+    private lazy var statusResultsController: ResultsController<StorageOrderStatus> = {
+        let predicate = NSPredicate(format: "siteID == %lld", siteID)
+        let descriptor = NSSortDescriptor(key: "slug", ascending: true)
+        let resultsController = ResultsController<StorageOrderStatus>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.reloadUISubject.send()
+        }
+        resultsController.onDidResetContent = { [weak self] in
+            self?.reloadUISubject.send()
+        }
+        do {
+            try resultsController.performFetch()
+        } catch {
+            DDLogError("⛔️ OrderSearchUICommand: Unable to fetch Order Statuses: \(error)")
+        }
+        return resultsController
+    }()
 
     init(siteID: Int64,
          onSelectSearchResult: @escaping ((Order, UIViewController) -> Void),
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          analytics: Analytics = ServiceLocator.analytics,
-         stores: StoresManager = ServiceLocator.stores,
-         ciabEligibilityChecker: CIABEligibilityCheckerProtocol = CIABEligibilityChecker()) {
+         stores: StoresManager = ServiceLocator.stores) {
         self.siteID = siteID
         self.onSelectSearchResult = onSelectSearchResult
         self.storageManager = storageManager
         self.analytics = analytics
         self.stores = stores
-        self.ciabEligibilityChecker = ciabEligibilityChecker
     }
 
     func createResultsController() -> ResultsController<ResultsControllerModel> {
@@ -71,7 +97,7 @@ final class OrderSearchUICommand: SearchUICommand {
     func createCellViewModel(model: Order) -> OrderListCellViewModel {
         return OrderListCellViewModel(order: model,
                                       currencySettings: ServiceLocator.currencySettings,
-                                      isCIAB: ciabEligibilityChecker.isCurrentSiteCIAB)
+                                      siteStatuses: statusResultsController.fetchedObjects)
     }
 
     /// Synchronizes the Orders matching a given Keyword

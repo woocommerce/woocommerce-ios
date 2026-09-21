@@ -162,7 +162,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
     private func loadChildItems(for parent: POSItem) async {
         let paginationTracker = paginationTracker(for: parent)
         do {
-            try await paginationTracker.resync { [weak self] pageNumber in
+            try await paginationTracker.resync { [weak self] _ in
                 guard let self else { return true }
                 return try await fetchChildItems(for: parent, pageNumber: Store.Default.firstPageNumber, appendToExistingItems: false)
             }

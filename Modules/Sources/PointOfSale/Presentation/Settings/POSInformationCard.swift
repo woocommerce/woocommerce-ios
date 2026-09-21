@@ -34,7 +34,7 @@ struct POSInformationCardFieldRow: View {
     let buttonTitle: String?
     let buttonAction: (() -> Void)?
     let buttonStyle: ButtonStyle
-    let isLoading: Bool
+    let isButtonEnabled: Bool
 
     init(label: String,
          value: String,
@@ -43,7 +43,7 @@ struct POSInformationCardFieldRow: View {
          buttonTitle: String? = nil,
          buttonAction: (() -> Void)? = nil,
          buttonStyle: ButtonStyle = .default,
-         isLoading: Bool = false) {
+         isButtonEnabled: Bool = true) {
         self.label = label
         self.value = value
         self.showSeparator = showSeparator
@@ -51,7 +51,7 @@ struct POSInformationCardFieldRow: View {
         self.buttonTitle = buttonTitle
         self.buttonAction = buttonAction
         self.buttonStyle = buttonStyle
-        self.isLoading = isLoading
+        self.isButtonEnabled = isButtonEnabled
     }
 
     var body: some View {
@@ -72,8 +72,9 @@ struct POSInformationCardFieldRow: View {
                         .buttonStyle(POSInfoCardButtonStyle(
                             size: .compact,
                             variant: buttonStyle == .primary ? .primary : .default,
-                            isLoading: isLoading
+                            isLoading: false
                         ))
+                        .disabled(!isButtonEnabled)
                 }
             }
 

@@ -43,7 +43,7 @@ final class EditProductCategoryListViewModel {
         onCompletionCallback(baseProductCategoryListViewModel.selectedCategories)
     }
 
-    /// Informs of wether there are still changes that were not commited
+    /// Informs of whether there are still changes that were not committed
     ///
     func hasUnsavedChanges() -> Bool {
         return product.categories.sorted() != baseProductCategoryListViewModel.selectedCategories.sorted()

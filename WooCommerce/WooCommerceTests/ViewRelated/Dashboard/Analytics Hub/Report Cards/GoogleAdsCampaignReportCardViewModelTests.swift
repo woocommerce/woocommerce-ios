@@ -94,7 +94,6 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         assertEqual(true, firstCampaign.details.contains("$200"))
         assertEqual("$1,234.56", firstCampaign.value)
         XCTAssertFalse(vm.showCampaignsError)
-
     }
 
     func test_reportViewModel_contains_expected_reportURL_elements() throws {

@@ -7,7 +7,7 @@ import Storage
 public final class ProductShippingClassStore: Store {
     private let remote: ProductShippingClassRemote
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.remote = ProductShippingClassRemote(network: network)
         super.init(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
@@ -66,7 +66,7 @@ private extension ProductShippingClassStore {
     /// Retrieves the `ProductShippingClass` associated with a given `Product`.
     ///
     func retrieveProductShippingClass(siteID: Int64, remoteID: Int64, onCompletion: @escaping (ProductShippingClass?, Error?) -> Void) {
-        remote.loadOne(for: siteID, remoteID: remoteID) { [weak self] (model, error) in
+        remote.loadOne(for: siteID, remoteID: remoteID) { [weak self] model, error in
             guard let model else {
                 onCompletion(nil, error)
                 return

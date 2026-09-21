@@ -4,7 +4,7 @@ struct ShippingLabelPackageSelection: View {
     @ObservedObject var viewModel: ShippingLabelPackageListViewModel
 
     var body: some View {
-        NavigationView {
+        NavigationStack {
             if viewModel.hasCustomOrPredefinedPackages {
                 ShippingLabelPackageList(viewModel: viewModel)
             } else {

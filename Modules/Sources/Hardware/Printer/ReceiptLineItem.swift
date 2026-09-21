@@ -32,3 +32,14 @@ extension ReceiptLineItem {
         case attributes = "attributes"
     }
 }
+
+public extension ReceiptLineItem {
+    /// The line's attributes joined for display, e.g. "Color Blue, Size M". Empty when there are
+    /// no attributes. Shared by every receipt renderer so the formatting stays identical.
+    var attributesDescription: String {
+        attributes
+            .map { "\($0.name) \($0.value)".trimmingCharacters(in: .whitespaces) }
+            .filter { $0.isEmpty == false }
+            .joined(separator: ", ")
+    }
+}

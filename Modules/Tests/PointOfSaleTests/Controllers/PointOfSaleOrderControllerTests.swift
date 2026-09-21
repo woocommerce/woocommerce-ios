@@ -5,9 +5,12 @@ import Foundation
 @testable import PointOfSale
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
+import struct Yosemite.OrderFeeLine
 import struct Yosemite.OrderCouponLine
+import struct Yosemite.POSCustomAmount
 import struct Yosemite.SystemPlugin
 import enum Yosemite.OrderAction
+import class Yosemite.POSOrderService
 import protocol Yosemite.PluginsServiceProtocol
 import class WooFoundation.CurrencySettings
 import protocol WooFoundation.Analytics
@@ -111,7 +114,7 @@ struct PointOfSaleOrderControllerTests {
 
         // When
         await sut.syncOrder(for: Cart(purchasableItems: [cartItem,
-                                                          makeItem(quantity: 5, orderItemsToMatch: [futureOrderItem])]),
+                                                         makeItem(quantity: 5, orderItemsToMatch: [futureOrderItem])]),
                             retryHandler: {})
 
         // Then
@@ -195,6 +198,44 @@ struct PointOfSaleOrderControllerTests {
         ])
     }
 
+    @Test func syncOrder_when_order_does_not_match_cart_then_sets_orderDoesNotMatchCart_error() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        mockOrderService.errorToReturn = POSOrderService.POSOrderServiceError.orderDoesNotMatchCart
+
+        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
+        var orderStateAppendTask: Task<Void, Never>? = nil
+        await confirmation(expectedCount: 2) { confirmation in
+            @Sendable func observeOrderState() {
+                withObservationTracking {
+                    _ = sut.orderState
+                } onChange: {
+                    orderStateAppendTask = Task { @MainActor in
+                        orderStates.append(sut.orderState)
+                    }
+                    confirmation()
+                    observeOrderState()
+                }
+            }
+            observeOrderState()
+
+            // When
+            await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        }
+
+        await orderStateAppendTask?.value
+
+        // Then
+        #expect(orderStates == [
+            .idle,
+            .syncing,
+            .error(.orderDoesNotMatchCart, {})
+        ])
+    }
+
     @Test func sendReceipt_when_there_is_no_order_then_throws_noOrder_error() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
@@ -268,6 +309,280 @@ struct PointOfSaleOrderControllerTests {
 
         // Then
         #expect(mockOrderService.spyCashPaymentChangeDueAmount == "$6.0")
+    }
+
+    @Test func markOrderAsPaidManually_when_no_order_then_fails_with_noOrder_error() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        // When / Then
+        await #expect(performing: {
+            try await sut.markOrderAsPaidManually(note: nil)
+        }, throws: { error in
+            (error as? PointOfSaleOrderController.PointOfSaleOrderControllerError) == .noOrder
+        })
+
+        // The order service was never called because the guard short-circuited.
+        #expect(mockOrderService.markOrderAsCompletedManuallyWasCalled == false)
+    }
+
+    @Test func markOrderAsPaidManually_with_synced_order_calls_orderService() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(orderID: 42, items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+
+        // When
+        try await sut.markOrderAsPaidManually(note: nil)
+
+        // Then
+        #expect(mockOrderService.markOrderAsCompletedManuallyWasCalled == true)
+        #expect(mockOrderService.spyMarkOrderAsCompletedManuallyOrder?.orderID == 42)
+    }
+
+    @Test func markOrderAsPaidManually_with_non_empty_note_calls_addOrderNote_with_trimmed_note() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(orderID: 99, items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+
+        // When
+        try await sut.markOrderAsPaidManually(note: "  Payment received in cash  ")
+
+        // Then
+        #expect(mockOrderService.addOrderNoteWasCalled == true)
+        #expect(mockOrderService.spyAddOrderNoteOrderID == 99)
+        #expect(mockOrderService.spyAddOrderNoteText == "Payment received in cash")
+        #expect(mockOrderService.spyAddOrderNoteIsCustomerNote == false)
+    }
+
+    @Test func markOrderAsPaidManually_with_whitespace_only_note_does_not_call_addOrderNote() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+
+        // When
+        try await sut.markOrderAsPaidManually(note: "   ")
+
+        // Then
+        #expect(mockOrderService.markOrderAsCompletedManuallyWasCalled == true)
+        #expect(mockOrderService.addOrderNoteWasCalled == false)
+    }
+
+    @Test func markOrderAsPaidManually_when_addOrderNote_fails_still_completes_order() async throws {
+        // Given
+        struct NoteAttachmentError: Error {}
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        // markOrderAsCompletedManually succeeds via resultToReturn; addOrderNote fails via its own override.
+        mockOrderService.resultToReturn = .success(())
+        mockOrderService.addOrderNoteResult = .failure(NoteAttachmentError())
+
+        // When — must NOT throw even though addOrderNote fails
+        try await sut.markOrderAsPaidManually(note: "Cash payment")
+
+        // Then — order was marked complete and note attachment was attempted but its error was swallowed
+        #expect(mockOrderService.markOrderAsCompletedManuallyWasCalled == true)
+        #expect(mockOrderService.addOrderNoteWasCalled == true)
+    }
+
+    @Test func markOrderAsPaidManually_when_orderService_throws_then_rethrows() async throws {
+        // Given
+        struct OrderServiceError: Error {}
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .failure(OrderServiceError())
+
+        // When / Then: the error propagates so the model can roll back state.
+        // Failure analytics is fired by `POSPaymentModel.confirmMarkAsPaidPayment()`, not here,
+        // so the controller has no analytics responsibility on this path.
+        await #expect(performing: {
+            try await sut.markOrderAsPaidManually(note: nil)
+        }, throws: { error in
+            error is OrderServiceError
+        })
+    }
+
+    @Test func confirmScanToPayPayment_with_synced_order_adds_note_and_records_payment_method() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(orderID: 123, items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+
+        // When
+        try await sut.confirmScanToPayPayment()
+
+        // Then
+        #expect(mockOrderService.addOrderNoteWasCalled == true)
+        #expect(mockOrderService.spyAddOrderNoteOrderID == 123)
+        #expect(mockOrderService.spyAddOrderNoteIsCustomerNote == false)
+        #expect(mockOrderService.spyAddOrderNoteText == "Paid via Scan to Pay")
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
+        #expect(mockOrderService.spyRecordScanToPayPaymentMethodOrder?.orderID == 123)
+    }
+
+    @Test func confirmScanToPayPayment_when_payment_method_update_fails_still_succeeds() async throws {
+        // Given
+        struct PaymentMethodUpdateError: Error {}
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        let orderItem = OrderItem.fake()
+        let fakeOrder = Order.fake().copy(orderID: 124, items: [orderItem])
+        mockOrderService.orderToReturn = fakeOrder
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+        mockOrderService.recordScanToPayPaymentMethodResult = .failure(PaymentMethodUpdateError())
+
+        // When
+        try await sut.confirmScanToPayPayment()
+
+        // Then
+        #expect(mockOrderService.addOrderNoteWasCalled == true)
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
+    }
+
+    @Test func confirmScanToPayPayment_when_the_note_fails_still_records_the_payment_method_and_does_not_throw() async throws {
+        // Given
+        struct AddOrderNoteError: Error {}
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 128, items: [OrderItem.fake()])
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.resultToReturn = .success(())
+        mockOrderService.addOrderNoteResult = .failure(AddOrderNoteError())
+
+        // When
+        try await sut.confirmScanToPayPayment()
+
+        // Then: the note failure is swallowed, and the payment method title still reaches the service.
+        #expect(mockOrderService.addOrderNoteWasCalled == true)
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
+        #expect(mockOrderService.spyRecordScanToPayPaymentMethodOrder?.orderID == 128)
+    }
+
+    @Test func recordScanToPayPaymentMethod_when_gateway_already_set_a_title_then_does_not_overwrite_it() async throws {
+        // Given: polling reloaded the order after the gateway settled the payment, so the order
+        // already carries the gateway's own payment method title.
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 125, items: [OrderItem.fake()])
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 125,
+                                                           paymentMethodTitle: "Credit card (WooPayments)",
+                                                           items: [OrderItem.fake()])
+        _ = try await sut.reloadCurrentOrder()
+
+        // When
+        await sut.recordScanToPayPaymentMethod()
+
+        // Then
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == false)
+    }
+
+    @Test func recordScanToPayPaymentMethod_when_title_is_the_generic_other_placeholder_then_records_it() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 126,
+                                                           paymentMethodTitle: "Other",
+                                                           items: [OrderItem.fake()])
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        mockOrderService.resultToReturn = .success(())
+
+        // When
+        await sut.recordScanToPayPaymentMethod()
+
+        // Then
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
+        #expect(mockOrderService.spyRecordScanToPayPaymentMethodOrder?.orderID == 126)
+    }
+
+    @Test func recordScanToPayPaymentMethod_when_title_is_empty_then_records_it() async throws {
+        // Given: the manual confirmation path, where no gateway has claimed the order yet.
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+
+        mockOrderService.orderToReturn = Order.fake().copy(orderID: 127,
+                                                           paymentMethodTitle: "",
+                                                           items: [OrderItem.fake()])
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        mockOrderService.resultToReturn = .success(())
+
+        // When
+        await sut.recordScanToPayPaymentMethod()
+
+        // Then
+        #expect(mockOrderService.recordScanToPayPaymentMethodWasCalled == true)
+        #expect(mockOrderService.spyRecordScanToPayPaymentMethodOrder?.orderID == 127)
     }
 
     @Test func syncOrder_when_successful_returns_newOrder_result() async throws {
@@ -396,6 +711,27 @@ struct PointOfSaleOrderControllerTests {
 
         // Then
         #expect(mockOrderService.syncOrderWasCalled == false)
+    }
+
+    @Test func syncOrder_maps_coupon_line_discounts_into_hasDiscount() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let discountingCoupon = OrderCouponLine.fake().copy(code: "SAVE10", discount: "5.00")
+        let zeroDiscountCoupon = OrderCouponLine.fake().copy(code: "ZERO", discount: "0.00")
+        mockOrderService.orderToReturn = Order.fake().copy(currency: "USD", coupons: [discountingCoupon, zeroDiscountCoupon])
+
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+
+        // Then
+        guard case .loaded(let totals, _) = sut.orderState else {
+            Issue.record("Expected loaded order state, got \(sut.orderState)")
+            return
+        }
+        #expect(totals.couponsTotals.map(\.hasDiscount) == [true, false])
     }
 
     @Test func syncOrder_with_matching_items_but_different_coupons_calls_orderService() async throws {
@@ -609,6 +945,144 @@ struct PointOfSaleOrderControllerTests {
         }
     }
 
+    // MARK: - Custom amount taxable intent
+
+    @Test func syncOrder_when_custom_amount_taxable_flag_toggled_then_calls_orderService() async throws {
+        // Given - an order whose fee matches the custom amount's name + amount, so
+        // `matches(order:)` alone would short-circuit the re-sync.
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let customAmountID = UUID()
+        let fee = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
+        let fakeOrder = Order.fake().copy(fees: [fee])
+        mockOrderService.orderToReturn = fakeOrder
+
+        // Initial sync with a taxable custom amount.
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+        mockOrderService.syncOrderWasCalled = false
+
+        // When - same id, name, and amount, but "Charge taxes" toggled off.
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: false)]),
+            retryHandler: {}
+        )
+
+        // Then - the taxable-intent change forces a re-sync despite name + amount being unchanged.
+        #expect(mockOrderService.syncOrderWasCalled == true)
+    }
+
+    @Test func syncOrder_when_custom_amount_unchanged_then_doesnt_call_orderService() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let customAmountID = UUID()
+        let fee = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
+        let fakeOrder = Order.fake().copy(fees: [fee])
+        mockOrderService.orderToReturn = fakeOrder
+
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+        mockOrderService.syncOrderWasCalled = false
+
+        // When - identical custom amount (same id, name, amount, taxable flag).
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+
+        // Then
+        #expect(mockOrderService.syncOrderWasCalled == false)
+    }
+
+    @Test func syncOrder_when_server_tax_status_differs_from_unchanged_cart_intent_then_doesnt_resync() async throws {
+        // Given - the cart intends a taxable amount but the server returns a non-taxable fee
+        // (e.g. a tax-exempt customer or a store-level tax-class override).
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let customAmountID = UUID()
+        let fee = OrderFeeLine.fake().copy(name: "Tip", taxStatus: .none, total: "5.00")
+        let fakeOrder = Order.fake().copy(fees: [fee])
+        mockOrderService.orderToReturn = fakeOrder
+
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+        mockOrderService.syncOrderWasCalled = false
+
+        // When - the cart's intent is unchanged; only the server's returned tax status differs.
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+
+        // Then - comparing against cart intent (not the server's decision) avoids a resync loop.
+        #expect(mockOrderService.syncOrderWasCalled == false)
+    }
+
+    @Test func syncOrder_when_custom_amount_removed_then_calls_orderService() async throws {
+        // Given - an order synced with a single custom amount.
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let customAmountID = UUID()
+        let fee = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
+        let fakeOrder = Order.fake().copy(fees: [fee])
+        mockOrderService.orderToReturn = fakeOrder
+
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+        mockOrderService.syncOrderWasCalled = false
+
+        // When - the custom amount is removed entirely.
+        await sut.syncOrder(for: Cart(customAmounts: []), retryHandler: {})
+
+        // Then - the cart no longer matches the order's fee, so a re-sync is required.
+        #expect(mockOrderService.syncOrderWasCalled == true)
+    }
+
+    @Test func syncOrder_after_clearOrder_with_same_custom_amount_then_calls_orderService() async throws {
+        // Given - an order synced with a custom amount, then cleared (e.g. order completed).
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let customAmountID = UUID()
+        let fee = OrderFeeLine.fake().copy(name: "Tip", total: "5.00")
+        let fakeOrder = Order.fake().copy(fees: [fee])
+        mockOrderService.orderToReturn = fakeOrder
+
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+        sut.clearOrder()
+        mockOrderService.syncOrderWasCalled = false
+
+        // When - a fresh cart with the same custom amount is synced after clearing.
+        await sut.syncOrder(
+            for: Cart(customAmounts: [POSCustomAmount(id: customAmountID, name: "Tip", amount: "5.00", isTaxable: true)]),
+            retryHandler: {}
+        )
+
+        // Then - clearOrder reset the snapshot, so this is treated as a brand new order.
+        #expect(mockOrderService.syncOrderWasCalled == true)
+    }
+
     @MainActor
     struct AnalyticsTests {
         private let analytics = MockPOSAnalytics()
@@ -631,7 +1105,7 @@ struct PointOfSaleOrderControllerTests {
             await sut.syncOrder(for: Cart(purchasableItems: [fakeCartItem]), retryHandler: { })
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "order_creation_success" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "order_creation_success" }))
         }
 
         @Test func syncOrder_when_create_order_fails_with_order_service_error_then_tracks_order_creation_failure_event() async throws {
@@ -646,7 +1120,7 @@ struct PointOfSaleOrderControllerTests {
             await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "order_creation_failed" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "order_creation_failed" }))
         }
 
         @MainActor
@@ -673,7 +1147,7 @@ struct PointOfSaleOrderControllerTests {
             })
 
             // Then
-            #expect(analytics.events.first(where: { $0.eventName == "cash_payment_failed" }) != nil)
+            #expect(analytics.events.contains(where: { $0.eventName == "cash_payment_failed" }))
         }
     }
 }

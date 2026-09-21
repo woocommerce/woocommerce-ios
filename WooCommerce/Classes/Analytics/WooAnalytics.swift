@@ -13,6 +13,9 @@ import WooFoundationCore
 
 final class WooAnalytics: Analytics {
 
+    typealias ABTestStarter = (ExperimentContext) -> Void
+    typealias WidgetConfigurationProvider = (@escaping (Result<[WidgetInfo], Error>) -> Void) -> Void
+
     // MARK: - Properties
 
     /// AnalyticsProvider: Interface to the actual analytics implementation
@@ -23,16 +26,27 @@ final class WooAnalytics: Analytics {
     ///
     private var applicationOpenedTime: Date?
 
+    private lazy var widgetSetupChangeTracker = WidgetSetupChangeTracker()
+
+    /// Defaults database used to persist the analytics opt-in state
+    ///
+    private let userDefaults: UserDefaults
+
+    private let startABTest: ABTestStarter
+    private let notificationCenter: NotificationCenter
+    private let getWidgetConfigurations: WidgetConfigurationProvider
+    private var isObservingNotifications = false
+
     /// Check user opt-in for analytics
     ///
     var userHasOptedIn: Bool {
         get {
             let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
-            let optedIn: Bool? = UserDefaults.standard.object(forKey: .userOptedInAnalytics)
+            let optedIn: Bool? = userDefaults.object(forKey: .userOptedInAnalytics)
             return ( optedIn ?? true ) && !isUITesting // analytics tracking on by default, but disabled for UI tests
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: .userOptedInAnalytics)
+            userDefaults.set(newValue, forKey: .userOptedInAnalytics)
         }
     }
 
@@ -41,8 +55,22 @@ final class WooAnalytics: Analytics {
 
     /// Designated Initializer
     ///
-    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker) {
+    init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker,
+         userDefaults: UserDefaults = .standard,
+         notificationCenter: NotificationCenter = .default,
+         getWidgetConfigurations: @escaping WidgetConfigurationProvider = { completion in
+             WidgetCenter.shared.getCurrentConfigurations(completion)
+         },
+         startABTest: @escaping ABTestStarter = { context in
+             Task { @MainActor in
+                 await ABTest.start(for: context)
+             }
+         }) {
         self.analyticsProvider = analyticsProvider
+        self.userDefaults = userDefaults
+        self.startABTest = startABTest
+        self.notificationCenter = notificationCenter
+        self.getWidgetConfigurations = getWidgetConfigurations
         WPAnalytics.register(analyticsProvider)
     }
 }
@@ -55,7 +83,8 @@ extension WooAnalytics {
     /// Initialize the analytics engine
     ///
     func initialize() {
-        refreshUserData()
+        // Restore the saved Tracks identity on launch, including site-credential sessions.
+        refreshUserData(includingSiteCredentialSessions: true)
         startObservingNotifications()
     }
 
@@ -63,23 +92,25 @@ extension WooAnalytics {
     /// It's good to call this function after a user logs in or out of the app.
     ///
     func refreshUserData() {
+        refreshUserData(includingSiteCredentialSessions: false)
+    }
+
+    private func refreshUserData(includingSiteCredentialSessions: Bool) {
         guard userHasOptedIn == true else {
             return
         }
 
-        // Skips refreshing user data when user is authenticated without WPCom
-        // since they are still identified with anonymous ID.
-        if ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
-            analyticsProvider.refreshUserData()
-        }
-
-        // Refreshes A/B experiments since `ExPlat.shared` is reset after each `TracksProvider.refreshUserData` call
-        // and any A/B test assignments that come back after the shared instance is reset won't be saved for later
-        // access.
         let context: ExperimentContext = ServiceLocator.stores.isAuthenticated ?
             .loggedIn: .loggedOut
-        Task { @MainActor in
-            await ABTest.start(for: context)
+
+        if includingSiteCredentialSessions || ServiceLocator.stores.isAuthenticatedWithoutWPCom == false {
+            // Refreshes A/B experiments after Tracks finishes switching users because that switch resets `ExPlat.shared`.
+            analyticsProvider.refreshUserData { [startABTest] in
+                startABTest(context)
+            }
+        } else {
+            // Keep the login-time skip from #9485, which addressed missing application-password approval events.
+            startABTest(context)
         }
     }
 
@@ -95,7 +126,8 @@ extension WooAnalytics {
         guard userHasOptedIn == true else {
             return
         }
-        let properties = combinedProperties(from: error, with: passedProperties)
+        let siteEnrichedProperties = siteEnrichedPropertiesIfNeeded(for: eventName, properties: passedProperties)
+        let properties = combinedProperties(from: error, with: siteEnrichedProperties)
         if let properties {
             analyticsProvider.track(eventName, withProperties: properties)
         } else {
@@ -110,6 +142,7 @@ extension WooAnalytics {
 extension WooAnalytics {
 
     func setUserHasOptedOut(_ optedOut: Bool) {
+        let wasOptedIn = userHasOptedIn
         userHasOptedIn = !optedOut
 
         if optedOut {
@@ -117,7 +150,10 @@ extension WooAnalytics {
             analyticsProvider.clearUsers()
             DDLogInfo("🔴 Tracking opt-out complete.")
         } else {
-            refreshUserData()
+            // An opted-out launch skips identity restoration. Restore it when tracking becomes enabled.
+            // Repeated enabled settings must keep the regular site-credential login skip.
+            refreshUserData(includingSiteCredentialSessions: !wasOptedIn)
+            startObservingNotifications()
             DDLogInfo("🔵 Tracking started.")
         }
     }
@@ -183,14 +219,18 @@ extension Analytics {
     }
 }
 
-// MARK: - EventHorizon Trackable Bridge
+// MARK: - EventHorizon Event Bridge
 
 extension Analytics {
-    /// Track a codegen'd Trackable event through the existing analytics pipeline.
-    func track(_ event: some Trackable) {
-        let properties = event.analyticsProperties as [AnyHashable: Any]
+    func track(_ event: Event) {
+        let properties = event.properties as [AnyHashable: Any]
         let enrichedProperties = appendSiteProperties(to: properties)
-        track(event.analyticsName, properties: enrichedProperties, error: nil)
+        track(event.name, properties: enrichedProperties, error: nil)
+    }
+
+    func track(_ eventName: String, withEventProperties properties: [String: any CustomStringConvertible]) {
+        let enrichedProperties = appendSiteProperties(to: properties as [AnyHashable: Any])
+        track(eventName, properties: enrichedProperties, error: nil)
     }
 }
 
@@ -211,9 +251,23 @@ fileprivate extension Analytics {
                 updatedProperties[key] = value
             }
         }
-        updatedProperties[PropertyKeys.storeID] = ServiceLocator.stores.sessionManager.defaultStoreUUID
-        updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion
+        if let storeUUID = ServiceLocator.stores.sessionManager.defaultStoreUUID, !storeUUID.isEmpty {
+            updatedProperties[PropertyKeys.storeID] = storeUUID
+        }
+        if let cachedWooCommerceVersion = ServiceLocator.stores.sessionManager.cachedWooCommerceVersion, !cachedWooCommerceVersion.isEmpty {
+            updatedProperties[PropertyKeys.cachedWooCommerceVersionKey] = cachedWooCommerceVersion
+        }
         return updatedProperties
+    }
+
+    /// Callers outside the app target (the Yosemite data layer) can only reach the `String`-named `track`,
+    /// which used to skip enrichment and drop `store_id` from those events. Enrichment is idempotent, so
+    /// re-running it for callers that already enriched is harmless.
+    func siteEnrichedPropertiesIfNeeded(for eventName: String, properties: [AnyHashable: Any]?) -> [AnyHashable: Any]? {
+        guard let stat = WooAnalyticsStat(rawValue: eventName), stat.shouldSendSiteProperties else {
+            return properties
+        }
+        return appendSiteProperties(to: properties)
     }
 }
 
@@ -243,37 +297,10 @@ private extension Analytics {
         guard let error else {
             return nil
         }
-
-        let nsError = error as NSError
-        let errorCode: String = {
-            if let networkError = error as? NetworkError, let code = networkError.responseCode {
-                return code.description
-            } else if let afError = error as? AFError {
-                if let responseCode = afError.responseCode {
-                    return responseCode.description
-                } else if let underlyingError = afError.underlyingError as? NSError {
-                    return underlyingError.code.description
-                }
-            } else if let loginError = error as? SiteCredentialLoginError {
-                return loginError.underlyingError.code.description
-            }
-            return nsError.code.description
-        }()
-
-        let errorDomain: String = {
-            if let networkError = error as? AFError,
-               let underlyingError = networkError.underlyingError as? NSError {
-                return underlyingError.domain
-            }
-            return nsError.domain
-        }()
-
-        let errorDescription = nsError.description
-
         return [
-            Constants.errorKeyCode: errorCode,
-            Constants.errorKeyDomain: errorDomain,
-            Constants.errorKeyDescription: errorDescription
+            Constants.errorKeyCode: error.errorCode.description,
+            Constants.errorKeyDomain: error.errorDomain,
+            Constants.errorKeyDescription: (error as NSError).description
         ]
     }
 }
@@ -283,25 +310,39 @@ private extension Analytics {
 private extension WooAnalytics {
 
     func startObservingNotifications() {
-        guard userHasOptedIn == true else {
+        guard userHasOptedIn, !isObservingNotifications else {
             return
         }
+        isObservingNotifications = true
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(trackApplicationOpened),
-                                               name: UIApplication.didBecomeActiveNotification,
-                                               object: nil)
+        notificationCenter.addObserver(self,
+                                       selector: #selector(trackApplicationOpened),
+                                       name: UIApplication.didBecomeActiveNotification,
+                                       object: nil)
 
-        NotificationCenter.default.addObserver(self,
-                                               selector: #selector(trackApplicationClosed),
-                                               name: UIApplication.didEnterBackgroundNotification,
-                                               object: nil)
+        notificationCenter.addObserver(self,
+                                       selector: #selector(trackApplicationClosed),
+                                       name: UIApplication.didEnterBackgroundNotification,
+                                       object: nil)
     }
 
     @objc func trackApplicationOpened() {
-        WidgetCenter.shared.getCurrentConfigurations { [weak self] configurationResult in
+        getWidgetConfigurations { [weak self] configurationResult in
             guard let self else { return }
-            self.track(.applicationOpened, withProperties: self.applicationOpenedProperties(configurationResult))
+
+            let applicationProperties = self.applicationOpenedProperties(configurationResult)
+
+            guard let infos = try? configurationResult.get() else {
+                self.track(.applicationOpened, withProperties: applicationProperties)
+                return
+            }
+
+            let snapshot = WidgetSnapshot(from: infos)
+            var properties = applicationProperties.merging(snapshot.analyticsProperties) { _, new in new }
+            if let diff = self.widgetSetupChangeTracker.evaluate(currentSnapshot: snapshot) {
+                properties.merge(diff.analyticsProperties) { _, new in new }
+            }
+            self.track(.applicationOpened, withProperties: properties)
         }
         applicationOpenedTime = Date()
     }
@@ -320,7 +361,7 @@ private extension WooAnalytics {
         return [PropertyKeys.propertyKeyTimeInApp: timeInApp.description]
     }
 
-    /// Builds the necesary properties for the `application_opened` event.
+    /// Builds the necessary properties for the `application_opened` event.
     ///
     func applicationOpenedProperties(_ configurationResult: Result<[WidgetInfo], Error>) -> [String: String] {
         guard let installedWidgets = try? configurationResult.get() else {
@@ -332,6 +373,8 @@ private extension WooAnalytics {
             switch widgetInfo.kind {
             case WooConstants.storeInfoWidgetKind:
                 return "\(WooAnalyticsEvent.Widgets.Name.todayStats.rawValue)-\(widgetInfo.family)"
+            case WooConstants.storeTrendsWidgetKind:
+                return "\(WooAnalyticsEvent.Widgets.Name.trends.rawValue)-\(widgetInfo.family)"
             case WooConstants.appLinkWidgetKind:
                 return WooAnalyticsEvent.Widgets.Name.appLink.rawValue
             default:

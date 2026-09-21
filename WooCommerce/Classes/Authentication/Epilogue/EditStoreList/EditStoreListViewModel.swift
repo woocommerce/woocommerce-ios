@@ -172,9 +172,17 @@ private extension EditStoreListViewModel {
                     ))
                 }
                 pushNotificationManager.unmarkSiteAsRegisteredForWooPNs(siteID)
+                analytics.track(event: .PushNotifications.wooPushTokenDeleteSuccess(targetSite: targetSite(for: siteID)))
             } catch {
                 DDLogError("⛔️ Failed to unregister site \(siteID) from self-driven push notifications: \(error)")
+                analytics.track(event: .PushNotifications.wooPushTokenDeleteError(targetSite: targetSite(for: siteID), error: error))
             }
         }
+    }
+
+    /// Hidden sites are always drawn from `availableSites`, so the target site for analytics
+    /// attribution can be resolved locally without a storage lookup.
+    func targetSite(for siteID: Int64) -> Site? {
+        availableSites.first { $0.siteID == siteID }
     }
 }

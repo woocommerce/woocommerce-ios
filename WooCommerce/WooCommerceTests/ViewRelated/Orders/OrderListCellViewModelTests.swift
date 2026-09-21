@@ -2,6 +2,7 @@ import XCTest
 import TestKit
 
 import Yosemite
+import WooFoundation
 @testable import WooCommerce
 
 final class OrderListCellViewModelTests: XCTestCase {
@@ -34,16 +35,30 @@ final class OrderListCellViewModelTests: XCTestCase {
         XCTAssertTrue(formatted.contains(expectedYearString))
     }
 
-    func test_status_from_order_is_used() {
+    func test_statusString_when_no_matching_site_status_then_falls_back_to_localizedName() {
         // Given
         let order = MockOrders().sampleOrder()
 
-        // When
+        // When — no site statuses provided, so nothing matches the order's status
         let viewModel = OrderListCellViewModel(order: order, currencySettings: ServiceLocator.currencySettings)
 
         // Then
         XCTAssertEqual(viewModel.status, order.status)
         XCTAssertEqual(viewModel.statusString, order.status.localizedName)
+    }
+
+    func test_statusString_when_matching_site_status_exists_then_uses_server_name() {
+        // Given
+        let order = MockOrders().sampleOrder()
+        let siteStatuses = [OrderStatus(name: "Server Name", siteID: order.siteID, slug: order.status.rawValue, total: 0)]
+
+        // When
+        let viewModel = OrderListCellViewModel(order: order,
+                                               currencySettings: ServiceLocator.currencySettings,
+                                               siteStatuses: siteStatuses)
+
+        // Then — the server-provided name is preferred over the app-localized name
+        XCTAssertEqual(viewModel.statusString, "Server Name")
     }
 
     func test_OrderListCell_accessoryView_uses_chevron_with_tertiaryLabel_tint_as_disclosure_indicator() {
@@ -82,5 +97,31 @@ final class OrderListCellViewModelTests: XCTestCase {
 
         // Then
         XCTAssertNil(viewModel.salesChannel)
+    }
+
+    func test_total_when_order_currency_matches_store_default_then_shows_no_currency_code() {
+        // Given — a USD order on a store whose default currency is USD
+        let store = CurrencySettings() // defaults to USD
+        let order = MockOrders().sampleOrder().copy(currency: "USD", total: "10.00")
+        let expected = CurrencyFormatter(currencySettings: store).formatAmount("10.00", with: "USD")
+
+        // When
+        let viewModel = OrderListCellViewModel(order: order, currencySettings: store)
+
+        // Then
+        XCTAssertEqual(viewModel.total, expected)
+    }
+
+    func test_total_when_order_currency_differs_from_store_default_then_appends_currency_code() {
+        // Given — a CAD order on a store whose default currency is USD
+        let store = CurrencySettings() // defaults to USD
+        let order = MockOrders().sampleOrder().copy(currency: "CAD", total: "10.00")
+        let baseAmount = CurrencyFormatter(currencySettings: store).formatAmount("10.00", with: "CAD") ?? ""
+
+        // When
+        let viewModel = OrderListCellViewModel(order: order, currencySettings: store)
+
+        // Then — the "$" symbol is disambiguated with the ISO code
+        XCTAssertEqual(viewModel.total, baseAmount + "\u{00a0}CAD")
     }
 }

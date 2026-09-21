@@ -15,6 +15,11 @@ extension PaymentGateway {
                        instructions: Localization.cashOnDeliveryCheckoutInstructions)
     }
 
+    /// The customer-facing title applied to the gateway when Pay in Person is enabled.
+    static var defaultPayInPersonTitle: String {
+        Localization.cashOnDeliveryCheckoutTitle
+    }
+
     private enum Localization {
         static let cashOnDeliveryCheckoutTitle = NSLocalizedString(
             "Pay in Person",

@@ -10,7 +10,7 @@ public class SettingStore: Store {
     private let siteAPIRemote: SiteAPIRemote
     private let methods: SettingStoreMethods
 
-    public override init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
+    override public init(dispatcher: Dispatcher, storageManager: StorageManagerType, network: Network) {
         self.siteSettingsRemote = SiteSettingsRemote(network: network)
         self.siteAPIRemote = SiteAPIRemote(network: network)
         self.methods = SettingStoreMethods(storageManager: storageManager, network: network)
@@ -79,6 +79,24 @@ public class SettingStore: Store {
             Task { @MainActor in
                 do {
                     try await methods.updateAnalyticsOrderDateType(siteID: siteID, value: value)
+                    onCompletion(.success(()))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
+        case let .retrieveAnalyticsImportUpdateMode(siteID, onCompletion):
+            Task { @MainActor in
+                do {
+                    let mode = try await methods.retrieveAnalyticsImportUpdateMode(siteID: siteID)
+                    onCompletion(.success(mode))
+                } catch {
+                    onCompletion(.failure(error))
+                }
+            }
+        case let .updateAnalyticsImportUpdateMode(siteID, value, onCompletion):
+            Task { @MainActor in
+                do {
+                    try await methods.updateAnalyticsImportUpdateMode(siteID: siteID, value: value)
                     onCompletion(.success(()))
                 } catch {
                     onCompletion(.failure(error))

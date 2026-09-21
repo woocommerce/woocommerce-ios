@@ -3,5 +3,4 @@ import CoreData
 
 @objc(Country)
 public class Country: NSManagedObject {
-
 }

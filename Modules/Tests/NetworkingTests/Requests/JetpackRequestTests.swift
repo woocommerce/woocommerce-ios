@@ -1,6 +1,7 @@
 import XCTest
 @testable import Networking
 @testable import NetworkingCore
+import Alamofire
 
 
 /// JetpackRequest Unit Tests
@@ -47,19 +48,35 @@ final class JetpackRequestTests: XCTestCase {
 
     /// Verifies that a POST JetpackRequest will serialize all of the Tunneling Parameters in the request body.
     ///
-    func test_post_request_queries_DotCom_Jetpack_tunnel_endpoint_with_its_parameters_in_the_body() {
+    func test_post_request_queries_DotCom_Jetpack_tunnel_endpoint_with_its_parameters_in_the_body() throws {
+        // Given
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
 
-        guard let urlRequest = try? request.asURLRequest(),
-            let generatedBodyAsData = urlRequest.httpBody,
-            let generatedBody = String(data: generatedBodyAsData, encoding: .utf8)
-        else {
-            XCTFail()
-            return
-        }
+        // When
+        let urlRequest = try request.asURLRequest()
+        let bodyData = try XCTUnwrap(urlRequest.httpBody)
+        let body = try XCTUnwrap(String(data: bodyData, encoding: .utf8))
+        let formItems = try XCTUnwrap(URLComponents(string: "?\(body)")?.queryItems)
+        let json = try XCTUnwrap(formItems.first { $0.name == "body" }?.value)
+        let parameters = try JSONSerialization.jsonObject(with: Data(json.utf8)) as? [String: String]
 
-        let expectedBody = httpBody(for: request)
-        XCTAssertEqual(expectedBody, generatedBody)
+        // Then
+        XCTAssertEqual(parameters, sampleParameters)
+        XCTAssertEqual(formItems.first { $0.name == "json" }?.value, "true")
+        XCTAssertEqual(formItems.first { $0.name == "path" }?.value, "/wc/v3/sample&_method=post")
+    }
+
+    func test_post_request_with_no_parameters_encodes_empty_parameters_in_the_body() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: sampleSiteID, path: sampleRPC)
+
+        // When
+        let urlRequest = try request.asURLRequest()
+        let generatedBodyAsData = try XCTUnwrap(urlRequest.httpBody)
+        let generatedBody = try XCTUnwrap(String(data: generatedBodyAsData, encoding: .utf8))
+
+        // Then
+        XCTAssertTrue(generatedBody.contains("body=%7B%7D"))
     }
 
     /// Verifies that a GET JetpackRequest will query the Jetpack Tunneled WordPress.com API, with the expected query parameters.
@@ -79,6 +96,20 @@ final class JetpackRequestTests: XCTestCase {
 
         let output = try! request.asURLRequest()
         XCTAssertNil(output.httpBody)
+    }
+
+    func test_asURLRequest_when_parameters_contain_non_finite_number_then_throws_error() {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .get,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: ["value": Double.nan])
+
+        // Then
+        XCTAssertThrowsError(try request.asURLRequest()) { error in
+            XCTAssertEqual(error as? RequestParameterError, .nonFiniteNumber(path: "parameters.value"))
+        }
     }
 
     /// Verifies that a DELETE JetpackRequest will actually become a GET with a `&_method=delete` query string parameter.
@@ -110,6 +141,30 @@ final class JetpackRequestTests: XCTestCase {
         // Then
         XCTAssertEqual(output.httpMethod?.uppercased(), "POST")
         XCTAssertTrue(generatedBody.contains("%26_method%3Dput"))
+    }
+
+    func test_mutation_request_encodes_query_parameters_in_tunneled_path_and_parameters_in_body() throws {
+        for method: HTTPMethod in [.post, .put] {
+            // Given
+            let request = JetpackRequest(wooApiVersion: .mark3,
+                                         method: method,
+                                         siteID: sampleSiteID,
+                                         path: sampleRPC,
+                                         parameters: ["status": "completed"],
+                                         queryParameters: ["currency": "EUR & GBP=1"])
+
+            // When
+            let urlRequest = try request.asURLRequest()
+            let form = try XCTUnwrap(urlRequest.httpBody)
+            let formString = try XCTUnwrap(String(data: form, encoding: .utf8))
+            let formItems = try XCTUnwrap(URLComponents(string: "?\(formString)")?.queryItems)
+            let path = try XCTUnwrap(formItems.first { $0.name == "path" }?.value)
+            let body = try XCTUnwrap(formItems.first { $0.name == "body" }?.value)
+
+            // Then
+            XCTAssertEqual(path, "/wc/v3/\(sampleRPC)&currency=EUR%20%26%20GBP%3D1&_method=\(method.rawValue.lowercased())")
+            XCTAssertEqual(try JSONSerialization.jsonObject(with: Data(body.utf8)) as? [String: String], ["status": "completed"])
+        }
     }
 
     /// Verifies that a JetpackRequest with `locale` encodes `&locale=fr_FR` query string parameter.
@@ -149,6 +204,26 @@ final class JetpackRequestTests: XCTestCase {
         XCTAssertEqual(output.siteURL, sampleSiteAddress)
     }
 
+    func test_converting_into_RESTRequest_preserves_query_and_body_parameters() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .put,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: ["status": "completed"],
+                                     queryParameters: ["currency": "EUR"],
+                                     availableAsRESTRequest: true)
+
+        // When
+        let restRequest = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress))
+        let urlRequest = try restRequest.asURLRequest()
+
+        // Then
+        XCTAssertEqual(URLComponents(url: try XCTUnwrap(urlRequest.url), resolvingAgainstBaseURL: false)?
+            .queryItems?.first { $0.name == "currency" }?.value, "EUR")
+        XCTAssertEqual(restRequest.jsonBodyParameters as? [String: String], ["status": "completed"])
+    }
+
     func test_converting_into_RESTRequest_is_nil_when_availableAsRESTRequest_is_false() {
         // Given
         let request = JetpackRequest(wooApiVersion: .mark3,
@@ -160,6 +235,24 @@ final class JetpackRequestTests: XCTestCase {
 
         // Then
         XCTAssertNil(request.asRESTRequest(with: sampleSiteAddress))
+    }
+
+    func test_converting_into_RESTRequest_when_parameters_are_invalid_returns_request_that_throws_validation_error() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: sampleSiteID,
+                                     path: sampleRPC,
+                                     parameters: ["value": .double(Double.nan)],
+                                     availableAsRESTRequest: true)
+
+        // When
+        let restRequest = try XCTUnwrap(request.asRESTRequest(with: sampleSiteAddress))
+
+        // Then
+        XCTAssertThrowsError(try restRequest.asURLRequest()) { error in
+            XCTAssertEqual(error as? RequestParameterError, .nonFiniteNumber(path: "parameters.value"))
+        }
     }
 
     // MARK: - allowsCellularAccess Tests
@@ -250,31 +343,11 @@ private extension JetpackRequestTests {
         }
     }
 
-    /// Returns the expected HTTP Body for a given Jetpack Request.
-    ///
-    func httpBody(for request: JetpackRequest) -> String {
-        guard request.method == .post else {
-            return String()
-        }
-
-        let parametersAsData = try? JSONSerialization.data(withJSONObject: request.parameters, options: [])
-        let parametersAsString = String(data: parametersAsData!, encoding: .utf8)!
-        let parametersAsPercentEncoded = parametersAsString.addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
-        let ampersandAsPercentEncoded = "&".addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
-        let methodAsPercentEncoded = String("method=" + request.method.rawValue.lowercased())
-            .addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
-
-        return "body=" + parametersAsPercentEncoded +
-            "&json=true" +
-            "&path=" + sampleWooApiVersion.path + sampleRPC +
-            ampersandAsPercentEncoded + "_" + methodAsPercentEncoded
-    }
-
     /// Concatenates the specified collection of Parameters for the URLRequest's httpBody.
     ///
     func concatenate(_ parameters: [String: Any]) -> String {
-        return parameters.reduce("") { (output, parameter) in
-            return output + "&" + parameter.key + "=" + String(describing: parameter.value)
+        return parameters.reduce(into: "") { output, parameter in
+            output += "&" + parameter.key + "=" + String(describing: parameter.value)
         }
     }
 }

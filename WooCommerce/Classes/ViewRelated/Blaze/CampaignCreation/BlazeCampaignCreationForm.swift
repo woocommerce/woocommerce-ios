@@ -1,8 +1,10 @@
+import Combine
 import SwiftUI
 
 /// Hosting controller for `BlazeCampaignCreationForm`
 final class BlazeCampaignCreationFormHostingController: UIHostingController<BlazeCampaignCreationForm> {
     private let viewModel: BlazeCampaignCreationFormViewModel
+    private var subscriptions = Set<AnyCancellable>()
 
     init(viewModel: BlazeCampaignCreationFormViewModel) {
         self.viewModel = viewModel
@@ -10,10 +12,11 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
         self.viewModel.onEditAd = { [weak self] in
             self?.navigateToEditAd()
         }
+        bindViewModel()
     }
 
     @available(*, unavailable)
-    required dynamic init?(coder aDecoder: NSCoder) {
+    dynamic required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
 
@@ -36,6 +39,16 @@ final class BlazeCampaignCreationFormHostingController: UIHostingController<Blaz
 }
 
 private extension BlazeCampaignCreationFormHostingController {
+    func bindViewModel() {
+        viewModel.$confirmPaymentViewModel
+            .compactMap { $0 }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] viewModel in
+                self?.navigateToConfirmPayment(viewModel: viewModel)
+            }
+            .store(in: &subscriptions)
+    }
+
     func configureNavigation() {
         title = Localization.title
     }
@@ -43,6 +56,15 @@ private extension BlazeCampaignCreationFormHostingController {
     func navigateToEditAd() {
         let vc = BlazeEditAdHostingController(viewModel: viewModel.editAdViewModel)
         present(vc, animated: true)
+    }
+
+    func navigateToConfirmPayment(viewModel: BlazeConfirmPaymentViewModel) {
+        guard navigationController?.topViewController === self else {
+            return
+        }
+
+        let vc = UIHostingController(rootView: BlazeConfirmPaymentView(viewModel: viewModel))
+        navigationController?.pushViewController(vc, animated: true)
     }
 }
 
@@ -93,15 +115,13 @@ struct BlazeCampaignCreationForm: View {
                     .accessibilityAddTraits(.isHeader)
 
                 VStack(spacing: 0) {
-                    VStack(spacing: 0) {
-                        // Objective - hidden behind a feature flag
-                        detailView(title: Localization.objective,
-                                   content: viewModel.campaignObjectiveText ?? Localization.chooseObjective) {
-                            isShowingCampaignObjectivePicker = true
-                        }
-                        divider
+                    // Objective
+                    detailView(title: Localization.objective,
+                               content: viewModel.campaignObjectiveText ?? Localization.chooseObjective) {
+                        isShowingCampaignObjectivePicker = true
                     }
-                    .renderedIf(ServiceLocator.featureFlagService.isFeatureFlagEnabled(.blazeCampaignObjective))
+
+                    divider
 
                     // Budget
                     detailView(title: Localization.budget, content: viewModel.budgetDetailText) {
@@ -260,12 +280,6 @@ struct BlazeCampaignCreationForm: View {
         .frame(maxWidth: Layout.maxWidth)
         .task {
             await viewModel.onLoad()
-        }
-        if let confirmPaymentViewModel = viewModel.confirmPaymentViewModel {
-            LazyNavigationLink(destination: BlazeConfirmPaymentView(viewModel: confirmPaymentViewModel),
-                               isActive: $viewModel.isShowingPaymentInfo) {
-                EmptyView()
-            }
         }
     }
 
@@ -456,7 +470,8 @@ private extension BlazeCampaignCreationForm {
     var supportForm: some View {
         NavigationView {
             SupportForm(isPresented: $isShowingSupport,
-                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag))
+                        viewModel: SupportFormViewModel(sourceTag: Constants.supportTag,
+                                                        mobileStatusReportProvider: MobileStatusReportProvider()))
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
                     Button(Localization.done) {

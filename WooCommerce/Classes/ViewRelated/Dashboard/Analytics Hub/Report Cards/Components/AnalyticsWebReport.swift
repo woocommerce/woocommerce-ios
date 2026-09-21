@@ -43,7 +43,7 @@ struct AnalyticsWebReport {
             reportQueryParams["before"] = dateFormatter.string(from: endDate)
         }
 
-        reportURLComponents?.queryItems = reportQueryParams.map { (key, value) in
+        reportURLComponents?.queryItems = reportQueryParams.map { key, value in
             URLQueryItem(name: key, value: value)
         }
         return reportURLComponents?.url

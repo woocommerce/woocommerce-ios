@@ -11,6 +11,9 @@ final class OrderListViewModelTests: XCTestCase {
     /// The `siteID` value doesn't matter.
     private let siteID: Int64 = 1_000_000
 
+    /// Time to wait before concluding that an inverted expectation was not fulfilled.
+    private let inverseExpectationTimeout = TimeInterval(0.5)
+
     private var storageManager: MockStorageManager!
 
     private var stores: MockStoresManager!
@@ -172,6 +175,27 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(snapshot.numberOfItems(inSection: sectionID), expectedOrders.future.count)
     }
 
+    // MARK: - Order Statuses
+
+    func test_statusesDidChange_emits_when_the_stored_order_statuses_change() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, filters: nil)
+        viewModel.activate()
+
+        let expectation = expectation(description: "statusesDidChange emits when the stored order statuses change")
+        viewModel.statusesDidChange
+            .sink {
+                expectation.fulfill()
+            }
+            .store(in: &subscriptions)
+
+        // When
+        insertOrderStatus(status: .processing)
+
+        // Then
+        wait(for: [expectation], timeout: Constants.expectationTimeout)
+    }
+
     // MARK: - App Activation
 
     func test_it_requests_a_resynchronization_when_the_app_is_activated() {
@@ -182,9 +206,9 @@ final class OrderListViewModelTests: XCTestCase {
                                            notificationCenter: notificationCenter,
                                            filters: nil)
 
-        var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeIfViewIsVisible = {
-            resynchronizeRequested = true
+        var resynchronizationReason: OrderListSyncActionUseCase.SyncReason?
+        viewModel.onShouldResynchronize = { reason in
+            resynchronizationReason = reason
         }
 
         viewModel.activate()
@@ -194,7 +218,7 @@ final class OrderListViewModelTests: XCTestCase {
         notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Assert
-        XCTAssertTrue(resynchronizeRequested)
+        XCTAssertEqual(resynchronizationReason, .viewWillAppear)
     }
 
     func test_given_no_previous_deactivation_it_does_not_request_a_resynchronization_when_the_app_is_activated() {
@@ -205,9 +229,9 @@ final class OrderListViewModelTests: XCTestCase {
                                            notificationCenter: notificationCenter,
                                            filters: nil)
 
-        var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeIfViewIsVisible = {
-            resynchronizeRequested = true
+        var resynchronizationReason: OrderListSyncActionUseCase.SyncReason?
+        viewModel.onShouldResynchronize = { reason in
+            resynchronizationReason = reason
         }
 
         viewModel.activate()
@@ -216,7 +240,7 @@ final class OrderListViewModelTests: XCTestCase {
         notificationCenter.post(name: UIApplication.didBecomeActiveNotification, object: nil)
 
         // Assert
-        XCTAssertFalse(resynchronizeRequested)
+        XCTAssertNil(resynchronizationReason)
     }
 
     // MARK: - Foreground Notifications
@@ -224,47 +248,95 @@ final class OrderListViewModelTests: XCTestCase {
     func test_given_a_new_order_notification_it_requests_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrderListViewModel(siteID: siteID,
-                                           storageManager: storageManager,
-                                           pushNotificationsManager: pushNotificationsManager,
-                                           filters: nil)
+        let viewModel = makeViewModelObservingNotifications(from: pushNotificationsManager)
 
-        var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeIfViewIsVisible = {
-            resynchronizeRequested = true
+        var resynchronizationReason: OrderListSyncActionUseCase.SyncReason?
+        let resynchronized = expectation(description: "Resynchronization is requested")
+        viewModel.onShouldResynchronize = { reason in
+            resynchronizationReason = reason
+            resynchronized.fulfill()
         }
 
         viewModel.activate()
 
         // Act
-        let notification = WooCommerce.PushNotification(noteID: 1, siteID: 1, kind: .storeOrder, title: "", subtitle: "", message: "", note: nil, meta: nil)
-        pushNotificationsManager.sendForegroundNotification(notification)
+        pushNotificationsManager.sendForegroundNotification(orderNotification(siteID: siteID))
 
         // Assert
-        XCTAssertTrue(resynchronizeRequested)
+        wait(for: [resynchronized], timeout: Constants.expectationTimeout)
+        XCTAssertEqual(resynchronizationReason, .pushNotification)
     }
 
     func test_given_a_non_order_notification_it_does_not_request_a_resynchronization() {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
-        let viewModel = OrderListViewModel(siteID: siteID,
-                                           storageManager: storageManager,
-                                           pushNotificationsManager: pushNotificationsManager,
-                                           filters: nil)
+        let viewModel = makeViewModelObservingNotifications(from: pushNotificationsManager)
 
-        var resynchronizeRequested = false
-        viewModel.onShouldResynchronizeIfViewIsVisible = {
-            resynchronizeRequested = true
+        let resynchronized = expectation(description: "Resynchronization is not requested")
+        resynchronized.isInverted = true
+        viewModel.onShouldResynchronize = { _ in
+            resynchronized.fulfill()
         }
 
         viewModel.activate()
 
         // Act
-        let notification = WooCommerce.PushNotification(noteID: 1, siteID: 1, kind: .comment, title: "", subtitle: "", message: "", note: nil, meta: nil)
+        let notification = WooCommerce.PushNotification(noteID: 1,
+                                                        siteID: siteID,
+                                                        kind: .comment,
+                                                        title: "",
+                                                        subtitle: "",
+                                                        message: "",
+                                                        note: nil,
+                                                        meta: nil)
         pushNotificationsManager.sendForegroundNotification(notification)
 
         // Assert
-        XCTAssertFalse(resynchronizeRequested)
+        wait(for: [resynchronized], timeout: inverseExpectationTimeout)
+    }
+
+    func test_given_an_order_notification_for_another_site_it_does_not_request_a_resynchronization() {
+        // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        let viewModel = makeViewModelObservingNotifications(from: pushNotificationsManager)
+
+        let resynchronized = expectation(description: "Resynchronization is not requested")
+        resynchronized.isInverted = true
+        viewModel.onShouldResynchronize = { _ in
+            resynchronized.fulfill()
+        }
+
+        viewModel.activate()
+
+        // Act
+        pushNotificationsManager.sendForegroundNotification(orderNotification(siteID: siteID + 1))
+
+        // Assert
+        wait(for: [resynchronized], timeout: inverseExpectationTimeout)
+    }
+
+    func test_given_a_burst_of_order_notifications_it_requests_a_single_resynchronization() {
+        // Arrange
+        let pushNotificationsManager = MockPushNotificationsManager()
+        let viewModel = makeViewModelObservingNotifications(from: pushNotificationsManager)
+
+        var resynchronizationCount = 0
+        let resynchronized = expectation(description: "Resynchronization is requested")
+        viewModel.onShouldResynchronize = { _ in
+            resynchronizationCount += 1
+            resynchronized.fulfill()
+        }
+
+        viewModel.activate()
+
+        // Act
+        for _ in 0..<5 {
+            pushNotificationsManager.sendForegroundNotification(orderNotification(siteID: siteID))
+        }
+
+        // Assert
+        wait(for: [resynchronized], timeout: Constants.expectationTimeout)
+        XCTAssertEqual(resynchronizationCount, 1)
     }
 
     // MARK: - Banner visibility
@@ -274,7 +346,8 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           filters: nil)
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {
             case let .loadFeedbackVisibility(_, onCompletion):
@@ -297,13 +370,196 @@ final class OrderListViewModelTests: XCTestCase {
         let viewModel = OrderListViewModel(siteID: siteID,
                                            stores: stores,
                                            storageManager: storageManager,
-                                           filters: nil)
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
 
         // When
         viewModel.activate()
         viewModel.dataLoadingError = expectedError
 
         XCTAssert(viewModel.topBanner == .error(expectedError))
+    }
+
+    func test_topBanner_when_store_currency_is_unresolved_and_no_loading_error_then_shows_currencyUnavailable() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+
+        // When
+        viewModel.activate()
+
+        // Then
+        XCTAssert(viewModel.topBanner == .currencyUnavailable)
+    }
+
+    func test_topBanner_when_store_currency_is_resolved_then_does_not_show_currencyUnavailable() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
+
+        // When
+        viewModel.activate()
+
+        // Then
+        XCTAssert(viewModel.topBanner == .none)
+    }
+
+    func test_topBanner_when_loading_error_and_currency_is_unresolved_then_error_takes_precedence() {
+        // Given
+        let expectedError = MockError()
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+
+        // When
+        viewModel.activate()
+        viewModel.dataLoadingError = expectedError
+
+        // Then — a data-loading error wins over the currency warning
+        XCTAssert(viewModel.topBanner == .error(expectedError))
+    }
+
+    func test_retryStoreCurrencySync_hides_the_banner_while_refreshing_then_reshows_it_when_currency_is_still_unavailable() {
+        // Given — the store currency is unavailable, so the banner is showing
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+        var capturedCompletion: ((Error?) -> Void)?
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .synchronizeGeneralSiteSettings(_, onCompletion) = action {
+                capturedCompletion = onCompletion
+            }
+        }
+        viewModel.activate()
+        XCTAssert(viewModel.topBanner == .currencyUnavailable)
+
+        // When — the re-sync starts
+        viewModel.retryStoreCurrencySync()
+
+        // Then — the banner is hidden while the sync is in flight
+        XCTAssert(viewModel.topBanner == .none)
+
+        // When — the sync completes but the currency is still unavailable
+        capturedCompletion?(nil)
+
+        // Then — the banner is shown again
+        XCTAssert(viewModel.topBanner == .currencyUnavailable)
+    }
+
+    func test_currencyUnavailable_banner_shown_event_is_tracked_when_the_banner_appears() {
+        // Given — the store currency is unavailable
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+
+        // When
+        viewModel.activate()
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == "orders_list_currency_unavailable_banner_shown" }.count, 1)
+    }
+
+    func test_currencyUnavailable_banner_shown_event_is_not_tracked_when_currency_is_resolved() {
+        // Given — the store currency is available, so no banner
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
+
+        // When
+        viewModel.activate()
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("orders_list_currency_unavailable_banner_shown"))
+    }
+
+    func test_retryStoreCurrencySync_tracks_the_retry_tapped_event() {
+        // Given
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           analytics: analytics,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: false))
+        viewModel.activate()
+
+        // When
+        viewModel.retryStoreCurrencySync()
+
+        // Then
+        XCTAssertTrue(analyticsProvider.receivedEvents.contains("orders_list_currency_unavailable_banner_retry_tapped"))
+    }
+
+    func test_topBanner_when_a_different_sync_error_occurs_then_the_error_banner_is_re_emitted() {
+        // Given — currency resolved so only the loading error can drive the banner
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
+        viewModel.activate()
+
+        var emittedBanners: [OrderListViewModel.TopBanner] = []
+        let cancellable = viewModel.$topBanner.sink { emittedBanners.append($0) }
+
+        // When — two different errors occur back-to-back, without an intervening success
+        let firstError = NSError(domain: "test", code: 1)
+        let secondError = NSError(domain: "test", code: 2)
+        viewModel.dataLoadingError = firstError
+        viewModel.dataLoadingError = secondError
+
+        // Then — the banner is re-emitted for the second, different error (initial .none + two errors)
+        XCTAssertEqual(emittedBanners.count, 3)
+        let lastError = emittedBanners.last.flatMap { banner -> NSError? in
+            guard case let .error(error) = banner else { return nil }
+            return error as NSError
+        }
+        XCTAssertEqual(lastError, secondError)
+
+        cancellable.cancel()
+    }
+
+    func test_topBanner_when_the_same_sync_error_repeats_then_the_error_banner_is_not_re_emitted() {
+        // Given — currency resolved so only the loading error can drive the banner
+        let viewModel = OrderListViewModel(siteID: siteID,
+                                           stores: stores,
+                                           storageManager: storageManager,
+                                           filters: nil,
+                                           selectedSiteSettings: makeSelectedSiteSettings(currencyResolved: true))
+        viewModel.activate()
+
+        var emittedBanners: [OrderListViewModel.TopBanner] = []
+        let cancellable = viewModel.$topBanner.sink { emittedBanners.append($0) }
+
+        // When — the same error (same domain + code) is set twice
+        viewModel.dataLoadingError = NSError(domain: "test", code: 1)
+        viewModel.dataLoadingError = NSError(domain: "test", code: 1)
+
+        // Then — the duplicate is deduped, so only one error emission follows the initial .none
+        XCTAssertEqual(emittedBanners.count, 2)
+
+        cancellable.cancel()
+    }
+
+    private func makeSelectedSiteSettings(currencyResolved: Bool) -> MockSelectedSiteSettings {
+        let mock = MockSelectedSiteSettings()
+        mock.isUsingFallbackCurrency = !currencyResolved
+        return mock
     }
 
     // MARK: - Filters Applied
@@ -360,83 +616,6 @@ final class OrderListViewModelTests: XCTestCase {
 
         // Assert
         XCTAssertFalse(resynchronizeRequested)
-    }
-
-    // MARK: - `shouldEnableTestOrder`
-    func test_shouldEnableTestOrder_returns_true_when_site_is_public_and_has_a_published_product_and_set_up_payment() {
-        // Given
-        let siteID: Int64 = 123
-        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .publicSite)
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, statusKey: "publish"))
-        storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: siteID, enabled: true))
-        let viewModel = OrderListViewModel(siteID: siteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           filters: nil)
-
-        // When
-        let isEnabled = viewModel.shouldEnableTestOrder
-
-        // Then
-        XCTAssertTrue(isEnabled)
-    }
-
-    func test_shouldEnableTestOrder_returns_false_when_site_is_not_public() {
-        // Given
-        let siteID: Int64 = 123
-        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .privateSite)
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, statusKey: "publish"))
-        storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: siteID, enabled: true))
-        let viewModel = OrderListViewModel(siteID: siteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           filters: nil)
-
-        // When
-        let isEnabled = viewModel.shouldEnableTestOrder
-
-        // Then
-        XCTAssertFalse(isEnabled)
-    }
-
-    func test_shouldEnableTestOrder_returns_false_when_site_has_no_published_product() {
-        // Given
-        let siteID: Int64 = 123
-        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .publicSite)
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, statusKey: "draft"))
-        storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: siteID, enabled: true))
-        let viewModel = OrderListViewModel(siteID: siteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           filters: nil)
-
-        // When
-        let isEnabled = viewModel.shouldEnableTestOrder
-
-        // Then
-        XCTAssertFalse(isEnabled)
-    }
-
-    func test_shouldEnableTestOrder_returns_false_when_site_has_no_payment_gateway() {
-        // Given
-        let siteID: Int64 = 123
-        let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .publicSite)
-        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: site))
-        storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: siteID, statusKey: "publish"))
-        storageManager.insertSamplePaymentGateway(readOnlyGateway: PaymentGateway.fake().copy(siteID: siteID, enabled: false))
-        let viewModel = OrderListViewModel(siteID: siteID,
-                                           stores: stores,
-                                           storageManager: storageManager,
-                                           filters: nil)
-
-        // When
-        let isEnabled = viewModel.shouldEnableTestOrder
-
-        // Then
-        XCTAssertFalse(isEnabled)
     }
 }
 
@@ -501,6 +680,16 @@ private extension OrderListViewModelTests {
         OrderStatus(name: nil, siteID: siteID, slug: status.rawValue, total: 0)
     }
 
+    @discardableResult
+    func insertOrderStatus(status: OrderStatusEnum) -> StorageOrderStatus {
+        let storageOrderStatus = storage.insertNewObject(ofType: StorageOrderStatus.self)
+        storageOrderStatus.siteID = siteID
+        storageOrderStatus.slug = status.rawValue
+        storageOrderStatus.name = status.rawValue
+        storage.saveIfNeeded()
+        return storageOrderStatus
+    }
+
     func insertOrder(id orderID: Int64,
                      status: OrderStatusEnum,
                      dateCreated: Date = Date(),
@@ -527,4 +716,30 @@ private extension OrderListViewModelTests {
     }
 
     final class MockError: Error { }
+}
+
+// MARK: - Foreground notification helpers
+//
+private extension OrderListViewModelTests {
+    /// Returns a view model wired to `pushNotificationsManager`, with a debounce short enough for tests.
+    ///
+    func makeViewModelObservingNotifications(from pushNotificationsManager: MockPushNotificationsManager) -> OrderListViewModel {
+        OrderListViewModel(siteID: siteID,
+                           stores: stores,
+                           storageManager: storageManager,
+                           pushNotificationsManager: pushNotificationsManager,
+                           pushNotificationSyncInterval: .milliseconds(1),
+                           filters: nil)
+    }
+
+    func orderNotification(siteID: Int64) -> WooCommerce.PushNotification {
+        WooCommerce.PushNotification(noteID: 1,
+                                     siteID: siteID,
+                                     kind: .storeOrder,
+                                     title: "",
+                                     subtitle: "",
+                                     message: "",
+                                     note: nil,
+                                     meta: nil)
+    }
 }

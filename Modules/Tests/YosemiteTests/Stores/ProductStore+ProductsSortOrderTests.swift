@@ -55,7 +55,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        productStatus: nil,
                                                        productType: nil,
                                                        productCategory: nil,
-                                                       sortOrder: .nameAscending) { [weak self] error in
+                                                       sortOrder: .nameAscending) { [weak self] _ in
                                                         guard let self else {
                                                             XCTFail()
                                                             return
@@ -80,7 +80,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        productStatus: nil,
                                                        productType: nil,
                                                        productCategory: nil,
-                                                       sortOrder: .nameDescending) { [weak self] error in
+                                                       sortOrder: .nameDescending) { [weak self] _ in
                                                         guard let self else {
                                                             XCTFail()
                                                             return
@@ -105,7 +105,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        productStatus: nil,
                                                        productType: nil,
                                                        productCategory: nil,
-                                                       sortOrder: .dateAscending) { [weak self] error in
+                                                       sortOrder: .dateAscending) { [weak self] _ in
                                                         guard let self else {
                                                             XCTFail()
                                                             return
@@ -130,7 +130,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
                                                        productStatus: nil,
                                                        productType: nil,
                                                        productCategory: nil,
-                                                       sortOrder: .dateDescending) { [weak self] error in
+                                                       sortOrder: .dateDescending) { [weak self] _ in
                                                         guard let self else {
                                                             XCTFail()
                                                             return

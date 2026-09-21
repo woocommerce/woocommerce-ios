@@ -37,9 +37,7 @@ struct MockProductActionHandler: MockActionHandler {
         }
     }
 
-    func synchronizeProducts(siteID: Int64,
-                             excludedProductIDs: [Int64],
-                             onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func synchronizeProducts(siteID: Int64, excludedProductIDs: [Int64], onCompletion: @escaping (Result<Bool, Error>) -> Void) {
         let products = objectGraph.products(forSiteId: siteID, without: excludedProductIDs)
         upsert(products: products) {
             /// Indicate that no more products are coming
@@ -76,7 +74,7 @@ struct MockProductActionHandler: MockActionHandler {
         }
     }
 
-    func upsert(products: [Product], onCompletion: @escaping () -> Void) {
+    func upsert(products: [Product], onCompletion: @escaping () -> ()) {
         storageManager.performAndSave({ storage in
             self.productStore.upsertStoredProducts(readOnlyProducts: products, in: storage)
         }, completion: onCompletion, on: .main)

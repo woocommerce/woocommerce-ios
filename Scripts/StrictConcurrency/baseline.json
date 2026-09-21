@@ -161,7 +161,6 @@
     "Modules/Sources/WordPressUI/Tools/RotationAwareNavigationViewController.swift": 2,
     "Modules/Sources/Yosemite/Internal/Logging.swift": 3,
     "Modules/Sources/Yosemite/Model/Extensions/User+Roles.swift": 1,
-    "Modules/Sources/Yosemite/Model/Mocks/ActionHandlers/MockProductActionHandler.swift": 2,
     "Modules/Sources/Yosemite/Model/Mocks/ActionHandlers/MockSupportChatActionHandler.swift": 2,
     "Modules/Sources/Yosemite/Model/Mocks/Graphs/ScreenshotsObjectGraph.swift": 6,
     "Modules/Sources/Yosemite/Model/Mocks/MockStoresManager.swift": 3,

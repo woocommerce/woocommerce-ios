@@ -70,8 +70,7 @@ public enum ProductAction: Action {
                                               sortOrder: ProductsSortOrder,
                                               additionalProductIDs: [Int64],
                                               shouldDeleteStoredProductsOnFirstPage: Bool = true,
-                                              onCompletion: (Result<(products: [Product], hasNextPage: Bool,
-                                                                                       missingProductIDs: [Int64]), Error>) -> Void)
+                                              onCompletion: (Result<(products: [Product], hasNextPage: Bool, missingProductIDs: [Int64]), Error>) -> Void)
 
     /// Retrieves a currency-scoped page of products without writing the results to local storage.
     ///
@@ -131,8 +130,7 @@ public enum ProductAction: Action {
     ///
     case retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,
                                                          identifier: String,
-                                                         onCompletion: (Result<(ItemIdentifierSearchResult,
-                                                                                                  ItemIdentifierSearchResultSource), Error>) -> Void)
+                                                         onCompletion: (Result<(ItemIdentifierSearchResult, ItemIdentifierSearchResultSource), Error>) -> Void)
 
     /// Deletes all of the cached products.
     ///

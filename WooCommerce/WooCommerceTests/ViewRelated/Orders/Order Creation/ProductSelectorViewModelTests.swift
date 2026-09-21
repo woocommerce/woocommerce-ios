@@ -1493,10 +1493,10 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let topProductsProvider = MockProductSelectorTopProductsProvider(provideTopProductsFromCachedOrders:
                                                                             ProductSelectorTopProducts(popularProductsIds: mostPopularProductIds,
                                                                                                         lastSoldProductsIds: lastSoldProductIds))
-        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+        let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
                                                  source: .orderForm(flow: .creation),
-                                                 storageManager: storageManager,
-                                                 stores: stores,
+                                                 storageManager: self.storageManager,
+                                                 stores: self.stores,
                                                  topProductsProvider: topProductsProvider)
 
         waitUntil {

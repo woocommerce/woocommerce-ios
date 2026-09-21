@@ -46,9 +46,7 @@ public final class ProductCategoryStore: Store {
         case let .updateProductCategory(category, onCompletion):
             updateProductCategory(category, onCompletion: mainActorCallback(onCompletion))
         case let .deleteProductCategory(siteID, categoryID, onCompletion):
-            deleteProductCategory(siteID: siteID,
-                                  categoryID: categoryID,
-                                  onCompletion: mainActorCallback(onCompletion))
+            deleteProductCategory(siteID: siteID, categoryID: categoryID, onCompletion: mainActorCallback(onCompletion))
         }
     }
 }
@@ -171,43 +169,34 @@ private extension ProductCategoryStore {
 
     /// Updates an existing product category.
     ///
-    func updateProductCategory(_ category: ProductCategory,
-                               onCompletion: @escaping @MainActor @Sendable (Result<ProductCategory, Error>) -> Void) {
+    func updateProductCategory(_ category: ProductCategory, onCompletion: @escaping @MainActor @Sendable (Result<ProductCategory, Error>) -> Void) {
         Task {
-            let result = await Result { try await remote.updateProductCategory(category) }
-
-            await MainActor.run {
-                switch result {
-                case .success(let updatedCategory):
+            do {
+                let updatedCategory = try await remote.updateProductCategory(category)
+                await MainActor.run {
                     upsertStoredProductCategoriesInBackground([updatedCategory], siteID: updatedCategory.siteID) {
                         onCompletion(.success(updatedCategory))
                     }
-                case .failure(let error):
-                    onCompletion(.failure(error))
                 }
+            } catch {
+                await onCompletion(.failure(error))
             }
         }
     }
 
     /// Deletes an existing product category.
     ///
-    func deleteProductCategory(siteID: Int64,
-                               categoryID: Int64,
-                               onCompletion: @escaping @MainActor @Sendable (Result<Void, Error>) -> Void) {
+    func deleteProductCategory(siteID: Int64, categoryID: Int64, onCompletion: @escaping @MainActor @Sendable (Result<Void, Error>) -> Void) {
         Task {
-            let result: Result<Void, Error> = await Result {
+            do {
                 try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)
-            }
-
-            await MainActor.run {
-                switch result {
-                case .success:
+                await MainActor.run {
                     deleteUnusedStoredProductCategories(siteID: siteID) {
                         onCompletion(.success(()))
                     }
-                case .failure(let error):
-                    onCompletion(.failure(error))
                 }
+            } catch {
+                await onCompletion(.failure(error))
             }
         }
     }

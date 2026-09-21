@@ -87,16 +87,17 @@ private extension ProductVariationStore {
                                               onCompletion: @escaping @MainActor @Sendable
                                               (Result<(variations: [ProductVariation], hasNextPage: Bool), Error>) -> Void) {
         Task {
-            let result = await Result {
-                try await remote.loadProductVariations(for: siteID,
-                                                       productID: productID,
-                                                       variationIDs: variationIDs,
-                                                       pageNumber: pageNumber,
-                                                       pageSize: pageSize,
-                                                       currency: currency)
+            do {
+                let variations = try await remote.loadProductVariations(for: siteID,
+                                                                        productID: productID,
+                                                                        variationIDs: variationIDs,
+                                                                        pageNumber: pageNumber,
+                                                                        pageSize: pageSize,
+                                                                        currency: currency)
+                await onCompletion(.success((variations, variations.count == pageSize)))
+            } catch {
+                await onCompletion(.failure(error))
             }
-
-            await onCompletion(result.map { ($0, $0.count == pageSize) })
         }
     }
 

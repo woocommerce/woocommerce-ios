@@ -359,7 +359,7 @@ let package = Package(
                 "WordPressShared",
                 .product(name: "KeychainAccess", package: "KeychainAccess"),
             ],
-            swiftSettings: swift6
+            swiftSettings: swift5
         ),
         .testTarget(
             name: "StorageTests",

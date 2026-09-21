@@ -1,6 +1,6 @@
 /// Represent a System Status.
 ///
-public struct SystemStatus: Decodable {
+public struct SystemStatus: Decodable, Sendable {
     public let activePlugins: [SystemPlugin]
     public let inactivePlugins: [SystemPlugin]
     public let environment: Environment?
@@ -33,7 +33,7 @@ public struct SystemStatus: Decodable {
 
 public extension SystemStatus {
     /// Simplified Environment type that only contains storeID
-    struct Environment: Decodable {
+    struct Environment: Decodable, Sendable {
         public let storeID: String?
 
         enum CodingKeys: String, CodingKey {

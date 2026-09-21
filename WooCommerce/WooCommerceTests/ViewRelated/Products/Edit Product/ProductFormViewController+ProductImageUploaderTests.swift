@@ -3,6 +3,7 @@ import XCTest
 
 @testable import WooCommerce
 
+@MainActor
 final class ProductFormViewController_ProductImageUploaderTests: XCTestCase {
     private let window = UIWindow(frame: UIScreen.main.bounds)
 

@@ -1,9 +1,14 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
-25.7
+25.8
 -----
 - [*] Troubleshoot Connection and support chat diagnostics no longer report a false analytics failure on WordPress.com Commerce plan stores. [https://github.com/woocommerce/woocommerce-ios/pull/17895]
+
+
+25.7
+-----
+- [**] When your store can't be reached because of a connection problem on your WordPress site, the app now explains what is going on and offers to contact support, instead of retrying silently. [https://github.com/woocommerce/woocommerce-ios/pull/17799]
 - [Internal] POS: Moved the refund flow state out of POSOrderListController into a new POSRefundController. No user-visible change. [https://github.com/woocommerce/woocommerce-ios/pull/17864]
 - [Internal] Attribute push_notification_received/alert_pressed events to the notification's origin site instead of the selected site. [https://github.com/woocommerce/woocommerce-ios/pull/17848]
 - [*] Order Creation: Kept Popular and Last Sold suggestions stable while loading more products. [https://github.com/woocommerce/woocommerce-ios/pull/17838]
@@ -15,6 +20,7 @@
 - [Internal] POS: Removed the server-calculated refunds feature flag; the flow is on for every store running WooCommerce 11.1.0 or later. [https://github.com/woocommerce/woocommerce-ios/pull/17836]
 - [*] POS: Fixed a refund failing with "Invalid refund amount" on stores that enter prices inclusive of tax. [https://github.com/woocommerce/woocommerce-ios/pull/17827]
 - [*] Login: Signing in with store credentials now asks for your WordPress sign-in or dashboard address when a security plugin has moved it, instead of failing. [https://github.com/woocommerce/woocommerce-ios/pull/17724]
+- [*] Notifications: Removed notifications for sites disconnected from WordPress.com from Notification Center. [https://github.com/woocommerce/woocommerce-ios/pull/17835]
 - [*] Push notifications: When a store's Jetpack is in Offline Mode, setup now shows a clear, actionable message explaining the cause instead of a generic permission error. [https://github.com/woocommerce/woocommerce-ios/pull/17857]
 
 25.6

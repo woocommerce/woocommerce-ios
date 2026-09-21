@@ -50,7 +50,7 @@ items:
     manual: "Later automation needs Mailosaur API and secret management."
   - id: login.social-google
     title: Social login with Google
-    flow: .maestro/flows/login_google.yaml
+    manual: "External Google account completion is deferred until a simulator account fixture is supported."
   - id: login.social-apple
     title: Social login with Apple
     manual: "External Apple account completion is deferred until a simulator account fixture is supported."

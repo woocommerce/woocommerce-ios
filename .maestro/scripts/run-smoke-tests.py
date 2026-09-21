@@ -53,7 +53,7 @@ ORDERED_FLOWS = [
     "diagnostic.yaml",
     "login_not_wp_site.yaml", "login_wrong_credentials.yaml", "login_help.yaml",
     "login_not_woo_store.yaml", "login_wrong_account.yaml", "login_no_jetpack.yaml",
-    "login_google.yaml", "login_successful.yaml", "dashboard_stats.yaml",
+    "login_successful.yaml", "dashboard_stats.yaml",
     "dashboard_view_all_analytics.yaml", "dashboard_customize.yaml",
     "orders_list_and_search.yaml", "products_list_and_sort.yaml", "products_detail.yaml",
     "products_variations_and_tags.yaml", "hub_menu_settings.yaml", "hub_menu_payments.yaml",

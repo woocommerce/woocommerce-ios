@@ -14,7 +14,6 @@ executionOrder:
     - flows/login_not_woo_store.yaml
     - flows/login_wrong_account.yaml
     - flows/login_no_jetpack.yaml
-    - flows/login_google.yaml
     - flows/login_successful.yaml
     - flows/dashboard_stats.yaml
     - flows/dashboard_view_all_analytics.yaml

@@ -3,6 +3,7 @@ import Yosemite
 import Combine
 import PointOfSale
 
+@MainActor
 final class CardPresentPaymentServiceScreenshotMock: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
     let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>

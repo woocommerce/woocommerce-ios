@@ -438,18 +438,14 @@ def suite_status(statuses: list[str]) -> str:
     return "PASS"
 
 
-def sanitize_artifacts(root: Path, values: dict[str, str], *, remove_images: bool = False) -> None:
-    """Redact Maestro's generated text evidence and suppress login screenshots."""
+def sanitize_artifacts(root: Path, values: dict[str, str]) -> None:
+    """Redact Maestro's generated text evidence."""
     text_suffixes = {".html", ".json", ".log", ".txt", ".xml", ".yaml", ".yml"}
-    image_suffixes = {".heic", ".jpeg", ".jpg", ".png", ".webp"}
     if not root.exists():
         return
     paths = [root] if root.is_file() else root.rglob("*")
     for path in paths:
         if not path.is_file():
-            continue
-        if remove_images and path.suffix.lower() in image_suffixes:
-            path.unlink()
             continue
         if path.suffix.lower() in text_suffixes:
             original = path.read_text(errors="replace")
@@ -764,9 +760,8 @@ def main() -> int:
                         stderr += f"\nTimed out after {args.flow_timeout_seconds:g} seconds\n"
                         completed = subprocess.CompletedProcess(command, 124, stdout, stderr)
                     log.write_text(redact(completed.stdout + completed.stderr, values), encoding="utf-8")
-                    is_login = "login" in flow_tags(flow)
-                    sanitize_artifacts(debug, values, remove_images=is_login)
-                    sanitize_artifacts(screenshot_dir, values, remove_images=is_login)
+                    sanitize_artifacts(debug, values)
+                    sanitize_artifacts(screenshot_dir, values)
                     sanitize_artifacts(junit, values)
                     attempts.append(Attempt(flow, repetition, attempt_number, completed.returncode, junit, log, debug))
                     flow_returncodes.append(completed.returncode)

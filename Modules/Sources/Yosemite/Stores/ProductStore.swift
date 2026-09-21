@@ -52,13 +52,17 @@ public class ProductStore: Store {
         case .retrieveProduct(let siteID, let productID, let onCompletion):
             retrieveProduct(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case .retrieveProducts(let siteID, let productIDs, let pageNumber, let pageSize, let onCompletion):
+            guard productIDs.isNotEmpty else {
+                onCompletion(.success((products: [], hasNextPage: false)))
+                return
+            }
             retrieveProducts(siteID: siteID,
                              productIDs: productIDs,
                              pageNumber: pageNumber,
                              pageSize: pageSize,
                              onCompletion: mainActorCallback(onCompletion))
         case .retrieveProductsIfNeeded(let siteID, let productIDs, let onCompletion):
-            retrieveProductsIfNeeded(siteID: siteID, productIDs: productIDs, onCompletion: mainActorCallback(onCompletion))
+            retrieveProductsIfNeeded(siteID: siteID, productIDs: productIDs, onCompletion: onCompletion)
         case let .retrieveProductsTransiently(siteID, currency, pageNumber, pageSize, stockStatus, productStatus, productType,
                                               productCategory, sortOrder, productIDs, excludedProductIDs, onCompletion):
             retrieveProductsTransiently(siteID: siteID,
@@ -76,7 +80,7 @@ public class ProductStore: Store {
         case .retrieveFirstPurchasableItemMatchFromIdentifier(siteID: let siteID, identifier: let identifier, onCompletion: let onCompletion):
             retrieveFirstPurchasableItemMatchFromIdentifier(siteID: siteID,
                                                             identifier: identifier,
-                                                            onCompletion: mainActorCallback(onCompletion))
+                                                            onCompletion: onCompletion)
         case let.searchProductsInCache(siteID, keyword, pageSize, onCompletion):
             searchInCache(siteID: siteID, keyword: keyword, pageSize: pageSize, onCompletion: onCompletion)
         case let .searchProducts(siteID,
@@ -170,7 +174,7 @@ public class ProductStore: Store {
                 await onCompletion(result)
             }
         case .requestMissingProducts(let order, let onCompletion):
-            requestMissingProducts(for: order, onCompletion: mainActorCallback(onCompletion))
+            requestMissingProducts(for: order, onCompletion: onCompletion)
         case .updateProduct(let product, let onCompletion):
             updateProduct(product: product, onCompletion: onCompletion)
         case .updateProductImages(let siteID, let productID, let images, let onCompletion):
@@ -566,7 +570,7 @@ private extension ProductStore {
 
     /// Synchronizes the Products found in a specified Order.
     ///
-    func requestMissingProducts(for order: Order, onCompletion: @escaping @MainActor @Sendable (Error?) -> Void) {
+    func requestMissingProducts(for order: Order, onCompletion: @escaping (Error?) -> Void) {
         let itemIDs = order.items.map { $0.productID }
         let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
 
@@ -575,12 +579,11 @@ private extension ProductStore {
 
         // Do not trigger API request for empty array of items
         guard !missingIDs.isEmpty else {
-            Task { @MainActor in
-                onCompletion(nil)
-            }
+            onCompletion(nil)
             return
         }
 
+        let onCompletion = mainActorCallback(onCompletion)
         Task {
             let result = await Result {
                 let products = try await remote.loadProducts(for: order.siteID, by: missingIDs)
@@ -596,18 +599,17 @@ private extension ProductStore {
     ///
     func retrieveProductsIfNeeded(siteID: Int64,
                                   productIDs: [Int64],
-                                  onCompletion: @escaping @MainActor @Sendable (Result<[Product], Error>) -> Void) {
+                                  onCompletion: @escaping (Result<[Product], Error>) -> Void) {
         let storedProducts = storageManager.viewStorage.loadProducts(siteID: siteID, productsIDs: productIDs).map { $0.toReadOnly() }
         let storedProductIDs = storedProducts.map { $0.productID }
         let missingIDs = productIDs.filter { storedProductIDs.contains($0) == false }
 
         guard !missingIDs.isEmpty else {
-            Task { @MainActor in
-                onCompletion(.success(storedProducts))
-            }
+            onCompletion(.success(storedProducts))
             return
         }
 
+        let onCompletion = mainActorCallback(onCompletion)
         recursivelyRetrieveProducts(siteID: siteID,
                                     productIDs: missingIDs,
                                     pageNumber: ProductsRemote.Default.pageNumber,
@@ -650,13 +652,6 @@ private extension ProductStore {
                           pageSize: Int,
                           onCompletion: @escaping @MainActor @Sendable
                           (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
-        guard productIDs.isEmpty == false else {
-            Task { @MainActor in
-                onCompletion(.success((products: [], hasNextPage: false)))
-            }
-            return
-        }
-
         Task {
             let result = await Result {
                 let products = try await remote.loadProducts(for: siteID, by: productIDs, pageNumber: pageNumber, pageSize: pageSize)
@@ -702,17 +697,16 @@ private extension ProductStore {
     ///
     func retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,
                                                          identifier: String,
-                                                         onCompletion: @escaping @MainActor @Sendable
+                                                         onCompletion: @escaping
                                                          (Result<(ItemIdentifierSearchResult,
                                                                   ItemIdentifierSearchResultSource), Error>) -> Void) {
 
         guard !identifier.isEmpty else {
-            Task { @MainActor in
-                onCompletion(.failure(ProductLoadError.emptyIdentifier))
-            }
+            onCompletion(.failure(ProductLoadError.emptyIdentifier))
             return
         }
 
+        let onCompletion = mainActorCallback(onCompletion)
         Task {
             do {
                 let (products, source) = try await searchProductsByIdentifier(for: siteID, keyword: identifier)

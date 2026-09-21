@@ -273,6 +273,7 @@ class DefaultStoresManager: StoresManager {
         invalidWPCOMTokenNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveInvalidTokenError,
                                                                                object: nil,
                                                                                queue: .main) { [weak self] _ in
+            ServiceLocator.analytics.track(event: .Authentication.involuntaryLogout(reason: .invalidToken))
             _ = self?.deauthenticate()
         }
     }
@@ -287,6 +288,7 @@ class DefaultStoresManager: StoresManager {
             guard self?.isAuthenticatedWithoutWPCom == true else {
                 return
             }
+            ServiceLocator.analytics.track(event: .Authentication.involuntaryLogout(reason: .applicationPasswordUnauthorized))
             _ = self?.deauthenticate()
         }
     }

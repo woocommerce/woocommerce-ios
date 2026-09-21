@@ -284,18 +284,14 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual("ipad", RUNNER.PROFILES["pos-ipad"][3])
         self.assertNotIn("flaky_quarantine", RUNNER.PROFILES["release"][0])
 
-    def test_sanitize_artifacts_redacts_text_and_removes_login_images(self) -> None:
+    def test_sanitize_artifacts_redacts_text_and_keeps_images(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             (root / "commands.json").write_text('{"email":"merchant@example.com"}')
             (root / "screen.png").write_bytes(b"image")
-            RUNNER.sanitize_artifacts(
-                root,
-                {"MAESTRO_WOO_LAB_WPCOM_EMAIL": "merchant@example.com"},
-                remove_images=True,
-            )
+            RUNNER.sanitize_artifacts(root, {"MAESTRO_WOO_LAB_WPCOM_EMAIL": "merchant@example.com"})
             self.assertNotIn("merchant@example.com", (root / "commands.json").read_text())
-            self.assertFalse((root / "screen.png").exists())
+            self.assertTrue((root / "screen.png").exists())
 
     def test_app_identifier_is_dynamic(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

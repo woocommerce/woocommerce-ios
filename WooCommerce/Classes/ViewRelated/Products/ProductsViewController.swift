@@ -25,6 +25,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     /// Main TableView
     ///
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var contentStackTopConstraint: NSLayoutConstraint!
 
     private var barcodeScannerCoordinator: ProducBarcodeScannerCoordinator?
 
@@ -857,6 +858,9 @@ private extension ProductsViewController {
         }
 
         hasConfiguredLiquidGlassHeaderOverlay = true
+
+        contentStackTopConstraint.isActive = false
+        stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
 
         stackView.removeArrangedSubview(toolbar)
         toolbar.removeFromSuperview()

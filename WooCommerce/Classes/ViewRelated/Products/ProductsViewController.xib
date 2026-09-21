@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="ProductsViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="tableView" destination="1mE-SE-uK9" id="ogX-nu-l5x"/>
+                <outlet property="contentStackTopConstraint" destination="9UK-Qy-FXd" id="t2Q-2s-7Ua"/>
                 <outlet property="toolbar" destination="9eA-hc-k15" id="V2c-iT-WpM"/>
                 <outlet property="toolbarBottomSeparator" destination="ICC-sG-8Ui" id="FVw-Wf-hM9"/>
                 <outlet property="toolbarBottomSeparatorHeightConstraint" destination="zU7-Tl-zDq" id="Emz-K2-2hf"/>

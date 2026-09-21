@@ -123,8 +123,6 @@ public class ProductStore: Store {
                                   let excludedProductIDs,
                                   let shouldDeleteStoredProductsOnFirstPage,
                                   let onCompletion):
-            // The action owns this callback and transfers it exactly once to the task.
-            nonisolated(unsafe) let unsafeOnCompletion = onCompletion
             Task {
                 let result = await Result {
                     try await synchronizeProducts(siteID: siteID,
@@ -140,9 +138,7 @@ public class ProductStore: Store {
                                                   shouldDeleteStoredProductsOnFirstPage: shouldDeleteStoredProductsOnFirstPage)
                 }
 
-                await MainActor.run {
-                    unsafeOnCompletion(result)
-                }
+                await onCompletion(result)
             }
         case .synchronizeProductsForOrderCreation(let siteID,
                                                   let pageNumber,
@@ -151,7 +147,6 @@ public class ProductStore: Store {
                                                   let additionalProductIDs,
                                                   let shouldDeleteStoredProductsOnFirstPage,
                                                   let onCompletion):
-            nonisolated(unsafe) let unsafeOnCompletion = onCompletion
             Task {
                 let result = await Result {
                     try await synchronizeProductsForOrderCreation(
@@ -164,9 +159,7 @@ public class ProductStore: Store {
                     )
                 }
 
-                await MainActor.run {
-                    unsafeOnCompletion(result)
-                }
+                await onCompletion(result)
             }
         case .requestMissingProducts(let order, let onCompletion):
             requestMissingProducts(for: order, onCompletion: onCompletion)
@@ -278,8 +271,8 @@ private extension ProductStore {
                                      sortOrder: ProductsSortOrder,
                                      productIDs: [Int64],
                                      excludedProductIDs: [Int64],
-                                     onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
-        nonisolated(unsafe) let onCompletion = onCompletion
+                                     onCompletion: @escaping @MainActor @Sendable
+                                     (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
         Task {
             let result = await Result {
                 try await remote.loadAllProducts(for: siteID,
@@ -297,9 +290,7 @@ private extension ProductStore {
                                                  currency: currency)
             }
 
-            await MainActor.run {
-                onCompletion(result.map { ($0, $0.count == pageSize) })
-            }
+            await onCompletion(result.map { ($0, $0.count == pageSize) })
         }
     }
 
@@ -315,8 +306,8 @@ private extension ProductStore {
                                    productCategory: ProductCategory?,
                                    productIDs: [Int64],
                                    excludedProductIDs: [Int64],
-                                   onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
-        nonisolated(unsafe) let onCompletion = onCompletion
+                                   onCompletion: @escaping @MainActor @Sendable
+                                   (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
         nonisolated(unsafe) let filter = filter
         Task {
             let result = await Result {
@@ -346,9 +337,7 @@ private extension ProductStore {
                 return products
             }
 
-            await MainActor.run {
-                onCompletion(result.map { ($0, $0.count == pageSize) })
-            }
+            await onCompletion(result.map { ($0, $0.count == pageSize) })
         }
     }
 
@@ -375,8 +364,7 @@ private extension ProductStore {
                         productType: ProductType?,
                         productCategory: ProductCategory?,
                         excludedProductIDs: [Int64],
-                        onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        nonisolated(unsafe) let onCompletion = onCompletion
+                        onCompletion: @escaping @MainActor @Sendable (Result<Bool, Error>) -> Void) {
         nonisolated(unsafe) let filter = filter
         /// internal helper search method
         func searchProductsByKeyword(searchFields: [ProductSearchField]) async throws -> [Product] {
@@ -413,9 +401,7 @@ private extension ProductStore {
                 return products.count == pageSize
             }
 
-            await MainActor.run {
-                onCompletion(result)
-            }
+            await onCompletion(result)
         }
     }
 
@@ -556,8 +542,7 @@ private extension ProductStore {
 
     /// Synchronizes the Products found in a specified Order.
     ///
-    func requestMissingProducts(for order: Order, onCompletion: @escaping (Error?) -> Void) {
-        nonisolated(unsafe) let onCompletion = onCompletion
+    func requestMissingProducts(for order: Order, onCompletion: @escaping @MainActor @Sendable (Error?) -> Void) {
         let itemIDs = order.items.map { $0.productID }
         let productIDs = itemIDs.uniqued()  // removes duplicate product IDs
 
@@ -566,7 +551,9 @@ private extension ProductStore {
 
         // Do not trigger API request for empty array of items
         guard !missingIDs.isEmpty else {
-            onCompletion(nil)
+            MainActor.assumeIsolated {
+                onCompletion(nil)
+            }
             return
         }
 
@@ -576,9 +563,7 @@ private extension ProductStore {
                 await upsertStoredProductsInBackground(readOnlyProducts: products, siteID: order.siteID)
             }
 
-            await MainActor.run {
-                onCompletion(result.failure)
-            }
+            await onCompletion(result.failure)
         }
     }
 
@@ -634,10 +619,12 @@ private extension ProductStore {
                           productIDs: [Int64],
                           pageNumber: Int,
                           pageSize: Int,
-                          onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
-        nonisolated(unsafe) let onCompletion = onCompletion
+                          onCompletion: @escaping @MainActor @Sendable
+                          (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void) {
         guard productIDs.isEmpty == false else {
-            onCompletion(.success((products: [], hasNextPage: false)))
+            MainActor.assumeIsolated {
+                onCompletion(.success((products: [], hasNextPage: false)))
+            }
             return
         }
 
@@ -648,9 +635,7 @@ private extension ProductStore {
                 return (products: products, hasNextPage: products.count == pageSize)
             }
 
-            await MainActor.run {
-                onCompletion(result)
-            }
+            await onCompletion(result)
         }
     }
 
@@ -688,12 +673,14 @@ private extension ProductStore {
     ///
     func retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,
                                                          identifier: String,
-                                                         onCompletion: @escaping (Result<(ItemIdentifierSearchResult,
-                                                                                          ItemIdentifierSearchResultSource), Error>) -> Void) {
-        nonisolated(unsafe) let onCompletion = onCompletion
+                                                         onCompletion: @escaping @MainActor @Sendable
+                                                         (Result<(ItemIdentifierSearchResult,
+                                                                  ItemIdentifierSearchResultSource), Error>) -> Void) {
 
         guard !identifier.isEmpty else {
-            return onCompletion(.failure(ProductLoadError.emptyIdentifier))
+            return MainActor.assumeIsolated {
+                onCompletion(.failure(ProductLoadError.emptyIdentifier))
+            }
         }
 
         Task {
@@ -703,11 +690,11 @@ private extension ProductStore {
                 let matchedProducts = products.filter { $0.sku == identifier || $0.globalUniqueID == identifier }
 
                 guard !matchedProducts.isEmpty else {
-                    return onCompletion(.failure(ProductLoadError.notFound))
+                    return await onCompletion(.failure(ProductLoadError.notFound))
                 }
 
                 guard let product = matchedProducts.first(where: { $0.purchasable }) else {
-                    return onCompletion(.failure(ProductLoadError.notPurchasable))
+                    return await onCompletion(.failure(ProductLoadError.notPurchasable))
                 }
 
                 if let productVariation = product.toProductVariation() {
@@ -715,15 +702,19 @@ private extension ProductStore {
                                                                                                   siteID: siteID,
                                                                                                   productID: productVariation.productID,
                                                                                                   onCompletion: {
-                        onCompletion(.success((.variation(productVariation), source)))
+                        MainActor.assumeIsolated {
+                            onCompletion(.success((.variation(productVariation), source)))
+                        }
                     })
                 } else {
                     self.upsertStoredProductsInBackground(readOnlyProducts: [product], siteID: siteID, onCompletion: {
-                        onCompletion(.success((.product(product), source)))
+                        MainActor.assumeIsolated {
+                            onCompletion(.success((.product(product), source)))
+                        }
                     })
                 }
             } catch {
-                onCompletion(.failure(error))
+                await onCompletion(.failure(error))
             }
         }
     }
@@ -875,8 +866,7 @@ private extension ProductStore {
     func identifyLanguage(siteID: Int64,
                           string: String,
                           feature: GenerativeContentRemoteFeature,
-                          completion: @escaping (Result<String, Error>) -> Void) {
-        nonisolated(unsafe) let completion = completion
+                          completion: @escaping @MainActor @Sendable (Result<String, Error>) -> Void) {
         nonisolated(unsafe) let feature = feature
         Task {
             let result = await Result {
@@ -884,9 +874,7 @@ private extension ProductStore {
                                                                    string: string,
                                                                    feature: feature)
             }
-            await MainActor.run {
-                completion(result)
-            }
+            await completion(result)
         }
     }
 
@@ -894,8 +882,7 @@ private extension ProductStore {
                                     name: String,
                                     features: String,
                                     language: String,
-                                    completion: @escaping (Result<String, Error>) -> Void) {
-        nonisolated(unsafe) let completion = completion
+                                    completion: @escaping @MainActor @Sendable (Result<String, Error>) -> Void) {
         let prompt = [
             "Write a description for a product with title ```\(name)``` and features: ```\(features)```.",
             "Your response should be in language \(language).",
@@ -912,9 +899,7 @@ private extension ProductStore {
                                                                feature: .productDescription,
                                                                responseFormat: .text)
             }
-            await MainActor.run {
-                completion(result)
-            }
+            await completion(result)
         }
     }
 
@@ -923,8 +908,7 @@ private extension ProductStore {
                                        name: String,
                                        description: String,
                                        language: String,
-                                       completion: @escaping (Result<String, Error>) -> Void) {
-        nonisolated(unsafe) let completion = completion
+                                       completion: @escaping @MainActor @Sendable (Result<String, Error>) -> Void) {
         let prompt = [
             // swiftlint:disable:next line_length
             "Your task is to help a merchant create a message to share with their customers a product named ```\(name)```. More information about the product:",
@@ -942,9 +926,7 @@ private extension ProductStore {
                 try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productSharing, responseFormat: .text)
                     .trimmingCharacters(in: CharacterSet(["\""]))  // Trims quotation mark
             }
-            await MainActor.run {
-                completion(result)
-            }
+            await completion(result)
         }
     }
 
@@ -952,8 +934,7 @@ private extension ProductStore {
                                 productName: String?,
                                 scannedTexts: [String],
                                 language: String,
-                                completion: @escaping (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
-        nonisolated(unsafe) let completion = completion
+                                completion: @escaping @MainActor @Sendable (Result<ProductDetailsFromScannedTexts, Error>) -> Void) {
         let keywords: [String] = {
             guard let productName else {
                 return scannedTexts
@@ -983,17 +964,14 @@ private extension ProductStore {
                 let details = try JSONDecoder().decode(ProductDetailsFromScannedTexts.self, from: jsonData)
                 return ProductDetailsFromScannedTexts(name: details.name, description: details.description)
             }
-            await MainActor.run {
-                completion(result)
-            }
+            await completion(result)
         }
     }
 
     func generateProductName(siteID: Int64,
                              keywords: String,
                              language: String,
-                             completion: @escaping (Result<String, Error>) -> Void) {
-        nonisolated(unsafe) let completion = completion
+                             completion: @escaping @MainActor @Sendable (Result<String, Error>) -> Void) {
         let prompt = [
             "You are a WooCommerce SEO and marketing expert.",
             "Provide a product title to enhance the store's SEO performance and sales " +
@@ -1006,19 +984,14 @@ private extension ProductStore {
             let result = await Result {
                 try await generativeContentRemote.generateText(siteID: siteID, base: prompt, feature: .productName, responseFormat: .text)
             }
-            await MainActor.run {
-                completion(result)
-            }
+            await completion(result)
         }
     }
 
-    func fetchNumberOfProducts(siteID: Int64, completion: @escaping (Result<Int64, Error>) -> Void) {
-        nonisolated(unsafe) let completion = completion
+    func fetchNumberOfProducts(siteID: Int64, completion: @escaping @MainActor @Sendable (Result<Int64, Error>) -> Void) {
         Task {
             let result = await Result { try await remote.loadNumberOfProducts(siteID: siteID) }
-            await MainActor.run {
-                completion(result)
-            }
+            await completion(result)
         }
     }
 
@@ -1032,8 +1005,7 @@ private extension ProductStore {
                            weightUnit: String?,
                            categories: [ProductCategory],
                            tags: [ProductTag],
-                           completion: @escaping (Result<AIProduct, Error>) -> Void) {
-        nonisolated(unsafe) let completion = completion
+                           completion: @escaping @MainActor @Sendable (Result<AIProduct, Error>) -> Void) {
         Task {
             let result = await Result {
                 try await generativeContentRemote.generateAIProduct(siteID: siteID,
@@ -1047,9 +1019,7 @@ private extension ProductStore {
                                                                    categories: categories,
                                                                    tags: tags)
             }
-            await MainActor.run {
-                completion(result)
-            }
+            await completion(result)
         }
     }
 
@@ -1058,8 +1028,7 @@ private extension ProductStore {
                           pageNumber: Int,
                           pageSize: Int,
                           order: ProductsRemote.Order,
-                          completion: @escaping (Result<[ProductStock], Error>) -> Void) {
-        nonisolated(unsafe) let completion = completion
+                          completion: @escaping @MainActor @Sendable (Result<[ProductStock], Error>) -> Void) {
         nonisolated(unsafe) let order = order
         Task {
             let result = await Result {
@@ -1069,9 +1038,7 @@ private extension ProductStore {
                                            pageSize: pageSize,
                                            order: order)
             }
-            await MainActor.run {
-                completion(result)
-            }
+            await completion(result)
         }
     }
 
@@ -1084,8 +1051,7 @@ private extension ProductStore {
                              pageNumber: Int,
                              orderBy: ProductsRemote.OrderKey,
                              order: ProductsRemote.Order,
-                             completion: @escaping (Result<[ProductReport], Error>) -> Void) {
-        nonisolated(unsafe) let completion = completion
+                             completion: @escaping @MainActor @Sendable (Result<[ProductReport], Error>) -> Void) {
         nonisolated(unsafe) let orderBy = orderBy
         nonisolated(unsafe) let order = order
         Task {
@@ -1100,9 +1066,7 @@ private extension ProductStore {
                                                     orderBy: orderBy,
                                                     order: order)
             }
-            await MainActor.run {
-                completion(result)
-            }
+            await completion(result)
         }
     }
 
@@ -1116,8 +1080,7 @@ private extension ProductStore {
                                pageNumber: Int,
                                orderBy: ProductsRemote.OrderKey,
                                order: ProductsRemote.Order,
-                               completion: @escaping (Result<[ProductReport], Error>) -> Void) {
-        nonisolated(unsafe) let completion = completion
+                               completion: @escaping @MainActor @Sendable (Result<[ProductReport], Error>) -> Void) {
         nonisolated(unsafe) let orderBy = orderBy
         nonisolated(unsafe) let order = order
         Task {
@@ -1133,9 +1096,7 @@ private extension ProductStore {
                                                       orderBy: orderBy,
                                                       order: order)
             }
-            await MainActor.run {
-                completion(result)
-            }
+            await completion(result)
         }
     }
 }

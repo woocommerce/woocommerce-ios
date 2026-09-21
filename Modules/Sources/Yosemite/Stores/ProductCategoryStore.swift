@@ -169,9 +169,8 @@ private extension ProductCategoryStore {
 
     /// Updates an existing product category.
     ///
-    func updateProductCategory(_ category: ProductCategory, onCompletion: @escaping (Result<ProductCategory, Error>) -> Void) {
-        // The action owns this callback and transfers it exactly once to the task.
-        nonisolated(unsafe) let onCompletion = onCompletion
+    func updateProductCategory(_ category: ProductCategory,
+                               onCompletion: @escaping @MainActor @Sendable (Result<ProductCategory, Error>) -> Void) {
         Task {
             let result = await Result { try await remote.updateProductCategory(category) }
 
@@ -190,8 +189,9 @@ private extension ProductCategoryStore {
 
     /// Deletes an existing product category.
     ///
-    func deleteProductCategory(siteID: Int64, categoryID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        nonisolated(unsafe) let onCompletion = onCompletion
+    func deleteProductCategory(siteID: Int64,
+                               categoryID: Int64,
+                               onCompletion: @escaping @MainActor @Sendable (Result<Void, Error>) -> Void) {
         Task {
             let result: Result<Void, Error> = await Result {
                 try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)

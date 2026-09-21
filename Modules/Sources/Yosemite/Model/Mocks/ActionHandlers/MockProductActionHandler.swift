@@ -31,28 +31,36 @@ struct MockProductActionHandler: MockActionHandler {
             case .synchronizeProductsForOrderCreation(let siteID, _, _, _, _, _, let onCompletion):
                 let products = objectGraph.products(forSiteId: siteID, without: [])
                 upsert(products: products) {
-                    onCompletion(.success((products, false, [])))
+                    MainActor.assumeIsolated {
+                        onCompletion(.success((products, false, [])))
+                    }
                 }
             default: unimplementedAction(action: action)
         }
     }
 
-    func synchronizeProducts(siteID: Int64, excludedProductIDs: [Int64], onCompletion: @escaping (Result<Bool, Error>) -> Void) {
+    func synchronizeProducts(siteID: Int64,
+                             excludedProductIDs: [Int64],
+                             onCompletion: @escaping @MainActor @Sendable (Result<Bool, Error>) -> Void) {
         let products = objectGraph.products(forSiteId: siteID, without: excludedProductIDs)
         upsert(products: products) {
             /// Indicate that no more products are coming
-            onCompletion(.success(false))
+            MainActor.assumeIsolated {
+                onCompletion(.success(false))
+            }
         }
     }
 
     func retrieveProducts(
         siteId: Int64,
         productIds: [Int64],
-        onCompletion: @escaping (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void
+        onCompletion: @escaping @MainActor @Sendable (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void
     ) {
         let products = objectGraph.products(forSiteId: siteId, productIds: productIds)
         upsert(products: products) {
-            onCompletion(.success((products, false)))
+            MainActor.assumeIsolated {
+                onCompletion(.success((products, false)))
+            }
         }
     }
 
@@ -65,16 +73,18 @@ struct MockProductActionHandler: MockActionHandler {
         }
     }
 
-    func requestMissingProducts(for order: Order, onCompletion: @escaping (Error?) -> Void) {
+    func requestMissingProducts(for order: Order, onCompletion: @escaping @MainActor @Sendable (Error?) -> Void) {
         let productIds = order.items.map { $0.productID }.uniqued()
         let products = objectGraph.products(forSiteId: order.siteID, productIds: productIds)
 
         upsert(products: products) {
-            onCompletion(nil)
+            MainActor.assumeIsolated {
+                onCompletion(nil)
+            }
         }
     }
 
-    func upsert(products: [Product], onCompletion: @escaping () -> ()) {
+    func upsert(products: [Product], onCompletion: @escaping () -> Void) {
         storageManager.performAndSave({ storage in
             self.productStore.upsertStoredProducts(readOnlyProducts: products, in: storage)
         }, completion: onCompletion, on: .main)

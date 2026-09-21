@@ -84,9 +84,8 @@ private extension ProductVariationStore {
                                               variationIDs: [Int64],
                                               pageNumber: Int,
                                               pageSize: Int,
-                                              onCompletion: @escaping (Result<(variations: [ProductVariation], hasNextPage: Bool), Error>) -> Void) {
-        // The action owns this callback and transfers it exactly once to the task.
-        nonisolated(unsafe) let onCompletion = onCompletion
+                                              onCompletion: @escaping @MainActor @Sendable
+                                              (Result<(variations: [ProductVariation], hasNextPage: Bool), Error>) -> Void) {
         Task {
             let result = await Result {
                 try await remote.loadProductVariations(for: siteID,
@@ -97,9 +96,7 @@ private extension ProductVariationStore {
                                                        currency: currency)
             }
 
-            await MainActor.run {
-                onCompletion(result.map { ($0, $0.count == pageSize) })
-            }
+            await onCompletion(result.map { ($0, $0.count == pageSize) })
         }
     }
 

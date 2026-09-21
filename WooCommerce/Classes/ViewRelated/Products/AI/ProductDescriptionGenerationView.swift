@@ -258,7 +258,9 @@ final class ProductDescriptionGenerationPreviewStores: DefaultStoresManager {
     override func dispatch(_ action: Action) {
         if let action = action as? ProductAction {
             if case let .generateProductDescription(_, _, _, _, completion) = action {
-                completion(result)
+                MainActor.assumeIsolated {
+                    completion(result)
+                }
             }
         }
     }

@@ -3,6 +3,7 @@
 
 25.8
 -----
+- [Internal] Login: the site-address screen reached from the QR prologue's "Log in with site address" fallback now tracks under the `login_site_address` flow instead of `login_qr`. [https://github.com/woocommerce/woocommerce-ios/pull/PENDING]
 
 
 25.7

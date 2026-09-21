@@ -555,8 +555,8 @@ struct POSPaymentModelTests {
             orderProvider: orderProvider,
             markAsPaidHandler: handler,
             analytics: analytics,
-            celebration: celebration,
-            collectOrderPaymentAnalyticsTracker: tracker)
+            collectOrderPaymentAnalyticsTracker: tracker,
+            celebration: celebration)
 
         try await sut.confirmMarkAsPaidPayment()
 

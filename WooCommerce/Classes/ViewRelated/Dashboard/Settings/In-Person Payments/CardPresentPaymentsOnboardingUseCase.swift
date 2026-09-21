@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import os
 import Storage
 import Yosemite
 import Experiments
@@ -263,13 +264,15 @@ private extension CardPresentPaymentsOnboardingUseCase {
         }
 
         let group = DispatchGroup()
-        var errors = [Error]()
+        // The system status completion is `@Sendable`, so it cannot mutate a captured `var`; the errors live behind a lock
+        // until the use case is isolated to the main actor (WOOMOB-4096).
+        let errors = OSAllocatedUnfairLock(initialState: [Error]())
 
         // We need to sync settings to check the store's country
         let settingsAction = SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
             if let error {
                 DDLogError("[CardPresentPaymentsOnboarding] Error syncing site settings: \(error)")
-                errors.append(error)
+                errors.withLock { $0.append(error) }
             }
             group.leave()
         }
@@ -280,7 +283,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         let systemPluginsAction = SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
             if case let .failure(error) = result {
                 DDLogError("[CardPresentPaymentsOnboarding] Error syncing system plugins: \(error)")
-                errors.append(error)
+                errors.withLock { $0.append(error) }
             }
             group.leave()
         }
@@ -289,6 +292,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
 
         group.notify(queue: .main, execute: { [weak self] in
             guard let self else { return }
+            let errors = errors.withLock { $0 }
             if errors.isNotEmpty,
                errors.contains(where: self.isNetworkError(_:)) {
                 self.state = .noConnectionError

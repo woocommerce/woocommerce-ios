@@ -125,7 +125,7 @@ public enum ProductAction: Action {
     ///
     case retrieveProductsIfNeeded(siteID: Int64,
                                   productIDs: [Int64],
-                                  onCompletion: (Result<[Product], Error>) -> Void)
+                                  onCompletion: @MainActor @Sendable (Result<[Product], Error>) -> Void)
 
     /// Retrieves the first Product or Variation with exact-match SKU or, if that search is empty, global unique identifier
     ///

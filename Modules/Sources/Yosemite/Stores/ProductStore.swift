@@ -570,13 +570,17 @@ private extension ProductStore {
     /// Retrieves multiple products with a given siteID + productIDs.
     /// - Note: This is NOT a wrapper for retrieving a single product.
     ///
-    func retrieveProductsIfNeeded(siteID: Int64, productIDs: [Int64], onCompletion: @escaping (Result<[Product], Error>) -> Void) {
+    func retrieveProductsIfNeeded(siteID: Int64,
+                                  productIDs: [Int64],
+                                  onCompletion: @escaping @MainActor @Sendable (Result<[Product], Error>) -> Void) {
         let storedProducts = storageManager.viewStorage.loadProducts(siteID: siteID, productsIDs: productIDs).map { $0.toReadOnly() }
         let storedProductIDs = storedProducts.map { $0.productID }
         let missingIDs = productIDs.filter { storedProductIDs.contains($0) == false }
 
         guard !missingIDs.isEmpty else {
-            return onCompletion(.success(storedProducts))
+            return MainActor.assumeIsolated {
+                onCompletion(.success(storedProducts))
+            }
         }
 
         recursivelyRetrieveProducts(siteID: siteID,
@@ -593,7 +597,7 @@ private extension ProductStore {
                                      productIDs: [Int64],
                                      pageNumber: Int,
                                      retrievedProducts: [Product],
-                                     onCompletion: @escaping (Result<[Product], Error>) -> Void) {
+                                     onCompletion: @escaping @MainActor @Sendable (Result<[Product], Error>) -> Void) {
         retrieveProducts(siteID: siteID,
                          productIDs: productIDs,
                          pageNumber: pageNumber,

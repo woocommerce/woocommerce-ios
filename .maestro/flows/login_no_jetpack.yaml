@@ -66,32 +66,35 @@ tags:
     commands:
       - tapOn: "Not now"
 
-- extendedWaitUntil:
-    visible: "Manage Privacy|Save Password\\?"
-    timeout: 60000
-- runFlow:
-    when:
-      visible: "Manage Privacy"
-    commands:
-      - tapOn: "Save"
-- runFlow:
-    file: ../subflows/dismiss_save_password_prompt.yaml
+# After login the privacy sheet and the iOS password prompt can arrive a few
+# seconds apart or stacked on top of each other, and while either is open the
+# tab bar is not in the hierarchy. Wait for any sign of the dashboard, dismiss
+# whatever is up, then wait for the tab bar.
 - extendedWaitUntil:
     visible: "Manage Privacy|Save Password\\?|Orders"
-    timeout: 30000
+    timeout: 120000
+- runFlow:
+    file: ../subflows/dismiss_save_password_prompt.yaml
 - runFlow:
     when:
       visible: "Manage Privacy"
     commands:
       - tapOn: "Save"
+- extendedWaitUntil:
+    visible: "Manage Privacy|Save Password\\?"
+    timeout: 10000
+    optional: true
 - runFlow:
     file: ../subflows/dismiss_save_password_prompt.yaml
+- runFlow:
+    when:
+      visible: "Manage Privacy"
+    commands:
+      - tapOn: "Save"
 - extendedWaitUntil:
     visible:
       id: "tab-bar-orders-item"
-    timeout: 15000
-- assertVisible:
-    id: "tab-bar-orders-item"
+    timeout: 30000
 - assertVisible:
     id: "tab-bar-products-item"
 - takeScreenshot: login_no_jetpack

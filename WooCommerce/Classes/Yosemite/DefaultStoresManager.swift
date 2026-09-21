@@ -921,19 +921,20 @@ private extension DefaultStoresManager {
     ///
     @MainActor
     func synchronizeSystemInformation(siteID: Int64) async -> SystemInformation? {
-        await withCheckedContinuation { continuation in
-            dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { [weak self] result in
-                switch result {
-                case let .success(systemInformation):
-                    DDLogInfo("🟢 Successfully synced system information")
-                    self?.loadStoreUUID(siteID: siteID)
-                    self?.loadCachedWooCommerceVersion(siteID: siteID)
-                    continuation.resume(returning: systemInformation)
-                case let .failure(error):
-                    DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
-                    continuation.resume(returning: nil)
-                }
+        let result: Result<SystemInformation, Error> = await withCheckedContinuation { continuation in
+            dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
+                continuation.resume(returning: result)
             })
+        }
+        switch result {
+        case let .success(systemInformation):
+            DDLogInfo("🟢 Successfully synced system information")
+            loadStoreUUID(siteID: siteID)
+            loadCachedWooCommerceVersion(siteID: siteID)
+            return systemInformation
+        case let .failure(error):
+            DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
+            return nil
         }
     }
 

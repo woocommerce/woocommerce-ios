@@ -12,11 +12,11 @@ public protocol SupportFormMetaDataSource {
 
     /// Zendesk tags
     ///
-    var tags: [String] { get }
+    @MainActor var tags: [String] { get }
 
     /// Zendesk Custom Fields
     ///
-    var customFields: [Int64: String] { get }
+    @MainActor var customFields: [Int64: String] { get }
 }
 
 

@@ -3,7 +3,7 @@ import Foundation
 public extension SystemStatusReport {
     /// Details about security of a store in its system status report.
     ///
-    struct Security: Codable {
+    struct Security: Codable, Sendable {
         public let secureConnection, hideErrors: Bool
 
         enum CodingKeys: String, CodingKey {

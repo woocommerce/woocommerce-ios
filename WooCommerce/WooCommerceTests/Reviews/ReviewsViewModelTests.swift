@@ -388,9 +388,7 @@ final class MockReviewsStoresManager: DefaultStoresManager {
         }
 
         if let productAction = action as? ProductAction {
-            MainActor.assumeIsolated {
-                onProductAction(productAction)
-            }
+            onProductAction(productAction)
         }
 
         if let notificationAction = action as? NotificationAction {
@@ -408,7 +406,6 @@ final class MockReviewsStoresManager: DefaultStoresManager {
         }
     }
 
-    @MainActor
     private func onProductAction(_ action: ProductAction) {
         switch action {
         case .retrieveProducts(_, _, _, _, onCompletion: let onCompletion):

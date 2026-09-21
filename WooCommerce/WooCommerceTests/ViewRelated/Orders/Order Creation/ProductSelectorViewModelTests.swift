@@ -1663,26 +1663,28 @@ final class ProductSelectorViewModelTests: XCTestCase {
         let bundleProduct = createAndInsertBundleProduct(bundleItems: [.fake()])
         // The bundle's contents are checked before its configuration screen is offered.
         mockBundledProductsRetrieval([Product.fake().copy(siteID: sampleSiteID, purchasable: true)])
+        let configurationExpectation = expectation(description: "Bundle product is configured")
+        var productToConfigure: Yosemite.Product?
 
         // When
-        let productToConfigure: Yosemite.Product = try waitFor { promise in
-            let viewModel = ProductSelectorViewModel(siteID: self.sampleSiteID,
-                                                     source: .orderForm(flow: .creation),
-                                                     storageManager: self.storageManager,
-                                                     stores: self.stores,
-                                                     onConfigureProductRow: { product in
-                promise(product)
-            })
+        let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
+                                                 source: .orderForm(flow: .creation),
+                                                 storageManager: storageManager,
+                                                 stores: stores,
+                                                 onConfigureProductRow: { product in
+            productToConfigure = product
+            configurationExpectation.fulfill()
+        })
 
-            // Then bundle product row is configurable
-            XCTAssertEqual(viewModel.productRows.count, 1)
-            let productRow = try XCTUnwrap(viewModel.productRows.first)
-            XCTAssertTrue(productRow.isConfigurable)
-            productRow.configure?()
-        }
+        // Then bundle product row is configurable
+        XCTAssertEqual(viewModel.productRows.count, 1)
+        let productRow = try XCTUnwrap(viewModel.productRows.first)
+        XCTAssertTrue(productRow.isConfigurable)
+        productRow.configure?()
+        await fulfillment(of: [configurationExpectation], timeout: Constants.expectationTimeout)
 
         // Then
-        assertEqual(bundleProduct, productToConfigure)
+        assertEqual(bundleProduct, try XCTUnwrap(productToConfigure))
     }
 
     // MARK: - Pagination

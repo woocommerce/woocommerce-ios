@@ -43,7 +43,7 @@ public enum ProductAction: Action {
                         productType: ProductType? = nil,
                         productCategory: ProductCategory? = nil,
                         excludedProductIDs: [Int64] = [],
-                        onCompletion: @MainActor (Result<Bool, Error>) -> Void)
+                        onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Synchronizes the Products matching the specified criteria.
     ///
@@ -60,7 +60,7 @@ public enum ProductAction: Action {
                              productIDs: [Int64] = [],
                              excludedProductIDs: [Int64] = [],
                              shouldDeleteStoredProductsOnFirstPage: Bool = true,
-                             onCompletion: @MainActor (Result<Bool, Error>) -> Void)
+                             onCompletion: (Result<Bool, Error>) -> Void)
 
     /// Synchronizes a page of products and additional products needed for order creation in one storage update.
     ///
@@ -70,7 +70,7 @@ public enum ProductAction: Action {
                                               sortOrder: ProductsSortOrder,
                                               additionalProductIDs: [Int64],
                                               shouldDeleteStoredProductsOnFirstPage: Bool = true,
-                                              onCompletion: @MainActor (Result<(products: [Product], hasNextPage: Bool,
+                                              onCompletion: (Result<(products: [Product], hasNextPage: Bool,
                                                                                        missingProductIDs: [Int64]), Error>) -> Void)
 
     /// Retrieves a currency-scoped page of products without writing the results to local storage.
@@ -86,7 +86,7 @@ public enum ProductAction: Action {
                                      sortOrder: ProductsSortOrder,
                                      productIDs: [Int64] = [],
                                      excludedProductIDs: [Int64] = [],
-                                     onCompletion: @MainActor (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
+                                     onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
     /// Searches for currency-scoped products without writing products or search results to local storage.
     ///
@@ -102,7 +102,7 @@ public enum ProductAction: Action {
                                    productCategory: ProductCategory? = nil,
                                    productIDs: [Int64] = [],
                                    excludedProductIDs: [Int64] = [],
-                                   onCompletion: @MainActor (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
+                                   onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
     /// Retrieves the specified Product.
     ///
@@ -117,7 +117,7 @@ public enum ProductAction: Action {
                           productIDs: [Int64],
                           pageNumber: Int = ProductsRemote.Default.pageNumber,
                           pageSize: Int = ProductsRemote.Default.pageSize,
-                          onCompletion: @MainActor (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
+                          onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
 
     /// Retrieves every Product in a specified list, fetching only the ones which are not stored already.
     ///
@@ -125,13 +125,13 @@ public enum ProductAction: Action {
     ///
     case retrieveProductsIfNeeded(siteID: Int64,
                                   productIDs: [Int64],
-                                  onCompletion: @MainActor (Result<[Product], Error>) -> Void)
+                                  onCompletion: (Result<[Product], Error>) -> Void)
 
     /// Retrieves the first Product or Variation with exact-match SKU or, if that search is empty, global unique identifier
     ///
     case retrieveFirstPurchasableItemMatchFromIdentifier(siteID: Int64,
                                                          identifier: String,
-                                                         onCompletion: @MainActor (Result<(ItemIdentifierSearchResult,
+                                                         onCompletion: (Result<(ItemIdentifierSearchResult,
                                                                                                   ItemIdentifierSearchResultSource), Error>) -> Void)
 
     /// Deletes all of the cached products.
@@ -140,7 +140,7 @@ public enum ProductAction: Action {
 
     /// Requests the Products found in a specified Order.
     ///
-    case requestMissingProducts(for: Order, onCompletion: @MainActor (Error?) -> Void)
+    case requestMissingProducts(for: Order, onCompletion: (Error?) -> Void)
 
     /// Adds a new Product.
     ///
@@ -187,14 +187,14 @@ public enum ProductAction: Action {
     case identifyLanguage(siteID: Int64,
                           string: String,
                           feature: GenerativeContentRemoteFeature,
-                          completion: @MainActor (Result<String, Error>) -> Void)
+                          completion: (Result<String, Error>) -> Void)
 
     /// Generates a product name with Jetpack AI given the keywords
     ///
     case generateProductName(siteID: Int64,
                              keywords: String,
                              language: String,
-                             completion: @MainActor (Result<String, Error>) -> Void)
+                             completion: (Result<String, Error>) -> Void)
 
     /// Generates a product description with Jetpack AI given the name and features.
     ///
@@ -202,7 +202,7 @@ public enum ProductAction: Action {
                                     name: String,
                                     features: String,
                                     language: String,
-                                    completion: @MainActor (Result<String, Error>) -> Void)
+                                    completion: (Result<String, Error>) -> Void)
 
     /// Generates a product sharing message with Jetpack AI given the URL, name, and description
     ///
@@ -211,7 +211,7 @@ public enum ProductAction: Action {
                                        name: String,
                                        description: String,
                                        language: String,
-                                       completion: @MainActor (Result<String, Error>) -> Void)
+                                       completion: (Result<String, Error>) -> Void)
 
     /// Generates product details (e.g. name and description) with Jetpack AI given the scanned texts from an image and optional product name .
     ///
@@ -219,11 +219,11 @@ public enum ProductAction: Action {
                                 productName: String?,
                                 scannedTexts: [String],
                                 language: String,
-                                completion: @MainActor (Result<ProductDetailsFromScannedTexts, Error>) -> Void)
+                                completion: (Result<ProductDetailsFromScannedTexts, Error>) -> Void)
 
     /// Fetches the total number of products in the site given the site ID.
     ///
-    case fetchNumberOfProducts(siteID: Int64, completion: @MainActor (Result<Int64, Error>) -> Void)
+    case fetchNumberOfProducts(siteID: Int64, completion: (Result<Int64, Error>) -> Void)
 
 
     /// Generates a AIProduct using AI
@@ -250,7 +250,7 @@ public enum ProductAction: Action {
                            weightUnit: String?,
                            categories: [ProductCategory],
                            tags: [ProductTag],
-                           completion: @MainActor (Result<AIProduct, Error>) -> Void)
+                           completion: (Result<AIProduct, Error>) -> Void)
 
     /// Fetches stock based on the given status for a site
     /// - Parameter siteID: Site ID to fetch stock for.
@@ -266,7 +266,7 @@ public enum ProductAction: Action {
                           pageNumber: Int,
                           pageSize: Int,
                           order: ProductsRemote.Order,
-                          completion: @MainActor (Result<[ProductStock], Error>) -> Void)
+                          completion: (Result<[ProductStock], Error>) -> Void)
 
     /// Fetches product reports for the given product ID of a site in a given time range.
     /// - Parameter siteID: Site ID to fetch stock for.
@@ -289,7 +289,7 @@ public enum ProductAction: Action {
                              pageNumber: Int,
                              orderBy: ProductsRemote.OrderKey,
                              order: ProductsRemote.Order,
-                             completion: @MainActor (Result<[ProductReport], Error>) -> Void)
+                             completion: (Result<[ProductReport], Error>) -> Void)
 
     /// Fetches variation reports for the given product IDs and variation IDs in a given time range.
     /// - Parameter siteID: Site ID to fetch stock for.
@@ -313,5 +313,5 @@ public enum ProductAction: Action {
                                pageNumber: Int,
                                orderBy: ProductsRemote.OrderKey,
                                order: ProductsRemote.Order,
-                               completion: @MainActor (Result<[ProductReport], Error>) -> Void)
+                               completion: (Result<[ProductReport], Error>) -> Void)
 }

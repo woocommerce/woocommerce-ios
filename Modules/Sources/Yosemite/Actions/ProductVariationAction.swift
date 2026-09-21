@@ -34,7 +34,7 @@ public enum ProductVariationAction: Action {
                                               variationIDs: [Int64] = [],
                                               pageNumber: Int,
                                               pageSize: Int,
-                                              onCompletion: @MainActor (Result<(variations: [ProductVariation],
+                                              onCompletion: (Result<(variations: [ProductVariation],
                                                                                         hasNextPage: Bool), Error>) -> Void)
 
     /// Retrieves the specified ProductVariation.

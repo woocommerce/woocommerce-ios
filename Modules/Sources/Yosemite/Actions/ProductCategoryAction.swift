@@ -29,14 +29,14 @@ public enum ProductCategoryAction: Action {
     /// `onCompletion` will be invoked when the add operation finishes. `error` will be nil if the operation succeed.
     ///
     case updateProductCategory(_ category: ProductCategory,
-                               onCompletion: @MainActor (Result<ProductCategory, Error>) -> Void)
+                               onCompletion: (Result<ProductCategory, Error>) -> Void)
 
     /// Deletes an existing product category with the provided site ID and category ID.
     /// `onCompletion` will be invoked when the add operation finishes. `error` will be nil if the operation succeed.
     ///
     case deleteProductCategory(siteID: Int64,
                                categoryID: Int64,
-                               onCompletion: @MainActor (Result<Void, Error>) -> Void)
+                               onCompletion: (Result<Void, Error>) -> Void)
 }
 
 /// Defines all errors that a `ProductCategoryAction` can return

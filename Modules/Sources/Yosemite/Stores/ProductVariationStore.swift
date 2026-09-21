@@ -84,7 +84,7 @@ private extension ProductVariationStore {
                                               variationIDs: [Int64],
                                               pageNumber: Int,
                                               pageSize: Int,
-                                              onCompletion: @escaping @MainActor
+                                              onCompletion: @escaping @MainActor @Sendable
                                               (Result<(variations: [ProductVariation], hasNextPage: Bool), Error>) -> Void) {
         Task {
             let result = await Result {

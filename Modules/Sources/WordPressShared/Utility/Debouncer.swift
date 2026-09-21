@@ -7,9 +7,10 @@ import Foundation
 ///
 @MainActor
 public final class Debouncer {
-    private var callback: (() -> Void)?
+    // Read from the nonisolated deinit; every other access is main-actor isolated.
+    nonisolated(unsafe) private var callback: (() -> Void)?
     private let delay: Double
-    private var timer: Timer?
+    nonisolated(unsafe) private var timer: Timer?
 
     // MARK: - Init & deinit
 
@@ -18,7 +19,7 @@ public final class Debouncer {
         self.callback = callback
     }
 
-    isolated deinit {
+    deinit {
         if let timer, timer.fireDate >= Date() {
             timer.invalidate()
             callback?()

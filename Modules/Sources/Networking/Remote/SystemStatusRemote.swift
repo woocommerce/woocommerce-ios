@@ -53,9 +53,10 @@ public class SystemStatusRemote: Remote {
     ///
     public func loadSystemStatus<T, M: Mapper>(for siteID: Int64,
                                                fields: [Field]? = nil,
-                                               mapper: M) async throws -> T where M.Output == T {
+                                               mapper: M,
+                                               isolation: isolated (any Actor)? = #isolation) async throws -> T where M.Output == T {
         let request = makeRequest(siteID: siteID, fields: fields)
-        return try await enqueue(request, mapper: mapper)
+        return try await enqueue(request, mapper: mapper, isolation: isolation)
     }
 }
 

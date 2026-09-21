@@ -262,10 +262,6 @@ final class ProductFormViewModel: ProductFormViewModelProtocol {
         updateBlazeEligibility()
     }
 
-    deinit {
-        cancellable?.cancel()
-    }
-
     func hasUnsavedChanges() -> Bool {
         let hasProductChangesExcludingImages = product.product.copy(images: []) != originalProduct.product.copy(images: [])
         let hasImageChanges = productImagesUploader
@@ -662,7 +658,7 @@ extension ProductFormViewModel {
 
         remoteActionUseCase.duplicateProduct(originalProduct: snapshot.product,
                                              password: snapshot.password) { [weak self] result in
-            guard let self else { return }
+            guard self != nil else { return }
             switch result {
             case .failure(let error):
                 onCompletion(.failure(error))
@@ -912,7 +908,6 @@ private extension ProductFormViewModel {
 // MARK: Favorite
 //
 extension ProductFormViewModel {
-    @MainActor
     func isFavorite() async -> Bool {
         await favoriteProductsUseCase.isFavorite(productID: product.productID)
     }

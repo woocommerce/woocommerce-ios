@@ -62,6 +62,38 @@ struct AnalyticsTopPerformersCard: View {
     let reportViewModel: AnalyticsReportLinkViewModel?
     @State private var showingWebReport: Bool = false
 
+    init(title: String,
+         statTitle: String,
+         statValue: String,
+         delta: String,
+         deltaBackgroundColor: UIColor,
+         deltaTextColor: UIColor,
+         isStatsRedacted: Bool,
+         showStatsError: Bool,
+         statsErrorMessage: String,
+         topPerformersTitle: String,
+         topPerformersData: [TopPerformersRow.Data],
+         isTopPerformersRedacted: Bool,
+         showTopPerformersError: Bool,
+         topPerformersErrorMessage: String,
+         reportViewModel: AnalyticsReportLinkViewModel?) {
+        self.title = title
+        self.statTitle = statTitle
+        self.statValue = statValue
+        self.delta = delta
+        self.deltaBackgroundColor = deltaBackgroundColor
+        self.deltaTextColor = deltaTextColor
+        self.isStatsRedacted = isStatsRedacted
+        self.showStatsError = showStatsError
+        self.statsErrorMessage = statsErrorMessage
+        self.topPerformersTitle = topPerformersTitle
+        self.topPerformersData = topPerformersData
+        self.isTopPerformersRedacted = isTopPerformersRedacted
+        self.showTopPerformersError = showTopPerformersError
+        self.topPerformersErrorMessage = topPerformersErrorMessage
+        self.reportViewModel = reportViewModel
+    }
+
     var body: some View {
         VStack(alignment: .leading) {
 

@@ -72,7 +72,7 @@ final class StorePickerViewModel {
     func refreshSites(currentlySelectedSiteID: Int64?, completion: (() -> Void)? = nil) {
         refetchSitesAndUpdateState()
 
-        synchronizeSites(selectedSiteID: currentlySelectedSiteID) { [weak self] _ in
+        synchronizeSites { [weak self] _ in
             self?.refetchSitesAndUpdateState()
             completion?()
         }
@@ -150,13 +150,13 @@ private extension StorePickerViewModel {
         }()
     }
 
-    func synchronizeSites(selectedSiteID: Int64?, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeSites(onCompletion: @escaping (Result<Void, Error>) -> Void) {
         let syncStartTime = Date()
         let action = AccountAction
-            .synchronizeSites(selectedSiteID: selectedSiteID) { result in
+            .synchronizeSites { result in
                 switch result {
-                case .success(let containsJCPSites):
-                    if containsJCPSites {
+                case .success(let result):
+                    if result.containsJetpackConnectionPackageSites {
                         let syncDuration = round(Date().timeIntervalSince(syncStartTime) * 1000)
                         ServiceLocator.analytics.track(.jetpackCPSitesFetched, withProperties: ["duration": syncDuration])
                     }

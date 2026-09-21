@@ -1,12 +1,12 @@
 import Foundation
 import GRDB
 
-public protocol GRDBManagerProtocol {
+public protocol GRDBManagerProtocol: Sendable {
     var databaseConnection: GRDBDatabaseConnection { get }
     func reset() throws
 }
 
-public protocol GRDBDatabaseConnection: DatabaseReader, DatabaseWriter {}
+public protocol GRDBDatabaseConnection: DatabaseReader, DatabaseWriter, Sendable {}
 
 public final class GRDBManager: GRDBManagerProtocol {
 

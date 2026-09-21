@@ -6,6 +6,7 @@ import Fakes
 import Yosemite
 
 /// Unit tests for update functions in `ProductFormViewModel`.
+@MainActor
 final class ProductFormViewModel_UpdatesTests: XCTestCase {
     func testUpdatingName() {
         // Arrange
@@ -354,11 +355,5 @@ final class ProductFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.downloadableFiles.count, newDownloadableFiles.count)
         XCTAssertEqual(viewModel.productModel.downloadLimit, newDownloadLimit)
         XCTAssertEqual(viewModel.productModel.product.downloadExpiry, newDownloadExpiry)
-    }
-}
-
-extension ProductImageActionHandler {
-    convenience init(siteID: Int64, product: ProductFormDataModel) {
-        self.init(siteID: siteID, productID: .product(id: product.productID), imageStatuses: product.imageStatuses)
     }
 }

@@ -33,11 +33,11 @@ final class POSServiceLocatorAdaptor: POSDependencyProviding {
         POSConnectivityAdaptor()
     }
 
-    var externalNavigation: POSExternalNavigationProviding {
+    @MainActor var externalNavigation: POSExternalNavigationProviding {
         POSExternalNavigationAdaptor()
     }
 
-    var externalViews: POSExternalViewProviding {
+    @MainActor var externalViews: POSExternalViewProviding {
         POSExternalViewAdaptor()
     }
 }
@@ -81,6 +81,7 @@ private struct POSConnectivityAdaptor: POSConnectivityProviding {
 }
 
 private struct POSExternalNavigationAdaptor: POSExternalNavigationProviding {
+    @MainActor
     func navigateToCreateOrder() {
         AppDelegate.shared.tabBarController?.navigate(to: OrdersDestination.createOrder)
     }

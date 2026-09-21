@@ -170,7 +170,7 @@ private extension ProductCategoryStore {
     /// Updates an existing product category.
     ///
     func updateProductCategory(_ category: ProductCategory,
-                               onCompletion: @escaping @MainActor @Sendable (Result<ProductCategory, Error>) -> Void) {
+                               onCompletion: @escaping @MainActor (Result<ProductCategory, Error>) -> Void) {
         Task {
             let result = await Result { try await remote.updateProductCategory(category) }
 
@@ -191,7 +191,7 @@ private extension ProductCategoryStore {
     ///
     func deleteProductCategory(siteID: Int64,
                                categoryID: Int64,
-                               onCompletion: @escaping @MainActor @Sendable (Result<Void, Error>) -> Void) {
+                               onCompletion: @escaping @MainActor (Result<Void, Error>) -> Void) {
         Task {
             let result: Result<Void, Error> = await Result {
                 try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)

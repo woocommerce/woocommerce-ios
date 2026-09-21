@@ -32,6 +32,30 @@ struct QRLoginCoordinatorTests {
         #expect(spy.analytics.steps == [.qrPrologue])
     }
 
+    @Test func prologue_reappearing_reasserts_qr_flow_without_emitting_an_extra_step() {
+        // Given — a camera-mode coordinator showing the prologue. The initial
+        // appearance emits exactly one `qr_prologue` step under `login_qr`.
+        let nav = UINavigationController()
+        let spy = Spies()
+        let coordinator = makeCoordinator(mode: .camera, navigationController: nav, spies: spy)
+        coordinator.start()
+        #expect(spy.analytics.steps == [.qrPrologue])
+
+        // When — the merchant returns to the prologue (as when popping the
+        // site-address fallback that switched the flow to `login_site_address`),
+        // driving another `viewDidAppear`.
+        let prologue = nav.viewControllers.first
+        prologue?.beginAppearanceTransition(true, animated: false)
+        prologue?.endAppearanceTransition()
+
+        // Then — the QR flow + step are re-asserted as state, so the next event
+        // tracked from the prologue isn't mis-attributed to the flow the fallback
+        // left behind; no *extra* `qr_prologue` event is emitted. (WOOMOB-4152)
+        #expect(spy.analytics.flows == [.loginQR, .loginQR])
+        #expect(spy.analytics.setSteps == [.qrPrologue])
+        #expect(spy.analytics.steps == [.qrPrologue])
+    }
+
     @Test func start_when_deepLink_selfHosted_then_pushes_host_and_stays_alive() {
         // Given
         let nav = UINavigationController()
@@ -250,10 +274,12 @@ private extension QRLoginCoordinatorTests {
 final class SpyQRLoginAnalytics: QRLoginAnalyticsTracking {
     private(set) var flows: [AuthenticatorAnalyticsTracker.Flow] = []
     private(set) var steps: [AuthenticatorAnalyticsTracker.Step] = []
+    private(set) var setSteps: [AuthenticatorAnalyticsTracker.Step] = []
     private(set) var clicks: [AuthenticatorAnalyticsTracker.ClickTarget] = []
     private(set) var failures: [String] = []
 
     func setFlow(_ flow: AuthenticatorAnalyticsTracker.Flow) { flows.append(flow) }
+    func setStep(_ step: AuthenticatorAnalyticsTracker.Step) { setSteps.append(step) }
     func trackStep(_ step: AuthenticatorAnalyticsTracker.Step) { steps.append(step) }
     func trackClick(_ click: AuthenticatorAnalyticsTracker.ClickTarget) { clicks.append(click) }
     func trackFailure(_ failure: String) { failures.append(failure) }

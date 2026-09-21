@@ -127,10 +127,21 @@ private extension QRLoginCoordinator {
         )
         // The dark prologue hides the shared navigation bar and draws its own
         // light Back / Help controls over the bubble background.
-        prologueViewController = pushScreen(view,
-                                            navigationBarStyle: .hidden,
-                                            prefersLightStatusBar: true,
-                                            showsHelpButton: false)
+        let hosting = pushScreen(view,
+                                 navigationBarStyle: .hidden,
+                                 prefersLightStatusBar: true,
+                                 showsHelpButton: false)
+        // Re-assert the QR flow + step (state only, no event) every time the
+        // prologue reappears — e.g. when the merchant pops back from the
+        // site-address fallback, which switches the shared flow to
+        // `login_site_address`. Without this, the next event tracked from the
+        // prologue (a scan, a camera-permission click) would be mis-attributed
+        // to that flow. Mirrors Android's `QrLoginPrologueFragment.onResume`. (WOOMOB-4152)
+        hosting.onViewDidAppear = { [weak self] in
+            self?.analytics.setFlow(.loginQR)
+            self?.analytics.setStep(.qrPrologue)
+        }
+        prologueViewController = hosting
     }
 
     func handleScanCTA() {

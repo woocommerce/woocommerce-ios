@@ -28,8 +28,20 @@ final class QRLoginHostingController<Content: View>: UIHostingController<Content
     /// When `true`, the status bar uses light content — for the dark prologue.
     var prefersLightStatusBar = false
 
+    /// Invoked on every `viewDidAppear`, including when the merchant returns to
+    /// this screen by popping a screen that was pushed on top. The prologue uses
+    /// it to re-assert the QR-login flow the shared analytics tracker should be
+    /// in, since a pushed screen (e.g. the site-address fallback) may have
+    /// switched it. (WOOMOB-4152)
+    var onViewDidAppear: (() -> Void)?
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         prefersLightStatusBar ? .lightContent : .default
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        onViewDidAppear?()
     }
 
     override func viewWillAppear(_ animated: Bool) {

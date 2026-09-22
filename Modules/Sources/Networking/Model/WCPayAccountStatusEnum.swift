@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents all of the possible Site Plugin Statuses in enum form
 ///
-public enum WCPayAccountStatusEnum: Decodable, Hashable, GeneratedFakeable {
+public enum WCPayAccountStatusEnum: Decodable, Hashable, Sendable, GeneratedFakeable {
     /// This is the normal state for a fully functioning WCPay account. The merchant should be able to collect
     /// card present payments.
     case complete

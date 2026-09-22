@@ -76,19 +76,18 @@ private extension ReceiptStore {
                                                                                         email: email)
         let orderToUpdate = order.copy(billingAddress: updatedBillingAddress)
 
-        let action = OrderAction.updateOrder(siteID: order.siteID, order: orderToUpdate, giftCard: nil, fields: [.billingAddress]) { result in
+        let action = OrderAction.updateOrder(siteID: order.siteID, order: orderToUpdate, giftCard: nil, fields: [.billingAddress]) { [weak self] result in
+            guard let self else {
+                return onCompletion(.failure(ReceiptStoreError.storeDeallocated))
+            }
+
             switch result {
             case let .success(updatedOrder):
-                Task { [weak self] in
-                    guard let self else {
-                        onCompletion(.failure(ReceiptStoreError.storeDeallocated))
-                        return
-                    }
-
-                    do {
-                        try await remote.sendReceipt(siteID: order.siteID, orderID: order.orderID)
+                remote.sendReceipt(siteID: order.siteID, orderID: order.orderID) { result in
+                    switch result {
+                    case .success:
                         onCompletion(.success(updatedOrder))
-                    } catch {
+                    case let .failure(error):
                         onCompletion(.failure(error))
                     }
                 }

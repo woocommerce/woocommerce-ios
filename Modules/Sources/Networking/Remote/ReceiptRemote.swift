@@ -49,6 +49,24 @@ public final class ReceiptRemote: Remote {
         try await enqueue(request)
     }
 
+    /// Sends the order receipt to the customer attached to the order, calling back on the main queue.
+    ///
+    /// - Parameters:
+    ///    - siteID: Site which hosts the Order.
+    ///    - orderID: ID of the order that the receipt is associated to.
+    ///    - completion: Called with `.success` once the request is accepted, or with the request error.
+    ///
+    public func sendReceipt(siteID: Int64, orderID: Int64, completion: @escaping (Result<Void, Error>) -> Void) {
+        let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.actionsPath)/send_order_details"
+        let request = JetpackRequest(wooApiVersion: .mark3,
+                                     method: .post,
+                                     siteID: siteID,
+                                     path: path,
+                                     parameters: [:],
+                                     availableAsRESTRequest: true)
+        enqueue(request, mapper: IgnoringResponseMapper(), completion: completion)
+    }
+
     /// Sends the Point of Sale receipt to the customer attached to the order.
     /// - Parameters:
     ///   - siteID: Site which hosts the Order.

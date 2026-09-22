@@ -5,7 +5,7 @@ import Codegen
 /// See https://stripe.com/docs/payments/intents#intent-statuses
 /// See also https://stripe.com/docs/api/payment_intents/object#payment_intent_object-status
 ///
-public enum WCPayPaymentIntentStatusEnum: Decodable, Hashable, GeneratedFakeable {
+public enum WCPayPaymentIntentStatusEnum: Decodable, Hashable, Sendable, GeneratedFakeable {
     /// When the PaymentIntent is created, it has a status of `requiresPaymentMethod` until a payment method is attached.
     case requiresPaymentMethod
     /// After the customer provides their payment information, the PaymentIntent is ready to be confirmed.

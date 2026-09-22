@@ -383,8 +383,10 @@ private extension ProductVariationStore {
     }
 }
 
-// ProductVariationStore only holds immutable, thread-safe collaborators. Persistence is routed through
-// ProductVariationStorageManager, so transferring the store to its tasks does not expose mutable state.
+// Temporary migration bridge allowing tasks to capture this nonisolated store without Sendable checking.
+// This does not make its collaborators thread-safe; their access requires manual review.
+// Main-thread dispatch and storage queue conventions remain requirements, not compiler-enforced guarantees.
+// Replace this conformance once store, dispatcher, and networking/storage boundaries have checked isolation or safe transfer contracts.
 extension ProductVariationStore: @unchecked Sendable {}
 private extension ProductVariationStore {
     /// Recursively sync all product variations starting with the given page number and using a maximum page size.

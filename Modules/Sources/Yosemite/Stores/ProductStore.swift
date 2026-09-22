@@ -1118,8 +1118,10 @@ private extension ProductStore {
     }
 }
 
-// ProductStore only holds immutable, thread-safe collaborators. Its tasks route persistence through
-// StorageManager's queues, so transferring the store to those tasks does not expose mutable state.
+// Temporary migration bridge allowing tasks to capture this nonisolated store without Sendable checking.
+// This does not protect store or subclass state, or make its collaborators thread-safe; their access requires manual review.
+// Main-thread dispatch and storage queue conventions remain requirements, not compiler-enforced guarantees.
+// Replace this conformance once store, dispatcher, and networking/storage boundaries have checked isolation or safe transfer contracts.
 extension ProductStore: @unchecked Sendable {}
 
 

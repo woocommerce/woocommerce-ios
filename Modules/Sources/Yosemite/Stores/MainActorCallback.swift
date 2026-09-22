@@ -1,7 +1,9 @@
-/// Adapts an existing callback to the main actor without requiring every action caller to be `Sendable`.
+/// Adapts a legacy completion for main-actor invocation without changing public action callback types.
 ///
-/// The unchecked conformance is safe because the wrapped callback is private and can only be invoked
-/// through the main-actor-isolated `callAsFunction` method.
+/// The unchecked conformance allows transferring a non-Sendable closure; only invocation is actor-checked.
+/// Callers must ensure its captures are safe to access on the main actor and cannot race with access elsewhere.
+/// This wrapper does not establish thread safety or ownership of captured objects.
+/// Remove this bridge once dispatch and callback APIs express the required isolation and transfer contracts.
 struct MainActorCallback<Input: Sendable>: @unchecked Sendable {
     private let callback: (Input) -> Void
 

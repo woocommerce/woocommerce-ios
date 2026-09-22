@@ -3,6 +3,7 @@
 
 25.8
 -----
+- [*] POS: Kept controls clear of the system bars on iPhone Duo, and improved Cart, Checkout, Settings, Orders, and refund layouts across devices. [https://github.com/woocommerce/woocommerce-ios/pull/17932]
 - [*] Troubleshoot Connection and support chat diagnostics no longer report a false analytics failure on WordPress.com Commerce plan stores. [https://github.com/woocommerce/woocommerce-ios/pull/17895]
 
 

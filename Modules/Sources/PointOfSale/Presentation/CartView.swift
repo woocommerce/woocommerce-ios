@@ -523,11 +523,18 @@ private struct PurchasableItemsCartSection: View {
     @Binding var shouldShowItemImages: Bool
     @AccessibilityFocusState private var accessibilityFocusedItem: UUID?
 
+    private let viewHelper = CartViewHelper()
+
     var body: some View {
         LazyVStack(spacing: Constants.cartItemSpacing) {
             ForEach(posModel.cart.purchasableItems, id: \.id) { cartItem in
                 ItemRowView(
                     cartItem: cartItem,
+                    showsDiscountedNote: viewHelper.shouldShowItemDiscountedNote(
+                        orderStage: posModel.orderStage,
+                        orderState: posModel.orderState,
+                        cartItem: cartItem
+                    ),
                     showImage: $shouldShowItemImages,
                     onItemRemoveTapped: itemRemoveCallback(for: cartItem),
                     onCancelLoading: cancelLoadingCallback(for: cartItem)

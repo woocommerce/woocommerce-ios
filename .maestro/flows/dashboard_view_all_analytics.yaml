@@ -28,7 +28,9 @@ tags:
 - assertVisible: "See report"
 - assertVisible: "Edit"
 - takeScreenshot: dashboard_view_all_analytics
-- back
+# A swipe back does not leave the analytics screen here.
+- tapOn:
+    id: "BackButton"
 - extendedWaitUntil:
-    visible: "My store"
+    visible: "View all store analytics"
     timeout: 10000

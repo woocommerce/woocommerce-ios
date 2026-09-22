@@ -1203,6 +1203,21 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
     }
 
+    func test_trackBarcodeScanningPermissionSettingsOpened_then_tracks_source() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackBarcodeScanningPermissionSettingsOpened()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.barcodeScanningPermissionSettingsOpened.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
+    }
+
     // MARK: - Payment Section Tests
 
     func test_payment_section_when_products_and_custom_amounts_are_added_then_paymentDataViewModel_is_updated() throws {

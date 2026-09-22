@@ -3300,6 +3300,10 @@ extension WooAnalyticsEvent {
                                            Keys.reason: reason.rawValue])
         }
 
+        static func barcodeScanningPermissionSettingsOpened(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .barcodeScanningPermissionSettingsOpened, properties: [Keys.source: source.rawValue])
+        }
+
         static func productSearchViaSKUSuccess(from source: String, stockManaged: Bool? = nil) -> WooAnalyticsEvent {
             var properties = [Keys.source: source]
 

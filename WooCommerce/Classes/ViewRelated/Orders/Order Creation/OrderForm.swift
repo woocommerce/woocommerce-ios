@@ -707,7 +707,10 @@ private struct ProductsSection: View {
                                 authorizationStatus: authorizationStatus) {
                                 viewModel.trackBarcodeScanningPermissionSettingsTapped(reason: reason)
                             }
-                            openSettingsAction()
+                            openSettingsAction { didOpenSettings in
+                                guard didOpenSettings else { return }
+                                viewModel.trackBarcodeScanningPermissionSettingsOpened()
+                            }
                          }),
                         .cancel()
                      ]
@@ -974,11 +977,12 @@ private extension ProductsSection {
             comment: "Title for the barcode scanning button to add a product to an order")
     }
 
-    func openSettingsAction() {
+    func openSettingsAction(completion: @escaping (Bool) -> Void) {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+            completion(false)
             return
         }
-        UIApplication.shared.open(settingsURL)
+        UIApplication.shared.open(settingsURL, options: [:], completionHandler: completion)
     }
 
     func logPermissionStatus(status: EditableOrderViewModel.CapturePermissionStatus) {

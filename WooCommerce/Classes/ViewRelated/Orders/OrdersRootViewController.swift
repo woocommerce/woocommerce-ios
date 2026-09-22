@@ -289,8 +289,10 @@ final class OrdersRootViewController: UIViewController {
             }
         }, onPermissionsDenied: { [weak self] reason in
             self?.analytics.track(event: .BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: reason))
-        }, onOpenSettings: { [weak self] reason in
+        }, onSettingsTapped: { [weak self] reason in
             self?.analytics.track(event: .BarcodeScanning.barcodeScanningPermissionSettingsTapped(from: .orderList, reason: reason))
+        }, onSettingsOpened: { [weak self] in
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningPermissionSettingsOpened(from: .orderList))
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()

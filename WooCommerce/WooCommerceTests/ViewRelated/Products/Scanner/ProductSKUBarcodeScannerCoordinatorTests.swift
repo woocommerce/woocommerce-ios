@@ -183,28 +183,34 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
 
     // MARK: - Settings reporting
 
-    func test_coordinator_when_settings_action_is_not_tapped_then_does_not_report_settings_tap() {
+    func test_coordinator_when_settings_action_is_not_tapped_then_reports_neither_tapped_nor_opened() {
         // Given
         var reportedReasons: [ProducBarcodeScannerCoordinator.FailureReason] = []
+        var openedCallCount = 0
         let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                           permissionChecker: MockCaptureDevicePermissionChecker(authorizationStatus: .denied),
                                                           onBarcodeScanned: { _ in },
-                                                          onOpenSettings: { reportedReasons.append($0) })
+                                                          onSettingsTapped: { reportedReasons.append($0) },
+                                                          onSettingsOpened: { openedCallCount += 1 })
 
         // When
         coordinator.start()
 
         // Then
         XCTAssertTrue(reportedReasons.isEmpty)
+        XCTAssertEqual(openedCallCount, 0)
     }
 
-    func test_coordinator_when_settings_action_is_tapped_then_reports_current_failure_reason() throws {
+    func test_coordinator_when_settings_action_is_tapped_and_settings_open_then_reports_tapped_and_opened() throws {
         // Given
         var reportedReasons: [ProducBarcodeScannerCoordinator.FailureReason] = []
+        var openedCallCount = 0
         let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
                                                           permissionChecker: MockCaptureDevicePermissionChecker(authorizationStatus: .restricted),
                                                           onBarcodeScanned: { _ in },
-                                                          onOpenSettings: { reportedReasons.append($0) })
+                                                          onSettingsTapped: { reportedReasons.append($0) },
+                                                          onSettingsOpened: { openedCallCount += 1 },
+                                                          openSettings: { completion in completion(true) })
         coordinator.start()
         let alert = try XCTUnwrap(navigationController.presentedViewController as? UIAlertController)
 
@@ -213,5 +219,27 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
 
         // Then
         XCTAssertEqual(reportedReasons, [.cameraAccessRestricted])
+        XCTAssertEqual(openedCallCount, 1)
+    }
+
+    func test_coordinator_when_settings_action_is_tapped_but_settings_do_not_open_then_reports_only_tapped() throws {
+        // Given
+        var reportedReasons: [ProducBarcodeScannerCoordinator.FailureReason] = []
+        var openedCallCount = 0
+        let coordinator = ProducBarcodeScannerCoordinator(sourceNavigationController: navigationController,
+                                                          permissionChecker: MockCaptureDevicePermissionChecker(authorizationStatus: .denied),
+                                                          onBarcodeScanned: { _ in },
+                                                          onSettingsTapped: { reportedReasons.append($0) },
+                                                          onSettingsOpened: { openedCallCount += 1 },
+                                                          openSettings: { completion in completion(false) })
+        coordinator.start()
+        let alert = try XCTUnwrap(navigationController.presentedViewController as? UIAlertController)
+
+        // When
+        alert.tapButton(atIndex: 0)
+
+        // Then
+        XCTAssertEqual(reportedReasons, [.cameraAccessNotPermitted])
+        XCTAssertEqual(openedCallCount, 0)
     }
 }

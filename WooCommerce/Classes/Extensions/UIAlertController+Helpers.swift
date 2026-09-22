@@ -4,6 +4,7 @@ import UIKit
 /// UIAlertController Helpers
 ///
 extension UIAlertController {
+    typealias OpenSettingsAction = (@escaping (Bool) -> Void) -> Void
 
     /// Discard Changes Action Sheet
     ///
@@ -53,27 +54,37 @@ extension UIAlertController {
     /// Present an alert when the app does not have permission to use camera for barcode scanner.
     /// The alert has an action that links to device settings and a cancel action.
     static func presentBarcodeScannerNoCameraPermissionAlert(viewController: UIViewController,
-                                                             onOpenSettings: (() -> Void)? = nil,
-                                                             onCancel: (() -> Void)? = nil) {
+                                                             onSettingsTapped: (() -> Void)? = nil,
+                                                             onSettingsOpened: (() -> Void)? = nil,
+                                                             onCancel: (() -> Void)? = nil,
+                                                             openSettings: OpenSettingsAction? = nil) {
         presentAlertWithLinkToOpenSettings(viewController: viewController,
                                            title: BarcodeScannerNoCameraPermissionAlert.Localization.title,
                                            message: BarcodeScannerNoCameraPermissionAlert.Localization.message,
-                                           onOpenSettings: onOpenSettings,
-                                           onCancel: onCancel)
+                                           onSettingsTapped: onSettingsTapped,
+                                           onSettingsOpened: onSettingsOpened,
+                                           onCancel: onCancel,
+                                           openSettings: openSettings)
     }
 
     /// Present an alert with an action that links to device settings and cancel action.
     static func presentAlertWithLinkToOpenSettings(viewController: UIViewController,
                                                    title: String? = nil,
                                                    message: String? = nil,
-                                                   onOpenSettings: (() -> Void)? = nil,
-                                                   onCancel: (() -> Void)? = nil) {
+                                                   onSettingsTapped: (() -> Void)? = nil,
+                                                   onSettingsOpened: (() -> Void)? = nil,
+                                                   onCancel: (() -> Void)? = nil,
+                                                   openSettings: OpenSettingsAction? = nil) {
         let alert = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alert.view.tintColor = .text
 
         let openSettingsAction = UIAlertAction(title: AlertWithLinkToOpenSettings.Localization.openSettings, style: .default) { _ in
-            onOpenSettings?()
-            AlertWithLinkToOpenSettings.openSettings()
+            onSettingsTapped?()
+            let openSettings = openSettings ?? AlertWithLinkToOpenSettings.openSettings
+            openSettings { didOpenSettings in
+                guard didOpenSettings else { return }
+                onSettingsOpened?()
+            }
         }
         alert.addAction(openSettingsAction)
         alert.preferredAction = openSettingsAction
@@ -157,11 +168,12 @@ private enum AlertWithLinkToOpenSettings {
                                               comment: "Button title to cancel opening device settings in an alert")
     }
 
-    static let openSettings: () -> Void = {
+    static let openSettings: UIAlertController.OpenSettingsAction = { completion in
         guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
+            completion(false)
             return
         }
-        UIApplication.shared.open(targetURL)
+        UIApplication.shared.open(targetURL, options: [:], completionHandler: completion)
     }
 }
 

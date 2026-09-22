@@ -10,18 +10,24 @@ final class ProducBarcodeScannerCoordinator: Coordinator {
     private let permissionChecker: CaptureDevicePermissionChecker
     private let onBarcodeScanned: (_ barcode: ScannedBarcode) -> Void
     private let onPermissionsDenied: ((FailureReason) -> Void)?
-    private let onOpenSettings: ((FailureReason) -> Void)?
+    private let onSettingsTapped: ((FailureReason) -> Void)?
+    private let onSettingsOpened: (() -> Void)?
+    private let openSettings: UIAlertController.OpenSettingsAction?
 
     init(sourceNavigationController: UINavigationController,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
          onBarcodeScanned: @escaping (_ barcode: ScannedBarcode) -> Void,
          onPermissionsDenied: ((FailureReason) -> Void)? = nil,
-         onOpenSettings: ((FailureReason) -> Void)? = nil) {
+         onSettingsTapped: ((FailureReason) -> Void)? = nil,
+         onSettingsOpened: (() -> Void)? = nil,
+         openSettings: UIAlertController.OpenSettingsAction? = nil) {
         self.navigationController = sourceNavigationController
         self.permissionChecker = permissionChecker
         self.onBarcodeScanned = onBarcodeScanned
         self.onPermissionsDenied = onPermissionsDenied
-        self.onOpenSettings = onOpenSettings
+        self.onSettingsTapped = onSettingsTapped
+        self.onSettingsOpened = onSettingsOpened
+        self.openSettings = openSettings
     }
 
     func start() {
@@ -33,12 +39,14 @@ final class ProducBarcodeScannerCoordinator: Coordinator {
                 onPermissionsDenied?(failureReason)
             }
             UIAlertController.presentBarcodeScannerNoCameraPermissionAlert(viewController: navigationController,
-                                                                          onOpenSettings: { [weak self] in
+                                                                          onSettingsTapped: { [weak self] in
                 guard let failureReason else { return }
-                self?.onOpenSettings?(failureReason)
+                self?.onSettingsTapped?(failureReason)
+            }, onSettingsOpened: { [weak self] in
+                self?.onSettingsOpened?()
             }, onCancel: { [weak self] in
                 self?.navigationController.dismiss(animated: true, completion: nil)
-            })
+            }, openSettings: openSettings)
         case .notDetermined:
             permissionChecker.requestAccess(for: .video) { [weak self] granted in
                 guard let self else { return }

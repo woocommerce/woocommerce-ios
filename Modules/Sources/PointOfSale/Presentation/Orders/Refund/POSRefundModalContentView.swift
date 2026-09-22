@@ -116,7 +116,7 @@ struct POSRefundModalContentView: View {
             content
                 .environment(\.posRefundPresentationStyle, .fullScreen)
         }
-            .ignoresSafeArea(.container, edges: .bottom)
+            .ignoresSafeArea(.posLegacyContainerRegionToIgnore, edges: .bottom)
             .posModal(item: $cardPresentAlertItem, onDismiss: {
                 cardPresentAlertItem?.alertType.onDismiss?()
             }) { item in

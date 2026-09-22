@@ -100,6 +100,8 @@ final class QRLoginPostExchangeService: QRLoginPostExchangeServicing {
         switch siteResult {
         case .success(let value):
             site = value
+        case .failure(let error) where error is UnexpectedStoreResponseError:
+            return await fail(.unexpectedStoreResponse, useCase: useCase)
         case .failure:
             return await fail(.siteAuthFailure, useCase: useCase)
         }
@@ -114,6 +116,8 @@ final class QRLoginPostExchangeService: QRLoginPostExchangeServicing {
             return .success(())
         case .failure(.insufficientRole):
             return await fail(.userNotEligible, useCase: useCase)
+        case .failure(.unknown(let error)) where error is UnexpectedStoreResponseError:
+            return await fail(.unexpectedStoreResponse, useCase: useCase)
         case .failure:
             return await fail(.siteAuthFailure, useCase: useCase)
         }

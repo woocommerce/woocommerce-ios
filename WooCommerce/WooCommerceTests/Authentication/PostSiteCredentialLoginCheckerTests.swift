@@ -1,3 +1,4 @@
+import SwiftUI
 import XCTest
 @testable import Yosemite
 @testable import Networking
@@ -68,6 +69,23 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertFalse(isSuccess)
         XCTAssertTrue(navigationController.viewControllers.isEmpty)
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
+    }
+
+    func test_unexpected_store_response_uses_the_shared_store_connection_error_modal() throws {
+        // Given
+        let useCase = MockApplicationPasswordUseCase(mockGenerationError: UnexpectedStoreResponseError())
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                     stores: stores,
+                                                     previousViewController: nil)
+
+        // When
+        checker.checkEligibility(for: testURL, from: navigationController, onSuccess: {})
+        waitUntil {
+            self.navigationController.presentedViewController != nil
+        }
+
+        // Then
+        XCTAssertTrue(navigationController.presentedViewController is UIHostingController<StoreConnectionErrorModal>)
     }
 
     func test_role_error_screen_is_displayed_when_the_user_is_not_eligible() {

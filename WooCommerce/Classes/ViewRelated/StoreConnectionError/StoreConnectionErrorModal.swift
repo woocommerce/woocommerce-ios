@@ -6,8 +6,26 @@ import SwiftUI
 /// attention, so the warning is left only through one of its two buttons.
 ///
 struct StoreConnectionErrorModal: View {
+    let title: String
+    let contactSupportTitle: String
+    let dismissTitle: String
+    let message: String
     let onContactSupport: () -> Void
     let onDismiss: () -> Void
+
+    init(title: String = Localization.title,
+         message: String = Localization.body,
+         contactSupportTitle: String = Localization.contactSupport,
+         dismissTitle: String = Localization.dismiss,
+         onContactSupport: @escaping () -> Void,
+         onDismiss: @escaping () -> Void) {
+        self.title = title
+        self.message = message
+        self.onContactSupport = onContactSupport
+        self.onDismiss = onDismiss
+        self.contactSupportTitle = contactSupportTitle
+        self.dismissTitle = dismissTitle
+    }
 
     var body: some View {
         ZStack {
@@ -33,22 +51,22 @@ struct StoreConnectionErrorModal: View {
 
     private var content: some View {
         VStack(alignment: .leading, spacing: Layout.spacing) {
-            Text(Localization.title)
+            Text(title)
                 .font(.title3)
                 .bold()
                 .foregroundStyle(Color(.text))
                 .fixedSize(horizontal: false, vertical: true)
 
-            Text(Localization.body)
+            Text(message)
                 .font(.body)
                 .foregroundStyle(Color(.text))
                 .fixedSize(horizontal: false, vertical: true)
 
             VStack(spacing: Layout.buttonSpacing) {
-                Button(Localization.contactSupport, action: onContactSupport)
+                Button(contactSupportTitle, action: onContactSupport)
                     .buttonStyle(PrimaryButtonStyle())
 
-                Button(Localization.dismiss, action: onDismiss)
+                Button(dismissTitle, action: onDismiss)
                     .buttonStyle(SecondaryButtonStyle())
             }
             .padding(.top, Layout.buttonsTopPadding)

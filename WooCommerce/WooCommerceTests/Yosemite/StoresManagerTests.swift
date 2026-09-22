@@ -29,6 +29,7 @@ final class StoresManagerTests: XCTestCase {
         cancellable?.cancel()
         pushNotificationDefaults.removePersistentDomain(forName: pushNotificationDefaultsSuiteName)
         pushNotificationDefaults = nil
+        ServiceLocator.storageManager.reset()
         super.tearDown()
     }
 
@@ -1079,14 +1080,10 @@ private extension StoresManagerTests {
                                               plugin: "woocommerce/woocommerce.php",
                                               version: version,
                                               active: true)
-        let storageManager = ServiceLocator.storageManager
         waitFor { promise in
-            storageManager.performAndSave({ storage in
+            ServiceLocator.storageManager.performAndSave({ storage in
                 storage.insertNewObject(ofType: StorageSystemPlugin.self).update(with: plugin)
             }, completion: { promise(()) }, on: .main)
-        }
-        addTeardownBlock {
-            storageManager.reset()
         }
     }
 

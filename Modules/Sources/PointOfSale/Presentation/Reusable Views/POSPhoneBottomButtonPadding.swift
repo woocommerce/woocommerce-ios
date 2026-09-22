@@ -2,10 +2,10 @@ import SwiftUI
 
 extension View {
     /// Standard bottom-action padding for phone POS full-screen flows.
-    func posPhoneBottomButtonPadding() -> some View {
+    func posPhoneBottomButtonPadding(bottom: CGFloat = POSPhoneBottomButtonPadding.bottom) -> some View {
         padding(.horizontal, POSPhoneBottomButtonPadding.horizontal)
             .padding(.top, POSPhoneBottomButtonPadding.top)
-            .padding(.bottom, POSPhoneBottomButtonPadding.bottom)
+            .padding(.bottom, bottom)
     }
 }
 

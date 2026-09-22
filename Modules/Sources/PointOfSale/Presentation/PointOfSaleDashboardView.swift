@@ -449,7 +449,7 @@ struct PointOfSaleDashboardView: View {
                 .animation(.snappy(duration: 0.25), value: phoneCartItemsCount)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .posPhoneBottomButtonPadding()
+        .posPhoneBottomButtonPadding(bottom: phoneCartButtonBottomPadding)
         // Quick pulse to confirm an item was added — only on count increases, so removing items
         // doesn't bounce the button distractingly.
         .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)
@@ -465,6 +465,14 @@ struct PointOfSaleDashboardView: View {
             }
         }
         .accessibilityIdentifier("pos-compact-cart-button")
+    }
+
+    private var phoneCartButtonBottomPadding: CGFloat {
+        // The iOS 27 safe area already clears the bottom system region.
+        if #available(iOS 27, *) {
+            return POSPadding.medium
+        }
+        return POSPadding.xxLarge
     }
 
     private var phoneCartSheetView: some View {

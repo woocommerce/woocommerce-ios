@@ -43,6 +43,7 @@ struct POSRefundNavigationHeader: View {
         HStack(alignment: .top, spacing: POSSpacing.medium) {
             if let backAction {
                 POSPageHeaderBackButton(configuration: .init(state: .enabled, action: backAction))
+                    .frame(width: Constants.backButtonWidth)
                     .accessibilityLabel(backAccessibilityLabel)
             }
 
@@ -57,8 +58,16 @@ struct POSRefundNavigationHeader: View {
             Spacer(minLength: POSSpacing.none)
         }
         .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
+        .padding(.leading, backAction == nil ? POSPadding.xLarge : POSPadding.large)
+        .padding(.trailing, POSPadding.xLarge)
+        .padding(.vertical, POSPadding.xLarge)
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    private enum Constants {
+        // The item checkboxes start 32 points in and are 32 points wide.
+        // A 48-point button slot starting 24 points in shares their center line.
+        static let backButtonWidth: CGFloat = 48
     }
 }
 

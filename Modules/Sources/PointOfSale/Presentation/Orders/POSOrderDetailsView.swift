@@ -76,7 +76,6 @@ struct POSOrderDetailsView: View {
                     headerBottomContent(for: order)
                 }
             )
-            .posHeaderBackButtonPadding(POSPadding.none)
             .fixedSize(horizontal: false, vertical: true)
             .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 

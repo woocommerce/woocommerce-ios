@@ -39,14 +39,7 @@ public final class ReceiptRemote: Remote {
     ///    - orderID: ID of the order that the receipt is associated to.
     ///
     public func sendReceipt(siteID: Int64, orderID: Int64) async throws {
-        let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.actionsPath)/send_order_details"
-        let request = JetpackRequest(wooApiVersion: .mark3,
-                                     method: .post,
-                                     siteID: siteID,
-                                     path: path,
-                                     parameters: [:],
-                                     availableAsRESTRequest: true)
-        try await enqueue(request)
+        try await enqueue(sendReceiptRequest(siteID: siteID, orderID: orderID))
     }
 
     /// Sends the order receipt to the customer attached to the order, calling back on the main queue.
@@ -57,14 +50,7 @@ public final class ReceiptRemote: Remote {
     ///    - completion: Called with `.success` once the request is accepted, or with the request error.
     ///
     public func sendReceipt(siteID: Int64, orderID: Int64, completion: @escaping (Result<Void, Error>) -> Void) {
-        let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.actionsPath)/send_order_details"
-        let request = JetpackRequest(wooApiVersion: .mark3,
-                                     method: .post,
-                                     siteID: siteID,
-                                     path: path,
-                                     parameters: [:],
-                                     availableAsRESTRequest: true)
-        enqueue(request, mapper: IgnoringResponseMapper(), completion: completion)
+        enqueue(sendReceiptRequest(siteID: siteID, orderID: orderID), mapper: IgnoringResponseMapper(), completion: completion)
     }
 
     /// Sends the Point of Sale receipt to the customer attached to the order.
@@ -93,6 +79,16 @@ public final class ReceiptRemote: Remote {
 extension ReceiptRemote: POSReceiptsRemoteProtocol {}
 
 private extension ReceiptRemote {
+    func sendReceiptRequest(siteID: Int64, orderID: Int64) -> JetpackRequest {
+        let path = "\(Constants.ordersPath)/\(orderID)/\(Constants.actionsPath)/send_order_details"
+        return JetpackRequest(wooApiVersion: .mark3,
+                              method: .post,
+                              siteID: siteID,
+                              path: path,
+                              parameters: [:],
+                              availableAsRESTRequest: true)
+    }
+
     enum ParameterKeys {
         static let expirationDays: String = "expiration_days"
         static let forceRegenerate: String = "force_new"

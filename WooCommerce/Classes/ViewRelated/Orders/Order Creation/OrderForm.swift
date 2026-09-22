@@ -702,7 +702,11 @@ private struct ProductsSection: View {
                     message: Text(OrderForm.Localization.permissionsMessage),
                      buttons: [
                         .default(Text(OrderForm.Localization.permissionsOpenSettings), action: {
-                            viewModel.trackBarcodeScanningPermissionSettingsOpened()
+                            if case let .notPermitted(authorizationStatus) = viewModel.capturePermissionStatus,
+                               let reason = WooAnalyticsEvent.BarcodeScanning.BarcodeScanningFailureReason(
+                                authorizationStatus: authorizationStatus) {
+                                viewModel.trackBarcodeScanningPermissionSettingsTapped(reason: reason)
+                            }
                             openSettingsAction()
                          }),
                         .cancel()

@@ -3269,6 +3269,9 @@ extension WooAnalyticsEvent {
 
         enum BarcodeScanningFailureReason: String {
             case cameraAccessNotPermitted = "camera_access_not_permitted"
+            case cameraAccessRestricted = "camera_access_restricted"
+            case cameraAccessDeniedAtPrompt = "camera_access_denied_at_prompt"
+
             init?(authorizationStatus: AVAuthorizationStatus) {
                 switch authorizationStatus {
                 case .denied:
@@ -3290,8 +3293,11 @@ extension WooAnalyticsEvent {
                                                                               Keys.reason: reason.rawValue])
         }
 
-        static func barcodeScanningPermissionSettingsOpened(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .barcodeScanningPermissionSettingsOpened, properties: [Keys.source: source.rawValue])
+        static func barcodeScanningPermissionSettingsTapped(from source: BarcodeScanning.Source,
+                                                             reason: BarcodeScanningFailureReason) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .barcodeScanningPermissionSettingsTapped,
+                              properties: [Keys.source: source.rawValue,
+                                           Keys.reason: reason.rawValue])
         }
 
         static func productSearchViaSKUSuccess(from source: String, stockManaged: Bool? = nil) -> WooAnalyticsEvent {

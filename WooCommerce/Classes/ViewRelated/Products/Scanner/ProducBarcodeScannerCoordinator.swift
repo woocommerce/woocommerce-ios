@@ -10,13 +10,13 @@ final class ProducBarcodeScannerCoordinator: Coordinator {
     private let permissionChecker: CaptureDevicePermissionChecker
     private let onBarcodeScanned: (_ barcode: ScannedBarcode) -> Void
     private let onPermissionsDenied: ((FailureReason) -> Void)?
-    private let onOpenSettings: (() -> Void)?
+    private let onOpenSettings: ((FailureReason) -> Void)?
 
     init(sourceNavigationController: UINavigationController,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
          onBarcodeScanned: @escaping (_ barcode: ScannedBarcode) -> Void,
          onPermissionsDenied: ((FailureReason) -> Void)? = nil,
-         onOpenSettings: (() -> Void)? = nil) {
+         onOpenSettings: ((FailureReason) -> Void)? = nil) {
         self.navigationController = sourceNavigationController
         self.permissionChecker = permissionChecker
         self.onBarcodeScanned = onBarcodeScanned
@@ -28,12 +28,14 @@ final class ProducBarcodeScannerCoordinator: Coordinator {
         let cameraAuthorizationStatus = permissionChecker.authorizationStatus(for: .video)
         switch cameraAuthorizationStatus {
         case .denied, .restricted:
-            if let reason = FailureReason(authorizationStatus: cameraAuthorizationStatus) {
-                onPermissionsDenied?(reason)
+            let failureReason = FailureReason(authorizationStatus: cameraAuthorizationStatus)
+            if let failureReason {
+                onPermissionsDenied?(failureReason)
             }
             UIAlertController.presentBarcodeScannerNoCameraPermissionAlert(viewController: navigationController,
                                                                           onOpenSettings: { [weak self] in
-                self?.onOpenSettings?()
+                guard let failureReason else { return }
+                self?.onOpenSettings?(failureReason)
             }, onCancel: { [weak self] in
                 self?.navigationController.dismiss(animated: true, completion: nil)
             })

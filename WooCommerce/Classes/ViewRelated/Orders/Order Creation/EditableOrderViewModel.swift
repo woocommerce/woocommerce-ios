@@ -2442,8 +2442,9 @@ extension EditableOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderCreation, reason: reason))
     }
 
-    func trackBarcodeScanningPermissionSettingsOpened() {
-        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningPermissionSettingsOpened(from: .orderCreation))
+    func trackBarcodeScanningPermissionSettingsTapped(reason: WooAnalyticsEvent.BarcodeScanning.BarcodeScanningFailureReason) {
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningPermissionSettingsTapped(from: .orderCreation,
+                                                                                                          reason: reason))
     }
 
     /// Attempts to map SKU to Product

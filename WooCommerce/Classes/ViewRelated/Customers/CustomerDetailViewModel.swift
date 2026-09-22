@@ -4,6 +4,7 @@ import Yosemite
 import WooFoundation
 import protocol Storage.StorageManagerType
 
+@MainActor
 final class CustomerDetailViewModel: ObservableObject {
     private let stores: StoresManager
     private let storageManager: StorageManagerType

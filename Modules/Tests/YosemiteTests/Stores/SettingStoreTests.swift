@@ -752,6 +752,66 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    func test_retrieveAnalyticsSetting_returns_settingNotExposed_when_tunnel_reports_invalid_setting() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let tunnelError = DotcomError.unknown(code: "rest_setting_setting_invalid", message: "Invalid setting.", data: nil)
+        network.simulateError(requestUrlSuffix: "settings/advanced/woocommerce_analytics_enabled", error: tunnelError)
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        guard case let .failure(error) = result, case .settingNotExposed? = error as? SettingError else {
+            return XCTFail("Expected SettingError.settingNotExposed, got \(result)")
+        }
+    }
+
+    func test_retrieveAnalyticsSetting_returns_settingNotExposed_when_direct_rest_reports_invalid_setting() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let body = Data("{\"code\":\"rest_setting_setting_invalid\",\"message\":\"Invalid setting.\",\"data\":{\"status\":404}}".utf8)
+        network.simulateError(requestUrlSuffix: "settings/advanced/woocommerce_analytics_enabled", error: NetworkError.notFound(response: body))
+
+        // When
+        let result: Result<Bool, Error> = waitFor { promise in
+            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        guard case let .failure(error) = result, case .settingNotExposed? = error as? SettingError else {
+            return XCTFail("Expected SettingError.settingNotExposed, got \(result)")
+        }
+    }
+
+    func test_enableAnalyticsSetting_returns_settingNotExposed_when_setting_is_invalid() {
+        // Given
+        let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+        let tunnelError = DotcomError.unknown(code: "rest_setting_setting_invalid", message: "Invalid setting.", data: nil)
+        network.simulateError(requestUrlSuffix: "settings/advanced/woocommerce_analytics_enabled", error: tunnelError)
+
+        // When
+        let result: Result<Void, Error> = waitFor { promise in
+            let action = SettingAction.enableAnalyticsSetting(siteID: self.sampleSiteID) { result in
+                promise(result)
+            }
+            store.onAction(action)
+        }
+
+        // Then
+        guard case let .failure(error) = result, case .settingNotExposed? = error as? SettingError else {
+            return XCTFail("Expected SettingError.settingNotExposed, got \(result)")
+        }
+    }
+
     func test_enableAnalyticsSetting_updates_stored_settings() {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_analytics_enabled", value: "no", settingGroupKey: "advanced")

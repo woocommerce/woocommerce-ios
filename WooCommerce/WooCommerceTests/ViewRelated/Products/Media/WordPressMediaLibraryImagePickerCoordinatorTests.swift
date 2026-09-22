@@ -23,6 +23,7 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_start_presents_WordPressMediaLibraryImagePickerViewController() {
         // Given
         let coordinator = makeCoordinator { _ in }
@@ -37,6 +38,7 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
         assertThat(sourceViewController.presentedViewController, isAnInstanceOf: WordPressMediaLibraryPickerViewController.self)
     }
 
+    @MainActor
     func test_mediaPicker_is_dismissed_after_didFinishPicking() throws {
         // Given
         let coordinator = makeCoordinator { _ in }
@@ -55,6 +57,7 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_mediaPicker_is_dismissed_after_mediaPickerControllerDidCancel() throws {
         // Given
         let coordinator = makeCoordinator { _ in }
@@ -96,6 +99,7 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
 
     // MARK: - `onCompletion`
 
+    @MainActor
     func test_media_items_are_returned_after_didFinishPicking() throws {
         let expectedMediaItems: [Media] = [.fake().copy(mediaID: 6), .fake().copy(mediaID: 12)]
         let mediaItems: [Media] = try waitFor { promise in
@@ -121,6 +125,7 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
         XCTAssertEqual(mediaItems, expectedMediaItems)
     }
 
+    @MainActor
     func test_empty_media_items_are_returned_after_mediaPickerControllerDidCancel() throws {
         let mediaItems: [Media] = try waitFor { promise in
             // Given
@@ -174,6 +179,7 @@ final class WordPressMediaLibraryImagePickerCoordinatorTests: XCTestCase {
 }
 
 private extension WordPressMediaLibraryImagePickerCoordinatorTests {
+    @MainActor
     func makeCoordinator(onCompletion: @escaping Completion) -> WordPressMediaLibraryPickerCoordinator {
         .init(siteID: 304, imagesOnly: true, allowsMultipleSelections: false, onCompletion: onCompletion)
     }

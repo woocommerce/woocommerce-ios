@@ -8,6 +8,7 @@ import protocol WooFoundation.ConnectivityObserver
 
 /// Helper that provides general device & site zendesk metadata.
 ///
+@MainActor
 class SupportFormMetadataProvider {
 
     /// Dependencies

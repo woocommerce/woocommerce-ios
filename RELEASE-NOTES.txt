@@ -4,6 +4,7 @@
 25.8
 -----
 - [*] On iPhone, fixed large titles returning late or staying compact in Orders and Products on iOS 26. [https://github.com/woocommerce/woocommerce-ios/pull/17925]
+- [*] Troubleshoot Connection and support chat diagnostics no longer report a false analytics failure on WordPress.com Commerce plan stores. [https://github.com/woocommerce/woocommerce-ios/pull/17895]
 
 
 25.7

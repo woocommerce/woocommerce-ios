@@ -79,6 +79,29 @@ struct ConnectivityToolViewModelTests {
         #expect(actions.contains(where: { $0.title == "View technical details" }))
     }
 
+    @Test func test_testAnalyticsSetting_when_setting_is_not_exposed_then_skips_the_test() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.failure(SettingError.settingNotExposed))
+            default:
+                break
+            }
+        }
+        let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
+
+        // When
+        let result = await sut.testAnalyticsSetting()
+
+        // Then
+        guard case .skipped = result else {
+            Issue.record("Expected .skipped state but got \(result)")
+            return
+        }
+    }
+
     // MARK: - enableAnalytics
 
     @Test func test_enableAnalytics_when_succeeds_then_updates_card_to_relaunch_message() async {
@@ -183,6 +206,20 @@ struct ConnectivityToolViewModelTests {
         #expect(properties?["test"] as? String == "analytics")
         #expect(properties?["success"] as? Bool == true)
         #expect(properties?["time_taken"] as? Double == 0.5)
+        #expect(properties?["skipped"] as? Bool == false)
+    }
+
+    @Test func test_requestResponse_event_when_test_is_skipped_then_carries_skipped_property() {
+        // Given
+        let event = WooAnalyticsEvent.ConnectivityTool.requestResponse(test: .analytics, success: true, timeTaken: 0.5, skipped: true)
+
+        // When
+        let properties = event.properties
+
+        // Then
+        #expect(properties["test"] as? String == "analytics")
+        #expect(properties["success"] as? Bool == true)
+        #expect(properties["skipped"] as? Bool == true)
     }
 
     // MARK: - testNotifications

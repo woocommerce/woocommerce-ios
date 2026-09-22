@@ -155,6 +155,31 @@ struct SupportDiagnosticsServiceTests {
         #expect(results[0].errorMessage?.contains("not enabled") == true)
     }
 
+    @Test func test_testAnalyticsSetting_when_setting_is_not_exposed_then_returns_not_applicable_success() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.failure(SettingError.settingNotExposed))
+            default:
+                break
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        let results = await sut.runTests([Test.analyticsSetting])
+
+        // Then
+        #expect(results.count == 1)
+        #expect(results[0].isSuccess == true)
+        #expect(results[0].test == Test.analyticsSetting)
+        #expect(results[0].errorMessage == nil)
+        #expect(results[0].technicalDetails?.hasPrefix("Not applicable") == true)
+        #expect(results[0].troubleshootingDescription().contains("Not applicable") == true)
+    }
+
     @Test func test_testAnalyticsSetting_when_request_fails_then_returns_failure_with_technical_details() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))

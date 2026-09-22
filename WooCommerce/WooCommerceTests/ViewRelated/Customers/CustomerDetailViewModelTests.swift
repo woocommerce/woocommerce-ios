@@ -8,6 +8,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
 
     private let dateFormatter = DateFormatter.mediumLengthLocalizedDateFormatter
 
+    @MainActor
     func test_it_inits_with_expected_values_from_customer() throws {
         // Given
         let customer = sampleCustomer()
@@ -30,6 +31,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showLocation)
     }
 
+    @MainActor
     func test_it_inits_with_expected_values_from_empty_customer() {
         // Given
         let customer = WCAnalyticsCustomer.fake().copy(name: " ",
@@ -63,6 +65,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showLocation)
     }
 
+    @MainActor
     func test_it_updates_billing_and_shipping_and_phone_from_remote() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -95,6 +98,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
         assertEqual(billing.phone, viewModel.phone)
     }
 
+    @MainActor
     func test_it_updates_isSyncing_during_and_after_sync() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -122,6 +126,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
         XCTAssertFalse(vm.isSyncing)
     }
 
+    @MainActor
     func test_isSyncing_not_true_if_data_already_loaded() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -151,6 +156,7 @@ final class CustomerDetailViewModelTests: XCTestCase {
         XCTAssertFalse(vm.isSyncing)
     }
 
+    @MainActor
     func test_it_fetches_billing_and_shipping_from_storage() {
         // Given
         let billing = sampleAddress()

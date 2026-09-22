@@ -5,6 +5,7 @@ import Foundation
 import PointOfSale
 import Yosemite
 
+@MainActor
 final class CardPresentPaymentServiceUITestMock: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never>
     let readerConnectionStatusPublisher: AnyPublisher<CardPresentPaymentReaderConnectionStatus, Never>

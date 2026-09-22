@@ -55,7 +55,7 @@ public final class SitePluginStore: Store {
 // MARK: - Network request
 //
 private extension SitePluginStore {
-    func synchronizeSitePlugins(siteID: Int64, completionHandler: @escaping (Result<Void, Error>) -> Void) {
+    func synchronizeSitePlugins(siteID: Int64, completionHandler: @escaping @Sendable (Result<Void, Error>) -> Void) {
         remote.loadPlugins(for: siteID) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -95,7 +95,7 @@ private extension SitePluginStore {
         }
     }
 
-    func getPluginDetails(siteID: Int64, pluginName: String, onCompletion: @escaping (Result<SitePlugin, Error>) -> Void) {
+    func getPluginDetails(siteID: Int64, pluginName: String, onCompletion: @escaping @Sendable (Result<SitePlugin, Error>) -> Void) {
         remote.getPluginDetails(for: siteID, pluginName: pluginName) { [weak self] result in
             guard let self else { return }
             switch result {

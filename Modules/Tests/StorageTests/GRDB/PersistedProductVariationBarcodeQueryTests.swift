@@ -2,18 +2,22 @@ import Foundation
 import Testing
 @testable import Storage
 
+private let testSiteID: Int64 = 123
+
 @Suite("PersistedProductVariation Barcode Query Tests")
 struct PersistedProductVariationBarcodeQueryTests {
-    private let siteID: Int64 = 123
-    private var grdbManager: GRDBManager!
+    private let siteID: Int64 = testSiteID
+    private let grdbManager: GRDBManager
 
     init() async throws {
-        grdbManager = try GRDBManager()
+        let grdbManager = try GRDBManager()
 
         // Initialize site
         try await grdbManager.databaseConnection.write { db in
-            try PersistedSite(id: siteID).insert(db)
+            try PersistedSite(id: testSiteID).insert(db)
         }
+
+        self.grdbManager = grdbManager
     }
 
     // MARK: - Global Unique ID Query Tests

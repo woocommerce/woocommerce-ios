@@ -3,6 +3,7 @@
 
 25.8
 -----
+- [*] Troubleshoot Connection and support chat diagnostics no longer report a false analytics failure on WordPress.com Commerce plan stores. [https://github.com/woocommerce/woocommerce-ios/pull/17895]
 
 
 25.7

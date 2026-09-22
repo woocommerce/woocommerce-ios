@@ -17,6 +17,11 @@ tags:
     visible: "Payments"
     timeout: 20000
 - assertVisible: "Payments"
+- extendedWaitUntil:
+    visible: "Pay In Person"
+    timeout: 20000
+- assertVisible: "Pay In Person"
+- takeScreenshot: hub_payments_top
 - scroll
 - scroll
 - runFlow:
@@ -34,6 +39,20 @@ tags:
       - evalScript: ${console.log('FEATURE_EXERCISED hub.payments.card-readers')}
       - assertVisible: "Order Card Reader"
       - assertVisible: "Manage Card Reader"
+      - assertVisible: ".*Learn more about In.Person Payments.*"
+      - tapOn: "Order Card Reader"
+      - extendedWaitUntil:
+          notVisible: "Manage Card Reader"
+          timeout: 20000
+      - takeScreenshot: hub_payments_order_reader
+      # The purchase page is a pushed web view, and a swipe back lands on the
+      # page itself while it is still loading.
+      - tapOn:
+          id: "BackButton"
+      - extendedWaitUntil:
+          visible:
+            id: "card-reader-manuals"
+          timeout: 20000
       - tapOn:
           id: "card-reader-manuals"
       - extendedWaitUntil:
@@ -42,11 +61,14 @@ tags:
       - assertVisible: "BBPOS Chipper 2X BT"
       - assertVisible: "Stripe Reader M2"
       - takeScreenshot: hub_payments_manuals
-      - back
+      - tapOn:
+          id: "BackButton"
       - extendedWaitUntil:
-          visible: "Payments"
-          timeout: 10000
-- tapOn: "Back"
+          visible:
+            id: "card-reader-manuals"
+          timeout: 15000
+- tapOn:
+    id: "BackButton"
 - extendedWaitUntil:
     visible:
       id: "menu-payments"

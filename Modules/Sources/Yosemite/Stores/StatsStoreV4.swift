@@ -590,7 +590,7 @@ public extension StatsStoreV4 {
 
     /// Converts a Date into the appropriately formatted string based on the `timeRange`
     ///
-    static func buildDateString(from date: Date, timeRange: StatsTimeRangeV4) -> String {
+    nonisolated static func buildDateString(from date: Date, timeRange: StatsTimeRangeV4) -> String {
         switch timeRange {
         case .today:
             return DateFormatter.Stats.statsDayFormatter.string(from: date)

@@ -2,6 +2,7 @@ import Foundation
 import Storage
 import CoreData
 
+@MainActor
 protocol MockActionHandler {
     associatedtype ActionType
 

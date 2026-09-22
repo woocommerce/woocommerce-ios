@@ -6,6 +6,7 @@ import WooFoundation
 //         Every store is subscribed to the global action dispatcher (although it can be initialized with a custom dispatcher), and should
 //         respond to relevant Actions by implementing onAction(_:), and change its internal state according to those actions.
 //
+@MainActor
 public class DeauthenticatedStore: ActionsProcessor {
 
     /// The dispatcher used to subscribe to Actions.

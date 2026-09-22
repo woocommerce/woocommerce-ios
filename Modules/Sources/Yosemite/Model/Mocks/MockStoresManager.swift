@@ -2,6 +2,7 @@ import Combine
 import Storage
 import enum NetworkingCore.RequestAuthenticationMode
 
+@MainActor
 public class MockStoresManager: StoresManager {
 
     /// An object graph containing all the mocked data

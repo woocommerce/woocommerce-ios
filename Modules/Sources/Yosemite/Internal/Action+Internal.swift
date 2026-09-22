@@ -33,7 +33,7 @@ extension ActionsProcessor {
 
     /// Returns the TypeIdentifier associated with the Receiver's Type.
     ///
-    var identifier: TypeIdentifier {
+    nonisolated var identifier: TypeIdentifier {
         return ObjectIdentifier(self)
     }
 }

@@ -734,7 +734,7 @@ struct PointOfSaleOrderControllerTests {
         #expect(totals.couponsTotals.map(\.hasDiscount) == [true, false])
     }
 
-    @Test func syncOrder_marks_cart_items_with_discounted_order_lines_in_totals() async throws {
+    @Test @MainActor func syncOrder_marks_cart_items_with_discounted_order_lines_in_totals() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
@@ -757,7 +757,7 @@ struct PointOfSaleOrderControllerTests {
         #expect(totals.discountedCartItemIDs == [discountedCartItem.id])
     }
 
-    @Test func syncOrder_marks_all_cart_rows_of_a_discounted_grouped_order_line() async throws {
+    @Test @MainActor func syncOrder_marks_all_cart_rows_of_a_discounted_grouped_order_line() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,
@@ -779,7 +779,7 @@ struct PointOfSaleOrderControllerTests {
         #expect(totals.discountedCartItemIDs == [firstCartRow.id, secondCartRow.id])
     }
 
-    @Test func syncOrder_does_not_mark_cart_items_for_rounding_deltas_or_unparseable_totals() async throws {
+    @Test @MainActor func syncOrder_does_not_mark_cart_items_for_rounding_deltas_or_unparseable_totals() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,
                                              receiptSender: mockReceiptSender,

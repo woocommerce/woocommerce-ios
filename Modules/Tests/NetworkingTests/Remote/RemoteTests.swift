@@ -46,6 +46,22 @@ final class RemoteTests: XCTestCase {
         XCTAssertEqual(response, Data([1]))
     }
 
+    func test_enqueue_without_mapper_when_given_main_actor_isolation_then_forwards_it_to_network() async throws {
+        // Given
+        let remote = Remote(network: IsolationCapturingNetwork(expectedMainActorIsolation: true))
+
+        // When / Then
+        try await remote.enqueue(request, isolation: #isolation)
+    }
+
+    func test_enqueue_without_mapper_when_using_legacy_overload_then_keeps_nonisolated_network_call() async throws {
+        // Given
+        let remote = Remote(network: IsolationCapturingNetwork(expectedMainActorIsolation: false))
+
+        // When / Then
+        try await remote.enqueue(request)
+    }
+
     /// Verifies that `enqueue:mapper:` properly wraps up the received request within an AuthenticatedRequest, with
     /// the remote credentials.
     ///
@@ -1701,6 +1717,8 @@ private final class SuccessfulNetwork: Network {
 
 /// Returns whether the call carried MainActor isolation in its response body.
 private struct IsolationCapturingNetwork: Network {
+    var expectedMainActorIsolation: Bool?
+
     var session: URLSession { URLSession(configuration: .default) }
 
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) { }
@@ -1709,7 +1727,10 @@ private struct IsolationCapturingNetwork: Network {
 
     func responseDataAndHeaders(for request: URLRequestConvertible,
                                 isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
-        (Data([isolation === MainActor.shared ? 1 : 0]), nil)
+        if let expectedMainActorIsolation {
+            XCTAssertEqual(isolation === MainActor.shared, expectedMainActorIsolation)
+        }
+        return (Data([isolation === MainActor.shared ? 1 : 0]), nil)
     }
 
     func responseDataPublisher(for request: URLRequestConvertible) -> AnyPublisher<Swift.Result<Data, Error>, Never> {

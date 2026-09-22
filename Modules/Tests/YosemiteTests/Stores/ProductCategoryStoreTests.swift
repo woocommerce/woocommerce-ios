@@ -385,6 +385,8 @@ final class ProductCategoryStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             let action = ProductCategoryAction.updateProductCategory(category) { aResult in
+                XCTAssertTrue(Thread.isMainThread)
+                XCTAssertEqual(self.viewStorage.loadProductCategory(siteID: self.sampleSiteID, categoryID: categoryID)?.name, "Dress")
                 promise(aResult)
             }
             self.store.onAction(action)
@@ -410,6 +412,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             let action = ProductCategoryAction.updateProductCategory(category) { aResult in
+                XCTAssertTrue(Thread.isMainThread)
                 promise(aResult)
             }
             self.store.onAction(action)
@@ -424,11 +427,23 @@ final class ProductCategoryStoreTests: XCTestCase {
     func test_deleteProductCategory_does_not_throw_error_upon_success() {
         // Given
         let categoryID: Int64 = 104
+        let category = sampleCategory(categoryID: categoryID)
+        waitForExpectation { expectation in
+            storageManager.performAndSave({ storage in
+                let storedCategory = storage.insertNewObject(ofType: Storage.ProductCategory.self)
+                storedCategory.update(with: category)
+            }, completion: {
+                expectation.fulfill()
+            }, on: .main)
+        }
+        XCTAssertEqual(storedProductCategoriesCount, 1)
         network.simulateResponse(requestUrlSuffix: "products/categories/\(categoryID)", filename: "generic_success_data")
 
         // When
         let result = waitFor { promise in
             let action = ProductCategoryAction.deleteProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { aResult in
+                XCTAssertTrue(Thread.isMainThread)
+                XCTAssertEqual(self.storedProductCategoriesCount, 0)
                 promise(aResult)
             }
             self.store.onAction(action)
@@ -446,6 +461,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             let action = ProductCategoryAction.deleteProductCategory(siteID: self.sampleSiteID, categoryID: categoryID) { aResult in
+                XCTAssertTrue(Thread.isMainThread)
                 promise(aResult)
             }
             self.store.onAction(action)

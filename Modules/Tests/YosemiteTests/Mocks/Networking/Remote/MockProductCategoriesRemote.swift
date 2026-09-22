@@ -29,11 +29,12 @@ extension MockProductCategoriesRemote: ProductCategoriesRemoteProtocol {
         // no-op
     }
 
-    func updateProductCategory(_ category: Networking.ProductCategory) async throws -> Networking.ProductCategory {
+    func updateProductCategory(_ category: Networking.ProductCategory,
+                               isolation: isolated (any Actor)?) async throws -> Networking.ProductCategory {
         .fake()
     }
 
-    func deleteProductCategory(for siteID: Int64, categoryID: Int64) async throws {
+    func deleteProductCategory(for siteID: Int64, categoryID: Int64, isolation: isolated (any Actor)?) async throws {
         // no-op
     }
 

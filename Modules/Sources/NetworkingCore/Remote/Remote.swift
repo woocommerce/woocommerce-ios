@@ -44,9 +44,14 @@ open class Remote: NSObject {
     /// - Parameter request: Request that should be performed.
     ///
     public func enqueue(_ request: Request) async throws {
+        try await enqueue(request, isolation: nil)
+    }
+
+    /// Enqueues a request without transferring the remote out of the caller's isolation.
+    public func enqueue(_ request: Request, isolation: isolated (any Actor)?) async throws {
         let data: Data
         do {
-            data = try await network.responseData(for: request)
+            data = try await network.responseData(for: request, isolation: isolation)
         } catch {
             throw mapNetworkError(error: error, for: request)
         }

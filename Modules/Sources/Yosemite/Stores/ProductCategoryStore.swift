@@ -44,9 +44,20 @@ public final class ProductCategoryStore: Store {
         case .synchronizeProductCategory(siteID: let siteID, categoryID: let CategoryID, onCompletion: let onCompletion):
             synchronizeProductCategory(siteID: siteID, categoryID: CategoryID, onCompletion: onCompletion)
         case let .updateProductCategory(category, onCompletion):
-            updateProductCategory(category, onCompletion: onCompletion)
+            // The legacy dispatcher promises main-thread delivery but has no actor annotation.
+            // This reference is used synchronously under the runtime check, not transferred to another executor.
+            nonisolated(unsafe) let store = self
+            let onCompletion = mainActorCallback(onCompletion)
+            MainActor.assumeIsolated {
+                store.updateProductCategory(category, onCompletion: onCompletion)
+            }
         case let .deleteProductCategory(siteID, categoryID, onCompletion):
-            deleteProductCategory(siteID: siteID, categoryID: categoryID, onCompletion: onCompletion)
+            // Same checked legacy boundary as updateProductCategory above.
+            nonisolated(unsafe) let store = self
+            let onCompletion = mainActorCallback(onCompletion)
+            MainActor.assumeIsolated {
+                store.deleteProductCategory(siteID: siteID, categoryID: categoryID, onCompletion: onCompletion)
+            }
         }
     }
 }
@@ -169,10 +180,11 @@ private extension ProductCategoryStore {
 
     /// Updates an existing product category.
     ///
+    @MainActor
     func updateProductCategory(_ category: ProductCategory, onCompletion: @escaping (Result<ProductCategory, Error>) -> Void) {
-        Task { @MainActor in
+        Task {
             do {
-                let updatedCategory = try await remote.updateProductCategory(category)
+                let updatedCategory = try await remote.updateProductCategory(category, isolation: #isolation)
                 upsertStoredProductCategoriesInBackground([updatedCategory], siteID: updatedCategory.siteID) {
                     onCompletion(.success(updatedCategory))
                 }
@@ -184,10 +196,11 @@ private extension ProductCategoryStore {
 
     /// Deletes an existing product category.
     ///
+    @MainActor
     func deleteProductCategory(siteID: Int64, categoryID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        Task { @MainActor in
+        Task {
             do {
-                try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)
+                try await remote.deleteProductCategory(for: siteID, categoryID: categoryID, isolation: #isolation)
                 deleteUnusedStoredProductCategories(siteID: siteID) {
                     onCompletion(.success(()))
                 }
@@ -208,12 +221,11 @@ private extension ProductCategoryStore {
                                                    siteID: Int64,
                                                    shouldDeleteUnusedCategories: Bool = false,
                                                    onCompletion: @escaping () -> Void) {
-        storageManager.performAndSave({ [weak self] storage in
-            guard let self else { return }
+        storageManager.performAndSave({ storage in
             if shouldDeleteUnusedCategories {
                 storage.deleteUnusedProductCategories(siteID: siteID)
             }
-            upsertStoredProductCategories(readOnlyProductCategories, in: storage, siteID: siteID)
+            Self.upsertStoredProductCategories(readOnlyProductCategories, in: storage, siteID: siteID)
         }, completion: onCompletion, on: .main)
     }
 }
@@ -226,9 +238,9 @@ private extension ProductCategoryStore {
     ///     - storage: Where we should save all the things!
     ///     - siteID: site ID for looking up the ProductCategory.
     ///
-    func upsertStoredProductCategories(_ readOnlyProductCategories: [Networking.ProductCategory],
-                                       in storage: StorageType,
-                                       siteID: Int64) {
+    static func upsertStoredProductCategories(_ readOnlyProductCategories: [Networking.ProductCategory],
+                                             in storage: StorageType,
+                                             siteID: Int64) {
 
         // Fetch all stored categories
         let storedCategories = storage.loadProductCategories(siteID: siteID)

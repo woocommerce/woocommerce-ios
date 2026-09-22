@@ -205,6 +205,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
     }
 
     // MARK: - Update product category
+    @MainActor
     func test_updateProductCategory_success_returns_parsed_ProductCategory() async throws {
         // Given
         let remote = ProductCategoriesRemote(network: network)
@@ -219,6 +220,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
         XCTAssertEqual(updatedCategory.name, "Dress")
     }
 
+    @MainActor
     func test_updateProductCategory_failure_relays_networking_error() async throws {
         // Given
         let remote = ProductCategoriesRemote(network: network)
@@ -237,6 +239,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
     }
 
     // MARK: - Delete product category
+    @MainActor
     func test_deleteProductCategory_success_does_not_throw_error() async throws {
         // Given
         let remote = ProductCategoriesRemote(network: network)
@@ -249,6 +252,7 @@ final class ProductCategoriesRemoteTests: XCTestCase {
         try await remote.deleteProductCategory(for: siteID, categoryID: categoryID)
     }
 
+    @MainActor
     func test_deleteProductCategory_failure_relays_networking_error() async throws {
         // Given
         let remote = ProductCategoriesRemote(network: network)

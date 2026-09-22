@@ -20,9 +20,11 @@ public protocol ProductCategoriesRemoteProtocol {
                                  parentID: Int64?,
                                  completion: @escaping (Result<[ProductCategory], Error>) -> Void)
 
-    func updateProductCategory(_ category: ProductCategory) async throws -> ProductCategory
+    /// Preserves the caller's isolation while updating the category.
+    func updateProductCategory(_ category: ProductCategory, isolation: isolated (any Actor)?) async throws -> ProductCategory
 
-    func deleteProductCategory(for siteID: Int64, categoryID: Int64) async throws
+    /// Preserves the caller's isolation while deleting the category.
+    func deleteProductCategory(for siteID: Int64, categoryID: Int64, isolation: isolated (any Actor)?) async throws
 }
 
 /// Product Categories: Remote Endpoints
@@ -154,7 +156,8 @@ public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProto
     ///
     /// - Parameter category: Details to be updated for a category.
     ///
-    public func updateProductCategory(_ category: ProductCategory) async throws -> ProductCategory {
+    public func updateProductCategory(_ category: ProductCategory,
+                                      isolation: isolated (any Actor)? = #isolation) async throws -> ProductCategory {
         let parameters: RequestParameterConvertibleDictionary = [
             ParameterKey.name: category.name,
             ParameterKey.parent: category.parentID
@@ -169,7 +172,7 @@ public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProto
                                      parameters: parameters,
                                      availableAsRESTRequest: true)
         let mapper = ProductCategoryMapper(siteID: siteID)
-        return try await enqueue(request, mapper: mapper)
+        return try await enqueue(request, mapper: mapper, isolation: isolation)
     }
 
     /// Deletes an existing `ProductCategory`.
@@ -178,7 +181,9 @@ public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProto
     ///   - siteID: Site that the category belongs to.
     ///   - categoryID: ID of the category to be deleted.
     ///
-    public func deleteProductCategory(for siteID: Int64, categoryID: Int64) async throws {
+    public func deleteProductCategory(for siteID: Int64,
+                                      categoryID: Int64,
+                                      isolation: isolated (any Actor)? = #isolation) async throws {
         let path = "\(Path.categories)/\(categoryID)"
         let request = JetpackRequest(wooApiVersion: .mark3,
                                      method: .delete,
@@ -186,7 +191,7 @@ public final class ProductCategoriesRemote: Remote, ProductCategoriesRemoteProto
                                      path: path,
                                      parameters: ["force": "true"],
                                      availableAsRESTRequest: true)
-        try await enqueue(request)
+        try await enqueue(request, isolation: isolation)
     }
 }
 

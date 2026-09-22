@@ -32,6 +32,7 @@ final class WooShippingStoreTests: XCTestCase {
     ///
     private let sampleOrderID: Int64 = 12
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -41,6 +42,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `checkCreationEligibility`
 
+    @MainActor
     func test_checkCreationEligibility_returns_eligibility_on_success() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -64,6 +66,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(isEligibleForCreation, expectedEligibility)
     }
 
+    @MainActor
     func test_checkCreationEligibility_returns_false_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -89,6 +92,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `createPackage`
 
+    @MainActor
     func test_createPackage_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -112,6 +116,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualResponse, response)
     }
 
+    @MainActor
     func test_createPackage_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -133,6 +138,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    @MainActor
     func test_createPackage_when_successful_then_upserts_packages_into_storage() throws {
         // Given
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -168,6 +174,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `deletePackage`
 
+    @MainActor
     func test_deletePackage_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -191,6 +198,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualResponse, response)
     }
 
+    @MainActor
     func test_deletePackage_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -212,6 +220,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    @MainActor
     func test_deletePackage_when_successful_then_upserts_packages_into_storage() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -260,6 +269,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `loadLabelRates`
 
+    @MainActor
     func test_loadLabelRates_returns_success_response_with_rates() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -285,6 +295,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(rates, expectedRates)
     }
 
+    @MainActor
     func test_loadLabelRates_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -310,6 +321,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_loadLabelRates_maps_invalid_destination_name_rate_error() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -345,6 +357,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertNotNil(result.failure as? WooShippingLoadLabelRatesError)
     }
 
+    @MainActor
     func test_loadLabelRates_returns_sent_packages_on_success() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -374,6 +387,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(receivedValue, [samplePackage])
     }
 
+    @MainActor
     func test_loadLabelRates_returns_sent_packages_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -404,6 +418,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `loadAccountSettings`
 
+    @MainActor
     func test_loadAccountSettings_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -425,6 +440,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualSettings, expectedSettings)
     }
 
+    @MainActor
     func test_loadAccountSettings_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -446,6 +462,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_loadAccountSettings_when_successful_then_upserts_settings_into_storage() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -488,6 +505,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `loadPackages`
 
+    @MainActor
     func test_loadPackages_returns_success_response_with_rates() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -509,6 +527,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualResponse, response)
     }
 
+    @MainActor
     func test_loadPackages_when_successful_then_upserts_packages_into_storage() throws {
         // Given
         let store = WooShippingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -544,6 +563,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(storedPackages.savedPredefinedPackages.contains(where: { $0.package.id == "small_flat_box" }))
     }
 
+    @MainActor
     func test_loadPackages_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -567,6 +587,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `purchaseShippingLabel`
 
+    @MainActor
     func test_purchaseShippingLabel_returns_shipping_label_on_success_and_persists_label_in_storage() throws {
         // Given
         let expectedLabel = ShippingLabel.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, shippingLabelID: 13579, shipmentID: "0")
@@ -611,6 +632,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(storedShipments.first?.shippingLabel?.shippingLabelID, expectedLabel.shippingLabelID)
     }
 
+    @MainActor
     func test_purchaseShippingLabel_returns_error_on_purchaseShippingLabel_request_failure() throws {
         // Given
         let expectedError = NetworkError.timeout()
@@ -639,6 +661,7 @@ final class WooShippingStoreTests: XCTestCase {
     }
 
     // slow
+    @MainActor
     func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() throws {
         // Given
         let expectedError = NetworkError.timeout()
@@ -668,6 +691,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_purchaseShippingLabel_returns_error_on_purchase_error() throws {
         // Given
         let expectedLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseError)
@@ -697,6 +721,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? WooShippingLabelPurchaseError, .purchaseErrorStatus)
     }
 
+    @MainActor
     func test_purchaseShippingLabel_does_not_return_error_if_purchase_remains_in_progress() throws {
         // Given
         let inProgressLabel = ShippingLabel.fake().copy(shippingLabelID: 13579, status: .purchaseInProgress)
@@ -763,6 +788,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertGreaterThan(remote.checkLabelStatusCallsCount, 1)
     }
 
+    @MainActor
     func test_printLabel_returns_print_data_on_success() throws {
         // Given
         let expectedPrintData = ShippingLabelPrintData.fake()
@@ -788,6 +814,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(printData, expectedPrintData)
     }
 
+    @MainActor
     func test_printLabel_returns_error_on_failure() throws {
         // Given
         let expectedError = NetworkError.timeout()
@@ -813,6 +840,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_loadOriginAddresses_returns_addresses_on_success() {
         // Given
         let expectedAddresses: [WooShippingOriginAddress] = [WooShippingOriginAddress.fake()]
@@ -836,6 +864,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(addresses, expectedAddresses)
     }
 
+    @MainActor
     func test_loadOriginAddresses_returns_error_failure() {
         // Given
         let expectedError = NetworkError.timeout()
@@ -859,6 +888,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_loadOriginAddresses_persists_fetched_addresses_to_local_storage_on_success() {
         // Given
         let address1 = WooShippingOriginAddress(
@@ -962,6 +992,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `validateAddress`
 
+    @MainActor
     func test_validateAddress_returns_WooShippingAddressValidationSuccess_on_success() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -985,6 +1016,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(validationSuccess, expectedResult)
     }
 
+    @MainActor
     func test_validateAddress_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1008,6 +1040,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `updateOriginAddress`
 
+    @MainActor
     func test_updateOriginAddress_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1030,6 +1063,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualAddressUpdate, expectedAddressUpdate)
     }
 
+    @MainActor
     func test_updateOriginAddress_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1054,6 +1088,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `verifyDestinationAddress`
 
+    @MainActor
     func test_verifyDestinationAddress_returns_WooShippingVerifyDestinationAddressSuccess_on_success() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1077,6 +1112,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(validationSuccess, expectedResult)
     }
 
+    @MainActor
     func test_verifyDestinationAddress_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1100,6 +1136,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `updateDestinationAddress`
 
+    @MainActor
     func test_updateDestinationAddress_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1124,6 +1161,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualAddressUpdate, expectedAddressUpdate)
     }
 
+    @MainActor
     func test_updateDestinationAddress_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1151,6 +1189,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `loadConfig`
 
+    @MainActor
     func test_loadConfig_returns_success_response() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1172,6 +1211,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualConfig, expectedConfig)
     }
 
+    @MainActor
     func test_loadConfig_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1195,6 +1235,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `updateShipment`
 
+    @MainActor
     func test_updateShipment_returns_success_response_and_persists_shipments() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1223,6 +1264,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(storedShipments.first?.index, "0")
     }
 
+    @MainActor
     func test_updateShipment_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1247,6 +1289,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: - `refundShippingLabel`
 
+    @MainActor
     func test_refundShippingLabel_returns_updated_label_and_updates_stored_label_refund_on_success() throws {
         // Given
         let sampleOrderID: Int64 = 134
@@ -1293,6 +1336,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertNotNil(storedShipments.first?.shippingLabel?.refund)
     }
 
+    @MainActor
     func test_refundShippingLabel_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1320,6 +1364,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: - `updateAccountSettings`
 
+    @MainActor
     func test_updateAccountSettings_returns_true_on_success() throws {
         // Given
         let sampleOrderID: Int64 = 134
@@ -1340,6 +1385,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(result.get()))
     }
 
+    @MainActor
     func test_updateAccountSettings_returns_error_on_failure() throws {
         // Given
         let sampleOrderID: Int64 = 134
@@ -1364,6 +1410,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: - `acceptUPSTermsOfService`
 
+    @MainActor
     func test_acceptUPSTermsOfService_returns_true_on_success() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1384,6 +1431,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(result.get()))
     }
 
+    @MainActor
     func test_acceptUPSTermsOfService_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1408,6 +1456,7 @@ final class WooShippingStoreTests: XCTestCase {
 
     // MARK: `syncShipments`
 
+    @MainActor
     func test_syncShipments_returns_shipments_on_success() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1430,6 +1479,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(actualShipments, expectedShipments)
     }
 
+    @MainActor
     func test_syncShipments_returns_error_on_failure() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1451,6 +1501,7 @@ final class WooShippingStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_syncShipments_persists_shipments_to_storage_on_success() throws {
         // Given
         let remote = MockWooShippingRemote()
@@ -1498,6 +1549,7 @@ final class WooShippingStoreTests: XCTestCase {
 }
 
 private extension WooShippingStoreTests {
+    @MainActor
     func sampleLabelRates() -> [ShippingLabelCarriersAndRates] {
         return [ShippingLabelCarriersAndRates(packageID: "123",
                                               defaultRates: [sampleLabelRate()],
@@ -1508,6 +1560,7 @@ private extension WooShippingStoreTests {
                                               additionalHandling: [])]
     }
 
+    @MainActor
     func sampleLabelRate() -> ShippingLabelCarrierRate {
         ShippingLabelCarrierRate(title: "USPS - Media Mail",
                                  insurance: "0.0",
@@ -1524,6 +1577,7 @@ private extension WooShippingStoreTests {
                                  deliveryDateGuaranteed: false)
     }
 
+    @MainActor
     func sampleCustomPackage() -> WooShippingCustomPackage {
         WooShippingCustomPackage(id: "849225dc153",
                                  name: "Custom name",
@@ -1532,6 +1586,7 @@ private extension WooShippingStoreTests {
                                  boxWeight: 0.01)
     }
 
+    @MainActor
     func sampleCarrierPredefinedOptions() -> WooShippingCarrierPredefinedOptions {
         WooShippingCarrierPredefinedOptions(carrierID: "usps",
                                             predefinedOptions: [.init(title: "pri_flat_boxes",
@@ -1561,6 +1616,7 @@ private extension WooShippingStoreTests {
     }
 
     @discardableResult
+    @MainActor
     func insertShippingLabel(_ readOnlyShippingLabel: Yosemite.ShippingLabel) -> StorageShippingLabel {
         let shippingLabel = viewStorage.insertNewObject(ofType: StorageShippingLabel.self)
         shippingLabel.update(with: readOnlyShippingLabel)
@@ -1568,6 +1624,7 @@ private extension WooShippingStoreTests {
     }
 
     @discardableResult
+    @MainActor
     func insertOrder(siteID: Int64, orderID: Int64) -> StorageOrder {
         let order = viewStorage.insertNewObject(ofType: StorageOrder.self)
         order.siteID = siteID
@@ -1577,6 +1634,7 @@ private extension WooShippingStoreTests {
     }
 
     @discardableResult
+    @MainActor
     func insertShipment(siteID: Int64, orderID: Int64, index: String) -> StorageWooShippingShipment {
         let shipment = viewStorage.insertNewObject(ofType: StorageWooShippingShipment.self)
         shipment.siteID = siteID

@@ -99,6 +99,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(result)
     }
 
+    @MainActor
     func test_handleAuthenticationUrl_presents_role_error_if_user_does_not_have_admin_role() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultRoles: [.shopManager]))
@@ -129,6 +130,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_handleAuthenticationUrl_presents_jetpack_setup_flow_after_fetching_wpcom_account_and_jetpack_user() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -160,6 +162,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_handleAuthenticationUrl_presents_setup_flow_if_jetpack_is_already_connected() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -191,6 +194,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_startSetup_when_eligible_then_presents_email_login_directly() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -222,6 +226,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(loginViewController.topViewController is WPComEmailLoginHostingController)
     }
 
+    @MainActor
     func test_startSetup_when_eligible_then_does_not_present_benefit_modal() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -252,6 +257,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertFalse(navigationController.presentedViewController is JetpackBenefitsHostingController)
     }
 
+    @MainActor
     func test_startSetup_when_eligible_and_wpcom_credentials_then_presents_setup_steps_directly() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true))
@@ -273,6 +279,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue((navigationController.presentedViewController as? UINavigationController)?.topViewController is JetpackSetupHostingController)
     }
 
+    @MainActor
     func test_startSetup_when_eligible_and_no_wpcom_credentials_then_proceeds_with_connection_check() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -304,6 +311,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(loginViewController?.topViewController is WPComEmailLoginHostingController)
     }
 
+    @MainActor
     func test_startAuthentication_proceeds_to_display_email_screen_when_email_is_not_found() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -324,6 +332,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(loginViewController.topViewController is WPComEmailLoginHostingController)
     }
 
+    @MainActor
     func test_startAuthentication_proceeds_to_display_password_screen_when_email_is_found() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -347,6 +356,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(loginViewController.topViewController is WPComPasswordLoginHostingController)
     }
 
+    @MainActor
     func test_startAuthentication_proceeds_to_display_magic_link_screen_when_email_is_passwordless() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -370,6 +380,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertTrue(loginViewController.topViewController is WPComMagicLinkHostingController)
     }
 
+    @MainActor
     func test_authenticateUserAndRefreshSite_when_wporg_endpoints_exist_then_uses_them_to_delete_application_password() throws {
         // Given
         var capturedEndpoints: CookieNonceAuthenticationEndpoints?
@@ -412,6 +423,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         XCTAssertEqual(stores.preservingSelectedSite, true)
     }
 
+    @MainActor
     func test_authenticateUserAndRefreshSite_when_sync_fails_and_user_cancels_then_restores_wporg_endpoints() throws {
         // Given
         let sessionManager = SessionManager(
@@ -474,6 +486,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
 }
 
 private extension MockStoresManager {
+    @MainActor
     func mockJetpackCheck(isJetpackInstalled: Bool = false,
                           isJetpackActive: Bool = false) {
         whenReceivingAction(ofType: SystemStatusAction.self) { action in

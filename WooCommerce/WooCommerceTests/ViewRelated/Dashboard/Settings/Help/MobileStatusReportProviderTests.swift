@@ -338,6 +338,7 @@ struct MobileStatusReportProviderTests {
 
     /// An aged-out cache is not what `isRemoteFeatureFlagEnabled` returns, so listing its values would describe
     /// behaviour the app is not exhibiting.
+    @MainActor
     @Test func remote_flags_are_not_listed_when_none_are_in_effect() async {
         // Given
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
@@ -354,6 +355,7 @@ struct MobileStatusReportProviderTests {
         #expect(!report.contains("(remote)"))
     }
 
+    @MainActor
     @Test func remote_flags_report_the_server_value_and_the_keys_it_omitted() async {
         // Given
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
@@ -373,6 +375,7 @@ struct MobileStatusReportProviderTests {
 
     /// The deauthenticated stores manager drops actions for stores it does not run, and a dropped dispatch has
     /// no completion coming. The report must degrade to the fallback value rather than wait on it forever.
+    @MainActor
     @Test func an_unanswered_dispatch_degrades_instead_of_stalling_the_report() async {
         // Given: nothing ever answers the feature-flag action
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { _ in }
@@ -419,6 +422,7 @@ private extension MobileStatusReportProviderTests {
                                    dispatchTimeout: 0.05)
     }
 
+    @MainActor
     func givenAFullyPopulatedStore() async throws -> MockPushNotificationsManager {
         sessionManager.defaultSite = Yosemite.Site.fake().copy(siteID: 1,
                                                                name: "A",

@@ -15,6 +15,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
     private let sampleSiteID: Int64 = 12891
     private let sampleConfiguration = CardPresentPaymentsConfiguration(country: .US)
 
+    @MainActor
     override func setUp() {
         let sessionManager = SessionManager.makeForTesting(authenticated: true)
         sessionManager.setStoreId(sampleSiteID)

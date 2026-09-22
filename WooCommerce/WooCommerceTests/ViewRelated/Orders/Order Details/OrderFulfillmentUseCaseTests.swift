@@ -10,6 +10,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
     private var stores: MockStoresManager!
     private var cancellables = Set<AnyCancellable>()
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
@@ -57,6 +58,7 @@ final class OrderFulfillmentUseCaseTests: XCTestCase {
         assertThat(statusUpdateAction: action, matches: order, status: .failed)
     }
 
+    @MainActor
     func test_retry_dispatches_an_Action_to_change_the_status_to_completed() throws {
         // Given
         let order = MockOrders().empty().copy(siteID: 498, orderID: 29, status: .pending)
@@ -169,6 +171,7 @@ private extension OrderFulfillmentUseCaseTests {
         XCTAssertEqual(actualStatus, expectedStatus, file: file, line: line)
     }
 
+    @MainActor
     func mockUpdateOrderAction(from stores: MockStoresManager,
                                toCompleteWithError completionError: Error?,
                                file: StaticString = #file,

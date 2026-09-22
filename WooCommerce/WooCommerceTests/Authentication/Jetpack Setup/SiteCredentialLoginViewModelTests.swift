@@ -36,6 +36,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.primaryButtonDisabled)
     }
 
+    @MainActor
     func test_isLoggingIn_is_updated_appropriately_when_login_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -59,6 +60,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isLoggingIn)
     }
 
+    @MainActor
     func test_isLoggingIn_is_updated_appropriately_when_login_succeeds() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -80,6 +82,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isLoggingIn)
     }
 
+    @MainActor
     func test_shouldShowErrorAlert_is_true_when_login_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -104,6 +107,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.errorMessage, SiteCredentialLoginViewModel.Localization.genericFailure)
     }
 
+    @MainActor
     func test_errorMessage_is_correct_when_login_fails_with_incorrect_credentials() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -128,6 +132,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.errorMessage, SiteCredentialLoginViewModel.Localization.wrongCredentials)
     }
 
+    @MainActor
     func test_authentication_and_successHandler_are_triggered_when_fetching_plugin_succeeds() {
         // Given
         var successHandlerTriggered = false
@@ -157,6 +162,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertTrue(successHandlerTriggered)
     }
 
+    @MainActor
     func test_authentication_and_successHandler_are_triggered_when_fetching_plugin_fails_with_404() {
         // Given
         var successHandlerTriggered = false
@@ -187,6 +193,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertTrue(successHandlerTriggered)
     }
 
+    @MainActor
     func test_authentication_and_successHandler_are_triggered_when_fetching_plugin_fails_with_403() {
         // Given
         var successHandlerTriggered = false
@@ -246,6 +253,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_reset_password_button_tapped" }))
     }
 
+    @MainActor
     func test_it_tracks_login_jetpack_site_credential_did_show_error_alert_when_displaying_remote_error() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -270,6 +278,7 @@ final class SiteCredentialLoginViewModelTests: XCTestCase {
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_site_credential_did_show_error_alert" }))
     }
 
+    @MainActor
     func test_it_tracks_login_jetpack_site_credential_did_finish_login_when_login_finishes() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())

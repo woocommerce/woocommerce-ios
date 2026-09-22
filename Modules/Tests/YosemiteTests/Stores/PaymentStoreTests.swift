@@ -17,6 +17,7 @@ final class PaymentStoreTests: XCTestCase {
     private var remote: MockPaymentRemote!
     private var store: PaymentStore!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -26,6 +27,7 @@ final class PaymentStoreTests: XCTestCase {
         store = PaymentStore(remote: remote, dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
+    @MainActor
     override func tearDown() {
         store = nil
         remote = nil
@@ -37,6 +39,7 @@ final class PaymentStoreTests: XCTestCase {
 
     // MARK: - `loadPlan`
 
+    @MainActor
     func test_loadPlan_returns_plan_on_success() throws {
         // Given
         remote.whenLoadingPlan(thenReturn: .success(.init(productID: 12, name: "woo", formattedPrice: "$16.8")))
@@ -54,6 +57,7 @@ final class PaymentStoreTests: XCTestCase {
         XCTAssertEqual(plan, .init(productID: 12, name: "woo", formattedPrice: "$16.8"))
     }
 
+    @MainActor
     func test_loadPlan_returns_failure_on_error() throws {
         // Given
         remote.whenLoadingPlan(thenReturn: .failure(NetworkError.timeout()))
@@ -73,6 +77,7 @@ final class PaymentStoreTests: XCTestCase {
 
     // MARK: - `loadSiteCurrentPlan`
 
+    @MainActor
     func test_loadSiteCurrentPlan_returns_plan_on_success() throws {
         // Given
         remote.whenLoadingSiteCurrentPlan(thenReturn: .success(.init(hasDomainCredit: true)))
@@ -90,6 +95,7 @@ final class PaymentStoreTests: XCTestCase {
         XCTAssertEqual(plan, .init(hasDomainCredit: true))
     }
 
+    @MainActor
     func test_loadSiteCurrentPlan_returns_failure_on_error() throws {
         // Given
         remote.whenLoadingSiteCurrentPlan(thenReturn: .failure(NetworkError.timeout()))
@@ -109,6 +115,7 @@ final class PaymentStoreTests: XCTestCase {
 
     // MARK: - `createCart`
 
+    @MainActor
     func test_createCart_returns_on_success() throws {
         // Given
         remote.whenCreatingCart(thenReturn: .success(()))
@@ -124,6 +131,7 @@ final class PaymentStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_createCart_returns_invalidProductID_error_when_productID_is_not_integer() throws {
         // Given
         remote.whenCreatingCart(thenReturn: .failure(NetworkError.timeout()))
@@ -141,6 +149,7 @@ final class PaymentStoreTests: XCTestCase {
         XCTAssertEqual(error as? Yosemite.CreateCartError, .invalidProductID)
     }
 
+    @MainActor
     func test_createCart_relays_networking_CreateCartError_failure() throws {
         // Given
         remote.whenCreatingCart(thenReturn: .failure(Networking.CreateCartError.productNotInCart))
@@ -158,6 +167,7 @@ final class PaymentStoreTests: XCTestCase {
         XCTAssertEqual(error as? Yosemite.CreateCartError, .productNotInCart)
     }
 
+    @MainActor
     func test_createCart_returns_failure_on_error() throws {
         // Given
         remote.whenCreatingCart(thenReturn: .failure(NetworkError.timeout()))

@@ -115,6 +115,7 @@ final class DateWooTests: XCTestCase {
 
     // MARK: - `toStringInSiteTimeZone(dateStyle:timeStyle:locale:)`
 
+    @MainActor
     func test_toStringInSiteTimeZone_returns_date_string_in_site_time_zone() throws {
         // Given
         // GMT: Monday, December 25, 2023 3:23:31 AM

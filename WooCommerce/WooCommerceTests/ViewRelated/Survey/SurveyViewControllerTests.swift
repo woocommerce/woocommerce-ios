@@ -13,6 +13,7 @@ final class SurveyViewControllerTests: XCTestCase {
     private let testURL = "https://example.com"
     private let storeUUID = "8363cd24-2501-463f-b21b-649315a0d507"
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -24,6 +25,7 @@ final class SurveyViewControllerTests: XCTestCase {
         ServiceLocator.setStores(storesManager)
     }
 
+    @MainActor
     override func tearDown() {
         ServiceLocator.setStores(MockStoresManager(sessionManager: .testingInstance))
 

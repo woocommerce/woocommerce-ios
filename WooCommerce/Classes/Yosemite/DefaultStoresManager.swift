@@ -13,6 +13,7 @@ import enum PointOfSale.POSRolesPersistence
 
 // MARK: - DefaultStoresManager
 //
+@MainActor
 class DefaultStoresManager: StoresManager {
 
     private let sessionManagerLockQueue = DispatchQueue(label: "StoresManager.sessionManagerLockQueue")
@@ -170,7 +171,7 @@ class DefaultStoresManager: StoresManager {
          notificationCenter: NotificationCenter = .default,
          defaults: UserDefaults = .standard,
          pushNotificationDefaults: UserDefaults = .group ?? .standard,
-         stateFactory: (SessionManagerProtocol) -> StoresManagerState = { AuthenticatedState(sessionManager: $0) ?? DeauthenticatedState() },
+         stateFactory: @MainActor (SessionManagerProtocol) -> StoresManagerState = { AuthenticatedState(sessionManager: $0) ?? DeauthenticatedState() },
          cardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache = .shared,
          grdbManagerProvider: GRDBManagerProviding = ServiceLocatorGRDBManagerProvider()) {
         _sessionManager = sessionManager
@@ -1228,6 +1229,7 @@ private extension DefaultStoresManager {
 
 // MARK: - StoresManagerState
 //
+@MainActor
 protocol StoresManagerState {
 
     /// Executed before the state is deactivated.

@@ -53,6 +53,7 @@ final class OrderStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -64,6 +65,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that OrderAction.synchronizeOrders returns the expected Orders.
     ///
+    @MainActor
     func testRetrieveOrdersReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -83,6 +85,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that `OrderAction.synchronizeOrders` effectively persists any retrieved orders.
     ///
+    @MainActor
     func testRetrieveOrdersEffectivelyPersistsRetrievedOrders() {
         let expectation = self.expectation(description: "Persist order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -106,6 +109,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `OrderAction.synchronizeOrders` effectively persists all of the order fields
     /// correctly across all of the related Order objects (items, coupons, etc).
     ///
+    @MainActor
     func testRetrieveOrdersEffectivelyPersistsOrderFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -136,6 +140,7 @@ final class OrderStoreTests: XCTestCase {
     ///
     /// Ref. Issue: https://github.com/woocommerce/woocommerce-ios/issues/221
     ///
+    @MainActor
     func testRetrieveOrdersWithBreakingDocumentIsProperlyParsedAndInsertedIntoStorage() {
         let expectation = self.expectation(description: "Persist order list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -156,6 +161,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that OrderAction.retrieveOrders returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveOrdersReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve orders error response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -173,6 +179,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that OrderAction.retrieveOrders returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveOrdersReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve orders empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -189,6 +196,7 @@ final class OrderStoreTests: XCTestCase {
 
     // MARK: - OrderAction.checkIfStoreHasOrders
 
+    @MainActor
     func test_checkIfStoreHasOrders_returns_true_if_there_exists_any_order_in_storage() throws {
         // Given
         storageManager.insertSampleOrder(readOnlyOrder: Order.fake().copy(siteID: sampleSiteID))
@@ -207,6 +215,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertTrue(hasOrders)
     }
 
+    @MainActor
     func test_checkIfStoreHasOrders_returns_true_if_remote_returns_non_empty_results() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "orders", filename: "orders-load-all")
@@ -225,6 +234,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertTrue(hasOrders)
     }
 
+    @MainActor
     func test_checkIfStoreHasOrders_returns_false_if_remote_returns_empty_results() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "orders", filename: "empty-data-array")
@@ -243,6 +253,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertFalse(hasOrders)
     }
 
+    @MainActor
     func test_checkIfStoreHasOrders_relays_error_if_remote_request_fails() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "orders", filename: "generic_error")
@@ -263,6 +274,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that `OrderAction.searchOrder` effectively persists the retrieved orders.
     ///
+    @MainActor
     func testSearchOrdersEffectivelyPersistsRetrievedSearchOrders() {
         let expectation = self.expectation(description: "Search Persists Orders")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -289,6 +301,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that `OrderAction.searchOrders` effectively upserts the `OrderSearchResults` entity.
     ///
+    @MainActor
     func testSearchOrdersEffectivelyPersistsSearchResultsEntity() {
         let expectation = self.expectation(description: "Search Persists Results")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -316,6 +329,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that `OrderAction.searchOrders` does not result in duplicated entries in the OrderSearchResults entity.
     ///
+    @MainActor
     func testSearchOrdersDoesNotProduceDuplicatedReferences() {
         let expectation = self.expectation(description: "Search Doesnt Duplicate References")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -356,6 +370,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that OrderAction.retrieveOrder returns the expected Order.
     ///
+    @MainActor
     func testRetrieveSingleOrderReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve single order")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -376,6 +391,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `OrderAction.retrieveOrder` effectively persists all of the remote order fields
     /// correctly across all of the related `Order` objects (items, coupons, etc).
     ///
+    @MainActor
     func testRetrieveSingleOrderEffectivelyPersistsOrderFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist order")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -402,6 +418,7 @@ final class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_retrieve_single_order_fetches_up_to_date_order_from_storage() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -427,6 +444,7 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(storedOrder, fetchedOrder)
     }
 
+    @MainActor
     func test_retrieve_single_order_fetches_order_from_remote_when_stored_order_is_outdated() {
         // Given
         network = MockNetwork(useResponseQueue: true)
@@ -453,6 +471,7 @@ final class OrderStoreTests: XCTestCase {
     /// Orders stored from list and search fetches carry no metadata-derived values (those fetches omit
     /// `meta_data`), so the date-modified shortcut is skipped and the order is synced in full.
     ///
+    @MainActor
     func test_retrieveOrder_when_stored_order_lacks_metadata_then_fetches_full_order_from_remote() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -482,6 +501,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that OrderAction.retrieveOrderRemotely returns the expected Order.
     ///
+    @MainActor
     func test_retrieveOrderRemotely_returns_expected_fields() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -502,6 +522,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `OrderAction.retrieveOrderRemotely` effectively persists all of the remote order fields
     /// correctly across all of the related `Order` objects (items, coupons, etc).
     ///
+    @MainActor
     func test_retrieveOrderRemotely_effectively_persists_order_fields_and_related_objects() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -525,6 +546,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storedOrder?.toReadOnly(), remoteOrder)
     }
 
+    @MainActor
     func test_retrieveOrderRemotely_deletes_existing_stored_order_when_remote_order_is_autoDraft() throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -551,6 +573,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 
+    @MainActor
     func test_retrieveOrderRemotely_does_not_return_existing_order_in_storage_and_replaces_order_in_storage() throws {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -589,6 +612,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredOrder` does not produce duplicate entries.
     ///
+    @MainActor
     func testUpdateStoredOrderEffectivelyUpdatesPreexistantOrder() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -634,6 +658,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredOrder` effectively inserts a new Order, with the specified payload.
     ///
+    @MainActor
     func testUpdateStoredOrderEffectivelyPersistsNewOrder() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
@@ -648,6 +673,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that `upsertStoredOrder` doesn't mark a Pre Existant order as "Search Results" (since it's been already
     /// retrieved for "Regular Scroll" display).
     ///
+    @MainActor
     func testUpsertStoredOrderDoesntMarkPreExistantOrdersAsSearchResults() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
@@ -663,6 +689,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredOrder` keeps the "Search Results" flag whenever the same order is upserted more than once.
     ///
+    @MainActor
     func testUpsertStoredOrderPreservesPreExistantSearchResults() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
@@ -679,6 +706,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredOrder` unmarks "Search Results Cached Orders" whenever we're storing "regular scroll" Orders.
     ///
+    @MainActor
     func testUpsertStoredOrderUnmarksSearchResultsWhenUpsertingRegularPagingResults() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
@@ -698,6 +726,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredResults` inserts new OrderSearchResults entities, and links them to a given Order.
     ///
+    @MainActor
     func testUpsertStoredSearchResultsEffectivelyInsertsNewSearchResultsEntitiesAndLinkThemToOrders() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteOrder = sampleOrder()
@@ -719,6 +748,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that OrderAction.retrieveOrder returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveSingleOrderReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve single order error response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -737,6 +767,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that OrderAction.retrieveOrder returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveSingleOrderReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve single order empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -755,6 +786,7 @@ final class OrderStoreTests: XCTestCase {
     /// Verifies that whenever a `retrieveOrder` action results in a response with statusCode = 404, the local entity
     /// is obliterated from existence.
     ///
+    @MainActor
     func testRetrieveSingleOrderResultingInStatusCode404CausesTheStoredOrderToGetDeleted() {
         let expectation = self.expectation(description: "Retrieve single order empty response")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -780,6 +812,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that an Order's .status field gets effectively updated during `updateOrder`'s response processing.
     ///
+    @MainActor
     func testUpdateOrderEffectivelyChangesAffectedOrderStatusField() {
         let expectation = self.expectation(description: "Update Order Status")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -805,6 +838,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that the Optimistic OrderStatus Update OP effectively reverts the (optimistic) change upon failure.
     ///
+    @MainActor
     func testUpdateOrderRevertsOptimisticUpdateUponFailure() {
         let expectation = self.expectation(description: "Optimistic Update Recovery")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -827,6 +861,7 @@ final class OrderStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_optimistic_update_order_customer_note_correctly() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -854,6 +889,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.customerNote, updatedOrder.customerNote)
     }
 
+    @MainActor
     func test_optimistic_update_order_customer_note_reverts_upon_failure() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -879,6 +915,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.customerNote, originalOrder.customerNote)
     }
 
+    @MainActor
     func test_optimistic_update_deletes_order_from_storage_upon_failure_if_it_does_not_exist_locally() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -902,6 +939,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertNil(storageOrder)
     }
 
+    @MainActor
     func test_optimistic_update_order_shipping_phone_correctly() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -930,6 +968,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.shippingPhone, updatedOrder.shippingAddress?.phone)
     }
 
+    @MainActor
     func test_optimistic_update_order_shipping_phone_reverts_upon_failure() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -956,6 +995,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(storageOrder?.shippingPhone, originalOrder.shippingAddress?.phone)
     }
 
+    @MainActor
     func test_optimistic_update_order_shipping_and_billing_phone_correctly() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -992,6 +1032,7 @@ final class OrderStoreTests: XCTestCase {
 
     /// Verifies that `resetStoredOrders` nukes the Orders Cache.
     ///
+    @MainActor
     func testResetStoredOrdersEffectivelyNukesTheOrdersCache() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let order = sampleOrder().copy(appliedGiftCards: [.fake()])
@@ -1024,6 +1065,7 @@ final class OrderStoreTests: XCTestCase {
     /// This translates effectively into: Ensure that performing update OP's that don't really change anything, do not
     /// end up causing UI refresh OP's in the main thread.
     ///
+    @MainActor
     func testInnocuousUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
         // Stack
         let viewContext = storageManager.persistentContainer.viewContext
@@ -1066,6 +1108,7 @@ final class OrderStoreTests: XCTestCase {
     }
 
 
+    @MainActor
     func test_create_simple_payments_order_properly_sends_values_as_fees_with_no_taxes() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1092,6 +1135,7 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(received, expected)
     }
 
+    @MainActor
     func test_create_simple_payments_order_properly_sends_values_as_fees_with_taxes() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1118,6 +1162,7 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(received, expected)
     }
 
+    @MainActor
     func test_create_simple_payments_order_sends_currency_when_provided() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1136,6 +1181,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(request.parameters["currency"] as? String, "USD")
     }
 
+    @MainActor
     func test_create_pending_simple_payments_order_stores_orders_correctly() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1158,6 +1204,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertNotNil(storedOrder)
     }
 
+    @MainActor
     func test_create_draft_simple_payments_order_does_not_get_stored() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1180,6 +1227,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertNil(storedOrder)
     }
 
+    @MainActor
     func test_create_order_stores_orders_correctly() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1198,6 +1246,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertNotNil(storedOrder)
     }
 
+    @MainActor
     func test_create_order_with_gift_card_returns_notApplied_error_when_error_response_does_not_include_gift_card() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1215,6 +1264,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? OrderStore.GiftCardError, .notApplied)
     }
 
+    @MainActor
     func test_create_order_with_gift_card_returns_cannotApply_error_when_error_is_returned() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1233,6 +1283,7 @@ final class OrderStoreTests: XCTestCase {
                        .cannotApply(reason: "Requested amount for gift card code Z exceeded the order total."))
     }
 
+    @MainActor
     func test_create_order_with_gift_card_returns_invalid_error_when_error_is_returned() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1251,6 +1302,7 @@ final class OrderStoreTests: XCTestCase {
                        .invalid(reason: "Gift card code Z not found."))
     }
 
+    @MainActor
     func test_update_simple_payments_order_sends_correct_values() throws {
         // Given
         let feeID: Int64 = 1234
@@ -1304,6 +1356,7 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(receivedNote, note)
     }
 
+    @MainActor
     func test_update_simple_payments_order_sends_default_name_when_none_provided() throws {
         // Given
         let feeID: Int64 = 1234
@@ -1340,6 +1393,7 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(expectedFees, receivedFees)
     }
 
+    @MainActor
     func test_create_order_sends_expected_fields() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1369,6 +1423,7 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(expectedKeys, receivedKeys)
     }
 
+    @MainActor
     func test_create_order_with_giftCard_sends_expected_fields() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1399,6 +1454,7 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(expectedKeys, receivedKeys)
     }
 
+    @MainActor
     func test_create_order_does_not_upsert_autodrafts() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1417,6 +1473,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 
+    @MainActor
     func test_update_order_does_not_upsert_autodrafts() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1435,6 +1492,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 
+    @MainActor
     func test_update_order_with_giftCard_sends_expected_fields() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1454,6 +1512,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertTrue(receivedKeys.contains(expectedKeys))
     }
 
+    @MainActor
     func test_update_order_with_request_currency_forwards_currency_as_query_parameter() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1473,6 +1532,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertNil(request.requestParameters.dictionary?["currency"])
     }
 
+    @MainActor
     func test_update_order_with_gift_card_returns_notApplied_error_when_error_response_does_not_include_gift_card() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1490,6 +1550,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? OrderStore.GiftCardError, .notApplied)
     }
 
+    @MainActor
     func test_update_order_with_gift_card_returns_cannotApply_error_when_error_is_returned() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1508,6 +1569,7 @@ final class OrderStoreTests: XCTestCase {
                        .cannotApply(reason: "Requested amount for gift card code Z exceeded the order total."))
     }
 
+    @MainActor
     func test_update_order_with_gift_card_returns_invalid_error_when_error_is_returned() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1528,6 +1590,7 @@ final class OrderStoreTests: XCTestCase {
 
     // MARK: Tests for `markOrderAsPaidLocally`
 
+    @MainActor
     func test_markOrderAsPaidLocally_sets_order_datePaid_and_status_to_processing() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1554,6 +1617,7 @@ final class OrderStoreTests: XCTestCase {
         assertEqual(orderInStorage, orderOnCompletion)
     }
 
+    @MainActor
     func test_markOrderAsPaidLocally_returns_failure_when_there_is_no_order() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1573,6 +1637,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? OrderStore.MarkOrderAsPaidLocallyError, .orderNotFoundInStorage)
     }
 
+    @MainActor
     func test_delete_order_removes_order_from_storage() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1593,6 +1658,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 0)
     }
 
+    @MainActor
     func test_delete_order_keeps_order_in_storage_if_deletion_fails() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1613,6 +1679,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.Order.self), 1)
     }
 
+    @MainActor
     func test_delete_order_does_not_keep_autodraft_order_in_storage_if_deletion_fails() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1635,6 +1702,7 @@ final class OrderStoreTests: XCTestCase {
 
     // MARK: - `observeInsertedOrders`
 
+    @MainActor
     func test_observeInsertedOrders_emits_inserted_order() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1673,6 +1741,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(ordersSequence.first, [order])
     }
 
+    @MainActor
     func test_observeInsertedOrders_does_not_emit_values_after_inserting_orders_in_a_different_site() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1711,6 +1780,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertEqual(ordersSequence.count, 0)
     }
 
+    @MainActor
     func test_observeInsertedOrders_does_not_emit_values_after_inserting_a_non_order_object() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1751,6 +1821,7 @@ final class OrderStoreTests: XCTestCase {
 
     // MARK: - Product bundles extension
 
+    @MainActor
     func test_updateOrder_with_remote_item_with_bundle_configuration_updates_line_items() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1786,6 +1857,7 @@ final class OrderStoreTests: XCTestCase {
         XCTAssertNil(removedChildBundleOrderItem["bundle_configuration"])
     }
 
+    @MainActor
     func test_updateOrder_with_new_item_with_bundle_configuration_does_not_update_line_items() throws {
         // Given
         let store = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1820,6 +1892,7 @@ final class OrderStoreTests: XCTestCase {
 // MARK: - Private Methods
 //
 private extension OrderStoreTests {
+    @MainActor
     func sampleOrder() -> Networking.Order {
         return Order.fake().copy(siteID: sampleSiteID,
                                  orderID: 963,
@@ -1855,6 +1928,7 @@ private extension OrderStoreTests {
                                  customFields: [])
     }
 
+    @MainActor
     func sampleOrderMutated() -> Networking.Order {
         return sampleOrder().copy(status: .completed,
                                   discountTotal: "40.00",
@@ -1866,6 +1940,7 @@ private extension OrderStoreTests {
                                   appliedGiftCards: sampleAppliedGiftCards())
     }
 
+    @MainActor
     func sampleOrderMutated2() -> Networking.Order {
         return sampleOrder().copy(status: .completed,
                                   discountTotal: "40.00",
@@ -1877,6 +1952,7 @@ private extension OrderStoreTests {
                                   appliedGiftCards: [])
     }
 
+    @MainActor
     func sampleAddress() -> Networking.Address {
         return Address(firstName: "Johnny",
                        lastName: "Appleseed",
@@ -1891,6 +1967,7 @@ private extension OrderStoreTests {
                        email: "scrambled@scrambled.com")
     }
 
+    @MainActor
     func sampleShippingLines() -> [Networking.ShippingLine] {
         return [ShippingLine(shippingID: 123,
         methodTitle: "International Priority Mail Express Flat Rate",
@@ -1900,6 +1977,7 @@ private extension OrderStoreTests {
         taxes: [.init(taxID: 1, subtotal: "", total: "0.62125")])]
     }
 
+    @MainActor
     func sampleCoupons() -> [Networking.OrderCouponLine] {
         let coupon1 = OrderCouponLine(couponID: 894,
                                       code: "30$off",
@@ -1909,6 +1987,7 @@ private extension OrderStoreTests {
         return [coupon1]
     }
 
+    @MainActor
     func sampleCouponsMutated() -> [Networking.OrderCouponLine] {
         let coupon1 = OrderCouponLine(couponID: 894,
                                       code: "30$off",
@@ -1922,6 +2001,7 @@ private extension OrderStoreTests {
         return [coupon1, coupon2]
     }
 
+    @MainActor
     func sampleFeeLines() -> [Networking.OrderFeeLine] {
         let fee = OrderFeeLine(feeID: 60,
                                name: "$125.50 fee",
@@ -1934,6 +2014,7 @@ private extension OrderStoreTests {
         return [fee]
     }
 
+    @MainActor
     func sampleOrderTaxLine() -> Networking.OrderTaxLine {
         OrderTaxLine.fake().copy(taxID: 1330,
                                  rateCode: "US-NY-STATE-2",
@@ -1945,10 +2026,12 @@ private extension OrderStoreTests {
                                  ratePercent: 4.5)
     }
 
+    @MainActor
     func sampleOrderTaxLines() -> [Networking.OrderTaxLine] {
         [sampleOrderTaxLine()]
     }
 
+    @MainActor
     func sampleOrderTaxLinesMutated() -> [Networking.OrderTaxLine] {
         [
             sampleOrderTaxLine().copy(totalTax: "55", ratePercent: 5.5),
@@ -1956,6 +2039,7 @@ private extension OrderStoreTests {
         ]
     }
 
+    @MainActor
     func sampleItems() -> [Networking.OrderItem] {
         let item1 = OrderItem(itemID: 890,
                               name: "Fruits Basket (Mix & Match Product)",
@@ -1998,6 +2082,7 @@ private extension OrderStoreTests {
         return [item1, item2]
     }
 
+    @MainActor
     func sampleItemsMutated() -> [Networking.OrderItem] {
         let item1 = OrderItem(itemID: 890,
                               name: "Fruits Basket (Mix & Match Product) 2",
@@ -2059,6 +2144,7 @@ private extension OrderStoreTests {
         return [item1, item2, item3]
     }
 
+    @MainActor
     func sampleItemsMutated2() -> [Networking.OrderItem] {
         let item1 = OrderItem(itemID: 890,
                               name: "Fruits Basket (Mix & Match Product) 2",
@@ -2082,28 +2168,34 @@ private extension OrderStoreTests {
         return [item1]
     }
 
+    @MainActor
     func taxes() -> [Networking.OrderItemTax] {
         return [Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45")]
     }
 
+    @MainActor
     func taxesMutated() -> [Networking.OrderItemTax] {
         [Networking.OrderItemTax(taxID: 73, subtotal: "0.9", total: "0.9"),
          Networking.OrderItemTax(taxID: 75, subtotal: "0.45", total: "0.45")]
     }
 
+    @MainActor
     func sampleCustomFields() -> [Networking.MetaData] {
         return [Networking.MetaData(metadataID: 18148, key: "Viewed Currency", value: "USD")]
     }
 
+    @MainActor
     func sampleCustomFieldsMutated() -> [Networking.MetaData] {
         return [Networking.MetaData(metadataID: 18148, key: "Viewed Currency", value: "GBP"),
                 Networking.MetaData(metadataID: 18149, key: "Converted Order Total", value: "223.71 GBP")]
     }
 
+    @MainActor
     func sampleAppliedGiftCards() -> [Networking.OrderGiftCard] {
         return [Networking.OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)]
     }
 
+    @MainActor
     func requestInt64Value(_ value: Any?) -> Int64? {
         switch value {
         case let value as Int64:
@@ -2127,6 +2219,7 @@ private extension Networking.Order {
     /// stored copy is eligible for the date-modified shortcut in `retrieveOrder`.
     /// `MockStorageManager.insertSampleOrder` persists only scalar attributes (no relationships),
     /// so the scalar `chargeID` is used as the marker.
+    @MainActor
     func withMetadataDerivedValues() -> Networking.Order {
         copy(chargeID: "ch_123")
     }

@@ -14,6 +14,7 @@ class StoreTests: XCTestCase {
     private var accountStore: MockAccountStore!
     private var siteStore: MockSiteStore!
 
+    @MainActor
     override func setUp() {
         accountStore = MockAccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         siteStore = MockSiteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -22,6 +23,7 @@ class StoreTests: XCTestCase {
 
     /// Verifies that Account Actions are only received by the Account Store.
     ///
+    @MainActor
     func testOnlyAccountStoreHandlesAccountActions() {
         XCTAssertTrue(accountStore.receivedActions.isEmpty)
         XCTAssertTrue(siteStore.receivedActions.isEmpty)

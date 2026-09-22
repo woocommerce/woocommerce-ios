@@ -25,6 +25,7 @@ final class TelemetryStoreTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
 
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -34,6 +35,7 @@ final class TelemetryStoreTests: XCTestCase {
 
     // MARK: - TelemetryAction.sendTelemetry
 
+    @MainActor
     func test_sendTelemetry_action_accepts_null_data_response() {
         // Given
         let store = TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -54,6 +56,7 @@ final class TelemetryStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_sendTelemetry_action_throttles_request_within_timeout() {
         // Given
         let store = TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -75,6 +78,7 @@ final class TelemetryStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? TelemetryError, TelemetryError.requestThrottled)
     }
 
+    @MainActor
     func test_sendTelemetry_action_properly_relays_errors() {
         // Given
         let store = TelemetryStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

@@ -24,12 +24,14 @@ private extension RequestParameters {
         dictionary.map(Self.anyDictionary)
     }
 
+    @MainActor
     static func anyDictionary(from parameters: RequestParameterDictionary) -> [String: Any] {
         parameters.reduce(into: [String: Any]()) { output, element in
             output[element.key] = anyValue(from: element.value)
         }
     }
 
+    @MainActor
     static func anyValue(from value: RequestParameterValue) -> Any {
         switch value {
         case .string(let value):

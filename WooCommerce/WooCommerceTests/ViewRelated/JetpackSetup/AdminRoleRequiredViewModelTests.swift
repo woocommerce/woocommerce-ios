@@ -5,6 +5,7 @@ import XCTest
 @MainActor
 final class AdminRoleRequiredViewModelTests: XCTestCase {
 
+    @MainActor
     func test_username_is_correct() {
         // Given
         let testUsername = "Test"
@@ -20,6 +21,7 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
         assertEqual(testUsername, username)
     }
 
+    @MainActor
     func test_roleName_is_correct() {
         // Given
         let sessionManager = MockSessionManager()
@@ -34,6 +36,7 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
         assertEqual(NSLocalizedString("Shop Manager", comment: "User's Shop Manager role."), roleName)
     }
 
+    @MainActor
     func test_checkIfUserGotSufficientRole_returns_true_if_user_has_admin_role() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -55,6 +58,7 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
         XCTAssertTrue(result)
     }
 
+    @MainActor
     func test_checkIfUserGotSufficientRole_returns_false_if_user_does_not_have_admin_role() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
@@ -76,6 +80,7 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
         XCTAssertFalse(result)
     }
 
+    @MainActor
     func test_checkIfUserGotSufficientRole_relays_error_if_the_fetch_fails() async {
         // Given
         let expectedError = NSError(domain: "Test", code: 500, userInfo: nil)

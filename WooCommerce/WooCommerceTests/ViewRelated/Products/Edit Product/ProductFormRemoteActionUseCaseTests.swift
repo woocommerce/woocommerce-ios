@@ -15,6 +15,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     private let pluginName = "WooCommerce"
     private let pluginSlug = "woocommerce"
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
@@ -36,6 +37,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     // MARK: - Adding a product (`addProduct`)
 
+    @MainActor
     func test_adding_product_with_a_password_successfully_returns_success_result() {
         // Arrange
         let product = Product.fake()
@@ -59,6 +61,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
                        [WooAnalyticsStat.addProductSuccess.rawValue])
     }
 
+    @MainActor
     func test_adding_product_with_a_password_unsuccessfully_returns_failure_result_with_password_error() {
         // Arrange
         let product = Product.fake()
@@ -80,6 +83,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(result, .failure(.passwordCannotBeUpdated))
     }
 
+    @MainActor
     func test_adding_product_without_a_password_successfully_does_not_trigger_password_action_and_returns_success_result() {
         // Arrange
         let product = Product.fake()
@@ -99,6 +103,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(result, .success(ResultData(product: model, password: nil)))
     }
 
+    @MainActor
     func test_adding_product_unsuccessfully_does_not_trigger_password_action_and_returns_failure_result_with_product_error() {
         // Arrange
         let product = Product.fake()
@@ -121,6 +126,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     }
 
     // MARK: - Editing a product (`addProduct`)
+    @MainActor
     func test_editing_product_and_password_without_edits_in_Woo_8_1_and_above_does_not_trigger_actions_and_returns_success_result() {
         // Arrange
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
@@ -153,6 +159,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
     }
 
+    @MainActor
     func test_editing_product_and_password_without_edits_in_Woo_below_8_1_does_not_trigger_actions_and_returns_success_result() {
         // Arrange
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
@@ -185,6 +192,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(result, .success(ResultData(product: model, password: password)))
     }
 
+    @MainActor
     func test_editing_product_with_a_password_in_Woo_8_1_and_above_successfully_returns_success_result() {
         // Arrange
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
@@ -227,6 +235,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
             }
     }
 
+    @MainActor
     func test_editing_product_with_a_password_in_Woo_below_8_1_successfully_returns_success_result() {
         // Arrange
         let activePlugin = SystemPlugin.fake().copy(siteID: siteID,
@@ -269,6 +278,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
             }
     }
 
+    @MainActor
     func test_editing_product_successfully_with_a_password_unsuccessfully_returns_failure_result_with_password_error() {
         // Arrange
         let originalProduct = Product.fake()
@@ -299,6 +309,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(result, .failure(.passwordCannotBeUpdated))
     }
 
+    @MainActor
     func test_editing_product_unsuccessfully_with_a_password_successfully_returns_failure_result_with_product_error() {
         // Arrange
         let originalProduct = Product.fake()
@@ -329,6 +340,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(result, .failure(.invalidSKU))
     }
 
+    @MainActor
     func test_editing_product_unsuccessfully_with_a_password_unsuccessfully_returns_failure_result_with_product_error() {
         // Arrange
         let originalProduct = Product.fake()
@@ -361,6 +373,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 
     // MARK: - Delete a product (`deleteProduct`)
 
+    @MainActor
     func test_deleting_product_successfully_returns_success_result() {
         // Arrange
         let product = Product.fake()
@@ -380,6 +393,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(result, .success(ResultData(product: model, password: nil)))
     }
 
+    @MainActor
     func test_deleting_product_returns_failure_result_with_product_error() {
         // Arrange
         let product = Product.fake()
@@ -400,6 +414,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
     }
 
     // MARK: - Duplicate a product (`duplicateProduct`)
+    @MainActor
     func test_duplicating_product_triggers_adding_copy_of_product_correctly() {
         // Given
         let product = Product.fake().copy(name: "Test", statusKey: ProductStatus.published.rawValue, sku: "12356")
@@ -430,6 +445,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertNil(copiedProductSKU)
     }
 
+    @MainActor
     func test_duplicating_product_clears_slug_so_server_assigns_a_unique_one() {
         // Given
         // Reusing the source slug in the create request risks the storefront resolving to the
@@ -463,6 +479,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         assertEqual("https://store.example/original-slug", product.permalink)
     }
 
+    @MainActor
     func test_duplicating_product_with_a_password_unsuccessfully_returns_failure_result_with_password_error() {
         // Given
         let product = Product.fake()
@@ -488,6 +505,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["error_code"] as? String, String(passwordError.code))
     }
 
+    @MainActor
     func test_duplicating_product_without_a_password_successfully_does_not_trigger_password_action_and_returns_success_result() {
         // Given
         let product = Product.fake()
@@ -508,6 +526,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(duplicateAnalyticsEvents, [WooAnalyticsStat.duplicateProductSuccess.rawValue])
     }
 
+    @MainActor
     func test_duplicating_product_unsuccessfully_does_not_trigger_password_action_and_returns_failure_result_with_product_error() {
         // Given
         let product = Product.fake()
@@ -528,6 +547,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(duplicateAnalyticsEvents, [WooAnalyticsStat.duplicateProductFailed.rawValue])
     }
 
+    @MainActor
     func test_duplicating_product_with_custom_fields_dispatches_metadata_update_action() throws {
         // Given
         let customFields = [
@@ -568,6 +588,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(returnedProduct.product.customFields, customFields)
     }
 
+    @MainActor
     func test_core_duplicate_fetches_canonical_product_without_dispatching_legacy_copy_actions_for_supported_product_types() throws {
         for productType in [ProductType.simple, .variable, .subscription, .variableSubscription] {
             // Given
@@ -621,6 +642,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_core_duplicate_failure_is_terminal_and_does_not_run_legacy_fallback() {
         // Given
         let underlyingError = NSError(domain: "ProductDuplicate", code: 500)
@@ -649,6 +671,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(duplicateAnalyticsEvents, [WooAnalyticsStat.duplicateProductFailed.rawValue])
     }
 
+    @MainActor
     func test_core_duplicate_canonical_retrieval_failure_is_terminal_and_does_not_run_legacy_fallback() {
         // Given
         let underlyingError = NSError(domain: "ProductRetrieve", code: 500)
@@ -681,6 +704,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["error_code"] as? String, String(underlyingError.code))
     }
 
+    @MainActor
     func test_legacy_fallback_preserves_images_and_does_not_mutate_subscription_source_product() throws {
         // Given
         let images = [ProductImage(imageID: 12,
@@ -724,12 +748,14 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
         XCTAssertEqual(try result?.get().product.product.images, images)
     }
 
+    @MainActor
     func test_legacy_fallback_for_variable_product_types_recreates_variations() {
         for productType in [ProductType.variable, .variableSubscription] {
             assertLegacyFallbackRecreatesVariations(for: productType)
         }
     }
 
+    @MainActor
     func test_legacy_fallback_variable_product_failure_tracks_one_failure_only_after_final_retrieval_fails() {
         // Given
         let variationID: Int64 = 11
@@ -778,6 +804,7 @@ final class ProductFormRemoteActionUseCaseTests: XCTestCase {
 }
 
 private extension ProductFormRemoteActionUseCaseTests {
+    @MainActor
     func assertLegacyFallbackRecreatesVariations(for productType: ProductType) {
         // Given
         analyticsProvider.clearEvents()
@@ -838,6 +865,7 @@ private extension ProductFormRemoteActionUseCaseTests {
         }
     }
 
+    @MainActor
     func mockAddProduct(result: Result<Product, ProductUpdateError>) {
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -851,6 +879,7 @@ private extension ProductFormRemoteActionUseCaseTests {
         }
     }
 
+    @MainActor
     func mockUpdateProduct(result: Result<Product, ProductUpdateError>) {
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
             if case let ProductAction.updateProduct(_, onCompletion) = action {
@@ -859,6 +888,7 @@ private extension ProductFormRemoteActionUseCaseTests {
         }
     }
 
+    @MainActor
     func mockDeleteProduct(result: Result<Product, ProductUpdateError>) {
         storesManager.whenReceivingAction(ofType: ProductAction.self) { action in
             if case let ProductAction.deleteProduct(_, _, onCompletion) = action {
@@ -867,6 +897,7 @@ private extension ProductFormRemoteActionUseCaseTests {
         }
     }
 
+    @MainActor
     func mockUpdatePassword(result: Result<String?, Error>) {
         storesManager.whenReceivingAction(ofType: SitePostAction.self) { action in
             if case let SitePostAction.updateSitePostPassword(_, _, _, onCompletion) = action {

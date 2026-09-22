@@ -11,6 +11,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -31,6 +32,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         analytics = nil
     }
 
+    @MainActor
     func test_findProduct_when_there_is_an_error_then_passes_and_tracks_it() async {
         // Given
         let source = WooAnalyticsEvent.BarcodeScanning.Source.orderCreation
@@ -61,6 +63,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["reason"] as? String, "Product not found")
     }
 
+    @MainActor
     func test_findProduct_when_sku_matches_barcode_then_returns_product() async {
         // Given
         let source = WooAnalyticsEvent.BarcodeScanning.Source.orderList
@@ -88,6 +91,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["source"] as? String, source.rawValue)
     }
 
+    @MainActor
     func test_findProduct_when_global_unique_id_matches_barcode_then_returns_product() async {
         // Given
         let source = WooAnalyticsEvent.BarcodeScanning.Source.orderList
@@ -122,6 +126,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_findProduct_when_barcode_is_ean13_and_has_country_code_retries_without_it_and_without_check_digit_and_returns_product() async {
         let returningProduct = Product.fake()
         let productSKU = "72527273070"
@@ -154,6 +159,7 @@ final class BarcodeScannerItemFinderTests: XCTestCase {
         XCTAssertEqual(retrievedProduct, returningProduct)
     }
 
+    @MainActor
     private func assertTriesWithoutCheckDigit(for symbology: BarcodeSymbology) async {
         let returningProduct = Product.fake()
         let productSKU = "97802013796"

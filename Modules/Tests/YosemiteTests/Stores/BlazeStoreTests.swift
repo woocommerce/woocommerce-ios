@@ -69,6 +69,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Set up and Tear down
 
+    @MainActor
     override func setUp() {
         super.setUp()
         network = MockNetwork()
@@ -76,6 +77,7 @@ final class BlazeStoreTests: XCTestCase {
         remote = MockBlazeRemote()
     }
 
+    @MainActor
     override func tearDown() {
         network = nil
         storageManager = nil
@@ -85,6 +87,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Create campaign
 
+    @MainActor
     func test_createCampaign_does_not_throw_errors_upon_success() throws {
         // Given
         remote.whenCreatingCampaign(thenReturn: .success(()))
@@ -106,6 +109,7 @@ final class BlazeStoreTests: XCTestCase {
         try result.get()
     }
 
+    @MainActor
     func test_createCampaign_returns_error_on_failure() throws {
         // Given
         remote.whenCreatingCampaign(thenReturn: .failure(NetworkError.timeout()))
@@ -131,6 +135,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - synchronizeCampaignsList
 
+    @MainActor
     func test_synchronizeCampaignsList_returns_false_for_hasNextPage_when_number_of_retrieved_results_is_zero() throws {
         // Given
         remote.whenLoadingCampaignList(thenReturn: .success([]))
@@ -154,6 +159,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertFalse(hasNextPage)
     }
 
+    @MainActor
     func test_synchronizeCampaignsList_returns_true_for_hasNextPage_when_number_of_retrieved_results_is_not_zero() throws {
         // Given
         remote.whenLoadingCampaignList(thenReturn: .success([.fake()]))
@@ -177,6 +183,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertTrue(hasNextPage)
     }
 
+    @MainActor
     func test_synchronizeCampaignsList_returns_error_on_failure() throws {
         // Given
         remote.whenLoadingCampaignList(thenReturn: .failure(NetworkError.timeout()))
@@ -200,6 +207,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
+    @MainActor
     func test_synchronizeCampaignsList_stores_campaigns_upon_success() throws {
         // Given
         remote.whenLoadingCampaignList(thenReturn: .success([.fake().copy(campaignID: "123")]))
@@ -224,6 +232,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignListCount, 1)
     }
 
+    @MainActor
     func test_synchronizeCampaignsList_deletes_campaigns_when_items_recieved_from_API_with_zero_as_pagination_skip_value() {
         // Given
         storeCampaignListItem(.fake().copy(siteID: sampleSiteID, campaignID: "123"))
@@ -249,6 +258,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignListCount, 1)
     }
 
+    @MainActor
     func test_synchronizeCampaignsList_does_not_delete_campaigns_when_receiving_subsequent_items_using_non_zero_pagination_skip_value() {
         // Given
         storeCampaignListItem(.fake().copy(siteID: sampleSiteID, campaignID: "123"))
@@ -276,6 +286,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Synchronize single campaign
 
+    @MainActor
     func test_synchronizeCampaign_updates_campaign_in_storage_upon_success() throws {
         // Given
         let campaignID = "315"
@@ -303,6 +314,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Synchronize target devices
 
+    @MainActor
     func test_synchronizeTargetDevices_is_successful_when_fetching_successfully() throws {
         // Given
         remote.whenFetchingTargetDevices(thenReturn: .success([.fake().copy(id: "mobile")]))
@@ -323,6 +335,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(devices.count, 1)
     }
 
+    @MainActor
     func test_synchronizeTargetDevices_stores_devices_upon_success() throws {
         // Given
         remote.whenFetchingTargetDevices(thenReturn: .success([.fake().copy(id: "mobile")]))
@@ -344,6 +357,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetDeviceCount, 1)
     }
 
+    @MainActor
     func test_synchronizeTargetDevices_overwrites_existing_devices_with_the_given_locale() throws {
         // Given
         let locale = "vi"
@@ -374,6 +388,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(device.locale, locale)
     }
 
+    @MainActor
     func test_synchronizeTargetDevices_returns_error_on_failure() throws {
         // Given
         remote.whenFetchingTargetDevices(thenReturn: .failure(NetworkError.timeout()))
@@ -396,6 +411,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Synchronize target languages
 
+    @MainActor
     func test_synchronizeTargetLanguages_is_successful_when_fetching_successfully() throws {
         // Given
         remote.whenFetchingTargetLanguages(thenReturn: .success([.fake().copy(id: "en")]))
@@ -416,6 +432,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(languages.count, 1)
     }
 
+    @MainActor
     func test_synchronizeTargetLanguages_stores_languages_upon_success() throws {
         // Given
         remote.whenFetchingTargetLanguages(thenReturn: .success([.fake().copy(id: "en")]))
@@ -437,6 +454,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetLanguageCount, 1)
     }
 
+    @MainActor
     func test_synchronizeTargetLanguages_overwrites_existing_languages_with_the_given_locale() throws {
         // Given
         let locale = "en"
@@ -467,6 +485,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(language.locale, locale)
     }
 
+    @MainActor
     func test_synchronizeTargetLanguages_returns_error_on_failure() throws {
         // Given
         remote.whenFetchingTargetLanguages(thenReturn: .failure(NetworkError.timeout()))
@@ -489,6 +508,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Synchronize target topics
 
+    @MainActor
     func test_synchronizeTargetTopics_is_successful_when_fetching_successfully() throws {
         // Given
         remote.whenFetchingTargetTopics(thenReturn: .success([.fake().copy(id: "IAB1")]))
@@ -509,6 +529,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(topics.count, 1)
     }
 
+    @MainActor
     func test_synchronizeTargetTopics_stores_topics_upon_success() throws {
         // Given
         remote.whenFetchingTargetTopics(thenReturn: .success([.fake().copy(id: "IAB1")]))
@@ -530,6 +551,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedTargetTopicCount, 1)
     }
 
+    @MainActor
     func test_synchronizeTargetTopics_overwrites_existing_topics_with_the_given_locale() throws {
         // Given
         let locale = "en"
@@ -560,6 +582,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(topic.locale, locale)
     }
 
+    @MainActor
     func test_synchronizeTargetTopics_returns_error_on_failure() throws {
         // Given
         remote.whenFetchingTargetTopics(thenReturn: .failure(NetworkError.timeout()))
@@ -582,6 +605,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Fetching target locations
 
+    @MainActor
     func test_fetchTargetLocations_is_successful_when_fetching_successfully() throws {
         // Given
         remote.whenFetchingTargetLocations(thenReturn: .success([.fake().copy(id: 123)]))
@@ -602,6 +626,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(locations.count, 1)
     }
 
+    @MainActor
     func test_fetchTargetLocations_returns_error_on_failure() throws {
         // Given
         remote.whenFetchingTargetLocations(thenReturn: .failure(NetworkError.timeout()))
@@ -624,6 +649,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Fetching forecasted impressions
 
+    @MainActor
     func test_fetchForecastedImpressions_is_successful_when_fetching_successfully() throws {
         // Given
         remote.whenFetchingForecastedImpressions(thenReturn: .success(.fake().copy(totalImpressionsMax: 12345)))
@@ -646,6 +672,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(impressions.totalImpressionsMax, 12345)
     }
 
+    @MainActor
     func test_fetchForecastedImpressions_returns_error_on_failure() throws {
         // Given
         remote.whenFetchingForecastedImpressions(thenReturn: .failure(NetworkError.timeout()))
@@ -670,6 +697,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Fetching AI suggestions
 
+    @MainActor
     func test_fetchAISuggestions_returns_suggestions_when_fetching_successfully() throws {
         // Given
         let suggestions = [BlazeAISuggestion(siteName: "Name 1", textSnippet: "Description 1", ctaText: "CTA 1"),
@@ -694,6 +722,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(value, suggestions)
     }
 
+    @MainActor
     func test_fetchAISuggestions_returns_error_on_failure() throws {
         // Given
         remote.whenFetchingAISuggestionsResult(thenReturn: .failure(NetworkError.timeout()))
@@ -718,6 +747,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Fetching payment info
 
+    @MainActor
     func test_fetchPaymentInfo_is_successful_when_fetching_successfully() throws {
         // Given
         let paymentInfo = BlazePaymentInfo.fake().copy(
@@ -740,6 +770,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(info, paymentInfo)
     }
 
+    @MainActor
     func test_fetchPaymentInfo_returns_error_on_failure() throws {
         // Given
         remote.whenFetchingPaymentInfo(thenReturn: .failure(NetworkError.timeout()))
@@ -763,6 +794,7 @@ final class BlazeStoreTests: XCTestCase {
 
     // MARK: - Synchronize campaign objectives
 
+    @MainActor
     func test_synchronizeCampaignObjectives_is_successful_when_fetching_successfully() throws {
         // Given
         remote.whenFetchingCampaignObjectives(thenReturn: .success([.fake().copy(id: "sale")]))
@@ -783,6 +815,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(objectives.count, 1)
     }
 
+    @MainActor
     func test_synchronizeCampaignObjectives_stores_devices_upon_success() throws {
         // Given
         remote.whenFetchingCampaignObjectives(thenReturn: .success([.fake().copy(id: "sale")]))
@@ -804,6 +837,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(storedCampaignObjectiveCount, 1)
     }
 
+    @MainActor
     func test_synchronizeCampaignObjectives_overwrites_existing_objective_with_the_given_locale() throws {
         // Given
         let locale = "vi"
@@ -836,6 +870,7 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(objective.locale, locale)
     }
 
+    @MainActor
     func test_synchronizeCampaignObjectives_returns_error_on_failure() throws {
         // Given
         remote.whenFetchingCampaignObjectives(thenReturn: .failure(NetworkError.timeout()))
@@ -859,6 +894,7 @@ final class BlazeStoreTests: XCTestCase {
 
 private extension BlazeStoreTests {
     @discardableResult
+    @MainActor
     func storeCampaignListItem(_ campaign: Networking.BlazeCampaignListItem) -> Storage.BlazeCampaignListItem {
         let storedCampaign = storage.insertNewObject(ofType: BlazeCampaignListItem.self)
         storedCampaign.update(with: campaign)
@@ -866,6 +902,7 @@ private extension BlazeStoreTests {
     }
 
     @discardableResult
+    @MainActor
     func storeTargetDevice(_ device: Networking.BlazeTargetDevice) -> Storage.BlazeTargetDevice {
         let storedDevice = storage.insertNewObject(ofType: BlazeTargetDevice.self)
         storedDevice.update(with: device)
@@ -873,6 +910,7 @@ private extension BlazeStoreTests {
     }
 
     @discardableResult
+    @MainActor
     func storeTargetLanguage(_ language: Networking.BlazeTargetLanguage) -> Storage.BlazeTargetLanguage {
         let storedLanguage = storage.insertNewObject(ofType: BlazeTargetLanguage.self)
         storedLanguage.update(with: language)
@@ -880,6 +918,7 @@ private extension BlazeStoreTests {
     }
 
     @discardableResult
+    @MainActor
     func storeTargetTopic(_ topic: Networking.BlazeTargetTopic) -> Storage.BlazeTargetTopic {
         let storedTopic = storage.insertNewObject(ofType: BlazeTargetTopic.self)
         storedTopic.update(with: topic)
@@ -887,6 +926,7 @@ private extension BlazeStoreTests {
     }
 
     @discardableResult
+    @MainActor
     func storeCampaignObjectives(_ objective: Networking.BlazeCampaignObjective) -> Storage.BlazeCampaignObjective {
         let storedItem = storage.insertNewObject(ofType: BlazeCampaignObjective.self)
         storedItem.update(with: objective)

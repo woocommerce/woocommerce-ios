@@ -28,6 +28,7 @@ class PluginListViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_syncPlugins_dispatches_synchronizeSitePlugins_action_with_correct_siteID() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)

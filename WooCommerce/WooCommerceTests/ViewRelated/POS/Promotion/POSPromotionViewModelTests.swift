@@ -10,6 +10,7 @@ final class POSPromotionViewModelTests: XCTestCase {
     private var sessionManager: SessionManager!
     private var stores: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         analyticsProvider = MockAnalyticsProvider()

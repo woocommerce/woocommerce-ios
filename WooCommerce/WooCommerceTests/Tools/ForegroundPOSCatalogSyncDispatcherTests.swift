@@ -119,6 +119,7 @@ struct ForegroundPOSCatalogSyncDispatcherTests {
     }
 
     @Test
+    @MainActor
     func defaultSiteNotification_stopsDispatcher() async throws {
         // Given
         await sut.start()

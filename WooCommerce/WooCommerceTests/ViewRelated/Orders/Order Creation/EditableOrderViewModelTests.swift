@@ -16,6 +16,7 @@ final class EditableOrderViewModelTests: XCTestCase {
     let sampleOrderID: Int64 = 1234
     let sampleProductID: Int64 = 5
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -62,6 +63,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.flow, .editing(initialOrder: order))
     }
 
+    @MainActor
     func test_editing_with_request_currency_uses_transient_currency_products_in_selector() throws {
         // Given
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, currency: "EUR")
@@ -242,6 +244,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.navigationTrailingItem)
     }
 
+    @MainActor
     func test_edition_view_model_has_a_navigation_loading_item_when_synching() {
         // Given
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID)
@@ -266,6 +269,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(navigationItemDuringSync, .loading)
     }
 
+    @MainActor
     func test_loading_indicator_is_enabled_during_network_request() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -287,6 +291,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(navigationItem, .loading)
     }
 
+    @MainActor
     func test_view_is_disabled_during_network_request() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -308,6 +313,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(isViewDisabled)
     }
 
+    @MainActor
     func test_create_button_is_enabled_after_the_network_operation_completes() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -328,6 +334,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.navigationTrailingItem, .create)
     }
 
+    @MainActor
     func test_view_model_fires_error_notice_when_order_creation_fails() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -348,6 +355,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fixedNotice, EditableOrderViewModel.NoticeFactory.createOrderErrorNotice(error, order: .fake()))
     }
 
+    @MainActor
     func test_view_model_fires_error_notice_when_order_sync_fails() {
         // Given
         let synchronizer = RemoteOrderSynchronizer(siteID: sampleSiteID, flow: .creation, stores: stores)
@@ -374,6 +382,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fixedNotice, EditableOrderViewModel.NoticeFactory.syncOrderErrorNotice(error, flow: .creation, with: synchronizer))
     }
 
+    @MainActor
     func test_view_model_fires_error_notice_when_order_sync_fails_because_of_coupons() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -399,6 +408,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fixedNotice?.message, NSLocalizedString("Sorry, this coupon is not applicable to selected products.", comment: ""))
     }
 
+    @MainActor
     func test_view_model_clears_error_notice_when_order_is_syncing() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -610,6 +620,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.map { $0.productRow.stepperViewModel }[safe: 1]?.quantity, 1)
     }
 
+    @MainActor
     func test_bundle_order_item_with_child_items_includes_full_bundle_configuration_when_quantity_is_incremented() throws {
         // Given
         let bundledProduct = Product.fake().copy(siteID: sampleSiteID, productID: 665, productTypeKey: ProductType.simple.rawValue)
@@ -1272,6 +1283,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.couponLineViewModels.isEmpty)
     }
 
+    @MainActor
     func test_payment_section_loading_indicator_is_enabled_while_order_syncs() {
         // When
         let isLoadingDuringSync: Bool = waitFor { promise in
@@ -1293,6 +1305,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.paymentDataViewModel.isLoading) // Disabled after sync ends
     }
 
+    @MainActor
     func test_payment_section_loading_indicator_is_disabled_while_non_editable_order_syncs() {
         // Given
         let order = Order.fake().copy(siteID: sampleSiteID, orderID: sampleOrderID, isEditable: false)
@@ -1316,6 +1329,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(isPaymentsLoadingVisible)
     }
 
+    @MainActor
     func test_payment_section_is_updated_when_order_has_taxes() {
         // Given
         let expectation = expectation(description: "Order with taxes is synced")
@@ -1673,6 +1687,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(analytics.receivedEvents.isEmpty)
     }
 
+    @MainActor
     func test_sync_failure_tracked_when_sync_fails() throws {
         // Given
         let analytics = MockAnalyticsProvider()
@@ -1759,6 +1774,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.customerNoteDataViewModel.customerNote, expectedCustomerNote)
     }
 
+    @MainActor
     func test_discard_order_deletes_order_if_order_exists_remotely() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -1793,6 +1809,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(orderDeleted)
     }
 
+    @MainActor
     func test_discard_order_skips_remote_deletion_for_local_order() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -1804,6 +1821,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         viewModel.discardOrder()
     }
 
+    @MainActor
     func test_shouldShowNewTaxRateSection_when_there_are_not_items_then_it_returns_false() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -1830,6 +1848,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowNewTaxRateSection)
     }
 
+    @MainActor
     func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerBillingAddress_and_there_are_items_then_returns_true() throws {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -1867,6 +1886,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerShippingAddress_and_there_are_items_then_returns_true() throws {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -1904,6 +1924,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerBillingAddress_and_there_are_custom_amounts_then_returns_true() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -1936,6 +1957,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_customerShippingAddress_and_there_are_custom_amounts_then_returns_true() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -1968,6 +1990,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_shouldShowNewTaxRateSection_when_taxBasedOnSetting_is_shopBaseAddress_and_there_are_items_then_returns_false() throws {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -1994,6 +2017,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowNewTaxRateSection)
     }
 
+    @MainActor
     func test_shouldShowNewTaxRateSection_when_order_is_not_editable_and_flow_is_editing_then_returns_false() {
             // Given
             stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -2038,6 +2062,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.paymentDataViewModel.shouldShowTaxesInfoButton)
     }
 
+    @MainActor
     func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerBillingAddress_then_updates_only_addressFormViewModel_location_fields_with_new_data() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -2073,6 +2098,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressFormViewModel.fields.city, taxRate.cities.first)
     }
 
+    @MainActor
     func test_onTaxRateSelected_when_taxBasedOnSetting_is_customerShippingAddress_then_updates_only_addressFormViewModel_location_fields_with_new_data() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -2109,6 +2135,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressFormViewModel.secondaryFields.city, taxRate.cities.first)
     }
 
+    @MainActor
     func test_onTaxRateSelected_when_taxBasedOnSetting_is_shopBaseAddress_then_it_does_not_reset_addressFormViewModel_with_new_data() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -2253,6 +2280,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.canBeDismissed)
     }
 
+    @MainActor
     func test_onFinished_is_called_when_creating_order() {
         // Given
         var isCallbackCalled = false
@@ -2442,6 +2470,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
     }
 
+    @MainActor
     func test_addScannedProductToOrder_when_sku_is_not_found_then_returns_productNotFound_error_and_shows_autodismissable_notice_with_retry_action() {
         // Given
         let actionError = NSError(domain: "Error", code: 0)
@@ -2496,6 +2525,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_addScannedProductToOrder_when_existing_sku_is_found_then_retrieving_a_matching_product_returns_success() {
         // Given
         let analytics = MockAnalyticsProvider()
@@ -2545,6 +2575,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentOrderItems.count, 0)
     }
 
+    @MainActor
     func test_addScannedProductToOrder_when_existing_sku_is_found_then_succeeds_to_add_product_to_order() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID, purchasable: true)
@@ -2754,6 +2785,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(orderItem.quantity, 1)
     }
 
+    @MainActor
     func test_when_initialItem_is_bundle_product_it_sets_configurableScannedProductViewModel_without_order_items() throws {
         // Given
         let bundleProduct = createAndInsertBundleProduct(siteID: sampleSiteID, productID: 1, bundleItems: [.fake().copy(productID: 2)])
@@ -2778,6 +2810,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentOrderItems.count, 0)
     }
 
+    @MainActor
     func test_order_created_when_tax_based_on_is_customer_billing_address_then_property_is_updated() {
         // Given
         let expectedString = NSLocalizedString("Calculated on billing address.", comment: "")
@@ -2800,6 +2833,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayTaxCalculationHint, expectedString)
     }
 
+    @MainActor
     func test_order_created_when_tax_based_on_is_shop_base_address_then_property_is_updated() {
         // Given
         let expectedString = NSLocalizedString("Calculated on shop base address.", comment: "")
@@ -2822,6 +2856,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayTaxCalculationHint, expectedString)
     }
 
+    @MainActor
     func test_order_created_when_tax_based_on_is_customer_shipping_address_then_property_is_updated() {
         // Given
         let expectedString = NSLocalizedString("Calculated on shipping address.", comment: "")
@@ -2844,6 +2879,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentDataViewModel.taxBasedOnSetting?.displayTaxCalculationHint, expectedString)
     }
 
+    @MainActor
     func test_payment_data_view_model_when_calling_onDismissWpAdminWebViewClosure_then_calls_to_update_elements() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -2867,6 +2903,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(isUpdatingOrder)
     }
 
+    @MainActor
     func test_payment_data_view_model_when_calling_onDismissWpAdminWebViewClosure_then_calls_to_retrieveTaxBasedOnSetting() {
         // Given
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
@@ -2889,6 +2926,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(isRetrievingTaxBasedOnSetting)
     }
 
+    @MainActor
     func test_viewModel_when_taxRate_is_stored_then_resets_addressFormViewModel_fields_with_new_data() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -2934,6 +2972,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressFormViewModel.fields.city, taxRate.cities.first)
     }
 
+    @MainActor
     func test_forgetTaxRate_then_resets_addressFormViewModel_fields() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -2986,6 +3025,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.addressFormViewModel.fields.city.isEmpty)
     }
 
+    @MainActor
     func test_viewModel_when_taxRate_is_stored_then_taxRateRowAction_is_storedTaxRateSheet() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -3025,6 +3065,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_viewModel_when_taxRate_is_stored_then_shouldStoreTaxRateInSelectorByDefault_is_true() {
         // Given
         stores.whenReceivingAction(ofType: SettingAction.self, thenCall: { action in
@@ -3064,6 +3105,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_isGiftCardEnabled_becomes_true_when_gift_cards_plugin_is_active() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -3088,6 +3130,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, true)
     }
 
+    @MainActor
     func test_isGiftCardEnabled_stays_false_when_gift_cards_plugin_is_not_active() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -3112,6 +3155,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel?.paymentDataViewModel.isGiftCardEnabled, false)
     }
 
+    @MainActor
     func test_isGiftCardEnabled_stays_false_when_gift_cards_plugin_is_not_installed() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -3263,6 +3307,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // Existing items: bundle A with child item, non-bundle B —> select bundle A again and configure in product selector
     // —> order items to update remotely: bundle A with child item, non-bundle B, bundle A with bundle configuration
+    @MainActor
     func test_when_existing_items_contain_bundle_and_non_bundle_then_selecting_same_bundle_results_in_two_bundles() throws {
         // Given
         let bundleItem = ProductBundleItem.fake().copy(productID: 5)
@@ -3329,6 +3374,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // Existing items: bundle A with child item —> select non-bundle B which is A's child item in product selector
     // —> order items to update remotely: bundle A with child item, non-bundle B
+    @MainActor
     func test_when_existing_items_contain_bundle_then_selecting_non_bundle_child_item_results_in_same_bundle_and_new_non_bundle_item() throws {
         // Given
         let itemProductID: Int64 = 777
@@ -3395,6 +3441,7 @@ final class EditableOrderViewModelTests: XCTestCase {
 
     // No existing items —> select bundle A and configure, repeat selecting and configuring bundle A in product selector
     // —> order items to update remotely: bundle A with bundle configuration, bundle A with bundle configuration
+    @MainActor
     func test_when_no_existing_items_then_selecting_bundle_twice_results_in_two_bundle_items() throws {
         // Given
         let bundleItem = ProductBundleItem.fake().copy(productID: 5)
@@ -3458,6 +3505,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(secondNewBundleOrderItem.quantity, 1)
     }
 
+    @MainActor
     func test_when_selecting_bundle_with_recalculate_sync_then_bundle_configuration_is_preserved() throws {
         // Given
         let bundleItem = ProductBundleItem.fake().copy(productID: 5)
@@ -3508,6 +3556,7 @@ final class EditableOrderViewModelTests: XCTestCase {
     // No existing items —> select bundle A and configure in product selector -> close product selector
     // —> select bundle A and configure in product selector
     // —> order items to update remotely: bundle A with the latest bundle configuration
+    @MainActor
     func test_selecting_bundle_then_canceling_then_selecting_bundle_again_results_in_one_bundle_item_with_the_latest_configuration() throws {
         // Given
         let bundleItem = ProductBundleItem.fake().copy(productID: 5)
@@ -3705,6 +3754,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         assertEqual(shippingLine.methodTitle, editShippingLineViewModel.methodTitle)
     }
 
+    @MainActor
     func test_order_creation_when_initialCustomer_is_nil_does_not_trigger_sync() {
         // Given, When
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -3717,6 +3767,7 @@ final class EditableOrderViewModelTests: XCTestCase {
                                    initialCustomer: nil)
     }
 
+    @MainActor
     func test_order_creation_when_initialCustomer_is_not_nil_syncs_order_with_customer_data() {
         // Given
         let address = Address.fake().copy(address1: "1 Main Street")
@@ -3784,6 +3835,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.canBeDismissed)
     }
 
+    @MainActor
     func test_onCreateOrderTapped_schedules_potential_merchant_notification() {
         // Given
         let mockScheduler = MockPOSNotificationScheduler()
@@ -3811,6 +3863,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(mockScheduler.lastMerchantType, .potentialMerchant)
     }
 
+    @MainActor
     func test_onCreateOrderTapped_does_not_schedule_notification_on_failure() {
         // Given
         let mockScheduler = MockPOSNotificationScheduler()
@@ -3909,6 +3962,7 @@ private extension EditableOrderViewModelTests {
         }, completion: {}, on: .main)
     }
 
+    @MainActor
     func createAndInsertBundleProduct(siteID: Int64, productID: Int64, bundleItems: [Yosemite.ProductBundleItem]) -> Yosemite.Product {
         let bundleProduct = Product.fake().copy(siteID: siteID,
                                                 productID: productID,
@@ -3972,6 +4026,7 @@ private extension EditableOrderViewModelTests {
 private extension EditableOrderViewModelTests {
     /// Stubs the SKU lookup so that scanning any barcode resolves to the given product, and the bundled
     /// product lookup so that the product's children resolve to `bundledChildren`.
+    @MainActor
     func mockScannedProductRetrieval(_ product: Product, bundledChildren: [Product] = []) {
         storageManager.insertSampleProduct(readOnlyProduct: product)
         stores.whenReceivingAction(ofType: ProductAction.self, thenCall: { action in

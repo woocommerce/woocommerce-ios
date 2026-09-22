@@ -138,6 +138,7 @@ final class FilterProductListViewModelTests: XCTestCase {
         XCTAssertEqual(retrievedFilters, [expectedFilters])
     }
 
+    @MainActor
     func test_saveSelectedFilterToHistory_sends_correct_settings_to_storage() {
         // Given
         let filters = createMockFilters()
@@ -165,6 +166,7 @@ final class FilterProductListViewModelTests: XCTestCase {
         XCTAssertEqual(savedSettings?.favoriteProduct, filters.favoriteProduct?.isActive ?? false)
     }
 
+    @MainActor
     func test_removeFilterFromHistory_removes_the_correct_settings_in_storage() {
         // Given
         let filters = createMockFilters()

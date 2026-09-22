@@ -12,6 +12,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -119,6 +120,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
     func test_fetchInProgress_is_updated_correctly_when_fetching_search_results() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, stores: stores, onCompletion: { _ in })
+        @MainActor
         var fetchingStates: [Bool] = []
 
         // When
@@ -138,6 +140,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
     func test_searchResults_is_updated_correctly_after_fetching_locations() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, stores: stores, onCompletion: { _ in })
+        @MainActor
         let tokyo = BlazeTargetLocation.fake().copy(id: 123, name: "Tokyo")
 
         // When
@@ -153,6 +156,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
     func test_searchResults_is_updated_correctly_after_updating_searchQuery() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, stores: stores, onCompletion: { _ in })
+        @MainActor
         let tokyo = BlazeTargetLocation.fake().copy(id: 123, name: "Tokyo")
 
         // When
@@ -187,6 +191,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
     func test_addOptionFromSearchResult_clears_searchResult() {
         // Given
         let viewModel = BlazeTargetLocationPickerViewModel(siteID: sampleSiteID, selectedLocations: nil, stores: stores, onCompletion: { _ in })
+        @MainActor
         let tokyo = BlazeTargetLocation.fake().copy(id: 123, name: "Tokyo")
 
         // When
@@ -225,6 +230,7 @@ final class BlazeTargetLocationPickerViewModelTests: XCTestCase {
 }
 
 private extension BlazeTargetLocationPickerViewModelTests {
+    @MainActor
     func mockSearchLocationRequest(with result: Result<[BlazeTargetLocation], Error>) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {

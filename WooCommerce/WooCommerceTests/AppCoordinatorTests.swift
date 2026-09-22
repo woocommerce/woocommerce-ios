@@ -17,6 +17,7 @@ final class AppCoordinatorTests: XCTestCase {
 
     private let window = UIWindow(frame: UIScreen.main.bounds)
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -186,6 +187,7 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertTrue(loginNavigationController.topViewController is ULErrorViewController)
     }
 
+    @MainActor
     func test_starting_app_logged_in_with_selected_site_stays_on_tabbar() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -206,6 +208,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
     }
 
+    @MainActor
     func test_resetting_selected_site_while_on_tabbar_presents_store_picker() throws {
         // Given
         // App is logged in with a selected site, so the root is the main tab bar.
@@ -234,6 +237,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(storePickerNavigationController.topViewController, isAnInstanceOf: StorePickerViewController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_in_with_wporg_credentials_and_selected_site_stays_on_tabbar() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.wporgCredentials)
@@ -254,6 +258,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_in_with_application_password_credentials_and_selected_site_stays_on_tabbar() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
@@ -274,6 +279,7 @@ final class AppCoordinatorTests: XCTestCase {
         assertThat(window.rootViewController, isAnInstanceOf: MainTabBarController.self)
     }
 
+    @MainActor
     func test_starting_app_logged_in_with_selected_site_and_ineligible_status_presents_role_error() throws {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)

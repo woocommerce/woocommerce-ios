@@ -16,6 +16,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
     private let sampleAdminURL = "https://example.com/wp-admin/"
 
+    @MainActor
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(adminURL: sampleAdminURL)))
         analyticsProvider = MockAnalyticsProvider()
@@ -25,6 +26,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         vm = createViewModel()
     }
 
+    @MainActor
     func test_cards_viewmodels_show_correct_data_after_updating_from_network() async {
         // Given
         let storage = MockStorageManager()
@@ -80,6 +82,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         XCTAssertEqual(vm.giftCardsCard.leadingValue, "20")
     }
 
+    @MainActor
     func test_cards_viewmodels_redacted_while_updating_from_network() async {
         // Given
         var loadingRevenueCardRedacted: Bool = false
@@ -147,6 +150,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         // Given
     }
 
+    @MainActor
     func test_session_card_is_hidden_for_sites_without_jetpack_plugin() {
         // Given
         let storesForNonJetpackSite = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))
@@ -198,6 +202,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         assertEqual("Week to Date", optionSelectedEventProperty)
     }
 
+    @MainActor
     func test_retrieving_stats_tracks_expected_waiting_time_event() async {
         // Given
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
@@ -222,6 +227,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
 
     // MARK: Customized Analytics
 
+    @MainActor
     func test_enabledCards_shows_correct_data_after_loading_from_storage() async {
         // Given
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -243,6 +249,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         assertEqual([.revenue], vm.enabledCards)
     }
 
+    @MainActor
     func test_enabledCards_contains_new_cards_not_in_stored_customizations_when_extensions_are_active() async {
         // Given
         let storage = MockStorageManager()
@@ -284,6 +291,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         assertEqual([.revenue], vm.enabledCards)
     }
 
+    @MainActor
     func test_it_stores_updated_analytics_cards_when_saved() async throws {
         // When
         let storedAnalyticsCards = try waitFor { promise in
@@ -381,6 +389,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         await vm.updateData()
     }
 
+    @MainActor
     func test_enabling_new_card_fetches_required_data() async throws {
         // Given it fetches order stats (current and previous) for initial cards
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in
@@ -432,6 +441,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         assertEqual(5, stores.receivedActions.filter { $0 is StatsActionV4 }.count)
     }
 
+    @MainActor
     func test_changing_card_settings_without_enabling_new_cards_does_not_update_data() async throws {
         // Given
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -461,6 +471,7 @@ final class AnalyticsHubViewModelTests: XCTestCase {
         customizeAnalytics.saveChanges()
     }
 
+    @MainActor
     func test_sessions_card_is_inactive_in_customizeAnalytics_when_ineligible() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, defaultSite: .fake().copy(siteID: -1)))
@@ -595,6 +606,7 @@ extension AnalyticsHubViewModelTests {
         XCTAssertFalse(vm.isFocusedCardMode)
     }
 
+    @MainActor
     func test_enabledCards_when_focusedCard_is_unsupported_on_store_then_returns_empty() {
         // Given – JCP store cannot display the sessions card
         let jcpStores = MockStoresManager(sessionManager: .makeForTesting(

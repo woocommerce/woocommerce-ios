@@ -20,6 +20,7 @@ final class DefaultThemeInstallerTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_it_stores_theme_correctly() throws {
         // Given
         let siteID: Int64 = 123
@@ -38,6 +39,7 @@ final class DefaultThemeInstallerTests: XCTestCase {
         XCTAssertEqual(themes["\(siteID)"], themeID)
     }
 
+    @MainActor
     func test_it_installs_theme_if_stored_theme_available() async throws {
         // Given
         let siteID: Int64 = 123
@@ -80,6 +82,7 @@ final class DefaultThemeInstallerTests: XCTestCase {
         XCTAssertEqual(themeActivatedForSiteID, siteID)
     }
 
+    @MainActor
     func test_it_clears_stored_theme_if_installation_successful() async throws {
         // Given
         let siteID: Int64 = 123
@@ -110,6 +113,7 @@ final class DefaultThemeInstallerTests: XCTestCase {
         XCTAssertNil(themes["\(siteID)"])
     }
 
+    @MainActor
     func test_it_does_not_attempt_theme_installation_if_stored_theme_not_available() async throws {
         // Given
         let siteID: Int64 = 123
@@ -144,6 +148,7 @@ final class DefaultThemeInstallerTests: XCTestCase {
         XCTAssertNil(activatedThemeID)
     }
 
+    @MainActor
     func test_install_tracks_success() async throws {
         // Given
         let themeID = "tsubaki"
@@ -169,6 +174,7 @@ final class DefaultThemeInstallerTests: XCTestCase {
         XCTAssertEqual(eventProperties["theme"] as? String, themeID)
     }
 
+    @MainActor
     func test_install_tracks_installation_failure() async throws {
         // Given
         let themeID = "tsubaki"
@@ -193,6 +199,7 @@ final class DefaultThemeInstallerTests: XCTestCase {
         XCTAssertEqual(eventProperties["error_code"] as? String, "501")
     }
 
+    @MainActor
     func test_install_tracks_activation_failure() async throws {
         // Given
         let themeID = "tsubaki"
@@ -219,6 +226,7 @@ final class DefaultThemeInstallerTests: XCTestCase {
         XCTAssertEqual(eventProperties["error_code"] as? String, "500")
     }
 
+    @MainActor
     func test_installPendingThemeIfNeeded_tracks_success() async throws {
         // Given
         let siteID: Int64 = 123
@@ -252,6 +260,7 @@ final class DefaultThemeInstallerTests: XCTestCase {
         XCTAssertEqual(eventProperties["theme"] as? String, themeID)
     }
 
+    @MainActor
     func test_installPendingThemeIfNeeded_tracks_failure() async throws {
         // Given
         let siteID: Int64 = 123

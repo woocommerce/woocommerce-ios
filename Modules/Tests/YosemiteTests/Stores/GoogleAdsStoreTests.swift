@@ -19,6 +19,7 @@ final class GoogleAdsStoreTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 120934
 
+    @MainActor
     override func setUp() {
         super.setUp()
         network = MockNetwork()
@@ -26,6 +27,7 @@ final class GoogleAdsStoreTests: XCTestCase {
         storageManager = MockStorageManager()
     }
 
+    @MainActor
     override func tearDown() {
         network = nil
         remote = nil
@@ -35,6 +37,7 @@ final class GoogleAdsStoreTests: XCTestCase {
 
     // MARK: - Check connection
 
+    @MainActor
     func test_checkConnection_returns_connection_on_success() throws {
         // Given
         let store = GoogleAdsStore(dispatcher: Dispatcher(),
@@ -56,6 +59,7 @@ final class GoogleAdsStoreTests: XCTestCase {
         assertEqual(connection, receivedConnection)
     }
 
+    @MainActor
     func test_checkConnection_returns_error_on_failure() throws {
         // Given
         let store = GoogleAdsStore(dispatcher: Dispatcher(),
@@ -78,6 +82,7 @@ final class GoogleAdsStoreTests: XCTestCase {
 
     // MARK: - Fetch campaigns
 
+    @MainActor
     func test_checkCampaigns_returns_campaign_list_on_success() throws {
         // Given
         let store = GoogleAdsStore(dispatcher: Dispatcher(),
@@ -99,6 +104,7 @@ final class GoogleAdsStoreTests: XCTestCase {
         assertEqual([campaign], receivedCampaigns)
     }
 
+    @MainActor
     func test_fetchCampaigns_returns_error_on_failure() throws {
         // Given
         let store = GoogleAdsStore(dispatcher: Dispatcher(),
@@ -121,6 +127,7 @@ final class GoogleAdsStoreTests: XCTestCase {
 
     // MARK: - Retrieve campaign stats
 
+    @MainActor
     func test_retrieveCampaignStats_returns_campaign_stats_on_success() throws {
         // Given
         let store = GoogleAdsStore(dispatcher: Dispatcher(),
@@ -146,6 +153,7 @@ final class GoogleAdsStoreTests: XCTestCase {
         assertEqual(campaignStats, receivedCampaignStats)
     }
 
+    @MainActor
     func test_retrieveCampaigns_compiles_multiple_pages_of_campaign_stats() throws {
         // Given
         let store = GoogleAdsStore(dispatcher: Dispatcher(),
@@ -176,6 +184,7 @@ final class GoogleAdsStoreTests: XCTestCase {
         assertEqual(2, receivedCampaignStats.campaigns.count)
     }
 
+    @MainActor
     func test_retrieveCampaignStats_returns_error_on_failure() throws {
         // Given
         let store = GoogleAdsStore(dispatcher: Dispatcher(),

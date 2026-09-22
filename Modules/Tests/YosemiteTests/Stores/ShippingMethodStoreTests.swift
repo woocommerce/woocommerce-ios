@@ -30,6 +30,7 @@ final class ShippingMethodStoreTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
 
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -41,6 +42,7 @@ final class ShippingMethodStoreTests: XCTestCase {
 
     /// Verifies that `ShippingMethodStore.synchronizeShippingMethods` effectively persists any retrieved `ShippingMethod`.
     ///
+    @MainActor
     func test_synchronizeShippingMethods_effectively_persists_retrieved_shipping_methods() {
         // Given
         let store = ShippingMethodStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -65,6 +67,7 @@ final class ShippingMethodStoreTests: XCTestCase {
 
     /// Verifies that `ShippingMethodStore.synchronizeShippingMethods` removes any `ShippingMethod` not included in the response.
     ///
+    @MainActor
     func test_synchronizeShippingMethods_removes_stale_shipping_methods_from_storage() {
         // Given
         let store = ShippingMethodStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -90,6 +93,7 @@ final class ShippingMethodStoreTests: XCTestCase {
 
     /// Verifies that `ShippingMethodStore.synchronizeShippingMethods` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_synchronizeShippingMethods_returns_error_upon_response_error() {
         // Given
         let store = ShippingMethodStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -109,6 +113,7 @@ final class ShippingMethodStoreTests: XCTestCase {
 
     /// Verifies that `ShippingMethodStore.synchronizeShippingMethods` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func test_synchronizeShippingMethods_returns_error_upon_empty_response() {
         // Given
         let store = ShippingMethodStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -129,10 +134,12 @@ final class ShippingMethodStoreTests: XCTestCase {
 // MARK: - Private Methods
 //
 private extension ShippingMethodStoreTests {
+    @MainActor
     func sampleShippingMethod() -> Networking.ShippingMethod {
         return ShippingMethod(siteID: sampleSiteID, methodID: "flat_rate", title: "Flat rate")
     }
 
+    @MainActor
     func insertShippingMethodToStorage(_ readOnlyShippingMethod: Networking.ShippingMethod) {
         let storageShippingMethod = viewStorage.insertNewObject(ofType: Storage.ShippingMethod.self)
         storageShippingMethod.update(with: readOnlyShippingMethod)

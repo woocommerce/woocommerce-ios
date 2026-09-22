@@ -477,6 +477,7 @@ struct POSTabEligibilityCheckerTests {
         POSIneligibleReason.unsupportedCountry,
         POSIneligibleReason.unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD])
     ])
+    @MainActor
     fileprivate func refreshEligibility_syncs_site_settings_and_checks_eligibility_for_site_settings_issues(ineligibleReason: POSIneligibleReason) async throws {
         // Given
         setupCountry(country: .us, currency: .USD)
@@ -510,6 +511,7 @@ struct POSTabEligibilityCheckerTests {
         POSIneligibleReason.unsupportedCountry,
         POSIneligibleReason.unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD])
     ])
+    @MainActor
     fileprivate func refreshEligibility_returns_siteSettingsNotAvailable_when_site_settings_sync_fails(ineligibleReason: POSIneligibleReason) async throws {
         // Given
         setupCountry(country: .us, currency: .USD)
@@ -536,6 +538,7 @@ struct POSTabEligibilityCheckerTests {
         #expect(syncCalled == true) // Called during the attempt
     }
 
+    @MainActor
     @Test func refreshEligibility_returns_noInternetConnection_when_site_settings_sync_fails_with_connectivity_error() async throws {
         // Given
         setupCountry(country: .us, currency: .USD)

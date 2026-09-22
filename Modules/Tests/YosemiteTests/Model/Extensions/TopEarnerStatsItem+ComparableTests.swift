@@ -3,6 +3,7 @@ import XCTest
 @testable import Yosemite
 
 final class TopEarnerStatsItem_ComparableTests: XCTestCase {
+    @MainActor
     func test_comparing_TopEarnerStatsItem_with_equal_quantity_is_by_total_amount() {
         // When
         let statsItemWithLowerTotal = TopEarnerStatsItem.fake().copy(quantity: 2, total: 3.5)
@@ -12,6 +13,7 @@ final class TopEarnerStatsItem_ComparableTests: XCTestCase {
         XCTAssertGreaterThan(statsItemWithHigherTotal, statsItemWithLowerTotal)
     }
 
+    @MainActor
     func test_comparing_TopEarnerStatsItem_with_different_quantity_is_by_quantity() {
         // When
         let statsItemWithLowerQuantity = TopEarnerStatsItem.fake().copy(quantity: 1, total: 3.7)

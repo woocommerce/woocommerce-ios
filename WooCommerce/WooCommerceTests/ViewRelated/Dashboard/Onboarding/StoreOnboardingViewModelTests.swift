@@ -11,6 +11,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
     private var analytics: WooAnalytics!
     private let freeTrialPlanSlug = "ecommerce-trial-bundle-monthly"
 
+    @MainActor
     override func setUpWithError() throws {
         try super.setUpWithError()
         let uuid = UUID().uuidString
@@ -754,6 +755,7 @@ final class StoreOnboardingViewModelTests: XCTestCase {
 }
 
 private extension StoreOnboardingViewModelTests {
+    @MainActor
     func mockLoadOnboardingTasks(result: Result<[StoreOnboardingTask], Error>) {
         stores.whenReceivingAction(ofType: StoreOnboardingTasksAction.self) { action in
             guard case let .loadOnboardingTasks(_, completion) = action else {

@@ -32,6 +32,7 @@ final class SettingStoreTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
 
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -44,6 +45,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` effectively persists any retrieved SiteSettings.
     ///
+    @MainActor
     func testRetrieveGerneralSiteSettingsEffectivelyPersistsRetrievedSettings() {
         let expectation = self.expectation(description: "Persist general site settings")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -70,6 +72,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` effectively persists any updated SiteSettings.
     ///
+    @MainActor
     func testRetrieveGeneralSiteSettingsEffectivelyPersistsUpdatedSettings() {
         let expectation = self.expectation(description: "Persist updated general site settings")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -99,6 +102,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveGeneralSiteSettingsReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve general site settings error response")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -115,6 +119,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveGeneralSiteSettingsReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve general site settings empty response")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -133,6 +138,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredGeneralSiteSettings` effectively inserts a new SiteSetting, with the specified payload.
     ///
+    @MainActor
     func testUpsertStoredGeneralSiteSettingsEffectivelyPersistsNewSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteSiteSettings = [sampleGeneralSiteSetting(), sampleGeneralSiteSetting2()].sorted()
@@ -150,6 +156,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredGeneralSiteSettings` does not produce duplicate entries.
     ///
+    @MainActor
     func testUpsertStoredGeneralSiteSettingsEffectivelyUpdatesPreexistantSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -182,6 +189,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredGeneralSiteSettings` removes previously stored SiteSettings correctly.
     ///
+    @MainActor
     func testUpsertStoredGeneralSiteSettingsEffectivelyRemovesInvalidSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -202,6 +210,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredGeneralSiteSettings` removes previously stored SiteSettings correctly if an empty read-only array is passed in.
     ///
+    @MainActor
     func testUpsertStoredGeneralSiteSettingsEffectivelyRemovesSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -221,6 +230,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeProductSiteSettings` effectively persists any retrieved SiteSettings.
     ///
+    @MainActor
     func testRetrieveProductSiteSettingsEffectivelyPersistsRetrievedSettings() {
         let expectation = self.expectation(description: "Persist product site settings")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -247,6 +257,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeProductSiteSettings` effectively persists any updated SiteSettings.
     ///
+    @MainActor
     func testRetrieveProductSiteSettingsEffectivelyPersistsUpdatedSettings() {
         let expectation = self.expectation(description: "Persist updated product site settings")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -276,6 +287,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeProductSiteSettings` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveProductSiteSettingsReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve product site settings error response")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -292,6 +304,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeProductSiteSettings` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveProductSiteSettingsReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve product site settings empty response")
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -310,6 +323,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredProductSiteSettings` effectively inserts a new SiteSetting, with the specified payload.
     ///
+    @MainActor
     func testUpsertStoredProductSiteSettingsEffectivelyPersistsNewSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteSiteSettings = [sampleProductSiteSetting(), sampleProductSiteSetting2()].sorted()
@@ -327,6 +341,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredProductSiteSettings` does not produce duplicate entries.
     ///
+    @MainActor
     func testUpsertStoredProductSiteSettingsEffectivelyUpdatesPreexistantSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -359,6 +374,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredProductSiteSettings` removes previously stored SiteSettings correctly.
     ///
+    @MainActor
     func testUpsertStoredProductSiteSettingsEffectivelyRemovesInvalidSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -379,6 +395,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredProductSiteSettings` removes previously stored SiteSettings correctly if an empty read-only array is passed in.
     ///
+    @MainActor
     func testUpsertStoredProductSiteSettingsEffectivelyRemovesSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -398,6 +415,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStored*SiteSettings` effectively persists SiteSettings for multiple setting groups
     ///
+    @MainActor
     func testUpsertMultipleSiteSettingsGroupsEffectivelyPersistsSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteGeneralSiteSettings = [sampleGeneralSiteSetting(), sampleGeneralSiteSetting2()].sorted()
@@ -430,6 +448,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `upsertStored*SiteSettings` effectively updates + prunes SiteSettings for multiple setting groups
     ///
+    @MainActor
     func testUpsertMultipleSiteSettingsGroupsEffectivelyUpdatesSiteSettings() {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteGeneralSiteSettings = [sampleGeneralSiteSetting(), sampleGeneralSiteSetting2()].sorted()
@@ -478,6 +497,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns the expected API information.
     ///
+    @MainActor
     func test_retrieveSiteAPI_returns_expected_status() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -499,6 +519,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns the expected API information.
     ///
+    @MainActor
     func test_retrieveSiteAPI_returns_expected_status_for_non_woo_site() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -520,6 +541,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_retrieveSiteAPI_returns_error_upon_reponse_error() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -539,6 +561,7 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func test_retrieveSiteAPI_returns_error_upon_empty_response() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -555,6 +578,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    @MainActor
     func test_retrieveCouponSetting_returns_correct_setting() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -573,6 +597,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
+    @MainActor
     func test_retrieveTaxBasedOnSetting_returns_correct_setting() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -591,6 +616,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(taxBasedOnSetting, .customerShippingAddress)
     }
 
+    @MainActor
     func test_retrieveTaxBasedOnSetting_returns_error_when_it_cannot_be_parsed() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -613,6 +639,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(error as? SettingError, .parseError)
     }
 
+    @MainActor
     func test_retrieveCouponSetting_updates_stored_settings() {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
@@ -634,6 +661,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(updated?.value, "yes")
     }
 
+    @MainActor
     func test_retrieveCouponSetting_returns_error_when_loading_fails_and_setting_is_found_in_storage() throws {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
@@ -654,6 +682,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    @MainActor
     func test_enableCouponSetting_updates_stored_settings() {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
@@ -675,6 +704,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(updated?.value, "yes")
     }
 
+    @MainActor
     func test_enableCouponSetting_returns_error_if_remote_request_fails() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -693,6 +723,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    @MainActor
     func test_retrieveAnalyticsSetting_returns_correct_setting() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -711,6 +742,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
+    @MainActor
     func test_retrieveAnalyticsSetting_updates_stored_settings() {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_analytics_enabled", value: "no", settingGroupKey: "advanced")
@@ -732,6 +764,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(updated?.value, "yes")
     }
 
+    @MainActor
     func test_retrieveAnalyticsSetting_returns_error_when_loading_fails_and_setting_is_found_in_storage() throws {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_analytics_enabled", value: "no", settingGroupKey: "general")
@@ -752,6 +785,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    @MainActor
     func test_retrieveAnalyticsSetting_returns_settingNotExposed_when_tunnel_reports_invalid_setting() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -772,6 +806,7 @@ final class SettingStoreTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_retrieveAnalyticsSetting_returns_settingNotExposed_when_direct_rest_reports_invalid_setting() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -792,6 +827,7 @@ final class SettingStoreTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_enableAnalyticsSetting_returns_settingNotExposed_when_setting_is_invalid() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -812,6 +848,7 @@ final class SettingStoreTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_enableAnalyticsSetting_updates_stored_settings() {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_analytics_enabled", value: "no", settingGroupKey: "advanced")
@@ -833,6 +870,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(updated?.value, "yes")
     }
 
+    @MainActor
     func test_enableAnalyticsSetting_returns_error_if_remote_request_fails() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -851,6 +889,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    @MainActor
     func test_retrieveCouponSetting_does_not_remove_other_settings_in_same_group() {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
@@ -886,6 +925,7 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.retrievePointOfSaleSettings
 
+    @MainActor
     func test_retrievePointOfSaleSettings_returns_expected_settings() throws {
         // Given
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -930,6 +970,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(refundPolicySetting?.settingGroupKey, "point-of-sale")
     }
 
+    @MainActor
     func test_retrievePointOfSaleSettings_returns_error_upon_response_error() {
         // Given
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -947,6 +988,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    @MainActor
     func test_retrievePointOfSaleSettings_returns_error_upon_empty_response() {
         // Given
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -965,6 +1007,7 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.isFeatureEnabled
 
+    @MainActor
     func test_isFeatureEnabled_returns_true_when_feature_is_enabled() {
         // Given
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -987,6 +1030,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(isFeatureEnabled)
     }
 
+    @MainActor
     func test_isFeatureEnabled_returns_failure_when_no_response() {
         // Given
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1004,6 +1048,7 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.retrieveAnalyticsOrderDateType
 
+    @MainActor
     func test_retrieveAnalyticsOrderDateType_returns_paid_value() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1023,6 +1068,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(dateType, .paid)
     }
 
+    @MainActor
     func test_retrieveAnalyticsOrderDateType_returns_completed_value() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1042,6 +1088,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(dateType, .completed)
     }
 
+    @MainActor
     func test_retrieveAnalyticsOrderDateType_returns_parse_error_and_skips_cache_when_value_is_unknown() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1064,6 +1111,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_date_type"))
     }
 
+    @MainActor
     func test_retrieveAnalyticsOrderDateType_returns_failure_when_network_fails() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1084,6 +1132,7 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.updateAnalyticsOrderDateType
 
+    @MainActor
     func test_updateAnalyticsOrderDateType_returns_success_when_response_parses() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1102,6 +1151,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_updateAnalyticsOrderDateType_returns_parse_error_and_skips_cache_when_value_is_unknown() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1124,6 +1174,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_date_type"))
     }
 
+    @MainActor
     func test_updateAnalyticsOrderDateType_returns_failure_when_network_fails() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1144,6 +1195,7 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.retrieveAnalyticsImportUpdateMode
 
+    @MainActor
     func test_retrieveAnalyticsImportUpdateMode_returns_scheduled_value() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1163,6 +1215,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(mode, .scheduled)
     }
 
+    @MainActor
     func test_retrieveAnalyticsImportUpdateMode_when_value_is_null_then_returns_immediate_value_and_caches_no() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1183,6 +1236,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_analytics_scheduled_import")?.value, "no")
     }
 
+    @MainActor
     func test_retrieveAnalyticsImportUpdateMode_returns_parse_error_and_skips_cache_when_value_is_unknown() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1207,6 +1261,7 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.updateAnalyticsImportUpdateMode
 
+    @MainActor
     func test_updateAnalyticsImportUpdateMode_returns_success_when_response_parses() throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1225,6 +1280,7 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_updateAnalyticsImportUpdateMode_returns_failure_when_network_fails() {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1251,6 +1307,7 @@ private extension SettingStoreTests {
 
     // MARK: - General SiteSetting Samples
 
+    @MainActor
     func sampleGeneralSiteSetting() -> Networking.SiteSetting {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_currency",
@@ -1261,6 +1318,7 @@ private extension SettingStoreTests {
                            settingGroupKey: SiteSettingGroup.general.rawValue)
     }
 
+    @MainActor
     func sampleGeneralSiteSettingMutated() -> Networking.SiteSetting {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_currency",
@@ -1270,6 +1328,7 @@ private extension SettingStoreTests {
                            settingGroupKey: SiteSettingGroup.general.rawValue)
     }
 
+    @MainActor
     func sampleGeneralSiteSetting2() -> Networking.SiteSetting {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_price_thousand_sep",
@@ -1279,6 +1338,7 @@ private extension SettingStoreTests {
                            settingGroupKey: SiteSettingGroup.general.rawValue)
     }
 
+    @MainActor
     func sampleGeneralSiteSetting2Mutated() -> Networking.SiteSetting {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_price_thousand_sep",
@@ -1290,6 +1350,7 @@ private extension SettingStoreTests {
 
     // MARK: - Product SiteSetting Samples
 
+    @MainActor
     func sampleProductSiteSetting() -> Networking.SiteSetting {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_dimension_unit",
@@ -1299,6 +1360,7 @@ private extension SettingStoreTests {
                            settingGroupKey: SiteSettingGroup.product.rawValue)
     }
 
+    @MainActor
     func sampleProductSiteSettingMutated() -> Networking.SiteSetting {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_dimension_unit",
@@ -1308,6 +1370,7 @@ private extension SettingStoreTests {
                            settingGroupKey: SiteSettingGroup.product.rawValue)
     }
 
+    @MainActor
     func sampleProductSiteSetting2() -> Networking.SiteSetting {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_weight_unit",
@@ -1317,6 +1380,7 @@ private extension SettingStoreTests {
                            settingGroupKey: SiteSettingGroup.product.rawValue)
     }
 
+    @MainActor
     func sampleProductSiteSetting2Mutated() -> Networking.SiteSetting {
         return SiteSetting(siteID: sampleSiteID,
                            settingID: "woocommerce_weight_unit",
@@ -1328,6 +1392,7 @@ private extension SettingStoreTests {
 
     // MARK: - SiteAPI Samples
 
+    @MainActor
     func sampleSiteAPIWithWoo() -> Networking.SiteAPI {
         return SiteAPI(siteID: sampleSiteID,
                        namespaces: ["oembed/1.0", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc/v1", "wc/v2", "wc/v3", "wc-pb/v3", "wp/v2"],
@@ -1335,6 +1400,7 @@ private extension SettingStoreTests {
                        routes: ["/wc/v3/payments/orders/(?P<order_id>\\w+)/prepare_terminal_payment"])
     }
 
+    @MainActor
     func sampleSiteAPINoWoo() -> Networking.SiteAPI {
         return SiteAPI(siteID: sampleSiteID,
                        namespaces: ["oembed/1.0", "akismet/v1", "jetpack/v4", "wpcom/v2", "wc-pb/v3", "wp/v2"],

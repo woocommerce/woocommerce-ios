@@ -6,6 +6,7 @@ import XCTest
 final class LocalNotificationSchedulerTests: XCTestCase {
     private var stores: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
@@ -16,6 +17,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_notification_is_scheduled_when_remote_feature_flag_is_enabled() async throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
@@ -38,6 +40,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         XCTAssertEqual(pushNotesManager.requestedLocalNotifications, [notification])
     }
 
+    @MainActor
     func test_notification_is_not_scheduled_when_remote_feature_flag_is_disabled() async throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()
@@ -73,6 +76,7 @@ final class LocalNotificationSchedulerTests: XCTestCase {
         XCTAssertEqual(pushNotesManager.requestedLocalNotifications, [notification])
     }
 
+    @MainActor
     func test_requestLocalNotificationIfNeeded_is_triggered_when_shouldSkipIfScheduled_is_true() async throws {
         // Given
         let pushNotesManager = MockPushNotificationsManager()

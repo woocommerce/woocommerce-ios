@@ -5,6 +5,7 @@ import Yosemite
 
 @MainActor
 struct SetUpTapToPayTryPaymentPromptViewModelTests {
+    @MainActor
     @Test func tryAPaymentTapped_creates_order_in_store_currency() throws {
         // Given
         let siteID: Int64 = 123

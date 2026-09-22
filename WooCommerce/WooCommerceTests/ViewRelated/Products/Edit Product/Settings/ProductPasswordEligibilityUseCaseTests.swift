@@ -12,6 +12,7 @@ final class ProductPasswordEligibilityUseCaseTests: XCTestCase {
     private let pluginPath = "woocommerce/woocommerce.php"
     private let siteID: Int64 = 1
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()

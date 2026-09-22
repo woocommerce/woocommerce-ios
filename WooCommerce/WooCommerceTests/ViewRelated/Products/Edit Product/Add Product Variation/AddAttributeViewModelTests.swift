@@ -11,6 +11,7 @@ final class AddAttributeViewModelTests: XCTestCase {
 
     private var storesManager: MockProductAttributeStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storesManager = MockProductAttributeStoresManager()
@@ -21,6 +22,7 @@ final class AddAttributeViewModelTests: XCTestCase {
         storesManager = nil
     }
 
+    @MainActor
     func test_it_transitions_to_synced_state_after_synchronizing_attributes() throws {
         // Given
         let product = Product.fake()
@@ -42,6 +44,7 @@ final class AddAttributeViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.numberOfResponsesConsumed, 1)
     }
 
+    @MainActor
     func test_it_transitions_to_failed_state_after_synchronizing_attributes_errors() throws {
         // Given
         let product = Product.fake()

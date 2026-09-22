@@ -34,6 +34,7 @@ final class AccountStoreTests: XCTestCase {
     private let jcpSitePredicate = \StorageSite.isJetpackThePluginInstalled == false && \StorageSite.isJetpackConnected == true
     private let jetpackSitePredicate = \StorageSite.isJetpackThePluginInstalled == true && \StorageSite.isJetpackConnected == true
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -45,6 +46,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that AccountAction.synchronizeAccount returns an error, whenever there is not backend response.
     ///
+    @MainActor
     func test_synchronizeAccount_returns_error_upon_empty_response() {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -64,6 +66,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that AccountAction.synchronizeAccount returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_synchronizeAccount_returns_error_upon_reponse_error() {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -84,6 +87,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that AccountAction.synchronizeAccount effectively inserts a new Default Account.
     ///
+    @MainActor
     func test_synchronizeAccount_returns_expected_account_details() throws {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -110,6 +114,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `updateStoredAccount` does not produce duplicate entries.
     ///
+    @MainActor
     func test_upsertStoredAccount_effectively_updates_preexistant_accounts() {
         // Given
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -129,6 +134,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `updateStoredAccount` effectively inserts a new Account, with the specified payload.
     ///
+    @MainActor
     func test_upsertStoredAccount_effectively_persists_new_accounts() {
         // Given
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -147,6 +153,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeAccountSettings` returns an error, whenever there is no backend reply.
     ///
+    @MainActor
     func test_synchronizeAccountSettings_returns_error_on_empty_response() {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -165,6 +172,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeAccountSettings` effectively persists any retrieved settings.
     ///
+    @MainActor
     func test_synchronizeAccountSettings_effectively_persists_retrieved_settings() {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -186,6 +194,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeAccountSettings` effectively update any retrieved settings.
     ///
+    @MainActor
     func test_synchronizeAccountSettings_effectively_update_retrieved_settings() throws {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -218,6 +227,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `updateCrashReportingOptOut` submits the setting to the remote and relays a success.
     ///
+    @MainActor
     func test_updateCrashReportingOptOut_when_remote_succeeds_then_returns_success() {
         // Given
         let remote = MockAccountRemote()
@@ -239,6 +249,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `updateCrashReportingOptOut` relays a remote failure, so callers can keep the local value untouched.
     ///
+    @MainActor
     func test_updateCrashReportingOptOut_when_remote_fails_then_returns_failure() {
         // Given
         let remote = MockAccountRemote()
@@ -261,6 +272,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` returns an error, whenever there is no backend reply.
     ///
+    @MainActor
     func test_synchronizeSites_returns_error_on_empty_response() {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -279,6 +291,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` effectively persists any retrieved sites when all sites have Jetpack-the-plugin.
     ///
+    @MainActor
     func test_synchronizeSites_effectively_persists_retrieved_sites() {
         // Given
         let remote = MockAccountRemote()
@@ -305,6 +318,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Site.self, matching: jetpackSitePredicate), 2)
     }
 
+    @MainActor
     func test_upsertStoredSitesInBackground_when_site_synchronizations_are_cancelled_then_does_not_update_stored_sites() {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -326,6 +340,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSite(siteID: responseSiteID))
     }
 
+    @MainActor
     func test_cancelSiteSynchronizations_when_requests_are_pending_then_completes_each_once_without_cached_fallback() {
         let site = Site.fake().copy(siteID: 123, url: "https://example.com", isJetpackThePluginInstalled: true)
         storageManager.insertSampleSite(readOnlySite: site)
@@ -363,6 +378,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` effectively persists a Jetpack Connection Package site and a Jetpack site.
     ///
+    @MainActor
     func test_synchronizeSites_effectively_persists_jetpack_cp_and_jetpack_sites() throws {
         // Given
         let siteIDOfJCPSite = Int64(255)
@@ -423,6 +439,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` effectively persists a Jetpack Connection Package site without any changes when WP site settings request fails.
     ///
+    @MainActor
     func test_synchronizeSites_persists_a_jetpack_cp_site_without_any_changes_when_wp_settings_request_fails() throws {
         // Given
         let siteID = Int64(255)
@@ -467,6 +484,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` persists a Jetpack Connection Package site without any changes when WC site settings request fails.
     ///
+    @MainActor
     func test_synchronizeSites_persists_a_jetpack_cp_site_without_any_changes_when_wc_settings_request_fails() throws {
         // Given
         let siteID = Int64(255)
@@ -513,6 +531,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` deletes storage sites that do not exist remotely anymore.
     ///
+    @MainActor
     func test_synchronizeSites_deletes_sites_that_do_not_exist_remotely() {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -537,6 +556,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSite(siteID: siteIDInStorageOnly))
     }
 
+    @MainActor
     func test_synchronizeSites_returns_authoritative_empty_site_ids_and_deletes_cached_sites() throws {
         // Given
         let remote = MockAccountRemote()
@@ -557,6 +577,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSite(siteID: 127))
     }
 
+    @MainActor
     func test_synchronizeSites_when_preserving_site_then_deletes_only_other_missing_sites() throws {
         // Given
         let remote = MockAccountRemote()
@@ -578,6 +599,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` deletes the selected site after a successful response omits it.
     ///
+    @MainActor
     func test_synchronizeSites_deletes_selected_site_that_does_not_exist_remotely() {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -604,6 +626,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` returns `false` for JCP sites presence when all sites have Jetpack-the-plugin.
     ///
+    @MainActor
     func test_synchronizeSites_returns_false_when_all_sites_have_jetpack_plugin() throws {
         // Given
         let remote = MockAccountRemote()
@@ -628,6 +651,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` returns `true` when one site is JCP.
     ///
+    @MainActor
     func test_synchronizeSites_returns_true_when_one_site_is_jcp() throws {
         // Given
         let remote = MockAccountRemote()
@@ -655,6 +679,7 @@ final class AccountStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeSites` effectively persists a site with Blaze properties from the remote.
     ///
+    @MainActor
     func test_synchronizeSites_effectively_persists_site_with_blaze_properties() throws {
         // Given
         let remote = MockAccountRemote()
@@ -684,6 +709,7 @@ final class AccountStoreTests: XCTestCase {
 
     // MARK: - AccountAction.synchronizeSitesAndReturnSelectedSiteInfo
 
+    @MainActor
     func test_synchronizeSitesAndReturnSelectedSiteInfo_effectively_persists_retrieved_sites_and_returns_the_matching_site() throws {
         // Given
         let expectedSiteURL = "https://example.com"
@@ -713,6 +739,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(site.url, expectedSiteURL)
     }
 
+    @MainActor
     func test_synchronizeSitesAndReturnSelectedSiteInfo_throws_not_found_error_if_no_matching_site_is_found() {
         // Given
         let expectedSiteURL = "https://example.com"
@@ -740,6 +767,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, NetworkError.notFound())
     }
 
+    @MainActor
     func test_synchronizeSitesAndReturnSelectedSiteInfo_relays_error_when_loadSites_fails() {
         // Given
         let expectedSiteURL = "https://example.com"
@@ -767,6 +795,7 @@ final class AccountStoreTests: XCTestCase {
 
     // MARK: - AccountAction.loadAccount
 
+    @MainActor
     func test_loadAccount_returns_expected_account() {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -789,6 +818,7 @@ final class AccountStoreTests: XCTestCase {
         assertEqual(account, sampleAccountPristine())
     }
 
+    @MainActor
     func test_loadAccount_returns_nil_for_unknown_account() {
         // Given
         let store = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -811,6 +841,7 @@ final class AccountStoreTests: XCTestCase {
 
     // MARK: - AccountAction.loadAndSynchronizeSite
 
+    @MainActor
     func test_loadAndSynchronizeSite_returns_site_already_in_storage_without_making_network_request_if_forcedUpdate_is_false() throws {
         // Given
         let network = MockNetwork()
@@ -843,6 +874,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(network.requestsForResponseData.count, 0)
     }
 
+    @MainActor
     func test_loadAndSynchronizeSite_fetches_from_remote_if_forcedUpdate_is_true() throws {
         // Given
         let network = MockNetwork()
@@ -877,6 +909,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(network.requestsForResponseData.count, 3)
     }
 
+    @MainActor
     func test_loadAndSynchronizeSite_returns_unknown_site_error_after_syncing_failure() throws {
         // Given
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -907,6 +940,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(((network.requestsForResponseData.first?.urlRequest?.url?.absoluteString.contains("me/sites")) == true))
     }
 
+    @MainActor
     func test_loadAndSynchronizeSite_does_not_request_wpcom_sites_when_synchronization_is_disabled() throws {
         // Given
         let accountStore = AccountStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -925,6 +959,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(network.requestsForResponseData.isEmpty)
     }
 
+    @MainActor
     func test_loadAndSynchronizeSite_returns_site_after_syncing_success() throws {
         // Given
         let network = MockNetwork()
@@ -959,6 +994,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(site.siteID, siteIDInSimulatedResponse)
     }
 
+    @MainActor
     func test_loadAndSynchronizeSite_makes_3_network_requests_when_one_site_is_jetpack_cp_connected() throws {
         // Given
         let network = MockNetwork()
@@ -985,6 +1021,7 @@ final class AccountStoreTests: XCTestCase {
                        [.loadSites, .checkIfWooCommerceIsActive(siteID: siteIDOfJCPSite), .fetchWordPressSiteSettings(siteID: siteIDOfJCPSite)])
     }
 
+    @MainActor
     func test_loadAndSynchronizeSite_makes_1_network_requests_when_all_sites_have_jetpack_plugin() throws {
         // Given
         let network = MockNetwork()
@@ -1008,6 +1045,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(remote.invocations, [.loadSites])
     }
 
+    @MainActor
     func test_disconnectFromSocialService_returns_success_on_dotcom_remote_success() throws {
         // Given
         let network = MockNetwork()
@@ -1030,6 +1068,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_disconnectFromSocialService_returns_failure_on_dotcom_remote_failure() throws {
         // Given
         let network = MockNetwork()
@@ -1056,6 +1095,7 @@ final class AccountStoreTests: XCTestCase {
 
     // MARK: - updateNotificationSettings
 
+    @MainActor
     func test_updateNotificationSettings_returns_success_upon_success() {
         // Given
         let network = MockNetwork()
@@ -1079,6 +1119,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_updateNotificationSettings_relays_error_upon_failure() {
         // Given
         let network = MockNetwork()
@@ -1106,6 +1147,7 @@ final class AccountStoreTests: XCTestCase {
 
     // MARK: - loadNotificationSettings
 
+    @MainActor
     func test_loadNotificationSettings_returns_success_upon_success() throws {
         // Given
         let network = MockNetwork()
@@ -1134,6 +1176,7 @@ final class AccountStoreTests: XCTestCase {
         XCTAssertEqual(try result.get(), settings)
     }
 
+    @MainActor
     func test_loadNotificationSettings_relays_error_upon_failure() {
         // Given
         let network = MockNetwork()
@@ -1165,6 +1208,7 @@ private extension AccountStoreTests {
 
     /// Verifies that the Storage.Account fields match with the specified Networking.Account.
     ///
+    @MainActor
     func compare(storageAccount: Storage.Account, remoteAccount: Networking.Account) {
         XCTAssertEqual(storageAccount.userID, remoteAccount.userID)
         XCTAssertEqual(storageAccount.displayName, remoteAccount.displayName)
@@ -1175,6 +1219,7 @@ private extension AccountStoreTests {
 
     /// Sample Account: Mark I
     ///
+    @MainActor
     func sampleAccountPristine() -> Networking.Account {
         return Account(userID: 1234,
                        displayName: "Sample",
@@ -1185,6 +1230,7 @@ private extension AccountStoreTests {
 
     /// Sample Account: Mark II
     ///
+    @MainActor
     func sampleAccountUpdate() -> Networking.Account {
         return Account(userID: 1234,
                        displayName: "Yosemite",
@@ -1193,6 +1239,7 @@ private extension AccountStoreTests {
                        gravatarUrl: "https://automattic.com/yosemite.png")
     }
 
+    @MainActor
     func sampleAccountSettings() -> Networking.AccountSettings {
         return AccountSettings(userID: 10,
                                tracksOptOut: true,
@@ -1203,6 +1250,7 @@ private extension AccountStoreTests {
 
     /// Sample Site
     ///
+    @MainActor
     func sampleSitePristine() -> Networking.Site {
         return Site.fake()
     }

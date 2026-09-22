@@ -11,6 +11,7 @@ private struct TestConstants {
 
 final class CardReaderSettingsKnownReadersStorageTests: XCTestCase {
 
+    @MainActor
     func test_subscribing_publishes_initial_empty_value() {
         let mockStoresManager = MockAppSettingsStoresManager(sessionManager: SessionManager.testingInstance)
 
@@ -31,6 +32,7 @@ final class CardReaderSettingsKnownReadersStorageTests: XCTestCase {
         cancellable?.cancel()
     }
 
+    @MainActor
     func test_subscribing_publishes_initial_known_value() {
         let mockStoresManager = MockAppSettingsStoresManager(sessionManager: SessionManager.testingInstance, knownReaderID: TestConstants.mockReaderID)
 
@@ -57,6 +59,7 @@ final class CardReaderSettingsKnownReadersStorageTests: XCTestCase {
         XCTAssertEqual(recordedObservations, [TestConstants.mockReaderID])
     }
 
+    @MainActor
     func test_remembering_a_reader_publishes_change() {
         let mockStoresManager = MockAppSettingsStoresManager(sessionManager: SessionManager.testingInstance, knownReaderID: TestConstants.mockReaderID)
 
@@ -85,6 +88,7 @@ final class CardReaderSettingsKnownReadersStorageTests: XCTestCase {
         XCTAssertEqual(recordedObservations, [TestConstants.mockReaderID, TestConstants.secondMockReaderID])
     }
 
+    @MainActor
     func test_forgetting_a_reader_publishes_change() {
         let mockStoresManager = MockAppSettingsStoresManager(sessionManager: SessionManager.testingInstance)
 

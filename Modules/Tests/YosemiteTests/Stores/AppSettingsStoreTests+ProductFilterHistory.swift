@@ -158,6 +158,7 @@ private extension AppSettingsStoreTests_ProductFilterHistory {
                                       favoriteProduct: true)
     }
 
+    @MainActor
     func insertMockFilter(filter: StoredProductSettings.Setting, using store: AppSettingsStore) async throws {
         let error = await withCheckedContinuation { continuation in
             store.onAction(AppSettingsAction.upsertProductFilterHistory(filter: filter, onCompletion: { error in

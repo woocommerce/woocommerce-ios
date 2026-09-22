@@ -12,6 +12,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     ///
     private let applicationPassword = ApplicationPassword(wpOrgUsername: "username", password: .init("password"), uuid: "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
 
+    @MainActor
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         navigationController = UINavigationController()
@@ -117,6 +118,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
     }
 
+    @MainActor
     func test_onSuccess_is_triggered_when_the_site_has_active_woo() {
         // Given
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
@@ -147,6 +149,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_error_alert_is_displayed_if_the_site_does_not_have_active_woo() {
         // Given
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
@@ -179,6 +182,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
     }
 
+    @MainActor
     func test_error_alert_is_displayed_if_the_site_info_cannot_be_fetched() {
         // Given
         let appPasswordUseCase = MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword)
@@ -210,6 +214,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
     }
 
+    @MainActor
     func test_custom_endpoints_when_password_is_generated_then_persists_before_role_and_woo_checks() throws {
         // Given
         var events: [String] = []
@@ -271,6 +276,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_verified_standard_endpoints_when_custom_record_exists_then_removes_stale_record_before_role_check() throws {
         // Given
         let defaults = try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString))
@@ -314,6 +320,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         XCTAssertNil(sessionManager.cookieNonceAuthenticationEndpoints(for: credentials))
     }
 
+    @MainActor
     func test_missing_endpoint_persistence_context_when_checking_browser_or_malformed_flow_then_does_not_mutate_endpoints() {
         // Given
         var persistenceCallCount = 0

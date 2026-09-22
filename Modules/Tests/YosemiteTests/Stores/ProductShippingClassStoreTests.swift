@@ -41,6 +41,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
     ///
     private let defaultPageSize = 75
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -52,6 +53,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that `ProductShippingClassAction.synchronizeProductShippingClasss` effectively persists any retrieved ProductShippingClasss.
     ///
+    @MainActor
     func testRetrieveProductShippingClassesEffectivelyPersisted() {
         let expectation = self.expectation(description: "Retrieve ProductShippingClass list")
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -85,6 +87,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that `ProductShippingClassAction.synchronizeProductShippingClassModels` multiple times does not create duplicated objects.
     ///
+    @MainActor
     func testRetrieveProductShippingClassesCreateNoDuplicates() {
         let expectation = self.expectation(description: "Retrieve product shipping class list")
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -136,6 +139,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_synchronizing_product_shipping_classes_of_the_same_page_size_has_next_page() {
         // Arrange
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -158,6 +162,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(result).get())
     }
 
+    @MainActor
     func test_synchronizing_product_shipping_classes_of_smaller_size_than_page_size_has_no_next_page() {
         // Arrange
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -182,6 +187,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that `ProductShippingClassAction.synchronizeProductShippingClasss` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveProductShippingClasssReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve ProductShippingClasss error response")
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -202,6 +208,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that `ProductShippingClassAction.synchronizeProductShippingClasss` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveProductShippingClasssReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve ProductShippingClasss empty response")
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -220,6 +227,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that syncing for the first page deletes stored models for the given site ID.
     ///
+    @MainActor
     func testSyncingProductShippingClassesOnTheFirstPageResetsStoredModels() {
         // Inserts a Product Variation into the storage with two site IDs.
         let siteID1: Int64 = 134
@@ -258,6 +266,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that syncing after the first page does not delete stored models for the given site ID and product ID.
     ///
+    @MainActor
     func testSyncingProductShippingClassesAfterTheFirstPage() {
         // Inserts one model into the storage.
         let siteID: Int64 = 134
@@ -293,6 +302,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that syncing for the first page does not delete stored model if the API call fails.
     ///
+    @MainActor
     func testSyncingProductShippingClassesOnTheFirstPageDoesNotDeleteStoredModelsUponResponseError() {
         // Inserts one model into the storage.
         let siteID: Int64 = 134
@@ -331,6 +341,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that `ProductShippingClassAction.retrieveProductShippingClass` effectively persists any retrieved ProductShippingClasss.
     ///
+    @MainActor
     func testRetrieveProductShippingClassEffectivelyPersisted() {
         let expectation = self.expectation(description: "Retrieve ProductShippingClass")
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -364,6 +375,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that `ProductShippingClassAction.retrieveProductShippingClass` multiple times does not create duplicated objects.
     ///
+    @MainActor
     func testRetrieveProductShippingClassCreateNoDuplicates() {
         let expectation = self.expectation(description: "Retrieve product shipping class")
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -401,6 +413,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that `ProductShippingClassAction.retrieveProductShippingClass` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveProductShippingClassReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve ProductShippingClass error response")
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -423,6 +436,7 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
     /// Verifies that `ProductShippingClassAction.retrieveProductShippingClass` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveProductShippingClassReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve ProductShippingClass empty response")
         let store = ProductShippingClassStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -444,10 +458,12 @@ final class ProductShippingClassStoreTests: XCTestCase {
 
 
 private extension ProductShippingClassStoreTests {
+    @MainActor
     func sampleProductShippingClass(remoteID: Int64) -> Yosemite.ProductShippingClass {
         return sampleProductShippingClass(remoteID: remoteID, siteID: sampleSiteID)
     }
 
+    @MainActor
     func sampleProductShippingClass(remoteID: Int64, siteID: Int64) -> Yosemite.ProductShippingClass {
         return ProductShippingClass(count: 3,
                                     descriptionHTML: "Limited offer!",

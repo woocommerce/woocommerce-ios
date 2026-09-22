@@ -65,6 +65,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
     // MARK: - Tests with Feature Flag Disabled
 
+    @MainActor
     func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -106,6 +107,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                originalImages: []))
     }
 
+    @MainActor
     func test_hasUnsavedChangesOnImages_stays_false_after_uploading_and_saving_successfully() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -165,6 +167,7 @@ final class ProductImageUploaderTests: XCTestCase {
         XCTAssertEqual(images.map { $0.imageID }, [uploadedMedia.mediaID])
     }
 
+    @MainActor
     func test_when_saving_product_twice_the_latest_images_are_saved() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -239,6 +242,7 @@ final class ProductImageUploaderTests: XCTestCase {
         XCTAssertEqual(images.map { $0.imageID }, [606, 645])
     }
 
+    @MainActor
     func test_replaceLocalID_replaces_productID_properly() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -274,6 +278,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                      originalStatuses: []).productImageStatuses)
     }
 
+    @MainActor
     func test_calling_replaceLocalID_with_nonExistent_localProductID_does_nothing() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -301,6 +306,7 @@ final class ProductImageUploaderTests: XCTestCase {
                                                                      originalStatuses: []).productImageStatuses)
     }
 
+    @MainActor
     func test_product_id_of_uploaded_image_is_updated_after_saving_product() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -344,6 +350,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
     // MARK: - Error updates
 
+    @MainActor
     func test_actionHandler_error_is_emitted_when_image_upload_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -377,6 +384,7 @@ final class ProductImageUploaderTests: XCTestCase {
                     errors)
     }
 
+    @MainActor
     func test_savingProductImages_error_is_emitted_when_saving_images_fails() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -423,6 +431,7 @@ final class ProductImageUploaderTests: XCTestCase {
                     errors)
     }
 
+    @MainActor
     func test_errors_are_not_emitted_when_image_upload_succeeds() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -451,6 +460,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
     // MARK: - `stopEmittingErrors`
 
+    @MainActor
     func test_error_is_emitted_after_stopEmittingErrors_with_a_different_product_when_image_upload_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -488,6 +498,7 @@ final class ProductImageUploaderTests: XCTestCase {
                     errors)
     }
 
+    @MainActor
     func test_error_is_not_emitted_after_stopEmittingErrors_when_image_upload_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -519,6 +530,7 @@ final class ProductImageUploaderTests: XCTestCase {
         XCTAssertTrue(errors.isEmpty)
     }
 
+    @MainActor
     func test_calling_replaceLocalID_updates_excluded_product_from_status_updates() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -557,6 +569,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
     // MARK: - `startEmittingErrors`
 
+    @MainActor
     func test_error_is_emitted_after_stop_and_startEmittingErrors_when_image_upload_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -599,6 +612,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
     // MARK: - `reset`
 
+    @MainActor
     func test_image_upload_error_is_not_emitted_after_reset() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -642,6 +656,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
     // MARK: `activeUploads`
 
+    @MainActor
     func test_product_is_removed_from_activeUploads_when_upload_completes() {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         let imageUploader = createImageUploader(stores: stores, featureFlag: mockFeatureFlagService)
@@ -673,6 +688,7 @@ final class ProductImageUploaderTests: XCTestCase {
         actionHandler.uploadMediaAssetToSiteMediaLibrary(asset: .phAsset(asset: asset))
     }
 
+    @MainActor
     func test_product_is_removed_from_activeUploads_when_upload_is_cancelled() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -707,6 +723,7 @@ final class ProductImageUploaderTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_background_upload_notice_is_sent_when_there_are_active_uploads() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -748,6 +765,7 @@ final class ProductImageUploaderTests: XCTestCase {
 
     // MARK: - Tests with background image upload feature flag enabled
 
+    @MainActor
     func test_hasUnsavedChangesOnImages_becomes_false_after_uploading_and_saving_with_flag_enabled() throws {
         // Given
         mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
@@ -847,6 +865,7 @@ final class ProductImageUploaderTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_activeUploads_are_tracked_through_storage_with_flag_enabled() {
         // Given
         mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
@@ -921,6 +940,7 @@ final class ProductImageUploaderTests: XCTestCase {
         XCTAssertTrue(activeUploads.isEmpty)
     }
 
+    @MainActor
     func test_background_upload_notice_is_sent_when_there_are_active_uploads_with_flag_enabled() {
         // Given
         mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)
@@ -976,6 +996,7 @@ final class ProductImageUploaderTests: XCTestCase {
         XCTAssertTrue(isNoticeTriggered, "Notice should be triggered when there are active uploads")
     }
 
+    @MainActor
     func test_reset_clears_storage_state_with_flag_enabled() {
         // Given
         mockFeatureFlagService = MockFeatureFlagService(backgroundProductImageUpload: true)

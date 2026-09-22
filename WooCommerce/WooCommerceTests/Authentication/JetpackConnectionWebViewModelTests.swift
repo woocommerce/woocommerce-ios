@@ -111,6 +111,7 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
         XCTAssertNil(failureErrorCode)
     }
 
+    @MainActor
     func test_dismissal_is_tracked_when_not_authenticated() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -132,6 +133,7 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connect_dismissed" }))
     }
 
+    @MainActor
     func test_dismissal_is_not_tracked_when_authenticated() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -153,6 +155,7 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
         XCTAssertNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connect_dismissed" }))
     }
 
+    @MainActor
     func test_completion_is_tracked_when_not_authenticated() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -183,6 +186,7 @@ final class JetpackConnectionWebViewModelTests: XCTestCase {
         XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_jetpack_connect_completed" }))
     }
 
+    @MainActor
     func test_completion_is_not_tracked_when_authenticated() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))

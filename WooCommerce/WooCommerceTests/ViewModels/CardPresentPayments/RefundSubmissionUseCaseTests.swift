@@ -23,6 +23,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
     private var storageManager: MockStorageManager!
     private var refundService: MockRefundService!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -52,6 +53,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_with_non_interac_payment_method_does_not_dispatch_CardPresentPaymentActions() throws {
         // Given
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .cardPresent(
                                                     details: .init(brand: .visa,
@@ -97,6 +99,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(refundService.spyCreateRefundRestockItems, true)
         // The server owns the math: the submission path never sends an amount override.
         XCTAssertEqual(try XCTUnwrap(refundService.spyCreateRefundAmount), nil)
+        @MainActor
         let dispatchedV3Create = stores.receivedActions.contains(where: { action in
             guard let refundAction = action as? RefundAction, case .createRefund = refundAction else {
                 return false
@@ -196,6 +199,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_with_classic_create_maps_rejection_code_to_RefundAPIError() throws {
         // Given the classic v3 create fails with an actionable rejection code
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: nil,
                                                    amount: "2.28",
@@ -217,6 +221,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
     // dispatch an additional `retrieveRefund` action.
     func test_submitRefund_regression_with_classic_create_does_not_retrieve_refund_after_creation() {
         // Given
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: nil,
                                                    amount: "2.28",
@@ -236,6 +241,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_with_interac_payment_method_dispatches_CardPresentPaymentActions() throws {
         // Given
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .interacPresent(
                                                     details: .init(brand: .visa,
@@ -256,6 +262,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_with_cardInserted_reader_event_shows_cardInserted_alert() {
         // Given
+        @MainActor
         let useCase = createUseCase(details: interacRefundDetails())
         mockCardPresentPaymentActions(returnCardReaderMessage: .cardInserted)
         mockServerSideRefund(result: .success(()))
@@ -274,6 +281,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_with_removeCardRequested_reader_event_shows_reader_message() {
         // Given
+        @MainActor
         let useCase = createUseCase(details: interacRefundDetails())
         mockCardPresentPaymentActions(returnCardReaderMessage: .removeCardRequested("Remove card"))
         mockServerSideRefund(result: .success(()))
@@ -293,6 +301,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_with_non_interac_payment_method_does_not_call_showOnboardingIfRequired() throws {
         // Given
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .cardPresent(
                                                     details: .init(brand: .visa,
@@ -318,6 +327,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_with_missing_server_side_refund_response_returns_failure() throws {
         // Given
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .cardPresent(
                                                     details: .init(brand: .visa,
@@ -363,6 +373,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_without_a_paymentGatewayAccount_in_storage_returns_failure() {
         // Given
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .interacPresent(
                                                     details: .init(brand: .visa,
@@ -388,6 +399,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_successfully_tracks_interacRefundSuccess_event_when_payment_method_is_interac() throws {
         // Given
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .interacPresent(
                                                     details: .init(brand: .visa,
@@ -420,6 +432,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_successfully_does_not_track_interacRefundSuccess_event_when_payment_method_is_not_interac() throws {
         // Given
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .unknown),
                                                    amount: "2.28",
@@ -442,6 +455,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_with_client_side_success_and_server_side_failure_tracks_interacRefundSuccess_event_when_payment_method_is_interac() throws {
         // Given
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .interacPresent(
                                                     details: .init(brand: .visa,
@@ -475,6 +489,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_submitRefund_with_client_side_failure_tracks_interacRefundFailed_event_when_payment_method_is_interac() throws {
         // Given
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .interacPresent(
                                                     details: .init(brand: .visa,
@@ -510,6 +525,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         // Given
         let shouldRetry = false
         let error = CardReaderServiceError.refundPayment(shouldRetry: shouldRetry)
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .interacPresent(
                                                     details: .init(brand: .visa,
@@ -550,6 +566,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         // Given
         let siteID: Int64 = 863
         cardReaderConnectionAlerts = MockCardReaderSettingsAlerts(mode: .cancelScanning)
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(siteID: siteID, total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .interacPresent(
                                                     details: .init(brand: .visa,
@@ -585,6 +602,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
 
     func test_canceling_preparingReader_alert_tracks_interacRefundCanceled_event_when_payment_method_is_interac() throws {
         // Given
+        @MainActor
         let useCase = createUseCase(details: .init(order: .fake().copy(total: "2.28"),
                                                    charge: .fake().copy(paymentMethodDetails: .interacPresent(
                                                     details: .init(brand: .visa,
@@ -611,6 +629,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         XCTAssertEqual(result.failure as? RefundSubmissionUseCaseSubmissionError, .canceledByUser)
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "interac_refund_cancelled"}))
+        @MainActor
         let eventProperties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
         XCTAssertEqual(eventProperties["card_reader_model"] as? String, Mocks.cardReaderModel)
         XCTAssertEqual(eventProperties["country"] as? String, "US")
@@ -642,6 +661,7 @@ private extension RefundSubmissionUseCaseTests {
               paymentGatewayAccount: createPaymentGatewayAccount(siteID: siteID))
     }
 
+    @MainActor
     func mockServerSideRefund(result: Result<Void, Error>) {
         let refund: Refund?
         let error: Error?
@@ -656,6 +676,7 @@ private extension RefundSubmissionUseCaseTests {
         mockServerSideRefund(refund: refund, error: error)
     }
 
+    @MainActor
     func mockServerSideRefund(refund: Refund?, error: Error?) {
         stores.whenReceivingAction(ofType: RefundAction.self) { action in
             if case let .createRefund(_, _, _, completion) = action {
@@ -676,6 +697,7 @@ private extension RefundSubmissionUseCaseTests {
     ///                             `CardPresentPaymentAction.refundPayment`.
     ///   - cancelCardReaderDiscoveryResult: the result of cancelling reader discovery in `CardPresentPaymentAction.cancelCardReaderDiscovery`.
     ///                                      Default result is success.
+    @MainActor
     func mockCardPresentPaymentActions(connectedCardReaders: [CardReader] = [MockCardReader.wisePad3()],
                                        clientSideRefundResult: Result<Void, Error> = .success(()),
                                        cancelRefundResult: Result<Void, Error> = .success(()),

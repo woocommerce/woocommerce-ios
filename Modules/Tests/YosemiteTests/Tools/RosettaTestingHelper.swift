@@ -19,6 +19,8 @@ private func processIsTranslated() -> Int32 {
     return ret
 }
 
+@MainActor
+
 func testingOnRosetta() -> Bool {
     return processIsTranslated() == EMULATED
 }

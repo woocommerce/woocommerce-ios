@@ -14,12 +14,14 @@ final class JetpackConnectionStoreTests: XCTestCase {
     ///
     private var network: MockNetwork!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         network = MockNetwork()
         dispatcher = Dispatcher()
     }
 
+    @MainActor
     func test_retrieveJetpackPluginDetails_returns_correct_plugin() throws {
         // Given
         let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
@@ -45,6 +47,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         assertEqual(plugin.name, "Jetpack")
     }
 
+    @MainActor
     func test_retrieveJetpackPluginDetails_properly_relays_errors() {
         // Given
         let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
@@ -68,6 +71,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
+    @MainActor
     func test_installJetpackPlugin_completes_successfully_when_the_installation_succeeds() throws {
         // Given
         let urlSuffix = "wp/v2/plugins"
@@ -89,6 +93,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_installJetpackPlugin_properly_relays_errors() {
         // Given
         let urlSuffix = "wp/v2/plugins"
@@ -112,6 +117,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
+    @MainActor
     func test_activateJetpackPlugin_completes_successfully_when_the_activation_succeeds() throws {
         // Given
         let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
@@ -133,6 +139,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_activateJetpackPlugin_properly_relays_errors() {
         // Given
         let urlSuffix = "wp/v2/plugins/jetpack/jetpack"
@@ -156,6 +163,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
+    @MainActor
     func test_fetchJetpackConnectionURL_returns_correct_url() throws {
         // Given
         let urlSuffix = "/jetpack/v4/connection/url"
@@ -180,6 +188,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         assertEqual(url.absoluteString, expectedURL)
     }
 
+    @MainActor
     func test_fetchJetpackConnectionURL_properly_relays_errors() {
         // Given
         let urlSuffix = "/jetpack/v4/connection/url"
@@ -203,6 +212,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
+    @MainActor
     func test_fetchJetpackConnectionData_correctly_returns_parsed_user() throws {
         // Given
         let urlSuffix = "/jetpack/v4/connection/data"
@@ -227,6 +237,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertNotNil(user.wpcomUser)
     }
 
+    @MainActor
     func test_fetchJetpackConnectionData_properly_relays_errors() {
         // Given
         let siteURL = "http://test.com"
@@ -251,6 +262,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
+    @MainActor
     func test_fetchJetpackConnectionStatus_correctly_returns_offline_mode() throws {
         // Given
         let urlSuffix = "/jetpack/v4/connection"
@@ -274,6 +286,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertTrue(status.isInOfflineMode)
     }
 
+    @MainActor
     func test_fetchJetpackConnectionStatus_properly_relays_errors() {
         // Given
         let urlSuffix = "/jetpack/v4/connection"
@@ -297,6 +310,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
+    @MainActor
     func test_loadWPComAccount_returns_parsed_account() {
         // Given
         let store = JetpackConnectionStore(dispatcher: dispatcher)
@@ -315,6 +329,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         assertEqual("example@example.blog", result?.email)
     }
 
+    @MainActor
     func test_loadWPComAccount_returns_nil_upon_error() {
         // Given
         let store = JetpackConnectionStore(dispatcher: dispatcher)
@@ -332,6 +347,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertNil(result)
     }
 
+    @MainActor
     func test_registerSite_returns_correct_blogID() throws {
         // Given
         let urlSuffix = "/jetpack/v4/connection/register"
@@ -355,6 +371,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(blogID, 1234567890)
     }
 
+    @MainActor
     func test_registerSite_properly_relays_errors() {
         // Given
         let urlSuffix = "/jetpack/v4/connection/register"
@@ -378,6 +395,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
+    @MainActor
     func test_provisionConnection_returns_correct_provision_response() throws {
         // Given
         let urlSuffix = "/jetpack/v4/remote_provision"
@@ -403,6 +421,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(response.secret, "secret_token_12345")
     }
 
+    @MainActor
     func test_provisionConnection_properly_relays_errors() {
         // Given
         let urlSuffix = "/jetpack/v4/remote_provision"
@@ -426,6 +445,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
+    @MainActor
     func test_finalizeJetpackConnection_returns_success_on_success() throws {
         // Given
         let urlSuffix = "sites/134/jetpack-remote-connect-user"
@@ -448,6 +468,7 @@ final class JetpackConnectionStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_finalizeJetpackConnection_returns_error_on_failure() throws {
         // Given
         let urlSuffix = "sites/134/jetpack-remote-connect-user"

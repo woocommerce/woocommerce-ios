@@ -35,6 +35,7 @@ class ReviewReplyViewModelTests: XCTestCase {
         assertEqual(viewModel.navigationTrailingItem, .send(enabled: true))
     }
 
+    @MainActor
     func test_loading_indicator_enabled_during_network_request() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -58,6 +59,7 @@ class ReviewReplyViewModelTests: XCTestCase {
         XCTAssertEqual(navigationItem, .loading)
     }
 
+    @MainActor
     func test_send_button_renabled_after_network_request_completes() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -83,6 +85,7 @@ class ReviewReplyViewModelTests: XCTestCase {
         XCTAssertEqual(navigationItem, .send(enabled: true))
     }
 
+    @MainActor
     func test_sendReply_completion_block_returns_true_after_successful_network_request() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -108,6 +111,7 @@ class ReviewReplyViewModelTests: XCTestCase {
         XCTAssertTrue(successResponse)
     }
 
+    @MainActor
     func test_sendReply_completion_block_returns_false_after_failed_network_request() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -133,6 +137,7 @@ class ReviewReplyViewModelTests: XCTestCase {
         XCTAssertFalse(successResponse)
     }
 
+    @MainActor
     func test_view_model_triggers_success_notice_after_reply_is_sent_successfully() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -159,6 +164,7 @@ class ReviewReplyViewModelTests: XCTestCase {
         XCTAssertEqual(noticeTypes, [.success])
     }
 
+    @MainActor
     func test_view_model_triggers_error_notice_using_modal_notice_presenter_after_reply_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

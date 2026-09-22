@@ -41,6 +41,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertTrue(triggeredUpdate)
     }
 
+    @MainActor
     func test_provided_amount_gets_properly_formatted() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -67,6 +68,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.total, "$100.00")
     }
 
+    @MainActor
     func test_given_default_currency_when_updateOrder_then_order_is_updated_with_correct_values() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -91,6 +93,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         assertEqual("$1.00", viewModel.total)
     }
 
+    @MainActor
     func test_given_a_non_default_currency_when_updateOrder_then_order_is_updated_with_correct_values() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -123,6 +126,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         assertEqual("1.00د.إ", viewModel.total)
     }
 
+    @MainActor
     func test_when_updateOrder_then_currency_symbol_is_stripped_from_amount_sent_to_stores() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -147,6 +151,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         assertEqual("1.00", updatedAmount)
     }
 
+    @MainActor
     func test_when_updateOrder_then_amount_name_is_added_to_order_when_provided() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -263,6 +268,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.taxLines[0].value, "$4.30")
     }
 
+    @MainActor
     func test_when_order_is_updated_loading_indicator_is_toggled() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -296,6 +302,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertEqual(loadingStates, [true, false]) // Loading, then not loading.
     }
 
+    @MainActor
     func test_view_model_attempts_error_notice_presentation_when_failing_to_update_order() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -332,6 +339,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertTrue(receivedError)
     }
 
+    @MainActor
     func test_view_model_attempts_error_notice_presentation_when_submitting_invalid_email() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -361,6 +369,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertTrue(receivedError)
     }
 
+    @MainActor
     func test_order_is_updated_with_pending_status() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -384,6 +393,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertEqual(updateStatus, .pending)
     }
 
+    @MainActor
     func test_when_order_is_updated_navigation_to_payments_method_is_triggered() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -408,6 +418,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.navigateToPaymentMethods)
     }
 
+    @MainActor
     func test_when_order_is_updated_email_is_trimmed() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -435,6 +446,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertEqual(trimmedEmail, viewModel.email)
     }
 
+    @MainActor
     func test_empty_emails_are_send_as_nil_when_updating_orders() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -461,6 +473,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertNil(emailSent)
     }
 
+    @MainActor
     func test_noteAdded_event_is_tracked_after_editing_note() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -493,6 +506,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_taxesToggled_event_is_tracked_after_switching_taxes_toggle() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -531,6 +545,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         assertEqual(mockAnalytics.receivedProperties[2]["state"] as? String, "off") // Taxes disabled due to setting `enableTaxes` as false
     }
 
+    @MainActor
     func test_failing_event_is_tracked_when_order_fails_to_update() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -565,6 +580,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         assertEqual(mockAnalytics.receivedProperties.first?["currency"] as? String, "JPY")
     }
 
+    @MainActor
     func test_taxes_toggle_state_is_properly_loaded() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)
@@ -589,6 +605,7 @@ final class SimplePaymentsSummaryViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.enableTaxes)
     }
 
+    @MainActor
     func test_taxes_toggle_state_is_stored_after_toggling_taxes() {
         // Given
         let mockStores = MockStoresManager(sessionManager: .testingInstance)

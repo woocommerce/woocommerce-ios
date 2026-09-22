@@ -33,6 +33,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         XCTAssertEqual(state, .loading)
     }
 
+    @MainActor
     func test_state_is_content_after_loading_themes_for_profiler_mode() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -56,6 +57,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state, .content(themes: expectedThemes))
     }
 
+    @MainActor
     func test_state_is_error_after_loading_themes_failed() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -78,6 +80,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state, .error)
     }
 
+    @MainActor
     func test_fetchThemes_filters_out_matching_theme_id() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -108,6 +111,7 @@ final class ThemesCarouselViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_state_is_error_if_filtered_theme_list_is_empty() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())

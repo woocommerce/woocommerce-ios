@@ -10,6 +10,7 @@ final class JetpackSetupHostingControllerTests: XCTestCase {
     private let testURL = "https://test.com"
     private let credentials = Credentials.wpcom(username: "test", authToken: "secret", siteAddress: "https://example.com")
 
+    @MainActor
     func test_it_tracks_login_jetpack_setup_screen_dismissed_when_view_is_dismissed_for_unauthenticated_users() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))

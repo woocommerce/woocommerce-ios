@@ -17,11 +17,13 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
     }
 
+    @MainActor
     override func tearDown() {
         storageManager = nil
         cancellables.forEach {
@@ -31,6 +33,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_objectWithID_returns_the_expected_immutable_object() throws {
         // Given
         let insertedAccount = insertAccount(displayName: "Reina Feil", username: "reinafeil")
@@ -57,6 +60,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(fetchedAccount, insertedAccount.toReadOnly())
     }
 
+    @MainActor
     func test_snapshot_emits_an_empty_list_if_SnapshotsProvider_is_not_started() throws {
         // Given
         let insertedAccount = insertAccount(displayName: "Reina Feil", username: "reinafeil")
@@ -79,6 +83,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         assertEmpty(snapshot.itemIdentifiers)
     }
 
+    @MainActor
     func test_snapshot_can_emit_a_sorted_list() throws {
         // Given
         let accounts = [
@@ -109,6 +114,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(actualObjectIDs, expectedObjectIDs)
     }
 
+    @MainActor
     func test_snapshot_can_emit_a_list_with_sections() throws {
         // Given
         let expectedFirstSection = [
@@ -148,6 +154,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(snapshot.itemIdentifiers(inSection: "Y"), expectedSecondSection.map(\.objectID))
     }
 
+    @MainActor
     func test_snapshot_can_emit_a_filtered_list() throws {
         // Given
         let expectedFirstSection = [
@@ -190,6 +197,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(snapshot.itemIdentifiers(inSection: "Y"), expectedSecondSection.map(\.objectID))
     }
 
+    @MainActor
     func test_snapshot_continuously_emits_values_for_structural_changes() throws {
         // Given
         let zanza = insertAccount(displayName: "Z", username: "Zanza")
@@ -240,6 +248,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(secondSnapshot.itemIdentifiers(inSection: "W"), [wakaba.objectID])
     }
 
+    @MainActor
     func test_snapshot_emits_a_new_snapshot_when_objects_are_updated_in_derived_storage() throws {
         // Given
         let zanza = insertAccount(displayName: "Z", username: "Zanza")
@@ -289,6 +298,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         XCTAssertEqual(lastSnapshot.itemIdentifiers, firstSnapshot.itemIdentifiers)
     }
 
+    @MainActor
     func test_snapshot_does_not_emit_a_new_snapshot_when_differently_typed_objects_are_updated_in_derived_storage() throws {
         // Given
         let account = insertAccount(displayName: "Z", username: "Zanza")
@@ -328,6 +338,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         assertEmpty(snapshots)
     }
 
+    @MainActor
     func test_snapshot_does_not_emit_a_new_snapshot_when_the_updated_objects_do_not_match_the_predicate() throws {
         // Given
         let account = insertAccount(displayName: "Z", username: "Zanza")
@@ -370,6 +381,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
         assertEmpty(snapshots)
     }
 
+    @MainActor
     func test_snapshot_will_still_emit_snapshots_after_the_StorageManager_is_reset() throws {
         // Given
         let zanza = insertAccount(displayName: "Z", username: "Zanza")
@@ -415,6 +427,7 @@ final class FetchResultSnapshotsProviderTests: XCTestCase {
 
 private extension FetchResultSnapshotsProviderTests {
     @discardableResult
+    @MainActor
     func insertAccount(displayName: String, username: String) -> StorageAccount {
         let account = storageManager.insertSampleAccount()
         account.displayName = displayName
@@ -422,6 +435,7 @@ private extension FetchResultSnapshotsProviderTests {
         return account
     }
 
+    @MainActor
     func insertOrderStatus(name: String) -> StorageOrderStatus {
         let orderStatus = viewStorage.insertNewObject(ofType: StorageOrderStatus.self)
         orderStatus.name = name

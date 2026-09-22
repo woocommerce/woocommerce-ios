@@ -7,6 +7,7 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 135
     private var stores: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting())
         super.setUp()
@@ -185,6 +186,7 @@ final class GoogleAdsDashboardCardViewModelTests: XCTestCase {
 }
 
 private extension GoogleAdsDashboardCardViewModelTests {
+    @MainActor
     func mockRequest(lastCampaignResult: Result<[GoogleAdsCampaign], Error> = .success([]),
                      lastCampaignStatsResult: Result<GoogleAdsCampaignStats, Error> = .success(.fake())) {
         stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in

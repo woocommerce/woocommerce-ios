@@ -89,6 +89,7 @@ final class CustomerSearchUICommandTests: XCTestCase {
         XCTAssert(analyticsProvider.receivedEvents.contains("order_creation_customer_added"))
     }
 
+    @MainActor
     func test_synchronizeModels_when_and_keyword_is_empty_and_loadResultsWhenSearchTermIsEmpty_is_true_then_calls_synchronizeAllLightCustomersDataAction() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -117,6 +118,7 @@ final class CustomerSearchUICommandTests: XCTestCase {
         XCTAssertEqual(invocationCount, 1)
     }
 
+    @MainActor
     func test_synchronizeModels_when_and_keyword_is_empty_and_loadResultsWhenSearchTermIsEmpty_is_false_then_calls_deleteAllCustomers() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

@@ -4,6 +4,7 @@ import WooFoundation
 @testable import Yosemite
 
 final class PaymentIntent_ReceiptParametersTests: XCTestCase {
+    @MainActor
     func test_receipt_parameters_is_generated_from_intent_with_a_charge_that_contains_paymentMethod_card_details() {
         // Given
         let intent = PaymentIntent.fake().copy(amount: 100, charges: [Mocks.cardPresentCharge])
@@ -22,6 +23,7 @@ final class PaymentIntent_ReceiptParametersTests: XCTestCase {
         XCTAssertEqual(receiptParameters?.cardDetails, cardDetails)
     }
 
+    @MainActor
     func test_receipt_parameters_includes_store_from_intent_metadata() {
         // Given
         let metadata = PaymentIntent.initMetadata(store: "Store Name", orderID: 134)
@@ -31,6 +33,7 @@ final class PaymentIntent_ReceiptParametersTests: XCTestCase {
         XCTAssertEqual(intent.receiptParameters()?.storeName, "Store Name")
     }
 
+    @MainActor
     func test_receipt_parameters_includes_orderID_from_intent_metadata() {
         // Given
         let metadata = PaymentIntent.initMetadata(store: "Store Name", orderID: 1920)
@@ -40,6 +43,7 @@ final class PaymentIntent_ReceiptParametersTests: XCTestCase {
         XCTAssertEqual(intent.receiptParameters()?.orderID, 1920)
     }
 
+    @MainActor
     func test_receiptParameters_Includes_formattedAmount_WithDecimalFormatting() {
         // Given
         let intent = PaymentIntent.fake().copy(amount: 10000, currency: "usd", charges: [Mocks.cardPresentCharge])

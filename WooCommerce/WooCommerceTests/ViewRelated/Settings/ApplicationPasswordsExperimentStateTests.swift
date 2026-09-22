@@ -9,6 +9,7 @@ final class ApplicationPasswordsExperimentStateTests: XCTestCase {
     private var stores: MockStoresManager!
     private var cancellables: AnyCancellable?
 
+    @MainActor
     override func setUp() {
         super.setUp()
         availabilityChecker = ApplicationPasswordsExperimentAvailabilityCheckerMock()
@@ -24,6 +25,7 @@ final class ApplicationPasswordsExperimentStateTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_when_available_and_enabled_then_isAvailableAndEnabled_stream_returns_true() {
         // Given
         availabilityChecker.mockedAvailability = true
@@ -46,6 +48,7 @@ final class ApplicationPasswordsExperimentStateTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_when_available_and_disabled_then_isAvailableAndEnabled_stream_returns_false() {
         // Given
         availabilityChecker.mockedAvailability = true
@@ -68,6 +71,7 @@ final class ApplicationPasswordsExperimentStateTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_when_unavailable_and_enabled_then_isAvailableAndEnabled_stream_returns_false() {
         // Given
         availabilityChecker.mockedAvailability = false
@@ -90,6 +94,7 @@ final class ApplicationPasswordsExperimentStateTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_when_unavailable_and_disabled_then_isAvailableAndEnabled_stream_returns_false() {
         // Given
         availabilityChecker.mockedAvailability = false

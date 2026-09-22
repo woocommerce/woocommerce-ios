@@ -539,6 +539,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertEqual(updatedRows?[2].displayMode, .editable)
     }
 
+    @MainActor
     func test_validateAddress_returns_validation_error_when_missing_name_without_triggering_action() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
@@ -573,6 +574,7 @@ final class ShippingLabelFormViewModelTests: XCTestCase {
         XCTAssertFalse(triggeredValidateAddressAction)
     }
 
+    @MainActor
     func test_validateAddress_triggers_validate_action_when_name_is_not_missing() {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)

@@ -32,6 +32,7 @@ final class StatsStoreV4Tests: XCTestCase {
     private let sampleSiteID: Int64 = 123
 
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -43,6 +44,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveStats` effectively persists any retrieved OrderStatsV4.
     ///
+    @MainActor
     func test_retrieveStats_effectively_persists_retrieved_stats() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -73,6 +75,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveStats` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_retrieveStats_returns_error_upon_reponse_error() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -98,6 +101,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveStats` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func test_retrieveStats_returns_error_upon_empty_response() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -125,6 +129,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteVisitStats` effectively persists any retrieved SiteVisitStats.
     ///
+    @MainActor
     func test_retrieveSiteVisitStats_effectively_persists_retrieved_stats() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -152,6 +157,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteVisitStats` effectively persists any updated SiteVisitStatsItems.
     ///
+    @MainActor
     func test_retrieveSiteVisitStats_effectively_persists_updated_items() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -182,6 +188,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteVisitStats` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_retrieveSiteVisitStats_returns_error_upon_reponse_error() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -204,6 +211,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteVisitStats` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func test_retrieveSiteVisitStats_returns_error_upon_empty_response() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -225,6 +233,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `upsertStoredSiteVisitStats` effectively inserts a new SiteVisitStats, with the specified payload.
     ///
+    @MainActor
     func test_upsertStoredSiteVisitStats_effectively_persists_new_SiteVisitStats() {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteSiteVisitStats = sampleSiteVisitStats()
@@ -239,6 +248,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `upsertStoredSiteVisitStats` does not produce duplicate entries.
     ///
+    @MainActor
     func test_upsertStoredSiteVisitStats_effectively_updates_preexistant_SiteVisitStats() {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let timeRange = StatsTimeRangeV4.thisYear
@@ -261,6 +271,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any retrieved TopEarnerStats.
     ///
+    @MainActor
     func test_retrieveTopEarnerStats_effectively_persists_retrieved_stats() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -293,6 +304,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` makes a network request with the given quantity parameter.
     ///
+    @MainActor
     func test_retrieveTopEarnerStats_makes_network_request_with_given_quantity_parameter() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -320,6 +332,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveStats` makes a network request with the given `force_cache_refresh` parameter if `forceRefresh` is true.
     ///
+    @MainActor
     func test_retrieveStats_makes_network_request_with_given_force_cache_rerefresh_parameter_if_forceRefresh_is_true() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -345,6 +358,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveStats` makes a network request without the `force_cache_refresh` parameter if `forceRefresh` is false.
     ///
+    @MainActor
     func test_retrieveStats_makes_network_request_without_force_cache_rerefresh_parameter_if_forceRefresh_is_false() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -370,6 +384,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` effectively persists any updated TopEarnerStatsItems.
     ///
+    @MainActor
     func test_retrieveTopEarnerStats_effectively_persists_updated_items() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -402,6 +417,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_retrieveTopEarnerStats_returns_error_upon_response_error() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -428,6 +444,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopEarnerStats` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func test_retrieveTopEarnerStats_returns_error_upon_empty_response() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -453,6 +470,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `upsertStoredTopEarnerStats` effectively inserts a new TopEarnerStats, with the specified payload.
     ///
+    @MainActor
     func test_upsertStoredTopEarnerStats_effectively_persists_new_TopEarnersStats() {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteTopEarnersStats = sampleTopEarnerStats()
@@ -466,6 +484,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `upsertStoredTopEarnerStats` does not produce duplicate entries.
     ///
+    @MainActor
     func test_upsertStoredTopEarnerStats_effectively_updates_preexistant_TopEarnersStats() {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -486,6 +505,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` returns any retrieved SiteSummaryStats.
     ///
+    @MainActor
     func test_retrieveSiteSummaryStats_returns_retrieved_stats() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -512,6 +532,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` makes the expected alternate network request for multiple stats periods.
     ///
+    @MainActor
     func test_retrieveSiteSummaryStats_makes_expected_network_request_for_multiple_periods() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -539,6 +560,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` converts and returns SiteSummaryStats for multiple periods.
     ///
+    @MainActor
     func test_retrieveSiteSummaryStats_returns_retrieved_quarter_stats() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -565,6 +587,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_retrieveSiteSummaryStats_returns_error_upon_response_error() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -589,6 +612,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func test_retrieveSiteSummaryStats_returns_error_upon_empty_response() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -612,6 +636,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveSiteSummaryStats` effectively persists any retrieved SiteSummaryStats.
     ///
+    @MainActor
     func test_retrieveSiteSummaryStats_effectively_persists_retrieved_stats() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -641,6 +666,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `upsertStoredSiteSummaryStats` does not produce duplicate entries.
     ///
+    @MainActor
     func test_upsertStoredSiteSummaryStats_effectively_updates_preexistant_SiteSummaryStats() {
         let statsStore = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -659,6 +685,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveProductBundleStats` returns the retrieved bundle stats.
     ///
+    @MainActor
     func test_retrieveProductBundleStats_returns_retrieved_stats() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -686,6 +713,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveProductBundleStats` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_retrieveProductBundleStats_returns_error_upon_reponse_error() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -711,6 +739,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveProductBundleStats` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func test_retrieveProductBundleStats_returns_error_upon_empty_response() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -737,6 +766,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopProductBundles` returns the retrieved product bundle report items.
     ///
+    @MainActor
     func test_retrieveTopProductBundles_returns_retrieved_product_bundles() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -763,6 +793,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopProductBundles` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_retrieveTopProductBundles_returns_error_upon_reponse_error() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -786,6 +817,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveTopProductBundles` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func test_retrieveTopProductBundles_returns_error_upon_empty_response() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -810,6 +842,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveUsedGiftCardStats` returns the retrieved bundle stats.
     ///
+    @MainActor
     func test_retrieveUsedGiftCardStats_returns_retrieved_stats() throws {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -837,6 +870,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveUsedGiftCardStats` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_retrieveUsedGiftCardStats_returns_error_upon_reponse_error() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -862,6 +896,7 @@ final class StatsStoreV4Tests: XCTestCase {
 
     /// Verifies that `StatsActionV4.retrieveUsedGiftCardStats` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func test_retrieveUsedGiftCardStats_returns_error_upon_empty_response() {
         // Given
         let store = StatsStoreV4(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -891,6 +926,7 @@ final class StatsStoreV4Tests: XCTestCase {
 private extension StatsStoreV4Tests {
     // MARK: - Order Stats V4 Sample
 
+    @MainActor
     func sampleStats() -> Networking.OrderStatsV4 {
         return OrderStatsV4(siteID: sampleSiteID,
                             granularity: .monthly,
@@ -900,6 +936,7 @@ private extension StatsStoreV4Tests {
 
 
     /// Matches `totals` field in `order-stats-v4-year` response.
+    @MainActor
     func sampleTotals() -> Networking.OrderStatsV4Totals {
         return OrderStatsV4Totals(totalOrders: 3,
                                   totalItemsSold: 5,
@@ -910,6 +947,7 @@ private extension StatsStoreV4Tests {
     }
 
     /// Matches the first interval's `subtotals` field in `order-stats-v4-year` response.
+    @MainActor
     func sampleIntervalSubtotals() -> Networking.OrderStatsV4Totals {
         return OrderStatsV4Totals(totalOrders: 3,
                                   totalItemsSold: 5,
@@ -919,10 +957,12 @@ private extension StatsStoreV4Tests {
                                   averageOrderValue: 266)
     }
 
+    @MainActor
     func sampleIntervals() -> [Networking.OrderStatsV4Interval] {
         return [sampleIntervalMonthly()]
     }
 
+    @MainActor
     func sampleIntervalMonthly() -> Networking.OrderStatsV4Interval {
         return OrderStatsV4Interval(interval: "2019",
                                     dateStart: "2019-07-09 00:00:00",
@@ -930,6 +970,7 @@ private extension StatsStoreV4Tests {
                                     subtotals: sampleIntervalSubtotals())
     }
 
+    @MainActor
     func sampleStatsMutated() -> Networking.OrderStatsV4 {
         return OrderStatsV4(siteID: sampleSiteID,
                             granularity: .yearly,
@@ -937,10 +978,12 @@ private extension StatsStoreV4Tests {
                             intervals: sampleIntervalsMutated())
     }
 
+    @MainActor
     func sampleIntervalsMutated() -> [Networking.OrderStatsV4Interval] {
         return [sampleIntervalYearMutated()]
     }
 
+    @MainActor
     func sampleIntervalYearMutated() -> Networking.OrderStatsV4Interval {
         return OrderStatsV4Interval(interval: "2019",
                                     dateStart: "2019-07-09 00:00:00",
@@ -948,6 +991,7 @@ private extension StatsStoreV4Tests {
                                     subtotals: sampleTotalsMutated())
     }
 
+    @MainActor
     func sampleTotalsMutated() -> Networking.OrderStatsV4Totals {
         return OrderStatsV4Totals(totalOrders: 10,
                                   totalItemsSold: 0,
@@ -959,6 +1003,7 @@ private extension StatsStoreV4Tests {
 
     // MARK: - Site Visit Stats Sample
 
+    @MainActor
     func sampleSiteVisitStats() -> Networking.SiteVisitStats {
         return SiteVisitStats(siteID: sampleSiteID,
                               date: "2015-08-06",
@@ -967,14 +1012,17 @@ private extension StatsStoreV4Tests {
     }
 
 
+    @MainActor
     func sampleSiteVisitStatsItem1() -> Networking.SiteVisitStatsItem {
         return SiteVisitStatsItem(period: "2014-01-01", visitors: 1135, views: 12821)
     }
 
+    @MainActor
     func sampleSiteVisitStatsItem2() -> Networking.SiteVisitStatsItem {
         return SiteVisitStatsItem(period: "2015-01-01", visitors: 1629, views: 14808)
     }
 
+    @MainActor
     func sampleSiteVisitStatsMutated() -> Networking.SiteVisitStats {
         return SiteVisitStats(siteID: sampleSiteID,
                               date: "2015-08-06",
@@ -983,16 +1031,19 @@ private extension StatsStoreV4Tests {
     }
 
 
+    @MainActor
     func sampleSiteVisitStatsItem1Mutated() -> Networking.SiteVisitStatsItem {
         return SiteVisitStatsItem(period: "2014-01-01", visitors: 1140, views: 12831)
     }
 
+    @MainActor
     func sampleSiteVisitStatsItem2Mutated() -> Networking.SiteVisitStatsItem {
         return SiteVisitStatsItem(period: "2015-01-01", visitors: 1634, views: 14818)
     }
 
     // MARK: - Top Earner Stats Sample
 
+    @MainActor
     func sampleTopEarnerStats() -> Networking.TopEarnerStats {
         return TopEarnerStats(siteID: sampleSiteID,
                               date: "2020",
@@ -1001,6 +1052,7 @@ private extension StatsStoreV4Tests {
                               items: [sampleTopEarnerStatsItem1(), sampleTopEarnerStatsItem2()])
     }
 
+    @MainActor
     func sampleTopEarnerStatsItem1() -> Networking.TopEarnerStatsItem {
         return TopEarnerStatsItem(productID: 233,
                                   productName: "Colorful Sunglasses Subscription",
@@ -1010,6 +1062,7 @@ private extension StatsStoreV4Tests {
                                   imageUrl: "https://example.com/wp-content/uploads/2023/01/sunglasses-2-600x600.jpg")
     }
 
+    @MainActor
     func sampleTopEarnerStatsItem2() -> Networking.TopEarnerStatsItem {
         return TopEarnerStatsItem(productID: 27,
                                   productName: "Album",
@@ -1019,6 +1072,7 @@ private extension StatsStoreV4Tests {
                                   imageUrl: "https://example.com/wp-content/uploads/2023/01/album-1-600x600.jpg")
     }
 
+    @MainActor
     func sampleTopEarnerStatsMutated() -> Networking.TopEarnerStats {
         return TopEarnerStats(siteID: sampleSiteID,
                               date: "2020",
@@ -1027,6 +1081,7 @@ private extension StatsStoreV4Tests {
                               items: [sampleTopEarnerStatsMutatedItem1(), sampleTopEarnerStatsMutatedItem2()])
     }
 
+    @MainActor
     func sampleTopEarnerStatsMutatedItem1() -> Networking.TopEarnerStatsItem {
         return TopEarnerStatsItem(productID: 233,
                                   productName: "Colorful Sunglasses Subscription",
@@ -1036,6 +1091,7 @@ private extension StatsStoreV4Tests {
                                   imageUrl: "https://example.com/wp-content/uploads/2023/01/sunglasses-2-600x600.jpg")
     }
 
+    @MainActor
     func sampleTopEarnerStatsMutatedItem2() -> Networking.TopEarnerStatsItem {
         return TopEarnerStatsItem(productID: 27,
                                   productName: "Album",
@@ -1047,6 +1103,7 @@ private extension StatsStoreV4Tests {
 
     // MARK: - Site Summary Stats Sample
 
+    @MainActor
     func sampleSiteSummaryStats() -> Networking.SiteSummaryStats {
         return SiteSummaryStats(siteID: sampleSiteID,
                                 date: "2022-12-09",
@@ -1055,6 +1112,7 @@ private extension StatsStoreV4Tests {
                                 views: 123)
     }
 
+    @MainActor
     func sampleSiteSummaryStatsMutated() -> Networking.SiteSummaryStats {
         return SiteSummaryStats(siteID: sampleSiteID,
                                 date: "2022-12-09",
@@ -1063,6 +1121,7 @@ private extension StatsStoreV4Tests {
                                 views: 127)
     }
 
+    @MainActor
     func sampleSiteSummaryStatsQuarter() -> Networking.SiteSummaryStats {
         return SiteSummaryStats(siteID: sampleSiteID,
                                 date: "2022-12-09",
@@ -1073,6 +1132,7 @@ private extension StatsStoreV4Tests {
 
     // MARK: - Product Bundle Stats Sample
 
+    @MainActor
     func sampleBundleStats() -> Networking.ProductBundleStats {
         ProductBundleStats(siteID: sampleSiteID,
                            granularity: .daily,
@@ -1080,6 +1140,7 @@ private extension StatsStoreV4Tests {
                            intervals: [sampleBundleStatsInterval1(), sampleBundleStatsInterval2()])
     }
 
+    @MainActor
     func sampleBundleStatsTotals() -> Networking.ProductBundleStatsTotals {
         ProductBundleStatsTotals(totalItemsSold: 5,
                                  totalBundledItemsSold: 3,
@@ -1088,6 +1149,7 @@ private extension StatsStoreV4Tests {
                                  totalProducts: 4)
     }
 
+    @MainActor
     func sampleBundleStatsInterval1() -> Networking.ProductBundleStatsInterval {
         ProductBundleStatsInterval(interval: "2024-01-21",
                                    dateStart: "2024-01-21 00:00:00",
@@ -1099,6 +1161,7 @@ private extension StatsStoreV4Tests {
                                                     totalProducts: 2))
     }
 
+    @MainActor
     func sampleBundleStatsInterval2() -> Networking.ProductBundleStatsInterval {
         ProductBundleStatsInterval(interval: "2024-01-20",
                                    dateStart: "2024-01-20 00:00:00",
@@ -1112,6 +1175,7 @@ private extension StatsStoreV4Tests {
 
     // MARK: - Top Product Bundles Sample
 
+    @MainActor
     func sampleTopBundle() -> Networking.ProductsReportItem {
         ProductsReportItem(productID: 507,
                             productName: "Awesome bundle",
@@ -1122,6 +1186,7 @@ private extension StatsStoreV4Tests {
 
     // MARK: - Gift Card Stats Sample
 
+    @MainActor
     func sampleGiftCardStats() -> Networking.GiftCardStats {
         GiftCardStats(siteID: sampleSiteID,
                       granularity: .daily,
@@ -1129,6 +1194,7 @@ private extension StatsStoreV4Tests {
                       intervals: [sampleGiftCardStatsInterval()])
     }
 
+    @MainActor
     func sampleGiftCardStatsTotals() -> Networking.GiftCardStatsTotals {
         GiftCardStatsTotals(giftCardsCount: 1,
                             usedAmount: 20,
@@ -1136,6 +1202,7 @@ private extension StatsStoreV4Tests {
                             netAmount: 20)
     }
 
+    @MainActor
     func sampleGiftCardStatsInterval() -> Networking.GiftCardStatsInterval {
         GiftCardStatsInterval(interval: "2024-02",
                                    dateStart: "2024-01-08 00:00:00",

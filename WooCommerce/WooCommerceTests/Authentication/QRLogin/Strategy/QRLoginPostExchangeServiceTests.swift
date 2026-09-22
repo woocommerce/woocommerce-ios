@@ -18,6 +18,7 @@ struct QRLoginPostExchangeServiceTests {
 
     // MARK: - Happy path
 
+    @MainActor
     @Test func complete_when_site_is_woo_and_user_is_eligible_then_returns_success_and_tracks_signedIn() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -43,6 +44,7 @@ struct QRLoginPostExchangeServiceTests {
 
     // MARK: - Server-controlled site_url validation
 
+    @MainActor
     @Test func complete_when_response_siteURL_host_differs_from_scanned_then_revokes_ap_and_returns_siteAuthFailure() async throws {
         // Given — a malicious/compromised server returns a different host than the
         // one the merchant scanned and confirmed.
@@ -70,6 +72,7 @@ struct QRLoginPostExchangeServiceTests {
         #expect(analytics.receivedEvents.contains(WooAnalyticsStat.signedIn.rawValue) == false)
     }
 
+    @MainActor
     @Test func complete_when_response_siteURL_downgrades_scheme_to_http_then_revokes_ap_and_returns_siteAuthFailure() async throws {
         // Given — scanned URL was https (release rule), server tries to bind the
         // credentials to a cleartext http endpoint.
@@ -92,6 +95,7 @@ struct QRLoginPostExchangeServiceTests {
         #expect(appPasswordUseCase.deletePasswordCallCount == 1)
     }
 
+    @MainActor
     @Test func complete_when_response_siteURL_matches_host_and_scheme_then_authenticates_against_response_url() async throws {
         // Given — same host and scheme but a canonical subdirectory path; the
         // response value should be used verbatim so the install path is preserved.
@@ -118,6 +122,7 @@ struct QRLoginPostExchangeServiceTests {
 
     // MARK: - Failure paths
 
+    @MainActor
     @Test func complete_when_fetchSiteInfo_fails_then_revokes_ap_and_returns_siteAuthFailure() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -144,6 +149,7 @@ struct QRLoginPostExchangeServiceTests {
         #expect(analytics.receivedEvents.contains(WooAnalyticsStat.signedIn.rawValue) == false)
     }
 
+    @MainActor
     @Test func complete_when_site_is_not_woo_then_revokes_ap_and_returns_notAWooSite() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -165,6 +171,7 @@ struct QRLoginPostExchangeServiceTests {
         #expect(appPasswordUseCase.deletePasswordCallCount == 1)
     }
 
+    @MainActor
     @Test func complete_when_user_role_insufficient_then_revokes_ap_and_returns_userNotEligible() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -187,6 +194,7 @@ struct QRLoginPostExchangeServiceTests {
         #expect(appPasswordUseCase.deletePasswordCallCount == 1)
     }
 
+    @MainActor
     @Test func complete_when_role_check_errors_then_returns_siteAuthFailure() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -209,6 +217,7 @@ struct QRLoginPostExchangeServiceTests {
         #expect(appPasswordUseCase.deletePasswordCallCount == 1)
     }
 
+    @MainActor
     @Test func complete_when_revoke_itself_fails_then_still_surfaces_original_error() async throws {
         // Given — revoke throws, we should still bubble up the original failure.
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -263,6 +272,7 @@ private extension QRLoginPostExchangeServiceTests {
         )
     }
 
+    @MainActor
     func stubFetchSiteInfo(stores: MockStoresManager, result: Result<Site, Error>) {
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             if case let .fetchSiteInfo(_, completion) = action {

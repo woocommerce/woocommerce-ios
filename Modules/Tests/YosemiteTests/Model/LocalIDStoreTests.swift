@@ -4,6 +4,7 @@ import XCTest
 import WooFoundation
 
 class LocalIDStoreTests: XCTestCase {
+    @MainActor
     func test_local_id_store_creation() {
         let store = LocalIDStore()
 
@@ -14,6 +15,7 @@ class LocalIDStoreTests: XCTestCase {
         XCTAssertEqual(localID, -2)
     }
 
+    @MainActor
     func test_is_local_id() {
         // ids <= 0 are local
         XCTAssertTrue(LocalIDStore.isIDLocal(0))

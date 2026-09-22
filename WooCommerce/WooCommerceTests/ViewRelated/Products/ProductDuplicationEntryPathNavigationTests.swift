@@ -7,6 +7,7 @@ import Yosemite
 @MainActor
 extension ProductFormViewController_DuplicationTests {
     @Test
+    @MainActor
     func test_product_loader_duplication_replaces_contained_source_editor() async throws {
         // Given
         let sourceProduct = Product.fake().copy(productID: 123, name: "Source")
@@ -37,6 +38,7 @@ extension ProductFormViewController_DuplicationTests {
     }
 
     @Test
+    @MainActor
     func test_add_product_form_after_first_save_replaces_source_editor() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -72,6 +74,7 @@ extension ProductFormViewController_DuplicationTests {
 
 @MainActor
 private extension ProductFormViewController_DuplicationTests {
+    @MainActor
     func configureDuplication(stores: MockStoresManager, sourceProduct: Product, duplicate: Product) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {

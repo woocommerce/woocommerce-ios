@@ -162,6 +162,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(viewModel.navigationTrailingItem, .loading)
     }
 
+    @MainActor
     func test_loading_indicator_gets_disabled_after_the_network_operation_completes() {
         // Given
         let viewModel = EditOrderAddressFormViewModel(
@@ -191,6 +192,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(navigationItem, .done(enabled: false))
     }
 
+    @MainActor
     func test_starting_view_model_without_stored_countries_fetches_them_remotely() {
         // Given
         testingStorage.reset()
@@ -215,6 +217,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertTrue(countriesFetched)
     }
 
+    @MainActor
     func test_syncing_countries_correctly_sets_showPlaceholders_properties() {
         // Given
         testingStorage.reset()
@@ -263,6 +266,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.fields.country, newCountry.name)
     }
 
+    @MainActor
     func test_view_model_only_updates_shipping_address_field() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -287,6 +291,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(update.fields, [.shippingAddress])
     }
 
+    @MainActor
     func test_view_model_updates_shipping_and_billing_address_fields_when_use_as_toggle_is_on() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -314,6 +319,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(update.fields, [.shippingAddress, .billingAddress])
     }
 
+    @MainActor
     func test_view_model_only_updates_billing_address_field() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -385,6 +391,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(fields.state, "Greater London")
     }
 
+    @MainActor
     func test_view_model_updates_billing_and_shipping_address_fields_when_use_as_toggle_is_on() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -412,6 +419,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(update.fields, [.billingAddress, .shippingAddress])
     }
 
+    @MainActor
     func test_view_model_fires_success_notice_after_updating_address_successfully() {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
@@ -435,6 +443,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(noticeRequest, EditOrderAddressFormViewModel.NoticeFactory.createSuccessNotice())
     }
 
+    @MainActor
     func test_view_model_fires_error_notice_after_failing_to_update_address() {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, stores: testingStores)
@@ -458,6 +467,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(noticeRequest, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToUpdateAddress))
     }
 
+    @MainActor
     func test_view_model_fires_error_notice_after_failing_to_fetch_countries() {
         // Given
         testingStorage.reset()
@@ -475,6 +485,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(viewModel.notice, AddressFormViewModel.NoticeFactory.createErrorNotice(from: .unableToLoadCountries))
     }
 
+    @MainActor
     func test_copying_empty_shipping_address_for_billing_does_not_sends_an_empty_email_field() {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: Order.fake(), type: .shipping, storageManager: testingStorage, stores: testingStores)
@@ -499,6 +510,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertNil(billingAddress?.email)
     }
 
+    @MainActor
     func test_copying_billing_address_for_shipping_does_not_sends_an_email_field() {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: order(withBillingAddress: sampleAddress()),
@@ -526,6 +538,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertNil(shippingAddress?.email)
     }
 
+    @MainActor
     func test_sending_empty_email_billing_address_does_sends_an_empty_email_field() {
         // Given
         let viewModel = EditOrderAddressFormViewModel(order: order(withBillingAddress: sampleAddressWithEmptyNullableFields()),
@@ -569,6 +582,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.showEmailField)
     }
 
+    @MainActor
     func test_view_model_tracks_success_after_updating_shipping_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -597,6 +611,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "shipping_address")
     }
 
+    @MainActor
     func test_view_model_tracks_success_after_updating_billing_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -625,6 +640,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "billing_address")
     }
 
+    @MainActor
     func test_view_model_tracks_failure_after_updating_shipping_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -653,6 +669,7 @@ final class EditOrderAddressFormViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "shipping_address")
     }
 
+    @MainActor
     func test_view_model_tracks_failure_after_updating_billing_address() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()

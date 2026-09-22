@@ -27,6 +27,7 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
 
     // MARK: `print`
 
+    @MainActor
     func test_print_without_result_presents_InProgressViewController() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -47,6 +48,7 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         assertThat(viewController.presentedViewControllers[0], isAnInstanceOf: InProgressViewController.self)
     }
 
+    @MainActor
     func test_print_on_success_dismisses_InProgressViewController() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -80,6 +82,7 @@ final class PrintShippingLabelCoordinatorTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_print_logs_analytics() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

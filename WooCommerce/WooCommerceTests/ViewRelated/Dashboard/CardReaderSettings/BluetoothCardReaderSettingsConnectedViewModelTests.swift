@@ -12,6 +12,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 1234
 
+    @MainActor
     override func setUpWithError() throws {
         mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBT()],
@@ -38,6 +39,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
             delayToShowUpdateSuccessMessage: .milliseconds(1))
     }
 
+    @MainActor
     func test_did_change_should_show_returns_false_if_no_connected_readers() {
         mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [],
@@ -91,6 +93,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.connectedReaderBatteryLevel, "50% Battery")
     }
 
+    @MainActor
     func test_view_model_correctly_formats_connected_card_reader_battery_level_when_nil() {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBTNoVerNoBatt()],
@@ -122,6 +125,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.connectedReaderSoftwareVersion, "Version: 1.00.03.34-SZZZ_Generic_v45-300001")
     }
 
+    @MainActor
     func test_view_model_correctly_formats_connected_card_reader_software_version_when_nil() {
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
             connectedReaders: [MockCardReader.bbposChipper2XBTNoVerNoBatt()],
@@ -169,6 +173,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_startCardReaderUpdate_properly_handles_update_failure() {
         // Given
         let expectation = self.expectation(description: #function)
@@ -228,6 +233,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
                        MockCardReader.bbposChipper2XBT().readerType.model)
     }
 
+    @MainActor
     func test_starting_card_reader_update_logs_cardReaderSoftwareUpdate_event_after_setting_candidateCardReader() throws {
         // Given
         // .available not sent
@@ -245,6 +251,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.softwareUpdateType] as? String, "Required")
     }
 
+    @MainActor
     func test_optional_card_reader_update_starts_viewModel_logs_cardReaderSoftwareUpdateStarted_event_with_optional_update_type() throws {
         // Given
         mockStoresManager.simulateOptionalUpdateAvailable()
@@ -262,6 +269,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.softwareUpdateType] as? String, "Optional")
     }
 
+    @MainActor
     func test_when_store_sends_update_complete_viewModel_logs_tracks_event_cardReaderSoftwareUpdateSuccess() throws {
         // Given
 
@@ -277,6 +285,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
                        MockCardReader.bbposChipper2XBT().readerType.model)
     }
 
+    @MainActor
     func test_when_store_sends_update_failed_viewModel_logs_tracks_event_cardReaderSoftwareUpdateFailed() throws {
         // Given
         // .available not sent
@@ -298,6 +307,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertEqual(firstPropertiesBatch[WooAnalyticsEvent.InPersonPayments.Keys.errorDescription] as? String, expectedErrorDescription)
     }
 
+    @MainActor
     func test_when_user_cancels_update_viewModel_logs_tracks_event_cardReaderSoftwareUpdateCancelTapped() throws {
         // Given
         mockStoresManager.simulateCancelableUpdate(onCancel: {})
@@ -314,6 +324,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
                        MockCardReader.bbposChipper2XBT().readerType.model)
     }
 
+    @MainActor
     func test_when_update_is_successfully_canceled_viewModel_logs_tracks_event_cardReaderSoftwareUpdateCanceled() throws {
         // Given
         let expectation = self.expectation(description: #function)
@@ -335,6 +346,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
                        MockCardReader.bbposChipper2XBT().readerType.model)
     }
 
+    @MainActor
     func test_when_update_is_successfully_canceled_viewModel_does_not_log_tracks_event_cardReaderSoftwareUpdateFailed() {
         // Given
         let expectation = self.expectation(description: #function)
@@ -351,6 +363,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateFailed.rawValue))
     }
 
+    @MainActor
     func test_starting_card_reader_update_does_not_log_cardReaderSoftwareUpdateStarted_event_without_candidateCardReader() throws {
         // Given
         // .available not sent.
@@ -364,6 +377,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderSoftwareUpdateStarted.rawValue))
     }
 
+    @MainActor
     func test_when_update_reaches_100_percent_viewModel_does_not_provide_cancel_handler_so_cancel_button_is_not_shown() {
         // Given
         mockStoresManager.simulateCancelableUpdate(onCancel: {})
@@ -376,6 +390,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertNil(handler)
     }
 
+    @MainActor
     func test_When_update_progress_is_displayed_rounded_to_100_percent_viewModel_does_not_provide_cancel_handler_so_cancel_button_is_not_shown() {
         // Given
         mockStoresManager.simulateCancelableUpdate(onCancel: {})
@@ -388,6 +403,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertNil(handler)
     }
 
+    @MainActor
     func test_when_update_reaches_99_percent_viewModel_provides_cancel_handler_so_cancel_button_is_shown() {
         // Given
         mockStoresManager.simulateCancelableUpdate(onCancel: {})
@@ -400,6 +416,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertNotNil(handler)
     }
 
+    @MainActor
     func test_when_update_starts_viewModel_test_when_update_reaches_100_percent_viewModel_does_not_provide_cancel_handler_so_cancel_button_is_not_shown() {
         // Given
         mockStoresManager.simulateCancelableUpdate(onCancel: {})
@@ -411,6 +428,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertNotNil(handler)
     }
 
+    @MainActor
     func test_when_a_mandatory_update_succeeds_optional_updates_are_not_available() {
         // Given
         // .available is not sent
@@ -430,6 +448,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.optionalReaderUpdateAvailable)
     }
 
+    @MainActor
     func test_when_an_optional_update_succeeds_optional_updates_are_not_available() {
         // Given
         mockStoresManager.simulateOptionalUpdateAvailable()
@@ -449,6 +468,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.optionalReaderUpdateAvailable)
     }
 
+    @MainActor
     func test_when_a_mandatory_update_fails_optional_updates_are_not_available() {
         // Given
         // .available is not sent
@@ -461,6 +481,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.optionalReaderUpdateAvailable)
     }
 
+    @MainActor
     func test_when_an_optional_update_fails_optional_updates_are_available() {
         // Given
         mockStoresManager.simulateOptionalUpdateAvailable()
@@ -477,6 +498,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.connectedReaderModel, MockCardReader.bbposChipper2XBT().readerType.model)
     }
 
+    @MainActor
     func test_when_connected_to_two_readers_it_sets_connectedReaderModel_from_the_first_reader() {
         // Given
         mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -499,6 +521,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.connectedReaderModel, "WISEPAD_3")
     }
 
+    @MainActor
     func test_when_not_connected_to_any_readers_it_sets_connectedReaderModel_to_nil() {
         // Given
         mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -521,6 +544,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.connectedReaderModel)
     }
 
+    @MainActor
     func test_when_connected_to_a_built_in_reader_it_isnt_displayed() {
         // Given
         mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -546,6 +570,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         assertEqual(.isFalse, shouldShow)
     }
 
+    @MainActor
     func test_when_connected_to_a_built_in_reader_it_disconnects() {
         // Given
         mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -576,6 +601,7 @@ final class BluetoothCardReaderSettingsConnectedViewModelTests: XCTestCase {
         }))
     }
 
+    @MainActor
     func test_when_automatically_disconnects_from_built_in_reader_it_tracks_that_in_analytics() throws {
         // Given
         mockStoresManager = MockCardPresentPaymentsStoresManager(

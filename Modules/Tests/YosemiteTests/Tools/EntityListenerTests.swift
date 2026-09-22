@@ -21,6 +21,7 @@ class EntityListenerTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
@@ -30,6 +31,7 @@ class EntityListenerTests: XCTestCase {
 
     /// Verifies that onUpsert is called everytime the associated Storage.Entity is Updated.
     ///
+    @MainActor
     func testOnUpsertGetsCalledWheneverTargetEntityIsEffectivelyUpdated() {
         /// Step 1: Insert
         ///
@@ -62,6 +64,7 @@ class EntityListenerTests: XCTestCase {
     /// Verifies that no closure is called when the associated Storage.Entity is deleted
     /// without a replacement.
     ///
+    @MainActor
     func test_no_closure_gets_called_when_target_entity_is_deleted_without_replacement() {
         // Given
         let storageAccount = storageManager.insertSampleAccount()
@@ -101,6 +104,7 @@ class EntityListenerTests: XCTestCase {
     /// Verifies that onReplace is called when the associated Storage.Entity is deleted and
     /// re-inserted within a single save, receiving the replacement entity.
     ///
+    @MainActor
     func test_onReplace_gets_called_when_target_entity_is_deleted_and_reinserted_in_a_single_save() {
         // Given
         let storageAccount = storageManager.insertSampleAccount()
@@ -127,6 +131,7 @@ class EntityListenerTests: XCTestCase {
 
     /// Verifies that onUpsert is called everytime the associated Storage.Entity is Refreshed.
     ///
+    @MainActor
     func testOnUpsertGetsCalledWheneverTheAssociatedContextRefreshesAllObjects() {
         /// Step 1: Insert
         ///
@@ -158,6 +163,7 @@ class EntityListenerTests: XCTestCase {
     /// Normally, this scenario wouldn't happen: EntityListener *USERS* would never have access to ReadOnly instances
     /// before they're effectively persisted. *But* we're supporting this, as a safety measure.
     ///
+    @MainActor
     func testOnUpsertGetsCalledWheneverTheAssociatedEntityGetsInsertedInContext() {
         /// Step 1: Insert
         ///

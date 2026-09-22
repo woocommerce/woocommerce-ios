@@ -593,6 +593,7 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         XCTAssertTrue(harness.viewModel.provisionalNavigationErrors.isEmpty)
     }
 
+    @MainActor
     func test_reload_without_site_credential_authentication_does_not_stop_unrelated_navigation() throws {
         // Given
         let suiteName = UUID().uuidString
@@ -644,6 +645,7 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_controller_with_mismatched_persisted_endpoint_identity_falls_back_to_unauthenticated_initial_url() throws {
         // Given
         let credentials: Yosemite.Credentials = .wporg(username: username, password: password, siteAddress: "https://test.com")
@@ -747,6 +749,7 @@ final class WordPressOrgCredentialsAuthenticatorTests: XCTestCase {
         return (try WKWebView().authenticateForWPOrg(with: credentials, authenticationEndpoints: endpoints), endpoints)
     }
 
+    @MainActor
     private func makeAuthenticatedControllerHarness(
         siteCredentialReplacementScheduler: @escaping (@escaping () -> Void) -> Void = { $0() }
     ) throws -> (

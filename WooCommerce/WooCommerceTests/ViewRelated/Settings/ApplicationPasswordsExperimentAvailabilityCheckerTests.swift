@@ -14,6 +14,7 @@ final class ApplicationPasswordsExperimentAvailabilityCheckerTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     private func setupEnvironment(
         isWPComAuthenticated: Bool,
         cachedRemoteFFEnabled: Bool

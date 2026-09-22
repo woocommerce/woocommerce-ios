@@ -6,18 +6,21 @@ final class AccountCreationStoreTests: XCTestCase {
     private var remote: MockAccountRemote!
     private var store: AccountCreationStore!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         remote = MockAccountRemote()
         store = AccountCreationStore(dotcomClientID: "", dotcomClientSecret: "", remote: remote, dispatcher: .init())
     }
 
+    @MainActor
     override func tearDown() {
         store = nil
         remote = nil
         super.tearDown()
     }
 
+    @MainActor
     func test_createAccount_returns_result_on_success() throws {
         // Given
         remote.whenLoadingUsernameSuggestions(thenReturn: .success(["woo", "zoo"]))
@@ -36,6 +39,7 @@ final class AccountCreationStoreTests: XCTestCase {
         XCTAssertEqual(data, .init(authToken: "auth", username: "voo"))
     }
 
+    @MainActor
     func test_createAccount_returns_invalidUsername_error_when_username_suggestions_are_empty() throws {
         // Given
         remote.whenLoadingUsernameSuggestions(thenReturn: .success([]))
@@ -53,6 +57,7 @@ final class AccountCreationStoreTests: XCTestCase {
         XCTAssertEqual(error, .invalidUsername)
     }
 
+    @MainActor
     func test_createAccount_returns_invalidUsername_error_when_loadUsernameSuggestions_fails() throws {
         // Given
         remote.whenLoadingUsernameSuggestions(thenReturn: .failure(NetworkError.notFound()))
@@ -70,6 +75,7 @@ final class AccountCreationStoreTests: XCTestCase {
         XCTAssertEqual(error, .invalidUsername)
     }
 
+    @MainActor
     func test_createAccount_returns_error_from_remote_on_failure() throws {
         // Given
         remote.whenLoadingUsernameSuggestions(thenReturn: .success(["woo", "zoo"]))

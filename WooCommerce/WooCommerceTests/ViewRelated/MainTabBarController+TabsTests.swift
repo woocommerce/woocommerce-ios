@@ -8,6 +8,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
         SessionManager.removeTestingDatabase()
     }
 
+    @MainActor
     func test_tab_view_controllers_are_not_empty_after_updating_default_site() throws {
         // Arrange
         let storesManager = MockStoresManager(sessionManager: .makeForTesting())
@@ -40,6 +41,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
+    @MainActor
     func test_tab_view_controllers_include_pos_tab_when_pos_tab_is_visible() throws {
         // Given
         let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
@@ -82,6 +84,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
+    @MainActor
     func test_tab_view_controllers_exclude_pos_tab_when_pos_tab_is_not_visible() throws {
         // Given
         let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
@@ -122,6 +125,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
+    @MainActor
     func test_tab_view_controllers_do_not_change_when_pos_visibility_changes() throws {
         // Given
         let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
@@ -158,6 +162,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
         XCTAssertEqual(tabBarController.tabRootViewControllers.count, 4)
     }
 
+    @MainActor
     func test_tab_view_controllers_include_bookings_tab_when_bookings_tab_is_visible() throws {
         // Given
         let mockBookingsEligibilityChecker = MockBookingsEligibilityChecker()
@@ -216,6 +221,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
+    @MainActor
     func test_tab_view_controllers_exclude_bookings_tab_when_bookings_tab_is_not_visible() throws {
         // Given
         let mockBookingsEligibilityChecker = MockBookingsEligibilityChecker()
@@ -269,6 +275,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
+    @MainActor
     func test_tab_view_controllers_do_not_change_when_bookings_visibility_changes() throws {
         // Given
         let mockBookingsEligibilityChecker = MockBookingsEligibilityChecker()
@@ -306,6 +313,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
     }
 
 
+    @MainActor
     func test_tab_root_viewControllers_are_replaced_after_updating_to_a_different_site() throws {
         // Arrange
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -341,6 +349,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
                           viewControllersAfterSiteChange[WooTab.hubMenu.visibleIndex(isPOSTabVisible: false)])
     }
 
+    @MainActor
     func test_tab_view_controllers_stay_the_same_after_updating_to_the_same_site() throws {
         // Arrange
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -367,6 +376,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
         XCTAssertEqual(viewControllersBeforeSiteChange, viewControllersAfterSiteChange)
     }
 
+    @MainActor
     func test_pos_tab_is_not_inserted_when_superseded_visibility_check_resolves_after_cancellation() throws {
         // Given a check that resolves `true` only once its task is cancelled, mimicking the
         // indeterminate verdict a superseded checker produces when cancellation cuts its
@@ -416,6 +426,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
         withExtendedLifetime(tabBarController) {}
     }
 
+    @MainActor
     func test_pos_visibility_and_eligibility_are_rechecked_when_app_enters_foreground() throws {
         // Given
         let mockPOSVisibilityChecker = MockPOSTabVisibilityChecker()

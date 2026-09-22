@@ -38,6 +38,7 @@ struct SelectedSiteSettingsTests {
 }
 
 private extension SelectedSiteSettingsTests {
+    @MainActor
     func makeStores() -> MockStoresManager {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.sessionManager.setStoreId(siteID)

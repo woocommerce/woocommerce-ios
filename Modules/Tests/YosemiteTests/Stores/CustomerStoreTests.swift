@@ -17,6 +17,7 @@ final class CustomerStoreTests: XCTestCase {
     private let dummyCustomerID: Int64 = 25
     private let dummyKeyword: String = "John"
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -34,6 +35,7 @@ final class CustomerStoreTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_retrieveCustomer_returns_customer_upon_success() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "", filename: "customer")
@@ -74,6 +76,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(customer.shipping?.country, "US" )
     }
 
+    @MainActor
     func test_retrieveCustomer_returns_Error_upon_failure() {
         // Given
         let expectedError = NetworkError.notFound()
@@ -92,6 +95,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_synchronizeLightCustomersData_retrieves_wc_analytics_customers_and_parses_them_to_customers() {
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
 
@@ -138,6 +142,7 @@ final class CustomerStoreTests: XCTestCase {
         assertEqual("Doe", customers[3].lastName)
     }
 
+    @MainActor
     func test_searchCustomers_returns_Error_upon_failure() {
         // Given
         let expectedError = NetworkError.notFound()
@@ -163,6 +168,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_searchCustomers_upserts_the_returned_CustomerSearchResult() {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
@@ -198,6 +204,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(storedCustomerSearchResults?.customers?.count, 4)
     }
 
+    @MainActor
     func test_searchCustomers_when_loading_a_second_page_then_appends_to_the_first_and_keeps_guests_separate() {
         // Given
         let pagedNetwork = MockNetwork(useResponseQueue: true)
@@ -243,6 +250,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(storedCustomerSearchResults?.customers?.count, 6)
     }
 
+    @MainActor
     func test_retrieveCustomer_upserts_the_returned_Customer() {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers/25", filename: "customer")
@@ -267,6 +275,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(storedCustomer?.firstName, "John")
     }
 
+    @MainActor
     func test_searchCustomers_stores_unregistered_customers_from_the_results() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
@@ -291,6 +300,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(unregisteredCustomer.lastName, "The Unregistered")
     }
 
+    @MainActor
     func test_deleteAllCustomers() {
         let customer = Customer.fake().copy(siteID: dummySiteID)
         storageManager.insertSampleCustomer(readOnlyCustomer: customer)
@@ -312,6 +322,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(customersAfterDeleting.count, 0)
     }
 
+    @MainActor
     func test_synchronizeAllCustomers_upserts_WCAnalyticsCustomers_upon_success() {
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
 
@@ -348,6 +359,7 @@ final class CustomerStoreTests: XCTestCase {
         assertEqual("John Doe", customers[3].name)
     }
 
+    @MainActor
     func test_synchronizeAllCustomers_returns_Error_upon_failure() {
         // Given
         let expectedError = NetworkError.notFound()
@@ -366,6 +378,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_searchWCAnalyticsCustomers_upserts_the_returned_WCAnalyticsCustomerSearchResult() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "customers", filename: "wc-analytics-customers")
@@ -399,6 +412,7 @@ final class CustomerStoreTests: XCTestCase {
         XCTAssertEqual(storedCustomerSearchResults?.customers?.count, 4)
     }
 
+    @MainActor
     func test_searchWCAnalyticsCustomers_returns_Error_upon_failure() {
         // Given
         let expectedError = NetworkError.notFound()

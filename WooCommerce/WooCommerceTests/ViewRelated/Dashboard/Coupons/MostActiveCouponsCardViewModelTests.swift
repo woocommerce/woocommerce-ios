@@ -31,6 +31,7 @@ final class MostActiveCouponsCardViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()

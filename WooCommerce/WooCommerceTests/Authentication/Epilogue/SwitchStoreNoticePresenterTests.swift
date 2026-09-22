@@ -13,6 +13,7 @@ final class SwitchStoreNoticePresenterTests: XCTestCase {
     private var stores: StoresManager!
     private var noticePresenter: MockNoticePresenter!
 
+    @MainActor
     override func setUp() {
         super.setUp()
 

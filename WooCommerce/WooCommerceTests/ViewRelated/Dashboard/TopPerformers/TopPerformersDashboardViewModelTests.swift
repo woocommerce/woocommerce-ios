@@ -171,6 +171,7 @@ final class TopPerformersDashboardViewModelTests: XCTestCase {
 }
 
 private extension TopPerformersDashboardViewModelTests {
+    @MainActor
     func mockTopPerformersStats(with stores: MockStoresManager,
                                 error: Error? = nil) {
         stores.whenReceivingAction(ofType: StatsActionV4.self) { action in

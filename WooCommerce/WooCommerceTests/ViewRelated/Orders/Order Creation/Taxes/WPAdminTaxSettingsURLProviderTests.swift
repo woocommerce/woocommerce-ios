@@ -4,6 +4,7 @@ import WooFoundation
 import Yosemite
 
 final class WPAdminTaxSettingsURLProviderTests: XCTestCase {
+    @MainActor
     func test_wpAdminTaxSettingsURL_passes_right_url() {
         // Given
         let sampleAdminURL = "https://testshop.com/wp-admin/"

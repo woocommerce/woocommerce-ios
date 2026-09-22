@@ -16,6 +16,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
@@ -23,6 +24,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
     // MARK: tests for `init` with a `ProductsSortOrder` param
 
+    @MainActor
     func testProductResultsControllerInitWithAscendingNameSortOrder() {
         // Arrange
         let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Zap")
@@ -42,6 +44,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, [product2, product1])
     }
 
+    @MainActor
     func testProductResultsControllerInitWithDescendingNameSortOrder() {
         // Arrange
         let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "fun house")
@@ -61,6 +64,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, [product2, product1])
     }
 
+    @MainActor
     func testProductResultsControllerInitWithAscendingDateSortOrder() {
         // Arrange
         // Friday, March 27, 2020 9:47:09 AM GMT
@@ -85,6 +89,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, [product2, product1])
     }
 
+    @MainActor
     func testProductResultsControllerInitWithDescendingDateSortOrder() {
         // Arrange
         // Friday, March 27, 2020 9:47:09 AM GMT
@@ -111,6 +116,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
 
     // MARK: tests for `updateSortOrder` with a `ProductsSortOrder` param
 
+    @MainActor
     func testProductResultsControllerUpdateWithAscendingNameSortOrder() {
         // Arrange
         let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "fun house")
@@ -133,6 +139,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, [product1, product2])
     }
 
+    @MainActor
     func testProductResultsControllerUpdateWithDescendingNameSortOrder() {
         // Arrange
         let product1 = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Zap")
@@ -155,6 +162,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, [product1, product2])
     }
 
+    @MainActor
     func testProductResultsControllerUpdateWithAscendingDateSortOrder() {
         // Arrange
         // Friday, March 27, 2020 9:47:09 AM GMT
@@ -182,6 +190,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, [product2, product1])
     }
 
+    @MainActor
     func testProductResultsControllerUpdateWithDescendingDateSortOrder() {
         // Arrange
         // Friday, March 27, 2020 9:47:09 AM GMT
@@ -209,6 +218,7 @@ final class ResultsController_StorageProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, [product2, product1])
     }
 
+    @MainActor
     func test_product_ResultsController_sorts_in_descending_date_for_draft_product_of_earlier_date() {
         // Arrange
         // Friday, March 27, 2020 9:47:09 AM GMT

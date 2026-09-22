@@ -9,6 +9,7 @@ private struct TestConstants {
 
 final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
 
+    @MainActor
     func test_did_change_should_show_returns_true_if_no_connected_readers() {
         let mockKnownReaderProvider = MockKnownReaderProvider()
 
@@ -34,6 +35,7 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_did_change_should_show_returns_false_if_reader_connected() {
         let mockKnownReaderProvider = MockKnownReaderProvider(knownReader: TestConstants.mockReaderID)
 
@@ -62,6 +64,7 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
 
     // MARK: - Skip Auto Search Tests
 
+    @MainActor
     func test_shouldSkipAutoSearch_returns_true_when_reconnection_is_cancelled() {
         let mockKnownReaderProvider = MockKnownReaderProvider()
 
@@ -88,6 +91,7 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldSkipAutoSearch())
     }
 
+    @MainActor
     func test_shouldSkipAutoSearch_returns_false_when_reconnection_succeeds() {
         let mockKnownReaderProvider = MockKnownReaderProvider()
 
@@ -115,6 +119,7 @@ final class CardReaderSettingsSearchingViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldSkipAutoSearch())
     }
 
+    @MainActor
     func test_shouldSkipAutoSearch_returns_false_after_clearSkipAutoSearch_is_called() {
         let mockKnownReaderProvider = MockKnownReaderProvider()
 

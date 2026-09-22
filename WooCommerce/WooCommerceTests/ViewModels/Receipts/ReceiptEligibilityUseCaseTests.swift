@@ -4,6 +4,7 @@ import Yosemite
 
 @MainActor
 final class ReceiptEligibilityUseCaseTests: XCTestCase {
+    @MainActor
     func test_when_WooCommerce_version_is_below_minimum_then_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -26,6 +27,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
     func test_when_WooCommerce_version_is_equal_or_above_minimum_then_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -48,6 +50,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForFailedPaymentEmailReceipts_when_plugins_are_inactive_then_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -72,6 +75,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForFailedPaymentEmailReceipts_when_plugins_are_supported_then_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -96,6 +100,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForFailedPaymentEmailReceipts_when_woopayments_version_is_incorrect_then_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -120,6 +125,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForFailedPaymentEmailReceipts_when_stripe_gateway_then_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -144,6 +150,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForFailedPaymentEmailReceipts_when_stripe_gateway_is_outdated_then_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -168,6 +175,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForReceipt_with_completed_status_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -188,6 +196,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForReceipt_with_minimum_wc_version_and_processing_status_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -208,6 +217,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForReceipt_with_minimum_wc_version_and_refunded_status_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -228,6 +238,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForReceipt_with_failed_status_and_no_gateway_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -254,6 +265,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForReceipt_with_failed_status_and_gateway_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -288,6 +300,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForReceipt_with_paid_custom_status_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -308,6 +321,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForReceipt_with_unpaid_custom_status_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -328,6 +342,7 @@ final class ReceiptEligibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
     func test_isEligibleForReceipt_with_cancelled_status_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())

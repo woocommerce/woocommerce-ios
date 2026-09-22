@@ -157,6 +157,7 @@ struct SupportChatViewModelTests {
 
     // MARK: - Analytics Tests
 
+    @MainActor
     @Test func init_tracks_entryPointTapped() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -292,6 +293,7 @@ struct SupportChatViewModelTests {
 
     // MARK: - Send Message Error Handling Tests
 
+    @MainActor
     @Test func sendMessage_when_failure_with_429_then_state_is_rate_limit_error() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -314,6 +316,7 @@ struct SupportChatViewModelTests {
         #expect(message.contains("limit"), "Expected rate-limit copy, got: \(message)")
     }
 
+    @MainActor
     @Test func sendMessage_when_failure_with_500_then_state_is_generic_error() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -336,6 +339,7 @@ struct SupportChatViewModelTests {
         #expect(message.contains("We couldn't connect to AI chat right now."), "Expected generic copy, got: \(message)")
     }
 
+    @MainActor
     @Test func sendMessage_when_failure_then_marks_last_user_message_as_failed() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -355,6 +359,7 @@ struct SupportChatViewModelTests {
         #expect(lastUserMessage?.failed == true, "Expected the failed user bubble to be marked")
     }
 
+    @MainActor
     @Test func sendMessage_when_failure_with_timeout_then_state_is_generic_error() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -377,6 +382,7 @@ struct SupportChatViewModelTests {
         #expect(message.contains("We couldn't connect to AI chat right now."), "Expected generic copy, got: \(message)")
     }
 
+    @MainActor
     @Test func sendMessage_tracks_messageSent_with_isFirstMessage_toggling_across_multiple_sends() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -401,6 +407,7 @@ struct SupportChatViewModelTests {
         #expect(messageSentProperties.last?["is_first_message"] as? Bool == false)
     }
 
+    @MainActor
     @Test func sendMessage_when_response_contains_forwardToHumanSupport_then_tracks_responseReceived_with_flag() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -450,6 +457,7 @@ struct SupportChatViewModelTests {
         )
     }
 
+    @MainActor
     @Test func sendMessage_when_failure_tracks_errorEscalationButtonShown_only_once() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -477,6 +485,7 @@ struct SupportChatViewModelTests {
 
     // MARK: - Execute Action Tests
 
+    @MainActor
     @Test func executeAction_enableAnalytics_calls_service_and_reruns_test() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -530,6 +539,7 @@ struct SupportChatViewModelTests {
         #expect(sut.isExecutingAction == false)
     }
 
+    @MainActor
     @Test func executeAction_when_service_throws_then_state_is_error() async {
         // Given — enableAnalytics fails
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -652,6 +662,7 @@ struct SupportChatViewModelTests {
     // MARK: - Resume Chat Tests
 
     @Test(.timeLimit(.minutes(1)))
+    @MainActor
     func resumeIfNeeded_when_chat_flagged_for_human_support_then_sets_shouldPromptHumanSupport() async {
         // Given
         let chatID: Int64 = 123
@@ -704,6 +715,7 @@ struct SupportChatViewModelTests {
     }
 
     @Test(.timeLimit(.minutes(1)))
+    @MainActor
     func resumeIfNeeded_when_chat_flagged_for_human_support_then_filters_flagged_message() async {
         // Given
         let chatID: Int64 = 123
@@ -760,6 +772,7 @@ struct SupportChatViewModelTests {
     }
 
     @Test(.timeLimit(.minutes(1)))
+    @MainActor
     func resumeIfNeeded_when_chat_not_flagged_then_shouldPromptHumanSupport_is_false() async {
         // Given
         let chatID: Int64 = 123
@@ -803,6 +816,7 @@ struct SupportChatViewModelTests {
     }
 
     @Test(.timeLimit(.minutes(1)))
+    @MainActor
     func resumeIfNeeded_when_chat_has_no_persisted_bot_response_then_canEscalateToHumanSupport_is_true() async {
         // Given
         let chatID: Int64 = 123
@@ -843,6 +857,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
+    @MainActor
     @Test func contactHumanSupport_passes_chatID_in_callback() async {
         // Given
         let chatID: Int64 = 456
@@ -916,6 +931,7 @@ struct SupportChatViewModelTests {
         #expect(receivedHasBotResponse == false)
     }
 
+    @MainActor
     @Test func contactHumanSupport_when_first_message_is_sending_then_does_not_contact_support_or_track_tap() {
         // Given
         var didContactHumanSupport = false
@@ -943,6 +959,7 @@ struct SupportChatViewModelTests {
         #expect(analyticsProvider.receivedEvents.contains("support_chat_escalation_tapped") == false)
     }
 
+    @MainActor
     @Test func contactHumanSupport_after_bot_response_passes_hasReceivedBotResponse_true() {
         // Given
         var receivedHasBotResponse: Bool?
@@ -967,6 +984,7 @@ struct SupportChatViewModelTests {
         #expect(receivedHasBotResponse == true)
     }
 
+    @MainActor
     @Test func contactHumanSupport_when_prefetched_systemStatusReport_then_passes_it_in_supportAreaInfo() async {
         // Given
         let prefetchedReport = "### Pre-fetched System Status Report ###"
@@ -1071,6 +1089,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
+    @MainActor
     @Test func canEscalateToHumanSupport_becomes_true_after_first_user_message_is_sent() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1087,6 +1106,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
+    @MainActor
     @Test func canEscalateToHumanSupport_remains_true_when_sending_message_fails() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1105,6 +1125,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
+    @MainActor
     @Test func canEscalateToHumanSupport_is_true_for_helpAndSupport_entry_after_proceedToChat() async {
         // Given — helpAndSupport entry shows issue picker first; input area is hidden
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1122,6 +1143,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
+    @MainActor
     @Test func canEscalateToHumanSupport_is_true_after_helpAndSupport_picker_selection() async {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -1151,6 +1173,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
+    @MainActor
     @Test func markChatTicketCreated_flips_hasCreatedTicket_and_hides_toolbar() {
         // Given — a live chat with at least one user message so the toolbar would otherwise be visible
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1186,6 +1209,7 @@ struct SupportChatViewModelTests {
         #expect(events.first?["entry_point"] as? String == "connectivity_tool")
     }
 
+    @MainActor
     @Test func canEscalateToHumanSupport_is_false_when_hasCreatedTicket_is_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1207,6 +1231,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == false)
     }
 
+    @MainActor
     @Test func canEscalateToHumanSupport_is_false_when_chat_is_resolved() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1227,6 +1252,7 @@ struct SupportChatViewModelTests {
 
     // MARK: - Contact Human Support Button Enabled Tests
 
+    @MainActor
     @Test func isContactHumanSupportButtonEnabled_is_false_when_first_message_is_sending_before_chat_is_created() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1241,6 +1267,7 @@ struct SupportChatViewModelTests {
         #expect(sut.isContactHumanSupportButtonEnabled == false)
     }
 
+    @MainActor
     @Test func isContactHumanSupportButtonEnabled_is_true_when_existing_chat_is_sending_message() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1287,6 +1314,7 @@ struct SupportChatViewModelTests {
 
     // MARK: - Resolved Button Tests
 
+    @MainActor
     @Test func shouldShowResolvedButton_when_last_bot_message_is_resolved_then_returns_true() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1322,6 +1350,7 @@ struct SupportChatViewModelTests {
         #expect(sut.shouldShowResolvedButton == true)
     }
 
+    @MainActor
     @Test func shouldShowResolvedButton_when_last_bot_message_is_upvoted_then_returns_true() async {
         // Given
         let messageID: Int64 = 2
@@ -1358,6 +1387,7 @@ struct SupportChatViewModelTests {
         #expect(sut.shouldShowResolvedButton == true)
     }
 
+    @MainActor
     @Test func sendMessage_when_last_bot_message_is_resolved_then_appends_resolved_prompt() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1396,6 +1426,7 @@ struct SupportChatViewModelTests {
         #expect(prompt.content == .resolvedPrompt)
     }
 
+    @MainActor
     @Test func submitFeedback_when_upvoting_last_bot_message_then_appends_resolved_prompt() async throws {
         // Given
         let messageID: Int64 = 2
@@ -1434,6 +1465,7 @@ struct SupportChatViewModelTests {
         #expect(prompt.content == .resolvedPrompt)
     }
 
+    @MainActor
     @Test func submitFeedback_when_resolved_prompt_already_exists_then_does_not_append_duplicate_prompt() async {
         // Given
         let messageID: Int64 = 2
@@ -1476,6 +1508,7 @@ struct SupportChatViewModelTests {
         #expect(sut.messages.filter { $0.content == .resolvedPrompt }.count == 1)
     }
 
+    @MainActor
     @Test func shouldShowResolvedButton_when_last_bot_message_is_downvoted_then_returns_false() async {
         // Given
         let messageID: Int64 = 2
@@ -1511,6 +1544,7 @@ struct SupportChatViewModelTests {
         #expect(sut.shouldShowResolvedButton == false)
     }
 
+    @MainActor
     @Test func shouldShowResolvedButton_when_two_bot_responses_excluding_greeting_and_issue_picker_then_returns_true() async {
         // Given
         var botMessageID: Int64 = 1
@@ -1549,6 +1583,7 @@ struct SupportChatViewModelTests {
         #expect(sut.shouldShowResolvedButton == true)
     }
 
+    @MainActor
     @Test func shouldShowResolvedButton_when_shouldPromptHumanSupport_then_returns_false() async {
         // Given
         var sendCount = 0
@@ -1609,6 +1644,7 @@ struct SupportChatViewModelTests {
         #expect(sut.shouldShowResolvedButton == false)
     }
 
+    @MainActor
     @Test func markChatResolved_when_shouldShowResolvedButton_then_hides_resolved_button() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1675,6 +1711,7 @@ struct SupportChatViewModelTests {
         #expect(message.shouldShowFeedbackButtons == false)
     }
 
+    @MainActor
     @Test func submitFeedback_when_valid_messageID_then_dispatches_action() async {
         // Given
         let chatID: Int64 = 123
@@ -1727,6 +1764,7 @@ struct SupportChatViewModelTests {
         #expect(receivedFeedback?.upvoted == true)
     }
 
+    @MainActor
     @Test func submitFeedback_when_already_rated_then_does_not_dispatch_again() async {
         // Given
         let chatID: Int64 = 123
@@ -1772,6 +1810,7 @@ struct SupportChatViewModelTests {
         #expect(feedbackCallCount == 1)
     }
 
+    @MainActor
     @Test func submitFeedback_when_upvoted_stores_rating_direction() async {
         // Given
         let chatID: Int64 = 123
@@ -1814,6 +1853,7 @@ struct SupportChatViewModelTests {
         #expect(sut.messageRatings[messageID] == true)
     }
 
+    @MainActor
     @Test func submitFeedback_when_downvoted_stores_rating_direction() async {
         // Given
         let chatID: Int64 = 123
@@ -1856,6 +1896,7 @@ struct SupportChatViewModelTests {
         #expect(sut.messageRatings[messageID] == false)
     }
 
+    @MainActor
     @Test func submitFeedback_tracks_analytics_event() async {
         // Given
         let chatID: Int64 = 123
@@ -1900,6 +1941,7 @@ struct SupportChatViewModelTests {
         #expect(analyticsProvider.received(event: "support_chat_feedback_submitted", with: ["rating": "down"]))
     }
 
+    @MainActor
     @Test func submitFeedback_tracks_rating_entryPoint_supportArea_and_userMessageCount() {
         // Given
         let chatID: Int64 = 123
@@ -1958,6 +2000,7 @@ struct SupportChatViewModelTests {
         )
     }
 
+    @MainActor
     @Test func sendMessage_when_success_then_bot_message_has_messageID() async {
         // Given
         let messageID: Int64 = 789
@@ -1994,6 +2037,7 @@ struct SupportChatViewModelTests {
         #expect(botMessage?.messageID == messageID)
     }
 
+    @MainActor
     @Test func sendMessage_when_success_then_bot_message_isNewInSession_is_true() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -2030,6 +2074,7 @@ struct SupportChatViewModelTests {
     }
 
     @Test(.timeLimit(.minutes(1)))
+    @MainActor
     func resumeIfNeeded_when_success_then_rehydrated_messages_have_isNewInSession_false() async {
         // Given
         let chatID: Int64 = 123
@@ -2071,6 +2116,7 @@ struct SupportChatViewModelTests {
     }
 
     @Test(.timeLimit(.minutes(1)))
+    @MainActor
     func resumeIfNeeded_when_sessionID_is_available_then_passes_sessionID_to_fetchChat() async {
         // Given
         let chatID: Int64 = 123
@@ -2111,6 +2157,7 @@ struct SupportChatViewModelTests {
         #expect(receivedSessionID == sessionID)
     }
 
+    @MainActor
     @Test func markChatResolved_when_chatID_exists_then_dispatches_markResolved_action() {
         // Given
         let chatID: Int64 = 123
@@ -2140,6 +2187,7 @@ struct SupportChatViewModelTests {
 
     // MARK: - Test Helpers
 
+    @MainActor
     private func makeSUT(
         entryPoint: SupportChatViewModel.EntryPoint = .helpAndSupport,
         stores: StoresManager? = nil,

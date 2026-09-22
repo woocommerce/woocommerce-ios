@@ -9,22 +9,26 @@ final class StorageShippingSettingsServiceTests: XCTestCase {
     private let sampleSiteID = Int64(134)
     private var storage: CoreDataManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storage = CoreDataManager(name: "WooCommerce", crashLogger: MockCrashLogger())
     }
 
+    @MainActor
     override func tearDown() {
         storage = nil
         super.tearDown()
     }
 
+    @MainActor
     func testInitialShippingSettings() {
         let service = StorageShippingSettingsService(siteID: sampleSiteID, storageManager: storage)
         XCTAssertNil(service.dimensionUnit)
         XCTAssertNil(service.weightUnit)
     }
 
+    @MainActor
     func testDimensionUnit() {
         let expectedDimensionUnit = "km"
         insertDimensionUnitSiteSetting(value: expectedDimensionUnit, siteID: sampleSiteID)
@@ -34,6 +38,7 @@ final class StorageShippingSettingsServiceTests: XCTestCase {
         XCTAssertEqual(service.dimensionUnit, expectedDimensionUnit)
     }
 
+    @MainActor
     func testWeightUnit() {
         let expectedWeightUnit = "kg"
         insertDimensionUnitSiteSetting(value: expectedWeightUnit, siteID: sampleSiteID)
@@ -43,6 +48,7 @@ final class StorageShippingSettingsServiceTests: XCTestCase {
         XCTAssertEqual(service.dimensionUnit, expectedWeightUnit)
     }
 
+    @MainActor
     func testUpdatingSiteID() {
         let siteID1 = Int64(123)
         let expectedDimensionUnit1 = "km"
@@ -69,6 +75,7 @@ final class StorageShippingSettingsServiceTests: XCTestCase {
 }
 
 private extension StorageShippingSettingsServiceTests {
+    @MainActor
     func insertDimensionUnitSiteSetting(value: String, siteID: Int64) {
         let siteSetting = storage.viewStorage.insertNewObject(ofType: SiteSetting.self)
         siteSetting.siteID = siteID
@@ -77,6 +84,7 @@ private extension StorageShippingSettingsServiceTests {
         siteSetting.value = value
     }
 
+    @MainActor
     func insertWeightUnitSiteSetting(value: String, siteID: Int64) {
         let siteSetting = storage.viewStorage.insertNewObject(ofType: SiteSetting.self)
         siteSetting.siteID = siteID

@@ -32,6 +32,7 @@ final class AppSettingsStoreTests_CardReaderSettings: XCTestCase {
     ///
     private var subject: AppSettingsStore!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -41,6 +42,7 @@ final class AppSettingsStoreTests_CardReaderSettings: XCTestCase {
         subject = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage, generalAppSettings: generalAppSettings)
     }
 
+    @MainActor
     override func tearDown() {
         dispatcher = nil
         storageManager = nil
@@ -50,6 +52,7 @@ final class AppSettingsStoreTests_CardReaderSettings: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_loading_card_reader_without_previous_data_returns_nil() {
 
         let expectation = self.expectation(description: #function)
@@ -66,6 +69,7 @@ final class AppSettingsStoreTests_CardReaderSettings: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_remember_card_reader_remembers_the_card_reader() {
 
         let expectation = self.expectation(description: #function)
@@ -87,6 +91,7 @@ final class AppSettingsStoreTests_CardReaderSettings: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_forget_card_reader_forgets_the_card_reader() {
 
         let expectation = self.expectation(description: #function)

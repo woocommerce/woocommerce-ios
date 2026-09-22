@@ -8,6 +8,7 @@ final class ReadOnlyConvertibleTests: XCTestCase {
 
     private let defaultDate = Date(timeIntervalSince1970: 0)
 
+    @MainActor
     func test_app_does_not_crash_when_converting_deleted_product() throws {
         // Given
         let storageManager = MockStorageManager()
@@ -47,6 +48,7 @@ final class ReadOnlyConvertibleTests: XCTestCase {
         XCTAssertEqual(readOnlyItem.dateCreated, defaultDate)
     }
 
+    @MainActor
     func test_app_does_not_crash_when_converting_deleted_product_image() throws {
         // Given
         let storageManager = MockStorageManager()
@@ -84,6 +86,7 @@ final class ReadOnlyConvertibleTests: XCTestCase {
         XCTAssertEqual(readOnlyItem.dateCreated, defaultDate)
     }
 
+    @MainActor
     func test_app_does_not_crash_when_converting_deleted_product_variation() throws {
         // Given
         let storageManager = MockStorageManager()
@@ -123,6 +126,7 @@ final class ReadOnlyConvertibleTests: XCTestCase {
         XCTAssertEqual(readOnlyItem.dateCreated, defaultDate)
     }
 
+    @MainActor
     func test_app_does_not_crash_when_converting_deleted_shipping_label() throws {
         // Given
         let storageManager = MockStorageManager()
@@ -163,6 +167,7 @@ final class ReadOnlyConvertibleTests: XCTestCase {
         XCTAssertEqual(readOnlyItem.status, .unknown)
     }
 
+    @MainActor
     func test_app_does_not_crash_when_converting_deleted_shipping_label_refund() throws {
         // Given
         let storageManager = MockStorageManager()
@@ -200,6 +205,7 @@ final class ReadOnlyConvertibleTests: XCTestCase {
         XCTAssertEqual(readOnlyItem.status, .unknown)
     }
 
+    @MainActor
     func test_app_does_not_crash_when_converting_deleted_wcpaycharge() throws {
         // Given
         let storageManager = MockStorageManager()

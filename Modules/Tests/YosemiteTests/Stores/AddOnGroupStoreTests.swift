@@ -29,6 +29,7 @@ final class AddOnGroupStoreTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 123
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -36,6 +37,7 @@ final class AddOnGroupStoreTests: XCTestCase {
         network = MockNetwork()
     }
 
+    @MainActor
     func test_syncAddOnGroups_stores_groups_correctly() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "product-add-ons", filename: "add-on-groups")
@@ -56,6 +58,7 @@ final class AddOnGroupStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageProductAddOnOption.self), 6) // 2 options in the 1st add-on, 1 in the 2nd, and 3 in the 3rd
     }
 
+    @MainActor
     func test_syncAddOnGroups_deletes_stale_groups() throws {
         // Given
         let oldGroup = AddOnGroup.fake().copy(siteID: sampleSiteID, groupID: 123)

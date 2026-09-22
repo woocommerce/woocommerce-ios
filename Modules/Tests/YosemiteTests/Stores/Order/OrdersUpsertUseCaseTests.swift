@@ -14,16 +14,19 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
     }
 
+    @MainActor
     override func tearDown() {
         storageManager = nil
         super.tearDown()
     }
 
+    @MainActor
     func test_it_inserts_orders_with_permanent_ids() throws {
         // Given
         let orders = [makeOrder(), makeOrder()]
@@ -39,6 +42,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_it_persists_orders_in_storage() throws {
         // Given
         let orders = [
@@ -58,6 +62,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(persistedOrder9001.toReadOnly(), orders.last)
     }
 
+    @MainActor
     func test_it_persists_order_relationships_in_storage() throws {
         // Given
         let coupon = Networking.OrderCouponLine(couponID: 1, code: "", discount: "", discountTax: "")
@@ -80,6 +85,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(persistedShippingLine.toReadOnly(), shippingLine)
     }
 
+    @MainActor
     func test_it_persists_order_item_taxes_in_storage() throws {
         // Given
         let taxes = [
@@ -101,6 +107,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(tax2.toReadOnly(), taxes[1])
     }
 
+    @MainActor
     func test_it_persists_shipping_line_taxes_in_storage() throws {
         // Given
         let taxes = [
@@ -122,6 +129,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(tax2.toReadOnly(), taxes[1])
     }
 
+    @MainActor
     func test_it_persists_order_tax_line_in_storage() throws {
         // Given
         let taxLine = OrderTaxLine.fake().copy(taxID: 1)
@@ -136,6 +144,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageTaxLine.toReadOnly(), taxLine)
     }
 
+    @MainActor
     func test_it_replaces_existing_order_tax_line_in_storage() throws {
         // Given
         let originalTaxLine = OrderTaxLine.fake().copy(taxID: 1, ratePercent: 0.0)
@@ -152,6 +161,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageTaxLine.toReadOnly(), taxLine)
     }
 
+    @MainActor
     func test_order_with_createdVia_field_when_upsert_to_storage_then_field_is_persisted_correctly() throws {
         // Given
         let order = makeOrder().copy(siteID: defaultSiteID, orderID: 123, createdVia: "pos-rest-api")
@@ -166,6 +176,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(persistedOrder.toReadOnly().createdVia, "pos-rest-api")
     }
 
+    @MainActor
     func test_order_with_createdVia_field_when_updated_then_field_is_updated_correctly() throws {
         // Given
         let originalOrder = makeOrder().copy(siteID: defaultSiteID, orderID: 123, createdVia: nil)
@@ -182,6 +193,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(persistedOrder.toReadOnly().createdVia, "pos-rest-api")
     }
 
+    @MainActor
     func test_it_persists_order_item_attributes_in_storage() throws {
         // Given
         let attributes = [
@@ -200,6 +212,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageOrderItem.toReadOnly(), orderItem)
     }
 
+    @MainActor
     func test_it_replaces_existing_order_item_attributes_in_storage() throws {
         // Given
         let originalAttributes = [Networking.OrderItemAttribute(metaID: 2, name: "Type", value: "Water")]
@@ -221,6 +234,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageOrderItem.toReadOnly(), orderItem)
     }
 
+    @MainActor
     func test_it_persists_order_item_addons_in_storage() throws {
         // Given
         let addOns = [
@@ -240,6 +254,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageOrderItem.toReadOnly().addOns, addOns)
     }
 
+    @MainActor
     func test_it_replaces_existing_order_item_addons_in_storage() throws {
         // Given
         let originalAddOns = [Networking.OrderItemProductAddOn(addOnID: 685, key: "Extra cheese", value: "Parmasan")]
@@ -262,6 +277,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageOrderItem.toReadOnly().addOns, addOns)
     }
 
+    @MainActor
     func test_it_persists_order_custom_field_in_storage() throws {
         // Given
         let customField = MetaData(metadataID: 1, key: "Key", value: "Value")
@@ -276,6 +292,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageCustomField.toReadOnly(), customField)
     }
 
+    @MainActor
     func test_it_sorts_order_custom_fields_by_metadata_id_when_converting_from_storage() throws {
         // Given
         let customFields = [
@@ -294,6 +311,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageOrder.toReadOnly().customFields.map { $0.metadataID }, [1, 2, 3])
     }
 
+    @MainActor
     func test_it_replaces_existing_order_custom_field_in_storage() throws {
         // Given
         let originalCustomField = MetaData(metadataID: 1, key: "Key", value: "Value")
@@ -310,6 +328,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageCustomField.toReadOnly(), customField)
     }
 
+    @MainActor
     func test_it_separates_identical_custom_fields_between_order_and_product() throws {
         // Given
         let customField = MetaData(metadataID: 1, key: "Key", value: "Value")
@@ -334,6 +353,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 2)
     }
 
+    @MainActor
     func test_it_persists_changes_to_identical_custom_fields_separately_for_order_and_product() throws {
         // Given
         let initialCustomField = MetaData(metadataID: 1, key: "Key", value: "Value")
@@ -366,6 +386,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 2)
     }
 
+    @MainActor
     func test_it_deletes_order_custom_field_but_persists_product_custom_field() throws {
         // Given
         let initialCustomField = MetaData(metadataID: 1, key: "Key", value: "Value")
@@ -393,6 +414,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.MetaData.self), 1)
     }
 
+    @MainActor
     func test_it_handles_large_number_of_custom_fields_for_order_and_product_without_deadlock_in_small_amount_of_time() throws {
         // Given
         let customFields = (1...2500).map { MetaData(metadataID: $0, key: "Key\($0)", value: "Value\($0)") }
@@ -417,6 +439,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_it_persists_order_gift_card_in_storage() throws {
         // Given
         let giftCard = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)
@@ -431,6 +454,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageOrder.appliedGiftCards?.map { $0.toReadOnly() }, [giftCard])
     }
 
+    @MainActor
     func test_it_replaces_existing_order_gift_card_in_storage_for_the_same_order() throws {
         // Given
         let originalGiftCard = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)
@@ -447,6 +471,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageOrder.appliedGiftCards?.map { $0.toReadOnly() }, [giftCard])
     }
 
+    @MainActor
     func test_it_does_not_replace_existing_order_gift_card_in_storage_for_a_different_order() throws {
         // Given
         let originalGiftCard = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 20)
@@ -466,6 +491,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageOrder.appliedGiftCards?.map { $0.toReadOnly() }, [giftCard])
     }
 
+    @MainActor
     func test_it_allows_multiple_gift_cards_of_the_same_giftCardID_for_the_same_order_in_storage() throws {
         // Given
         let giftCard1 = OrderGiftCard(giftCardID: 2, code: "SU9F-MGB5-KS5V-EZFT", amount: 25)
@@ -483,6 +509,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
                        [giftCard1, giftCard2])
     }
 
+    @MainActor
     func test_it_persists_order_attribution_info_in_storage() throws {
         // Given
         let attributionInfo = OrderAttributionInfo.fake()
@@ -497,6 +524,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageAttributionInfo.toReadOnly(), attributionInfo)
     }
 
+    @MainActor
     func test_it_replaces_existing_order_attribution_info_in_storage() throws {
         // Given
         let originalAttributionInfo = OrderAttributionInfo.fake().copy(source: "admin")
@@ -513,6 +541,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageAttributionInfo.toReadOnly(), attributionInfo)
     }
 
+    @MainActor
     func test_it_removes_existing_order_attribution_info_from_storage_if_removed_in_remote() throws {
         // Given
         let siteID: Int64 = 3
@@ -533,6 +562,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
 
     // MARK: - Excluding metadata-derived fields (orders fetched without `meta_data`)
 
+    @MainActor
     func test_upsert_when_excluding_metadata_derived_fields_then_existing_custom_fields_are_preserved() throws {
         // Given
         let customField = MetaData(metadataID: 1, key: "Key", value: "Value")
@@ -548,6 +578,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageCustomField.toReadOnly(), customField)
     }
 
+    @MainActor
     func test_upsert_when_excluding_metadata_derived_fields_then_existing_attribution_info_is_preserved() throws {
         // Given
         let siteID: Int64 = 3
@@ -565,6 +596,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageAttributionInfo.toReadOnly(), attributionInfo)
     }
 
+    @MainActor
     func test_upsert_when_excluding_metadata_derived_fields_then_existing_metadata_derived_attributes_are_preserved() throws {
         // Given
         let orderID: Int64 = 11
@@ -586,6 +618,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageOrder.renewalSubscriptionID, "281")
     }
 
+    @MainActor
     func test_upsert_when_excluding_metadata_derived_fields_then_other_fields_are_still_updated() throws {
         // Given
         let orderID: Int64 = 11
@@ -601,6 +634,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
         XCTAssertEqual(storageOrder.statusKey, OrderStatusEnum.completed.rawValue)
     }
 
+    @MainActor
     func test_it_removes_existing_order_items_from_storage_if_removed_in_remote() throws {
         // Given
         let orderID: Int64 = 11
@@ -622,6 +656,7 @@ final class OrdersUpsertUseCaseTests: XCTestCase {
 
 private extension OrdersUpsertUseCaseTests {
 
+    @MainActor
     func makeOrderItem(itemID: Int64, taxes: [Networking.OrderItemTax]) -> Networking.OrderItem {
         OrderItem(itemID: itemID,
                   name: "",
@@ -643,10 +678,12 @@ private extension OrdersUpsertUseCaseTests {
                   bundleConfiguration: [])
     }
 
+    @MainActor
     func makeOrder() -> Networking.Order {
         Order.fake().copy(siteID: defaultSiteID, customerNote: "", items: [])
     }
 
+    @MainActor
     func makeOrderItem(itemID: Int64 = 76, attributes: [Networking.OrderItemAttribute] = []) -> Networking.OrderItem {
         .init(itemID: itemID,
               name: "Poke",

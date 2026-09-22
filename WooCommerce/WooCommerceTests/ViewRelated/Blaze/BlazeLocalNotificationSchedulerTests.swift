@@ -22,6 +22,7 @@ final class BlazeLocalNotificationSchedulerTests: XCTestCase {
 
     private var pushNotesManager: MockPushNotificationsManager!
 
+    @MainActor
     override func setUpWithError() throws {
         super.setUp()
         let testURL = "https://example.com"

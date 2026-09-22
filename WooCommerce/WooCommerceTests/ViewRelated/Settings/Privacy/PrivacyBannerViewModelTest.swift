@@ -30,6 +30,7 @@ import TestKit
         XCTAssertTrue(viewModel.analyticsEnabled)
     }
 
+    @MainActor
     func test_submit_changes_on_wpcom_account_triggers_network_request_and_updates_loading_state() {
         // Given
         let analytics = TestAnalytics()
@@ -60,6 +61,7 @@ import TestKit
         XCTAssertFalse(enabled)
     }
 
+    @MainActor
     func test_submit_changes_using_wpcom_account_calls_completion_block() {
         // Given
         let analytics = TestAnalytics()
@@ -90,6 +92,7 @@ import TestKit
         XCTAssertTrue(completionCalled)
     }
 
+    @MainActor
     func test_submit_changes_using_non_wpcom_account_calls_completion_block() {
         // Given
         let analytics = TestAnalytics()

@@ -17,6 +17,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private var storage: MockStorageManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -32,6 +33,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         storage = nil
     }
 
+    @MainActor
     func test_loading_is_enabled_while_marking_order_as_paid() async {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -70,6 +72,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertEqual(loadingStates, [true, false]) // Loading, then not loading.
     }
 
+    @MainActor
     func test_view_is_disabled_while_loading_is_enabled() async {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
@@ -100,6 +103,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.disableViewActions)
     }
 
+    @MainActor
     func test_view_model_updates_order_async_after_order_marked_as_paid() async throws {
         // Given
         let order = Order.fake().copy(status: .pending)
@@ -134,6 +138,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
+    @MainActor
     func test_onSuccess_is_invoked_after_order_is_marked_as_paid() async {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
@@ -158,6 +163,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         await viewModel.markOrderAsPaidByCash(with: nil)
     }
 
+    @MainActor
     func test_mark_order_as_paid_by_cash_then_order_status_and_payment_method_fields_updated() async {
         // Given
         let siteID: Int64 = 10
@@ -198,6 +204,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertEqual(orderUpdateFields, [.status, .paymentMethodID, .paymentMethodTitle])
     }
 
+    @MainActor
     func test_view_model_attempts_completed_notice_presentation_when_marking_an_order_as_paid() async {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
@@ -237,6 +244,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(receivedCompleted)
     }
 
+    @MainActor
     func test_view_model_attempts_error_notice_presentation_when_failing_to_mark_order_as_paid() async {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
@@ -274,6 +282,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(receivedError)
     }
 
+    @MainActor
     func test_completed_event_is_tracked_after_marking_order_as_paid() async {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -315,6 +324,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
+    @MainActor
     func test_completed_event_is_tracked_after_marking_order_as_paid_with_zero_decimals_currency() async {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -359,6 +369,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
+    @MainActor
     func test_completed_event_is_tracked_after_collecting_payment_successfully() {
         // Given
         let insertOrder = Order.fake()
@@ -418,6 +429,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
+    @MainActor
     func test_completed_event_is_tracked_after_scanning_to_pay() async {
         // Given
         stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
@@ -447,6 +459,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
+    @MainActor
     func test_failed_event_is_tracked_after_failing_to_mark_order_as_paid() async {
         // Given
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -486,6 +499,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["currency"] as? String, "JPY")
     }
 
+    @MainActor
     func test_markOrderAsPaidByCash_when_passing_info_with_add_note_true_sends_note() async {
         // Given
         let cashPaymentInfo = OrderPaidByCashInfo(customerPaidAmount: "$50", changeGivenAmount: "$20", addNoteWithChangeData: true)
@@ -529,6 +543,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertEqual(passedNote, expectedNote)
     }
 
+    @MainActor
     func test_failed_event_is_tracked_after_failing_to_collect_payment() {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
@@ -634,6 +649,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
+    @MainActor
     func test_performScanToPayFinishedTasks_adds_note_to_order() async {
         // Given
         let siteID: Int64 = 10
@@ -762,6 +778,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showTapToPayRow)
     }
 
+    @MainActor
     func test_card_rows_are_not_shown_when_there_is_an_error_checking_for_order_eligibility() {
         // Given
         let configuration = CardPresentPaymentsConfiguration(country: .US)
@@ -911,6 +928,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(receivedCompleted)
     }
 
+    @MainActor
     func test_view_model_attempts_created_notice_after_scan_to_pay() async {
         // Given
         stores.whenReceivingAction(ofType: OrderNoteAction.self) { action in
@@ -945,6 +963,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(receivedCompleted)
     }
 
+    @MainActor
     func test_view_model_attempts_completed_notice_after_collecting_payment() {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
@@ -992,6 +1011,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(receivedCompleted)
     }
 
+    @MainActor
     func test_view_model_calls_onSuccess_after_collecting_payment() {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
@@ -1027,6 +1047,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(calledOnSuccess)
     }
 
+    @MainActor
     func test_view_model_updates_order_async_after_collecting_payment_successfully() throws {
         // Given
         let order = Order.fake().copy(status: .pending)
@@ -1067,6 +1088,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertEqual(orderID, order.orderID)
     }
 
+    @MainActor
     func test_collectPayment_when_ttp_payment_error_then_onFailure_called() {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
@@ -1098,6 +1120,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertTrue(onFailureCalled)
     }
 
+    @MainActor
     func test_collectPayment_when_ttp_payment_error_requiresFallbackPaymentMethod_then_onFailure_not_called() {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
@@ -1130,6 +1153,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         XCTAssertFalse(onFailureCalled)
     }
 
+    @MainActor
     func test_collectPayment_when_card_reader_payment_error_requiresFallbackPaymentMethod_then_onFailure_called() {
         // Given
         storage.insertSampleOrder(readOnlyOrder: .fake())
@@ -1169,6 +1193,7 @@ private extension PaymentMethodsViewModelTests {
         simulate(tapToPayDeviceAvailability: tapToPayDeviceAvailability, on: stores)
     }
 
+    @MainActor
     private func simulate(cardPaymentEligibility: Bool, on stores: MockStoresManager) {
         stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
             switch action {
@@ -1178,6 +1203,7 @@ private extension PaymentMethodsViewModelTests {
         }
     }
 
+    @MainActor
     private func simulate(tapToPayDeviceAvailability: Bool, on stores: MockStoresManager) {
         stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
             switch action {

@@ -15,6 +15,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
         .fake().copy(currentUser: .fake().copy(isConnected: true, wpcomUser: DotcomUser.fake().copy(email: testEmail)))
     }
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -27,6 +28,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
 
     // MARK: - evaluateAndConnect
 
+    @MainActor
     func test_evaluateAndConnect_returns_alreadyConnected_when_user_has_email() async throws {
         // Given
         let service = makeService()
@@ -60,6 +62,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_evaluateAndConnect_returns_webViewRequired_when_isRegistered_nil_and_plugin_installed() async throws {
         // Given
         let service = makeService()
@@ -94,6 +97,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_evaluateAndConnect_throws_when_plugin_check_fails_with_non_404() async {
         // Given
         let service = makeService()
@@ -120,6 +124,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
 
     // MARK: - verifyConnection
 
+    @MainActor
     func test_verifyConnection_retries_then_succeeds() async throws {
         // Given
         let service = makeService()
@@ -141,6 +146,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
         XCTAssertEqual(fetchCount, 3)
     }
 
+    @MainActor
     func test_verifyConnection_throws_after_max_retries() async {
         // Given
         let service = makeService()
@@ -162,6 +168,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_verifyConnection_retries_on_fetch_error_then_succeeds() async throws {
         // Given
         let service = makeService()
@@ -188,6 +195,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
 
     // MARK: - isJetpackInOfflineMode
 
+    @MainActor
     func test_isJetpackInOfflineMode_returns_true_when_offline_mode_is_active() async {
         // Given
         let service = makeService()
@@ -204,6 +212,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
         XCTAssertTrue(isOffline)
     }
 
+    @MainActor
     func test_isJetpackInOfflineMode_returns_false_when_offline_mode_is_inactive() async {
         // Given
         let service = makeService()
@@ -220,6 +229,7 @@ final class JetpackConnectionServiceTests: XCTestCase {
         XCTAssertFalse(isOffline)
     }
 
+    @MainActor
     func test_isJetpackInOfflineMode_returns_false_when_fetch_fails() async {
         // Given
         let service = makeService()
@@ -248,6 +258,7 @@ private extension JetpackConnectionServiceTests {
     ///   - initialData: The connection data returned on the first fetch.
     ///   - expectsRegister: Whether `registerSite` should be triggered.
     ///   - extraHandler: Optional handler for additional actions (e.g. `retrieveJetpackPluginDetails`).
+    @MainActor
     func assertNativeConnect(
         initialData: JetpackConnectionData,
         expectsRegister: Bool,

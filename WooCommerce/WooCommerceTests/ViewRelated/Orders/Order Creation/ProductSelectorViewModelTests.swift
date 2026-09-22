@@ -36,6 +36,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_sync_when_currency_is_configured_then_retrieves_and_paginates_products_in_memory_with_order_currency() {
         // Given
         insert(Product.fake().copy(siteID: sampleSiteID, productID: 99, name: "Cached USD product", purchasable: true))
@@ -67,6 +68,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.productRows.contains { $0.productOrVariationID == 99 })
     }
 
+    @MainActor
     func test_sync_when_currency_and_search_term_are_configured_then_searches_and_paginates_in_memory_without_cached_search() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -99,6 +101,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.map(\.productOrVariationID), [1, 2])
     }
 
+    @MainActor
     func test_sync_when_transient_product_retrieval_fails_then_shows_sync_notice() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -122,6 +125,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.notice, ProductSelectorViewModel.NoticeFactory.productSyncNotice(retryAction: {}))
     }
 
+    @MainActor
     func test_sync_when_transient_product_search_fails_then_shows_search_notice() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -192,6 +196,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 1)
     }
 
+    @MainActor
     func test_scrolling_indicator_appears_only_during_sync() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -216,6 +221,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowScrollIndicator, "Scroll indicator is not disabled after sync ends")
     }
 
+    @MainActor
     func test_sync_status_updates_as_expected_for_empty_product_list() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -282,6 +288,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncStatus, .results)
     }
 
+    @MainActor
     func test_sync_status_does_not_change_while_syncing_when_storage_contains_products() {
         // Given
         let product = Product.fake().copy(siteID: self.sampleSiteID, purchasable: true)
@@ -308,6 +315,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncStatus, .results)
     }
 
+    @MainActor
     func test_onLoadTrigger_triggers_initial_product_sync() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -359,6 +367,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(timesSynced, 1)
     }
 
+    @MainActor
     func test_entering_search_term_performs_remote_product_search() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -388,6 +397,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 1)
     }
 
+    @MainActor
     func test_entering_search_term_when_search_filter_is_sku_then_requests_and_shows_right_products() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -425,6 +435,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[0].name, skuFilterProduct.name)
     }
 
+    @MainActor
     func test_entering_search_term_when_search_filter_is_sku_and_returns_variations_as_products_then_shows_the_variations() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -457,6 +468,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows[0].name, skuFilterVariation.name)
     }
 
+    @MainActor
     func test_entering_search_term_when_there_are_no_filters_then_performs_local_product_search() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -486,6 +498,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 1)
     }
 
+    @MainActor
     func test_entering_search_term_when_there_are_no_cached_items_then_it_does_not_reload_products() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -515,6 +528,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 0)
     }
 
+    @MainActor
     func test_searching_products_filters_product_list_as_expected() {
         // Given
         let hoodie = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Hoodie", purchasable: true)
@@ -625,6 +639,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(currentFilters.numberOfActiveFilters, 0)
     }
 
+    @MainActor
     func test_view_model_fires_error_notice_when_product_sync_fails() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -646,6 +661,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.notice, ProductSelectorViewModel.NoticeFactory.productSyncNotice(retryAction: {}))
     }
 
+    @MainActor
     func test_view_model_fires_error_notice_when_product_search_fails() {
         // Given
         let mockStorageManager = MockStorageManager()
@@ -1349,6 +1365,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         assertEqual(filteredproductIDs, favoriteProductsUseCase.favoriteProductIDsValue)
     }
 
+    @MainActor
     func test_searchProducts_are_triggered_with_correct_filters() async throws {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -1440,6 +1457,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productRows.count, 1) // only 1 variable product "Pizza"
     }
 
+    @MainActor
     func test_selectedProduct_does_not_change_if_selectedProduct_is_called_multiple_times_when_synchronizeProducts() {
         // Given
         var selectedProduct: Int64?
@@ -1556,6 +1574,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertTrue(Set(displayingPopularIds).intersection(Set(displayingLastSoldIds)).isEmpty)
     }
 
+    @MainActor
     func test_productsSectionViewModels_when_we_have_popular_and_most_recently_sold_products_with_a_search_term_it_ignores_them() {
         // Given
         let mostPopularProductIds: [Int64] = Array(1...6)
@@ -1687,6 +1706,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     // MARK: - Pagination
 
+    @MainActor
     func test_reopening_selector_when_cache_contains_lower_ranked_candidates_then_preserves_suggestion_membership() {
         // Given
         let popularProductIDs: [Int64] = [1, 2, 3, 4, 5, 6]
@@ -1730,6 +1750,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(reopenedViewModel.sections.first { $0.type == .lastSold }?.products.map(\.productID), expectedLastSoldIDs)
     }
 
+    @MainActor
     func test_syncing_first_page_persists_additional_products_and_keeps_top_sections_stable_during_pagination() throws {
         // Given
         let firstPage = (1...25).map { productID in
@@ -1805,6 +1826,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections[2].products.count, mergedProducts.count + nextPageProducts.count - 1)
     }
 
+    @MainActor
     func test_syncing_first_page_when_product_sync_fails_retries_the_order_creation_action() {
         // Given
         let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
@@ -1839,6 +1861,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(requestCount, 2)
     }
 
+    @MainActor
     func test_resyncing_first_page_persists_additional_products_without_changing_frozen_top_sections() throws {
         // Given
         let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
@@ -1881,6 +1904,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections[1].products.map(\.productID), [lastSoldProduct.productID])
     }
 
+    @MainActor
     func test_syncing_first_page_with_currency_loads_products_and_top_products_transiently_with_the_same_currency() throws {
         // Given
         let pageProduct = Product.fake().copy(siteID: sampleSiteID, productID: 3, purchasable: true)
@@ -1929,6 +1953,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections[2].products.map(\.productID), [pageProduct.productID])
     }
 
+    @MainActor
     func test_syncing_first_page_when_filters_change_before_completion_then_preserves_unfiltered_suggestions() throws {
         // Given
         let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true, stockStatusKey: "instock")
@@ -1973,6 +1998,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections.first?.products.map(\.productID), [popularProduct.productID])
     }
 
+    @MainActor
     func test_clearing_filters_when_filtered_sync_replaces_cache_then_keeps_frozen_suggestions_until_refresh_completes() throws {
         // Given
         let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true, stockStatusKey: "instock")
@@ -2026,6 +2052,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections.first?.products.map(\.productID), [popularProduct.productID])
     }
 
+    @MainActor
     func test_pagination_when_frozen_suggestion_becomes_unpurchasable_then_removes_it_without_adding_candidates() throws {
         // Given
         let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
@@ -2060,6 +2087,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.productRows.contains { $0.productOrVariationID == laterLastSoldProduct.productID })
     }
 
+    @MainActor
     func test_resyncing_first_page_when_frozen_suggestion_is_deleted_then_removes_it_and_preserves_remaining_membership() throws {
         // Given
         let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, purchasable: true)
@@ -2103,6 +2131,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections.first?.products.map(\.productID), [popularProduct.productID])
     }
 
+    @MainActor
     func test_resyncing_first_page_when_additional_request_fails_after_cache_replacement_then_keeps_frozen_suggestions() {
         // Given
         let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 26, purchasable: true)
@@ -2194,6 +2223,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertNil(selectedProductID)
     }
 
+    @MainActor
     func test_resyncing_first_page_with_currency_when_suggestions_are_outside_page_then_preserves_membership_and_refreshes_details() throws {
         // Given
         let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 26, name: "Original", purchasable: true)
@@ -2228,6 +2258,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections.last?.products.map(\.productID), [pageProduct.productID])
     }
 
+    @MainActor
     func test_resyncing_first_page_with_currency_when_additional_request_fails_then_keeps_frozen_suggestions() {
         // Given
         let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 26, purchasable: true)
@@ -2257,6 +2288,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections.last?.products.map(\.productID), [pageProduct.productID])
     }
 
+    @MainActor
     func test_pagination_with_currency_when_existing_products_change_then_refreshes_details_and_purchasability() throws {
         // Given
         let popularProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, name: "Original", price: "10", purchasable: true)
@@ -2294,6 +2326,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(catalogProduct.price, updatedPopularProduct.price)
     }
 
+    @MainActor
     func test_it_syncs_the_second_page_after_searching_and_selecting_a_product_not_in_the_first_page() {
         // Given
         var searchProductsPages = [Int]()
@@ -2387,6 +2420,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.favoriteProductIDs, sampleProductIDs)
     }
 
+    @MainActor
     func test_sync_when_currency_and_empty_favorites_filter_are_configured_then_returns_empty_without_request() {
         // Given
         let favoriteProductsUseCase = MockFavoriteProductsUseCase()
@@ -2417,6 +2451,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncStatus, .empty)
     }
 
+    @MainActor
     func test_sync_when_currency_search_and_favorites_filter_are_configured_then_forwards_favorite_productIDs() async {
         // Given
         let favoriteProductsUseCase = MockFavoriteProductsUseCase()
@@ -2455,6 +2490,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
 
     // MARK: - Resetting filters
 
+    @MainActor
     func test_it_resets_filters_when_tapping_close_button() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -2492,6 +2528,7 @@ final class ProductSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.filterListViewModel.criteria.stockStatus, .inStock)
     }
 
+    @MainActor
     func test_it_resets_filters_when_completing_selection() {
         // Given
         let viewModel = ProductSelectorViewModel(siteID: sampleSiteID,
@@ -2688,6 +2725,7 @@ private extension ProductSelectorViewModelTests {
     }
 
     /// Stubs the bundled product lookup so a bundle's children resolve to `children`.
+    @MainActor
     func mockBundledProductsRetrieval(_ children: [Yosemite.Product]) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             guard case let .retrieveProductsIfNeeded(_, _, onCompletion) = action else {

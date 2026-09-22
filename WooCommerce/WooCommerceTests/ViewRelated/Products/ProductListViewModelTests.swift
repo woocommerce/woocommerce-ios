@@ -8,6 +8,7 @@ final class ProductListViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
     private var storesManager: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: .makeForTesting())
@@ -246,6 +247,7 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.commonPriceForSelectedProducts, .mixed)
     }
 
+    @MainActor
     func test_updating_products_with_status_sets_correct_status() throws {
         // Given
         let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)
@@ -277,6 +279,7 @@ final class ProductListViewModelTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_updating_products_with_price_sets_correct_price_and_filters_simple_products() throws {
         // Given
         let viewModel = ProductListViewModel(siteID: sampleSiteID, stores: storesManager)

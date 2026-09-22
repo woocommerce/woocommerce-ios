@@ -11,6 +11,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
 
     let sampleSiteID: Int64 = 123
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -80,6 +81,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
     func test_loadCustomersListData_calls_to_synchronizeLightCustomersData() {
         // Given
         let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
@@ -122,6 +124,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(passedFilterEmpty, .email)
     }
 
+    @MainActor
     func test_loadCustomersListData_calls_to_synchronizeLightCustomersData_and_passes_error() {
         // Given
         let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }
@@ -178,6 +181,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(passedCustomer, notRegisteredCustomer)
     }
 
+    @MainActor
     func test_onCustomerSelected_when_customerID_is_not_0_retrieves_customer_full_data_and_finishes_succesfully() {
         // Given
         var passedCustomer: Customer?
@@ -216,6 +220,7 @@ final class CustomerSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(passedCustomer, returnedCustomer)
     }
 
+    @MainActor
     func test_onCustomerSelected_calls_to_retrieveCustomer_and_passes_error() {
         // Given
         let viewModel = CustomerSelectorViewModel(siteID: sampleSiteID, stores: stores) { _ in }

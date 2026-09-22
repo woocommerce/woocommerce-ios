@@ -25,6 +25,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
 
     private let sampleStoreID: Int64 = 12345
 
+    @MainActor
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.sessionManager.setStoreId(sampleStoreID)
@@ -91,6 +92,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         assertEqual(false, eventProperties[AnalyticProperties.enabledKey] as? Bool)
     }
 
+    @MainActor
     func test_updateCashOnDeliverySetting_enabled_success_logs_enable_success_event() throws {
         // Given
         assertEmpty(analyticsProvider.receivedEvents)
@@ -114,6 +116,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         assertEqual("payments_hub", eventProperties[AnalyticProperties.sourceKey] as? String)
     }
 
+    @MainActor
     func test_updateCashOnDeliverySetting_enabled_failure_logs_enable_failure_event() throws {
         // Given
         stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in
@@ -137,6 +140,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         assertEqual("payments_hub", eventProperties[AnalyticProperties.sourceKey] as? String)
     }
 
+    @MainActor
     func test_updateCashOnDeliverySetting_disabled_success_logs_disable_success_event() throws {
         // Given
         assertEmpty(analyticsProvider.receivedEvents)
@@ -160,6 +164,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         assertEqual("payments_hub", eventProperties[AnalyticProperties.sourceKey] as? String)
     }
 
+    @MainActor
     func test_updateCashOnDeliverySetting_disabled_failure_logs_disable_failure_event() throws {
         // Given
         stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in
@@ -184,6 +189,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
     }
 
     // MARK: - Toggle confirmation tests
+    @MainActor
     func test_cashOnDeliveryToggleRequested_then_nothing_changes_before_the_user_confirms() {
         // Given
         assertEmpty(analyticsProvider.receivedEvents)
@@ -256,6 +262,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         XCTAssertFalse(confirmation.targetState)
     }
 
+    @MainActor
     func test_confirmCashOnDeliveryToggle_tracks_toggled_event_and_dispatches_the_gateway_update() throws {
         // Given
         sut.cashOnDeliveryToggleRequested(enabled: true)
@@ -274,6 +281,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         XCTAssertTrue(gateway.enabled)
     }
 
+    @MainActor
     func test_confirmCashOnDeliveryToggle_when_alert_dismissal_already_cleared_the_confirmation_then_the_update_still_happens() throws {
         // Given the alert's isPresented binding may clear the pending confirmation before the button action runs
         sut.cashOnDeliveryToggleRequested(enabled: true)
@@ -292,6 +300,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         XCTAssertTrue(gateway.enabled)
     }
 
+    @MainActor
     func test_confirmCashOnDeliveryToggle_enabled_when_no_site_is_selected_then_the_toggle_state_reverts() {
         // Given a stores manager with no selected site
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -312,6 +321,7 @@ final class InPersonPaymentsCashOnDeliveryToggleRowViewModelTests: XCTestCase {
         assertEmpty(stores.receivedActions)
     }
 
+    @MainActor
     func test_dismissCashOnDeliveryToggleConfirmation_then_the_gateway_is_left_untouched() {
         // Given
         sut.cashOnDeliveryToggleRequested(enabled: true)

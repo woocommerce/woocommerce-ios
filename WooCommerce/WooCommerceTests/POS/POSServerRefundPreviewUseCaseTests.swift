@@ -270,6 +270,7 @@ private extension POSServerRefundPreviewUseCaseTests {
         static let belowMinimum = "11.0.9"
     }
 
+    @MainActor
     func makeSUT(cachedWooVersion: String? = Versions.minimum,
                  cache: ServerRefundAvailabilityCache? = nil,
                  previewResult: Swift.Result<RefundPreview, Error>? = nil,

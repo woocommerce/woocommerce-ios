@@ -11,10 +11,12 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
 
     let testingStorage = MockStorageManager()
 
+    @MainActor
     let testingStores = MockStoresManager(sessionManager: .testingInstance)
 
     var subscriptions = Set<AnyCancellable>()
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -361,6 +363,7 @@ final class CreateOrderAddressFormViewModelTests: XCTestCase {
         XCTAssertNotEqual(updatedAddressData?.billingAddress, updatedAddressData?.shippingAddress)
     }
 
+    @MainActor
     func test_view_model_fires_error_notice_after_failing_to_fetch_countries() {
         // Given
         testingStorage.reset()

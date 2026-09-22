@@ -33,6 +33,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         assertEqual(expectedTitle, viewModel.viewTitle)
     }
 
+    @MainActor
     func test_generateShareMessage_updates_generationInProgress_correctly() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -61,6 +62,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.generationInProgress)
     }
 
+    @MainActor
     func test_generateShareMessage_updates_messageContent_upon_success() async {
         // Given
         let expectedString = "Check out this product!"
@@ -89,6 +91,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         assertEqual(expectedString, viewModel.messageContent)
     }
 
+    @MainActor
     func test_generateShareMessage_updates_errorMessage_on_failure() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -116,6 +119,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.errorMessage)
     }
 
+    @MainActor
     func test_generateShareMessage_updates_errorMessage_on_identifyLanguage_failure() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -142,6 +146,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     }
 
     // MARK: - Analytics
+    @MainActor
     func test_generate_button_tapped_is_tracked_correctly() async throws {
         // Given
         let expectedLanguage = "en"
@@ -196,6 +201,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         XCTAssertEqual(retryEventProperties["is_retry"] as? Bool, true)
     }
 
+    @MainActor
     func test_generation_failure_event_is_tracked() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -229,6 +235,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         XCTAssertEqual(failureEventProperties["error_domain"] as? String, "Test")
     }
 
+    @MainActor
     func test_identify_language_failure_event_is_tracked() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -281,6 +288,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     }
 
     // MARK: `shareSheet`
+    @MainActor
     func test_shareSheet_has_expected_activityItems() async throws {
         // Given
         let expectedString = "Check out this product!"
@@ -331,6 +339,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
     }
 
     // MARK: `shouldShowFeedbackView`
+    @MainActor
     func test_shouldShowFeedbackView_is_true_when_a_message_is_generated() async {
         // Given
         let expectedString = "Check out this product!"
@@ -359,6 +368,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowFeedbackView)
     }
 
+    @MainActor
     func test_handleFeedback_sets_shouldShowFeedbackView_to_false() async {
         // Given
         let expectedString = "Check out this product!"
@@ -396,6 +406,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
 
     // MARK: - Language identification request
 
+    @MainActor
     func test_identify_language_request_is_sent_only_during_first_generation_attempt() async {
         // Given
         var identifyLanguageRequestCounter = 0
@@ -434,6 +445,7 @@ final class ProductSharingMessageGenerationViewModelTests: XCTestCase {
         XCTAssertEqual(identifyLanguageRequestCounter, 1)
     }
 
+    @MainActor
     func test_identify_language_request_is_sent_again_upon_down_vote() async {
         // Given
         var identifyLanguageRequestCounter = 0

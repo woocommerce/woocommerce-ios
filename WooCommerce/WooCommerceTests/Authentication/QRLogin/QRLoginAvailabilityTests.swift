@@ -112,6 +112,7 @@ private extension QRLoginAvailabilityTests {
     }
 
     /// A `MockStoresManager` that answers `FeatureFlagAction.isRemoteFeatureFlagEnabled`.
+    @MainActor
     func makeStores(remoteFlag: Bool, completionTiming: CompletionTiming = .immediate) -> MockStoresManager {
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in

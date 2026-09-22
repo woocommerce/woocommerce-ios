@@ -30,6 +30,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         assertEqual(viewModel.navigationTrailingItem, .done(enabled: true))
     }
 
+    @MainActor
     func test_view_model_only_updates_customer_note_field() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -55,6 +56,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         assertEqual(update.fields, [.customerNote])
     }
 
+    @MainActor
     func test_view_model_returns_success_after_updating_order_successfully() {
         // Given
         let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
@@ -80,6 +82,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         XCTAssertTrue(obtainedResult)
     }
 
+    @MainActor
     func test_view_model_dispatches_optimistic_order_update_when_feature_flag_is_enabled() {
         // Given
         let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true)
@@ -105,6 +108,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         XCTAssertTrue(obtainedResult)
     }
 
+    @MainActor
     func test_view_model_dispatches_non_optimistic_order_update_when_feature_flag_is_disabled() {
         // Given
         let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
@@ -130,6 +134,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         XCTAssertTrue(obtainedResult)
     }
 
+    @MainActor
     func test_view_model_does_not_fire_success_notice_after_updating_order_optimistically_successfully() {
         // Given
         let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true)
@@ -155,6 +160,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         assertEmpty(noticePresenter.queuedNotices)
     }
 
+    @MainActor
     func test_view_model_fires_success_notice_after_updating_order_no_optimistically_successfully() {
         // Given
         let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
@@ -180,6 +186,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         assertEqual(.success, noticePresenter.queuedNotices.first?.feedbackType)
     }
 
+    @MainActor
     func test_view_model_fires_error_notice_after_order_update_optimistically_fails_using_default_notice_presenter() {
         // Given
         let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: true)
@@ -209,6 +216,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         assertEqual(.error, noticePresenter.queuedNotices.first?.feedbackType)
     }
 
+    @MainActor
     func test_view_model_fires_error_notice_after_order_non_optimistic_update_fails_using_modal_notice_presenter() {
         // Given
         let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
@@ -241,6 +249,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         assertEmpty(noticePresenter.queuedNotices)
     }
 
+    @MainActor
     func test_view_model_returns_no_success_after_order_non_optimistic_update_fails() {
         // Given
         let featureFlagService = MockFeatureFlagService(isUpdateOrderOptimisticallyOn: false)
@@ -266,6 +275,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         XCTAssertFalse(obtainedResult)
     }
 
+    @MainActor
     func test_view_model_tracks_success_after_updating_note() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -293,6 +303,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "customer_note")
     }
 
+    @MainActor
     func test_view_model_tracks_failure_after_failing_to_update_note() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -320,6 +331,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "customer_note")
     }
 
+    @MainActor
     func test_view_model_tracks_cancel_flow() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -334,6 +346,7 @@ class EditCustomerNoteViewModelTests: XCTestCase {
         assertEqual(analyticsProvider.receivedProperties.first?["subject"] as? String, "customer_note")
     }
 
+    @MainActor
     func test_view_model_reset_new_note_when_cancel_flow() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

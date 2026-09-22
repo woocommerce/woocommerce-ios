@@ -16,6 +16,7 @@ final class StoreOnboardingTasksStoreTests: XCTestCase {
     private var remote: MockStoreOnboardingTasksRemote!
     private var store: StoreOnboardingTasksStore!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -28,6 +29,7 @@ final class StoreOnboardingTasksStoreTests: XCTestCase {
                                           remote: remote)
     }
 
+    @MainActor
     override func tearDown() {
         store = nil
         remote = nil
@@ -40,6 +42,7 @@ final class StoreOnboardingTasksStoreTests: XCTestCase {
 
     // MARK: - `loadOnboardingTasks`
 
+    @MainActor
     func test_loadOnboardingTasks_returns_tasks_on_success() throws {
         // Given
         remote.whenLoadingOnboardingTasks(thenReturn: .success([.init(isComplete: true, type: .launchStore)]))
@@ -58,6 +61,7 @@ final class StoreOnboardingTasksStoreTests: XCTestCase {
         XCTAssertEqual(tasks, [.init(isComplete: true, type: .launchStore)])
     }
 
+    @MainActor
     func test_loadOnboardingTasks_returns_sorted_tasks_with_wcpay_before_launchStore_on_success() throws {
         // Given
         let unsortedTasks: [StoreOnboardingTask] = [.init(isComplete: true, type: .unsupported("")),
@@ -85,6 +89,7 @@ final class StoreOnboardingTasksStoreTests: XCTestCase {
                                .init(isComplete: true, type: .unsupported(""))])
     }
 
+    @MainActor
     func test_loadOnboardingTasks_returns_sorted_tasks_with_payments_after_launchStore_on_success() throws {
         // Given
         let unsortedTasks: [StoreOnboardingTask] = [.init(isComplete: true, type: .unsupported("")),
@@ -112,6 +117,7 @@ final class StoreOnboardingTasksStoreTests: XCTestCase {
                                .init(isComplete: true, type: .unsupported(""))])
     }
 
+    @MainActor
     func test_loadOnboardingTasks_returns_error_on_failure() throws {
         // Given
         remote.whenLoadingOnboardingTasks(thenReturn: .failure(NetworkError.timeout()))

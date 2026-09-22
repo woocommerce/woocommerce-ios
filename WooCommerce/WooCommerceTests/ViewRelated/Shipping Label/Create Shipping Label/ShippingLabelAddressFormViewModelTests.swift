@@ -66,6 +66,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
 
+    @MainActor
     func test_sections_are_returned_correctly_if_an_address_validation_error_occurs_for_all_empty_rows() {
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress()
@@ -143,6 +144,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
 
+    @MainActor
     func test_sections_are_returned_correctly_if_stateOfCountry_is_not_required() {
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress(country: "VN")
@@ -185,6 +187,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
 
+    @MainActor
     func test_sections_are_returned_correctly_if_stateOfCountry_is_required() {
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress(country: "US")
@@ -228,6 +231,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
 
+    @MainActor
     func test_sections_are_returned_correctly_if_phone_is_required_and_empty() {
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress(country: "VN")
@@ -272,6 +276,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
 
+    @MainActor
     func test_sections_are_returned_correctly_if_phone_is_required_and_invalid_and_validation_is_required() {
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress(phone: "0123", country: "US")
@@ -317,6 +322,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
 
+    @MainActor
     func test_sections_are_returned_correctly_if_phone_is_required_and_invalid_and_validation_is_not_required() {
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress(phone: "0123", country: "US")
@@ -361,6 +367,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
 
+    @MainActor
     func test_sections_are_returned_correctly_if_phone_is_required_and_country_is_nonUS() {
         // Given
         let shippingAddress = MockShippingLabelAddress.sampleAddress(phone: "0123", country: "VN")
@@ -404,6 +411,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sections, [ShippingLabelAddressFormViewModel.Section(rows: expectedRows)])
     }
 
+    @MainActor
     func test_address_validation_returns_correct_values_if_succeeded() {
         // Given
         let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
@@ -444,6 +452,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressValidationError, nil)
     }
 
+    @MainActor
     func test_address_validation_returns_correct_values_if_the_validation_fails() {
         // Given
         let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
@@ -483,6 +492,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressValidationError, validationError)
     }
 
+    @MainActor
     func test_address_validation_returns_correct_values_if_the_validation_returns_an_error() {
         // Given
         let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
@@ -523,6 +533,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressValidationError, validationError)
     }
 
+    @MainActor
     func test_address_validation_toggle_shouldShowTopBannerView() {
         // Given
         let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",
@@ -567,6 +578,7 @@ final class ShippingLabelAddressFormViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_extended_country_and_state_name_return_the_correct_values() {
         // Given
         let shippingAddress = ShippingLabelAddress(company: "Automattic Inc.",

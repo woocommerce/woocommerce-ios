@@ -42,6 +42,7 @@ final class ProductTagStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         network = MockNetwork(useResponseQueue: true)
@@ -51,6 +52,7 @@ final class ProductTagStoreTests: XCTestCase {
                                      network: network)
     }
 
+    @MainActor
     override func tearDown() {
         store = nil
         network = nil
@@ -59,6 +61,7 @@ final class ProductTagStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_synchronizeAllProductTags_saves_all_tags_to_storage() throws {
         // Given a stubed product-tags network response
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
@@ -80,6 +83,7 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNil(errorResponse)
     }
 
+    @MainActor
     func testSynchronizeProductTagsReturnsTagsUponPaginatedResponse() throws {
         // Given a stubed product-tags network response
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
@@ -102,6 +106,7 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNil(errorResponse)
     }
 
+    @MainActor
     func testSynchronizeProductTagsUpdatesStoredTagsSuccessfulResponse() {
         // Given an initial stored tag and a stubed product-tags network response
         let initialTag = sampleTag(tagID: 34)
@@ -128,6 +133,7 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNil(errorResponse)
     }
 
+    @MainActor
     func testSynchronizeProductTagsReturnsErrorUponPaginatedResponseError() {
         // Given a stubed first page tag response and second page generic-error network response
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "product-tags-all")
@@ -156,6 +162,7 @@ final class ProductTagStoreTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testSynchronizeProductTagsReturnsErrorUponResponseError() {
         // Given a stubed generic-error network response
         network.simulateResponse(requestUrlSuffix: "products/tags", filename: "generic_error")
@@ -176,6 +183,7 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNotNil(errorResponse)
     }
 
+    @MainActor
     func testSynchronizeProductTagsReturnsErrorUponEmptyResponse() {
         // Given a an empty network response
         XCTAssertEqual(storedProductTagsCount, 0)
@@ -195,6 +203,7 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNotNil(errorResponse)
     }
 
+    @MainActor
     func testAddProductTagAddsStoredTagSuccessfulResponse() {
         // Given a stubed product tag network response
         network.simulateResponse(requestUrlSuffix: "products/tags/batch", filename: "product-tags-created")
@@ -219,6 +228,7 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNil(result?.failure)
     }
 
+    @MainActor
     func testAddProductTagReturnsErrorUponResponseError() {
         // Given a stubed generic-error network response
         network.simulateResponse(requestUrlSuffix: "products/tags/batch", filename: "generic_error")
@@ -239,6 +249,7 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
+    @MainActor
     func test_addProductTags_returns_success_for_empty_tag_list() throws {
         // When
         var result: Result<[Networking.ProductTag], Error>?
@@ -258,6 +269,7 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertTrue(addedTags.isEmpty)
     }
 
+    @MainActor
     func testAddProductTagReturnsErrorUponEmptyResponse() {
         // Given an empty network response
         XCTAssertEqual(storedProductTagsCount, 0)
@@ -277,6 +289,7 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
+    @MainActor
     func testDeleteProductTagDeleteStoredTagSuccessfulResponse() {
         // Given a stubed product tag network response and a product tag stored locally
         network.simulateResponse(requestUrlSuffix: "products/tags/batch", filename: "product-tags-deleted")
@@ -299,6 +312,7 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNil(result?.failure)
     }
 
+    @MainActor
     func testDeleteProductTagReturnsErrorUponResponseError() {
         // Given a stubed generic-error network response
         network.simulateResponse(requestUrlSuffix: "products/tags/batch", filename: "generic_error")
@@ -320,6 +334,7 @@ final class ProductTagStoreTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
+    @MainActor
     func testDeleteProductTagReturnsErrorUponEmptyResponse() {
         // Given an empty network response
         storageManager.insertSampleProductTag(readOnlyProductTag: sampleTag(tagID: 35))
@@ -342,6 +357,7 @@ final class ProductTagStoreTests: XCTestCase {
 }
 
 private extension ProductTagStoreTests {
+    @MainActor
     func sampleTag(tagID: Int64) -> Networking.ProductTag {
         return Networking.ProductTag(siteID: sampleSiteID, tagID: tagID, name: "Sample", slug: "sample")
     }

@@ -31,6 +31,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     private var skippedCodOnboardingStep = true
 
+    @MainActor
     override func setUpWithError() throws {
         try super.setUpWithError()
         analyticsProvider = MockAnalyticsProvider()
@@ -1217,6 +1218,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(useCase.state, onboardingStateCache.value)
     }
 
+    @MainActor
     func test_installCardPresentPlugin_when_failure_to_install_plugin_then_event_is_tracked_with_correct_properties() throws {
         // Given
         setupCountry(country: .us)
@@ -1249,6 +1251,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["error_description"] as? String, expectedError.description)
     }
 
+    @MainActor
     func test_activateCardPresentPlugin_when_failure_to_activate_plugin_then_event_is_tracked_with_correct_properties() throws {
         // Given
         setupCountry(country: .us)
@@ -1293,6 +1296,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     // MARK: - loadAccounts error handling tests
 
+    @MainActor
     func test_onboarding_handles_network_error_when_loading_accounts() {
         // Given
         setupCountry(country: .us)
@@ -1320,6 +1324,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(useCase.state, .noConnectionError)
     }
 
+    @MainActor
     func test_onboarding_handles_generic_error_when_both_accounts_fail_to_load() {
         // Given
         setupCountry(country: .us)

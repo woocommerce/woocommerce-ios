@@ -204,6 +204,7 @@ struct SupportEscalationCoordinatorTests {
         try await assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
     }
 
+    @MainActor
     @Test func handleEscalation_when_logged_out_then_support_form_retains_transcript() async throws {
         // Given
         let zendesk = MockZendeskManager()
@@ -229,6 +230,7 @@ struct SupportEscalationCoordinatorTests {
         await coordinator.directTicketCreationTask?.value
     }
 
+    @MainActor
     @Test func handleEscalation_when_high_confidence_but_no_site_address_then_shows_support_form() async throws {
         // Given
         let zendesk = MockZendeskManager()
@@ -259,6 +261,7 @@ struct SupportEscalationCoordinatorTests {
         try await assertSupportFormRetainsTranscript(navigationController, zendesk: zendesk)
     }
 
+    @MainActor
     @Test func handleEscalation_when_preLogin_has_site_address_then_can_create_ticket_directly_after_transcript_consent() async {
         // Given
         let zendesk = MockZendeskManager()
@@ -387,6 +390,7 @@ struct SupportEscalationCoordinatorTests {
 
     // MARK: - Ticket Persistence Tests
 
+    @MainActor
     @Test func createTicketDirectly_when_succeeds_and_has_chatID_then_dispatches_markTicketCreated() async {
         // Given
         let zendesk = MockZendeskManager()
@@ -420,6 +424,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(dispatchedChatID == 123)
     }
 
+    @MainActor
     @Test func createTicketDirectly_when_succeeds_and_no_chatID_then_does_not_dispatch_markTicketCreated() async {
         // Given
         let zendesk = MockZendeskManager()
@@ -452,6 +457,7 @@ struct SupportEscalationCoordinatorTests {
         #expect(markTicketCreatedCalled == false)
     }
 
+    @MainActor
     @Test func createTicketDirectly_when_fails_then_does_not_dispatch_markTicketCreated() async {
         // Given
         let zendesk = MockZendeskManager()
@@ -660,6 +666,7 @@ struct SupportEscalationCoordinatorTests {
 // MARK: - Helpers
 
 private extension SupportEscalationCoordinatorTests {
+    @MainActor
     func makeCoordinator(navigationController: UINavigationController? = nil,
                          additionalAttachmentsProvider: @escaping () -> [ZendeskAttachment] = { [] },
                          attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),

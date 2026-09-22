@@ -25,6 +25,7 @@ final class AppSettingsStoreTests_FavoriteProductIDs: XCTestCase {
     ///
     private var subject: AppSettingsStore!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -34,6 +35,7 @@ final class AppSettingsStoreTests_FavoriteProductIDs: XCTestCase {
         subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!, generalAppSettings: generalAppSettings!)
     }
 
+    @MainActor
     override func tearDown() {
         dispatcher = nil
         storageManager = nil
@@ -43,6 +45,7 @@ final class AppSettingsStoreTests_FavoriteProductIDs: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_setProductIDAsFavorite_stores_the_value() throws {
         // Given
         let siteID: Int64 = 1234
@@ -62,6 +65,7 @@ final class AppSettingsStoreTests_FavoriteProductIDs: XCTestCase {
         XCTAssertEqual([favProductID], settingsForSite?.favoriteProductIDs)
     }
 
+    @MainActor
     func test_removeProductIDAsFavorite_the_value() throws {
         // Given
         let siteID: Int64 = 1234
@@ -81,6 +85,7 @@ final class AppSettingsStoreTests_FavoriteProductIDs: XCTestCase {
         XCTAssertNil(settingsForSite?.selectedTaxRateID)
     }
 
+    @MainActor
     func test_loadFavoriteProductIDs_works_correctly() throws {
         // Given
         let siteID: Int64 = 1234

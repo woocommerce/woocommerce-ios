@@ -59,6 +59,7 @@ final class ProductSearchUICommandTests: XCTestCase {
 
     // MARK: - `synchronizeModels`
 
+    @MainActor
     func test_synchronizeModels_does_not_dispatch_search_action_when_the_last_keyword_is_the_same_for_the_first_page() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -99,6 +100,7 @@ final class ProductSearchUICommandTests: XCTestCase {
         XCTAssertEqual(invocationCount, 2)
     }
 
+    @MainActor
     func test_synchronizeModels_does_not_dispatch_search_action_when_keyword_is_empty() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -126,6 +128,7 @@ final class ProductSearchUICommandTests: XCTestCase {
 
     // MARK: - Analytics
 
+    @MainActor
     func test_productListSearched_is_tracked_when_synchronizing_models() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

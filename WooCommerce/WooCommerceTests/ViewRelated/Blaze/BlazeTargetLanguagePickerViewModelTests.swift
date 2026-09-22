@@ -21,6 +21,7 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -79,6 +80,7 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_state_is_correct_when_no_cached_data_is_found() async {
         // Given
         let locale = "en_US"
@@ -105,6 +107,7 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .error)
     }
 
+    @MainActor
     func test_state_is_result_when_there_is_cached_data() async {
         // Given
         let locale = "en_US"
@@ -157,6 +160,7 @@ final class BlazeTargetLanguagePickerViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldDisableSaveButton)
     }
 
+    @MainActor
     func test_save_button_is_disabled_when_syncState_is_not_result() async {
         // Given
         let locale = "en_US"

@@ -187,6 +187,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
 
     // MARK: - Deletion
 
+    @MainActor
     func test_deleting_variation_successfully_returns_success_result() throws {
         // Given
         let sampleProductVariation = MockProductVariation().productVariation()
@@ -219,6 +220,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
         XCTAssertNotNil(mockStoresManager.receivedActions[0] as? ProductVariationAction)
     }
 
+    @MainActor
     func test_deleting_variation_failure_returns_error() {
         // Given
         let sampleProductVariation = MockProductVariation().productVariation()
@@ -250,6 +252,7 @@ final class ProductVariationFormViewModel_UpdatesTests: XCTestCase {
 }
 
 private extension ProductVariationFormViewModel_UpdatesTests {
+    @MainActor
     func mockDeleteVariation(storesManager: MockStoresManager, result: Result<Void, ProductUpdateError>) {
         storesManager.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             if case let ProductVariationAction.deleteProductVariation(_, onCompletion) = action {

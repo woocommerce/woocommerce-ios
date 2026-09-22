@@ -3,6 +3,7 @@ import XCTest
 @testable import Yosemite
 
 final class GenerateAllVariationsUseCaseTests: XCTestCase {
+    @MainActor
     func test_trying_to_generate_more_than_100_variations_will_return_error() {
         // Given
         let product = Product.fake().copy(attributes: [
@@ -36,6 +37,7 @@ final class GenerateAllVariationsUseCaseTests: XCTestCase {
         XCTAssertEqual(error, .tooManyVariations(variationCount: 125))
     }
 
+    @MainActor
     func test_generating_less_than_100_variations_ask_for_confirmation_and_creates_variations() {
         // Given
         let product = Product.fake().copy(attributes: [
@@ -73,6 +75,7 @@ final class GenerateAllVariationsUseCaseTests: XCTestCase {
         XCTAssertTrue(succeeded)
     }
 
+    @MainActor
     func test_generating_no_variations_sends_completed_state() {
         // Given
         let product = Product.fake().copy(attributes: [ProductAttribute.fake().copy(attributeID: 1, name: "Size", options: ["XS"])])
@@ -104,6 +107,7 @@ final class GenerateAllVariationsUseCaseTests: XCTestCase {
         XCTAssertFalse(variationsGenerated)
     }
 
+    @MainActor
     func test_generating_less_than_100_variations_ask_for_confirmation_and_sends_cancel_state() {
         // Given
         let product = Product.fake().copy(attributes: [
@@ -141,6 +145,7 @@ final class GenerateAllVariationsUseCaseTests: XCTestCase {
         XCTAssertTrue(canceled)
     }
 
+    @MainActor
     func test_failing_to_fetch_variations_sends_error_state() {
         // Given
         let product = Product.fake().copy(attributes: [
@@ -173,6 +178,7 @@ final class GenerateAllVariationsUseCaseTests: XCTestCase {
         XCTAssertEqual(error, .unableToFetchVariations)
     }
 
+    @MainActor
     func test_failing_to_create_variations_sends_error_state() {
         // Given
         let product = Product.fake().copy(attributes: [

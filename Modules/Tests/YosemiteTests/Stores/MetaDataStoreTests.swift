@@ -20,6 +20,7 @@ final class MetaDataStoreTests: XCTestCase {
     private let newMetadataArray: [RequestParameterDictionary] = [["id": .int(1234), "key": .string("newValue")]]
     private let returnMetaDataArray = [MetaData(metadataID: 1234, key: "key", value: "newValue")]
 
+    @MainActor
     override func setUp() {
         super.setUp()
         network = MockNetwork()
@@ -27,6 +28,7 @@ final class MetaDataStoreTests: XCTestCase {
         remote = MockMetaDataRemote()
     }
 
+    @MainActor
     override func tearDown() {
         network = nil
         storageManager = nil
@@ -36,6 +38,7 @@ final class MetaDataStoreTests: XCTestCase {
 
     // MARK: - Update Order MetaData
 
+    @MainActor
     func test_updateOrderMetaData_is_successful_when_updating_successfully() throws {
         // Given
         remote.whenUpdatingMetaData(thenReturn: .success(returnMetaDataArray))
@@ -62,6 +65,7 @@ final class MetaDataStoreTests: XCTestCase {
         XCTAssertEqual(updatedMetaData.first?.value.stringValue, "newValue")
     }
 
+    @MainActor
     func test_updateOrderMetaData_returns_error_on_failure() throws {
         // Given
         let metadata: [RequestParameterDictionary] = [["key": .string("newValue")]]
@@ -87,6 +91,7 @@ final class MetaDataStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
+    @MainActor
     func test_updateOrderMetaData_removes_deleted_items() {
         // Given
         let metaData = [MetaData(metadataID: 1, key: "key", value: "value"),
@@ -117,6 +122,7 @@ final class MetaDataStoreTests: XCTestCase {
 
     // MARK: - Update Product MetaData
 
+    @MainActor
     func test_updateProductMetaData_is_successful_when_updating_successfully() throws {
         // Given
         remote.whenUpdatingMetaData(thenReturn: .success(returnMetaDataArray))
@@ -143,6 +149,7 @@ final class MetaDataStoreTests: XCTestCase {
         XCTAssertEqual(updatedMetaData.first?.value.stringValue, "newValue")
     }
 
+    @MainActor
     func test_updateProductMetaData_returns_error_on_failure() throws {
         // Given
         let metadata: [RequestParameterDictionary] = [["key": .string("value")]]
@@ -169,6 +176,7 @@ final class MetaDataStoreTests: XCTestCase {
     }
 
 
+    @MainActor
     func test_updateProductMetaData_removes_deleted_items() {
         // Given
         let metaData = [MetaData(metadataID: 1, key: "key", value: "value"),
@@ -200,6 +208,7 @@ final class MetaDataStoreTests: XCTestCase {
 }
 
 private extension MockStorageManager {
+    @MainActor
     func insertSampleMetaData(_ metaData: Networking.MetaData) {
         let storageObj = viewStorage.insertNewObject(ofType: MetaData.self)
         storageObj.update(with: metaData)

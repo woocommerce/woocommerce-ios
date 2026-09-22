@@ -4,6 +4,7 @@ import Yosemite
 
 @MainActor
 struct CardPresentRefundOrchestratorTests {
+    @MainActor
     @Test func test_refund_when_reader_rearms_after_multiple_cards_then_keeps_message_visible_until_refund_advances() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

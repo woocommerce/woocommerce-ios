@@ -9,6 +9,7 @@ class CardPresentPaymentsOnboardingIPPUsersRefresherTests: XCTestCase {
     private var sut: CardPresentPaymentsOnboardingIPPUsersRefresher!
     private var cardPresentPaymentsOnboardingUseCase: MockCardPresentPaymentsOnboardingUseCase!
 
+    @MainActor
     override func setUp() {
         cardPresentPaymentsOnboardingUseCase = MockCardPresentPaymentsOnboardingUseCase(initial: .pluginNotInstalled)
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -21,6 +22,7 @@ class CardPresentPaymentsOnboardingIPPUsersRefresherTests: XCTestCase {
         cardPresentPaymentsOnboardingUseCase = nil
     }
 
+    @MainActor
     func test_refreshIPPUsersOnboardingState_when_there_are_IPP_transactions_then_it_calls_to_refresh() {
         // Given
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -42,6 +44,7 @@ class CardPresentPaymentsOnboardingIPPUsersRefresherTests: XCTestCase {
         XCTAssertTrue(cardPresentPaymentsOnboardingUseCase.refreshWasCalled)
     }
 
+    @MainActor
     func test_refreshIPPUsersOnboardingState_when_there_are_no_IPP_transactions_then_it_does_not_call_to_refresh() {
         // Given
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in

@@ -29,6 +29,7 @@ final class SubscriptionStoreTests: XCTestCase {
     ///
     private let sampleSubscriptionID: Int64 = 282
 
+    @MainActor
     override func setUp() {
         super.setUp()
         network = MockNetwork()
@@ -38,6 +39,7 @@ final class SubscriptionStoreTests: XCTestCase {
 
     // MARK: - loadSubscriptions
 
+    @MainActor
     func test_loadSubscriptions_returns_specific_subscription_for_renewal_order_on_success() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "subscriptions/\(sampleSubscriptionID)", filename: "subscription")
@@ -68,6 +70,7 @@ final class SubscriptionStoreTests: XCTestCase {
         assertEqual(expectedSubscription, subscription)
     }
 
+    @MainActor
     func test_loadSubscriptions_returns_errors_for_renewal_order_on_failure() {
         // Given
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)
@@ -88,6 +91,7 @@ final class SubscriptionStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, error)
     }
 
+    @MainActor
     func test_loadSubscriptions_returns_subscriptions_for_non_renewal_order_on_success() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "subscriptions", filename: "subscription-list")
@@ -107,6 +111,7 @@ final class SubscriptionStoreTests: XCTestCase {
         assertEqual(2, subscriptions.count)
     }
 
+    @MainActor
     func test_loadSubscriptions_returns_errors_for_non_renewal_order_on_failure() {
         // Given
         let error = NetworkError.unacceptableStatusCode(statusCode: 500)

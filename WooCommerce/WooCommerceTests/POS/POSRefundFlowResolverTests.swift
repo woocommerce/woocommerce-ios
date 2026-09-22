@@ -95,6 +95,7 @@ private extension POSRefundFlowResolverTests {
         static let belowMinimum = "11.0.9"
     }
 
+    @MainActor
     func makeSUT(cachedWooVersion: String? = Versions.minimum,
                  cache: ServerRefundAvailabilityCache? = nil) -> POSRefundFlowResolver {
         // Resolved in the (main-actor) test body rather than as a default argument: the cache's

@@ -18,6 +18,7 @@ final class EditableOrderShippingLineViewModelTests: XCTestCase {
     let sampleProductID: Int64 = 5
     let currencySettings = CurrencySettings()
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -35,6 +36,7 @@ final class EditableOrderShippingLineViewModelTests: XCTestCase {
 
     // MARK: Initialization
 
+    @MainActor
     func test_init_syncs_available_shipping_methods() {
         // Given
         var shippingMethodsSynced = false
@@ -298,6 +300,7 @@ final class EditableOrderShippingLineViewModelTests: XCTestCase {
         assertEqual(expectedFeedbackType, viewModel.feedbackBannerConfig.feedbackType)
     }
 
+    @MainActor
     func test_feedback_survey_config_onSurveyButtonTapped_updates_feedback_visibility() throws {
         // Given
         var updatedType: FeedbackType?
@@ -336,6 +339,7 @@ final class EditableOrderShippingLineViewModelTests: XCTestCase {
         assertEqual("gave_feedback", analytics.receivedProperties.first?["action"] as? String)
     }
 
+    @MainActor
     func test_feedback_survey_config_onCloseButtonTapped_updates_feedback_visibility() throws {
         // Given
         var updatedType: FeedbackType?

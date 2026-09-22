@@ -14,10 +14,12 @@ final class Order_CardPresentPaymentTests: XCTestCase {
                                                total: "25",
                                                paymentMethodID: "woocommercePayments")
 
+    @MainActor
     func test_isEligibleForCardPresentPayment_when_order_has_all_requirements_then_it_is_eligible() {
         XCTAssertFalse(eligibleOrder.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: configuration, products: []))
     }
 
+    @MainActor
     func test_isEligibleForCardPresentPayment_when_order_has_date_paid_then_is_not_eligible() {
         // Given
         let order = eligibleOrder.copy(datePaid: Date())
@@ -26,6 +28,7 @@ final class Order_CardPresentPaymentTests: XCTestCase {
         XCTAssertFalse(order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: configuration, products: []))
     }
 
+    @MainActor
     func test_isEligibleForCardPresentPayment_when_total_is_zero_then_is_not_eligible() {
         // Given
         let order = eligibleOrder.copy(total: "0")
@@ -34,6 +37,7 @@ final class Order_CardPresentPaymentTests: XCTestCase {
         XCTAssertFalse(order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: configuration, products: []))
     }
 
+    @MainActor
     func test_isEligibleForCardPresentPayment_when_status_is_not_valid_then_is_not_eligible() {
         // Given
         let notEligibleStatuses: [OrderStatusEnum] = [.autoDraft, .completed, .cancelled, .refunded, .custom("test")]
@@ -44,6 +48,7 @@ final class Order_CardPresentPaymentTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_isEligibleForCardPresentPayment_when_payment_method_is_unknown_then_is_not_eligible() {
         // Given
         let order = eligibleOrder.copy(paymentMethodID: "unknown")
@@ -52,6 +57,7 @@ final class Order_CardPresentPaymentTests: XCTestCase {
         XCTAssertFalse(order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: configuration, products: []))
     }
 
+    @MainActor
     func test_isEligibleForCardPresentPayment_when_currency_is_different_than_configuration_then_is_not_eligible() {
         // Given
         let order = eligibleOrder.copy(currency: "EUR")
@@ -60,6 +66,7 @@ final class Order_CardPresentPaymentTests: XCTestCase {
         XCTAssertFalse(order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: configuration, products: []))
     }
 
+    @MainActor
     func test_isEligibleForCardPresentPayment_when_there_is_a_subscription_product_then_is_not_eligible() {
         // Given
         let productID: Int64 = 1

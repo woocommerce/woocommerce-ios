@@ -24,6 +24,7 @@ final class CouponListViewModelTests: XCTestCase {
         sut = CouponListViewModel(siteID: 123)
     }
 
+    @MainActor
     private func createMocks() {
         mockStorageManager = MockStorageManager()
         mockStoresManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -175,6 +176,7 @@ final class CouponListViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .loadingNextPage)
     }
 
+    @MainActor
     func test_state_is_couponsDisabled_if_coupon_setting_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -197,6 +199,7 @@ final class CouponListViewModelTests: XCTestCase {
         assertEqual(.couponsDisabled, sut.state)
     }
 
+    @MainActor
     func test_state_is_coupons_if_enableCoupons_and_synchronizeFirstPage_succeed() {
         // Given
         let sampleSiteID: Int64 = 123
@@ -232,6 +235,7 @@ final class CouponListViewModelTests: XCTestCase {
         assertEqual(.coupons, sut.state)
     }
 
+    @MainActor
     func test_state_is_couponDisabled_if_enableCoupons_fails() {
         // Given
         let sampleSiteID: Int64 = 123

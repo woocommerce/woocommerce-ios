@@ -21,6 +21,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -30,6 +31,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         storageManager = MockStorageManager()
     }
 
+    @MainActor
     override func tearDown() {
         storageManager = nil
         productsRemote = nil
@@ -39,6 +41,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_it_fetches_all_entities_and_returns_the_Parcel() throws {
         // Given
         let useCase = makeUseCase()
@@ -66,6 +69,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(parcel.product, product)
     }
 
+    @MainActor
     func test_it_uses_the_existing_Note_in_Storage_if_it_is_available() throws {
         // Given
         let useCase = makeUseCase()
@@ -94,6 +98,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(parcel.note?.noteID, note.noteID)
     }
 
+    @MainActor
     func test_it_uses_the_existing_Product_in_Storage_if_it_is_available() throws {
         // Given
         let useCase = makeUseCase()
@@ -120,6 +125,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(parcel.product, product)
     }
 
+    @MainActor
     func test_it_uses_the_existing_ProductReview_in_Storage_if_it_is_available() throws {
         // Given
         let useCase = makeUseCase()
@@ -147,6 +153,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(parcel.review, productReview)
     }
 
+    @MainActor
     func test_when_successful_then_it_saves_the_ProductReview_to_Storage() throws {
         // Given
         let useCase = makeUseCase()
@@ -179,6 +186,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
     /// Simulate a scenario where the StorageType is no longer available, which may happen
     /// if the owning `ProductReviewStore` is deallocated during user log out.
     ///
+    @MainActor
     func test_when_successful_but_Storage_is_no_longer_available_then_it_returns_a_failure() throws {
         // Given
         let useCase = makeUseCase()
@@ -209,6 +217,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(productsRemote.invocationCountOfLoadProduct, 0)
     }
 
+    @MainActor
     func test_when_Note_fetch_fails_then_all_other_fetches_are_aborted() throws {
         // Given
         let useCase = makeUseCase()
@@ -229,6 +238,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(productsRemote.invocationCountOfLoadProduct, 0)
     }
 
+    @MainActor
     func test_when_ProductReview_fetch_fails_then_all_other_fetches_are_aborted() throws {
         // Given
         let useCase = makeUseCase()
@@ -253,6 +263,7 @@ final class RetrieveProductReviewFromNoteUseCaseTests: XCTestCase {
         XCTAssertEqual(productsRemote.invocationCountOfLoadProduct, 0)
     }
 
+    @MainActor
     func test_when_Note_has_missing_meta_then_it_returns_a_failure() throws {
         // Given
         let useCase = makeUseCase()
@@ -282,6 +293,7 @@ private extension RetrieveProductReviewFromNoteUseCaseTests {
 
     /// Create a UseCase using the mocks
     ///
+    @MainActor
     func makeUseCase() -> RetrieveProductReviewFromNoteUseCase {
         RetrieveProductReviewFromNoteUseCase(notificationsRemote: notificationsRemote,
                                              productReviewsRemote: productReviewsRemote,
@@ -291,6 +303,7 @@ private extension RetrieveProductReviewFromNoteUseCaseTests {
 
     /// Retrieve the Parcel using the given UseCase
     ///
+    @MainActor
     func retrieveAndWait(using useCase: RetrieveProductReviewFromNoteUseCase,
                          noteID: Int64) throws -> Result<ProductReviewFromNoteParcel, Error> {
         var result: Result<ProductReviewFromNoteParcel, Error>?

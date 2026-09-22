@@ -7,6 +7,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -30,6 +31,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             // One optional item
             .fake().copy(bundledItemID: 1, productID: 2, isOptional: false)
         ])
+        @MainActor
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success(productsFromRetrieval))
 
@@ -68,9 +70,11 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(bundledItemID: 1, productID: 2, isOptional: true),
             .fake().copy(bundledItemID: 2, productID: 3, isOptional: false)
         ])
+        @MainActor
         let productsFromRetrieval = [1, 2, 3].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success(productsFromRetrieval))
 
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: self.stores,
@@ -105,9 +109,11 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(bundledItemID: 1, productID: 2, defaultQuantity: 2, isOptional: false),
             .fake().copy(bundledItemID: 2, productID: 3, defaultQuantity: 3, isOptional: false)
         ])
+        @MainActor
         let productsFromRetrieval = [1, 2, 3].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success(productsFromRetrieval))
 
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: self.stores,
@@ -129,9 +135,11 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(productID: 2, isOptional: true),
             .fake().copy(productID: 3, isOptional: false)
         ])
+        @MainActor
         let productsFromRetrieval = [1, 2, 3].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success(productsFromRetrieval))
 
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: self.stores,
@@ -162,9 +170,11 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         let product = Product.fake().copy(productID: 1, bundleMinSize: 5, bundledItems: [
             .fake().copy(productID: 2)
         ])
+        @MainActor
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success(productsFromRetrieval))
 
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: self.stores,
@@ -187,12 +197,14 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
     func test_loadProductsErrorMessage_is_set_when_retrieveProducts_fails() throws {
         // Given
+        @MainActor
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
         ])
         mockProductsRetrieval(result: .failure(NSError(domain: "", code: 0, userInfo: nil)))
 
         // When
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: stores,
@@ -206,12 +218,14 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 
     func test_errorMessage_is_reset_when_retrieveProducts_fails_then_succeeds_after_retry() throws {
         // Given
+        @MainActor
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
         ])
         mockProductsRetrieval(result: .failure(NSError(domain: "", code: 0, userInfo: nil)))
 
         // When
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: stores,
@@ -219,6 +233,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         waitUntil {
             viewModel.loadProductsErrorMessage != nil
         }
+        @MainActor
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success(productsFromRetrieval))
         viewModel.retry()
@@ -234,10 +249,12 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
         ])
+        @MainActor
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         var configurationsFromOnConfigure: [BundledProductConfiguration] = []
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: self.stores,
@@ -270,9 +287,11 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
         ])
+        @MainActor
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success(productsFromRetrieval))
 
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            // The bundle is not new when there are non-empty child items.
                                                            childItems: [.fake()],
@@ -296,10 +315,12 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2, minQuantity: 2, maxQuantity: 8, defaultQuantity: 6)
         ])
+        @MainActor
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         var configurationsFromOnConfigure: [BundledProductConfiguration] = []
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            // The bundle is new when there are no child items.
                                                            childItems: [],
@@ -327,10 +348,12 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(productID: 2)
         ])
+        @MainActor
         let productsFromRetrieval = [1, 2].map { Product.fake().copy(productID: $0) }
         mockProductsRetrieval(result: .success(productsFromRetrieval))
 
         // When
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            orderItem: .fake().copy(productID: 1, quantity: 3),
                                                            childItems: [
@@ -366,6 +389,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                          pricedIndividually: false)
         ])
         // Product defaults can be absent even though the bundle response contains the inherited effective defaults.
+        @MainActor
         let variableProduct = createVariableProductWithTwoAttributes(productID: 2).copy(defaultAttributes: [])
         mockProductsRetrieval(result: .success([variableProduct]))
         mockVariationsRetrieval(result: .success([
@@ -375,6 +399,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         ]))
 
         // When
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: stores,
@@ -393,6 +418,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(bundledItemID: 1, productID: 2, overridesDefaultVariationAttributes: false)
         ])
+        @MainActor
         let variableProduct = createVariableProductWithTwoAttributes(productID: 2)
             .copy(defaultAttributes: [
                 .init(attributeID: 0, name: "Flavor", option: "Pineapple"),
@@ -409,6 +435,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         ]))
 
         // When
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: stores,
@@ -434,6 +461,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                          ])
         ])
         // The product-level defaults point to a different variation, and should be ignored given the override.
+        @MainActor
         let variableProduct = createVariableProductWithTwoAttributes(productID: 2)
             .copy(defaultAttributes: [
                 .init(attributeID: 0, name: "Flavor", option: "Pineapple"),
@@ -450,6 +478,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         ]))
 
         // When
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: stores,
@@ -477,6 +506,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
                 .init(attributeID: 0, name: "Flavor", option: "Pineapple"),
                 .init(attributeID: 0, name: "Color", option: "Indigo")
             ])
+        @MainActor
         let matchingAttributes: [ProductVariationAttribute] = [.init(id: 0, name: "Flavor", option: "Pineapple"),
                                                                .init(id: 0, name: "Color", option: "Indigo")]
         mockProductsRetrieval(result: .success([variableProduct]))
@@ -489,6 +519,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         ]))
 
         // When
+        @MainActor
         let viewModel = ConfigurableBundleProductViewModel(product: product,
                                                            childItems: [],
                                                            stores: stores,
@@ -508,6 +539,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
             .fake().copy(bundledItemID: 1, productID: 2)
         ])
         // Defaults only cover one of the two variation attributes: no variation fetch, no pre-selection.
+        @MainActor
         let variableProduct = createVariableProductWithTwoAttributes(productID: 2)
             .copy(defaultAttributes: [
                 .init(attributeID: 0, name: "Flavor", option: "Pineapple")
@@ -524,11 +556,13 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         }
 
         // Then
+        @MainActor
         let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
         XCTAssertNil(bundleItemViewModel.selectedVariation)
         // The partial default still prefills the picker settings once a variation is selected manually.
     }
 
+    @MainActor
     func test_bundleItemViewModels_do_not_preselect_variation_when_variations_retrieval_fails() throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
@@ -552,12 +586,15 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         }
 
         // Then
+        @MainActor
         let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
         XCTAssertNil(bundleItemViewModel.selectedVariation)
     }
 
+    @MainActor
     func test_bundleItemViewModels_do_not_preselect_variation_when_child_order_item_exists() throws {
         // Given
+        @MainActor
         let product = Product.fake().copy(productID: 1, bundledItems: [
             .fake().copy(bundledItemID: 1, productID: 2)
         ])
@@ -579,12 +616,14 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
         }
 
         // Then the existing order item's variation is kept.
+        @MainActor
         let bundleItemViewModel = try XCTUnwrap(viewModel.bundleItemViewModels.first)
         XCTAssertEqual(bundleItemViewModel.selectedVariation?.variationID, 55)
     }
 
     // MARK: - Analytics
 
+    @MainActor
     func test_configure_tracks_orderFormBundleProductConfigurationSaveTapped_event() throws {
         // Given
         let product = Product.fake().copy(productID: 1, bundledItems: [
@@ -608,6 +647,7 @@ final class ConfigurableBundleProductViewModelTests: XCTestCase {
 }
 
 private extension ConfigurableBundleProductViewModelTests {
+    @MainActor
     func mockProductsRetrieval(result: Result<[Product], Error>) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             switch action {
@@ -619,6 +659,7 @@ private extension ConfigurableBundleProductViewModelTests {
         }
     }
 
+    @MainActor
     func mockVariationsRetrieval(result: Result<[ProductVariation], Error>) {
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             switch action {

@@ -33,6 +33,7 @@ struct BookingSearchViewModelTests {
 
     // MARK: - Search action
 
+    @MainActor
     @Test func search_bookings_is_dispatched_when_query_is_not_empty() async throws {
         // Given
         let searchQuerySubject = PassthroughSubject<String, Never>()
@@ -61,6 +62,7 @@ struct BookingSearchViewModelTests {
         #expect(invocationCount == 1)
     }
 
+    @MainActor
     @Test func search_bookings_passes_correct_search_query() async throws {
         // Given
         let searchQuerySubject = PassthroughSubject<String, Never>()
@@ -89,6 +91,7 @@ struct BookingSearchViewModelTests {
         #expect(capturedSearchQuery == "my test query")
     }
 
+    @MainActor
     @Test func search_results_are_updated_on_successful_search() async throws {
         // Given
         let searchQuerySubject = PassthroughSubject<String, Never>()
@@ -119,6 +122,7 @@ struct BookingSearchViewModelTests {
         #expect(viewModel.searchResults.contains { $0.bookingID == booking2.bookingID })
     }
 
+    @MainActor
     @Test func error_fetching_is_true_on_search_failure() async throws {
         // Given
         let searchQuerySubject = PassthroughSubject<String, Never>()
@@ -147,6 +151,7 @@ struct BookingSearchViewModelTests {
 
     // MARK: - Pagination
 
+    @MainActor
     @Test func on_load_next_page_action_loads_next_page() async throws {
         // Given
         let searchQuerySubject = PassthroughSubject<String, Never>()
@@ -187,6 +192,7 @@ struct BookingSearchViewModelTests {
         #expect(viewModel.searchResults.count == 26, "Should have 26 results total (25 from page 1 + 1 from page 2)")
     }
 
+    @MainActor
     @Test func search_results_are_cleared_on_new_search() async throws {
         // Given
         let searchQuerySubject = PassthroughSubject<String, Never>()
@@ -229,6 +235,7 @@ struct BookingSearchViewModelTests {
 
     // MARK: - Type-based filtering
 
+    @MainActor
     @Test func today_tab_passes_correct_date_filters_to_search_action() async throws {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -261,6 +268,7 @@ struct BookingSearchViewModelTests {
         #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z", "Today tab should filter before end of day")
     }
 
+    @MainActor
     @Test func upcoming_tab_passes_correct_date_filters_to_search_action() async throws {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -293,6 +301,7 @@ struct BookingSearchViewModelTests {
         #expect(capturedFilters?.startDateAfter == "2021-01-01T23:59:59Z", "Upcoming tab should filter after end of day")
     }
 
+    @MainActor
     @Test func all_tab_passes_no_date_filters_to_search_action() async throws {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -327,6 +336,7 @@ struct BookingSearchViewModelTests {
 
     // MARK: - Filter merging
 
+    @MainActor
     @Test func today_tab_merges_user_date_filters_with_tab_constraints() async throws {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -374,6 +384,7 @@ struct BookingSearchViewModelTests {
                 "Should use user's startDateBefore since it's earlier")
     }
 
+    @MainActor
     @Test func upcoming_tab_merges_user_date_filters_with_tab_constraints() async throws {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200)
@@ -421,6 +432,7 @@ struct BookingSearchViewModelTests {
                 "Should use user's startDateBefore since tab has no upper bound")
     }
 
+    @MainActor
     @Test func all_tab_passes_user_date_filters_through_unchanged() async throws {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200)
@@ -465,6 +477,7 @@ struct BookingSearchViewModelTests {
         #expect(capturedFilters?.startDateBefore == userEndDate.ISO8601Format())
     }
 
+    @MainActor
     @Test func non_date_filters_pass_through_on_today_tab() async throws {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200)
@@ -513,6 +526,7 @@ struct BookingSearchViewModelTests {
 
     // MARK: - Refresh action
 
+    @MainActor
     @Test func on_refresh_action_resyncs_search_results() async throws {
         // Given
         let searchQuerySubject = PassthroughSubject<String, Never>()
@@ -549,6 +563,7 @@ struct BookingSearchViewModelTests {
 
     // MARK: - Sort order
 
+    @MainActor
     @Test func update_sort_order_triggers_new_search_with_ascending_order() async throws {
         // Given
         let searchQuerySubject = PassthroughSubject<String, Never>()
@@ -582,6 +597,7 @@ struct BookingSearchViewModelTests {
         #expect(capturedOrder == .ascending, "Should search with ascending order")
     }
 
+    @MainActor
     @Test func update_sort_order_triggers_new_search_with_descending_order() async throws {
         // Given
         let searchQuerySubject = PassthroughSubject<String, Never>()
@@ -615,6 +631,7 @@ struct BookingSearchViewModelTests {
         #expect(capturedOrder == .descending, "Should search with descending order")
     }
 
+    @MainActor
     @Test func update_sort_order_does_not_trigger_search_when_query_is_empty() async throws {
         // Given
         let searchQuerySubject = PassthroughSubject<String, Never>()
@@ -643,6 +660,7 @@ struct BookingSearchViewModelTests {
         #expect(searchCount == 0, "Should not trigger search when query is empty")
     }
 
+    @MainActor
     @Test func update_sort_order_uses_current_sort_for_subsequent_searches() async throws {
         // Given
         let searchQuerySubject = PassthroughSubject<String, Never>()

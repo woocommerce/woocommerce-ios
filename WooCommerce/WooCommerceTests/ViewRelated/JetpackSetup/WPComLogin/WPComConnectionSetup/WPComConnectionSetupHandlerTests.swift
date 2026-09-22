@@ -242,6 +242,7 @@ final class WPComConnectionSetupHandlerTests: XCTestCase {
 
     // MARK: - Helpers
 
+    @MainActor
     private func makeHandler(siteAlreadyConnected: Bool = false) -> WPComConnectionSetupHandler {
         let handler = WPComConnectionSetupHandler(
             siteID: 123,

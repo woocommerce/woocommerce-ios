@@ -44,6 +44,7 @@ final class InboxNotesStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         network = MockNetwork(useResponseQueue: true)
@@ -53,6 +54,7 @@ final class InboxNotesStoreTests: XCTestCase {
                                      network: network)
     }
 
+    @MainActor
     override func tearDown() {
         store = nil
         network = nil
@@ -61,6 +63,7 @@ final class InboxNotesStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_loadAllInboxNotes_then_it_returns_inbox_notes_upon_successful_response() throws {
         // Given a stubbed inbox notes network response
         network.simulateResponse(requestUrlSuffix: "admin/notes", filename: "inbox-note-list")
@@ -84,6 +87,7 @@ final class InboxNotesStoreTests: XCTestCase {
     }
 
 
+    @MainActor
     func test_loadAllInboxNotes_then_it_updates_stored_inbox_notes_upon_successful_response() {
         // Given an initial stored inbox note and a stubbed inbox notes network response
         let initialInboxNote = sampleInboxNote(id: 296)
@@ -115,6 +119,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertNotEqual(initialInboxNote.actions.first?.status, updatedInboxNote?.actions?.first?.status)
     }
 
+    @MainActor
     func test_loadAllInboxNotes_then_it_returns_error_upon_response_error() {
         // Given a stubbed generic-error network response
         network.simulateResponse(requestUrlSuffix: "admin/notes", filename: "generic_error")
@@ -137,6 +142,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertFalse(result.isSuccess)
     }
 
+    @MainActor
     func test_loadAllInboxNotes_then_it_returns_error_upon_empty_response() {
         // Given an empty network response
         XCTAssertEqual(storedInboxNotesCount, 0)
@@ -158,6 +164,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertFalse(result.isSuccess)
     }
 
+    @MainActor
     func test_dismissInboxNote_do_nothing_if_no_inbox_notes_exist_upon_successful_response() {
         // Given a stubbed inbox note network response
         let sampleInboxNoteID: Int64 = 296
@@ -181,6 +188,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_dismissInboxNote_delete_existing_inbox_note_upon_successful_response() {
         // Given an initial stored inbox note and a stubbed inbox notes network response
         let sampleInboxNoteID: Int64 = 296
@@ -206,6 +214,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_dismissInboxNote_then_it_returns_error_upon_response_error() {
         // Given a stubbed generic-error network response
         let sampleInboxNoteID: Int64 = 296
@@ -229,6 +238,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertFalse(result.isSuccess)
     }
 
+    @MainActor
     func test_dismissInboxNote_then_it_returns_error_upon_empty_response() {
         // Given an empty network response
         let sampleInboxNoteID: Int64 = 296
@@ -251,6 +261,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertFalse(result.isSuccess)
     }
 
+    @MainActor
     func test_dismissAllInboxNotes_do_nothing_if_no_inbox_notes_exist_upon_successful_response() {
         // Given a stubbed inbox note network response
         network.simulateResponse(requestUrlSuffix: "admin/notes/delete/all", filename: "inbox-note-list")
@@ -273,6 +284,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_dismissAllInboxNotes_delete_existing_inbox_notes_upon_successful_response() {
         // Given two initial stored inbox note and a stubbed inbox notes network response
         let initialInboxNote = sampleInboxNote(id: 296)
@@ -299,6 +311,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_dismissAllInboxNotes_then_it_returns_error_upon_response_error() {
         // Given a stubbed generic-error network response
         network.simulateResponse(requestUrlSuffix: "admin/notes/delete/all", filename: "generic_error")
@@ -321,6 +334,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertFalse(result.isSuccess)
     }
 
+    @MainActor
     func test_dismissAllInboxNotes_then_it_returns_error_upon_empty_response() {
         // Given an empty network response
         XCTAssertEqual(storedInboxNotesCount, 0)
@@ -342,6 +356,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertFalse(result.isSuccess)
     }
 
+    @MainActor
     func test_markInboxNoteAsActioned_then_it_updates_stored_inbox_notes_and_inbox_action_upon_successful_response() {
         // Given a stubbed inbox note network response
         let sampleInboxNoteID: Int64 = 296
@@ -372,6 +387,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertEqual("actioned", updatedInboxNote?.actions?.first?.status)
     }
 
+    @MainActor
     func test_markInboxNoteAsActioned_then_it_returns_error_upon_response_error() {
         // Given a stubbed generic-error network response
         let sampleInboxNoteID: Int64 = 296
@@ -396,6 +412,7 @@ final class InboxNotesStoreTests: XCTestCase {
         XCTAssertFalse(result.isSuccess)
     }
 
+    @MainActor
     func test_markInboxNoteAsActioned_then_it_returns_error_upon_empty_response() {
         // Given an empty network response
         let sampleInboxNoteID: Int64 = 296
@@ -422,6 +439,7 @@ final class InboxNotesStoreTests: XCTestCase {
 }
 
 private extension InboxNotesStoreTests {
+    @MainActor
     func sampleInboxNote(id: Int64) -> Networking.InboxNote {
         let dateFormatter = DateFormatter.Defaults.dateTimeFormatter
         let url = "https://woocommerce.com/products/woocommerce-bookings/"

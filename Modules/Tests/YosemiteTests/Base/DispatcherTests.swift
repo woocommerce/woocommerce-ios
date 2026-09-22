@@ -9,6 +9,7 @@ class DispatcherTests: XCTestCase {
     var dispatcher: Dispatcher!
     var processor: MockActionsProcessor!
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -19,6 +20,7 @@ class DispatcherTests: XCTestCase {
 
     /// Verifies that multiple instances of the same processor get properly registered.
     ///
+    @MainActor
     func testProcessorEffectivelyGetsRegistered() {
         let processor = MockActionsProcessor()
         dispatcher.register(processor: processor, for: MockSiteAction.self)
@@ -27,6 +29,7 @@ class DispatcherTests: XCTestCase {
 
     /// Verifies that a processor only receives the actions it's been registered to.
     ///
+    @MainActor
     func testProcessorsReceiveOnlyRegisteredActions() {
         dispatcher.register(processor: processor, for: MockSiteAction.self)
 
@@ -40,6 +43,7 @@ class DispatcherTests: XCTestCase {
 
     /// Verifies that a registered processor receive all of the posted actions.
     ///
+    @MainActor
     func testProcessorsReceiveRegisteredActions() {
         dispatcher.register(processor: processor, for: MockSiteAction.self)
         XCTAssertTrue(processor.receivedActions.isEmpty)
@@ -53,6 +57,7 @@ class DispatcherTests: XCTestCase {
 
     /// Verifies that, once unregistered, a processor stops receiving actions.
     ///
+    @MainActor
     func testUnregisteredProcessorsDoNotReceiveAnyActions() {
         XCTAssertTrue(processor.receivedActions.isEmpty)
 
@@ -68,6 +73,7 @@ class DispatcherTests: XCTestCase {
 
     /// Verifies that the Dispatcher does not strongly retain the ActionsProcessors.
     ///
+    @MainActor
     func testProcessorsAreNotStronglyRetainedByDispatcher() {
         dispatcher.register(processor: processor, for: MockSiteAction.self)
         XCTAssertNotNil(dispatcher.processor(for: MockSiteAction.self))

@@ -39,6 +39,7 @@ class WooAnalyticsTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         let sessionManager = MockSessionManager()
@@ -435,6 +436,7 @@ class WooAnalyticsTests: XCTestCase {
         }, startABTest: { _ in })
     }
 
+    @MainActor
     func test_events_when_logged_in_include_site_properties() {
         // Given
         guard let testingProvider else {
@@ -477,6 +479,7 @@ class WooAnalyticsTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_events_when_logged_out_do_not_include_site_properties() {
         // Given
         guard let testingProvider else {
@@ -515,6 +518,7 @@ class WooAnalyticsTests: XCTestCase {
 
     // MARK: - Event Bridge
 
+    @MainActor
     func test_track_Event_when_authenticated_then_includes_site_properties() {
         // Given
         guard let testingProvider else {
@@ -539,6 +543,7 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertEqual(receivedProperties["blog_id"] as? Int64, sampleSiteID)
     }
 
+    @MainActor
     func test_track_Event_when_not_authenticated_then_skips_site_properties() {
         // Given
         guard let testingProvider else {
@@ -562,6 +567,7 @@ class WooAnalyticsTests: XCTestCase {
 
     // MARK: - Data-layer tracking by raw event name
 
+    @MainActor
     func test_track_by_raw_stat_name_when_authenticated_then_includes_site_properties() {
         // Given
         guard let testingProvider else {
@@ -589,6 +595,7 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertEqual(receivedProperties["prop-key1"] as? String, "prop-value1")
     }
 
+    @MainActor
     func test_track_by_raw_stat_name_when_stat_opts_out_of_site_properties_then_skips_them() {
         // Given
         guard let testingProvider else {
@@ -613,6 +620,7 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertNil(receivedProperties["blog_id"])
     }
 
+    @MainActor
     func test_track_by_unknown_event_name_then_skips_site_properties() {
         // Given
         guard let testingProvider else {
@@ -636,6 +644,7 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertNil(receivedProperties["store_id"])
     }
 
+    @MainActor
     func test_track_by_raw_stat_name_when_session_values_are_nil_then_keeps_caller_supplied_store_and_version_properties() {
         // Given
         guard let testingProvider else {
@@ -667,6 +676,7 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertEqual(receivedProperties["blog_id"] as? Int64, sampleSiteID)
     }
 
+    @MainActor
     func test_track_by_raw_stat_name_when_session_and_caller_both_have_values_then_session_values_win() {
         // Given
         guard let testingProvider else {

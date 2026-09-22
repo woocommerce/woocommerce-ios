@@ -27,6 +27,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -34,6 +35,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         network = MockNetwork()
     }
 
+    @MainActor
     override func tearDown() {
         network = nil
         storageManager = nil
@@ -43,6 +45,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: - `loadShippingLabels`
 
+    @MainActor
     func test_loadShippingLabels_persists_shipping_labels_and_settings_on_success() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -118,6 +121,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(persistedSettings.toReadOnly(), expectedSettings)
     }
 
+    @MainActor
     func test_loadShippingLabels_does_not_persist_shipping_labels_and_settings_on_success_with_empty_shipping_labels() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -151,6 +155,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelSettings.self), 0)
     }
 
+    @MainActor
     func test_loadShippingLabels_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -174,6 +179,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: - `printShippingLabel`
 
+    @MainActor
     func test_printShippingLabel_returns_ShippingLabelPrintData_on_success() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -199,6 +205,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(printData, expectedPrintData)
     }
 
+    @MainActor
     func test_printShippingLabel_returns_ShippingLabelPrintData_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -226,6 +233,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: - `refundShippingLabel`
 
+    @MainActor
     func test_refundShippingLabel_returns_refund_and_updates_local_ShippingLabel_refund_on_success() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -264,6 +272,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 1)
     }
 
+    @MainActor
     func test_refundShippingLabel_returns_refund_on_success_without_storage_changes_if_no_existing_ShippingLabel_in_storage() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -294,6 +303,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageShippingLabelRefund.self), 0)
     }
 
+    @MainActor
     func test_refundShippingLabel_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -320,6 +330,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `loadShippingLabelSettings`
 
+    @MainActor
     func test_loadShippingLabelSettings_returns_settings_if_it_exists_in_storage() throws {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: 208)
@@ -340,6 +351,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(result, shippingLabelSettings)
     }
 
+    @MainActor
     func test_loadShippingLabelSettings_returns_nil_if_it_does_not_exist_in_storage() throws {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel().copy(siteID: sampleSiteID, orderID: 208)
@@ -359,6 +371,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `validateAddress`
 
+    @MainActor
     func test_validateAddress_returns_ShippingLabelAddressValidationSuccess_on_success() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -382,6 +395,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(printData, expectedResult)
     }
 
+    @MainActor
     func test_validateAddress_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -406,6 +420,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `packagesDetails`
 
+    @MainActor
     func test_packagesDetails_returns_ShippingLabelPackagesResponse_on_success() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -427,6 +442,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(printData, expectedResult)
     }
 
+    @MainActor
     func test_packagesDetails_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -450,6 +466,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `checkCreationEligibility`
 
+    @MainActor
     func test_checkCreationEligibility_returns_eligibility_on_success() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -473,6 +490,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(isEligibleForCreation, expectedEligibility)
     }
 
+    @MainActor
     func test_checkCreationEligibility_returns_false_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -498,6 +516,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `createPackage`
 
+    @MainActor
     func test_createPackage_returns_success_response() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -517,6 +536,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_createPackage_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -539,6 +559,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `loadCarriersAndRates`
 
+    @MainActor
     func test_loadCarriersAndRates_returns_success_response() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -561,6 +582,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_loadCarriersAndRates_returns_error_on_failure() throws {
         // Given
         let remote = MockShippingLabelRemote()
@@ -587,6 +609,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `synchronizeShippingLabelAccountSettings`
 
+    @MainActor
     func test_synchronizeShippingLabelAccountSettings_persists_account_settings_on_success() throws {
         // Given
         let expectedSettings = sampleShippingLabelAccountSettings()
@@ -610,6 +633,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(persistedSettings.toReadOnly(), expectedSettings)
     }
 
+    @MainActor
     func test_synchronizeShippingLabelAccountSettings_returns_error_on_failure() throws {
         // Given
         let expectedError = NetworkError.notFound()
@@ -633,6 +657,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: `updateShippingLabelAccountSettings`
 
+    @MainActor
     func test_updateShippingLabelAccountSettings_returns_success_response() throws {
         // Given
         let settings = ShippingLabelAccountSettings.fake().copy()
@@ -654,6 +679,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_updateShippingLabelAccountSettings_returns_error_on_failure() throws {
         // Given
         let settings = ShippingLabelAccountSettings.fake().copy()
@@ -677,6 +703,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_purchaseShippingLabel_returns_shipping_label_on_success() throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
@@ -717,6 +744,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(actualLabels, [expectedLabel])
     }
 
+    @MainActor
     func test_purchaseShippingLabel_returns_error_on_purchaseShippingLabel_request_failure() throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
@@ -751,6 +779,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_purchaseShippingLabel_returns_error_on_checkLabelStatus_request_failure() throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
@@ -789,6 +818,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(error as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_purchaseShippingLabel_returns_error_on_purchase_error() throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
@@ -828,6 +858,7 @@ final class ShippingLabelStoreTests: XCTestCase {
         XCTAssertEqual(error as? LabelPurchaseError, LabelPurchaseError.purchaseErrorStatus)
     }
 
+    @MainActor
     func test_purchaseShippingLabel_does_not_return_error_if_purchase_remains_in_progress() throws {
         // Given
         let mockAddress = ShippingLabelAddress.fake()
@@ -907,6 +938,7 @@ final class ShippingLabelStoreTests: XCTestCase {
 }
 
 private extension ShippingLabelStoreTests {
+    @MainActor
     func insertOrder(siteID: Int64, orderID: Int64) {
         let order = viewStorage.insertNewObject(ofType: StorageOrder.self)
         order.siteID = siteID
@@ -914,11 +946,13 @@ private extension ShippingLabelStoreTests {
         order.statusKey = ""
     }
 
+    @MainActor
     func insertShippingLabel(_ readOnlyShippingLabel: Yosemite.ShippingLabel) {
         let shippingLabel = viewStorage.insertNewObject(ofType: StorageShippingLabel.self)
         shippingLabel.update(with: readOnlyShippingLabel)
     }
 
+    @MainActor
     func insertShippingLabelSettings(_ readOnlyShippingLabelSettings: Yosemite.ShippingLabelSettings) {
         let shippingLabelSettings = viewStorage.insertNewObject(ofType: StorageShippingLabelSettings.self)
         shippingLabelSettings.update(with: readOnlyShippingLabelSettings)
@@ -926,11 +960,13 @@ private extension ShippingLabelStoreTests {
 }
 
 private extension ShippingLabelStoreTests {
+    @MainActor
     func sampleShippingLabelAddressVerification() -> ShippingLabelAddressVerification {
         let type: ShippingLabelAddressVerification.ShipType = .destination
         return ShippingLabelAddressVerification(address: sampleShippingLabelAddress(), type: type)
     }
 
+    @MainActor
     func sampleShippingLabelAddress() -> Yosemite.ShippingLabelAddress {
         return ShippingLabelAddress(company: "",
                                     name: "Anitaa",
@@ -943,6 +979,7 @@ private extension ShippingLabelStoreTests {
                                     postcode: "94110-4929")
     }
 
+    @MainActor
     func sampleShippingLabelPackagesResponse() -> Yosemite.ShippingLabelPackagesResponse {
         return ShippingLabelPackagesResponse(storeOptions: sampleShippingLabelStoreOptions(),
                                              customPackages: sampleShippingLabelCustomPackages(),
@@ -950,10 +987,12 @@ private extension ShippingLabelStoreTests {
                                              unactivatedPredefinedOptions: [])
     }
 
+    @MainActor
     func sampleShippingLabelStoreOptions() -> ShippingLabelStoreOptions {
         return ShippingLabelStoreOptions(currencySymbol: "$", dimensionUnit: "cm", weightUnit: "kg", originCountry: "US")
     }
 
+    @MainActor
     func sampleShippingLabelCustomPackage() -> ShippingLabelCustomPackage {
         return ShippingLabelCustomPackage(isUserDefined: true,
                                                         title: "Caja",
@@ -963,6 +1002,7 @@ private extension ShippingLabelStoreTests {
                                                         maxWeight: 0)
     }
 
+    @MainActor
     func sampleShippingLabelCustomPackages() -> [ShippingLabelCustomPackage] {
         let customPackage1 = ShippingLabelCustomPackage(isUserDefined: true,
                                                         title: "Krabica",
@@ -980,6 +1020,7 @@ private extension ShippingLabelStoreTests {
         return [customPackage1, customPackage2]
     }
 
+    @MainActor
     func sampleShippingLabelPredefinedOptions() -> [ShippingLabelPredefinedOption] {
         let predefinedPackages1 = [ShippingLabelPredefinedPackage(id: "small_flat_box",
                                                                   title: "Small Flat Rate Box",
@@ -1004,6 +1045,7 @@ private extension ShippingLabelStoreTests {
         return [predefinedOption1, predefinedOption2]
     }
 
+    @MainActor
     func sampleShippingLabelAccountSettings() -> Yosemite.ShippingLabelAccountSettings {
         let paymentMethod = ShippingLabelPaymentMethod(paymentMethodID: 11743265,
                                                        name: "Example User",
@@ -1027,6 +1069,7 @@ private extension ShippingLabelStoreTests {
                                             addPaymentMethodURL: nil)
     }
 
+    @MainActor
     func sampleShippingLabelCarriersAndRates() -> [ShippingLabelCarriersAndRates] {
         return [ShippingLabelCarriersAndRates(packageID: "123",
                                               defaultRates: [sampleShippingLabelCarrierRate()],
@@ -1037,6 +1080,7 @@ private extension ShippingLabelStoreTests {
                                               additionalHandling: [])]
     }
 
+    @MainActor
     func sampleShippingLabelCarrierRate() -> ShippingLabelCarrierRate {
         let rate = ShippingLabelCarrierRate(title: "USPS - Parcel Select Mail",
                                             insurance: "0",

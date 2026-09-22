@@ -5,6 +5,7 @@ import XCTest
 final class StorePlanSynchronizerTests: XCTestCase {
 
     // Mocked stores manager
+    @MainActor
     var stores = MockStoresManager(sessionManager: .testingInstance)
 
     // Mocked session
@@ -13,6 +14,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
     // Site ID
     let sampleSiteID: Int64 = 123
 
+    @MainActor
     override func setUp() {
         session = SessionManager.makeForTesting(authenticated: true, isWPCom: true)
         session.defaultSite = .fake().copy(siteID: sampleSiteID, isWordPressComStore: true)
@@ -43,6 +45,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.planState, .unavailable)
     }
 
+    @MainActor
     func test_synchronizer_fetches_plan_immediately_for_non_wpcom_site_that_once_was_ecommerce_trial() {
         // Given
         session.defaultSite = .fake().copy(siteID: sampleSiteID, isWordPressComStore: false, wasEcommerceTrial: true)
@@ -63,6 +66,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.planState, .loaded(samplePlan))
     }
 
+    @MainActor
     func test_synchronizer_has_unavailable_state_on_a_non_wpcom_site_with_ecommerce_trial() {
         // Given
         session.defaultSite = .fake().copy(siteID: sampleSiteID, isWordPressComStore: false, wasEcommerceTrial: true)
@@ -83,6 +87,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.planState, .loaded(samplePlan))
     }
 
+    @MainActor
     func test_synchronizer_fetches_plan_immediately_if_there_is_a_wpcom_site() {
         // Given
         let samplePlan = WPComSitePlan(hasDomainCredit: false)
@@ -102,6 +107,7 @@ final class StorePlanSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.planState, .loaded(samplePlan))
     }
 
+    @MainActor
     func test_synchronizer_reflects_error_state() {
         // Given
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in

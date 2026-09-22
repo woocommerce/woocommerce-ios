@@ -31,6 +31,7 @@ final class SitePluginStoreTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 12345
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -39,6 +40,7 @@ final class SitePluginStoreTests: XCTestCase {
         remote = MockSitePluginsRemote()
     }
 
+    @MainActor
     override func tearDown() {
         super.tearDown()
         remote = nil
@@ -92,6 +94,7 @@ final class SitePluginStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadPlugin(siteID: sampleSiteID, name: stalePluginName))
     }
 
+    @MainActor
     func test_installSitePlugin_stores_plugin_correctly() {
         // Given
         network.simulateResponse(requestUrlSuffix: "plugins", filename: "plugin")
@@ -112,6 +115,7 @@ final class SitePluginStoreTests: XCTestCase {
         XCTAssertEqual(plugins.first?.plugin, "jetpack/jetpack")
     }
 
+    @MainActor
     func test_activateSitePlugin_updates_plugin_correctly() {
         // Given
         let pluginName = "jetpack/jetpack"
@@ -138,6 +142,7 @@ final class SitePluginStoreTests: XCTestCase {
         XCTAssertEqual(plugins.first?.status, SitePluginStatusEnum.active.rawValue)
     }
 
+    @MainActor
     func test_activateSitePlugin_completes_with_failure_when_receiving_inactive_plugin() {
         // Given
         network.simulateResponse(requestUrlSuffix: "plugins/jetpack/jetpack", filename: "plugin-inactive")

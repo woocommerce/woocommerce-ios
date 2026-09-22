@@ -15,16 +15,19 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         storageManager.viewStorage
     }
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
     }
 
+    @MainActor
     override func tearDown() {
         storageManager = nil
         super.tearDown()
     }
 
+    @MainActor
     func testItCanDeleteAllOrdersBeforeSaving() {
         // Arrange
         insert(order: Fixtures.order)
@@ -52,6 +55,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
     /// merge into the view context as one change notification. Splitting them into separate saves
     /// would silently break that pairing, so this test pins the single-save behavior.
     ///
+    @MainActor
     func test_fetchFilteredOrders_when_deleting_all_before_saving_then_it_writes_in_a_single_save() {
         // Given
         let saveCountingStorageManager = SaveCountingStorageManager()
@@ -77,6 +81,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         XCTAssertEqual(storageManager.viewStorage.countObjects(ofType: Storage.Order.self), Fixtures.ordersLoadAllJSON.ordersCount)
     }
 
+    @MainActor
     func testItCanSkipDeletingAllOrdersBeforeSaving() {
         // Arrange
         insert(order: Fixtures.order)
@@ -99,6 +104,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.ordersCount + 1)
     }
 
+    @MainActor
     func test_it_can_skip_saving_orders() {
         // Arrange
         insert(order: Fixtures.order)
@@ -121,6 +127,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         XCTAssertEqual(countOrders(), 1)
     }
 
+    @MainActor
     func test_when_given_a_filter_it_fetches_all_orders_list() {
         // Arrange
         let network = MockNetwork(useResponseQueue: true)
@@ -136,6 +143,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
                        Fixtures.ordersLoadAllJSON.ordersCount)
     }
 
+    @MainActor
     func test_when_not_given_a_filter_it_fetches_the_all_orders_list() {
         // Arrange
         let network = MockNetwork(useResponseQueue: true)
@@ -150,6 +158,7 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
         XCTAssertEqual(countOrders(), Fixtures.ordersLoadAllJSON.ordersCount)
     }
 
+    @MainActor
     func testWhenAnErrorHappensItWillNotDeleteAllOrders() {
         // Arrange
         insert(order: Fixtures.order)
@@ -172,10 +181,12 @@ final class OrderStoreTests_FetchFilteredAndAllOrders: XCTestCase {
 // MARK: - Private
 
 private extension OrderStoreTests_FetchFilteredAndAllOrders {
+    @MainActor
     func createOrderStore(using network: Network) -> OrderStore {
         OrderStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
     }
 
+    @MainActor
     func executeActionAndWait(using store: OrderStore,
                               statuses: [String]?,
                               writeStrategy: OrderAction.OrdersStorageWriteStrategy) {
@@ -194,16 +205,19 @@ private extension OrderStoreTests_FetchFilteredAndAllOrders {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func insert(order: Networking.Order) {
         let storageOrder = viewStorage.insertNewObject(ofType: Storage.Order.self)
         storageOrder.update(with: Fixtures.order)
     }
 
+    @MainActor
     func findOrder(withID orderID: Int64) -> Storage.Order? {
         let predicate = NSPredicate(format: "orderID = %ld", orderID)
         return viewStorage.firstObject(ofType: Storage.Order.self, matching: predicate)
     }
 
+    @MainActor
     func countOrders() -> Int {
         viewStorage.countObjects(ofType: Storage.Order.self)
     }
@@ -253,6 +267,7 @@ private final class SaveCountingStorageManager: StorageManagerType {
         inner.viewStorage
     }
 
+    @MainActor
     func performAndSave(_ operation: @escaping (StorageType) -> Void,
                         completion: (() -> Void)?,
                         on queue: DispatchQueue) {
@@ -260,6 +275,7 @@ private final class SaveCountingStorageManager: StorageManagerType {
         inner.performAndSave(operation, completion: completion, on: queue)
     }
 
+    @MainActor
     func performAndSave<T>(_ operation: @escaping (StorageType) throws -> T,
                            completion: @escaping (Result<T, Error>) -> Void,
                            on queue: DispatchQueue) {
@@ -267,6 +283,7 @@ private final class SaveCountingStorageManager: StorageManagerType {
         inner.performAndSave(operation, completion: completion, on: queue)
     }
 
+    @MainActor
     func reset(onCompletion: (() -> Void)?) {
         inner.reset(onCompletion: onCompletion)
     }

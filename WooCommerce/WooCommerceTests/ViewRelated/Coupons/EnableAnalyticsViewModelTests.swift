@@ -4,6 +4,7 @@ import XCTest
 
 final class EnableAnalyticsViewModelTests: XCTestCase {
 
+    @MainActor
     func test_enableAnalytics_triggers_onSuccess_if_request_succeeds() {
         // Given
         let sampleSiteID: Int64 = 135
@@ -35,6 +36,7 @@ final class EnableAnalyticsViewModelTests: XCTestCase {
         XCTAssertFalse(onFailureTriggered)
     }
 
+    @MainActor
     func test_enableAnalytics_triggers_onSuccess_if_request_succeeds_on_second_try() {
         // Given
         let sampleSiteID: Int64 = 135
@@ -72,6 +74,7 @@ final class EnableAnalyticsViewModelTests: XCTestCase {
         XCTAssertFalse(onFailureTriggered)
     }
 
+    @MainActor
     func test_enableAnalytics_triggers_onFailure_if_request_fails_on_both_tries() {
         // Given
         let sampleSiteID: Int64 = 135

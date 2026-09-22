@@ -42,6 +42,7 @@ final class ProductFormViewModel_ObservablesTests: XCTestCase {
     }
 
 
+    @MainActor
     func test_when_viewmodel_is_created_then_blazeEligibilityObservable_is_updated() {
         // Arrange
         let product = Product.fake()

@@ -2,6 +2,7 @@ import XCTest
 @testable import Yosemite
 
 final class MediaFileManagerTests: XCTestCase {
+    @MainActor
     func testCreatingLocalMediaURL() {
         do {
             let basename = "media-service-test-sample"
@@ -29,6 +30,7 @@ final class MediaFileManagerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testRemovingLocalMediaAtURL() {
         do {
             let fileManager = MockFileManager()

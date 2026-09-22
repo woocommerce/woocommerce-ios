@@ -27,6 +27,7 @@ final class InboxViewModelTests: XCTestCase {
 
     // MARK: - State transitions
 
+    @MainActor
     func test_state_is_empty_without_any_actions() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -44,6 +45,7 @@ final class InboxViewModelTests: XCTestCase {
         XCTAssertEqual(invocationCountOfLoadInboxNotes, 0)
     }
 
+    @MainActor
     func test_state_is_syncingFirstPage_and_loadAllInboxNotes_is_dispatched_after_the_first_onLoadTrigger() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -69,6 +71,7 @@ final class InboxViewModelTests: XCTestCase {
         XCTAssertEqual(invocationCountOfLoadInboxNotes, 2)
     }
 
+    @MainActor
     func test_state_is_results_after_onLoadTrigger_with_nonempty_results() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -100,6 +103,7 @@ final class InboxViewModelTests: XCTestCase {
         XCTAssertEqual(states, [.empty, .syncingFirstPage, .results])
     }
 
+    @MainActor
     func test_state_is_back_to_empty_after_onLoadTrigger_with_empty_results() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -129,6 +133,7 @@ final class InboxViewModelTests: XCTestCase {
         XCTAssertEqual(states, [.empty, .syncingFirstPage, .empty])
     }
 
+    @MainActor
     func test_it_loads_next_page_after_onLoadTrigger_and_onLoadNextPageAction_until_the_data_size_is_smaller_than_page_size() {
         // Given
         let pageSize: Int = 2
@@ -169,6 +174,7 @@ final class InboxViewModelTests: XCTestCase {
 
     // MARK: - Row view models
 
+    @MainActor
     func test_noteRowViewModels_match_loaded_notes() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -189,6 +195,7 @@ final class InboxViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.noteRowViewModels.first, .init(note: note))
     }
 
+    @MainActor
     func test_noteRowViewModels_are_empty_when_loaded_notes_are_empty() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -207,6 +214,7 @@ final class InboxViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.noteRowViewModels, [])
     }
 
+    @MainActor
     func test_noteRowViewModels_do_not_include_removed_notes() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -230,6 +238,7 @@ final class InboxViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.noteRowViewModels.first, .init(note: note))
     }
 
+    @MainActor
     func test_noteRowViewModels_are_sorted_by_dateCreated_and_id() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -261,6 +270,7 @@ final class InboxViewModelTests: XCTestCase {
 
     // MARK: - `onRefreshAction`
 
+    @MainActor
     func test_onRefreshAction_resyncs_the_first_page() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -291,6 +301,7 @@ final class InboxViewModelTests: XCTestCase {
 
     // MARK: - `dismissAllInboxNotes`
 
+    @MainActor
     func test_dismissAllInboxNotes_after_syncing_2_pages_dispatches_action_with_matching_note_params_and_page_size_including_2_pages() {
         typealias InboxNoteParameters = (pageNumber: Int,
                                          pageSize: Int,

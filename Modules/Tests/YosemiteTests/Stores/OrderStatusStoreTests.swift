@@ -33,6 +33,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -44,6 +45,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that OrderStatusAction.resetStoredOrderStatuses nukes the Orders Cache.
     ///
+    @MainActor
     func testResetStoredOrderStatusesEffectivelyNukesTheStoredOrderStatuses() {
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -74,6 +76,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that OrderStatusAction.retrieveOrderStatuses returns success on valid response.
     ///
+    @MainActor
     func test_retrieveOrderStatuses_returns_expected_statuses() throws {
         // Given
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -96,6 +99,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that OrderStatusAction.retrieveOrderStatuses returns an error, whenever there is an error response.
     ///
+    @MainActor
     func test_retrieveOrderStatuses_returns_error_upon_response_error() {
         // Given
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -115,6 +119,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that OrderStatusAction.retrieveOrderStatuses returns an error, whenever there is not backend response.
     ///
+    @MainActor
     func test_retrieveOrderStatuses_returns_error_upon_empty_response() {
         // Given
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -133,6 +138,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that OrderStatusAction.retrieveOrderStatuses effectively persists any retrieved statuses.
     ///
+    @MainActor
     func test_retrieveOrderStatuses_effectively_persists_retrieved_OrderStatuses() {
         // Given
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -155,6 +161,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredStatusesInBackground` does not produce duplicate entries.
     ///
+    @MainActor
     func test_upsertStatuses_effectively_updates_preexistant_OrderStatuses() {
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
@@ -192,6 +199,7 @@ class OrderStatusStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredStatusesInBackground` removes deleted entities.
     ///
+    @MainActor
     func test_upsertStatuses_effectively_removes_deleted_OrderStatuses() {
         let orderStatusStore = OrderStatusStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.OrderStatus.self), 0)
@@ -233,6 +241,7 @@ class OrderStatusStoreTests: XCTestCase {
 //
 private extension OrderStatusStoreTests {
 
+    @MainActor
     func sampleOrderStatuses() -> [Networking.OrderStatus] {
         return [
             OrderStatus(name: "Pending payment", siteID: sampleSiteID, slug: "pending", total: 123),
@@ -247,6 +256,7 @@ private extension OrderStatusStoreTests {
         ]
     }
 
+    @MainActor
     func sampleOrderStatusesMutated() -> [Networking.OrderStatus] {
         return [
             OrderStatus(name: "Pending payment", siteID: sampleSiteID, slug: "pending", total: 123),
@@ -261,6 +271,7 @@ private extension OrderStatusStoreTests {
         ]
     }
 
+    @MainActor
     func sampleOrderStatusesDeleted() -> [Networking.OrderStatus] {
         return [
             OrderStatus(name: "Pending payment", siteID: sampleSiteID, slug: "pending", total: 123),

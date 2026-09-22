@@ -8,6 +8,7 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
 
     private var stores: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting())
         super.setUp()
@@ -84,6 +85,7 @@ final class DefaultGoogleAdsEligibilityCheckerTests: XCTestCase {
 
 // MARK: - Helpers
 private extension DefaultGoogleAdsEligibilityCheckerTests {
+    @MainActor
     func mockRequests(syncedPlugins: [SystemPlugin] = [],
                       adsConnection: GoogleAdsConnection? = nil) {
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in

@@ -6,6 +6,7 @@ class WhatsNewViewModelTests: XCTestCase {
 
     private var storesManager: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
@@ -39,6 +40,7 @@ class WhatsNewViewModelTests: XCTestCase {
 
     func test_on_appear_it_triggers_a_mark_as_displayed_action() throws {
         // Arrange
+        @MainActor
         let viewModel = WhatsNewViewModel(items: [], stores: storesManager, onDismiss: {})
 
         // Act

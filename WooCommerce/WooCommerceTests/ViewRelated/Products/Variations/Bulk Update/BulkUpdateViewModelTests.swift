@@ -14,6 +14,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
     private var storesManager: MockStoresManager!
     private var storageManager: MockStorageManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
@@ -26,6 +27,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_all_products_are_synchronized_on_the_viewload_event() throws {
         // Given
         let expectedSiteID: Int64 = 42
@@ -69,6 +71,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .notStarted)
     }
 
+    @MainActor
     func test_sync_state_updates_to_loading_when_product_variations_syncing_starts() {
         // Given
         let viewModel = BulkUpdateViewModel(siteID: 0,
@@ -88,6 +91,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .syncing)
     }
 
+    @MainActor
     func test_sync_state_updates_to_syncerror_when_product_variations_syncing_fails() {
         // Given
         let viewModel = BulkUpdateViewModel(siteID: 0,
@@ -112,6 +116,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .error)
     }
 
+    @MainActor
     func test_sync_state_updates_to_syncResults_when_product_variations_syncing_is_successful() {
         // Given
         let viewModel = BulkUpdateViewModel(siteID: 0,
@@ -136,6 +141,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .synced([]))
     }
 
+    @MainActor
     func test_number_of_sections_and_title_when_in_synch_state() throws {
         //Given
         let product = Product.fake().copy(siteID: 1, productID: 1, productTypeKey: "variable", variations: [1, 2])
@@ -170,6 +176,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         XCTAssertTrue(sectionTitle.isNotEmpty)
     }
 
+    @MainActor
     func test_sale_price_description_when_all_products_have_same_price() {
         //Given
         let product = Product.fake().copy(siteID: 1, productID: 1, productTypeKey: "variable", variations: [1, 2])
@@ -208,6 +215,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         XCTAssertEqual(regularPriceViewModel.style, .primary)
     }
 
+    @MainActor
     func test_sale_price_description_when_some_products_have_different_price() {
         //Given
         let product = Product.fake().copy(siteID: 1, productID: 1, productTypeKey: "variable", variations: [1, 2])
@@ -245,6 +253,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         XCTAssertEqual(regularPriceViewModel.style, .primary)
     }
 
+    @MainActor
     func test_sale_price_description_when_all_products_have_no_price() {
         //Given
         let product = Product.fake().copy(siteID: 1, productID: 1, productTypeKey: "variable", variations: [1, 2])
@@ -282,6 +291,7 @@ final class BulkUpdateViewModelTests: XCTestCase {
         XCTAssertEqual(regularPriceViewModel.style, .secondary)
     }
 
+    @MainActor
     func test_sale_price_description_when_some_products_have_no_price() {
         //Given
         let product = Product.fake().copy(siteID: 1, productID: 1, productTypeKey: "variable", variations: [1, 2])

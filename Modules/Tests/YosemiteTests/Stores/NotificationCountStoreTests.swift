@@ -32,6 +32,7 @@ final class NotificationCountStoreTests: XCTestCase {
         return documents.appendingPathComponent("notification-count.plist")
     }()
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -40,6 +41,7 @@ final class NotificationCountStoreTests: XCTestCase {
         subject = NotificationCountStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage)
     }
 
+    @MainActor
     override func tearDown() {
         dispatcher = nil
         storageManager = nil
@@ -50,6 +52,7 @@ final class NotificationCountStoreTests: XCTestCase {
 
     // MARK: `incrementNotificationCount`
 
+    @MainActor
     func testIncrementingAndLoadingNotificationCountReturnsTheCorrectCount() {
         let data = SiteNotificationCountFileContents(countBySite: [defaultSiteID: [.comment: 2, .storeOrder: 6]])
         try! fileStorage.write(data, to: fileURL)
@@ -71,6 +74,7 @@ final class NotificationCountStoreTests: XCTestCase {
 
     // MARK: `loadNotificationCount`
 
+    @MainActor
     func testLoadingNotificationCountWithoutPreviousDataReturns0() {
         var notificationCount: Int?
         waitForExpectation { expectation in
@@ -86,6 +90,7 @@ final class NotificationCountStoreTests: XCTestCase {
 
     // MARK: `resetNotificationCount`
 
+    @MainActor
     func testResettingNotificationCountOfAGivenTypeReturns0() {
         let data = SiteNotificationCountFileContents(countBySite: [defaultSiteID: [.comment: 2, .storeOrder: 6]])
         try! fileStorage.write(data, to: URL(fileURLWithPath: ""))
@@ -105,6 +110,7 @@ final class NotificationCountStoreTests: XCTestCase {
         XCTAssertEqual(notificationCount, 0)
     }
 
+    @MainActor
     func testResettingNotificationCountForASiteDoesNotAffectAnotherSite() {
         // Arrange
         let anotherSiteID: Int64 = 999
@@ -133,6 +139,7 @@ final class NotificationCountStoreTests: XCTestCase {
 
     // MARK: `resetNotificationCountForAllSites`
 
+    @MainActor
     func testResettingNotificationCountForTwoSites() {
         // Arrange
         let anotherSiteID: Int64 = 999

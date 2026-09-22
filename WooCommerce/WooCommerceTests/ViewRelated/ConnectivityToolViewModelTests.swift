@@ -9,6 +9,7 @@ struct ConnectivityToolViewModelTests {
 
     // MARK: - testAnalyticsSetting
 
+    @MainActor
     @Test func test_testAnalyticsSetting_when_analytics_enabled_then_returns_success() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -29,6 +30,7 @@ struct ConnectivityToolViewModelTests {
         assertState(result, is: .success)
     }
 
+    @MainActor
     @Test func test_testAnalyticsSetting_when_analytics_disabled_then_returns_error_with_enable_action() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -54,6 +56,7 @@ struct ConnectivityToolViewModelTests {
         #expect(actions.contains(where: { $0.title == "Enable Analytics" }))
     }
 
+    @MainActor
     @Test func test_testAnalyticsSetting_when_request_fails_then_returns_error_with_technical_details() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -79,6 +82,7 @@ struct ConnectivityToolViewModelTests {
         #expect(actions.contains(where: { $0.title == "View technical details" }))
     }
 
+    @MainActor
     @Test func test_testAnalyticsSetting_when_setting_is_not_exposed_then_skips_the_test() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -104,6 +108,7 @@ struct ConnectivityToolViewModelTests {
 
     // MARK: - enableAnalytics
 
+    @MainActor
     @Test func test_enableAnalytics_when_succeeds_then_updates_card_to_relaunch_message() async {
         // Given
         let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
@@ -147,6 +152,7 @@ struct ConnectivityToolViewModelTests {
         #expect(message.contains("relaunch"))
     }
 
+    @MainActor
     @Test func test_enableAnalytics_when_fails_twice_then_restores_error_state() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -224,6 +230,7 @@ struct ConnectivityToolViewModelTests {
 
     // MARK: - testNotifications
 
+    @MainActor
     @Test func test_testNotifications_when_jetpack_active_authorized_and_config_ok_then_returns_success() async {
         // Given
         let site = Site.fake()
@@ -265,6 +272,7 @@ struct ConnectivityToolViewModelTests {
         assertState(result, is: .success)
     }
 
+    @MainActor
     @Test func test_testNotifications_when_jetpack_not_active_then_returns_error_with_setup_jetpack_action() async {
         // Given — active plugins do not include Jetpack
         let site = Site.fake()
@@ -298,6 +306,7 @@ struct ConnectivityToolViewModelTests {
         #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.setupJetpack.id }))
     }
 
+    @MainActor
     @Test func test_testNotifications_when_permission_denied_then_returns_error_with_open_settings() async {
         // Given
         let site = Site.fake()
@@ -329,6 +338,7 @@ struct ConnectivityToolViewModelTests {
         #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.openSettings.id }))
     }
 
+    @MainActor
     @Test func test_testNotifications_when_no_device_id_then_returns_device_not_registered_error() async {
         // Given
         let site = Site.fake()
@@ -360,6 +370,7 @@ struct ConnectivityToolViewModelTests {
         #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.registerDevice.id }))
     }
 
+    @MainActor
     @Test func test_testNotifications_when_order_notifications_disabled_then_returns_error_with_enable_action() async {
         // Given
         let site = Site.fake()
@@ -405,6 +416,7 @@ struct ConnectivityToolViewModelTests {
         #expect(actions.contains(where: { $0.id == ConnectivityToolViewModel.NotificationFailedAction.enableOrderNotifications.id }))
     }
 
+    @MainActor
     @Test func test_testNotifications_when_config_request_fails_then_returns_error_with_technical_details() async {
         // Given
         let site = Site.fake()

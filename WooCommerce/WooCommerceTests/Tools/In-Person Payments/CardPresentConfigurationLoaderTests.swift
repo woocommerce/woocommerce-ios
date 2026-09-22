@@ -16,6 +16,7 @@ final class CardPresentConfigurationLoaderTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 1234
 
+    @MainActor
     override func setUpWithError() throws {
         try super.setUpWithError()
         storageManager = MockStorageManager()

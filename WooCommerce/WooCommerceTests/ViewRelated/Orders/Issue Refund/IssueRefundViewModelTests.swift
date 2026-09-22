@@ -714,6 +714,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isSelectAllButtonVisible)
     }
 
+    @MainActor
     func test_fetch_when_there_is_a_payment_gateway_stored_then_calls_to_fetch_charge() throws {
         // Given
         // The order has a chargeID
@@ -738,6 +739,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertTrue(chargeFetched)
     }
 
+    @MainActor
     func test_fetch_when_fetching_charge_fails_then_it_notifies_it() throws {
         // Given
         var showFetchChargeErrorNotice = false
@@ -764,6 +766,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertTrue(showFetchChargeErrorNotice)
     }
 
+    @MainActor
     func test_viewModel_shows_spinner_when_charge_not_fetched_yet() {
         // Given
         // The order has a chargeID
@@ -776,6 +779,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isNextButtonAnimating)
     }
 
+    @MainActor
     func test_viewModel_does_not_show_spinner_when_there_is_no_charge_to_fetch() {
         // Given
         // The order has a chargeID
@@ -788,6 +792,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isNextButtonAnimating)
     }
 
+    @MainActor
     func test_viewModel_does_not_show_spinner_when_there_is_no_charge_to_fetch_but_an_empty_chargeID() {
         // Given
         // The order has a chargeID
@@ -800,6 +805,7 @@ final class IssueRefundViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isNextButtonAnimating)
     }
 
+    @MainActor
     func test_viewModel_hides_spinner_when_charge_found_in_storage() {
         // Given
         // The order has a chargeID

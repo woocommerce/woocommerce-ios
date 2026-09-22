@@ -21,6 +21,7 @@ final class ReviewsDashboardCardViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()

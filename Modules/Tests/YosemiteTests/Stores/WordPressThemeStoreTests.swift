@@ -14,6 +14,7 @@ final class WordPressThemeStoreTests: XCTestCase {
 
     private var storageManager: MockStorageManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         network = MockNetwork()
@@ -22,6 +23,7 @@ final class WordPressThemeStoreTests: XCTestCase {
         storageManager = MockStorageManager()
     }
 
+    @MainActor
     override func tearDown() {
         network = nil
         dispatcher = nil
@@ -32,6 +34,7 @@ final class WordPressThemeStoreTests: XCTestCase {
 
     // MARK: - loadSuggestedThemes tests
 
+    @MainActor
     func test_loadSuggestedThemes_returns_themes_on_success() throws {
         // Given
         remote.whenLoadingSuggestedTheme(thenReturn: .success([.fake().copy(id: "tsubaki")]))
@@ -54,6 +57,7 @@ final class WordPressThemeStoreTests: XCTestCase {
         XCTAssertEqual(themes.first?.id, "tsubaki")
     }
 
+    @MainActor
     func test_loadSuggestedThemes_returns_error_on_failure() throws {
         // Given
         remote.whenLoadingSuggestedTheme(thenReturn: .failure(NetworkError.timeout()))
@@ -76,6 +80,7 @@ final class WordPressThemeStoreTests: XCTestCase {
 
     // MARK: - loadCurrentTheme tests
 
+    @MainActor
     func test_loadCurrentTheme_returns_theme_on_success() throws {
         // Given
         remote.whenLoadingCurrentTheme(thenReturn: .success(.fake().copy(name: "Tsubaki")))
@@ -97,6 +102,7 @@ final class WordPressThemeStoreTests: XCTestCase {
         XCTAssertEqual(theme.name, "Tsubaki")
     }
 
+    @MainActor
     func test_loadCurrentTheme_returns_error_on_failure() throws {
         // Given
         remote.whenLoadingCurrentTheme(thenReturn: .failure(NetworkError.timeout()))
@@ -119,6 +125,7 @@ final class WordPressThemeStoreTests: XCTestCase {
 
     // MARK: - installTheme tests
 
+    @MainActor
     func test_installTheme_returns_installed_theme_on_success() throws {
         // Given
         let sampleTheme = WordPressTheme.fake().copy(name: "Tsubaki")
@@ -141,6 +148,7 @@ final class WordPressThemeStoreTests: XCTestCase {
         XCTAssertEqual(theme.name, "Tsubaki")
     }
 
+    @MainActor
     func test_installTheme_returns_error_on_failure() throws {
         // Given
         remote.whenInstallingTheme(thenReturn: .failure(NetworkError.timeout()))
@@ -163,6 +171,7 @@ final class WordPressThemeStoreTests: XCTestCase {
 
     // MARK: - activateTheme tests
 
+    @MainActor
     func test_activateTheme_returns_activated_theme_on_success() throws {
         // Given
         let sampleTheme = WordPressTheme.fake().copy(name: "Tsubaki")
@@ -185,6 +194,7 @@ final class WordPressThemeStoreTests: XCTestCase {
         XCTAssertEqual(theme.name, "Tsubaki")
     }
 
+    @MainActor
     func test_activateTheme_returns_error_on_failure() throws {
         // Given
         remote.whenActivatingTheme(thenReturn: .failure(NetworkError.timeout()))

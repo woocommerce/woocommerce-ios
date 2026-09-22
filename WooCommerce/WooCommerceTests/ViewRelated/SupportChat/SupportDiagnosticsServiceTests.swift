@@ -109,6 +109,7 @@ struct SupportDiagnosticsServiceTests {
 
     // MARK: - Analytics Setting Tests
 
+    @MainActor
     @Test func test_testAnalyticsSetting_when_enabled_then_returns_success() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -131,6 +132,7 @@ struct SupportDiagnosticsServiceTests {
         #expect(results[0].test == Test.analyticsSetting)
     }
 
+    @MainActor
     @Test func test_testAnalyticsSetting_when_disabled_then_returns_failure_with_enableAnalytics_action() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -155,6 +157,7 @@ struct SupportDiagnosticsServiceTests {
         #expect(results[0].errorMessage?.contains("not enabled") == true)
     }
 
+    @MainActor
     @Test func test_testAnalyticsSetting_when_setting_is_not_exposed_then_returns_not_applicable_success() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -180,6 +183,7 @@ struct SupportDiagnosticsServiceTests {
         #expect(results[0].troubleshootingDescription().contains("Not applicable") == true)
     }
 
+    @MainActor
     @Test func test_testAnalyticsSetting_when_request_fails_then_returns_failure_with_technical_details() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -238,6 +242,7 @@ struct SupportDiagnosticsServiceTests {
         #expect(results[1].suggestedAction == Action.openNotificationSettings)
     }
 
+    @MainActor
     @Test func test_testNotifications_when_registered_for_self_driven_PN_then_returns_success() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -270,6 +275,7 @@ struct SupportDiagnosticsServiceTests {
         #expect(results[1].isSuccess == true)
     }
 
+    @MainActor
     @Test func test_testNotifications_when_registered_for_self_driven_PN_and_some_preferences_disabled_then_returns_failure_with_openPreferences_action() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -304,6 +310,7 @@ struct SupportDiagnosticsServiceTests {
         #expect(results[1].suggestedAction == Action.openPushNotificationPreferences)
     }
 
+    @MainActor
     @Test func test_testNotifications_when_registered_for_self_driven_PN_and_preferences_fetch_fails_then_returns_success() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -385,6 +392,7 @@ struct SupportDiagnosticsServiceTests {
         #expect(results[1].suggestedAction == Action.registerDevice)
     }
 
+    @MainActor
     @Test func test_testNotifications_when_eligible_for_self_driven_PN_site_not_registered_and_WPCom_notifications_enabled_then_returns_success() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -424,6 +432,7 @@ struct SupportDiagnosticsServiceTests {
         #expect(didCheckPluginVersion == false)
     }
 
+    @MainActor
     @Test func test_testNotifications_when_eligible_for_self_driven_PN_site_not_registered_and_WPCom_order_notifications_disabled_then_returns_failure() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -508,6 +517,7 @@ struct SupportDiagnosticsServiceTests {
 
     // MARK: - Enable Analytics Action
 
+    @MainActor
     @Test func test_enableAnalytics_when_succeeds_then_completes_without_error() async throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -525,6 +535,7 @@ struct SupportDiagnosticsServiceTests {
         try await sut.enableAnalytics()
     }
 
+    @MainActor
     @Test func test_enableAnalytics_when_fails_twice_then_throws_error() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -606,6 +617,7 @@ struct SupportDiagnosticsServiceTests {
 
     // MARK: - Test Helpers
 
+    @MainActor
     private func makeSUT(
         stores: StoresManager? = nil,
         connectivityObserver: ConnectivityObserver? = nil,

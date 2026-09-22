@@ -6,6 +6,7 @@ class ShippingLabelAddNewPackageViewModelTests: XCTestCase {
 
     private let sampleSiteID = 12345
 
+    @MainActor
     func test_createCustomPackage_resets_child_view_models_on_success() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -46,6 +47,7 @@ class ShippingLabelAddNewPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.customPackageVM.emptyPackageWeight, "")
     }
 
+    @MainActor
     func test_activateServicePackage_resets_child_view_models_on_success() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

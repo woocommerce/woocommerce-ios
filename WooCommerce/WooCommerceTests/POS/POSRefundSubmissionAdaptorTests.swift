@@ -394,6 +394,7 @@ private extension POSRefundSubmissionAdaptorTests {
     ///
     /// `serverFlowEligible: false` puts the store below the minimum WooCommerce version, which is
     /// how the local flow is now reached.
+    @MainActor
     func makeSUT(previewResult: Result<RefundPreview, Error>?,
                      serverFlowEligible: Bool = true,
                      manualPreviewResolution: Bool = false,

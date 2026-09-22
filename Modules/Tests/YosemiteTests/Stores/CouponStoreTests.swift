@@ -60,6 +60,7 @@ final class CouponStoreTests: XCTestCase {
 
     // MARK: - Set up and Tear down
 
+    @MainActor
     override func setUp() {
         super.setUp()
         network = MockNetwork(useResponseQueue: true)
@@ -69,6 +70,7 @@ final class CouponStoreTests: XCTestCase {
                             network: network)
     }
 
+    @MainActor
     func setUpUsingSpyRemote() {
         network = MockNetwork(useResponseQueue: true)
         remote = MockCouponsRemote()
@@ -81,6 +83,7 @@ final class CouponStoreTests: XCTestCase {
 
     // MARK: - Tests
 
+    @MainActor
     func test_synchronizeCoupons_calls_remote_using_correct_request_parameters() {
         setUpUsingSpyRemote()
         // Given & When
@@ -100,6 +103,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(remote.spyLoadAllCouponsPageSize, 3)
     }
 
+    @MainActor
     func test_synchronizeCoupons_returns_network_error_on_failure() {
         setUpUsingSpyRemote()
         // Given
@@ -120,6 +124,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_synchronizeCoupons_returns_has_next_page_true_when_number_of_retrieved_results_matches_pagesize() throws {
         setUpUsingSpyRemote()
         // Given
@@ -142,6 +147,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertTrue(hasNextPage)
     }
 
+    @MainActor
     func test_synchronizeCoupons_returns_has_next_page_false_when_number_of_retrieved_results_differs_from_pagesize() throws {
         setUpUsingSpyRemote()
         // Given
@@ -164,6 +170,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertFalse(hasNextPage)
     }
 
+    @MainActor
     func test_synchronizeCoupons_stores_coupons_upon_success() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "coupons",
@@ -186,6 +193,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(storedCouponsCount, 4)
     }
 
+    @MainActor
     func test_synchronizeCoupons_deletes_coupons_when_first_page_recieved_from_API() {
         // Given
         storeCoupon(Coupon.fake(), for: sampleSiteID)
@@ -209,6 +217,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(storedCouponsCount, 4)
     }
 
+    @MainActor
     func test_synchronizeCoupons_does_not_delete_coupons_when_subsequent_pages_recieved_from_API() {
         // Given
         storeCoupon(Coupon.fake(), for: sampleSiteID)
@@ -232,6 +241,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(storedCouponsCount, 5)
     }
 
+    @MainActor
     func test_deleteCoupon_calls_remote_using_correct_request_parameters() {
         setUpUsingSpyRemote()
         // Given
@@ -246,6 +256,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(remote.spyDeleteCouponWithID, 10)
     }
 
+    @MainActor
     func test_deleteCoupon_returns_network_error_on_failure() {
         // Given
         let sampleCouponID: Int64 = 720 // match with the one in the coupon.json file
@@ -269,6 +280,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(storedCouponsCount, 1)
     }
 
+    @MainActor
     func test_deleteCoupon_deletes_coupon_upon_success() throws {
         // Given
         let sampleCouponID: Int64 = 720
@@ -292,6 +304,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(storedCouponsCount, 0)
     }
 
+    @MainActor
     func test_updateCoupon_calls_remote_using_correct_request_parameters() {
         setUpUsingSpyRemote()
         // Given
@@ -307,6 +320,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(remote.spyUpdateCoupon, coupon)
     }
 
+    @MainActor
     func test_updateCoupon_returns_network_error_on_failure() {
         // Given
         let sampleCouponID: Int64 = 720
@@ -332,6 +346,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.loadCoupon(siteID: sampleSiteID, couponID: sampleCouponID)?.amount, "10")
     }
 
+    @MainActor
     func test_updateCoupon_updates_stored_coupon_upon_success() throws {
         // Given
         let sampleCouponID: Int64 = 720
@@ -360,6 +375,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(storedCoupon?.discountType, Coupon.DiscountType.fixedCart.rawValue)
     }
 
+    @MainActor
     func test_createCoupon_calls_remote_using_correct_request_parameters() {
         setUpUsingSpyRemote()
         // Given
@@ -375,6 +391,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(remote.spyCreateCoupon, coupon)
     }
 
+    @MainActor
     func test_createCoupon_returns_network_error_on_failure() {
         // Given
         let sampleCouponID: Int64 = 720
@@ -396,6 +413,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(storedCouponsCount, 0)
     }
 
+    @MainActor
     func test_createCoupon_insert_stored_coupon_upon_success() throws {
         // Given
         let sampleCouponID: Int64 = 720
@@ -421,6 +439,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(storedCoupon?.discountType, Coupon.DiscountType.fixedCart.rawValue)
     }
 
+    @MainActor
     func test_loadCouponReport_calls_remote_using_correct_request_parameters() {
         setUpUsingSpyRemote()
         // Given
@@ -438,6 +457,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(remote.spyLoadCouponReportDate, sampleDate)
     }
 
+    @MainActor
     func test_loadCouponReport_returns_network_error_on_failure() {
         // Given
         let sampleCouponID: Int64 = 571
@@ -457,6 +477,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_loadCouponReport_returns_expected_details_upon_success() throws {
         // Given
         let sampleCouponID: Int64 = 571
@@ -477,6 +498,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(try result.get(), expectedReport)
     }
 
+    @MainActor
     func test_loadMostActiveCoupons_calls_remote_using_correct_request_parameters() throws {
         setUpUsingSpyRemote()
         // Given
@@ -508,6 +530,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(remote.spyLoadMostActiveCouponsEndDate, end)
     }
 
+    @MainActor
     func test_loadMostActiveCoupons_returns_network_error_on_failure() throws {
         // Given
         let currentDate = try date(from: "2020-11-05T23:59:59Z")
@@ -533,6 +556,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_loadMostActiveCoupons_returns_expected_details_upon_success() throws {
         // Given
         let sampleCouponID: Int64 = 571
@@ -557,6 +581,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(try result.get(), expectedReport)
     }
 
+    @MainActor
     func test_searchCoupons_calls_remote_using_correct_request_parameters() {
         setUpUsingSpyRemote()
         // Given
@@ -583,6 +608,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(remote.spySearchCouponsPageSize, expectedPageSize)
     }
 
+    @MainActor
     func test_searchCoupons_returns_network_error_on_failure() {
         // Given
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
@@ -600,6 +626,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_searchCoupons_upserts_coupons_and_search_results_upon_successful_search() throws {
         // Given
         let sampleCouponID: Int64 = 720
@@ -624,6 +651,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(storedCoupon?.amount, "10.00") // Updated amount reflecting the response.
     }
 
+    @MainActor
     func test_retrieveCoupon_calls_remote_using_correct_request_parameters() {
         setUpUsingSpyRemote()
         // Given
@@ -639,6 +667,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(remote.spyRetrieveCouponID, sampleCouponID)
     }
 
+    @MainActor
     func test_retrieveCoupon_returns_network_error_on_failure() {
         // Given
         let sampleCouponID: Int64 = 720
@@ -657,6 +686,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_retrieveCoupon_upserts_the_returned_coupon() throws {
         // Given
         let sampleCouponID: Int64 = 720
@@ -679,6 +709,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(storedCoupon?.amount, "10.00") // Updated amount reflecting the response.
     }
 
+    @MainActor
     func test_validateCouponCode_calls_remote_using_correct_request_parameters() {
         setUpUsingSpyRemote()
         // Given
@@ -703,6 +734,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(remote.spySearchCouponsPageSize, expectedPageSize)
     }
 
+    @MainActor
     func test_validateCouponCode_when_search_includes_the_coupon_code_then_returns_true() {
         setUpUsingSpyRemote()
         // Given
@@ -727,6 +759,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertTrue(isValidated)
     }
 
+    @MainActor
     func test_validateCouponCode_when_search_doesnt_include_the_coupon_code_then_returns_false() {
         setUpUsingSpyRemote()
         // Given
@@ -751,6 +784,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertFalse(isValidated)
     }
 
+    @MainActor
     func test_validateCouponCode_when_search_fails_then_it_fails() {
         setUpUsingSpyRemote()
         // Given
@@ -772,6 +806,7 @@ final class CouponStoreTests: XCTestCase {
 
     // MARK: CouponAction.loadCoupons
 
+    @MainActor
     func test_loadCoupons_calls_remote_using_correct_request_parameters() {
         setUpUsingSpyRemote()
         // Given
@@ -787,6 +822,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(remote.spyLoadCouponsCouponIDs, [1, 2, 3])
     }
 
+    @MainActor
     func test_loadCoupons_returns_network_error_on_failure() {
         setUpUsingSpyRemote()
         // Given
@@ -806,6 +842,7 @@ final class CouponStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, expectedError)
     }
 
+    @MainActor
     func test_loadCoupons_stores_coupons_upon_success() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "coupons",
@@ -828,12 +865,14 @@ final class CouponStoreTests: XCTestCase {
 }
 
 private extension CouponStoreTests {
+    @MainActor
     func date(from iso8601Date: String) throws -> Date {
         let dateFormatter = DateFormatter.Defaults.iso8601
         return try XCTUnwrap(dateFormatter.date(from: iso8601Date))
     }
 
     @discardableResult
+    @MainActor
     func storeCoupon(_ coupon: Networking.Coupon, for siteID: Int64) -> Storage.Coupon {
         let storedCoupon = storage.insertNewObject(ofType: Coupon.self)
         storedCoupon.update(with: coupon)

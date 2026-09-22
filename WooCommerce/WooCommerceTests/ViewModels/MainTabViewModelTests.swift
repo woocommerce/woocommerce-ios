@@ -9,6 +9,7 @@ import Yosemite
 final class MainTabViewModelTests: XCTestCase {
     private let sampleStoreID: Int64 = 35
 
+    @MainActor
     func test_onViewDidAppear_will_save_the_installation_date() throws {
         // Given
         let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -34,6 +35,7 @@ final class MainTabViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_when_user_is_not_logged_in_then_onViewDidAppear_will_not_save_the_installation_date() throws {
         // Given
         let storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -50,6 +52,7 @@ final class MainTabViewModelTests: XCTestCase {
         XCTAssertEqual(storesManager.receivedActions.count, 0)
     }
 
+    @MainActor
     func test_loadHubMenuTabBadge_when_should_show_reviews_badge_only_calls_onMenuBadgeShouldBeDisplayed_with_type_secondary() {
         // Given
         let sessionManager = SessionManager.makeForTesting(authenticated: true)
@@ -83,6 +86,7 @@ final class MainTabViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_loadHubMenuTabBadge_when_reviews_badge_should_be_hidden_calls_onMenuBadgeShouldBeHidden() {
         // Given
         let sessionManager = SessionManager.makeForTesting()

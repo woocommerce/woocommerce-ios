@@ -27,6 +27,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     private var subscriptions = Set<AnyCancellable>()
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
@@ -341,6 +342,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     // MARK: - Banner visibility
 
+    @MainActor
     func test_banner_should_not_be_shown_when_there_is_no_error() {
         // Given
         let viewModel = OrderListViewModel(siteID: siteID,
@@ -427,6 +429,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssert(viewModel.topBanner == .error(expectedError))
     }
 
+    @MainActor
     func test_retryStoreCurrencySync_hides_the_banner_while_refreshing_then_reshows_it_when_currency_is_still_unavailable() {
         // Given — the store currency is unavailable, so the banner is showing
         let viewModel = OrderListViewModel(siteID: siteID,

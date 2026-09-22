@@ -45,6 +45,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -52,6 +53,7 @@ final class ShipmentStoreTests: XCTestCase {
         network = MockNetwork()
     }
 
+    @MainActor
     override func tearDown() {
         dispatcher = nil
         storageManager = nil
@@ -63,6 +65,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `ShipmentAction.synchronizeShipmentTrackingData` effectively persists any retrieved tracking data.
     ///
+    @MainActor
     func testRetrieveShipmentTrackingListEffectivelyPersistsRetrievedShipmentTrackingData() {
         let expectation = self.expectation(description: "Retrieve shipment tracking list")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -111,6 +114,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `ShipmentAction.synchronizeShipmentTrackingData` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveShipmentTrackingListReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve shipment tracking list error response")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -127,6 +131,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `ShipmentAction.synchronizeShipmentTrackingData` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveShipmentTrackingListReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve shipment tracking list empty response")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -142,6 +147,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `upsertShipmentTrackingDataInBackground` does not produce duplicate entries.
     ///
+    @MainActor
     func testUpdateRetrieveShipmentTrackingListEffectivelyUpdatesPreexistantShipmentTrackingData() {
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
@@ -183,6 +189,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `upsertShipmentTrackingDataInBackground` removes deleted entities.
     ///
+    @MainActor
     func testUpdateRetrieveShipmentTrackingListEffectivelyRemovesDeletedShipmentTrackingData() {
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTracking.self), 0)
@@ -222,6 +229,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `ShipmentAction.synchronizeShipmentTrackingProviders` effectively persists any retrieved tracking providers data.
     ///
+    @MainActor
     func testRetrieveShipmentTrackingProviderListEffectivelyPersistsRetrievedShipmentTrackingProviderData() {
         let expectation = self.expectation(description: "Retrieve shipment tracking providers list")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -250,6 +258,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `ShipmentAction.synchronizeShipmentTrackingProviders` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveShipmentTrackingGroupListReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve shipment tracking provider group list error response")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -267,6 +276,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `ShipmentAction.synchronizeShipmentTrackingProviders` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveShipmentTrackingGroupListReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve shipment tracking provider grup list empty response")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -282,6 +292,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `upsertShipmentTrackingProviderData` does not produce duplicate entries.
     ///
+    @MainActor
     func testUpdateRetrieveShipmentTrackingProviderGroupListEffectivelyUpdatesPreexistantShipmentTrackingData() {
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ShipmentTrackingProviderGroup.self), 0)
@@ -316,6 +327,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `upsertShipmentTrackingProviderDataInBackground` removes duplicated data.
     ///
+    @MainActor
     func testUpdateRetrieveShipmentTrackingProviderGroupListEffectivelyRemovesDeletedShipmentTrackingGroupData() {
         let shipmentStore = ShipmentStore(dispatcher: dispatcher,
                                           storageManager: storageManager,
@@ -354,6 +366,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `addTracking` saves a new tracking.
     ///
+    @MainActor
     func testAddTrackingEffectivelyAddsTrackingData() {
         let expectation = self.expectation(description: "Add shipment tracking")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher,
@@ -394,6 +407,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `ShipmentAction.addTracking` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testAddTrackingListReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Add shipment tracking error response")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher,
@@ -418,6 +432,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `ShipmentAction.addTracking` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testAddTrackingReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Add tracking empty response")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher,
@@ -442,6 +457,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `addTracking` saves a new tracking.
     ///
+    @MainActor
     func testAddCustomTrackingEffectivelyAddsTrackingData() {
         let expectation = self.expectation(description: "Add custom shipment tracking")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher,
@@ -499,6 +515,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `ShipmentAction.addCustomTracking` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testAddCustomTrackingListReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Add custom tracking error response")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher,
@@ -523,6 +540,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `ShipmentAction.addCustomTracking` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testAddCustomTrackingReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Add customtracking empty response")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher,
@@ -547,6 +565,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `deleteTracking` removes saved tracking.
     ///
+    @MainActor
     func testDeleteTrackingEffectivelyDeletesTrackingData() {
         let shipmentStore = ShipmentStore(dispatcher: dispatcher,
                                           storageManager: storageManager,
@@ -583,6 +602,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `ShipmentAction.deleteTracking` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testDeleteTrackingListReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Delete shipment tracking error response")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -601,6 +621,7 @@ final class ShipmentStoreTests: XCTestCase {
 
     /// Verifies that `ShipmentAction.deleteTracking` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testDeleteTrackingReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Delete tracking empty response")
         let shipmentStore = ShipmentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -620,6 +641,7 @@ final class ShipmentStoreTests: XCTestCase {
 // MARK: - Helpers
 //
 private extension ShipmentStoreTests {
+    @MainActor
     func insertTrackingProviderData(siteID: Int64, orderID: Int64, readOnlyShipmentTrackingProviderGroups: [Networking.ShipmentTrackingProviderGroup]) {
         for readOnlyGroup in readOnlyShipmentTrackingProviderGroups {
             let storageGroup = viewStorage.insertNewObject(ofType: Storage.ShipmentTrackingProviderGroup.self)
@@ -643,6 +665,7 @@ private extension ShipmentStoreTests {
 
     // MARK: - ShipmentTracking Samples
 
+    @MainActor
     func sampleShipmentTracking1() -> Networking.ShipmentTracking {
         return ShipmentTracking(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
@@ -653,6 +676,7 @@ private extension ShipmentStoreTests {
                                 dateShipped: DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2019-02-15"))
     }
 
+    @MainActor
     func sampleShipmentTracking2() -> Networking.ShipmentTracking {
         return ShipmentTracking(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
@@ -663,6 +687,7 @@ private extension ShipmentStoreTests {
                                 dateShipped: DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2019-02-14"))
     }
 
+    @MainActor
     func sampleShipmentTracking3() -> Networking.ShipmentTracking {
         return ShipmentTracking(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
@@ -673,6 +698,7 @@ private extension ShipmentStoreTests {
                                 dateShipped: DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2019-02-11"))
     }
 
+    @MainActor
     func sampleShipmentTracking4() -> Networking.ShipmentTracking {
         return ShipmentTracking(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
@@ -683,6 +709,7 @@ private extension ShipmentStoreTests {
                                 dateShipped: nil)
     }
 
+    @MainActor
     func sampleShipmentTracking1Mutated() -> Networking.ShipmentTracking {
         return ShipmentTracking(siteID: sampleSiteID,
                                 orderID: sampleOrderID,
@@ -693,26 +720,31 @@ private extension ShipmentStoreTests {
                                 dateShipped: DateFormatter.Defaults.yearMonthDayDateFormatter.date(from: "2019-01-01"))
     }
 
+    @MainActor
     func sampleShipmentTrackingList() -> [Networking.ShipmentTracking] {
         return [sampleShipmentTracking1(), sampleShipmentTracking2(), sampleShipmentTracking3(), sampleShipmentTracking4()]
     }
 
+    @MainActor
     func sampleShipmentTrackingListMutated() -> [Networking.ShipmentTracking] {
         return [sampleShipmentTracking1Mutated(), sampleShipmentTracking2(), sampleShipmentTracking3(), sampleShipmentTracking4()]
     }
 
+    @MainActor
     func sampleShipmentTrackingListDeleted() -> [Networking.ShipmentTracking] {
         return [sampleShipmentTracking1Mutated(),
                 sampleShipmentTracking2(),
                 sampleShipmentTracking4()]
     }
 
+    @MainActor
     func sampleShipmentTrackingProviderSingleGroup() -> Networking.ShipmentTrackingProviderGroup {
         return ShipmentTrackingProviderGroup(name: sampleCountryName,
                                              siteID: sampleSiteID,
                                              providers: [australiaSampleShipmentTrackingProvider1()])
     }
 
+    @MainActor
     func australia() -> Networking.ShipmentTrackingProviderGroup {
         return ShipmentTrackingProviderGroup(name: sampleCountryName,
                                              siteID: sampleSiteID,
@@ -720,6 +752,7 @@ private extension ShipmentStoreTests {
                                                          australiaSampleShipmentTrackingProvider2()])
     }
 
+    @MainActor
     func sweden() -> Networking.ShipmentTrackingProviderGroup {
         return ShipmentTrackingProviderGroup(name: sampleCountryName2,
                                              siteID: sampleSiteID,
@@ -727,34 +760,40 @@ private extension ShipmentStoreTests {
                                                          swedenSampleShipmentTrackingProvider2()])
     }
 
+    @MainActor
     func australiaSampleShipmentTrackingProvider1() -> Networking.ShipmentTrackingProvider {
         return ShipmentTrackingProvider(siteID: sampleSiteID,
                                         name: "Fastway Couriers",
                                         url: "http://www.fastway.com.au/courier-services/track-your-parcel?l=%1$s")
     }
 
+    @MainActor
     func australiaSampleShipmentTrackingProvider2() -> Networking.ShipmentTrackingProvider {
         return ShipmentTrackingProvider(siteID: sampleSiteID,
                                         name: "Australia Post",
                                         url: "http://auspost.com.au/track/track.html?id=%1$s")
     }
 
+    @MainActor
     func swedenSampleShipmentTrackingProvider1() -> Networking.ShipmentTrackingProvider {
         return ShipmentTrackingProvider(siteID: sampleSiteID,
                                         name: "PostNord Sverige AB",
                                         url: "http://www.fastway.com.au/courier-services/track-your-parcel?l=%1$s")
     }
 
+    @MainActor
     func swedenSampleShipmentTrackingProvider2() -> Networking.ShipmentTrackingProvider {
         return ShipmentTrackingProvider(siteID: sampleSiteID,
                                         name: "DHL.se",
                                         url: "http://auspost.com.au/track/track.html?id=%1$s")
     }
 
+    @MainActor
     func australiaAndSweden() -> [Networking.ShipmentTrackingProviderGroup] {
         return [australia(), sweden()]
     }
 
+    @MainActor
     func australiaMutated() -> Networking.ShipmentTrackingProviderGroup {
         return ShipmentTrackingProviderGroup(name: sampleCountryName,
                                              siteID: sampleSiteID,
@@ -763,6 +802,7 @@ private extension ShipmentStoreTests {
                                                                                                                                  url: "url mutated")])
     }
 
+    @MainActor
     func swedenMutated() -> Networking.ShipmentTrackingProviderGroup {
         return ShipmentTrackingProviderGroup(name: sampleCountryName2,
                                              siteID: sampleSiteID,
@@ -771,10 +811,12 @@ private extension ShipmentStoreTests {
                                                                                   url: "none")])
     }
 
+    @MainActor
     func sampleShipmentTrackingProviderGroupListMutatedOneGroup() -> [Networking.ShipmentTrackingProviderGroup] {
         return [australiaMutated()]
     }
 
+    @MainActor
     func australiaMutatedAndSwedenMutated() -> [Networking.ShipmentTrackingProviderGroup] {
         return [australiaMutated(), swedenMutated()]
     }

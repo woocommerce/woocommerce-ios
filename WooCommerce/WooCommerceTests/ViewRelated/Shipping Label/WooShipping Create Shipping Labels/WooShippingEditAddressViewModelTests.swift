@@ -169,6 +169,7 @@ final class WooShippingEditAddressViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.status, .missingInformation)
     }
 
+    @MainActor
     func test_expected_fields_are_required() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

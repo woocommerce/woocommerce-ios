@@ -10,6 +10,7 @@ import YosemiteTestHelpers
 ///
 final class BulkUpdateViewControllerTests: XCTestCase {
 
+    @MainActor
     func test_view_controller_displays_notice_on_sync_error() throws {
         // Given
         let storageManager =  MockStorageManager()

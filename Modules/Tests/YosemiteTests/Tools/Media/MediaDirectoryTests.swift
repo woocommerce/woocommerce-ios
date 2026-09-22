@@ -2,6 +2,7 @@ import XCTest
 @testable import Yosemite
 
 final class MediaDirectoryTests: XCTestCase {
+    @MainActor
     func testMediaDirectoryURLWithUploadsDirectory() {
         let name = "Media"
         let url = MediaDirectory.uploads.directoryURL(name: name)
@@ -13,6 +14,7 @@ final class MediaDirectoryTests: XCTestCase {
         XCTAssert(url.absoluteString.hasPrefix(parentDirectory.absoluteString), "Media uploads directory URL has unexpected path.")
     }
 
+    @MainActor
     func testMediaDirectoryURLWithCacheDirectory() {
         let name = "Media"
         let url = MediaDirectory.cache.directoryURL(name: name)
@@ -24,6 +26,7 @@ final class MediaDirectoryTests: XCTestCase {
         XCTAssert(url.absoluteString.hasPrefix(parentDirectory.absoluteString), "Media uploads directory URL has unexpected path.")
     }
 
+    @MainActor
     func testMediaDirectoryURLWithTemporaryDirectory() {
         let name = "Media"
         let url = MediaDirectory.temporary.directoryURL(name: name)

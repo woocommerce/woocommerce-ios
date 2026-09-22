@@ -37,6 +37,7 @@ class CommentStoreTests: XCTestCase {
     private let sampleCommentID: Int64 = 999
 
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -48,6 +49,7 @@ class CommentStoreTests: XCTestCase {
 
     /// Verifies that CommentAction.updateApprovalStatus returns the expected status when approving a comment.
     ///
+    @MainActor
     func testApproveCommentReturnsExpectedStatus() {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Approve comment")
@@ -65,6 +67,7 @@ class CommentStoreTests: XCTestCase {
 
     /// Verifies that CommentAction.updateApprovalStatus returns the expected status when unapproving a comment.
     ///
+    @MainActor
     func testUnapproveCommentReturnsExpectedStatus() {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Unpprove comment")
@@ -82,6 +85,7 @@ class CommentStoreTests: XCTestCase {
 
     /// Verifies that CommentAction.updateApprovalStatus returns an error, whenever there is an error response.
     ///
+    @MainActor
     func testUpdateApprovalStatusReturnsErrorUponReponseError() {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Approve comment error response")
@@ -99,6 +103,7 @@ class CommentStoreTests: XCTestCase {
 
     /// Verifies that CommentAction.updateApprovalStatus returns an error, whenever there is not backend response.
     ///
+    @MainActor
     func testUpdateApprovalStatusReturnsErrorUponEmptyResponse() {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Approve comment empty response error")
@@ -118,6 +123,7 @@ class CommentStoreTests: XCTestCase {
 
     /// Verifies that CommentAction.updateSpamStatus returns the expected status when marking a comment as spam.
     ///
+    @MainActor
     func testMarkCommentAsSpamReturnsExpectedStatus() {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Mark comment as spam")
@@ -135,6 +141,7 @@ class CommentStoreTests: XCTestCase {
 
     /// Verifies that CommentAction.updateSpamStatus returns the expected status when marking a comment as NOT spam.
     ///
+    @MainActor
     func testMarkCommentAsNotSpamReturnsExpectedStatus() {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Mark comment as not spam")
@@ -152,6 +159,7 @@ class CommentStoreTests: XCTestCase {
 
     /// Verifies that CommentAction.updateSpamStatus returns an error, whenever there an error response.
     ///
+    @MainActor
     func testMarkCommentAsSpamReturnsErrorUponReponseError() {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Mark comment as spam error response")
@@ -169,6 +177,7 @@ class CommentStoreTests: XCTestCase {
 
     /// Verifies that CommentAction.updateSpamStatus returns an error, whenever there is not backend response.
     ///
+    @MainActor
     func testMarkCommentAsSpamReturnsErrorUponEmptyResponse() {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Mark comment as spam empty response")
@@ -188,6 +197,7 @@ class CommentStoreTests: XCTestCase {
 
     /// Verifies that CommentAction.updateTrashStatus returns the expected status when marking a comment as trash.
     ///
+    @MainActor
     func testMarkCommentAsTrashReturnsExpectedStatus() {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Mark comment as trash")
@@ -205,6 +215,7 @@ class CommentStoreTests: XCTestCase {
 
     /// Verifies that CommentAction.updateTrashStatus returns the expected status when marking a comment as NOT trash.
     ///
+    @MainActor
     func testMarkCommentAsNotTrashReturnsExpectedStatus() {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Mark comment as not trash")
@@ -222,6 +233,7 @@ class CommentStoreTests: XCTestCase {
 
     /// Verifies that CommentAction.updateTrashStatus returns an error, whenever there an error response.
     ///
+    @MainActor
     func testMarkCommentAsTrashReturnsErrorUponReponseError() {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Mark comment as trash error response")
@@ -239,6 +251,7 @@ class CommentStoreTests: XCTestCase {
 
     /// Verifies that CommentAction.updateTrashStatus returns an error, whenever there is not backend response.
     ///
+    @MainActor
     func testMarkCommentAsTrashReturnsErrorUponEmptyResponse() {
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectation = self.expectation(description: "Mark comment as trash empty response")
@@ -255,6 +268,7 @@ class CommentStoreTests: XCTestCase {
 
     // MARK: - CommentAction.replyToComment
 
+    @MainActor
     func test_replyToComment_returns_expected_comment_status() throws {
         // Given
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -277,6 +291,7 @@ class CommentStoreTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(result.get()), .approved)
     }
 
+    @MainActor
     func test_replyToComment_returns_error_upon_response_error() {
         // Given
         let store = CommentStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

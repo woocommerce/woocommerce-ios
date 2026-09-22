@@ -4,6 +4,7 @@ import XCTest
 final class FileManager_URLTests: XCTestCase {
     private lazy var fileManager = MockFileManager()
 
+    @MainActor
     func testCreatingIncrementalFilenames() {
         let filename = "hello"
         let fileExtension = "txt"
@@ -26,6 +27,7 @@ final class FileManager_URLTests: XCTestCase {
 }
 
 private extension FileManager_URLTests {
+    @MainActor
     func createMockData(at fileURL: URL) {
         _ = fileManager.createFile(atPath: fileURL.path, contents: Data())
     }

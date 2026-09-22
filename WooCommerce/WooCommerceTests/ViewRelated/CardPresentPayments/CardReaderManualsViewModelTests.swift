@@ -9,6 +9,7 @@ class CardReaderManualsViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private let sampleSiteID: Int64 = 1234
 
+    @MainActor
     override func setUpWithError() throws {
         try super.setUpWithError()
         storageManager = MockStorageManager()

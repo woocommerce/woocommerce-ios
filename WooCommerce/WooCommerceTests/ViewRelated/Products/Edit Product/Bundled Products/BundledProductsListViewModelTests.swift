@@ -14,8 +14,10 @@ final class BundledProductsListViewModelTests: XCTestCase {
     private var storage: StorageType {
         storageManager.viewStorage
     }
+    @MainActor
     private let stores = MockStoresManager(sessionManager: .testingInstance)
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
@@ -57,6 +59,7 @@ final class BundledProductsListViewModelTests: XCTestCase {
         XCTAssertEqual(bundledProduct.sku, product.sku)
     }
 
+    @MainActor
     func test_view_model_syncs_and_updates_bundled_products_with_missing_images() throws {
         // Given
         let productWithImage = Product.fake().copy(siteID: sampleSiteID, productID: 12, sku: sampleSKU, images: [sampleImage])
@@ -89,6 +92,7 @@ final class BundledProductsListViewModelTests: XCTestCase {
         XCTAssertTrue(bundledProductsWithoutImages.isEmpty)
     }
 
+    @MainActor
     func test_view_model_syncs_and_updates_bundled_products_with_missing_sku() throws {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: 12, sku: sampleSKU, images: [sampleImage])

@@ -166,6 +166,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertNil(capturedEndpoints)
     }
 
+    @MainActor
     func test_sync_when_native_wporg_credentials_are_custom_default_or_malformed_then_injects_exact_boundary_endpoints() throws {
         let cases: [(options: [String: Any], expectedLogin: String?, expectedAdmin: String?)] = [
             (
@@ -224,6 +225,7 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_did_authenticate_user_applies_custom_default_and_malformed_endpoint_context_through_real_checker() throws {
         let cases: [(options: [String: Any], expectedStoredEndpoint: String?)] = [
             (
@@ -846,6 +848,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["url_after_redirects"] as? String, siteInfo.url)
     }
 
+    @MainActor
     func test_it_auto_switches_store_when_there_is_only_one_valid_store() throws {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -882,6 +885,7 @@ final class AuthenticationManagerTests: XCTestCase {
         })
     }
 
+    @MainActor
     func test_it_does_not_auto_select_store_when_there_are_more_than_one_only_one_valid_stores() throws {
         // Given
         let sessionManager = SessionManager.makeForTesting()
@@ -1074,6 +1078,7 @@ final class AuthenticationManagerTests: XCTestCase {
     /// so plainly returning would leave the merchant on a credential form whose fields, submit button and back button
     /// are all still disabled. Login has to restart instead.
     ///
+    @MainActor
     func test_didAuthenticateUser_when_the_application_password_use_case_cannot_be_created_then_login_restarts() throws {
         // Given
         let sessionManager = SessionManager(

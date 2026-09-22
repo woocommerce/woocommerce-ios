@@ -19,6 +19,7 @@ struct RemoteFeatureFlagServiceTests {
         service = RemoteFeatureFlagService(stores: stores)
     }
 
+    @MainActor
     @Test func test_isEnabled_when_dispatching_then_forwards_flag_defaultValue_and_useCache() async {
         // Given
         var received: (featureFlag: RemoteFeatureFlag, defaultValue: Bool, useCache: Bool)?
@@ -38,6 +39,7 @@ struct RemoteFeatureFlagServiceTests {
         #expect(received?.useCache == false)
     }
 
+    @MainActor
     @Test func test_isEnabled_when_useCache_is_not_specified_then_uses_cache() async {
         // Given
         var receivedUseCache: Bool?

@@ -23,6 +23,7 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -54,6 +55,7 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .result(items: [mobile]))
     }
 
+    @MainActor
     func test_state_is_correct_when_no_cached_data_is_found() async {
         // Given
         let viewModel = BlazeTargetDevicePickerViewModel(siteID: sampleSiteID,
@@ -79,6 +81,7 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .error)
     }
 
+    @MainActor
     func test_state_is_result_when_there_is_cached_data() async {
         // Given
         let mobile = BlazeTargetDevice(id: "mobile", name: "Mobile", locale: locale.identifier)
@@ -128,6 +131,7 @@ final class BlazeTargetDeviceViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldDisableSaveButton)
     }
 
+    @MainActor
     func test_save_button_is_disabled_when_syncState_is_not_result() async {
         // Given
         let viewModel = BlazeTargetDevicePickerViewModel(siteID: sampleSiteID,

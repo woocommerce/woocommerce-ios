@@ -63,6 +63,7 @@ final class AddEditProductCategoryViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.saveEnabled)
     }
 
+    @MainActor
     func test_saveCategory_invokes_addProductCategory_when_adding_new_category() async throws {
         // Given
         let title = "Yarn"
@@ -93,6 +94,7 @@ final class AddEditProductCategoryViewModelTests: XCTestCase {
         try await viewModel.saveCategory()
     }
 
+    @MainActor
     func test_onCompletion_is_invoked_upon_adding_success() async throws {
         // Given
         var newCategory: ProductCategory?
@@ -119,6 +121,7 @@ final class AddEditProductCategoryViewModelTests: XCTestCase {
         XCTAssertEqual(newCategory, expectedCategory)
     }
 
+    @MainActor
     func test_saveCategory_invokes_updateProductCategory_for_existing_category() async throws {
         // Given
         let title = "Yarn"
@@ -150,6 +153,7 @@ final class AddEditProductCategoryViewModelTests: XCTestCase {
         try await viewModel.saveCategory()
     }
 
+    @MainActor
     func test_onCompletion_is_invoked_upon_updating_success() async throws {
         // Given
         var newCategory: ProductCategory?

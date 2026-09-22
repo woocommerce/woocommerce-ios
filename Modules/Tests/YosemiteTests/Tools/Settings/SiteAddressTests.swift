@@ -4,6 +4,7 @@ import XCTest
 
 final class SiteAddressTests: XCTestCase {
 
+    @MainActor
     func test_the_address_fields_returns_the_expected_values() {
         // Arrange
         let siteSettings = mapLoadGeneralSiteSettingsResponse()
@@ -25,6 +26,7 @@ final class SiteAddressTests: XCTestCase {
 private extension SiteAddressTests {
     /// Returns the SiteSettings output upon receiving `filename` (Data Encoded)
     ///
+    @MainActor
     func mapGeneralSettings(from filename: String) -> [SiteSetting] {
         guard let response = Loader.contentsOf(filename) else {
             return []
@@ -35,6 +37,7 @@ private extension SiteAddressTests {
 
     /// Returns the SiteSetting array as output upon receiving `settings-general`
     ///
+    @MainActor
     func mapLoadGeneralSiteSettingsResponse() -> [SiteSetting] {
         return mapGeneralSettings(from: "settings-general")
     }

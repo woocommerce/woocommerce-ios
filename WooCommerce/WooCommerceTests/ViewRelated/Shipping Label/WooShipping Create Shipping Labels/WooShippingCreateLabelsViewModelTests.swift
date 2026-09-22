@@ -35,6 +35,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_state_is_loading_initially() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -46,6 +47,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state, .loading)
     }
 
+    @MainActor
     func test_state_is_missingRequiredData_when_store_settings_are_missing() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -77,6 +79,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state, .missingRequiredData)
     }
 
+    @MainActor
     func test_state_is_missingRequiredData_when_origin_addresses_are_missing() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -109,6 +112,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.weightUnit, shippingSettingsService.weightUnit)
     }
 
+    @MainActor
     func test_state_is_ready_when_loading_required_data_succeeds() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -173,6 +177,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
     }
 
     /// Builds a view model whose store returns a single origin address with the given phone/email/verification state.
+    @MainActor
     private func makeViewModelLoadingOriginAddress(phone: String,
                                                    email: String,
                                                    isVerified: Bool = false) -> WooShippingCreateLabelsViewModel {
@@ -268,6 +273,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originAddressNoticeLabel, expected)
     }
 
+    @MainActor
     func test_editSelectedOriginAddress_sets_addressToEdit_view_model() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -322,6 +328,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.addressToEdit?.isDefaultAddress, originAddress.defaultAddress)
     }
 
+    @MainActor
     func test_origin_addresses_fetched_and_converted_to_originAddresses_view_model() {
         // Given
         let originAddress = WooShippingOriginAddress.fake().copy(id: "default", defaultAddress: true)
@@ -342,6 +349,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originAddresses.selectedAddressID, originAddress.id)
     }
 
+    @MainActor
     func test_default_origin_address_fetched_and_converted_to_formatted_originAddress() {
         // Given
         let originAddresses = [WooShippingOriginAddress.fake(),
@@ -388,6 +396,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(expectedAddressLines, viewModel.destinationAddressLines)
     }
 
+    @MainActor
     func test_order_destination_address_is_loaded_from_remote_and_set_as_destination_address() {
         // Given
         let destinationAddresses = WooShippingNormalizedAddress.fake().copy(country: "US",
@@ -437,6 +446,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual("£10.00", viewModel.shippingLines.first?.formattedTotal)
     }
 
+    @MainActor
     func test_destinationAddressStatus_unverified_and_noticeLabel_set_for_unverified_address() {
         // Given
         let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
@@ -465,6 +475,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.destinationAddressStatusNoticeLabel)
     }
 
+    @MainActor
     func test_destinationAddressStatus_verified_and_noticeLabel_set_for_verified_address() {
         // Given
         let address = Address.fake().copy(address1: "1 Main Street", city: "San Francisco", state: "CA", postcode: "12345", country: "US")
@@ -493,6 +504,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.destinationAddressStatusNoticeLabel)
     }
 
+    @MainActor
     func test_destinationAddressStatus_missing_and_noticeLabel_set_for_empty_address() {
         // Given
         let order = Order.fake().copy(shippingAddress: nil)
@@ -531,6 +543,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.addressToEdit)
     }
 
+    @MainActor
     func test_shouldShowNotices_is_updated_correctly_for_unfulfilled_shipment() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -598,6 +611,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_currentShipment_when_selected_index_points_past_reloaded_shipments_then_does_not_crash() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -631,6 +645,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertTrue(true)
     }
 
+    @MainActor
     func test_currentShipment_when_shipments_are_empty_then_does_not_crash() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -658,6 +673,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state, previousState)
     }
 
+    @MainActor
     func test_currentShipment_when_earlier_shipment_is_removed_then_preserves_selected_shipment() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -935,6 +951,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.labelPurchaseErrorNotice)
     }
 
+    @MainActor
     func test_originAddressLines_is_correct_for_both_purchased_label_and_unfulfilled_shipment() {
         // Given
         let labelOriginAddress = ShippingLabelAddress.fake().copy(address1: "1 E 35th ST")
@@ -981,6 +998,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originAddressLines?.first, originAddress.address1)
     }
 
+    @MainActor
     func test_destinationAddressLines_is_correct_for_both_purchased_label_and_unfulfilled_shipment() {
         // Given
         let labelDestinationAddress = ShippingLabelAddress.fake().copy(address1: "1 E 35th ST")
@@ -1030,6 +1048,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.destinationAddressLines?.first, destinationAddress.address1)
     }
 
+    @MainActor
     func test_payment_method_line_is_nil_when_shipment_is_purchased() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1074,6 +1093,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.paymentMethodLine)
     }
 
+    @MainActor
     func test_payment_method_line_is_add_when_no_payment_method_selected() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1116,6 +1136,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.paymentMethodLine, .add)
     }
 
+    @MainActor
     func test_payment_method_line_shows_card_when_payment_method_selected() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1191,6 +1212,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_didUpdateAccountSettings_updates_paymentMethodLine() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1286,6 +1308,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     // MARK: - loadRequiredData with stored data tests
 
+    @MainActor
     func test_loadRequiredData_state_becomes_ready_immediately_when_origin_addresses_and_settings_are_stored() {
         // Given
         let originAddress = WooShippingOriginAddress(siteID: siteID,
@@ -1327,6 +1350,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.weightUnit, "g")
     }
 
+    @MainActor
     func test_loadRequiredData_state_becomes_ready_immediately_when_only_origin_addresses_are_stored() {
         // Given
         let originAddress = WooShippingOriginAddress(siteID: siteID,
@@ -1380,6 +1404,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.weightUnit, settings.storeOptions.weightUnit)
     }
 
+    @MainActor
     func test_loadRequiredData_state_becomes_ready_immediately_when_only_account_settings_are_stored() {
         // Given
         let accountSettings = ShippingLabelAccountSettings.fake().copy(siteID: siteID)
@@ -1434,6 +1459,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
 
     // MARK: - split shipments feature visibility tests
 
+    @MainActor
     private func initialConfigurationForSplitShipmentsTest(stores: MockStoresManager) {
         stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
@@ -1458,6 +1484,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_splitShipmentsRowVisible_is_false_when_only_single_product_item_exists() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1502,6 +1529,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.splitShipmentsRowVisible)
     }
 
+    @MainActor
     func test_splitShipmentsRowVisible_is_false_when_order_has_multiple_shipments() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1557,6 +1585,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.splitShipmentsRowVisible)
     }
 
+    @MainActor
     func test_splitShipmentsRowVisible_is_true_when_requirements_met() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1606,6 +1635,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.splitShipmentsRowVisible)
     }
 
+    @MainActor
     func test_editSplitShipmentsOptionVisible_is_false_when_only_single_product_item_exists() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1650,6 +1680,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.editSplitShipmentsOptionVisible)
     }
 
+    @MainActor
     func test_editSplitShipmentsOptionVisible_is_false_when_all_shipments_fulfilled() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1713,6 +1744,7 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.editSplitShipmentsOptionVisible)
     }
 
+    @MainActor
     func test_editSplitShipmentsOptionVisible_is_true_when_all_requirements_met() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1780,6 +1812,7 @@ private extension WooShippingCreateLabelsViewModelTests {
         return mapGeneralSettings(from: "settings-general")
     }
 
+    @MainActor
     func setupInitialDataLoadingMocks(
         for stores: MockStoresManager,
         originAddressesResult: Result<[WooShippingOriginAddress], Error> = .success([.fake().copy(id: "default", defaultAddress: true)]),
@@ -1900,6 +1933,7 @@ private extension WooShippingCreateLabelsViewModelTests {
 
 // MARK: - Carrier Terms of Service tracking
 extension WooShippingCreateLabelsViewModelTests {
+    @MainActor
     func test_carrier_tos_shown_event_is_tracked_when_UPS_terms_are_shown() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -1914,6 +1948,7 @@ extension WooShippingCreateLabelsViewModelTests {
         analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "upsdap", "state": "shown"])
     }
 
+    @MainActor
     func test_carrier_tos_shown_event_is_tracked_when_FedEx_terms_are_shown() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -1928,6 +1963,7 @@ extension WooShippingCreateLabelsViewModelTests {
         analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "fedex", "state": "shown"])
     }
 
+    @MainActor
     func test_carrier_tos_shown_event_is_not_tracked_when_terms_are_dismissed() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -1944,6 +1980,7 @@ extension WooShippingCreateLabelsViewModelTests {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("wcs_carrier_tos"))
     }
 
+    @MainActor
     func test_carrier_tos_accepted_event_is_tracked_for_UPS() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -1958,6 +1995,7 @@ extension WooShippingCreateLabelsViewModelTests {
         analyticsProvider.assertReceived(event: "wcs_carrier_tos", with: ["carrier": "upsdap", "state": "accepted"])
     }
 
+    @MainActor
     func test_carrier_tos_accepted_event_is_tracked_for_FedEx() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()

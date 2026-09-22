@@ -17,6 +17,7 @@ final class FeatureFlagStoreTests: XCTestCase {
     private var store: FeatureFlagStore!
     private var currentDate: Date!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -31,6 +32,7 @@ final class FeatureFlagStoreTests: XCTestCase {
                                  currentDate: { self.currentDate })
     }
 
+    @MainActor
     override func tearDown() {
         store = nil
         remote = nil
@@ -41,6 +43,7 @@ final class FeatureFlagStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_isRemoteFeatureFlagEnabled_returns_value_from_remote_on_success() throws {
         // Given
         remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true]))
@@ -57,6 +60,7 @@ final class FeatureFlagStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
+    @MainActor
     func test_isRemoteFeatureFlagEnabled_returns_default_value_on_failure() throws {
         // Given
         remote.whenLoadingAllFeatureFlags(thenReturn: .failure(NetworkError.timeout()))
@@ -73,6 +77,7 @@ final class FeatureFlagStoreTests: XCTestCase {
         XCTAssertFalse(isEnabled)
     }
 
+    @MainActor
     func test_isRemoteFeatureFlagEnabled_when_useCache_is_true_returns_cached_value_without_remote_call() throws {
         // Given
         remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true]))
@@ -101,6 +106,7 @@ final class FeatureFlagStoreTests: XCTestCase {
         XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 1)
     }
 
+    @MainActor
     func test_isRemoteFeatureFlagEnabled_when_useCache_is_false_fetches_from_remote() throws {
         // Given
         remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true]))
@@ -129,6 +135,7 @@ final class FeatureFlagStoreTests: XCTestCase {
         XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 2)
     }
 
+    @MainActor
     func test_isRemoteFeatureFlagEnabled_when_cache_is_expired_fetches_from_remote() throws {
         // Given
         let cacheMaxAge: TimeInterval = 24 * 60 * 60
@@ -161,6 +168,7 @@ final class FeatureFlagStoreTests: XCTestCase {
         XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 2)
     }
 
+    @MainActor
     func test_isRemoteFeatureFlagEnabled_when_cache_is_not_expired_returns_cached_value() throws {
         // Given
         let cacheMaxAge: TimeInterval = 24 * 60 * 60
@@ -193,6 +201,7 @@ final class FeatureFlagStoreTests: XCTestCase {
         XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 1)
     }
 
+    @MainActor
     func test_isRemoteFeatureFlagEnabled_when_useCache_is_false_updates_cache() throws {
         // Given
         remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true]))
@@ -227,6 +236,7 @@ final class FeatureFlagStoreTests: XCTestCase {
         XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 2)
     }
 
+    @MainActor
     func test_loadRemoteFeatureFlagsInEffect_reports_nothing_when_no_fetch_has_succeeded() throws {
         // Given
         // No fetch has been performed.
@@ -243,6 +253,7 @@ final class FeatureFlagStoreTests: XCTestCase {
         XCTAssertEqual(remote.loadAllFeatureFlagsCallCount, 0)
     }
 
+    @MainActor
     func test_loadRemoteFeatureFlagsInEffect_reports_nothing_when_the_only_fetch_failed() throws {
         // Given
         remote.whenLoadingAllFeatureFlags(thenReturn: .failure(NetworkError.timeout()))
@@ -264,6 +275,7 @@ final class FeatureFlagStoreTests: XCTestCase {
         XCTAssertNil(values)
     }
 
+    @MainActor
     func test_loadRemoteFeatureFlagsInEffect_reports_fetched_values_without_fetching_again() throws {
         // Given
         remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true,
@@ -289,6 +301,7 @@ final class FeatureFlagStoreTests: XCTestCase {
 
     /// An expired cache is not consulted by `isRemoteFeatureFlagEnabled`, so reporting its values would describe
     /// behaviour the app is not exhibiting.
+    @MainActor
     func test_loadRemoteFeatureFlagsInEffect_reports_nothing_rather_than_the_aged_out_values() throws {
         // Given
         remote.whenLoadingAllFeatureFlags(thenReturn: .success([.storeCreationCompleteNotification: true]))

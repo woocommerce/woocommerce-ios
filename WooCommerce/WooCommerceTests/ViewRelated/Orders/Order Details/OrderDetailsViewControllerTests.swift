@@ -229,6 +229,7 @@ private extension OrderDetailsViewControllerTests {
 ///
 private struct OrderDetailStoreManagerFactory {
 
+    @MainActor
     static func createManager(order: Order) -> MockStoresManager {
         let storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
 

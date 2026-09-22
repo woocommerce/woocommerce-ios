@@ -49,6 +49,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
     ///
     private let defaultPageNumber = 1
 
+    @MainActor
     override func setUp() {
         super.setUp()
         network = MockNetwork(useResponseQueue: true)
@@ -60,6 +61,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         insertProductAttribute()
     }
 
+    @MainActor
     override func tearDown() {
         store = nil
         network = nil
@@ -68,6 +70,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_synchronizeProductAttributeTerms_stores_single_page_terms() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: sampleTermsPath, filename: "product-attribute-terms")
@@ -88,6 +91,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         XCTAssertFalse(result.isFailure)
     }
 
+    @MainActor
     func test_synchronizeProductAttributeTerms_stores_multiple_page_terms() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: sampleTermsPath, filename: "product-attribute-terms")
@@ -109,6 +113,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         XCTAssertFalse(result.isFailure)
     }
 
+    @MainActor
     func test_synchronizeProductAttributeTerms_updates_previously_stored_terms() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: sampleTermsPath, filename: "product-attribute-terms")
@@ -133,6 +138,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         XCTAssertFalse(result.isFailure)
     }
 
+    @MainActor
     func test_synchronizeProductAttributeTerms_deletes_stale_terms() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: sampleTermsPath, filename: "product-attribute-terms")
@@ -156,6 +162,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
         XCTAssertFalse(result.isFailure)
     }
 
+    @MainActor
     func test_createProductAttributeTerm_stores_term_correctly() throws {
         // Given
         let expectedTerm = ProductAttributeTerm(siteID: sampleSiteID, termID: 23, name: "XXS", slug: "xxs", count: 1)
@@ -183,6 +190,7 @@ final class ProductAttributeTermStoreTests: XCTestCase {
 // MARK: Helpers
 private extension ProductAttributeTermStoreTests {
     @discardableResult
+    @MainActor
     func insertProductAttribute() -> Yosemite.ProductAttribute {
         let attribute = ProductAttribute(siteID: sampleSiteID,
                                          attributeID: sampleAttributeID,
@@ -196,6 +204,7 @@ private extension ProductAttributeTermStoreTests {
     }
 
     @discardableResult
+    @MainActor
     func insertProductAttributeTerm(termID: Int64) -> Yosemite.ProductAttributeTerm {
         let term = ProductAttributeTerm(siteID: sampleSiteID, termID: termID, name: "", slug: "", count: 0)
         storageManager.insertSampleProductAttributeTerm(readOnlyTerm: term, onAttributeWithID: sampleAttributeID)

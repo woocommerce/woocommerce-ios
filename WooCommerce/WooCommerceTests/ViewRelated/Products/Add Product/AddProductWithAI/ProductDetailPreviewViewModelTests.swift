@@ -18,6 +18,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -37,6 +38,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     // MARK: `generateProductDetails`
 
+    @MainActor
     func test_generateProductDetails_fetches_site_settings_if_weight_unit_is_nil() async {
         // Given
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
@@ -72,6 +74,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
     }
 
+    @MainActor
     func test_generateProductDetails_fetches_site_settings_if_dimension_unit_is_nil() async {
         // Given
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
@@ -107,6 +110,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
     }
 
+    @MainActor
     func test_generateProductDetails_synchronizes_categories() async {
         // Given
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
@@ -138,6 +142,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
     }
 
+    @MainActor
     func test_generateProductDetails_synchronizes_tags() async {
         // Given
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
@@ -169,6 +174,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
     }
 
+    @MainActor
     func test_generateProductDetails_sends_features_to_identify_language() async throws {
         // Given
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
@@ -203,6 +209,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
     }
 
+    @MainActor
     func test_identified_language_is_reused_when_generating_product_details_again() async {
         // Given
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
@@ -243,6 +250,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(identifyingLanguageRequestCount, 1)
     }
 
+    @MainActor
     func test_categories_are_synced_only_once_when_generating_product_details_again() async {
         // Given
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
@@ -280,6 +288,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(syncCategoriesRequestCount, 1)
     }
 
+    @MainActor
     func test_tags_are_synced_only_once_when_generating_product_details_again() async {
         // Given
         let productFeatures = "Ballpoint, Blue ink, ABS plastic"
@@ -317,6 +326,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(syncTagsRequestCount, 1)
     }
 
+    @MainActor
     func test_generateProductDetails_sends_correct_values_to_generate_product_details() async throws {
         // Given
         let sampleSiteID: Int64 = 123
@@ -393,6 +403,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.generateProductDetails()
     }
 
+    @MainActor
     func test_generateProductDetails_updates_generationInProgress_correctly() async throws {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: 123,
@@ -428,6 +439,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isGeneratingDetails)
     }
 
+    @MainActor
     func test_errorState_is_updated_when_generateProductDetails_fails() async throws {
         // Given
         let expectedError = NSError(domain: "test", code: 503)
@@ -463,6 +475,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.errorState, .generatingProduct)
     }
 
+    @MainActor
     func test_generateProductDetails_displays_generatedProduct_correctly() async throws {
         // Given
         let siteID: Int64 = 123
@@ -520,6 +533,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productShippingDetails, "\(weightString)\n\(dimensionsString)")
     }
 
+    @MainActor
     func test_it_saves_generated_product_correctly() async throws {
         // Given
         let siteID: Int64 = 123
@@ -611,6 +625,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
     }
 
     // MARK: Options
+    @MainActor
     func test_the_options_title_is_based_on_total_options() async throws {
         // Given
         let aiProduct = sampleAIProduct
@@ -637,6 +652,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                                                                                 3))
     }
 
+    @MainActor
     func test_it_switches_between_options() async throws {
         // Given
         let aiProduct = sampleAIProduct
@@ -676,6 +692,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productShortDescription, Self.sampleShortDescriptions.first)
     }
 
+    @MainActor
     func test_it_enables_switching_when_there_are_more_than_one_option() async throws {
         // Given
         let aiProduct = sampleAIProduct
@@ -699,6 +716,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.canSwitchBetweenOptions)
     }
 
+    @MainActor
     func test_it_hides_switch_when_there_is_only_one_option() async throws {
         // Given
         let aiProduct = AIProduct.fake().copy(names: ["Name"],
@@ -724,6 +742,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.canSwitchBetweenOptions)
     }
 
+    @MainActor
     func test_it_prevents_switching_when_there_are_no_more_options() async throws {
         // Given
         let aiProduct = sampleAIProduct
@@ -764,6 +783,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     // MARK: - Undo edits
 
+    @MainActor
     func test_it_tracks_changes_to_text_fields() async throws {
         // Given
         let aiProduct = sampleAIProduct
@@ -813,6 +833,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasChangesToProductDescription)
     }
 
+    @MainActor
     func test_it_undoes_changes_in_name_field() async throws {
         // Given
         let aiProduct = sampleAIProduct
@@ -848,6 +869,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productDescription, "Edited description")
     }
 
+    @MainActor
     func test_it_undoes_changes_in_short_description_field() async throws {
         // Given
         let aiProduct = sampleAIProduct
@@ -883,6 +905,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productDescription, "Edited description")
     }
 
+    @MainActor
     func test_it_undoes_changes_in_description_field() async throws {
         // Given
         let aiProduct = sampleAIProduct
@@ -919,6 +942,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     // MARK: - Save product
 
+    @MainActor
     func test_it_saves_product_with_matching_existing_categories() async throws {
         // Given
         let sampleSiteID: Int64 = 123
@@ -961,6 +985,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(generatedProduct.categories, [biscuit])
     }
 
+    @MainActor
     func test_it_saves_product_with_new_categories_suggested_by_AI() async throws {
         // Given
         let aiProduct = sampleAIProduct.copy(categories: ["Biscuits", "Cookies"])
@@ -990,6 +1015,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(generatedProduct.categories.map { $0.categoryID }, [0, 0])
     }
 
+    @MainActor
     func test_it_saves_product_with_matching_existing_tags() async throws {
         // Given
         let food: ProductTag = .fake().copy(siteID: sampleSiteID, name: "Food")
@@ -1030,6 +1056,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(generatedProduct.tags, [food])
     }
 
+    @MainActor
     func test_it_saves_product_with_new_tags_suggested_by_AI() async throws {
         // Given
         let product = sampleAIProduct.copy(tags: ["Food", "Grocery"])
@@ -1059,6 +1086,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(generatedProduct.tags.map { $0.tagID }, [0, 0])
     }
 
+    @MainActor
     func test_saveProductAsDraft_updates_isSavingProduct_properly() async {
         // Given
         let aiProduct = sampleAIProduct.copy(names: ["iPhone 15"])
@@ -1103,6 +1131,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isSavingProduct)
     }
 
+    @MainActor
     func test_saveProductAsDraft_success_triggers_onProductCreated() async {
         // Given
         var createdProduct: Product?
@@ -1135,6 +1164,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(createdProduct, expectedProduct)
     }
 
+    @MainActor
     func test_saveProductAsDraft_updates_errorState_upon_failure() async {
         // Given
         let aiProduct = sampleAIProduct.copy(names: ["iPhone 15"])
@@ -1160,6 +1190,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.errorState, .savingProduct)
     }
 
+    @MainActor
     func test_saveProductAsDraft_saves_local_categories() async {
         // Given
         let grocery = ProductCategory.fake().copy(siteID: sampleSiteID, name: "Groceries")
@@ -1199,6 +1230,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         await viewModel.saveProductAsDraft()
     }
 
+    @MainActor
     func test_saveProductAsDraft_saves_local_tags() async {
         // Given
         let existingTag = ProductTag.fake().copy(siteID: sampleSiteID, name: "Existing tag")
@@ -1262,6 +1294,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 
     // MARK: Analytics
 
+    @MainActor
     func test_generateProductDetails_tracks_event_on_success() async throws {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
@@ -1285,6 +1318,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_creation_ai_generate_product_details_success"))
     }
 
+    @MainActor
     func test_generateProductDetails_tracks_event_on_failure() async throws {
         // Given
         let expectedError = NSError(domain: "test", code: 503)
@@ -1315,6 +1349,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(errorEventProperties["error_domain"] as? String, "test")
     }
 
+    @MainActor
     func test_saveProductAsDraft_tracks_tapped_event() async {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
@@ -1336,6 +1371,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_creation_ai_save_as_draft_button_tapped"))
     }
 
+    @MainActor
     func test_saveProductAsDraft_tracks_event_on_success() async throws {
         // Given
         let viewModel = ProductDetailPreviewViewModel(siteID: sampleSiteID,
@@ -1360,6 +1396,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("product_creation_ai_save_as_draft_success"))
     }
 
+    @MainActor
     func test_saveProductAsDraft_tracks_event_on_failure() async throws {
         // Given
         let expectedError = ProductUpdateError(error: NSError(domain: "test", code: 503))
@@ -1416,6 +1453,7 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
 }
 
 private extension ProductDetailPreviewViewModelTests {
+    @MainActor
     func mockSettingActions() {
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
@@ -1429,6 +1467,7 @@ private extension ProductDetailPreviewViewModelTests {
         }
     }
 
+    @MainActor
     func mockProductCategoryActions() {
         stores.whenReceivingAction(ofType: ProductCategoryAction.self) { action in
             switch action {
@@ -1442,6 +1481,7 @@ private extension ProductDetailPreviewViewModelTests {
         }
     }
 
+    @MainActor
     func mockProductTagActions() {
         stores.whenReceivingAction(ofType: ProductTagAction.self) { action in
             switch action {
@@ -1455,6 +1495,7 @@ private extension ProductDetailPreviewViewModelTests {
         }
     }
 
+    @MainActor
     func mockProductActions(identifiedLanguage: String = "en",
                             aiGeneratedProductResult: (Result<AIProduct, Error>)? = nil,
                             addedProductResult: (Result<Product, ProductUpdateError>)? = nil) {

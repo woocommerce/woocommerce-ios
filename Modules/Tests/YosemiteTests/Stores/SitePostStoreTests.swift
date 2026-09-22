@@ -27,6 +27,7 @@ final class SitePostStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -36,6 +37,7 @@ final class SitePostStoreTests: XCTestCase {
 
     /// Verifies that SitePostAction.getSitePostPassword returns the expected result.
     ///
+    @MainActor
     func testRetrieveSitePostPasswordReturnsExpectedResult() {
         let expectation = self.expectation(description: "Retrieve site post password")
         let sitePostStore = SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -56,6 +58,7 @@ final class SitePostStoreTests: XCTestCase {
 
     /// Verifies that SitePostAction.updateSitePostPassword returns the expected result.
     ///
+    @MainActor
     func testUpdateSitePostPasswordReturnsExpectedResult() {
         // Arrange
         let sitePostStore = SitePostStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

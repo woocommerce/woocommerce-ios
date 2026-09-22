@@ -165,6 +165,7 @@ private extension AppSettingsStoreTests_OrderFilterHistory {
                                            salesChannelFilter: salesChannelFilter)
     }
 
+    @MainActor
     func insertMockFilter(filter: StoredOrderSettings.Setting, using store: AppSettingsStore) async throws {
         let error = await withCheckedContinuation { continuation in
             store.onAction(AppSettingsAction.upsertOrderFilterHistory(filter: filter, onCompletion: { error in

@@ -7,6 +7,7 @@ final class WordPressMediaLibraryPickerDataSourceTests: XCTestCase {
     private let siteID: Int64 = 123
     private var stores: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting())
         super.setUp()
@@ -19,6 +20,7 @@ final class WordPressMediaLibraryPickerDataSourceTests: XCTestCase {
 
     // MARK: Retrieve media using product ID
 
+    @MainActor
     func test_it_retrieves_media_using_product_id_as_nil_when_productID_is_not_provided() throws {
         // Given
         let sut = WordPressMediaLibraryPickerDataSource(siteID: siteID,
@@ -43,6 +45,7 @@ final class WordPressMediaLibraryPickerDataSourceTests: XCTestCase {
         XCTAssertNil(receivedProductID)
     }
 
+    @MainActor
     func test_it_retrieves_media_using_product_id_when_productID_is_provided() throws {
         // Given
         let sut = WordPressMediaLibraryPickerDataSource(siteID: siteID,

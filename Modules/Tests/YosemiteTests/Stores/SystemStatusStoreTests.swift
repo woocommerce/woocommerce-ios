@@ -29,6 +29,7 @@ final class SystemStatusStoreTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 99999
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()

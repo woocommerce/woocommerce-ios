@@ -143,6 +143,7 @@ struct NewStockNotificationPreferencesDetailViewModelTests {
 private extension NewStockNotificationPreferencesDetailViewModelTests {
     enum SyncError: Error { case network }
 
+    @MainActor
     func makeStores() -> MockStoresManager {
         MockStoresManager(sessionManager: .testingInstance)
     }
@@ -158,6 +159,7 @@ private extension NewStockNotificationPreferencesDetailViewModelTests {
             storageManager: storageManager)
     }
 
+    @MainActor
     func stubSyncProductSettings(_ stores: MockStoresManager, result error: Error?) {
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             if case let .synchronizeProductSiteSettings(_, onCompletion) = action {

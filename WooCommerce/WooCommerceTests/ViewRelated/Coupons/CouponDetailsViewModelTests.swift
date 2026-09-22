@@ -66,6 +66,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.individualUseOnly)
     }
 
+    @MainActor
     func test_coupon_is_updated_after_synchronizing() {
         // Given
         let sampleCoupon = Coupon.fake().copy(amount: "15.00", discountType: .percent)
@@ -89,6 +90,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.amount, "10%")
     }
 
+    @MainActor
     func test_coupon_performance_is_correct_with_usage_count_equal_to_0() {
         // Given
         let sampleCoupon = Coupon.fake().copy(usageCount: 0)
@@ -114,6 +116,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.discountedAmount, "$0.00")
     }
 
+    @MainActor
     func test_coupon_performance_is_correct_with_usage_count_larger_than_0() {
         // Given
         let sampleCoupon = Coupon.fake().copy(usageCount: 10)
@@ -169,6 +172,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasWCAnalyticsDisabled)
     }
 
+    @MainActor
     func test_hasErrorLoadingAmount_returns_false_if_loading_amount_succeeds() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
@@ -190,6 +194,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasErrorLoadingAmount)
     }
 
+    @MainActor
     func test_hasErrorLoadingAmount_returns_true_if_loading_amount_fails_and_retrieveAnalyticsSetting_returns_true() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
@@ -221,6 +226,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasWCAnalyticsDisabled)
     }
 
+    @MainActor
     func test_hasErrorLoadingAmount_returns_true_if_loading_amount_fails_and_retrieveAnalyticsSetting_returns_false() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, productIds: [12, 23])
@@ -252,6 +258,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasWCAnalyticsDisabled)
     }
 
+    @MainActor
     func test_shouldShowErrorLoadingAmount_returns_false_if_usageCount_is_zero() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, usageCount: 0, productIds: [12, 23])
@@ -283,6 +290,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowErrorLoadingAmount)
     }
 
+    @MainActor
     func test_shouldShowErrorLoadingAmount_returns_true_if_usageCount_is_not_zero() {
         // Given
         let sampleCoupon = Coupon.fake().copy(code: "TEST", amount: "10.00", discountType: .percent, usageCount: 1, productIds: [12, 23])
@@ -314,6 +322,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowErrorLoadingAmount)
     }
 
+    @MainActor
     func test_deleteCoupon_triggers_onSuccess_if_deletion_succeeds() {
         // Given
         let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)
@@ -347,6 +356,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(onFailureTriggered)
     }
 
+    @MainActor
     func test_deleteCoupon_triggers_onFailure_if_deletion_fails() {
         // Given
         let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)
@@ -378,6 +388,7 @@ final class CouponDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(onFailureTriggered)
     }
 
+    @MainActor
     func test_deleteCoupon_updates_isLoading_correctly() {
         // Given
         let sampleCoupon = Coupon.fake().copy(siteID: 123, couponID: 456)

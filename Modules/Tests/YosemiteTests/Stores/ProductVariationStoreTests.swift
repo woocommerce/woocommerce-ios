@@ -40,6 +40,7 @@ final class ProductVariationStoreTests: XCTestCase {
     ///
     private let defaultPageSize = 75
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -49,6 +50,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     // MARK: - ProductVariationAction.synchronizeProductVariations
 
+    @MainActor
     func test_retrieveProductVariationsTransiently_returns_currency_scoped_variations_without_persisting_them() throws {
         // Given
         let expectation = expectation(description: #function)
@@ -74,6 +76,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.synchronizeProductVariations` effectively persists any retrieved product variations.
     ///
+    @MainActor
     func testRetrieveProductVariationsEffectivelyPersisted() {
         let expectation = self.expectation(description: "Retrieve product variation list")
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -104,6 +107,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.synchronizeProductVariations` multiple times does not create duplicated objects.
     ///
+    @MainActor
     func testRetrieveProductVariationsCreateNoDuplicates() {
         let expectation = self.expectation(description: "Retrieve product variation list")
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -149,6 +153,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.synchronizeProductVariations` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveProductVariationsReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve product variations error response")
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -170,6 +175,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.synchronizeProductVariations` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveProductVariationsReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve product variations empty response")
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -189,6 +195,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that syncing for the first page deletes stored models for the given site ID and product ID.
     ///
+    @MainActor
     func testSyncingProductVariationsOnTheFirstPageResetsStoredModels() {
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -236,6 +243,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that syncing after the first page does not delete stored models for the given site ID and product ID.
     ///
+    @MainActor
     func testSyncingProductVariationsAfterTheFirstPage() {
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -276,6 +284,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that syncing for the first page does not delete stored ProductVariations if the API call fails.
     ///
+    @MainActor
     func testSyncingProductVariationsOnTheFirstPageDoesNotDeleteStoredProductsUponResponseError() {
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -314,6 +323,7 @@ final class ProductVariationStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_sync_product_variations_indicates_when_there_are_more_variations_to_fetch() {
         let store = ProductVariationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "products/\(sampleProductID)/variations", filename: "product-variations-load-all")
@@ -336,6 +346,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.retrieveProductVariation` effectively persists the retrieved product variation.
     ///
+    @MainActor
     func test_retrieveProductVariation_persists_the_ProductVariation() throws {
         // Given
         let remote = MockProductVariationsRemote()
@@ -375,6 +386,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.retrieveProductVariation` called multiple times does not create duplicated objects.
     ///
+    @MainActor
     func test_retrieveProductVariation_create_no_duplicates() throws {
 
         // Given
@@ -425,6 +437,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.retrieveProductVariation` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_retrieveProductVariation_returns_expected_error() throws {
 
         // Given
@@ -456,6 +469,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.retrieveProductVariation` effectively persists the fields added by the Min/Max Quantities extension.
     ///
+    @MainActor
     func test_retrieve_product_variation_effectively_persists_mix_max_quantity_fields() throws {
         let remote = MockProductVariationsRemote()
         let sampleVariationID: Int64 = 12
@@ -492,6 +506,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.createProductVariation` returns the expected `ProductVariation`.
     ///
+    @MainActor
     func test_creating_ProductVariation_returns_expected_fields_and_related_objects() throws {
         // Given
         let remote = MockProductVariationsRemote()
@@ -534,6 +549,7 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(readOnlyStoredProductVariation, expectedProductVariation)
     }
 
+    @MainActor
     func test_creating_product_variations_properly_stores_them_locally() {
         // Given
         let remote = ProductVariationsRemote(network: network)
@@ -566,6 +582,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.createProductVariation` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_createProductVariation_returns_error_upon_response_error() throws {
         // Given
         let remote = MockProductVariationsRemote()
@@ -605,6 +622,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.updateProductVariation` returns the expected `ProductVariation`.
     ///
+    @MainActor
     func testUpdatingProductVariationReturnsExpectedFieldsAndRelatedObjects() {
         // Given
         let remote = MockProductVariationsRemote()
@@ -646,6 +664,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.updateProductVariation` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_updateProductVariation_returns_error_upon_response_error() {
         // Given
         let remote = MockProductVariationsRemote()
@@ -681,6 +700,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.updateProductVariationImage` effectively persists the returned product variation.
     ///
+    @MainActor
     func test_updateProductVariationImage_with_success_persists_returned_variation() throws {
         // Given
         let remote = MockProductVariationsRemote()
@@ -724,6 +744,7 @@ final class ProductVariationStoreTests: XCTestCase {
         assertEqual(expectedProductVariation, storedProductVariation?.toReadOnly())
     }
 
+    @MainActor
     func test_updateProductImages_with_failure_returns_error() {
         // Given
         let remote = MockProductVariationsRemote()
@@ -758,6 +779,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     // MARK: `requestMissingVariations`
 
+    @MainActor
     func test_requestMissingVariations_only_completes_when_all_missing_variations_are_returned() throws {
         // Given
         let remote = MockProductVariationsRemote()
@@ -801,6 +823,7 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 3)
     }
 
+    @MainActor
     func test_requestMissingVariations_does_not_make_network_requests_when_all_variations_are_in_storage() throws {
         // Given
         let remote = MockProductVariationsRemote()
@@ -831,6 +854,7 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.ProductVariation.self), 2)
     }
 
+    @MainActor
     func test_requestMissingVariations_returns_error_on_any_variation() throws {
         // Given
         let remote = MockProductVariationsRemote()
@@ -871,6 +895,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     // MARK: - ProductVariationAction.deleteProductVariation
 
+    @MainActor
     func test_deleteProductVariation_deletes_data_from_storage_and_returns_expected_data() {
         // Given
         let remote = MockProductVariationsRemote()
@@ -899,6 +924,7 @@ final class ProductVariationStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.ProductVariation.self), 0)
     }
 
+    @MainActor
     func test_deleteProductVariation_returns_error_upon_response_error() {
         // Given
         let remote = MockProductVariationsRemote()
@@ -929,6 +955,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.updateProductVariations` returns the expected `ProductVariations`.
     ///
+    @MainActor
     func test_updateProductVariations_is_correctly_updating_productVariation() throws {
         // Given
         let remote = MockProductVariationsRemote()
@@ -979,6 +1006,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
     /// Verifies that `ProductVariationAction.updateProductVariations` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_updateProductVariations_returns_error_upon_response_error() {
         // Given
         let remote = MockProductVariationsRemote()
@@ -1019,6 +1047,7 @@ final class ProductVariationStoreTests: XCTestCase {
 
 
 private extension ProductVariationStoreTests {
+    @MainActor
     func sampleProductVariationAttributes() -> [Yosemite.ProductVariationAttribute] {
         return [
             ProductVariationAttribute(id: 0, name: "Darkness", option: "99%"),
@@ -1027,12 +1056,14 @@ private extension ProductVariationStoreTests {
         ]
     }
 
+    @MainActor
     func sampleProductVariation(id: Int64) -> Yosemite.ProductVariation {
         return sampleProductVariation(siteID: sampleSiteID,
                                       productID: sampleProductID,
                                       id: id)
     }
 
+    @MainActor
     func sampleProductVariation(siteID: Int64,
                                 productID: Int64,
                                 id: Int64) -> Yosemite.ProductVariation {
@@ -1088,6 +1119,7 @@ private extension ProductVariationStoreTests {
                                 overrideProductQuantities: nil)
     }
 
+    @MainActor
     func sampleOrder(items: [Yosemite.OrderItem]) -> Yosemite.Order {
         Order.fake().copy(siteID: sampleSiteID,
                           orderID: 963,
@@ -1111,6 +1143,7 @@ private extension ProductVariationStoreTests {
                           items: items)
     }
 
+    @MainActor
     func sampleOrderItem(productID: Int64, variationID: Int64) -> Yosemite.OrderItem {
         .init(itemID: 890,
               name: "Fruits Basket (Mix & Match Product)",

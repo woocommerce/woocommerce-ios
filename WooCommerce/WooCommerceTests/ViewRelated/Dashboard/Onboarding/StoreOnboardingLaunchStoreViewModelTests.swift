@@ -9,6 +9,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
     private let freeTrialID = "1052"
     private let siteID: Int64 = 134
 
+    @MainActor
     override func setUp() {
         super.setUp()
         sessionManager = .makeForTesting(authenticated: true)
@@ -33,6 +34,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
 
     // MARK: - `launchStore`
 
+    @MainActor
     func test_launchStore_triggers_onLaunch_on_success() throws {
         // Given
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
@@ -61,6 +63,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_launchStore_sets_alreadyLaunched_error_on_failure() async throws {
         // Given
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
@@ -82,6 +85,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.error, .alreadyLaunched)
     }
 
+    @MainActor
     func test_launchStore_updates_state_to_launchingStore_when_there_is_no_error() async throws {
         // Given
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
@@ -103,6 +107,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .launchingStore)
     }
 
+    @MainActor
     func test_launchStore_updates_state_to_readyToPublish_when_there_is_error() async throws {
         // Given
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
@@ -138,6 +143,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .checkingSitePlan)
     }
 
+    @MainActor
     func test_state_is_needsPlanUpgrade_for_WPCOM_site_under_free_trail() async {
         // Given
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
@@ -160,6 +166,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .needsPlanUpgrade)
     }
 
+    @MainActor
     func test_state_is_readyToPublish_for_WPCOM_site_not_under_free_trial() async {
         // Given
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
@@ -180,6 +187,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
         XCTAssertEqual(sut.state, .readyToPublish)
     }
 
+    @MainActor
     func test_state_is_readyToPublish_for_WPCOM_site_when_checking_site_plan_fails() async {
         // Given
         sessionManager.defaultSite = .fake().copy(isWordPressComStore: true)
@@ -201,6 +209,7 @@ final class StoreOnboardingLaunchStoreViewModelTests: XCTestCase {
 }
 
 private extension StoreOnboardingLaunchStoreViewModelTests {
+    @MainActor
     func mockLoadSiteCurrentPlan(result: Result<WPComSitePlan, Error>) {
         stores.whenReceivingAction(ofType: PaymentAction.self) { action in
             guard case let .loadSiteCurrentPlan(_, completion) = action else {

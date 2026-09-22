@@ -35,6 +35,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -42,6 +43,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         network = MockNetwork()
     }
 
+    @MainActor
     override func tearDown() {
         dispatcher = nil
         storageManager = nil
@@ -51,6 +53,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
 
     // MARK: - ProductAction.synchronizeProducts
 
+    @MainActor
     func test_synchronizeProducts_when_filters_are_off_then_it_does_not_send_filter_params() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -80,6 +83,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
                                productCategoryValue: nil)
     }
 
+    @MainActor
     func test_synchronizeProducts_with_only_stock_status_filter_then_it_sends_stocks_status_filter_param() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -109,6 +113,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
                                productCategoryValue: nil)
     }
 
+    @MainActor
     func test_synchronizeProducts_with_only_product_status_filter_then_it_sends_product_status_filter_param() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -138,6 +143,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
                                productCategoryValue: nil)
     }
 
+    @MainActor
     func test_synchronizeProducts_with_only_product_type_filter_then_it_sends_product_type_filter_param() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -167,6 +173,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
                                productCategoryValue: nil)
     }
 
+    @MainActor
     func test_synchronizeProducts_with_only_product_category_filter_then_it_sends_product_category_filter_param() {
         let filterProductCategory = ProductCategory(categoryID: 213, siteID: 0, parentID: 0, name: "", slug: "")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -197,6 +204,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
                                productCategoryValue: String(filterProductCategory.categoryID))
     }
 
+    @MainActor
     func test_synchronizeProducts_with_non_core_product_type_network_error_then_it_returns_success_without_next_page() throws {
         // Given
         let remote = MockProductsRemote()
@@ -233,6 +241,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_synchronizeProducts_with_core_product_type_network_error_then_it_returns_failure() throws {
         // Given
         let remote = MockProductsRemote()
@@ -271,6 +280,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_synchronizeProducts_triggers_remote_request_with_filters() {
         // Given
         let remote = MockProductsRemote()
@@ -317,6 +327,7 @@ final class ProductStore_FilterProductsTests: XCTestCase {
 }
 
 private extension ProductStore_FilterProductsTests {
+    @MainActor
     func assertParamValues(stockStatusValue: String?, productStatusValue: String?, productTypeValue: String?, productCategoryValue: String?) {
         guard let queryParameters = network.queryParameters else {
             XCTFail("Cannot parse query from the API request")

@@ -11,6 +11,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
     private var analytics: Analytics!
     private var noticePresenter: MockNoticePresenter!
 
+    @MainActor
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         analyticsProvider = MockAnalyticsProvider()
@@ -186,6 +187,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showJetpackStatsCTA)
     }
 
+    @MainActor
     func test_it_tracks_expected_jetpack_stats_CTA_success_events() async {
         // Given
         let vm = SessionsReportCardViewModel(siteID: sampleSiteID,
@@ -218,6 +220,7 @@ final class SessionsReportCardViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_it_tracks_expected_jetpack_stats_CTA_failure_events() async {
         // Given
         let vm = SessionsReportCardViewModel(siteID: sampleSiteID,

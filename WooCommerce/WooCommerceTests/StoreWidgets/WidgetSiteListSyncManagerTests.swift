@@ -307,6 +307,7 @@ private extension WidgetSiteListSyncManagerTests {
         }
     }
 
+    @MainActor
     func makeTestContext(isWPCom: Bool = true,
                          defaultStoreID: Int64? = nil) -> TestContext {
         let storageManager = MockStorageManager()

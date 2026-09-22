@@ -5,6 +5,7 @@ final class MediaTypeTests: XCTestCase {
     // MARK: - `init(fileExtension: String)`
     // Reference: https://wordpress.com/support/accepted-filetypes/
 
+    @MainActor
     func testInitWithImageFileExtensions() throws {
         try XCTSkipIf(testingOnRosetta())
         let imageFileExtensions = ["jpg", "jpeg", "gif", "png"]
@@ -13,6 +14,7 @@ final class MediaTypeTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testInitWithVideoFileExtensions() throws {
         try XCTSkipIf(testingOnRosetta())
         // Note: "ogv" isn't supported on iOS.
@@ -22,6 +24,7 @@ final class MediaTypeTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testInitWithAudioFileExtensions() throws {
         try XCTSkipIf(testingOnRosetta())
         var audioFileExtensions = ["mp3", "m4a", "wav"]
@@ -35,6 +38,7 @@ final class MediaTypeTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testInitWithPowerpointFileExtensions() throws {
         try XCTSkipIf(testingOnRosetta())
         let presentationFileExtensions = ["ppt", "pptx", "pps", "ppsx"]
@@ -43,6 +47,7 @@ final class MediaTypeTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testInitWithOtherFileExtensions() throws {
         try XCTSkipIf(testingOnRosetta())
         var presentationFileExtensions = [
@@ -67,6 +72,7 @@ final class MediaTypeTests: XCTestCase {
     // - IANA, the official registry of MIME media types and maintains a list of all the official MIME types:
     //   http://www.iana.org/assignments/media-types/media-types.xhtml
 
+    @MainActor
     func testInitWithImageMimeType() throws {
         try XCTSkipIf(testingOnRosetta())
         let imageMimeTypes = ["image/jpeg", "image/gif", "image/png"]
@@ -75,6 +81,7 @@ final class MediaTypeTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testInitWithVideoMimeType() throws {
         try XCTSkipIf(testingOnRosetta())
         let videoMimeTypes = [
@@ -87,6 +94,7 @@ final class MediaTypeTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testInitWithAudioMimeType() throws {
         try XCTSkipIf(testingOnRosetta())
         var audioMimeTypes = ["audio/midi", "audio/x-midi", "audio/mpeg", "audio/wav"]
@@ -99,6 +107,7 @@ final class MediaTypeTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testInitWithPowerpointMimeType() throws {
         try XCTSkipIf(testingOnRosetta())
         let presentationMimeTypes = ["application/vnd.ms-powerpoint", "application/vnd.openxmlformats-officedocument.presentationml.presentation"]
@@ -107,6 +116,7 @@ final class MediaTypeTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testInitWithOtherMimeType() throws {
         try XCTSkipIf(testingOnRosetta())
         var otherMimeTypes = [

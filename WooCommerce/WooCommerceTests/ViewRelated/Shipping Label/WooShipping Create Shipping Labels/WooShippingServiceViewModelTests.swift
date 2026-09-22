@@ -10,6 +10,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
     private static let samplePackageID = "default_box"
     private var samplePackage = ShippingLabelPackageSelected.fake().copy(id: samplePackageID, weight: 5)
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -96,6 +97,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertNil(rate3.adultSignatureRequiredLabel)
     }
 
+    @MainActor
     func test_when_loadLabelRates_receives_error_it_sets_error_state() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -280,6 +282,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(uspsCards?.first?.title, "USPS - Parcel Select Mail")
     }
 
+    @MainActor
     func test_it_sets_correct_error_state_when_destination_address_is_missing() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -317,6 +320,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.loadingState, .error(.missingShipmentWeight))
     }
 
+    @MainActor
     func test_when_loadLabelRates_receives_empty_rates_it_sets_error_state() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -354,6 +358,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.loadingState, .error(.noRatesAvailable(isHAZMAT: true)))
     }
 
+    @MainActor
     func test_when_loadLabelRates_receives_invalid_destination_name_rate_error_it_sets_error_state() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -399,6 +404,7 @@ final class WooShippingServiceViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.displayedServiceCards.first?.title, "DHL - Next Day")
     }
 
+    @MainActor
     func test_refreshSelectedRate_returns_updated_rate() throws {
         // Given
         let oldStandardRate = ShippingLabelCarrierRate(title: "USPS - Media Mail",

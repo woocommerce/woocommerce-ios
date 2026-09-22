@@ -7,6 +7,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
     private var sessionManager: SessionManager!
     private var stores: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -43,6 +44,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_roleEligibilityUseCase_checkEligibility_returns_failure_when_receiving_unknown_errors() {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -70,6 +72,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(error is SampleError)
     }
 
+    @MainActor
     func test_roleEligibilityUseCase_checkEligibility_returns_insufficientRoleError_when_user_is_ineligible() {
         // Given
         let sampleUser = makeUser()
@@ -99,6 +102,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         XCTAssertEqual(info.roles, sampleUser.roles)
     }
 
+    @MainActor
     func test_roleEligibilityUseCase_checkEligibility_persists_errorInfo_when_insufficientRoleError_and_storeID_matches_defaultStoreID() {
         // Given
         let ineligibleUser = makeUser()
@@ -131,6 +135,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(errorInfoSaved)
     }
 
+    @MainActor
     func test_roleEligibilityUseCase_checkEligibility_shouldNot_persist_errorInfo_when_storeID_doesNot_match_defaultStoreID() {
         // Given
         let ineligibleUser = makeUser()
@@ -164,6 +169,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(errorInfoSaved)
     }
 
+    @MainActor
     func test_roleEligibilityUseCase_checkEligibility_returns_success_when_user_is_eligible() {
         // Given
         let eligibleUser = makeUser(eligible: true)
@@ -195,6 +201,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(resetErrorInfoInvoked)
     }
 
+    @MainActor
     func test_roleEligibilityUseCase_updates_roles_in_sessionManager() throws {
         // Given
         let eligibleUser = makeUser(eligible: true)

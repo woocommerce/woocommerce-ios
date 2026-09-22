@@ -4,6 +4,7 @@ import Yosemite
 
 @MainActor
 struct CardPresentPaymentServiceTests {
+    @MainActor
     @Test func test_initialization_when_publisher_callbacks_are_omitted_then_completes() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))

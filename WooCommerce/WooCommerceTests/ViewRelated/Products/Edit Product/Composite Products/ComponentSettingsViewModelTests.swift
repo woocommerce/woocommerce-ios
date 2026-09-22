@@ -11,8 +11,10 @@ final class ComponentSettingsViewModelTests: XCTestCase {
     private var storage: StorageType {
         storageManager.viewStorage
     }
+    @MainActor
     private let stores = MockStoresManager(sessionManager: .testingInstance)
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
@@ -71,6 +73,7 @@ final class ComponentSettingsViewModelTests: XCTestCase {
                        NSLocalizedString("None", comment: "Label when there is no default option for a component in a composite product"))
     }
 
+    @MainActor
     func test_view_model_loads_category_component_options() {
         // Given
         let component = sampleComponent(optionType: .categoryIDs,
@@ -108,6 +111,7 @@ final class ComponentSettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowOptionImages)
     }
 
+    @MainActor
     func test_view_model_loads_product_component_options() {
         // Given
         let component = sampleComponent(optionType: .productIDs,
@@ -139,6 +143,7 @@ final class ComponentSettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowOptionImages)
     }
 
+    @MainActor
     func test_view_model_has_expected_values_after_loading_error_for_product_options() {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
@@ -164,6 +169,7 @@ final class ComponentSettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.showDefaultOptionLoadingIndicator)
     }
 
+    @MainActor
     func test_view_model_has_expected_values_after_loading_errors_for_category_options() {
         // Given
         stores.whenReceivingAction(ofType: ProductAction.self) { action in

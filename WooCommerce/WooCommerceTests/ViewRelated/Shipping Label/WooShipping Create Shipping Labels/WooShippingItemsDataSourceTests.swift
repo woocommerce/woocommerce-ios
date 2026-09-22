@@ -9,6 +9,7 @@ final class WooShippingItemsDataSourceTests: XCTestCase {
     private var storageManager: MockStorageManager!
     private var stores: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
@@ -31,6 +32,7 @@ final class WooShippingItemsDataSourceTests: XCTestCase {
         assertEqual(2, dataSource.items.count)
     }
 
+    @MainActor
     func test_it_inits_with_expected_items_from_remote() {
         // Given
         let product = Product.fake().copy(productID: 13)

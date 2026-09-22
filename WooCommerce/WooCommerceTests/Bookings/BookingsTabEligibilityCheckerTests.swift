@@ -4,6 +4,7 @@ import Yosemite
 
 @MainActor
 struct BookingsTabEligibilityCheckerTests {
+    @MainActor
     @Test func checkVisibility_returns_false() async throws {
         // Given
         let site = Site.fake()

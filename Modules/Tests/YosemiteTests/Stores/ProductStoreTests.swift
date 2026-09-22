@@ -58,6 +58,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -67,6 +68,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.addProduct
 
+    @MainActor
     func test_addProduct_returns_the_expected_product_with_related_objects() throws {
         // Arrange
         let remote = MockProductsRemote()
@@ -134,6 +136,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.MetaData.self), 1)
     }
 
+    @MainActor
     func test_addProduct_returns_error_upon_network_error() {
         // Arrange
         let remote = MockProductsRemote()
@@ -158,6 +161,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.duplicateProduct
 
+    @MainActor
     func test_duplicateProduct_returns_the_duplicated_product_ID() throws {
         // Given
         let remote = MockProductsRemote()
@@ -180,38 +184,45 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(remote.invocationCountOfDuplicateProduct, 1)
     }
 
+    @MainActor
     func test_duplicateProduct_maps_Dotcom_noRestRoute_to_endpointUnavailable() {
         assertDuplicateProductError(DotcomError.noRestRoute(), equals: .endpointUnavailable)
     }
 
+    @MainActor
     func test_duplicateProduct_maps_notFound_NetworkError_with_rest_no_route_code_to_endpointUnavailable() {
         let response = Data(#"{"code":"rest_no_route","message":"No route found","data":{"status":404}}"#.utf8)
         let error = NetworkError.notFound(response: response)
         assertDuplicateProductError(error, equals: .endpointUnavailable)
     }
 
+    @MainActor
     func test_duplicateProduct_preserves_non_route_errors_as_terminal_unknown_error() {
         let response = Data(#"{"code":"woocommerce_rest_product_invalid_id","message":"Invalid product ID","data":{"status":404}}"#.utf8)
         let error = NetworkError.notFound(response: response)
         assertDuplicateProductError(error, equals: .unknown(error: AnyError(error)))
     }
 
+    @MainActor
     func test_duplicateProduct_preserves_non_notFound_NetworkError_with_rest_no_route_code_as_terminal_unknown_error() {
         let response = Data(#"{"code":"rest_no_route","message":"No route found","data":{"status":500}}"#.utf8)
         let error = NetworkError.unacceptableStatusCode(statusCode: 500, response: response)
         assertDuplicateProductError(error, equals: .unknown(error: AnyError(error)))
     }
 
+    @MainActor
     func test_duplicateProduct_preserves_generic_transport_error_as_terminal_unknown_error() {
         let error = URLError(.networkConnectionLost)
         assertDuplicateProductError(error, equals: .unknown(error: AnyError(error)))
     }
 
+    @MainActor
     func test_duplicateProduct_does_not_classify_WordPress_error_code_without_notFound_NetworkError_as_endpointUnavailable() {
         let error = WordPressApiError.unknown(code: "rest_no_route", message: "No route found")
         assertDuplicateProductError(error, equals: .unknown(error: AnyError(error)))
     }
 
+    @MainActor
     private func assertDuplicateProductError(_ error: Error, equals expectedError: ProductDuplicateError) {
         // Given
         let remote = MockProductsRemote()
@@ -234,6 +245,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.deleteProduct
 
+    @MainActor
     func test_deleteProduct_deletes_the_stored_product() throws {
         // Arrange
         let remote = MockProductsRemote()
@@ -312,6 +324,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.MetaData.self), 0)
     }
 
+    @MainActor
     func test_deleteProduct_returns_error_upon_network_error() {
         // Arrange
         let remote = MockProductsRemote()
@@ -334,6 +347,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.synchronizeProducts
 
+    @MainActor
     func test_retrieveProductsTransiently_returns_currency_scoped_products_without_persisting_them() throws {
         // Given
         let expectation = expectation(description: #function)
@@ -361,6 +375,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(network.queryParametersDictionary)["currency"] as? String, "EUR")
     }
 
+    @MainActor
     func test_synchronizeProductsForOrderCreation_persists_page_and_additional_products_and_uses_page_for_pagination() throws {
         // Given
         let pageProducts = (1...25).map { Product.fake().copy(siteID: sampleSiteID, productID: Int64($0), name: "Page \($0)") }
@@ -396,6 +411,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.loadProduct(siteID: sampleSiteID, productID: 26)?.name, "Additional 26")
     }
 
+    @MainActor
     func test_synchronizeProductsForOrderCreation_when_additional_request_fails_preserves_cached_requested_products() throws {
         // Given
         let pageProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1)
@@ -431,6 +447,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: unrelatedCachedProduct.productID))
     }
 
+    @MainActor
     func test_synchronizeProductsForOrderCreation_when_additional_request_omits_cached_product_removes_it() throws {
         // Given
         let pageProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1)
@@ -463,6 +480,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: cachedAdditionalProduct.productID))
     }
 
+    @MainActor
     func test_synchronizeProductsForOrderCreation_when_page_request_fails_leaves_storage_untouched() throws {
         // Given
         let cachedProduct = Product.fake().copy(siteID: sampleSiteID, productID: 99)
@@ -492,6 +510,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadProduct(siteID: sampleSiteID, productID: additionalProduct.productID))
     }
 
+    @MainActor
     func test_searchProductsTransiently_returns_currency_scoped_products_without_persisting_products_or_search_results() throws {
         // Given
         let expectation = expectation(description: #function)
@@ -520,6 +539,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.synchronizeProducts effectively persists any retrieved products.
     ///
+    @MainActor
     func testRetrieveProductsEffectivelyPersistsRetrievedProducts() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -547,6 +567,7 @@ final class ProductStoreTests: XCTestCase {
     /// Verifies that `ProductAction.synchronizeProducts` effectively persists all of the product fields
     /// correctly across all of the related `Product` entities (tags, categories, attributes, etc).
     ///
+    @MainActor
     func testRetrieveProductsEffectivelyPersistsProductFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -578,6 +599,7 @@ final class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func testsRetrieveProductsDontNilStoredProductCategoryParentId() {
         // Given an initial store category and simulated product response
         let expectation = self.expectation(description: #function)
@@ -608,6 +630,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.synchronizeProducts for the first page deletes stored Products for the given site ID.
     ///
+    @MainActor
     func testSyncingProductsOnTheFirstPageResetsStoredProducts() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -652,6 +675,7 @@ final class ProductStoreTests: XCTestCase {
     /// Verifies that ProductAction.synchronizeProducts after the first page does not delete stored Products for the given
     /// site ID.
     ///
+    @MainActor
     func testSyncingProductsAfterTheFirstPage() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -692,6 +716,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.synchronizeProducts for the first page does not delete stored Products if the API call fails.
     ///
+    @MainActor
     func testSyncingProductsOnTheFirstPageDoesNotDeleteStoredProductsUponResponseError() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -730,6 +755,7 @@ final class ProductStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_synchronizing_products_of_the_same_page_size_has_next_page() {
         // Arrange
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -756,6 +782,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(result).get())
     }
 
+    @MainActor
     func test_synchronizing_products_of_smaller_size_than_page_size_has_no_next_page() {
         // Arrange
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -784,6 +811,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.synchronizeProducts returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveProductsReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve products error response")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -807,6 +835,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.synchronizeProducts returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveProductsReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve products empty response")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -832,6 +861,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product`.
     ///
+    @MainActor
     func test_retrieve_single_product_returns_expected_fields() throws {
         // Arrange
         // The shipping class ID should match the `shipping_class_id` field in `product.json`.
@@ -862,6 +892,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product` of external product type.
     ///
+    @MainActor
     func testRetrieveSingleExternalProductReturnsExpectedFields() throws {
         // Arrange
         let remote = MockProductsRemote()
@@ -884,6 +915,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProduct` returns the expected `Product` for `variation` product types.
     ///
+    @MainActor
     func testRetrieveSingleVariationTypeProductReturnsExpectedFields() throws {
         // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -906,6 +938,7 @@ final class ProductStoreTests: XCTestCase {
     /// Verifies that `ProductAction.retrieveProduct` effectively persists all of the remote product fields
     /// correctly across all of the related `Product` entities (tags, categories, attributes, etc).
     ///
+    @MainActor
     func testRetrieveSingleProductEffectivelyPersistsProductFieldsAndRelatedObjects() throws {
         // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -945,6 +978,7 @@ final class ProductStoreTests: XCTestCase {
     /// Verifies that `ProductAction.retrieveProduct` effectively persists all of the remote product fields
     /// correctly across all of the related `Product` entities (tags, categories, attributes, etc) for `variation` product types.
     ///
+    @MainActor
     func testRetrieveSingleVariationTypeProductEffectivelyPersistsProductFieldsAndRelatedObjects() throws {
         // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -980,6 +1014,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveSingleProductReturnsErrorUponReponseError() throws {
         // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -999,6 +1034,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProduct` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveSingleProductReturnsErrorUponEmptyResponse() throws {
         // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1018,6 +1054,7 @@ final class ProductStoreTests: XCTestCase {
     /// Verifies that whenever a `ProductAction.retrieveProduct` action results in a response with statusCode = 404, the local entity
     /// is obliterated from existence.
     ///
+    @MainActor
     func testRetrieveSingleProductResultingInStatusCode404CausesTheStoredProductToGetDeleted() throws {
         // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1047,6 +1084,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.resetStoredProducts` deletes the Products from Storage
     ///
+    @MainActor
     func testResetStoredProductsEffectivelyNukesTheProductsCache() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -1074,6 +1112,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductStore.upsertStoredProduct` does not produce duplicate entries.
     ///
+    @MainActor
     func test_update_stored_product_effectively_updates_preexistant_product() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -1122,6 +1161,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductStore.upsertStoredProduct` updates the correct site's product.
     ///
+    @MainActor
     func testUpdateStoredProductEffectivelyUpdatesCorrectSitesProduct() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -1168,6 +1208,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductStore.upsertStoredProduct` effectively inserts a new Product, with the specified payload.
     ///
+    @MainActor
     func testUpdateStoredProductEffectivelyPersistsNewProduct() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteProduct = sampleProduct(downloadable: true)
@@ -1200,6 +1241,7 @@ final class ProductStoreTests: XCTestCase {
     /// This translates effectively into: Ensure that performing update OP's that don't really change anything, do not
     /// end up causing UI refresh OP's in the main thread.
     ///
+    @MainActor
     func testInnocuousProductUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
         // Stack
         let viewContext = storageManager.persistentContainer.viewContext
@@ -1244,6 +1286,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductStore.upsertStoredProduct` does not store products with the `importing` product status.
     ///
+    @MainActor
     func test_upsertStoredProduct_does_not_store_import_placeholder_products() {
         // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1261,6 +1304,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.searchProducts` effectively persists the retrieved products.
     ///
+    @MainActor
     func test_searchProducts_effectively_persists_retrieved_search_products() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1293,6 +1337,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.searchProducts` effectively upserts the `ProductSearchResults` entity.
     ///
+    @MainActor
     func test_searchProducts_effectively_persists_search_results_entity() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1325,6 +1370,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.searchProducts` effectively persists the retrieved products.
     ///
+    @MainActor
     func test_searchProducts_effectively_persists_product_bundle_items() throws {
         // Given
         let remote = MockProductsRemote()
@@ -1367,6 +1413,7 @@ final class ProductStoreTests: XCTestCase {
         assertEqual(mockBundleItem, storageBundleItem.toReadOnly())
     }
 
+    @MainActor
     func test_searchProducts_effectively_persists_product_bundle_properties() throws {
         // Given
         let remote = MockProductsRemote()
@@ -1395,6 +1442,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(product.bundleMaxSize, 6)
     }
 
+    @MainActor
     func test_searchProductsInCache_then_effectively_persists_search_results_entity() throws {
         // Given
         let keyword = "test"
@@ -1427,6 +1475,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.searchProducts` does not result in duplicated entries in the ProductSearchResults entity.
     ///
+    @MainActor
     func test_searchProducts_does_not_produce_duplicated_references() {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1469,6 +1518,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(searchResults.first?.keyword, keyword)
     }
 
+    @MainActor
     func test_searchProducts_triggers_remote_request_with_filters() {
         // Given
         let remote = MockProductsRemote()
@@ -1502,6 +1552,7 @@ final class ProductStoreTests: XCTestCase {
         assertEqual(filteredProductCategory, remote.searchProductWithProductCategory)
     }
 
+    @MainActor
     func test_searchProducts_sets_hasNextPage_to_true_if_product_count_is_the_same_as_pageSize() throws {
         // Given
         let remote = MockProductsRemote()
@@ -1530,6 +1581,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(hasNextPage)
     }
 
+    @MainActor
     func test_searchProducts_sets_hasNextPage_to_false_if_product_count_is_smaller_than_pageSize() throws {
         // Given
         let remote = MockProductsRemote()
@@ -1563,6 +1615,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.updateProduct` returns the expected `Product`.
     ///
+    @MainActor
     func test_updating_product_returns_expected_fields() {
         let expectation = self.expectation(description: "Update product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1654,6 +1707,7 @@ final class ProductStoreTests: XCTestCase {
     /// Verifies that `ProductAction.updateProduct` effectively persists all of the remote product fields
     /// correctly across all of the related `Product` entities (tags, categories, attributes, etc) for `variation` product types.
     ///
+    @MainActor
     func testUpdatingProductEffectivelyPersistsRelatedObjects() {
         let expectation = self.expectation(description: "Update product")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1706,6 +1760,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.updateProduct` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testUpdatingProductReturnsErrorUponReponseError() {
         // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1728,6 +1783,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.updateProduct` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testUpdatingProductReturnsErrorUponEmptyResponse() {
         // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1749,6 +1805,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that whenever a `ProductAction.updateProduct` action results in a response with statusCode = 404, the local entity is not deleted.
     ///
+    @MainActor
     func testUpdatingProductResultingInStatusCode404DoesNotCauseTheStoredProductToGetDeleted() {
         // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1779,6 +1836,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that whenever a `ProductAction.updateProduct` action results in product update maintaint the Product Tags order.
     ///
+    @MainActor
     func testUpdatingProductResultingMantainingTheSameOrderForTags() {
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -1801,6 +1859,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.updateProductImages` effectively persists the returned product.
     ///
+    @MainActor
     func test_updateProductImages_with_success_persists_returned_product() throws {
         // Given
         let remote = MockProductsRemote()
@@ -1828,6 +1887,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
     }
 
+    @MainActor
     func test_updateProductImages_with_failure_returns_error() {
         // Given
         let remote = MockProductsRemote()
@@ -1856,6 +1916,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.updateProducts` returns the expected `Products`.
     ///
+    @MainActor
     func test_updateProducts_is_correctly_updating_products() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -1880,6 +1941,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.retrieveProducts effectively persists any retrieved products.
     ///
+    @MainActor
     func testRetrievingProductsEffectivelyPersistsRetrievedProducts() {
         // Arrange
         let remote = MockProductsRemote()
@@ -1910,6 +1972,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.Product.self), 1)
     }
 
+    @MainActor
     func test_retrieveProductsIfNeeded_returns_products_from_every_page() {
         // Arrange
         // A full page means there is another one to fetch, so this takes two requests.
@@ -1933,6 +1996,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(result).get().map { $0.productID }, productIDs)
     }
 
+    @MainActor
     func test_retrieveProductsIfNeeded_when_every_product_is_stored_then_no_request_is_made() throws {
         // Arrange
         // The remote has no stubbed result, so reaching it at all fails the test.
@@ -1956,6 +2020,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(result).get().map { $0.productID }.sorted(), storedProducts.map { $0.productID }.sorted())
     }
 
+    @MainActor
     func test_retrieveProductsIfNeeded_when_a_product_is_missing_then_only_that_one_is_fetched() throws {
         // Arrange
         let remote = MockProductsRemote()
@@ -1982,6 +2047,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(result).get().map { $0.productID }.sorted(), [storedProduct.productID, missingProduct.productID].sorted())
     }
 
+    @MainActor
     func test_retrieveProductsIfNeeded_when_a_page_fails_then_it_returns_the_error() {
         // Arrange
         let remote = MockProductsRemote()
@@ -2002,6 +2068,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(result).isFailure)
     }
 
+    @MainActor
     func test_retrieving_products_of_the_same_page_size_has_next_page() {
         // Arrange
         let remote = MockProductsRemote()
@@ -2028,6 +2095,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(hasNextPage)
     }
 
+    @MainActor
     func test_retrieving_products_of_smaller_size_than_page_size_has_no_next_page() {
         // Arrange
         let remote = MockProductsRemote()
@@ -2056,6 +2124,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.retrieveProducts with a page number and size makes a network request that includes these params.
     ///
+    @MainActor
     func testRetrievingProductsMakesANetworkRequestWithTheExpectedPageNumberAndSize() {
         // Arrange
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2087,6 +2156,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.retrieveProducts always returns an empty result for an empty array of product IDs.
     ///
+    @MainActor
     func testRetrievingProductsWithEmptyIDsReturnsAnEmptyResult() {
         // Arrange
         let remote = MockProductsRemote()
@@ -2120,6 +2190,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that `ProductAction.retrieveProducts` effectively persists the fields added by the Min/Max Quantities extension.
     ///
+    @MainActor
     func test_retrieve_products_effectively_persists_mix_max_quantity_fields() throws {
         let remote = MockProductsRemote()
         let expectedProduct = Product.fake().copy(siteID: sampleSiteID,
@@ -2145,6 +2216,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(storedProduct, expectedProduct)
     }
 
+    @MainActor
     func test_calling_replaceProductLocally_replaces_product_locally() throws {
         // Given
         let product = sampleProduct()
@@ -2172,6 +2244,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.checkIfStoreHasProducts returns true result when remote returns an array with a product ID.
     ///
+    @MainActor
     func test_checkIfStoreHasProducts_returns_expected_result_when_remote_returns_product() throws {
         // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2193,6 +2266,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.checkIfStoreHasProducts returns false result when a product already exists in local storage.
     ///
+    @MainActor
     func test_checkIfStoreHasProducts_with_IDs_returns_expected_result_when_local_storage_has_product() throws {
         // Given
         storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: sampleSiteID))
@@ -2214,6 +2288,7 @@ final class ProductStoreTests: XCTestCase {
 
     /// Verifies that ProductAction.checkIfStoreHasProducts returns true result for an empty array.
     ///
+    @MainActor
     func test_checkIfStoreHasProducts_returns_expected_result_when_remote_returns_empty_array() throws {
         // Given
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2233,6 +2308,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertFalse(hasProducts)
     }
 
+    @MainActor
     func test_checkIfStoreHasProducts_returns_expected_result_when_local_storage_has_no_product_of_given_stautus_and_remote_returns_empty_array() throws {
         // Given
         storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: sampleSiteID, statusKey: "draft"))
@@ -2253,6 +2329,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertFalse(hasPublishedProducts)
     }
 
+    @MainActor
     func test_checkIfStoreHasProducts_returns_expected_result_when_local_storage_has_no_product_of_given_product_type_and_remote_returns_empty_array() throws {
         // Given
         storageManager.insertSampleProduct(readOnlyProduct: Product.fake().copy(siteID: sampleSiteID, productTypeKey: "simple"))
@@ -2275,6 +2352,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.generateProductDescription
 
+    @MainActor
     func test_generateProductDescription_returns_text_on_success() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -2301,6 +2379,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(generatedText, "Trendy product")
     }
 
+    @MainActor
     func test_generateProductDescription_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -2326,6 +2405,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
+    @MainActor
     func test_generateProductDescription_includes_parameters_in_remote_base_parameter() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -2353,6 +2433,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(base.contains("en"))
     }
 
+    @MainActor
     func test_generateProductDescription_uses_correct_feature() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -2378,6 +2459,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productDescription)
     }
 
+    @MainActor
     func test_generateProductDescription_uses_correct_response_format() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -2405,6 +2487,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.generateProductSharingMessage
 
+    @MainActor
     func test_generateProductSharingMessage_returns_text_on_success() throws {
         // Given
         let expectedText = "Check out this cool product"
@@ -2435,6 +2518,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(generatedText, expectedText)
     }
 
+    @MainActor
     func test_generateProductSharingMessage_returns_text_after_trimming_quotation_marks() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -2464,6 +2548,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(generatedText, "This is \"AI\" generated message.")
     }
 
+    @MainActor
     func test_generateProductSharingMessage_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -2492,6 +2577,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
+    @MainActor
     func test_generateProductSharingMessage_includes_parameters_in_remote_base_parameter() throws {
         // Given
         let expectedURL = "https://example.com"
@@ -2528,6 +2614,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(base.contains(expectedLangugae))
     }
 
+    @MainActor
     func test_generateProductSharingMessage_uses_correct_feature() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -2556,6 +2643,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productSharing)
     }
 
+    @MainActor
     func test_generateProductSharingMessage_uses_correct_response_format() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -2586,6 +2674,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.identifyLanguage
 
+    @MainActor
     func test_identifyLanguage_returns_language_on_success() throws {
         // Given
         let expectedLanguage = "en"
@@ -2612,6 +2701,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(generatedText, expectedLanguage)
     }
 
+    @MainActor
     func test_identifyLanguage_returns_error_on_identify_language_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -2639,6 +2729,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - ProductAction.retrieveFirstPurchasableItemMatchFromIdentifier
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_successful_exact_SKU_match_product_then_returns_matched_product() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2671,6 +2762,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(productMatch.sku, expectedProductSKU)
     }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_successful_exact_global_unique_id_match_product_then_returns_matched_product() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2703,6 +2795,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(productMatch.globalUniqueID, expectedProductGlobalUniqueId)
     }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_successful_exact_SKU_match_product_variation_then_returns_matched_product_variation() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2735,6 +2828,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(variationMatch.sku, expectedProductSKU)
     }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_successful_exact_global_unique_id_match_variation_then_returns_matched_variation() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2767,6 +2861,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(variationMatch.globalUniqueID, expectedProductGlobalUniqueId)
     }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_successful_exact_SKU_match_product_but_not_purchasable_then_returns_error() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2788,6 +2883,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(error, ProductLoadError.notPurchasable)
     }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_successful_exact_global_unique_id_match_product_not_purchasable_then_returns_error() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2809,6 +2905,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(error, ProductLoadError.notPurchasable)
     }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_two_successful_SKU_partial_match_products_then_returns_matched_product() throws {
         // Given
         let remote = MockProductsRemote()
@@ -2839,6 +2936,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(productMatch.sku, "chocobars")
     }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_partial_SKU_match_then_returns_not_found_error() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2860,6 +2958,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(error, ProductLoadError.notFound)
     }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_unsuccessful_SKU_and_global_unique_id_match_then_returns_not_found_error() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2882,6 +2981,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(error, ProductLoadError.notFound)
     }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_errors_on_empty_Identifier() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2903,6 +3003,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(error, ProductLoadError.emptyIdentifier)
     }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_unsuccessful_Identifier_match_then_does_not_upsert_product_to_storage() throws {
         // Given
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2924,6 +3025,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: StorageProduct.self), 0)
     }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_successful_SKU_match_product_then_upserts_product_to_storage() {
          // Given
          let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2951,6 +3053,7 @@ final class ProductStoreTests: XCTestCase {
          XCTAssertEqual(storedProduct?.sku, expectedProductSKU)
      }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_successful_global_unique_id_match_product_then_upserts_product_to_storage() {
          // Given
          let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -2978,6 +3081,7 @@ final class ProductStoreTests: XCTestCase {
          XCTAssertEqual(storedProduct?.globalUniqueID, expectedProductGlobalUniqueId)
      }
 
+    @MainActor
     func test_retrieveFirstPurchasableItemMatchFromIdentifier_when_successful_SKU_match_variation_then_upserts_product_to_storage() {
          // Given
          let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -3007,6 +3111,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - `generateProductDetails`
 
+    @MainActor
     func test_generateProductDetails_returns_product_details_on_success() throws {
         // Given
         // swiftlint:disable:next line_length
@@ -3035,6 +3140,7 @@ final class ProductStoreTests: XCTestCase {
                                              description: "Enhance your salads."))
     }
 
+    @MainActor
     func test_generateProductDetails_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -3060,6 +3166,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
+    @MainActor
     func test_generateProductDetails_includes_parameters_in_remote_base_parameter() throws {
         // Given
         let scannedTexts = ["onion", "chives"]
@@ -3090,6 +3197,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(base.contains("\(language)"))
     }
 
+    @MainActor
     func test_generateProductDetails_uses_correct_feature() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -3115,6 +3223,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productDetailsFromScannedTexts)
     }
 
+    @MainActor
     func test_generateProductDetails_uses_correct_response_format() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -3142,6 +3251,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - `generateProductName`
 
+    @MainActor
     func test_generateProductName_returns_product_details_on_success() throws {
         // Given
         let text = "iPhone 15 Smart Phone"
@@ -3165,6 +3275,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(name, text)
     }
 
+    @MainActor
     func test_generateProductName_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -3187,6 +3298,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
+    @MainActor
     func test_generateProductName_includes_parameters_in_remote_base_parameter() throws {
         // Given
         let keyword = "iPhone 15"
@@ -3210,6 +3322,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertTrue(base.contains("\(keyword)"))
     }
 
+    @MainActor
     func test_generateProductName_uses_correct_feature() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -3232,6 +3345,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(feature, GenerativeContentRemoteFeature.productName)
     }
 
+    @MainActor
     func test_generateProductName_uses_correct_response_format() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -3256,6 +3370,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - `fetchNumberOfProducts`
 
+    @MainActor
     func test_fetchNumberOfProducts_returns_products_total_on_success() throws {
         // Given
         let remote = MockProductsRemote()
@@ -3274,6 +3389,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(numberOfProducts, 62)
     }
 
+    @MainActor
     func test_fetchNumberOfProducts_returns_error_on_failure() throws {
         // Given
         let remote = MockProductsRemote()
@@ -3295,6 +3411,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - `generateAIProduct`
 
+    @MainActor
     func test_generateAIProduct_returns_AIProduct_on_success() throws {
         // Given
         let product: AIProduct = .fake()
@@ -3327,6 +3444,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(receivedProduct, product)
     }
 
+    @MainActor
     func test_generateAIProduct_returns_error_on_failure() throws {
         // Given
         let generativeContentRemote = MockGenerativeContentRemote()
@@ -3360,6 +3478,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - Fetch stock
 
+    @MainActor
     func test_fetchStock_returns_stock_on_success() throws {
         // Given
         let stock = ProductStock.fake().copy(siteID: sampleSiteID,
@@ -3394,6 +3513,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(receivedStock.first, stock)
     }
 
+    @MainActor
     func test_fetchStock_returns_error_on_failure() throws {
         // Given
         let mockRemote = MockProductsRemote()
@@ -3422,6 +3542,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - Fetch product reports
 
+    @MainActor
     func test_fetchProductReports_returns_reports_on_success() throws {
         // Given
         let report = ProductReport.fake().copy(productID: 123,
@@ -3456,6 +3577,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(receivedReports.first, report)
     }
 
+    @MainActor
     func test_fetchProductReports_returns_error_on_failure() throws {
         // Given
         let mockRemote = MockProductsRemote()
@@ -3488,6 +3610,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - Fetch variation reports
 
+    @MainActor
     func test_fetchVariationReports_returns_reports_on_success() throws {
         // Given
         let report = ProductReport.fake().copy(productID: 123,
@@ -3524,6 +3647,7 @@ final class ProductStoreTests: XCTestCase {
         XCTAssertEqual(receivedReports.first, report)
     }
 
+    @MainActor
     func test_fetchVariationReports_returns_error_on_failure() throws {
         // Given
         let mockRemote = MockProductsRemote()
@@ -3556,6 +3680,7 @@ final class ProductStoreTests: XCTestCase {
 
     // MARK: - requestMissingProducts
 
+    @MainActor
     func test_requestMissingProducts_triggers_loading_request_only_for_missing_products_and_saves_fetched_products_to_storage() {
         // Given
         let existingProductIDs: [Int64] = [13, 53]
@@ -3600,6 +3725,7 @@ final class ProductStoreTests: XCTestCase {
 //
 private extension ProductStoreTests {
 
+    @MainActor
     func sampleProduct(_ siteID: Int64? = nil,
                        name: String? = nil,
                        productID: Int64? = nil,
@@ -3691,15 +3817,18 @@ private extension ProductStoreTests {
                        combineVariationQuantities: nil)
     }
 
+    @MainActor
     func sampleDimensions() -> Networking.ProductDimensions {
         return ProductDimensions(length: "12", width: "33", height: "54")
     }
 
+    @MainActor
     func sampleCategories(parentID: Int64 = 0) -> [Networking.ProductCategory] {
         let category1 = ProductCategory(categoryID: 36, siteID: sampleSiteID, parentID: parentID, name: "Events", slug: "events")
         return [category1]
     }
 
+    @MainActor
     func sampleTags(siteID: Int64) -> [Networking.ProductTag] {
         let tag1 = ProductTag(siteID: siteID, tagID: 37, name: "room", slug: "room")
         let tag2 = ProductTag(siteID: siteID, tagID: 38, name: "party room", slug: "party-room")
@@ -3714,6 +3843,7 @@ private extension ProductStoreTests {
         return [tag1, tag2, tag3, tag4, tag5, tag6, tag7, tag8, tag9]
     }
 
+    @MainActor
     func sampleImages() -> [Networking.ProductImage] {
         let image1 = ProductImage(imageID: 19,
                                   dateCreated: DateFormatter.dateFromString(with: "2018-01-26T21:49:45"),
@@ -3724,6 +3854,7 @@ private extension ProductStoreTests {
         return [image1]
     }
 
+    @MainActor
     func sampleAttributes() -> [Networking.ProductAttribute] {
         let attribute1 = ProductAttribute(siteID: sampleSiteID,
                                           attributeID: 0,
@@ -3744,6 +3875,7 @@ private extension ProductStoreTests {
         return [attribute1, attribute2]
     }
 
+    @MainActor
     func sampleDefaultAttributes() -> [Networking.ProductDefaultAttribute] {
         let defaultAttribute1 = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
         let defaultAttribute2 = ProductDefaultAttribute(attributeID: 0, name: "Size", option: "Medium")
@@ -3751,6 +3883,7 @@ private extension ProductStoreTests {
         return [defaultAttribute1, defaultAttribute2]
     }
 
+    @MainActor
     func sampleDownloads() -> [Networking.ProductDownload] {
         let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
                                         name: "Song #1",
@@ -3764,6 +3897,7 @@ private extension ProductStoreTests {
         return [download1, download2, download3]
     }
 
+    @MainActor
     func sampleDownloadsMutated() -> [Networking.ProductDownload] {
         let download1 = ProductDownload(downloadID: "1f9c11f99ceba63d4403c03bd5391b11",
                                         name: "Song #1",
@@ -3774,6 +3908,7 @@ private extension ProductStoreTests {
         return [download1, download2]
     }
 
+    @MainActor
     func sampleProductMutated(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
 
@@ -3858,16 +3993,19 @@ private extension ProductStoreTests {
                        customFields: sampleCustomFieldsMutated())
     }
 
+    @MainActor
     func sampleDimensionsMutated() -> Networking.ProductDimensions {
         return ProductDimensions(length: "12", width: "33", height: "54")
     }
 
+    @MainActor
     func sampleCategoriesMutated() -> [Networking.ProductCategory] {
         let category1 = ProductCategory(categoryID: 36, siteID: sampleSiteID, parentID: 0, name: "Events", slug: "events")
         let category2 = ProductCategory(categoryID: 362, siteID: sampleSiteID, parentID: 0, name: "Other Stuff", slug: "other")
         return [category1, category2]
     }
 
+    @MainActor
     func sampleTagsMutated(siteID: Int64) -> [Networking.ProductTag] {
         let tag1 = ProductTag(siteID: siteID, tagID: 37, name: "something", slug: "something")
         let tag2 = ProductTag(siteID: siteID, tagID: 38, name: "party room", slug: "party-room")
@@ -3878,6 +4016,7 @@ private extension ProductStoreTests {
         return [tag1, tag2, tag3, tag4, tag5]
     }
 
+    @MainActor
     func sampleImagesMutated() -> [Networking.ProductImage] {
         let image1 = ProductImage(imageID: 19,
                                   dateCreated: DateFormatter.dateFromString(with: "2018-01-26T21:49:45"),
@@ -3894,6 +4033,7 @@ private extension ProductStoreTests {
         return [image1, image2]
     }
 
+    @MainActor
     func sampleAttributesMutated() -> [Networking.ProductAttribute] {
         let attribute1 = ProductAttribute(siteID: sampleSiteID,
                                           attributeID: 0,
@@ -3906,12 +4046,14 @@ private extension ProductStoreTests {
         return [attribute1]
     }
 
+    @MainActor
     func sampleDefaultAttributesMutated() -> [Networking.ProductDefaultAttribute] {
         let defaultAttribute1 = ProductDefaultAttribute(attributeID: 0, name: "Color", option: "Purple")
 
         return [defaultAttribute1]
     }
 
+    @MainActor
     func sampleProductShippingClass(remoteID: Int64, siteID: Int64) -> Yosemite.ProductShippingClass {
         return ProductShippingClass(count: 3,
                                     descriptionHTML: "Limited offer!",
@@ -3921,6 +4063,7 @@ private extension ProductStoreTests {
                                     slug: "")
     }
 
+    @MainActor
     func sampleVariationTypeProduct(_ siteID: Int64? = nil) -> Networking.Product {
         let testSiteID = siteID ?? sampleSiteID
         return Product.fake().copy(siteID: testSiteID,
@@ -3998,10 +4141,12 @@ private extension ProductStoreTests {
                        combineVariationQuantities: nil)
     }
 
+    @MainActor
     func sampleVariationTypeDimensions() -> Networking.ProductDimensions {
         return ProductDimensions(length: "11", width: "22", height: "33")
     }
 
+    @MainActor
     func sampleVariationTypeImages() -> [Networking.ProductImage] {
         let image1 = ProductImage(imageID: 301,
                                   dateCreated: DateFormatter.dateFromString(with: "2019-04-09T20:23:58"),
@@ -4012,6 +4157,7 @@ private extension ProductStoreTests {
         return [image1]
     }
 
+    @MainActor
     func sampleVariationTypeAttributes() -> [Networking.ProductAttribute] {
         let attribute1 = ProductAttribute(siteID: sampleSiteID,
                                           attributeID: 0,
@@ -4032,6 +4178,7 @@ private extension ProductStoreTests {
         return [attribute1, attribute2]
     }
 
+    @MainActor
     func sampleAddOns() -> [Networking.ProductAddOn] {
         let topping = Networking.ProductAddOn.fake().copy(type: .checkbox,
                                                           display: .radioButton,
@@ -4075,6 +4222,7 @@ private extension ProductStoreTests {
         return [topping, soda, delivery]
     }
 
+    @MainActor
     func sampleCustomFields() -> [Networking.MetaData] {
         let meta1 = MetaData(metadataID: 4060,
                              key: "my_custom_field",
@@ -4085,6 +4233,7 @@ private extension ProductStoreTests {
         return [meta1, meta2]
     }
 
+    @MainActor
     func sampleCustomFieldsMutated() -> [Networking.MetaData] {
         let meta1 = MetaData(metadataID: 4060,
                             key: "my_custom_field_mutated",
@@ -4095,6 +4244,7 @@ private extension ProductStoreTests {
         return [meta1, meta2]
     }
 
+    @MainActor
     func insertStoredProduct(_ product: Networking.Product) {
         waitForExpectation { expectation in
             storageManager.performAndSave({ storage in

@@ -29,11 +29,13 @@ final class ResultsControllerTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
     }
 
+    @MainActor
     override func tearDown() {
         storageManager = nil
         super.tearDown()
@@ -41,6 +43,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that the Results Controller has an Empty Section right after the Fetch OP is performed.
     ///
+    @MainActor
     func testResultsControllerStartsEmptySectionAfterPerformingFetch() {
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
         XCTAssertEqual(resultsController.sections.count, 0)
@@ -55,6 +58,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that ResultsController does pick up pre-existent entities, right after performFetch runs.
     ///
+    @MainActor
     func testResultsControllerPicksUpEntitiesAvailablePriorToInstantiation() {
         storageManager.insertSampleAccount()
 
@@ -69,6 +73,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that ResultsController does pick up entities inserted after being instantiated.
     ///
+    @MainActor
     func testResultsControllerPicksUpEntitiesInsertedAfterInstantiation() {
         storageManager.insertSampleAccount()
 
@@ -83,6 +88,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that `sectionNameKeyPath` effectively causes the ResultsController to produce multiple sections, based on the grouping parameter.
     ///
+    @MainActor
     func testResultsControllerGroupSectionsBySectionNameKeypath() {
         let numberOfAccounts = 100
         for _ in 0 ..< numberOfAccounts {
@@ -105,6 +111,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that `object(at indexPath:)` effectively returns the expected (ReadOnly) Entity.
     ///
+    @MainActor
     func testObjectAtIndexPathReturnsExpectedEntity() {
         let mutableAccount = storageManager.insertSampleAccount()
         let sectionNameKeyPath = "userID"
@@ -123,6 +130,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that `onWillChangeContent` is called *before* anything is updated.
     ///
+    @MainActor
     func testOnWillChangeContentIsEffectivelyCalledBeforeChanges() {
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
@@ -145,6 +153,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that onDidChangeContent is effectivelyc alled *after* the results are altered.
     ///
+    @MainActor
     func testOnDidChangeContentIsEffectivelyCalledAfterChangesArePerformed() {
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
@@ -168,6 +177,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that `onDidChangeObject` is called whenever a new object is inserted.
     ///
+    @MainActor
     func testOnDidChangeObjectIsEffectivelyCalledOnceNewObjectsAreInserted() {
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
         try? resultsController.performFetch()
@@ -189,6 +199,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that `onDidChangeSection` is called whenever new sections are added.
     ///
+    @MainActor
     func testOnDidChangeSectionIsCalledWheneverNewSectionsAreAdded() {
         let sectionNameKeyPath = "userID"
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage,
@@ -210,6 +221,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that `fetchedObjects` effectively  returns all of the (readOnly) objects that are expected to be available.
     ///
+    @MainActor
     func testFetchedObjectsEffectivelyReturnsAvailableEntities() {
         let sortDescriptor = NSSortDescriptor(key: #selector(getter: StorageAccount.userID).description, ascending: true)
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sortDescriptor])
@@ -228,6 +240,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that `fetchedObjects` effectively  returns all of the (readOnly) objects that are expected to be available.
     ///
+    @MainActor
     func testResettingStorageIsMappedIntoOnResetClosure() {
         storageManager.insertSampleAccount()
         storageManager.insertSampleAccount()
@@ -252,6 +265,7 @@ final class ResultsControllerTests: XCTestCase {
 
     /// Verifies that `numberOfObjects` returns zero, when the collection is empty.
     ///
+    @MainActor
     func testEmptyStorageReturnsZeroNumberOfObjects() {
         let sortDescriptor = NSSortDescriptor(key: #selector(getter: StorageAccount.userID).description, ascending: true)
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sortDescriptor])
@@ -264,6 +278,7 @@ final class ResultsControllerTests: XCTestCase {
     /// Verifies that `objectIndex(from indexPath:)` returns a plain Integer that can be used to retrieve the target Object
     /// from the `fetchedObjects` collection.
     ///
+    @MainActor
     func testObjectIndexFromIndexPathReturnsAPlainIndexThatLetsYouMapTheProperObject() {
         let sectionNameKeyPath = "displayName"
         let sortDescriptor = NSSortDescriptor(key: #selector(getter: StorageAccount.username).description, ascending: true)
@@ -298,6 +313,7 @@ final class ResultsControllerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testWhenNoFetchPerformedThenSafeObjectAtIndexPathReturnsNil() {
         // Given
         let resultsController = ResultsController<StorageAccount>(viewStorage: viewStorage, sortedBy: [sampleSortDescriptor])
@@ -310,6 +326,7 @@ final class ResultsControllerTests: XCTestCase {
         XCTAssertNil(object)
     }
 
+    @MainActor
     func testSafeObjectAtIndexPathReturnsTheExpectedRow() throws {
         // Given
         let _ = [
@@ -336,6 +353,7 @@ final class ResultsControllerTests: XCTestCase {
         XCTAssertEqual(readonlyAccount.displayName, secondSection[0].displayName)
     }
 
+    @MainActor
     func testSafeObjectAtIndexPathReturnsNilIfTheSectionDoesNotExist() throws {
         // Given
         let _ = [
@@ -356,6 +374,7 @@ final class ResultsControllerTests: XCTestCase {
         XCTAssertNil(readonlyAccount)
     }
 
+    @MainActor
     func testSafeObjectAtIndexPathReturnsNilIfTheRowDoesNotExist() throws {
         // Given
         let _ = [
@@ -378,6 +397,7 @@ final class ResultsControllerTests: XCTestCase {
 
     // MARK: Fetch limit
 
+    @MainActor
     func test_fetchLimit_fetches_the_specified_count() throws {
         // Given
         let _ = [
@@ -396,6 +416,7 @@ final class ResultsControllerTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects.count, 1)
     }
 
+    @MainActor
     func test_all_matching_objects_are_fetched_when_fetchLimit_not_specified() throws {
         // Given
         let _ = [
@@ -415,6 +436,7 @@ final class ResultsControllerTests: XCTestCase {
 
     // MARK: - `indexPath(forObjectMatching:)`
 
+    @MainActor
     func test_indexPath_returns_index_path_for_the_first_matching_object() throws {
         // Given
         let _ = [
@@ -434,6 +456,7 @@ final class ResultsControllerTests: XCTestCase {
         XCTAssertEqual(resultsController.indexPath(forObjectMatching: { $0.displayName == "A" }), .init(row: 0, section: 0))
     }
 
+    @MainActor
     func test_indexPath_returns_nil_when_there_is_no_matching_object() throws {
         // Given
         let _ = [
@@ -457,6 +480,7 @@ final class ResultsControllerTests: XCTestCase {
 
 private extension ResultsControllerTests {
     @discardableResult
+    @MainActor
     func insertAccount(displayName: String, username: String) -> StorageAccount {
         let account = storageManager.insertSampleAccount()
         account.displayName = displayName

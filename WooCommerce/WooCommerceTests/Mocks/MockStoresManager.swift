@@ -146,6 +146,7 @@ extension MockStoresManager {
     /// Resolves `FeatureFlagAction.isRemoteFeatureFlagEnabled` by returning the given fixed value,
     /// regardless of the local `defaultValue` — mimicking a remote override.
     ///
+    @MainActor
     func resolveRemoteFeatureFlag(returning value: Bool) {
         whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             if case let .isRemoteFeatureFlagEnabled(_, _, _, completion) = action {

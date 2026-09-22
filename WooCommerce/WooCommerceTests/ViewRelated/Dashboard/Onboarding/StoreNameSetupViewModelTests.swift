@@ -6,6 +6,7 @@ final class StoreNameSetupViewModelTests: XCTestCase {
 
     private var stores: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting())
     }
@@ -44,6 +45,7 @@ final class StoreNameSetupViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldEnableSaving)
     }
 
+    @MainActor
     func test_isSavingInProgress_returns_false_upon_saving_name_completes() async {
         // Given
         let viewModel = StoreNameSetupViewModel(siteID: 123, name: "Test", stores: stores, onNameSaved: {})
@@ -108,6 +110,7 @@ final class StoreNameSetupViewModelTests: XCTestCase {
 }
 
 private extension StoreNameSetupViewModelTests {
+    @MainActor
     func mockStoreNameUpdate(result: Result<Void, Error>) {
         stores.whenReceivingAction(ofType: SiteAction.self) { action in
             switch action {

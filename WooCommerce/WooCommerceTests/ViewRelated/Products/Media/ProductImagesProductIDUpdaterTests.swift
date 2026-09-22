@@ -6,6 +6,7 @@ import Yosemite
 final class ProductImagesProductIDUpdaterTests: XCTestCase {
     private var storesManager: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: .testingInstance)
@@ -16,6 +17,7 @@ final class ProductImagesProductIDUpdaterTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_updateProductIDOfImage_dispatches_MediaAction_updateProductID_to_update_media_parent_id() async throws {
         // Given
         let productImage = ProductImage.fake()

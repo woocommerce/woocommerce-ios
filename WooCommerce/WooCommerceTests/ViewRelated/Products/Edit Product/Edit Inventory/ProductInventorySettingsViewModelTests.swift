@@ -129,6 +129,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
 
     // MARK: - `handleSKUChange`
 
+    @MainActor
     func testHandlingADuplicateSKUUpdatesTheSKUSectionWithError() {
         // Arrange
         let sku = "134"
@@ -165,6 +166,7 @@ final class ProductInventorySettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.sku, sku)
     }
 
+    @MainActor
     func testHandlingTheOriginalSKUIsAlwaysValid() {
         // Arrange
         let sku = "134"

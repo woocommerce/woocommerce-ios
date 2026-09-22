@@ -27,6 +27,7 @@ final class CustomerListViewModelTests: XCTestCase {
 
     // MARK: - State transitions
 
+    @MainActor
     func test_state_is_empty_without_any_actions() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -44,6 +45,7 @@ final class CustomerListViewModelTests: XCTestCase {
         XCTAssertEqual(invocationCountOfSyncCustomers, 0)
     }
 
+    @MainActor
     func test_state_is_syncingFirstPage_and_synchronizeAllCustomers_is_dispatched_upon_loadCustomers() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -86,6 +88,7 @@ final class CustomerListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .results)
     }
 
+    @MainActor
     func test_state_is_results_after_loadCustomers_with_nonempty_results() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -114,6 +117,7 @@ final class CustomerListViewModelTests: XCTestCase {
         XCTAssertEqual(states, [.empty, .syncingFirstPage, .results])
     }
 
+    @MainActor
     func test_state_is_back_to_empty_after_loadCustomers_with_empty_results() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -143,6 +147,7 @@ final class CustomerListViewModelTests: XCTestCase {
         XCTAssertEqual(states, [.empty, .syncingFirstPage, .empty])
     }
 
+    @MainActor
     func test_it_loads_next_page_after_loadCustomers_and_onLoadNextPageAction_until_hasNextPage_is_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -181,6 +186,7 @@ final class CustomerListViewModelTests: XCTestCase {
 
     // MARK: - Customer rows
 
+    @MainActor
     func test_customers_match_loaded_customers() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -201,6 +207,7 @@ final class CustomerListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.customers.first?.name, customer.name)
     }
 
+    @MainActor
     func test_customers_are_empty_when_loaded_customers_are_empty() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -219,6 +226,7 @@ final class CustomerListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.customers.count, 0)
     }
 
+    @MainActor
     func test_customers_are_sorted_by_lastActiveDate() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -245,6 +253,7 @@ final class CustomerListViewModelTests: XCTestCase {
 
     // MARK: - `onRefreshAction`
 
+    @MainActor
     func test_onRefreshAction_resyncs_the_first_page() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -280,6 +289,7 @@ final class CustomerListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.searchFilter, .name)
     }
 
+    @MainActor
     func test_filter_is_updated_and_advanced_search_shows_when_store_is_eligible() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -297,6 +307,7 @@ final class CustomerListViewModelTests: XCTestCase {
         assertEqual(.all, viewModel.searchFilter)
     }
 
+    @MainActor
     func test_search_includes_searchTerm_and_selected_filter() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -323,6 +334,7 @@ final class CustomerListViewModelTests: XCTestCase {
         assertEqual(viewModel.searchFilter, searchFilter)
     }
 
+    @MainActor
     func test_state_is_syncingFirstPage_and_searchWCAnalyticsCustomers_is_dispatched_when_searchTerm_is_set() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -343,6 +355,7 @@ final class CustomerListViewModelTests: XCTestCase {
         assertEqual(.syncingFirstPage, searchState)
     }
 
+    @MainActor
     func test_state_reset_to_empty_when_search_returns_no_results() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -365,6 +378,7 @@ final class CustomerListViewModelTests: XCTestCase {
         assertEqual(.empty, viewModel.syncState)
     }
 
+    @MainActor
     func test_customers_updated_with_search_results() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

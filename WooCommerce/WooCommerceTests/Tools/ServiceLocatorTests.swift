@@ -19,6 +19,7 @@ final class ServiceLocatorTests: XCTestCase {
         XCTAssertNotNil(ServiceLocator.stores)
     }
 
+    @MainActor
     func test_stores_defaults_to_DefaultStoresManager() {
         let stores = ServiceLocator.stores
 

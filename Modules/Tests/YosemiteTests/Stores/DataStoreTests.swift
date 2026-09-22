@@ -25,6 +25,7 @@ final class DataStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -33,6 +34,7 @@ final class DataStoreTests: XCTestCase {
         network.removeAllSimulatedResponses()
     }
 
+    @MainActor
     override func tearDown() {
         network = nil
         storageManager = nil
@@ -42,6 +44,7 @@ final class DataStoreTests: XCTestCase {
 
     // MARK: `synchronizeCountries`
 
+    @MainActor
     func test_synchronizeCountries_persists_Country_on_success() throws {
         // Given
         let remote = DataRemote(network: network)
@@ -75,6 +78,7 @@ final class DataStoreTests: XCTestCase {
         XCTAssertEqual(states.first?.name, "Alabama")
     }
 
+    @MainActor
     func test_synchronizeCountries_returns_error_on_failure() throws {
         // Given
         let remote = DataRemote(network: network)

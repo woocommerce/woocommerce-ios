@@ -14,16 +14,19 @@ final class ResultsController_FilterProductTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
     }
 
+    @MainActor
     override func tearDown() {
         storageManager = nil
         super.tearDown()
     }
 
+    @MainActor
     func testPredicateWithAllNilFilters() {
         // Arrange
         // Creates different combinations of products.
@@ -67,6 +70,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, expectedProducts)
     }
 
+    @MainActor
     func testPredicateWithNonNilStockStatusFilter() {
         // Arrange
         let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, stockStatusKey: ProductStockStatus.inStock.rawValue)
@@ -92,6 +96,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, expectedProducts)
     }
 
+    @MainActor
     func testPredicateWithNonNilProductStatus() {
         // Arrange
         let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, statusKey: ProductStatus.published.rawValue)
@@ -117,6 +122,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, expectedProducts)
     }
 
+    @MainActor
     func testPredicateWithNonNilProductType() {
         // Arrange
         let otherProduct = Product.fake().copy(siteID: sampleSiteID, productID: 1, productTypeKey: ProductType.affiliate.rawValue)
@@ -142,6 +148,7 @@ final class ResultsController_FilterProductTests: XCTestCase {
         XCTAssertEqual(resultsController.fetchedObjects, expectedProducts)
     }
 
+    @MainActor
     func test_predicate_with_non_nil_product_IDs() {
         // Given
         let otherProducts = [Product.fake().copy(siteID: sampleSiteID, productID: 1),

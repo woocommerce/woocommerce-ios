@@ -366,6 +366,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertNil(application.presentInAppMessages.first?.message)
     }
 
+    @MainActor
     func test_handleNotificationInTheForeground_when_connected_wpcom_notification_duplicates_woo_push_then_tracks_and_updates_badge_without_banner() async throws {
         // Given
         let siteID: Int64 = 132
@@ -711,6 +712,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(application.presentInAppMessages.isEmpty)
     }
 
+    @MainActor
     func test_registerDeviceToken_when_self_driven_gate_enabled_registers_self_driven_token_and_disables_WPCom_notifications() async {
         // Given
         defaults.set("456", forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
@@ -895,6 +897,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains("woo_push_token_delete_error"))
     }
 
+    @MainActor
     func test_registerDeviceToken_when_self_driven_gate_enabled_and_self_driven_token_registration_fails_falls_back_to_wpcom() async {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -942,6 +945,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         }))
     }
 
+    @MainActor
     func test_registerDeviceToken_when_self_driven_registration_fails_with_404_unmarks_registered_site() async {
         // Given
         let siteID: Int64 = 99
@@ -982,6 +986,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(storedSiteIDs.contains("\(siteID)"), "Site ID should be unmarked after 404 error")
     }
 
+    @MainActor
     func test_registerDeviceToken_when_plugin_version_is_incompatible_then_unmarks_site_and_skips_registration() async {
         // Given
         let siteID: Int64 = 99
@@ -1032,6 +1037,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(storedSiteIDs.contains("\(siteID)"), "Site ID should be unmarked when plugin version is incompatible")
     }
 
+    @MainActor
     func test_registerDeviceToken_when_plugin_version_is_compatible_then_proceeds_with_registration() async {
         // Given
         let siteID: Int64 = 99
@@ -1077,6 +1083,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(storedSiteIDs.contains("\(siteID)"), "Site ID should be marked as registered when plugin version is compatible")
     }
 
+    @MainActor
     func test_registerDeviceToken_when_plugin_version_check_fails_then_proceeds_with_registration() async {
         // Given
         let siteID: Int64 = 99
@@ -1123,6 +1130,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(storedSiteIDs.contains("\(siteID)"), "Site ID should be registered even when version check fails")
     }
 
+    @MainActor
     func test_registerDeviceToken_when_token_changes_then_clears_registered_sites_before_reregistration() async {
         // Given — site is registered with an old token
         let siteID: Int64 = 99
@@ -1174,6 +1182,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     // MARK: - Multi-site registration tests
 
+    @MainActor
     func test_registerDeviceToken_when_self_driven_enabled_then_registers_all_sites() async {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1220,6 +1229,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(storedSiteIDs.contains("300"))
     }
 
+    @MainActor
     func test_registerDeviceToken_when_some_sites_fail_then_other_sites_still_registered() async {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1265,6 +1275,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertTrue(storedSiteIDs.contains("300"), "Site 300 should be registered")
     }
 
+    @MainActor
     func test_registerDeviceToken_skips_already_registered_sites() async {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1304,6 +1315,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(registeredSiteIDs, [300])
     }
 
+    @MainActor
     func test_registerDeviceToken_falls_back_to_wpcom_when_any_site_fails() async {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1353,6 +1365,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         }))
     }
 
+    @MainActor
     func test_registerDeviceToken_when_multiple_sites_then_token_register_events_carry_target_site_properties() async throws {
         // Given — two stored sites with distinct URLs and capability flags; selected site is site 100.
         let analyticsProvider = MockAnalyticsProvider()
@@ -1418,6 +1431,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(errorProperties["is_jetpack_connected"] as? Bool, false)
     }
 
+    @MainActor
     func test_registerDeviceToken_when_target_site_is_not_the_selected_site_then_forces_jetpack_tunnel() async throws {
         // Given — selected site is 100, storage has two WC-active sites.
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1457,6 +1471,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(restFallbackBySite[200], false, "Non-selected site must force Jetpack tunnel to avoid mis-routing")
     }
 
+    @MainActor
     func test_registerDeviceToken_when_site_credentials_login_then_token_register_event_uses_session_default_site() async throws {
         // Given — site-credentials style login: the session holds the site, but storage doesn't.
         let analyticsProvider = MockAnalyticsProvider()
@@ -1510,6 +1525,7 @@ final class PushNotificationsManagerTests: XCTestCase {
 
     // MARK: - Self-driven push token deletion analytics
 
+    @MainActor
     func test_unregisterFromWooPushNotificationsIfPossible_when_unregistration_succeeds_then_tracks_delete_success_with_target_site_properties() async throws {
         // Given — selected site 100 is stored with distinct properties and a Woo push token is registered.
         let analyticsProvider = MockAnalyticsProvider()
@@ -1547,6 +1563,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("woo_push_token_delete_error"))
     }
 
+    @MainActor
     func test_unregisterFromWooPushNotificationsIfPossible_when_unregistration_fails_then_tracks_delete_error_with_error_properties() async throws {
         // Given — same setup as the success case, but the unregistration action fails.
         let analyticsProvider = MockAnalyticsProvider()
@@ -1609,6 +1626,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains("woo_push_token_delete_error"))
     }
 
+    @MainActor
     func test_registerDeviceToken_when_site_returns_notFound_then_unmarks_that_site() async {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1654,6 +1672,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertFalse(storedSiteIDs.contains("200"), "Site 200 should be unmarked after notFound error")
     }
 
+    @MainActor
     func test_registerDeviceToken_when_storage_is_empty_then_falls_back_to_current_siteID() async {
         // Given — no sites in storage, but defaultStoreID is set
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -1691,6 +1710,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         XCTAssertEqual(registeredSiteIDs, [99])
     }
 
+    @MainActor
     func test_registerDeviceToken_when_all_sites_already_registered_then_skips_registration() async {
         // Given — all sites already registered
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -2126,6 +2146,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_registerDeviceToken_when_eligibility_unknown_then_retries_eligibility_check() async {
         // Given — eligibility check does not complete during init
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -2163,6 +2184,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         }))
     }
 
+    @MainActor
     func test_registerDeviceToken_when_self_driven_succeeds_and_deviceID_is_nil_then_registers_dotcom_and_disables_WPCom() async throws {
         // Given
         storesManager.authenticate(credentials: SessionSettings.wpcomCredentials)
@@ -2231,6 +2253,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         }))
     }
 
+    @MainActor
     func test_registerDeviceToken_when_self_driven_succeeds_and_deviceID_is_set_then_disables_WPCom_without_dotcom_registration() async {
         // Given
         defaults.set("456", forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceID)
@@ -2284,6 +2307,7 @@ final class PushNotificationsManagerTests: XCTestCase {
         }))
     }
 
+    @MainActor
     func test_registerSiteForSelfDrivenPushNotifications_when_feature_disabled_then_skips_registration() async {
         // Given
         let siteID: Int64 = 99
@@ -2521,6 +2545,7 @@ private extension PushNotificationsManagerTests {
         return manager
     }
 
+    @MainActor
     func stubUpdateNotificationSettings(result: Result<Void, Error>) {
         storesManager.whenReceivingAction(ofType: AccountAction.self) { action in
             if case let .updateNotificationSettings(_, onCompletion) = action {
@@ -2532,6 +2557,7 @@ private extension PushNotificationsManagerTests {
     /// Stubs the migration's NotificationActions: WPCom device registration succeeds with
     /// deviceID "456", the Woo upsert returns record ID `siteID + 1000`, and the store-side
     /// delete completes with `unregisterResult`.
+    @MainActor
     func stubFallbackWooActions(unregisterResult: Result<Void, Error> = .success(())) {
         guard let device = try? JSONDecoder().decode(DotcomDevice.self, from: Data(#"{"ID": "456"}"#.utf8)) else {
             return XCTFail("Failed to decode DotcomDevice")
@@ -2697,6 +2723,7 @@ private extension PushNotificationsManagerTests {
         return payload
     }
 
+    @MainActor
     func mockSynchronizeNotificationsAction(error: Error? = nil) {
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             if case .synchronizeNotifications(let completion) = action {
@@ -2705,6 +2732,7 @@ private extension PushNotificationsManagerTests {
         }
     }
 
+    @MainActor
     func mockSelfDrivenRegistrationActions(token: Int64 = 42, error: Error? = nil) {
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {
@@ -2725,6 +2753,7 @@ private extension PushNotificationsManagerTests {
         }
     }
 
+    @MainActor
     func mockRemoteFeatureFlagAction(isEnabled: Bool, onCompletion: (() -> Void)? = nil) {
         storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {

@@ -21,12 +21,14 @@ final class JustInTimeMessageStoreTests: XCTestCase {
 
     var sut: JustInTimeMessageStore!
 
+    @MainActor
     override func setUp() {
         network = MockNetwork(useResponseQueue: true)
         storageManager = MockStorageManager()
         sut = JustInTimeMessageStore(dispatcher: Dispatcher(), storageManager: storageManager, network: network)
     }
 
+    @MainActor
     func test_loadMessage_then_it_returns_empty_array_upon_successful_empty_response() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "jetpack/v4/jitm", filename: "empty-data-array")
@@ -47,6 +49,7 @@ final class JustInTimeMessageStoreTests: XCTestCase {
         XCTAssert(try result.get().isEmpty)
     }
 
+    @MainActor
     func test_loadMessage_then_it_returns_the_Just_In_Time_Message_upon_successful_response() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "jetpack/v4/jitm", filename: "just-in-time-message-list")
@@ -83,6 +86,7 @@ final class JustInTimeMessageStoreTests: XCTestCase {
         assertEqual(expectedJustInTimeMessage, recievedMessage)
     }
 
+    @MainActor
     func test_loadMessage_then_it_returns_error_upon_response_error() {
         // Given a stubbed generic-error network response
         network.simulateError(requestUrlSuffix: "jetpack/v4/jitm", error: DotcomError.noRestRoute())

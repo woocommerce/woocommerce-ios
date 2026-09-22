@@ -6,6 +6,7 @@ final class DefaultFavoriteProductsUseCaseTests: XCTestCase {
     private let sampleSiteID: Int64 = 134
     private var stores: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
@@ -16,6 +17,7 @@ final class DefaultFavoriteProductsUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_it_sets_product_id_as_favorite_in_app_settings() async {
         // Given
         let usecase = DefaultFavoriteProductsUseCase(siteID: sampleSiteID,
@@ -38,6 +40,7 @@ final class DefaultFavoriteProductsUseCaseTests: XCTestCase {
         XCTAssertEqual(receivedProductID, 4)
     }
 
+    @MainActor
     func test_it_removes_product_id_as_favorite_in_app_settings() async {
         // Given
         let usecase = DefaultFavoriteProductsUseCase(siteID: sampleSiteID,
@@ -105,6 +108,7 @@ final class DefaultFavoriteProductsUseCaseTests: XCTestCase {
 }
 
 private extension DefaultFavoriteProductsUseCaseTests {
+    @MainActor
     func mockLoadFavoriteProductIDs(_ ids: [Int64]) {
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
             switch action {

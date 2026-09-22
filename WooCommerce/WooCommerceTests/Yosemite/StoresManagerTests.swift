@@ -259,6 +259,7 @@ final class StoresManagerTests: XCTestCase {
 
     /// Verifies that `deauthenticate` invalidates card present payment onboarding state cache.
     ///
+    @MainActor
     func testDeauthenticate_invalidates_card_present_payment_onboarding_state_cache() {
         let cardPresentPaymentOnboardingStateCache = MockCardPresentPaymentOnboardingStateCache()
         let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
@@ -336,6 +337,7 @@ final class StoresManagerTests: XCTestCase {
 
     /// Verifies that `updateDefaultStore` handles catalog sync cleanup gracefully when switching stores.
     ///
+    @MainActor
     func test_updateDefaultStore_handles_catalog_sync_cleanup_when_switching_stores() {
         // Given
         let sessionManager = SessionManager.testingInstance
@@ -645,6 +647,7 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(mockProductImageUploader.resetWasCalled)
     }
 
+    @MainActor
     func test_deauthenticate_invokes_delete_application_password() {
         // Given
         let mockSessionManager = MockSessionManager()
@@ -658,6 +661,7 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(mockSessionManager.deleteApplicationPasswordLocally)
     }
 
+    @MainActor
     func test_removingDefaultStore_invokes_delete_application_password() {
         // Given
         let mockSessionManager = MockSessionManager()
@@ -671,6 +675,7 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(mockSessionManager.deleteApplicationPasswordLocally)
     }
 
+    @MainActor
     func test_updating_default_storeID_sets_storePhoneNumber_to_nil() throws {
         // Given
         let uuid = UUID().uuidString
@@ -691,6 +696,7 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(defaults[.storePhoneNumber])
     }
 
+    @MainActor
     func test_updating_default_storeID_sets_completedAllStoreOnboardingTasks_to_nil() throws {
         // Given
         let uuid = UUID().uuidString
@@ -711,6 +717,7 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.completedAllStoreOnboardingTasks])
     }
 
+    @MainActor
     func test_updating_default_storeID_sets_usedProductDescriptionAI_to_nil() throws {
         // Given
         let uuid = UUID().uuidString
@@ -731,6 +738,7 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.usedProductDescriptionAI])
     }
 
+    @MainActor
     func test_updating_default_storeID_sets_hasDismissedWriteWithAITooltip_to_nil() throws {
         // Given
         let uuid = UUID().uuidString
@@ -751,6 +759,7 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(defaults[UserDefaults.Key.hasDismissedWriteWithAITooltip])
     }
 
+    @MainActor
     func test_updating_default_storeID_sets_numberOfTimesWriteWithAITooltipIsShown_to_nil() throws {
         // Given
         let uuid = UUID().uuidString
@@ -791,6 +800,7 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(isLoggedInValues, [false, true, false])
     }
 
+    @MainActor
     func test_it_deauthenticates_non_wpcom_session_upon_receiving_application_password_invalidated_notification() {
         // Given
         let notificationCenter = MockNotificationCenter()
@@ -810,6 +820,7 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(isLoggedInValues, [false, true, false])
     }
 
+    @MainActor
     func test_it_does_not_deauthenticate_wpcom_session_upon_receiving_application_password_invalidated_notification() {
         // Given
         let notificationCenter = MockNotificationCenter()
@@ -831,6 +842,7 @@ final class StoresManagerTests: XCTestCase {
 
     /// Verifies that the selected store is reset—while keeping the user authenticated—upon receiving an unknown blog error notification.
     ///
+    @MainActor
     func test_it_resets_selected_store_and_stays_authenticated_upon_receiving_unknown_blog_error_notification() {
         // Given
         let originalAnalytics = ServiceLocator.analytics
@@ -858,6 +870,7 @@ final class StoresManagerTests: XCTestCase {
 
     /// Verifies that default store is reset when initialized in an unexpected state: deauthenticated state with default store set.
     ///
+    @MainActor
     func test_it_resets_default_store_when_initialized_with_deauthenticated_state_and_default_store_set() {
         // Given
         let sessionManager = SessionManager.makeForTesting(defaultSite: Site.fake().copy(siteID: 123))
@@ -881,6 +894,7 @@ final class StoresManagerTests: XCTestCase {
         )
     }
 
+    @MainActor
     private func makeStoresManager(
         credentials: Credentials,
         endpoints: CookieNonceAuthenticationEndpoints?
@@ -974,6 +988,7 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(state.receivedActions.isEmpty)
     }
 
+    @MainActor
     func test_authenticate_when_session_changes_then_clears_connected_site_ids_but_preserves_same_wpcom_session() {
         // Given
         let sessionManager = MockSessionManager()
@@ -1005,6 +1020,7 @@ final class StoresManagerTests: XCTestCase {
 }
 
 private extension StoresManagerTests {
+    @MainActor
     func makeSiteSynchronizationTestContext(credentials: Credentials = SessionSettings.wpcomCredentials)
         -> (DefaultStoresManager, MockStoresManagerState, MockSessionManager) {
         let state = MockStoresManagerState()

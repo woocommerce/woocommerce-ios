@@ -103,6 +103,7 @@ final class NoWooErrorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.secondaryButtonTitle, Localization.secondaryButtonTitle)
     }
 
+    @MainActor
     func test_user_is_logged_out_when_tapping_secondary_button() {
         // Given
         let site = Site.fake().copy(url: "https://test.com")

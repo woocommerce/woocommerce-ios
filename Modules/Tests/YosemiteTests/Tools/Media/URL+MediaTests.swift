@@ -7,6 +7,7 @@ final class URL_MediaTests: XCTestCase {
 
     // MARK: tests for `mimeTypeForPathExtension`
 
+    @MainActor
     func testMimeTypeForJPEGFileURL() throws {
         try XCTSkipIf(testingOnRosetta())
         let url = URL(string: "/test/product.jpeg")
@@ -14,6 +15,7 @@ final class URL_MediaTests: XCTestCase {
         XCTAssertEqual(url?.mimeTypeForPathExtension, expectedMimeType)
     }
 
+    @MainActor
     func testMimeTypeForJPGFileURL() throws {
         try XCTSkipIf(testingOnRosetta())
         let url = URL(string: "/test/product.jpg")
@@ -21,6 +23,7 @@ final class URL_MediaTests: XCTestCase {
         XCTAssertEqual(url?.mimeTypeForPathExtension, expectedMimeType)
     }
 
+    @MainActor
     func testMimeTypeForGIFFileURL() throws {
         try XCTSkipIf(testingOnRosetta())
         let url = URL(string: "/test/product.gif")
@@ -28,6 +31,7 @@ final class URL_MediaTests: XCTestCase {
         XCTAssertEqual(url?.mimeTypeForPathExtension, expectedMimeType)
     }
 
+    @MainActor
     func testMimeTypeForPNGFileURL() throws {
         try XCTSkipIf(testingOnRosetta())
         let url = URL(string: "/test/product.png")
@@ -37,16 +41,19 @@ final class URL_MediaTests: XCTestCase {
 
     // MARK: tests for `fileExtensionForUTType`
 
+    @MainActor
     func testFileExtensionForJPEGType() {
         let expectedFileExtension = "jpeg"
         XCTAssertEqual(URL.fileExtensionForUTType(UTType.jpeg.identifier), expectedFileExtension)
     }
 
+    @MainActor
     func testFileExtensionForGIFType() {
         let expectedFileExtension = "gif"
         XCTAssertEqual(URL.fileExtensionForUTType(UTType.gif.identifier), expectedFileExtension)
     }
 
+    @MainActor
     func testFileExtensionForPNGType() {
         let expectedFileExtension = "png"
         XCTAssertEqual(URL.fileExtensionForUTType(UTType.png.identifier), expectedFileExtension)

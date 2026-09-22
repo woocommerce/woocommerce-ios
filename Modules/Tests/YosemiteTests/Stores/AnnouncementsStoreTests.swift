@@ -29,6 +29,7 @@ final class AnnouncementsStoreTests: XCTestCase {
     ///
     private var subject: AnnouncementsStore?
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -44,6 +45,7 @@ final class AnnouncementsStoreTests: XCTestCase {
                                      fileStorage: fileStorage)
     }
 
+    @MainActor
     func test_synchronize_announcements_effectively_retrieves_latest_announcement() {
         // Arrange
         let announcement = makeAnnouncement()
@@ -65,6 +67,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertEqual(fetchedAnnouncement?.features.first?.iconUrl, "https://s0.wordpress.com/i/store/mobile/plans-premium.png")
     }
 
+    @MainActor
     func test_synchronize_announcements_with_empty_response_error_gets_an_error() {
         // Arrange
         remote.whenLoadingAnnouncements(for: UserAgent.bundleShortVersion, thenReturn: .success([]))
@@ -81,6 +84,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertEqual(resultError, .announcementNotFound)
     }
 
+    @MainActor
     func test_synchronize_announcements_with_error_gets_an_error() {
         // Arrange
         let error = NSError(domain: "", code: 0, userInfo: nil)
@@ -98,6 +102,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertEqual(resultError, error)
     }
 
+    @MainActor
     func test_load_saved_announcement_without_saved_data_returns_error() {
         // Arrange, Act
         let resultError: AnnouncementsStorageError? = waitFor { [weak self] promise in
@@ -111,6 +116,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertEqual(resultError, .invalidAnnouncement)
     }
 
+    @MainActor
     func test_load_newly_saved_announcement_returns_an_announcement_not_yet_displayed() throws {
         //Arrange
         try fileStorage?.write(makeStorageAnnouncement(), to: try XCTUnwrap(expectedFeatureAnnouncementsFileURL))
@@ -128,6 +134,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertFalse(isDisplayed)
     }
 
+    @MainActor
     func test_load_saved_announcement_already_displayed_returns_a_displayed_announcement() throws {
         //Arrange
         try fileStorage?.write(makeStorageAnnouncement(displayed: true), to: try XCTUnwrap(expectedFeatureAnnouncementsFileURL))
@@ -145,6 +152,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertTrue(isDisplayed)
     }
 
+    @MainActor
     func test_on_mark_announcement_as_displayed_it_updates_storage_model() throws {
         //Arrange
         try fileStorage?.write(makeStorageAnnouncement(displayed: false), to: try XCTUnwrap(expectedFeatureAnnouncementsFileURL))
@@ -170,6 +178,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertTrue(isDisplayed)
     }
 
+    @MainActor
     func test_synchronize_announcements_for_debug_fetches_with_custom_app_version() {
         // Arrange
         let customVersion = "999.0"
@@ -188,6 +197,7 @@ final class AnnouncementsStoreTests: XCTestCase {
         XCTAssertEqual(fetchedAnnouncement?.appVersionName, "1")
     }
 
+    @MainActor
     func test_synchronize_announcements_for_debug_always_overwrites_existing_announcement() throws {
         // Arrange
         let customVersion = "999.0"
@@ -223,6 +233,7 @@ private extension AnnouncementsStoreTests {
         FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("feature-announcements.plist")
     }
 
+    @MainActor
     func makeAnnouncement() -> Yosemite.Announcement {
         Announcement.fake().copy(appVersionName: "1",
                                  detailsUrl: "http://wordpress.org",
@@ -237,6 +248,7 @@ private extension AnnouncementsStoreTests {
                                  ])
     }
 
+    @MainActor
     func makeStorageAnnouncement(displayed: Bool = false) -> StorageAnnouncement {
         StorageAnnouncement(appVersionName: "1",
                             minimumAppVersion: "1",

@@ -71,6 +71,7 @@ struct AIAssistantTimeRangeTests {
 }
 
 private extension AIAssistantTimeRangeTests {
+    @MainActor
     func makeSUT(timeZone: TimeZone = .current) -> AIAssistantExternalNavigationAdaptor {
         let stores = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
         let host = AIAssistantNavigationHost()

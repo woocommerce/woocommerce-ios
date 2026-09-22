@@ -8,6 +8,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
 
     private var storesManager: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
@@ -135,6 +136,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.bulkUpdatePriceError?.validationError(), .salePriceHigherThanRegularPrice)
     }
 
+    @MainActor
     func test_state_when_selected_valid_price_is_valid_and_action_is_dispatched() {
         // Given
         let variations = [MockProductVariation().productVariation().copy(dateOnSaleStart: Date(), dateOnSaleEnd: Date(), salePrice: "9")]
@@ -156,6 +158,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.bulkUpdatePriceError)
     }
 
+    @MainActor
     func test_state_remains_loading_when_price_changes() {
         // Given
         let variations = [MockProductVariation().productVariation().copy(dateOnSaleStart: Date(), dateOnSaleEnd: Date(), salePrice: "9")]
@@ -178,6 +181,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.bulkUpdatePriceError)
     }
 
+    @MainActor
     func test_state_when_selected_valid_price_is_valid_when_action_fails() {
         // Given
         let variations = [MockProductVariation().productVariation().copy(dateOnSaleStart: Date(), dateOnSaleEnd: Date(), salePrice: "9")]
@@ -205,6 +209,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.bulkUpdatePriceError, .priceUpdateError)
     }
 
+    @MainActor
     func test_callback_is_called_when_update_action_is_successful() {
         // Given
         let variations = [MockProductVariation().productVariation().copy(dateOnSaleStart: Date(), dateOnSaleEnd: Date(), salePrice: "9")]
@@ -238,6 +243,7 @@ final class BulkUpdatePriceSettingsViewModelTests: XCTestCase {
         XCTAssertTrue(isCallbackCalled)
     }
 
+    @MainActor
     func test_action_is_caled_with_the_updated_price() {
         // Given
         let dateOnSaleStart = Date()

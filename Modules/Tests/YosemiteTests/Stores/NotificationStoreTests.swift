@@ -28,6 +28,7 @@ final class NotificationStoreTests: XCTestCase {
         return storageManager.viewStorage
     }
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -40,6 +41,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that `NotificationAction.synchronizeNotifications` effectively persists any retrieved Notes.
     ///
+    @MainActor
     func testRetrieveNotesEffectivelyPersistsRetrievedNotes() {
         let expectation = self.expectation(description: "Sync notifications")
         let notificationStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -91,6 +93,7 @@ final class NotificationStoreTests: XCTestCase {
     /// Verifies that `NotificationAction.synchronizeNotifications` will only request the notifications that aren't locally
     /// stored, and are up to date.
     ///
+    @MainActor
     func testSynchronizeNotificationsRequestsOnlyOutdatedNotes() {
         let expectation = self.expectation(description: "Sync notifications")
         let notificationStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -121,6 +124,7 @@ final class NotificationStoreTests: XCTestCase {
     /// Verifies that `NotificationAction.synchronizeNotification` will effectively request a single notification,
     /// which will be stored in CoreData.
     ///
+    @MainActor
     func testSynchronizeSingleNotificationEffectivelyUpdatesRequestedNote() {
         let expectation = self.expectation(description: "Sync notification")
         let notificationStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -149,6 +153,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.updateLastSeen handles a success response from the backend properly
     ///
+    @MainActor
     func testUpdateLastSeenReturnsSuccess() {
         let expectation = self.expectation(description: "Update last seen success response")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -165,6 +170,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.updateLastSeen returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testUpdateLastSeenReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Update last seen error response")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -181,6 +187,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.updateLastSeen returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testUpdateLastSeenReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Update last seen empty response")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -199,6 +206,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.updateReadStatus handles a success response from the backend properly
     ///
+    @MainActor
     func testUpdateNotificationReadStatusReturnsSuccess() {
         let expectation = self.expectation(description: "Update read status success response")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -224,6 +232,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.updateReadStatus returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testUpdateNotificationReadStatusReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Update notification read status error response")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -240,6 +249,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.updateReadStatus returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testUpdateNotificationReadStatusReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Update notification read status empty response")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -255,6 +265,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that `updateLocalNoteReadStatus` does not produce duplicate entries.
     ///
+    @MainActor
     func testUpdateStoredNotificationEffectivelyUpdatesPreexistantNotification() {
         let expectation = self.expectation(description: "Update read status on existing note")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -277,6 +288,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that `updateLocalNoteReadStatus` does not produce duplicate entries with an invalid notification ID.
     ///
+    @MainActor
     func testUpdateStoredNotificationDoesntUpdateInvalidNote() {
         let expectation = self.expectation(description: "Update read status on invalid note")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -294,6 +306,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that `NotificationAction.updateReadStatus` effectively invalidates the note's hash on error.
     ///
+    @MainActor
     func testMarkAsReadInvalidatesTheNotificationHashOnError() {
         let expectation = self.expectation(description: "Update read status success response")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -323,6 +336,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.updateMultipleReadStatus handles a success response from the backend properly
     ///
+    @MainActor
     func testUpdateMultipleNotificationReadStatusEffectivelyPatchesLocalFlags() {
         let expectation = self.expectation(description: "Update read status success response")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -355,6 +369,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.registerDevice successfully handles a success response from the backend.
     ///
+    @MainActor
     func test_registerDevice_handles_successful_response() throws {
         // Given
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -379,6 +394,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.registerDevice successfully handles a failure response from the backend.
     ///
+    @MainActor
     func test_registerDevice_handles_failure_response() {
         // Given
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -405,6 +421,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.unregisterDevice successfully handles a success response from the backend.
     ///
+    @MainActor
     func testUnregisterDeviceHandlesSuccessfulResponse() {
         let expectation = self.expectation(description: "Unregister Device")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -423,6 +440,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.unregisterDevice successfully handles a failure response from the backend.
     ///
+    @MainActor
     func testUnregisterDeviceHandlesFailureResponse() {
         let expectation = self.expectation(description: "Unregister Device")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -444,6 +462,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.registerDeviceForSelfDrivenPushNotifications successfully handles a success response from the backend.
     ///
+    @MainActor
     func test_registerDeviceForSelfDrivenPushNotifications_handles_successful_response() {
         // Given
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -476,6 +495,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.registerDeviceForSelfDrivenPushNotifications successfully handles a failure response from the backend.
     ///
+    @MainActor
     func test_registerDeviceForSelfDrivenPushNotifications_handles_failure_response() {
         // Given
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -511,6 +531,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.unregisterFromSelfDrivenPushNotifications successfully handles a success response from the backend.
     ///
+    @MainActor
     func test_unregisterFromSelfDrivenPushNotifications_handles_successful_response() {
         // Given
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -541,6 +562,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that NotificationAction.unregisterFromSelfDrivenPushNotifications successfully handles a failure response from the backend.
     ///
+    @MainActor
     func test_unregisterFromSelfDrivenPushNotifications_handles_failure_response() {
         // Given
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -573,6 +595,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that `loadPushNotificationPreferences` returns the decoded preferences on success.
     ///
+    @MainActor
     func test_loadPushNotificationPreferences_handles_successful_response() {
         // Given
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -602,6 +625,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that `loadPushNotificationPreferences` surfaces an error when the backend returns an error.
     ///
+    @MainActor
     func test_loadPushNotificationPreferences_handles_failure_response() {
         // Given
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -629,6 +653,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that `updatePushNotificationPreferences` returns the server-merged preferences on success.
     ///
+    @MainActor
     func test_updatePushNotificationPreferences_handles_successful_response() {
         // Given
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -658,6 +683,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that `updatePushNotificationPreferences` surfaces an error when the backend returns an error.
     ///
+    @MainActor
     func test_updatePushNotificationPreferences_handles_failure_response() {
         // Given
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -687,6 +713,7 @@ final class NotificationStoreTests: XCTestCase {
 
     /// Verifies that `markLocalNoteAsDeleted` works as expected.
     ///
+    @MainActor
     func testUpdateDeletedStatusEffectivelyUpdatesPreexistantNotification() {
         let expectation = self.expectation(description: "Update delete status on existing note")
         let noteStore = NotificationStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -745,12 +772,14 @@ private extension NotificationStoreTests {
 
     /// Returns a sample Apple Device
     ///
+    @MainActor
     func sampleAPNSDevice() -> APNSDevice {
         return APNSDevice(token: "1234", model: "iPhone", name: "Something", iOSVersion: "99", identifierForVendor: "1234")
     }
 
     /// Returns a sample Dotcom Notification
     ///
+    @MainActor
     func sampleNotification() -> Networking.Note {
         return Note(noteID: 123456,
                     hash: 11223344,
@@ -770,6 +799,7 @@ private extension NotificationStoreTests {
 
     /// Returns a sample Dotcom Notification (same as above but slightly mutated!)
     ///
+    @MainActor
     func sampleNotificationMutated() -> Networking.Note {
         return Note(noteID: 123456,
                     hash: 11223344,

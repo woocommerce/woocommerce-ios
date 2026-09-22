@@ -33,6 +33,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
     // MARK: - State transitions
 
+    @MainActor
     func test_state_is_empty_without_any_actions() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -50,6 +51,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertEqual(invocationCountOfLoadCampaigns, 0)
     }
 
+    @MainActor
     func test_synchronizeCampaignsList_is_dispatched_upon_loadCampaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -91,6 +93,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncState, .results)
     }
 
+    @MainActor
     func test_state_is_results_after_loadCampaigns_with_nonempty_results() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -122,6 +125,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertEqual(states, [.empty, .syncingFirstPage, .results])
     }
 
+    @MainActor
     func test_state_is_back_to_empty_after_loadCampaigns_with_empty_results() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -151,6 +155,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertEqual(states, [.empty, .syncingFirstPage, .empty])
     }
 
+    @MainActor
     func test_it_loads_next_page_after_loadCampaigns_and_onLoadNextPageAction_until_hasNextPage_is_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -192,6 +197,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
     // MARK: - Row view models
 
+    @MainActor
     func test_campaignModels_match_loaded_campaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -214,6 +220,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.campaigns, [campaign2, campaign1])
     }
 
+    @MainActor
     func test_campaignModels_are_empty_when_loaded_campaigns_are_empty() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -232,6 +239,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.campaigns, [])
     }
 
+    @MainActor
     func test_campaignModels_are_sorted_by_id() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -258,6 +266,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
     // MARK: - `onRefreshAction`
 
+    @MainActor
     func test_onRefreshAction_resyncs_the_first_page() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -288,6 +297,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
     // MARK: - shouldShowIntroView
 
+    @MainActor
     func test_shouldShowIntroView_is_false_when_there_are_existing_campaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -311,6 +321,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowIntroView)
     }
 
+    @MainActor
     func test_shouldShowIntroView_is_true_only_when_loading_campaigns_for_the_first_time_and_there_are_no_existing_campaigns() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -341,6 +352,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
     // MARK: `selectedCampaignURL`
 
+    @MainActor
     func test_didSelectCampaignDetails_updates_selectedCampaignURL_correctly() {
         // Given
         let testURL = "https://example.com"

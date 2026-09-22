@@ -35,6 +35,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -44,6 +45,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
 
     // MARK: - ProductAction.synchronizeProducts
 
+    @MainActor
     func testSynchronizingProductsWithAscendingNameSortOrder() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -69,6 +71,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func testSynchronizingProductsWithDescendingNameSortOrder() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -94,6 +97,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func testSynchronizingProductsWithAscendingDateSortOrder() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -119,6 +123,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func testSynchronizingProductsWithDescendingDateSortOrder() {
         let expectation = self.expectation(description: "Retrieve product list")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -146,6 +151,7 @@ final class ProductStore_ProductsSortOrderTests: XCTestCase {
 }
 
 private extension ProductStore_ProductsSortOrderTests {
+    @MainActor
     func assertSortOrderParamValues(orderByValue: String, orderValue: String) {
         guard let queryParameters = network.queryParameters else {
             XCTFail("Cannot parse query from the API request")

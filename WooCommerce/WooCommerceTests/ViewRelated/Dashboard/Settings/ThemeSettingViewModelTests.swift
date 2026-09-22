@@ -7,6 +7,7 @@ final class ThemeSettingViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
 
+    @MainActor
     func test_updateCurrentThemeName_updates_loadingCurrentTheme_properly() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -29,6 +30,7 @@ final class ThemeSettingViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.loadingCurrentTheme)
     }
 
+    @MainActor
     func test_updateCurrentThemeName_updates_correct_name_from_loaded_theme() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -62,6 +64,7 @@ final class ThemeSettingViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentThemeName, "tsubaki")
     }
 
+    @MainActor
     func test_it_triggers_pending_theme_installation_upon_initialization() async {
         // Given
         let themeInstaller = MockThemeInstaller()

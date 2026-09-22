@@ -477,6 +477,7 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 123
 
+    @MainActor
     private func makeViewModel(
         isJCPSite: Bool = false,
         jetpackConnectionService: JetpackConnectionServiceProtocol = MockJetpackConnectionService(),

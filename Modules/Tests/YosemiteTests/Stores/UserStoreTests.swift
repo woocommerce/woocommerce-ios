@@ -28,6 +28,7 @@ final class UserStoreTests: XCTestCase {
 
     // MARK: Lifecycle
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -37,6 +38,7 @@ final class UserStoreTests: XCTestCase {
 
     // MARK: Tests
 
+    @MainActor
     func test_retrieveUser_returns_user_model_correctly() {
         // Given
         let urlSuffix = "users/me"
@@ -55,6 +57,7 @@ final class UserStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_retrieveUser_properly_returns_error() {
         // Given
         let store = UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -71,6 +74,7 @@ final class UserStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    @MainActor
     func test_get_ip_location_returns_a_success() {
         // Given
         let urlSuffix = "geo/"
@@ -89,6 +93,7 @@ final class UserStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_get_ip_location_returns_error() {
         // Given
         let store = UserStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

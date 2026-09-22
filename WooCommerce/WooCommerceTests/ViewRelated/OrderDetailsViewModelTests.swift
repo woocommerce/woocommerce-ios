@@ -14,6 +14,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     private var storesManager: MockStoresManager!
     private var storageManager: MockStorageManager!
 
+    @MainActor
     override func setUp() {
         storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         storageManager = MockStorageManager()
@@ -432,6 +433,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_there_should_not_be_edit_order_action_if_order_is_not_synced() {
         // Given
         let sessionManager = SessionManager.makeForTesting(cachedWooCommerceVersion: "11.1.0")
@@ -507,6 +509,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_edit_order_action_uses_active_stored_woocommerce_version_instead_of_inactive_or_session_versions() {
         // Given
         let order = Order.fake().copy(currency: "USD", total: "10.0")
@@ -536,6 +539,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.editOrderRequestCurrency, CurrencyCode.USD.rawValue)
     }
 
+    @MainActor
     func test_edit_order_action_does_not_use_session_woocommerce_version_when_site_has_no_stored_version() {
         // Given
         let order = Order.fake().copy(currency: "USD", total: "10.0")
@@ -669,6 +673,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(title.contains("\u{20AC}10.0"))
     }
 
+    @MainActor
     func test_syncSubscriptions_loads_subscription_into_dataSource() throws {
         // Given
 
@@ -771,6 +776,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
     // MARK: - `syncTrackingsWhenShipmentTrackingIsEnabled`
 
+    @MainActor
     func test_syncTrackingsWhenShipmentTrackingIsEnabled_dispatches_ShipmentAction() async throws {
         // Given
         storesManager.reset()
@@ -899,6 +905,7 @@ private extension OrderDetailsViewModelTests {
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: setting)
     }
 
+    @MainActor
     func configureShippingLabelContext(storeCountry: String?,
                                        handlesEligibilityCheck: Bool = false,
                                        handlesShipmentSync: Bool = false) -> OrderDetailsViewModel {
@@ -927,6 +934,7 @@ private extension OrderDetailsViewModelTests {
         return viewModel
     }
 
+    @MainActor
     func whenFetchingSystemPlugin(path: String? = nil, thenReturn plugin: SystemPlugin?) {
         storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {
@@ -942,6 +950,7 @@ private extension OrderDetailsViewModelTests {
         }
     }
 
+    @MainActor
     func whenSyncingLegacyShippingLabels(thenReturn result: Result<[ShippingLabel], Error>) {
         storesManager.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
             switch action {
@@ -953,6 +962,7 @@ private extension OrderDetailsViewModelTests {
         }
     }
 
+    @MainActor
     func whenSyncingShipments(thenReturn result: Result<[WooShippingShipment], Error>) {
         storesManager.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {
@@ -964,6 +974,7 @@ private extension OrderDetailsViewModelTests {
         }
     }
 
+    @MainActor
     func whenCheckingLegacyShippingLabelCreationEligibility(thenReturn isEligible: Bool) {
         storesManager.whenReceivingAction(ofType: ShippingLabelAction.self) { action in
             switch action {
@@ -975,6 +986,7 @@ private extension OrderDetailsViewModelTests {
         }
     }
 
+    @MainActor
     func whenCheckingShippingLabelCreationEligibility(thenReturn isEligible: Bool) {
         storesManager.whenReceivingAction(ofType: WooShippingAction.self) { action in
             switch action {

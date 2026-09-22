@@ -26,6 +26,7 @@ final class ProductImagesSaverTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_image_status_with_upload_error_is_removed_from_imageStatusesToSave() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -56,6 +57,7 @@ final class ProductImagesSaverTests: XCTestCase {
         XCTAssertEqual(imagesSaver.imageStatusesToSave, [])
     }
 
+    @MainActor
     func test_imageStatusesToSave_stays_empty_after_saving_product_successfully() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -112,6 +114,7 @@ final class ProductImagesSaverTests: XCTestCase {
         XCTAssertEqual(imagesSaver.imageStatusesToSave, [])
     }
 
+    @MainActor
     func test_imageStatusesToSave_stays_empty_after_saving_product_fails() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -151,6 +154,7 @@ final class ProductImagesSaverTests: XCTestCase {
         XCTAssertEqual(imagesSaver.imageStatusesToSave, [])
     }
 
+    @MainActor
     func test_updateProductVariationImage_is_dispatched_when_saving_an_image_to_ProductVariation() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -184,6 +188,7 @@ final class ProductImagesSaverTests: XCTestCase {
         XCTAssertEqual(savedImages, [image])
     }
 
+    @MainActor
     func test_savedProduct_is_updated_correctly() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -243,6 +248,7 @@ final class ProductImagesSaverTests: XCTestCase {
 
     // MARK: - Analytics
 
+    @MainActor
     func test_savingProductAfterBackgroundImageUploadSuccess_is_tracked_on_variation_update_success() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -275,6 +281,7 @@ final class ProductImagesSaverTests: XCTestCase {
         assertEqual("variation", analyticsProvider.receivedProperties.first?["type"] as? String)
     }
 
+    @MainActor
     func test_savingProductAfterBackgroundImageUploadFailed_is_tracked_on_product_update_failure() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

@@ -18,6 +18,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     private var viewModel: CustomFieldsListViewModel!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -185,6 +186,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.combinedList.last?.fieldID)
     }
 
+    @MainActor
     func test_given_savingSucceeds_when_saveChangesCalled_then_changesAreSaved() async {
         // Given: successfully saving the changes
         let newField = MetaData(metadataID: 10, key: "NewKey", value: "NewValue")
@@ -207,6 +209,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasChanges)
     }
 
+    @MainActor
     func test_given_savingFails_when_saveChangesCalled_then_changesAreNotSaved() async {
         // Given: failing to save the changes
         stores.whenReceivingAction(ofType: MetaDataAction.self) { action in
@@ -225,6 +228,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.hasChanges)
     }
 
+    @MainActor
     func test_given_savingFails_when_saveChangesCalled_then_errorIsThrown() async {
         // Given: failing to save the changes
         stores.whenReceivingAction(ofType: MetaDataAction.self) { action in
@@ -242,6 +246,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertNotNil(viewModel.notice)
     }
 
+    @MainActor
     func test_given_savingSucceeds_when_saveChangesCalled_then_callListener() async {
         // Given: successfully saving the changes
         stores.whenReceivingAction(ofType: MetaDataAction.self) { [self] action in
@@ -327,6 +332,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
 
     // MARK: - Disallowed Keys for Creation with remote changes
 
+    @MainActor
     func test_given_addField_then_saveChanges_then_disallowedKeysUpdates() async {
         // Given: Initial state with two fields ("Key1", "Key2")
 
@@ -351,6 +357,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("NewKey"))
     }
 
+    @MainActor
     func test_given_saveField_then_saveChanges_then_disallowedKeysUpdates() async {
         // Given: Initial state with two fields ("Key1", "Key2")
 
@@ -374,6 +381,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.disallowedKeysForCreation.contains("Key2"))
     }
 
+    @MainActor
     func test_given_deleteField_then_saveChanges_then_disallowedKeysUpdates() async {
         // Given: Initial state with two fields ("Key1", "Key2")
         let fieldToDelete = originalFields[0]
@@ -398,6 +406,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
     }
 
     // MARK: - Top Banner
+    @MainActor
     func test_given_bannerNotDismissed_when_hasChanges_then_showBanner() async {
         // Given: The banner is not dismissed
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -421,6 +430,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowTopBanner)
     }
 
+    @MainActor
     func test_given_bannerDismissed_when_hasChanges_then_hideBanner() async {
         // Given: The banner is dismissed
         stores.whenReceivingAction(ofType: AppSettingsAction.self) { action in
@@ -444,6 +454,7 @@ final class CustomFieldsListViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowTopBanner)
     }
 
+    @MainActor
     func test_given_bannerShown_when_dismissBannerCalled_then_bannerIsDismissed() async {
         // Given: The banner is shown
         var wasDismissed = false

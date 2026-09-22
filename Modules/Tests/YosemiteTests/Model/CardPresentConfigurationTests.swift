@@ -5,6 +5,7 @@ import WooFoundation
 
 class CardPresentConfigurationTests: XCTestCase {
     // MARK: - US Tests
+    @MainActor
     func test_configuration_for_US() throws {
         let configuration = CardPresentPaymentsConfiguration(country: .US)
         XCTAssertTrue(configuration.isSupportedCountry)
@@ -16,6 +17,7 @@ class CardPresentConfigurationTests: XCTestCase {
     }
 
     // MARK: - Puerto Rico Tests
+    @MainActor
     func test_configuration_for_PR() throws {
         let configuration = CardPresentPaymentsConfiguration(country: .PR)
         XCTAssertTrue(configuration.isSupportedCountry)
@@ -28,6 +30,7 @@ class CardPresentConfigurationTests: XCTestCase {
     }
 
     // MARK: - Canada Tests
+    @MainActor
     func test_configuration_for_Canada() throws {
         let configuration = CardPresentPaymentsConfiguration(country: .CA)
         XCTAssertTrue(configuration.isSupportedCountry)
@@ -40,6 +43,7 @@ class CardPresentConfigurationTests: XCTestCase {
     }
 
     // MARK: - United Kingdom Tests
+    @MainActor
     func test_configuration_for_United_Kingdom() throws {
         let configuration = CardPresentPaymentsConfiguration(country: .GB)
         XCTAssertTrue(configuration.isSupportedCountry)
@@ -56,6 +60,7 @@ class CardPresentConfigurationTests: XCTestCase {
     // The model knows about expansion countries unconditionally; per-site exposure
     // is gated upstream by `CardPresentConfigurationLoader` + the eligibility cache.
 
+    @MainActor
     func test_configuration_for_each_supported_EEA_Euro_expansion_country() {
         let eeaCountries: [CountryCode] = [.FI, .IE, .LU, .NL]
         for country in eeaCountries {
@@ -76,6 +81,7 @@ class CardPresentConfigurationTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_configuration_for_fiscalization_countries_is_unsupported() {
         let fiscalizationCountries: [CountryCode] = [.AT, .BE, .FR, .DE, .IT, .PT, .ES]
         for country in fiscalizationCountries {
@@ -88,6 +94,7 @@ class CardPresentConfigurationTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_configuration_for_Singapore() {
         let configuration = CardPresentPaymentsConfiguration(country: .SG)
         XCTAssertTrue(configuration.isSupportedCountry)
@@ -100,6 +107,7 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertNil(configuration.contactlessLimitAmount)
     }
 
+    @MainActor
     func test_configuration_for_New_Zealand() {
         let configuration = CardPresentPaymentsConfiguration(country: .NZ)
         XCTAssertTrue(configuration.isSupportedCountry)
@@ -112,6 +120,7 @@ class CardPresentConfigurationTests: XCTestCase {
         XCTAssertEqual(configuration.contactlessLimitAmount, 20000)
     }
 
+    @MainActor
     func test_configuration_for_Australia() {
         let configuration = CardPresentPaymentsConfiguration(country: .AU)
         XCTAssertTrue(configuration.isSupportedCountry)

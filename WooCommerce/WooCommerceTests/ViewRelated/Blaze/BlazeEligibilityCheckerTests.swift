@@ -6,6 +6,7 @@ final class BlazeEligibilityCheckerTests: XCTestCase {
     private var stores: MockStoresManager!
     private static let pluginSlug = "blaze-ads/blaze-ads.php"
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -248,6 +249,7 @@ private extension BlazeEligibilityCheckerTests {
                          isAdmin: isAdmin)
     }
 
+    @MainActor
     func mockPluginFetch(remotePlugin: SystemPlugin? = nil) {
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {

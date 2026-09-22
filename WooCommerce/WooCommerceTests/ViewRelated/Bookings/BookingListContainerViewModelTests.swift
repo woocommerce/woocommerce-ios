@@ -227,6 +227,7 @@ class BookingListContainerViewModelTests {
 }
 
 fileprivate extension BookingListContainerViewModelTests {
+    @MainActor
     func givenViewModel() -> BookingListContainerViewModel {
         return BookingListContainerViewModel(
             siteID: site.siteID,

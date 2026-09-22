@@ -25,6 +25,7 @@ struct POSTapToPayAvailabilityCheckerTests {
         #expect(result == .unavailable(reason: .deviceNotSupported))
     }
 
+    @MainActor
     @Test func checkAvailability_when_tapToPay_hardware_unsupported_then_does_not_dispatch_device_check() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -45,6 +46,7 @@ struct POSTapToPayAvailabilityCheckerTests {
 
     // MARK: - Device Support Gate
 
+    @MainActor
     @Test func checkAvailability_when_device_not_supported_then_returns_deviceNotSupported() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -64,6 +66,7 @@ struct POSTapToPayAvailabilityCheckerTests {
         #expect(result == .unavailable(reason: .deviceNotSupported))
     }
 
+    @MainActor
     @Test func checkAvailability_when_device_not_supported_then_does_not_check_site_eligibility() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -85,6 +88,7 @@ struct POSTapToPayAvailabilityCheckerTests {
 
     // MARK: - Site Eligibility Gate
 
+    @MainActor
     @Test func checkAvailability_when_device_supported_but_site_not_eligible_then_returns_siteNotEligible() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -104,6 +108,7 @@ struct POSTapToPayAvailabilityCheckerTests {
         #expect(result == .unavailable(reason: .siteNotEligible))
     }
 
+    @MainActor
     @Test func checkAvailability_when_site_eligibility_nil_cached_then_returns_siteNotEligible() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -125,6 +130,7 @@ struct POSTapToPayAvailabilityCheckerTests {
 
     // MARK: - All Gates Pass
 
+    @MainActor
     @Test func checkAvailability_when_all_gates_pass_then_returns_available() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -150,6 +156,7 @@ struct POSTapToPayAvailabilityCheckerTests {
 private extension POSTapToPayAvailabilityCheckerTests {
     /// Hardware support defaults to `true` so the device / eligibility tests stay deterministic
     /// regardless of the simulator the suite runs on.
+    @MainActor
     func makeSUT(
         stores: MockStoresManager = MockStoresManager(sessionManager: .makeForTesting()),
         eligibilityService: MockPOSEligibilityService = MockPOSEligibilityService(),

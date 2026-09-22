@@ -8,6 +8,7 @@ final class PointOfSaleDefaultPurchasableItemFetchStrategyTests: XCTestCase {
     private let mockAnalytics = MockPOSItemFetchAnalyticsTracking()
     private var sut: PointOfSaleDefaultPurchasableItemFetchStrategy!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         sut = PointOfSaleDefaultPurchasableItemFetchStrategy(
@@ -18,11 +19,13 @@ final class PointOfSaleDefaultPurchasableItemFetchStrategyTests: XCTestCase {
         )
     }
 
+    @MainActor
     override func tearDown() {
         sut = nil
         super.tearDown()
     }
 
+    @MainActor
     func test_fetchProducts_tracks_analytics_for_first_page() async throws {
         // Given
         let totalItems = 42
@@ -35,6 +38,7 @@ final class PointOfSaleDefaultPurchasableItemFetchStrategyTests: XCTestCase {
         XCTAssertEqual(mockAnalytics.spyTotalItems, totalItems)
     }
 
+    @MainActor
     func test_fetchProducts_does_not_track_analytics_for_subsequent_pages() async throws {
         // Given
         let totalItems = 42

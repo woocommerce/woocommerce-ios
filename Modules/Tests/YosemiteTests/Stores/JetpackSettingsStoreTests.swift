@@ -21,12 +21,14 @@ final class JetpackSettingsStoreTests: XCTestCase {
     ///
     private let sampleSiteID: Int64 = 123
 
+    @MainActor
     override func setUp() {
         dispatcher = Dispatcher()
         network = MockNetwork()
         storageManager = MockStorageManager()
     }
 
+    @MainActor
     func test_updateJetpackModule_returns_success_result() throws {
         // Given
         let store = JetpackSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -44,6 +46,7 @@ final class JetpackSettingsStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_updateJetpackModule_returns_properly_relays_errors() throws {
         // Given
         let store = JetpackSettingsStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

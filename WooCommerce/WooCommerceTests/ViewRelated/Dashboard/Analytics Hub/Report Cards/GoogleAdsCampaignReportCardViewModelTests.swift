@@ -13,6 +13,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 12345
     private let sampleAdminURL = "https://example.com/wp-admin/"
 
+    @MainActor
     override func setUp() {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
@@ -59,6 +60,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         XCTAssertFalse(vm.isEligibleForGoogleAds)
     }
 
+    @MainActor
     func test_GoogleAdsCampaignReportCardViewModel_sets_expected_values_from_campaign_data() async throws {
         // Given
         let campaignStats = sampleCampaignStats()
@@ -124,6 +126,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showCampaignsError)
     }
 
+    @MainActor
     func test_GoogleAdsCampaignReportCardViewModel_sets_expected_values_when_syncing_remotely() async throws {
         // Given
         var isRedactedWhileSyncing: Bool = false
@@ -155,6 +158,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         XCTAssertFalse(showingCampaignsErrorWhileSyncing)
     }
 
+    @MainActor
     func test_campaignData_includes_top_five_campaigns() async throws {
         // Given
         stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
@@ -186,6 +190,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         XCTAssertFalse(vm.campaignsData.contains(where: { $0.value == "$234" }))
     }
 
+    @MainActor
     func test_changing_selectedStat_updates_displayed_values() async throws {
         // Given
         stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
@@ -233,6 +238,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         assertEqual("analytics_hub", sourceProperty)
     }
 
+    @MainActor
     func test_showCampaignsCTA_is_false_when_card_is_loading() async {
         // Given
         var showCampaignCTAWhileLoading: Bool?
@@ -258,6 +264,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         assertEqual(false, showCampaignCTAWhileLoading)
     }
 
+    @MainActor
     func test_showCampaignsCTA_is_false_when_card_has_loading_error() async {
         // Given
         let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,
@@ -281,6 +288,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         XCTAssertFalse(vm.showCampaignCTA)
     }
 
+    @MainActor
     func test_showCampaignsCTA_is_false_when_card_has_campaigns_data() async {
         // Given
         let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,
@@ -316,6 +324,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         XCTAssertFalse(vm.showCampaignCTA)
     }
 
+    @MainActor
     func test_showCampaignsCTA_is_true_when_eligible_for_Google_Ads_and_no_campaigns_in_stats() async {
         // Given
         let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,
@@ -339,6 +348,7 @@ final class GoogleAdsCampaignReportCardViewModelTests: XCTestCase {
         XCTAssertTrue(vm.showCampaignCTA)
     }
 
+    @MainActor
     func test_showCampaignsCTA_is_false_when_campaign_was_successfully_created() async {
         // Given
         let vm = GoogleAdsCampaignReportCardViewModel(siteID: sampleSiteID,

@@ -606,6 +606,7 @@ extension POSTabVisibilityCheckerTests {
     /// Configures the mock stores to respond to `FeatureFlagAction.isRemoteFeatureFlagEnabled`.
     /// `isAllowed` controls the `.pointOfSale` flag (whitelisting).
     /// `phonePointOfSaleUSFlagEnabled` controls the flag opening Phone POS to US stores.
+    @MainActor
     func accountWhitelistedInBackend(_ isAllowed: Bool = false,
                                      phonePointOfSaleUSFlagEnabled: Bool = false) {
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in

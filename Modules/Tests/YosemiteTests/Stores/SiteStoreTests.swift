@@ -33,6 +33,7 @@ final class SiteStoreTests: XCTestCase {
     private var remote: MockSiteRemote!
     private var store: SiteStore!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -45,6 +46,7 @@ final class SiteStoreTests: XCTestCase {
                           network: network)
     }
 
+    @MainActor
     override func tearDown() {
         store = nil
         remote = nil
@@ -56,6 +58,7 @@ final class SiteStoreTests: XCTestCase {
 
     // MARK: - `createSite`
 
+    @MainActor
     func test_createSite_returns_site_result_on_success() throws {
         // Given
         remote.whenCreatingSite(thenReturn: .success(
@@ -80,6 +83,7 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertEqual(siteResult, .init(siteID: 134, name: "Salsa verde", url: "https://salsa.verde/", siteSlug: "salsa.verde"))
     }
 
+    @MainActor
     func test_createSite_returns_unsuccessful_error_on_false_success() throws {
         // Given
         remote.whenCreatingSite(thenReturn: .success(
@@ -104,6 +108,7 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertEqual(error, .unsuccessful)
     }
 
+    @MainActor
     func test_createSite_returns_invalidDomain_error_on_Networking_domain_error() throws {
         // Given
         remote.whenCreatingSite(thenReturn: .failure(
@@ -124,6 +129,7 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertEqual(error, .invalidDomain)
     }
 
+    @MainActor
     func test_createSite_returns_domainExists_error_on_Dotcom_blog_name_exists_error() throws {
         // Given
         remote.whenCreatingSite(thenReturn: .failure(
@@ -144,6 +150,7 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertEqual(error, .domainExists)
     }
 
+    @MainActor
     func test_createSite_returns_invalidDomain_error_on_Dotcom_blog_name_error() throws {
         // Given
         remote.whenCreatingSite(thenReturn: .failure(
@@ -168,6 +175,7 @@ final class SiteStoreTests: XCTestCase {
 
     // MARK: - `launchSite`
 
+    @MainActor
     func test_launchSite_returns_success_on_success() throws {
         // Given
         remote.whenLaunchingSite(thenReturn: .success(()))
@@ -183,6 +191,7 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_launchSite_returns_alreadyLaunched_error_on_already_launched_WordPressApiError() throws {
         // Given
         remote.whenLaunchingSite(thenReturn: .failure(WordPressApiError.unknown(code: "already-launched", message: "")))
@@ -199,6 +208,7 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertEqual(error, .alreadyLaunched)
     }
 
+    @MainActor
     func test_launchSite_returns_unexpected_error_on_unauthorized_WordPressApiError() throws {
         // Given
         remote.whenLaunchingSite(thenReturn: .failure(WordPressApiError.unknown(code: "unauthorized", message: "")))
@@ -217,6 +227,7 @@ final class SiteStoreTests: XCTestCase {
 
     // MARK: - `enableFreeTrial`
 
+    @MainActor
     func test_enableFreeTrial_returns_success_on_success() throws {
         // Given
         remote.whenEnablingFreeTrial(thenReturn: .success(()))
@@ -232,6 +243,7 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_enableFreeTrial_returns_error_on_failure() throws {
         // Given
         remote.whenEnablingFreeTrial(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
@@ -250,6 +262,7 @@ final class SiteStoreTests: XCTestCase {
 
      // MARK: - `updateSiteTitle`
 
+    @MainActor
     func test_updateSiteTitle_returns_on_success() {
         // Given
         let siteID: Int64 = 123
@@ -269,6 +282,7 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertEqual(site?.name, "Test")
     }
 
+    @MainActor
     func test_updateSiteTitle_returns_error_on_failure() throws {
         // Given
         let siteID: Int64 = 123
@@ -289,6 +303,7 @@ final class SiteStoreTests: XCTestCase {
 
     // MARK: - `uploadStoreProfilerAnswers`
 
+    @MainActor
     func test_uploadStoreProfilerAnswers_returns_success_on_success() throws {
         // Given
         remote.whenUploadingStoreProfilerAnswers(thenReturn: .success(()))
@@ -307,6 +322,7 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_uploadStoreProfilerAnswers_returns_error_on_failure() throws {
         // Given
         remote.whenUploadingStoreProfilerAnswers(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
@@ -328,6 +344,7 @@ final class SiteStoreTests: XCTestCase {
 
     // MARK: - `syncSiteByDomain`
 
+   @MainActor
    func test_syncSite_returns_URL_normalization_state_on_success() throws {
        // Given
        let siteID: Int64 = 123
@@ -353,6 +370,7 @@ final class SiteStoreTests: XCTestCase {
        XCTAssertTrue(required)
    }
 
+   @MainActor
    func test_syncSiteByDomain_returns_site_and_URL_normalization_state_on_success() throws {
        // Given
        let siteID: Int64 = 123
@@ -377,6 +395,7 @@ final class SiteStoreTests: XCTestCase {
        XCTAssertEqual(loadedSite?.name, "Miffy")
    }
 
+   @MainActor
    func test_syncSiteByDomain_returns_error_on_failure() throws {
        // Given
        let domain = "example.com"
@@ -398,6 +417,7 @@ final class SiteStoreTests: XCTestCase {
 
 private extension SiteStoreTests {
     @discardableResult
+    @MainActor
     func storeSite(_ site: NetworkingCore.Site) -> Storage.Site {
         let storedSite = storage.insertNewObject(ofType: StorageSite.self)
         storedSite.update(with: site)

@@ -11,6 +11,7 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -197,6 +198,7 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
 
     // MARK: - Language identification request
 
+    @MainActor
     func test_identify_language_request_is_sent_only_during_first_generation_attempt() {
         // Given
         var identifyLanguageRequestCounter = 0
@@ -239,6 +241,7 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
         XCTAssertEqual(identifyLanguageRequestCounter, 1)
     }
 
+    @MainActor
     func test_identify_language_request_is_sent_again_upon_down_vote() {
         // Given
         var identifyLanguageRequestCounter = 0
@@ -444,6 +447,7 @@ final class ProductDescriptionGenerationViewModelTests: XCTestCase {
 }
 
 private extension ProductDescriptionGenerationViewModelTests {
+    @MainActor
     func mock(generatedDescription: Result<String, Error>,
               identifyLaunguage: Result<String, Error> = .success("en")) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in

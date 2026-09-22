@@ -8,6 +8,7 @@ import Yosemite
 final class ProductFormViewModel_SaveTests: XCTestCase {
     private var storesManager: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
@@ -21,6 +22,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
 
     // MARK: `saveProductRemotely` for adding a product
 
+    @MainActor
     func test_adding_a_product_remotely_with_nil_status_uses_the_original_product() throws {
         // Arrange
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
@@ -44,6 +46,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         XCTAssertEqual(savedProduct, EditableProductModel(product: product))
     }
 
+    @MainActor
     func test_adding_a_product_remotely_with_a_given_status_overrides_the_status_of_the_original_product() throws {
         // Arrange
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
@@ -67,6 +70,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         XCTAssertEqual(savedProduct, EditableProductModel(product: product.copy(statusKey: ProductStatus.pending.rawValue)))
     }
 
+    @MainActor
     func test_adding_a_product_remotely_fires_replaceLocalID_in_productImagesUploader() throws {
         // Given
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
@@ -88,6 +92,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         XCTAssertTrue(productImagesUploader.replaceLocalIDWasCalled)
     }
 
+    @MainActor
     func test_adding_a_product_remotely_fires_method_to_save_images_in_background_using_productImagesUploader() throws {
         // Given
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
@@ -112,6 +117,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
 
     // MARK: `saveProductRemotely` for editing a product
 
+    @MainActor
     func test_editing_a_product_remotely_with_nil_status_uses_the_original_product() throws {
         // Arrange
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
@@ -135,6 +141,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         XCTAssertEqual(savedProduct, EditableProductModel(product: product))
     }
 
+    @MainActor
     func test_editing_a_product_remotely_with_a_given_status_overrides_the_status_of_the_original_product() throws {
         // Arrange
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
@@ -158,6 +165,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         XCTAssertEqual(savedProduct, EditableProductModel(product: product.copy(statusKey: ProductStatus.pending.rawValue)))
     }
 
+    @MainActor
     func test_editing_a_product_remotely_with_changes_in_details_triggers_updateProduct() throws {
         // Arrange
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
@@ -185,6 +193,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         XCTAssertEqual(savedProduct, EditableProductModel(product: product.copy(name: "Test")))
     }
 
+    @MainActor
     func test_editing_a_product_remotely_with_changes_in_uploaded_images_triggers_updateProduct() throws {
         // Arrange
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
@@ -213,6 +222,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         XCTAssertEqual(savedProduct, EditableProductModel(product: product.copy(images: [newImage])))
     }
 
+    @MainActor
     func test_editing_a_product_remotely_fires_method_to_save_images_in_background_using_productImagesUploader() throws {
         // Given
         let product = Product.fake().copy(statusKey: ProductStatus.published.rawValue)
@@ -238,6 +248,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         XCTAssertFalse(updateProductTriggered)
     }
 
+    @MainActor
     func test_saveProductRemotely_when_draft_variable_product_saved_with_published_status_then_saves_with_published_status() throws {
         // Given
         let product = Product.fake().copy(
@@ -267,6 +278,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
 
     // MARK: `duplicateProduct`
 
+    @MainActor
     func test_duplicateProduct_does_not_change_original_form_baseline() throws {
         // Given
         let originalProduct = Product.fake().copy(productID: 123,
@@ -304,6 +316,7 @@ final class ProductFormViewModel_SaveTests: XCTestCase {
         XCTAssertFalse(viewModel.hasUnsavedChanges())
     }
 
+    @MainActor
     func test_duplicateProduct_uses_captured_saved_aggregate_and_password_in_compatibility_fallback() throws {
         // Given
         let savedPassword = "saved-password"

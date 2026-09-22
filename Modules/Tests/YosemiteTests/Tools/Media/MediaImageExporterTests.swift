@@ -4,6 +4,7 @@ import UniformTypeIdentifiers
 @testable import Yosemite
 
 final class MediaImageExporterTests: XCTestCase {
+    @MainActor
     func testExportingAnImageWithTypeHint() throws {
         // Loads the test image into png data.
         let mockData = UIImage(named: "image", in: .module, compatibleWith: nil)!.pngData()
@@ -31,6 +32,7 @@ final class MediaImageExporterTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testExportingAnImageWithAnUnknownTypeHintUsesTheImageDataType() throws {
         // Loads the test image into png data.
         let mockData = UIImage(named: "image", in: .module, compatibleWith: nil)!.pngData()
@@ -57,6 +59,7 @@ final class MediaImageExporterTests: XCTestCase {
         }
     }
 
+    @MainActor
     func testExportingNonImageData() throws {
         let mockData = Data()
         let filename = "test"
@@ -79,6 +82,7 @@ final class MediaImageExporterTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_export_sets_filename_and_altText_in_output_media() throws {
         // Loads the test image into png data.
         let mockData = UIImage(named: "image", in: .module, compatibleWith: nil)!.pngData()

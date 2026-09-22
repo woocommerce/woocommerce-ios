@@ -8,6 +8,7 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
     private var stores: MockStoresManager!
     private let siteID: Int64 = 208
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true))
@@ -22,11 +23,13 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
         // Arrange
         let variation = MockProductVariation().productVariation()
         let product = Product.fake()
+        @MainActor
         let useCase = ProductVariationLoadUseCase(siteID: siteID, stores: stores)
         mockRetrieveProductVariation(result: .success(variation))
         mockRetrieveProduct(result: .success(product))
 
         // Action
+        @MainActor
         let result = waitFor { promise in
             useCase.loadProductVariation(productID: 806, variationID: 725) { result in
                 promise(result)
@@ -43,11 +46,13 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
     func test_loadProductVariation_with_variation_error_returns_the_error() throws {
         // Arrange
         let product = Product.fake()
+        @MainActor
         let useCase = ProductVariationLoadUseCase(siteID: siteID, stores: stores)
         mockRetrieveProductVariation(result: .failure(ProductVariationLoadError.unexpected))
         mockRetrieveProduct(result: .success(product))
 
         // Action
+        @MainActor
         let result = waitFor { promise in
             useCase.loadProductVariation(productID: 806, variationID: 725) { result in
                 promise(result)
@@ -64,11 +69,13 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
     func test_loadProductVariation_with_product_error_returns_the_error() throws {
         // Arrange
         let variation = MockProductVariation().productVariation()
+        @MainActor
         let useCase = ProductVariationLoadUseCase(siteID: siteID, stores: stores)
         mockRetrieveProductVariation(result: .success(variation))
         mockRetrieveProduct(result: .failure(ProductLoadError.notFoundInStorage))
 
         // Action
+        @MainActor
         let result = waitFor { promise in
             useCase.loadProductVariation(productID: 806, variationID: 725) { result in
                 promise(result)
@@ -84,11 +91,13 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
 
     func test_loadProductVariation_with_variation_and_product_error_returns_the_variation_error() throws {
         // Arrange
+        @MainActor
         let useCase = ProductVariationLoadUseCase(siteID: siteID, stores: stores)
         mockRetrieveProductVariation(result: .failure(NetworkError.timeout()))
         mockRetrieveProduct(result: .failure(ProductLoadError.notFoundInStorage))
 
         // Action
+        @MainActor
         let result = waitFor { promise in
             useCase.loadProductVariation(productID: 806, variationID: 725) { result in
                 promise(result)
@@ -104,6 +113,7 @@ final class ProductVariationLoadUseCaseTests: XCTestCase {
 }
 
 private extension ProductVariationLoadUseCaseTests {
+    @MainActor
     func mockRetrieveProductVariation(result: Result<ProductVariation, Error>) {
         stores.whenReceivingAction(ofType: ProductVariationAction.self) { action in
             if case let ProductVariationAction.retrieveProductVariation(_, _, _, onCompletion: onCompletion) = action {
@@ -112,6 +122,7 @@ private extension ProductVariationLoadUseCaseTests {
         }
     }
 
+    @MainActor
     func mockRetrieveProduct(result: Result<Product, Error>) {
         stores.whenReceivingAction(ofType: ProductAction.self) { action in
             if case let ProductAction.retrieveProduct(_, _, onCompletion) = action {

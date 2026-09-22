@@ -10,6 +10,7 @@ struct ARParcelFittingEligibilityCheckerTests {
     // localFF AND (remoteFF OR explatTreatment)
     // (remoteFF, explatTreatment, localFF, expected)
     @Test
+    @MainActor
     func test_isEligible_for_all_flag_permutations() async {
         let cases: [(Bool, Bool, Bool, Bool)] = [
             (false, false, false, false),
@@ -53,6 +54,7 @@ struct ARParcelFittingEligibilityCheckerTests {
     }
 
     @Test
+    @MainActor
     func test_isEligible_when_AR_not_supported_then_returns_false() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -82,6 +84,7 @@ struct ARParcelFittingEligibilityCheckerTests {
     }
 
     @Test
+    @MainActor
     func test_isEligible_when_localFF_off_then_does_not_dispatch_remote_check() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -104,6 +107,7 @@ struct ARParcelFittingEligibilityCheckerTests {
     }
 
     @Test
+    @MainActor
     func test_isEligible_when_explat_treatment_then_does_not_dispatch_remote_check() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -126,6 +130,7 @@ struct ARParcelFittingEligibilityCheckerTests {
     }
 
     @Test
+    @MainActor
     func test_isEligible_dispatches_remote_check_with_defaultValue_false() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -162,6 +167,7 @@ struct ARParcelFittingEligibilityCheckerTests {
     }
 
     @Test
+    @MainActor
     func test_isEligible_when_remote_flag_completes_asynchronously_then_returns_correct_value() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))

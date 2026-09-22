@@ -10,6 +10,7 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private var viewModel: CouponLineDetailsViewModel!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting())
@@ -59,6 +60,7 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldDisableDoneButton)
     }
 
+    @MainActor
     func test_validateAndSaveData_then_calls_action_with_right_parameters() {
         // Given
         let passedCouponCode = "COUPON_CODE"
@@ -86,6 +88,7 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(parameters?.1, sampleSiteID)
     }
 
+    @MainActor
     func test_validateAndSaveData_when_coupon_is_edited_and_validated_then_completes_successfully() {
         // Given
         var savedResult: CouponLineDetailsResult?
@@ -125,6 +128,7 @@ final class CouponLineDetailsViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_validateAndSaveData_when_coupon_is_not_validated_then_fails() {
         // Given
         stores.whenReceivingAction(ofType: CouponAction.self) { action in

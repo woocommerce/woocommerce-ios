@@ -29,6 +29,7 @@ final class OrderCardPresentPaymentEligibilityStoreTests: XCTestCase {
     ///
     private var store: OrderCardPresentPaymentEligibilityStore!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -42,6 +43,7 @@ final class OrderCardPresentPaymentEligibilityStoreTests: XCTestCase {
     }
 
     // Other behavioural tests are in Order_CardPresentPaymentTests
+    @MainActor
     func test_orderIsEligibleForCardPresentPayment_returns_true_for_eligible_order() throws {
         // Given
         let orderItem = OrderItem.fake().copy(itemID: 1234,

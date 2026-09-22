@@ -8,6 +8,7 @@ import protocol WooFoundation.Analytics
 @Suite(.serialized)
 @MainActor
 struct ProductFormViewController_DuplicationTests {
+    @MainActor
     @Test func test_duplicate_when_saved_product_is_unchanged_then_starts_immediately() {
         // Given
         let context = TestContext()
@@ -30,6 +31,7 @@ struct ProductFormViewController_DuplicationTests {
         #expect(productForm.presentedViewController == nil)
     }
 
+    @MainActor
     @Test func test_duplicate_when_product_is_edited_then_shows_confirmation_and_cancel_retains_draft() async throws {
         // Given
         let context = TestContext()
@@ -73,6 +75,7 @@ struct ProductFormViewController_DuplicationTests {
         #expect(context.duplicateResultAnalyticsEvents.isEmpty)
     }
 
+    @MainActor
     @Test func test_duplicate_when_confirmed_and_successful_then_navigates_once_without_resetting_source_draft() async throws {
         // Given
         let context = TestContext()
@@ -140,6 +143,7 @@ struct ProductFormViewController_DuplicationTests {
         #expect(context.duplicateResultAnalyticsEvents == [WooAnalyticsStat.duplicateProductSuccess.rawValue])
     }
 
+    @MainActor
     @Test func test_duplicate_when_confirmed_and_failed_then_retains_live_draft() async throws {
         // Given
         let context = TestContext()
@@ -178,6 +182,7 @@ struct ProductFormViewController_DuplicationTests {
         #expect(context.duplicateResultAnalyticsEvents == [WooAnalyticsStat.duplicateProductFailed.rawValue])
     }
 
+    @MainActor
     @Test func test_duplicate_when_edit_product_has_productID_zero_then_no_ops_before_progress_or_request() {
         // Given
         let context = TestContext()

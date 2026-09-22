@@ -124,6 +124,7 @@ final class UpdateCrashReportingSettingUseCaseTests {
 
     @MainActor
     @Test(arguments: [true, false])
+    @MainActor
     func test_handleRemoteValue_when_a_choice_is_recorded_then_remote_value_wins_locally(remoteOptOut: Bool) throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, displayName: "Test Account"))

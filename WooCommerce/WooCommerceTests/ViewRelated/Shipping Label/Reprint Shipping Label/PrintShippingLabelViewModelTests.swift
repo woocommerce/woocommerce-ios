@@ -43,6 +43,7 @@ final class PrintShippingLabelViewModelTests: XCTestCase {
         XCTAssertEqual(paperSizeValues, [nil])
     }
 
+    @MainActor
     func test_loadShippingLabelSettingsForDefaultPaperSize_sets_selectedPaperSize_to_setting_value_if_supported() {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel()
@@ -70,6 +71,7 @@ final class PrintShippingLabelViewModelTests: XCTestCase {
         XCTAssertEqual(paperSizeValues, [nil, .letter])
     }
 
+    @MainActor
     func test_loadShippingLabelSettingsForDefaultPaperSize_with_unsupported_paper_size_sets_selectedPaperSize_to_the_first_option() {
         // Given
         let shippingLabel = MockShippingLabel.emptyLabel()

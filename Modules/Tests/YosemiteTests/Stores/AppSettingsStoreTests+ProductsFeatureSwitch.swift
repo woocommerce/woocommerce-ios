@@ -38,6 +38,7 @@ final class AppSettingsStoreTests_ProductsFeatureSwitch: XCTestCase {
         return documents!.appendingPathComponent("products-m4-feature-switch.plist")
     }()
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -47,6 +48,7 @@ final class AppSettingsStoreTests_ProductsFeatureSwitch: XCTestCase {
         subject = AppSettingsStore(dispatcher: dispatcher, storageManager: storageManager, fileStorage: fileStorage, generalAppSettings: generalAppSettings)
     }
 
+    @MainActor
     override func tearDown() {
         dispatcher = nil
         storageManager = nil

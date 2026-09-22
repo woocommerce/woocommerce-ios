@@ -16,6 +16,7 @@ final class ProductFormViewModelTests: XCTestCase {
     private var sessionManager: SessionManager!
     private var stores: StoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         analyticsProvider = MockAnalyticsProvider()
@@ -84,6 +85,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     // MARK: `canShareProduct`
 
+    @MainActor
     func test_edit_product_form_with_published_status_can_share_product() {
         // Arrange
         let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.published.rawValue)
@@ -111,6 +113,7 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(canShareProduct)
     }
 
+    @MainActor
     func test_edit_product_form_with_non_published_status_can_share_product() {
         // Arrange
         let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.pending.rawValue)
@@ -138,6 +141,7 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(canShareProduct)
     }
 
+    @MainActor
     func test_edit_product_form_with_non_public_site_cannot_share_product() {
         // Given
         let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.published.rawValue)
@@ -153,6 +157,7 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(canShareProduct)
     }
 
+    @MainActor
     func test_edit_product_form_with_invalid_permalink_cannot_share_product() {
         // Given
         let product = Product.fake().copy(name: "Test", permalink: "", statusKey: ProductStatus.published.rawValue)
@@ -168,6 +173,7 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertFalse(canShareProduct)
     }
 
+    @MainActor
     func test_edit_product_form_with_valid_permalink_can_share_product() {
         // Given
         let product = Product.fake().copy(name: "Test", permalink: "https://example.com/product", statusKey: ProductStatus.published.rawValue)
@@ -408,6 +414,7 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.product.attributes, newProduct.attributes)
     }
 
+    @MainActor
     func test_update_variations_fires_replace_product_action() throws {
         // Given
         let product = Product.fake()
@@ -760,6 +767,7 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertTrue(hasLinkedProducts)
     }
 
+    @MainActor
     func test_onProductCreated_called_when_new_product_saved_remotely() {
         // Given
         var isCallbackCalled = false
@@ -823,6 +831,7 @@ final class ProductFormViewModelTests: XCTestCase {
 
     // MARK: `refreshProduct`
 
+    @MainActor
     func test_refreshProduct_updates_product_from_remote_when_no_unsaved_changes() {
         // Given
         let product = Product.fake().copy(productID: 22, name: "Album", averageRating: "0.00", ratingCount: 0)
@@ -845,6 +854,7 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originalProductModel.product.ratingCount, 1)
     }
 
+    @MainActor
     func test_refreshProduct_does_not_override_unsaved_local_edits() {
         // Given
         let product = Product.fake().copy(productID: 22, name: "Old name", ratingCount: 0)
@@ -878,6 +888,7 @@ final class ProductFormViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.originalProductModel.product.name, "Old name")
     }
 
+    @MainActor
     func test_refreshProduct_does_not_fetch_for_product_that_does_not_exist_remotely() {
         // Given
         let product = Product.fake().copy(productID: 0)

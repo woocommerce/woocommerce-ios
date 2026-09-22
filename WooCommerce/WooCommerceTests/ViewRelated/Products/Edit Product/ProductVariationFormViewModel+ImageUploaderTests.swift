@@ -12,6 +12,7 @@ final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
     private let siteID: Int64 = 1234
     private let productID = ProductOrVariationID.product(id: 5678)
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)
@@ -22,6 +23,7 @@ final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_isUpdateEnabled_is_false_after_saving_a_variation_while_an_image_is_uploading() throws {
         // Given
         let productVariation = ProductVariation.fake().copy(status: .published)
@@ -55,6 +57,7 @@ final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
         XCTAssertEqual(isUpdateEnabledValues, [false])
     }
 
+    @MainActor
     func test_isUpdateEnabled_becomes_false_after_saving_a_variation_from_image_upload() throws {
         // Given
         let originalImage = ProductImage.fake().copy(imageID: 7)
@@ -104,6 +107,7 @@ final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
         XCTAssertEqual(viewModel.productModel.images, [image])
     }
 
+    @MainActor
     func test_isUpdateEnabled_is_always_false_when_image_was_saved_previously() throws {
         // Given
         let originalImage = ProductImage.fake().copy(imageID: 7)

@@ -10,6 +10,7 @@ final class ProductSettingsViewModelTests: XCTestCase {
     private let siteID: Int64 = 123
     private let pluginName = "WooCommerce"
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: SessionManager.testingInstance)

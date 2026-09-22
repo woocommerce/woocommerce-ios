@@ -24,6 +24,7 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
         }
     }
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -32,6 +33,7 @@ final class MarkOrderAsReadUseCaseTests: XCTestCase {
         network = MockNetwork()
     }
 
+    @MainActor
     private func setupStoreManagerReceivingNotificationActions(for note: Yosemite.Note, noteStore: NotificationStore) {
         storesManager.whenReceivingAction(ofType: NotificationAction.self) { action in
             switch action {

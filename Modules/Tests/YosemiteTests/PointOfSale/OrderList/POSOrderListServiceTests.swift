@@ -10,6 +10,7 @@ final class POSOrderListServiceTests: XCTestCase {
     private var orderProvider: POSOrderListServiceProtocol!
     private var mockOrdersRemote: MockPOSOrdersRemote!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         mockOrdersRemote = MockPOSOrdersRemote()
@@ -20,12 +21,14 @@ final class POSOrderListServiceTests: XCTestCase {
         )
     }
 
+    @MainActor
     override func tearDown() {
         orderProvider = nil
         mockOrdersRemote = nil
         super.tearDown()
     }
 
+    @MainActor
     func test_PointOfSaleOrderServiceProtocol_when_fails_request_with_requestFailed_then_throws_error() async throws {
         let expectedError = POSOrderListServiceError.requestFailed
         mockOrdersRemote.mockPagedOrdersResult = .failure(expectedError)
@@ -38,6 +41,7 @@ final class POSOrderListServiceTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_PointOfSaleOrderServiceProtocol_when_empty_data_for_non_first_page_of_orders_then_returns_empty_orders_and_no_next_page() async throws {
         mockOrdersRemote.mockPagedOrdersResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
 
@@ -47,6 +51,7 @@ final class POSOrderListServiceTests: XCTestCase {
         XCTAssertFalse(pagedOrders.hasMorePages)
     }
 
+    @MainActor
     func test_PointOfSaleOrderServiceProtocol_provides_no_orders_when_store_has_no_orders() async throws {
         mockOrdersRemote.mockPagedOrdersResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
 
@@ -58,6 +63,7 @@ final class POSOrderListServiceTests: XCTestCase {
         XCTAssertEqual(mockOrdersRemote.spyPageSize, 25)
     }
 
+    @MainActor
     func test_PointOfSaleOrderServiceProtocol_provides_orders_when_store_has_orders() async throws {
         let mockOrder = makeOrder(
             orderID: 1001,
@@ -77,6 +83,7 @@ final class POSOrderListServiceTests: XCTestCase {
         XCTAssertEqual(pagedOrders.items.first?.id, 1001)
     }
 
+    @MainActor
     func test_providePointOfSaleOrders_when_one_order_item_has_invalid_total_tax_then_skips_malformed_order_and_returns_page() async throws {
         let malformedOrder = makeOrder(
             orderID: 1001,
@@ -100,6 +107,7 @@ final class POSOrderListServiceTests: XCTestCase {
         XCTAssertEqual(pagedOrders.items.first?.lineItems.first?.totalTax, .zero)
     }
 
+    @MainActor
     func test_searchPointOfSaleOrders_when_one_order_item_has_invalid_total_tax_then_skips_malformed_order_and_returns_page() async throws {
         let malformedOrder = makeOrder(
             orderID: 1001,
@@ -124,6 +132,7 @@ final class POSOrderListServiceTests: XCTestCase {
         XCTAssertEqual(mockOrdersRemote.spySearchTerm, "100")
     }
 
+    @MainActor
     func test_providePointOfSaleOrders_when_one_order_has_invalid_total_then_skips_malformed_order_and_returns_page() async throws {
         let malformedOrder = makeOrder(
             orderID: 1001,
@@ -148,6 +157,7 @@ final class POSOrderListServiceTests: XCTestCase {
         XCTAssertEqual(pagedOrders.items.first?.formattedTotal, "$25.99")
     }
 
+    @MainActor
     func test_loadOrder_when_order_item_has_invalid_total_tax_then_throws_requestFailed() async {
         let malformedOrder = makeOrder(
             orderID: 1001,
@@ -167,6 +177,7 @@ final class POSOrderListServiceTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_PointOfSaleOrderServiceProtocol_returns_correct_pagination_when_more_pages_available() async throws {
         let mockOrders = [
             makeOrder(orderID: 1001, number: "1001", total: "25.99", items: [makeOrderItem()]),
@@ -184,6 +195,7 @@ final class POSOrderListServiceTests: XCTestCase {
         XCTAssertTrue(mockOrdersRemote.loadPOSOrdersCalled)
     }
 
+    @MainActor
     func test_providePointOfSaleOrders_uses_passed_page_number() async throws {
         mockOrdersRemote.mockPagedOrdersResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
 
@@ -194,6 +206,7 @@ final class POSOrderListServiceTests: XCTestCase {
         XCTAssertEqual(mockOrdersRemote.spyPageSize, 25)
     }
 
+    @MainActor
     func test_providePointOfSaleOrders_handles_fetch_error() async {
         mockOrdersRemote.mockPagedOrdersResult = .failure(TestError.expectedError)
 
@@ -207,6 +220,7 @@ final class POSOrderListServiceTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_providePointOfSaleOrders_handles_empty_results() async throws {
         mockOrdersRemote.mockPagedOrdersResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
 
@@ -216,6 +230,7 @@ final class POSOrderListServiceTests: XCTestCase {
         XCTAssertTrue(mockOrdersRemote.loadPOSOrdersCalled)
     }
 
+    @MainActor
     func test_providePointOfSaleOrders_passes_correct_site_id() async throws {
         mockOrdersRemote.mockPagedOrdersResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
 
@@ -224,6 +239,7 @@ final class POSOrderListServiceTests: XCTestCase {
         XCTAssertEqual(mockOrdersRemote.spySiteID, siteID)
     }
 
+    @MainActor
     func test_providePointOfSaleOrders_uses_default_page_size() async throws {
         mockOrdersRemote.mockPagedOrdersResult = .success(PagedItems(items: [], hasMorePages: false, totalItems: 0))
 
@@ -238,6 +254,7 @@ private extension POSOrderListServiceTests {
         case expectedError
     }
 
+    @MainActor
     func makeOrder(
         orderID: Int64,
         number: String,
@@ -259,6 +276,7 @@ private extension POSOrderListServiceTests {
         )
     }
 
+    @MainActor
     func makeOrderItem(
         itemID: Int64 = 1,
         totalTax: String = "0.00"

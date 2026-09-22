@@ -113,6 +113,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_name_when_we_pass_a_variation_it_shows_the_parent_product_name() {
         // Given
         let parentProductID: Int64 = 12345
@@ -143,6 +144,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_onTapIncreaseStockQuantityOnce_with_a_product_then_increases_the_amount_and_sends_action() async throws {
         // Given
         let previousStockQuantity: Decimal = 5
@@ -174,6 +176,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.updateQuantityButtonMode, .increaseOnce)
     }
 
+    @MainActor
     func test_onTapIncreaseStockQuantityOnce_with_a_variation_then_increases_the_amount_and_sends_action() async throws {
         // Given
         let previousStockQuantity: Decimal = 5
@@ -206,6 +209,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.updateQuantityButtonMode, .increaseOnce)
     }
 
+    @MainActor
     func test_onTapUpdateStockQuantity_with_a_product_then_sends_action() async throws {
         // Given
         let stockQuantity: Decimal = 23
@@ -236,6 +240,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.updateQuantityButtonMode, .increaseOnce)
     }
 
+    @MainActor
     func test_onTapUpdateStockQuantity_with_a_variation_then_sends_action() async throws {
         // Given
         let stockQuantity: Decimal = 23
@@ -288,6 +293,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.viewMode, .stockManagementNeedsToBeEnabled)
     }
 
+    @MainActor
     func test_onTapManageStock_with_a_product_then_sends_action() async throws {
         // Given
         let product = Product.fake().copy(siteID: siteID, manageStock: false)
@@ -313,6 +319,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.viewMode, .stockCanBeManaged)
     }
 
+    @MainActor
     func test_onTapManageStock_with_a_variation_then_sends_action() async throws {
         // Given
         let product = ProductVariation.fake().copy(siteID: siteID, manageStock: false)
@@ -338,6 +345,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.viewMode, .stockCanBeManaged)
     }
 
+    @MainActor
     func test_when_onTapIncreaseStockQuantityOnce_then_product_quick_inventory_update_increment_quantity_tapped_is_tracked() async throws {
         // Given
         let product = Product.fake().copy(siteID: siteID, manageStock: false)
@@ -367,6 +375,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent }))
     }
 
+    @MainActor
     func test_when_onTapUpdateStockQuantity_then_product_quick_inventory_update_manual_quantity_update_tapped_is_tracked() async throws {
         // Given
         let product = Product.fake().copy(siteID: siteID, manageStock: false)
@@ -396,6 +405,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent }))
     }
 
+    @MainActor
     func test_when_onTapManageStock_succeeds_then_product_quick_inventory_enable_manage_stock_success_is_tracked() async throws {
         // Given
         let product = Product.fake().copy(siteID: siteID, manageStock: true)
@@ -425,6 +435,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains(where: { $0 == expectedEvent }))
     }
 
+    @MainActor
     func test_when_onTapManageStock_fails_then_product_quick_inventory_enable_manage_stock_failure_is_tracked() async throws {
         // Given
         let product = Product.fake().copy(siteID: siteID, manageStock: true)
@@ -455,6 +466,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         })
     }
 
+    @MainActor
     func test_when_onViewProductDetailsButtonTapped_then_product_quick_inventory_view_product_details_tapped_is_tracked() {
         // Given
         let product = ProductVariation.fake().copy(siteID: siteID, manageStock: false)
@@ -474,6 +486,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents, ["product_quick_inventory_view_product_details_tapped"])
     }
 
+    @MainActor
     func test_when_onDismiss_tapped_then_product_quick_inventory_update_dismissed_is_tracked() {
         // Given
         let product = ProductVariation.fake().copy(siteID: siteID, manageStock: false)
@@ -493,6 +506,7 @@ final class UpdateProductInventoryViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents, ["product_quick_inventory_update_dismissed"])
     }
 
+    @MainActor
     func test_onTapManageStock_when_we_get_an_error_then_throws_error() async throws {
         // Given
         let product = Product.fake().copy(siteID: siteID, manageStock: false)

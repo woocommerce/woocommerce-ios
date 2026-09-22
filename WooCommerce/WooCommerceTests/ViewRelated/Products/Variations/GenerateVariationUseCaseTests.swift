@@ -3,6 +3,7 @@ import XCTest
 @testable import Yosemite
 
 final class GenerateVariationUseCaseTests: XCTestCase {
+    @MainActor
     func test_create_variations_is_invoked_with_correct_parameters_for_regular_variable_product() {
         // Given
         let attribute = sampleAttribute(attributeID: 0, name: "attr", options: ["Option 1", "Option 2"])
@@ -41,6 +42,7 @@ final class GenerateVariationUseCaseTests: XCTestCase {
         XCTAssertEqual(expectedVariation, variationSubmitted)
     }
 
+    @MainActor
     func test_create_variations_is_invoked_with_correct_parameters_for_subscription_variable_product() {
         // Given
         let attribute = sampleAttribute(attributeID: 0, name: "attr", options: ["Option 1", "Option 2"])
@@ -80,6 +82,7 @@ final class GenerateVariationUseCaseTests: XCTestCase {
         XCTAssertEqual(expectedVariation, variationSubmitted)
     }
 
+    @MainActor
     func test_create_variations_returns_variation_and_updated_product_variations_array() throws {
         // Given
         let attribute = sampleAttribute(attributeID: 0, name: "attr", options: ["Option 1", "Option 2"])

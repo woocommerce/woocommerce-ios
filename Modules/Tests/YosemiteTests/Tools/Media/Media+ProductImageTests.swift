@@ -2,6 +2,7 @@ import XCTest
 @testable import Yosemite
 
 final class Media_ProductImageTests: XCTestCase {
+    @MainActor
     func testMediaToProductImage() {
         // GMT: Thursday, August 15, 2019 6:14:35 PM
         let date = Date(timeIntervalSince1970: 1565892875)

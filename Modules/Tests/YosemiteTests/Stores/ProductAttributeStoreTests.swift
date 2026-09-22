@@ -42,6 +42,7 @@ final class ProductAttributeStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         network = MockNetwork(useResponseQueue: true)
@@ -51,6 +52,7 @@ final class ProductAttributeStoreTests: XCTestCase {
                                      network: network)
     }
 
+    @MainActor
     override func tearDown() {
         store = nil
         network = nil
@@ -59,6 +61,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_synchronize_product_attributes_returns_attributes_upon_successful_response() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "products/attributes", filename: "product-attributes-all")
@@ -77,6 +80,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 2)
     }
 
+    @MainActor
     func test_synchronize_product_attributes_updates_stored_attributes_upon_successful_response() throws {
         // Given
         let initialAttribute = sampleProductAttribute(attributeID: 1)
@@ -104,6 +108,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(initialAttribute.options, updatedAttribute?.options)
     }
 
+    @MainActor
     func test_synchronize_product_attributes_returns_error_upon_error_response() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "products/attributes", filename: "generic_error")
@@ -122,6 +127,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    @MainActor
     func test_synchronize_product_attributes_returns_error_upon_empty_response() throws {
         // Given
         XCTAssertEqual(storedProductAttributesCount, 0)
@@ -139,6 +145,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    @MainActor
     func test_add_product_attribute_stored_attribute_upon_successful_response() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "products/attributes", filename: "product-attribute-create")
@@ -165,6 +172,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(addedAttribute?.options, [])
     }
 
+    @MainActor
     func test_add_product_attribute_returns_error_upon_response_error() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "products/attributes", filename: "generic_error")
@@ -183,6 +191,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
     }
 
+    @MainActor
     func test_add_product_attribute_returns_error_upon_empty_response() throws {
         // Given
         XCTAssertEqual(storedProductAttributesCount, 0)
@@ -200,6 +209,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
     }
 
+    @MainActor
     func test_update_product_attribute_stored_attribute_upon_successful_response() throws {
         // Given
         let initialAttribute = sampleProductAttribute(attributeID: 1)
@@ -227,6 +237,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(initialAttribute.options, updatedAttribute?.options)
     }
 
+    @MainActor
     func test_update_product_attribute_returns_error_upon_response_error() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "products/attributes/1", filename: "generic_error")
@@ -245,6 +256,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
     }
 
+    @MainActor
     func test_update_product_attribute_returns_error_upon_empty_response() throws {
         // Given
         XCTAssertEqual(storedProductAttributesCount, 0)
@@ -262,6 +274,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
     }
 
+    @MainActor
     func test_delete_product_attribute_stored_attribute_upon_successful_response() throws {
         // Given
         let initialAttribute = sampleProductAttribute(attributeID: 1)
@@ -282,6 +295,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
     }
 
+    @MainActor
     func test_delete_product_attribute_returns_error_upon_response_error() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "products/attributes/1", filename: "generic_error")
@@ -300,6 +314,7 @@ final class ProductAttributeStoreTests: XCTestCase {
         XCTAssertEqual(storedProductAttributesCount, 0)
     }
 
+    @MainActor
     func test_delete_product_attribute_returns_error_upon_empty_response() throws {
         // Given
         XCTAssertEqual(storedProductAttributesCount, 0)
@@ -319,6 +334,7 @@ final class ProductAttributeStoreTests: XCTestCase {
 }
 
 private extension ProductAttributeStoreTests {
+    @MainActor
     func sampleProductAttribute(attributeID: Int64) -> Networking.ProductAttribute {
         return Networking.ProductAttribute(siteID: sampleSiteID,
                                            attributeID: attributeID,

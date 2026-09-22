@@ -35,6 +35,7 @@ final class OrderFulfillmentStoreTests: XCTestCase {
     ///
     private let sampleOrderID: Int64 = 963
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -42,6 +43,7 @@ final class OrderFulfillmentStoreTests: XCTestCase {
         network = MockNetwork()
     }
 
+    @MainActor
     override func tearDown() {
         dispatcher = nil
         storageManager = nil
@@ -53,6 +55,7 @@ final class OrderFulfillmentStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeOrderFulfillments` persists retrieved fulfillment data.
     ///
+    @MainActor
     func test_synchronizeOrderFulfillments_when_successful_then_persists_fulfillments() {
         // Given
         let expectation = self.expectation(description: "Synchronize order fulfillments")
@@ -96,6 +99,7 @@ final class OrderFulfillmentStoreTests: XCTestCase {
 
     /// Verifies that `synchronizeOrderFulfillments` returns an error on network failure.
     ///
+    @MainActor
     func test_synchronizeOrderFulfillments_when_network_error_then_returns_error() {
         // Given
         let expectation = self.expectation(description: "Synchronize order fulfillments error")
@@ -163,6 +167,7 @@ final class OrderFulfillmentStoreTests: XCTestCase {
 // MARK: - Helpers
 //
 private extension OrderFulfillmentStoreTests {
+    @MainActor
     func insertOrder(siteID: Int64, orderID: Int64) {
         let storage = viewStorage
         let order = storage.insertNewObject(ofType: Storage.Order.self)

@@ -25,6 +25,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_sync_when_currency_is_configured_then_retrieves_and_paginates_variations_in_memory_with_order_currency() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
@@ -56,6 +57,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.productVariationRows.contains { $0.productOrVariationID == 99 })
     }
 
+    @MainActor
     func test_syncNextPage_when_transient_page_is_partially_filtered_then_retrieves_next_page() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
@@ -87,6 +89,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(retrievedPages, [1, 2])
     }
 
+    @MainActor
     func test_sync_when_transient_page_has_no_purchasable_variations_then_automatically_retrieves_next_page() {
         // Given
         let product = Product.fake().copy(siteID: sampleSiteID, productID: sampleProductID)
@@ -153,6 +156,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
                        "Product variation rows include non-purchasable product variation")
     }
 
+    @MainActor
     func test_scrolling_indicator_appears_only_during_sync() {
         // Given
         let product = Product.fake()
@@ -175,6 +179,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowScrollIndicator, "Scroll indicator is not disabled after sync ends")
     }
 
+    @MainActor
     func test_sync_status_updates_as_expected_for_empty_product_variation_list() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -196,6 +201,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncStatus, .empty)
     }
 
+    @MainActor
     func test_sync_status_updates_as_expected_when_product_variations_are_synced() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -218,6 +224,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncStatus, .results)
     }
 
+    @MainActor
     func test_sync_status_does_not_change_while_syncing_when_storage_contains_product_variations() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -241,6 +248,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.syncStatus, .results)
     }
 
+    @MainActor
     func test_onLoadTrigger_triggers_initial_product_variation_sync() {
         // Given
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: Product.fake(), storageManager: storageManager, stores: stores)
@@ -278,6 +286,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(sortedProductVariationIDs, [2, 1, 3])
     }
 
+    @MainActor
     func test_view_model_fires_error_notice_when_product_variation_sync_fails() {
         // Given
         let viewModel = ProductVariationSelectorViewModel(siteID: sampleSiteID, product: Product.fake(), stores: stores)
@@ -387,6 +396,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(Set(viewModel.productVariationRows.map { $0.productOrVariationID }), [2, 12])
     }
 
+    @MainActor
     func test_only_variations_in_allowedProductVariationIDs_are_synced() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -411,6 +421,7 @@ final class ProductVariationSelectorViewModelTests: XCTestCase {
         viewModel.sync(pageNumber: 1, pageSize: 25, onCompletion: { _ in })
     }
 
+    @MainActor
     func test_empty_variationIDs_are_synced_when_allowedProductVariationIDs_is_not_specified() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)

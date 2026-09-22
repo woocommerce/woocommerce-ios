@@ -7,6 +7,7 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
     private var storesManager: MockStoresManager!
     private var featureFlagService: MockFeatureFlagService!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -51,6 +52,7 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
         XCTAssertFalse(result)
     }
 
+    @MainActor
     func test_checkEligibility_passes_local_feature_flag_as_default_value() async {
         // Given
         featureFlagService = MockFeatureFlagService(selfDrivenPushToken: true)
@@ -77,6 +79,7 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
         XCTAssertEqual(capturedDefaultValue, true)
     }
 
+    @MainActor
     func test_checkEligibility_passes_correct_remote_feature_flag_key() async {
         // Given
         let checker = WooPushNotificationEligibilityCheck(
@@ -102,6 +105,7 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
         XCTAssertEqual(capturedFeatureFlag, .selfDrivenPushNotificationsM1)
     }
 
+    @MainActor
     func test_checkEligibility_uses_cache() async {
         // Given
         let checker = WooPushNotificationEligibilityCheck(
@@ -127,6 +131,7 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
         XCTAssertEqual(capturedUseCache, true)
     }
 
+    @MainActor
     func test_checkEligibility_when_stores_are_not_authenticated_returns_false_without_dispatching_action() async {
         // Given
         storesManager = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -147,6 +152,7 @@ final class WooPushNotificationEligibilityCheckTests: XCTestCase {
 // MARK: - Helpers
 
 private extension WooPushNotificationEligibilityCheckTests {
+    @MainActor
     func mockRemoteFeatureFlagAction(isEnabled: Bool) {
         storesManager.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {

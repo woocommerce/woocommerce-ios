@@ -4,6 +4,7 @@ import WooFoundation
 
 class OrderTotalsCalculatorTests: XCTestCase {
 
+    @MainActor
     func test_itemsTotal_includes_all_item_subtotals() {
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
@@ -16,6 +17,7 @@ class OrderTotalsCalculatorTests: XCTestCase {
         XCTAssertEqual(orderTotalsCalculator.itemsTotal, 10)
     }
 
+    @MainActor
     func test_feesTotal_includes_all_fee_line_totals() {
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
@@ -28,6 +30,7 @@ class OrderTotalsCalculatorTests: XCTestCase {
         XCTAssertEqual(orderTotalsCalculator.feesTotal, 10)
     }
 
+    @MainActor
     func test_orderTotal_includes_expected_totals() {
         let shippingTotal = 5
         let taxTotal = 3
@@ -53,6 +56,7 @@ class OrderTotalsCalculatorTests: XCTestCase {
         XCTAssertEqual(orderTotalsCalculator.orderTotal, NSDecimalNumber(decimal: Decimal(expectedTotal)))
     }
 
+    @MainActor
     func test_updateOrderTotal_returns_order_with_expected_total() {
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())
@@ -69,6 +73,7 @@ class OrderTotalsCalculatorTests: XCTestCase {
         XCTAssertEqual(updatedOrder.total, "28")
     }
 
+    @MainActor
     func test_updateOrderTotal_when_there_are_discounts_then_returns_order_with_expected_total() {
         // Given
         let currencyFormatter = CurrencyFormatter(currencySettings: CurrencySettings())

@@ -15,6 +15,7 @@ final class ClientSideBannerProviderTests: XCTestCase {
     private var featureFlagService: MockFeatureFlagService!
     private var siteSettings: MockSelectedSiteSettings!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -34,6 +35,7 @@ final class ClientSideBannerProviderTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     private func setUpBasicMocks() {
         // Default: remote feature flag disabled
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
@@ -194,6 +196,7 @@ final class ClientSideBannerProviderTests: XCTestCase {
 
     // MARK: - Dismissal Tests
 
+    @MainActor
     func test_loadBanner_returns_nil_when_banner_previously_dismissed() async {
         // Given
         let site = Site.fake().copy(siteID: testSiteID, isJetpackThePluginInstalled: false, isJetpackConnected: false)
@@ -232,6 +235,7 @@ final class ClientSideBannerProviderTests: XCTestCase {
         )
     }
 
+    @MainActor
     private func enableRemoteFeatureFlag() {
         stores.whenReceivingAction(ofType: FeatureFlagAction.self) { action in
             switch action {

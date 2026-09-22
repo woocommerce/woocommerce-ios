@@ -133,6 +133,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_saveSelectedFilterToHistory_updates_filter_history_with_the_new_filter() {
         // Given
         let siteID: Int64 = 123
@@ -169,6 +170,7 @@ final class FilterOrderListViewModelTests: XCTestCase {
         XCTAssertEqual(savedSettings?.dateRangeFilter, filters.dateRange)
     }
 
+    @MainActor
     func test_removeFilterFromHistory_removes_the_correct_filter() {
         // Given
         let siteID: Int64 = 123

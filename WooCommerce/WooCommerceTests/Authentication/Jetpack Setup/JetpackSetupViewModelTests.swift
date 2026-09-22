@@ -40,6 +40,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.descriptionAttributedString.string, description)
     }
 
+    @MainActor
     func test_isSetupStepFailed_is_correct_when_the_current_step_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -66,6 +67,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isSetupStepFailed(.connection))
     }
 
+    @MainActor
     func test_title_is_correct_when_retrieveJetpackPluginDetails_fails_with_permission_error() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -87,6 +89,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.title, JetpackInstallStep.installation.errorTitle)
     }
 
+    @MainActor
     func test_title_and_tryAgainButtonTitle_are_correct_when_installation_step_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -111,6 +114,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tryAgainButtonTitle, JetpackInstallStep.installation.tryAgainButtonTitle)
     }
 
+    @MainActor
     func test_title_and_tryAgainButtonTitle_are_correct_when_activation_step_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -136,6 +140,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tryAgainButtonTitle, JetpackInstallStep.activation.tryAgainButtonTitle)
     }
 
+    @MainActor
     func test_title_and_tryAgainButtonTitle_are_correct_when_connection_step_fails() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -163,6 +168,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.tryAgainButtonTitle, JetpackInstallStep.connection.tryAgainButtonTitle)
     }
 
+    @MainActor
     func test_shouldShowInitialLoadingIndicator_turns_on_correctly_when_startSetup_then_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -175,6 +181,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowInitialLoadingIndicator)
     }
 
+    @MainActor
     func test_shouldShowInitialLoadingIndicator_turns_off_correctly_when_retrieveJetpackPluginDetails_is_success_then_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -196,6 +203,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowInitialLoadingIndicator)
     }
 
+    @MainActor
     func test_shouldShowSetupSteps_when_startSetup_then_returns_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -208,6 +216,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.shouldShowSetupSteps)
     }
 
+    @MainActor
     func test_shouldShowSetupSteps_when_retrieveJetpackPluginDetails_is_success_then_returns_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -229,6 +238,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.shouldShowSetupSteps)
     }
 
+    @MainActor
     func test_shouldShowGoToStoreButton_is_correct() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -261,6 +271,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     }
 
     // MARK: - API calls
+    @MainActor
     func test_startSetup_triggers_connection_step_if_connectionOnly_is_true() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -299,6 +310,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(connectionService.evaluateAndConnectCallCount, 1)
     }
 
+    @MainActor
     func test_startSetup_triggers_installation_steps_if_connectionOnly_is_false() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -336,6 +348,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(connectionService.evaluateAndConnectCallCount, 1)
     }
 
+    @MainActor
     func test_startSetup_triggers_jetpack_installation_if_retrieving_details_fails_with_404() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -364,6 +377,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertTrue(triggeredJetpackInstallation)
     }
 
+    @MainActor
     func test_startSetup_triggers_jetpack_activation_if_retrieving_details_returns_inactive_jetpack() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -400,6 +414,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertFalse(triggeredConnection)
     }
 
+    @MainActor
     func test_startSetup_triggers_jetpack_connection_if_retrieving_details_returns_active_jetpack() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -440,6 +455,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(connectionService.evaluateAndConnectCallCount, 1)
     }
 
+    @MainActor
     func test_installation_triggers_activation_when_completing_successfully() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -475,6 +491,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertFalse(triggeredConnection)
     }
 
+    @MainActor
     func test_activation_success_triggers_connection_service() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -503,6 +520,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(connectionService.evaluateAndConnectCallCount, 1)
     }
 
+    @MainActor
     func test_activation_triggers_fetching_connection_url_when_site_has_outdated_jetpack() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -533,6 +551,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(connectionService.fetchJetpackConnectionURLCallCount, 1)
     }
 
+    @MainActor
     func test_shouldPresentWebView_is_true_when_fetching_connection_url_returns_account_connection_url() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -561,6 +580,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.jetpackConnectionURL, testConnectionURL)
     }
 
+    @MainActor
     func test_shouldPresentWebView_is_true_when_fetching_connection_url_returns_site_connection_url() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -590,6 +610,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.jetpackConnectionURL, URL(string: expectedURL))
     }
 
+    @MainActor
     func test_authorizeJetpackConnection_sets_connection_status_to_in_progress_and_triggers_fetching_jetpack_connection() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -620,6 +641,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertTrue(triggeredFetchingJetpackConnection)
     }
 
+    @MainActor
     func test_authorizeJetpackConnection_updates_connection_status_and_setup_step_correctly_when_fetching_jetpack_connection_successfully() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -665,6 +687,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     }
 
     // MARK: - Error handling
+    @MainActor
     func test_setupFailed_is_true_when_retrieveJetpackPluginDetails_encounters_permission_error() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -691,6 +714,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                                                          errorCode: 403))
     }
 
+    @MainActor
     func test_retrieveJetpackPluginDetails_triggers_installJetpack_when_encountering_non_permission_error() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -715,6 +739,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertTrue(installJetpackTriggered)
     }
 
+    @MainActor
     func test_installJetpack_relays_error_when_failed() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -741,6 +766,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                                                          errorCode: 501))
     }
 
+    @MainActor
     func test_activateJetpack_relays_error_when_failed() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -768,6 +794,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                                                          errorCode: -1001))
     }
 
+    @MainActor
     func test_register_connection_relays_error_when_failed() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -795,6 +822,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                                                          errorCode: -1001))
     }
 
+    @MainActor
     func test_provision_connection_relays_error_when_failed() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -822,6 +850,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                                                          errorCode: -1001))
     }
 
+    @MainActor
     func test_finalize_connection_relays_error_when_failed() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -851,6 +880,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                                                          errorCode: -1001))
     }
 
+    @MainActor
     func test_fetchJetpackConnectionURL_relays_error_when_failed() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -880,6 +910,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                                                          errorCode: -1001))
     }
 
+    @MainActor
     func test_checkJetpackConnection_hits_fetchJetpackConnection_3_times_when_encountering_error_consistently_and_relays_error() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -909,6 +940,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
                                                          errorCode: -1001))
     }
 
+    @MainActor
     func test_checkJetpackConnection_hits_fetchJetpackConnectionData_3_times_when_failing_to_fetch_connected_wpcom_user() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -960,6 +992,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
     }
 
     // MARK: - Analytics
+    @MainActor
     func test_it_tracks_when_tapping_go_to_store_button() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -981,6 +1014,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["tap"] as? String, "go_to_store")
     }
 
+    @MainActor
     func test_it_tracks_correct_event_when_jetpack_installation_starts() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -1012,6 +1046,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertNil(analyticsProvider.receivedProperties[indexOfEvent]["error_code"])
     }
 
+    @MainActor
     func test_it_tracks_correct_event_when_jetpack_installation_fails() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -1044,6 +1079,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["error_code"] as? String, "403")
     }
 
+    @MainActor
     func test_it_tracks_correct_event_when_jetpack_activation_starts() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -1079,6 +1115,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertNil(analyticsProvider.receivedProperties[indexOfEvent]["error_code"])
     }
 
+    @MainActor
     func test_it_tracks_correct_event_when_jetpack_activation_fails() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -1134,6 +1171,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertNil(analyticsProvider.receivedProperties[indexOfEvent]["error_code"])
     }
 
+    @MainActor
     func test_it_tracks_correct_event_when_connection_step_fails() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -1171,6 +1209,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["connection_type"] as? String, "native")
     }
 
+    @MainActor
     func test_it_tracks_correct_event_when_fetching_jetpack_connection_url_fails() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -1208,6 +1247,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["connection_type"] as? String, "web")
     }
 
+    @MainActor
     func test_it_tracks_correct_event_when_checking_jetpack_connection_is_successful() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -1241,6 +1281,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["step"] as? String, "all_done")
     }
 
+    @MainActor
     func test_it_tracks_correct_event_when_checking_jetpack_connection_is_successful_but_no_wpCom_user_present() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
@@ -1284,6 +1325,7 @@ final class JetpackSetupViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties[indexOfEvent]["connection_type"] as? String, "native")
     }
 
+    @MainActor
     func test_it_tracks_correct_event_when_retrying_setup() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))

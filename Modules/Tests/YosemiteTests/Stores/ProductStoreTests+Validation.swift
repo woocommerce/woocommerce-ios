@@ -29,6 +29,7 @@ final class ProductStoreTests_Validation: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -39,6 +40,7 @@ final class ProductStoreTests_Validation: XCTestCase {
     // MARK: test cases for `ProductAction.validateProductSKU`
 
     /// Verifies that a nil SKU is valid.
+    @MainActor
     func testValidatingSKUWithNilValue() {
         let expectation = self.expectation(description: "Product SKU validation")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -53,6 +55,7 @@ final class ProductStoreTests_Validation: XCTestCase {
     }
 
     /// Verifies that an empty SKU is valid.
+    @MainActor
     func testValidatingSKUWithEmptyValue() {
         let expectation = self.expectation(description: "Product SKU validation")
         let productStore = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -67,6 +70,7 @@ final class ProductStoreTests_Validation: XCTestCase {
     }
 
     /// Verifies that an existing SKU is not valid.
+    @MainActor
     func testValidatingSKUWithExistingValue() {
         let expectation = self.expectation(description: "Product SKU validation")
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -86,6 +90,7 @@ final class ProductStoreTests_Validation: XCTestCase {
     }
 
     /// Verifies that a non existing SKU is valid.
+    @MainActor
     func testValidatingSKUWithNotExistingValue() {
         let expectation = self.expectation(description: "Product SKU validation")
         let store = ProductStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

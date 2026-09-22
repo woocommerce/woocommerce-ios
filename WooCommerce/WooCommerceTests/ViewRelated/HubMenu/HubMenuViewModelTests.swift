@@ -782,6 +782,7 @@ private extension HubMenuViewModelTests {
         return storage
     }
 
+    @MainActor
     func mockGoogleAdsCampaignFetch(with result: Result<[GoogleAdsCampaign], Error>, for stores: MockStoresManager) {
         stores.whenReceivingAction(ofType: GoogleAdsAction.self) { action in
             switch action {

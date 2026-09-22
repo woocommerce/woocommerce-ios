@@ -16,6 +16,7 @@ class ShippingLabelPackagesFormViewModelTests: XCTestCase {
 
     private var stores: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()

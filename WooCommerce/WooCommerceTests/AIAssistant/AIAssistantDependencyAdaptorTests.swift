@@ -8,6 +8,7 @@ import WooAIAssistant
 struct AIAssistantDependencyAdaptorTests {
 
     @Test
+    @MainActor
     func test_default_when_called_then_returns_dependencies_with_jwt_provider_bound_to_site() {
         // Given
         let site = Site.fake().copy(siteID: 123, url: "https://store.test", isWordPressComStore: true)
@@ -27,6 +28,7 @@ struct AIAssistantDependencyAdaptorTests {
     }
 
     @Test
+    @MainActor
     func test_default_when_called_then_safety_policy_is_default_not_alwaysExecute() {
         // Given
         let site = Site.fake().copy(siteID: 1, url: "https://store.test")
@@ -44,6 +46,7 @@ struct AIAssistantDependencyAdaptorTests {
     }
 
     @Test
+    @MainActor
     func test_default_when_called_then_max_iterations_matches_orchestrator_default() {
         // Given
         let site = Site.fake().copy(siteID: 1, url: "https://store.test")
@@ -61,6 +64,7 @@ struct AIAssistantDependencyAdaptorTests {
     }
 
     @Test
+    @MainActor
     func test_default_when_called_then_system_prompt_provider_returns_woocommerce_prompt() {
         // Given
         let site = Site.fake().copy(siteID: 1, url: "https://store.test")

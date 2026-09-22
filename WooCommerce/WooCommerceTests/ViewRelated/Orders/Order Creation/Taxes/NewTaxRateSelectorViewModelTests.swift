@@ -16,6 +16,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.wpAdminTaxSettingsURL, wpAdminTaxSettingsURL)
     }
 
+    @MainActor
     func test_onLoadTrigger_then_calls_to_retrieveTaxRates() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -35,6 +36,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         XCTAssertTrue(retrieveTaxRatesIsCalled)
     }
 
+    @MainActor
     func test_taxRateViewModels_match_loaded_tax_rates() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -66,6 +68,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.taxRateViewModels.count, 1)
     }
 
+    @MainActor
     func test_taxRateViewModels_when_taxRate_does_not_have_location_then_it_is_filtered() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -91,6 +94,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.taxRateViewModels.isEmpty)
     }
 
+    @MainActor
     func test_onRowSelected_then_calls_onTaxRateSelected_with_right_tax_rate() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -123,6 +127,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(selectedTaxRate, taxRate)
     }
 
+    @MainActor
     func test_onLoadNextPageAction_loads_next_page() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -179,6 +184,7 @@ final class NewTaxRateSelectorViewModelTests: XCTestCase {
         XCTAssertEqual(properties["auto_tax_rate_enabled"] as? Bool, storeSelectedTaxRate)
     }
 
+    @MainActor
     func test_onRowSelected_when_storeSelectedTaxRate_is_true_then_stores_tax_rate_id() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

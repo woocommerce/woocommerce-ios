@@ -42,6 +42,7 @@ final class PaymentGatewayStoreTests: XCTestCase {
     ///
     private var store: PaymentGatewayStore!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -50,6 +51,7 @@ final class PaymentGatewayStoreTests: XCTestCase {
         store = PaymentGatewayStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
     }
 
+    @MainActor
     func test_synchronize_gateways_correctly_persists_payment_gateways() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list")
@@ -70,6 +72,7 @@ final class PaymentGatewayStoreTests: XCTestCase {
         XCTAssertNotNil(viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: "cod"))
     }
 
+    @MainActor
     func test_synchronize_gateways_correctly_deletes_stale_payment_gateways() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "payment_gateways", filename: "payment-gateway-list")
@@ -94,6 +97,7 @@ final class PaymentGatewayStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: "cod"))
     }
 
+    @MainActor
     func test_updatePaymentGateway_returns_network_error_on_failure() {
         // Given
         let samplePaymentGatewayID = "cod"
@@ -122,6 +126,7 @@ final class PaymentGatewayStoreTests: XCTestCase {
         assertEqual("Failing gateway", viewStorage.loadPaymentGateway(siteID: sampleSiteID, gatewayID: samplePaymentGatewayID)?.title)
     }
 
+    @MainActor
     func test_updatePaymentGateway_updates_stored_paymentGateway_upon_success() throws {
         // Given
         let samplePaymentGatewayID = "cod"
@@ -156,6 +161,7 @@ final class PaymentGatewayStoreTests: XCTestCase {
 
 private extension PaymentGatewayStoreTests {
     @discardableResult
+    @MainActor
     func storePaymentGateway(_ paymentGateway: Networking.PaymentGateway, for siteID: Int64) -> Storage.PaymentGateway {
         let storedPaymentGateway = viewStorage.insertNewObject(ofType: PaymentGateway.self)
         storedPaymentGateway.update(with: paymentGateway)

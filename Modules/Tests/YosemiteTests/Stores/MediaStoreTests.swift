@@ -31,6 +31,7 @@ final class MediaStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -42,6 +43,7 @@ final class MediaStoreTests: XCTestCase {
 
     /// Verifies that `MediaAction.retrieveMedia` returns the expected response.
     ///
+    @MainActor
     func test_retrieveMedia_returns_media() throws {
         // Given
         let mediaID: Int64 = 22
@@ -69,6 +71,7 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertEqual(media, expectedMedia.toMedia())
     }
 
+    @MainActor
     func test_retrieveMedia_returns_error_upon_receiving_error_response() throws {
         // Given
         let mediaID: Int64 = 22
@@ -101,6 +104,7 @@ final class MediaStoreTests: XCTestCase {
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response.
     ///
+    @MainActor
     func test_retrieveMediaLibrary_returns_media_list() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
@@ -138,6 +142,7 @@ final class MediaStoreTests: XCTestCase {
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns the expected response for cases where URLs contain special chars.
     ///
+    @MainActor
     func test_retrieveMediaLibrary_returns_media_list_when_URLs_contain_special_chars() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "media", filename: "media-library")
@@ -176,6 +181,7 @@ final class MediaStoreTests: XCTestCase {
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_retrieveMediaLibrary_returns_error_upon_response_error() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "media", filename: "generic_error")
@@ -201,6 +207,7 @@ final class MediaStoreTests: XCTestCase {
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func test_retrieveMediaLibrary_returns_error_upon_empty_response() {
         // Given
         let mediaStore = MediaStore(dispatcher: dispatcher,
@@ -222,6 +229,7 @@ final class MediaStoreTests: XCTestCase {
     }
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` invokes `MediaRemoteProtocol.loadMediaLibrary` when there is no corresponding site in storage.
+    @MainActor
     func test_retrieveMediaLibrary_without_storage_site_invokes_loadMediaLibrary_remote_call() throws {
         // Given
         let remote = MockMediaRemote()
@@ -247,6 +255,7 @@ final class MediaStoreTests: XCTestCase {
     }
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` for a placeholder site ID returns the media list from the remote response.
+    @MainActor
     func test_retrieveMediaLibrary_returns_media_list_when_connecting_to_site_with_placeholder_site_id() throws {
         // Given
         let siteID = WooConstants.placeholderSiteID
@@ -277,6 +286,7 @@ final class MediaStoreTests: XCTestCase {
     }
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` for a placeholder site ID returns the media list from the remote response.
+    @MainActor
     func test_retrieveMediaLibrary_from_jcp_site_returns_media_list() throws {
         // Given
         let remote = MockMediaRemote()
@@ -308,6 +318,7 @@ final class MediaStoreTests: XCTestCase {
     }
 
     /// Verifies that `MediaAction.retrieveMediaLibrary` from a JCP site returns an error from the remote response.
+    @MainActor
     func test_retrieveMediaLibrary_from_jcp_site_returns_error_upon_empty_response() throws {
         // Given
         let remote = MockMediaRemote()
@@ -339,6 +350,7 @@ final class MediaStoreTests: XCTestCase {
 
     // MARK: test cases for `MediaAction.uploadMedia`
 
+    @MainActor
     func test_uploadMedia_returns_uploaded_media_and_deletes_input_media_file() throws {
         // Given
         let fileManager = FileManager.default
@@ -375,6 +387,7 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertFalse(fileManager.fileExists(atPath: targetURL.path))
     }
 
+    @MainActor
     func test_uploadMedia_returns_error_upon_response_error() {
         // Given
         let fileManager = FileManager.default
@@ -413,6 +426,7 @@ final class MediaStoreTests: XCTestCase {
     }
 
     /// Verifies that `MediaAction.uploadMedia` invokes `MediaRemoteProtocol.uploadMedia` when there is no corresponding site in storage.
+    @MainActor
     func test_uploadMedia_without_storage_site_invokes_uploadMedia_remote_call() throws {
         // Given
         let fileManager = FileManager.default
@@ -447,6 +461,7 @@ final class MediaStoreTests: XCTestCase {
     }
 
     /// Verifies that `MediaAction.uploadMedia` for a placeholder site ID returns the uploaded media from the remote response.
+    @MainActor
     func test_uploadMedia_returns_uploaded_media_and_deletes_input_media_file_when_connecting_to_site_with_placeholder_site_id() throws {
         // Given
         let siteID = WooConstants.placeholderSiteID
@@ -490,6 +505,7 @@ final class MediaStoreTests: XCTestCase {
 
 
     /// Verifies that `MediaAction.uploadMedia` from a JCP site returns the uploaded media from the remote response.
+    @MainActor
     func test_uploadMedia_to_jcp_site_returns_uploaded_media_and_deletes_input_media_file() throws {
         // Given
         let fileManager = FileManager.default
@@ -533,6 +549,7 @@ final class MediaStoreTests: XCTestCase {
     }
 
     /// Verifies that `MediaAction.uploadMedia` from a JCP site returns an error from the remote response.
+    @MainActor
     func test_uploadMedia_to_jcp_site_returns_error_from_remote_response() throws {
         // Given
         let fileManager = FileManager.default
@@ -573,6 +590,7 @@ final class MediaStoreTests: XCTestCase {
 
     // MARK: test cases for `MediaAction.uploadFile`
 
+    @MainActor
     func test_uploadFile_returns_uploaded_media() throws {
         // Given
         let fileManager = FileManager.default
@@ -604,6 +622,7 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertTrue(fileManager.fileExists(atPath: fileURL.path))
     }
 
+    @MainActor
     func test_uploadFile_returns_error_upon_response_error() {
         // Given
         let fileManager = FileManager.default
@@ -638,6 +657,7 @@ final class MediaStoreTests: XCTestCase {
 
     /// Verifies that `MediaAction.updateProductID` returns the expected response.
     ///
+    @MainActor
     func test_updateProductID_returns_media() throws {
         // Given
         let remote = MockMediaRemote()
@@ -664,6 +684,7 @@ final class MediaStoreTests: XCTestCase {
 
     /// Verifies that `MediaAction.updateProductID` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_updateProductID_returns_error_upon_response_error() throws {
         // Given
         let remote = MockMediaRemote()
@@ -688,6 +709,7 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertEqual(error, .unauthorized())
     }
 
+    @MainActor
     func test_toMedia_converts_rendered_title_to_file_name_if_media_detail_is_not_available() {
         // Given
         let wpMedia = WordPressMedia.fake().copy(slug: "test",
@@ -701,6 +723,7 @@ final class MediaStoreTests: XCTestCase {
         XCTAssertEqual(converted.filename, "Test")
     }
 
+    @MainActor
     func test_toMedia_converts_slug_to_file_name_if_rendered_title_and_media_detail_are_not_available() {
         // Given
         let wpMedia = WordPressMedia.fake().copy(slug: "test",
@@ -716,6 +739,7 @@ final class MediaStoreTests: XCTestCase {
 }
 
 private extension MediaStoreTests {
+    @MainActor
     func createSampleUploadableMedia(targetURL: URL) -> UploadableMedia {
         return UploadableMedia(localURL: targetURL,
                                filename: "test.jpg",
@@ -723,6 +747,7 @@ private extension MediaStoreTests {
                                altText: nil)
     }
 
+    @MainActor
     func createMediaStoreAndExportableMedia(at targetURL: URL, fileManager: FileManager, remote: MediaRemoteProtocol? = nil) -> MediaStore {
         do {
             try fileManager.createDirectory(at: fileManager.temporaryDirectory, withIntermediateDirectories: true)
@@ -750,6 +775,7 @@ private extension MediaStoreTests {
         }
     }
 
+    @MainActor
     func date(with dateString: String) -> Date {
         guard let date = DateFormatter.Defaults.dateTimeFormatter.date(from: dateString) else {
             return Date()
@@ -757,6 +783,7 @@ private extension MediaStoreTests {
         return date
     }
 
+    @MainActor
     func insertJCPSiteToStorage(siteID: Int64) {
         // JCP site determination requires a `Site` in storage.
         let jcpSite = Site.fake().copy(siteID: siteID, isJetpackThePluginInstalled: false, isJetpackConnected: true)

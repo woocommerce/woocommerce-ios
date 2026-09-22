@@ -3,6 +3,7 @@ import XCTest
 
 final class StatsTimeRangeTests: XCTestCase {
 
+    @MainActor
     func testVisitStatsQuantityOnFebInLeapYear() {
         // GMT: Saturday, February 1, 2020 12:29:29 AM
         let date = Date(timeIntervalSince1970: 1580516969)
@@ -14,6 +15,7 @@ final class StatsTimeRangeTests: XCTestCase {
 
     // MARK: `intervalGranularity` for custom range
 
+    @MainActor
     func test_intervalGranularity_for_dates_with_days_difference_greater_than_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -27,6 +29,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.intervalGranularity, .yearly)
     }
 
+    @MainActor
     func test_intervalGranularity_for_dates_with_days_difference_from_91_to_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -40,6 +43,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.intervalGranularity, .monthly)
     }
 
+    @MainActor
     func test_intervalGranularity_for_dates_with_days_difference_from_29_to_90() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -53,6 +57,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.intervalGranularity, .weekly)
     }
 
+    @MainActor
     func test_intervalGranularity_for_dates_with_days_difference_from_1_to_28() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -66,6 +71,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.intervalGranularity, .daily)
     }
 
+    @MainActor
     func test_intervalGranularity_for_a_same_day_range() {
         // Given
         // GMT: March 4 2024 00:00:00
@@ -82,6 +88,7 @@ final class StatsTimeRangeTests: XCTestCase {
 
     // MARK: `siteVisitStatsGranularity` for custom range
 
+    @MainActor
     func test_siteVisitStatsGranularity_for_dates_with_days_difference_greater_than_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -95,6 +102,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.siteVisitStatsGranularity, .year)
     }
 
+    @MainActor
     func test_siteVisitStatsGranularity_for_dates_with_days_difference_from_91_to_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -108,6 +116,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.siteVisitStatsGranularity, .month)
     }
 
+    @MainActor
     func test_siteVisitStatsGranularity_for_dates_with_days_difference_from_29_to_90() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -121,6 +130,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.siteVisitStatsGranularity, .week)
     }
 
+    @MainActor
     func test_siteVisitStatsGranularity_for_dates_with_days_difference_from_1_to_28() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -134,6 +144,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.siteVisitStatsGranularity, .day)
     }
 
+    @MainActor
     func test_siteVisitStatsGranularity_for_a_same_day_range() {
         // Given
         // GMT: March 4 2024 00:00:00
@@ -150,6 +161,7 @@ final class StatsTimeRangeTests: XCTestCase {
 
     // MARK: `topEarnerStatsGranularity` for custom range
 
+    @MainActor
     func test_topEarnerStatsGranularity_for_dates_with_days_difference_greater_than_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -163,6 +175,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.topEarnerStatsGranularity, .year)
     }
 
+    @MainActor
     func test_topEarnerStatsGranularity_for_dates_with_days_difference_from_91_to_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -176,6 +189,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.topEarnerStatsGranularity, .month)
     }
 
+    @MainActor
     func test_topEarnerStatsGranularity_for_dates_with_days_difference_from_29_to_90() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -189,6 +203,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.topEarnerStatsGranularity, .week)
     }
 
+    @MainActor
     func test_topEarnerStatsGranularity_for_dates_with_days_difference_from_2_to_28() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -202,6 +217,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.topEarnerStatsGranularity, .day)
     }
 
+    @MainActor
     func test_topEarnerStatsGranularity_for_dates_with_days_difference_less_than_2() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -217,6 +233,7 @@ final class StatsTimeRangeTests: XCTestCase {
 
     // MARK: `summaryStatsGranularity` for custom range
 
+    @MainActor
     func test_summaryStatsGranularity_for_dates_with_days_difference_greater_than_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -230,6 +247,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.summaryStatsGranularity, .year)
     }
 
+    @MainActor
     func test_summaryStatsGranularity_for_dates_with_days_difference_from_91_to_3_years() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -243,6 +261,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.summaryStatsGranularity, .month)
     }
 
+    @MainActor
     func test_summaryStatsGranularity_for_dates_with_days_difference_from_29_to_90() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -256,6 +275,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.summaryStatsGranularity, .week)
     }
 
+    @MainActor
     func test_summaryStatsGranularity_for_dates_with_days_difference_from_2_to_28() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -269,6 +289,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range.summaryStatsGranularity, .day)
     }
 
+    @MainActor
     func test_summaryStatsGranularity_for_dates_with_days_difference_less_than_2() {
         // Given
         // GMT: Saturday, February 1, 2020 12:29:29 AM
@@ -283,6 +304,7 @@ final class StatsTimeRangeTests: XCTestCase {
     }
     // MARK: Custom range
 
+    @MainActor
     func test_initializing_custom_range_from_rawValue() {
         // Given
 
@@ -301,6 +323,7 @@ final class StatsTimeRangeTests: XCTestCase {
         XCTAssertEqual(range, .custom(from: fromDate, to: toDate))
     }
 
+    @MainActor
     func test_getting_rawValue_from_custom_range() {
         // Given
 

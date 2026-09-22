@@ -189,6 +189,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(row.body, body)
     }
 
+    @MainActor
     func test_view_model_submits_refund_and_completes_successfully() throws {
         // Given
         let order = MockOrders().empty()
@@ -228,6 +229,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_view_model_submits_refund_and_updates_order() throws {
         // Given
         let order = MockOrders().empty()
@@ -270,6 +272,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertTrue(orderUpdated)
     }
 
+    @MainActor
     func test_view_model_submits_refund_with_automatic_refund_enabled() throws {
         // Given
         let order = MockOrders().empty().copy(paymentMethodID: "stripe", paymentMethodTitle: "Stripe")
@@ -308,6 +311,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertTrue(wasAutomated)
     }
 
+    @MainActor
     func test_view_model_submits_refund_with_automatic_refund_disabled() throws {
         // Given
         let order = MockOrders().empty().copy(paymentMethodID: "stripe", paymentMethodTitle: "Stripe")
@@ -345,6 +349,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertFalse(wasAutomated)
     }
 
+    @MainActor
     func test_view_model_submits_refund_with_all_shipping_lines_when_refunds_shipping() throws {
         // Given
         let shippingLines = [
@@ -380,6 +385,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(refund.items.map { $0.total }, ["5.00", "3.00"])
     }
 
+    @MainActor
     func test_view_model_submits_refund_and_relays_error() throws {
         // Given
         let order = MockOrders().empty()
@@ -508,6 +514,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["amount"] as? String, details.amount)
     }
 
+    @MainActor
     func test_view_model_tracks_when_refund_creation_fails() throws {
         // Given
         let order = MockOrders().empty()
@@ -545,6 +552,7 @@ final class RefundConfirmationViewModelTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedProperties.first?["error_description"] as? String, result.failure?.localizedDescription)
     }
 
+    @MainActor
     func test_view_model_tracks_when_refund_creation_succeeds() throws {
         // Given
         let order = MockOrders().empty()

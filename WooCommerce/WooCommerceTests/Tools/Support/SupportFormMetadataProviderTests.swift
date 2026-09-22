@@ -8,6 +8,7 @@ struct SupportFormMetadataProviderTests {
     // MARK: - Pre-fetched System Status Report
 
     @Test
+    @MainActor
     func systemFields_when_prefetched_report_provided_then_uses_prefetched_report() {
         // Given
         let sessionManager = SessionManager.makeForTesting(authenticated: true)

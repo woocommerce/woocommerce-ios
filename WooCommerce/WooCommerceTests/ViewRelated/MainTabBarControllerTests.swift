@@ -16,6 +16,7 @@ final class MainTabBarControllerTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         let mockAuthenticationManager = MockAuthenticationManager()
@@ -71,6 +72,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(selectedTabIndexAfterSiteChange, WooTab.myStore.visibleIndex(isPOSTabVisible: false))
     }
 
+    @MainActor
     func test_when_receiving_a_review_notification_from_a_different_site_navigates_to_hubMenu_tab() throws {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
@@ -554,6 +556,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(mockPOSEligibilityService.loadCachedPOSTabVisibility(siteID: siteID), true)
     }
 
+    @MainActor
     func test_event_is_tracked_after_eligibility_check() throws {
         // Given
         let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
@@ -587,6 +590,7 @@ final class MainTabBarControllerTests: XCTestCase {
         assertEqual(true, analyticsProvider.receivedProperties[safe: indexOfEvent]?["is_visible"] as? Bool)
     }
 
+    @MainActor
     func test_initial_tabs_visibility_on_phone_ignores_cached_pos_visibility() throws {
         // Given
         let siteID: Int64 = 1126

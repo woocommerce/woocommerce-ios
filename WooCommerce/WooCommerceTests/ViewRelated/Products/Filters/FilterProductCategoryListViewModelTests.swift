@@ -11,6 +11,7 @@ final class FilterProductCategoryListViewModelTests: XCTestCase {
     private let anyCategoryIsSelectedDefaultValue = false
     private var subscription: AnyCancellable?
 
+    @MainActor
     override func setUp() {
         super.setUp()
 

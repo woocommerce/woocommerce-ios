@@ -34,12 +34,14 @@ struct PushNotificationPreferencesViewModelTests {
                                              analytics: WooAnalytics(analyticsProvider: analyticsProvider))
     }
 
+    @MainActor
     private func makeStores() -> MockStoresManager {
         MockStoresManager(sessionManager: .testingInstance)
     }
 
     // MARK: - Loading
 
+    @MainActor
     @Test func test_load_when_remote_succeeds_then_loadState_becomes_loaded_and_displayed_lastSaved_reflect_response() async {
         // Given
         let stores = makeStores()
@@ -66,6 +68,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.hasUnsavedChanges == false)
     }
 
+    @MainActor
     @Test func test_load_when_remote_fails_then_loadState_becomes_error() async {
         // Given
         struct AnyError: Error {}
@@ -84,6 +87,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.loadState == .error)
     }
 
+    @MainActor
     @Test func test_load_when_remote_fails_then_notifications_settings_load_failed_is_tracked() async {
         // Given
         struct AnyError: Error {}
@@ -103,6 +107,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(analyticsProvider.receivedEvents.contains("notifications_settings_load_failed"))
     }
 
+    @MainActor
     @Test func test_load_when_remote_succeeds_then_notifications_settings_load_failed_is_not_tracked() async {
         // Given
         let stores = makeStores()
@@ -121,6 +126,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(!analyticsProvider.receivedEvents.contains("notifications_settings_load_failed"))
     }
 
+    @MainActor
     @Test func test_load_when_unsaved_edits_exist_then_response_does_not_stomp_displayed_state() async {
         // Given the user has flipped a toggle (creating an unsaved edit) before a fresh load.
         let stores = makeStores()
@@ -144,6 +150,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - Setters mutate displayed only
 
+    @MainActor
     @Test func test_setStoreOrderEnabled_mutates_displayed_only_and_does_not_dispatch_update() async {
         // Given
         let stores = makeStores()
@@ -166,6 +173,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(dispatched.calls.isEmpty)
     }
 
+    @MainActor
     @Test func test_setStoreReviewEnabled_mutates_displayed_only_and_does_not_dispatch_update() async {
         // Given
         let stores = makeStores()
@@ -188,6 +196,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(dispatched.calls.isEmpty)
     }
 
+    @MainActor
     @Test func test_setStoreStockEnabled_mutates_displayed_only_and_does_not_dispatch_update() async {
         // Given
         let stores = makeStores()
@@ -210,6 +219,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(dispatched.calls.isEmpty)
     }
 
+    @MainActor
     @Test func test_setStoreOrderEnabled_preserves_existing_minAmount_in_displayed() async {
         // Given a loaded VM with a positive threshold.
         let stores = makeStores()
@@ -231,6 +241,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - discardStoreOrderEdits
 
+    @MainActor
     @Test func test_discardStoreOrderEdits_reverts_storeOrder_to_lastSaved_and_clears_unsaved_flag() async {
         // Given a loaded VM with a positive threshold the user then edits.
         let stores = makeStores()
@@ -254,6 +265,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.hasUnsavedChanges == false)
     }
 
+    @MainActor
     @Test func test_discardStoreOrderEdits_leaves_other_sections_untouched() async {
         // Given a loaded VM where the user edits review *and* order.
         let stores = makeStores()
@@ -280,6 +292,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - hasUnsavedChanges
 
+    @MainActor
     @Test func test_hasUnsavedChanges_when_displayed_equals_lastSaved_then_false() async {
         // Given a loaded VM with no edits.
         let stores = makeStores()
@@ -306,6 +319,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.hasUnsavedChanges == true)
     }
 
+    @MainActor
     @Test func test_hasUnsavedChanges_when_toggle_flipped_back_to_lastSaved_then_false() async {
         // Given a loaded VM with `enabled: true`.
         let stores = makeStores()
@@ -327,6 +341,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - Save
 
+    @MainActor
     @Test func test_isSaving_is_true_while_save_is_in_flight_and_false_after() async {
         // Given
         let stores = makeStores()
@@ -362,6 +377,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.isSaving == false)
     }
 
+    @MainActor
     @Test func test_save_is_a_noop_while_another_save_is_already_in_flight() async {
         // Given
         let stores = makeStores()
@@ -395,6 +411,7 @@ struct PushNotificationPreferencesViewModelTests {
         _ = await firstSave
     }
 
+    @MainActor
     @Test func test_save_when_remote_succeeds_then_lastSaved_updates_and_returns_true() async {
         // Given
         let stores = makeStores()
@@ -420,6 +437,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(dispatched.last?.storeStock == nil)
     }
 
+    @MainActor
     @Test func test_save_when_remote_fails_then_returns_false_and_surfaces_notice() async {
         // Given
         struct AnyError: Error {}
@@ -443,6 +461,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.hasUnsavedChanges == true)
     }
 
+    @MainActor
     @Test func test_save_with_no_pending_changes_then_returns_true_without_dispatch() async {
         // Given
         let stores = makeStores()
@@ -465,6 +484,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - setStoreOrderMinAmount
 
+    @MainActor
     @Test func test_setStoreOrderMinAmount_mutates_displayed_only_and_preserves_enabled() async {
         // Given a loaded VM with the master toggle on.
         let stores = makeStores()
@@ -486,6 +506,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.lastKnownStoreOrderMinAmount == 300)
     }
 
+    @MainActor
     @Test func test_setStoreOrderMinAmount_with_zero_normalizes_to_nil_and_keeps_lastKnown() async {
         // Given a loaded VM with a positive threshold.
         let stores = makeStores()
@@ -517,6 +538,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.storeOrderMinAmount == nil)
     }
 
+    @MainActor
     @Test func test_load_when_response_has_positive_minAmount_then_lastKnown_is_populated() async {
         // Given
         let stores = makeStores()
@@ -544,6 +566,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.storeOrderDetailText == "All orders")
     }
 
+    @MainActor
     @Test func test_storeOrderDetailText_when_minAmount_positive_then_returns_formatted_currency_string() async {
         // Given
         let stores = makeStores()
@@ -563,6 +586,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - setStoreReviewMaxRating
 
+    @MainActor
     @Test func test_setStoreReviewMaxRating_mutates_displayed_only_and_preserves_enabled() async {
         // Given a loaded VM with the master toggle on.
         let stores = makeStores()
@@ -614,6 +638,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.lastKnownStoreReviewMaxRating == 1)
     }
 
+    @MainActor
     @Test func test_setStoreReviewMaxRating_with_nil_clears_rating_and_preserves_lastKnown() async {
         // Given a loaded VM with an in-range rating.
         let stores = makeStores()
@@ -633,6 +658,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.lastKnownStoreReviewMaxRating == 4)
     }
 
+    @MainActor
     @Test func test_setStoreReviewEnabled_preserves_existing_maxRating_in_displayed() async {
         // Given a loaded VM with an in-range maxRating.
         let stores = makeStores()
@@ -654,6 +680,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - discardStoreReviewEdits
 
+    @MainActor
     @Test func test_discardStoreReviewEdits_reverts_storeReview_to_lastSaved_and_clears_unsaved_flag() async {
         // Given a loaded VM with an in-range rating the user then edits.
         let stores = makeStores()
@@ -676,6 +703,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.hasUnsavedChanges == false)
     }
 
+    @MainActor
     @Test func test_discardStoreReviewEdits_leaves_other_sections_untouched() async {
         // Given a loaded VM where the user edits review *and* order.
         let stores = makeStores()
@@ -700,6 +728,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.displayed.storeReview?.maxRating == nil)
     }
 
+    @MainActor
     @Test func test_load_when_response_has_in_range_maxRating_then_lastKnown_is_populated() async {
         // Given
         let stores = makeStores()
@@ -727,6 +756,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.storeReviewDetailText == "All reviews")
     }
 
+    @MainActor
     @Test func test_storeReviewDetailText_when_maxRating_is_plural_then_returns_stars_and_below() async {
         // Given
         let stores = makeStores()
@@ -744,6 +774,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.storeReviewDetailText == "3 stars and below")
     }
 
+    @MainActor
     @Test func test_storeReviewDetailText_when_maxRating_is_one_then_returns_singular_star_phrasing() async {
         // Given
         let stores = makeStores()
@@ -821,6 +852,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - storeStock sub-toggles
 
+    @MainActor
     @Test func test_setStoreStockLowStock_mutates_displayed_only_and_preserves_siblings() async {
         // Given a loaded VM with all stock sub-fields set so we can prove they're preserved.
         let stores = makeStores()
@@ -853,6 +885,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(dispatched.calls.isEmpty)
     }
 
+    @MainActor
     @Test func test_setStoreStockOutOfStock_mutates_displayed_only_and_preserves_siblings() async {
         // Given
         let stores = makeStores()
@@ -885,6 +918,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(dispatched.calls.isEmpty)
     }
 
+    @MainActor
     @Test func test_setStoreStockOnBackorder_mutates_displayed_only_and_preserves_siblings() async {
         // Given
         let stores = makeStores()
@@ -917,6 +951,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(dispatched.calls.isEmpty)
     }
 
+    @MainActor
     @Test func test_setStoreStockEnabled_preserves_existing_sub_toggles_in_displayed() async {
         // Given a loaded VM with sub-toggles set.
         let stores = makeStores()
@@ -943,6 +978,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - discardStoreStockEdits
 
+    @MainActor
     @Test func test_discardStoreStockEdits_reverts_storeStock_to_lastSaved_and_clears_unsaved_flag() async {
         // Given a loaded VM with sub-toggles the user then edits.
         let stores = makeStores()
@@ -971,6 +1007,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.hasUnsavedChanges == false)
     }
 
+    @MainActor
     @Test func test_discardStoreStockEdits_leaves_other_sections_untouched() async {
         // Given a loaded VM where the user edits stock *and* order.
         let stores = makeStores()
@@ -997,6 +1034,7 @@ struct PushNotificationPreferencesViewModelTests {
 
     // MARK: - storeStockDetailText
 
+    @MainActor
     @Test func test_storeStockDetailText_when_all_three_subtoggles_on_returns_all_stock_alerts() async {
         // Given
         let stores = makeStores()
@@ -1025,6 +1063,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.storeStockDetailText == "No alerts")
     }
 
+    @MainActor
     @Test func test_storeStockDetailText_when_loaded_with_master_on_and_all_subtoggles_off_returns_no_alerts() async {
         // Given a loaded VM with master on but all three sub-toggles off — the
         // realistic "No alerts" branch that the user sees on the list row.
@@ -1046,6 +1085,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(sut.storeStockDetailText == "No alerts")
     }
 
+    @MainActor
     @Test func test_storeStockDetailText_when_subset_on_returns_joined_localized_names() async {
         // Given
         let stores = makeStores()
@@ -1072,6 +1112,7 @@ struct PushNotificationPreferencesViewModelTests {
         #expect(detail != "No alerts")
     }
 
+    @MainActor
     @Test func test_save_dispatches_only_changed_sections() async {
         // Given a loaded VM with one section edited.
         let stores = makeStores()

@@ -5,6 +5,7 @@ import Yosemite
 final class PluginVersionCheckerTests: XCTestCase {
     private var stores: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -118,6 +119,7 @@ final class PluginVersionCheckerTests: XCTestCase {
 }
 
 private extension PluginVersionCheckerTests {
+    @MainActor
     func mockSystemInfo(with plugins: [SystemPlugin]) {
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
             switch action {

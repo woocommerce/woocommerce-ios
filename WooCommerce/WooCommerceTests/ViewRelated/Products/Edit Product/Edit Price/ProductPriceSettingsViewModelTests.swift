@@ -66,6 +66,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
 
     // `retrieveProductTaxClass`
 
+    @MainActor
     func testHandlingNilRetrievedTaxClass() {
         // Arrange
         let mockStoresManager = MockTaxClassStoresManager(missingTaxClass: nil, sessionManager: SessionManager.testingInstance)
@@ -88,6 +89,7 @@ final class ProductPriceSettingsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.taxClass?.slug, "standard")
     }
 
+    @MainActor
     func testHandlingNonNilRetrievedTaxClass() {
         // Arrange
         let taxClass = TaxClass(siteID: 18, name: "Lowest tax", slug: "nice-tax-class")

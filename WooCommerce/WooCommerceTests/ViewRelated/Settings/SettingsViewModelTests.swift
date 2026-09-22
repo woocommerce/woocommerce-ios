@@ -26,6 +26,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     private var analytics: WooAnalytics!
 
+    @MainActor
     override func setUpWithError() throws {
         super.setUp()
         storageManager = MockStorageManager()
@@ -143,6 +144,7 @@ final class SettingsViewModelTests: XCTestCase {
 
     // MARK: - `accountSettings` row visibility
 
+    @MainActor
     func test_accountSettings_section_is_shown_when_authenticated_with_wpcom() {
         // Given
         let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: true)
@@ -157,6 +159,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.accountSettings) })
     }
 
+    @MainActor
     func test_accountSettings_section_is_hidden_when_authenticated_without_wpcom() {
         // Given
         let sessionManager = SessionManager.makeForTesting(authenticated: true, isWPCom: false)
@@ -171,6 +174,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.accountSettings) })
     }
 
+    @MainActor
     func test_sections_contains_whats_new_row_when_announcement_for_this_version_is_available() {
         // Given
         let viewModel = SettingsViewModel(
@@ -203,6 +207,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.whatsNew) })
     }
 
+    @MainActor
     func test_sections_does_not_contain_whats_new_row_when_announcement_is_available_for_past_version() {
         // Given
         let viewModel = SettingsViewModel(
@@ -231,6 +236,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.whatsNew) })
     }
 
+    @MainActor
     func test_sections_does_not_contain_notifications_row_when_user_is_authenticated_without_WPCom() {
         // Given
         let featureFlagService = MockFeatureFlagService()
@@ -245,6 +251,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
     }
 
+    @MainActor
     func test_sections_does_not_contain_notifications_row_when_site_is_JCP() {
         // Given
         let featureFlagService = MockFeatureFlagService()
@@ -259,6 +266,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.notifications) })
     }
 
+    @MainActor
     func test_sections_contains_notifications_row_for_Jetpack_site_and_user_is_authenticated_with_WPCom() {
         // Given
         let featureFlagService = MockFeatureFlagService()
@@ -435,6 +443,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.enablePushNotifications) })
     }
 
+    @MainActor
     func test_sections_contains_connectivity_row_if_user_authenticated_without_wpcom() {
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true, isWordPressComStore: false)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false, defaultSite: testSite))
@@ -447,6 +456,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.connectivity) })
     }
 
+    @MainActor
     func test_sections_contains_connectivity_row_if_user_authenticated_with_wpcom() {
         let testSite = Site.fake().copy(siteID: 123, isJetpackThePluginInstalled: true, isJetpackConnected: true, isWordPressComStore: false)
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: true, defaultSite: testSite))
@@ -473,6 +483,7 @@ final class SettingsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.sections.contains { $0.rows.contains(SettingsViewController.Row.woocommerceDetails) })
     }
 
+    @MainActor
     func test_sections_do_not_contain_plugins_when_user_is_not_admin() {
         // Given
         let sessionManager = SessionManager.makeForTesting(authenticated: true, defaultRoles: [.shopManager])

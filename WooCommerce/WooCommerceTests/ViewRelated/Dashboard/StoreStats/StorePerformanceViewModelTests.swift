@@ -1015,6 +1015,7 @@ final class StorePerformanceViewModelTests: XCTestCase {
 // MARK: - Private helpers
 //
 private extension StorePerformanceViewModelTests {
+    @MainActor
     func mockSyncAllStats(with stores: MockStoresManager,
                           retrieveStatsError: Error? = nil,
                           visitorStatsError: Error? = nil,

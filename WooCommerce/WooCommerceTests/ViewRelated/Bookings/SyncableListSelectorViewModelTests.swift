@@ -27,6 +27,7 @@ struct SyncableListSelectorViewModelTests {
 
     // MARK: - Initialization
 
+    @MainActor
     @Test func initial_state_is_empty() {
         // Given
         let syncable = MockListSyncable(siteID: sampleSiteID)
@@ -44,6 +45,7 @@ struct SyncableListSelectorViewModelTests {
 
     // MARK: - State transitions
 
+    @MainActor
     @Test func state_transitions_to_syncing_first_page_on_load_resources() {
         // Given
         let syncable = MockListSyncable(siteID: sampleSiteID)
@@ -58,6 +60,7 @@ struct SyncableListSelectorViewModelTests {
         #expect(viewModel.shouldShowBottomActivityIndicator == true)
     }
 
+    @MainActor
     @Test func state_transitions_to_results_after_successful_sync_with_data() async {
         // Given
         let syncable = MockListSyncable(siteID: sampleSiteID)
@@ -99,6 +102,7 @@ struct SyncableListSelectorViewModelTests {
         #expect(viewModel.shouldShowBottomActivityIndicator == false)
     }
 
+    @MainActor
     @Test func state_transitions_to_empty_after_successful_sync_with_no_data() async {
         // Given
         let syncable = MockListSyncable(siteID: sampleSiteID)
@@ -139,6 +143,7 @@ struct SyncableListSelectorViewModelTests {
 
     // MARK: - Pagination
 
+    @MainActor
     @Test func sync_action_is_dispatched_on_load_resources() {
         // Given
         let syncable = MockListSyncable(siteID: sampleSiteID)
@@ -161,6 +166,7 @@ struct SyncableListSelectorViewModelTests {
         #expect(syncActionCalled)
     }
 
+    @MainActor
     @Test func next_page_is_loaded_on_load_next_page_action() async {
         // Given
         let syncable = MockListSyncable(siteID: sampleSiteID)
@@ -205,6 +211,7 @@ struct SyncableListSelectorViewModelTests {
 
     // MARK: - Search functionality
 
+    @MainActor
     @Test func search_action_is_dispatched_when_search_query_changes() async {
         // Given
         let syncable = MockListSyncable(siteID: sampleSiteID)
@@ -234,6 +241,7 @@ struct SyncableListSelectorViewModelTests {
         #expect(capturedKeyword == "test")
     }
 
+    @MainActor
     @Test func search_predicate_is_applied_when_search_query_is_not_empty() async {
         // Given
         let syncable = MockListSyncable(siteID: sampleSiteID)
@@ -279,6 +287,7 @@ struct SyncableListSelectorViewModelTests {
         #expect(viewModel.items.first?.productID == matchingProduct.productID)
     }
 
+    @MainActor
     @Test func search_predicate_is_removed_when_search_query_is_cleared() async {
         // Given
         let syncable = MockListSyncable(siteID: sampleSiteID)
@@ -316,6 +325,7 @@ struct SyncableListSelectorViewModelTests {
         #expect(viewModel.items.count == 2)
     }
 
+    @MainActor
     @Test func syncable_without_search_predicate_uses_base_predicate_during_search() async {
         // Given
         let syncable = MockListSyncable(siteID: sampleSiteID, hasSearchPredicate: false)
@@ -353,6 +363,7 @@ struct SyncableListSelectorViewModelTests {
 
     // MARK: - Error handling
 
+    @MainActor
     @Test func state_transitions_to_empty_on_sync_error() async {
         // Given
         let syncable = MockListSyncable(siteID: sampleSiteID)

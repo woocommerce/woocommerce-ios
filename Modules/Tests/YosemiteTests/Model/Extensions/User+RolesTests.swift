@@ -6,6 +6,7 @@ final class User_RolesTests: XCTestCase {
 
     // MARK: Extended User Methods
 
+    @MainActor
     func test_user_when_fullName_exists_displayName_returns_fullName() {
         // Given
         let user: Yosemite.User = makeUser()
@@ -17,6 +18,7 @@ final class User_RolesTests: XCTestCase {
         XCTAssertEqual(displayName, "Johnny Appleseed")
     }
 
+    @MainActor
     func test_user_when_fullName_isEmpty_displayName_returns_username() {
         // Given
         let user = makeUser(firstName: "", lastName: "")
@@ -28,6 +30,7 @@ final class User_RolesTests: XCTestCase {
         XCTAssertEqual(displayName, "johnny_appleseed")
     }
 
+    @MainActor
     func test_user_when_fullName_and_username_isEmpty_displayName_returns_email() {
         // Given
         let user = makeUser(firstName: "", lastName: "", username: "")
@@ -39,6 +42,7 @@ final class User_RolesTests: XCTestCase {
         XCTAssertEqual(displayName, "johnny@email.blog")
     }
 
+    @MainActor
     func test_user_with_eligible_roles_hasEligibleRoles_returns_true() {
         // Given
         let adminUser = makeUser(roles: ["administrator"])
@@ -53,6 +57,7 @@ final class User_RolesTests: XCTestCase {
         XCTAssertTrue(managerIsEligible)
     }
 
+    @MainActor
     func test_user_with_ineligible_roles_hasEligibleRoles_returns_false() {
         // Given
         let user = makeUser()
@@ -66,6 +71,7 @@ final class User_RolesTests: XCTestCase {
 
     // MARK: User.Role Enum
 
+    @MainActor
     func test_userRole_displayString_returns_correct_localized_value_for_all_roles() {
         for (roleKey, expectedValue) in Expectations.roleTexts {
             // Given
@@ -79,6 +85,7 @@ final class User_RolesTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_userRole_isEligible_returns_true_when_role_isValid() {
         // Given
         let administratorRole = User.Role(rawValue: "administrator")!
@@ -92,6 +99,7 @@ final class User_RolesTests: XCTestCase {
         XCTAssertTrue(administratorIsEligible && shopManagerIsEligible)
     }
 
+    @MainActor
     func test_userRole_isEligible_returns_false_when_role_isNotValid() {
         // Given
         let role = User.Role(rawValue: "contributor")!
@@ -103,6 +111,7 @@ final class User_RolesTests: XCTestCase {
         XCTAssertFalse(isEligible)
     }
 
+    @MainActor
     func test_userRole_displayText_given_default_role_returns_correct_localized_string() {
         // Given
         let roleString = "shop_manager"
@@ -115,6 +124,7 @@ final class User_RolesTests: XCTestCase {
         XCTAssertEqual(displayText, expected)
     }
 
+    @MainActor
     func test_userRole_displayText_given_nonDefault_role_returns_titleCased_string() {
         // Given
         let roleString = "door_holder"
@@ -129,6 +139,7 @@ final class User_RolesTests: XCTestCase {
 }
 
 private extension User_RolesTests {
+    @MainActor
     func makeUser(firstName: String = "Johnny", lastName: String = "Appleseed", username: String = "johnny_appleseed",
                   email: String = "johnny@email.blog", roles: [String] = ["author", "editor"]) -> User {
         User(localID: 0, siteID: 0, email: email, username: username,

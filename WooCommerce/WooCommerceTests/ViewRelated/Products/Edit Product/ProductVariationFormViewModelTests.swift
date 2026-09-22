@@ -58,6 +58,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
 
     // MARK: `canShareProduct`
 
+    @MainActor
     func test_edit_product_variation_form_with_published_status_can_share_product() {
         // Given
         let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.published)
@@ -85,6 +86,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         XCTAssertFalse(canShareProduct)
     }
 
+    @MainActor
     func test_edit_product_variation_form_with_non_published_status_can_share_product() {
         // Given
         let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.pending)
@@ -112,6 +114,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         XCTAssertFalse(canShareProduct)
     }
 
+    @MainActor
     func test_edit_product_form_with_non_public_site_cannot_share_product() {
         // Given
         let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.published)
@@ -127,6 +130,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         XCTAssertFalse(canShareProduct)
     }
 
+    @MainActor
     func test_edit_product_variation_form_with_invalid_permalink_cannot_share_product() {
         // Given
         let product = ProductVariation.fake().copy(permalink: "", status: ProductStatus.published)
@@ -142,6 +146,7 @@ final class ProductVariationFormViewModelTests: XCTestCase {
         XCTAssertFalse(canShareProduct)
     }
 
+    @MainActor
     func test_edit_product_variation_form_with_valid_permalink_can_share_product() {
         // Given
         let product = ProductVariation.fake().copy(permalink: "https://example.com/product", status: ProductStatus.published)

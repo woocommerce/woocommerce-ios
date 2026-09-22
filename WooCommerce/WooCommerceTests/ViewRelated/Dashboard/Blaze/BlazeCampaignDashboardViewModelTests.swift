@@ -21,6 +21,7 @@ final class BlazeCampaignDashboardViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         WordPressAuthenticator.initializeAuthenticator()
@@ -938,6 +939,7 @@ private extension BlazeCampaignDashboardViewModelTests {
         }, completion: {}, on: .main)
     }
 
+    @MainActor
     func mockSynchronizeProducts(insertProductToStorage product: Networking.Product? = nil) {
         stores.whenReceivingAction(ofType: ProductAction.self) { [weak self] action in
             switch action {
@@ -952,6 +954,7 @@ private extension BlazeCampaignDashboardViewModelTests {
         }
     }
 
+    @MainActor
     func mockSynchronizeCampaignsList(insertCampaignToStorage BlazeCampaignListItem: BlazeCampaignListItem? = nil) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { [weak self] action in
             switch action {

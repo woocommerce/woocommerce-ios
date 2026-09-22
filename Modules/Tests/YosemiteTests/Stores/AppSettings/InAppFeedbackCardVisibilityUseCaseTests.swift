@@ -15,6 +15,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
     private var calendar: Calendar!
     private var fileManager: MockFileManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dateFormatter = DateFormatter.Defaults.iso8601
@@ -23,6 +24,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         fileManager = MockFileManager()
     }
 
+    @MainActor
     override func tearDown() {
         fileManager = MockFileManager()
         calendar = nil
@@ -30,6 +32,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_shouldBeVisible_is_false_if_installationDate_is_less_than_90_days_ago() throws {
         // Given
         let installationDate = try date(from: "2020-08-08T00:00:00Z")
@@ -47,6 +50,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(shouldBeVisible)
     }
 
+    @MainActor
     func test_shouldBeVisible_is_true_if_installationDate_is_more_than_or_equal_to_90_days_ago() throws {
         // Given
         let installationDate = try date(from: "2020-08-08T00:00:00Z")
@@ -64,6 +68,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(shouldBeVisible)
     }
 
+    @MainActor
     func test_shouldBeVisible_is_false_if_lastFeedback_is_less_than_180_days_ago() throws {
         // Given
         let installationDate = try date(from: "2020-08-08T00:00:00Z")
@@ -82,6 +87,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(shouldBeVisible)
     }
 
+    @MainActor
     func test_shouldBeVisible_is_true_if_lastFeedback_is_more_than_or_equal_to_180_days_ago() throws {
         // Given
         let installationDate = try date(from: "2020-08-08T00:00:00Z")
@@ -100,6 +106,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(shouldBeVisible)
     }
 
+    @MainActor
     func test_shouldBeVisible_is_false_if_documentDir_creation_date_is_less_than_90_days_ago() throws {
         // Given
         let documentDirCreationDate = try date(from: "2020-08-08T00:00:00Z")
@@ -118,6 +125,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(shouldBeVisible)
     }
 
+    @MainActor
     func test_shouldBeVisible_is_true_if_documentDir_creation_date_is_more_than_or_equal_to_90_days_ago() throws {
         // Given
         let documentDirCreationDate = try date(from: "2020-08-08T00:00:00Z")
@@ -138,6 +146,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(shouldBeVisible)
     }
 
+    @MainActor
     func test_shouldBeVisible_throws_if_the_installation_date_cannot_be_inferred() throws {
         // Given
         fileManager.whenRetrievingAttributesOfItem(atPath: try documentDirectoryURL().path, thenReturn: [:])
@@ -155,6 +164,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertEqual(error as? InferenceError, .failedToInferInstallationDate)
     }
 
+    @MainActor
     func test_orderFormShippingLines_shouldBeVisible_is_true_if_feedback_status_is_pending() throws {
         // Given
         let currentDate = try date(from: "2020-11-12T23:59:59Z")
@@ -171,6 +181,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertTrue(shouldBeVisible)
     }
 
+    @MainActor
     func test_orderFormShippingLines_shouldBeVisible_is_false_if_feedback_status_is_dismissed() throws {
         // Given
         let currentDate = try date(from: "2020-11-12T23:59:59Z")
@@ -187,6 +198,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(shouldBeVisible)
     }
 
+    @MainActor
     func test_orderFormShippingLines_shouldBeVisible_is_false_if_lastFeedback_is_less_than_7_days_ago() throws {
         // Given
         let lastFeedbackDate = try date(from: "2020-11-06T00:00:00Z")
@@ -204,6 +216,7 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
         XCTAssertFalse(shouldBeVisible)
     }
 
+    @MainActor
     func test_orderFormShippingLines_shouldBeVisible_is_true_if_lastFeedback_is_more_than_or_equal_to_7_days_ago() throws {
         // Given
         let lastFeedbackDate = try date(from: "2020-11-06T00:00:00Z")
@@ -225,14 +238,17 @@ final class InAppFeedbackCardVisibilityUseCaseTests: XCTestCase {
 // MARK: - Utils
 
 private extension InAppFeedbackCardVisibilityUseCaseTests {
+    @MainActor
     func date(from iso8601Date: String) throws -> Date {
         try XCTUnwrap(dateFormatter.date(from: iso8601Date))
     }
 
+    @MainActor
     func documentDirectoryURL() throws -> URL {
         try XCTUnwrap(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).last)
     }
 
+    @MainActor
     func createAppSetting(installationDate: Date?, feedbackType: FeedbackType, feedbackStatus: FeedbackSettings.Status) -> GeneralAppSettings {
         let feedback = FeedbackSettings(name: feedbackType, status: feedbackStatus)
         let settings = GeneralAppSettings(

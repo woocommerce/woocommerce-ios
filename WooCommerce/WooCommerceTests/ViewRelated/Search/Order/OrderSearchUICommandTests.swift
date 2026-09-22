@@ -110,6 +110,7 @@ final class OrderSearchUICommandTests: XCTestCase {
         XCTAssertEqual(sanitizedKeywordWithoutHash, "123", "Expected sanitizeKeyword to return the keyword unchanged if there's no leading '#'")
     }
 
+    @MainActor
     func test_SynchronizeModels_tracks_orders_list_search_analytics() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

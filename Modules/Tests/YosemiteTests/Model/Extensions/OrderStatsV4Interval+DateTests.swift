@@ -9,6 +9,7 @@ final class OrderStatsV4Interval_DateTests: XCTestCase {
                                                             netRevenue: 0,
                                                             averageOrderValue: 0)
 
+    @MainActor
     func testDateStartAndDateEnd() throws {
         let dateStringInSiteTimeZone = "2019-08-08 10:45:00"
         let interval = OrderStatsV4Interval(interval: "hour",
@@ -33,6 +34,7 @@ final class OrderStatsV4Interval_DateTests: XCTestCase {
 
     // MARK: - Unparseable dates return nil instead of crashing
 
+    @MainActor
     func test_dateStart_when_date_string_is_empty_then_returns_nil() throws {
         // Given
         let interval = OrderStatsV4Interval(interval: "hour",
@@ -48,6 +50,7 @@ final class OrderStatsV4Interval_DateTests: XCTestCase {
         XCTAssertNil(dateStart)
     }
 
+    @MainActor
     func test_dateEnd_when_date_string_is_malformed_then_returns_nil() throws {
         // Given
         let interval = OrderStatsV4Interval(interval: "hour",
@@ -63,6 +66,7 @@ final class OrderStatsV4Interval_DateTests: XCTestCase {
         XCTAssertNil(dateEnd)
     }
 
+    @MainActor
     func test_date_start_and_date_end_parsed_when_daylight_saving_time_begins() throws {
         // Given
         let dateString = "2023-03-26 01:00:00"

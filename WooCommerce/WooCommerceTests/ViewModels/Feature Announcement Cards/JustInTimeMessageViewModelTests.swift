@@ -16,6 +16,7 @@ final class JustInTimeMessageViewModelTests: XCTestCase {
     private var stores: MockStoresManager!
     private var sut: JustInTimeMessageViewModel!
 
+    @MainActor
     override func setUp() {
         subscriptions = Set<AnyCancellable>()
         webviewPublishes = [WebViewSheetViewModel]()
@@ -117,6 +118,7 @@ final class JustInTimeMessageViewModelTests: XCTestCase {
         assertAnalyticEventLogged(name: "jitm_dismissed", message: message)
     }
 
+    @MainActor
     func test_success_response_on_dismissal_tracks_jitm_dismiss_success_event() {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")
@@ -138,6 +140,7 @@ final class JustInTimeMessageViewModelTests: XCTestCase {
         assertAnalyticEventLogged(name: "jitm_dismiss_success", message: message)
     }
 
+    @MainActor
     func test_failed_response_on_dismissal_tracks_jitm_dismiss_failed_event() {
         // Given
         let message = Yosemite.JustInTimeMessage.fake().copy(messageID: "test-message-id", featureClass: "test-feature-class")

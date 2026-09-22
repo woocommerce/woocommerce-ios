@@ -34,6 +34,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_sending_status_input_updates_local_order() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -46,6 +47,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.order.status, .completed)
     }
 
+    @MainActor
     func test_sending_new_product_input_updates_local_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -63,6 +65,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(item.quantity, input.quantity)
     }
 
+    @MainActor
     func test_setProducts_sends_single_product_input_then_updates_order_successfully() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -90,6 +93,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(item.quantity, productInput.quantity)
     }
 
+    @MainActor
     func test_setProducts_sends_multiple_product_input_then_updates_order_successfully() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -128,6 +132,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(anotherItem.quantity, anotherProductInput.quantity)
     }
 
+    @MainActor
     func test_sending_update_product_input_updates_local_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -147,6 +152,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(item.quantity, updatedInput.quantity)
     }
 
+    @MainActor
     func test_sending_delete_product_input_updates_local_order() throws {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -164,6 +170,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.order.items[0].quantity, .zero)
     }
 
+    @MainActor
     func test_sending_addresses_input_updates_local_order() throws {
         // Given
         let address = Address.fake().copy(firstName: "Woo", lastName: "Customer")
@@ -179,6 +186,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.order.shippingAddress, address)
     }
 
+    @MainActor
     func test_sending_nil_addresses_input_updates_local_order() throws {
         // Given
         let address = Address.fake().copy(firstName: "Woo", lastName: "Customer")
@@ -196,6 +204,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertNil(synchronizer.order.shippingAddress)
     }
 
+    @MainActor
     func test_sending_shipping_input_updates_local_order() throws {
         // Given
         let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID, methodID: "free_shipping")
@@ -209,6 +218,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.order.shippingLines, [shippingLine])
     }
 
+    @MainActor
     func test_removing_shipping_input_updates_local_order() throws {
         // Given
         let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID)
@@ -224,6 +234,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertNil(firstLine.methodID)
     }
 
+    @MainActor
     func test_sending_product_input_triggers_order_creation() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -249,6 +260,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(orderCreationInvoked)
     }
 
+    @MainActor
     func test_sending_new_product_input_sends_order_without_totals() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
@@ -278,6 +290,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_sending_new_product_input_sends_order_with_zero_ids() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
@@ -306,6 +319,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_sending_existing_product_input_sends_order_with_totals() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID, price: "20.0")
@@ -340,6 +354,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_sending_addresses_input_triggers_order_creation() {
         // Given
         let address = Address.fake().copy(firstName: "Woo", lastName: "Customer")
@@ -365,6 +380,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(orderCreationInvoked)
     }
 
+    @MainActor
     func test_sending_shipping_input_triggers_order_creation() {
         // Given
         let shippingLine = ShippingLine.fake().copy(shippingID: sampleShippingID)
@@ -389,6 +405,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(orderCreationInvoked)
     }
 
+    @MainActor
     func test_adding_fee_input_triggers_order_creation() {
         // Given
         let fee = OrderFeeLine.fake().copy()
@@ -413,6 +430,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(orderCreationInvoked)
     }
 
+    @MainActor
     func test_adding_fee_input_triggers_order_sync_in_edit_flow() {
         // Given
         let fee = OrderFeeLine.fake().copy()
@@ -440,6 +458,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(orderUpdateInvoked)
     }
 
+    @MainActor
     func test_adding_fee_input_updates_local_order() throws {
         // Given
         let feeLine = OrderFeeLine.fake().copy(feeID: sampleFeeID, name: "test-fee")
@@ -454,6 +473,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(firstLine.name, feeLine.name)
     }
 
+    @MainActor
     func test_removing_fee_input_updates_local_order() throws {
         // Given
         let feeLine = OrderFeeLine.fake().copy(feeID: sampleFeeID)
@@ -468,6 +488,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(synchronizer.order.fees.first?.isDeleted ?? true)
     }
 
+    @MainActor
     func test_sending_coupon_input_triggers_order_creation() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -491,6 +512,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(orderCreationInvoked)
     }
 
+    @MainActor
     func test_sending_coupon_input_triggers_order_sync_in_edit_flow() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
@@ -517,6 +539,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(orderUpdateInvoked)
     }
 
+    @MainActor
     func test_removing_coupon_input_updates_local_order() throws {
         // Given
         let couponCode = "code"
@@ -531,6 +554,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertNil(synchronizer.order.coupons.first)
     }
 
+    @MainActor
     func test_sending_customer_note_input_updates_local_order() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -544,6 +568,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.order.customerNote, expectedNotes)
     }
 
+    @MainActor
     func test_creating_customer_note_input_updates_local_order() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -571,6 +596,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(resultOrder.customerNote, expectedNote)
     }
 
+    @MainActor
     func test_updating_customer_note_input_updates_local_order() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -608,6 +634,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(resultOrder.customerNote, expectedNote)
     }
 
+    @MainActor
     func test_sending_customer_note_input_triggers_sync_in_edit_flow() throws {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
@@ -634,6 +661,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(update.fields, OrderUpdateField.allCases)
     }
 
+    @MainActor
     func test_updateOrder_forwards_configured_request_currency() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
@@ -662,6 +690,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(receivedCurrency, "EUR")
     }
 
+    @MainActor
     func test_sending_customer_id_input_does_not_trigger_sync_in_creation_flow() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -675,6 +704,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.setCustomerID.send(16)
     }
 
+    @MainActor
     func test_sending_customer_id_input_does_not_trigger_sync_in_edit_flow() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
@@ -689,6 +719,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.setCustomerID.send(16)
     }
 
+    @MainActor
     func test_sending_customer_id_then_addresses_input_triggers_sync_in_creation_flow() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -713,6 +744,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(orderToCreate.customerID, 16)
     }
 
+    @MainActor
     func test_sending_customer_id_then_addresses_input_triggers_sync_in_edit_flow() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
@@ -739,6 +771,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(update.fields.contains(.customerID))
     }
 
+    @MainActor
     func test_removing_customer_id_sets_customer_id_to_0() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID, customerID: 16)
@@ -756,6 +789,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.order.customerID, 0)
     }
 
+    @MainActor
     func test_removing_customer_id_does_not_trigger_sync_in_creation_flow() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -769,6 +803,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.removeCustomerID.send(())
     }
 
+    @MainActor
     func test_removing_customer_id_does_not_trigger_sync_in_edit_flow() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
@@ -783,6 +818,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         synchronizer.removeCustomerID.send(())
     }
 
+    @MainActor
     func test_states_are_properly_set_upon_success_order_creation() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -815,6 +851,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(states, [.syncing(blocking: true), .synced])
     }
 
+    @MainActor
     func test_states_are_properly_set_upon_success_order_update_with_new_items() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -853,6 +890,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(states, [.syncing(blocking: true), .synced])
     }
 
+    @MainActor
     func test_state_is_set_to_syncing_and_blocking_upon_order_update_with_new_item_that_includes_bundle_configuration() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -880,6 +918,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(states, [.syncing(blocking: true)])
     }
 
+    @MainActor
     func test_states_are_properly_set_upon_success_order_update_with_no_new_items() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -919,6 +958,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(states, [.syncing(blocking: false), .synced])
     }
 
+    @MainActor
     func test_states_are_properly_set_upon_success_order_update_with_no_new_items_in_allUpdates_block_behavior() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -959,6 +999,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(states, [.syncing(blocking: true), .synced])
     }
 
+    @MainActor
     func test_order_creation_can_resume_after_receiving_errors() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -1001,6 +1042,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(receivedCreationRequest)
     }
 
+    @MainActor
     func test_states_are_properly_set_upon_failing_order_creation() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -1034,6 +1076,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         assertEqual(states, [.syncing(blocking: true), .error(error, usesGiftCard: false)])
     }
 
+    @MainActor
     func test_states_are_properly_set_upon_failing_order_update() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -1073,6 +1116,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(states, [.syncing(blocking: true), .error(error, usesGiftCard: false)])
     }
 
+    @MainActor
     func test_sending_double_input_triggers_only_one_order_creation() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -1103,6 +1147,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
 
+    @MainActor
     func test_sending_input_while_order_is_being_created_ignores_order_update() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -1135,6 +1180,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_order_is_created_with_draft_status_and_returned_with_selected_status() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1171,6 +1217,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.order.status, .pending) // Selected status
     }
 
+    @MainActor
     func test_order_is_created_with_site_currency() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1204,6 +1251,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(submittedCurrency.uppercased(), "GBP") // Submitted Status
     }
 
+    @MainActor
     func test_order_is_synced_with_selected_status_in_editing_flow() {
         // Given
         let order = Order.fake().copy(orderID: sampleOrderID)
@@ -1230,6 +1278,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.order.status, .onHold) // Selected status
     }
 
+    @MainActor
     func test_order_update_is_sent_with_correct_order_fields() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -1268,6 +1317,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
                                       .customerID])
     }
 
+    @MainActor
     func test_order_update_in_edit_flow_is_sent_with_all_order_fields() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -1295,6 +1345,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(updateFields, OrderUpdateField.allCases)
     }
 
+    @MainActor
     func test_sending_retry_trigger_after_failed_order_creation_retries_expected_order_creation() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -1338,6 +1389,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(createdOrderItems.first?.quantity, 1)
     }
 
+    @MainActor
     func test_sending_retry_trigger_with_remote_order_triggers_order_update() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -1388,6 +1440,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(updatedOrderItems.first?.quantity, 2)
     }
 
+    @MainActor
     func test_commit_changes_creates_order_if_order_has_not_been_created() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1412,6 +1465,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_commit_changes_relays_error() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1437,6 +1491,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
+    @MainActor
     func test_commit_changes_updates_order_if_order_has_been_created() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1466,6 +1521,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_commitAllChanges_relays_usesGiftCard_on_success() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1491,6 +1547,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(usesGiftCard)
     }
 
+    @MainActor
     func test_commitAllChanges_relays_usesGiftCard_on_failure() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1517,6 +1574,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertTrue(usesGiftCard)
     }
 
+    @MainActor
     func test_double_inputs_are_debounced_during_order_update() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -1553,6 +1611,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         wait(for: [exp], timeout: 1.0)
     }
 
+    @MainActor
     func test_order_sync_preserves_customerID_from_local_order_when_remote_returns_zero() {
         // Given
         let product = Product.fake().copy(productID: sampleProductID)
@@ -1594,6 +1653,7 @@ final class RemoteOrderSynchronizerTests: XCTestCase {
         XCTAssertEqual(synchronizer.order.customerID, expectedCustomerID)
     }
 
+    @MainActor
     func test_order_creation_includes_customerID_when_set_before_sync() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

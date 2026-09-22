@@ -58,6 +58,7 @@ class RefundStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -65,6 +66,7 @@ class RefundStoreTests: XCTestCase {
         network = MockNetwork()
     }
 
+    @MainActor
     override func tearDown() {
         super.tearDown()
         // anything that needs cleared after each unit test, should be added here.
@@ -75,6 +77,7 @@ class RefundStoreTests: XCTestCase {
 
     /// Verifies that `RefundAction.synchronizeRefunds` effectively persists any retrieved refunds.
     ///
+    @MainActor
     func testRetrieveRefundsEffectivelyPersistsRetrievedRefunds() {
         let expectation = self.expectation(description: "Retrieve refunds")
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -99,6 +102,7 @@ class RefundStoreTests: XCTestCase {
     /// Verifies that `RefundAction.synchronizeRefunds` effectively persists all of the refund fields
     /// correctly across the related `Refund` entities (OrderItemRefund, for example).
     ///
+    @MainActor
     func testRetrieveRefundsEffectivelyPersistsRefundFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist refunds list")
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -131,6 +135,7 @@ class RefundStoreTests: XCTestCase {
     /// Verifies that `RefundAction.synchronizeRefunds` returns an error
     /// whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveRefundsReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve refunds error response")
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -150,6 +155,7 @@ class RefundStoreTests: XCTestCase {
 
     /// Verifies that `RefundAction.synchronizeRefunds` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveProductsReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve refunds empty response")
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -171,6 +177,7 @@ class RefundStoreTests: XCTestCase {
 
     /// Verifies that `RefundAction.retrieveRefund` returns the expected `Refund`.
     ///
+    @MainActor
     func testRetrieveSingleRefundReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve single refund")
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -194,6 +201,7 @@ class RefundStoreTests: XCTestCase {
     /// Verifies that `RefundAction.retrieveRefund` effectively persists all of the remote product fields
     /// correctly across all of the related `Refund` entities (such as OrderItemRefund).
     ///
+    @MainActor
     func testRetrieveSingleRefundEffectivelyPersistsRefundFieldsAndRelatedObjects() {
         let expectation = self.expectation(description: "Persist single refund")
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -226,6 +234,7 @@ class RefundStoreTests: XCTestCase {
     /// Verifies that `RefundAction.retrieveRefund` returns an error
     /// whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveSingleRefundReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve a single refund's error response")
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -244,6 +253,7 @@ class RefundStoreTests: XCTestCase {
 
     /// Verifies that `RefundAction.retrieveRefund` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveSingleRefundReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve a single refund's empty response")
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -263,6 +273,7 @@ class RefundStoreTests: XCTestCase {
     /// action results in a response with statusCode = 404
     /// and the local entity is obliterated from existence.
     ///
+    @MainActor
     func testRetrieveSingleRefundResultingInStatusCode404CausesTheStoredRefundToGetDeleted() {
         let expectation = self.expectation(description: "Delete single refund when response is 404 not found")
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -290,6 +301,7 @@ class RefundStoreTests: XCTestCase {
 
     /// Verifies that `RefundAction.resetStoredRefunds` deletes the Refunds from Storage
     ///
+    @MainActor
     func testResetStoredRefundsEffectivelyNukesTheRefundsCache() {
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -311,6 +323,7 @@ class RefundStoreTests: XCTestCase {
 
     /// Verifies that `RefundStore.upsertStoredRefund` does not produce duplicate entries.
     ///
+    @MainActor
     func testUpdateStoredRefundEffectivelyUpdatesPreexistantRefund() {
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -330,6 +343,7 @@ class RefundStoreTests: XCTestCase {
 
     /// Verifies that `RefundStore.upsertStoredRefund` updates the correct site's refund.
     ///
+    @MainActor
     func testUpdateStoredRefundEffectivelyUpdatesCorrectSitesRefund() {
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
@@ -356,6 +370,7 @@ class RefundStoreTests: XCTestCase {
 
     /// Verifies that `RefundStore.upsertStoredRefund` effectively inserts a new Refund, with the specified payload.
     ///
+    @MainActor
     func testUpdateStoredRefundEffectivelyPersistsNewRefund() {
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let remoteRefund = sampleRefund()
@@ -378,6 +393,7 @@ class RefundStoreTests: XCTestCase {
     /// This translates effectively into: Ensure that performing update OPs that don't really change anything, do not
     /// end up causing UI refresh OPs in the main thread.
     ///
+    @MainActor
     func testInnocuousRefundUpdateOperationsPerformedInBackgroundDoNotTriggerUpsertEventsInTheMainThread() {
         // Stack
         let viewContext = storageManager.persistentContainer.viewContext
@@ -419,6 +435,7 @@ class RefundStoreTests: XCTestCase {
         wait(for: [backgroundSaveExpectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_stale_refunds_are_deleted_when_retrieving_new_refunds_with_deleteStaleRefunds_flag() {
         // Given
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -443,6 +460,7 @@ class RefundStoreTests: XCTestCase {
         XCTAssertNil(retrieveError)
     }
 
+    @MainActor
     func test_stale_refunds_are_not_deleted_when_retrieving_new_refunds_without_deleteStaleRefunds_flag() {
         // Given
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -467,6 +485,7 @@ class RefundStoreTests: XCTestCase {
         XCTAssertNil(retrieveError)
     }
 
+    @MainActor
     func test_refunds_are_retrieved_from_remote_when_they_are_missing_from_storage() {
         // Given
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -488,6 +507,7 @@ class RefundStoreTests: XCTestCase {
         XCTAssertNil(retrieveError)
     }
 
+    @MainActor
     func test_refunds_are_not_retrieved_from_remote_when_they_exist_in_storage() {
         // Given
         let refundStore = RefundStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -518,6 +538,7 @@ private extension RefundStoreTests {
 
     /// Generate a sample Refund
     ///
+    @MainActor
     func sampleRefund(_ siteID: Int64? = nil, refundID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
         let testDate = DateFormatter.dateFromString(with: "2019-10-09T16:18:23")
@@ -536,6 +557,7 @@ private extension RefundStoreTests {
 
     /// Generate a mutated Refund
     ///
+    @MainActor
     func sampleRefundMutated(_ siteID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
         let testDate = DateFormatter.dateFromString(with: "2019-10-09T16:18:23")
@@ -554,6 +576,7 @@ private extension RefundStoreTests {
 
     /// Generate a single Refund
     ///
+    @MainActor
     func sampleRefund2(_ siteID: Int64? = nil) -> Networking.Refund {
         let testSiteID = siteID ?? sampleSiteID
         let testDate = DateFormatter.dateFromString(with: "2019-10-01T19:33:46")
@@ -571,6 +594,7 @@ private extension RefundStoreTests {
     }
 
     /// Returns an `Order` with empty values. Use `copy()` to modify them.
+    @MainActor
     func sampleOrder() -> Networking.Order {
         Order.fake().copy(
             siteID: sampleSiteID,
@@ -582,6 +606,7 @@ private extension RefundStoreTests {
 
     /// Generate a sample OrderItem
     ///
+    @MainActor
     func sampleOrderItem() -> Networking.OrderItemRefund {
         return OrderItemRefund(itemID: 73,
                                name: "Ninja Silhouette",
@@ -601,6 +626,7 @@ private extension RefundStoreTests {
 
     /// Generate another sample OrderItem
     ///
+    @MainActor
     func sampleOrderItem2() -> Networking.OrderItemRefund {
         return OrderItemRefund(itemID: 67,
                                name: "Ship Your Idea - Blue, XL",
@@ -618,6 +644,7 @@ private extension RefundStoreTests {
                                totalTax: "0.00")
     }
 
+    @MainActor
     func sampleShippingLine() -> Networking.ShippingLine {
         ShippingLine(shippingID: 189,
                      methodTitle: "Flat rate",

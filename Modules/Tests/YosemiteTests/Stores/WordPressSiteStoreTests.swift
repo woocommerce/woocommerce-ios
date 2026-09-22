@@ -14,6 +14,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
     private let sampleSiteURL = "https://test.com"
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -21,11 +22,13 @@ final class WordPressSiteStoreTests: XCTestCase {
         WordPressRESTAPIRootCache.shared.setRoot("https://test.com/wp-json/", for: sampleSiteURL)
     }
 
+    @MainActor
     override func tearDown() {
         WordPressRESTAPIRootCache.shared.reset()
         super.tearDown()
     }
 
+    @MainActor
     func test_fetchSiteInfo_returns_correct_site() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info")
@@ -55,6 +58,7 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertFalse(site.isJetpackThePluginInstalled)
     }
 
+    @MainActor
     func test_fetchSiteInfo_relays_error_properly() throws {
         // Given
         network.simulateError(requestUrlSuffix: "wp-json/", error: NetworkError.notFound())
@@ -73,6 +77,7 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertTrue(result.failure is NetworkError)
     }
 
+    @MainActor
     func test_fetchApplicationPasswordAuthorizationURL_returns_nil_authorization_url_if_application_password_is_not_available() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info")
@@ -92,6 +97,7 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertNil(url)
     }
 
+    @MainActor
     func test_fetchApplicationPasswordAuthorizationURL_returns_correct_authorization_url_if_available() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info-with-auth-url")
@@ -111,6 +117,7 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertEqual(url?.absoluteString, "https://example.com/wp-admin/authorize-application.php")
     }
 
+    @MainActor
     func test_fetchApplicationPasswordAuthorizationURL_relays_error_properly() throws {
         // Given
         network.simulateError(requestUrlSuffix: "wp-json/", error: NetworkError.notFound())
@@ -129,6 +136,7 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertTrue(result.failure is NetworkError)
     }
 
+    @MainActor
     func test_fetchPageList_returns_correct_page_list() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "wp-json/wp/v2/pages?_fields=id,title,link", filename: "wp-page-list-success")
@@ -152,6 +160,7 @@ final class WordPressSiteStoreTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_fetchPageList_relays_error_properly() throws {
         // Given
         network.simulateError(requestUrlSuffix: "wp-json/wp/v2/pages?_fields=id,title,link", error: NetworkError.notFound())

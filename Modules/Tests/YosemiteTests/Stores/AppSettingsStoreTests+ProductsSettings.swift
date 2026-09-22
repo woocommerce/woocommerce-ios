@@ -24,6 +24,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
     ///
     private var subject: AppSettingsStore!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -33,6 +34,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
         subject = AppSettingsStore(dispatcher: dispatcher!, storageManager: storageManager!, fileStorage: fileStorage!, generalAppSettings: generalAppSettings!)
     }
 
+    @MainActor
     override func tearDown() {
         dispatcher = nil
         storageManager = nil
@@ -42,6 +44,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_productsSettings_actions_returns_values_after_being_set() throws {
         // Given
         let siteID: Int64 = 134
@@ -88,6 +91,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
         XCTAssertEqual(try result2.get(), productSettings)
     }
 
+    @MainActor
     func test_productsSettings_actions_returns_values_after_being_set_with_two_sites() throws {
         // Given
         let siteID1: Int64 = 134
@@ -154,6 +158,7 @@ final class AppSettingsStoreTests_ProductsSettings: XCTestCase {
         XCTAssertEqual(try result2.get(), productSettings2)
     }
 
+    @MainActor
     func test_reset_productsSettings_action() {
 
         let action = AppSettingsAction.resetProductsSettings

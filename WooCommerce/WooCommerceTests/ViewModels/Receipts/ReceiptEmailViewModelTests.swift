@@ -35,6 +35,7 @@ struct ReceiptEmailViewModelTests {
         .store(in: &subscriptions)
     }
 
+    @MainActor
     @Test func sendReceipt_when_action_succeeds() async {
         // Given send receipt action succeeds
         sut.email = "test@test.com"
@@ -59,6 +60,7 @@ struct ReceiptEmailViewModelTests {
         #expect(completionResult == .success(order))
     }
 
+    @MainActor
     @Test func sendReceipt_when_action_fails() async {
         // Given send receipt action fails
         struct FakeError: Error {

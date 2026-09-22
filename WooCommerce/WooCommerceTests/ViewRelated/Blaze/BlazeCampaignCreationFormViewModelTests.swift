@@ -46,6 +46,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: Site.fake().copy(url: sampleSiteAddress)))
@@ -584,6 +585,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isShowingMissingImageErrorAlert)
     }
 
+    @MainActor
     func test_it_shows_error_if_confirm_without_objective() async {
         // Given
         insertProduct(sampleProduct)
@@ -606,6 +608,7 @@ final class BlazeCampaignCreationFormViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isShowingMissingObjectiveAlert)
     }
 
+    @MainActor
     func test_it_does_not_show_error_if_confirm_with_objective() async {
         // Given
         insertProduct(sampleProduct)
@@ -1143,6 +1146,7 @@ private class MockProductUIImageLoader: ProductUIImageLoader {
 }
 
 private extension BlazeCampaignCreationFormViewModelTests {
+    @MainActor
     func mockAISuggestionsSuccess(_ suggestions: [BlazeAISuggestion]) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {
@@ -1154,6 +1158,7 @@ private extension BlazeCampaignCreationFormViewModelTests {
         }
     }
 
+    @MainActor
     func mockAISuggestionsFailure(_ error: Error) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {

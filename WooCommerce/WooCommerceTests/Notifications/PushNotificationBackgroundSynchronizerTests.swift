@@ -95,6 +95,7 @@ final class PushNotificationBackgroundSynchronizerTests: XCTestCase {
 private extension PushNotificationBackgroundSynchronizerTests {
     /// Responses when the order exists in the order list
     ///
+    @MainActor
     func mockOrderInOrderListResponses(order: Networking.Order, synchronizeNotifications: Bool = true) {
         if synchronizeNotifications {
             // Mock sync notifications
@@ -139,6 +140,7 @@ private extension PushNotificationBackgroundSynchronizerTests {
 
     /// Responses when the order does not exists the order list.
     ///
+    @MainActor
     func mockOrderNotInOrdersList(order: Networking.Order) {
         mockOrderInOrderListResponses(order: order)
 
@@ -156,6 +158,7 @@ private extension PushNotificationBackgroundSynchronizerTests {
         }
     }
 
+    @MainActor
     func mockOrderNotInOrdersForSampleWithNoteFullData(order: Networking.Order) {
         mockOrderInOrderListResponses(order: order, synchronizeNotifications: false)
 

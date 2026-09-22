@@ -27,6 +27,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
     // MARK: - checkSiteEligibility
 
+    @MainActor
     func test_checkSiteEligibility_returns_expiredWPComPlan_if_plan_expired() {
         // Given
         let site = Site.fake().copy(siteID: 123, plan: freePlan, wasEcommerceTrial: false)
@@ -51,6 +52,7 @@ final class RequirementsCheckerTests: XCTestCase {
         XCTAssertEqual(checkResult, .expiredWPComPlan)
     }
 
+    @MainActor
     func test_checkSiteEligibility_returns_validWCVersion_if_highest_Woo_version_is_3() {
         // Given
         let site = Site.fake().copy(siteID: 123)
@@ -84,6 +86,7 @@ final class RequirementsCheckerTests: XCTestCase {
         XCTAssertEqual(checkResult, .validWCVersion)
     }
 
+    @MainActor
     func test_checkSiteEligibility_returns_invalidWCVersion_if_highest_Woo_version_is_not_3() {
         // Given
         let site = Site.fake().copy(siteID: 123)
@@ -125,6 +128,7 @@ final class RequirementsCheckerTests: XCTestCase {
         XCTAssertEqual(checkResult, .invalidWCVersion)
     }
 
+    @MainActor
     func test_checkSiteEligibility_returns_failure_if_site_setting_check_fails() {
         // Given
         let site = Site.fake().copy(siteID: 123)
@@ -155,6 +159,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
     // MARK: - checkEligibilityForDefaultStore
 
+    @MainActor
     func test_checkEligibilityForDefaultStore_presents_wc_version_alert_when_highest_Woo_version_is_not_3() {
         // Given
         let site = Site.fake().copy(siteID: 123)
@@ -179,6 +184,7 @@ final class RequirementsCheckerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_checkEligibilityForDefaultStore_presents_plan_upgrade_alert_for_wpcom_store_with_expired_free_trial_plan() {
         // Given
         let site = Site.fake().copy(siteID: 123, plan: freePlan)

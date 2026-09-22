@@ -66,6 +66,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     ///
     private let samplePaymentIntentID: String = "p_idREDACTED"
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -80,6 +81,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
                                                    cardReaderConfigProvider: mockCardReaderConfigProvider)
     }
 
+    @MainActor
     override func tearDown() {
         dispatcher = nil
         storageManager = nil
@@ -91,6 +93,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     // MARK: - CardPresentPaymentAction.startCardReaderDiscovery
 
+    @MainActor
     func test_retrievePaymentIntent_action_returns_refreshed_intent_from_service() throws {
         // Given
         let clientSecret = "pi_client_secret"
@@ -112,6 +115,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     /// Verifies that CardPresentPaymentAction.startCardReaderDiscovery hits the `start` method in the service.
     ///
+    @MainActor
     func test_start_discovery_action_hits_start_in_service() {
         let action = CardPresentPaymentAction.startCardReaderDiscovery(
             siteID: sampleSiteID,
@@ -123,6 +127,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertTrue(mockCardReaderService.didHitStart)
     }
 
+    @MainActor
     func test_start_discovery_action_returns_data_eventually() {
         let expectation = self.expectation(description: "Readers discovered")
 
@@ -140,6 +145,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_start_discovery_action_passes_configuration_provider_to_service() {
         let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID,
                                                                        discoveryMethod: .bluetoothScan,
@@ -151,6 +157,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertTrue(mockCardReaderService.didReceiveAConfigurationProvider)
     }
 
+    @MainActor
     func test_start_discovery_action_passes_discovery_method_to_service() {
         let action = CardPresentPaymentAction.startCardReaderDiscovery(siteID: sampleSiteID,
                                                                        discoveryMethod: .bluetoothScan,
@@ -169,6 +176,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// https://github.com/woocommerce/woocommerce-ios/issues/3741
     /// This test will be edited to assert an error was received when
     /// proper error support is implemented.
+    @MainActor
     func test_start_discovery_action_returns_empty_error_when_token_fetching_fails() {
         let expectation = self.expectation(description: "Empty readers on failure to obtain a connection token")
 
@@ -191,6 +199,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_cancel_discovery_action_hits_cancel_in_service() {
         let action = CardPresentPaymentAction.cancelCardReaderDiscovery { _ in
             //
@@ -203,6 +212,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     /// We are still not handling errors, so we will need a new test here
     /// for the case when cancelation fails, which apparently is a thing
+    @MainActor
     func test_cancel_discovery_action_publishes_idle_as_new_discovery_status() {
         let expectation = self.expectation(description: "Cancelling discovery published idle as discoveryStatus")
 
@@ -217,6 +227,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_cancel_discovery_after_start_rdpchanges_discovery_status_to_idle_eventually() {
         let expectation = self.expectation(description: "Cancelling discovery changes discoveryStatus to idle")
 
@@ -240,6 +251,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_connect_to_reader_action_updates_returns_provided_reader_on_success() {
         let expectation = self.expectation(description: "Connect to card reader")
 
@@ -260,6 +272,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_disconnect_action_hits_disconnect_in_service() {
         let action = CardPresentPaymentAction.disconnect(onCompletion: { _ in
             //
@@ -272,6 +285,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     /// Verifies that the PaymentGatewayAccountStore hits the network when loading a WCPay Account and places nothing in storage in case of error.
     ///
+    @MainActor
     func test_loadAccounts_handles_failure() throws {
         network.simulateResponse(requestUrlSuffix: "payments/accounts",
                                  filename: "generic_error")
@@ -293,6 +307,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     /// Verifies that the PaymentGatewayAccountStore hits the network when loading a WCPay Account, propagates success and upserts the account into storage.
     ///
+    @MainActor
     func test_loadAccounts_returns_expected_data() throws {
         network.simulateResponse(requestUrlSuffix: "payments/accounts",
                                  filename: "wcpay-account-complete")
@@ -322,6 +337,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     /// Verifies that loadAccounts succeeds when only WCPay succeeds and Stripe fails.
     ///
+    @MainActor
     func test_loadAccounts_succeeds_when_only_wcpay_succeeds() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "payments/accounts",
@@ -353,6 +369,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     /// Verifies that loadAccounts succeeds when only Stripe succeeds and WCPay fails.
     ///
+    @MainActor
     func test_loadAccounts_succeeds_when_only_stripe_succeeds() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "payments/accounts",
@@ -384,6 +401,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     /// Verifies that loadAccounts returns an error when both WCPay and Stripe fail.
     ///
+    @MainActor
     func test_loadAccounts_fails_when_both_wcpay_and_stripe_fail() throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "payments/accounts",
@@ -405,6 +423,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     /// Verifies that the store hits the network when fetching a charge, and propagates success.
     ///
+    @MainActor
     func test_fetchWCPayCharge_returns_expected_data() throws {
         network.simulateResponse(requestUrlSuffix: "payments/charges/\(sampleChargeID)",
                                  filename: "wcpay-charge-card-present")
@@ -420,6 +439,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertEqual(charge.id, sampleChargeID)
     }
 
+    @MainActor
     func test_fetchWCPayCharge_inserts_charge_in_storage() throws {
         network.simulateResponse(requestUrlSuffix: "payments/charges/\(sampleChargeID)",
                                  filename: "wcpay-charge-card-present")
@@ -441,6 +461,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertEqual(storageCharge?.status, "succeeded")
     }
 
+    @MainActor
     func test_fetchWCPayCharge_inserts_card_present_charge_details_in_storage() throws {
         network.simulateResponse(requestUrlSuffix: "payments/charges/\(sampleChargeID)",
                                  filename: "wcpay-charge-card-present")
@@ -467,6 +488,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertNil(storageCharge?.cardDetails)
     }
 
+    @MainActor
     func test_fetchWCPayCharge_inserts_card_charge_details_in_storage() throws {
         network.simulateResponse(requestUrlSuffix: "payments/charges/\(sampleCardChargeID)",
                                  filename: "wcpay-charge-card")
@@ -492,6 +514,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertNil(storageCharge?.cardPresentDetails)
     }
 
+    @MainActor
     func test_fetchWCPayCharge_inserts_interac_present_charge_details_in_storage() throws {
         network.simulateResponse(requestUrlSuffix: "payments/charges/\(sampleInteracChargeID)",
                                  filename: "wcpay-charge-interac-present")
@@ -520,6 +543,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     /// Verifies that the store hits the network when fetching a charge, and propagates errors.
     ///
+    @MainActor
     func test_fetchWCPayCharge_returns_error_on_failure() {
         network.simulateResponse(requestUrlSuffix: "payments/charges/\(sampleErrorChargeID)",
                                  filename: "wcpay-charge-error")
@@ -534,6 +558,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     /// Verifies that the store deletes the charge if it's gone from the remote.
     ///
+    @MainActor
     func test_fetchWCPayCharge_deletes_existing_charge_on_no_such_charge_failure() {
         let charge = viewStorage.insertNewObject(ofType: Storage.WCPayCharge.self)
         let networkCharge = WCPayCharge.fake().copy(siteID: sampleSiteID, id: sampleErrorChargeID)
@@ -560,6 +585,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     /// Verifies that the store deletes the charge if it's gone from the remote.
     ///
+    @MainActor
     func test_fetchWCPayCharge_deletes_existing_charge_on_no_such_charge_failure_when_using_site_credentials() {
         // Given
         let charge = viewStorage.insertNewObject(ofType: Storage.WCPayCharge.self)
@@ -592,6 +618,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     /// Verifies that the store doesn't delete charges just for any old error.
     ///
+    @MainActor
     func test_fetchWCPayCharge_does_not_delete_existing_charge_on_unknown_failure() {
         let charge = viewStorage.insertNewObject(ofType: Storage.WCPayCharge.self)
         let networkCharge = WCPayCharge.fake().copy(siteID: sampleSiteID, id: sampleErrorChargeID)
@@ -619,6 +646,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Verifies that  only `onProcessingCompletion` is called after card reader finishes capturing payment, since card has to be removed before
     /// `onCompletion` is called.
     ///
+    @MainActor
     func test_collectPayment_calls_onProcessingCompletion_but_not_onCompletion_after_card_reader_capturePayment_success() {
         // Given
         let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .visa)))
@@ -653,6 +681,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Verifies that `onCompletion` is called after card reader finishes capturing payment, then the card is removed successfully
     /// and the site finishes capturing payment.
     ///
+    @MainActor
     func test_collectPayment_calls_onCompletion_after_card_reader_capturePayment_success_and_card_removal_and_site_capturePayment() throws {
         // Given
         let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .visa)))
@@ -691,6 +720,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_collectPayment_prepares_au_eftpos_payment_before_site_capturePayment() throws {
         // Given
         let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .eftposAu)))
@@ -731,6 +761,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_collectPayment_prepares_au_card_payment_with_eftpos_available_before_site_capturePayment() throws {
         // Given
         let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .visa,
@@ -772,6 +803,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_collectPayment_skips_preparing_au_card_payment_when_eftpos_is_not_available() throws {
         // Given
         let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .visa,
@@ -810,6 +842,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_collectPayment_skips_preparing_interac_payment_when_terminal_payment_preparation_is_disabled() throws {
         // Given
         let intent = paymentIntent(collectedPaymentMethod: .interacPresent(details: cardPresentDetails(brand: .interac)))
@@ -850,6 +883,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Verifies that `onCompletion` is called with an error after card reader finishes capturing payment, the card is removed successfully
     /// but the site fails to capture payment.
     ///
+    @MainActor
     func test_collectPayment_calls_onCompletion_with_failure_after_card_reader_capturePayment_success_but_site_capturePayment_failure() throws {
         // Given
         let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .visa)))
@@ -886,6 +920,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_collectPayment_calls_onCompletion_with_failure_when_prepare_terminal_payment_fails_before_processing_completion() throws {
         // Given
         let intent = paymentIntent(collectedPaymentMethod: .interacPresent(details: cardPresentDetails(brand: .interac)))
@@ -925,6 +960,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Verifies that `CardReaderEvent.cardRemovedAfterPaymentCapture` is sent after card reader finishes capturing payment, the card is removed successfully
     /// and before the site captures payment.
     ///
+    @MainActor
     func test_collectPayment_sends_cardRemovedAfterPaymentCapture_event_after_card_removal_and_before_site_capturePayment_completion() {
         // Given
         let intent = paymentIntent(collectedPaymentMethod: .cardPresent(details: cardPresentDetails(brand: .visa)))
@@ -966,6 +1002,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
     /// Verifies that after card reader finishes capturing payment with an error, `onCompletion` is called with a failure result
     /// and `onProcessingCompletion` is not called. Card removal is not necessary since the previous step already fails.
     ///
+    @MainActor
     func test_collectPayment_calls_onCompletion_but_not_onProcessingCompletion_after_card_reader_capturePayment_failure() throws {
         // Given
         let error = UnderlyingError.readerBusy
@@ -996,6 +1033,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertEqual(errorFromResult as? UnderlyingError, error)
     }
 
+    @MainActor
     func test_cancelPayment_keeps_payment_subscription_alive_when_reader_cancellation_fails() throws {
         // Given
         let capturePaymentSubject = PassthroughSubject<PaymentIntent, Error>()
@@ -1034,6 +1072,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertEqual(receivedPaymentError as? UnderlyingError, paymentError)
     }
 
+    @MainActor
     func test_selectedPaymentGatewayAccount_when_sent_use_before_then_returns_the_same_account() {
         // Given
         let account = PaymentGatewayAccount.fake()
@@ -1049,6 +1088,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertEqual(result, account)
     }
 
+    @MainActor
     func test_checkDeviceSupport_action_passes_configuration_provider_to_service() {
         let action = CardPresentPaymentAction.checkDeviceSupport(siteID: sampleSiteID,
                                                                  cardReaderType: .tapToPay,
@@ -1061,6 +1101,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertNotNil(mockCardReaderService.spyCheckSupportConfigProvider)
     }
 
+    @MainActor
     func test_checkDeviceSupport_action_passes_reader_type_and_discovery_method_to_service() {
         let action = CardPresentPaymentAction.checkDeviceSupport(siteID: sampleSiteID,
                                                                  cardReaderType: .chipper,
@@ -1074,6 +1115,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         assertEqual(.chipper, mockCardReaderService.spyCheckSupportCardReaderType)
     }
 
+    @MainActor
     func test_checkDeviceSupport_action_passes_operating_system_override_version_to_service() {
         let expectedVersion = OperatingSystemVersion(majorVersion: 18, minorVersion: 0, patchVersion: 1)
         let action = CardPresentPaymentAction.checkDeviceSupport(
@@ -1090,6 +1132,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     // MARK: - CardPresentPaymentAction.observeCardReaderReconnectionState
 
+    @MainActor
     func test_observeCardReaderReconnectionState_returns_publisher() {
         let expectation = self.expectation(description: "Reconnection state publisher received")
 
@@ -1103,6 +1146,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_observeCardReaderReconnectionState_emits_reconnecting_state() {
         let expectation = self.expectation(description: "Reconnecting state received")
 
@@ -1127,6 +1171,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_observeCardReaderReconnectionState_emits_succeeded_state() {
         let expectation = self.expectation(description: "Reconnection succeeded state received")
 
@@ -1151,6 +1196,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         wait(for: [expectation], timeout: Constants.expectationTimeout)
     }
 
+    @MainActor
     func test_observeCardReaderReconnectionState_emits_failed_state() {
         let expectation = self.expectation(description: "Reconnection failed state received")
 
@@ -1177,6 +1223,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     // MARK: - CardPresentPaymentAction.cancelReconnection
 
+    @MainActor
     func test_cancelReconnection_action_hits_cancelReconnection_in_service() {
         let expectation = self.expectation(description: "Cancel reconnection completed")
 
@@ -1193,6 +1240,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 
     // MARK: - CardPresentPaymentAction.reset
 
+    @MainActor
     func test_reset_clears_config_provider_context() {
         // Given
         mockCardReaderConfigProvider.setContext(siteID: sampleSiteID, remote: WCPayRemote(network: network))
@@ -1207,6 +1255,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertNil(mockCardReaderConfigProvider.currentSiteID)
     }
 
+    @MainActor
     func test_reset_disconnects_card_reader() {
         // When
         let action = CardPresentPaymentAction.reset(onCompletion: {})
@@ -1216,6 +1265,7 @@ final class CardPresentPaymentStoreTests: XCTestCase {
         XCTAssertTrue(mockCardReaderService.didHitDisconnect)
     }
 
+    @MainActor
     func test_use_paymentGatewayAccount_when_account_changes_then_resets_config_provider() {
         // Given
         let accountA = PaymentGatewayAccount.fake().copy(siteID: 111)
@@ -1233,10 +1283,12 @@ final class CardPresentPaymentStoreTests: XCTestCase {
 }
 
 private extension CardPresentPaymentStoreTests {
+    @MainActor
     func paymentIntent(collectedPaymentMethod: PaymentMethod?) -> PaymentIntent {
         PaymentIntent.fake().copy(collectedPaymentMethod: collectedPaymentMethod)
     }
 
+    @MainActor
     func cardPresentDetails(brand: CardBrand, availableNetworks: [CardBrand]? = nil) -> CardPresentTransactionDetails {
         CardPresentTransactionDetails(last4: "1234",
                                       expMonth: 12,

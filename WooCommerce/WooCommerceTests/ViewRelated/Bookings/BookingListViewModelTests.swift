@@ -30,6 +30,7 @@ class BookingListViewModelTests {
 
     // MARK: - State transitions
 
+    @MainActor
     @Test func state_is_empty_without_any_actions() {
         // Given
         var invocationCountOfLoadBookings = 0
@@ -46,6 +47,7 @@ class BookingListViewModelTests {
         #expect(invocationCountOfLoadBookings == 0)
     }
 
+    @MainActor
     @Test func synchronize_bookings_is_dispatched_upon_load_bookings() {
         // Given
         var invocationCountOfLoadBookings = 0
@@ -64,6 +66,7 @@ class BookingListViewModelTests {
         #expect(invocationCountOfLoadBookings == 1)
     }
 
+    @MainActor
     @Test func event_fires_when_load_bookings_fail() {
         // Given
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
@@ -90,6 +93,7 @@ class BookingListViewModelTests {
         #expect(viewModel.syncState == .syncingFirstPage)
     }
 
+    @MainActor
     @Test func state_is_results_upon_load_bookings_if_existing_bookings_in_storage() {
         let existingBooking = createBooking(id: 123, startDate: Date())
         insertBookings([existingBooking])
@@ -105,6 +109,7 @@ class BookingListViewModelTests {
         #expect(viewModel.syncState == .results)
     }
 
+    @MainActor
     @Test func state_is_results_after_load_bookings_with_nonempty_results() async {
         // Given
         let booking = createBooking(id: 1, startDate: Date())
@@ -141,6 +146,7 @@ class BookingListViewModelTests {
         #expect(states == [.empty, .syncingFirstPage, .results])
     }
 
+    @MainActor
     @Test func state_is_back_to_empty_after_load_bookings_with_empty_results() async {
         // Given
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
@@ -175,6 +181,7 @@ class BookingListViewModelTests {
         #expect(states == [.empty, .syncingFirstPage, .empty])
     }
 
+    @MainActor
     @Test func it_loads_next_page_after_load_bookings_and_on_load_next_page_action_until_has_next_page_is_false() async {
         // Given
         var invocationCountOfLoadBookings = 0
@@ -223,6 +230,7 @@ class BookingListViewModelTests {
 
     // MARK: - Row view models
 
+    @MainActor
     @Test func booking_models_match_loaded_bookings() {
         // Given
         let booking1 = createBooking(id: 9, startDate: Date())
@@ -247,6 +255,7 @@ class BookingListViewModelTests {
         #expect(viewModel.bookings.contains { $0.bookingID == booking2.bookingID })
     }
 
+    @MainActor
     @Test func booking_models_are_empty_when_loaded_bookings_are_empty() {
         // Given
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
@@ -265,6 +274,7 @@ class BookingListViewModelTests {
         #expect(viewModel.bookings == [])
     }
 
+    @MainActor
     @Test func booking_models_are_sorted_by_date_created() {
         // Given
         let olderBooking = Booking.fake().copy(siteID: sampleSiteID, bookingID: 1, dateCreated: Date(timeIntervalSince1970: 1000), startDate: Date())
@@ -291,6 +301,7 @@ class BookingListViewModelTests {
 
     // MARK: - `onRefreshAction`
 
+    @MainActor
     @Test func on_refresh_action_resyncs_the_first_page() async {
         // Given
         var invocationCountOfLoadBookings = 0
@@ -316,6 +327,7 @@ class BookingListViewModelTests {
 
     // MARK: - Type-based filtering
 
+    @MainActor
     @Test func today_tab_passes_correct_date_filters_to_booking_action() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -341,6 +353,7 @@ class BookingListViewModelTests {
                 "Today tab should exclude cancelled bookings via API")
     }
 
+    @MainActor
     @Test func upcoming_tab_passes_correct_date_filters_to_booking_action() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -369,6 +382,7 @@ class BookingListViewModelTests {
                 "Upcoming tab should exclude cancelled bookings via API")
     }
 
+    @MainActor
     @Test func all_tab_passes_no_date_filters_to_booking_action() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -395,6 +409,7 @@ class BookingListViewModelTests {
 
     // MARK: - Cache clearing logic
 
+    @MainActor
     @Test func load_bookings_does_not_clear_cache() {
         // Given
         var capturedShouldClearCache: Bool?
@@ -416,6 +431,7 @@ class BookingListViewModelTests {
         #expect(capturedShouldClearCache == false, "Initial load should not clear cache")
     }
 
+    @MainActor
     @Test func on_load_next_page_action_does_not_clear_cache() {
         // Given
         var capturedShouldClearCache: Bool?
@@ -456,6 +472,7 @@ class BookingListViewModelTests {
 
     // MARK: - Local storage filtering
 
+    @MainActor
     @Test func today_tab_results_controller_filters_local_storage_correctly() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -485,6 +502,7 @@ class BookingListViewModelTests {
         #expect(bookingIDs.contains(startOfNextDayBooking.bookingID))
     }
 
+    @MainActor
     @Test func upcoming_tab_results_controller_filters_local_storage_correctly() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -515,6 +533,7 @@ class BookingListViewModelTests {
         #expect(bookingIDs.contains(atEndOfDayBooking.bookingID), "Should contain booking exactly at end of day")
     }
 
+    @MainActor
     @Test func all_tab_results_controller_shows_all_bookings_from_local_storage() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -544,6 +563,7 @@ class BookingListViewModelTests {
         #expect(bookingIDs.contains(farPastBooking.bookingID), "Should contain far past booking")
     }
 
+    @MainActor
     @Test func results_controller_filters_by_site_id() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -569,6 +589,7 @@ class BookingListViewModelTests {
 
     // MARK: - Cancelled booking filtering
 
+    @MainActor
     @Test func today_tab_excludes_cancelled_bookings() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -591,6 +612,7 @@ class BookingListViewModelTests {
         #expect(bookingIDs.contains(paidBooking.bookingID))
     }
 
+    @MainActor
     @Test func upcoming_tab_excludes_cancelled_bookings() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -612,6 +634,7 @@ class BookingListViewModelTests {
         #expect(!bookingIDs.contains(cancelledBooking.bookingID), "Cancelled bookings should be excluded from Upcoming tab")
     }
 
+    @MainActor
     @Test func all_tab_includes_cancelled_bookings() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -632,6 +655,7 @@ class BookingListViewModelTests {
         #expect(bookingIDs.contains(cancelledBooking.bookingID), "Cancelled bookings should be included in All tab")
     }
 
+    @MainActor
     @Test func state_is_syncingFirstPage_when_updating_filters_with_no_matching_bookings_in_storage() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -665,6 +689,7 @@ class BookingListViewModelTests {
                 "Should show loading state instead of empty state while syncing after filter change")
     }
 
+    @MainActor
     @Test func state_is_empty_after_updating_filters_when_sync_completes_with_no_results() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -699,6 +724,7 @@ class BookingListViewModelTests {
                 "Should show empty state after sync completes with no matching results")
     }
 
+    @MainActor
     @Test func today_tab_excludes_cancelled_bookings_after_applying_filters() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -731,6 +757,7 @@ class BookingListViewModelTests {
 
     // MARK: - Filter merging
 
+    @MainActor
     @Test func today_tab_merges_user_date_filters_with_tab_constraints() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -777,6 +804,7 @@ class BookingListViewModelTests {
                 "Should use user's startDateBefore since it's earlier (more restrictive)")
     }
 
+    @MainActor
     @Test func upcoming_tab_merges_user_date_filters_with_tab_constraints() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200) // 2021-01-01 00:00:00 UTC
@@ -820,6 +848,7 @@ class BookingListViewModelTests {
                 "Should use user's startDateBefore since tab has no upper bound")
     }
 
+    @MainActor
     @Test func all_tab_passes_user_date_filters_through_unchanged() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200)
@@ -855,6 +884,7 @@ class BookingListViewModelTests {
         #expect(capturedFilters?.startDateBefore == userEndDate.ISO8601Format())
     }
 
+    @MainActor
     @Test func non_date_filters_pass_through_on_today_tab() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200)
@@ -895,6 +925,7 @@ class BookingListViewModelTests {
         #expect(capturedFilters?.bookingStatusExclude == [BookingStatus.cancelled.rawValue])
     }
 
+    @MainActor
     @Test func clearing_filters_on_today_tab_resets_to_tab_date_constraints() {
         // Given
         let testDate = Date(timeIntervalSince1970: 1609459200)
@@ -938,6 +969,7 @@ class BookingListViewModelTests {
 
     // MARK: - Sort order
 
+    @MainActor
     @Test func update_sort_order_sorts_bookings_from_oldest_to_newest() {
         // Given
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
@@ -976,6 +1008,7 @@ class BookingListViewModelTests {
         #expect(viewModel.bookings[1].bookingID == newerBooking.bookingID)
     }
 
+    @MainActor
     @Test func update_sort_order_sorts_bookings_from_newest_to_oldest() {
         // Given
         stores.whenReceivingAction(ofType: BookingAction.self) { action in
@@ -1014,6 +1047,7 @@ class BookingListViewModelTests {
         #expect(viewModel.bookings[1].bookingID == olderBooking.bookingID)
     }
 
+    @MainActor
     @Test func update_sort_order_triggers_resync_with_correct_order() {
         // Given
         var capturedOrder: BookingsRemote.Order?
@@ -1035,6 +1069,7 @@ class BookingListViewModelTests {
         #expect(capturedOrder == .ascending, "Should dispatch action with ascending order")
     }
 
+    @MainActor
     @Test func update_sort_order_to_newest_first_triggers_resync_with_descending_order() {
         // Given
         var capturedOrder: BookingsRemote.Order?

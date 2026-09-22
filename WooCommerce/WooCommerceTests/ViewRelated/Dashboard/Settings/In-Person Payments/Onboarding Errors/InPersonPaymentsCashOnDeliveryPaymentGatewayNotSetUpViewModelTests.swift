@@ -20,6 +20,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
 
     private var sut: InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModel!
 
+    @MainActor
     override func setUp() {
         stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.sessionManager.setStoreId(12345)
@@ -60,6 +61,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         XCTAssert(completionCalled)
     }
 
+    @MainActor
     func test_skip_saves_skipped_preference_for_the_current_site() {
         // Given
         var spySavedOnboardingSkipForSiteID: Int64? = nil
@@ -80,6 +82,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         assertEqual(12345, spySavedOnboardingSkipForSiteID)
     }
 
+    @MainActor
     func test_enable_success_calls_completion() {
         // Given
         stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in
@@ -108,6 +111,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         XCTAssert(completionCalled)
     }
 
+    @MainActor
     func test_enable_failure_displays_notice() throws {
         // Given
         stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in
@@ -160,6 +164,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         assertEqual("US", eventProperties[AnalyticProperties.countryCodeKey] as? String)
     }
 
+    @MainActor
     func test_enable_success_logs_enable_success_event() throws {
         // Given
         assertEmpty(analyticsProvider.receivedEvents)
@@ -193,6 +198,7 @@ final class InPersonPaymentsCashOnDeliveryPaymentGatewayNotSetUpViewModelTests: 
         assertEqual("onboarding", eventProperties[AnalyticProperties.sourceKey] as? String)
     }
 
+    @MainActor
     func test_enable_failure_logs_enable_failure_event() throws {
         // Given
         stores.whenReceivingAction(ofType: PaymentGatewayAction.self) { action in

@@ -150,6 +150,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.validateCustomPackageInputFields(), true)
     }
 
+    @MainActor
     func test_packageData_is_correct() throws {
         // Given
         let dimensionUnit = "cm"
@@ -187,6 +188,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertEqual(updatedPackageData.id, "a")
     }
 
+    @MainActor
     func test_packageData_does_not_show_height_if_height_is_unavailable() throws {
         // Given
         let dimensionUnit = "cm"
@@ -281,6 +283,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
 
     // MARK: - allDimensionsValid tests
 
+    @MainActor
     func test_allDimensionsValid_returns_false_when_dimension_is_zero() {
         // Given
         let siteID: Int64 = 1234
@@ -296,6 +299,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.allDimensionsValid)
     }
 
+    @MainActor
     func test_allDimensionsValid_returns_false_when_dimension_is_empty_string() {
         // Given
         let siteID: Int64 = 1234
@@ -311,6 +315,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.allDimensionsValid)
     }
 
+    @MainActor
     func test_allDimensionsValid_returns_false_when_dimension_is_invalid_string() {
         // Given
         let siteID: Int64 = 1234
@@ -326,6 +331,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.allDimensionsValid)
     }
 
+    @MainActor
     func test_allDimensionsValid_returns_false_when_dimension_is_negative() {
         // Given
         let siteID: Int64 = 1234
@@ -341,6 +347,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.allDimensionsValid)
     }
 
+    @MainActor
     func test_allDimensionsValid_returns_true_when_all_dimensions_are_valid_positive_numbers() {
         // Given
         let siteID: Int64 = 1234
@@ -356,6 +363,7 @@ final class WooShippingAddCustomPackageViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.allDimensionsValid)
     }
 
+    @MainActor
     func test_allDimensionsValid_returns_true_when_all_dimensions_are_valid_decimals() {
         // Given
         let siteID: Int64 = 1234

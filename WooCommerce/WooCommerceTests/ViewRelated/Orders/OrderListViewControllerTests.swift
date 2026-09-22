@@ -8,6 +8,7 @@ import Storage
 @MainActor
 struct OrderListViewControllerTests {
     @Test
+    @MainActor
     func test_restoreSelectedOrderDetails_when_second_order_is_selected_then_recreates_its_detail() async throws {
         // Given
         let siteID: Int64 = 3932
@@ -54,6 +55,7 @@ struct OrderListViewControllerTests {
         #expect(shownOrderIDs == [selectedOrder.orderID])
     }
 
+    @MainActor
     @Test func empty_state_when_store_previously_qualified_for_test_order_then_uses_first_order_empty_state() throws {
         // Given
         let siteID: Int64 = 123
@@ -87,6 +89,7 @@ struct OrderListViewControllerTests {
         #expect(mirror.actionButton.titleLabel?.text == "Learn more")
     }
 
+    @MainActor
     @Test func foreground_order_notification_when_orders_are_hidden_then_synchronizes_first_page() async throws {
         // Given
         let siteID: Int64 = 123

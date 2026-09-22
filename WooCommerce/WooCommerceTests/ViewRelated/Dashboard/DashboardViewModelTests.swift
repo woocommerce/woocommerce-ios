@@ -33,6 +33,7 @@ final class DashboardViewModelTests: XCTestCase {
         isJetpackConnected: true
     )
 
+    @MainActor
     override func setUpWithError() throws {
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
@@ -51,6 +52,7 @@ final class DashboardViewModelTests: XCTestCase {
 
     /// Sets up mock handlers for actions that are dispatched during DashboardViewModel initialization.
     /// This prevents Swift continuation leaks from unhandled async actions in child view models.
+    @MainActor
     private func setUpBasicMocks(for targetStores: MockStoresManager? = nil) {
         let storesManager = targetStores ?? stores!
 
@@ -1389,6 +1391,7 @@ private final class MockAIAssistantEligibilityChecker: AIAssistantEligibilityChe
 
 private extension DashboardViewModelTests {
 
+    @MainActor
     func mockReloadingData(jitmResult: Result<[Yosemite.JustInTimeMessage], Error> = .success([]),
                            storeHasOrders: Bool = true,
                            existingProducts: [Product] = [],

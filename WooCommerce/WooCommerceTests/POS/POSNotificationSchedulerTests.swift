@@ -86,6 +86,7 @@ struct POSNotificationSchedulerTests {
         #expect(mockPushNotesManager.requestedLocalNotifications.isEmpty)
     }
 
+    @MainActor
     @Test func scheduleLocalNotificationIfEligible_when_stores_are_not_authenticated_then_no_notification_scheduled() async throws {
         // Given
         let siteSettings = sampleSiteSettings(countryCode: "US")
@@ -212,6 +213,7 @@ struct POSNotificationSchedulerTests {
         #expect(queryItems.first(where: { $0.name == "store-url" })?.value == Self.storeURL)
     }
 
+    @MainActor
     @Test func scheduleLocalNotificationIfEligible_when_store_metadata_is_unavailable_then_tags_platform_and_app_version() async throws {
         // Given
         let siteSettings = sampleSiteSettings(countryCode: "US")
@@ -388,6 +390,7 @@ struct POSNotificationSchedulerTests {
             .tagSiteInfo(siteID: Self.siteID, storeUUID: Self.storeUUID, storeURL: Self.storeURL)
     }
 
+    @MainActor
     private func setupMockStores(stores: MockStoresManager? = nil,
                                   isPotentialMerchantScheduled: Bool = false,
                                   isCurrentMerchantScheduled: Bool = false,

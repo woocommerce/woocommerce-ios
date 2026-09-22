@@ -179,6 +179,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_sync_options_of_existing_attribute_creates_optionsAdded_section() throws {
         // Given
         let storage = MockStorageManager()
@@ -212,6 +213,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_sync_options_of_existing_attribute_should_display_and_hide_ghost_tableView() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -236,6 +238,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_failed_sync_options_of_existing_attribute_should_display_error_state() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -258,6 +261,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_select_addedOption_moves_it_to_offeredSection_and_removes_it_from_addedSection() throws {
         // Given
         let storage = MockStorageManager()
@@ -297,6 +301,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_selecting_all_added_options_removes_its_section() throws {
         // Given
         let storage = MockStorageManager()
@@ -337,6 +342,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         ])
     }
 
+    @MainActor
     func test_update_product_should_toggle_showUpdateIndicator_property() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -362,6 +368,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_updating_existing_attribute_correctly_updates_product_attributes() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -400,6 +407,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         XCTAssertEqual(updatedProduct.attributes, [initialNonVarAttribute, expectedAttribute])
     }
 
+    @MainActor
     func test_removing_current_attribute_correctly_updates_product_attributes() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -435,6 +443,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         XCTAssertEqual(updatedProduct.attributes, [attribute1, attribute3])
     }
 
+    @MainActor
     func test_saving_new_attribute_does_not_override_existing_local_attribute() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -576,6 +585,7 @@ final class AddAttributeOptionsViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.isNextButtonEnabled)
     }
 
+    @MainActor
     func test_creating_attributes_for_a_new_product_saves_the_product_as_draft() {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)

@@ -48,6 +48,7 @@ class OrderNoteStoreTests: XCTestCase {
     let sampleSystemAuthor = "system"
 
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -57,6 +58,7 @@ class OrderNoteStoreTests: XCTestCase {
 
     /// Verifies that OrderNoteAction.retrieveOrderNotes returns the expected OrderNotes.
     ///
+    @MainActor
     func testRetrieveOrderNotesReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve order notes")
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -81,6 +83,7 @@ class OrderNoteStoreTests: XCTestCase {
 
     /// Verifies that `OrderNoteAction.retrieveOrderNotes` effectively persists any retrieved order notes.
     ///
+    @MainActor
     func testRetrieveOrderNotesEffectivelyPersistsRetrievedOrderNotes() {
         let expectation = self.expectation(description: "Persist order note list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -102,6 +105,7 @@ class OrderNoteStoreTests: XCTestCase {
 
     /// Verifies that `OrderNoteAction.retrieveOrderNotes` effectively persists all of the order note fields.
     ///
+    @MainActor
     func testRetrieveOrderNotesEffectivelyPersistsOrderNoteFields() {
         let expectation = self.expectation(description: "Persist order note list")
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -139,6 +143,7 @@ class OrderNoteStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredOrderNoteInBackground` does not produce duplicate entries.
     ///
+    @MainActor
     func testUpdateStoredOrderNoteInBackgroundEffectivelyUpdatesPreexistantOrderNote() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -173,6 +178,7 @@ class OrderNoteStoreTests: XCTestCase {
 
     /// Verifies that `upsertStoredOrderNoteInBackground` effectively inserts a new OrderNote, with the specified payload.
     ///
+    @MainActor
     func testUpdateStoredOrderNoteInBackgroundEffectivelyPersistsNewOrderNote() {
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -195,6 +201,7 @@ class OrderNoteStoreTests: XCTestCase {
 
     /// Verifies that OrderNoteAction.retrieveOrderNotes returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveOrderNotesReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve order notes error response")
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -216,6 +223,7 @@ class OrderNoteStoreTests: XCTestCase {
 
     /// Verifies that OrderNoteAction.retrieveOrderNotes returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveOrderNotesReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve order notes empty response")
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -236,6 +244,7 @@ class OrderNoteStoreTests: XCTestCase {
 
     /// Verifies that `OrderNoteAction.addOrderNote` returns the expected OrderNote.
     ///
+    @MainActor
     func test_add_order_note_returns_expected_note() {
         // Given
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -260,6 +269,7 @@ class OrderNoteStoreTests: XCTestCase {
 
     /// Verifies that `OrderNoteAction.addOrderNote` effectively persists the new order note.
     ///
+    @MainActor
     func test_add_order_note_effectively_persists_new_order_note() {
         // Given
         let orderStore = OrderStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -287,6 +297,7 @@ class OrderNoteStoreTests: XCTestCase {
 
     /// Verifies that `OrderNoteAction.addOrderNote` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func test_add_order_note_returns_error_upon_response_error() {
         // Given
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -310,6 +321,7 @@ class OrderNoteStoreTests: XCTestCase {
 
     /// Verifies that `OrderNoteAction.addOrderNote` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func test_add_order_note_returns_error_upon_empty_response() {
         // Given
         let orderNoteStore = OrderNoteStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
@@ -334,6 +346,7 @@ class OrderNoteStoreTests: XCTestCase {
 // MARK: - Private Methods
 //
 private extension OrderNoteStoreTests {
+    @MainActor
     func sampleCustomerNote() -> Networking.OrderNote {
         return OrderNote(noteID: 2261,
                          dateCreated: DateFormatter.dateFromString(with: "2018-06-23T17:06:55"),
@@ -342,6 +355,7 @@ private extension OrderNoteStoreTests {
                          author: sampleAuthor)
     }
 
+    @MainActor
     func sampleCustomerNoteMutated() -> Networking.OrderNote {
         return OrderNote(noteID: 2261,
                          dateCreated: DateFormatter.dateFromString(with: "2018-06-23T18:07:55"),
@@ -350,6 +364,7 @@ private extension OrderNoteStoreTests {
                          author: sampleAuthor)
     }
 
+    @MainActor
     func sampleSellerNote() -> Networking.OrderNote {
         return OrderNote(noteID: 2260,
                          dateCreated: DateFormatter.dateFromString(with: "2018-06-23T16:05:55"),
@@ -358,6 +373,7 @@ private extension OrderNoteStoreTests {
                          author: sampleAdminAuthor)
     }
 
+    @MainActor
     func sampleSystemNote() -> Networking.OrderNote {
         return OrderNote(noteID: 2099,
                          dateCreated: DateFormatter.dateFromString(with: "2018-05-29T03:07:46"),
@@ -366,6 +382,7 @@ private extension OrderNoteStoreTests {
                          author: sampleSystemAuthor)
     }
 
+    @MainActor
     func sampleNewNote() -> Networking.OrderNote {
         return OrderNote(noteID: 2235,
                          dateCreated: DateFormatter.dateFromString(with: "2018-06-22T15:36:20"),
@@ -374,6 +391,7 @@ private extension OrderNoteStoreTests {
                          author: sampleAdminAuthor)
     }
 
+    @MainActor
     func sampleOrder() -> Networking.Order {
         return Order.fake().copy(siteID: sampleSiteID,
                                  orderID: sampleOrderID,
@@ -400,6 +418,7 @@ private extension OrderNoteStoreTests {
                                  shippingLines: sampleShippingLines())
     }
 
+    @MainActor
     func sampleShippingLines() -> [Networking.ShippingLine] {
         return [ShippingLine(shippingID: 123,
         methodTitle: "International Priority Mail Express Flat Rate",
@@ -410,6 +429,7 @@ private extension OrderNoteStoreTests {
         ]
     }
 
+    @MainActor
     func sampleAddress() -> Networking.Address {
         return Address(firstName: "Johnny",
                        lastName: "Appleseed",

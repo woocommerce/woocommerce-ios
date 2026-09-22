@@ -17,6 +17,7 @@ final class StorePickerViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_siteToPreselect_when_multiple_woo_stores_have_no_matching_site_address_then_returns_nil() {
         // Given
         let firstSite = Site.fake().copy(siteID: 123, url: "https://first.example.com", isWooCommerceActive: true)
@@ -33,6 +34,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertNil(selectedSite)
     }
 
+    @MainActor
     func test_siteToPreselect_when_multiple_mixed_sites_have_no_matching_site_address_then_returns_nil() {
         // Given
         let wooSite = Site.fake().copy(siteID: 123, url: "https://store.example.com", isWooCommerceActive: true)
@@ -49,6 +51,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertNil(selectedSite)
     }
 
+    @MainActor
     func test_siteToPreselect_when_one_woo_store_is_the_only_site_then_returns_it() {
         // Given
         let wooSite = Site.fake().copy(siteID: 123, url: "https://store.example.com", isWooCommerceActive: true)
@@ -64,6 +67,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(selectedSite, wooSite)
     }
 
+    @MainActor
     func test_siteToPreselect_when_site_address_matches_a_woo_store_then_returns_it() {
         // Given
         let firstSite = Site.fake().copy(siteID: 123, url: "https://first.example.com", isWooCommerceActive: true)
@@ -80,6 +84,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(selectedSite, matchingSite)
     }
 
+    @MainActor
     func test_siteToPreselect_when_switching_stores_has_a_default_site_then_returns_it() {
         // Given
         let firstSite = Site.fake().copy(siteID: 123, url: "https://first.example.com", isWooCommerceActive: true)
@@ -95,6 +100,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(selectedSite, defaultSite)
     }
 
+    @MainActor
     func test_siteToPreselect_when_switching_stores_has_no_default_site_then_returns_the_first_woo_store() {
         // Given
         let firstSite = Site.fake().copy(siteID: 123, url: "https://first.example.com", isWooCommerceActive: true)
@@ -110,6 +116,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(selectedSite, firstSite)
     }
 
+    @MainActor
     func test_siteToPreselect_when_switching_stores_has_only_non_woo_sites_then_returns_nil() {
         // Given
         let defaultSite = Site.fake().copy(siteID: 123, url: "https://store.example.com", isWooCommerceActive: true)
@@ -125,6 +132,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertNil(selectedSite)
     }
 
+    @MainActor
     func test_multipleStoresAvailable_is_correct_for_single_store() {
         // Given
         let testSite = Site.fake()
@@ -147,6 +155,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.multipleStoresAvailable)
     }
 
+    @MainActor
     func test_multipleStoresAvailable_is_correct_for_multiple_stores() {
         // Given
         let testSite1 = Site.fake().copy(siteID: 123)
@@ -171,6 +180,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.multipleStoresAvailable)
     }
 
+    @MainActor
     func test_table_view_configs_are_correct_for_empty_store_list() {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -194,6 +204,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.numberOfRows(inSection: 0), 1)
     }
 
+    @MainActor
     func test_table_view_configs_are_correct_for_list_with_only_woo_stores() {
         // Given
         let testSite1 = Site.fake().copy(siteID: 123, isWooCommerceActive: true)
@@ -220,6 +231,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.site(at: IndexPath(row: 0, section: 0))?.siteID, testSite1.siteID)
     }
 
+    @MainActor
     func test_table_view_configs_are_correct_for_list_with_both_woo_and_non_woo_sites() {
         // Given
         let testSite1 = Site.fake().copy(siteID: 123, name: "abc", isWooCommerceActive: true)
@@ -253,6 +265,7 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.site(at: IndexPath(row: 0, section: 1))?.siteID, testSite3.siteID)
     }
 
+    @MainActor
     func test_trackScreenView_tracks_both_number_of_woo_and_non_woo_sites() throws {
         // Given
         let testSite1 = Site.fake().copy(siteID: 123, name: "abc", isWooCommerceActive: true)

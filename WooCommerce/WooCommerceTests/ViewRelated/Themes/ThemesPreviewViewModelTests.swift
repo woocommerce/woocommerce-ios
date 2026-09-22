@@ -10,6 +10,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -67,6 +68,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.selectedPageUrl, URL(string: "https://tsubakidemo.wpcomstaging.com/" + Expectations.demoSuffix))
     }
 
+    @MainActor
     func test_fetchPages_sets_the_right_pages_and_state() async {
         // Given
         let viewModel = ThemesPreviewViewModel(siteID: 123,
@@ -93,6 +95,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state, .pagesContent)
     }
 
+    @MainActor
     func test_fetchPages_success_sets_right_state() async {
         // Given
         let viewModel = ThemesPreviewViewModel(siteID: 123,
@@ -118,6 +121,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.state, .pagesContent)
     }
 
+    @MainActor
     func test_fetchPages_sets_right_pages_content() async {
         // Given
         let viewModel = ThemesPreviewViewModel(siteID: 123,
@@ -160,6 +164,7 @@ final class ThemesPreviewViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_fetchPages_failure_sets_right_state() async {
         // Given
         let viewModel = ThemesPreviewViewModel(siteID: 123,

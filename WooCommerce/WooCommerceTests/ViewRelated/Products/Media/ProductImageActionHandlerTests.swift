@@ -131,6 +131,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.productImageUploadFailed.rawValue])
     }
 
+    @MainActor
     func test_uploading_UIImage_passes_filename_and_altText_to_MediaAction() {
         // Given
         let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
@@ -157,6 +158,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
         XCTAssertEqual(mediaMetadata.altText, "cool product")
     }
 
+    @MainActor
     func test_uploading_UIImage_adds_uploading_status_with_UIImage_asset_type() {
         // Given
         let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
@@ -349,6 +351,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
     // MARK: - discardUpload
 
+    @MainActor
     func test_productImageStatuses_are_updated_correctly_after_discard_upload() {
         // Given
         let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)

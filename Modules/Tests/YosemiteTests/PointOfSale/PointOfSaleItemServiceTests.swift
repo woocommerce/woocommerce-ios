@@ -8,6 +8,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
     private var mockItemMapper: MockPointOfSaleItemMapper!
     private let siteID: Int64 = 13092
 
+    @MainActor
     override func setUp() {
         super.setUp()
         currencySettings = CurrencySettings()
@@ -15,6 +16,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         itemProvider = PointOfSaleItemService(currencySettings: currencySettings, itemMapper: mockItemMapper)
     }
 
+    @MainActor
     override func tearDown() {
         currencySettings = nil
         itemProvider = nil
@@ -22,6 +24,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_PointOfSaleItemServiceProtocol_when_fails_request_with_requestFailed_then_throws_error() async throws {
         // Given
         let expectedError = PointOfSaleItemServiceError.requestFailed
@@ -38,6 +41,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_PointOfSaleItemServiceProtocol_when_empty_data_for_non_first_page_of_products_then_returns_empty_items_and_no_next_page() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
@@ -51,6 +55,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertFalse(pagedItems.hasMorePages)
     }
 
+    @MainActor
     func test_PointOfSaleItemServiceProtocol_provides_no_items_when_store_has_no_products() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
@@ -66,6 +71,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertEqual(mockItemMapper.mockProducts.count, 0)
     }
 
+    @MainActor
     func test_PointOfSaleItemServiceProtocol_provides_items_when_store_has_eligible_products() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
@@ -101,6 +107,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertEqual(pagedItems.items.first, expectedItem)
     }
 
+    @MainActor
     func test_PointOfSaleItemServiceProtocol_when_eligibility_criteria_applies_then_returns_correct_number_of_items() async throws {
         // Given
         let expectedItemNames = ["Dymo LabelWriter 4XL", "Virtual Polo", "Private Hoodie", "Hoodie with Zipper without price"]
@@ -149,6 +156,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
 
     // MARK: - Query Parameters
 
+    @MainActor
     func test_providePointOfSaleItems_uses_mapper_correctly() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
@@ -172,6 +180,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertEqual(mockItemMapper.mockProducts, [mockProduct])
     }
 
+    @MainActor
     func test_providePointOfSaleVariationItems_returns_variations_with_non_downloadable_filter_when_load_succeeds() async throws {
         // Given
         let parentProductID: Int64 = 123
@@ -222,6 +231,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertEqual(pagedVariations.items.first, expectedVariation)
     }
 
+    @MainActor
     func test_providePointOfSaleVariationItems_returns_variation_page_details_when_load_succeeds() async throws {
         // Given
         let parentProductID: Int64 = 123
@@ -259,6 +269,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertTrue(mockItemMapper.mapVariationsToPOSItemsCalled)
     }
 
+    @MainActor
     func test_providePointOfSaleVariationItems_throws_error_when_variations_load_fails() async throws {
         // Given
         let parentProductID: Int64 = 123
@@ -285,6 +296,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_providePointOfSaleVariationItems_formats_empty_prices_as_zero() async throws {
         // Given
         let parentProductID: Int64 = 123
@@ -327,6 +339,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertEqual(pagedVariations.items.first, expectedVariation)
     }
 
+    @MainActor
     func test_providePointOfSaleItems_uses_passed_fetch_strategy() async throws {
         // Given
         let fetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
@@ -339,6 +352,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertEqual(fetchStrategy.spyFetchProductsPageNumber, 5)
     }
 
+    @MainActor
     func test_providePointOfSaleSimpleProductItems_returns_expected_items() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
@@ -368,6 +382,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertEqual(pagedItems.items.first, expectedItem)
     }
 
+    @MainActor
     func test_providePointOfSaleVariationItems_returns_expected_items() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
@@ -404,6 +419,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertEqual(pagedItems.items.first, expectedItem)
     }
 
+    @MainActor
     func test_providePointOfSaleItems_handles_fetch_error() async {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
@@ -420,6 +436,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_providePointOfSaleItems_handles_empty_results() async throws {
         // Given
         let mockFetchStrategy = MockPointOfSalePurchasableItemFetchStrategy()
@@ -435,6 +452,7 @@ final class PointOfSaleItemServiceTests: XCTestCase {
         XCTAssertEqual(mockItemMapper.mockProducts.count, 0)
     }
 
+    @MainActor
     func test_providePointOfSaleVariationItems_passes_correct_data_to_mapper() async throws {
         // Given
         let parentProductID: Int64 = 123

@@ -120,6 +120,7 @@ private extension UnsupportedBundledProductCheckerTests {
     }
 
     /// Builds a checker whose child lookup returns `children`, or fails with `error`.
+    @MainActor
     func makeChecker(children: [Product] = [], error: Error? = nil) -> UnsupportedBundledProductChecker {
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: ProductAction.self) { action in

@@ -38,6 +38,7 @@ final class TaxStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -48,6 +49,7 @@ final class TaxStoreTests: XCTestCase {
                                 network: network)
     }
 
+    @MainActor
     override func tearDown() {
         store = nil
         dispatcher = nil
@@ -62,6 +64,7 @@ final class TaxStoreTests: XCTestCase {
 
     /// Verifies that `TaxAction.retrieveTaxClasses` effectively persists any retrieved tax class.
     ///
+    @MainActor
     func testRetrieveTaxClassesEffectivelyPersistsRetrievedTaxClasses() {
         let expectation = self.expectation(description: "Retrieve tax class list")
 
@@ -82,6 +85,7 @@ final class TaxStoreTests: XCTestCase {
     /// Verifies that `TaxAction.retrieveTaxClasses` effectively persists all of the fields
     /// correctly across all of the related `TaxClass` entities
     ///
+    @MainActor
     func testRetrieveTaxClassesEffectivelyPersistsTaxClassFields() {
         let expectation = self.expectation(description: "Persist tax class list")
 
@@ -108,6 +112,7 @@ final class TaxStoreTests: XCTestCase {
 
     /// Verifies that `TaxAction.retrieveTaxClasses` returns an error whenever there is an error response from the backend.
     ///
+    @MainActor
     func testRetrieveTaxClassesReturnsErrorUponReponseError() {
         let expectation = self.expectation(description: "Retrieve tax class error response")
 
@@ -124,6 +129,7 @@ final class TaxStoreTests: XCTestCase {
 
     /// Verifies that `TaxAction.retrieveTaxClasses` returns an error whenever there is no backend response.
     ///
+    @MainActor
     func testRetrieveTaxClassesReturnsErrorUponEmptyResponse() {
         let expectation = self.expectation(description: "Retrieve tax class empty response")
 
@@ -138,6 +144,7 @@ final class TaxStoreTests: XCTestCase {
 
     /// Verifies that `TaxAction.retrieveTaxClasses` returns the expected `TaxClass`.
     ///
+    @MainActor
     func testRetrieveTaxClassesReturnsExpectedFields() {
         let expectation = self.expectation(description: "Retrieve single tax class")
         let remoteTaxClass = sampleTaxClass()
@@ -159,6 +166,7 @@ final class TaxStoreTests: XCTestCase {
 
     /// Verifies that `TaxAction.requestMissingTaxClasses` request the Tax Class found in a specified Product.
     ///
+    @MainActor
     func testRequestMissingTaxClassesEffectivelyReturnMissingTaxClass() {
         let expectation = self.expectation(description: "Return missing tax class")
 
@@ -181,6 +189,7 @@ final class TaxStoreTests: XCTestCase {
 
     /// Verifies that `TaxAction.upsertStoredTaxClass` does not produce duplicate entries.
     ///
+    @MainActor
     func testUpdateStoredTaxClassesEffectivelyUpdatesPreexistantTaxClass() {
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxClass.self), 0)
@@ -193,6 +202,7 @@ final class TaxStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxClass.self), 1)
     }
 
+    @MainActor
     func test_retrieveTaxRates_then_persists_TaxRates() {
         network.simulateResponse(requestUrlSuffix: "taxes", filename: "taxes")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxRate.self), 0)
@@ -211,6 +221,7 @@ final class TaxStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.TaxRate.self), 3)
     }
 
+    @MainActor
     func test_retrieveTaxRate_then_persists_TaxRate() {
         let taxRateID: Int64 = 1
         network.simulateResponse(requestUrlSuffix: "taxes/\(taxRateID)", filename: "tax")
@@ -236,12 +247,14 @@ final class TaxStoreTests: XCTestCase {
 //
 private extension TaxStoreTests {
 
+    @MainActor
     func sampleTaxClass() -> Networking.TaxClass {
         return Networking.TaxClass(siteID: sampleSiteID,
                                    name: "Standard Rate",
                                    slug: "standard")
     }
 
+    @MainActor
     func sampleTaxClassMutated() -> Networking.TaxClass {
         return Networking.TaxClass(siteID: sampleSiteID,
                                    name: "Standard Rate Mutated",

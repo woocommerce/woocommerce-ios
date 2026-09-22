@@ -339,6 +339,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.shipmentWeight, "1.25")
     }
 
+    @MainActor
     func test_changing_shipmentWeight_loads_new_label_rates_with_updated_weight() {
         // Given
         let expectedWeight = 2.5
@@ -377,6 +378,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(packageWeightForLabelRates, expectedWeight)
     }
 
+    @MainActor
     func test_changing_customs_form_loads_new_label_rates_with_updated_customs_form() {
         // Given
         let expectedItem = ShippingLabelCustomsForm.Item.fake().copy(
@@ -447,6 +449,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(sentCustomsForm, expectedCustomsForm)
     }
 
+    @MainActor
     func test_changing_customs_form_loads_new_label_rates_without_customs_form_when_customs_form_is_not_required() {
         // Given
         var sentCustomsForm: ShippingLabelCustomsForm?
@@ -519,6 +522,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertNil(sentCustomsForm)
     }
 
+    @MainActor
     func test_changing_HAZMAT_category_loads_new_label_rates_with_updated_HAZMAT_category() {
         // Given
         let expectedHAZMATCategory = "CLASS_1"
@@ -945,6 +949,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
     }
 
     // MARK: - Customs
+    @MainActor
     func test_preselects_customs_origin_country() throws {
         // Setup
         let originAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
@@ -980,6 +985,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertEqual(customsItemViewModel.selectedCountry?.code, expectedCountry)
     }
 
+    @MainActor
     func test_customs_form_is_incomplete_when_destination_country_is_eu_and_hsTariffNumber_is_empty() throws {
         // Given
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -1050,6 +1056,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_package_contains_complete_customs_form_when_required_data_is_prefilled() throws {
         // Setup
         let originAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()
@@ -1103,6 +1110,7 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_currentPackage_does_not_contain_prefilled_customs_form_when_customs_form_is_not_required() throws {
         // Setup
         let originAddressSubject = PassthroughSubject<WooShippingAddress?, Never>()

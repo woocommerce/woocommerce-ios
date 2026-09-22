@@ -9,6 +9,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
     private var analytics: WooAnalytics!
     private var viewModel: AccountCreationFormViewModel!
 
+    @MainActor
     override func setUp() {
         super.setUp()
 
@@ -228,6 +229,7 @@ final class AccountCreationFormViewModelTests: XCTestCase {
 }
 
 private extension AccountCreationFormViewModelTests {
+    @MainActor
     func mockAccountCreationSuccess(result: CreateAccountResult) {
         stores.whenReceivingAction(ofType: AccountCreationAction.self) { action in
             switch action {
@@ -250,6 +252,7 @@ private extension AccountCreationFormViewModelTests {
         }
     }
 
+    @MainActor
     func mockAccountCreationFailure(error: CreateAccountError) {
         stores.whenReceivingAction(ofType: AccountCreationAction.self) { action in
             guard case let .createAccount(_, _, completion) = action else {

@@ -234,6 +234,7 @@ final class PushNotificationTests: XCTestCase {
 private extension PushNotificationTests {
     /// Returns a `StoresManager` whose session points at the given store.
     ///
+    @MainActor
     func makeStores(defaultStoreID: Int64?) -> MockStoresManager {
         let sessionManager = SessionManager.testingInstance
         sessionManager.defaultStoreID = defaultStoreID

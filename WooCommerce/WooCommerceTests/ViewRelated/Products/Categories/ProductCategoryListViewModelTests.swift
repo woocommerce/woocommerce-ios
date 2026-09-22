@@ -250,6 +250,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.categoryViewModels.count, 1)
     }
 
+    @MainActor
     func test_deleteCategory_removes_item_from_selectedCategories_upon_success() async {
         // Given
         let category = ProductCategory.fake().copy(categoryID: 123, siteID: 98)
@@ -273,6 +274,7 @@ final class ProductCategoryListViewModelTests: XCTestCase {
         XCTAssertTrue(viewModel.selectedCategories.isEmpty)
     }
 
+    @MainActor
     func test_deleteCategory_updates_deletionFailure_upon_failure() async {
         // Given
         let error = NSError(domain: "Test", code: 404)

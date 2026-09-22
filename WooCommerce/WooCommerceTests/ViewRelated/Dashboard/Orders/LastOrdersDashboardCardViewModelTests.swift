@@ -23,6 +23,7 @@ final class LastOrdersDashboardCardViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storageManager = MockStorageManager()
@@ -279,6 +280,7 @@ private extension LastOrdersDashboardCardViewModelTests {
         storage.saveIfNeeded()
     }
 
+    @MainActor
     func mockFetchFilteredOrders() {
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -290,6 +292,7 @@ private extension LastOrdersDashboardCardViewModelTests {
         }
     }
 
+    @MainActor
     func mockOrderStatuses() {
         stores.whenReceivingAction(ofType: OrderStatusAction.self) { action in
             switch action {

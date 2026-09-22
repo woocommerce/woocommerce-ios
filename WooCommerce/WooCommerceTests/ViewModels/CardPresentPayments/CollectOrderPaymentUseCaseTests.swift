@@ -25,6 +25,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     private var notificationCenter: NotificationCenter!
     private var applicationState: UIApplication.State!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: .testingInstance)
@@ -41,6 +42,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         setUpUseCase(order: order)
     }
 
+    @MainActor
     private func setUpUseCase(order: Order, configuration: CardPresentPaymentsConfiguration = Mocks.configuration) {
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
             switch action {
@@ -99,6 +101,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         assertEqual(.foundReader, mockAnalyticsTracker.spyPaymentCancelationSource)
     }
 
+    @MainActor
     func test_collectPayment_canceledWhileValidatingOrder_doesNotStartPaymentAfterValidationCompletes() throws {
         // Given
         let order = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "1.5")
@@ -415,6 +418,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
     }
 
     // MARK: - Failure cases
+    @MainActor
     func test_ambiguous_server_capture_error_returns_success_when_refreshed_intent_confirms_capture() throws {
         // Given
         let clientSecret = "pi_client_secret"
@@ -451,6 +455,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertTrue(mockAnalyticsTracker.didCallTrackSuccessfulPayment)
     }
 
+    @MainActor
     func test_ambiguous_server_capture_error_does_not_return_success_when_refreshed_intent_requires_capture() throws {
         // Given
         let intent = ambiguousCapturePaymentIntent()
@@ -479,6 +484,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_ambiguous_server_capture_error_does_not_return_success_for_a_different_payment_intent() throws {
         // Given
         let intent = ambiguousCapturePaymentIntent()
@@ -507,6 +513,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_post_confirmation_error_returns_receipt_capable_success_from_refreshed_intent() throws {
         // Given
         let intent = ambiguousCapturePaymentIntent().copy(
@@ -546,6 +553,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertNotNil(refreshedIntent.receiptParameters())
     }
 
+    @MainActor
     func test_collectPayment_with_below_minimum_amount_results_in_failure_and_tracks_collectPaymentFailed_event() throws {
         // Given
         let order = Order.fake().copy(total: "0.49")
@@ -693,6 +701,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertFalse(mockPaymentOrchestrator.spyDidCallCancelPayment)
     }
 
+    @MainActor
     func test_collectPayment_with_interac_dispatches_markOrderAsPaidLocally_after_successful_client_side_capture() throws {
         // Given
         let interacPaymentMethod = PaymentMethod.interacPresent(details: .fake())
@@ -726,6 +735,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         XCTAssertEqual(action.orderID, defaultOrderID)
     }
 
+    @MainActor
     func test_collectPayment_with_noninterac_does_not_dispatch_markOrderAsPaidLocally_after_successful_client_side_capture() throws {
         // Given
         let cardPresentPaymentMethod = PaymentMethod.cardPresent(details: .fake())
@@ -966,6 +976,7 @@ final class CollectOrderPaymentUseCaseTests: XCTestCase {
         })
     }
 
+    @MainActor
     func test_collectPayment_succeeds_when_order_total_precision_differs_between_initial_and_retrieved_order() throws {
         // Given an order with 2 decimal place precision
         let initialOrder = Order.fake().copy(siteID: defaultSiteID, orderID: defaultOrderID, total: "22.56")
@@ -1055,6 +1066,7 @@ private extension CollectOrderPaymentUseCaseTests {
         }
     }
 
+    @MainActor
     func mockTerminalPaymentPreparationRoute(isAvailable: Bool) {
         stores.whenReceivingAction(ofType: SettingAction.self) { [defaultSiteID] action in
             switch action {
@@ -1070,6 +1082,7 @@ private extension CollectOrderPaymentUseCaseTests {
         }
     }
 
+    @MainActor
     func mockUnexpectedTerminalPaymentPreparationRouteCheck() {
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {

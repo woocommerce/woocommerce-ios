@@ -48,6 +48,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
     private var mockSiteSpecificAppSettingsStoreMethods: MockSiteSpecificAppSettingsStoreMethods!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -65,6 +66,7 @@ final class AppSettingsStoreTests: XCTestCase {
         subject?.customSelectedProvidersURL = TestConstants.customFileURL!
     }
 
+    @MainActor
     override func tearDown() {
         dispatcher = nil
         storageManager = nil
@@ -75,6 +77,7 @@ final class AppSettingsStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func testFileStorageIsRequestedToWriteWhenAddingANewShipmentProvider() {
         let expectation = self.expectation(description: "A write is requested")
 
@@ -92,6 +95,7 @@ final class AppSettingsStoreTests: XCTestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
 
+    @MainActor
     func testFileStorageIsRequestedToWriteWhenAddingANewCustomShipmentProvider() {
         let expectation = self.expectation(description: "A write is requested")
 
@@ -110,6 +114,7 @@ final class AppSettingsStoreTests: XCTestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
 
+    @MainActor
     func testFileStorageIsRequestedToWriteWhenAddingAShipmentProviderForExistingSite() {
         let expectation = self.expectation(description: "A write is requested")
 
@@ -127,6 +132,7 @@ final class AppSettingsStoreTests: XCTestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
 
+    @MainActor
     func testFileStorageIsRequestedToWriteWhenAddingACustomShipmentProviderForExistingSite() {
         let expectation = self.expectation(description: "A write is requested")
 
@@ -145,6 +151,7 @@ final class AppSettingsStoreTests: XCTestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
 
+    @MainActor
     func testAddingNewProviderToExistingSiteUpdatesFile() {
         let expectation = self.expectation(description: "File is updated")
 
@@ -165,6 +172,7 @@ final class AppSettingsStoreTests: XCTestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
 
+    @MainActor
     func testAddingNewCustomProviderToExistingSiteUpdatesFile() {
         let expectation = self.expectation(description: "File is updated")
 
@@ -186,6 +194,7 @@ final class AppSettingsStoreTests: XCTestCase {
         waitForExpectations(timeout: 2, handler: nil)
     }
 
+    @MainActor
     func testRestoreResetProvidersHitsClearFile() {
         let expectation = self.expectation(description: "File is updated")
 
@@ -204,6 +213,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
     // MARK: - General App Settings
 
+    @MainActor
     func testItCanSaveTheAppInstallationDate() throws {
         // Given
         let date = Date(timeIntervalSince1970: 100)
@@ -236,6 +246,7 @@ final class AppSettingsStoreTests: XCTestCase {
     /// This has to be tested using a `FileStorage` that operates on real files instead of an
     /// in-memory storage. The in-memory storage does not fail if the given file URL does not exist.
     ///
+    @MainActor
     func test_it_can_save_the_installationDate_when_the_settings_file_does_not_exist() throws {
         // Given
         let date = Date(timeIntervalSince1970: 100)
@@ -275,6 +286,7 @@ final class AppSettingsStoreTests: XCTestCase {
         try? fileStorage.deleteFile(at: fileURL)
     }
 
+    @MainActor
     func testItDoesNotSaveTheAppInstallationDateIfTheGivenDateIsNewer() throws {
         // Given
         let existingDate = Date(timeIntervalSince1970: 100)
@@ -304,6 +316,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertNotEqual(newerDate, savedSettings.installationDate)
     }
 
+    @MainActor
     func testGivenNoExistingSettingsThenItCanSaveTheAppInstallationDate() throws {
         // Given
         let date = Date(timeIntervalSince1970: 100)
@@ -326,6 +339,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(savedSettings.feedbacks.isEmpty)
     }
 
+    @MainActor
     func test_it_can_update_the_general_feedback_given_date() throws {
         // Given
         let date = Date(timeIntervalSince1970: 300)
@@ -356,6 +370,7 @@ final class AppSettingsStoreTests: XCTestCase {
     /// This is more like a simple integration test because most of the logic is tested by
     /// `InAppFeedbackCardVisibilityUseCase`.
     ///
+    @MainActor
     func test_loadInAppFeedbackCardVisibility_returns_true_if_installationDate_is_more_than_90_days_ago() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -378,6 +393,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(try XCTUnwrap(shouldBeVisibleResult).get())
     }
 
+    @MainActor
     func test_loadOrderAddOnsSwitchState_returns_false_on_new_generalAppSettings() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -395,6 +411,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertFalse(isEnabled)
     }
 
+    @MainActor
     func test_loadOrderAddOnsSwitchState_returns_true_after_updating_switch_state_as_true() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -414,6 +431,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
+    @MainActor
     func test_loadJetpackBenefitsBannerVisibility_returns_true_on_new_generalAppSettings() throws {
         // Given
         // Deletes any pre-existing app settings.
@@ -436,6 +454,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(isVisible)
     }
 
+    @MainActor
     func test_loadJetpackBenefitsBannerVisibility_returns_true_after_setting_last_dismissed_date_exactly_five_days_ago_without_dst() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -471,6 +490,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
     /// Tests an edge case where the time interval since the last dismissed date is less than 5 24-hour days, but is exactly 5 days on calendar with daylight
     /// saving time.
+    @MainActor
     func test_loadJetpackBenefitsBannerVisibility_returns_false_after_setting_last_dismissed_date_exactly_five_24hr_days_ago() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -505,6 +525,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertFalse(isVisible)
     }
 
+    @MainActor
     func test_loadJetpackBenefitsBannerVisibility_returns_false_after_setting_last_dismissed_date_less_than_five_days_ago() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -540,6 +561,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
     // MARK: - General Store Settings
 
+    @MainActor
     func test_setStoreID_stores_the_store_id_correctly() throws {
         // Given
         let storeID = "test-store-id"
@@ -554,6 +576,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.spySetStoreID, storeID)
     }
 
+    @MainActor
     func test_getStoreID_retrieves_the_saved_store_id() throws {
         // Given
         let expectedStoreID = "test-store-id"
@@ -573,6 +596,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertEqual(retrievedStoreID, expectedStoreID)
     }
 
+    @MainActor
     func test_saving_isTelemetryAvailable_works_correctly() throws {
         // Given
         let initialTime = Date(timeIntervalSince1970: 100)
@@ -593,6 +617,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertEqual(initialTime, settingsForSite.telemetryLastReportedTime)
     }
 
+    @MainActor
     func test_saving_telemetryLastReportedTime_works_correctly() throws {
         // Given
         let initialTime = Date(timeIntervalSince1970: 100)
@@ -614,6 +639,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertEqual(true, settingsForSite.isTelemetryAvailable)
     }
 
+    @MainActor
     func test_getTelemetryInfo_returns_correct_saved_data() throws {
         // Given
         let initialTime = Date(timeIntervalSince1970: 100)
@@ -634,6 +660,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertEqual(initialTime, data.telemetryLastReportedTime)
     }
 
+    @MainActor
     func test_getTelemetryInfo_returns_correct_default_data() throws {
         // When
         let data: (isAvailable: Bool, telemetryLastReportedTime: Date?) = waitFor { promise in
@@ -648,6 +675,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertNil(data.telemetryLastReportedTime)
     }
 
+    @MainActor
     func test_simplePaymentsToggleTaxes_returns_correct_default_data() throws {
         // When
         let result: Result<Bool, Error> = waitFor { promise in
@@ -661,6 +689,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertFalse(try result.get())
     }
 
+    @MainActor
     func test_simplePaymentsToggleTaxes_returns_correct_saved_data() throws {
         // Given
         let action = AppSettingsAction.setSimplePaymentsTaxesToggleState(siteID: TestConstants.siteID, isOn: true) { _ in }
@@ -678,6 +707,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertTrue(try result.get())
     }
 
+    @MainActor
     func test_saving_preferredInPersonPaymentGateway_works_correctly() throws {
         // Given
         let initialTime = Date(timeIntervalSince1970: 100)
@@ -699,6 +729,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertEqual(initialTime, settingsForSite.telemetryLastReportedTime)
     }
 
+    @MainActor
     func test_saving_preferredInPersonPaymentGateway_works_correctly_when_the_settings_file_does_not_exist() throws {
         // Given
         let preferredGateway = "woocommerce-payments"
@@ -713,6 +744,7 @@ final class AppSettingsStoreTests: XCTestCase {
         XCTAssertEqual(preferredGateway, settingsForSite.preferredInPersonPaymentGateway)
     }
 
+    @MainActor
     func test_resetGeneralStoreSettings_resets_all_settings() throws {
         // When
         let action = AppSettingsAction.resetGeneralStoreSettings
@@ -727,6 +759,7 @@ final class AppSettingsStoreTests: XCTestCase {
 
 extension AppSettingsStoreTests {
 
+    @MainActor
     func test_setFeatureAnnouncementDismissed_for_campaign_when_remindAfterDays_is_nil_then_dismissal_is_stored_with_no_reminder_date() throws {
         // When
         let action = AppSettingsAction.setFeatureAnnouncementDismissed(campaign: .linkedProductsPromo, remindAfterDays: nil, onCompletion: nil)
@@ -743,6 +776,7 @@ extension AppSettingsStoreTests {
         XCTAssertNil(remindAfterDate)
     }
 
+    @MainActor
     func test_setFeatureAnnouncementDismissed_for_campaign_stores_current_date() throws {
         // Given
         let currentTime = Date()
@@ -759,6 +793,7 @@ extension AppSettingsStoreTests {
         XCTAssert(Calendar.current.isDate(actualDismissDate, inSameDayAs: currentTime))
     }
 
+    @MainActor
     func test_setFeatureAnnouncementDismissed_when_remindAfterDays_is_two_weeks_then_stores_reminder_date_is_two_weeks() throws {
         // Given
         let remindAfterDays = 14
@@ -776,6 +811,7 @@ extension AppSettingsStoreTests {
         XCTAssert(Calendar.current.isDate(actualRemindAfter, inSameDayAs: twoWeeksTime))
     }
 
+    @MainActor
     func test_setFeatureAnnouncementDismissed_when_remindAfterDays_is_seven_days_stores_reminder_then_date_saved_date_is_one_week() throws {
         // Given
         let remindAfterDays = 7
@@ -793,6 +829,7 @@ extension AppSettingsStoreTests {
         XCTAssert(Calendar.current.isDate(actualRemindAfter, inSameDayAs: oneWeekTime))
     }
 
+    @MainActor
     func test_setFeatureAnnouncementDismissed_with_another_campaign_previously_dismissed_keeps_values_for_both() throws {
         // Given
         let currentTime = Date()
@@ -816,6 +853,7 @@ extension AppSettingsStoreTests {
         assertEqual(currentTime, otherCampaignDismissDate)
     }
 
+    @MainActor
     func test_getFeatureAnnouncementVisibility_without_stored_setting_calls_completion_with_visibility_true() throws {
         // When
         let result: Result<Bool, Error> = waitFor { promise in
@@ -830,6 +868,7 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(isEnabled)
     }
 
+    @MainActor
     func test_getFeatureAnnouncementVisibility_with_stored_dismissDate_and_no_remindAfter_calls_completion_with_visibility_false() throws {
         // Given
         let date = Date(timeIntervalSince1970: 100)
@@ -850,6 +889,7 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(isEnabled)
     }
 
+    @MainActor
     func test_getFeatureAnnouncementVisibility_with_stored_dismissDate_and_future_remindAfter_calls_completion_with_visibility_false() throws {
         // Given
         let dismissedDate = Date()
@@ -872,6 +912,7 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(isEnabled)
     }
 
+    @MainActor
     func test_getFeatureAnnouncementVisibility_with_stored_dismissDate_and_past_remindAfter_calls_completion_with_visibility_true() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -897,6 +938,7 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(isEnabled)
     }
 
+    @MainActor
     func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_nothing_is_saved_returns_false() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -913,6 +955,7 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(result)
     }
 
+    @MainActor
     func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_using_legacy_code_for_a_different_site_returns_false() throws {
         // Given
         let siteIDA: Int64 = 1
@@ -932,6 +975,7 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(result)
     }
 
+    @MainActor
     func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_using_legacy_code_for_that_site_returns_true() throws {
         // Given
         let siteID: Int64 = 1
@@ -950,6 +994,7 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(result)
     }
 
+    @MainActor
     func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_for_a_different_site_returns_false() throws {
         // Given
         let siteIDA: Int64 = 1
@@ -970,6 +1015,7 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(result)
     }
 
+    @MainActor
     func test_loadSiteHasAtLeastOneIPPTransactionFinished_when_it_is_marked_via_first_transactions_for_that_site_returns_true() throws {
         // Given
         let action = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: TestConstants.siteID, cardReaderType: .other)
@@ -987,6 +1033,7 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(result)
     }
 
+    @MainActor
     func test_given_no_data_has_been_stored_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
         // When
         let actualValue = waitFor { promise in
@@ -1000,6 +1047,7 @@ extension AppSettingsStoreTests {
         XCTAssertNil(actualValue)
     }
 
+    @MainActor
     func test_given_a_date_was_previously_stored_for_the_site_and_reader_loadFirstInPersonPaymentsTransactionDate_returns_that_date() throws {
         // Given
         let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: TestConstants.siteID, cardReaderType: .tapToPay)
@@ -1018,6 +1066,7 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(storedDate.timeIntervalSinceNow < 60)
     }
 
+    @MainActor
     func test_given_a_date_was_only_previously_stored_for_another_site_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
         // Given
         let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: 1, cardReaderType: .tapToPay)
@@ -1035,6 +1084,7 @@ extension AppSettingsStoreTests {
         XCTAssertNil(actualValue)
     }
 
+    @MainActor
     func test_given_a_date_was_only_previously_stored_for_another_reader_loadFirstInPersonPaymentsTransactionDate_returns_nil() throws {
         // Given
         let updateAction = AppSettingsAction.storeInPersonPaymentsTransactionIfFirst(siteID: TestConstants.siteID, cardReaderType: .stripeM2)
@@ -1052,6 +1102,7 @@ extension AppSettingsStoreTests {
         XCTAssertNil(actualValue)
     }
 
+    @MainActor
     func test_setSelectedTaxRateID_works_correctly() throws {
         // Given
         let storedTaxRateID: Int64 = 4321
@@ -1068,6 +1119,7 @@ extension AppSettingsStoreTests {
         XCTAssertEqual(storedTaxRateID, settingsForSite.selectedTaxRateID)
     }
 
+    @MainActor
     func test_setSelectedTaxRateID_when_nil_then_erases_the_value() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(selectedTaxRateID: 34)
@@ -1082,6 +1134,7 @@ extension AppSettingsStoreTests {
         XCTAssertNil(settingsForSite.selectedTaxRateID)
     }
 
+    @MainActor
     func test_loadSelectedTaxRateID_works_correctly() throws {
         // Given
         let storedTaxRateID: Int64 = 4321
@@ -1099,6 +1152,7 @@ extension AppSettingsStoreTests {
         XCTAssertEqual(loadedTaxRateID, storedTaxRateID)
     }
 
+    @MainActor
     func test_setAnalyticsHubCards_works_correctly() throws {
         // Given
         let analyticsCards = [
@@ -1119,6 +1173,7 @@ extension AppSettingsStoreTests {
         assertEqual(analyticsCards, settingsForSite.analyticsHubCards)
     }
 
+    @MainActor
     func test_loadAnalyticsHubCards_works_correctly() throws {
         // Given
         let storedAnalyticsCards = [
@@ -1140,6 +1195,7 @@ extension AppSettingsStoreTests {
         assertEqual(storedAnalyticsCards, loadedAnalyticsCards)
     }
 
+    @MainActor
     func test_loadAnalyticsHubCards_returns_nil_when_no_cards_are_saved() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
@@ -1157,6 +1213,7 @@ extension AppSettingsStoreTests {
 
     // MARK: - custom time range tab
 
+    @MainActor
     func test_setCustomStatsTimeRange_works_correctly() throws {
         // Given
         let fromDate = Date(timeIntervalSince1970: 1677486077) // Feb 27, 2023
@@ -1175,6 +1232,7 @@ extension AppSettingsStoreTests {
         assertEqual(customTimeRange.rawValue, settingsForSite.customStatsTimeRange)
     }
 
+    @MainActor
     func test_loadCustomStatsTimeRange_works_correctly() throws {
         // Given
         let fromDate = Date(timeIntervalSince1970: 1677486077) // Feb 27, 2023
@@ -1194,6 +1252,7 @@ extension AppSettingsStoreTests {
         assertEqual(customTimeRange, loadedCustomTimeRange)
     }
 
+    @MainActor
     func test_loadCustomStatsTimeRange_returns_nil_when_no_custom_range_is_saved() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
@@ -1210,6 +1269,7 @@ extension AppSettingsStoreTests {
     }
 
     // MARK: - dashboard cards
+    @MainActor
     func test_setDashboardCards_works_correctly() throws {
         // Given
         let dashboardCards = [
@@ -1230,6 +1290,7 @@ extension AppSettingsStoreTests {
         assertEqual(dashboardCards, settingsForSite.dashboardCards)
     }
 
+    @MainActor
     func test_loadDashboardCards_works_correctly() throws {
         // Given
         let storedDashboardCards = [
@@ -1251,6 +1312,7 @@ extension AppSettingsStoreTests {
         assertEqual(storedDashboardCards, loadedDashboardCards)
     }
 
+    @MainActor
     func test_loadDashboardCards_returns_nil_when_no_cards_are_saved() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
@@ -1268,6 +1330,7 @@ extension AppSettingsStoreTests {
 
     // MARK: - Last selected time range for Performance card
 
+    @MainActor
     func test_setLastSelectedPerformanceTimeRange_works_correctly() throws {
         // Given
         let timeRange = StatsTimeRangeV4.thisYear
@@ -1283,6 +1346,7 @@ extension AppSettingsStoreTests {
         assertEqual(timeRange.rawValue, settingsForSite.lastSelectedPerformanceTimeRange)
     }
 
+    @MainActor
     func test_loadLastSelectedPerformanceTimeRange_works_correctly() throws {
         // Given
         let timeRange = StatsTimeRangeV4.thisYear
@@ -1299,6 +1363,7 @@ extension AppSettingsStoreTests {
         assertEqual(timeRange, loadedTimeRange)
     }
 
+    @MainActor
     func test_loadLastSelectedPerformanceTimeRange_returns_nil_when_no_data_was_saved() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
@@ -1316,6 +1381,7 @@ extension AppSettingsStoreTests {
 
     // MARK: - Last selected revenue stats type for Performance card
 
+    @MainActor
     func test_setLastSelectedDashboardRevenueStatsType_works_correctly() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
@@ -1330,6 +1396,7 @@ extension AppSettingsStoreTests {
         assertEqual(DashboardRevenueStatsType.net.rawValue, settingsForSite.lastSelectedDashboardRevenueStatsType)
     }
 
+    @MainActor
     func test_loadLastSelectedDashboardRevenueStatsType_returns_persisted_value() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.storeSettings =
@@ -1346,6 +1413,7 @@ extension AppSettingsStoreTests {
         assertEqual(DashboardRevenueStatsType.gross, loadedRevenueType)
     }
 
+    @MainActor
     func test_loadLastSelectedDashboardRevenueStatsType_returns_nil_when_no_data_was_saved() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
@@ -1363,6 +1431,7 @@ extension AppSettingsStoreTests {
 
     // MARK: - Last selected time range for Top Performers card
 
+    @MainActor
     func test_setLastSelectedTopPerformersTimeRange_works_correctly() throws {
         // Given
         let timeRange = StatsTimeRangeV4.thisWeek
@@ -1378,6 +1447,7 @@ extension AppSettingsStoreTests {
         assertEqual(timeRange.rawValue, settingsForSite.lastSelectedTopPerformersTimeRange)
     }
 
+    @MainActor
     func test_loadLastSelectedTopPerformersTimeRange_works_correctly() throws {
         // Given
         let timeRange = StatsTimeRangeV4.thisWeek
@@ -1394,6 +1464,7 @@ extension AppSettingsStoreTests {
         assertEqual(timeRange, loadedTimeRange)
     }
 
+    @MainActor
     func test_loadLastSelectedTopPerformersTimeRange_returns_nil_when_no_data_was_saved() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
@@ -1411,6 +1482,7 @@ extension AppSettingsStoreTests {
 
     // MARK: - Last selected time range for Most active coupons card
 
+    @MainActor
     func test_setLastSelectedMostActiveCouponsTimeRange_works_correctly() throws {
         // Given
         let timeRange = StatsTimeRangeV4.thisMonth
@@ -1426,6 +1498,7 @@ extension AppSettingsStoreTests {
         assertEqual(timeRange.rawValue, settingsForSite.lastSelectedMostActiveCouponsTimeRange)
     }
 
+    @MainActor
     func test_loadLastSelectedMostActiveCouponsTimeRange_works_correctly() throws {
         // Given
         let timeRange = StatsTimeRangeV4.thisMonth
@@ -1442,6 +1515,7 @@ extension AppSettingsStoreTests {
         assertEqual(timeRange, loadedTimeRange)
     }
 
+    @MainActor
     func test_loadLastSelectedMostActiveCouponsTimeRange_returns_nil_when_no_data_was_saved() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
@@ -1459,6 +1533,7 @@ extension AppSettingsStoreTests {
 
     // MARK: - Last selected stock type for Stock dashboard card
 
+    @MainActor
     func test_setLastSelectedStockType_works_correctly() throws {
         // Given
         let stockType = "lowstock"
@@ -1474,6 +1549,7 @@ extension AppSettingsStoreTests {
         assertEqual(stockType, settingsForSite.lastSelectedStockType)
     }
 
+    @MainActor
     func test_loadLastSelectedStockType_works_correctly() throws {
         // Given
         let stockType = "lowstock"
@@ -1490,6 +1566,7 @@ extension AppSettingsStoreTests {
         assertEqual(stockType, loadedStockType)
     }
 
+    @MainActor
     func test_loadLastSelectedStockType_returns_nil_when_no_data_was_saved() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
@@ -1507,6 +1584,7 @@ extension AppSettingsStoreTests {
 
     // MARK: - Last selected order status for Most recent orders card
 
+    @MainActor
     func test_setLastSelectedOrderStatus_works_correctly() throws {
         // Given
         let status = "pending"
@@ -1522,6 +1600,7 @@ extension AppSettingsStoreTests {
         assertEqual(status, settingsForSite.lastSelectedOrderStatus)
     }
 
+    @MainActor
     func test_loadLastSelectedOrderStatus_works_correctly() throws {
         // Given
         let status = "pending"
@@ -1538,6 +1617,7 @@ extension AppSettingsStoreTests {
         assertEqual(status, loadedOrderStatus)
     }
 
+    @MainActor
     func test_loadLastSelectedOrderStatus_returns_nil_when_no_data_was_saved() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings()
@@ -1555,6 +1635,7 @@ extension AppSettingsStoreTests {
 
     // MARK: - Point of Sale Survey Notification
 
+    @MainActor
     func test_getPOSSurveyPotentialMerchantNotificationScheduled_returns_false_on_new_generalAppSettings() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -1571,6 +1652,7 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(result)
     }
 
+    @MainActor
     func test_getPOSSurveyPotentialMerchantNotificationScheduled_returns_true_after_setting_as_scheduled() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -1589,6 +1671,7 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(result)
     }
 
+    @MainActor
     func test_setPOSSurveyPotentialMerchantNotificationScheduled_stores_value_correctly() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -1607,6 +1690,7 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(savedSettings.isPOSSurveyPotentialMerchantNotificationScheduled)
     }
 
+    @MainActor
     func test_getPOSSurveyCurrentMerchantNotificationScheduled_returns_false_on_new_generalAppSettings() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -1623,6 +1707,7 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(result)
     }
 
+    @MainActor
     func test_getPOSSurveyCurrentMerchantNotificationScheduled_returns_true_after_setting_as_scheduled() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -1641,6 +1726,7 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(result)
     }
 
+    @MainActor
     func test_setPOSSurveyCurrentMerchantNotificationScheduled_stores_value_correctly() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -1659,6 +1745,7 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(savedSettings.isPOSSurveyCurrentMerchantNotificationScheduled)
     }
 
+    @MainActor
     func test_getHasPOSBeenOpenedAtLeastOnce_returns_false_on_new_generalAppSettings() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -1675,6 +1762,7 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(result)
     }
 
+    @MainActor
     func test_getHasPOSBeenOpenedAtLeastOnce_returns_true_after_setting() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -1693,6 +1781,7 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(result)
     }
 
+    @MainActor
     func test_setHasPOSBeenOpenedAtLeastOnce_stores_value_correctly() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -1711,6 +1800,7 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(savedSettings.hasPOSBeenOpenedAtLeastOnce)
     }
 
+    @MainActor
     func test_resetPOSSurveyNotificationScheduled_resets_all_flags_to_false() throws {
         // Given
         try fileStorage?.deleteFile(at: expectedGeneralAppSettingsFileURL)
@@ -1785,6 +1875,7 @@ extension AppSettingsStoreTests {
 
     // MARK: - POS Local Catalog Cellular Data Tests
 
+    @MainActor
     func test_getPOSLocalCatalogCellularDataAllowed_returns_false_by_default() throws {
         // When
         let isAllowed: Bool = waitFor { promise in
@@ -1798,6 +1889,7 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(isAllowed)
     }
 
+    @MainActor
     func test_getPOSLocalCatalogCellularDataAllowed_returns_saved_value() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.mockPOSLocalCatalogCellularDataAllowed = true
@@ -1817,6 +1909,7 @@ extension AppSettingsStoreTests {
 
     // MARK: - POS Catalog File Blocked Tests
 
+    @MainActor
     func test_getPOSCatalogFileBlockedByHost_when_no_block_is_recorded_then_returns_false() throws {
         // When
         let isBlocked: Bool = waitFor { promise in
@@ -1830,6 +1923,7 @@ extension AppSettingsStoreTests {
         XCTAssertFalse(isBlocked)
     }
 
+    @MainActor
     func test_getPOSCatalogFileBlockedByHost_when_a_block_is_recorded_then_returns_true() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.mockPOSCatalogFileBlockedByHostAt = Date()
@@ -1847,6 +1941,7 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(isBlocked)
     }
 
+    @MainActor
     func test_setPOSLocalCatalogCellularDataAllowed_saves_value_successfully() throws {
         // When
         waitFor { promise in
@@ -1861,6 +1956,7 @@ extension AppSettingsStoreTests {
         XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.mockPOSLocalCatalogCellularDataAllowed, true)
     }
 
+    @MainActor
     func test_setPOSLocalCatalogCellularDataAllowed_can_set_false() throws {
         // Given
         mockSiteSpecificAppSettingsStoreMethods.mockPOSLocalCatalogCellularDataAllowed = true
@@ -1878,6 +1974,7 @@ extension AppSettingsStoreTests {
         XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.mockPOSLocalCatalogCellularDataAllowed, false)
     }
 
+    @MainActor
     func test_setHTTPSConfigurationUpdateRequired_persists_requirement() {
         // When
         subject?.onAction(AppSettingsAction.setHTTPSConfigurationUpdateRequired(siteID: TestConstants.siteID, required: true))
@@ -1886,6 +1983,7 @@ extension AppSettingsStoreTests {
         XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.storeSettings.requiresHTTPSConfigurationUpdate, true)
     }
 
+    @MainActor
     func test_dismissHTTPSConfigurationWarning_persists_dismissal_date() {
         // Given
         let date = Date(timeIntervalSince1970: 123)
@@ -1897,6 +1995,7 @@ extension AppSettingsStoreTests {
         XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.storeSettings.lastHTTPSConfigurationWarningDismissedDate, date)
     }
 
+    @MainActor
     func test_getHTTPSConfigurationWarningState_returns_persisted_state() {
         // Given
         let date = Date(timeIntervalSince1970: 123)
@@ -1925,6 +2024,7 @@ private extension AppSettingsStoreTests {
         return documents!.appendingPathComponent("general-app-settings.plist")
     }
 
+    @MainActor
     func createAppSettingAndGeneralFeedback(installationDate: Date?, feedbackStatus: FeedbackSettings.Status) -> (GeneralAppSettings, FeedbackSettings) {
         let feedback = FeedbackSettings(name: .general, status: feedbackStatus)
         let settings = GeneralAppSettings(
@@ -1945,6 +2045,7 @@ private extension AppSettingsStoreTests {
         return (settings, feedback)
     }
 
+    @MainActor
     func createAppSettings(featureAnnouncementCampaignSettings: [FeatureAnnouncementCampaign: FeatureAnnouncementCampaignSettings] = [:]) -> GeneralAppSettings {
         let settings = GeneralAppSettings(
             installationDate: Date(),

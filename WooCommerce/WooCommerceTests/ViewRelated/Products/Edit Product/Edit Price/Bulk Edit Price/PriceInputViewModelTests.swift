@@ -8,6 +8,7 @@ final class PriceInputViewModelTests: XCTestCase {
     private let sampleSiteID: Int64 = 123
     private var storesManager: MockStoresManager!
 
+    @MainActor
     override func setUp() {
         super.setUp()
         storesManager = MockStoresManager(sessionManager: .makeForTesting())

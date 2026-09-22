@@ -46,6 +46,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -56,6 +57,7 @@ final class ProductCategoryStoreTests: XCTestCase {
                                      network: network)
     }
 
+    @MainActor
     override func tearDown() {
         store = nil
         network = nil
@@ -65,6 +67,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_synchronizeProductCategories_then_it_returns_categories_upon_successful_response() throws {
         // Given a stubed product-categories network response
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
@@ -89,6 +92,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNil(errorResponse)
     }
 
+    @MainActor
     func test_synchronizeProductCategories_then_it_returns_categories_upon_paginated_response() throws {
         // Given a stubed product-categories network response
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
@@ -114,6 +118,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNil(errorResponse)
     }
 
+    @MainActor
     func test_synchronizeProductCategories_then_it_updates_stored_categories_upon_succesful_response() {
         // Given an initial stored category and a stubed product-categories network response
         let initialCategory = sampleCategory(categoryID: 20)
@@ -143,6 +148,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNil(errorResponse)
     }
 
+    @MainActor
     func test_synchronizeProductCategories_then_it_returns_error_upon_paginated_response_error() {
         // Given a stubed first page category response and second page generic-error network response
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "categories-all")
@@ -176,6 +182,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_synchronizeProductCategories_then_it_returns_error_upon_response_error() {
         // Given a stubed generic-error network response
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "generic_error")
@@ -198,6 +205,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNotNil(errorResponse)
     }
 
+    @MainActor
     func test_synchronizeProductCategories_then_it_returns_error_upon_empty_response() {
         // Given a an empty network response
         XCTAssertEqual(storedProductCategoriesCount, 0)
@@ -219,6 +227,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNotNil(errorResponse)
     }
 
+    @MainActor
     func test_addProductCategory_then_it_adds_storedCategory_when_a_successful_response() {
         // Given a stubed product category network response
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "category")
@@ -241,6 +250,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNil(result?.failure)
     }
 
+    @MainActor
     func test_addProductCategory_then_it_returns_error_upon_response_error() {
         // Given a stubed generic-error network response
         network.simulateResponse(requestUrlSuffix: "products/categories", filename: "generic_error")
@@ -262,6 +272,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
+    @MainActor
     func test_addProductCategory_then_it_returns_error_upon_empty_error() {
         // Given a an empty network response
         XCTAssertEqual(storedProductCategoriesCount, 0)
@@ -281,6 +292,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
+    @MainActor
     func test_synchronizeProductCategories_then_it_deletes_unused_categories() {
         // Given some stored product categories without product relationships
         let sampleCategories = (1...5).map { id in
@@ -310,6 +322,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertEqual(storedProductCategoriesCount, 2)
     }
 
+    @MainActor
     func test_synchronizeProductCategory_successfully_then_it_stores_the_requested_category() {
         let categoryID: Int64 = 123
         network.simulateResponse(requestUrlSuffix: "products/categories/\(categoryID)", filename: "category")
@@ -329,6 +342,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         assertAddedCategoryTookDataFromMockedNetworkData(addedCategory)
     }
 
+    @MainActor
     func test_synchronizeProductCategory_successfully_then_it_provides_the_requested_category() {
         let categoryID: Int64 = 123
         network.simulateResponse(requestUrlSuffix: "products/categories/\(categoryID)", filename: "category")
@@ -348,6 +362,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertEqual(try result?.get().name, "Dress")
     }
 
+    @MainActor
     func test_synchronizeProductCategory_fails_with_resourceDoesNotExist_then_it_provides_right_error() {
         let categoryID: Int64 = 123
         network.simulateError(requestUrlSuffix: "products/categories/\(categoryID)", error: DotcomError.resourceDoesNotExist())
@@ -376,6 +391,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_updateProductCategory_success_returns_product_category() throws {
         // Given
         let categoryID: Int64 = 104
@@ -401,6 +417,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertEqual(productCategory.slug, "Shirt")
     }
 
+    @MainActor
     func test_updateProductCategory_failure_throws_correct_error() {
         // Given
         let categoryID: Int64 = 104
@@ -421,6 +438,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, .notFound())
     }
 
+    @MainActor
     func test_deleteProductCategory_does_not_throw_error_upon_success() {
         // Given
         let categoryID: Int64 = 104
@@ -438,6 +456,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
+    @MainActor
     func test_deleteProductCategory_throws_correct_error_upon_failure() {
         // Given
         let categoryID: Int64 = 104
@@ -458,6 +477,7 @@ final class ProductCategoryStoreTests: XCTestCase {
 
     // MARK: Batch creation of categories
 
+    @MainActor
     func test_createProductCategories_returns_categories_on_success() throws {
         // Given
         let network = MockNetwork()
@@ -482,6 +502,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertEqual(categories[1].name, "Sample 2")
     }
 
+    @MainActor
     func test_createProductCategories_updates_stored_categories_on_success() throws {
         // Given
         let network = MockNetwork()
@@ -505,6 +526,7 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertEqual(storedProductCategoriesCount, 2)
     }
 
+    @MainActor
     func test_createProductCategories_returns_error_on_failure() throws {
         // Given
         let network = MockNetwork()
@@ -529,10 +551,12 @@ final class ProductCategoryStoreTests: XCTestCase {
 }
 
 private extension ProductCategoryStoreTests {
+    @MainActor
     func sampleCategory(categoryID: Int64) -> Networking.ProductCategory {
         return Networking.ProductCategory(categoryID: categoryID, siteID: sampleSiteID, parentID: 0, name: "Sample", slug: "Sample")
     }
 
+    @MainActor
     func assertAddedCategoryTookDataFromMockedNetworkData(_ productCategory: Storage.ProductCategory?) {
         XCTAssertNotNil(productCategory)
         XCTAssertEqual(productCategory?.categoryID, 104)

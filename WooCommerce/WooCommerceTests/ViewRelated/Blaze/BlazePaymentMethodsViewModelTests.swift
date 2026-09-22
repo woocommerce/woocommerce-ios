@@ -19,6 +19,7 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
 
     private var subscription: AnyCancellable?
 
+    @MainActor
     override func setUp() {
         super.setUp()
         stores = MockStoresManager(sessionManager: SessionManager.makeForTesting(authenticated: true,
@@ -116,6 +117,7 @@ final class BlazePaymentMethodsViewModelTests: XCTestCase {
 }
 
 private extension BlazePaymentMethodsViewModelTests {
+    @MainActor
     func mockPaymentFetch(with result: Result<BlazePaymentInfo, Error>) {
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
             switch action {

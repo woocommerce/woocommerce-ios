@@ -27,6 +27,7 @@ final class ReceiptStoreTests: XCTestCase {
         return storageManager.viewStorage
     }
 
+    @MainActor
     override func setUp() {
         super.setUp()
         dispatcher = Dispatcher()
@@ -34,6 +35,7 @@ final class ReceiptStoreTests: XCTestCase {
         network = MockNetwork()
     }
 
+    @MainActor
     override func tearDown() {
         dispatcher = nil
         storageManager = nil
@@ -42,6 +44,7 @@ final class ReceiptStoreTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_retrieveReceipt_when_orderID_matches_route_then_returns_valid_receipt_with_expected_fields() throws {
         // Given
         let sampleOrderID: Int64 = 123
@@ -68,6 +71,7 @@ final class ReceiptStoreTests: XCTestCase {
         assertEqual(expectedReceiptExpirationDate, expectedReceipt.expirationDate)
     }
 
+    @MainActor
     func test_retrieveReceipt_when_orderID_does_not_match_route_then_returns_error() throws {
         // Given
         let sampleOrderID: Int64 = 987
@@ -91,6 +95,7 @@ final class ReceiptStoreTests: XCTestCase {
         XCTAssertNotNil(expectedError)
     }
 
+    @MainActor
     func test_sendReceipt_when_order_updates_and_action_succeeds() throws {
         // Given order update and send_order_details actions succeed
         let email = "test@test.com"
@@ -120,6 +125,7 @@ final class ReceiptStoreTests: XCTestCase {
         XCTAssert(result.billingAddress?.email == email)
     }
 
+    @MainActor
     func test_sendReceipt_when_order_update_fails_then_send_receipt_fails() {
         // Given order update fails
         let email = "test@test.com"

@@ -16,13 +16,11 @@
     "Modules/Sources/Networking/Network/BackgroundDownloadService.swift": 3,
     "Modules/Sources/Networking/ProductImageInBackground/ProductImageStatusStorage.swift": 1,
     "Modules/Sources/Networking/Remote/JetpackConnectionRemote.swift": 8,
-    "Modules/Sources/Networking/Remote/RefundsRemote.swift": 1,
     "Modules/Sources/Networking/Remote/SystemStatusRemote.swift": 4,
     "Modules/Sources/NetworkingCore/ApplicationPassword/ApplicationPasswordUseCase.swift": 5,
     "Modules/Sources/NetworkingCore/Internal/Logging.swift": 3,
     "Modules/Sources/NetworkingCore/Mapper/OrderStatsV4Mapper.swift": 1,
     "Modules/Sources/NetworkingCore/Model/DotcomError.swift": 12,
-    "Modules/Sources/NetworkingCore/Model/Refund/RefundPreview.swift": 2,
     "Modules/Sources/NetworkingCore/Network/AlamofireNetwork.swift": 28,
     "Modules/Sources/NetworkingCore/Network/StoreConnectionErrorMonitor.swift": 1,
     "Modules/Sources/NetworkingCore/Network/WordPressOrgNetwork.swift": 4,
@@ -258,8 +256,6 @@
     "Modules/Tests/PointOfSaleTests/Tools/POSReceiptSenderTests.swift": 4,
     "Modules/Tests/PointOfSaleTests/ViewHelpers/POSPaymentViewHelperTests.swift": 4,
     "Modules/Tests/PointOfSaleTests/ViewHelpers/TotalsViewHelperTests.swift": 5,
-    "Modules/Tests/StorageTests/GRDB/PersistedProductBarcodeQueryTests.swift": 6,
-    "Modules/Tests/StorageTests/GRDB/PersistedProductVariationBarcodeQueryTests.swift": 9,
     "Modules/Tests/YosemiteTests/Mocks/CardPresentPayments/MockCardReaderService.swift": 21,
     "Modules/Tests/YosemiteTests/Mocks/Networking/Remote/MockNotificationsRemote.swift": 4,
     "Modules/Tests/YosemiteTests/Mocks/Networking/Remote/MockProductReviewsRemote.swift": 4,
@@ -1123,5 +1119,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 10071
+  "total": 10056
 }

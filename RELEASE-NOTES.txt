@@ -4,10 +4,13 @@
 25.8
 -----
 - [*] Age verification: the "Access Restricted" alert and the parental consent screens now offer a Contact Support action that opens Help & Support while keeping the restriction in place. [https://github.com/woocommerce/woocommerce-ios/pull/17909]
+- [*] Login: Fix account matching for www and non-www store addresses [https://github.com/woocommerce/woocommerce-ios/pull/17906]
+- [*] Troubleshoot Connection and support chat diagnostics no longer report a false analytics failure on WordPress.com Commerce plan stores. [https://github.com/woocommerce/woocommerce-ios/pull/17895]
 
 
 25.7
 -----
+- [*] POS: Cart items discounted by a coupon or another source are now marked "Discount applied" at checkout. [https://github.com/woocommerce/woocommerce-ios/pull/17887]
 - [**] When your store can't be reached because of a connection problem on your WordPress site, the app now explains what is going on and offers to contact support, instead of retrying silently. [https://github.com/woocommerce/woocommerce-ios/pull/17799]
 - [Internal] POS: Moved the refund flow state out of POSOrderListController into a new POSRefundController. No user-visible change. [https://github.com/woocommerce/woocommerce-ios/pull/17864]
 - [Internal] Attribute push_notification_received/alert_pressed events to the notification's origin site instead of the selected site. [https://github.com/woocommerce/woocommerce-ios/pull/17848]

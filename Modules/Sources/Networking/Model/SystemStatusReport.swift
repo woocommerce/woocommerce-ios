@@ -2,7 +2,7 @@ import Foundation
 
 /// Represent a System Status Report.
 ///
-public struct SystemStatusReport: Decodable {
+public struct SystemStatusReport: Decodable, Sendable {
     public let activePlugins: [SystemPlugin]
     public let inactivePlugins: [SystemPlugin]
     public let environment: Environment?

@@ -19,8 +19,8 @@ final class CustomerListViewModelTests: XCTestCase {
         storageManager.viewStorage
     }
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         subscriptions = []
         storageManager = MockStorageManager()
     }

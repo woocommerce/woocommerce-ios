@@ -3,7 +3,7 @@ import Foundation
 public extension SystemStatusReport {
     /// Details about a store's theme in its system status report.
     ///
-    struct Theme: Decodable {
+    struct Theme: Decodable, Sendable {
         public let name, version: String
         public let authorURL: String
         public let isChildTheme, hasWoocommerceSupport, hasWoocommerceFile, hasOutdatedTemplates: Bool

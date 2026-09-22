@@ -82,7 +82,7 @@ struct PointOfSaleDashboardView: View {
                     onExit: { dismiss() }
                 )
                     .transition(.opacity)
-                    .ignoresSafeArea()
+                    .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore)
             case .ineligible(let reason):
                 POSIneligibleView(reason: reason, onRefresh: {
                     try await posModel.entryPointController.refreshEligibility(reason: reason)
@@ -140,11 +140,10 @@ struct PointOfSaleDashboardView: View {
         }
         .environment(\.posBackgroundAppearance, backgroundAppearance)
         .animation(.easeInOut, value: viewState == .loading())
-        .background(Color.posSurface)
+        .background(Color.posSurface.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
-        // Applied before the posModal/posRootModal modifiers so only the dashboard content
-        // ignores the iOS 26 container insets — the modal overlay must keep the top safe
-        // area, or full-screen phone modals lay out underneath the status bar.
+        // Applied before the modal modifiers so the iOS 26 workaround affects only
+        // dashboard content. On iOS 27+ the system safe area also covers vertical bars.
         .ignoresSafeArea(dashboardIgnoredSafeAreaRegions)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
@@ -334,7 +333,7 @@ struct PointOfSaleDashboardView: View {
                 }
         }
         .animation(.default, value: posModel.orderStage)
-        .ignoresSafeArea()
+        .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore)
         .background(Color.posSurface.ignoresSafeArea())
     }
 
@@ -569,7 +568,7 @@ struct PointOfSaleDashboardView: View {
             .animation(.default, value: posModel.orderStage)
             .animation(.default, value: posModel.paymentState.card.shownFullScreen)
         }
-        .ignoresSafeArea()
+        .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore)
         .background(Color.posSurface.ignoresSafeArea())
         .environment(\.posNavigationRouter, navigationRouter)
     }

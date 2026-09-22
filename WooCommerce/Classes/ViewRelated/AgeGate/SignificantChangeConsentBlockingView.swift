@@ -30,8 +30,8 @@ final class SignificantChangeConsentBlockingHostingController: UIHostingControll
     init(
         context: SignificantChangeBlockingContext,
         detailMessage: String? = nil,
-        onAction: @escaping () -> Void,
-        onContactSupport: @escaping () -> Void
+        onAction: @escaping @MainActor () -> Void,
+        onContactSupport: @escaping @MainActor () -> Void
     ) {
         self.context = context
         super.init(rootView: SignificantChangeConsentBlockingView(
@@ -47,8 +47,8 @@ final class SignificantChangeConsentBlockingHostingController: UIHostingControll
     func update(
         context: SignificantChangeBlockingContext,
         detailMessage: String? = nil,
-        onAction: @escaping () -> Void,
-        onContactSupport: @escaping () -> Void
+        onAction: @escaping @MainActor () -> Void,
+        onContactSupport: @escaping @MainActor () -> Void
     ) {
         self.context = context
         rootView = SignificantChangeConsentBlockingView(
@@ -69,9 +69,9 @@ struct SignificantChangeConsentBlockingView: View {
     let context: SignificantChangeBlockingContext
     /// Replaces the generic `.approvalNeeded` message, e.g. a declared change's `blockerMessage`.
     var detailMessage: String? = nil
-    let onAction: () -> Void
+    let onAction: @MainActor () -> Void
     /// Opens Help & Support on top of the wall; the wall stays up underneath.
-    let onContactSupport: () -> Void
+    let onContactSupport: @MainActor () -> Void
 
     /// Brief in-button progress after a tap. The underlying work can resolve instantly,
     /// which otherwise looks like the tap wasn't registered at all.
@@ -102,7 +102,9 @@ struct SignificantChangeConsentBlockingView: View {
             }
             .buttonStyle(PrimaryLoadingButtonStyle(isLoading: isWorking))
             if context.offersContactSupport {
-                Button(Localization.contactSupportButton, action: onContactSupport)
+                Button(Localization.contactSupportButton) {
+                    onContactSupport()
+                }
                     .buttonStyle(SecondaryButtonStyle())
                     .disabled(isWorking)
             }

@@ -463,7 +463,7 @@
     "WooCommerce/Classes/ViewModels/Order Details/Shipping Labels/ShippingLabelPaperSizeListSelectorCommand.swift": 2,
     "WooCommerce/Classes/ViewRelated/AgeGate/AgeRangeVerificationCoordinator.swift": 7,
     "WooCommerce/Classes/ViewRelated/AgeGate/SignificantChangeConsentCoordinator.swift": 7,
-    "WooCommerce/Classes/ViewRelated/AppCoordinator.swift": 56,
+    "WooCommerce/Classes/ViewRelated/AppCoordinator.swift": 53,
     "WooCommerce/Classes/ViewRelated/Blaze/BlazeEditAd/BlazeEditAdViewModel.swift": 2,
     "WooCommerce/Classes/ViewRelated/Blaze/BudgetSetting/BlazeBudgetSettingViewModel.swift": 3,
     "WooCommerce/Classes/ViewRelated/Blaze/CampaignCreation/BlazeCampaignCreationForm.swift": 1,

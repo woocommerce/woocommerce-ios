@@ -505,10 +505,10 @@ private extension AppCoordinator {
     /// consent flow. No logout: the user keeps their session and explicitly sends the
     /// approval request, re-checks, or re-asks.
     func presentSignificantChangeBlocker(context: SignificantChangeBlockingContext) {
-        let action: () -> Void = { [weak self] in
+        let action: @MainActor () -> Void = { [weak self] in
             self?.handleSignificantChangeBlockerAction(for: context)
         }
-        let contactSupport: () -> Void = { [weak self] in
+        let contactSupport: @MainActor () -> Void = { [weak self] in
             self?.presentSupportFromSignificantChangeBlocker()
         }
         // Only a declared change has its own Approval Needed copy.
@@ -542,6 +542,7 @@ private extension AppCoordinator {
         startForegroundConsentRecheck()
     }
 
+    @MainActor
     func handleSignificantChangeBlockerAction(for context: SignificantChangeBlockingContext) {
         analytics.track(event: .AgeVerification.action(for: context))
         switch context {
@@ -571,6 +572,7 @@ private extension AppCoordinator {
     /// Opens Help & Support on top of the wall. The wall is never dismissed for this, so closing
     /// support lands back on it with the same context. Ignored while the wall already presents
     /// something (the system consent sheet, or support itself).
+    @MainActor
     func presentSupportFromSignificantChangeBlocker() {
         guard let blocker = significantChangeBlocker, blocker.presentedViewController == nil else { return }
         analytics.track(event: .AgeVerification.contactSupportTapped(for: blocker.context))

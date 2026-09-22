@@ -9,6 +9,8 @@ struct ULAccountMatcherTests {
         ("https://example.com", "https://www.example.com"),
         ("https://www.example.com", "example.com"),
         ("http://example.com/shop", "https://www.example.com/shop"),
+        ("https://example.com/shop", "https://www.example.com/shop/"),
+        ("https://www.example.com/shop/", "https://example.com/shop"),
         ("https://EXAMPLE.com/", "https://www.example.com")
     ])
     func test_match_when_www_differs_then_returns_account_site(stored: String, entered: String) {

@@ -92,7 +92,9 @@ private extension ULAccountMatcher {
                   components.user == nil, components.password == nil else { return nil }
             self.host = host.lowercased()
             port = components.port
-            path = components.percentEncodedPath == "/" ? "" : components.percentEncodedPath
+            path = components.percentEncodedPath.hasSuffix("/")
+                ? String(components.percentEncodedPath.dropLast())
+                : components.percentEncodedPath
             query = components.percentEncodedQuery
         }
 

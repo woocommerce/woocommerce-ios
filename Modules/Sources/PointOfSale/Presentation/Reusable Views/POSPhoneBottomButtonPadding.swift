@@ -12,5 +12,5 @@ extension View {
 private enum POSPhoneBottomButtonPadding {
     static let horizontal: CGFloat = POSPadding.medium
     static let top: CGFloat = POSPadding.medium
-    static let bottom: CGFloat = POSPadding.xxLarge
+    static let bottom: CGFloat = POSPadding.medium
 }

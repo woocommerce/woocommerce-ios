@@ -142,9 +142,10 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut, value: viewState == .loading())
         .background(Color.posSurface.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
-        // Applied before the modal modifiers so the iOS 26 workaround affects only
-        // dashboard content. On iOS 27+ the system safe area also covers vertical bars.
-        .ignoresSafeArea(dashboardIgnoredSafeAreaRegions)
+        // Keep the iOS 26 top/side workaround on dashboard content while every OS
+        // reserves the bottom system area for footer controls.
+        .ignoresSafeArea(.posContainerRegionToIgnore, edges: [.top, .horizontal])
+        .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .keyboard : [], edges: .bottom)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }) { factory in
@@ -333,7 +334,7 @@ struct PointOfSaleDashboardView: View {
                 }
         }
         .animation(.default, value: posModel.orderStage)
-        .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore)
+        .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore, edges: [.top, .horizontal])
         .background(Color.posSurface.ignoresSafeArea())
     }
 
@@ -449,7 +450,7 @@ struct PointOfSaleDashboardView: View {
                 .animation(.snappy(duration: 0.25), value: phoneCartItemsCount)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .posPhoneBottomButtonPadding(bottom: phoneCartButtonBottomPadding)
+        .posPhoneBottomButtonPadding()
         // Quick pulse to confirm an item was added — only on count increases, so removing items
         // doesn't bounce the button distractingly.
         .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)
@@ -465,14 +466,6 @@ struct PointOfSaleDashboardView: View {
             }
         }
         .accessibilityIdentifier("pos-compact-cart-button")
-    }
-
-    private var phoneCartButtonBottomPadding: CGFloat {
-        // The iOS 27 safe area already clears the bottom system region.
-        if #available(iOS 27, *) {
-            return POSPadding.medium
-        }
-        return POSPadding.xxLarge
     }
 
     private var phoneCartSheetView: some View {
@@ -576,7 +569,7 @@ struct PointOfSaleDashboardView: View {
             .animation(.default, value: posModel.orderStage)
             .animation(.default, value: posModel.paymentState.card.shownFullScreen)
         }
-        .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore)
+        .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore, edges: [.top, .horizontal])
         .background(Color.posSurface.ignoresSafeArea())
         .environment(\.posNavigationRouter, navigationRouter)
     }
@@ -756,17 +749,6 @@ private extension PointOfSaleDashboardView {
     }
 }
 
-private extension PointOfSaleDashboardView {
-    /// Ignore keyboard safe area only for the full-size on-screen keyboard, so floating
-    /// controls sit above the external keyboard's helper bar (pre-iOS 26 only; iOS 26 has no helper bar).
-    var dashboardIgnoredSafeAreaRegions: SafeAreaRegions {
-        if keyboardObserver.isFullSizeKeyboardVisible {
-            return SafeAreaRegions.posContainerRegionToIgnore.union(.keyboard)
-        } else {
-            return .posContainerRegionToIgnore
-        }
-    }
-}
 
 // Mark-as-paid confirmation now lives inside the right-pane NavigationStack via
 // `POSNavigationDestinationMarkAsPaidView`, not as a modal modifier on the dashboard.

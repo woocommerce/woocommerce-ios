@@ -110,6 +110,9 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                 isEnabled: isCompactBackGestureActive
             )
         }
+        // The offscreen pane stays in the HStack for state preservation. Keep it out of
+        // system regions beyond this view's safe bounds, including Duo's vertical bar.
+        .clipped()
         // Anchors the gesture's coordinates to this view rather than to the window. `.global` is
         // only the same thing as "this split view" when the window fills the screen, which is why
         // measuring the edge against it worked on a phone and failed in a collapsed iPad window.

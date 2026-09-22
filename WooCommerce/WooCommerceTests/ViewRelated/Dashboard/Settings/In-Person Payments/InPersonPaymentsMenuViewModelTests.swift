@@ -1,6 +1,8 @@
+import Combine
 import SwiftUI
 import XCTest
 import TestKit
+import YosemiteTestHelpers
 import protocol WooFoundation.Analytics
 @testable import Yosemite
 @testable import WooCommerce
@@ -181,6 +183,156 @@ final class InPersonPaymentsMenuViewModelTests: XCTestCase {
      }
 
     // MARK: - Tap to Pay tests
+    func test_onAppear_when_missing_country_recovers_then_shows_card_readers_without_recreating_menu() async {
+        // Given
+        let storage = MockStorageManager()
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        stores.sessionManager.setStoreId(sampleStoreID)
+        let settings = SelectedSiteSettings(stores: stores, storageManager: storage)
+        let dependencies = InPersonPaymentsMenuViewModel.Dependencies(
+            cardPresentPaymentsConfiguration: .init(country: .unknown),
+            onboardingUseCase: mockOnboardingUseCase,
+            cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+            wooPaymentsPayoutService: nil,
+            systemStatusService: systemStatusService,
+            stores: stores,
+            siteSettings: settings)
+        let menu = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                                dependencies: dependencies,
+                                                payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
+        await menu.onAppear()
+        XCTAssertFalse(menu.shouldShowCardReaderSection)
+        mockOnboardingUseCase.refreshIfNecessaryWasCalled = false
+
+        // When
+        await withCheckedContinuation { continuation in
+            storage.performAndSave({ storage in
+                let setting = storage.insertNewObject(ofType: StorageSiteSetting.self)
+                setting.update(with: SiteSetting.fake().copy(siteID: self.sampleStoreID,
+                                                            settingID: "woocommerce_default_country",
+                                                            value: "GB",
+                                                            settingGroupKey: SiteSettingGroup.general.rawValue))
+            }, completion: { continuation.resume() }, on: .main)
+        }
+        settings.refresh()
+        XCTAssertEqual(SiteAddress(siteSettings: settings.siteSettings).countryCode, .GB)
+        await menu.onAppear()
+
+        // Then
+        XCTAssertTrue(menu.shouldShowCardReaderSection)
+        XCTAssertTrue(mockOnboardingUseCase.refreshIfNecessaryWasCalled)
+    }
+
+    func test_country_change_when_settings_arrive_then_does_not_refresh_payment_gateways() async {
+        // Given
+        let settings = MockSelectedSiteSettings()
+        let changes = PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>()
+        settings.mockSettingsStream = changes.eraseToAnyPublisher()
+        let toggle = MockInPersonPaymentsCashOnDeliveryToggleRowViewModel()
+        let menu = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                                dependencies: .init(cardPresentPaymentsConfiguration: .init(country: .unknown),
+                                                                    onboardingUseCase: mockOnboardingUseCase,
+                                                                    cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                    wooPaymentsPayoutService: nil,
+                                                                    systemStatusService: MockSystemStatusService(),
+                                                                    siteSettings: settings),
+                                                payInPersonToggleViewModel: toggle)
+        let initialized = expectation(description: "Initial country visibility applied")
+        let initialSubscription = menu.$shouldShowCardReaderSection.dropFirst().first().sink { _ in initialized.fulfill() }
+        defer { initialSubscription.cancel() }
+        await fulfillment(of: [initialized], timeout: 5)
+        toggle.spyDidCallRefreshState = false
+
+        let recovered = expectation(description: "Country recovery updated visibility")
+        var refreshedPaymentGateways = false
+        let recoverySubscription = menu.$shouldShowCardReaderSection.first(where: { $0 }).sink { _ in
+            refreshedPaymentGateways = toggle.spyDidCallRefreshState
+            recovered.fulfill()
+        }
+        defer { recoverySubscription.cancel() }
+
+        // When
+        sendCountry("GB", to: changes)
+        await fulfillment(of: [recovered], timeout: 5)
+
+        // Then
+        XCTAssertTrue(menu.shouldShowCardReaderSection)
+        XCTAssertFalse(refreshedPaymentGateways)
+    }
+
+    func test_country_change_when_unsupported_then_clears_onboarding_notice_and_loading() {
+        for state in [CardPresentPaymentOnboardingState.pluginSetupNotCompleted(plugin: .wcPay), .loading] {
+            // Given
+            let changes = PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>()
+            let menu = makeMenuForCountryChanges(state: state, changes: changes)
+            XCTAssertEqual(menu.backgroundOnboardingInProgress, state == .loading)
+            XCTAssertEqual(menu.cardPresentPaymentsOnboardingNotice != nil, state != .loading)
+
+            // When
+            sendCountry("LT", to: changes)
+
+            // Then
+            XCTAssertNil(menu.cardPresentPaymentsOnboardingNotice)
+            XCTAssertFalse(menu.backgroundOnboardingInProgress)
+            XCTAssertTrue(menu.shouldDisableManageCardReaders)
+            XCTAssertNil(menu.selectedPaymentGatewayPlugin)
+            XCTAssertNil(mockPayInPersonToggleViewModel.selectedPlugin)
+        }
+    }
+
+    func test_country_change_when_support_returns_then_restores_cached_onboarding_state() {
+        // Given
+        let changes = PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>()
+        let menu = makeMenuForCountryChanges(state: .completed(plugin: .wcPayPreferred), changes: changes)
+        XCTAssertTrue(menu.shouldShowPaymentOptionsSection)
+        XCTAssertFalse(menu.shouldDisableManageCardReaders)
+
+        // When
+        sendCountry("LT", to: changes)
+
+        // Then
+        XCTAssertFalse(menu.shouldShowPaymentOptionsSection)
+        XCTAssertFalse(menu.shouldShowManagePaymentGatewaysRow)
+        XCTAssertTrue(menu.shouldDisableManageCardReaders)
+        XCTAssertNil(menu.selectedPaymentGatewayName)
+
+        // When: the use case keeps its cached state without publishing it again.
+        sendCountry("GB", to: changes)
+
+        // Then
+        XCTAssertTrue(menu.shouldShowPaymentOptionsSection)
+        XCTAssertTrue(menu.shouldShowManagePaymentGatewaysRow)
+        XCTAssertFalse(menu.shouldDisableManageCardReaders)
+        XCTAssertEqual(menu.selectedPaymentGatewayPlugin, .wcPay)
+        XCTAssertEqual(mockPayInPersonToggleViewModel.selectedPlugin, .wcPay)
+    }
+
+    private func makeMenuForCountryChanges(
+        state: CardPresentPaymentOnboardingState,
+        changes: PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>
+    ) -> InPersonPaymentsMenuViewModel {
+        let settings = MockSelectedSiteSettings()
+        settings.mockSettingsStream = changes.eraseToAnyPublisher()
+        let menu = InPersonPaymentsMenuViewModel(siteID: sampleStoreID,
+                                                dependencies: .init(cardPresentPaymentsConfiguration: .init(country: .unknown),
+                                                                    onboardingUseCase: MockCardPresentPaymentsOnboardingUseCase(initial: state),
+                                                                    cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                                                    wooPaymentsPayoutService: nil,
+                                                                    systemStatusService: systemStatusService,
+                                                                    siteSettings: settings),
+                                                payInPersonToggleViewModel: mockPayInPersonToggleViewModel)
+        sendCountry("GB", to: changes)
+        return menu
+    }
+
+    private func sendCountry(_ country: String, to changes: PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>) {
+        let setting = SiteSetting.fake().copy(siteID: sampleStoreID,
+                                              settingID: "woocommerce_default_country",
+                                              value: country,
+                                              settingGroupKey: "general")
+        changes.send((siteID: sampleStoreID, settings: [setting], source: .storageChange))
+    }
+
      func test_shouldShowTapToPaySection_false_when_built_in_reader_isnt_in_configuration() async {
          // Given
          let configuration = CardPresentPaymentsConfiguration(

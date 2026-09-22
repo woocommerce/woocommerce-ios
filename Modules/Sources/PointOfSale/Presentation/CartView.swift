@@ -60,13 +60,13 @@ struct CartView: View {
                 if viewHelper.shouldShowCheckout(orderStage: posModel.orderStage, cart: posModel.cart) {
                     checkoutButton
                         .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-                        .padding(.vertical, Constants.checkoutButtonVerticalPadding)
+                        .padding(.top, POSPadding.medium)
+                        .padding(.bottom, horizontalSizeClass == .compact ? POSPadding.small : POSPadding.medium)
                         .accessibilityAddTraits(.isHeader)
                         .if(shouldApplyFooterTopShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .top) })
                         .zIndex(1)
                 }
             }
-            .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
             // iPad path only — on phone the dashboard hosts the cover above the cart sheet via
             // `onPresentBarcodeScannerSetup`, otherwise POSSheet's coverManager interaction would
             // tear CartView down before the cover fully presents.
@@ -241,7 +241,6 @@ private enum Constants {
     static let emptyViewImageTextSpacing: CGFloat = POSSpacing.xLarge // This should be 40 by designs, but the overlay technique means we have to tweak it
     static let cartHeaderElementSpacing: CGFloat = POSSpacing.medium
     static let cartAnimation: Animation = .spring(duration: 0.2)
-    static let checkoutButtonVerticalPadding: CGFloat = POSPadding.medium
     static let cartItemSpacing: CGFloat = POSSpacing.medium
     static let cartLastItemBottomPadding: CGFloat = POSPadding.large
 }

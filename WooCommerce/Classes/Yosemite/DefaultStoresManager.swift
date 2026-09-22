@@ -504,7 +504,6 @@ class DefaultStoresManager: StoresManager {
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
         sessionManager.defaultSite = nil
-        sessionManager.cachedWooCommerceVersion = nil
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
         defaults[.usedProductDescriptionAI] = nil
@@ -967,6 +966,9 @@ private extension DefaultStoresManager {
     /// Loads the WooCommerce plugin version from storage and caches it in memory for the session only
     ///
     func loadCachedWooCommerceVersion(siteID: Int64) {
+        guard sessionManager.defaultStoreID == siteID else {
+            return
+        }
         let version = ServiceLocator.storageManager.viewStorage.loadSystemPlugin(
             siteID: siteID,
             fileNameWithoutExtension: Plugin.wooCommerce.fileNameWithoutExtension,

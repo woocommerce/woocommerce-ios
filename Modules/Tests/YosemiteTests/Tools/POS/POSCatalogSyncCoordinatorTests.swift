@@ -1797,6 +1797,51 @@ extension POSCatalogSyncCoordinatorTests {
         #expect(syncCompleted?.properties?["cached_woo_core_version"] == nil)
     }
 
+    @Test func performFullSyncIfApplicable_does_not_set_cached_woo_core_version_on_sync_failed_event() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics,
+            pluginsService: makePluginsService(wooCommerceVersion: "10.8.1")
+        )
+        mockSyncService.startFullSyncResult = .failure(NSError(domain: "test", code: 1))
+
+        // When
+        try? await sut.performFullSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
+        #expect(syncFailed != nil)
+        #expect(syncFailed?.properties?["cached_woo_core_version"] == nil)
+    }
+
+    @Test func performIncrementalSyncIfApplicable_does_not_set_cached_woo_core_version_on_sync_skipped_event() async throws {
+        // Given
+        let mockAnalytics = MockAnalytics()
+        let sut = POSCatalogSyncCoordinator(
+            fullSyncService: mockSyncService,
+            incrementalSyncService: mockIncrementalSyncService,
+            grdbManager: grdbManager,
+            catalogEligibilityChecker: mockEligibilityChecker,
+            siteSettings: mockSiteSettings,
+            analytics: mockAnalytics,
+            pluginsService: makePluginsService(wooCommerceVersion: "10.8.1")
+        )
+
+        // When
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+
+        // Then
+        let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
+        #expect(syncSkipped != nil)
+        #expect(syncSkipped?.properties?["cached_woo_core_version"] == nil)
+    }
+
     // MARK: - Sync Type Analytics
 
     @Test("POSCatalogSyncType enum has correct raw values")

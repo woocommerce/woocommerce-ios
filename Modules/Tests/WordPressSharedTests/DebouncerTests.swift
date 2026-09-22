@@ -62,6 +62,23 @@ class DebouncerTests: XCTestCase {
         wait(for: [debouncerHasRun], timeout: testTimeout)
     }
 
+    /// Tests that a cancelled debouncer does not fire its callback when released.
+    ///
+    func testDebouncerDoesNotFireWhenCancelledAndReleased() {
+        let debouncerHasRun = XCTestExpectation(description: "A cancelled debouncer should not fire on release.")
+        debouncerHasRun.isInverted = true
+
+        var debouncer: Debouncer? = Debouncer(delay: 0.5) {
+            debouncerHasRun.fulfill()
+        }
+
+        debouncer?.call()
+        debouncer?.cancel()
+        debouncer = nil
+
+        wait(for: [debouncerHasRun], timeout: 0)
+    }
+
     /// Tests that the debouncer works fine when used with an ad hoc callback.
     ///
     func testDebouncerWithAdHocCallback() {

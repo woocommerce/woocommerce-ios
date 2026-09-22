@@ -20,7 +20,7 @@ public final class Debouncer {
     }
 
     deinit {
-        if let timer, timer.fireDate >= Date() {
+        if let timer, timer.isValid, timer.fireDate >= Date() {
             timer.invalidate()
             callback?()
         }
@@ -30,6 +30,7 @@ public final class Debouncer {
 
     public func cancel() {
         timer?.invalidate()
+        timer = nil
     }
 
     public func call(immediate: Bool = false, callback: (() -> Void)? = nil) {

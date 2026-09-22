@@ -3,6 +3,7 @@
 
 25.8
 -----
+- [*] On iPhone, fixed large titles returning late or staying compact in Orders and Products on iOS 26. [https://github.com/woocommerce/woocommerce-ios/pull/17925]
 
 
 25.7

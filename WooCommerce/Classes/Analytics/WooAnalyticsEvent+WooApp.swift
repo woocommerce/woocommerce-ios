@@ -1,3 +1,4 @@
+import AVFoundation
 import Foundation
 import UIKit
 import Yosemite
@@ -3268,6 +3269,16 @@ extension WooAnalyticsEvent {
 
         enum BarcodeScanningFailureReason: String {
             case cameraAccessNotPermitted = "camera_access_not_permitted"
+            init?(authorizationStatus: AVAuthorizationStatus) {
+                switch authorizationStatus {
+                case .denied:
+                    self = .cameraAccessNotPermitted
+                case .restricted:
+                    self = .cameraAccessRestricted
+                default:
+                    return nil
+                }
+            }
         }
 
         static func barcodeScanningSuccess(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
@@ -3277,6 +3288,10 @@ extension WooAnalyticsEvent {
         static func barcodeScanningFailure(from source: BarcodeScanning.Source, reason: BarcodeScanningFailureReason) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .barcodeScanningFailure, properties: [Keys.source: source.rawValue,
                                                                               Keys.reason: reason.rawValue])
+        }
+
+        static func barcodeScanningPermissionSettingsOpened(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .barcodeScanningPermissionSettingsOpened, properties: [Keys.source: source.rawValue])
         }
 
         static func productSearchViaSKUSuccess(from source: String, stockManaged: Bool? = nil) -> WooAnalyticsEvent {

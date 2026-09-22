@@ -287,8 +287,10 @@ final class OrdersRootViewController: UIViewController {
                 }
                 navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
             }
-        }, onPermissionsDenied: { [weak self] in
-            self?.analytics.track(event: .BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
+        }, onPermissionsDenied: { [weak self] reason in
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: reason))
+        }, onOpenSettings: { [weak self] in
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningPermissionSettingsOpened(from: .orderList))
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()

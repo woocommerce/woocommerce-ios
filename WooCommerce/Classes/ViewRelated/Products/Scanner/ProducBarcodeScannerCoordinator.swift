@@ -1,35 +1,49 @@
+import AVFoundation
 import Experiments
 import UIKit
 
 /// Coordinates navigation for product barcode scanner based on camera permission.
 final class ProducBarcodeScannerCoordinator: Coordinator {
+    typealias FailureReason = WooAnalyticsEvent.BarcodeScanning.BarcodeScanningFailureReason
+
     let navigationController: UINavigationController
     private let permissionChecker: CaptureDevicePermissionChecker
     private let onBarcodeScanned: (_ barcode: ScannedBarcode) -> Void
-    private let onPermissionsDenied: (() -> Void)?
+    private let onPermissionsDenied: ((FailureReason) -> Void)?
+    private let onOpenSettings: (() -> Void)?
 
     init(sourceNavigationController: UINavigationController,
          permissionChecker: CaptureDevicePermissionChecker = AVCaptureDevicePermissionChecker(),
          onBarcodeScanned: @escaping (_ barcode: ScannedBarcode) -> Void,
-         onPermissionsDenied: (() -> Void)? = nil) {
+         onPermissionsDenied: ((FailureReason) -> Void)? = nil,
+         onOpenSettings: (() -> Void)? = nil) {
         self.navigationController = sourceNavigationController
         self.permissionChecker = permissionChecker
         self.onBarcodeScanned = onBarcodeScanned
         self.onPermissionsDenied = onPermissionsDenied
+        self.onOpenSettings = onOpenSettings
     }
 
     func start() {
         let cameraAuthorizationStatus = permissionChecker.authorizationStatus(for: .video)
         switch cameraAuthorizationStatus {
         case .denied, .restricted:
-            onPermissionsDenied?()
-            UIAlertController.presentBarcodeScannerNoCameraPermissionAlert(viewController: navigationController) { [weak self] in
-                self?.navigationController.dismiss(animated: true, completion: nil)
+            if let reason = FailureReason(authorizationStatus: cameraAuthorizationStatus) {
+                onPermissionsDenied?(reason)
             }
+            UIAlertController.presentBarcodeScannerNoCameraPermissionAlert(viewController: navigationController,
+                                                                          onOpenSettings: { [weak self] in
+                self?.onOpenSettings?()
+            }, onCancel: { [weak self] in
+                self?.navigationController.dismiss(animated: true, completion: nil)
+            })
         case .notDetermined:
             permissionChecker.requestAccess(for: .video) { [weak self] granted in
+                guard let self else { return }
                 if granted {
-                    self?.showScanner()
+                    showScanner()
+                } else {
+                    onPermissionsDenied?(.cameraAccessDeniedAtPrompt)
                 }
             }
         default:

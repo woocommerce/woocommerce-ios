@@ -148,7 +148,7 @@ struct ItemListView: View {
                     .opacity(selectedItemListType.isCoupons ? 1 : 0)
                     .accessibilityHidden(!selectedItemListType.isCoupons)
             }
-            .ignoresSafeArea(.container)
+            .ignoresSafeArea(.posLegacyContainerRegionToIgnore)
         }
         .navigationDestination(for: POSItem.self, destination: { item in
             childListView(parentItem: item)

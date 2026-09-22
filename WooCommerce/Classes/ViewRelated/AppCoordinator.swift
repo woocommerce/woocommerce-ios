@@ -569,9 +569,10 @@ private extension AppCoordinator {
     }
 
     /// Opens Help & Support on top of the wall. The wall is never dismissed for this, so closing
-    /// support lands back on it with the same context.
+    /// support lands back on it with the same context. Ignored while the wall already presents
+    /// something (the system consent sheet, or support itself).
     func presentSupportFromSignificantChangeBlocker() {
-        guard let blocker = significantChangeBlocker else { return }
+        guard let blocker = significantChangeBlocker, blocker.presentedViewController == nil else { return }
         analytics.track(event: .AgeVerification.contactSupportTapped(for: blocker.context))
         authenticationManager.presentSupport(from: blocker, sourceTag: .ageRestriction, siteURL: nil)
     }
@@ -580,7 +581,8 @@ private extension AppCoordinator {
         guard let blocker = significantChangeBlocker else { return }
         significantChangeBlocker = nil
         stopForegroundConsentRecheck()
-        blocker.dismiss(animated: animated)
+        // Dismiss through the presenter so anything on top of the wall (e.g. Help & Support) goes with it.
+        (blocker.presentingViewController ?? blocker).dismiss(animated: animated)
     }
 
     /// While the blocker is up, re-check on every foreground: the parent may have

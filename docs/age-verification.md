@@ -56,7 +56,7 @@ The flow runs after login, from `AppCoordinator`, and re-runs on every foregroun
 | 13 | Declined age sharing, SDK unavailable/error, unknown result, invalid UI state | Allow |
 | 14 | Minor status evidence | Requires a declared upper bound < 18 (two age gates requested: 13 and 18); the adult band and bandless responses are non-minor |
 | 15 | Blocker dismissal | Only an authoritative eligible outcome dismisses it; transient fail-open results never do |
-| 16 | Contact Support | Help & Support (Zendesk, application log attachable) opens on top of the wall, or over the logged-out UI after the underage logout. The wall keeps its context underneath; closing support lands back on it, never on store content |
+| 16 | Contact Support | Help & Support (Zendesk, application log attachable) opens on top of the wall, or over the logged-out UI after the underage logout. The wall keeps its context underneath; closing support lands back on it, never on store content. Tearing the wall down (an authoritative allow on re-check) dismisses through its presenter, so an open Help & Support goes with it |
 
 Notes on the matrix:
 

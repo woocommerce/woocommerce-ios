@@ -390,6 +390,75 @@ final class AppCoordinatorTests: XCTestCase {
         XCTAssertEqual(analytics.receivedProperties[eventIndex]["screen"] as? String, "underage_alert")
     }
 
+    @MainActor
+    func test_contact_support_on_consent_blocker_when_wall_already_presents_then_does_nothing() throws {
+        // Given
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stubEligibleRoleCheck()
+        sessionManager.defaultStoreID = 134
+        let mockAuthentication = MockAuthentication()
+        let analytics = MockAnalyticsProvider()
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(
+            decision: .restrictConsentRequired,
+            result: .eligible(significantAppChangeApprovalRequired: true, isMinor: true)
+        )
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: mockAuthentication,
+                                             analytics: WooAnalytics(analyticsProvider: analytics),
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator)
+        appCoordinator.start()
+        waitUntil { self.window.rootViewController?.presentedViewController is SignificantChangeConsentBlockingHostingController }
+        let blocker = try XCTUnwrap(window.rootViewController?.presentedViewController as? SignificantChangeConsentBlockingHostingController)
+        waitUntil { blocker.isBeingPresented == false }
+        // Stands in for the system consent sheet (or an already open Help & Support).
+        let sheet = UIViewController()
+        blocker.present(sheet, animated: false)
+        XCTAssertTrue(blocker.presentedViewController === sheet)
+
+        // When
+        blocker.rootView.onContactSupport()
+
+        // Then
+        XCTAssertFalse(mockAuthentication.presentSupportWithSourceTagInvoked)
+        XCTAssertFalse(analytics.receivedEvents.contains(WooAnalyticsStat.accountAgeRestrictionContactSupportTapped.rawValue))
+    }
+
+    @MainActor
+    func test_consent_blocker_dismissal_when_help_and_support_is_on_top_then_dismisses_the_whole_chain() throws {
+        // Given
+        stores.authenticate(credentials: SessionSettings.wpcomCredentials)
+        stubEligibleRoleCheck()
+        sessionManager.defaultStoreID = 134
+        let ageRangeVerificationCoordinator = MockAgeRangeVerificationCoordinator(
+            decision: .restrictConsentRequired,
+            result: .eligible(significantAppChangeApprovalRequired: true, isMinor: true)
+        )
+        let appCoordinator = makeCoordinator(window: window,
+                                             stores: stores,
+                                             authenticationManager: MockAuthentication(),
+                                             ageRangeVerificationCoordinator: ageRangeVerificationCoordinator)
+        appCoordinator.start()
+        waitUntil { self.window.rootViewController?.presentedViewController is SignificantChangeConsentBlockingHostingController }
+        let blocker = try XCTUnwrap(window.rootViewController?.presentedViewController as? SignificantChangeConsentBlockingHostingController)
+        waitUntil { blocker.isBeingPresented == false }
+        // Stands in for Help & Support opened from the wall.
+        let support = UIViewController()
+        blocker.present(support, animated: false)
+        XCTAssertTrue(blocker.presentedViewController === support)
+
+        // When the gate stops applying (e.g. Age Assurance turned off) and the app comes back to the foreground
+        ageRangeVerificationCoordinator.decision = .allow
+        ageRangeVerificationCoordinator.result = .featureUnavailable
+        NotificationCenter.default.post(name: UIApplication.willEnterForegroundNotification, object: nil)
+
+        // Then both the wall and what it presented are gone, and the store UI is reachable again.
+        waitUntil { self.window.rootViewController?.presentedViewController == nil }
+        XCTAssertNil(blocker.presentingViewController)
+        XCTAssertNil(support.presentingViewController)
+        XCTAssertTrue(stores.isAuthenticated)
+    }
+
     // MARK: - Login onboarding
 
     func test_starting_app_logged_out_without_interacting_with_onboarding_presents_onboarding_over_authentication() throws {

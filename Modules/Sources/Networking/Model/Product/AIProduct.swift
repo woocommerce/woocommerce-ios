@@ -3,8 +3,8 @@ import Codegen
 
 /// Product generated using AI.
 ///
-public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
-    public struct Shipping: Codable, GeneratedFakeable, GeneratedCopiable, Equatable {
+public struct AIProduct: Codable, GeneratedFakeable, GeneratedCopiable, Equatable, Sendable {
+    public struct Shipping: Codable, GeneratedFakeable, GeneratedCopiable, Equatable, Sendable {
         public let length: String
         public let weight: String
         public let width: String

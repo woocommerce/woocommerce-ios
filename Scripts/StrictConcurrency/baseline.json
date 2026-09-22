@@ -258,8 +258,6 @@
     "Modules/Tests/PointOfSaleTests/Tools/POSReceiptSenderTests.swift": 4,
     "Modules/Tests/PointOfSaleTests/ViewHelpers/POSPaymentViewHelperTests.swift": 4,
     "Modules/Tests/PointOfSaleTests/ViewHelpers/TotalsViewHelperTests.swift": 5,
-    "Modules/Tests/StorageTests/GRDB/PersistedProductBarcodeQueryTests.swift": 6,
-    "Modules/Tests/StorageTests/GRDB/PersistedProductVariationBarcodeQueryTests.swift": 9,
     "Modules/Tests/YosemiteTests/Mocks/CardPresentPayments/MockCardReaderService.swift": 21,
     "Modules/Tests/YosemiteTests/Mocks/Networking/Remote/MockNotificationsRemote.swift": 4,
     "Modules/Tests/YosemiteTests/Mocks/Networking/Remote/MockProductReviewsRemote.swift": 4,
@@ -1123,5 +1121,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 10068
+  "total": 10053
 }

@@ -147,6 +147,11 @@ final class SupportDiagnosticsService {
             Result(test: test, isSuccess: true, errorMessage: nil, technicalDetails: nil, suggestedAction: nil)
         }
 
+        /// The site cannot answer the test. Counts as a pass, with the reason kept for the support context.
+        static func notApplicable(test: Test, reason: String) -> Result {
+            Result(test: test, isSuccess: true, errorMessage: nil, technicalDetails: reason, suggestedAction: nil)
+        }
+
         static func failure(test: Test, failure: Failure) -> Result {
             Result(test: test,
                    isSuccess: false,
@@ -230,8 +235,7 @@ final class SupportDiagnosticsService {
         var results: [Result] = []
 
         for test in tests {
-            let failure = await runTest(test)
-            let result = failure.map { Result.failure(test: test, failure: $0) } ?? Result.success(test: test)
+            let result = await runTest(test)
             results.append(result)
 
             if !result.isSuccess {
@@ -251,28 +255,32 @@ final class SupportDiagnosticsService {
         return await runTests(tests)
     }
 
-    /// Runs a single test and returns failure details if the test failed, nil if successful.
+    /// Runs a single test and returns its result.
     ///
-    private func runTest(_ test: Test) async -> Failure? {
+    private func runTest(_ test: Test) async -> Result {
         switch test {
         case .internetConnection:
-            return checkInternetConnection()
+            return result(for: test, failure: checkInternetConnection())
         case .wpComServers:
-            return await checkWPComServers()
+            return result(for: test, failure: await checkWPComServers())
         case .site:
-            return await checkSite()
+            return result(for: test, failure: await checkSite())
         case .siteOrders:
-            return await checkSiteOrders()
+            return result(for: test, failure: await checkSiteOrders())
         case .loadingProducts:
-            return await checkLoadingProducts()
+            return result(for: test, failure: await checkLoadingProducts())
         case .analyticsSetting:
             return await checkAnalyticsSetting()
         case .notifications:
-            return await checkNotifications()
+            return result(for: test, failure: await checkNotifications())
         }
     }
 
-    // MARK: - Individual Checks (return nil on success, Failure on error)
+    private func result(for test: Test, failure: Failure?) -> Result {
+        failure.map { Result.failure(test: test, failure: $0) } ?? Result.success(test: test)
+    }
+
+    // MARK: - Individual Checks (return nil on success, Failure on error; the analytics check returns a Result)
 
     private func checkInternetConnection() -> Failure? {
         let status = connectivityObserver.currentStatus
@@ -342,23 +350,30 @@ final class SupportDiagnosticsService {
         }
     }
 
-    private func checkAnalyticsSetting() async -> Failure? {
+    /// Returns a not-applicable pass when the site does not expose the setting in its REST API.
+    ///
+    private func checkAnalyticsSetting() async -> Result {
         await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsSetting(siteID: siteID) { result in
                 switch result {
                 case .success(let isEnabled):
                     if isEnabled {
                         DDLogInfo("SupportDiagnostics: ✅ Analytics enabled")
-                        continuation.resume(returning: nil)
+                        continuation.resume(returning: .success(test: .analyticsSetting))
                     } else {
                         DDLogInfo("SupportDiagnostics: ⚠️ Analytics disabled")
-                        continuation.resume(returning: Failure(errorMessage: Localization.Error.analyticsDisabled,
-                                                               suggestedAction: .enableAnalytics))
+                        let failure = Failure(errorMessage: Localization.Error.analyticsDisabled, suggestedAction: .enableAnalytics)
+                        continuation.resume(returning: .failure(test: .analyticsSetting, failure: failure))
                     }
                 case .failure(let error):
+                    if let settingError = error as? SettingError, case .settingNotExposed = settingError {
+                        DDLogInfo("SupportDiagnostics: ⏭️ Analytics setting is not exposed by the site, not applicable")
+                        continuation.resume(returning: .notApplicable(test: .analyticsSetting, reason: Constants.analyticsSettingNotExposedReason))
+                        return
+                    }
                     DDLogError("SupportDiagnostics: ❌ Analytics check failed\n\(error)")
-                    continuation.resume(returning: Failure(errorMessage: Localization.Error.analyticsCheckFailed,
-                                                           technicalDetails: error.formattedTechnicalDetails))
+                    let failure = Failure(errorMessage: Localization.Error.analyticsCheckFailed, technicalDetails: error.formattedTechnicalDetails)
+                    continuation.resume(returning: .failure(test: .analyticsSetting, failure: failure))
                 }
             }
             stores.dispatch(action)
@@ -651,6 +666,15 @@ extension SupportDiagnosticsService {
         return results.enumerated().map { index, result in
             "## \(index + 1). " + result.troubleshootingDescription()
         }.joined(separator: "\n\n")
+    }
+}
+
+// MARK: - Constants
+
+private extension SupportDiagnosticsService {
+    enum Constants {
+        /// Not user facing: sent in the chat troubleshooting context when the analytics check does not apply.
+        static let analyticsSettingNotExposedReason = "Not applicable: the site does not expose the analytics setting in its REST API"
     }
 }
 

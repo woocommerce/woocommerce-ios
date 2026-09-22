@@ -2768,7 +2768,7 @@ struct POSPaymentModelTests {
 
 @MainActor
 private func makePaymentController(
-    cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
+    cardPresentPaymentService: CardPresentPaymentFacade? = nil,
     orderProvider: POSPaymentOrderProviding = MockPOSPaymentOrderProvider(),
     cashPaymentHandler: POSCashPaymentHandling = MockPOSCashPaymentHandler(),
     scanToPayHandler: POSScanToPayHandling = MockPOSScanToPayHandler(),
@@ -2786,7 +2786,9 @@ private func makePaymentController(
     cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
     paymentState: PointOfSalePaymentState = .idle
 ) -> POSPaymentModel {
-    POSPaymentModel(
+    let cardPresentPaymentService = cardPresentPaymentService ?? MockCardPresentPaymentService()
+
+    return POSPaymentModel(
         cardPresentPaymentService: cardPresentPaymentService,
         orderProvider: orderProvider,
         cashPaymentHandler: cashPaymentHandler,

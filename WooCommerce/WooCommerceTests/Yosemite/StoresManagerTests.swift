@@ -3,6 +3,7 @@ import Combine
 import XCTest
 import Networking
 import Storage
+import TestKit
 @testable import WooCommerce
 import Yosemite
 
@@ -1002,6 +1003,62 @@ final class StoresManagerTests: XCTestCase {
         // Then
         XCTAssertNil(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs))
     }
+
+    // MARK: - Cached WooCommerce version
+
+    func test_initializeAfterDependenciesAreInitialized_when_woocommerce_plugin_is_in_storage_then_caches_woocommerce_version() {
+        // Given
+        let siteID: Int64 = 123
+        insertWooCommercePlugin(siteID: siteID, version: "10.8.1")
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultCredentials = SessionSettings.wpcomCredentials
+        sessionManager.defaultStoreID = siteID
+        sessionManager.cachedWooCommerceVersion = nil
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+
+        // When
+        manager.initializeAfterDependenciesAreInitialized()
+
+        // Then
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "10.8.1")
+    }
+
+    func test_initializeAfterDependenciesAreInitialized_when_woocommerce_plugin_is_not_in_storage_then_cached_woocommerce_version_is_nil() {
+        // Given
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultCredentials = SessionSettings.wpcomCredentials
+        sessionManager.defaultStoreID = 123
+        sessionManager.cachedWooCommerceVersion = nil
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+
+        // When
+        manager.initializeAfterDependenciesAreInitialized()
+
+        // Then
+        XCTAssertNil(sessionManager.cachedWooCommerceVersion)
+    }
+
+    func test_updateDefaultStore_when_switching_store_then_caches_woocommerce_version_of_new_store() {
+        // Given
+        let firstSiteID: Int64 = 123
+        let secondSiteID: Int64 = 456
+        insertWooCommercePlugin(siteID: firstSiteID, version: "10.8.1")
+        insertWooCommercePlugin(siteID: secondSiteID, version: "11.1.0")
+        let sessionManager = SessionManager.testingInstance
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        manager.updateDefaultStore(storeID: firstSiteID)
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "10.8.1")
+
+        // When
+        manager.updateDefaultStore(storeID: secondSiteID)
+
+        // Then
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "11.1.0")
+    }
 }
 
 private extension StoresManagerTests {
@@ -1015,6 +1072,22 @@ private extension StoresManagerTests {
                                            pushNotificationDefaults: pushNotificationDefaults,
                                            stateFactory: { _ in state })
         return (manager, state, sessionManager)
+    }
+
+    func insertWooCommercePlugin(siteID: Int64, version: String) {
+        let plugin = SystemPlugin.fake().copy(siteID: siteID,
+                                              plugin: "woocommerce/woocommerce.php",
+                                              version: version,
+                                              active: true)
+        let storageManager = ServiceLocator.storageManager
+        waitFor { promise in
+            storageManager.performAndSave({ storage in
+                storage.insertNewObject(ofType: StorageSystemPlugin.self).update(with: plugin)
+            }, completion: { promise(()) }, on: .main)
+        }
+        addTeardownBlock {
+            storageManager.reset()
+        }
     }
 
     func startSiteSynchronization(manager: DefaultStoresManager,

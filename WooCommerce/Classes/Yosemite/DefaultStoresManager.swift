@@ -1034,6 +1034,7 @@ private extension DefaultStoresManager {
         //
         // Batch 1 (immediate): Site settings — needed for dashboard rendering.
         loadStoreUUID(siteID: siteID)
+        loadCachedWooCommerceVersion(siteID: siteID)
         synchronizeSettings(with: siteID) { [weak self] in
             guard let self else { return }
             ServiceLocator.shippingSettingsService.update(siteID: siteID)

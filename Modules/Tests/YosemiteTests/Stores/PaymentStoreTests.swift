@@ -37,14 +37,15 @@ final class PaymentStoreTests: XCTestCase {
 
     // MARK: - `loadPlan`
 
-    func test_loadPlan_returns_plan_on_success() throws {
+    @MainActor
+    func test_loadPlan_returns_plan_on_success() async throws {
         // Given
         remote.whenLoadingPlan(thenReturn: .success(.init(productID: 12, name: "woo", formattedPrice: "$16.8")))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(PaymentAction.loadPlan(productID: 12) { result in
-                promise(result)
+        let result: Result<WPComPlan, Error> = await withCheckedContinuation { continuation in
+            store.onAction(PaymentAction.loadPlan(productID: 12) { result in
+                continuation.resume(returning: result)
             })
         }
 
@@ -54,14 +55,15 @@ final class PaymentStoreTests: XCTestCase {
         XCTAssertEqual(plan, .init(productID: 12, name: "woo", formattedPrice: "$16.8"))
     }
 
-    func test_loadPlan_returns_failure_on_error() throws {
+    @MainActor
+    func test_loadPlan_returns_failure_on_error() async throws {
         // Given
         remote.whenLoadingPlan(thenReturn: .failure(NetworkError.timeout()))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(PaymentAction.loadPlan(productID: 12) { result in
-                promise(result)
+        let result: Result<WPComPlan, Error> = await withCheckedContinuation { continuation in
+            store.onAction(PaymentAction.loadPlan(productID: 12) { result in
+                continuation.resume(returning: result)
             })
         }
 
@@ -73,14 +75,15 @@ final class PaymentStoreTests: XCTestCase {
 
     // MARK: - `loadSiteCurrentPlan`
 
-    func test_loadSiteCurrentPlan_returns_plan_on_success() throws {
+    @MainActor
+    func test_loadSiteCurrentPlan_returns_plan_on_success() async throws {
         // Given
         remote.whenLoadingSiteCurrentPlan(thenReturn: .success(.init(hasDomainCredit: true)))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(PaymentAction.loadSiteCurrentPlan(siteID: 645) { result in
-                promise(result)
+        let result: Result<WPComSitePlan, Error> = await withCheckedContinuation { continuation in
+            store.onAction(PaymentAction.loadSiteCurrentPlan(siteID: 645) { result in
+                continuation.resume(returning: result)
             })
         }
 
@@ -90,14 +93,15 @@ final class PaymentStoreTests: XCTestCase {
         XCTAssertEqual(plan, .init(hasDomainCredit: true))
     }
 
-    func test_loadSiteCurrentPlan_returns_failure_on_error() throws {
+    @MainActor
+    func test_loadSiteCurrentPlan_returns_failure_on_error() async throws {
         // Given
         remote.whenLoadingSiteCurrentPlan(thenReturn: .failure(NetworkError.timeout()))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(PaymentAction.loadSiteCurrentPlan(siteID: 645) { result in
-                promise(result)
+        let result: Result<WPComSitePlan, Error> = await withCheckedContinuation { continuation in
+            store.onAction(PaymentAction.loadSiteCurrentPlan(siteID: 645) { result in
+                continuation.resume(returning: result)
             })
         }
 
@@ -109,14 +113,15 @@ final class PaymentStoreTests: XCTestCase {
 
     // MARK: - `createCart`
 
-    func test_createCart_returns_on_success() throws {
+    @MainActor
+    func test_createCart_returns_on_success() async throws {
         // Given
         remote.whenCreatingCart(thenReturn: .success(()))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(PaymentAction.createCart(productID: "12", siteID: 62) { result in
-                promise(result)
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+            store.onAction(PaymentAction.createCart(productID: "12", siteID: 62) { result in
+                continuation.resume(returning: result)
             })
         }
 
@@ -124,14 +129,15 @@ final class PaymentStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_createCart_returns_invalidProductID_error_when_productID_is_not_integer() throws {
+    @MainActor
+    func test_createCart_returns_invalidProductID_error_when_productID_is_not_integer() async throws {
         // Given
         remote.whenCreatingCart(thenReturn: .failure(NetworkError.timeout()))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(PaymentAction.createCart(productID: "wo0", siteID: 62) { result in
-                promise(result)
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+            store.onAction(PaymentAction.createCart(productID: "wo0", siteID: 62) { result in
+                continuation.resume(returning: result)
             })
         }
 
@@ -141,14 +147,15 @@ final class PaymentStoreTests: XCTestCase {
         XCTAssertEqual(error as? Yosemite.CreateCartError, .invalidProductID)
     }
 
-    func test_createCart_relays_networking_CreateCartError_failure() throws {
+    @MainActor
+    func test_createCart_relays_networking_CreateCartError_failure() async throws {
         // Given
         remote.whenCreatingCart(thenReturn: .failure(Networking.CreateCartError.productNotInCart))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(PaymentAction.createCart(productID: "12", siteID: 62) { result in
-                promise(result)
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+            store.onAction(PaymentAction.createCart(productID: "12", siteID: 62) { result in
+                continuation.resume(returning: result)
             })
         }
 
@@ -158,14 +165,15 @@ final class PaymentStoreTests: XCTestCase {
         XCTAssertEqual(error as? Yosemite.CreateCartError, .productNotInCart)
     }
 
-    func test_createCart_returns_failure_on_error() throws {
+    @MainActor
+    func test_createCart_returns_failure_on_error() async throws {
         // Given
         remote.whenCreatingCart(thenReturn: .failure(NetworkError.timeout()))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(PaymentAction.createCart(productID: "12", siteID: 62) { result in
-                promise(result)
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+            store.onAction(PaymentAction.createCart(productID: "12", siteID: 62) { result in
+                continuation.resume(returning: result)
             })
         }
 

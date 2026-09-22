@@ -186,7 +186,6 @@
     "Modules/Sources/Yosemite/Stores/MetaDataStore.swift": 6,
     "Modules/Sources/Yosemite/Stores/NotificationStore.swift": 14,
     "Modules/Sources/Yosemite/Stores/OrderStore.swift": 18,
-    "Modules/Sources/Yosemite/Stores/PaymentStore.swift": 10,
     "Modules/Sources/Yosemite/Stores/ProductCategoryStore.swift": 7,
     "Modules/Sources/Yosemite/Stores/ProductStore.swift": 109,
     "Modules/Sources/Yosemite/Stores/ProductVariationStore.swift": 3,
@@ -798,6 +797,7 @@
     "WooCommerce/Classes/ViewRelated/Themes/ThemesPreviewView.swift": 2,
     "WooCommerce/Classes/ViewRelated/Themes/ThemesPreviewViewModel.swift": 2,
     "WooCommerce/Classes/ViewRelated/Top Banner/ErrorTopBannerFactory.swift": 3,
+    "WooCommerce/Classes/ViewRelated/Upgrades/StorePlanSynchronizer.swift": 1,
     "WooCommerce/Classes/ViewRelated/WhatsNew/WhatsNewFactory.swift": 3,
     "WooCommerce/Classes/Yosemite/AuthenticatedState.swift": 5,
     "WooCommerce/Classes/Yosemite/DefaultStoresManager.swift": 17,
@@ -1117,5 +1117,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 10048
+  "total": 10039
 }

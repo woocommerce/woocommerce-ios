@@ -119,6 +119,8 @@ struct TotalsView: View {
                     }
                 }
                 .scrollVerticallyIfNeeded()
+                // A completed payment replaces the checkout content. Start the new screen at its top.
+                .id(displayPaymentState.isSuccess)
                 .animation(.default, value: isShowingPaymentView)
                 .animation(.default, value: useTapToPayHeroLayout)
                 .animation(.default, value: bottomControlState)

@@ -70,6 +70,13 @@ struct SelfHostedQRLoginRemoteTests {
         await expectScanError(statusCode: 403, body: Data(), expected: .unauthorized)
     }
 
+    @Test(arguments: [401, 403])
+    func scan_when_html_authentication_error_then_throws_unauthorized(statusCode: Int) async {
+        await expectScanError(statusCode: statusCode,
+                              body: Data("<html><body>Access denied</body></html>".utf8),
+                              expected: .unauthorized)
+    }
+
     @Test func scan_when_404_then_throws_notFound() async {
         await expectScanError(statusCode: 404, body: Data(), expected: .notFound)
     }
@@ -88,6 +95,19 @@ struct SelfHostedQRLoginRemoteTests {
 
     @Test func scan_when_500_then_throws_internalServerError() async {
         await expectScanError(statusCode: 500, body: Data(), expected: .internalServerError(code: nil))
+    }
+
+    @Test func scan_when_html_500_then_throws_safe_unexpected_store_response() async {
+        // Given
+        let url = makeURL(path: "/qr-login-scan")
+        let session = MockURLSession()
+        let responseData = Data("<html><body>Service unavailable</body></html>".utf8)
+        session.simulateResponse(for: url.absoluteString, data: responseData, statusCode: 500)
+        let remote = makeRemote(session: session)
+        // When / Then
+        await #expect(throws: QRLoginNetworkError.unexpectedStoreResponse) {
+            _ = try await remote.scan(siteURL: siteURL, token: token, device: device)
+        }
     }
 
     @Test func scan_when_malformed_body_then_throws_malformed() async {

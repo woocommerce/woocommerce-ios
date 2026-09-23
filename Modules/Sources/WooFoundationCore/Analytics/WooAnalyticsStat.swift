@@ -1166,7 +1166,6 @@ public enum WooAnalyticsStat: String {
     case loginJetpackSetupFlow = "login_jetpack_setup_flow"
 
     // MARK: Login WooCommerce setup
-    case loginWooCommerceErrorShown = "login_woocommerce_error_shown"
     case loginWooCommerceSetupButtonTapped = "login_woocommerce_setup_button_tapped"
     case loginWooCommerceSetupDismissed = "login_woocommerce_setup_dismissed"
     case loginWooCommerceSetupCompleted = "login_woocommerce_setup_completed"
@@ -1200,7 +1199,6 @@ public enum WooAnalyticsStat: String {
     case appIntentShortcutOpened = "shortcut_opened"
 
     // MARK: Login Jetpack Connection
-    case loginJetpackConnectionErrorShown = "login_jetpack_connection_error_shown"
     case loginJetpackConnectButtonTapped = "login_jetpack_connect_button_tapped"
     case loginJetpackConnectCompleted = "login_jetpack_connect_completed"
     case loginJetpackConnectDismissed = "login_jetpack_connect_dismissed"

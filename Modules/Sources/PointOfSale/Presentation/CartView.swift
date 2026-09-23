@@ -36,76 +36,79 @@ struct CartView: View {
 
     var body: some View {
         @Bindable var posModel = posModel
-        ZStack {
-            VStack(spacing: 0) {
-                CartHeaderView(
-                    shouldApplyHeaderBottomShadow: shouldApplyHeaderBottomShadow,
-                    shouldShowClearCartButton: shouldShowClearCartButton,
-                    itemCount: posModel.cart.totalItemCount,
-                    backgroundColor: backgroundColor
-                )
-                .zIndex(1)
-                .trackSize(size: $headerSize)
-
-                if posModel.cart.isNotEmpty {
-                    CartScrollViewContent(
-                        offSetPosition: $offSetPosition,
-                        cartContentHeight: $cartContentHeight,
-                        scrollViewHeight: $scrollViewHeight
+        GeometryReader { geometry in
+            ZStack {
+                VStack(spacing: 0) {
+                    CartHeaderView(
+                        shouldApplyHeaderBottomShadow: shouldApplyHeaderBottomShadow,
+                        shouldShowClearCartButton: shouldShowClearCartButton,
+                        itemCount: posModel.cart.totalItemCount,
+                        backgroundColor: backgroundColor
                     )
-                } else {
-                    Spacer()
-                }
+                    .zIndex(1)
+                    .trackSize(size: $headerSize)
 
-                if viewHelper.shouldShowCheckout(orderStage: posModel.orderStage, cart: posModel.cart) {
-                    checkoutButton
-                        .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-                        .padding(.top, POSPadding.medium)
-                        .padding(.bottom, horizontalSizeClass == .compact ? POSPadding.small : POSPadding.medium)
-                        .accessibilityAddTraits(.isHeader)
-                        .if(shouldApplyFooterTopShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .top) })
-                        .zIndex(1)
+                    if posModel.cart.isNotEmpty {
+                        CartScrollViewContent(
+                            offSetPosition: $offSetPosition,
+                            cartContentHeight: $cartContentHeight,
+                            scrollViewHeight: $scrollViewHeight
+                        )
+                    } else {
+                        Spacer()
+                    }
+
+                    if viewHelper.shouldShowCheckout(orderStage: posModel.orderStage, cart: posModel.cart) {
+                        checkoutButton
+                            .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                            .padding(.top, POSPadding.medium)
+                            .padding(.bottom, horizontalSizeClass == .compact ?
+                                     POSCompactFooterLayout.bottomPadding(safeAreaInset: geometry.safeAreaInsets.bottom) : POSPadding.medium)
+                            .accessibilityAddTraits(.isHeader)
+                            .if(shouldApplyFooterTopShadow, transform: { $0.applyEdgeShadow(backgroundColor: backgroundColor, edges: .top) })
+                            .zIndex(1)
+                    }
                 }
-            }
-            // iPad path only — on phone the dashboard hosts the cover above the cart sheet via
-            // `onPresentBarcodeScannerSetup`, otherwise POSSheet's coverManager interaction would
-            // tear CartView down before the cover fully presents.
-            .posModal(isPresented: $showBarcodeScanningModal) {
-                POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
-            }
-            // Cart-side edit only: the add path pushes from the products list and tracks
-            // its own `mode: .add` analytics inline in `ItemListView`.
-            //
-            // iPad-only here. On phone the cart is presented as a sheet; presenting a
-            // .posFullScreenCover from inside it triggers POSSheet's coverManager check
-            // and the sheet dismisses CartView along with the cover. The dashboard hosts
-            // the same cover for compact width via `posModel.editingCustomAmount` directly.
-            .if(horizontalSizeClass != .compact) { view in
-                view.posFullScreenCover(item: $posModel.editingCustomAmount) { customAmount in
-                    AddCustomAmountView(
-                        currencySettings: currencyProvider.currencySettings,
-                        editing: customAmount,
-                        backButtonStyle: .close,
-                        // Explicit-dismiss path (back button + post-submit). System-driven dismissal
-                        // already nils the `item` binding; this closure handles the user-driven cases
-                        // where `submit()` calls `onDismiss()` to close the cover.
-                        onDismiss: { posModel.editingCustomAmount = nil },
-                        onSubmit: { updated in
-                            posModel.upsertCustomAmount(updated, mode: .edit)
-                        }
-                    )
+                // iPad path only — on phone the dashboard hosts the cover above the cart sheet via
+                // `onPresentBarcodeScannerSetup`, otherwise POSSheet's coverManager interaction would
+                // tear CartView down before the cover fully presents.
+                .posModal(isPresented: $showBarcodeScanningModal) {
+                    POSBarcodeScannerSetup(isPresented: $showBarcodeScanningModal, analytics: analytics)
                 }
-            }
-            .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
-            .frame(maxWidth: .infinity)
-            .background(content: {
-                if posModel.cart.isEmpty {
-                    cartEmptyView
+                // Cart-side edit only: the add path pushes from the products list and tracks
+                // its own `mode: .add` analytics inline in `ItemListView`.
+                //
+                // iPad-only here. On phone the cart is presented as a sheet; presenting a
+                // .posFullScreenCover from inside it triggers POSSheet's coverManager check
+                // and the sheet dismisses CartView along with the cover. The dashboard hosts
+                // the same cover for compact width via `posModel.editingCustomAmount` directly.
+                .if(horizontalSizeClass != .compact) { view in
+                    view.posFullScreenCover(item: $posModel.editingCustomAmount) { customAmount in
+                        AddCustomAmountView(
+                            currencySettings: currencyProvider.currencySettings,
+                            editing: customAmount,
+                            backButtonStyle: .close,
+                            // Explicit-dismiss path (back button + post-submit). System-driven dismissal
+                            // already nils the `item` binding; this closure handles the user-driven cases
+                            // where `submit()` calls `onDismiss()` to close the cover.
+                            onDismiss: { posModel.editingCustomAmount = nil },
+                            onSubmit: { updated in
+                                posModel.upsertCustomAmount(updated, mode: .edit)
+                            }
+                        )
+                    }
                 }
-            })
-            .background(backgroundColor.ignoresSafeArea(.all))
-            .accessibilityElement(children: .contain)
-            .accessibilityIdentifier("pos-cart-view")
+                .animation(Constants.cartAnimation, value: posModel.cart.isEmpty)
+                .frame(maxWidth: .infinity)
+                .background(content: {
+                    if posModel.cart.isEmpty {
+                        cartEmptyView
+                    }
+                })
+                .background(backgroundColor.ignoresSafeArea(.all))
+                .accessibilityElement(children: .contain)
+                .accessibilityIdentifier("pos-cart-view")
+            }
         }
     }
 }

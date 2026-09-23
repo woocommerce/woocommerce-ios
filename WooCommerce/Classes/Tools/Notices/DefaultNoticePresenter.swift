@@ -45,9 +45,12 @@ class DefaultNoticePresenter: NoticePresenter {
     ///
     @discardableResult
     nonisolated func enqueue(notice: Notice) -> Bool {
+        #if hasFeature(StrictConcurrency)
         // The legacy Notice contains a non-Sendable action. This checked, synchronous bridge never changes executors.
         // Remove this local escape hatch with the bridge when NoticePresenter's callers adopt @MainActor.
+        // Minimal checking infers Sendable for Notice and warns if this annotation is present.
         nonisolated(unsafe) let notice = notice
+        #endif
         return MainActor.assumeIsolated {
             guard
                 noticeOnScreen != notice, // Ignore if we are already presenting this notice.

@@ -900,7 +900,6 @@
     "WooCommerce/WooCommerceTests/ViewRelated/Blaze/BlazeTargetTopicPickerViewModelTests.swift": 10,
     "WooCommerce/WooCommerceTests/ViewRelated/Bookings/BookingDetailsViewModelTests.swift": 9,
     "WooCommerce/WooCommerceTests/ViewRelated/Bookings/BookingListViewModelTests.swift": 1,
-    "WooCommerce/WooCommerceTests/ViewRelated/Bookings/BookingSearchViewModelTests.swift": 5,
     "WooCommerce/WooCommerceTests/ViewRelated/BottomSheet/BottomSheetPresenterTests.swift": 19,
     "WooCommerce/WooCommerceTests/ViewRelated/CardPresentPayments/CardPresentPaymentPreflightControllerTests.swift": 30,
     "WooCommerce/WooCommerceTests/ViewRelated/CardPresentPayments/CardPresentPaymentsModalViewControllerTests.swift": 81,
@@ -1117,5 +1116,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 9920
+  "total": 9915
 }

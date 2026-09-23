@@ -410,8 +410,6 @@
     "WooCommerce/Classes/Tools/Logging/Logging.swift": 3,
     "WooCommerce/Classes/Tools/Logging/WooCrashLoggingStack.swift": 4,
     "WooCommerce/Classes/Tools/MapsHelper.swift": 3,
-    "WooCommerce/Classes/Tools/Notices/DefaultNoticePresenter.swift": 60,
-    "WooCommerce/Classes/Tools/Notices/PermanentNotice/PermanentNoticePresenter.swift": 33,
     "WooCommerce/Classes/Tools/PhoneHelper.swift": 4,
     "WooCommerce/Classes/Tools/RequirementsChecker.swift": 10,
     "WooCommerce/Classes/Tools/ResultsController+UIKit.swift": 10,
@@ -1119,5 +1117,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 10013
+  "total": 9920
 }

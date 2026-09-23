@@ -13,6 +13,7 @@ struct PermanentNotice {
 /// Presents a banner permanently, that is, will remain until it is called to dismiss, unlike `DefaultNoticePresenter`, which dismiss the notice after a delay.
 /// The design also differs with the latter to represent a more permanent air.
 ///
+@MainActor
 final class PermanentNoticePresenter {
     private var hostingController: UIHostingController<PermanentNoticeView>?
 

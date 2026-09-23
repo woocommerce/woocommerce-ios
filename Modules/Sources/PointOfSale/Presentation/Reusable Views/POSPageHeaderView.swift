@@ -47,6 +47,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private let trailingContent: TrailingContent
     private let bottomContent: BottomContent
     @Environment(\.posHeaderBackButtonConfiguration) private var environmentBackButtonConfiguration
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private var effectiveBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
         environmentBackButtonConfiguration ?? backButtonConfiguration
@@ -117,7 +118,8 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         .frame(minHeight: POSHeaderLayoutConstants.minHeight)
         .padding(.leading, shouldHaveLeadingPaddingForItems ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.none)
         .padding(.trailing, POSHeaderLayoutConstants.sectionHorizontalPadding)
-        .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
+        .padding(.top, horizontalSizeClass == .compact ? POSPadding.medium : POSHeaderLayoutConstants.sectionVerticalPadding)
+        .padding(.bottom, POSHeaderLayoutConstants.sectionVerticalPadding)
     }
 
     /// Several selectable titles (Products / Coupons) keep the horizontal scroll fallback, so a

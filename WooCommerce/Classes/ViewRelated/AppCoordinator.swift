@@ -35,7 +35,7 @@ final class AppCoordinator {
     private lazy var appleIDCredentialChecker = AppleIDCredentialChecker()
 
     /// Handles the age range verification process and corresponding app/UI state behaviour.
-    private let ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = AgeRangeVerificationCoordinator()
+    private let ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol
 
     init(window: UIWindow,
          stores: StoresManager = ServiceLocator.stores,
@@ -47,7 +47,8 @@ final class AppCoordinator {
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
-         themeInstaller: ThemeInstaller = DefaultThemeInstaller()) {
+         themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
+         ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = AgeRangeVerificationCoordinator()) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -67,6 +68,7 @@ final class AppCoordinator {
         self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: stores, storageManager: storageManager)
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         self.themeInstaller = themeInstaller
+        self.ageRangeVerificationCoordinator = ageRangeVerificationCoordinator
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
         configureAuthenticator()
@@ -503,8 +505,11 @@ private extension AppCoordinator {
     /// consent flow. No logout: the user keeps their session and explicitly sends the
     /// approval request, re-checks, or re-asks.
     func presentSignificantChangeBlocker(context: SignificantChangeBlockingContext) {
-        let action: () -> Void = { [weak self] in
+        let action: @MainActor () -> Void = { [weak self] in
             self?.handleSignificantChangeBlockerAction(for: context)
+        }
+        let contactSupport: @MainActor () -> Void = { [weak self] in
+            self?.presentSupportFromSignificantChangeBlocker()
         }
         // Only a declared change has its own Approval Needed copy.
         let detailMessage: String? = context == .approvalNeeded
@@ -518,10 +523,15 @@ private extension AppCoordinator {
             if blocker.context != context {
                 analytics.track(event: .AgeVerification.dialogShown(for: context))
             }
-            blocker.update(context: context, detailMessage: detailMessage, onAction: action)
+            blocker.update(context: context, detailMessage: detailMessage, onAction: action, onContactSupport: contactSupport)
             return
         }
-        let blocker = SignificantChangeConsentBlockingHostingController(context: context, detailMessage: detailMessage, onAction: action)
+        let blocker = SignificantChangeConsentBlockingHostingController(
+            context: context,
+            detailMessage: detailMessage,
+            onAction: action,
+            onContactSupport: contactSupport
+        )
         significantChangeBlocker = blocker
         if let presenter = window.topmostPresentedViewController {
             presenter.present(blocker, animated: true)
@@ -532,6 +542,7 @@ private extension AppCoordinator {
         startForegroundConsentRecheck()
     }
 
+    @MainActor
     func handleSignificantChangeBlockerAction(for context: SignificantChangeBlockingContext) {
         analytics.track(event: .AgeVerification.action(for: context))
         switch context {
@@ -558,11 +569,22 @@ private extension AppCoordinator {
         }
     }
 
+    /// Opens Help & Support on top of the wall. The wall is never dismissed for this, so closing
+    /// support lands back on it with the same context. Ignored while the wall already presents
+    /// something (the system consent sheet, or support itself).
+    @MainActor
+    func presentSupportFromSignificantChangeBlocker() {
+        guard let blocker = significantChangeBlocker, blocker.presentedViewController == nil else { return }
+        analytics.track(event: .AgeVerification.contactSupportTapped(for: blocker.context))
+        authenticationManager.presentSupport(from: blocker, sourceTag: .ageRestriction, siteURL: nil)
+    }
+
     func dismissSignificantChangeBlockerIfNeeded(animated: Bool = true) {
         guard let blocker = significantChangeBlocker else { return }
         significantChangeBlocker = nil
         stopForegroundConsentRecheck()
-        blocker.dismiss(animated: animated)
+        // Dismiss through the presenter so anything on top of the wall (e.g. Help & Support) goes with it.
+        (blocker.presentingViewController ?? blocker).dismiss(animated: animated)
     }
 
     /// While the blocker is up, re-check on every foreground: the parent may have
@@ -611,13 +633,33 @@ private extension AppCoordinator {
             )
             alert.addAction(
                 UIAlertAction(
-                    title: Localization.AgeVerificationAlert.confirmationButton,
-                    style: .default,
-                    handler: nil
-                )
+                    title: Localization.AgeVerificationAlert.contactSupportButton,
+                    style: .default
+                ) { [weak self, weak presenter] _ in
+                    self?.presentSupportFromUnderageAlert(from: presenter)
+                }
             )
+            let confirmation = UIAlertAction(
+                title: Localization.AgeVerificationAlert.confirmationButton,
+                style: .default,
+                handler: nil
+            )
+            alert.addAction(confirmation)
+            alert.preferredAction = confirmation
             presenter.present(alert, animated: true)
         }
+    }
+
+    /// Opens Help & Support over the logged-out UI, the same path the login screens' Help button uses.
+    /// The session is already gone, so closing support lands back on the login prologue.
+    /// - Parameter presenter: the view controller the alert was shown on; the alert itself is dismissed by the time its handler runs.
+    func presentSupportFromUnderageAlert(from presenter: UIViewController?) {
+        analytics.track(event: .AgeVerification.contactSupportTapped(screen: .underageAlert))
+        guard let presenter else {
+            DDLogWarn("Failed to obtain view controller to present Help & Support from the underage alert.")
+            return
+        }
+        authenticationManager.presentSupport(from: presenter, sourceTag: .ageRestriction, siteURL: nil)
     }
 }
 
@@ -645,6 +687,12 @@ private extension AppCoordinator {
                 "appCoordinator.ineligibleAgeRangeAlert.confirmationButton",
                 value: "Got it",
                 comment: "Alert confirmation button displayed when user identified as underage and taken to force logout."
+            )
+
+            static let contactSupportButton = NSLocalizedString(
+                "appCoordinator.ineligibleAgeRangeAlert.contactSupportButton",
+                value: "Contact Support",
+                comment: "Alert button that opens Help & Support, displayed when user identified as underage and taken to force logout."
             )
         }
 

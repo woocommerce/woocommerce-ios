@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an item in a Product Bundle
 ///
-public struct ProductBundleItem: Codable, Equatable, Hashable, GeneratedCopiable, GeneratedFakeable {
+public struct ProductBundleItem: Codable, Equatable, Hashable, GeneratedCopiable, GeneratedFakeable, Sendable {
     /// Bundled item ID
     public let bundledItemID: Int64
 
@@ -140,7 +140,7 @@ private extension ProductBundleItem {
 
 /// Represents all ProductBundleItem stock statuses
 ///
-public enum ProductBundleItemStockStatus: String, Codable, GeneratedFakeable {
+public enum ProductBundleItemStockStatus: String, Codable, GeneratedFakeable, Sendable {
     case inStock        = "in_stock"
     case outOfStock     = "out_of_stock"
     case onBackOrder    = "on_backorder"

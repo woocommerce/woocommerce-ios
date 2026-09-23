@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Product Add-On Option entity
 ///
-public struct ProductAddOnOption: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct ProductAddOnOption: Codable, Equatable, GeneratedCopiable, GeneratedFakeable, Sendable {
     /// Option name.
     ///
     public let label: String?

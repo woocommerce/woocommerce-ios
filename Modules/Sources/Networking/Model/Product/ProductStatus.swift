@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductStatus Entity.
 ///
-public enum ProductStatus: Codable, Hashable, GeneratedFakeable {
+public enum ProductStatus: Codable, Hashable, GeneratedFakeable, Sendable {
     case published
     case draft
     case pending

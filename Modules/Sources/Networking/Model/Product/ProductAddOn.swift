@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Product Add-On entity
 ///
-public struct ProductAddOn: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct ProductAddOn: Codable, Equatable, GeneratedCopiable, GeneratedFakeable, Sendable {
     /// Add-on Type.
     ///
     public let type: AddOnType
@@ -128,7 +128,7 @@ private extension ProductAddOn {
 
 /// Represents all possible Add-On types.
 ///
-public enum AddOnType: String, Codable, GeneratedFakeable {
+public enum AddOnType: String, Codable, GeneratedFakeable, Sendable {
     case multipleChoice = "multiple_choice"
     case checkbox
     case customText = "custom_text"
@@ -141,7 +141,7 @@ public enum AddOnType: String, Codable, GeneratedFakeable {
 
 /// Represents all possible Add-On display options.
 ///
-public enum AddOnDisplay: String, Codable, GeneratedFakeable {
+public enum AddOnDisplay: String, Codable, GeneratedFakeable, Sendable {
     case dropdown = "select"
     case radioButton = "radiobutton"
     case images
@@ -149,7 +149,7 @@ public enum AddOnDisplay: String, Codable, GeneratedFakeable {
 
 /// Represents all possible Add-On title formats.
 ///
-public enum AddOnTitleFormat: String, Codable, GeneratedFakeable {
+public enum AddOnTitleFormat: String, Codable, GeneratedFakeable, Sendable {
     case label
     case heading
     case hide
@@ -157,7 +157,7 @@ public enum AddOnTitleFormat: String, Codable, GeneratedFakeable {
 
 /// Represents all possible Add-On restrictions types.
 ///
-public enum AddOnRestrictionsType: String, Codable, GeneratedFakeable {
+public enum AddOnRestrictionsType: String, Codable, GeneratedFakeable, Sendable {
     case any_text = "any_text"
     case onlyLetters = "only_letters"
     case onlyNumbers = "only_numbers"
@@ -167,7 +167,7 @@ public enum AddOnRestrictionsType: String, Codable, GeneratedFakeable {
 
 /// Represents all possible Add-On pricing types.
 ///
-public enum AddOnPriceType: String, Codable, GeneratedFakeable {
+public enum AddOnPriceType: String, Codable, GeneratedFakeable, Sendable {
     case flatFee = "flat_fee"
     case quantityBased = "quantity_based"
     case percentageBased = "percentage_based"

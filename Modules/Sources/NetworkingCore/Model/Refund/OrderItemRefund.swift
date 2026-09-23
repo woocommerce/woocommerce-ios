@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents an Order Item that was refunded or will be refunded.
 ///
-public struct OrderItemRefund: Codable, Equatable, GeneratedFakeable, GeneratedCopiable, Hashable {
+public struct OrderItemRefund: Codable, Equatable, Sendable, GeneratedFakeable, GeneratedCopiable, Hashable {
     public let itemID: Int64
     public let name: String
     public let productID: Int64

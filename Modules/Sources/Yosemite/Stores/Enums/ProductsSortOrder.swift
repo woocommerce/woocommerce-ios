@@ -2,7 +2,7 @@ import Networking
 
 /// How products are sorted in a product list.
 ///
-public enum ProductsSortOrder: String {
+public enum ProductsSortOrder: String, Sendable {
     // From the newest to the oldest
     case dateDescending
     // From the oldest to the newest

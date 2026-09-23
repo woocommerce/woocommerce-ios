@@ -166,10 +166,7 @@ private extension PointOfSaleInformationModal {
     }
 
     var modalFrameWidth: CGFloat {
-        if isCompactWidth {
-            return parentSize.width
-        }
-        return min(Constants.modalFrameWidth, maxAvailableRegularWidth)
+        min(Constants.modalFrameWidth, maxAvailableRegularWidth)
     }
 
     var maxAvailableRegularWidth: CGFloat {

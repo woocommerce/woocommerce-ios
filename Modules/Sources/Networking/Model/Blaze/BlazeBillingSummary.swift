@@ -50,8 +50,9 @@ public extension BlazeBillingSummary {
 
         public init(from decoder: Decoder) throws {
             let container = try decoder.container(keyedBy: CodingKeys.self)
-            let rawDate = try container.decodeIfPresent(String.self, forKey: .date)
-            date = rawDate.flatMap { Self.parseDate($0) }
+            let dateFormatter = ISO8601DateFormatter()
+            dateFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            date = try container.decodeIfPresent(String.self, forKey: .date).flatMap(dateFormatter.date(from:))
             amount = container.failsafeDecodeIfPresent(targetType: Double.self,
                                                        forKey: .amount,
                                                        alternativeTypes: [.string(transform: { Double($0) ?? 0 })]) ?? 0
@@ -62,27 +63,6 @@ public extension BlazeBillingSummary {
             case date
             case amount
             case url
-        }
-
-        private static func parseDate(_ value: String) -> Date? {
-            let isoFormatter = ISO8601DateFormatter()
-            if let date = isoFormatter.date(from: value) {
-                return date
-            }
-            isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
-            if let date = isoFormatter.date(from: value) {
-                return date
-            }
-            let formatter = DateFormatter()
-            formatter.locale = Locale(identifier: "en_US_POSIX")
-            formatter.timeZone = TimeZone(identifier: "UTC")
-            for format in ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd"] {
-                formatter.dateFormat = format
-                if let date = formatter.date(from: value) {
-                    return date
-                }
-            }
-            return nil
         }
     }
 }

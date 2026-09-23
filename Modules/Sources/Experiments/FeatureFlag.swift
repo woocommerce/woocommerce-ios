@@ -64,10 +64,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case backgroundProductImageUpload
 
-    /// Enables optimized handling of product images
-    ///
-    case productImageOptimizedHandling
-
     /// Legacy Bookings tab flag.
     ///
     case ciabBookings

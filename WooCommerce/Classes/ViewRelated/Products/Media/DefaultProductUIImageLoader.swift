@@ -15,7 +15,6 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         case unableToLoadImage
     }
 
-    private var imageStorage: ImageStorage
     private let imageService: ImageService
 
     private let productImageActionHandler: ProductImageActionHandler?
@@ -42,7 +41,6 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         self.productImageActionHandler = nil
         self.imageService = imageService
         self.phAssetImageLoaderProvider = phAssetImageLoaderProvider
-        self.imageStorage = ImageStorage()
     }
 
     /// Use when images are being uploaded in the scope: the asset image is reused after being uploaded to a remote image
@@ -58,7 +56,6 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
         self.productImageActionHandler = productImageActionHandler
         self.imageService = imageService
         self.phAssetImageLoaderProvider = phAssetImageLoaderProvider
-        self.imageStorage = ImageStorage()
 
         assetUploadSubscription = productImageActionHandler.addAssetUploadObserver(self) { [weak self] asset, result in
             guard let self else { return }
@@ -91,10 +88,6 @@ final class DefaultProductUIImageLoader: ProductUIImageLoader {
     }
 
     func requestImage(productImage: ProductImage) async throws -> UIImage {
-        if let image = await imageStorage.getImage(id: productImage.imageID) {
-            return image
-        }
-
         guard let encodedString = productImage.src.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed),
               let url = URL(string: encodedString) else {
             throw ImageLoaderError.invalidURL
@@ -151,10 +144,6 @@ private extension DefaultProductUIImageLoader {
             return
         }
 
-        let useImageServiceCache = ServiceLocator.featureFlagService.isFeatureFlagEnabled(
-            .productImageOptimizedHandling
-        )
-
         switch asset {
         case .phAsset(let asset):
             phAssetImageLoader.requestImage(for: asset,
@@ -164,36 +153,10 @@ private extension DefaultProductUIImageLoader {
                 guard let image, let self else {
                     return
                 }
-                if useImageServiceCache {
-                    self.imageService.storeImageInCache(image, for: url)
-                } else {
-                    Task {
-                        await self.imageStorage.saveImage(image: image, id: productImage.imageID)
-                    }
-                }
+                self.imageService.storeImageInCache(image, for: url)
             }
         case .uiImage(let image, _, _):
-            if useImageServiceCache {
-                imageService.storeImageInCache(image, for: url)
-            } else {
-                Task {
-                    await self.imageStorage.saveImage(image: image, id: productImage.imageID)
-                }
-            }
+            imageService.storeImageInCache(image, for: url)
         }
-    }
-}
-
-/// Stores images in a dictionary using given `id`
-///
-private actor ImageStorage {
-    private var images: [Int64: UIImage] = [:]
-
-    func saveImage(image: UIImage, id: Int64) {
-        images[id] = image
-    }
-
-    func getImage(id: Int64) -> UIImage? {
-        images[id]
     }
 }

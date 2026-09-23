@@ -1,7 +1,8 @@
+import Codegen
 import Foundation
 
 /// Blaze billing summary of the current WPCom user.
-public struct BlazeBillingSummary: Decodable, Equatable {
+public struct BlazeBillingSummary: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// Amount the user failed to pay for previous campaigns, in USD.
     public let debt: Double
@@ -31,7 +32,7 @@ public struct BlazeBillingSummary: Decodable, Equatable {
 public extension BlazeBillingSummary {
 
     /// Unpaid order with a link to pay it.
-    struct PaymentLink: Decodable, Equatable {
+    struct PaymentLink: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
 
         /// Creation date of the order.
         public let date: Date?

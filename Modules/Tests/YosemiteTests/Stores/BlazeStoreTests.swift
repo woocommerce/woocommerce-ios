@@ -765,7 +765,7 @@ final class BlazeStoreTests: XCTestCase {
 
     func test_fetchBillingSummary_returns_summary_when_fetching_successfully() throws {
         // Given
-        let summary = BlazeBillingSummary(debt: 25.05, paymentLinks: [.init(date: nil, amount: 25.05, url: "https://example.com")])
+        let summary = BlazeBillingSummary.fake().copy(debt: 25.05, paymentLinks: [.fake()])
         remote.whenFetchingBillingSummary(thenReturn: .success(summary))
         let store = BlazeStore(dispatcher: Dispatcher(),
                                storageManager: storageManager,

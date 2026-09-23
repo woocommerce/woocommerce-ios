@@ -428,7 +428,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
     func test_outstandingBalance_is_set_after_loadCampaigns_when_account_has_debt() {
         // Given
-        let summary = BlazeBillingSummary(debt: 25.05, paymentLinks: [.init(date: nil, amount: 25.05, url: "https://example.com")])
+        let summary = BlazeBillingSummary.fake().copy(debt: 25.05, paymentLinks: [.fake()])
         let stores = mockStores(billingSummaryResult: .success(summary))
         let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
 
@@ -441,7 +441,7 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
     func test_outstandingBalance_is_nil_after_loadCampaigns_when_account_has_no_debt() {
         // Given
-        let stores = mockStores(billingSummaryResult: .success(BlazeBillingSummary(debt: 0, paymentLinks: [])))
+        let stores = mockStores(billingSummaryResult: .success(BlazeBillingSummary.fake().copy(debt: 0)))
         let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
 
         // When

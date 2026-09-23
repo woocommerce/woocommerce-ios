@@ -44,7 +44,8 @@ tags:
           commands:
             - assertVisible: "Create Your Campaign"
       - takeScreenshot: blaze_campaign_destination
-      - back
+      - tapOn:
+          id: "BackButton"
       - extendedWaitUntil:
           visible:
             id: "menu-blaze"

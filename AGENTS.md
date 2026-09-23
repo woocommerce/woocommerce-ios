@@ -105,9 +105,10 @@ pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
   --allow-writing-to-package-directory swiftlint --working-directory .. --quiet --fix && popd
 
 # Code generation (Sourcery for Copiable/Fakeable and the Design System demo token catalogs
-# — run after changing StoreDesignSystem tokens)
+# — run after changing StoreDesignSystem tokens). Release build (`-c release`) is required until
+# Sourcery handles specifiers like `isolated`; its debug build crashes on them.
 pushd BuildTools && export SDKROOT=$(xcrun --sdk macosx --show-sdk-path) && \
-  swift package plugin --allow-writing-to-directory .. \
+  swift package -c release plugin --allow-writing-to-directory .. \
   --allow-writing-to-package-directory sourcery-command --disableCache && popd
 ```
 

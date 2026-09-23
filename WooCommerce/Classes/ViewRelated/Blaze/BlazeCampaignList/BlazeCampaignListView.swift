@@ -134,11 +134,15 @@ struct BlazeCampaignListView: View {
                     }
                 }
             case .empty:
-                VStack(spacing: Layout.contentSpacing) {
-                    outstandingBalanceNotice
-                    EmptyState(title: Localization.emptyStateTitle,
-                               description: Localization.emptyStateMessage,
-                               image: .emptyProductsImage)
+                if viewModel.outstandingBalance != nil {
+                    ScrollView {
+                        VStack(spacing: Layout.contentSpacing) {
+                            outstandingBalanceNotice
+                            emptyState
+                        }
+                    }
+                } else {
+                    emptyState
                         .frame(maxHeight: .infinity)
                 }
             case .syncingFirstPage:
@@ -183,6 +187,12 @@ struct BlazeCampaignListView: View {
 }
 
 private extension BlazeCampaignListView {
+
+    var emptyState: some View {
+        EmptyState(title: Localization.emptyStateTitle,
+                   description: Localization.emptyStateMessage,
+                   image: .emptyProductsImage)
+    }
 
     @ViewBuilder
     var outstandingBalanceNotice: some View {

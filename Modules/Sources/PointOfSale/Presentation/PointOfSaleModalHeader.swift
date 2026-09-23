@@ -1,8 +1,6 @@
 import SwiftUI
 
 struct PointOfSaleModalHeader: View {
-    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
-
     @Binding var isPresented: Bool
     @Binding var title: AttributedString
 
@@ -11,7 +9,7 @@ struct PointOfSaleModalHeader: View {
             Text(title)
                 .font(.posHeadingBold)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                .lineLimit(dynamicTypeSize.isAccessibilitySize ? nil : 1)
+                .fixedSize(horizontal: false, vertical: true)
             Spacer()
             Button {
                 isPresented = false

@@ -297,7 +297,7 @@ let package = Package(
             dependencies: [
                 "EventHorizonSDK",
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "PointOfSale",
@@ -432,7 +432,7 @@ let package = Package(
                 .target(name: "ParcelFittingCheck"),
                 "EventHorizonSDK",
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .testTarget(
             name: "StoreDesignSystemTests",

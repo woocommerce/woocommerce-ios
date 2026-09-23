@@ -14,7 +14,7 @@ public struct ParcelPresetCarrier: Identifiable {
     }
 }
 
-public struct ParcelPresetPackage: Identifiable {
+public struct ParcelPresetPackage: Identifiable, Sendable {
     public let id: String
     public let name: String
     public let length: Float

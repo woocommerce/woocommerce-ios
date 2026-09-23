@@ -1,5 +1,7 @@
 import Foundation
-import StarIO10
+// StarIO10 predates Swift concurrency, so none of its types are `Sendable`. Every SDK object is owned by the
+// `StarPrinterCoordinator` actor below, which is what makes handing them to the SDK's async calls safe.
+@preconcurrency import StarIO10
 
 /// Concrete `PrinterDiscoveryService` backed by the Star Micronics StarIO10 SDK.
 ///

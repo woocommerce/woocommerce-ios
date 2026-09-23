@@ -1445,6 +1445,7 @@ public enum WooAnalyticsStat: String {
     // `..._verification_action`); the consent request/resolution events are iOS-only.
     case accountAgeRestrictionChecked = "account_age_restriction_checked"
     case accountAgeRestrictionDialogShown = "account_age_restriction_dialog_shown"
+    case accountAgeRestrictionContactSupportTapped = "account_age_restriction_contact_support_tapped"
     case accountAgeVerificationAction = "account_age_verification_action"
     case accountAgeConsentRequested = "account_age_consent_requested"
     case accountAgeConsentResolved = "account_age_consent_resolved"

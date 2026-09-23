@@ -3,7 +3,7 @@ import ARKit
 import SwiftUI
 import Combine
 
-final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, ARCoachingOverlayViewDelegate {
+final class ARParcelSceneCoordinator: NSObject, UIGestureRecognizerDelegate, @MainActor ARCoachingOverlayViewDelegate {
     weak var arView: ARView?
     var dimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)
     private let initialDimensions: SIMD3<Float> = SIMD3(0.20, 0.10, 0.15)

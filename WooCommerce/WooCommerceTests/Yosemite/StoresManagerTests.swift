@@ -810,6 +810,60 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertEqual(isLoggedInValues, [false, true, false])
     }
 
+    func test_it_tracks_involuntary_logout_with_invalid_token_reason_upon_receiving_invalid_token_error_notification() {
+        // Given
+        let originalAnalytics = ServiceLocator.analytics
+        defer { ServiceLocator.setAnalytics(originalAnalytics) }
+        let analyticsProvider = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
+        let manager = DefaultStoresManager.testingInstance
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        // When
+        MockNotificationCenter.testingInstance.post(name: .RemoteDidReceiveInvalidTokenError, object: DotcomError.invalidToken, userInfo: nil)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.last, "account_involuntary_logout")
+        XCTAssertEqual(analyticsProvider.receivedProperties.last?["reason"] as? String, "invalid_token")
+    }
+
+    func test_it_tracks_involuntary_logout_with_unauthorized_reason_when_non_wpcom_session_receives_application_password_invalidated_notification() {
+        // Given
+        let originalAnalytics = ServiceLocator.analytics
+        defer { ServiceLocator.setAnalytics(originalAnalytics) }
+        let analyticsProvider = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
+        let notificationCenter = MockNotificationCenter()
+        let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                           notificationCenter: notificationCenter)
+        manager.authenticate(credentials: SessionSettings.applicationPasswordCredentials)
+
+        // When
+        notificationCenter.post(name: .ApplicationPasswordInvalidated, object: NetworkError.unacceptableStatusCode(statusCode: 401), userInfo: nil)
+
+        // Then
+        XCTAssertEqual(analyticsProvider.receivedEvents.last, "account_involuntary_logout")
+        XCTAssertEqual(analyticsProvider.receivedProperties.last?["reason"] as? String, "application_password_unauthorized")
+    }
+
+    func test_it_does_not_track_involuntary_logout_when_wpcom_session_receives_application_password_invalidated_notification() {
+        // Given
+        let originalAnalytics = ServiceLocator.analytics
+        defer { ServiceLocator.setAnalytics(originalAnalytics) }
+        let analyticsProvider = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
+        let notificationCenter = MockNotificationCenter()
+        let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                           notificationCenter: notificationCenter)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        // When
+        notificationCenter.post(name: .ApplicationPasswordInvalidated, object: NetworkError.unacceptableStatusCode(statusCode: 401), userInfo: nil)
+
+        // Then
+        XCTAssertFalse(analyticsProvider.receivedEvents.contains("account_involuntary_logout"))
+    }
+
     func test_it_does_not_deauthenticate_wpcom_session_upon_receiving_application_password_invalidated_notification() {
         // Given
         let notificationCenter = MockNotificationCenter()

@@ -2,6 +2,7 @@ import Combine
 import KeychainAccess
 import WordPressAuthenticator
 import Yosemite
+import protocol WooFoundation.Analytics
 
 protocol AppleIDCredentialCheckerProtocol {
     /// Checks whether the user signed in with Apple.
@@ -16,13 +17,17 @@ final class AppleIDCredentialChecker: AppleIDCredentialCheckerProtocol {
 
     private let authenticator: WordPressAuthenticator
     private let stores: StoresManager
+    private let analytics: Analytics
 
     private var cancellable: AnyCancellable?
     private var cancellables = Set<AnyCancellable>()
 
-    init(authenticator: WordPressAuthenticator = WordPressAuthenticator.shared, stores: StoresManager = ServiceLocator.stores) {
+    init(authenticator: WordPressAuthenticator = WordPressAuthenticator.shared,
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.authenticator = authenticator
         self.stores = stores
+        self.analytics = analytics
         observeAppDidBecomeActiveForCheckingAppleIDCredentialState()
     }
 
@@ -113,6 +118,7 @@ private extension AppleIDCredentialChecker {
 
     func logOutRevokedAppleAccount() {
         removeAppleIDFromKeychain()
+        analytics.track(event: .Authentication.involuntaryLogout(reason: .appleIDCredentialRevoked))
         DispatchQueue.main.async { [weak self] in
             self?.logout()
         }

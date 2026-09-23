@@ -19,7 +19,9 @@ struct POSPageHeaderBackButton: View {
                 .font(.posButtonSymbolLarge)
                 .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
                 .foregroundColor(configuration.state == .disabled ? .posOnSurfaceVariantLowest : .posOnSurface)
-                .padding(.horizontal, backButtonPadding)
+                .padding(.leading, configuration.alignIconToLeadingEdge ? 0 : backButtonPadding)
+                .padding(.trailing, configuration.alignIconToLeadingEdge ? backButtonPadding * 2 : backButtonPadding)
+                .contentShape(Rectangle())
         }
         .disabled(configuration.state == .disabled || configuration.state == .shimmering)
         .accessibilityIdentifier(configuration.accessibilityIdentifier ?? Constants.defaultAccessibilityIdentifier)

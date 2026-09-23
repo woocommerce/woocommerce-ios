@@ -130,9 +130,6 @@
     "Modules/Sources/WooFoundationCore/CurrencySettings.swift": 1,
     "Modules/Sources/WooFoundationCore/Logging.swift": 3,
     "Modules/Sources/WooFoundationCore/String+Helpers.swift": 2,
-    "Modules/Sources/WordPressShared/Utility/Debouncer.swift": 1,
-    "Modules/Sources/WordPressShared/Utility/RichContentFormatter.swift": 4,
-    "Modules/Sources/WordPressShared/Views/WPStyleGuide+DynamicType.swift": 11,
     "Modules/Sources/WordPressUI/BottomSheet/BottomSheetViewController.swift": 1,
     "Modules/Sources/WordPressUI/BottomSheet/DrawerPresentationController.swift": 14,
     "Modules/Sources/WordPressUI/Extensions/BlockEvents/UIBarButtonItem+BlockEvents.swift": 2,
@@ -1113,5 +1110,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 9951
+  "total": 9935
 }

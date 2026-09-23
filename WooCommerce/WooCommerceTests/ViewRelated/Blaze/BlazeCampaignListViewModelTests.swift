@@ -321,10 +321,14 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
         // When
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case let .synchronizeCampaignsList(_, _, _, onCompletion) = action else {
-                return
+            switch action {
+            case let .synchronizeCampaignsList(_, _, _, onCompletion):
+                onCompletion(.success(true))
+            case let .fetchBillingSummary(_, onCompletion):
+                onCompletion(.success(BlazeBillingSummary.fake().copy(debt: 0)))
+            default:
+                break
             }
-            onCompletion(.success(true))
         }
         viewModel.loadCampaigns()
 
@@ -337,6 +341,50 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.shouldShowIntroView)
+    }
+
+    func test_shouldShowIntroView_is_false_when_there_are_no_campaigns_and_account_has_outstanding_balance() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .synchronizeCampaignsList(_, _, _, onCompletion):
+                onCompletion(.success(true))
+            case let .fetchBillingSummary(_, onCompletion):
+                onCompletion(.success(BlazeBillingSummary.fake().copy(debt: 25.05, paymentLinks: [.fake()])))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.loadCampaigns()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+    }
+
+    func test_shouldShowIntroView_is_true_when_there_are_no_campaigns_and_fetching_billing_summary_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .synchronizeCampaignsList(_, _, _, onCompletion):
+                onCompletion(.success(true))
+            case let .fetchBillingSummary(_, onCompletion):
+                onCompletion(.failure(NSError(domain: "test", code: 0)))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.loadCampaigns()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowIntroView)
     }
 
     // MARK: `selectedCampaignURL`

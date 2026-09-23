@@ -21,6 +21,10 @@ final class BlazeCampaignListViewModel: ObservableObject {
     /// Tracks whether the intro view has been presented.
     private var didShowIntroView = false
 
+    /// Tracks whether the first campaigns sync and billing summary fetch finished, to decide on the intro view.
+    private var didLoadCampaigns = false
+    private var didLoadOutstandingBalance = false
+
     let siteID: Int64
 
     var siteURL: String {
@@ -170,11 +174,13 @@ private extension BlazeCampaignListViewModel {
         transitionToResultsUpdatedState()
     }
 
+    /// The intro is skipped when there is an outstanding balance, so the balance notice is the first thing shown.
     func displayIntroViewIfNeeded() {
-        if !didShowIntroView {
-            shouldShowIntroView = syncState == .empty
-            didShowIntroView = true
+        guard !didShowIntroView, didLoadCampaigns, didLoadOutstandingBalance else {
+            return
         }
+        shouldShowIntroView = syncState == .empty && outstandingBalance == nil
+        didShowIntroView = true
     }
 
     /// Clears application icon badge
@@ -195,6 +201,8 @@ private extension BlazeCampaignListViewModel {
             case .failure(let error):
                 DDLogError("⛔️ Error fetching Blaze billing summary: \(error)")
             }
+            self?.didLoadOutstandingBalance = true
+            self?.displayIntroViewIfNeeded()
         })
     }
 
@@ -233,6 +241,7 @@ extension BlazeCampaignListViewModel: PaginationTrackerDelegate {
             }
 
             self?.updateResults()
+            self?.didLoadCampaigns = true
             self?.displayIntroViewIfNeeded()
         }
         stores.dispatch(action)

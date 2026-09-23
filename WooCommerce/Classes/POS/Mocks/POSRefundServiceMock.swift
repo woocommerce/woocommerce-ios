@@ -4,7 +4,7 @@ import Yosemite
 /// Deterministic `RefundServiceProtocol` implementation for screenshot generation and UI tests.
 /// Computes preview totals from the mocked order's line items, mirroring what the production
 /// service receives from the server, and persists nothing.
-final class POSRefundServiceMock: RefundServiceProtocol {
+nonisolated final class POSRefundServiceMock: RefundServiceProtocol {
     private let orderService: POSOrderServiceProtocol
 
     init(orderService: POSOrderServiceProtocol) {

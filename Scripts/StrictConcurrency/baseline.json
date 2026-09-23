@@ -379,7 +379,6 @@
     "WooCommerce/Classes/POS/Adaptors/Card Present Payments/POSRefundCardPresentPaymentAlerts.swift": 1,
     "WooCommerce/Classes/POS/Adaptors/Card Present Payments/POSRefundSubmissionAdaptor.swift": 2,
     "WooCommerce/Classes/POS/Adaptors/Card Present Payments/POSServerRefundPreviewUseCase.swift": 2,
-    "WooCommerce/Classes/POS/Adaptors/POSTapToPayAvailabilityChecker.swift": 1,
     "WooCommerce/Classes/POS/POSNotificationScheduler.swift": 1,
     "WooCommerce/Classes/Routing/ProductDetail/Coordinator/ProductDetailWebCoordinator.swift": 3,
     "WooCommerce/Classes/Routing/ProductDetail/ProductDetailCoordinatorFactoryProtocol.swift": 1,
@@ -1113,5 +1112,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 9951
+  "total": 9950
 }

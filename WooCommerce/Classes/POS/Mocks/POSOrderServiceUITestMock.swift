@@ -6,7 +6,7 @@ import WooFoundationCore
 import struct NetworkingCore.OrderItem
 import PointOfSale
 
-final class POSOrderServiceUITestMock: POSOrderServiceProtocol {
+nonisolated final class POSOrderServiceUITestMock: POSOrderServiceProtocol {
     func syncOrder(cart: POSCart, currency: CurrencyCode) async throws -> Order {
         let orderItems = cart.items.enumerated().map { index, cartItem in
             makeOrderItem(from: cartItem, itemID: Int64(index + 1))

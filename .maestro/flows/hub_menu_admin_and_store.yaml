@@ -27,7 +27,8 @@ tags:
 - assertNotVisible:
     id: "menu-view-store"
 - takeScreenshot: hub_view_store
-- tapOn: "Back"
+- tapOn:
+    id: "BackButton"
 - extendedWaitUntil:
     visible:
       id: "menu-view-store"
@@ -41,7 +42,8 @@ tags:
 - assertNotVisible:
     id: "menu-woocommerce-admin"
 - takeScreenshot: hub_woocommerce_admin
-- tapOn: "Back"
+- tapOn:
+    id: "BackButton"
 - extendedWaitUntil:
     visible:
       id: "store-title"

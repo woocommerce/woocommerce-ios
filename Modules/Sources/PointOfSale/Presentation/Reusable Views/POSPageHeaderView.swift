@@ -13,19 +13,22 @@ struct POSPageHeaderBackButtonConfiguration {
     let buttonIcon: String?
     let accessibilityIdentifier: String?
     let alignIconToLeadingEdge: Bool
+    let spacingAfterBackButton: CGFloat?
 
     init(
         state: State,
         action: @escaping () -> Void,
         buttonIcon: String? = nil,
         accessibilityIdentifier: String? = nil,
-        alignIconToLeadingEdge: Bool = false
+        alignIconToLeadingEdge: Bool = false,
+        spacingAfterBackButton: CGFloat? = nil
     ) {
         self.state = state
         self.action = action
         self.buttonIcon = buttonIcon
         self.accessibilityIdentifier = accessibilityIdentifier
         self.alignIconToLeadingEdge = alignIconToLeadingEdge
+        self.spacingAfterBackButton = spacingAfterBackButton
     }
 }
 
@@ -135,7 +138,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
     private var itemsRow: some View {
         VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-            HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
+            HStack(alignment: hStackAlignment, spacing: effectiveBackButtonConfiguration?.spacingAfterBackButton ?? Constants.horizontalSpacing) {
                 if showsBackButton {
                     backButton
                 }

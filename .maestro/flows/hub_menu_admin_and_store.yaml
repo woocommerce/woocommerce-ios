@@ -44,9 +44,12 @@ tags:
 - takeScreenshot: hub_woocommerce_admin
 - tapOn:
     id: "BackButton"
-- extendedWaitUntil:
-    visible:
+# The menu keeps the scroll position it had before the web view, and the store
+# card sits at the top of the list.
+- scrollUntilVisible:
+    element:
       id: "store-title"
+    direction: UP
     timeout: 15000
 - copyTextFrom:
     id: "store-title"

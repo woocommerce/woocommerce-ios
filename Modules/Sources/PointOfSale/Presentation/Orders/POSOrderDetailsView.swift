@@ -68,9 +68,7 @@ struct POSOrderDetailsView: View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: POSOrderListView.Localization.orderTitle(order.number),
-                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack,
-                                                                     alignIconToLeadingEdge: true,
-                                                                     spacingAfterBackButton: POSSpacing.none) : nil,
+                backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack, alignIconToLeadingEdge: true) : nil,
                 trailingContent: {
                     actionsSection(setup: availableActionsSetup)
                 },

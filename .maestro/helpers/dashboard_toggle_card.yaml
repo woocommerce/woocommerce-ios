@@ -14,8 +14,7 @@ appId: ${APP_ID}
       visible:
         id: "selectable-item-selected-${CARD_TITLE}"
     commands:
-      - evalScript: |
-          output['dashboardCardState_' + String(CARD_KEY)] = 'selected';
+      - evalScript: ${output['dashboardCardState_' + String(CARD_KEY)] = 'selected'}
       - runFlow:
           file: set_dashboard_card_selection.yaml
           env:
@@ -26,8 +25,7 @@ appId: ${APP_ID}
       visible:
         id: "selectable-item-unselected-${CARD_TITLE}"
     commands:
-      - evalScript: |
-          output['dashboardCardState_' + String(CARD_KEY)] = 'unselected';
+      - evalScript: ${output['dashboardCardState_' + String(CARD_KEY)] = 'unselected'}
       - runFlow:
           file: set_dashboard_card_selection.yaml
           env:
@@ -40,13 +38,11 @@ appId: ${APP_ID}
         rightOf:
           text: "${CARD_TITLE}"
     commands:
-      - evalScript: |
-          output['dashboardCardState_' + String(CARD_KEY)] = 'unavailable';
-          console.log('DASHBOARD_CARD_UNAVAILABLE ' + String(CARD_TITLE));
+      - evalScript: ${output['dashboardCardState_' + String(CARD_KEY)] = 'unavailable'}
+      - evalScript: ${console.log('DASHBOARD_CARD_UNAVAILABLE ' + String(CARD_TITLE))}
 - runFlow:
     when:
       notVisible: "${CARD_TITLE}"
     commands:
-      - evalScript: |
-          output['dashboardCardState_' + String(CARD_KEY)] = 'hidden';
-          console.log('DASHBOARD_CARD_HIDDEN ' + String(CARD_TITLE));
+      - evalScript: ${output['dashboardCardState_' + String(CARD_KEY)] = 'hidden'}
+      - evalScript: ${console.log('DASHBOARD_CARD_HIDDEN ' + String(CARD_TITLE))}

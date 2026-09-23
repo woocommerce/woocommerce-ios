@@ -142,9 +142,6 @@ struct PointOfSaleDashboardView: View {
         .animation(.easeInOut, value: viewState == .loading())
         .background(Color.posSurface.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
-        // Keep the iOS 26 top/side workaround on dashboard content while every OS
-        // reserves the bottom system area for footer controls.
-        .ignoresSafeArea(.posContainerRegionToIgnore, edges: [.top, .horizontal])
         .ignoresSafeArea(keyboardObserver.isFullSizeKeyboardVisible ? .keyboard : [], edges: .bottom)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()

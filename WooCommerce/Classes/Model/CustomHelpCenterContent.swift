@@ -85,17 +85,20 @@ extension CustomHelpCenterContent {
     init(screen: Screen, flow: AuthenticatorAnalyticsTracker.Flow) {
         let step: String
         switch screen {
+        // These step values are now real `AuthenticatorAnalyticsTracker.Step` cases rather than
+        // hand-written literals, so the help-centre `source_step` and the screen-view
+        // `unified_login_step` can never drift apart.
         case .jetpackRequired:
-            step = "jetpack_not_connected" // Matching Android `Step` value
+            step = AuthenticatorAnalyticsTracker.Step.jetpackNotConnected.rawValue
             url = WooConstants.URLs.helpCenterForJetpackRequiredError.asURL()
         case .storePicker:
-            step = "site_list" // Matching Android `Step` value
+            step = AuthenticatorAnalyticsTracker.Step.siteList.rawValue
             url = WooConstants.URLs.helpCenterForStorePicker.asURL()
         case .wrongAccountError:
-            step = "wrong_wordpress_account" // Matching Android `Step` value
+            step = AuthenticatorAnalyticsTracker.Step.wrongWordPressAccount.rawValue
             url = WooConstants.URLs.helpCenterForWrongAccountError.asURL()
         case .noWooError:
-            step = "not_woo_store" // Matching Android `Step` value
+            step = AuthenticatorAnalyticsTracker.Step.notWooStore.rawValue
             url = WooConstants.URLs.helpCenterForNoWooError.asURL()
         case .purchasePlanError:
             step = "purchase_plan_error"

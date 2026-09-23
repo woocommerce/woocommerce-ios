@@ -18,6 +18,7 @@ import protocol Yosemite.POSEligibilityServiceProtocol
 ///
 /// One-shot — `POSTapToPayAvailabilityController` calls `checkAvailability()` once on
 /// POS entry and holds the result for the rest of the session.
+@MainActor
 final class POSTapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking {
     private let siteID: Int64
     private let stores: StoresManager
@@ -50,22 +51,18 @@ final class POSTapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking {
 
 private extension POSTapToPayAvailabilityChecker {
     func deviceSupportsTapToPay() async -> Bool {
-        // `StoresManager.dispatch` asserts main-thread; `withCheckedContinuation`'s
-        // closure runs on whatever thread the awaiter is on, which after a prior
-        // suspension point may be a cooperative background thread. Hop to the main
-        // actor before dispatching.
+        // `withCheckedContinuation` runs its body synchronously on the caller's isolation,
+        // so the dispatch happens on the main actor as `StoresManager.dispatch` requires.
         await withCheckedContinuation { continuation in
-            Task { @MainActor in
-                let action = CardPresentPaymentAction.checkDeviceSupport(
-                    siteID: siteID,
-                    cardReaderType: .tapToPay,
-                    discoveryMethod: .tapToPay,
-                    minimumOperatingSystemVersionOverride: nil
-                ) { isSupported in
-                    continuation.resume(returning: isSupported)
-                }
-                stores.dispatch(action)
+            let action = CardPresentPaymentAction.checkDeviceSupport(
+                siteID: siteID,
+                cardReaderType: .tapToPay,
+                discoveryMethod: .tapToPay,
+                minimumOperatingSystemVersionOverride: nil
+            ) { isSupported in
+                continuation.resume(returning: isSupported)
             }
+            stores.dispatch(action)
         }
     }
 

@@ -2,7 +2,6 @@ import Combine
 import SwiftUI
 import UIKit
 import Yosemite
-import Experiments
 
 /// Hosting controller that wraps an `EditOrderAddressForm`.
 ///
@@ -310,21 +309,19 @@ struct SingleAddressForm: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderAddressMapSearch) {
-                Button(action: {
-                    showMapPicker = true
-                    ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerTapped,
-                                                   withProperties: ["locale": Locale.current.identifier])
-                }) {
-                    HStack {
-                        Image(systemName: "map")
-                        Text(Localization.pickOnMap)
-                    }
+            Button(action: {
+                showMapPicker = true
+                ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerTapped,
+                                               withProperties: ["locale": Locale.current.identifier])
+            }) {
+                HStack {
+                    Image(systemName: "map")
+                    Text(Localization.pickOnMap)
                 }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.horizontal, Constants.horizontalPadding)
-                .padding(.vertical, Constants.mapPickerButtonVerticalPadding)
             }
+            .buttonStyle(PrimaryButtonStyle())
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.vertical, Constants.mapPickerButtonVerticalPadding)
 
             Group {
                 TitleAndTextFieldRow(title: Localization.companyField,

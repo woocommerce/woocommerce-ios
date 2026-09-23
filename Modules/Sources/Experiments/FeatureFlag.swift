@@ -68,10 +68,6 @@ public enum FeatureFlag: Int, CaseIterable {
     ///
     case productImageOptimizedHandling
 
-    /// Enables the CTA to search for an address in the map in order details > shipping address.
-    ///
-    case orderAddressMapSearch
-
     /// Legacy Bookings tab flag.
     ///
     case ciabBookings

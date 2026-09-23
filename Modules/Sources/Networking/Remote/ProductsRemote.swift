@@ -838,7 +838,7 @@ public extension ProductsRemote {
     }
 }
 
-public enum ProductSearchField: String {
+public enum ProductSearchField: String, Sendable {
     case name
     case sku
     case globalUniqueID = "global_unique_id"

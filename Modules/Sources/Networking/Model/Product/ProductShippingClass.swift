@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductShippingClass entity.
 ///
-public struct ProductShippingClass: Decodable, Equatable, GeneratedFakeable {
+public struct ProductShippingClass: Decodable, Equatable, GeneratedFakeable, Sendable {
     // Entities.
     public let count: Int64
     public let descriptionHTML: String?

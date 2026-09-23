@@ -71,6 +71,10 @@ final class StorePickerViewController: UIViewController {
 
     private var subscriptions: Set<AnyCancellable> = []
 
+    /// Whether the login outcome step has already been reported for this presentation.
+    ///
+    private var hasTrackedLoginOutcome = false
+
     private lazy var requirementsChecker = RequirementsChecker()
 
     // MARK: - Private Properties
@@ -289,8 +293,33 @@ private extension StorePickerViewController {
     }
 
     func refreshResults() {
-        viewModel.refreshSites(currentlySelectedSiteID: currentlySelectedSite?.siteID)
+        viewModel.refreshSites(currentlySelectedSiteID: currentlySelectedSite?.siteID) { [weak self] didSync in
+            guard didSync else { return }
+            self?.trackLoginOutcome()
+        }
         viewModel.trackScreenView()
+    }
+
+    /// Reports which epilogue the merchant landed on, once the sites have been synchronised.
+    ///
+    /// Only the login epilogue, mirroring Android, which gates its login events on
+    /// `openedFromLogin` so store switching does not look like a login outcome. The two steps are
+    /// mutually exclusive there as well, and this has to wait for the sync because the state starts
+    /// out `.empty` and would otherwise report no stores for every merchant. A failed sync is not
+    /// reported at all, so an offline merchant is not counted as having no stores.
+    ///
+    func trackLoginOutcome() {
+        guard configuration == .login, !hasTrackedLoginOutcome else {
+            return
+        }
+        hasTrackedLoginOutcome = true
+
+        switch viewModel.state {
+        case .empty:
+            AuthenticatorAnalyticsTracker.shared.track(step: .noWooStores)
+        case .available:
+            AuthenticatorAnalyticsTracker.shared.track(step: .siteList)
+        }
     }
 
     func observeStateChange() {

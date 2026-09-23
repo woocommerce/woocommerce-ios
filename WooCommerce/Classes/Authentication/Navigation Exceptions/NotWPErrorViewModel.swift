@@ -36,7 +36,7 @@ struct NotWPErrorViewModel: ULErrorViewModel {
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {
-        // NO-OP
+        AuthenticatorAnalyticsTracker.shared.track(step: .notWordPressSite)
     }
 }
 

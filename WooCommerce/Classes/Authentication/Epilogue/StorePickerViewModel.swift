@@ -63,18 +63,26 @@ final class StorePickerViewModel {
     @MainActor
     func refreshSites(currentlySelectedSiteID: Int64?) async {
         await withCheckedContinuation { continuation in
-            refreshSites(currentlySelectedSiteID: currentlySelectedSiteID) {
+            refreshSites(currentlySelectedSiteID: currentlySelectedSiteID) { _ in
                 continuation.resume()
             }
         }
     }
 
-    func refreshSites(currentlySelectedSiteID: Int64?, completion: (() -> Void)? = nil) {
+    /// - Parameter completion: called with whether the sites were successfully synchronised.
+    ///   Callers that report on the result need this: a failed sync leaves the state `.empty`,
+    ///   which is indistinguishable from an account that genuinely has no stores.
+    func refreshSites(currentlySelectedSiteID: Int64?, completion: ((Bool) -> Void)? = nil) {
         refetchSitesAndUpdateState()
 
-        synchronizeSites { [weak self] _ in
+        synchronizeSites { [weak self] result in
             self?.refetchSitesAndUpdateState()
-            completion?()
+            switch result {
+            case .success:
+                completion?(true)
+            case .failure:
+                completion?(false)
+            }
         }
     }
 

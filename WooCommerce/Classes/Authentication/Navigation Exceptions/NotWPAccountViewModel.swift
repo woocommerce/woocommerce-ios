@@ -64,6 +64,7 @@ final class NotWPAccountViewModel: ULErrorViewModel {
     func viewDidLoad(_ viewController: UIViewController?) {
         self.viewController = viewController
         analytics.track(.loginInvalidEmailScreenViewed)
+        AuthenticatorAnalyticsTracker.shared.track(step: .noWpcomAccountFound)
     }
 }
 

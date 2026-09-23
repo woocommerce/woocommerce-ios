@@ -3,6 +3,7 @@
 
 25.8
 -----
+- [*] Age verification: the "Access Restricted" alert and the parental consent screens now offer a Contact Support action that opens Help & Support while keeping the restriction in place. [https://github.com/woocommerce/woocommerce-ios/pull/17909]
 - [*] Login: Fix account matching for www and non-www store addresses [https://github.com/woocommerce/woocommerce-ios/pull/17906]
 - [*] Troubleshoot Connection and support chat diagnostics no longer report a false analytics failure on WordPress.com Commerce plan stores. [https://github.com/woocommerce/woocommerce-ios/pull/17895]
 

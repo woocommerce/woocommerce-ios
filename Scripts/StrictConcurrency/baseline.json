@@ -28,10 +28,6 @@
     "Modules/Sources/NetworkingCore/Settings/UserAgent.swift": 2,
     "Modules/Sources/NetworkingCore/WordPressAPIDiscovery.swift": 6,
     "Modules/Sources/NetworkingCore/WordPressRESTAPIRootCache.swift": 4,
-    "Modules/Sources/ParcelFittingCheck/ARScene/ARCuboidEntity.swift": 29,
-    "Modules/Sources/ParcelFittingCheck/ARScene/ARParcelSceneCoordinator.swift": 1,
-    "Modules/Sources/ParcelFittingCheck/Models/ParcelDimensions.swift": 1,
-    "Modules/Sources/ParcelFittingCheck/Presenter/ParcelFittingCheckPresenter.swift": 15,
     "Modules/Sources/PointOfSale/Controllers/POSOrderListController.swift": 9,
     "Modules/Sources/PointOfSale/Controllers/POSPaymentModel.swift": 36,
     "Modules/Sources/PointOfSale/Controllers/POSRefundController.swift": 8,
@@ -128,7 +124,7 @@
     "Modules/Sources/UITestsFoundation/Screens/Reviews/SingleReviewScreen.swift": 14,
     "Modules/Sources/UITestsFoundation/Screens/Settings/BetaFeaturesScreen.swift": 7,
     "Modules/Sources/UITestsFoundation/Screens/Settings/SettingsScreen.swift": 17,
-    "Modules/Sources/UITestsFoundation/Screens/TabNavComponent.swift": 13,
+    "Modules/Sources/UITestsFoundation/Screens/TabNavComponent.swift": 12,
     "Modules/Sources/UITestsFoundation/XCTest+Extensions.swift": 15,
     "Modules/Sources/WooFoundationCore/BuildConfiguration.swift": 1,
     "Modules/Sources/WooFoundationCore/ColorStudio.swift": 13,
@@ -186,8 +182,8 @@
     "Modules/Sources/Yosemite/Stores/MetaDataStore.swift": 6,
     "Modules/Sources/Yosemite/Stores/NotificationStore.swift": 14,
     "Modules/Sources/Yosemite/Stores/OrderStore.swift": 18,
-    "Modules/Sources/Yosemite/Stores/ProductCategoryStore.swift": 7,
-    "Modules/Sources/Yosemite/Stores/ProductStore.swift": 109,
+    "Modules/Sources/Yosemite/Stores/ProductCategoryStore.swift": 6,
+    "Modules/Sources/Yosemite/Stores/ProductStore.swift": 74,
     "Modules/Sources/Yosemite/Stores/ProductVariationStore.swift": 3,
     "Modules/Sources/Yosemite/Stores/QRLoginStore.swift": 20,
     "Modules/Sources/Yosemite/Stores/SettingStore.swift": 19,
@@ -1117,5 +1113,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 10039
+  "total": 9956
 }

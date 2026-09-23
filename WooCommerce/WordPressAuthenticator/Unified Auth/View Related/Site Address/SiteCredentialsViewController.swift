@@ -34,7 +34,7 @@ final class SiteCredentialsViewController: LoginViewController {
     private let configuration: WordPressAuthenticatorConfiguration
 
     private var isWPCom: Bool {
-        return loginFields.siteAddress == "https://wordpress.com"
+        return loginFields.siteAddress == LoginFields.wpComSiteAddress
     }
 
     init?(coder: NSCoder,

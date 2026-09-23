@@ -49,9 +49,11 @@ private extension MagicLinkRequestViewController {
             tracker.track(click: .requestMagicLink)
             configureSubmitButton(animating: true)
 
+            // The requester persists this, and it is what restores the store address when the
+            // emailed link is opened, so it has to be the typed address and not the WP.com marker.
             let result = await MagicLinkRequester().requestMagicLink(email: loginFields.username,
                                                                      jetpackLogin: loginFields.meta.jetpackLogin,
-                                                                     siteAddress: loginFields.siteAddress)
+                                                                     siteAddress: loginFields.effectiveSiteAddress)
 
             configureSubmitButton(animating: false)
 
@@ -87,7 +89,13 @@ private extension MagicLinkRequestViewController {
 
         vc.loginFields = self.loginFields
         if fallbackAction == .wpcomUsernamePassword {
-            vc.loginFields.siteAddress = "https://wordpress.com"
+            // The overwrite has to stay: SiteCredentialsViewController keys its WP.com mode off
+            // this value. loginFields is shared with vc, so skip the stash once siteAddress is
+            // already the marker, or re-entering the fallback would save it over the real address.
+            if self.loginFields.siteAddress != LoginFields.wpComSiteAddress {
+                vc.loginFields.siteAddressForEpilogue = self.loginFields.siteAddress
+            }
+            vc.loginFields.siteAddress = LoginFields.wpComSiteAddress
         }
 
         self.navigationController?.pushViewController(vc, animated: true)

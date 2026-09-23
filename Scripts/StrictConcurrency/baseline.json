@@ -16,13 +16,11 @@
     "Modules/Sources/Networking/Network/BackgroundDownloadService.swift": 3,
     "Modules/Sources/Networking/ProductImageInBackground/ProductImageStatusStorage.swift": 1,
     "Modules/Sources/Networking/Remote/JetpackConnectionRemote.swift": 8,
-    "Modules/Sources/Networking/Remote/RefundsRemote.swift": 1,
     "Modules/Sources/Networking/Remote/SystemStatusRemote.swift": 4,
     "Modules/Sources/NetworkingCore/ApplicationPassword/ApplicationPasswordUseCase.swift": 5,
     "Modules/Sources/NetworkingCore/Internal/Logging.swift": 3,
     "Modules/Sources/NetworkingCore/Mapper/OrderStatsV4Mapper.swift": 1,
     "Modules/Sources/NetworkingCore/Model/DotcomError.swift": 12,
-    "Modules/Sources/NetworkingCore/Model/Refund/RefundPreview.swift": 2,
     "Modules/Sources/NetworkingCore/Network/AlamofireNetwork.swift": 28,
     "Modules/Sources/NetworkingCore/Network/StoreConnectionErrorMonitor.swift": 1,
     "Modules/Sources/NetworkingCore/Network/WordPressOrgNetwork.swift": 4,
@@ -131,7 +129,7 @@
     "Modules/Sources/UITestsFoundation/Screens/Reviews/SingleReviewScreen.swift": 14,
     "Modules/Sources/UITestsFoundation/Screens/Settings/BetaFeaturesScreen.swift": 7,
     "Modules/Sources/UITestsFoundation/Screens/Settings/SettingsScreen.swift": 17,
-    "Modules/Sources/UITestsFoundation/Screens/TabNavComponent.swift": 13,
+    "Modules/Sources/UITestsFoundation/Screens/TabNavComponent.swift": 12,
     "Modules/Sources/UITestsFoundation/XCTest+Extensions.swift": 15,
     "Modules/Sources/WooFoundationCore/BuildConfiguration.swift": 1,
     "Modules/Sources/WooFoundationCore/ColorStudio.swift": 13,
@@ -1121,5 +1119,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 10017
+  "total": 10013
 }

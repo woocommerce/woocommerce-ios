@@ -761,6 +761,47 @@ final class BlazeStoreTests: XCTestCase {
         XCTAssertEqual(result.failure as? NetworkError, .timeout())
     }
 
+    // MARK: - Fetch billing summary
+
+    func test_fetchBillingSummary_returns_summary_when_fetching_successfully() throws {
+        // Given
+        let summary = BlazeBillingSummary(debt: 25.05, paymentLinks: [.init(date: nil, amount: 25.05, url: "https://example.com")])
+        remote.whenFetchingBillingSummary(thenReturn: .success(summary))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchBillingSummary(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertEqual(try result.get(), summary)
+    }
+
+    func test_fetchBillingSummary_returns_error_on_failure() throws {
+        // Given
+        remote.whenFetchingBillingSummary(thenReturn: .failure(NetworkError.timeout()))
+        let store = BlazeStore(dispatcher: Dispatcher(),
+                               storageManager: storageManager,
+                               network: network,
+                               remote: remote)
+
+        // When
+        let result = waitFor { promise in
+            store.onAction(BlazeAction.fetchBillingSummary(siteID: self.sampleSiteID, onCompletion: { result in
+                promise(result)
+            }))
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, .timeout())
+    }
+
     // MARK: - Synchronize campaign objectives
 
     func test_synchronizeCampaignObjectives_is_successful_when_fetching_successfully() throws {

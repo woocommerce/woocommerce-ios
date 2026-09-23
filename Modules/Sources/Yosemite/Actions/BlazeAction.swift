@@ -122,6 +122,16 @@ public enum BlazeAction: Action {
     case fetchPaymentInfo(siteID: Int64,
                           onCompletion: (Result<BlazePaymentInfo, Error>) -> Void)
 
+    /// Fetches the Blaze billing summary of the current user, including any outstanding balance.
+    ///
+    /// - siteID: WPCom ID for the site to create the campaign in.
+    /// - `onCompletion`: invoked when the fetch operation finishes.
+    ///   - `result.success(BlazeBillingSummary)`: billing summary of the user.
+    ///   - `result.failure(Error)`: error indicates issues fetching the summary.
+    ///
+    case fetchBillingSummary(siteID: Int64,
+                             onCompletion: (Result<BlazeBillingSummary, Error>) -> Void)
+
     /// Retrieves and stores campaign objectives for creating Blaze campaigns for a site.
     ///
     /// - `siteID`: the site to create Blaze campaign.

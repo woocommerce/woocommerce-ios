@@ -1,0 +1,88 @@
+import Foundation
+
+/// Blaze billing summary of the current WPCom user.
+public struct BlazeBillingSummary: Decodable, Equatable {
+
+    /// Amount the user failed to pay for previous campaigns, in USD.
+    public let debt: Double
+
+    /// Unpaid orders that the user can pay to clear the debt.
+    public let paymentLinks: [PaymentLink]
+
+    public init(debt: Double, paymentLinks: [PaymentLink]) {
+        self.debt = debt
+        self.paymentLinks = paymentLinks
+    }
+
+    public init(from decoder: Decoder) throws {
+        let container = try decoder.container(keyedBy: CodingKeys.self)
+        debt = container.failsafeDecodeIfPresent(targetType: Double.self,
+                                                 forKey: .debt,
+                                                 alternativeTypes: [.string(transform: { Double($0) ?? 0 })]) ?? 0
+        paymentLinks = try container.decodeIfPresent([PaymentLink].self, forKey: .paymentLinks) ?? []
+    }
+
+    private enum CodingKeys: String, CodingKey {
+        case debt
+        case paymentLinks
+    }
+}
+
+public extension BlazeBillingSummary {
+
+    /// Unpaid order with a link to pay it.
+    struct PaymentLink: Decodable, Equatable {
+
+        /// Creation date of the order.
+        public let date: Date?
+
+        /// Amount of the order, in USD.
+        public let amount: Double
+
+        /// Link to pay the order.
+        public let url: String
+
+        public init(date: Date?, amount: Double, url: String) {
+            self.date = date
+            self.amount = amount
+            self.url = url
+        }
+
+        public init(from decoder: Decoder) throws {
+            let container = try decoder.container(keyedBy: CodingKeys.self)
+            let rawDate = try container.decodeIfPresent(String.self, forKey: .date)
+            date = rawDate.flatMap { Self.parseDate($0) }
+            amount = container.failsafeDecodeIfPresent(targetType: Double.self,
+                                                       forKey: .amount,
+                                                       alternativeTypes: [.string(transform: { Double($0) ?? 0 })]) ?? 0
+            url = try container.decode(String.self, forKey: .url)
+        }
+
+        private enum CodingKeys: String, CodingKey {
+            case date
+            case amount
+            case url
+        }
+
+        private static func parseDate(_ value: String) -> Date? {
+            let isoFormatter = ISO8601DateFormatter()
+            if let date = isoFormatter.date(from: value) {
+                return date
+            }
+            isoFormatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+            if let date = isoFormatter.date(from: value) {
+                return date
+            }
+            let formatter = DateFormatter()
+            formatter.locale = Locale(identifier: "en_US_POSIX")
+            formatter.timeZone = TimeZone(identifier: "UTC")
+            for format in ["yyyy-MM-dd HH:mm:ss", "yyyy-MM-dd'T'HH:mm:ss", "yyyy-MM-dd"] {
+                formatter.dateFormat = format
+                if let date = formatter.date(from: value) {
+                    return date
+                }
+            }
+            return nil
+        }
+    }
+}

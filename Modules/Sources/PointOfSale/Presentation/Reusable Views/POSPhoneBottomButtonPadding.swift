@@ -16,9 +16,9 @@ private enum POSPhoneBottomButtonPadding {
 }
 
 enum POSCompactFooterLayout {
-    /// Keep the action at least one large padding token from the screen edge.
+    /// Match the compact page header's top spacing when there is no bottom inset.
     /// The system safe area supplies that space when its inset is larger.
     static func bottomPadding(safeAreaInset: CGFloat) -> CGFloat {
-        max(POSPadding.large - safeAreaInset, POSPadding.none)
+        max(POSPadding.medium - safeAreaInset, POSPadding.none)
     }
 }

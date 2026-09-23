@@ -11,6 +11,10 @@ final class BlazeCampaignListViewModel: ObservableObject {
     @Published var shouldDisplayPostCampaignCreationTip = false
     @Published var shouldShowIntroView = false
     @Published var selectedCampaignURL: URL?
+    @Published var selectedPaymentURL: URL?
+
+    /// Billing summary of the Blaze account, set only when there is an outstanding balance to pay.
+    @Published private(set) var outstandingBalance: BlazeBillingSummary?
 
     private var selectedCampaignID: String?
 
@@ -84,6 +88,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
     /// Called when loading the first page of campaigns.
     func loadCampaigns() {
         paginationTracker.syncFirstPage()
+        fetchOutstandingBalance()
     }
 
     /// Called when the next page should be loaded.
@@ -94,6 +99,7 @@ final class BlazeCampaignListViewModel: ObservableObject {
     /// Called when the user pulls down the list to refresh.
     /// - Parameter completion: called when the refresh completes.
     func onRefreshAction(completion: @escaping () -> Void) {
+        fetchOutstandingBalance()
         paginationTracker.resync(reason: nil) {
             completion()
         }
@@ -108,6 +114,15 @@ final class BlazeCampaignListViewModel: ObservableObject {
                           siteURL.trimHTTPScheme(),
                           BlazeCampaignDetailSource.campaignList.rawValue)
         selectedCampaignURL = URL(string: path)
+    }
+
+    func didSelectPayment(_ paymentLink: BlazeBillingSummary.PaymentLink) {
+        selectedPaymentURL = URL(string: paymentLink.url)
+    }
+
+    /// Reloads the balance and campaigns, as paying the balance resumes suspended campaigns.
+    func didDismissPayment() {
+        loadCampaigns()
     }
 
     func didSelectCreateCampaign(source: BlazeSource) {
@@ -169,6 +184,18 @@ private extension BlazeCampaignListViewModel {
         kind.forEach { kind in
             pushNotesManager.resetBadgeCount(type: kind)
         }
+    }
+
+    func fetchOutstandingBalance() {
+        stores.dispatch(BlazeAction.fetchBillingSummary(siteID: siteID) { [weak self] result in
+            switch result {
+            case .success(let summary):
+                let hasOutstandingBalance = summary.debt > 0 && summary.paymentLinks.isNotEmpty
+                self?.outstandingBalance = hasOutstandingBalance ? summary : nil
+            case .failure(let error):
+                DDLogError("⛔️ Error fetching Blaze billing summary: \(error)")
+            }
+        })
     }
 
     func refreshSelectedCampaign() {

@@ -236,27 +236,29 @@ struct PointOfSaleDashboardView: View {
         Group {
             switch posModel.orderStage {
             case .building:
-                VStack(spacing: POSSpacing.none) {
-                    ItemListView(
-                        selectedItemListType: $viewStateCoordinator.selectedItemListType,
-                        searchTerm: $viewStateCoordinator.searchTerm,
-                        httpsConfigurationNotice: httpsConfigurationNotice,
-                        phoneHeaderAccessoryBuilder: { context in
-                            AnyView(phoneOverflowMenu(
-                                canCreateCoupon: context.canCreateCoupon,
-                                onCreateCoupon: context.onCreateCoupon
-                            ))
+                GeometryReader { geometry in
+                    VStack(spacing: POSSpacing.none) {
+                        ItemListView(
+                            selectedItemListType: $viewStateCoordinator.selectedItemListType,
+                            searchTerm: $viewStateCoordinator.searchTerm,
+                            httpsConfigurationNotice: httpsConfigurationNotice,
+                            phoneHeaderAccessoryBuilder: { context in
+                                AnyView(phoneOverflowMenu(
+                                    canCreateCoupon: context.canCreateCoupon,
+                                    onCreateCoupon: context.onCreateCoupon
+                                ))
+                            }
+                        )
+                        if PointOfSaleDashboardViewHelper.showsCompactCartButton(
+                            cartIsEmpty: posModel.cart.isEmpty,
+                            floatingControlSuppressed: floatingControlSuppressed
+                        ) {
+                            phoneCartButton(bottomSafeAreaInset: geometry.safeAreaInsets.bottom)
+                                .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
-                    )
-                    if PointOfSaleDashboardViewHelper.showsCompactCartButton(
-                        cartIsEmpty: posModel.cart.isEmpty,
-                        floatingControlSuppressed: floatingControlSuppressed
-                    ) {
-                        phoneCartButton
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
+                    .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: posModel.cart.isEmpty)
                 }
-                .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: posModel.cart.isEmpty)
             case .finalizing:
                 NavigationStack(path: $navigationPath) {
                     phoneTotalsContainer
@@ -437,7 +439,7 @@ struct PointOfSaleDashboardView: View {
         posModel.cart.totalItemCount
     }
 
-    private var phoneCartButton: some View {
+    private func phoneCartButton(bottomSafeAreaInset: CGFloat) -> some View {
         Button {
             phoneCartPresentationDetent = .medium
             phoneShowingCart = true
@@ -450,7 +452,7 @@ struct PointOfSaleDashboardView: View {
                 .animation(.snappy(duration: 0.25), value: phoneCartItemsCount)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .posPhoneBottomButtonPadding()
+        .posPhoneBottomButtonPadding(bottom: POSCompactFooterLayout.bottomPadding(safeAreaInset: bottomSafeAreaInset))
         // Quick pulse to confirm an item was added — only on count increases, so removing items
         // doesn't bounce the button distractingly.
         .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)

@@ -757,7 +757,7 @@ private extension TotalsView {
             .if(horizontalSizeClass != .compact) {
                 $0
                     .padding(.horizontal, POSPadding.medium)
-                    .padding(.bottom, POSPadding.xxLarge)
+                    .padding(.bottom, POSPadding.medium)
             }
     }
 
@@ -774,7 +774,7 @@ private extension TotalsView {
         .if(horizontalSizeClass != .compact) {
             $0
                 .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.xxLarge)
+                .padding(.bottom, POSPadding.medium)
         }
     }
 

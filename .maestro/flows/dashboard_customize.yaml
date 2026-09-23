@@ -372,7 +372,13 @@ tags:
     text: "Most recent reviews"
     above:
       text: "Most active coupons"
-- swipe: { start: "92%,54%", end: "92%,60%", duration: 2000 }
+# Drag by the row's own handle; a fixed screen point lands on a different card
+# depending on the device and on the order earlier steps left behind.
+- swipe:
+    from:
+      text: "Reorder Most recent reviews"
+    direction: DOWN
+    duration: 2000
 - waitForAnimationToEnd:
     timeout: 5000
 - assertVisible:
@@ -391,7 +397,11 @@ tags:
     text: "Most recent reviews"
     below:
       text: "Most active coupons"
-- swipe: { start: "92%,60%", end: "92%,54%", duration: 2000 }
+- swipe:
+    from:
+      text: "Reorder Most active coupons"
+    direction: DOWN
+    duration: 2000
 - waitForAnimationToEnd:
     timeout: 5000
 - assertVisible:

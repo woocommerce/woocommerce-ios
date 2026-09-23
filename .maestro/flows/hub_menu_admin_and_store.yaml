@@ -82,31 +82,29 @@ tags:
 - copyTextFrom:
     id: "url-label"
     index: 0
-- evalScript: |
-    output.storeFirstURL = String(maestro.copiedText || '').trim();
+- evalScript: ${output.storeCandidateZeroURL = maestro.copiedText.trim()}
 - copyTextFrom:
-    id: "name-label"
-    index: 0
-- evalScript: |
-    output.storeFirstName = String(maestro.copiedText || '').trim();
-- evalScript: |
-    function host(value) {
-      return String(value || '').trim().toLowerCase()
-        .replace(/^https?:\/\//, '')
-        .split('/')[0]
-        .split('?')[0]
-        .split('#')[0]
-        .replace(/:\d+$/, '')
-        .replace(/\.$/, '');
-    }
-    output.storeTargetHost = host(output.storeFirstURL);
-    output.storeTargetName = output.storeFirstName;
-    if (!output.storeTargetHost || output.storeTargetHost === output.storeOriginalHost) {
-      throw new Error('Store picker must expose a different Woo store in its first row');
-    }
+    id: "url-label"
+    index: 1
+- evalScript: ${output.storeCandidateOneURL = maestro.copiedText.trim()}
+# Keep the copied strings raw: a value built inside a function does not survive
+# to the next command, so pick between them with inline conditions.
+- runFlow:
+    when:
+      true: ${String(output.storeCandidateZeroURL).toLowerCase().split('://').pop().split('/')[0] != String(output.storeOriginalURL).toLowerCase().split('://').pop().split('/')[0]}
+    commands:
+      - evalScript: ${output.storeTargetURL = output.storeCandidateZeroURL}
+- runFlow:
+    when:
+      true: ${String(output.storeCandidateZeroURL).toLowerCase().split('://').pop().split('/')[0] == String(output.storeOriginalURL).toLowerCase().split('://').pop().split('/')[0]}
+    commands:
+      - evalScript: ${output.storeTargetURL = output.storeCandidateOneURL}
+- assertTrue:
+    condition: ${output.storeTargetURL && String(output.storeTargetURL).toLowerCase().split('://').pop().split('/')[0] != String(output.storeOriginalURL).toLowerCase().split('://').pop().split('/')[0]}
+    label: Store picker exposes a different Woo store in its first two rows
 - takeScreenshot: hub_store_picker_discovery
 - tapOn:
-    point: "50%,43%"
+    text: "${output.storeTargetURL}"
 - takeScreenshot: hub_store_picker_target_selected
 - extendedWaitUntil:
     visible:
@@ -157,7 +155,8 @@ tags:
     timeout: 15000
     centerElement: true
 - tapOn:
-    point: "50%,75%"
+    id: "url-label"
+    text: ".*${MAESTRO_WOO_LAB_JETPACK_STORE_HOST}.*"
 - takeScreenshot: hub_store_picker_original_selected
 - extendedWaitUntil:
     visible:

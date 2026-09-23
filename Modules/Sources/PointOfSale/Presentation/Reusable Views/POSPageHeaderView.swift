@@ -12,20 +12,12 @@ struct POSPageHeaderBackButtonConfiguration {
     let action: () -> Void
     let buttonIcon: String?
     let accessibilityIdentifier: String?
-    let alignIconToLeadingEdge: Bool
 
-    init(
-        state: State,
-        action: @escaping () -> Void,
-        buttonIcon: String? = nil,
-        accessibilityIdentifier: String? = nil,
-        alignIconToLeadingEdge: Bool = false
-    ) {
+    init(state: State, action: @escaping () -> Void, buttonIcon: String? = nil, accessibilityIdentifier: String? = nil) {
         self.state = state
         self.action = action
         self.buttonIcon = buttonIcon
         self.accessibilityIdentifier = accessibilityIdentifier
-        self.alignIconToLeadingEdge = alignIconToLeadingEdge
     }
 }
 
@@ -135,38 +127,35 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
     private var itemsRow: some View {
         VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-            // The back button already has trailing padding; keep item spacing between titles only.
-            HStack(alignment: hStackAlignment, spacing: POSSpacing.none) {
+            HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
                 if showsBackButton {
                     backButton
                 }
-                HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
-                    ForEach(0..<items.count, id: \.self) { index in
-                        VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
-                            HStack(spacing: POSSpacing.small) {
-                                if items[index].title.isNotEmpty {
-                                    Button(action: {
-                                        items[index].action?()
-                                    }) {
-                                        titleText(items[index].title, isSelected: items[index].isSelected)
-                                    }
-                                    .disabled(items[index].isSelected)
-                                    .accessibilityElement()
-                                    .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
-                                    .accessibilityLabel(items[index].title)
+                ForEach(0..<items.count, id: \.self) { index in
+                    VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
+                        HStack(spacing: POSSpacing.small) {
+                            if items[index].title.isNotEmpty {
+                                Button(action: {
+                                    items[index].action?()
+                                }) {
+                                    titleText(items[index].title, isSelected: items[index].isSelected)
                                 }
-
-                                if items[index].isLoading {
-                                    ProgressView()
-                                        .progressViewStyle(.circular)
-                                        .scaleEffect(0.7)
-                                        .transition(.opacity.combined(with: .scale))
-                                }
+                                .disabled(items[index].isSelected)
+                                .accessibilityElement()
+                                .accessibilityAddTraits(items.count == 1 ? .isHeader : [.isHeader, .isButton])
+                                .accessibilityLabel(items[index].title)
                             }
 
-                            if let subtitle = items[index].subtitle {
-                                subtitleText(subtitle)
+                            if items[index].isLoading {
+                                ProgressView()
+                                    .progressViewStyle(.circular)
+                                    .scaleEffect(0.7)
+                                    .transition(.opacity.combined(with: .scale))
                             }
+                        }
+
+                        if let subtitle = items[index].subtitle {
+                            subtitleText(subtitle)
                         }
                     }
                 }

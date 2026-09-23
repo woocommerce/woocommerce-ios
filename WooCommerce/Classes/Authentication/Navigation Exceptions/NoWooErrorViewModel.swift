@@ -110,7 +110,7 @@ final class NoWooErrorViewModel: ULErrorViewModel {
         AuthenticatorAnalyticsTracker.shared.track(
             step: .notWooStore,
             properties: [
-                AuthenticatorAnalyticsTracker.Property.url.rawValue: site.url.trimmingURLScheme(),
+                AuthenticatorAnalyticsTracker.Property.url.rawValue: site.url.trimHTTPScheme(),
                 AuthenticatorAnalyticsTracker.Property.hasConnectedStores.rawValue: String(showsConnectedStores)
             ]
         )

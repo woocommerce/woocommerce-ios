@@ -302,11 +302,11 @@ private extension StorePickerViewController {
 
     /// Reports which epilogue the merchant landed on, once the sites have been synchronised.
     ///
-    /// Only the login epilogue, mirroring Android, which gates its login events on
-    /// `openedFromLogin` so store switching does not look like a login outcome. The two steps are
-    /// mutually exclusive there as well, and this has to wait for the sync because the state starts
-    /// out `.empty` and would otherwise report no stores for every merchant. A failed sync is not
-    /// reported at all, so an offline merchant is not counted as having no stores.
+    /// Gated to the `.login` configuration, mirroring Android's `openedFromLogin`, so store
+    /// switching does not look like a login outcome. The two steps are mutually exclusive there as
+    /// well. This waits for the sync because the state starts out `.empty` and would otherwise
+    /// report no stores for every merchant, and a failed sync is not reported at all, so an offline
+    /// merchant is not counted as having none.
     ///
     func trackLoginOutcome() {
         guard configuration == .login, !hasTrackedLoginOutcome else {

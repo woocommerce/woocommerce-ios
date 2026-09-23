@@ -164,9 +164,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         viewModel.viewDidLoad(nil)
 
         // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_error_shown" }))
-        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, true)
+        XCTAssertEqual(AuthenticatorAnalyticsTracker.shared.state.lastStep, .wrongWordPressAccount)
     }
 
     func test_error_view_is_tracked_with_selfhosted_site_if_siteInfo_returns_selfhosted() throws {
@@ -188,9 +186,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         viewModel.viewDidLoad(nil)
 
         // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_error_shown" }))
-        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, true)
+        XCTAssertEqual(AuthenticatorAnalyticsTracker.shared.state.lastStep, .wrongWordPressAccount)
     }
 
     func test_error_view_is_tracked_without_selfhosted_site_if_siteInfo_returns_wpcom_site() throws {
@@ -212,9 +208,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         viewModel.viewDidLoad(nil)
 
         // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_error_shown" }))
-        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, false)
+        XCTAssertEqual(AuthenticatorAnalyticsTracker.shared.state.lastStep, .wrongWordPressAccount)
     }
 
     func test_primary_button_tap_is_tracked() {

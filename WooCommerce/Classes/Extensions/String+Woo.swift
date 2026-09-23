@@ -16,18 +16,6 @@ extension String {
     static var space: String {
         return " "
     }
-
-    /// The site address without its scheme or trailing slash.
-    ///
-    /// Android reports store addresses this way, and its values are the ones already in the
-    /// analytics history, so login steps normalise to the same shape before reporting a `url`.
-    /// Only the scheme is dropped: a store can live under a path, and that has to survive.
-    ///
-    func trimmingURLScheme() -> String {
-        removingPrefix("https://")
-            .removingPrefix("http://")
-            .removingSuffix("/")
-    }
 }
 
 

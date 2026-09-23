@@ -1,6 +1,7 @@
 import XCTest
 import Yosemite
 @testable import WooCommerce
+import WordPressAuthenticator
 
 final class NoWooErrorViewModelTests: XCTestCase {
 
@@ -140,18 +141,15 @@ final class NoWooErrorViewModelTests: XCTestCase {
     func test_woocommerce_error_screen_is_tracked_when_the_view_is_loaded() {
         // Given
         let site = Site.fake().copy(url: "https://test.com")
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         let viewModel = NoWooErrorViewModel(site: site,
                                             showsConnectedStores: false,
-                                            analytics: analytics,
                                             onSetupCompletion: { _ in })
 
         // When
         viewModel.viewDidLoad(nil)
 
         // Then
-        XCTAssertNotNil(analyticsProvider.receivedEvents.first(where: { $0 == "login_woocommerce_error_shown" }))
+        XCTAssertEqual(AuthenticatorAnalyticsTracker.shared.state.lastStep, .notWooStore)
     }
 
     func test_viewmodel_provides_expected_title_for_right_bar_button_item() {

@@ -117,7 +117,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         AuthenticatorAnalyticsTracker.shared.track(
             step: .wrongWordPressAccount,
             properties: [
-                AuthenticatorAnalyticsTracker.Property.url.rawValue: siteURL.trimmingURLScheme(),
+                AuthenticatorAnalyticsTracker.Property.url.rawValue: siteURL.trimHTTPScheme(),
                 AuthenticatorAnalyticsTracker.Property.hasConnectedStores.rawValue: String(showsConnectedStores)
             ]
         )

@@ -5,6 +5,8 @@ import Foundation
 /// This class de-bounces the execution of a provided callback.
 /// It also offers a mechanism to immediately trigger the scheduled call if necessary.
 ///
+/// Only used by the legacy `LoginSiteAddressViewController`; expected to go with it under AINFRA-601.
+///
 @MainActor
 public final class Debouncer {
     // Read from the nonisolated deinit; every other access is main-actor isolated.

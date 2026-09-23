@@ -10,11 +10,14 @@ tags:
     file: ../subflows/ensure_logged_in.yaml
 - runFlow:
     file: ../subflows/navigate_to_more_menu.yaml
+# The row can sit under the floating tab bar while still being in the
+# hierarchy, and the tap then lands on the tab bar instead.
 - scrollUntilVisible:
     element:
       id: "menu-view-store"
     direction: DOWN
     timeout: 15000
+    centerElement: true
 - tapOn:
     id: "menu-view-store"
 - extendedWaitUntil:

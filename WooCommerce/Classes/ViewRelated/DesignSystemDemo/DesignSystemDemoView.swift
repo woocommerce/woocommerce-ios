@@ -34,6 +34,7 @@ private struct ComponentsView: View {
             NavigationLink("Button") { ButtonComponentView() }
             NavigationLink("Cell") { CellComponentView() }
             NavigationLink("Checkbox") { CheckboxComponentView() }
+            NavigationLink("Chip") { ChipComponentView() }
             NavigationLink("Icon Container") { IconContainerComponentView() }
             NavigationLink("Divider") { DividerComponentView() }
             NavigationLink("NoticeBanner") { NoticeBannerComponentView() }

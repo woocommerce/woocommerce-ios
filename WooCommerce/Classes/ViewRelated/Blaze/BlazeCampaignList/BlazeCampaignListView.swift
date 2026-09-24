@@ -202,7 +202,7 @@ private extension BlazeCampaignListView {
     }
 
     func paymentView(url: URL) -> some View {
-        NavigationView {
+        NavigationStack {
             AuthenticatedWebView(isPresented: .constant(true),
                                  viewModel: DefaultAuthenticatedWebViewModel(title: Localization.paymentTitle, initialURL: url))
             .navigationTitle(Localization.paymentTitle)

@@ -92,6 +92,27 @@ class RunnerTests(unittest.TestCase):
         values["MAESTRO_WOO_NO_JETPACK_SITE_URL"] = "https://other.example.com/"
         RUNNER.validate_login_store_hosts([flow], values, store="lab")
 
+    def test_shared_destructive_runs_are_refused_outside_ci(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "orders_create.yaml"
+
+        with self.assertRaisesRegex(SystemExit, "shared store outside CI"):
+            RUNNER.validate_shared_destructive([flow], store="shared", ci=False)
+
+        RUNNER.validate_shared_destructive([flow], store="shared", ci=True)
+        RUNNER.validate_shared_destructive([flow], store="lab", ci=False)
+
+    def test_shared_destructive_runs_require_the_shared_host(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "orders_create.yaml"
+
+        with self.assertRaisesRegex(SystemExit, "configured host is lab.example.com"):
+            RUNNER.validate_shared_store_host(
+                [flow], {"MAESTRO_WOO_JETPACK_STORE_URL": "https://lab.example.com/"}, store="shared"
+            )
+
+        RUNNER.validate_shared_store_host(
+            [flow], {"MAESTRO_WOO_JETPACK_STORE_URL": f"https://{RUNNER.SHARED_STORE_HOST}/"}, store="shared"
+        )
+
     def test_html_report_names_the_overall_status(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)

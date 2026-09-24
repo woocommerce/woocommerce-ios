@@ -89,6 +89,46 @@ class SeedFixtureTests(unittest.TestCase):
             self.assertEqual([], contents["entities"])
             self.assertIn("created_at", contents)
 
+    def test_lock_lifecycle_is_separate_from_fixture_entities(self) -> None:
+        class LockClient:
+            def __init__(self, existing: list[dict[str, object]]) -> None:
+                self.existing = existing
+                self.created: list[dict[str, object]] = []
+                self.deleted: list[int] = []
+
+            def list(self, path: str, **query: object) -> list[dict[str, object]]:
+                return self.existing
+
+            def create(self, path: str, body: dict[str, object]) -> dict[str, object]:
+                self.created.append(body)
+                return {"id": 91, "name": body["name"]}
+
+            def delete(self, path: str, entity_id: int, *, prefix: str | None = None) -> None:
+                self.deleted.append(entity_id)
+
+        with tempfile.TemporaryDirectory() as directory:
+            manifest = Path(directory) / "run-manifest.json"
+            args = argparse.Namespace(run_id="SUITE-20260805T120000Z-abc123", manifest=manifest)
+
+            expired = {"id": 90, "name": "SUITE-LOCK-old", "date_created_gmt": "2020-01-01T00:00:00"}
+            client = LockClient([expired])
+            with mock.patch.object(SEED, "WooClient", return_value=client):
+                SEED.lock(args)
+                SEED.initialize(args)
+                self.assertEqual(json.loads(manifest.read_text())["lock"]["id"], 91)
+                SEED.unlock(args)
+
+            self.assertEqual(client.deleted, [90, 91])
+            self.assertTrue(str(client.created[0]["name"]).startswith("SUITE-LOCK-SUITE-20260805T120000Z-abc123-"))
+            contents = json.loads(manifest.read_text())
+            self.assertEqual(contents["lock"]["id"], 91)
+            self.assertEqual(contents["entities"], [])
+
+            active = {"id": 92, "name": "SUITE-LOCK-other", "date_created_gmt": SEED.dt.datetime.now(SEED.dt.timezone.utc).isoformat()}
+            with mock.patch.object(SEED, "WooClient", return_value=LockClient([active])):
+                with self.assertRaisesRegex(SEED.SmokeSetupError, "Shared store is locked"):
+                    SEED.lock(args)
+
     def test_rest_datetime_strips_offset_and_microseconds(self) -> None:
         """The API's `after` filter returns nothing when the offset is present.
 

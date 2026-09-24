@@ -4,6 +4,7 @@
 from __future__ import annotations
 
 import argparse
+import atexit
 import datetime as dt
 import hashlib
 import html
@@ -780,6 +781,26 @@ def main() -> int:
     validate_login_store_hosts(flows, values, store=args.store)
     validate_shared_store_host(flows, values, store=args.store)
     values = normalized_flow_environment(flows, values)
+    manifest = output / "run-manifest.json"
+    lock_held = False
+
+    def release_shared_lock() -> None:
+        nonlocal lock_held
+        if lock_held and manifest.is_file():
+            run([sys.executable, str(SCRIPT_DIR / "seed-fixtures.py"), "--mode", "unlock", "--run-id", run_id, "--manifest", str(manifest)], check=False, env=values)
+            lock_held = False
+
+    if args.store == "shared" and has_destructive_flows(flows):
+        print("--- Acquiring shared-store destructive lock", flush=True)
+        lock_result = run(
+            [sys.executable, str(SCRIPT_DIR / "seed-fixtures.py"), "--mode", "lock", "--run-id", run_id, "--manifest", str(manifest)],
+            check=False,
+            env=values,
+        )
+        if lock_result.returncode:
+            raise SystemExit(redact((lock_result.stderr or lock_result.stdout).strip() or "Could not lock the shared store", values))
+        lock_held = True
+        atexit.register(release_shared_lock)
     simulator = resolve_simulator(args.device, family)
     locale = run(
         [sys.executable, str(DEVICE_LOCALE), "--device", simulator["udid"]],
@@ -900,6 +921,7 @@ def main() -> int:
                 )
         elif args.seed:
             cleanup_status = "SKIPPED"
+        release_shared_lock()
 
     print("--- Generating reports", flush=True)
     result = finalize_suite(attempts, output / "report.xml")

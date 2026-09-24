@@ -318,7 +318,9 @@ struct OrderForm: View {
                         .renderedIf(viewModel.shippingLineViewModel.shippingLineRows.isNotEmpty)
 
                         Group {
-                            OrderCouponSectionView(viewModel: viewModel, couponViewModel: viewModel.couponLineViewModel)
+                            OrderCouponSectionView(viewModel: viewModel,
+                                                   couponViewModel: viewModel.couponLineViewModel,
+                                                   safeAreaInsets: safeAreaInsets)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
                             Spacer(minLength: Layout.sectionSpacing)
                         }
@@ -339,7 +341,7 @@ struct OrderForm: View {
 
                     VStack(spacing: Layout.noSpacing) {
                         Group {
-                            NewTaxRateSection(text: viewModel.taxRateRowText) {
+                            NewTaxRateSection(text: viewModel.taxRateRowText, safeAreaInsets: safeAreaInsets) {
                                 viewModel.onSetNewTaxRateTapped()
                                 switch viewModel.taxRateRowAction {
                                 case .storedTaxRateSheet:
@@ -555,6 +557,7 @@ struct OrderForm: View {
 
 private struct NewTaxRateSection: View {
     let text: String
+    let safeAreaInsets: EdgeInsets
     let onButtonTapped: (() -> Void)
 
     var body: some View {
@@ -563,6 +566,7 @@ private struct NewTaxRateSection: View {
                     Text(text)
                         .multilineTextAlignment(.center)
                         .padding(OrderForm.Layout.sectionSpacing)
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .frame(maxWidth: .infinity)
         })
         .background(Color(.listForeground(modal: true)))

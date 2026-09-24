@@ -165,7 +165,7 @@
     "Modules/Sources/Yosemite/Printer/ReceiptStoreInformation.swift": 1,
     "Modules/Sources/Yosemite/Stores/AccountCreationStore.swift": 5,
     "Modules/Sources/Yosemite/Stores/AccountStore.swift": 3,
-    "Modules/Sources/Yosemite/Stores/BlazeStore.swift": 35,
+    "Modules/Sources/Yosemite/Stores/BlazeStore.swift": 38,
     "Modules/Sources/Yosemite/Stores/BookingStore.swift": 56,
     "Modules/Sources/Yosemite/Stores/Enums/ProductsSortOrder.swift": 1,
     "Modules/Sources/Yosemite/Stores/FeatureFlagStore.swift": 9,
@@ -1110,5 +1110,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 9935
+  "total": 9938
 }

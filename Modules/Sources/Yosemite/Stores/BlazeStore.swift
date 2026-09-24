@@ -73,6 +73,8 @@ public final class BlazeStore: Store {
             fetchAISuggestions(siteID: siteID, productID: productID, onCompletion: onCompletion)
         case let .fetchPaymentInfo(siteID, onCompletion):
             fetchPaymentInfo(siteID: siteID, onCompletion: onCompletion)
+        case let .fetchBillingSummary(siteID, onCompletion):
+            fetchBillingSummary(siteID: siteID, onCompletion: onCompletion)
         case let .synchronizeCampaignObjectives(siteID, locale, onCompletion):
             synchronizeCampaignObjectives(siteID: siteID, locale: locale, onCompletion: onCompletion)
         }
@@ -330,6 +332,21 @@ private extension BlazeStore {
             do {
                 let paymentInfo = try await remote.fetchPaymentInfo(siteID: siteID)
                 onCompletion(.success(paymentInfo))
+            } catch {
+                onCompletion(.failure(error))
+            }
+        }
+    }
+}
+
+// MARK: - Fetch billing summary
+//
+private extension BlazeStore {
+    func fetchBillingSummary(siteID: Int64, onCompletion: @escaping (Result<BlazeBillingSummary, Error>) -> Void) {
+        Task { @MainActor in
+            do {
+                let summary = try await remote.fetchBillingSummary(siteID: siteID)
+                onCompletion(.success(summary))
             } catch {
                 onCompletion(.failure(error))
             }

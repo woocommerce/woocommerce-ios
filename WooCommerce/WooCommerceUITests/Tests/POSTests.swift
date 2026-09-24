@@ -108,6 +108,38 @@ final class POSTests: XCTestCase {
             .confirmExitPOS()
     }
 
+    func test_POS_ipad_checkout_stays_in_place_when_product_search_keyboard_opens() throws {
+        try XCTSkipIf(UIDevice.current.userInterfaceIdiom != .pad)
+        let screen = try openPOS()
+        let app = XCUIApplication()
+        screen.tapAddProduct(productID: ProductIDs.simpleProduct)
+
+        let checkout = app.buttons["pos-checkout-button"]
+        let menu = app.buttons["pos-menu-button"]
+        XCTAssertTrue(checkout.waitForIsHittable(timeout: 10))
+        XCTAssertTrue(menu.waitForExistence(timeout: 10))
+        let checkoutY = checkout.frame.minY
+        let menuY = menu.frame.minY
+        XCTAssertEqual(checkout.frame.maxY, menu.frame.maxY, accuracy: 1)
+
+        func capture(_ name: String) {
+            let attachment = XCTAttachment(screenshot: XCUIScreen.main.screenshot())
+            attachment.name = name
+            attachment.lifetime = .keepAlways
+            add(attachment)
+        }
+
+        capture("Checkout before search")
+        screen.tapSearchProducts()
+        XCTAssertTrue(app.textFields["pos-search-field"].waitForIsHittable(timeout: 10))
+        XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
+        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.7))
+        XCTAssertEqual(checkout.frame.minY, checkoutY, accuracy: 1)
+        XCTAssertEqual(menu.frame.minY, menuY, accuracy: 1)
+        XCTAssertEqual(checkout.frame.maxY, menu.frame.maxY, accuracy: 1)
+        capture("Checkout with keyboard")
+    }
+
     private func beginTwoProductCheckout(extraLaunchArguments: [String] = []) throws -> POSScreen {
         return try openPOS(extraLaunchArguments: extraLaunchArguments)
             .tapAddProduct(productID: ProductIDs.simpleProduct)

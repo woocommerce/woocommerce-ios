@@ -10,11 +10,10 @@ extension SafeAreaRegions {
         return .all
     }
 
-    /// Preserve views that always ignored the container before iOS 27.
-    static var posLegacyContainerRegionToIgnore: SafeAreaRegions {
-        if #available(iOS 27, *) {
-            return []
-        }
-        return .container
+    /// Keep regular-width POS controls at the bottom edge. A full software keyboard
+    /// must not move them, while the short external-keyboard helper bar still can.
+    static func posBottomRegionsToIgnore(isCompact: Bool, isFullSizeKeyboardVisible: Bool) -> SafeAreaRegions {
+        let container: SafeAreaRegions = isCompact ? [] : .container
+        return isFullSizeKeyboardVisible ? container.union(.keyboard) : container
     }
 }

@@ -6,6 +6,7 @@ struct CartView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.keyboardObserver) private var keyboardObserver
     private let viewHelper = CartViewHelper()
 
     /// Optional override for triggering the barcode-scanner setup from outside CartView.
@@ -110,6 +111,8 @@ struct CartView: View {
                 .accessibilityIdentifier("pos-cart-view")
             }
         }
+        .ignoresSafeArea(.posBottomRegionsToIgnore(isCompact: horizontalSizeClass == .compact,
+                                                 isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible), edges: .bottom)
     }
 }
 

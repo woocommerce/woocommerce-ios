@@ -1036,9 +1036,9 @@ private extension OrderDetailsViewModel {
         stores.dispatch(WooShippingAction.syncShipments(siteID: order.siteID, orderID: order.orderID) { result in
             switch result {
             case .success:
-                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
+                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success, isRevampedFlow: true))
             case .failure(let error):
-                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
+                ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error), isRevampedFlow: true))
                 DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
             }
         })
@@ -1049,10 +1049,10 @@ private extension OrderDetailsViewModel {
             stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
                 switch result {
                 case .success(let shippingLabels):
-                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success))
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .success, isRevampedFlow: false))
                     continuation.resume(returning: shippingLabels)
                 case .failure(let error):
-                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error)))
+                    ServiceLocator.analytics.track(event: .shippingLabelsAPIRequest(result: .failed(error: error), isRevampedFlow: false))
                     DDLogError("⛔️ Error synchronizing shipping labels: \(error)")
                     continuation.resume(returning: [])
                 }

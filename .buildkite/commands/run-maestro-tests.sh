@@ -2,6 +2,7 @@
 set -euo pipefail
 
 PROFILE="${MAESTRO_PROFILE:-release}"
+STORE="${MAESTRO_STORE:-shared}"
 APP_VARIANT="${MAESTRO_APP_VARIANT:-debug}"
 APP_ARTIFACT="${MAESTRO_APP_ARTIFACT:-build-products.tar}"
 APP_SOURCE_BUILD_ID="${MAESTRO_APP_SOURCE_BUILD_ID:-}"
@@ -25,6 +26,8 @@ case "$PROFILE" in
     ;;
 esac
 
+STORE_UPPER="$(printf '%s' "$STORE" | tr '[:lower:]' '[:upper:]')"
+
 case "$APP_VARIANT" in
   debug) ;;
   alpha|prototype)
@@ -45,17 +48,17 @@ if [[ -z "${MAESTRO_CI_RESOURCE_KEY:-}" || "${MAESTRO_CI_RESOURCE_KEY}" == "unco
 fi
 
 required_environment=(
-  MAESTRO_WOO_LAB_JETPACK_STORE_URL
-  MAESTRO_WOO_LAB_WPCOM_EMAIL
-  MAESTRO_WOO_LAB_WPCOM_PASSWORD
+  "MAESTRO_WOO_${STORE_UPPER}_JETPACK_STORE_URL"
+  "MAESTRO_WOO_${STORE_UPPER}_WPCOM_EMAIL"
+  "MAESTRO_WOO_${STORE_UPPER}_WPCOM_PASSWORD"
 )
 NEEDS_CLEANUP=false
 case "$PROFILE" in
   phone-full|pos-ipad|ios-system)
     NEEDS_CLEANUP=true
     required_environment+=(
-      MAESTRO_WOO_CONSUMER_KEY
-      MAESTRO_WOO_CONSUMER_SECRET
+      "MAESTRO_WOO_${STORE_UPPER}_CONSUMER_KEY"
+      "MAESTRO_WOO_${STORE_UPPER}_CONSUMER_SECRET"
     )
     ;;
 esac
@@ -121,6 +124,7 @@ runner=(
   .maestro/scripts/run-smoke-tests.sh
   --app "$APP_PATH"
   --profile "$PROFILE"
+  --store "$STORE"
   --output-dir "$OUTPUT_ROOT"
   --no-open
 )

@@ -27,6 +27,20 @@ class MaestroCiContractTests(unittest.TestCase):
         self.assertIn("phone-full|pos-ipad|ios-system", wrapper)
         self.assertIn("runner+=(--seed)", wrapper)
 
+    def test_release_and_burst_run_on_the_shared_store(self) -> None:
+        wrapper = (REPO_ROOT / ".buildkite" / "commands" / "run-maestro-tests.sh").read_text(
+            encoding="utf-8"
+        )
+        self.assertIn('STORE="${MAESTRO_STORE:-shared}"', wrapper)
+        self.assertIn('--store "$STORE"', wrapper)
+        for path in (
+            REPO_ROOT / ".buildkite" / "release-pipelines" / "maestro-smoke.yml",
+            REPO_ROOT / ".buildkite" / "schedules" / "maestro-smoke-burst.yml",
+        ):
+            pipeline = path.read_text(encoding="utf-8")
+            self.assertIn('MAESTRO_STORE: "shared"', pipeline)
+            self.assertNotIn("MAESTRO_WOO_LAB_", pipeline)
+
     def test_scheduled_phone_full_is_non_gating(self) -> None:
         schedule = (
             REPO_ROOT / ".buildkite" / "schedules" / "maestro-smoke-burst.yml"

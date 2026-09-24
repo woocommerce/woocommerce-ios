@@ -2,7 +2,7 @@ import Foundation
 
 /// Represent a WCPay account Entity.
 ///
-public struct WCPayAccount: Decodable {
+public struct WCPayAccount: Decodable, Sendable {
     public static let gatewayID = "woocommerce-payments"
 
     public let status: WCPayAccountStatusEnum

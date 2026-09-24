@@ -50,7 +50,9 @@ public final class PaymentStore: Store {
 
 private extension PaymentStore {
     func loadPlan(productID: Int64,
-                  completion: @escaping (Result<WPComPlan, Error>) -> Void) {
+                  completion: @escaping @Sendable (Result<WPComPlan, Error>) -> Void) {
+        // The remote is an immutable dependency whose requests are thread-safe; only the task reads it.
+        nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
                 let plan = try await remote.loadPlan(thatMatchesID: productID)
@@ -62,22 +64,28 @@ private extension PaymentStore {
     }
 
     func loadSiteCurrentPlan(siteID: Int64,
-                             completion: @escaping (Result<WPComSitePlan, Error>) -> Void) {
+                             completion: @escaping @Sendable (Result<WPComSitePlan, Error>) -> Void) {
+        nonisolated(unsafe) let remote = remote
         Task { @MainActor in
-            let result = await Result { try await remote.loadSiteCurrentPlan(siteID: siteID) }
-            completion(result)
+            do {
+                let plan = try await remote.loadSiteCurrentPlan(siteID: siteID)
+                completion(.success(plan))
+            } catch {
+                completion(.failure(error))
+            }
         }
     }
 
     func createCart(productID: String,
                     siteID: Int64,
-                    completion: @escaping (Result<Void, Error>) -> Void) {
+                    completion: @escaping @Sendable (Result<Void, Error>) -> Void) {
+        guard let productID = Int64(productID) else {
+            return completion(.failure(CreateCartError.invalidProductID))
+        }
+        nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
-                guard let productID = Int64(productID) else {
-                    return completion(.failure(CreateCartError.invalidProductID))
-                }
-                _ = try await remote.createCart(siteID: siteID, productID: productID)
+                try await remote.createCart(siteID: siteID, productID: productID)
                 completion(.success(()))
             } catch {
                 switch error {

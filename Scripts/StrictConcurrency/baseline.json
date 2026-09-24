@@ -10,7 +10,6 @@
     "Modules/Sources/Networking/Mapper/ProductBundleStatsMapper.swift": 1,
     "Modules/Sources/Networking/Model/Product/ProductAddOnEnvelope.swift": 1,
     "Modules/Sources/Networking/Model/Product/ProductMetadataExtractor.swift": 1,
-    "Modules/Sources/Networking/Model/WCPayAccount.swift": 1,
     "Modules/Sources/Networking/Network/BackgroundDownloadService.swift": 3,
     "Modules/Sources/Networking/ProductImageInBackground/ProductImageStatusStorage.swift": 1,
     "Modules/Sources/Networking/Remote/JetpackConnectionRemote.swift": 8,
@@ -178,12 +177,10 @@
     "Modules/Sources/Yosemite/Stores/MetaDataStore.swift": 6,
     "Modules/Sources/Yosemite/Stores/NotificationStore.swift": 14,
     "Modules/Sources/Yosemite/Stores/OrderStore.swift": 18,
-    "Modules/Sources/Yosemite/Stores/PaymentStore.swift": 10,
     "Modules/Sources/Yosemite/Stores/ProductCategoryStore.swift": 6,
     "Modules/Sources/Yosemite/Stores/ProductStore.swift": 74,
     "Modules/Sources/Yosemite/Stores/ProductVariationStore.swift": 3,
     "Modules/Sources/Yosemite/Stores/QRLoginStore.swift": 20,
-    "Modules/Sources/Yosemite/Stores/ReceiptStore.swift": 1,
     "Modules/Sources/Yosemite/Stores/SettingStore.swift": 19,
     "Modules/Sources/Yosemite/Stores/ShippingLabelStore.swift": 14,
     "Modules/Sources/Yosemite/Stores/ShippingMethodStore.swift": 3,
@@ -791,6 +788,7 @@
     "WooCommerce/Classes/ViewRelated/Themes/ThemesPreviewView.swift": 2,
     "WooCommerce/Classes/ViewRelated/Themes/ThemesPreviewViewModel.swift": 2,
     "WooCommerce/Classes/ViewRelated/Top Banner/ErrorTopBannerFactory.swift": 3,
+    "WooCommerce/Classes/ViewRelated/Upgrades/StorePlanSynchronizer.swift": 1,
     "WooCommerce/Classes/ViewRelated/WhatsNew/WhatsNewFactory.swift": 3,
     "WooCommerce/Classes/Yosemite/AuthenticatedState.swift": 5,
     "WooCommerce/Classes/Yosemite/DefaultStoresManager.swift": 17,
@@ -1110,5 +1108,5 @@
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/Utilities/URLSessionHelperTests.swift": 2,
     "WooCommerce/WordPressAuthenticatorTests/WordPressKit/WordPressKitTests/Tests/WordPressComServiceRemoteRestTests.swift": 2
   },
-  "total": 9935
+  "total": 9924
 }

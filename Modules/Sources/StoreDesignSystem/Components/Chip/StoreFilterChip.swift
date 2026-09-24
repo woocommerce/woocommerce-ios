@@ -5,8 +5,10 @@ import SwiftUI
 ///
 /// - Note: The design defines a single outlined style and no sizes, so none are modelled. The visible
 ///   chip keeps its compact design height while the tap target extends to the HIG minimum, as
-///   ``StoreSegmentedControl`` does. The selected chip carries `.isSelected` for VoiceOver.
-///   The chip owns no state: the caller passes `isSelected` and decides what a tap means in `action`.
+///   ``StoreSegmentedControl`` does. The chip owns no state: the caller passes `isSelected` and decides
+///   what a tap means in `action`. `isSelected` means "a filter is applied" and drives both the tonal
+///   style and the VoiceOver `.isSelected` trait, whether the tap toggles the filter or opens further
+///   options — so a chip that only opens a sheet passes `true` only while its filter is in effect.
 public struct StoreFilterChip: View {
     @Environment(\.isEnabled) private var isEnabled
 
@@ -19,7 +21,7 @@ public struct StoreFilterChip: View {
     /// - Parameters:
     ///   - title: The chip's label.
     ///   - icon: An optional leading icon, e.g. a filter glyph or a sort direction arrow.
-    ///   - isSelected: Whether the filter is applied. The caller owns the state and flips it in `action`.
+    ///   - isSelected: Whether the filter is applied. The caller owns the state and updates it from `action`.
     ///   - trailingIcon: An optional trailing icon, e.g. `StoreIcon.AngleDown.regular` when the chip opens further options.
     ///   - action: Called on tap.
     public init(_ title: String,

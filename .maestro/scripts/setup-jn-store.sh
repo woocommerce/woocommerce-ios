@@ -306,8 +306,8 @@ values = {
     "MAESTRO_WOO_LAB_WPCOM_PASSWORD": os.environ["WPCOM_PASS"],
     "MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_USERNAME": os.environ["ADMIN_USER"],
     "MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_PASSWORD": os.environ["SITE_PASS"],
-    "MAESTRO_WOO_CONSUMER_KEY": os.environ["CK"],
-    "MAESTRO_WOO_CONSUMER_SECRET": os.environ["CS"],
+    "MAESTRO_WOO_LAB_CONSUMER_KEY": os.environ["CK"],
+    "MAESTRO_WOO_LAB_CONSUMER_SECRET": os.environ["CS"],
 }
 
 def quote(value):

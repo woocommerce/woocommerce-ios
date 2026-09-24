@@ -35,6 +35,22 @@ DEVICE_LOCALE = SCRIPT_DIR / "device_locale.py"
 OUTPUT_DEFAULT = Path.home() / "woocommerce-maestro-output"
 NOT_WOO_STORE_FLOW = "login_not_woo_store.yaml"
 NO_JETPACK_FLOW = "login_no_jetpack.yaml"
+STORES = ("lab", "shared")
+# Profiles run against the lab store unless listed here, like the Android runner.
+PROFILE_STORES = {"release": "shared", "burst": "shared"}
+# Flows read these store-neutral names; the runner fills them from the
+# MAESTRO_WOO_LAB_* or MAESTRO_WOO_SHARED_* block picked with --store.
+STORE_SCOPED_SUFFIXES = (
+    "JETPACK_STORE_URL",
+    "WPCOM_EMAIL",
+    "WPCOM_PASSWORD",
+    "JETPACK_SITE_ADMIN_USERNAME",
+    "JETPACK_SITE_ADMIN_PASSWORD",
+    "CONSUMER_KEY",
+    "CONSUMER_SECRET",
+)
+# Older .env.local files keep the lab REST keys without the LAB_ prefix.
+LEGACY_UNSCOPED_LAB_SUFFIXES = ("CONSUMER_KEY", "CONSUMER_SECRET")
 NOT_WOO_STORE_WPCOM_FALLBACK = {
     "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL",
     "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD",
@@ -114,6 +130,7 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--profile", choices=sorted(PROFILES), default="core")
     parser.add_argument("--device", help="Simulator name or UDID")
+    parser.add_argument("--store", choices=STORES, help="Store credentials block to run against; defaults to the profile's store")
     parser.add_argument("--include-tags")
     parser.add_argument("--exclude-tags")
     parser.add_argument("--repeat", type=int)
@@ -155,6 +172,31 @@ def load_environment() -> dict[str, str]:
         if match:
             values[match.group(1)] = decode_env_value(match.group(2))
     return values
+
+
+def select_store_environment(values: dict[str, str], store: str) -> dict[str, str]:
+    selected = dict(values)
+    for suffix in STORE_SCOPED_SUFFIXES:
+        neutral = f"MAESTRO_WOO_{suffix}"
+        value = values.get(scoped_store_name(neutral, store), "")
+        if not value and store == "lab" and suffix in LEGACY_UNSCOPED_LAB_SUFFIXES:
+            value = values.get(neutral, "")
+        if value:
+            selected[neutral] = value
+        else:
+            selected.pop(neutral, None)
+    return selected
+
+
+def profile_store(profile: str) -> str:
+    return PROFILE_STORES.get(profile, "lab")
+
+
+def scoped_store_name(name: str, store: str) -> str:
+    suffix = name.removeprefix("MAESTRO_WOO_")
+    if suffix not in STORE_SCOPED_SUFFIXES:
+        return name
+    return f"MAESTRO_WOO_{store.upper()}_{suffix}"
 
 
 def run(
@@ -330,14 +372,16 @@ def required_environment(flows: list[Path], *, seed: bool) -> set[str]:
         required.update(references)
         for reference in SUBFLOW_REFERENCE_RE.findall(text):
             paths.append((path.parent / reference).resolve())
-    required.discard("MAESTRO_WOO_LAB_JETPACK_STORE_HOST")
+    required.discard("MAESTRO_WOO_JETPACK_STORE_HOST")
     if seed:
         required.update({"MAESTRO_WOO_CONSUMER_KEY", "MAESTRO_WOO_CONSUMER_SECRET"})
     return required
 
 
-def validate_environment(flows: list[Path], values: dict[str, str], *, seed: bool) -> None:
-    missing = sorted(name for name in required_environment(flows, seed=seed) if not values.get(name))
+def validate_environment(flows: list[Path], values: dict[str, str], *, seed: bool, store: str = "lab") -> None:
+    missing = sorted(
+        scoped_store_name(name, store) for name in required_environment(flows, seed=seed) if not values.get(name)
+    )
     if missing:
         raise SystemExit("Missing environment required by selected flows: " + ", ".join(missing))
     if any(flow.name == NOT_WOO_STORE_FLOW for flow in flows):
@@ -350,6 +394,22 @@ def validate_environment(flows: list[Path], values: dict[str, str], *, seed: boo
                 )
         elif any(configured_fallback) and not all(configured_fallback):
             raise SystemExit("Not-Woo-store WP.com fallback requires both email and password, or neither")
+
+
+def validate_login_store_hosts(flows: list[Path], values: dict[str, str], *, store: str) -> None:
+    if not any("MAESTRO_WOO_JETPACK_STORE_URL" in required_environment([flow], seed=False) for flow in flows):
+        return
+    store_host = normalized_store_host(values.get("MAESTRO_WOO_JETPACK_STORE_URL", ""))
+    no_jetpack_host = normalized_store_host(values.get("MAESTRO_WOO_NO_JETPACK_SITE_URL", ""))
+    if store_host and store_host == no_jetpack_host:
+        upper = store.upper()
+        raise SystemExit(
+            f"Setup error: selected --store {store} points the Jetpack store at the same host as the no-Jetpack site.\n\n"
+            "The selected flow set includes WP.com/Jetpack login flows. Set the "
+            f"{store} store block to a Jetpack-connected WooCommerce store with MAESTRO_WOO_{upper}_JETPACK_STORE_URL,\n"
+            f"MAESTRO_WOO_{upper}_WPCOM_EMAIL, and MAESTRO_WOO_{upper}_WPCOM_PASSWORD.\n"
+            "Keep MAESTRO_WOO_NO_JETPACK_* only for login_no_jetpack.yaml."
+        )
 
 
 def site_url_without_wp_admin(value: str) -> str:
@@ -393,9 +453,9 @@ def maestro_process_environment(
     for name in sorted(required_names - rest_only):
         if value := values.get(name):
             environment[name] = value
-    lab_store_url = values.get("MAESTRO_WOO_LAB_JETPACK_STORE_URL", "")
-    if lab_store_host := normalized_store_host(lab_store_url):
-        environment["MAESTRO_WOO_LAB_JETPACK_STORE_HOST"] = lab_store_host
+    store_url = values.get("MAESTRO_WOO_JETPACK_STORE_URL", "")
+    if store_host := normalized_store_host(store_url):
+        environment["MAESTRO_WOO_JETPACK_STORE_HOST"] = store_host
     environment["MAESTRO_SUITE_RUN_ID"] = run_id
     return environment
 
@@ -632,6 +692,7 @@ def main() -> int:
         raise SystemExit("--flow-timeout-seconds must be positive")
 
     include_default, exclude_default, repeat_default, family = PROFILES[args.profile]
+    args.store = args.store or profile_store(args.profile)
     include = csv(args.include_tags)
     exclude = csv(args.exclude_tags)
     include = include_default if include is None else include
@@ -641,10 +702,12 @@ def main() -> int:
     if args.plan:
         destructive_cleanup_required = any("destructive" in flow_tags(flow) for flow in flows)
         required = sorted(
-            required_environment(flows, seed=args.seed or destructive_cleanup_required)
+            scoped_store_name(name, args.store)
+            for name in required_environment(flows, seed=args.seed or destructive_cleanup_required)
         )
         print("--- Maestro execution plan")
         print(f"Profile:      {args.profile}")
+        print(f"Store:        {args.store}")
         print(f"Device family: {family}")
         print(f"Repeat:       {repeat}")
         print(f"Include tags: {','.join(include) or '<none>'}")
@@ -673,7 +736,7 @@ def main() -> int:
     if toolchain.returncode:
         return toolchain.returncode
 
-    values = load_environment()
+    values = select_store_environment(load_environment(), args.store)
     app_id = app_identifier(app)
     app_sha256 = app_bundle_sha256(app)
     stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -685,7 +748,8 @@ def main() -> int:
     (output / "diagnostics").mkdir()
     (output / "logs").mkdir()
 
-    validate_environment(flows, values, seed=args.seed)
+    validate_environment(flows, values, seed=args.seed, store=args.store)
+    validate_login_store_hosts(flows, values, store=args.store)
     values = normalized_flow_environment(flows, values)
     simulator = resolve_simulator(args.device, family)
     locale = run(
@@ -697,7 +761,7 @@ def main() -> int:
         return locale.returncode
     run(["xcrun", "simctl", "install", simulator["udid"], str(app)])
     summary = {
-        "run_id": run_id, "profile": args.profile, "app": str(app), "app_id": app_id,
+        "run_id": run_id, "profile": args.profile, "store": args.store, "app": str(app), "app_id": app_id,
         "candidate_kind": args.candidate_kind,
         "candidate_evidence": "developer build; not release evidence" if args.candidate_kind == "developer" else "release candidate",
         "app_sha256": app_sha256,
@@ -712,6 +776,7 @@ def main() -> int:
         print("--- Initializing run-owned cleanup journal", flush=True)
         run([sys.executable, str(seed), "--mode", "seed", "--run-id", run_id, "--manifest", str(output / "run-manifest.json")], env=values)
 
+
     attempts: list[Attempt] = []
     required_names = runtime_environment_names(flows, seed=args.seed)
     env_args = maestro_env_args(app_id, run_id)
@@ -725,6 +790,7 @@ def main() -> int:
     print("--- Running Maestro flows", flush=True)
     print(f"Run ID:       {run_id}", flush=True)
     print(f"Profile:      {args.profile}", flush=True)
+    print(f"Store:        {args.store}", flush=True)
     print(f"Simulator:    {simulator['name']} ({simulator['udid']})", flush=True)
     print(f"Output:       {output}", flush=True)
     print(f"Repeat:       {repeat}", flush=True)

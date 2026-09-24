@@ -60,10 +60,12 @@ def main() -> int:
     parser.add_argument("--app", required=True, type=Path)
     parser.add_argument("--profile", choices=sorted(RUNNER.PROFILES), default="core")
     parser.add_argument("--device")
+    parser.add_argument("--store", choices=RUNNER.STORES)
     parser.add_argument("--include-tags")
     parser.add_argument("--exclude-tags")
     parser.add_argument("--seed", action="store_true")
     args = parser.parse_args()
+    args.store = args.store or RUNNER.profile_store(args.profile)
 
     checks: list[tuple[bool, str]] = []
     for command in ("bash", "python3", "maestro", "xcrun", "plutil"):
@@ -72,10 +74,10 @@ def main() -> int:
     checks.append(check_toolchain())
 
     try:
-        values = RUNNER.load_environment()
+        values = RUNNER.select_store_environment(RUNNER.load_environment(), args.store)
         checks.append((True, "local environment syntax is valid"))
     except SystemExit:
-        values = dict(os.environ)
+        values = RUNNER.select_store_environment(dict(os.environ), args.store)
         checks.append((False, "local environment syntax is invalid"))
 
     try:
@@ -104,11 +106,12 @@ def main() -> int:
         checks.append((False, f"flow selection: {error}"))
 
     required = RUNNER.required_environment(flows if 'flows' in locals() else [], seed=args.seed)
-    missing = sorted(name for name in required if not values.get(name))
+    missing = sorted(RUNNER.scoped_store_name(name, args.store) for name in required if not values.get(name))
     checks.append((not missing, "required credentials are present" if not missing else "missing variables: " + ", ".join(missing)))
 
     print("WooCommerce iOS Maestro doctor")
     print(f"profile: {args.profile}")
+    print(f"store: {args.store}")
     failures = 0
     for passed, message in checks:
         print(f"[{'OK' if passed else 'FAIL'}] {message}")

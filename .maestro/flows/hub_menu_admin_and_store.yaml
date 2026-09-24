@@ -118,7 +118,7 @@ tags:
 - copyTextFrom:
     id: "store-url"
 - assertTrue:
-    condition: ${String(maestro.copiedText || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '') !== String(MAESTRO_WOO_LAB_JETPACK_STORE_URL || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '')}
+    condition: ${String(maestro.copiedText || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '') !== String(MAESTRO_WOO_JETPACK_STORE_URL || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '')}
     label: Hub identity changed to the dynamically selected store
 - tapOn: "Products"
 - extendedWaitUntil:
@@ -144,7 +144,7 @@ tags:
 - scrollUntilVisible:
     element:
       id: "url-label"
-      text: ".*${MAESTRO_WOO_LAB_JETPACK_STORE_HOST}.*"
+      text: ".*${MAESTRO_WOO_JETPACK_STORE_HOST}.*"
     direction: DOWN
     timeout: 15000
     centerElement: true
@@ -169,7 +169,7 @@ tags:
 - copyTextFrom:
     id: "store-url"
 - assertTrue:
-    condition: ${String(maestro.copiedText || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '') === String(MAESTRO_WOO_LAB_JETPACK_STORE_URL || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '')}
+    condition: ${String(maestro.copiedText || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '') === String(MAESTRO_WOO_JETPACK_STORE_URL || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '')}
     label: Original Hub store identity is restored
 - tapOn: "Products"
 - extendedWaitUntil:

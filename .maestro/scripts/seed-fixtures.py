@@ -72,7 +72,7 @@ def read_manifest(path: Path) -> dict[str, Any]:
 
 class WooClient:
     def __init__(self) -> None:
-        self.site_url = required_environment("MAESTRO_WOO_LAB_JETPACK_STORE_URL").rstrip("/")
+        self.site_url = required_environment("MAESTRO_WOO_JETPACK_STORE_URL").rstrip("/")
         key = required_environment("MAESTRO_WOO_CONSUMER_KEY")
         secret = required_environment("MAESTRO_WOO_CONSUMER_SECRET")
         token = base64.b64encode(f"{key}:{secret}".encode()).decode("ascii")

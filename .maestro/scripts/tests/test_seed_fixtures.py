@@ -65,7 +65,7 @@ class SeedFixtureTests(unittest.TestCase):
         self.environment = mock.patch.dict(
             os.environ,
             {
-                "MAESTRO_WOO_LAB_JETPACK_STORE_URL": "https://shop.example.com",
+                "MAESTRO_WOO_JETPACK_STORE_URL": "https://shop.example.com",
                 "MAESTRO_WOO_CONSUMER_KEY": "ck_test",
                 "MAESTRO_WOO_CONSUMER_SECRET": "cs_test",
             },

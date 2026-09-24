@@ -158,9 +158,10 @@ existing-customer email. Configure `MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH` as
 documented in `env.example`; the runner fails preflight rather than capturing
 or persisting a live customer's address.
 
-The lab store used by `phone-full` must be eligible for Inbox. The P2 lists
-Inbox as required hub coverage, so an absent `menu-inbox` fails the extended
-flow instead of being reported as a feature-gated skip.
+The lab store used by `phone-full` must be eligible for Inbox, Blaze and
+Google for WooCommerce. The P2 lists all three as required hub coverage, so an
+absent `menu-inbox`, `menu-blaze` or `menu-google-ads` fails the extended flow
+instead of being reported as a feature-gated skip.
 
 Validate traceability and static files with:
 

@@ -799,7 +799,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_isWooShippingSupported_returns_true_when_plugin_is_active_and_version_is_supported() async {
         // Given
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
-        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true, version: "1.0.5")
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true, version: "1.0.6")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
         // When
@@ -812,7 +812,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_isWooShippingSupported_returns_false_when_woo_shipping_plugin_not_active() async {
         // Given
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
-        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: false, version: "1.0.5")
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: false, version: "1.0.6")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
         // When
@@ -862,7 +862,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     func test_isWooShippingSupported_returns_false_when_woo_shipping_plugin_is_not_minimum_version() async {
         // Given
         let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
-        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: false, version: "1.0.4")
+        let plugin = insertSystemPlugin(path: SitePlugin.SupportedPluginPath.WooShipping, siteID: order.siteID, isActive: true, version: "1.0.5")
         whenFetchingSystemPlugin(thenReturn: plugin)
 
         // When

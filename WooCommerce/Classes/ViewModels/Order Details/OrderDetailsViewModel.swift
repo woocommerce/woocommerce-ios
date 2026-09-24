@@ -1143,7 +1143,6 @@ extension OrderDetailsViewModel {
 private extension OrderDetailsViewModel {
     enum Constants {
         /// Minimum version of Woo Shipping extension required for app support.
-        /// This should be updated to 1.0.6 once that version is released.
-        static let wooShippingMinimumVersion = "1.0.5"
+        static let wooShippingMinimumVersion = "1.0.6"
     }
 }

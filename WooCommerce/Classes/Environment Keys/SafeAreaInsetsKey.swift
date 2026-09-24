@@ -1,8 +1,9 @@
 import SwiftUI
 
-/// Environment key that allow use to obtain safe areas insets from a environment value.
-/// By `default` it provides the first window safe areas insets.
-/// Provide your custom inset with  the `environment(_:_:)` modifier when dealing with multiple windows or specific screens.
+/// Environment key for the safe-area insets of the container a screen is laid out in.
+///
+/// Read a live value at the screen root with `SafeAreaInsetsReader`.
+/// The default reads the first window once and never updates; it is a fallback being phased out (WOOMOB-4063).
 ///
 struct SafeAreaInsetsKey: EnvironmentKey {
     /// Returns the safe areas of the main window.
@@ -34,6 +35,22 @@ extension EnvironmentValues {
         }
         set {
             self[SafeAreaInsetsKey.self] = newValue
+        }
+    }
+}
+
+/// Reads the safe-area insets of the container this view is laid out in and hands them to `content`.
+/// Place it at a screen root, outside any `ScrollView`: inside scroll content there is no safe area left to read.
+/// It also publishes the value as `EnvironmentValues.safeAreaInsets` for shared components that read it themselves.
+///
+struct SafeAreaInsetsReader<Content: View>: View {
+    @ViewBuilder let content: (EdgeInsets) -> Content
+
+    var body: some View {
+        GeometryReader { geometry in
+            content(geometry.safeAreaInsets)
+                .environment(\.safeAreaInsets, geometry.safeAreaInsets)
+                .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
     }
 }

@@ -114,9 +114,10 @@ entries.
   identifier or text selector exists.
 - Main assertions are mandatory, specific, and never wildcard-only.
 - A feature-gated item maps to P2 coverage only when the selected profile's
-  fixture guarantees eligibility. `hub.inbox`, `hub.blaze.create` and
-  `hub.google-for-woo` are mandatory for `phone-full`; an ineligible store
-  fails the flow instead of emitting a passing skip.
+  fixture guarantees eligibility. `hub.inbox`, `hub.blaze.create`,
+  `hub.google-for-woo` and the `hub.payments` card-reader rows are mandatory
+  for `phone-full`; an ineligible store fails the flow instead of emitting a
+  passing skip.
 - Login-reset flows clear application state and Keychain. Non-login flows call
   `ensure_logged_in` and preserve authenticated state.
 - Flows share one session, so a flow restores any shared state it changes,

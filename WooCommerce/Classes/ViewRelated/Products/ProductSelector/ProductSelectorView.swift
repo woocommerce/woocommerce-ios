@@ -38,8 +38,6 @@ struct ProductSelectorView: View {
 
     ///   Environment safe areas
     ///
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
-
     @State private var showingFilters: Bool = false
 
     @State private var searchHeaderisBeingEdited = false
@@ -112,8 +110,14 @@ struct ProductSelectorView: View {
     }
 
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    @ViewBuilder private func content(safeAreaInsets: EdgeInsets) -> some View {
         VStack(spacing: 0) {
-            productSelectorHeader
+            productSelectorHeader(safeAreaInsets: safeAreaInsets)
 
             switch viewModel.syncStatus {
             case .results:
@@ -332,10 +336,10 @@ struct ProductSelectorView: View {
 }
 
 private extension ProductSelectorView {
-    @ViewBuilder var productSelectorHeader: some View {
+    @ViewBuilder func productSelectorHeader(safeAreaInsets: EdgeInsets) -> some View {
         if horizontalSizeClass == .regular {
             if !isHeaderCollapsedForKeyboard {
-                productSelectorHeaderTitleRow
+                productSelectorHeaderTitleRow(safeAreaInsets: safeAreaInsets)
             }
             productSelectorHeaderSearchRow
                 .padding(.bottom, Constants.defaultPadding)
@@ -343,13 +347,13 @@ private extension ProductSelectorView {
         } else {
             productSelectorHeaderSearchRow
             if !isHeaderCollapsedForKeyboard {
-                productSelectorHeaderTitleRow
+                productSelectorHeaderTitleRow(safeAreaInsets: safeAreaInsets)
             }
         }
         Divider()
     }
 
-    @ViewBuilder private var productSelectorHeaderTitleRow: some View {
+    @ViewBuilder private func productSelectorHeaderTitleRow(safeAreaInsets: EdgeInsets) -> some View {
         GeometryReader { geometry in
             HStack {
                 Text(viewModel.selectProductsTitle)

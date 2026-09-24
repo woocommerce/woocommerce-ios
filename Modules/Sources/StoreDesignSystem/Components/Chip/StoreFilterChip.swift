@@ -37,7 +37,7 @@ public struct StoreFilterChip: View {
     public var body: some View {
         Button(action: action) {
             chip
-                .frame(minHeight: StoreSize.minimumTapTarget)
+                .frame(minWidth: StoreSize.minimumTapTarget, minHeight: StoreSize.minimumTapTarget)
                 .contentShape(Rectangle())
         }
         .buttonStyle(StorePressFeedbackButtonStyle())

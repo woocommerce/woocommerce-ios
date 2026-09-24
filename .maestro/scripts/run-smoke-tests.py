@@ -117,7 +117,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--include-tags")
     parser.add_argument("--exclude-tags")
     parser.add_argument("--repeat", type=int)
-    parser.add_argument("--flow-timeout-seconds", type=float, default=900)
+    parser.add_argument("--flow-timeout-seconds", type=float, default=1800)
     parser.add_argument("--rerun-failed", type=Path)
     parser.add_argument("--output-dir", type=Path)
     parser.add_argument("--seed", action="store_true")

@@ -16,9 +16,8 @@ tags:
 
 # Capture the two always-available anchor cards and keep both selected so the
 # list's last-selected guard cannot block any non-anchor toggle.
-- evalScript: |
-    output.dashboardReviewsOriginal = '';
-    output.dashboardCouponsOriginal = '';
+- evalScript: ${output.dashboardReviewsOriginal = ''}
+- evalScript: ${output.dashboardCouponsOriginal = ''}
 - repeat:
     times: 6
     commands:
@@ -32,15 +31,13 @@ tags:
       visible:
         id: "selectable-item-selected-Most recent reviews"
     commands:
-      - evalScript: |
-          output.dashboardReviewsOriginal = 'selected';
+      - evalScript: ${output.dashboardReviewsOriginal = 'selected'}
 - runFlow:
     when:
       visible:
         id: "selectable-item-unselected-Most recent reviews"
     commands:
-      - evalScript: |
-          output.dashboardReviewsOriginal = 'unselected';
+      - evalScript: ${output.dashboardReviewsOriginal = 'unselected'}
       - runFlow:
           file: ../helpers/set_dashboard_card_selection.yaml
           env: { CARD_TITLE: Most recent reviews, DESIRED_STATE: selected }
@@ -53,15 +50,13 @@ tags:
       visible:
         id: "selectable-item-selected-Most active coupons"
     commands:
-      - evalScript: |
-          output.dashboardCouponsOriginal = 'selected';
+      - evalScript: ${output.dashboardCouponsOriginal = 'selected'}
 - runFlow:
     when:
       visible:
         id: "selectable-item-unselected-Most active coupons"
     commands:
-      - evalScript: |
-          output.dashboardCouponsOriginal = 'unselected';
+      - evalScript: ${output.dashboardCouponsOriginal = 'unselected'}
       - runFlow:
           file: ../helpers/set_dashboard_card_selection.yaml
           env: { CARD_TITLE: Most active coupons, DESIRED_STATE: selected }
@@ -372,7 +367,13 @@ tags:
     text: "Most recent reviews"
     above:
       text: "Most active coupons"
-- swipe: { start: "92%,54%", end: "92%,60%", duration: 2000 }
+# Drag by the row's own handle; a fixed screen point lands on a different card
+# depending on the device and on the order earlier steps left behind.
+- swipe:
+    from:
+      text: "Reorder Most recent reviews"
+    direction: DOWN
+    duration: 2000
 - waitForAnimationToEnd:
     timeout: 5000
 - assertVisible:
@@ -391,7 +392,11 @@ tags:
     text: "Most recent reviews"
     below:
       text: "Most active coupons"
-- swipe: { start: "92%,60%", end: "92%,54%", duration: 2000 }
+- swipe:
+    from:
+      text: "Reorder Most active coupons"
+    direction: DOWN
+    duration: 2000
 - waitForAnimationToEnd:
     timeout: 5000
 - assertVisible:

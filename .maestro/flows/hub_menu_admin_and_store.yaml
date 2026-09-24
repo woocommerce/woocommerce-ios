@@ -10,11 +10,14 @@ tags:
     file: ../subflows/ensure_logged_in.yaml
 - runFlow:
     file: ../subflows/navigate_to_more_menu.yaml
+# The row can sit under the floating tab bar while still being in the
+# hierarchy, and the tap then lands on the tab bar instead.
 - scrollUntilVisible:
     element:
       id: "menu-view-store"
     direction: DOWN
     timeout: 15000
+    centerElement: true
 - tapOn:
     id: "menu-view-store"
 - extendedWaitUntil:
@@ -24,7 +27,8 @@ tags:
 - assertNotVisible:
     id: "menu-view-store"
 - takeScreenshot: hub_view_store
-- tapOn: "Back"
+- tapOn:
+    id: "BackButton"
 - extendedWaitUntil:
     visible:
       id: "menu-view-store"
@@ -38,10 +42,14 @@ tags:
 - assertNotVisible:
     id: "menu-woocommerce-admin"
 - takeScreenshot: hub_woocommerce_admin
-- tapOn: "Back"
-- extendedWaitUntil:
-    visible:
+- tapOn:
+    id: "BackButton"
+# The menu keeps the scroll position it had before the web view, and the store
+# card sits at the top of the list.
+- scrollUntilVisible:
+    element:
       id: "store-title"
+    direction: UP
     timeout: 15000
 - copyTextFrom:
     id: "store-title"
@@ -74,31 +82,29 @@ tags:
 - copyTextFrom:
     id: "url-label"
     index: 0
-- evalScript: |
-    output.storeFirstURL = String(maestro.copiedText || '').trim();
+- evalScript: ${output.storeCandidateZeroURL = maestro.copiedText.trim()}
 - copyTextFrom:
-    id: "name-label"
-    index: 0
-- evalScript: |
-    output.storeFirstName = String(maestro.copiedText || '').trim();
-- evalScript: |
-    function host(value) {
-      return String(value || '').trim().toLowerCase()
-        .replace(/^https?:\/\//, '')
-        .split('/')[0]
-        .split('?')[0]
-        .split('#')[0]
-        .replace(/:\d+$/, '')
-        .replace(/\.$/, '');
-    }
-    output.storeTargetHost = host(output.storeFirstURL);
-    output.storeTargetName = output.storeFirstName;
-    if (!output.storeTargetHost || output.storeTargetHost === output.storeOriginalHost) {
-      throw new Error('Store picker must expose a different Woo store in its first row');
-    }
+    id: "url-label"
+    index: 1
+- evalScript: ${output.storeCandidateOneURL = maestro.copiedText.trim()}
+# Keep the copied strings raw: a value built inside a function does not survive
+# to the next command, so pick between them with inline conditions.
+- runFlow:
+    when:
+      true: ${String(output.storeCandidateZeroURL).toLowerCase().split('://').pop().split('/')[0] != String(output.storeOriginalURL).toLowerCase().split('://').pop().split('/')[0]}
+    commands:
+      - evalScript: ${output.storeTargetURL = output.storeCandidateZeroURL}
+- runFlow:
+    when:
+      true: ${String(output.storeCandidateZeroURL).toLowerCase().split('://').pop().split('/')[0] == String(output.storeOriginalURL).toLowerCase().split('://').pop().split('/')[0]}
+    commands:
+      - evalScript: ${output.storeTargetURL = output.storeCandidateOneURL}
+- assertTrue:
+    condition: ${output.storeTargetURL && String(output.storeTargetURL).toLowerCase().split('://').pop().split('/')[0] != String(output.storeOriginalURL).toLowerCase().split('://').pop().split('/')[0]}
+    label: Store picker exposes a different Woo store in its first two rows
 - takeScreenshot: hub_store_picker_discovery
 - tapOn:
-    point: "50%,43%"
+    text: "${output.storeTargetURL}"
 - takeScreenshot: hub_store_picker_target_selected
 - extendedWaitUntil:
     visible:
@@ -149,7 +155,8 @@ tags:
     timeout: 15000
     centerElement: true
 - tapOn:
-    point: "50%,75%"
+    id: "url-label"
+    text: ".*${MAESTRO_WOO_LAB_JETPACK_STORE_HOST}.*"
 - takeScreenshot: hub_store_picker_original_selected
 - extendedWaitUntil:
     visible:

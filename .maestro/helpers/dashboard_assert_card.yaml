@@ -1,16 +1,12 @@
 appId: ${APP_ID}
 ---
-- evalScript: |
-    const original = output['dashboardCardState_' + String(CARD_KEY)];
-    if (!original) {
-      throw new Error('Missing captured dashboard state for ' + String(CARD_TITLE));
-    }
-    if (String(EXPECTED_MODE) === 'inverse') {
-      output.dashboardExpectedState = original === 'selected' ? 'unselected' :
-        original === 'unselected' ? 'selected' : original;
-    } else {
-      output.dashboardExpectedState = original;
-    }
+# Multi-line evalScript blocks do not run on Maestro 2.9.0, so each step is a
+# single ${} expression.
+- evalScript: ${output.dashboardOriginalState = output['dashboardCardState_' + String(CARD_KEY)]}
+- assertTrue:
+    condition: ${!!output.dashboardOriginalState}
+    label: Captured dashboard state for ${CARD_TITLE}
+- evalScript: "${output.dashboardExpectedState = (typeof EXPECTED_MODE !== 'undefined' && String(EXPECTED_MODE) === 'inverse') ? (output.dashboardOriginalState === 'selected' ? 'unselected' : output.dashboardOriginalState === 'unselected' ? 'selected' : output.dashboardOriginalState) : output.dashboardOriginalState}"
 - repeat:
     times: 6
     commands:

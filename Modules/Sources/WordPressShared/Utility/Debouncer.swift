@@ -5,10 +5,14 @@ import Foundation
 /// This class de-bounces the execution of a provided callback.
 /// It also offers a mechanism to immediately trigger the scheduled call if necessary.
 ///
+/// Only used by the legacy `LoginSiteAddressViewController`; expected to go with it under AINFRA-601.
+///
+@MainActor
 public final class Debouncer {
-    private var callback: (() -> Void)?
+    // Read from the nonisolated deinit; every other access is main-actor isolated.
+    nonisolated(unsafe) private var callback: (() -> Void)?
     private let delay: Double
-    private var timer: Timer?
+    nonisolated(unsafe) private var timer: Timer?
 
     // MARK: - Init & deinit
 
@@ -18,7 +22,7 @@ public final class Debouncer {
     }
 
     deinit {
-        if let timer, timer.fireDate >= Date() {
+        if let timer, timer.isValid, timer.fireDate >= Date() {
             timer.invalidate()
             callback?()
         }
@@ -28,6 +32,7 @@ public final class Debouncer {
 
     public func cancel() {
         timer?.invalidate()
+        timer = nil
     }
 
     public func call(immediate: Bool = false, callback: (() -> Void)? = nil) {
@@ -52,8 +57,11 @@ public final class Debouncer {
     }
 
     private func scheduleCallback() {
-        timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [callback] _ in
-            callback?()
+        timer = Timer.scheduledTimer(withTimeInterval: delay, repeats: false) { [weak self] _ in
+            // Scheduled from the main run loop, so the timer fires on the main thread.
+            MainActor.assumeIsolated {
+                self?.callback?()
+            }
         }
     }
 }

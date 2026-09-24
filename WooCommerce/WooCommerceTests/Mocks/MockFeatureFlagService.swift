@@ -6,7 +6,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     var isUpdateOrderOptimisticallyOn: Bool
     var isPointOfSaleEnabled: Bool
     var backgroundProductImageUpload: Bool
-    var isProductImageOptimizedHandlingEnabled: Bool
     var isFeatureFlagEnabledReturnValue: [FeatureFlag: Bool] = [:]
     var selfDrivenPushToken: Bool
     var smarterNotifications: Bool
@@ -14,13 +13,11 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
     init(isUpdateOrderOptimisticallyOn: Bool = false,
          isPointOfSaleEnabled: Bool = false,
          backgroundProductImageUpload: Bool = false,
-         isProductImageOptimizedHandlingEnabled: Bool = false,
          selfDrivenPushToken: Bool = false,
          smarterNotifications: Bool = false) {
         self.isUpdateOrderOptimisticallyOn = isUpdateOrderOptimisticallyOn
         self.isPointOfSaleEnabled = isPointOfSaleEnabled
         self.backgroundProductImageUpload = backgroundProductImageUpload
-        self.isProductImageOptimizedHandlingEnabled = isProductImageOptimizedHandlingEnabled
         self.selfDrivenPushToken = selfDrivenPushToken
         self.smarterNotifications = smarterNotifications
     }
@@ -39,8 +36,6 @@ final class MockFeatureFlagService: FeatureFlagService, POSFeatureFlagProviding 
             return isPointOfSaleEnabled
         case .backgroundProductImageUpload:
             return backgroundProductImageUpload
-        case .productImageOptimizedHandling:
-            return isProductImageOptimizedHandlingEnabled
         case .ciabBookings:
             return false
         case .ciabBookingReschedule:

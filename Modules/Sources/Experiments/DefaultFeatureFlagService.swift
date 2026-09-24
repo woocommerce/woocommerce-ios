@@ -27,10 +27,6 @@ public struct DefaultFeatureFlagService: FeatureFlagService {
             return buildConfig == .localDeveloper || buildConfig == .alpha
         case .backgroundProductImageUpload:
             return buildConfig == .localDeveloper || buildConfig == .alpha
-        case .productImageOptimizedHandling:
-            return true
-        case .orderAddressMapSearch:
-            return true
         case .ciabBookings:
             return false
         case .pointOfSaleRoles:

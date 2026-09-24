@@ -20,4 +20,9 @@ public enum StoreSize {
     /// The touch target of a `StoreTopAppBar` control (48 pt): the design's icon-button box, which
     /// also sets the bar's row height. Larger than `minimumTapTarget` by design, not by accident.
     public static let topAppBarControlSize: CGFloat = 48
+
+    /// The grabber of a `StoreSheet`: a 32 × 4 pt pill centered in a 16 pt strip above the content.
+    public static let sheetGrabberWidth: CGFloat = 32
+    public static let sheetGrabberHeight: CGFloat = 4
+    public static let sheetGrabberAreaHeight: CGFloat = 16
 }

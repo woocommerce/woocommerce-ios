@@ -692,16 +692,16 @@ extension POSPaymentModel {
             order = paymentOrder.order
             currentOrder = order
         }
+        let cashSessionID = try await cashSessionService?.captureCashSession()
         try await cashPaymentHandler.completeCashPayment(for: order, changeDueAmount: changeDueAmount)
-        // The order is already paid. Record its drawer movement without delaying the success screen.
-        if let cashSessionService {
-            Task {
-                do {
-                    _ = try await cashSessionService.recordCashSale(orderID: order.orderID)
-                } catch {
-                    DDLogError("💵 [CashSession] Failed to record cash sale for order \(order.orderID): \(error)")
-                }
+        if let cashSessionService, let cashSessionID {
+            do {
+                try cashSessionService.enqueueCashSale(orderID: order.orderID, sessionID: cashSessionID)
+            } catch {
+                // The payment succeeded. The recorder retains this event and blocks session close until persistence recovers.
+                DDLogError("💵 [CashSession] Failed to persist cash sale for order \(order.orderID): \(error)")
             }
+            Task { await cashSessionService.retryPendingCashMovements() }
         }
         // Open the drawer without waiting for it: a slow or missing drawer must not hold up the sale.
         if let cashDrawer {

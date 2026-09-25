@@ -136,7 +136,7 @@ struct POSCashSessionEntryView: View {
             }
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: controller.isSaving))
-        .disabled(step == .amount ? !canContinue : controller.isSaving)
+        .disabled(step == .amount ? !canContinue : controller.isSaving || (action == .close && controller.hasPendingCashMovements))
         .frame(maxWidth: .infinity)
     }
 

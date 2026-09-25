@@ -18,6 +18,7 @@ struct POSCurrentCashSessionView: View {
                     HStack(spacing: POSSpacing.small) {
                         Button(Localization.closeButton) { entryAction = .close }
                             .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .primary, isLoading: false))
+                            .disabled(controller.hasPendingCashMovements)
                         Menu {
                             Button(Localization.payIn) { entryAction = .payIn }
                             Button(Localization.payOut) { entryAction = .payOut }
@@ -35,6 +36,19 @@ struct POSCurrentCashSessionView: View {
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                        if controller.hasPendingCashMovements {
+                            POSNoticeView(title: Localization.pendingTitle,
+                                          icon: Image(systemName: "exclamationmark.triangle"), style: .alertLowest) {
+                                VStack(alignment: .leading, spacing: POSSpacing.small) {
+                                    Text(Localization.pendingMessage)
+                                    Button(controller.isRetryingCashMovements ? Localization.retrying : Localization.retry) {
+                                        Task { await controller.retryPendingCashMovements() }
+                                    }
+                                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                                    .disabled(controller.isRetryingCashMovements)
+                                }
+                            }
+                        }
                         POSInformationCard {
                             POSCashSessionMetricView(label: Localization.expectedCash, amount: money.format(session.expectedCash))
                         }
@@ -97,5 +111,12 @@ private extension POSCurrentCashSessionView {
         static let cashSales = NSLocalizedString("pos.cashSession.current.sales", value: "Cash sales", comment: "Cash sales total")
         static let paidInOut = NSLocalizedString("pos.cashSession.current.paidInOut", value: "Paid in/out", comment: "Cash movements total")
         static let cashRefunds = NSLocalizedString("pos.cashSession.current.refunds", value: "Cash refunds", comment: "Cash refunds total")
+        static let pendingTitle = NSLocalizedString("pos.cashSession.current.pendingTitle", value: "Cash activity needs to sync",
+                                                    comment: "Title for cash sales or refunds awaiting session recording")
+        static let pendingMessage = NSLocalizedString("pos.cashSession.current.pendingMessage",
+                                                      value: "Some cash payments or refunds have not updated this session. Retry before closing it.",
+                                                      comment: "Explains why a cash session cannot close yet")
+        static let retry = NSLocalizedString("pos.cashSession.current.retry", value: "Retry", comment: "Retry pending cash activity")
+        static let retrying = NSLocalizedString("pos.cashSession.current.retrying", value: "Retrying…", comment: "Pending cash activity is syncing")
     }
 }

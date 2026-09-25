@@ -9,6 +9,7 @@ final class MockPOSRefundController: POSRefundControllerProtocol {
     var hasModifiedSelection = false
     var reviewPreparationState: POSRefundReviewPreparationState = .idle
     var requiresCardPresentRefund = false
+    var isCashRefund: Bool { stubIsCashRefund }
 
     private(set) var preloadedOrderID: Int64?
     private(set) var startRefundFlowOrderID: Int64?

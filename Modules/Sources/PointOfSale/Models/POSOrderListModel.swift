@@ -114,19 +114,19 @@ import struct Yosemite.POSOrder
 
     @MainActor
     func processRefund(reason: String?) async throws {
+        let cashSessionID = refundController.isCashRefund ? try await cashSessionService?.captureCashSession() : nil
         let result = try await refundController.processRefund(reason: reason)
         // Open the drawer so the cashier can hand the cash back, without holding up the refund flow.
         if result.isCashRefund, let cashDrawer {
             Task { await cashDrawer.openAutomatically(for: .cashRefund) }
         }
-        if result.isCashRefund, let cashSessionService {
-            Task {
-                do {
-                    _ = try await cashSessionService.recordCashRefund(orderID: result.refundedOrderID, refundID: result.refundID)
-                } catch {
-                    DDLogError("💵 [CashSession] Failed to record cash refund \(result.refundID) for order \(result.refundedOrderID): \(error)")
-                }
+        if result.isCashRefund, let cashSessionService, let cashSessionID {
+            do {
+                try cashSessionService.enqueueCashRefund(orderID: result.refundedOrderID, refundID: result.refundID, sessionID: cashSessionID)
+            } catch {
+                DDLogError("💵 [CashSession] Failed to persist cash refund \(result.refundID) for order \(result.refundedOrderID): \(error)")
             }
+            Task { await cashSessionService.retryPendingCashMovements() }
         }
         do {
             try await ordersController.updateOrder(orderID: result.refundedOrderID)

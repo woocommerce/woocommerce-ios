@@ -3,6 +3,12 @@ import Foundation
 /// The session boundary for the POS UI. The app supplies a Core API implementation.
 @MainActor
 public protocol POSCashSessionService {
+    var hasPendingCashMovements: Bool { get }
+    var isRetryingCashMovements: Bool { get }
+    func captureCashSession() async throws -> Int64?
+    func enqueueCashSale(orderID: Int64, sessionID: Int64) throws
+    func enqueueCashRefund(orderID: Int64, refundID: Int64, sessionID: Int64) throws
+    func retryPendingCashMovements() async
     func currentSession() async throws -> POSCashSession?
     func pastSessions(page: Int, perPage: Int) async throws -> POSCashSessionPage
     func session(id: Int64) async throws -> POSCashSession
@@ -11,6 +17,21 @@ public protocol POSCashSessionService {
     func recordCashSale(orderID: Int64) async throws -> POSCashSession?
     func recordCashRefund(orderID: Int64, refundID: Int64) async throws -> POSCashSession?
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal, note: String?) async throws -> POSCashSession
+}
+
+public extension POSCashSessionService {
+    var hasPendingCashMovements: Bool { false }
+    var isRetryingCashMovements: Bool { false }
+
+    func captureCashSession() async throws -> Int64? {
+        do {
+            return try await currentSession()?.id
+        } catch POSCashSessionServiceError.unsupported {
+            return nil
+        }
+    }
+
+    func retryPendingCashMovements() async {}
 }
 
 public struct POSCashSessionPage {
@@ -31,6 +52,7 @@ public enum POSCashSessionServiceError: LocalizedError {
     case invalidReference
     case sessionChanged
     case previewUnavailable
+    case pendingCashMovements
 
     public var errorDescription: String? {
         switch self {
@@ -49,6 +71,10 @@ public enum POSCashSessionServiceError: LocalizedError {
         case .previewUnavailable:
             return NSLocalizedString("pos.cashSession.error.previewUnavailable", value: "Could not connect to cash sessions. Try again.",
                                      comment: "Cash session preview error")
+        case .pendingCashMovements:
+            return NSLocalizedString("pos.cashSession.error.pendingCashMovements",
+                                     value: "Some cash payments or refunds have not updated the session yet. Retry before closing the session.",
+                                     comment: "Shown when cash movements still need to be saved to the store")
         }
     }
 }
@@ -149,30 +175,40 @@ final class POSMockCashSessionService: POSCashSessionService {
 
     func recordCashSale(orderID: Int64) async throws -> POSCashSession? {
         try await Task.sleep(for: writeDelay)
-        guard var session = openSession else { return nil }
+        guard let session = openSession else { return nil }
+        try enqueueCashSale(orderID: orderID, sessionID: session.id)
+        return openSession
+    }
+
+    func enqueueCashSale(orderID: Int64, sessionID: Int64) throws {
+        guard var session = openSession, session.id == sessionID else { throw POSCashSessionServiceError.noOpenSession }
         guard orderID > 0 else { throw POSCashSessionServiceError.invalidReference }
-        guard !recordedSaleOrderIDs.contains(orderID) else { return session }
+        guard !recordedSaleOrderIDs.contains(orderID) else { return }
         guard mockCashSaleAmount > 0 else { throw POSCashSessionServiceError.invalidAmount }
         session.movements.append(.init(id: UUID(), kind: .cashSale, amount: mockCashSaleAmount, date: now(),
                                        actor: currentActor, orderID: orderID, note: nil))
         session.revision += 1
         recordedSaleOrderIDs.insert(orderID)
         openSession = session
-        return session
     }
 
     func recordCashRefund(orderID: Int64, refundID: Int64) async throws -> POSCashSession? {
         try await Task.sleep(for: writeDelay)
-        guard var session = openSession else { return nil }
+        guard let session = openSession else { return nil }
+        try enqueueCashRefund(orderID: orderID, refundID: refundID, sessionID: session.id)
+        return openSession
+    }
+
+    func enqueueCashRefund(orderID: Int64, refundID: Int64, sessionID: Int64) throws {
+        guard var session = openSession, session.id == sessionID else { throw POSCashSessionServiceError.noOpenSession }
         guard orderID > 0, refundID > 0 else { throw POSCashSessionServiceError.invalidReference }
-        guard !recordedRefundIDs.contains(refundID) else { return session }
+        guard !recordedRefundIDs.contains(refundID) else { return }
         guard mockCashRefundAmount > 0 else { throw POSCashSessionServiceError.invalidAmount }
         session.movements.append(.init(id: UUID(), kind: .cashRefund, amount: mockCashRefundAmount, date: now(),
                                        actor: currentActor, orderID: orderID, note: nil))
         session.revision += 1
         recordedRefundIDs.insert(refundID)
         openSession = session
-        return session
     }
 
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal, note: String?) async throws -> POSCashSession {

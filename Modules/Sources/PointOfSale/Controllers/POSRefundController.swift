@@ -11,6 +11,7 @@ protocol POSRefundControllerProtocol {
     var hasModifiedSelection: Bool { get }
     var reviewPreparationState: POSRefundReviewPreparationState { get }
     var requiresCardPresentRefund: Bool { get }
+    var isCashRefund: Bool { get }
     func preloadRefund(for order: POSOrder) async
     func startRefundFlow(for order: POSOrder) async -> StartRefundFlowResult
     func refreshRefundableItems() async -> StartRefundFlowResult
@@ -42,6 +43,9 @@ protocol POSRefundControllerProtocol {
     var requiresCardPresentRefund: Bool {
         preparation?.requiresCardPresentRefund ?? false
     }
+
+    @MainActor
+    var isCashRefund: Bool { order?.isPaidInCash ?? false }
 
     // MARK: - Refund Item Selection
 

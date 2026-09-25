@@ -354,14 +354,67 @@ struct POSPaymentModelTests {
         let sut = makePaymentController(orderProvider: orderProvider, cashSessionService: cashSessionService)
 
         // When
-        try await confirmation { confirm in
-            cashSessionService.onCashSaleRecorded = { _ in confirm() }
-            try await sut.collectCashPayment(changeDueAmount: nil)
-            try await Task.sleep(for: .milliseconds(50))
-        }
+        try await sut.collectCashPayment(changeDueAmount: nil)
 
         // Then
         #expect(cashSessionService.recordedCashSaleOrderIDs == [order.orderID])
+        #expect(cashSessionService.enqueuedSessionIDs == [123])
+    }
+
+    @Test @MainActor
+    func test_collectCashPayment_when_session_capture_fails_then_does_not_complete_payment() async throws {
+        // Given
+        let cashHandler = MockPOSCashPaymentHandler()
+        let cashSessionService = MockPOSCashSessionService()
+        cashSessionService.captureError = POSCashSessionServiceError.previewUnavailable
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = .fake()
+        let sut = makePaymentController(orderProvider: orderProvider, cashPaymentHandler: cashHandler,
+                                        cashSessionService: cashSessionService)
+
+        // When / Then
+        await #expect(throws: POSCashSessionServiceError.self) {
+            try await sut.collectCashPayment(changeDueAmount: nil)
+        }
+        #expect(!cashHandler.completeCashPaymentCalled)
+        #expect(cashSessionService.recordedCashSaleOrderIDs.isEmpty)
+    }
+
+    @Test @MainActor
+    func test_collectCashPayment_when_no_cash_session_then_completes_payment_without_recording() async throws {
+        // Given
+        let cashHandler = MockPOSCashPaymentHandler()
+        let cashSessionService = MockPOSCashSessionService()
+        cashSessionService.capturedSessionID = nil
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = .fake()
+        let sut = makePaymentController(orderProvider: orderProvider, cashPaymentHandler: cashHandler,
+                                        cashSessionService: cashSessionService)
+
+        // When
+        try await sut.collectCashPayment(changeDueAmount: nil)
+
+        // Then
+        #expect(cashHandler.completeCashPaymentCalled)
+        #expect(sut.paymentState.cash == .paymentSuccess)
+        #expect(cashSessionService.recordedCashSaleOrderIDs.isEmpty)
+    }
+
+    @Test @MainActor
+    func test_collectCashPayment_when_cash_sessions_unsupported_then_completes_payment() async throws {
+        // Given
+        let cashHandler = MockPOSCashPaymentHandler()
+        let service = POSMockCashSessionService(isUnsupported: true)
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = .fake()
+        let sut = makePaymentController(orderProvider: orderProvider, cashPaymentHandler: cashHandler, cashSessionService: service)
+
+        // When
+        try await sut.collectCashPayment(changeDueAmount: nil)
+
+        // Then
+        #expect(cashHandler.completeCashPaymentCalled)
+        #expect(sut.paymentState.cash == .paymentSuccess)
     }
 
     @Test("collectCashPayment runs post-payment step")

@@ -11,8 +11,43 @@ final class MockPOSCashSessionService: POSCashSessionService {
     var onPastSessionsRequested: (@MainActor (Int) -> Void)?
     var pastSessionsToReturn = POSCashSessionPage(sessions: [], hasMore: false)
     var pastSessionsError: Error?
+    var hasPendingCashMovements = false
+    var isRetryingCashMovements = false
+    var capturedSessionID: Int64? = 123
+    var captureError: Error?
+    var currentSessionToReturn: POSCashSession?
+    var closeCallCount = 0
+    var captureCallCount = 0
+    var retryCallCount = 0
+    var retrySucceeds = true
+    private(set) var enqueuedSessionIDs: [Int64] = []
 
-    func currentSession() async throws -> POSCashSession? { nil }
+    func captureCashSession() async throws -> Int64? {
+        captureCallCount += 1
+        if let captureError { throw captureError }
+        return capturedSessionID
+    }
+
+    func enqueueCashSale(orderID: Int64, sessionID: Int64) throws {
+        enqueuedSessionIDs.append(sessionID)
+        recordedCashSaleOrderIDs.append(orderID)
+        hasPendingCashMovements = true
+        onCashSaleRecorded?(orderID)
+    }
+
+    func enqueueCashRefund(orderID: Int64, refundID: Int64, sessionID: Int64) throws {
+        enqueuedSessionIDs.append(sessionID)
+        recordedCashRefunds.append((orderID, refundID))
+        hasPendingCashMovements = true
+        onCashRefundRecorded?(orderID, refundID)
+    }
+
+    func retryPendingCashMovements() async {
+        retryCallCount += 1
+        if retrySucceeds { hasPendingCashMovements = false }
+    }
+
+    func currentSession() async throws -> POSCashSession? { currentSessionToReturn }
 
     func pastSessions(page: Int, perPage: Int) async throws -> POSCashSessionPage {
         requestedPastSessionPages.append(page)
@@ -29,6 +64,7 @@ final class MockPOSCashSessionService: POSCashSessionService {
         throw POSCashSessionServiceError.noOpenSession
     }
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal, note: String?) async throws -> POSCashSession {
+        closeCallCount += 1
         throw POSCashSessionServiceError.noOpenSession
     }
 

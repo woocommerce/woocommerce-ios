@@ -11,6 +11,13 @@ final class POSCashSessionAdaptor: POSCashSessionService {
     private let siteID: Int64
     private let deviceID: String
     private var pendingRequestIDs: [String: UUID] = [:]
+    private lazy var cashEventRecorder = POSCashEventRecorder.shared(siteID: siteID, deviceID: deviceID) { [weak self] event in
+        guard let self else { throw URLError(.cannotConnectToHost) }
+        try await self.recordCashEvent(event)
+    }
+
+    var hasPendingCashMovements: Bool { cashEventRecorder.hasPendingEvents }
+    var isRetryingCashMovements: Bool { cashEventRecorder.isRetrying }
 
     init(remote: POSCashSessionRemoteService, siteID: Int64, deviceID: String) {
         self.remote = remote
@@ -28,6 +35,31 @@ final class POSCashSessionAdaptor: POSCashSessionService {
         self.init(remote: remote,
                   siteID: siteID,
                   deviceID: Self.stableDeviceID())
+    }
+
+    func captureCashSession() async throws -> Int64? {
+        let sessionID: Int64?
+        do {
+            sessionID = try await mappingUnsupportedEndpoint { try await activeSessionID() }
+        } catch POSCashSessionServiceError.unsupported {
+            return nil
+        }
+        if sessionID != nil { try cashEventRecorder.prepare() }
+        return sessionID
+    }
+
+    func enqueueCashSale(orderID: Int64, sessionID: Int64) throws {
+        guard orderID > 0 else { throw POSCashSessionServiceError.invalidReference }
+        try cashEventRecorder.enqueue(siteID: siteID, sessionID: sessionID, source: .sale(orderID: orderID))
+    }
+
+    func enqueueCashRefund(orderID: Int64, refundID: Int64, sessionID: Int64) throws {
+        guard orderID > 0, refundID > 0 else { throw POSCashSessionServiceError.invalidReference }
+        try cashEventRecorder.enqueue(siteID: siteID, sessionID: sessionID, source: .refund(orderID: orderID, refundID: refundID))
+    }
+
+    func retryPendingCashMovements() async {
+        await cashEventRecorder.retry()
     }
 
     func currentSession() async throws -> POSCashSession? {
@@ -125,6 +157,7 @@ final class POSCashSessionAdaptor: POSCashSessionService {
 
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal,
                       note: String?) async throws -> POSCashSession {
+        guard !hasPendingCashMovements else { throw POSCashSessionServiceError.pendingCashMovements }
         guard countedCash >= 0 else { throw POSCashSessionServiceError.invalidAmount }
         let trimmedNote = note?.trimmingCharacters(in: .whitespacesAndNewlines)
         let requestKey = "close:\(sessionID):\(expectedRevision):\(decimalString(countedCash)):\(trimmedNote ?? "")"
@@ -144,6 +177,17 @@ final class POSCashSessionAdaptor: POSCashSessionService {
 }
 
 private extension POSCashSessionAdaptor {
+    func recordCashEvent(_ event: POSCashEvent) async throws {
+        switch event.source {
+        case .sale(let orderID):
+            _ = try await remote.recordCashSale(siteID: event.siteID, sessionID: event.sessionID,
+                                                requestID: event.requestID, orderID: orderID)
+        case .refund(let orderID, let refundID):
+            _ = try await remote.recordCashRefund(siteID: event.siteID, sessionID: event.sessionID,
+                                                  requestID: event.requestID, orderID: orderID, refundID: refundID)
+        }
+    }
+
     /// A store whose WooCommerce version has no `wc/pos/v1/cash-sessions` route answers 404 `rest_no_route`,
     /// as `DotcomError.noRestRoute` through the Jetpack tunnel or `NetworkError.notFound` over direct REST.
     func mappingUnsupportedEndpoint<T>(_ operation: () async throws -> T) async throws -> T {

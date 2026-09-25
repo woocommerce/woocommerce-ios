@@ -21,6 +21,9 @@ final class POSCashSessionController {
     private(set) var sessionDetailError: String?
     var errorMessage: String?
 
+    var hasPendingCashMovements: Bool { service.hasPendingCashMovements }
+    var isRetryingCashMovements: Bool { service.isRetryingCashMovements }
+
     @ObservationIgnored private let service: any POSCashSessionService
     @ObservationIgnored private var pastPage = 0
     @ObservationIgnored private var hasLoadedPastSessions = false
@@ -42,6 +45,7 @@ final class POSCashSessionController {
         currentLoadError = nil
         isCashSessionsUnsupported = false
         defer { isLoading = false }
+        await service.retryPendingCashMovements()
         do {
             currentSession = try await service.currentSession()
         } catch POSCashSessionServiceError.unsupported {
@@ -131,6 +135,10 @@ final class POSCashSessionController {
 
     func close(countedCash: Decimal, note: String?) async -> POSCashSession? {
         guard let session = currentSession else { return nil }
+        guard !hasPendingCashMovements else {
+            errorMessage = POSCashSessionErrorMessage.message(for: POSCashSessionServiceError.pendingCashMovements, operation: .close)
+            return nil
+        }
         var closedSession: POSCashSession?
         let saved = await save(operation: .close) {
             let closed = try await service.closeSession(sessionID: session.id, expectedRevision: session.revision,
@@ -145,6 +153,10 @@ final class POSCashSessionController {
             closedSession = closed
         }
         return saved ? closedSession : nil
+    }
+
+    func retryPendingCashMovements() async {
+        await loadCurrentSession()
     }
 
     private func save(operation: POSCashSessionErrorMessage.Operation, _ perform: () async throws -> Void) async -> Bool {

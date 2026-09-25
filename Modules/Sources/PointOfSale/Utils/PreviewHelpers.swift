@@ -553,6 +553,7 @@ final class POSPreviewRefundController: POSRefundControllerProtocol {
     var hasModifiedSelection = false
     var reviewPreparationState: POSRefundReviewPreparationState = .idle
     var requiresCardPresentRefund = false
+    var isCashRefund = false
 
     func preloadRefund(for order: POSOrder) async {}
     func startRefundFlow(for order: POSOrder) async -> StartRefundFlowResult { .hasItemsToRefund }

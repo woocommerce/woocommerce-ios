@@ -12,7 +12,9 @@ struct POSCashSessionDetailView: View {
     var body: some View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
-                title: String.localizedStringWithFormat(Localization.sessionNumber, String(session.id)),
+                title: horizontalSizeClass == .compact ?
+                    String.localizedStringWithFormat(Localization.compactSessionNumber, String(session.id)) :
+                    String.localizedStringWithFormat(Localization.sessionNumber, String(session.id)),
                 backButtonConfiguration: .init(state: .enabled, action: onBack)
             )
             .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: onBack))
@@ -88,6 +90,8 @@ struct POSCashSessionDetailView: View {
 private extension POSCashSessionDetailView {
     enum Localization {
         static let sessionNumber = NSLocalizedString("pos.cashSession.detail.number", value: "Session #%1$@", comment: "Closed cash session title")
+        static let compactSessionNumber = NSLocalizedString("pos.cashSession.detail.compactNumber", value: "#%1$@",
+                                                        comment: "Closed cash session title on iPhone")
         static let opened = NSLocalizedString("pos.cashSession.detail.opened", value: "Opened", comment: "Session opening information")
         static let closed = NSLocalizedString("pos.cashSession.detail.closed", value: "Closed", comment: "Session closing information")
         static let drawerSummary = NSLocalizedString("pos.cashSession.detail.summary", value: "Drawer summary", comment: "Cash drawer summary title")

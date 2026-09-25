@@ -4,7 +4,7 @@ import SwiftUI
 struct POSCashManagementView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation?
-    @State private var selectedPastSessionID: Int64?
+    @State private var pendingClosedSessionID: Int64?
     @State private var isLoaded = false
 
     let controller: POSCashSessionController
@@ -16,8 +16,8 @@ struct POSCashManagementView: View {
             } else {
                 POSNavigationSplitView(selection: $selection) { selection in
                     POSCashManagementListView(selection: selection, hasCurrentSession: controller.currentSession != nil)
-                } detail: { selection, _ in
-                    detailView(for: selection)
+                } detail: { selection, detailNavigationPath in
+                    detailView(for: selection, detailNavigationPath: detailNavigationPath)
                         .environment(\.posHeaderBackButtonConfiguration,
                                      horizontalSizeClass == .compact ?
                                         .init(state: .enabled, action: { self.selection = nil }) : nil)
@@ -27,6 +27,13 @@ struct POSCashManagementView: View {
                     if selection == nil {
                         selection = controller.currentSession == nil ? .startSession : .currentSession
                     }
+                } navigationPathForSelection: { selection in
+                    var path = NavigationPath()
+                    if selection == .pastSessions, let pendingClosedSessionID {
+                        path.append(POSPastCashSessionsView.SessionDestination(id: pendingClosedSessionID))
+                        self.pendingClosedSessionID = nil
+                    }
+                    return path
                 }
             }
         }
@@ -62,17 +69,18 @@ struct POSCashManagementView: View {
     }
 
     @ViewBuilder
-    private func detailView(for selection: SidebarNavigation) -> some View {
+    private func detailView(for selection: SidebarNavigation, detailNavigationPath: Binding<NavigationPath>) -> some View {
         switch selection {
         case .startSession:
             POSStartCashSessionView(controller: controller, onStarted: { self.selection = .currentSession })
         case .currentSession:
             POSCurrentCashSessionView(controller: controller, onClosed: { sessionID in
-                selectedPastSessionID = sessionID
+                pendingClosedSessionID = sessionID
                 self.selection = .pastSessions
             })
         case .pastSessions:
-            POSPastCashSessionsView(selectedSessionID: $selectedPastSessionID, controller: controller)
+            POSPastCashSessionsView(detailNavigationPath: detailNavigationPath,
+                                    controller: controller)
         }
     }
 }

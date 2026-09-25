@@ -1,40 +1,36 @@
 import SwiftUI
 
 struct POSPastCashSessionsView: View {
-    @Binding var selectedSessionID: Int64?
+    @Binding var detailNavigationPath: NavigationPath
     let controller: POSCashSessionController
 
     var body: some View {
-        Group {
-            if let selectedSessionID {
-                selectedSessionView(id: selectedSessionID)
-            } else {
-                sessionList
+        sessionList
+            .background(Color.posSurface)
+            .navigationDestination(for: SessionDestination.self) { destination in
+                selectedSessionView(id: destination.id)
+                    .toolbar(.hidden, for: .navigationBar)
+                    .task(id: destination.id) {
+                        await controller.loadSessionDetail(id: destination.id)
+                    }
             }
-        }
-        .background(Color.posSurface)
-        .task {
-            await controller.loadPastSessions()
-        }
-        .task(id: selectedSessionID) {
-            if let selectedSessionID {
-                await controller.loadSessionDetail(id: selectedSessionID)
+            .task {
+                await controller.loadPastSessions()
             }
-        }
-        .accessibilityIdentifier("pos-cash-drawer-past-sessions-view")
+            .accessibilityIdentifier("pos-cash-drawer-past-sessions-view")
     }
 
     @ViewBuilder
     private func selectedSessionView(id: Int64) -> some View {
         if let session = controller.sessionDetail, session.id == id {
-            POSCashSessionDetailView(session: session, onBack: { selectedSessionID = nil })
+            POSCashSessionDetailView(session: session, onBack: popDetail)
         } else {
             VStack(spacing: POSSpacing.none) {
                 POSPageHeaderView(
                     title: Localization.sessionDetails,
-                    backButtonConfiguration: .init(state: .enabled, action: { selectedSessionID = nil })
+                    backButtonConfiguration: .init(state: .enabled, action: popDetail)
                 )
-                .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: { selectedSessionID = nil }))
+                .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: popDetail))
                 if let message = controller.sessionDetailError {
                     POSListEmptyView(
                         viewModel: POSPastCashSessionsErrorViewModel(title: Localization.detailsError, subtitle: message),
@@ -102,7 +98,7 @@ struct POSPastCashSessionsView: View {
 
     private func sessionRow(_ session: POSCashSession) -> some View {
         Button {
-            selectedSessionID = session.id
+            detailNavigationPath.append(SessionDestination(id: session.id))
         } label: {
             HStack(spacing: POSSpacing.medium) {
                 VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
@@ -130,6 +126,15 @@ struct POSPastCashSessionsView: View {
             .progressViewStyle(POSProgressViewStyle())
             .frame(maxWidth: .infinity, maxHeight: .infinity)
             .accessibilityLabel(Localization.loading)
+    }
+
+    private func popDetail() {
+        guard !detailNavigationPath.isEmpty else { return }
+        detailNavigationPath.removeLast()
+    }
+
+    struct SessionDestination: Hashable {
+        let id: Int64
     }
 }
 
@@ -170,23 +175,49 @@ private extension POSPastCashSessionsView {
 }
 
 #if DEBUG
+private struct POSPastCashSessionsPreview: View {
+    @State private var navigationPath: NavigationPath
+    private let controller: POSCashSessionController
+
+    init(service: POSMockCashSessionService, selectedSessionID: Int64? = nil) {
+        var path = NavigationPath()
+        if let selectedSessionID {
+            path.append(POSPastCashSessionsView.SessionDestination(id: selectedSessionID))
+        }
+        _navigationPath = State(initialValue: path)
+        controller = POSCashSessionController(service: service)
+    }
+
+    var body: some View {
+        NavigationStack(path: $navigationPath) {
+            POSPastCashSessionsView(detailNavigationPath: $navigationPath,
+                                    controller: controller)
+                .navigationBarHidden(true)
+        }
+    }
+}
+
 #Preview("Past sessions") {
-    POSPastCashSessionsView(selectedSessionID: .constant(nil),
-                            controller: POSCashSessionController(service: POSMockCashSessionService()))
+    POSPastCashSessionsPreview(service: POSMockCashSessionService())
+}
+
+#Preview("Past session details") {
+    POSPastCashSessionsPreview(service: POSMockCashSessionService(), selectedSessionID: 1681891)
+}
+
+#Preview("Past session details error") {
+    POSPastCashSessionsPreview(service: POSMockCashSessionService(failDetailLoad: true), selectedSessionID: 1681891)
 }
 
 #Preview("Past sessions empty") {
-    POSPastCashSessionsView(selectedSessionID: .constant(nil),
-                            controller: POSCashSessionController(service: POSMockCashSessionService(hasSampleHistory: false)))
+    POSPastCashSessionsPreview(service: POSMockCashSessionService(hasSampleHistory: false))
 }
 
 #Preview("Past sessions error") {
-    POSPastCashSessionsView(selectedSessionID: .constant(nil),
-                            controller: POSCashSessionController(service: POSMockCashSessionService(failPastLoad: true)))
+    POSPastCashSessionsPreview(service: POSMockCashSessionService(failPastLoad: true))
 }
 
 #Preview("Past sessions loading") {
-    POSPastCashSessionsView(selectedSessionID: .constant(nil),
-                            controller: POSCashSessionController(service: POSMockCashSessionService(readDelay: .seconds(30))))
+    POSPastCashSessionsPreview(service: POSMockCashSessionService(readDelay: .seconds(30)))
 }
 #endif

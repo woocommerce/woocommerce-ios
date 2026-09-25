@@ -23,7 +23,7 @@ private struct POSCashSessionPreviewGallery: View {
     let screen: Screen
     @State private var controller: POSCashSessionController
     @State private var isReady = false
-    @State private var selectedSessionID: Int64?
+    @State private var detailNavigationPath = NavigationPath()
 
     init(screen: Screen) {
         self.screen = screen
@@ -63,9 +63,9 @@ private struct POSCashSessionPreviewGallery: View {
         case .currentError:
             POSCashManagementView(controller: controller)
         case .past:
-            POSPastCashSessionsView(selectedSessionID: $selectedSessionID, controller: controller)
+            pastSessionsPreview
         case .pastError:
-            POSPastCashSessionsView(selectedSessionID: $selectedSessionID, controller: controller)
+            pastSessionsPreview
         case .detail:
             if let session = controller.pastSessions.first {
                 POSCashSessionDetailView(session: session, onBack: {})
@@ -84,6 +84,14 @@ private struct POSCashSessionPreviewGallery: View {
             POSCashSessionEntryView(action: .close, controller: controller, onClosed: { _ in }, previewNoteStep: false)
         case .closeNote:
             POSCashSessionEntryView(action: .close, controller: controller, onClosed: { _ in }, previewNoteStep: true)
+        }
+    }
+
+    private var pastSessionsPreview: some View {
+        NavigationStack(path: $detailNavigationPath) {
+            POSPastCashSessionsView(detailNavigationPath: $detailNavigationPath,
+                                    controller: controller)
+                .navigationBarHidden(true)
         }
     }
 

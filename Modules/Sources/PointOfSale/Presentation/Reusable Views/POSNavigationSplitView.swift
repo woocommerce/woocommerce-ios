@@ -24,19 +24,23 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     private let detail: (SelectionValue, Binding<NavigationPath>) -> Detail
     private let detailPlaceholderView: () -> DetailPlaceholder
     private let setDefaultValue: (() -> Void)?
+    /// Supplies a destination as part of a selection change, after the previous detail path is discarded.
+    private let navigationPathForSelection: ((SelectionValue?) -> NavigationPath)?
 
     init(
         selection: Binding<SelectionValue?> = .constant(nil),
         @ViewBuilder sidebar: @escaping (Binding<SelectionValue?>) -> Sidebar,
         @ViewBuilder detail: @escaping (SelectionValue, Binding<NavigationPath>) -> Detail,
         @ViewBuilder detailPlaceholderView: @escaping () -> DetailPlaceholder,
-        setDefaultValue: (() -> Void)? = nil
+        setDefaultValue: (() -> Void)? = nil,
+        navigationPathForSelection: ((SelectionValue?) -> NavigationPath)? = nil
     ) {
         self._selection = selection
         self.sidebar = sidebar
         self.detail = detail
         self.detailPlaceholderView = detailPlaceholderView
         self.setDefaultValue = setDefaultValue
+        self.navigationPathForSelection = navigationPathForSelection
     }
 
     private var isRegular: Bool {
@@ -137,7 +141,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
         }
         .onChange(of: selection) { oldValue, newValue in
             guard oldValue?.id != newValue?.id else { return }
-            detailNavigationPath = NavigationPath()
+            detailNavigationPath = navigationPathForSelection?(newValue) ?? NavigationPath()
         }
     }
 

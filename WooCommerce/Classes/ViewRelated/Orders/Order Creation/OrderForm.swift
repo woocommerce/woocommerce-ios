@@ -702,7 +702,15 @@ private struct ProductsSection: View {
                     message: Text(OrderForm.Localization.permissionsMessage),
                      buttons: [
                         .default(Text(OrderForm.Localization.permissionsOpenSettings), action: {
-                            openSettingsAction()
+                            if case let .notPermitted(authorizationStatus) = viewModel.capturePermissionStatus,
+                               let reason = WooAnalyticsEvent.BarcodeScanning.BarcodeScanningFailureReason(
+                                authorizationStatus: authorizationStatus) {
+                                viewModel.trackBarcodeScanningPermissionSettingsTapped(reason: reason)
+                            }
+                            openSettingsAction { didOpenSettings in
+                                guard didOpenSettings else { return }
+                                viewModel.trackBarcodeScanningPermissionSettingsOpened()
+                            }
                          }),
                         .cancel()
                      ]
@@ -718,9 +726,11 @@ private extension ProductsSection {
         viewModel.trackBarcodeScanningButtonTapped()
         let capturePermissionStatus = viewModel.capturePermissionStatus
         switch capturePermissionStatus {
-        case .notPermitted:
-            viewModel.trackBarcodeScanningNotPermitted()
-            logPermissionStatus(status: .notPermitted)
+        case let .notPermitted(authorizationStatus):
+            if let reason = WooAnalyticsEvent.BarcodeScanning.BarcodeScanningFailureReason(authorizationStatus: authorizationStatus) {
+                viewModel.trackBarcodeScanningNotPermitted(reason: reason)
+            }
+            logPermissionStatus(status: capturePermissionStatus)
             self.showPermissionsSheet = true
         case .notDetermined:
             logPermissionStatus(status: .notDetermined)
@@ -728,6 +738,8 @@ private extension ProductsSection {
                 if isPermissionGranted {
                     showAddProductViaSKUScanner = true
                     logPermissionStatus(status: .permitted)
+                } else {
+                    viewModel.trackBarcodeScanningNotPermitted(reason: .cameraAccessDeniedAtPrompt)
                 }
             })
         case .permitted:
@@ -965,11 +977,12 @@ private extension ProductsSection {
             comment: "Title for the barcode scanning button to add a product to an order")
     }
 
-    func openSettingsAction() {
+    func openSettingsAction(completion: @escaping (Bool) -> Void) {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+            completion(false)
             return
         }
-        UIApplication.shared.open(settingsURL)
+        UIApplication.shared.open(settingsURL, options: [:], completionHandler: completion)
     }
 
     func logPermissionStatus(status: EditableOrderViewModel.CapturePermissionStatus) {

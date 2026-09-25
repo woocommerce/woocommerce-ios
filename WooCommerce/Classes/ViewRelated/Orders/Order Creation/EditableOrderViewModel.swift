@@ -1,3 +1,4 @@
+import AVFoundation
 import Yosemite
 import Combine
 import protocol Storage.StorageManagerType
@@ -2374,9 +2375,9 @@ private extension EditableOrderViewModel {
 
 extension EditableOrderViewModel {
 
-    enum CapturePermissionStatus {
+    enum CapturePermissionStatus: Equatable {
         case permitted
-        case notPermitted
+        case notPermitted(AVAuthorizationStatus)
         case notDetermined
     }
 
@@ -2393,7 +2394,7 @@ extension EditableOrderViewModel {
         case .authorized:
             return .permitted
         case .denied, .restricted:
-            return .notPermitted
+            return .notPermitted(authStatus)
         default:
             return .notDetermined
         }
@@ -2437,8 +2438,17 @@ extension EditableOrderViewModel {
         analytics.track(event: WooAnalyticsEvent.Orders.productAddNewFromBarcodeScanningTapped())
     }
 
-    func trackBarcodeScanningNotPermitted() {
-        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderCreation, reason: .cameraAccessNotPermitted))
+    func trackBarcodeScanningNotPermitted(reason: WooAnalyticsEvent.BarcodeScanning.BarcodeScanningFailureReason) {
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningFailure(from: .orderCreation, reason: reason))
+    }
+
+    func trackBarcodeScanningPermissionSettingsTapped(reason: WooAnalyticsEvent.BarcodeScanning.BarcodeScanningFailureReason) {
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningPermissionSettingsTapped(from: .orderCreation,
+                                                                                                          reason: reason))
+    }
+
+    func trackBarcodeScanningPermissionSettingsOpened() {
+        analytics.track(event: WooAnalyticsEvent.BarcodeScanning.barcodeScanningPermissionSettingsOpened(from: .orderCreation))
     }
 
     /// Attempts to map SKU to Product

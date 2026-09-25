@@ -1139,7 +1139,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.orderCreationProductBarcodeScanningTapped.rawValue)
     }
 
-    func test_trackBarcodeScanningNotPermitted_tracks_right_event() {
+    func test_trackBarcodeScanningNotPermitted_when_camera_is_denied_then_tracks_not_permitted_reason() {
         // Given
         let analytics = MockAnalyticsProvider()
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
@@ -1147,11 +1147,74 @@ final class EditableOrderViewModelTests: XCTestCase {
                                                analytics: WooAnalytics(analyticsProvider: analytics))
 
         // When
-        viewModel.trackBarcodeScanningNotPermitted()
+        viewModel.trackBarcodeScanningNotPermitted(reason: .cameraAccessNotPermitted)
 
         // Then
         XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.barcodeScanningFailure.rawValue)
         XCTAssertEqual(analytics.receivedProperties.first?["reason"] as? String, "camera_access_not_permitted")
+        XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
+    }
+
+    func test_trackBarcodeScanningNotPermitted_when_camera_is_restricted_then_tracks_restricted_reason() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackBarcodeScanningNotPermitted(reason: .cameraAccessRestricted)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.barcodeScanningFailure.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.first?["reason"] as? String, "camera_access_restricted")
+        XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
+    }
+
+    func test_trackBarcodeScanningNotPermitted_when_camera_is_denied_at_prompt_then_tracks_prompt_reason() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackBarcodeScanningNotPermitted(reason: .cameraAccessDeniedAtPrompt)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.barcodeScanningFailure.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.first?["reason"] as? String, "camera_access_denied_at_prompt")
+        XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
+    }
+
+    func test_trackBarcodeScanningPermissionSettingsTapped_then_tracks_source_and_reason() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackBarcodeScanningPermissionSettingsTapped(reason: .cameraAccessNotPermitted)
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.barcodeScanningPermissionSettingsTapped.rawValue)
+        XCTAssertEqual(analytics.receivedProperties.first?["reason"] as? String, "camera_access_not_permitted")
+        XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
+    }
+
+    func test_trackBarcodeScanningPermissionSettingsOpened_then_tracks_source() {
+        // Given
+        let analytics = MockAnalyticsProvider()
+        let viewModel = EditableOrderViewModel(siteID: sampleSiteID,
+                                               storageManager: storageManager,
+                                               analytics: WooAnalytics(analyticsProvider: analytics))
+
+        // When
+        viewModel.trackBarcodeScanningPermissionSettingsOpened()
+
+        // Then
+        XCTAssertEqual(analytics.receivedEvents.first, WooAnalyticsStat.barcodeScanningPermissionSettingsOpened.rawValue)
         XCTAssertEqual(analytics.receivedProperties.first?["source"] as? String, "order_creation")
     }
 
@@ -2345,7 +2408,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, permissionChecker: permissionChecker)
 
         // Then
-        XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
+        XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted(.denied))
     }
 
     func test_capturePermissionStatus_is_notPermitted_when_permissionChecker_is_restricted() {
@@ -2354,7 +2417,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         let viewModel = EditableOrderViewModel(siteID: sampleSiteID, storageManager: storageManager, permissionChecker: permissionChecker)
 
         // Then
-        XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
+        XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted(.restricted))
     }
 
     func test_requestCameraAccess_when_permission_is_granted_then_true_is_passed_to_the_completion_handler() {
@@ -2422,7 +2485,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
+        XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted(.denied))
     }
 
     func test_requestCameraAccess_when_permission_is_restricted_then_capturePermissionStatus_is_notPermitted() {
@@ -2439,7 +2502,7 @@ final class EditableOrderViewModelTests: XCTestCase {
         }
 
         // Then
-        XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted)
+        XCTAssertEqual(viewModel.capturePermissionStatus, .notPermitted(.restricted))
     }
 
     func test_addScannedProductToOrder_when_sku_is_not_found_then_returns_productNotFound_error_and_shows_autodismissable_notice_with_retry_action() {

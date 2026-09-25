@@ -1,4 +1,6 @@
 import Foundation
+import class Yosemite.POSCashSessionRemoteService
+import struct Yosemite.POSCashSessionAPIError
 import Testing
 import enum Networking.NetworkError
 import enum NetworkingCore.DotcomError
@@ -46,23 +48,23 @@ struct POSCashSessionAdaptorTests {
         }
     }
 
-    @Test func test_currentSession_when_network_notFound_without_rest_no_route_then_rethrows_network_error() async {
+    @Test func test_currentSession_when_network_notFound_without_rest_no_route_then_throws_api_error() async {
         // Given
         let sut = makeSUT(listError: networkError(statusCode: 404, code: "woocommerce_rest_cash_session_not_found"))
 
         // Then
-        await #expect(throws: NetworkError.self) {
+        await #expect(throws: POSCashSessionAPIError.self) {
             // When
             _ = try await sut.currentSession()
         }
     }
 
-    @Test func test_currentSession_when_server_error_then_rethrows_network_error() async {
+    @Test func test_currentSession_when_server_error_then_throws_api_error() async {
         // Given
         let sut = makeSUT(listError: networkError(statusCode: 500))
 
         // Then
-        await #expect(throws: NetworkError.self) {
+        await #expect(throws: POSCashSessionAPIError.self) {
             // When
             _ = try await sut.currentSession()
         }
@@ -71,7 +73,8 @@ struct POSCashSessionAdaptorTests {
 
 private extension POSCashSessionAdaptorTests {
     func makeSUT(listError: Error) -> POSCashSessionAdaptor {
-        POSCashSessionAdaptor(remote: MockPOSCashSessionRemote(listError: listError), siteID: siteID, deviceID: "device")
+        POSCashSessionAdaptor(remote: POSCashSessionRemoteService(remote: MockPOSCashSessionRemote(listError: listError)),
+                              siteID: siteID, deviceID: "device")
     }
 
     /// Builds a `NetworkError` whose `errorCode` resolves from a `{"code": ...}` response body.

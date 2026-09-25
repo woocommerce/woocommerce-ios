@@ -1,33 +1,31 @@
 import Combine
 import Foundation
-import Networking
-import NetworkingCore
+import Yosemite
 import PointOfSale
 import UIKit
 
 /// Maps the Core cash-session API to the POS presentation model.
 @MainActor
 final class POSCashSessionAdaptor: POSCashSessionService {
-    private let remote: POSCashSessionRemoteProtocol
+    private let remote: POSCashSessionRemoteService
     private let siteID: Int64
     private let deviceID: String
     private var pendingRequestIDs: [String: UUID] = [:]
 
-    init(remote: POSCashSessionRemoteProtocol, siteID: Int64, deviceID: String) {
+    init(remote: POSCashSessionRemoteService, siteID: Int64, deviceID: String) {
         self.remote = remote
         self.siteID = siteID
         self.deviceID = deviceID
     }
 
     convenience init?(credentials: Credentials?,
-                      selectedSite: AnyPublisher<JetpackSite?, Never>,
+                      selectedSite: AnyPublisher<POSCashSessionSite?, Never>,
                       appPasswordSupportState: AnyPublisher<Bool, Never>,
                       siteID: Int64) {
-        guard let credentials else { return nil }
-        let network = AlamofireNetwork(credentials: credentials,
-                                       selectedSite: selectedSite,
-                                       appPasswordSupportState: appPasswordSupportState)
-        self.init(remote: POSCashSessionRemote(network: network),
+        guard let remote = POSCashSessionRemoteService(credentials: credentials,
+                                                       selectedSite: selectedSite,
+                                                       appPasswordSupportState: appPasswordSupportState) else { return nil }
+        self.init(remote: remote,
                   siteID: siteID,
                   deviceID: Self.stableDeviceID())
     }
@@ -64,7 +62,7 @@ final class POSCashSessionAdaptor: POSCashSessionService {
             let session = try await mappedSession(response, withMovements: true)
             pendingRequestIDs.removeValue(forKey: requestKey)
             return session
-        } catch let error as NetworkError where error.responseCode == 409 {
+        } catch let error as POSCashSessionAPIError where error.statusCode == 409 {
             throw POSCashSessionServiceError.sessionAlreadyOpen
         }
     }
@@ -85,7 +83,7 @@ final class POSCashSessionAdaptor: POSCashSessionService {
             let session = try await self.session(id: sessionID)
             pendingRequestIDs.removeValue(forKey: requestKey)
             return session
-        } catch let error as NetworkError where error.responseCode == 404 {
+        } catch let error as POSCashSessionAPIError where error.statusCode == 404 {
             throw POSCashSessionServiceError.noOpenSession
         }
     }
@@ -96,10 +94,8 @@ final class POSCashSessionAdaptor: POSCashSessionService {
         do {
             _ = try await remote.recordCashSale(siteID: siteID, sessionID: activeID,
                                                 requestID: requestID(for: requestKey), orderID: orderID)
-        } catch let error as NetworkError where sourceAlreadyRecorded(error, in: activeID) {
+        } catch let error as POSCashSessionAPIError where sourceAlreadyRecorded(error, in: activeID) {
             // A previous attempt with another request ID has already added this order.
-        } catch let error as DotcomError where sourceAlreadyRecorded(error, in: activeID) {
-            // Jetpack tunneling reports the same conflict as a DotcomError.
         } catch {
             throw error
         }
@@ -116,10 +112,8 @@ final class POSCashSessionAdaptor: POSCashSessionService {
             _ = try await remote.recordCashRefund(siteID: siteID, sessionID: activeID,
                                                   requestID: requestID(for: requestKey),
                                                   orderID: orderID, refundID: refundID)
-        } catch let error as NetworkError where sourceAlreadyRecorded(error, in: activeID) {
+        } catch let error as POSCashSessionAPIError where sourceAlreadyRecorded(error, in: activeID) {
             // A previous attempt with another request ID has already added this refund.
-        } catch let error as DotcomError where sourceAlreadyRecorded(error, in: activeID) {
-            // Jetpack tunneling reports the same conflict as a DotcomError.
         } catch {
             throw error
         }
@@ -143,7 +137,7 @@ final class POSCashSessionAdaptor: POSCashSessionService {
             let session = try await mappedSession(response, withMovements: true)
             pendingRequestIDs.removeValue(forKey: requestKey)
             return session
-        } catch let error as NetworkError where error.responseCode == 409 {
+        } catch let error as POSCashSessionAPIError where error.statusCode == 409 {
             throw POSCashSessionServiceError.sessionChanged
         }
     }
@@ -155,10 +149,8 @@ private extension POSCashSessionAdaptor {
     func mappingUnsupportedEndpoint<T>(_ operation: () async throws -> T) async throws -> T {
         do {
             return try await operation()
-        } catch DotcomError.noRestRoute {
-            throw POSCashSessionServiceError.unsupported
-        } catch let error as NetworkError {
-            if case .notFound = error, error.errorCode == "rest_no_route" {
+        } catch let error as POSCashSessionAPIError {
+            if error.statusCode == 404, error.code == "rest_no_route" {
                 throw POSCashSessionServiceError.unsupported
             }
             throw error
@@ -198,21 +190,8 @@ private extension POSCashSessionAdaptor {
         return new
     }
 
-    func sourceAlreadyRecorded(_ error: NetworkError, in sessionID: Int64) -> Bool {
-        guard error.errorCode == "woocommerce_rest_cash_source_already_recorded",
-              let recordedSessionID = error.errorData?["session_id"]?.value as? Int else {
-            return false
-        }
-        return Int64(recordedSessionID) == sessionID
-    }
-
-    func sourceAlreadyRecorded(_ error: DotcomError, in sessionID: Int64) -> Bool {
-        guard case let .unknown(code, _, data) = error,
-              code == "woocommerce_rest_cash_source_already_recorded",
-              let recordedSessionID = data?["session_id"]?.value as? Int else {
-            return false
-        }
-        return Int64(recordedSessionID) == sessionID
+    func sourceAlreadyRecorded(_ error: POSCashSessionAPIError, in sessionID: Int64) -> Bool {
+        error.code == "woocommerce_rest_cash_source_already_recorded" && error.recordedSessionID == sessionID
     }
 
     func decimalString(_ value: Decimal) -> String {

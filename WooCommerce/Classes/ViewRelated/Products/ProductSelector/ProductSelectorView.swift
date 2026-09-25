@@ -179,6 +179,7 @@ struct ProductSelectorView: View {
                 ScrollView {
                     EmptyState(title: Localization.emptyStateMessage, image: .productBlouseImage)
                         .frame(maxWidth: .infinity)
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .containerRelativeFrame(.vertical)
                 }
             case .loading:
@@ -200,6 +201,7 @@ struct ProductSelectorView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .scrollDismissesKeyboard(.interactively)
         .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
+        .ignoresSafeArea(.container, edges: .horizontal)
         .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)
         .toolbar {
@@ -341,11 +343,11 @@ private extension ProductSelectorView {
             if !isHeaderCollapsedForKeyboard {
                 productSelectorHeaderTitleRow(safeAreaInsets: safeAreaInsets)
             }
-            productSelectorHeaderSearchRow
+            productSelectorHeaderSearchRow(safeAreaInsets: safeAreaInsets)
                 .padding(.bottom, Constants.defaultPadding)
                 .background(Color(.listForeground(modal: false)))
         } else {
-            productSelectorHeaderSearchRow
+            productSelectorHeaderSearchRow(safeAreaInsets: safeAreaInsets)
             if !isHeaderCollapsedForKeyboard {
                 productSelectorHeaderTitleRow(safeAreaInsets: safeAreaInsets)
             }
@@ -391,7 +393,7 @@ private extension ProductSelectorView {
 
     // The search field keeps a single structural position across size class changes so it is not
     // recreated on rotation, which would drop keyboard focus and skip the editing-ended callback.
-    @ViewBuilder private var productSelectorHeaderSearchRow: some View {
+    @ViewBuilder private func productSelectorHeaderSearchRow(safeAreaInsets: EdgeInsets) -> some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 searchHeader
@@ -409,6 +411,7 @@ private extension ProductSelectorView {
                     .transition(.opacity)
             }
         }
+        .padding(.horizontal, insets: safeAreaInsets)
         .frame(height: productSelectorHeaderSearchRowHeight)
         .animation(.easeInOut(duration: 0.2), value: shouldShowProductSearchFilter)
         .background(Color(.listForeground(modal: false)))

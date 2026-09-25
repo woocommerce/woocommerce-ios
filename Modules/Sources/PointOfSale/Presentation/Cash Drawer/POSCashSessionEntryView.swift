@@ -33,87 +33,111 @@ struct POSCashSessionEntryView: View {
     }
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.large) {
-            HStack(spacing: POSSpacing.medium) {
-                if step == .note {
-                    Button { step = .amount } label: {
-                        Image(systemName: "arrow.left")
+        VStack(spacing: POSSpacing.none) {
+            POSPageHeaderView(
+                title: step == .amount ? amountTitle : noteTitle,
+                subtitle: step == .note ? Localization.optional : nil,
+                backButtonConfiguration: headerButtonConfiguration
+            )
+
+            ScrollView {
+                VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
+                    if let submitError {
+                        POSNoticeView(title: Localization.errorTitle,
+                                      icon: Image(systemName: "exclamationmark.triangle"),
+                                      style: .alertLowest,
+                                      onDismiss: { self.submitError = nil }) {
+                            Text(submitError)
+                        }
                     }
-                    .accessibilityLabel(Localization.back)
-                }
-                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                    Text(step == .amount ? amountTitle : noteTitle)
-                        .font(.posHeadingBold)
-                        .foregroundStyle(Color.posOnSurface)
-                    if step == .note {
-                        Text(Localization.optional)
-                            .font(.posBodyMediumRegular())
-                            .foregroundStyle(.secondary)
-                    }
-                }
-                Spacer()
-                Button { dismiss() } label: { Image(systemName: "xmark") }
-                    .accessibilityLabel(Localization.cancel)
-            }
 
-            if let submitError {
-                POSNoticeView(title: Localization.errorTitle,
-                              icon: Image(systemName: "exclamationmark.triangle"),
-                              style: .alertLowest,
-                              onDismiss: { self.submitError = nil }) {
-                    Text(submitError)
-                }
-            }
-
-            Spacer(minLength: POSSpacing.medium)
-
-            if step == .amount {
-                HStack {
-                    Spacer()
-                    POSCashAmountTextField(amount: $amount,
-                                           isFocused: $isAmountFocused,
-                                           currencySettings: currencyProvider.currencySettings,
-                                           preset: 0,
-                                           onEdit: { hasEditedAmount = true },
-                                           onSubmit: { isAmountFocused = false })
-                    Spacer()
-                }
-                if action == .close, let expected = controller.currentSession?.expectedCash {
-                    Text(String.localizedStringWithFormat(Localization.expectedAmount, money.format(expected)))
-                        .font(.posBodyMediumRegular())
-                        .foregroundStyle(.secondary)
-                        .frame(maxWidth: .infinity)
-                    if hasEditedAmount, let parsedAmount, parsedAmount != expected {
-                        Text(String.localizedStringWithFormat(Localization.discrepancy, money.formatSigned(parsedAmount - expected)))
-                            .font(.posBodyMediumBold)
-                            .foregroundStyle(Color.posError)
-                            .frame(maxWidth: .infinity)
+                    if step == .amount {
+                        amountSection
+                    } else {
+                        noteSection
                     }
                 }
-            } else {
-                TextField(Localization.notePlaceholder, text: $note, axis: .vertical)
-                    .lineLimit(3...5)
-                    .font(.posHeadingRegular)
-                    .multilineTextAlignment(.center)
-                    .foregroundStyle(Color.posOnSurface)
+                .padding(.top, POSSpacing.xLarge)
+                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
             }
+            .scrollDismissesKeyboard(.interactively)
 
-            Spacer(minLength: POSSpacing.medium)
-
-            Button(step == .amount ? Localization.continueButton : submitTitle) {
-                if step == .amount {
-                    isAmountFocused = false
-                    step = .note
-                } else {
-                    Task { await submit() }
-                }
-            }
-            .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: controller.isSaving))
-            .disabled(step == .amount ? !canContinue : controller.isSaving)
-            .frame(maxWidth: .infinity)
+            submitButton
+                .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                .padding(.vertical, POSPadding.medium)
         }
-        .padding(POSPadding.large)
-        .background(Color.posSurface)
+        .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
+        .background(Color.posSurfaceBright.ignoresSafeArea())
+    }
+
+    private var headerButtonConfiguration: POSPageHeaderBackButtonConfiguration {
+        switch step {
+        case .amount:
+            return .init(state: controller.isSaving ? .disabled : .enabled,
+                         action: {
+                             isAmountFocused = false
+                             dismiss()
+                         },
+                         buttonIcon: "xmark")
+        case .note:
+            return .init(state: controller.isSaving ? .disabled : .enabled,
+                         action: { step = .amount },
+                         buttonIcon: "chevron.backward")
+        }
+    }
+
+    private var amountSection: some View {
+        VStack(alignment: .center, spacing: POSSpacing.xSmall) {
+            POSCashAmountTextField(amount: $amount,
+                                   isFocused: $isAmountFocused,
+                                   currencySettings: currencyProvider.currencySettings,
+                                   preset: 0,
+                                   onEdit: { hasEditedAmount = true },
+                                   onSubmit: { isAmountFocused = false })
+
+            if action == .close, let expected = controller.currentSession?.expectedCash {
+                Text(String.localizedStringWithFormat(Localization.expectedAmount, money.format(expected)))
+                    .font(.posBodySmallRegular())
+                    .foregroundColor(.posOnSurfaceVariantLowest)
+
+                if hasEditedAmount, let parsedAmount, parsedAmount != expected {
+                    Text(String.localizedStringWithFormat(Localization.discrepancy, money.formatSigned(parsedAmount - expected)))
+                        .font(.posBodySmallRegular())
+                        .foregroundColor(.posOnSurfaceVariantLowest)
+                }
+            }
+        }
+        .frame(maxWidth: .infinity)
+        .animation(.easeInOut, value: parsedAmount)
+    }
+
+    private var noteSection: some View {
+        VStack(alignment: .leading, spacing: POSSpacing.small) {
+            Text(Localization.noteLabel)
+                .font(.posBodyMediumRegular())
+                .foregroundColor(.posOnSurfaceVariantLowest)
+
+            TextField(Localization.notePlaceholder, text: $note, axis: .vertical)
+                .lineLimit(3...5)
+                .font(.posBodyLargeRegular())
+                .foregroundColor(.posOnSurface)
+                .textInputAutocapitalization(.sentences)
+                .padding(.vertical, POSPadding.small)
+        }
+    }
+
+    private var submitButton: some View {
+        Button(step == .amount ? Localization.continueButton : submitTitle) {
+            if step == .amount {
+                isAmountFocused = false
+                step = .note
+            } else {
+                Task { await submit() }
+            }
+        }
+        .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: controller.isSaving))
+        .disabled(step == .amount ? !canContinue : controller.isSaving)
+        .frame(maxWidth: .infinity)
     }
 
     private var amountTitle: String {
@@ -187,8 +211,7 @@ extension POSCashSessionEntryView {
 
 private extension POSCashSessionEntryView {
     enum Localization {
-        static let back = NSLocalizedString("pos.cashSession.entry.back", value: "Back", comment: "Back to cash amount entry")
-        static let cancel = NSLocalizedString("pos.cashSession.entry.cancel", value: "Cancel", comment: "Cancel cash session entry")
+        static let noteLabel = NSLocalizedString("pos.cashSession.entry.noteLabel", value: "Note", comment: "Label above the cash session note field")
         static let optional = NSLocalizedString("pos.cashSession.entry.optional", value: "Optional", comment: "Cash movement note is optional")
         static let payInAmount = NSLocalizedString("pos.cashSession.entry.payInAmount", value: "How much is the Pay in?", comment: "Pay in amount prompt")
         static let payOutAmount = NSLocalizedString("pos.cashSession.entry.payOutAmount", value: "How much is the Pay out?", comment: "Pay out amount prompt")

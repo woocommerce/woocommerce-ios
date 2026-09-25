@@ -24,9 +24,11 @@ struct POSCurrentCashSessionView: View {
                         } label: {
                             Image(systemName: "ellipsis")
                                 .font(.posBodyLargeBold)
-                                .foregroundStyle(Color.posOnSurface)
+                                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                                .foregroundColor(.posOnSurface)
                                 .padding(POSPadding.small)
                         }
+                        .menuIndicator(.hidden)
                         .accessibilityLabel(Localization.recordMovement)
                     }
                 })
@@ -55,7 +57,7 @@ struct POSCurrentCashSessionView: View {
                 }
             }
             .background(Color.posSurface)
-            .fullScreenCover(item: $entryAction) { action in
+            .posFullScreenCover(item: $entryAction) { action in
                 POSCashSessionEntryView(action: action, controller: controller, onClosed: onClosed)
             }
             .accessibilityIdentifier("pos-cash-drawer-current-session-view")

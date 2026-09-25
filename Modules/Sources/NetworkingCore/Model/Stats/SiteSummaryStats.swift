@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents site summary stats for a specific period.
 ///
-public struct SiteSummaryStats: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct SiteSummaryStats: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, Sendable {
     public let siteID: Int64
     public let date: String
     public let period: StatGranularity

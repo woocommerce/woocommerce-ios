@@ -17,7 +17,7 @@ final class OrderNotificationDataService {
     ///
     private let ordersRemote: OrdersRemote
 
-    private let siteRemote: SiteRemote
+    private let credentials: Credentials
 
     /// Notifications remote
     ///
@@ -28,10 +28,10 @@ final class OrderNotificationDataService {
     private let network: AlamofireNetwork
 
     init(credentials: Credentials) {
+        self.credentials = credentials
         network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil) // opt out from network switching
         ordersRemote = OrdersRemote(network: network)
         notesRemote = NotificationsRemote(network: network)
-        siteRemote = SiteRemote(network: network, dotcomClientID: "", dotcomClientSecret: "")
     }
 
     ///  Marks a notification as read when the given `orderID` matches `orderID` of the provided notification.
@@ -51,7 +51,10 @@ final class OrderNotificationDataService {
 
     @MainActor
     func loadStoreName(id: Int64) async throws -> String {
-        try await siteRemote.loadSite(siteID: id).name
+        // The async remote owns a separate network so it cannot race with order and notification requests.
+        let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
+        let siteRemote = SiteRemote(network: network, dotcomClientID: "", dotcomClientSecret: "")
+        return try await siteRemote.loadSite(siteID: id).name
     }
 
     @MainActor

@@ -92,12 +92,39 @@ struct POSCashSessionAdaptorTests {
             _ = try await sut.closeSession(sessionID: 1, expectedRevision: 1, countedCash: 10, note: nil)
         }
     }
+
+    @Test func test_session_when_api_returns_drawer_name_then_preserves_it() async throws {
+        // Given
+        let response = try JSONDecoder().decode(POSCashSessionResponse.self, from: Data("""
+        {
+          "id": 42, "device_id": "pos-1", "drawer_id": "Front counter", "status": "closed", "revision": 2,
+          "currency": "USD", "currency_precision": 2, "opening_amount": "100.00",
+          "cash_sales_total": "20.00", "cash_refunds_total": "0.00", "paid_in_total": "0.00",
+          "paid_out_total": "0.00", "expected_amount": "120.00", "counted_amount": "120.00",
+          "variance": "0.00", "note": null, "date_created_gmt": "2026-09-25T10:00:00Z",
+          "date_closed_gmt": "2026-09-25T11:00:00Z", "opened_by_name": "Thomas", "closed_by_name": "Maria"
+        }
+        """.utf8))
+        let sut = makeSUT(sessionResponse: response)
+
+        // When
+        let session = try await sut.session(id: response.id)
+
+        // Then
+        #expect(session.drawerID == "Front counter")
+    }
 }
 
 private extension POSCashSessionAdaptorTests {
     func makeSUT(listError: Error, closeError: Error? = nil) -> POSCashSessionAdaptor {
         POSCashSessionAdaptor(remote: POSCashSessionRemoteService(remote: MockPOSCashSessionRemote(listError: listError,
                                                                                                     closeError: closeError)),
+                              siteID: siteID, deviceID: UUID().uuidString)
+    }
+
+    func makeSUT(sessionResponse: POSCashSessionResponse) -> POSCashSessionAdaptor {
+        POSCashSessionAdaptor(remote: POSCashSessionRemoteService(remote: MockPOSCashSessionRemote(listError: UnexpectedCallError(),
+                                                                                                    sessionResponse: sessionResponse)),
                               siteID: siteID, deviceID: UUID().uuidString)
     }
 
@@ -118,20 +145,26 @@ private struct UnexpectedCallError: Error {}
 private final class MockPOSCashSessionRemote: POSCashSessionRemoteProtocol {
     private let listError: Error
     private let closeError: Error?
+    private let sessionResponse: POSCashSessionResponse?
 
-    init(listError: Error, closeError: Error? = nil) {
+    init(listError: Error, closeError: Error? = nil, sessionResponse: POSCashSessionResponse? = nil) {
         self.listError = listError
         self.closeError = closeError
+        self.sessionResponse = sessionResponse
     }
 
     func listSessions(siteID: Int64, deviceID: String?, status: String, page: Int, perPage: Int) async throws -> PagedItems<POSCashSessionResponse> {
         throw listError
     }
 
-    func session(siteID: Int64, id: Int64) async throws -> POSCashSessionResponse { throw UnexpectedCallError() }
+    func session(siteID: Int64, id: Int64) async throws -> POSCashSessionResponse {
+        guard let sessionResponse else { throw UnexpectedCallError() }
+        return sessionResponse
+    }
 
     func movements(siteID: Int64, sessionID: Int64, page: Int, perPage: Int) async throws -> PagedItems<POSCashMovementResponse> {
-        throw UnexpectedCallError()
+        guard sessionResponse != nil else { throw UnexpectedCallError() }
+        return PagedItems(items: [], hasMorePages: false, totalItems: 0)
     }
 
     func openSession(siteID: Int64, requestID: UUID, deviceID: String, openingAmount: String) async throws -> POSCashSessionResponse {

@@ -88,6 +88,7 @@ final class POSMockCashSessionService: POSCashSessionService {
     private var nextID: Int64 = 1681895
     private let now: () -> Date
     private let currentActor: String
+    private let drawerID: String?
     private let writeDelay: Duration
     private let readDelay: Duration
     private let failCurrentLoad: Bool
@@ -109,9 +110,11 @@ final class POSMockCashSessionService: POSCashSessionService {
          failPastLoad: Bool = false,
          failDetailLoad: Bool = false,
          mockCashSaleAmount: Decimal = 24,
-         mockCashRefundAmount: Decimal = 12) {
+         mockCashRefundAmount: Decimal = 12,
+         drawerID: String? = nil) {
         self.now = now
         self.currentActor = currentActor
+        self.drawerID = drawerID
         self.closedSessions = hasSampleHistory ? Self.sampleSessions() : []
         self.writeDelay = writeDelay
         self.readDelay = readDelay
@@ -156,7 +159,7 @@ final class POSMockCashSessionService: POSCashSessionService {
         guard openSession == nil else { throw POSCashSessionServiceError.sessionAlreadyOpen }
         guard openingCash >= 0 else { throw POSCashSessionServiceError.invalidAmount }
         let session = POSCashSession(id: nextID, openedAt: now(), openedBy: currentActor,
-                                     openingCash: openingCash, movements: [], revision: 0)
+                                     openingCash: openingCash, movements: [], revision: 0, drawerID: drawerID)
         nextID += 1
         openSession = session
         return session
@@ -283,7 +286,8 @@ private extension POSMockCashSessionService {
         ]
         return [
             .init(id: 1681891, openedAt: date(14, 8, 45), openedBy: "Thomas", openingCash: 200, movements: first,
-                  closedAt: date(14, 18, 12), closedBy: "Maria", countedCash: Decimal(string: "523.50"), revision: first.count + 1),
+                  closedAt: date(14, 18, 12), closedBy: "Maria", countedCash: Decimal(string: "523.50"),
+                  revision: first.count + 1, drawerID: "Front counter"),
             .init(id: 1681884, openedAt: date(13, 10, 0), openedBy: "Maria", openingCash: 100, movements: second,
                   closedAt: date(13, 15, 0), closedBy: "Maria", countedCash: 178, revision: second.count + 1),
             .init(id: 1681877, openedAt: date(12, 8, 30), openedBy: "Thomas", openingCash: 250, movements: third,

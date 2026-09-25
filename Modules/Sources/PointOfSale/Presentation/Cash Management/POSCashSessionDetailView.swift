@@ -28,6 +28,10 @@ struct POSCashSessionDetailView: View {
                         }
                     }
 
+                    if let drawerID = session.drawerID, !drawerID.isEmpty {
+                        POSCashSessionDrawerView(drawerID: drawerID)
+                    }
+
                     POSInformationCard {
                         VStack(alignment: .leading, spacing: POSSpacing.medium) {
                             Text(Localization.drawerSummary)

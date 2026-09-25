@@ -205,6 +205,10 @@ private struct POSPastCashSessionsPreview: View {
     POSPastCashSessionsPreview(service: POSMockCashSessionService(), selectedSessionID: 1681891)
 }
 
+#Preview("Past session details without drawer") {
+    POSPastCashSessionsPreview(service: POSMockCashSessionService(), selectedSessionID: 1681884)
+}
+
 #Preview("Past session details error") {
     POSPastCashSessionsPreview(service: POSMockCashSessionService(failDetailLoad: true), selectedSessionID: 1681891)
 }

@@ -278,7 +278,8 @@ private extension POSCashSessionAdaptor {
                                   revision: response.revision,
                                   totals: totals,
                                   currency: response.currency,
-                                  currencyPrecision: response.currencyPrecision)
+                                  currencyPrecision: response.currencyPrecision,
+                                  drawerID: response.drawerID)
     }
 
     func mapMovement(_ response: POSCashMovementResponse) throws -> POSCashSessionMovement? {

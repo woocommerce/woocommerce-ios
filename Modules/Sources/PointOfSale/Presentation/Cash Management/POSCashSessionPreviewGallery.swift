@@ -28,7 +28,8 @@ private struct POSCashSessionPreviewGallery: View {
     init(screen: Screen) {
         self.screen = screen
         let service = POSMockCashSessionService(failCurrentLoad: screen == .currentError,
-                                                failPastLoad: screen == .pastError)
+                                                failPastLoad: screen == .pastError,
+                                                drawerID: "Front counter")
         _controller = State(initialValue: POSCashSessionController(service: service))
     }
 

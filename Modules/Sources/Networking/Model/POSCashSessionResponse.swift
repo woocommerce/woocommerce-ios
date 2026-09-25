@@ -4,6 +4,7 @@ import Foundation
 public struct POSCashSessionResponse: Decodable {
     public let id: Int64
     public let deviceID: String
+    public let drawerID: String?
     public let status: String
     public let revision: Int
     public let currency: String
@@ -25,6 +26,7 @@ public struct POSCashSessionResponse: Decodable {
     private enum CodingKeys: String, CodingKey {
         case id, status, revision, currency, variance, note
         case deviceID = "device_id"
+        case drawerID = "drawer_id"
         case currencyPrecision = "currency_precision"
         case openingAmount = "opening_amount"
         case cashSalesTotal = "cash_sales_total"

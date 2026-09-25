@@ -26,9 +26,9 @@ struct AddOrderComponentsSection: View {
     ///
     @State private var shouldShowGoToCouponsAlert: Bool = false
 
-    ///   Environment safe areas
+    /// Safe-area insets of the form's container.
     ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
     @ScaledMetric private var scale: CGFloat = 1.0
 
@@ -36,12 +36,14 @@ struct AddOrderComponentsSection: View {
          shippingLineViewModel: EditableOrderShippingLineViewModel,
          couponLineViewModel: EditableOrderCouponLineViewModel,
          shouldShowCouponsInfoTooltip: Binding<Bool>,
-         shouldShowGiftCardForm: Binding<Bool>) {
+         shouldShowGiftCardForm: Binding<Bool>,
+         safeAreaInsets: EdgeInsets) {
         self.viewModel = viewModel
         self.shippingLineViewModel = shippingLineViewModel
         self.couponLineViewModel = couponLineViewModel
         self._shouldShowCouponsInfoTooltip = shouldShowCouponsInfoTooltip
         self._shouldShowGiftCardForm = shouldShowGiftCardForm
+        self.safeAreaInsets = safeAreaInsets
     }
 
     var body: some View {
@@ -241,7 +243,8 @@ struct AddOrderComponentsSection_Previews: PreviewProvider {
                                   shippingLineViewModel: shippingLineViewModel,
                                   couponLineViewModel: couponLineViewModel,
                                   shouldShowCouponsInfoTooltip: .constant(true),
-                                  shouldShowGiftCardForm: .constant(false))
+                                  shouldShowGiftCardForm: .constant(false),
+                                  safeAreaInsets: .zero)
             .previewLayout(.sizeThatFits)
     }
 }

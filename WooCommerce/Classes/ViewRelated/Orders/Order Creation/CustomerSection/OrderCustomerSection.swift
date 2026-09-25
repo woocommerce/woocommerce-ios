@@ -11,10 +11,16 @@ struct OrderCustomerSection: View {
     ///
     let addressFormViewModel: CreateOrderAddressFormViewModel
 
+    /// Safe-area insets of the form's container.
+    ///
+    let safeAreaInsets: EdgeInsets
+
     @State private var showAddressForm: Bool = false
 
     var body: some View {
-        OrderCustomerSectionContent(viewModel: viewModel.customerDataViewModel, showAddressForm: $showAddressForm)
+        OrderCustomerSectionContent(viewModel: viewModel.customerDataViewModel,
+                                    showAddressForm: $showAddressForm,
+                                    safeAreaInsets: safeAreaInsets)
             .sheet(isPresented: $showAddressForm) {
                 NavigationStack {
                     switch viewModel.customerNavigationScreen {
@@ -67,7 +73,7 @@ private struct OrderCustomerSectionContent: View {
 
     @Binding var showAddressForm: Bool
 
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
@@ -170,8 +176,8 @@ struct OrderCustomerSection_Previews: PreviewProvider {
                                                                             """)
 
         ScrollView {
-            OrderCustomerSectionContent(viewModel: emptyViewModel, showAddressForm: .constant(false))
-            OrderCustomerSectionContent(viewModel: addressViewModel, showAddressForm: .constant(false))
+            OrderCustomerSectionContent(viewModel: emptyViewModel, showAddressForm: .constant(false), safeAreaInsets: .zero)
+            OrderCustomerSectionContent(viewModel: addressViewModel, showAddressForm: .constant(false), safeAreaInsets: .zero)
         }
     }
 }

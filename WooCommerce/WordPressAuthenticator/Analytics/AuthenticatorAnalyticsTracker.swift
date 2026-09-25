@@ -25,6 +25,13 @@ public class AuthenticatorAnalyticsTracker {
         case click
         case source
         case step
+
+        /// The store address the merchant entered. Same key and meaning as Android, so the
+        /// two platforms' after-login failure steps can be read together.
+        case url
+
+        /// Whether the merchant's account already has at least one connected store.
+        case hasConnectedStores = "has_connected_stores"
     }
 
     public enum Source: String {
@@ -99,6 +106,11 @@ public class AuthenticatorAnalyticsTracker {
         /// QR-driven login flow (scan/poll/exchange).
         ///
         case loginQR = "login_qr"
+
+        /// Everything after authentication succeeds: the store picker and the after-login error
+        /// screens. Matches Android's `UnifiedLoginTracker.Flow.EPILOGUE`, which it sets when the
+        /// epilogue starts so every subsequent step inherits it.
+        case epilogue
     }
 
     public enum Step: String {
@@ -147,6 +159,44 @@ public class AuthenticatorAnalyticsTracker {
         /// Triggered when a magic link is automatically requested after filling in email address and the requested screen is shown
         ///
         case magicLinkAutoRequested = "magic_link_auto_requested"
+
+        // MARK: - After-login failure states (`flow = epilogue`)
+        //
+        // Shared vocabulary with Android's `UnifiedLoginTracker.Step`, so both apps report the
+        // same `step` values for the same merchant-facing screens. Values must stay byte-identical
+        // to Android's.
+
+        /// The store address entered at login is not in the signed-in WP.com account.
+        ///
+        case wrongWordPressAccount = "wrong_wordpress_account"
+
+        /// Jetpack is installed and active on the site, but not connected.
+        ///
+        case jetpackNotConnected = "jetpack_not_connected"
+
+        /// Jetpack is not installed on the site.
+        ///
+        case jetpackNotInstalled = "jetpack_not_installed"
+
+        /// The matched site does not have WooCommerce active.
+        ///
+        case notWooStore = "not_woo_store"
+
+        /// The account has no WooCommerce stores at all.
+        ///
+        case noWooStores = "no_woo_stores"
+
+        /// The entered address is not a WordPress site.
+        ///
+        case notWordPressSite = "not_wordpress_site"
+
+        /// No WP.com account exists for the entered email.
+        ///
+        case noWpcomAccountFound = "no_wpcom_account_found"
+
+        /// The store picker list is shown.
+        ///
+        case siteList = "site_list"
 
         // MARK: - QR-driven login flow (`flow = login_qr`)
 
@@ -422,12 +472,12 @@ public class AuthenticatorAnalyticsTracker {
 
     /// Track a step within a flow.
     ///
-    public func track(step: Step) {
+    public func track(step: Step, properties extraProperties: [String: String] = [:]) {
         guard canTrack() else {
             return
         }
 
-        track(event(step: step))
+        track(event(step: step, extraProperties: extraProperties))
     }
 
     /// Track a click interaction.
@@ -504,10 +554,10 @@ public class AuthenticatorAnalyticsTracker {
     ///
     /// - Returns: an analytics event representing the step.
     ///
-    private func event(step: Step) -> AnalyticsEvent {
+    private func event(step: Step, extraProperties: [String: String] = [:]) -> AnalyticsEvent {
         let event = AnalyticsEvent(
             name: EventType.step.rawValue,
-            properties: properties(step: step))
+            properties: properties(step: step).merging(extraProperties) { _, extra in extra })
 
         state.lastStep = step
 

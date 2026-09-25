@@ -1,4 +1,5 @@
 import UIKit
+import WordPressAuthenticator
 import Yosemite
 import protocol WooFoundation.Analytics
 
@@ -106,7 +107,13 @@ final class NoWooErrorViewModel: ULErrorViewModel {
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {
-        analytics.track(.loginWooCommerceErrorShown)
+        AuthenticatorAnalyticsTracker.shared.track(
+            step: .notWooStore,
+            properties: [
+                AuthenticatorAnalyticsTracker.Property.url.rawValue: site.url.trimHTTPScheme(),
+                AuthenticatorAnalyticsTracker.Property.hasConnectedStores.rawValue: String(showsConnectedStores)
+            ]
+        )
     }
 }
 

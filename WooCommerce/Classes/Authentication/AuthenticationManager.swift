@@ -713,6 +713,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                        in: navigationController)
         }
 
+        // Mirrors Android (SitePickerViewModel), which switches the flow to `epilogue` as the
+        // login epilogue starts, so the step reported by the picker and by every after-login
+        // error screen carries the same flow on both platforms.
+        AuthenticatorAnalyticsTracker.shared.set(flow: .epilogue)
+
         let matcher = ULAccountMatcher(storageManager: storageManager)
         matcher.refreshStoredSites()
 

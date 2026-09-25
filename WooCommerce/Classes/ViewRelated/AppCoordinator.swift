@@ -358,6 +358,11 @@ private extension AppCoordinator {
 
         // Show error for the current site URL if exists.
         if let siteURL = loggedOutAppSettings.errorLoginSiteAddress {
+            // Re-presenting the error the merchant was left on is still the login epilogue, but it
+            // skips `presentLoginEpilogue`, which is where the flow is normally set. Without this
+            // the step is reported against whatever flow the tracker was last left on, `prologue`
+            // on a cold launch.
+            AuthenticatorAnalyticsTracker.shared.set(flow: .epilogue)
             if let authenticationUI = authenticationManager.authenticationUI() as? UINavigationController,
                let errorController = authenticationManager.errorViewController(for: siteURL,
                                                                                with: matcher,

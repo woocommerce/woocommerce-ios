@@ -30,7 +30,6 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     @Published private var primaryButtonLoading = false
     @Published private var termsAttributedString: NSAttributedString = .init(string: "")
 
-    private var siteInfoSubscription: AnyCancellable?
 
     init(siteURL: String?,
          showsConnectedStores: Bool,
@@ -115,7 +114,13 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     // MARK: - Actions
     func viewDidLoad(_ viewController: UIViewController?) {
 
-        trackScreenView()
+        AuthenticatorAnalyticsTracker.shared.track(
+            step: .wrongWordPressAccount,
+            properties: [
+                AuthenticatorAnalyticsTracker.Property.url.rawValue: siteURL.trimHTTPScheme(),
+                AuthenticatorAnalyticsTracker.Property.hasConnectedStores.rawValue: String(showsConnectedStores)
+            ]
+        )
         configureTermsText()
 
         // Fetches site info if we're not sure whether the site is self-hosted.
@@ -170,16 +175,6 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
 // MARK: - Private helpers
 private extension WrongAccountErrorViewModel {
-    /// Waits for site info to log the screen view.
-    ///
-    func trackScreenView() {
-        siteInfoSubscription = $isSelfHostedSite
-            .dropFirst() // ignores first element
-            .sink { [weak self] isSelfHosted in
-                self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: isSelfHosted))
-            }
-    }
-
     /// Listens to changes to the self-hosted site check to update the content of the terms text.
     ///
     func configureTermsText() {

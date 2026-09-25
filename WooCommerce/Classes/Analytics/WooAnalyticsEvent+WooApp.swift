@@ -2798,18 +2798,6 @@ extension WooAnalyticsEvent {
 
 // MARK: - Jetpack connection
 //
-extension WooAnalyticsEvent {
-    enum LoginJetpackConnection {
-        enum Key: String {
-            case selfHosted = "is_selfhosted_site"
-        }
-
-        static func jetpackConnectionErrorShown(selfHostedSite: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .loginJetpackConnectionErrorShown, properties: [Key.selfHosted.rawValue: selfHostedSite])
-        }
-    }
-}
-
 // MARK: - Widgets {
 extension WooAnalyticsEvent {
     enum Widgets {

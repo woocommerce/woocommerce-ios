@@ -1,5 +1,6 @@
 import Combine
 import UIKit
+import WordPressAuthenticator
 import protocol WooFoundation.Analytics
 
 /// Configuration and actions for an ULErrorViewController,
@@ -88,11 +89,7 @@ final class JetpackSetupRequiredViewModel: ULErrorViewModel {
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {
-        if connectionOnly {
-            analytics.track(.loginJetpackConnectionErrorShown)
-        } else {
-            analytics.track(.loginJetpackRequiredScreenViewed)
-        }
+        AuthenticatorAnalyticsTracker.shared.track(step: connectionOnly ? .jetpackNotConnected : .jetpackNotInstalled)
 
         loadSiteFavicon()
     }

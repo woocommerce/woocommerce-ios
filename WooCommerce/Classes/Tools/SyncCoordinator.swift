@@ -33,6 +33,7 @@ protocol SyncingCoordinatorProtocol: AnyObject {
 /// Sync'ing of first page isn't really handled. Reason is: the first page of each collection must always be fresh,
 /// and the Sync OP is (usually) explicitly made in `viewWillAppear`. This may change in a future update, though!
 ///
+@MainActor
 class SyncingCoordinator: SyncingCoordinatorProtocol {
 
     /// Default Settings

@@ -76,21 +76,28 @@ struct AdaptiveModalContainer<PrimaryView: View, SecondaryView: View, DismissBut
 
         var body: some View {
             HStack(spacing: 0) {
-                NavigationStack {
-                    secondaryView($isShowingSecondaryView)
-                        .toolbar {
-                            ToolbarItem(placement: .navigationBarLeading) {
-                                dismissBarButton()
+                GeometryReader { column in
+                    NavigationStack {
+                        secondaryView($isShowingSecondaryView)
+                            .toolbar {
+                                ToolbarItem(placement: .navigationBarLeading) {
+                                    dismissBarButton()
+                                }
                             }
-                        }
+                    }
+                    // Set on the stack so pushed destinations inherit it too.
+                    .environment(\.navigationColumnEdgesInsideSafeArea, column.horizontalEdgesInsideSafeArea)
                 }
                 .layoutPriority(1)
 
                 Divider()
                     .ignoresSafeArea(edges: .vertical)
 
-                NavigationStack {
-                    primaryView(nil)
+                GeometryReader { column in
+                    NavigationStack {
+                        primaryView(nil)
+                    }
+                    .environment(\.navigationColumnEdgesInsideSafeArea, column.horizontalEdgesInsideSafeArea)
                 }
                 .frame(minWidth: 400)
             }
@@ -124,5 +131,19 @@ extension EnvironmentValues {
     var adaptiveModalContainerPresentationStyle: AdaptiveModalContainerPresentationStyle? {
         get { self[AdaptiveModalContainerPresentationStyleKey.self] }
         set { self[AdaptiveModalContainerPresentationStyleKey.self] = newValue }
+    }
+}
+
+private extension GeometryProxy {
+    /// Horizontal edges of this column that do not touch the container's unsafe area.
+    var horizontalEdgesInsideSafeArea: Edge.Set {
+        var edges: Edge.Set = []
+        if safeAreaInsets.leading == 0 {
+            edges.insert(.leading)
+        }
+        if safeAreaInsets.trailing == 0 {
+            edges.insert(.trailing)
+        }
+        return edges
     }
 }

@@ -57,8 +57,8 @@ struct POSCashSessionActivityView: View {
     }
 
     private func detail(for movement: POSCashSessionMovement) -> String {
-        let reference = movement.orderID.map { String.localizedStringWithFormat(Localization.orderNumber, String($0)) }
-        return activityDetail(date: movement.date, actor: movement.actor, note: movement.note ?? reference)
+        let referenceAndNote = POSCashSessionActivityFormatter.referenceAndNote(orderID: movement.orderID, note: movement.note)
+        return activityDetail(date: movement.date, actor: movement.actor, note: referenceAndNote)
     }
 
     private func activityDetail(date: Date, actor: String, note: String?) -> String {
@@ -79,7 +79,6 @@ private extension POSCashSessionActivityView {
         static let cashRefund = NSLocalizedString("pos.cashSession.activity.refund", value: "Cash refund issued", comment: "Cash session activity")
         static let payIn = NSLocalizedString("pos.cashSession.activity.payIn", value: "Pay in recorded", comment: "Cash session activity")
         static let payOut = NSLocalizedString("pos.cashSession.activity.payOut", value: "Pay out recorded", comment: "Cash session activity")
-        static let orderNumber = NSLocalizedString("pos.cashSession.activity.orderNumber", value: "Order #%1$@", comment: "Order reference in cash activity")
         static let timeActorAndNote = NSLocalizedString("pos.cashSession.activity.timeActorAndNote", value: "%1$@ · By %2$@ · %3$@",
                                                        comment: "Time, staff member, and note in cash activity")
         static let timeAndActor = NSLocalizedString("pos.cashSession.activity.timeAndActor", value: "%1$@ · By %2$@", comment: "Time and staff name in cash activity")

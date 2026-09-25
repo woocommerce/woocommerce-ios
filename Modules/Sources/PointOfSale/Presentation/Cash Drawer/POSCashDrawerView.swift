@@ -71,6 +71,7 @@ private extension POSCashDrawerView {
                         analytics.track(.pointOfSaleCashDrawerPastSessionsTapped)
                         selection = .pastSessions
                     })
+                    Spacer()
                 }
                 .padding(.horizontal, POSPadding.medium)
             }

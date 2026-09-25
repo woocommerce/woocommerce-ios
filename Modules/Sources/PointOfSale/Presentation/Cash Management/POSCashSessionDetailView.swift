@@ -44,7 +44,8 @@ struct POSCashSessionDetailView: View {
                                 POSCashSessionMetricView(label: Localization.startingCash, amount: money.format(session.openingCash))
                                 POSCashSessionMetricView(label: Localization.expectedCash, amount: money.format(session.expectedCash))
                                 POSCashSessionMetricView(label: Localization.countedCash, amount: money.format(session.countedCash ?? 0))
-                                POSCashSessionMetricView(label: Localization.difference, amount: money.formatSigned(session.difference ?? 0))
+                                POSCashSessionMetricView(label: Localization.difference, amount: money.formatSigned(session.difference ?? 0),
+                                                         amountColor: session.difference == 0 ? .posOnSurface : .posAlert)
                             }
 
                             POSDivider()

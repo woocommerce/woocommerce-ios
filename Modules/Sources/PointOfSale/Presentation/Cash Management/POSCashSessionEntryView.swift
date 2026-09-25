@@ -117,7 +117,7 @@ struct POSCashSessionEntryView: View {
                 if hasEditedAmount, let parsedAmount, parsedAmount != expected {
                     Text(String.localizedStringWithFormat(Localization.discrepancy, money.formatSigned(parsedAmount - expected)))
                         .font(.posBodySmallRegular())
-                        .foregroundColor(.posOnSurfaceVariantLowest)
+                        .foregroundColor(.posAlert)
                 }
             }
         }

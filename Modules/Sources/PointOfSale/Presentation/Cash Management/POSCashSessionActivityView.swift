@@ -19,7 +19,8 @@ struct POSCashSessionActivityView: View {
                 }
 
                 ForEach(session.movements.sorted(by: { $0.date > $1.date })) { movement in
-                    row(title: title(for: movement.kind), detail: detail(for: movement), amount: money.formatSigned(movement.signedAmount))
+                    row(title: title(for: movement.kind), detail: detail(for: movement), amount: money.formatSigned(movement.signedAmount),
+                        amountColor: movement.signedAmount > 0 ? .posSuccess : .posOnSurface)
                 }
 
                 row(title: Localization.started,
@@ -29,7 +30,7 @@ struct POSCashSessionActivityView: View {
         }
     }
 
-    private func row(title: String, detail: String, amount: String) -> some View {
+    private func row(title: String, detail: String, amount: String, amountColor: Color = .posOnSurface) -> some View {
         HStack(alignment: .top, spacing: POSSpacing.medium) {
             VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                 Text(title)
@@ -42,7 +43,7 @@ struct POSCashSessionActivityView: View {
             Spacer(minLength: POSSpacing.small)
             Text(amount)
                 .font(.posBodyMediumRegular())
-                .foregroundStyle(Color.posOnSurface)
+                .foregroundStyle(amountColor)
         }
         .accessibilityElement(children: .combine)
     }

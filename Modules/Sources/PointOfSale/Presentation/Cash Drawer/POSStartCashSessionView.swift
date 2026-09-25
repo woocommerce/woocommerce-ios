@@ -13,41 +13,44 @@ struct POSStartCashSessionView: View {
     @State private var startingCashAmount: String = ""
 
     var body: some View {
-        VStack(alignment: .leading, spacing: POSSpacing.medium) {
+        VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(title: Localization.title, backButtonConfiguration: nil)
+                .accessibilityAddTraits(.isHeader)
 
-            POSInformationCard {
-                VStack(alignment: .leading, spacing: POSPadding.small) {
-                    Text(Localization.startingCashLabel)
-                        .font(.posBodyLargeBold)
-                        .foregroundStyle(Color.posOnSurface)
+            ScrollView {
+                POSInformationCard {
+                    VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                        Text(Localization.startingCashLabel)
+                            .font(.posBodyLargeBold)
+                            .foregroundStyle(Color.posOnSurface)
 
-                    HStack {
-                        POSCashAmountTextField(
-                            amount: $startingCashAmount,
-                            isFocused: $isAmountFocused,
-                            currencySettings: currencyProvider.currencySettings,
-                            onSubmit: { isAmountFocused = false }
-                        )
-                        Spacer()
+                        HStack {
+                            POSCashAmountTextField(
+                                amount: $startingCashAmount,
+                                isFocused: $isAmountFocused,
+                                currencySettings: currencyProvider.currencySettings,
+                                preset: 0,
+                                onSubmit: { isAmountFocused = false }
+                            )
+                            Spacer()
+                        }
+                        .padding()
+                        .frame(maxWidth: .infinity)
+                        .background(Color.posSurface)
+                        .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
+
+                        Button(Localization.startSessionButtonTitle) {
+                            analytics.track(.pointOfSaleCashDrawerStartSessionButtonTapped)
+                            // TODO: Wire to the cash session interface once the Foundation team's local
+                            // interface is available. No session is started yet.
+                        }
+                        .buttonStyle(POSFilledButtonStyle(size: .normal))
+                        .frame(maxWidth: .infinity)
                     }
-                    .padding()
-                    .frame(maxWidth: .infinity)
-                    .background(Color.posSurfaceBright)
-                    .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
                 }
+                .padding(.horizontal, POSPadding.medium)
             }
-
-            Button(Localization.startSessionButtonTitle) {
-                analytics.track(.pointOfSaleCashDrawerStartSessionButtonTapped)
-                // TODO: Wire to the cash session interface once the Foundation team's local
-                // interface is available. No session is started yet.
-            }
-            .buttonStyle(POSFilledButtonStyle(size: .normal))
-            .frame(maxWidth: .infinity)
         }
-        .padding(POSPadding.large)
-        .frame(maxWidth: .infinity, alignment: .top)
         .background(Color.posSurface)
         .accessibilityIdentifier("pos-cash-drawer-start-session-view")
     }

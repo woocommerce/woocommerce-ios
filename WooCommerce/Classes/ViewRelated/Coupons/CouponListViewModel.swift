@@ -24,6 +24,7 @@ enum CouponListState {
     }
 }
 
+@MainActor
 final class CouponListViewModel {
 
     typealias CellViewModel = CouponCellViewModel

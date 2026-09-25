@@ -4,6 +4,7 @@ import Yosemite
 
 /// SyncingCoordinatorDelegate: Delegate that's expected to provide Sync'ing Services per Page.
 ///
+@MainActor
 protocol SyncingCoordinatorDelegate: AnyObject {
 
     /// The receiver is expected to synchronize the pageNumber. On completion, it should indicate if the sync was
@@ -18,6 +19,7 @@ protocol SyncingCoordinatorDelegate: AnyObject {
 
 /// SyncingCoordinatorProtocol: Used for providing mocks in testing
 ///
+@MainActor
 protocol SyncingCoordinatorProtocol: AnyObject {
     func ensureNextPageIsSynchronized(lastVisibleIndex: Int)
     func resynchronize(reason: String?, onCompletion: (() -> Void)?)

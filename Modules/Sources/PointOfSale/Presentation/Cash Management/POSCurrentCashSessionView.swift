@@ -7,7 +7,7 @@ struct POSCurrentCashSessionView: View {
     let controller: POSCashSessionController
     let onClosed: (Int64) -> Void
 
-    private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings) }
+    private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings, session: controller.currentSession) }
 
     var body: some View {
         if let session = controller.currentSession {

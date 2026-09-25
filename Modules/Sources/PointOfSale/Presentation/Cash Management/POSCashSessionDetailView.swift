@@ -7,7 +7,7 @@ struct POSCashSessionDetailView: View {
     let session: POSCashSession
     let onBack: () -> Void
 
-    private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings) }
+    private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings, session: session) }
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {

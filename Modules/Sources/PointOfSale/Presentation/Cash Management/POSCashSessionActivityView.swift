@@ -4,7 +4,7 @@ struct POSCashSessionActivityView: View {
     @Environment(\.posCurrencyProvider) private var currencyProvider
     let session: POSCashSession
 
-    private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings) }
+    private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings, session: session) }
 
     var body: some View {
         POSInformationCard {

@@ -231,7 +231,9 @@ private extension POSCashSessionAdaptor {
                                   countedCash: response.countedAmount.map(decimal),
                                   closingNote: response.note,
                                   revision: response.revision,
-                                  totals: totals)
+                                  totals: totals,
+                                  currency: response.currency,
+                                  currencyPrecision: response.currencyPrecision)
     }
 
     func mapMovement(_ response: POSCashMovementResponse) throws -> POSCashSessionMovement? {

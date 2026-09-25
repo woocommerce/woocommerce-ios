@@ -24,7 +24,7 @@ struct POSCashSessionEntryView: View {
     let onClosed: (Int64) -> Void
 
     private enum Step { case amount, note }
-    private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings) }
+    private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings, session: controller.currentSession) }
     private var parsedAmount: Decimal? { money.parse(amount) }
     private var canContinue: Bool {
         guard action != .close || hasEditedAmount else { return false }
@@ -90,7 +90,7 @@ struct POSCashSessionEntryView: View {
         VStack(alignment: .center, spacing: POSSpacing.xSmall) {
             POSCashAmountTextField(amount: $amount,
                                    isFocused: $isAmountFocused,
-                                   currencySettings: currencyProvider.currencySettings,
+                                   currencySettings: money.currencySettings,
                                    preset: 0,
                                    onEdit: { hasEditedAmount = true },
                                    onSubmit: { isAmountFocused = false })

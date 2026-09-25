@@ -3,6 +3,8 @@ import Foundation
 /// Session data used by the cash drawer UI. A real service can map its API response to this model.
 public struct POSCashSession: Identifiable, Equatable {
     public let id: Int64
+    public let currency: String?
+    public let currencyPrecision: Int?
     public let openedAt: Date
     public let openedBy: String
     public let openingCash: Decimal
@@ -18,8 +20,10 @@ public struct POSCashSession: Identifiable, Equatable {
     public init(id: Int64, openedAt: Date, openedBy: String, openingCash: Decimal,
                 movements: [POSCashSessionMovement], closedAt: Date? = nil, closedBy: String? = nil,
                 countedCash: Decimal? = nil, closingNote: String? = nil, revision: Int = 0,
-                totals: POSCashSessionTotals? = nil) {
+                totals: POSCashSessionTotals? = nil, currency: String? = nil, currencyPrecision: Int? = nil) {
         self.id = id
+        self.currency = currency
+        self.currencyPrecision = currencyPrecision
         self.openedAt = openedAt
         self.openedBy = openedBy
         self.openingCash = openingCash

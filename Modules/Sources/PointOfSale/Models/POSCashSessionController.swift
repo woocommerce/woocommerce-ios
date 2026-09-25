@@ -47,7 +47,7 @@ final class POSCashSessionController {
         } catch POSCashSessionServiceError.unsupported {
             isCashSessionsUnsupported = true
         } catch {
-            currentLoadError = error.localizedDescription
+            currentLoadError = POSCashSessionErrorMessage.message(for: error, operation: .loadCurrent)
         }
     }
 
@@ -76,7 +76,7 @@ final class POSCashSessionController {
             pastPage = 1
             hasLoadedPastSessions = true
         } catch {
-            pastLoadError = error.localizedDescription
+            pastLoadError = POSCashSessionErrorMessage.message(for: error, operation: .loadPast)
         }
     }
 
@@ -94,7 +94,7 @@ final class POSCashSessionController {
             hasMorePastSessions = result.hasMore
             pastPage = nextPage
         } catch {
-            pastPageError = error.localizedDescription
+            pastPageError = POSCashSessionErrorMessage.message(for: error, operation: .loadMorePast)
         }
     }
 
@@ -110,19 +110,21 @@ final class POSCashSessionController {
             let session = try await service.session(id: id)
             if detailRequest == request { sessionDetail = session }
         } catch {
-            if detailRequest == request, !Task.isCancelled { sessionDetailError = error.localizedDescription }
+            if detailRequest == request, !Task.isCancelled {
+                sessionDetailError = POSCashSessionErrorMessage.message(for: error, operation: .loadDetail)
+            }
         }
     }
 
     func start(openingCash: Decimal) async -> Bool {
-        await save {
+        await save(operation: .start) {
             currentSession = try await service.startSession(openingCash: openingCash)
         }
     }
 
     func record(kind: POSCashSessionMovement.Kind, amount: Decimal, note: String?) async -> Bool {
         guard let session = currentSession else { return false }
-        return await save {
+        return await save(operation: .record) {
             currentSession = try await service.recordMovement(sessionID: session.id, kind: kind, amount: amount, note: note)
         }
     }
@@ -130,7 +132,7 @@ final class POSCashSessionController {
     func close(countedCash: Decimal, note: String?) async -> POSCashSession? {
         guard let session = currentSession else { return nil }
         var closedSession: POSCashSession?
-        let saved = await save {
+        let saved = await save(operation: .close) {
             let closed = try await service.closeSession(sessionID: session.id, expectedRevision: session.revision,
                                                         countedCash: countedCash, note: note)
             currentSession = nil
@@ -145,16 +147,16 @@ final class POSCashSessionController {
         return saved ? closedSession : nil
     }
 
-    private func save(_ operation: () async throws -> Void) async -> Bool {
+    private func save(operation: POSCashSessionErrorMessage.Operation, _ perform: () async throws -> Void) async -> Bool {
         guard !isSaving else { return false }
         isSaving = true
         errorMessage = nil
         defer { isSaving = false }
         do {
-            try await operation()
+            try await perform()
             return true
         } catch {
-            errorMessage = error.localizedDescription
+            errorMessage = POSCashSessionErrorMessage.message(for: error, operation: operation)
             return false
         }
     }

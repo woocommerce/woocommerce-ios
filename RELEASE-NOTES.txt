@@ -9,6 +9,9 @@
 - [*] Login: Fix account matching for www and non-www store addresses [https://github.com/woocommerce/woocommerce-ios/pull/17906]
 - [*] Troubleshoot Connection and support chat diagnostics no longer report a false analytics failure on WordPress.com Commerce plan stores. [https://github.com/woocommerce/woocommerce-ios/pull/17895]
 - [*] Blaze: the campaign list now shows a notice with the outstanding balance and the unpaid orders to pay. [https://github.com/woocommerce/woocommerce-ios/pull/17941]
+- [*] Settings: Fixed the missing back button on the Push Notifications detail screens (New orders, New reviews, Stock) on iOS 18. [https://github.com/woocommerce/woocommerce-ios/pull/17868]
+- [*] Settings: The Save button on the Push Notifications detail screens no longer disappears right after the screen opens. [https://github.com/woocommerce/woocommerce-ios/pull/17868]
+- [*] Settings: Fixed stray "u{00A0}" text in the low stock threshold sentence on the Stock notifications screen. [https://github.com/woocommerce/woocommerce-ios/pull/17868]
 
 25.7
 -----
@@ -27,12 +30,6 @@
 - [*] Login: Signing in with store credentials now asks for your WordPress sign-in or dashboard address when a security plugin has moved it, instead of failing. [https://github.com/woocommerce/woocommerce-ios/pull/17724]
 - [*] Notifications: Removed notifications for sites disconnected from WordPress.com from Notification Center. [https://github.com/woocommerce/woocommerce-ios/pull/17835]
 - [*] Push notifications: When a store's Jetpack is in Offline Mode, setup now shows a clear, actionable message explaining the cause instead of a generic permission error. [https://github.com/woocommerce/woocommerce-ios/pull/17857]
-- [*] Settings: Fixed the missing back button on the Push Notifications detail screens (New orders, New reviews, Stock) on iOS 18. [https://github.com/woocommerce/woocommerce-ios/pull/PR_NUMBER]
-- [*] Settings: The Save button on the Push Notifications detail screens no longer disappears right after the screen opens. [https://github.com/woocommerce/woocommerce-ios/pull/PR_NUMBER]
-- [*] Settings: Fixed stray "u{00A0}" text in the low stock threshold sentence on the Stock notifications screen. [https://github.com/woocommerce/woocommerce-ios/pull/PR_NUMBER]
-- [*] Settings: Fixed the missing back button on the Push Notifications detail screens (New orders, New reviews, Stock) on iOS 18. [https://github.com/woocommerce/woocommerce-ios/pull/17868]
-- [*] Settings: The Save button on the Push Notifications detail screens no longer disappears right after the screen opens. [https://github.com/woocommerce/woocommerce-ios/pull/17868]
-- [*] Settings: Fixed stray "u{00A0}" text in the low stock threshold sentence on the Stock notifications screen. [https://github.com/woocommerce/woocommerce-ios/pull/17868]
 
 25.6
 -----

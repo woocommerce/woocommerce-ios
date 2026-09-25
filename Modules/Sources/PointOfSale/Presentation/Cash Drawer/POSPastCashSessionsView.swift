@@ -92,6 +92,9 @@ struct POSPastCashSessionsView: View {
                     }
                     .padding(POSPadding.medium)
                 }
+                .refreshable {
+                    await controller.refreshPastSessions()
+                }
             }
         }
     }

@@ -10,10 +10,12 @@ final class POSCashSessionController {
     private(set) var isLoading = false
     private(set) var isLoadingPastSessions = false
     private(set) var isLoadingNextPastSessions = false
+    private(set) var isRefreshingPastSessions = false
     private(set) var isLoadingSessionDetail = false
     private(set) var isSaving = false
     private(set) var hasMorePastSessions = false
     private(set) var currentLoadError: String?
+    private(set) var isCashSessionsUnsupported = false
     private(set) var pastLoadError: String?
     private(set) var pastPageError: String?
     private(set) var sessionDetailError: String?
@@ -38,21 +40,35 @@ final class POSCashSessionController {
         guard !isLoading else { return }
         isLoading = true
         currentLoadError = nil
+        isCashSessionsUnsupported = false
         defer { isLoading = false }
         do {
             currentSession = try await service.currentSession()
+        } catch POSCashSessionServiceError.unsupported {
+            isCashSessionsUnsupported = true
         } catch {
             currentLoadError = error.localizedDescription
         }
     }
 
     func loadPastSessions(force: Bool = false) async {
-        guard !isLoadingPastSessions, !isLoadingNextPastSessions else { return }
+        guard !isLoadingPastSessions, !isLoadingNextPastSessions, !isRefreshingPastSessions else { return }
         guard force || !hasLoadedPastSessions else { return }
         isLoadingPastSessions = true
+        defer { isLoadingPastSessions = false }
+        await loadFirstPastSessionsPage()
+    }
+
+    func refreshPastSessions() async {
+        guard !isLoadingPastSessions, !isLoadingNextPastSessions, !isRefreshingPastSessions else { return }
+        isRefreshingPastSessions = true
+        defer { isRefreshingPastSessions = false }
+        await loadFirstPastSessionsPage()
+    }
+
+    private func loadFirstPastSessionsPage() async {
         pastLoadError = nil
         pastPageError = nil
-        defer { isLoadingPastSessions = false }
         do {
             let result = try await service.pastSessions(page: 1, perPage: pageSize)
             pastSessions = result.sessions
@@ -65,7 +81,8 @@ final class POSCashSessionController {
     }
 
     func loadNextPastSessions() async {
-        guard hasLoadedPastSessions, hasMorePastSessions, !isLoadingPastSessions, !isLoadingNextPastSessions else { return }
+        guard hasLoadedPastSessions, hasMorePastSessions,
+              !isLoadingPastSessions, !isLoadingNextPastSessions, !isRefreshingPastSessions else { return }
         isLoadingNextPastSessions = true
         pastPageError = nil
         defer { isLoadingNextPastSessions = false }

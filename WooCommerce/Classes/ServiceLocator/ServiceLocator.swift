@@ -121,7 +121,9 @@ final class ServiceLocator {
 
     /// Support for discovering and connecting to external receipt printers
     ///
-    private static var _printerDiscovery: PrinterDiscoveryService = StarPrinterService()
+    /// The Star service also opens a cash drawer connected to the printer, so both roles share one instance.
+    private static let _starPrinterService = StarPrinterService()
+    private static var _printerDiscovery: PrinterDiscoveryService = _starPrinterService
 
     /// Observer for network connectivity
     ///
@@ -353,6 +355,11 @@ final class ServiceLocator {
     /// - Returns: An implementation of the ReceiptPrinterServiceProtocol protocol.
     static var posReceiptPrinterService: ReceiptPrinterServiceProtocol {
         ReceiptPrinterService(printerDiscoveryService: _printerDiscovery)
+    }
+
+    /// Provides the cash drawer connected to the POS receipt printer.
+    static var posCashDrawerService: Hardware.CashDrawerService {
+        _starPrinterService
     }
 
     /// Provides access point to the ConnectivityObserver.

@@ -105,6 +105,9 @@ protocol PointOfSaleAggregateModelProtocol {
     /// keep working — when nil POS behaves as if receipt printing is not available.
     private(set) var receiptPrinter: ReceiptPrinterServiceProtocol?
 
+    /// Cash drawer connected to the receipt printer. Nil when the cash drawer prototype is off.
+    private(set) var cashDrawer: POSCashDrawerController?
+
     private var cancellables: Set<AnyCancellable> = []
     // Private storage of the concrete coordinator
     private let _viewStateCoordinator = PointOfSaleViewStateCoordinator()
@@ -162,6 +165,7 @@ protocol PointOfSaleAggregateModelProtocol {
          isLocalCatalogEligible: Bool = false,
          tapToPayAvailabilityController: POSTapToPayAvailabilityController? = nil,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
+         cashDrawer: POSCashDrawerController? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large) {
         self.entryPointController = entryPointController
@@ -184,6 +188,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.isLocalCatalogEligible = isLocalCatalogEligible
         self.tapToPayAvailabilityController = tapToPayAvailabilityController
         self.receiptPrinter = receiptPrinter
+        self.cashDrawer = cashDrawer
 
         // Payment controller is created with cart-specific dependencies.
         // The weak self captures below are safe because paymentModel is owned by self.
@@ -197,6 +202,7 @@ protocol PointOfSaleAggregateModelProtocol {
             markAsPaidHandler: POSCartMarkAsPaidHandler(orderController: orderController),
             receiptSender: receiptSender,
             receiptPrinter: receiptPrinter,
+            cashDrawer: cashDrawer,
             configuration: .cart(
                 onNewOrder: { weakSelf?.startNewCart() },
                 onEditOrder: { weakSelf?.addMoreToCart() },

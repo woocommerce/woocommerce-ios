@@ -92,6 +92,8 @@ final class POSPaymentModel {
     /// Optional: nil when receipt printing is disabled (`.starReceiptPrinterSupport` off), matching
     /// the aggregate model's `receiptPrinter`. The Print receipt button is hidden in that case.
     private let receiptPrinter: ReceiptPrinterServiceProtocol?
+    /// Optional: nil when the cash drawer prototype is off (`.pointOfSaleCashDrawer`).
+    private let cashDrawer: POSCashDrawerController?
     private let postPaymentStep: (() async throws -> Void)?
     let configuration: POSPaymentFlowConfiguration
     private let analytics: POSAnalyticsProviding
@@ -160,6 +162,7 @@ final class POSPaymentModel {
          markAsPaidHandler: POSMarkAsPaidHandling,
          receiptSender: POSReceiptSending,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
+         cashDrawer: POSCashDrawerController? = nil,
          postPaymentStep: (() async throws -> Void)? = nil,
          configuration: POSPaymentFlowConfiguration,
          analytics: POSAnalyticsProviding,
@@ -177,6 +180,7 @@ final class POSPaymentModel {
         self.markAsPaidHandler = markAsPaidHandler
         self.receiptSender = receiptSender
         self.receiptPrinter = receiptPrinter
+        self.cashDrawer = cashDrawer
         self.postPaymentStep = postPaymentStep
         self.configuration = configuration
         self.analytics = analytics
@@ -686,6 +690,10 @@ extension POSPaymentModel {
             currentOrder = order
         }
         try await cashPaymentHandler.completeCashPayment(for: order, changeDueAmount: changeDueAmount)
+        // Open the drawer without waiting for it: a slow or missing drawer must not hold up the sale.
+        if let cashDrawer {
+            Task { await cashDrawer.openForConfirmedCashPayment() }
+        }
         try? await postPaymentStep?()
         cashPaymentSuccess()
     }

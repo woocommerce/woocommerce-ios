@@ -15,6 +15,7 @@ struct POSSettingsHardwareDetailView: View {
     @State private var showPrinterSetupModal: Bool = false
     @State private var showSupport: Bool = false
     @State private var isCancellingReconnection: Bool = false
+    @State private var isTestingCashDrawer: Bool = false
 
     /// Receipt printers appear in the hardware list only when the printer feature is enabled,
     /// which is signalled by the settings controller exposing a printer connection controller.
@@ -300,6 +301,10 @@ private extension POSSettingsHardwareDetailView {
                 VStack(spacing: POSSpacing.small) {
                     if let controller = settingsController.printerConnectionController {
                         printerSection(controller: controller)
+                        // The drawer is reached through the printer, so it is only offered once one is connected.
+                        if controller.isConnected, let cashDrawer = posModel.cashDrawer {
+                            cashDrawerSection(cashDrawer: cashDrawer)
+                        }
                     }
                 }
                 .padding(.horizontal, POSPadding.medium)
@@ -348,6 +353,55 @@ private extension POSSettingsHardwareDetailView {
             .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default, isLoading: false))
         }
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+
+    /// Cash drawer connected to the printer's drawer port: automatic opening and a test open.
+    func cashDrawerSection(cashDrawer: POSCashDrawerController) -> some View {
+        @Bindable var cashDrawer = cashDrawer
+        return POSInformationCard {
+            VStack(alignment: .leading, spacing: POSSpacing.small) {
+                POSInformationCardFieldRowWithToggle(label: Localization.cashDrawerAutomaticOpenTitle,
+                                                     value: Localization.cashDrawerAutomaticOpenSubtitle,
+                                                     isOn: $cashDrawer.opensAutomaticallyForCashPayments)
+
+                HStack(alignment: .center, spacing: POSSpacing.medium) {
+                    VStack(alignment: .leading, spacing: POSPadding.small) {
+                        Text(Localization.cashDrawerTestTitle)
+                            .font(.posBodyMediumBold)
+                        Text(cashDrawerTestStatus(for: cashDrawer.lastEvent))
+                            .font(.posBodyMediumRegular())
+                            .foregroundStyle(.secondary)
+                    }
+
+                    Spacer()
+
+                    Button(Localization.cashDrawerTestButton) {
+                        isTestingCashDrawer = true
+                        Task {
+                            await cashDrawer.open(for: .test)
+                            isTestingCashDrawer = false
+                        }
+                    }
+                    .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default, isLoading: isTestingCashDrawer))
+                    .disabled(isTestingCashDrawer)
+                }
+                .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
+    }
+
+    func cashDrawerTestStatus(for event: POSCashDrawerEvent?) -> String {
+        guard let event, event.reason == .test else {
+            return Localization.cashDrawerTestSubtitle
+        }
+        switch event.result {
+        case .opened:
+            return Localization.cashDrawerTestOpened
+        case .notConnected:
+            return Localization.cashDrawerTestNotConnected
+        case .failed:
+            return Localization.cashDrawerTestFailed
+        }
     }
 }
 
@@ -617,6 +671,54 @@ private extension POSSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.printerDisconnectTitle",
             value: "Disconnect printer",
             comment: "Title for the receipt printer disconnect button when a printer is connected."
+        )
+
+        static let cashDrawerAutomaticOpenTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerAutomaticOpenTitle",
+            value: "Cash drawer",
+            comment: "Title of the setting that opens the cash drawer connected to the receipt printer automatically."
+        )
+
+        static let cashDrawerAutomaticOpenSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerAutomaticOpenSubtitle",
+            value: "Open automatically for cash payments",
+            comment: "Subtitle of the setting that opens the cash drawer automatically when a cash payment is confirmed."
+        )
+
+        static let cashDrawerTestTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerTestTitle",
+            value: "Test cash drawer",
+            comment: "Title of the row that lets the merchant open the cash drawer to check it works."
+        )
+
+        static let cashDrawerTestSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerTestSubtitle",
+            value: "Open the drawer to check it is connected",
+            comment: "Subtitle of the test cash drawer row before a test has run."
+        )
+
+        static let cashDrawerTestButton = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerTestButton",
+            value: "Open drawer",
+            comment: "Button that opens the cash drawer connected to the receipt printer as a test."
+        )
+
+        static let cashDrawerTestOpened = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerTestOpened",
+            value: "Drawer opened",
+            comment: "Shown after a test open when the cash drawer opened."
+        )
+
+        static let cashDrawerTestNotConnected = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerTestNotConnected",
+            value: "Printer not connected. Connect the printer and try again.",
+            comment: "Shown after a test open when no receipt printer is connected."
+        )
+
+        static let cashDrawerTestFailed = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerTestFailed",
+            value: "The drawer didn't open. Check it is plugged into the printer's drawer port.",
+            comment: "Shown after a test open when the cash drawer command failed."
         )
 
         static let cardReaderConnectTitle = NSLocalizedString(

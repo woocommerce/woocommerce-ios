@@ -128,4 +128,9 @@ public enum FeatureFlag: Int, CaseIterable {
     /// Off by default until the stack is ready to enable for internal builds.
     ///
     case starReceiptPrinterSupport
+
+    /// Enables the cash drawer prototype in Point of Sale: opening a drawer connected to the
+    /// receipt printer after cash payments and from settings. Cash reconciliation meetup prototype.
+    ///
+    case pointOfSaleCashDrawer
 }

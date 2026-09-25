@@ -359,6 +359,9 @@ private extension POSTabCoordinator {
 
                 let receiptPrinter: ReceiptPrinterServiceProtocol? = ServiceLocator.featureFlagService
                     .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? ServiceLocator.posReceiptPrinterService : nil
+                // The drawer opens through the receipt printer, so it needs printer support too.
+                let cashDrawerService: CashDrawerService? = receiptPrinter != nil && ServiceLocator.featureFlagService
+                    .isFeatureFlagEnabled(.pointOfSaleCashDrawer) ? ServiceLocator.posCashDrawerService : nil
 
                 // Present staff settings only when POS roles are enabled (nil hides the Staff card).
                 // The wp-admin URL is derived from the site, like `receiptSettingsAdminURL` above.
@@ -411,6 +414,7 @@ private extension POSTabCoordinator {
                     preferredConnectionMethod: preferredConnectionMethod,
                     staffFetcher: staffFetcher,
                     receiptPrinter: receiptPrinter,
+                    cashDrawerService: cashDrawerService,
                     staffSettingsService: staffSettingsService,
                     services: serviceAdaptor,
                     httpsConfigurationNotice: httpsConfigurationNotice,

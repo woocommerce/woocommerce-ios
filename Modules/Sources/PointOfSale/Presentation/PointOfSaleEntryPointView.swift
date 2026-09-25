@@ -21,6 +21,7 @@ import struct Yosemite.SiteSetting
 import protocol Yosemite.PointOfSaleCouponFetchStrategyFactoryProtocol
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import protocol Yosemite.ReceiptPrinterServiceProtocol
+import protocol Yosemite.CashDrawerService
 
 /// periphery: ignore - public in preparation of move to POS module
 public struct PointOfSaleEntryPointView: View {
@@ -56,6 +57,7 @@ public struct PointOfSaleEntryPointView: View {
     private let tapToPayAvailabilityChecker: POSTapToPayAvailabilityChecking?
     private let preferredConnectionMethod: CardReaderConnectionMethod
     private let receiptPrinter: ReceiptPrinterServiceProtocol?
+    private let cashDrawer: POSCashDrawerController?
     private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
 
     /// periphery: ignore - public in preparation of move to POS module
@@ -88,6 +90,7 @@ public struct PointOfSaleEntryPointView: View {
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          staffFetcher: POSStaffFetching,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
+         cashDrawerService: CashDrawerService? = nil,
          staffSettingsService: POSStaffSettingsService? = nil,
          services: POSDependencyProviding,
          httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
@@ -186,6 +189,7 @@ public struct PointOfSaleEntryPointView: View {
         self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
         self.preferredConnectionMethod = preferredConnectionMethod
         self.receiptPrinter = receiptPrinter
+        self.cashDrawer = cashDrawerService.map { POSCashDrawerController(service: $0) }
         self.httpsConfigurationNotice = httpsConfigurationNotice
     }
 
@@ -232,6 +236,7 @@ public struct PointOfSaleEntryPointView: View {
                                                       analytics: services.analytics)
                 },
                 receiptPrinter: receiptPrinter,
+                cashDrawer: cashDrawer,
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 

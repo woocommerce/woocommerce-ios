@@ -16,14 +16,18 @@ struct POSSettingsHardwareDetailView: View {
     @State private var showSupport: Bool = false
     @State private var isCancellingReconnection: Bool = false
     @State private var isTestingCashDrawer: Bool = false
+    @State private var showCashDrawerPrinterSetupModal: Bool = false
 
     /// Receipt printers appear in the hardware list only when the printer feature is enabled,
     /// which is signalled by the settings controller exposing a printer connection controller.
+    /// Cash drawers open through the receipt printer, so they also need the cash drawer feature.
     private var hardwareDestinations: [HardwareDestination] {
         HardwareDestination.allCases.filter { destination in
             switch destination {
             case .printers:
                 return settingsController.printerConnectionController != nil
+            case .cashDrawers:
+                return settingsController.printerConnectionController != nil && posModel.cashDrawer != nil
             default:
                 return true
             }
@@ -104,6 +108,9 @@ struct POSSettingsHardwareDetailView: View {
                     .environment(\.posHeaderBackButtonConfiguration, nil)
             case .hardware(.printers):
                 printersView
+                    .environment(\.posHeaderBackButtonConfiguration, nil)
+            case .hardware(.cashDrawers):
+                cashDrawersView
                     .environment(\.posHeaderBackButtonConfiguration, nil)
             }
         }
@@ -301,15 +308,46 @@ private extension POSSettingsHardwareDetailView {
                 VStack(spacing: POSSpacing.small) {
                     if let controller = settingsController.printerConnectionController {
                         printerSection(controller: controller)
-                        // The drawer is reached through the printer, so it is only offered once one is connected.
-                        if controller.isConnected, let cashDrawer = posModel.cashDrawer {
-                            cashDrawerSection(cashDrawer: cashDrawer)
-                        }
                     }
                 }
                 .padding(.horizontal, POSPadding.medium)
                 .foregroundColor(.posOnSurface)
             }
+        }
+    }
+
+    var cashDrawersView: some View {
+        POSSettingsDetailPage(title: Localization.cashDrawersTitle,
+                              backgroundColor: backgroundColor,
+                              onBack: { navigationPath.removeLast() }) {
+            ScrollView {
+                VStack(spacing: POSSpacing.small) {
+                    if let controller = settingsController.printerConnectionController, let cashDrawer = posModel.cashDrawer {
+                        cashDrawersContent(printerController: controller, cashDrawer: cashDrawer)
+                    }
+                }
+                .padding(.horizontal, POSPadding.medium)
+                .foregroundColor(.posOnSurface)
+            }
+        }
+    }
+
+    /// The drawer opens through the receipt printer, so it can only be used once a printer is connected.
+    /// The setup modal hangs off the `Group` rather than the connect card, so it stays presented while the
+    /// content swaps to the drawer card as the printer connects, and can then dismiss itself.
+    @ViewBuilder
+    func cashDrawersContent(printerController: POSPrinterConnectionController, cashDrawer: POSCashDrawerController) -> some View {
+        Group {
+            if printerController.isConnected {
+                cashDrawerSection(cashDrawer: cashDrawer)
+            } else {
+                POSSettingsCard(title: Localization.cashDrawerConnectPrinterTitle,
+                                subtitle: Localization.cashDrawerConnectPrinterSubtitle,
+                                action: { showCashDrawerPrinterSetupModal = true })
+            }
+        }
+        .posModal(isPresented: $showCashDrawerPrinterSetupModal) {
+            POSPrinterSetupModal(isPresented: $showCashDrawerPrinterSetupModal, controller: printerController)
         }
     }
 
@@ -438,6 +476,7 @@ private extension POSSettingsHardwareDetailView {
         case cardReaders
         case scanners
         case printers
+        case cashDrawers
 
         var id: Self { self }
 
@@ -449,6 +488,8 @@ private extension POSSettingsHardwareDetailView {
                 return Localization.hardwareNavigationBarcodeTitle
             case .printers:
                 return Localization.hardwareNavigationPrinterTitle
+            case .cashDrawers:
+                return Localization.hardwareNavigationCashDrawerTitle
             }
         }
 
@@ -460,6 +501,8 @@ private extension POSSettingsHardwareDetailView {
                 return Localization.hardwareNavigationBarcodeSubtitle
             case .printers:
                 return Localization.hardwareNavigationPrinterSubtitle
+            case .cashDrawers:
+                return Localization.hardwareNavigationCashDrawerSubtitle
             }
         }
     }
@@ -635,6 +678,36 @@ private extension POSSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.hardwareNavigationPrinterSubtitle",
             value: "Manage receipt printer connections",
             comment: "Description of Receipt printer settings for connections."
+        )
+
+        static let hardwareNavigationCashDrawerTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareNavigationCashDrawerTitle",
+            value: "Cash drawers",
+            comment: "Navigation title of Cash drawer settings."
+        )
+
+        static let hardwareNavigationCashDrawerSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.hardwareNavigationCashDrawerSubtitle",
+            value: "Open a cash drawer connected to your receipt printer",
+            comment: "Description of Cash drawer settings."
+        )
+
+        static let cashDrawersTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawersTitle",
+            value: "Cash drawers",
+            comment: "Navigation title for cash drawer settings in Point of Sale."
+        )
+
+        static let cashDrawerConnectPrinterTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerConnectPrinterTitle",
+            value: "Connect printer",
+            comment: "Title of the button to connect a receipt printer from cash drawer settings, when no printer is connected."
+        )
+
+        static let cashDrawerConnectPrinterSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerConnectPrinterSubtitle",
+            value: "Cash drawers open through your receipt printer. Connect it to use your drawer.",
+            comment: "Subtitle explaining that a receipt printer must be connected before the cash drawer can be used."
         )
 
         static let printersTitle = NSLocalizedString(

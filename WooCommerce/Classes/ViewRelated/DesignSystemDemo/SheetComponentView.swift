@@ -34,7 +34,6 @@ struct SheetComponentView: View {
     }
 
     @State private var sizing: Sizing = .fitContent
-    @State private var showsCloseControl = false
     @State private var isContentLong = false
     @State private var isPresented = false
     @State private var dateType: DateType = .placed
@@ -46,7 +45,6 @@ struct SheetComponentView: View {
                     Text(option.rawValue).tag(option)
                 }
             }
-            Toggle("Close control", isOn: $showsCloseControl)
             Toggle("Long content", isOn: $isContentLong)
         } preview: {
             StoreButton("Show sheet") {
@@ -59,11 +57,7 @@ struct SheetComponentView: View {
     }
 
     @ViewBuilder private var sheetContent: some View {
-        if showsCloseControl {
-            StoreTopAppBar("Date type", navigation: .close { isPresented = false })
-        } else {
-            header
-        }
+        header
         if isContentLong {
             longOptions
         } else {

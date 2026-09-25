@@ -56,28 +56,24 @@ struct SheetComponentView: View {
         }
     }
 
+    /// `.fitContent` measures and scrolls the content itself; system detents leave scrolling to the caller.
     @ViewBuilder private var sheetContent: some View {
-        header
-        if isContentLong {
-            longOptions
-        } else {
-            options
-        }
-        footnote
-    }
-
-    @ViewBuilder private var longOptions: some View {
-        let stack = VStack(spacing: StoreSpacing.s0) {
-            ForEach(0..<6) { _ in
-                options
-            }
-        }
         if sizing == .fitContent {
-            stack
+            sheetBody
         } else {
             ScrollView {
-                stack
+                sheetBody
             }
+        }
+    }
+
+    private var sheetBody: some View {
+        VStack(spacing: StoreSpacing.s0) {
+            header
+            ForEach(0..<(isContentLong ? 6 : 1), id: \.self) { _ in
+                options
+            }
+            footnote
         }
     }
 

@@ -2,7 +2,8 @@ import SwiftUI
 
 /// The panel of a bottom sheet: content on a surface-bright container, with the grabber strip above
 /// and the design's minimum inset below. Present it with `storeSheet(isPresented:sizing:onDismiss:content:)`,
-/// or host it in a `UIHostingController` from UIKit.
+/// which also styles the system sheet (grabber, corners, background, detents). A `UIHostingController`
+/// can host the panel, but must configure its `sheetPresentationController` itself.
 public struct StoreSheet<Content: View>: View {
     private let content: Content
 

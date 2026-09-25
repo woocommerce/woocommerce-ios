@@ -5,7 +5,8 @@ public enum StoreSheetSizing: Equatable, Sendable {
     /// The sheet hugs its content (the design's default) and scrolls it only when taller than the largest
     /// sheet. The content is offered unbounded height, so it must not scroll or expand itself.
     case fitContent
-    /// The given system detents, for content that scrolls itself.
+    /// The given system detents. The content is not wrapped in a scroll view, so it must scroll itself
+    /// (or be short enough for the smallest detent at every text size).
     case detents(Set<PresentationDetent>)
 }
 

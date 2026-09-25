@@ -252,8 +252,10 @@ final class WordPressAPIDiscoveryTests: XCTestCase {
         XCTAssertEqual(session.requestCount, 3)
     }
 
-    func test_resolveRESTAPIRootURL_when_called_concurrently_then_shares_the_resolution_requests() async {
+    func test_resolveRESTAPIRootURL_when_called_concurrently_then_shares_the_resolution_requests() async throws {
         // Given
+        let sut = try XCTUnwrap(self.sut)
+        let sampleSiteURL = self.sampleSiteURL
         session.simulateResponse(for: sampleSiteURL, headerFields: nil)
         session.simulateResponse(
             for: "https://example.com/wp-json/?_fields=namespaces",
@@ -313,8 +315,10 @@ final class WordPressAPIDiscoveryTests: XCTestCase {
 
     // MARK: - Deduplication Tests
 
-    func test_discoverRESTAPIRootURL_when_concurrent_calls_for_same_url_then_makes_single_request() async {
+    func test_discoverRESTAPIRootURL_when_concurrent_calls_for_same_url_then_makes_single_request() async throws {
         // Given
+        let sut = try XCTUnwrap(self.sut)
+        let sampleSiteURL = self.sampleSiteURL
         session.simulateResponse(
             for: sampleSiteURL,
             headerFields: ["Link": "<https://example.com/wp-json/>; rel=\"https://api.w.org/\""]
@@ -331,8 +335,9 @@ final class WordPressAPIDiscoveryTests: XCTestCase {
         XCTAssertEqual(session.requestCount, 1)
     }
 
-    func test_discoverRESTAPIRootURL_when_concurrent_calls_with_different_casing_then_makes_single_request() async {
+    func test_discoverRESTAPIRootURL_when_concurrent_calls_with_different_casing_then_makes_single_request() async throws {
         // Given — simulate responses for both URL casings
+        let sut = try XCTUnwrap(self.sut)
         session.simulateResponse(
             for: "https://example.com",
             headerFields: ["Link": "<https://example.com/wp-json/>; rel=\"https://api.w.org/\""]

@@ -2,7 +2,7 @@ import Foundation
 
 /// Persisted state for background catalog downloads.
 /// Allows the app to resume processing downloads after being terminated.
-public struct BackgroundDownloadState: Codable {
+public struct BackgroundDownloadState: Codable, Sendable {
     let sessionIdentifier: String
     let siteID: Int64
     let downloadStartedAt: Date

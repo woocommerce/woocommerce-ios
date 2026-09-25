@@ -150,7 +150,8 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
     func test_prepareAppPasswordSupport_posts_eligible_notification() {
         // Given
         let siteID: Int64 = 123
-        var receivedNotifications: [Notification] = []
+        // `queue: nil` delivers on the posting thread, which is this one, so the observer never runs concurrently.
+        nonisolated(unsafe) var receivedNotifications: [Notification] = []
 
         let observer = notificationCenter.addObserver(
             forName: .JetpackSiteEligibleForAppPasswordSupport,
@@ -175,7 +176,8 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         // Given
         let siteID: Int64 = 456
         let error = NetworkError.unacceptableStatusCode(statusCode: 401, response: Data())
-        var receivedNotifications: [Notification] = []
+        // `queue: nil` delivers on the posting thread, which is this one, so the observer never runs concurrently.
+        nonisolated(unsafe) var receivedNotifications: [Notification] = []
 
         let observer = notificationCenter.addObserver(
             forName: .JetpackSiteFlaggedUnsupportedForApplicationPassword,
@@ -207,10 +209,11 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
     // MARK: - Thread Safety Tests
 
-    func test_concurrent_prepareAppPasswordSupport_operations_are_thread_safe() {
+    func test_concurrent_prepareAppPasswordSupport_operations_are_thread_safe() throws {
         let expectation = XCTestExpectation(description: "All reset operations complete")
         let operationCount = 3
         let siteIDs = Array(1...3).map { Int64($0) }
+        let errorHandler = try XCTUnwrap(self.errorHandler)
 
         expectation.expectedFulfillmentCount = operationCount
 
@@ -218,7 +221,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         for i in 0..<operationCount {
             DispatchQueue.global().async {
                 let siteID = siteIDs[i % siteIDs.count]
-                self.errorHandler.prepareAppPasswordSupport(for: siteID)
+                errorHandler.prepareAppPasswordSupport(for: siteID)
                 expectation.fulfill()
             }
         }
@@ -227,19 +230,19 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         wait(for: [expectation], timeout: 3.0)
     }
 
-    func test_concurrent_shouldRetryJetpackRequest_operations_are_thread_safe() {
+    func test_concurrent_shouldRetryJetpackRequest_operations_are_thread_safe() throws {
         let expectation = XCTestExpectation(description: "All retry checks complete")
         let operationCount = 3
+        let errorHandler = try XCTUnwrap(self.errorHandler)
         expectation.expectedFulfillmentCount = operationCount
 
         // When - perform many concurrent retry checks
         for i in 0..<operationCount {
+            let jetpackRequest = createJetpackRequest(siteID: Int64(i))
+            let restRequest = createRESTRequest()
+            let error = createNetworkError()
             DispatchQueue.global().async {
-                let jetpackRequest = self.createJetpackRequest(siteID: Int64(i))
-                let restRequest = self.createRESTRequest()
-                let error = self.createNetworkError()
-
-                _ = self.errorHandler.shouldRetryJetpackRequest(
+                _ = errorHandler.shouldRetryJetpackRequest(
                     originalRequest: jetpackRequest,
                     convertedRequest: restRequest,
                     failure: error
@@ -252,15 +255,16 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         wait(for: [expectation], timeout: 3.0)
     }
 
-    func test_concurrent_flagSiteAsUnsupported_operations_are_thread_safe() {
+    func test_concurrent_flagSiteAsUnsupported_operations_are_thread_safe() throws {
         let expectation = XCTestExpectation(description: "All flag operations complete")
         let operationCount = 3
+        let errorHandler = try XCTUnwrap(self.errorHandler)
         expectation.expectedFulfillmentCount = operationCount
 
         // When - perform many concurrent flag operations
         for i in 0..<operationCount {
             DispatchQueue.global().async {
-                self.errorHandler.flagSiteAsUnsupported(for: Int64(i), flow: .apiRequest, cause: .majorError, error: NetworkError.notFound(response: nil))
+                errorHandler.flagSiteAsUnsupported(for: Int64(i), flow: .apiRequest, cause: .majorError, error: NetworkError.notFound(response: nil))
                 expectation.fulfill()
             }
         }
@@ -273,26 +277,26 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         XCTAssertEqual(unsupportedList.count, operationCount)
     }
 
-    func test_concurrent_mixed_operations_are_thread_safe() {
+    func test_concurrent_mixed_operations_are_thread_safe() throws {
         let expectation = XCTestExpectation(description: "All mixed operations complete")
         let operationCount = 10
+        let errorHandler = try XCTUnwrap(self.errorHandler)
         expectation.expectedFulfillmentCount = operationCount
 
         // When - perform mixed concurrent operations
         for i in 0..<operationCount {
+            let siteID = Int64(i % 10)
+            let jetpackRequest = createJetpackRequest(siteID: siteID)
+            let restRequest = createRESTRequest()
+            let error = createNetworkError()
             DispatchQueue.global().async {
-                let siteID = Int64(i % 10)
-
                 switch i % 3 {
                 case 0:
-                    self.errorHandler.prepareAppPasswordSupport(for: siteID)
+                    errorHandler.prepareAppPasswordSupport(for: siteID)
                 case 1:
-                    self.errorHandler.flagSiteAsUnsupported(for: siteID, flow: .apiRequest, cause: .majorError, error: NetworkError.notFound(response: nil))
+                    errorHandler.flagSiteAsUnsupported(for: siteID, flow: .apiRequest, cause: .majorError, error: NetworkError.notFound(response: nil))
                 case 2:
-                    let jetpackRequest = self.createJetpackRequest(siteID: siteID)
-                    let restRequest = self.createRESTRequest()
-                    let error = self.createNetworkError()
-                    _ = self.errorHandler.shouldRetryJetpackRequest(
+                    _ = errorHandler.shouldRetryJetpackRequest(
                         originalRequest: jetpackRequest,
                         convertedRequest: restRequest,
                         failure: error
@@ -308,11 +312,12 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         wait(for: [expectation], timeout: 5.0)
     }
 
-    func test_isRequestRetried_with_concurrent_retry_additions() {
+    func test_isRequestRetried_with_concurrent_retry_additions() throws {
         let expectation = XCTestExpectation(description: "All operations complete")
         let operationCount = 5
         expectation.expectedFulfillmentCount = operationCount * 2 // retry + check operations
 
+        let errorHandler = try XCTUnwrap(self.errorHandler)
         let jetpackRequest = createJetpackRequest(siteID: 123)
         let restRequest = createRESTRequest()
         let error = createNetworkError()
@@ -321,7 +326,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         for _ in 0..<operationCount {
             DispatchQueue.global().async {
                 // Add retry
-                _ = self.errorHandler.shouldRetryJetpackRequest(
+                _ = errorHandler.shouldRetryJetpackRequest(
                     originalRequest: jetpackRequest,
                     convertedRequest: restRequest,
                     failure: error
@@ -331,7 +336,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
             DispatchQueue.global().async {
                 // Check if retried
-                _ = self.errorHandler.isRequestRetried(jetpackRequest)
+                _ = errorHandler.isRequestRetried(jetpackRequest)
                 expectation.fulfill()
             }
         }
@@ -561,12 +566,13 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         XCTAssertTrue(userDefaults.applicationPasswordUnsupportedList.keys.contains(String(siteID)))
     }
 
-    func test_concurrent_flagSiteAsUnsupportedForAppPasswordIfNeeded_no_race_condition() {
+    func test_concurrent_flagSiteAsUnsupportedForAppPasswordIfNeeded_no_race_condition() throws {
         // Given - test for the race condition fix where multiple threads
         // try to remove the same item simultaneously
         let expectation = XCTestExpectation(description: "All concurrent flag operations complete without crash")
         let threadCount = 50
         let siteID: Int64 = 999
+        let errorHandler = try XCTUnwrap(self.errorHandler)
         let jetpackRequest = createJetpackRequest(siteID: siteID)
         let restRequest = createRESTRequest()
         let error = createNetworkError()
@@ -591,7 +597,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
             group.enter()
             DispatchQueue.global().async {
                 // All threads try to remove the same request concurrently
-                self.errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(
+                errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(
                     originalRequest: jetpackRequest,
                     failure: nil
                 )
@@ -609,7 +615,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
     // MARK: - Deadlock Regression Test
 
-    func test_no_deadlock_when_kvo_observer_triggers_during_flagSiteAsUnsupported() {
+    func test_no_deadlock_when_kvo_observer_triggers_during_flagSiteAsUnsupported() throws {
         // This test reproduces the exact deadlock scenario from the production crash:
         // 1. flagSiteAsUnsupported writes to UserDefaults
         // 2. UserDefaults triggers KVO notification synchronously
@@ -628,25 +634,26 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
 
         // Given - Set up KVO observer to simulate the production scenario
         let siteID: Int64 = 12345
+        let errorHandler = try XCTUnwrap(self.errorHandler)
         let kvoTriggered = XCTestExpectation(description: "KVO observer triggered")
         let preparePasswordSupportCalled = XCTestExpectation(description: "prepareAppPasswordSupport called from KVO")
         let operationCompleted = XCTestExpectation(description: "Operation completed without deadlock")
 
         var kvoObservation: NSKeyValueObservation?
-        kvoObservation = userDefaults.observe(\.applicationPasswordUnsupportedList, options: [.new]) { [weak self] _, _ in
+        kvoObservation = userDefaults.observe(\.applicationPasswordUnsupportedList, options: [.new]) { _, _ in
             kvoTriggered.fulfill()
 
             // Simulate what happens in production:
             // AlamofireNetwork.observeSelectedSite gets triggered by KVO
             // and calls prepareAppPasswordSupport
-            self?.errorHandler.prepareAppPasswordSupport(for: siteID)
+            errorHandler.prepareAppPasswordSupport(for: siteID)
             preparePasswordSupportCalled.fulfill()
         }
 
         // When - Trigger the scenario that caused the deadlock
         DispatchQueue.global().async {
             // This will write to UserDefaults, triggering KVO
-            self.errorHandler.flagSiteAsUnsupported(
+            errorHandler.flagSiteAsUnsupported(
                 for: siteID,
                 flow: .apiRequest,
                 cause: .majorError,
@@ -669,21 +676,22 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         kvoObservation?.invalidate()
     }
 
-    func test_no_deadlock_with_concurrent_kvo_observers_and_flag_operations() {
+    func test_no_deadlock_with_concurrent_kvo_observers_and_flag_operations() throws {
         // This test creates even more stress by having multiple KVO observers
         // and concurrent flag operations to ensure the fix is robust
 
         let completionExpectation = XCTestExpectation(description: "All operations complete")
         completionExpectation.expectedFulfillmentCount = 10 // 10 flag operations
+        let errorHandler = try XCTUnwrap(self.errorHandler)
 
         var observations: [NSKeyValueObservation] = []
 
         // Set up multiple KVO observers (simulating multiple parts of the app observing)
         for i in 1...3 {
-            let observation = userDefaults.observe(\.applicationPasswordUnsupportedList, options: [.new]) { [weak self] _, _ in
+            let observation = userDefaults.observe(\.applicationPasswordUnsupportedList, options: [.new]) { _, _ in
                 let siteID = Int64(1000 + i)
                 // Each observer tries to access the error handler
-                self?.errorHandler.prepareAppPasswordSupport(for: siteID)
+                errorHandler.prepareAppPasswordSupport(for: siteID)
             }
             observations.append(observation)
         }
@@ -692,7 +700,7 @@ final class AlamofireNetworkErrorHandlerTests: XCTestCase {
         for i in 0..<10 {
             DispatchQueue.global().async {
                 let siteID = Int64(i)
-                self.errorHandler.flagSiteAsUnsupported(
+                errorHandler.flagSiteAsUnsupported(
                     for: siteID,
                     flow: .apiRequest,
                     cause: .majorError,

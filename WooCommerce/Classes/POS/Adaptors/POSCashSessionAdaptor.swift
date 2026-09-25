@@ -170,7 +170,8 @@ final class POSCashSessionAdaptor: POSCashSessionService {
             let session = try await mappedSession(response, withMovements: true)
             pendingRequestIDs.removeValue(forKey: requestKey)
             return session
-        } catch let error as POSCashSessionAPIError where error.statusCode == 409 {
+        } catch let error as POSCashSessionAPIError where error.statusCode == 409 &&
+            error.code == "woocommerce_rest_cash_session_revision_conflict" {
             throw POSCashSessionServiceError.sessionChanged
         }
     }

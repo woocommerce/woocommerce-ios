@@ -16,7 +16,11 @@ final class MockPOSCashSessionService: POSCashSessionService {
     var capturedSessionID: Int64? = 123
     var captureError: Error?
     var currentSessionToReturn: POSCashSession?
+    var currentSessionError: Error?
+    var closeError: Error?
+    var closeSessionToReturn: POSCashSession?
     var closeCallCount = 0
+    private(set) var closeExpectedRevisions: [Int] = []
     var captureCallCount = 0
     var retryCallCount = 0
     var retrySucceeds = true
@@ -47,7 +51,10 @@ final class MockPOSCashSessionService: POSCashSessionService {
         if retrySucceeds { hasPendingCashMovements = false }
     }
 
-    func currentSession() async throws -> POSCashSession? { currentSessionToReturn }
+    func currentSession() async throws -> POSCashSession? {
+        if let currentSessionError { throw currentSessionError }
+        return currentSessionToReturn
+    }
 
     func pastSessions(page: Int, perPage: Int) async throws -> POSCashSessionPage {
         requestedPastSessionPages.append(page)
@@ -65,7 +72,10 @@ final class MockPOSCashSessionService: POSCashSessionService {
     }
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal, note: String?) async throws -> POSCashSession {
         closeCallCount += 1
-        throw POSCashSessionServiceError.noOpenSession
+        closeExpectedRevisions.append(expectedRevision)
+        if let closeError { throw closeError }
+        guard let closeSessionToReturn else { throw POSCashSessionServiceError.noOpenSession }
+        return closeSessionToReturn
     }
 
     func recordCashSale(orderID: Int64) async throws -> POSCashSession? {

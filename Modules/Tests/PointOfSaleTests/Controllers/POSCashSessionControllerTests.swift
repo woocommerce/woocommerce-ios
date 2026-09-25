@@ -135,6 +135,60 @@ struct POSCashSessionControllerTests {
         #expect(service.requestedPastSessionPages == [1, 2, 1, 2])
     }
 
+    @Test func test_close_when_revision_conflicts_then_refreshes_and_requires_a_new_count() async throws {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 10,
+                                                        movements: [], revision: 1)
+        let controller = POSCashSessionController(service: service)
+        await controller.loadCurrentSession()
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 20,
+                                                        movements: [], revision: 2)
+        service.closeError = POSCashSessionServiceError.sessionChanged
+
+        // When
+        let firstClose = await controller.close(countedCash: 10, note: nil)
+
+        // Then
+        #expect(firstClose == nil)
+        #expect(controller.currentSession?.revision == 2)
+        #expect(controller.currentSession?.expectedCash == 20)
+        #expect(controller.requiresCloseRecount)
+        #expect(service.closeExpectedRevisions == [1])
+        #expect(await controller.close(countedCash: 20, note: nil) == nil)
+        #expect(service.closeCallCount == 1)
+
+        // When: the cashier reviews the new total and enters a new count.
+        #expect(controller.acknowledgeFreshCloseCount())
+        service.closeError = nil
+        service.closeSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 20,
+                                                      movements: [], closedAt: now, countedCash: 20, revision: 3)
+        _ = try #require(await controller.close(countedCash: 20, note: nil))
+        #expect(service.closeExpectedRevisions == [1, 2])
+    }
+
+    @Test func test_close_when_conflict_refresh_fails_then_blocks_stale_retries() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 10,
+                                                        movements: [], revision: 1)
+        let controller = POSCashSessionController(service: service)
+        await controller.loadCurrentSession()
+        service.closeError = POSCashSessionServiceError.sessionChanged
+        service.currentSessionError = POSCashSessionServiceError.previewUnavailable
+
+        // When
+        _ = await controller.close(countedCash: 10, note: nil)
+
+        // Then
+        #expect(controller.requiresCloseRecount)
+        #expect(controller.closeRefreshError != nil)
+        #expect(!controller.acknowledgeFreshCloseCount())
+        _ = await controller.close(countedCash: 10, note: nil)
+        #expect(service.closeCallCount == 1)
+        #expect(controller.currentSession?.revision == 1)
+    }
+
     private func makeSession(id: Int64) -> POSCashSession {
         .init(id: id, openedAt: now, openedBy: "Tester", openingCash: 0, movements: [], closedAt: now, closedBy: "Tester")
     }

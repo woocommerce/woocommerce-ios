@@ -69,12 +69,36 @@ struct POSCashSessionAdaptorTests {
             _ = try await sut.currentSession()
         }
     }
+
+    @Test func test_close_when_revision_conflicts_then_asks_for_review() async {
+        // Given
+        let sut = makeSUT(listError: UnexpectedCallError(),
+                          closeError: networkError(statusCode: 409, code: "woocommerce_rest_cash_session_revision_conflict"))
+
+        // Then
+        await #expect(throws: POSCashSessionServiceError.sessionChanged) {
+            // When
+            _ = try await sut.closeSession(sessionID: 1, expectedRevision: 1, countedCash: 10, note: nil)
+        }
+    }
+
+    @Test func test_close_when_other_conflict_then_preserves_api_error() async {
+        // Given
+        let sut = makeSUT(listError: UnexpectedCallError(), closeError: networkError(statusCode: 409, code: "other_conflict"))
+
+        // Then
+        await #expect(throws: POSCashSessionAPIError.self) {
+            // When
+            _ = try await sut.closeSession(sessionID: 1, expectedRevision: 1, countedCash: 10, note: nil)
+        }
+    }
 }
 
 private extension POSCashSessionAdaptorTests {
-    func makeSUT(listError: Error) -> POSCashSessionAdaptor {
-        POSCashSessionAdaptor(remote: POSCashSessionRemoteService(remote: MockPOSCashSessionRemote(listError: listError)),
-                              siteID: siteID, deviceID: "device")
+    func makeSUT(listError: Error, closeError: Error? = nil) -> POSCashSessionAdaptor {
+        POSCashSessionAdaptor(remote: POSCashSessionRemoteService(remote: MockPOSCashSessionRemote(listError: listError,
+                                                                                                    closeError: closeError)),
+                              siteID: siteID, deviceID: UUID().uuidString)
     }
 
     /// Builds a `NetworkError` whose `errorCode` resolves from a `{"code": ...}` response body.
@@ -93,9 +117,11 @@ private struct UnexpectedCallError: Error {}
 
 private final class MockPOSCashSessionRemote: POSCashSessionRemoteProtocol {
     private let listError: Error
+    private let closeError: Error?
 
-    init(listError: Error) {
+    init(listError: Error, closeError: Error? = nil) {
         self.listError = listError
+        self.closeError = closeError
     }
 
     func listSessions(siteID: Int64, deviceID: String?, status: String, page: Int, perPage: Int) async throws -> PagedItems<POSCashSessionResponse> {
@@ -128,6 +154,7 @@ private final class MockPOSCashSessionRemote: POSCashSessionRemoteProtocol {
 
     func closeSession(siteID: Int64, sessionID: Int64, requestID: UUID, expectedRevision: Int,
                       countedAmount: String, note: String?) async throws -> POSCashSessionResponse {
+        if let closeError { throw closeError }
         throw UnexpectedCallError()
     }
 }

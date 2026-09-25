@@ -19,6 +19,8 @@ final class POSCashSessionController {
     private(set) var pastLoadError: String?
     private(set) var pastPageError: String?
     private(set) var sessionDetailError: String?
+    private(set) var requiresCloseRecount = false
+    private(set) var closeRefreshError: String?
     var errorMessage: String?
 
     var hasPendingCashMovements: Bool { service.hasPendingCashMovements }
@@ -29,6 +31,7 @@ final class POSCashSessionController {
     @ObservationIgnored private var hasLoadedPastSessions = false
     @ObservationIgnored private var detailRequest = 0
     @ObservationIgnored private let pageSize = 20
+    @ObservationIgnored private var hasFreshSessionForClose = false
 
     init(service: any POSCashSessionService) {
         self.service = service
@@ -135,14 +138,26 @@ final class POSCashSessionController {
 
     func close(countedCash: Decimal, note: String?) async -> POSCashSession? {
         guard let session = currentSession else { return nil }
+        guard !requiresCloseRecount else {
+            errorMessage = POSCashSessionErrorMessage.message(for: POSCashSessionServiceError.sessionChanged, operation: .close)
+            return nil
+        }
         guard !hasPendingCashMovements else {
             errorMessage = POSCashSessionErrorMessage.message(for: POSCashSessionServiceError.pendingCashMovements, operation: .close)
             return nil
         }
         var closedSession: POSCashSession?
         let saved = await save(operation: .close) {
-            let closed = try await service.closeSession(sessionID: session.id, expectedRevision: session.revision,
+            let closed: POSCashSession
+            do {
+                closed = try await service.closeSession(sessionID: session.id, expectedRevision: session.revision,
                                                         countedCash: countedCash, note: note)
+            } catch POSCashSessionServiceError.sessionChanged {
+                requiresCloseRecount = true
+                hasFreshSessionForClose = false
+                await refreshSessionAfterCloseConflict()
+                throw POSCashSessionServiceError.sessionChanged
+            }
             currentSession = nil
             detailRequest += 1
             isLoadingSessionDetail = false
@@ -153,6 +168,30 @@ final class POSCashSessionController {
             closedSession = closed
         }
         return saved ? closedSession : nil
+    }
+
+    func refreshSessionAfterCloseConflict() async {
+        guard requiresCloseRecount, let originalSessionID = currentSession?.id else { return }
+        closeRefreshError = nil
+        do {
+            let latest = try await service.currentSession()
+            guard let latest, latest.id == originalSessionID else {
+                throw POSCashSessionServiceError.sessionChanged
+            }
+            currentSession = latest
+            hasFreshSessionForClose = true
+        } catch {
+            hasFreshSessionForClose = false
+            closeRefreshError = POSCashSessionErrorMessage.message(for: error, operation: .loadCurrent)
+        }
+    }
+
+    func acknowledgeFreshCloseCount() -> Bool {
+        guard requiresCloseRecount else { return true }
+        guard hasFreshSessionForClose else { return false }
+        requiresCloseRecount = false
+        hasFreshSessionForClose = false
+        return true
     }
 
     func retryPendingCashMovements() async {

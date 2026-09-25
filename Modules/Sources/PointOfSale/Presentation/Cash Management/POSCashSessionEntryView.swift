@@ -42,6 +42,20 @@ struct POSCashSessionEntryView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.xLarge) {
+                    if action == .close, controller.requiresCloseRecount {
+                        POSNoticeView(title: Localization.sessionChangedTitle,
+                                      icon: Image(systemName: "exclamationmark.triangle"), style: .alertLowest) {
+                            VStack(alignment: .leading, spacing: POSSpacing.small) {
+                                Text(controller.closeRefreshError ?? Localization.sessionChangedMessage)
+                                if controller.closeRefreshError != nil {
+                                    Button(Localization.retryRefresh) {
+                                        Task { await controller.refreshSessionAfterCloseConflict() }
+                                    }
+                                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                                }
+                            }
+                        }
+                    }
                     if let submitError {
                         POSNoticeView(title: Localization.errorTitle,
                                       icon: Image(systemName: "exclamationmark.triangle"),
@@ -129,6 +143,10 @@ struct POSCashSessionEntryView: View {
     private var submitButton: some View {
         Button(step == .amount ? Localization.continueButton : submitTitle) {
             if step == .amount {
+                if action == .close, !controller.acknowledgeFreshCloseCount() {
+                    submitError = controller.closeRefreshError ?? Localization.refreshRequired
+                    return
+                }
                 isAmountFocused = false
                 step = .note
             } else {
@@ -183,6 +201,11 @@ struct POSCashSessionEntryView: View {
                 onClosed(closedSession.id)
                 dismiss()
             } else {
+                if controller.requiresCloseRecount {
+                    amount = ""
+                    hasEditedAmount = false
+                    step = .amount
+                }
                 showSaveError()
             }
         }
@@ -229,5 +252,15 @@ private extension POSCashSessionEntryView {
         static let closeButton = NSLocalizedString("pos.cashSession.entry.closeButton", value: "Close session", comment: "Close cash session button")
         static let errorTitle = NSLocalizedString("pos.cashSession.entry.errorTitle", value: "Could not update session",
                                                   comment: "Cash session update error title")
+        static let sessionChangedTitle = NSLocalizedString("pos.cashSession.entry.sessionChangedTitle", value: "Cash session changed",
+                                                           comment: "Title when a cashier must review a changed cash session")
+        static let sessionChangedMessage = NSLocalizedString("pos.cashSession.entry.sessionChangedMessage",
+                                                             value: "Review the latest expected amount and count the cash again.",
+                                                             comment: "Instruction after a cash session close revision conflict")
+        static let refreshRequired = NSLocalizedString("pos.cashSession.entry.refreshRequired",
+                                                       value: "Refresh the session before counting the cash again.",
+                                                       comment: "Shown when a stale cash session could not be refreshed")
+        static let retryRefresh = NSLocalizedString("pos.cashSession.entry.retryRefresh", value: "Refresh session",
+                                                    comment: "Retry loading the latest cash session after a close conflict")
     }
 }

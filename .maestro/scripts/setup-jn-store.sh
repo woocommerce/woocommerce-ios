@@ -32,7 +32,8 @@ ENV_OUT=""
 APP_CREDS="$HOME/.configure/woocommerce-ios/secrets/woo_app_credentials.json"
 
 die() { printf '\033[31merror:\033[0m %s\n' "$*" >&2; exit 1; }
-step() { printf '\n\033[1m[%s]\033[0m %s\n' "$1" "$2"; }
+STEP=0
+step() { STEP=$(( STEP + 1 )); printf '\n\033[1m[%s/%s]\033[0m %s\n' "$STEP" "$TOTAL_STEPS" "$1"; }
 ok() { printf '  \033[32mok\033[0m %s\n' "$*"; }
 
 while [ $# -gt 0 ]; do
@@ -50,6 +51,7 @@ while [ $# -gt 0 ]; do
 done
 
 [ -n "$SITE" ] || die "--site is required"
+TOTAL_STEPS=6
 command -v expect >/dev/null || die "expect is required for password-based SSH"
 command -v python3 >/dev/null || die "python3 is required"
 [ -f "$APP_CREDS" ] || die "app credentials not found: $APP_CREDS (run 'rake dependencies')"
@@ -145,7 +147,8 @@ chmod +x "$WORK/ssh.exp"
 
 # The password goes through the environment rather than argv so it never
 # appears in `ps` output.
-remote() { JN_SSH_PASS="$SITE_PASS" "$WORK/ssh.exp" "$SITE" "$1" 2>/dev/null | tr -d '\r'; }
+remote() { remote_on "$SITE" "$SITE_PASS" "$1"; }
+remote_on() { JN_SSH_PASS="$2" "$WORK/ssh.exp" "$1" "$3" 2>/dev/null | tr -d '\r'; }
 
 # Run PHP on the site. The source is base64-encoded so quoting survives the
 # shell/ssh/wp-cli layers, and staged as a file because `wp eval-file -` does
@@ -159,7 +162,7 @@ remote_php() {
 
 # JN provisions asynchronously and answers HTTP well before its plugins finish
 # installing, so poll for the state actually needed rather than for a 200.
-step 1/6 "Waiting for $SITE to finish provisioning"
+step "Waiting for $SITE to finish provisioning"
 DEADLINE=$(( $(date +%s) + 900 ))
 STATE=""
 while :; do
@@ -186,7 +189,7 @@ echo "USER:" . ( get_user_by( "id", __ADMIN_ID__ ) ? "ok" : "MISSING" ) . "\n";'
 done
 ok "site is up, WooCommerce and Jetpack active"
 
-step 2/6 "Checking SSH and admin user"
+step "Checking SSH and admin user"
 if ! printf '%s' "$STATE" | grep -q "WPCLI:ok"; then
   printf '  remote output: %s\n' "$(printf '%s' "$STATE" | head -3 | tr '\n' ' ')" >&2
   die "could not run wp-cli over SSH. Check the site admin password."
@@ -197,7 +200,7 @@ ok "ssh and wp-cli working, admin user id $ADMIN_ID present"
 
 # rest_do_request runs as an authenticated admin inside wp-cli, so no cookie or
 # REST nonce is needed for the two site-side Jetpack calls.
-step 3/6 "Registering the site with Jetpack"
+step "Registering the site with Jetpack"
 REG="$(remote_php '<?php
 wp_set_current_user( __ADMIN_ID__ );
 $res = rest_do_request( new WP_REST_Request( "POST", "/jetpack/v4/connection/register" ) );
@@ -210,7 +213,7 @@ BLOG_ID="$(printf '%s' "$REG" | sed -n 's/^BLOGID:\([0-9][0-9]*\).*/\1/p' | head
 [ -n "$BLOG_ID" ] || die "could not register the site: $(printf '%s' "$REG" | head -3)"
 ok "registered, blogID=$BLOG_ID"
 
-step 4/6 "Provisioning the user connection"
+step "Provisioning the user connection"
 PROV="$(remote_php '<?php
 wp_set_current_user( __ADMIN_ID__ );
 $res = rest_do_request( new WP_REST_Request( "POST", "/jetpack/v4/remote_provision" ) );
@@ -228,7 +231,7 @@ ok "scope and secret obtained (the secret is short-lived)"
 # --data-urlencode is required, not stylistic: curl -d sends the body raw, so a
 # plus-alias address arrives with the + decoded as a space and the grant fails
 # with a misleading "Incorrect username or password".
-step 5/6 "Connecting Jetpack to $WPCOM_USER"
+step "Connecting Jetpack to $WPCOM_USER"
 CID="$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['dotcom_app_id'])" "$APP_CREDS")"
 CSEC="$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['dotcom_secret'])" "$APP_CREDS")"
 TOKRESP="$(curl -s -X POST https://public-api.wordpress.com/oauth2/token \
@@ -259,7 +262,7 @@ ok "isUserConnected=yes, hasConnectedOwner=yes"
 
 # WooCommerce exposes no REST endpoint for API keys, so insert the row the same
 # way its own admin-ajax handler does.
-step 6/6 "Creating WooCommerce API keys and writing $(basename "$ENV_OUT")"
+step "Creating WooCommerce API keys and writing $(basename "$ENV_OUT")"
 KEYS="$(remote_php '<?php
 $ck = "ck_" . wc_rand_hash();
 $cs = "cs_" . wc_rand_hash();

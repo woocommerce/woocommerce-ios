@@ -1013,7 +1013,7 @@ final class POSRefundControllerTests {
         #expect(sut.selectableItems.isEmpty)
     }
 
-    @Test func processRefund_when_successful_then_returns_the_refunded_order_id() async throws {
+    @Test func test_processRefund_when_successful_then_returns_the_order_and_created_refund_ids() async throws {
         // Given
         refundsService.providePointOfSaleRefundsResultToReturn = POSRefundsResult(
             refunds: [],
@@ -1023,6 +1023,7 @@ final class POSRefundControllerTests {
         let order = POSOrderTestFactory.makeOrder(id: 321, lineItems: [
             POSOrderTestFactory.makePOSOrderItem(itemID: 1, quantity: 1, price: 10.00, formattedPrice: "$10.00")
         ])
+        refundSubmissionProcessor.submittedRefundID = 654
         _ = await sut.startRefundFlow(for: order)
 
         // When
@@ -1030,6 +1031,7 @@ final class POSRefundControllerTests {
 
         // Then
         #expect(result.refundedOrderID == 321)
+        #expect(result.refundID == 654)
     }
 
     @Test func processRefund_when_successful_then_keeps_requiresCardPresentRefund_for_the_completion_screens() async throws {

@@ -21,6 +21,7 @@ final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcessing {
     private(set) var spySubmitRefundReason: String?
     private(set) var spySubmitRefundIsAutomaticRefund: Bool?
     var submitRefundErrorToThrow: Error?
+    var submittedRefundID: Int64 = 987
 
     nonisolated init(refundsService: MockPOSRefundsService,
                      currencyFormatter: CurrencyFormatter) {
@@ -97,7 +98,7 @@ final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcessing {
     func submitRefund(for order: POSOrder,
                       preparation: POSRefundPreparation,
                       selectedItems: [POSRefundSelectableItem],
-                      reason: String?) async throws {
+                      reason: String?) async throws -> Int64 {
         onSubmitRefundStarted?()
         if shouldSuspendSubmitRefund {
             await withCheckedContinuation { continuation in
@@ -116,6 +117,7 @@ final class MockPOSRefundSubmissionProcessor: POSRefundSubmissionProcessing {
         }
 
         stateModel.state = .completed
+        return submittedRefundID
     }
 
     private func reviewAmounts(for items: [POSRefundSelectableItem]) -> (subtotal: Decimal, tax: Decimal) {

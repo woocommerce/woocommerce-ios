@@ -18,6 +18,7 @@ final class MockPOSRefundController: POSRefundControllerProtocol {
 
     var stubStartRefundFlowResult: StartRefundFlowResult = .hasItemsToRefund
     var stubRefundedOrderID: Int64 = 123
+    var stubRefundID: Int64 = 987
     var stubIsCashRefund = false
     var processRefundErrorToThrow: Error?
 
@@ -64,6 +65,6 @@ final class MockPOSRefundController: POSRefundControllerProtocol {
             throw processRefundErrorToThrow
         }
 
-        return POSRefundSubmissionResult(refundedOrderID: stubRefundedOrderID, isCashRefund: stubIsCashRefund)
+        return POSRefundSubmissionResult(refundedOrderID: stubRefundedOrderID, refundID: stubRefundID, isCashRefund: stubIsCashRefund)
     }
 }

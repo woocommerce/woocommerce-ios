@@ -86,7 +86,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         refundService.createRefundResult = .success(.fake())
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Refund, Error> = waitFor { promise in
             useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
                 promise(result)
             }
@@ -140,7 +140,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         refundService.createRefundResult = .failure(NSError(domain: "test", code: 1))
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Refund, Error> = waitFor { promise in
             useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
                 promise(result)
             }
@@ -161,7 +161,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         refundService.createRefundResult = .failure(DotcomError.unknown(code: "woocommerce_rest_refund_exceeds_remaining", message: nil, data: nil))
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Refund, Error> = waitFor { promise in
             useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
                 promise(result)
             }
@@ -183,7 +183,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         refundService.createRefundResult = .failure(error)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Refund, Error> = waitFor { promise in
             useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
                 promise(result)
             }
@@ -203,7 +203,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         mockServerSideRefund(refund: nil, error: DotcomError.unknown(code: "woocommerce_rest_order_not_refundable", message: nil, data: nil))
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Refund, Error> = waitFor { promise in
             useCase.submitRefund(.fake(), showInProgressUI: {}) { result in
                 promise(result)
             }
@@ -488,7 +488,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         mockCardPresentPaymentActions(clientSideRefundResult: .failure(RefundSubmissionUseCaseSubmissionError.cardReaderDisconnected))
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Refund, Error> = waitFor { promise in
             useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
                 promise(result)
             })
@@ -523,7 +523,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         mockCardPresentPaymentActions(clientSideRefundResult: .failure(error))
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Refund, Error> = waitFor { promise in
             useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
                 promise(result)
             })
@@ -566,7 +566,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
         storageManager.insertSamplePaymentGatewayAccount(readOnlyAccount: paymentGatewayAccount)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Refund, Error> = waitFor { promise in
             useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
                 promise(result)
             })
@@ -599,7 +599,7 @@ final class RefundSubmissionUseCaseTests: XCTestCase {
                                       cancelRefundResult: .success(()))
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Refund, Error> = waitFor { promise in
             useCase.submitRefund(.fake(), showInProgressUI: {}, onCompletion: { result in
                 promise(result)
             })

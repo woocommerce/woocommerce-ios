@@ -13,10 +13,10 @@ protocol RefundSubmissionProtocol {
     ///
     /// - Parameter refund: the refund to submit.
     /// - Parameter showInProgressUI: called when the in-progress UI should be shown during refund submission.
-    /// - Parameter onCompletion: called when the refund completes.
+    /// - Parameter onCompletion: called with the created refund when submission completes.
     func submitRefund(_ refund: Refund,
                       showInProgressUI: @escaping (() -> Void),
-                      onCompletion: @escaping (Result<Void, Error>) -> Void)
+                      onCompletion: @escaping (Result<Refund, Error>) -> Void)
 }
 
 /// Use case to submit a refund for an order.
@@ -166,10 +166,10 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     /// - Parameters:
     ///   - refund: the refund to submit.
     ///   - showInProgressUI: called when the in-progress UI should be shown during refund submission.
-    ///   - onCompletion: called when the refund completes.
+    ///   - onCompletion: called with the created refund when submission completes.
     func submitRefund(_ refund: Refund,
                       showInProgressUI: @escaping (() -> Void),
-                      onCompletion: @escaping (Result<Void, Error>) -> Void) {
+                      onCompletion: @escaping (Result<Refund, Error>) -> Void) {
         if let charge = details.charge, shouldRefundWithCardReader(details: details) {
             cardPresentPaymentsOnboardingPresenter.showOnboardingIfRequired(
                 from: rootViewController) { [weak self] in
@@ -202,8 +202,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
                                 onCompletion(.failure(error))
                             }
                         }
-                    case .failure:
-                        onCompletion(result)
+                    case .failure(let error):
+                        onCompletion(.failure(error))
                     }
                 }
             }
@@ -420,7 +420,7 @@ private extension RefundSubmissionUseCase {
     /// - Parameters:
     ///   - refund: the refund to submit.
     ///   - onCompletion: called when the submission completes.
-    func submitRefundToSite(refund: Refund, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func submitRefundToSite(refund: Refund, onCompletion: @escaping (Result<Refund, Error>) -> Void) {
         if let serverLineItems = details.serverLineItems, let refundService {
             Task {
                 await submitComputedRefundToSite(refund: refund, lineItems: serverLineItems, refundService: refundService, onCompletion: onCompletion)
@@ -452,13 +452,13 @@ private extension RefundSubmissionUseCase {
                 return onCompletion(.failure(error))
             }
 
-            guard refundData != nil else {
+            guard let refundData else {
                 DDLogError("Error creating refund: \(refund)\nWith Error: missing created refund response")
                 self.trackCreateRefundRequestFailed(error: RefundSubmissionUseCaseSubmissionError.missingCreatedRefund)
                 return onCompletion(.failure(RefundSubmissionUseCaseSubmissionError.missingCreatedRefund))
             }
 
-            onCompletion(.success(()))
+            onCompletion(.success(refundData))
             self.trackCreateRefundRequestSuccess()
         }
         stores.dispatch(action)
@@ -469,17 +469,17 @@ private extension RefundSubmissionUseCase {
     private func submitComputedRefundToSite(refund: Refund,
                                             lineItems: [ComputedRefundLineItem],
                                             refundService: RefundServiceProtocol,
-                                            onCompletion: @escaping (Result<Void, Error>) -> Void) async {
+                                            onCompletion: @escaping (Result<Refund, Error>) -> Void) async {
         trackCreateRefundRequest()
         do {
-            _ = try await refundService.createRefund(siteID: details.order.siteID,
-                                                     orderID: details.order.orderID,
-                                                     reason: refund.reason,
-                                                     automaticRefund: refund.createAutomated ?? false,
-                                                     restockItems: true,
-                                                     amountOverride: nil,
-                                                     lineItems: lineItems)
-            onCompletion(.success(()))
+            let createdRefund = try await refundService.createRefund(siteID: details.order.siteID,
+                                                                       orderID: details.order.orderID,
+                                                                       reason: refund.reason,
+                                                                       automaticRefund: refund.createAutomated ?? false,
+                                                                       restockItems: true,
+                                                                       amountOverride: nil,
+                                                                       lineItems: lineItems)
+            onCompletion(.success(createdRefund))
             trackCreateRefundRequestSuccess()
         } catch {
             DDLogError("Error creating server-computed refund: \(refund)\nWith Error: \(error)")

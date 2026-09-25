@@ -18,6 +18,28 @@ struct POSRefundSubmissionAdaptorTests {
     private let siteID: Int64 = 123
     private let orderID: Int64 = 560
 
+    @Test(arguments: [false, true])
+    func test_submitRefund_when_successful_then_returns_created_refund_id(serverComputed: Bool) async throws {
+        // Given
+        let sut = makeSUT(previewResult: .success(preview()), serverFlowEligible: serverComputed)
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        _ = try await sut.adaptor.prepareReviewData(for: posOrder(),
+                                                    preparation: preparation,
+                                                    selectedItems: preparation.selectableItems,
+                                                    reason: nil)
+        sut.service.createdRefund = .fake().copy(refundID: 987)
+        sut.spy.createdRefundID = 987
+
+        // When
+        let refundID = try await sut.adaptor.submitRefund(for: posOrder(),
+                                                          preparation: preparation,
+                                                          selectedItems: preparation.selectableItems,
+                                                          reason: nil)
+
+        // Then
+        #expect(refundID == 987)
+    }
+
     @Test func prepareRefund_when_order_was_paid_with_gift_card_then_throws_eligibility_failure() async throws {
         // Given
         let giftCard = OrderGiftCard(giftCardID: 1, code: "GIFT-CARD", amount: 10)
@@ -329,6 +351,7 @@ private extension POSRefundSubmissionAdaptorTests {
     final class RefundActionSpy {
         var dispatchedClassicCreate = false
         var classicCreateAmount: String?
+        var createdRefundID: Int64 = 0
     }
 
     /// `RefundServiceProtocol` mock pinned to the main actor so the manual-resolution list and the
@@ -342,6 +365,7 @@ private extension POSRefundSubmissionAdaptorTests {
         var previewResult: Result<RefundPreview, Error>?
         var manualPreviewResolution = false
         var createRefundError: Error?
+        var createdRefund: Refund = .fake()
         /// Captured `previewRefund` continuations when the test uses manual resolution.
         private(set) var pendingPreviewCompletions: [(Result<RefundPreview, Error>) -> Void] = []
         private(set) var createRefundLineItems: [ComputedRefundLineItem]?
@@ -375,7 +399,7 @@ private extension POSRefundSubmissionAdaptorTests {
             if let createRefundError {
                 throw createRefundError
             }
-            return .fake()
+            return createdRefund
         }
     }
 
@@ -412,7 +436,7 @@ private extension POSRefundSubmissionAdaptorTests {
             case .createRefund(_, _, let refund, let onCompletion):
                 spy.dispatchedClassicCreate = true
                 spy.classicCreateAmount = refund.amount
-                onCompletion(refund, nil)
+                onCompletion(refund.copy(refundID: spy.createdRefundID), nil)
             case .retrieveRefund(_, _, _, let onCompletion):
                 onCompletion(.fake(), nil)
             default:

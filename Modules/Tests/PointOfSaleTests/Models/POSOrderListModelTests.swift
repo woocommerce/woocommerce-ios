@@ -6,6 +6,7 @@ import struct Yosemite.POSOrderRefund
 import enum NetworkingCore.OrderStatusEnum
 
 @MainActor
+@Suite(.timeLimit(.minutes(5)))
 final class POSOrderListModelTests {
     private let mockOrdersController = MockPOSOrderListController()
     private let mockRefundController = MockPOSRefundController()
@@ -154,37 +155,40 @@ final class POSOrderListModelTests {
         #expect(cashDrawer.lastEvent?.reason == .cashRefund)
     }
 
-    @Test func processRefund_when_cash_refund_succeeds_then_records_new_refund_id() async throws {
+    @Test(arguments: [false, true])
+    func test_processRefund_when_cash_refund_succeeds_then_records_created_refund_despite_order_refresh_failure(refreshFails: Bool) async throws {
         // Given
         let cashSessionService = MockPOSCashSessionService()
         mockRefundController.stubRefundedOrderID = 456
+        mockRefundController.stubRefundID = 987
         mockRefundController.stubIsCashRefund = true
         mockOrdersController.selectedOrder = makeTestOrder(id: 456, email: "customer@example.com")
-        mockOrdersController.orderToReturnOnUpdate = makeTestOrder(
-            id: 456,
-            email: "customer@example.com",
-            refunds: [.init(refundID: 987, formattedTotal: "-$5.00")]
-        )
+        mockOrdersController.shouldThrowError = refreshFails
         let sut = makeModel(cashSessionService: cashSessionService)
+        let (recordedRefunds, continuation) = AsyncStream<Int64>.makeStream()
+        defer { continuation.finish() }
+        cashSessionService.onCashRefundRecorded = { _, refundID in continuation.yield(refundID) }
 
         // When
-        try await confirmation { confirm in
-            cashSessionService.onCashRefundRecorded = { _, _ in confirm() }
-            try await sut.processRefund(reason: nil)
-            try await Task.sleep(for: .milliseconds(50))
-        }
+        try await sut.processRefund(reason: nil)
+        var iterator = recordedRefunds.makeAsyncIterator()
+        let recordedRefundID = await iterator.next()
 
         // Then
+        #expect(recordedRefundID == 987)
         #expect(cashSessionService.recordedCashRefunds.count == 1)
         #expect(cashSessionService.recordedCashRefunds.first?.orderID == 456)
         #expect(cashSessionService.recordedCashRefunds.first?.refundID == 987)
+        #expect(mockOrdersController.updateOrderCalled)
+        #expect(mockOrdersController.loadOrderRefundsCalled)
     }
 
-    @Test func processRefund_when_refund_is_not_cash_then_does_not_open_the_cash_drawer() async throws {
+    @Test func test_processRefund_when_refund_is_not_cash_then_does_not_open_drawer_or_record_cash_refund() async throws {
         // Given
         let drawerService = MockCashDrawerService()
+        let cashSessionService = MockPOSCashSessionService()
         let cashDrawer = POSCashDrawerController(service: drawerService, userDefaults: try makeUserDefaults())
-        let sut = makeModel(cashDrawer: cashDrawer)
+        let sut = makeModel(cashDrawer: cashDrawer, cashSessionService: cashSessionService)
         mockRefundController.stubIsCashRefund = false
 
         // When
@@ -192,6 +196,7 @@ final class POSOrderListModelTests {
 
         // Then
         #expect(drawerService.openCallCount == 0)
+        #expect(cashSessionService.recordedCashRefunds.isEmpty)
     }
 
     @Test func processRefund_when_order_refresh_fails_then_still_loads_the_refunds() async throws {

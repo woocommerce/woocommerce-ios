@@ -192,10 +192,11 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                             calculationFlow: calculationFlow)
     }
 
+    @discardableResult
     func submitRefund(for order: POSOrder,
                       preparation: POSRefundPreparation,
                       selectedItems: [POSRefundSelectableItem],
-                      reason: String?) async throws {
+                      reason: String?) async throws -> Int64 {
         guard submissionUseCase == nil else {
             throw POSRefundSubmissionAdaptorError.refundAlreadyInProgress
         }
@@ -265,9 +266,10 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
             self.onboardingSubscription = nil
         }
 
+        let createdRefund: Refund
         do {
-            try await withCheckedThrowingContinuation { continuation in
-                var continuation: CheckedContinuation<Void, Error>? = continuation
+            createdRefund = try await withCheckedThrowingContinuation { continuation in
+                var continuation: CheckedContinuation<Refund, Error>? = continuation
                 submissionUseCase.submitRefund(refund, showInProgressUI: { [weak self] in
                     Task { @MainActor in
                         self?.stateModel.state = submittingState
@@ -287,6 +289,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
 
         stateModel.state = .completed
         removePreloadedRefund(for: preparation.orderID)
+        return createdRefund.refundID
     }
 }
 

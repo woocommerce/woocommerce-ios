@@ -563,7 +563,7 @@ final class POSPreviewRefundController: POSRefundControllerProtocol {
     func reset() {}
     func prepareReview() async -> POSRefundReviewPreparationResult { .preparationError }
     func processRefund(reason: String?) async throws -> POSRefundSubmissionResult {
-        POSRefundSubmissionResult(refundedOrderID: 0)
+        POSRefundSubmissionResult(refundedOrderID: 0, refundID: 0)
     }
 }
 

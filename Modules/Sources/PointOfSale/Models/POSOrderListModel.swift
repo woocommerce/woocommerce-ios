@@ -114,36 +114,22 @@ import struct Yosemite.POSOrder
 
     @MainActor
     func processRefund(reason: String?) async throws {
-        let orderBeforeRefund = ordersController.selectedOrder
         let result = try await refundController.processRefund(reason: reason)
         // Open the drawer so the cashier can hand the cash back, without holding up the refund flow.
         if result.isCashRefund, let cashDrawer {
             Task { await cashDrawer.openAutomatically(for: .cashRefund) }
         }
-        do {
-            try await ordersController.updateOrder(orderID: result.refundedOrderID)
-            if result.isCashRefund, let cashSessionService {
-                let updatedOrder = ordersController.selectedOrder?.id == result.refundedOrderID
-                    ? ordersController.selectedOrder
-                    : ordersController.ordersViewState.orders.first { $0.id == result.refundedOrderID }
-                if let orderBeforeRefund, orderBeforeRefund.id == result.refundedOrderID, let updatedOrder {
-                    let knownRefundIDs = Set(orderBeforeRefund.refunds.map(\.refundID))
-                    let newRefunds = updatedOrder.refunds.filter { !knownRefundIDs.contains($0.refundID) }
-                    if newRefunds.count == 1, let refundID = newRefunds.first?.refundID {
-                        Task {
-                            do {
-                                _ = try await cashSessionService.recordCashRefund(orderID: result.refundedOrderID, refundID: refundID)
-                            } catch {
-                                DDLogError("💵 [CashSession] Failed to record cash refund \(refundID) for order \(result.refundedOrderID): \(error)")
-                            }
-                        }
-                    } else {
-                        DDLogError("💵 [CashSession] Cannot identify new refund for order \(result.refundedOrderID)")
-                    }
-                } else {
-                    DDLogError("💵 [CashSession] Refunded order \(result.refundedOrderID) is unavailable for cash event")
+        if result.isCashRefund, let cashSessionService {
+            Task {
+                do {
+                    _ = try await cashSessionService.recordCashRefund(orderID: result.refundedOrderID, refundID: result.refundID)
+                } catch {
+                    DDLogError("💵 [CashSession] Failed to record cash refund \(result.refundID) for order \(result.refundedOrderID): \(error)")
                 }
             }
+        }
+        do {
+            try await ordersController.updateOrder(orderID: result.refundedOrderID)
         } catch {
             DDLogError("⛔️ Failed to refresh order \(result.refundedOrderID) after refund: \(error)")
         }

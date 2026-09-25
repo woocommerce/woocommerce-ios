@@ -220,7 +220,7 @@ protocol POSRefundControllerProtocol {
             throw POSRefundProcessingError.emptySelection
         }
 
-        try await refundSubmissionProcessor.submitRefund(
+        let refundID = try await refundSubmissionProcessor.submitRefund(
             for: order,
             preparation: preparation,
             selectedItems: selectedItems,
@@ -228,6 +228,6 @@ protocol POSRefundControllerProtocol {
         )
 
         clearSelection()
-        return POSRefundSubmissionResult(refundedOrderID: order.id, isCashRefund: order.isPaidInCash)
+        return POSRefundSubmissionResult(refundedOrderID: order.id, refundID: refundID, isCashRefund: order.isPaidInCash)
     }
 }

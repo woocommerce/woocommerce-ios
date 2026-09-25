@@ -52,11 +52,13 @@ extension POSOrder {
 
 struct POSRefundSubmissionResult: Equatable {
     let refundedOrderID: Int64
+    let refundID: Int64
     /// Whether the refunded order was paid in cash, so the cashier hands the refund back from the drawer.
     let isCashRefund: Bool
 
-    init(refundedOrderID: Int64, isCashRefund: Bool = false) {
+    init(refundedOrderID: Int64, refundID: Int64, isCashRefund: Bool = false) {
         self.refundedOrderID = refundedOrderID
+        self.refundID = refundID
         self.isCashRefund = isCashRefund
     }
 }

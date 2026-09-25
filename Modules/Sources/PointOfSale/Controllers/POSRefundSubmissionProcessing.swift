@@ -67,10 +67,12 @@ public protocol POSRefundSubmissionProcessing: AnyObject {
                            selectedItems: [POSRefundSelectableItem],
                            reason: String?) async throws -> POSRefundReviewData
 
+    /// Submits the refund and returns the ID assigned by the server.
+    @discardableResult
     func submitRefund(for order: POSOrder,
                       preparation: POSRefundPreparation,
                       selectedItems: [POSRefundSelectableItem],
-                      reason: String?) async throws
+                      reason: String?) async throws -> Int64
 }
 
 public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessing {
@@ -103,11 +105,13 @@ public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessi
                             calculationFlow: .local)
     }
 
+    @discardableResult
     public func submitRefund(for order: POSOrder,
                              preparation: POSRefundPreparation,
                              selectedItems: [POSRefundSelectableItem],
-                             reason: String?) async throws {
+                             reason: String?) async throws -> Int64 {
         stateModel.state = .completed
+        return 0
     }
 }
 

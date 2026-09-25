@@ -119,8 +119,8 @@ final class RefundConfirmationViewModel {
                 self.updateOrder { _ in
                     onCompletion(.success(()))
                 }
-            default:
-                onCompletion(result)
+            case .failure(let error):
+                onCompletion(.failure(error))
             }
             self.submissionUseCase = nil
         })

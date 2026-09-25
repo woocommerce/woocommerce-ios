@@ -46,6 +46,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private let leadingContent: LeadingContent
     private let trailingContent: TrailingContent
     private let bottomContent: BottomContent
+    private let titleLineLimit: Int
     @Environment(\.posHeaderBackButtonConfiguration) private var environmentBackButtonConfiguration
 
     private var effectiveBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
@@ -65,12 +66,14 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         subtitle: String? = nil,
         isLoading: Bool = false,
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
+        titleLineLimit: Int = 1,
         @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
         @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
     ) {
         self.items = [.init(title: title, subtitle: subtitle, isSelected: true, isLoading: isLoading)]
         self.backButtonConfiguration = backButtonConfiguration
+        self.titleLineLimit = titleLineLimit
         self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
@@ -79,12 +82,14 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     init(
         items: [POSPageHeaderItem],
         backButtonConfiguration: POSPageHeaderBackButtonConfiguration? = nil,
+        titleLineLimit: Int = 1,
         @ViewBuilder leadingContent: () -> LeadingContent = { EmptyView() },
         @ViewBuilder trailingContent: () -> TrailingContent = { EmptyView() },
         @ViewBuilder bottomContent: () -> BottomContent = { EmptyView() }
     ) {
         self.items = items
         self.backButtonConfiguration = backButtonConfiguration
+        self.titleLineLimit = titleLineLimit
         self.leadingContent = leadingContent()
         self.trailingContent = trailingContent()
         self.bottomContent = bottomContent()
@@ -116,11 +121,15 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
     @ViewBuilder
     private var itemsContent: some View {
-        ViewThatFits(in: .horizontal) {
+        if titleLineLimit > 1 {
             itemsRow
-
-            ScrollView(.horizontal, showsIndicators: false) {
+        } else {
+            ViewThatFits(in: .horizontal) {
                 itemsRow
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    itemsRow
+                }
             }
         }
     }
@@ -166,8 +175,9 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private func titleText(_ title: String, isSelected: Bool) -> some View {
         Text(title)
             .font(.posHeadingBold)
-            .lineLimit(1)
-            .fixedSize(horizontal: true, vertical: false)
+            .lineLimit(titleLineLimit)
+            .multilineTextAlignment(.leading)
+            .fixedSize(horizontal: titleLineLimit == 1, vertical: true)
             .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             .foregroundColor(isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
     }

@@ -3,6 +3,7 @@ import WooFoundation
 
 /// Detail pane shown when "Start session" is selected in `POSCashManagementView`.
 struct POSStartCashSessionView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @FocusState private var isAmountFocused: Bool
@@ -22,16 +23,18 @@ struct POSStartCashSessionView: View {
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
-            POSPageHeaderView(title: Localization.title, backButtonConfiguration: nil)
+            POSPageHeaderView(title: horizontalSizeClass == .compact ? Localization.compactTitle : Localization.title,
+                              backButtonConfiguration: nil)
                 .accessibilityAddTraits(.isHeader)
 
             ScrollView {
                 VStack(spacing: POSSpacing.medium) {
                     if controller.isSaving {
                         POSInformationCard {
-                            VStack(spacing: POSSpacing.medium) {
+                            VStack(spacing: POSSpacing.xLarge) {
                                 ProgressView()
                                     .progressViewStyle(POSProgressViewStyle())
+                                    .padding(POSPadding.large)
                                 Text(Localization.startingSession)
                                     .font(.posBodyLargeBold)
                                     .foregroundStyle(Color.posOnSurface)
@@ -110,6 +113,9 @@ private extension POSStartCashSessionView {
             value: "Start a cash session",
             comment: "Title of the start cash session screen."
         )
+
+        static let compactTitle = NSLocalizedString("pointOfSaleStartCashSessionView.compactTitle", value: "Start session",
+                                                    comment: "Title of the start cash session screen on iPhone")
 
         static let startingCashLabel = NSLocalizedString(
             "pointOfSaleStartCashSessionView.startingCashLabel",

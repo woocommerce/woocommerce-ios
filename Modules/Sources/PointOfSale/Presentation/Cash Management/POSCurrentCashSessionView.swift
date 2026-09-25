@@ -51,13 +51,16 @@ struct POSCurrentCashSessionView: View {
 
                         HStack(alignment: .top, spacing: POSSpacing.small) {
                             POSInformationCard {
-                                POSCashSessionMetricView(label: Localization.cashSales, amount: money.format(session.cashSales))
+                                POSCashSessionMetricView(label: Localization.cashSales, amount: money.format(session.cashSales),
+                                                         labelMinHeight: compactMetricLabelHeight)
                             }
                             POSInformationCard {
-                                POSCashSessionMetricView(label: Localization.paidInOut, amount: money.format(session.paidInOut))
+                                POSCashSessionMetricView(label: Localization.paidInOut, amount: money.format(session.paidInOut),
+                                                         labelMinHeight: compactMetricLabelHeight)
                             }
                             POSInformationCard {
-                                POSCashSessionMetricView(label: Localization.cashRefunds, amount: money.format(-session.cashRefunds))
+                                POSCashSessionMetricView(label: Localization.cashRefunds, amount: money.format(-session.cashRefunds),
+                                                         labelMinHeight: compactMetricLabelHeight)
                             }
                         }
 
@@ -93,20 +96,27 @@ struct POSCurrentCashSessionView: View {
             .accessibilityLabel(Localization.recordMovement)
         }
     }
+
+    private var compactMetricLabelHeight: CGFloat? {
+        horizontalSizeClass == .compact ? POSSpacing.xxLarge : nil
+    }
 }
 
 struct POSCashSessionMetricView: View {
     let label: String
     let amount: String
+    var amountColor: Color = .posOnSurface
+    var labelMinHeight: CGFloat? = nil
 
     var body: some View {
         VStack(alignment: .leading, spacing: POSSpacing.small) {
             Text(label)
                 .font(.posBodySmallRegular())
                 .foregroundStyle(.secondary)
+                .frame(minHeight: labelMinHeight, alignment: .topLeading)
             Text(amount)
                 .font(.posBodyLargeBold)
-                .foregroundStyle(Color.posOnSurface)
+                .foregroundStyle(amountColor)
                 .minimumScaleFactor(0.75)
                 .lineLimit(1)
         }

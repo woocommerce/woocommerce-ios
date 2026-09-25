@@ -9,6 +9,12 @@ struct POSCashManagementView: View {
 
     let controller: POSCashSessionController
 
+    init(controller: POSCashSessionController, initialSelection: SidebarNavigation? = nil, initialDetailSessionID: Int64? = nil) {
+        self.controller = controller
+        _selection = State(initialValue: initialSelection)
+        _pendingClosedSessionID = State(initialValue: initialDetailSessionID)
+    }
+
     var body: some View {
         Group {
             if !isLoaded || controller.currentLoadError != nil || controller.isCashSessionsUnsupported {
@@ -64,7 +70,9 @@ struct POSCashManagementView: View {
         isLoaded = false
         await controller.loadCurrentSession()
         guard controller.currentLoadError == nil else { return }
-        selection = controller.currentSession == nil ? .startSession : .currentSession
+        if selection != .pastSessions {
+            selection = controller.currentSession == nil ? .startSession : .currentSession
+        }
         isLoaded = true
     }
 
@@ -112,7 +120,8 @@ private extension POSCashManagementView {
                                                action: {
                                                    analytics.track(.pointOfSaleCashDrawerCloseButtonTapped)
                                                    dismiss()
-                                               }))
+                                               }),
+                titleLineLimit: 2)
             .posHeaderBackButtonIcon(systemName: "xmark")
             .accessibilityAddTraits(.isHeader)
         }
@@ -230,13 +239,61 @@ extension POSCashManagementView {
         static let retry = NSLocalizedString("pos.cashSession.drawer.retry", value: "Try again", comment: "Retry loading current cash session")
         static let unsupportedTitle = NSLocalizedString("pos.cashSession.management.updateWooCommerceTitle", value: "WooCommerce update required",
                                                        comment: "Title when the store's WooCommerce version has no cash session API")
-        static let unsupportedMessage = NSLocalizedString("pos.cashSession.management.updateWooCommerceMessage",
-                                                         value: "Update WooCommerce to the latest version to use the cash drawer.",
+        static let unsupportedMessage = NSLocalizedString("pos.cashSession.management.updateWooCommerceForCashManagement",
+                                                         value: "Update WooCommerce to the latest version to use cash management.",
                                                          comment: "Message when the store's WooCommerce version has no cash session API")
     }
 }
 
 #if DEBUG
+private struct POSCashManagementSamplePreview: View {
+    let initialSelection: POSCashManagementView.SidebarNavigation
+    let detailSessionID: Int64?
+    @State private var controller: POSCashSessionController
+    @State private var isReady = false
+
+    init(selection: POSCashManagementView.SidebarNavigation, detailSessionID: Int64? = nil) {
+        initialSelection = selection
+        self.detailSessionID = detailSessionID
+        _controller = State(initialValue: POSCashSessionController(service: POSMockCashSessionService(drawerID: "Front counter")))
+    }
+
+    var body: some View {
+        Group {
+            if isReady {
+                POSCashManagementView(controller: controller, initialSelection: initialSelection,
+                                      initialDetailSessionID: detailSessionID)
+            } else {
+                ProgressView()
+            }
+        }
+        .posRootModal()
+        .environmentObject(POSModalManager())
+        .environmentObject(POSFullScreenCoverManager())
+        .task {
+            guard !isReady else { return }
+            if initialSelection == .currentSession {
+                _ = await controller.start(openingCash: 200)
+                _ = await controller.record(kind: .payIn, amount: 100, note: "Change order from bank")
+                _ = await controller.record(kind: .payOut, amount: 30, note: "Window cleaner")
+            }
+            isReady = true
+        }
+    }
+}
+
+#Preview("Current session split") {
+    POSCashManagementSamplePreview(selection: .currentSession)
+}
+
+#Preview("Past sessions split") {
+    POSCashManagementSamplePreview(selection: .pastSessions)
+}
+
+#Preview("Past session detail split") {
+    POSCashManagementSamplePreview(selection: .pastSessions, detailSessionID: 1681891)
+}
+
 #Preview {
     // Production supplies these via `.posFullScreenCover`; the standalone preview provides its own root
     // modal and managers so any future modal has somewhere to render.

@@ -133,6 +133,9 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
             if isRegular, selection == nil {
                 setDefaultValue?()
             }
+            if detailNavigationPath.isEmpty, let navigationPathForSelection {
+                detailNavigationPath = navigationPathForSelection(selection)
+            }
         }
         .onChange(of: horizontalSizeClass) { _, newValue in
             if newValue == .regular, selection == nil {

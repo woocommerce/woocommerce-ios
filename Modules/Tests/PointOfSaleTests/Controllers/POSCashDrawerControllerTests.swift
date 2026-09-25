@@ -94,6 +94,31 @@ struct POSCashDrawerControllerTests {
         // Then
         #expect(makeController(service: MockCashDrawerService()).opensAutomaticallyForCashPayments == false)
     }
+
+    @Test func test_updateDrawerName_when_name_has_surrounding_whitespace_then_saves_trimmed_name() {
+        // Given
+        let sut = makeController(service: MockCashDrawerService())
+
+        // When
+        sut.updateDrawerName("  Front till \n")
+
+        // Then
+        #expect(sut.drawerName == "Front till")
+        #expect(makeController(service: MockCashDrawerService()).drawerName == "Front till")
+    }
+
+    @Test func test_updateDrawerName_when_name_is_blank_then_clears_the_name() {
+        // Given
+        let sut = makeController(service: MockCashDrawerService())
+        sut.updateDrawerName("Front till")
+
+        // When
+        sut.updateDrawerName("   ")
+
+        // Then
+        #expect(sut.drawerName == nil)
+        #expect(makeController(service: MockCashDrawerService()).drawerName == nil)
+    }
 }
 
 private extension POSCashDrawerControllerTests {

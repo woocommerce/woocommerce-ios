@@ -46,6 +46,10 @@ final class POSCashDrawerController {
         }
     }
 
+    /// The merchant's name for this drawer, such as "Front till". Core uses it as the session's `drawer_id`.
+    /// Nil until the merchant names the drawer.
+    private(set) var drawerName: String?
+
     /// The most recent open attempt, so the UI can show a clear notice when the drawer is unavailable.
     private(set) var lastEvent: POSCashDrawerEvent?
 
@@ -63,6 +67,14 @@ final class POSCashDrawerController {
         self.userDefaults = userDefaults
         self.now = now
         self.opensAutomaticallyForCashPayments = userDefaults.object(forKey: Constants.opensAutomaticallyKey) as? Bool ?? true
+        self.drawerName = userDefaults.string(forKey: Constants.drawerNameKey)
+    }
+
+    /// Saves the drawer name without surrounding whitespace. A blank name clears it, as Core rejects blank drawer names.
+    func updateDrawerName(_ name: String) {
+        let trimmedName = name.trimmingCharacters(in: .whitespacesAndNewlines)
+        drawerName = trimmedName.isEmpty ? nil : trimmedName
+        userDefaults.set(drawerName, forKey: Constants.drawerNameKey)
     }
 
     /// Opens the drawer after a confirmed cash sale or cash refund, if automatic opening is on.
@@ -97,5 +109,6 @@ final class POSCashDrawerController {
 private extension POSCashDrawerController {
     enum Constants {
         static let opensAutomaticallyKey = "pos-cash-drawer-opens-automatically"
+        static let drawerNameKey = "pos-cash-drawer-name"
     }
 }

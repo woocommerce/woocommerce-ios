@@ -17,6 +17,8 @@ struct POSSettingsHardwareDetailView: View {
     @State private var isCancellingReconnection: Bool = false
     @State private var isTestingCashDrawer: Bool = false
     @State private var showCashDrawerPrinterSetupModal: Bool = false
+    /// What the merchant typed, kept as is so trimming never fights the cursor. The controller saves a trimmed copy.
+    @State private var cashDrawerNameDraft: String = ""
 
     /// Receipt printers appear in the hardware list only when the printer feature is enabled,
     /// which is signalled by the settings controller exposing a printer connection controller.
@@ -398,6 +400,27 @@ private extension POSSettingsHardwareDetailView {
         @Bindable var cashDrawer = cashDrawer
         return POSInformationCard {
             VStack(alignment: .leading, spacing: POSSpacing.small) {
+                VStack(alignment: .leading, spacing: POSPadding.small) {
+                    Text(Localization.cashDrawerNameTitle)
+                        .font(.posBodyMediumBold)
+                    TextField(Localization.cashDrawerNamePlaceholder, text: $cashDrawerNameDraft)
+                        .font(.posBodyMediumRegular())
+                        .foregroundColor(.posOnSurface)
+                        .textInputAutocapitalization(.words)
+                        .submitLabel(.done)
+                        .onChange(of: cashDrawerNameDraft) { _, newName in
+                            cashDrawer.updateDrawerName(newName)
+                        }
+                    Text(Localization.cashDrawerNameSubtitle)
+                        .font(.posBodySmallRegular())
+                        .foregroundStyle(.secondary)
+                    Divider()
+                        .padding(.top, POSPadding.small)
+                }
+                .onAppear {
+                    cashDrawerNameDraft = cashDrawer.drawerName ?? ""
+                }
+
                 POSInformationCardFieldRowWithToggle(label: Localization.cashDrawerAutomaticOpenTitle,
                                                      value: Localization.cashDrawerAutomaticOpenSubtitle,
                                                      isOn: $cashDrawer.opensAutomaticallyForCashPayments)
@@ -744,6 +767,24 @@ private extension POSSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.printerDisconnectTitle",
             value: "Disconnect printer",
             comment: "Title for the receipt printer disconnect button when a printer is connected."
+        )
+
+        static let cashDrawerNameTitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerNameTitle",
+            value: "Drawer name",
+            comment: "Title of the field where the merchant names the cash drawer connected to the receipt printer."
+        )
+
+        static let cashDrawerNamePlaceholder = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerNamePlaceholder",
+            value: "Front till",
+            comment: "Example name shown in the empty cash drawer name field."
+        )
+
+        static let cashDrawerNameSubtitle = NSLocalizedString(
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerNameSubtitle",
+            value: "Cash sessions are recorded against this name.",
+            comment: "Explains that the cash drawer name identifies the drawer in cash sessions."
         )
 
         static let cashDrawerAutomaticOpenTitle = NSLocalizedString(

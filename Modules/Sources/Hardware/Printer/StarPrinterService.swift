@@ -12,7 +12,7 @@ import Foundation
 /// All SDK interaction and mutable state live on the `StarPrinterCoordinator` actor, which
 /// serializes access so callbacks and the discovery/connection methods can never race. This
 /// type is a thin façade that adapts the actor to the synchronous parts of the protocol.
-public final class StarPrinterService: PrinterDiscoveryService {
+public final class StarPrinterService: PrinterDiscoveryService, CashDrawerService {
     private let coordinator = StarPrinterCoordinator()
 
     public init() {
@@ -63,6 +63,10 @@ public final class StarPrinterService: PrinterDiscoveryService {
 
     public func printReceipt(text: String) async throws {
         try await coordinator.printReceipt(text: text)
+    }
+
+    public func openCashDrawer() async throws {
+        try await coordinator.openCashDrawer()
     }
 }
 
@@ -222,6 +226,21 @@ private actor StarPrinterCoordinator {
             throw error
         }
     }
+
+    func openCashDrawer() async throws {
+        guard let printer else {
+            DDLogError("🖨️ Cannot open cash drawer: no printer connected")
+            throw PrinterError.printerNotConnected
+        }
+
+        do {
+            try await printer.print(command: openDrawerCommand())
+            DDLogInfo("🖨️ Cash drawer opened")
+        } catch {
+            DDLogError("🖨️ Opening cash drawer failed: \(error.localizedDescription)")
+            throw error
+        }
+    }
 }
 
 private extension StarPrinterCoordinator {
@@ -270,6 +289,15 @@ private extension StarPrinterCoordinator {
             .actionCut(.partial)
         return StarXpandCommand.StarXpandCommandBuilder()
             .addDocument(StarXpandCommand.DocumentBuilder().addPrinter(printerBuilder))
+            .getCommands()
+    }
+
+    /// Builds a StarXpand command that pulses the drawer on channel 1, the drawer-kick port most printers use.
+    func openDrawerCommand() -> String {
+        let drawerBuilder = StarXpandCommand.DrawerBuilder()
+            .actionOpen(StarXpandCommand.Drawer.OpenParameter().setChannel(.no1))
+        return StarXpandCommand.StarXpandCommandBuilder()
+            .addDocument(StarXpandCommand.DocumentBuilder().addDrawer(drawerBuilder))
             .getCommands()
     }
 }

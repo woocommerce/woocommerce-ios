@@ -5,6 +5,7 @@ import WooFoundationCore
 
 /// View Model for the MyStoreView
 ///
+@MainActor
 final class MyStoreViewModel: ObservableObject {
 
     /// Enum that tracks the state of the view.
@@ -30,7 +31,6 @@ final class MyStoreViewModel: ObservableObject {
 
     /// Perform the initial fetch and binds the refresh trigger for further refreshes.
     ///
-    @MainActor
     func fetchAndBindRefreshTrigger(trigger: AnyPublisher<Void, Never>) async {
         trigger
             .sink { [weak self] _ in
@@ -48,7 +48,6 @@ final class MyStoreViewModel: ObservableObject {
 
     /// Fetch stats and update the view state based on the result.
     ///
-    @MainActor
     private func fetchStats() async {
 
         if Self.shouldTransitionToLoading(state: viewState) {

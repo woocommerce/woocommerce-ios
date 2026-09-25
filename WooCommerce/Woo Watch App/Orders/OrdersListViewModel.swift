@@ -5,6 +5,7 @@ import WooFoundationCore
 
 /// View Model for the OrdersListView
 ///
+@MainActor
 final class OrdersListViewModel: ObservableObject {
 
     /// Represent the current state of the view
@@ -23,7 +24,6 @@ final class OrdersListViewModel: ObservableObject {
 
     /// Perform the initial fetch and binds the refresh trigger for further refreshes.
     ///
-    @MainActor
     func fetchAndBindRefreshTrigger(trigger: AnyPublisher<Void, Never>) async {
         trigger
             .sink { [weak self] _ in
@@ -41,7 +41,6 @@ final class OrdersListViewModel: ObservableObject {
 
     /// Fetch orders from a the remote source and updates the view state accordingly.
     ///
-    @MainActor
     private func fetchOrders() async {
 
         if Self.shouldTransitionToLoading(state: viewState) {

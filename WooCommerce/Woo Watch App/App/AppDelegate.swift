@@ -5,6 +5,7 @@ import struct NetworkingCore.Note
 import Sentry
 
 
+@MainActor
 class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
 
     /// Helper to send tracks events.
@@ -56,17 +57,22 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+        // Snapshot the payload before hopping; UserNotifications calls this delegate off the main actor.
+        let data = try? JSONSerialization.data(withJSONObject: response.notification.request.content.userInfo)
+        await MainActor.run {
+            tracksProvider?.sendTracksEvent(.watchPushNotificationTapped)
 
-        tracksProvider?.sendTracksEvent(.watchPushNotificationTapped)
+            // The Watch app only supports order notifications.
+            guard let data,
+                  let userInfo = try? JSONSerialization.jsonObject(with: data) as? [AnyHashable: Any],
+                  let notification = PushNotification.from(userInfo: userInfo),
+                  notification.kind == Note.Kind.storeOrder else {
+                return
+            }
 
-        // The Watch app only supports order notifications.
-        guard let notification = PushNotification.from(userInfo: response.notification.request.content.userInfo),
-              notification.kind == Note.Kind.storeOrder else {
-            return
+            // Trigger order notification app binding
+            appBindings.orderNotification = notification
         }
-
-        // Trigger order notification app binding
-        appBindings.orderNotification = notification
     }
 }

@@ -10,6 +10,9 @@ import WooFoundationCore
 
 /// Orchestrator class that fetches store stats for the widget and the Watch app.
 ///
+#if os(watchOS)
+@MainActor
+#endif
 final class StoreInfoDataService {
 
     /// Date-range parameters required to fetch a snapshot of store stats.
@@ -19,7 +22,7 @@ final class StoreInfoDataService {
     /// for the widget's user-facing options live below; the Watch app uses `today()` directly
     /// via `fetchTodayStats(for:)`.
     ///
-    struct DateRange {
+    struct DateRange: Sendable {
         let orderStatsGranularity: StatsGranularityV4
         let orderStatsQuantity: Int
         let earliestDateToInclude: Date
@@ -30,7 +33,7 @@ final class StoreInfoDataService {
         /// preceding" — week-to-date / month-to-date use a calendar-aligned previous window.
         let previousPeriodOverride: PreviousPeriodOverride?
 
-        struct PreviousPeriodOverride {
+        struct PreviousPeriodOverride: Sendable {
             let earliestDateToInclude: Date
             let latestDateToInclude: Date
         }
@@ -515,7 +518,7 @@ private extension StoreInfoDataService {
                                                   earliestDateToInclude: dateRange.earliestDateToInclude,
                                                   latestDateToInclude: dateRange.latestDateToInclude,
                                                   quantity: dateRange.orderStatsQuantity,
-                                                  forceRefresh: true) { result in
+                                                  forceRefresh: true) { @Sendable result in
                     continuation.resume(with: result)
                 }
             }
@@ -530,7 +533,7 @@ private extension StoreInfoDataService {
             Task { @MainActor in
                 siteStatsRemote.loadSiteSummaryStats(for: storeID,
                                                      period: dateRange.summaryStatsPeriod,
-                                                     includingDate: dateRange.latestDateToInclude) { result in
+                                                     includingDate: dateRange.latestDateToInclude) { @Sendable result in
                     continuation.resume(with: result)
                 }
             }

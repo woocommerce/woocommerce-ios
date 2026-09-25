@@ -101,7 +101,7 @@ extension UserDefaults {
 extension UserDefaults {
     /// User defaults instance ready to be shared between extensions of the same group.
     ///
-    static let group = UserDefaults(suiteName: WooConstants.sharedUserDefaultsSuiteName)
+    static var group: UserDefaults? { UserDefaults(suiteName: WooConstants.sharedUserDefaultsSuiteName) }
 }
 
 // MARK: - Convenience Methods

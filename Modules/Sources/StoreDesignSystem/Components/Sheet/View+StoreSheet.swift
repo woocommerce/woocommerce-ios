@@ -27,6 +27,8 @@ public extension View {
 
 /// The presented root. For `.fitContent` the content sits in a scroll view, so it is measured at its
 /// ideal height (not squeezed by the opening detent) and scrolls when taller than the largest sheet.
+/// In regular width (iPad) the form sheet is fitted to the content's height as well, since a `.height`
+/// detent alone does not size it there.
 private struct StoreSheetPresentation<Content: View>: View {
     let sizing: StoreSheetSizing
     @ViewBuilder let content: () -> Content
@@ -57,6 +59,7 @@ private struct StoreSheetPresentation<Content: View>: View {
             }
         }
         .presentationDetents(sizing.detents(panelHeight: panelHeight))
+        .modifier(FittedFormSizing(isEnabled: sizing == .fitContent))
         .presentationDragIndicator(.visible)
         .presentationBackground(Color.storeSurfaceBright)
         .presentationCornerRadius(StoreRadius.extraLarge)
@@ -65,5 +68,18 @@ private struct StoreSheetPresentation<Content: View>: View {
     private var panelHeight: CGFloat {
         guard contentHeight > 0 else { return 0 }
         return StoreSheetLayout.panelHeight(contentHeight: contentHeight, safeAreaInset: bottomSafeAreaInset)
+    }
+}
+
+/// Fits the regular-width form sheet to the content's height; a `.height` detent alone does not size it there.
+private struct FittedFormSizing: ViewModifier {
+    let isEnabled: Bool
+
+    func body(content: Content) -> some View {
+        if isEnabled {
+            content.presentationSizing(.form.fitted(horizontal: false, vertical: true))
+        } else {
+            content
+        }
     }
 }

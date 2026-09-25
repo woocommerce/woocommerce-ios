@@ -47,6 +47,18 @@ execution when another language is primary; they never change simulator
 settings automatically. The side-effect-free doctor does not boot a simulator,
 so boot the selected device before using it to validate language settings.
 
+## Lab and shared stores
+
+`--store lab|shared` picks the credential block the flows run against. The
+`release` and `burst` profiles use the shared store, every other profile uses
+the lab store.
+
+Destructive flows against the shared store are refused outside CI. In CI, they
+require `--seed`, the complete `MAESTRO_WOO_SHARED_*` login and REST credential
+block, and the exact `inpersonpayments.wpcomstaging.com` host. The runner
+acquires a REST-backed store lock before any simulator interaction and removes
+it on exit.
+
 ## Provisioning a lab store
 
 `.maestro/scripts/setup-jn-store.sh` turns a Jurassic Ninja site into the lab store:

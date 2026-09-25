@@ -1,6 +1,6 @@
 # Authenticate to the requested Jetpack-connected store through its site URL.
-# Required: MAESTRO_WOO_LAB_JETPACK_STORE_URL,
-# MAESTRO_WOO_LAB_WPCOM_EMAIL, MAESTRO_WOO_LAB_WPCOM_PASSWORD.
+# Required: MAESTRO_WOO_JETPACK_STORE_URL,
+# MAESTRO_WOO_WPCOM_EMAIL, MAESTRO_WOO_WPCOM_PASSWORD.
 appId: ${APP_ID}
 ---
 - launchApp:
@@ -14,7 +14,7 @@ appId: ${APP_ID}
 - runFlow:
     file: paste_into_focused_field.yaml
     env:
-      TEXT_TO_PASTE: ${MAESTRO_WOO_LAB_JETPACK_STORE_URL}
+      TEXT_TO_PASTE: ${MAESTRO_WOO_JETPACK_STORE_URL}
 - hideKeyboard
 - tapOn:
     id: "Site Address Next Button"
@@ -28,7 +28,7 @@ appId: ${APP_ID}
 - runFlow:
     file: paste_into_focused_field.yaml
     env:
-      TEXT_TO_PASTE: ${MAESTRO_WOO_LAB_WPCOM_EMAIL}
+      TEXT_TO_PASTE: ${MAESTRO_WOO_WPCOM_EMAIL}
 - hideKeyboard
 - tapOn:
     id: "Get Started Email Continue Button"
@@ -42,7 +42,7 @@ appId: ${APP_ID}
 - runFlow:
     file: paste_into_focused_field.yaml
     env:
-      TEXT_TO_PASTE: ${MAESTRO_WOO_LAB_WPCOM_PASSWORD}
+      TEXT_TO_PASTE: ${MAESTRO_WOO_WPCOM_PASSWORD}
 - hideKeyboard
 - extendedWaitUntil:
     visible: "Continue|Manage Privacy|Save Password.*|My store"
@@ -82,7 +82,7 @@ appId: ${APP_ID}
           function normalized(value) {
             return String(value || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '');
           }
-          if (normalized(maestro.copiedText) !== normalized(MAESTRO_WOO_LAB_JETPACK_STORE_URL)) {
+          if (normalized(maestro.copiedText) !== normalized(MAESTRO_WOO_JETPACK_STORE_URL)) {
             throw new Error('Login epilogue selected a different store');
           }
       - tapOn:

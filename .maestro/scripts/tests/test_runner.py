@@ -73,6 +73,46 @@ class RunnerTests(unittest.TestCase):
 
         RUNNER.validate_destructive_cleanup([flow], seed=True)
 
+    def test_release_and_burst_profiles_default_to_the_shared_store(self) -> None:
+        self.assertEqual("shared", RUNNER.profile_store("release"))
+        self.assertEqual("shared", RUNNER.profile_store("burst"))
+        self.assertEqual("lab", RUNNER.profile_store("core"))
+        self.assertEqual("lab", RUNNER.profile_store("phone-full"))
+
+    def test_jetpack_store_cannot_share_the_no_jetpack_host(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "dashboard_stats.yaml"
+        values = {
+            "MAESTRO_WOO_JETPACK_STORE_URL": "https://site.example.com/",
+            "MAESTRO_WOO_NO_JETPACK_SITE_URL": "https://site.example.com/wp-admin",
+        }
+
+        with self.assertRaisesRegex(SystemExit, "same host as the no-Jetpack site"):
+            RUNNER.validate_login_store_hosts([flow], values, store="lab")
+
+        values["MAESTRO_WOO_NO_JETPACK_SITE_URL"] = "https://other.example.com/"
+        RUNNER.validate_login_store_hosts([flow], values, store="lab")
+
+    def test_shared_destructive_runs_are_refused_outside_ci(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "orders_create.yaml"
+
+        with self.assertRaisesRegex(SystemExit, "shared store outside CI"):
+            RUNNER.validate_shared_destructive([flow], store="shared", ci=False)
+
+        RUNNER.validate_shared_destructive([flow], store="shared", ci=True)
+        RUNNER.validate_shared_destructive([flow], store="lab", ci=False)
+
+    def test_shared_destructive_runs_require_the_shared_host(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "orders_create.yaml"
+
+        with self.assertRaisesRegex(SystemExit, "configured host is lab.example.com"):
+            RUNNER.validate_shared_store_host(
+                [flow], {"MAESTRO_WOO_JETPACK_STORE_URL": "https://lab.example.com/"}, store="shared"
+            )
+
+        RUNNER.validate_shared_store_host(
+            [flow], {"MAESTRO_WOO_JETPACK_STORE_URL": f"https://{RUNNER.SHARED_STORE_HOST}/"}, store="shared"
+        )
+
     def test_html_report_names_the_overall_status(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
@@ -370,8 +410,8 @@ class RunnerTests(unittest.TestCase):
         self.assertIn("MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD", required)
         self.assertNotIn("MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL", required)
         self.assertNotIn("MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD", required)
-        self.assertNotIn("MAESTRO_WOO_LAB_WPCOM_EMAIL", required)
-        self.assertNotIn("MAESTRO_WOO_LAB_WPCOM_PASSWORD", required)
+        self.assertNotIn("MAESTRO_WOO_WPCOM_EMAIL", required)
+        self.assertNotIn("MAESTRO_WOO_WPCOM_PASSWORD", required)
 
     def test_not_woo_store_wpcom_fallback_must_be_complete(self) -> None:
         flow = RUNNER.FLOWS_DIR / "login_not_woo_store.yaml"
@@ -430,15 +470,61 @@ class RunnerTests(unittest.TestCase):
             resolved["MAESTRO_WOO_NO_JETPACK_SITE_URL"],
         )
 
-    def test_derived_lab_store_host_is_not_required_from_the_environment(self) -> None:
+    def test_derived_store_host_is_not_required_from_the_environment(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             flow = Path(directory) / "flow.yaml"
-            flow.write_text("appId: ${APP_ID}\n---\n- inputText: ${MAESTRO_WOO_LAB_JETPACK_STORE_HOST}\n")
+            flow.write_text("appId: ${APP_ID}\n---\n- inputText: ${MAESTRO_WOO_JETPACK_STORE_HOST}\n")
 
             self.assertNotIn(
-                "MAESTRO_WOO_LAB_JETPACK_STORE_HOST",
+                "MAESTRO_WOO_JETPACK_STORE_HOST",
                 RUNNER.required_environment([flow], seed=False),
             )
+
+    def test_selected_store_block_fills_the_store_neutral_names(self) -> None:
+        values = {
+            "MAESTRO_WOO_LAB_JETPACK_STORE_URL": "https://lab.example.com",
+            "MAESTRO_WOO_LAB_WPCOM_EMAIL": "lab@example.com",
+            "MAESTRO_WOO_SHARED_JETPACK_STORE_URL": "https://shared.example.com",
+            "MAESTRO_WOO_SHARED_WPCOM_EMAIL": "shared@example.com",
+            "MAESTRO_WOO_SHARED_CONSUMER_KEY": "shared-key",
+        }
+
+        lab = RUNNER.select_store_environment(values, "lab")
+        shared = RUNNER.select_store_environment(values, "shared")
+
+        self.assertEqual("https://lab.example.com", lab["MAESTRO_WOO_JETPACK_STORE_URL"])
+        self.assertEqual("lab@example.com", lab["MAESTRO_WOO_WPCOM_EMAIL"])
+        self.assertNotIn("MAESTRO_WOO_CONSUMER_KEY", lab)
+        self.assertEqual("https://shared.example.com", shared["MAESTRO_WOO_JETPACK_STORE_URL"])
+        self.assertEqual("shared@example.com", shared["MAESTRO_WOO_WPCOM_EMAIL"])
+        self.assertEqual("shared-key", shared["MAESTRO_WOO_CONSUMER_KEY"])
+
+    def test_shared_store_never_falls_back_to_lab_or_unscoped_values(self) -> None:
+        values = {
+            "MAESTRO_WOO_LAB_JETPACK_STORE_URL": "https://lab.example.com",
+            "MAESTRO_WOO_CONSUMER_KEY": "legacy-lab-key",
+        }
+
+        shared = RUNNER.select_store_environment(values, "shared")
+
+        self.assertNotIn("MAESTRO_WOO_JETPACK_STORE_URL", shared)
+        self.assertNotIn("MAESTRO_WOO_CONSUMER_KEY", shared)
+
+    def test_lab_store_accepts_legacy_unscoped_rest_keys(self) -> None:
+        values = {"MAESTRO_WOO_CONSUMER_KEY": "legacy-key", "MAESTRO_WOO_CONSUMER_SECRET": "legacy-secret"}
+
+        lab = RUNNER.select_store_environment(values, "lab")
+
+        self.assertEqual("legacy-key", lab["MAESTRO_WOO_CONSUMER_KEY"])
+        self.assertEqual("legacy-secret", lab["MAESTRO_WOO_CONSUMER_SECRET"])
+
+    def test_missing_store_values_are_reported_with_the_selected_block_name(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            flow = Path(directory) / "flow.yaml"
+            flow.write_text("appId: ${APP_ID}\n---\n- inputText: ${MAESTRO_WOO_JETPACK_STORE_URL}\n")
+
+            with self.assertRaisesRegex(SystemExit, "MAESTRO_WOO_SHARED_JETPACK_STORE_URL"):
+                RUNNER.validate_environment([flow], {}, seed=False, store="shared")
 
     def test_seed_explicitly_requires_consumer_keys(self) -> None:
         required = RUNNER.required_environment([], seed=True)
@@ -458,24 +544,24 @@ class RunnerTests(unittest.TestCase):
 
     def test_maestro_process_receives_only_selected_flow_environment_and_no_rest_secrets(self) -> None:
         values = {
-            "MAESTRO_WOO_LAB_JETPACK_STORE_URL": "http://shop.example.com/path",
-            "MAESTRO_WOO_LAB_WPCOM_EMAIL": "merchant@example.com",
+            "MAESTRO_WOO_JETPACK_STORE_URL": "http://shop.example.com/path",
+            "MAESTRO_WOO_WPCOM_EMAIL": "merchant@example.com",
             "MAESTRO_WOO_CONSUMER_KEY": "consumer-key",
             "MAESTRO_WOO_CONSUMER_SECRET": "consumer-secret",
             "MAESTRO_UNUSED_SECRET": "must-not-be-forwarded",
         }
         required = {
-            "MAESTRO_WOO_LAB_JETPACK_STORE_URL",
-            "MAESTRO_WOO_LAB_WPCOM_EMAIL",
+            "MAESTRO_WOO_JETPACK_STORE_URL",
+            "MAESTRO_WOO_WPCOM_EMAIL",
             "MAESTRO_WOO_CONSUMER_KEY",
             "MAESTRO_WOO_CONSUMER_SECRET",
         }
 
         environment = RUNNER.maestro_process_environment(values, required, "run-1")
 
-        self.assertEqual("http://shop.example.com/path", environment["MAESTRO_WOO_LAB_JETPACK_STORE_URL"])
-        self.assertEqual("merchant@example.com", environment["MAESTRO_WOO_LAB_WPCOM_EMAIL"])
-        self.assertEqual("shop.example.com", environment["MAESTRO_WOO_LAB_JETPACK_STORE_HOST"])
+        self.assertEqual("http://shop.example.com/path", environment["MAESTRO_WOO_JETPACK_STORE_URL"])
+        self.assertEqual("merchant@example.com", environment["MAESTRO_WOO_WPCOM_EMAIL"])
+        self.assertEqual("shop.example.com", environment["MAESTRO_WOO_JETPACK_STORE_HOST"])
         self.assertEqual("run-1", environment["MAESTRO_SUITE_RUN_ID"])
         self.assertNotIn("MAESTRO_WOO_CONSUMER_KEY", environment)
         self.assertNotIn("MAESTRO_WOO_CONSUMER_SECRET", environment)

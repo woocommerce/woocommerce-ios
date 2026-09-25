@@ -48,7 +48,8 @@ hand against a site created in a browser.
 
    ```bash
    ( set -a; . .maestro/.env.local; set +a
-     curl -s -o /dev/null -w '%{http_code}' -u "$MAESTRO_WOO_CONSUMER_KEY:$MAESTRO_WOO_CONSUMER_SECRET" \
+     curl -s -o /dev/null -w '%{http_code}' \
+       -u "${MAESTRO_WOO_LAB_CONSUMER_KEY:-$MAESTRO_WOO_CONSUMER_KEY}:${MAESTRO_WOO_LAB_CONSUMER_SECRET:-$MAESTRO_WOO_CONSUMER_SECRET}" \
        "$MAESTRO_WOO_LAB_JETPACK_STORE_URL/wp-json/wc/v3/products?per_page=1" )
    ```
 

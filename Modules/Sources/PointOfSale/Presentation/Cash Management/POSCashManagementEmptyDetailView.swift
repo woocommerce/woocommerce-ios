@@ -1,11 +1,11 @@
 import SwiftUI
 
-/// Detail pane shown when nothing is selected in the `POSCashDrawerView` sidebar.
-struct POSCashDrawerEmptyDetailView: View {
+/// Detail pane shown when nothing is selected in the `POSCashManagementView` sidebar.
+struct POSCashManagementEmptyDetailView: View {
     var body: some View {
         ZStack {
             VStack {
-                POSPageHeaderView(title: POSCashDrawerView.Localization.navigationTitle, backButtonConfiguration: nil)
+                POSPageHeaderView(title: POSCashManagementView.Localization.navigationTitle, backButtonConfiguration: nil)
                 Spacer()
             }
 
@@ -39,12 +39,12 @@ private enum Localization {
     static let noSelection = NSLocalizedString(
         "pointOfSaleCashDrawerEmptyDetailView.noSelection",
         value: "Select an option to get started.",
-        comment: "Text appearing in the cash drawer detail pane when nothing is selected in the sidebar."
+        comment: "Text appearing in the cash management detail pane when nothing is selected in the sidebar."
     )
 }
 
 #if DEBUG
 #Preview {
-    POSCashDrawerEmptyDetailView()
+    POSCashManagementEmptyDetailView()
 }
 #endif

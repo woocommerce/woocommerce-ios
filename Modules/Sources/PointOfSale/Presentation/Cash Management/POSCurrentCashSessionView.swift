@@ -87,8 +87,8 @@ struct POSCashSessionMetricView: View {
 
 private extension POSCurrentCashSessionView {
     enum Localization {
-        static let title = NSLocalizedString("pos.cashSession.current.title", value: "Current session", comment: "Current cash drawer session title")
-        static let sessionNumber = NSLocalizedString("pos.cashSession.current.number", value: "#%1$@", comment: "Cash drawer session number")
+        static let title = NSLocalizedString("pos.cashSession.current.title", value: "Current session", comment: "Current cash session title")
+        static let sessionNumber = NSLocalizedString("pos.cashSession.current.number", value: "#%1$@", comment: "Cash session number")
         static let closeButton = NSLocalizedString("pos.cashSession.current.close", value: "Close session", comment: "Close current cash session")
         static let payIn = NSLocalizedString("pos.cashSession.current.payIn", value: "Pay in", comment: "Record cash added to drawer")
         static let payOut = NSLocalizedString("pos.cashSession.current.payOut", value: "Pay out", comment: "Record cash removed from drawer")

@@ -152,8 +152,8 @@ private extension POSPastCashSessionsView {
         static let sessionDetails = NSLocalizedString("pos.cashSession.past.details", value: "Session details", comment: "Closed session detail title")
         static let sessionNumber = NSLocalizedString("pos.cashSession.past.number", value: "#%1$@", comment: "Cash session number")
         static let emptyTitle = NSLocalizedString("pointOfSalePastCashSessionsView.emptyTitle", value: "No past sessions yet", comment: "Empty sessions title")
-        static let emptySubtitle = NSLocalizedString("pointOfSalePastCashSessionsView.emptySubtitle",
-                                                     value: "Closed cash drawer sessions will appear here.", comment: "Empty sessions subtitle")
+        static let emptySubtitle = NSLocalizedString("pointOfSalePastCashSessionsView.emptyCashSessionsSubtitle",
+                                                     value: "Closed cash sessions will appear here.", comment: "Empty sessions subtitle")
         static let loadingError = NSLocalizedString("pos.cashSession.past.loadingError", value: "Could not load past sessions",
                                                     comment: "Past sessions loading error")
         static let detailsError = NSLocalizedString("pos.cashSession.past.detailsError", value: "Could not load session details",

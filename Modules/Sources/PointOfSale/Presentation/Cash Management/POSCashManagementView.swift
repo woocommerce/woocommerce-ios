@@ -1,7 +1,7 @@
 import SwiftUI
 
-/// Cash drawer screen with current and past sessions from an injected session controller.
-struct POSCashDrawerView: View {
+/// Cash management screen with current and past sessions from an injected session controller.
+struct POSCashManagementView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation?
     @State private var selectedPastSessionID: Int64?
@@ -12,19 +12,19 @@ struct POSCashDrawerView: View {
     var body: some View {
         Group {
             if let error = controller.currentLoadError {
-                POSListEmptyView(viewModel: POSCashDrawerLoadErrorViewModel(message: error),
+                POSListEmptyView(viewModel: POSCashManagementLoadErrorViewModel(message: error),
                                  onAction: { Task { await loadCurrentSession() } })
                     .background(Color.posSurface)
             } else if isLoaded {
                 POSNavigationSplitView(selection: $selection) { selection in
-                    POSCashDrawerListView(selection: selection, hasCurrentSession: controller.currentSession != nil)
+                    POSCashManagementListView(selection: selection, hasCurrentSession: controller.currentSession != nil)
                 } detail: { selection, _ in
                     detailView(for: selection)
                         .environment(\.posHeaderBackButtonConfiguration,
                                      horizontalSizeClass == .compact ?
                                         .init(state: .enabled, action: { self.selection = nil }) : nil)
                 } detailPlaceholderView: {
-                    POSCashDrawerEmptyDetailView()
+                    POSCashManagementEmptyDetailView()
                 } setDefaultValue: {
                     if selection == nil {
                         selection = controller.currentSession == nil ? .startSession : .currentSession
@@ -65,16 +65,16 @@ struct POSCashDrawerView: View {
     }
 }
 
-private struct POSCashDrawerLoadErrorViewModel: POSListEmptyViewModelProtocol {
+private struct POSCashManagementLoadErrorViewModel: POSListEmptyViewModelProtocol {
     let message: String
-    var title: String { POSCashDrawerView.Localization.errorTitle }
+    var title: String { POSCashManagementView.Localization.errorTitle }
     var subtitle: String { message }
-    var buttonTitle: String? { POSCashDrawerView.Localization.retry }
+    var buttonTitle: String? { POSCashManagementView.Localization.retry }
     var icon: Image { Image(systemName: "exclamationmark.triangle") }
 }
 
-private extension POSCashDrawerView {
-    struct POSCashDrawerListView: View {
+private extension POSCashManagementView {
+    struct POSCashManagementListView: View {
         @Environment(\.dismiss) private var dismiss
         @Environment(\.posAnalytics) private var analytics
         @Binding var selection: SidebarNavigation?
@@ -124,7 +124,7 @@ private extension POSCashDrawerView {
     }
 }
 
-extension POSCashDrawerView {
+extension POSCashManagementView {
     enum SidebarNavigation: String, CaseIterable, Identifiable {
         case startSession
         case currentSession
@@ -151,45 +151,45 @@ extension POSCashDrawerView {
 
     enum Localization {
         static let navigationTitle = NSLocalizedString(
-            "pointOfSaleCashDrawerView.navigationTitle",
-            value: "Cash drawer",
-            comment: "Title of the Point of Sale cash drawer screen."
+            "pointOfSaleCashManagementView.navigationTitle",
+            value: "Cash management",
+            comment: "Title of the Point of Sale cash management screen."
         )
 
         static let sidebarNavigationStartSessionTitle = NSLocalizedString(
             "pointOfSaleCashDrawerView.sidebarNavigationStartSessionTitle",
             value: "Start session",
-            comment: "Title of the Start session section within the Point of Sale cash drawer screen."
+            comment: "Title of the Start session section within Point of Sale cash management."
         )
 
         static let sidebarNavigationStartSessionSubtitle = NSLocalizedString(
-            "pointOfSaleCashDrawerView.sidebarNavigationStartSessionSubtitle",
-            value: "Start a new cash drawer session",
-            comment: "Description of the Start session section within the Point of Sale cash drawer screen."
+            "pointOfSaleCashManagementView.sidebarNavigationStartCashSessionSubtitle",
+            value: "Start a new cash session",
+            comment: "Description of the Start session section within Point of Sale cash management."
         )
 
         static let sidebarNavigationCurrentSessionTitle = NSLocalizedString(
             "pointOfSaleCashDrawerView.sidebarNavigationCurrentSessionTitle",
             value: "Current session",
-            comment: "Title of the current cash drawer session sidebar section."
+            comment: "Title of the current cash session sidebar section."
         )
 
         static let sidebarNavigationCurrentSessionSubtitle = NSLocalizedString(
-            "pointOfSaleCashDrawerView.sidebarNavigationCurrentSessionSubtitle",
-            value: "Your current cash drawer session",
-            comment: "Description of the current cash drawer session sidebar section."
+            "pointOfSaleCashManagementView.sidebarNavigationCurrentCashSessionSubtitle",
+            value: "Your current cash session",
+            comment: "Description of the current cash session sidebar section."
         )
 
         static let sidebarNavigationPastSessionsTitle = NSLocalizedString(
             "pointOfSaleCashDrawerView.sidebarNavigationPastSessionsTitle",
             value: "Past sessions",
-            comment: "Title of the Past sessions section within the Point of Sale cash drawer screen."
+            comment: "Title of the Past sessions section within Point of Sale cash management."
         )
 
         static let sidebarNavigationPastSessionsSubtitle = NSLocalizedString(
-            "pointOfSaleCashDrawerView.sidebarNavigationPastSessionsSubtitle",
-            value: "See past cash drawer sessions",
-            comment: "Description of the Past sessions section within the Point of Sale cash drawer screen."
+            "pointOfSaleCashManagementView.sidebarNavigationPastCashSessionsSubtitle",
+            value: "See past cash sessions",
+            comment: "Description of the Past sessions section within Point of Sale cash management."
         )
 
         static let errorTitle = NSLocalizedString("pos.cashSession.drawer.errorTitle", value: "Could not load cash sessions", comment: "Cash session error title")
@@ -201,21 +201,21 @@ extension POSCashDrawerView {
 #Preview {
     // Production supplies these via `.posFullScreenCover`; the standalone preview provides its own root
     // modal and managers so any future modal has somewhere to render.
-    POSCashDrawerView(controller: POSCashSessionController(service: POSMockCashSessionService()))
+    POSCashManagementView(controller: POSCashSessionController(service: POSMockCashSessionService()))
         .posRootModal()
         .environmentObject(POSModalManager())
         .environmentObject(POSFullScreenCoverManager())
 }
 
 #Preview("Current session loading error") {
-    POSCashDrawerView(controller: POSCashSessionController(service: POSMockCashSessionService(failCurrentLoad: true)))
+    POSCashManagementView(controller: POSCashSessionController(service: POSMockCashSessionService(failCurrentLoad: true)))
         .posRootModal()
         .environmentObject(POSModalManager())
         .environmentObject(POSFullScreenCoverManager())
 }
 
 #Preview("Current session loading") {
-    POSCashDrawerView(controller: POSCashSessionController(service: POSMockCashSessionService(readDelay: .seconds(30))))
+    POSCashManagementView(controller: POSCashSessionController(service: POSMockCashSessionService(readDelay: .seconds(30))))
         .posRootModal()
         .environmentObject(POSModalManager())
         .environmentObject(POSFullScreenCoverManager())

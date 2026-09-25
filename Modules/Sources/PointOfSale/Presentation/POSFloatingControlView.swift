@@ -18,8 +18,8 @@ struct POSFloatingControlView: View {
     private let onSettingsSelected: () -> Void
     /// Invoked when the Orders menu item is tapped.
     private let onOrdersSelected: () -> Void
-    /// Invoked when the Cash drawer menu item is tapped.
-    private let onCashDrawerSelected: () -> Void
+    /// Invoked when the Cash management menu item is tapped.
+    private let onCashManagementSelected: () -> Void
     @State private var showProductRestrictionsModal: Bool = false
     @State private var showBarcodeScanningModal: Bool = false
 
@@ -28,13 +28,13 @@ struct POSFloatingControlView: View {
          showDocumentation: Binding<Bool>,
          onSettingsSelected: @escaping () -> Void,
          onOrdersSelected: @escaping () -> Void,
-         onCashDrawerSelected: @escaping () -> Void) {
+         onCashManagementSelected: @escaping () -> Void) {
         self.onExitSelected = onExitSelected
         self._showSupport = showSupport
         self._showDocumentation = showDocumentation
         self.onSettingsSelected = onSettingsSelected
         self.onOrdersSelected = onOrdersSelected
-        self.onCashDrawerSelected = onCashDrawerSelected
+        self.onCashManagementSelected = onCashManagementSelected
     }
 
     var body: some View {
@@ -121,10 +121,10 @@ private extension POSFloatingControlView {
 
             Button {
                 analytics.track(.pointOfSaleCashDrawerMenuItemTapped)
-                onCashDrawerSelected()
+                onCashManagementSelected()
             } label: {
                 Label(
-                    title: { Text(Localization.cashDrawer) },
+                    title: { Text(Localization.cashManagement) },
                     icon: { Image(systemName: "dollarsign.circle") }
                 )
             }
@@ -218,10 +218,10 @@ private extension POSFloatingControlView {
             comment: "The title of the menu button to access Point of Sale settings."
         )
 
-        static let cashDrawer = NSLocalizedString(
-            "pointOfSale.floatingButtons.cashDrawer.button.title",
-            value: "Cash drawer",
-            comment: "The title of the menu button to access the Point of Sale cash drawer."
+        static let cashManagement = NSLocalizedString(
+            "pointOfSale.floatingButtons.cashManagement.button.title",
+            value: "Cash management",
+            comment: "The title of the menu button to manage Point of Sale cash sessions."
         )
     }
 }
@@ -234,7 +234,7 @@ private extension POSFloatingControlView {
                            showDocumentation: .constant(false),
                            onSettingsSelected: {},
                            onOrdersSelected: {},
-                                  onCashDrawerSelected: {})
+                                  onCashManagementSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
@@ -250,7 +250,7 @@ private extension POSFloatingControlView {
                                   showDocumentation: .constant(false),
                                   onSettingsSelected: {},
                                   onOrdersSelected: {},
-                                  onCashDrawerSelected: {})
+                                  onCashManagementSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(posModel)
 }
@@ -261,7 +261,7 @@ private extension POSFloatingControlView {
                            showDocumentation: .constant(false),
                            onSettingsSelected: {},
                            onOrdersSelected: {},
-                                  onCashDrawerSelected: {})
+                                  onCashManagementSelected: {})
         .environment(\.posBackgroundAppearance, .secondary)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
@@ -278,7 +278,7 @@ private extension POSFloatingControlView {
                                   showDocumentation: .constant(false),
                                   onSettingsSelected: {},
                                   onOrdersSelected: {},
-                                  onCashDrawerSelected: {})
+                                  onCashManagementSelected: {})
         .environment(\.posBackgroundAppearance, .primary)
         .environment(\.posAccessSession, session)
         .environment(POSPreviewHelpers.makePreviewAggregateModel())

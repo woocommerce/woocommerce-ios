@@ -1,7 +1,7 @@
 #if DEBUG
 import SwiftUI
 
-/// Stable cash drawer states for reviewing the UI without a store connection.
+/// Stable cash management states for reviewing the UI without a store connection.
 private struct POSCashSessionPreviewGallery: View {
     enum Screen: Equatable {
         case start
@@ -61,7 +61,7 @@ private struct POSCashSessionPreviewGallery: View {
         case .current:
             POSCurrentCashSessionView(controller: controller, onClosed: { _ in })
         case .currentError:
-            POSCashDrawerView(controller: controller)
+            POSCashManagementView(controller: controller)
         case .past:
             POSPastCashSessionsView(selectedSessionID: $selectedSessionID, controller: controller)
         case .pastError:

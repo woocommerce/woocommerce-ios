@@ -1,7 +1,7 @@
 import SwiftUI
 import WooFoundation
 
-/// Detail pane shown when "Start session" is selected in `POSCashDrawerView`.
+/// Detail pane shown when "Start session" is selected in `POSCashManagementView`.
 struct POSStartCashSessionView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posCurrencyProvider) private var currencyProvider
@@ -106,21 +106,21 @@ private extension POSStartCashSessionView {
 
     enum Localization {
         static let title = NSLocalizedString(
-            "pointOfSaleStartCashSessionView.title",
-            value: "Start a cash drawer session",
-            comment: "Title of the start cash drawer session screen."
+            "pointOfSaleStartCashSessionView.cashSessionTitle",
+            value: "Start a cash session",
+            comment: "Title of the start cash session screen."
         )
 
         static let startingCashLabel = NSLocalizedString(
             "pointOfSaleStartCashSessionView.startingCashLabel",
             value: "Starting cash",
-            comment: "Label for the starting cash amount field when starting a cash drawer session."
+            comment: "Label for the starting cash amount field when starting a cash session."
         )
 
         static let startSessionButtonTitle = NSLocalizedString(
             "pointOfSaleStartCashSessionView.startSessionButtonTitle",
             value: "Start session",
-            comment: "Title of the button that starts a new cash drawer session."
+            comment: "Title of the button that starts a new cash session."
         )
 
         static let invalidAmount = NSLocalizedString(
@@ -132,13 +132,13 @@ private extension POSStartCashSessionView {
         static let startingSession = NSLocalizedString(
             "pointOfSaleStartCashSessionView.startingSession",
             value: "Starting session",
-            comment: "Loading message while opening a cash drawer session."
+            comment: "Loading message while opening a cash session."
         )
 
         static let startFailed = NSLocalizedString(
             "pointOfSaleStartCashSessionView.startFailed",
             value: "Could not start the session",
-            comment: "Error heading when a cash drawer session fails to open."
+            comment: "Error heading when a cash session fails to open."
         )
     }
 }

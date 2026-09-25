@@ -123,7 +123,7 @@ struct PointOfSaleDashboardView: View {
                                    showDocumentation: $showDocumentation,
                                    onSettingsSelected: requestSettingsPermission,
                                    onOrdersSelected: presentOrders,
-                                   onCashDrawerSelected: presentCashDrawer)
+                                   onCashManagementSelected: presentCashManagement)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -178,8 +178,8 @@ struct PointOfSaleDashboardView: View {
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
         }
-        .posFullScreenCover(isPresented: $showCashDrawer) {
-            POSCashDrawerView(controller: posModel.cashSessions)
+        .posFullScreenCover(isPresented: $showCashManagement) {
+            POSCashManagementView(controller: posModel.cashSessions)
         }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
@@ -196,7 +196,7 @@ struct PointOfSaleDashboardView: View {
             showDocumentation = false
             showSettings = false
             showOrders = false
-            showCashDrawer = false
+            showCashManagement = false
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard case .eligible = newValue, oldValue != newValue else { return }
@@ -383,7 +383,7 @@ struct PointOfSaleDashboardView: View {
     }
 
     @State private var showOrders: Bool = false
-    @State private var showCashDrawer: Bool = false
+    @State private var showCashManagement: Bool = false
     @State private var phoneShowingBarcodeScannerSetup: Bool = false
     @State private var phoneCartButtonPulse: Bool = false
 
@@ -420,9 +420,9 @@ struct PointOfSaleDashboardView: View {
             }
             Button {
                 analytics.track(.pointOfSaleCashDrawerMenuItemTapped)
-                presentCashDrawer()
+                presentCashManagement()
             } label: {
-                Label(Localization.phoneMenuCashDrawer, systemImage: "dollarsign.circle")
+                Label(Localization.phoneMenuCashManagement, systemImage: "dollarsign.circle")
             }
             .accessibilityIdentifier("pos-cash-drawer-menu-item")
         } label: {
@@ -654,9 +654,9 @@ private extension PointOfSaleDashboardView {
         showOrders = true
     }
 
-    /// Opens the cash drawer screen.
-    func presentCashDrawer() {
-        showCashDrawer = true
+    /// Opens the cash management screen.
+    func presentCashManagement() {
+        showCashManagement = true
     }
 
     /// Opens POS settings, gated on `.viewPOSSettings` via manager override.
@@ -754,10 +754,10 @@ private extension PointOfSaleDashboardView {
             value: "Orders",
             comment: "Phone-only overflow menu item to open the historical orders view."
         )
-        static let phoneMenuCashDrawer = NSLocalizedString(
-            "pointOfSaleDashboard.phone.menu.cashDrawer",
-            value: "Cash drawer",
-            comment: "Phone-only overflow menu item to open the Point of Sale cash drawer screen."
+        static let phoneMenuCashManagement = NSLocalizedString(
+            "pointOfSaleDashboard.phone.menu.cashManagement",
+            value: "Cash management",
+            comment: "Phone-only overflow menu item to manage Point of Sale cash sessions."
         )
         static let phoneMenuAccessibilityLabel = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.accessibilityLabel",

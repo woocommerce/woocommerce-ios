@@ -24,6 +24,7 @@ public struct POSCashSessionPage {
 }
 
 public enum POSCashSessionServiceError: LocalizedError {
+    case unsupported
     case sessionAlreadyOpen
     case noOpenSession
     case invalidAmount
@@ -33,6 +34,8 @@ public enum POSCashSessionServiceError: LocalizedError {
 
     public var errorDescription: String? {
         switch self {
+        case .unsupported: return NSLocalizedString("pos.cashSession.error.unsupported", value: "Cash sessions are not available on this store.",
+                                                   comment: "Cash sessions are not supported by the store")
         case .sessionAlreadyOpen: return NSLocalizedString("pos.cashSession.error.alreadyOpen", value: "A session is already open.", comment: "Cash session error")
         case .noOpenSession: return NSLocalizedString("pos.cashSession.error.noOpenSession", value: "There is no open session.", comment: "Cash session error")
         case .invalidAmount: return NSLocalizedString("pos.cashSession.error.invalidAmount", value: "Enter a valid cash amount.", comment: "Cash session error")
@@ -60,6 +63,7 @@ final class POSMockCashSessionService: POSCashSessionService {
     private let writeDelay: Duration
     private let readDelay: Duration
     private let failCurrentLoad: Bool
+    private let isUnsupported: Bool
     private let failPastLoad: Bool
     private let failDetailLoad: Bool
     private let mockCashSaleAmount: Decimal
@@ -73,6 +77,7 @@ final class POSMockCashSessionService: POSCashSessionService {
          readDelay: Duration = .zero,
          hasSampleHistory: Bool = true,
          failCurrentLoad: Bool = false,
+         isUnsupported: Bool = false,
          failPastLoad: Bool = false,
          failDetailLoad: Bool = false,
          mockCashSaleAmount: Decimal = 24,
@@ -83,6 +88,7 @@ final class POSMockCashSessionService: POSCashSessionService {
         self.writeDelay = writeDelay
         self.readDelay = readDelay
         self.failCurrentLoad = failCurrentLoad
+        self.isUnsupported = isUnsupported
         self.failPastLoad = failPastLoad
         self.failDetailLoad = failDetailLoad
         self.mockCashSaleAmount = mockCashSaleAmount
@@ -91,6 +97,7 @@ final class POSMockCashSessionService: POSCashSessionService {
 
     func currentSession() async throws -> POSCashSession? {
         try await Task.sleep(for: readDelay)
+        if isUnsupported { throw POSCashSessionServiceError.unsupported }
         if failCurrentLoad { throw POSCashSessionServiceError.previewUnavailable }
         return openSession
     }

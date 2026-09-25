@@ -11,11 +11,9 @@ struct POSCashManagementView: View {
 
     var body: some View {
         Group {
-            if let error = controller.currentLoadError {
-                POSListEmptyView(viewModel: POSCashManagementLoadErrorViewModel(message: error),
-                                 onAction: { Task { await loadCurrentSession() } })
-                    .background(Color.posSurface)
-            } else if isLoaded {
+            if !isLoaded || controller.currentLoadError != nil || controller.isCashSessionsUnsupported {
+                sessionStatusView
+            } else {
                 POSNavigationSplitView(selection: $selection) { selection in
                     POSCashManagementListView(selection: selection, hasCurrentSession: controller.currentSession != nil)
                 } detail: { selection, _ in
@@ -30,15 +28,29 @@ struct POSCashManagementView: View {
                         selection = controller.currentSession == nil ? .startSession : .currentSession
                     }
                 }
+            }
+        }
+        .task {
+            await loadCurrentSession()
+        }
+    }
+
+    private var sessionStatusView: some View {
+        VStack(spacing: POSSpacing.none) {
+            POSCashManagementHeaderView()
+
+            if controller.isCashSessionsUnsupported {
+                POSListEmptyView(viewModel: POSCashManagementUnsupportedViewModel())
+            } else if let error = controller.currentLoadError {
+                POSListEmptyView(viewModel: POSCashManagementLoadErrorViewModel(message: error),
+                                 onAction: { Task { await loadCurrentSession() } })
             } else {
                 ProgressView()
                     .progressViewStyle(POSProgressViewStyle())
                     .frame(maxWidth: .infinity, maxHeight: .infinity)
             }
         }
-        .task {
-            await loadCurrentSession()
-        }
+        .background(Color.posSurface)
     }
 
     private func loadCurrentSession() async {
@@ -73,9 +85,32 @@ private struct POSCashManagementLoadErrorViewModel: POSListEmptyViewModelProtoco
     var icon: Image { Image(systemName: "exclamationmark.triangle") }
 }
 
+private struct POSCashManagementUnsupportedViewModel: POSListEmptyViewModelProtocol {
+    var title: String { POSCashManagementView.Localization.unsupportedTitle }
+    var subtitle: String { POSCashManagementView.Localization.unsupportedMessage }
+    var buttonTitle: String? { nil }
+    var icon: Image { Image(systemName: "info.circle") }
+}
+
 private extension POSCashManagementView {
-    struct POSCashManagementListView: View {
+    struct POSCashManagementHeaderView: View {
         @Environment(\.dismiss) private var dismiss
+        @Environment(\.posAnalytics) private var analytics
+
+        var body: some View {
+            POSPageHeaderView(
+                title: Localization.navigationTitle,
+                backButtonConfiguration: .init(state: .enabled,
+                                               action: {
+                                                   analytics.track(.pointOfSaleCashDrawerCloseButtonTapped)
+                                                   dismiss()
+                                               }))
+            .posHeaderBackButtonIcon(systemName: "xmark")
+            .accessibilityAddTraits(.isHeader)
+        }
+    }
+
+    struct POSCashManagementListView: View {
         @Environment(\.posAnalytics) private var analytics
         @Binding var selection: SidebarNavigation?
         let hasCurrentSession: Bool
@@ -86,16 +121,7 @@ private extension POSCashManagementView {
 
         var body: some View {
             VStack(alignment: .leading, spacing: POSSpacing.none) {
-                POSPageHeaderView(
-                    title: Localization.navigationTitle,
-                    backButtonConfiguration: .init(state: .enabled,
-                                                   action: {
-                                                       analytics.track(.pointOfSaleCashDrawerCloseButtonTapped)
-                                                       dismiss()
-                                                   }))
-                .posHeaderBackButtonIcon(systemName: "xmark")
-                .foregroundColor(.posSurface)
-                .accessibilityAddTraits(.isHeader)
+                POSCashManagementHeaderView()
 
                 VStack(spacing: POSSpacing.small) {
                     POSSettingsCard(title: primaryNavigation.title,
@@ -194,6 +220,11 @@ extension POSCashManagementView {
 
         static let errorTitle = NSLocalizedString("pos.cashSession.drawer.errorTitle", value: "Could not load cash sessions", comment: "Cash session error title")
         static let retry = NSLocalizedString("pos.cashSession.drawer.retry", value: "Try again", comment: "Retry loading current cash session")
+        static let unsupportedTitle = NSLocalizedString("pos.cashSession.management.unsupportedTitle", value: "Cash management unavailable",
+                                                       comment: "Title when the store does not support cash sessions")
+        static let unsupportedMessage = NSLocalizedString("pos.cashSession.management.unsupportedMessage",
+                                                         value: "Cash sessions are not available on this store.",
+                                                         comment: "Message when the store does not support cash sessions")
     }
 }
 
@@ -216,6 +247,13 @@ extension POSCashManagementView {
 
 #Preview("Current session loading") {
     POSCashManagementView(controller: POSCashSessionController(service: POSMockCashSessionService(readDelay: .seconds(30))))
+        .posRootModal()
+        .environmentObject(POSModalManager())
+        .environmentObject(POSFullScreenCoverManager())
+}
+
+#Preview("Cash sessions unsupported") {
+    POSCashManagementView(controller: POSCashSessionController(service: POSMockCashSessionService(isUnsupported: true)))
         .posRootModal()
         .environmentObject(POSModalManager())
         .environmentObject(POSFullScreenCoverManager())

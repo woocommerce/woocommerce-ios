@@ -8,9 +8,11 @@ public struct UnauthenticatedRequest: Request {
     /// Request that does not require WPCOM authentication.
     ///
     public let request: URLRequest
+    let isMerchantRESTRequest: Bool
 
-    public init(request: URLRequest) {
+    public init(request: URLRequest, isMerchantRESTRequest: Bool = false) {
         self.request = request
+        self.isMerchantRESTRequest = isMerchantRESTRequest
     }
 
     /// Returns the wrapped request, with a custom user-agent header.

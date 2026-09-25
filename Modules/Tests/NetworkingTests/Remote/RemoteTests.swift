@@ -433,6 +433,23 @@ final class RemoteTests: XCTestCase {
         XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
     }
 
+    func test_enqueue_when_direct_request_returns_html_then_the_store_is_recorded_as_unexpected() throws {
+        let network = SuccessfulNetwork(data: Data("<html>Service unavailable</html>".utf8), simulatesJetpackTunnel: false)
+        let recorder = MockStoreConnectionErrorRecorder()
+        let remote = Remote(network: network)
+        remote.storeConnectionErrorRecorder = recorder
+        let expectationForRequest = expectation(description: "Request")
+
+        remote.enqueue(request, mapper: DummyMapper()) { _, error in
+            XCTAssertTrue(error is UnexpectedStoreResponseError)
+            expectationForRequest.fulfill()
+        }
+        wait(for: [expectationForRequest], timeout: Constants.expectationTimeout)
+
+        XCTAssertEqual(recorder.unexpectedStoreResponseSiteIDs, [123])
+        XCTAssertTrue(recorder.successfulConnectionSiteIDs.isEmpty)
+    }
+
     /// The `(Output?, Error?)` overload parses the body even when the request failed, because the Jetpack
     /// tunnel returns a body worth reading alongside an error status. A body the validator has nothing to
     /// say about must not be mistaken for the store being reachable.
@@ -1046,7 +1063,7 @@ final class RemoteTests: XCTestCase {
 
     // MARK: Mapping `NetworkError`
 
-    func test_enqueue_async_when_jetpack_network_error_response_contains_raw_body_then_logs_and_preserves_mapped_error() async throws {
+    func test_enqueue_async_when_jetpack_network_error_response_contains_raw_body_then_logs_and_returns_safe_error() async throws {
         // Given
         let network = MockNetwork()
         let remote = Remote(network: network)
@@ -1064,7 +1081,7 @@ final class RemoteTests: XCTestCase {
             XCTFail("Expected the request to throw")
         } catch {
             // Then
-            assertRawBodyDotcomError(error)
+            assertUnexpectedStoreResponseError(error)
         }
 
         let call = try XCTUnwrap(logger.calls.first)
@@ -1075,7 +1092,104 @@ final class RemoteTests: XCTestCase {
         XCTAssertEqual(call.transportStatus, 500)
     }
 
-    func test_enqueue_with_mapper_when_jetpack_validation_error_contains_raw_body_then_logs_and_preserves_completion_error() throws {
+    func test_enqueue_async_when_direct_store_returns_html_server_error_then_returns_safe_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+        let request = RESTRequest(siteURL: "https://example.com", method: .post, path: "something")
+        let responseData = Data("<html><body>Service unavailable</body></html>".utf8)
+        network.simulateError(
+            requestUrlSuffix: "something",
+            error: NetworkError.unacceptableStatusCode(statusCode: 500, response: responseData)
+        )
+
+        // When
+        do {
+            try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            assertUnexpectedStoreResponseError(error)
+        }
+    }
+
+    func test_enqueue_with_mapper_when_store_returns_html_success_response_then_returns_safe_error() async throws {
+        // Given
+        let responseData = Data("<!doctype html><html><body>Unexpected response</body></html>".utf8)
+        let remote = Remote(network: SuccessfulNetwork(data: responseData))
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "products")
+
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: FailingDummyMapper())
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            assertUnexpectedStoreResponseError(error)
+        }
+    }
+
+    func test_enqueue_async_when_store_returns_plain_text_unauthorized_then_preserves_authentication_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+        network.simulateError(
+            requestUrlSuffix: "something",
+            error: NetworkError.unacceptableStatusCode(statusCode: 401, response: Data("Unauthorized".utf8))
+        )
+
+        // When
+        do {
+            try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            XCTAssertTrue(error is NetworkError)
+        }
+    }
+
+    func test_enqueue_async_when_store_returns_json_rate_limit_then_preserves_rest_error() async throws {
+        // Given
+        let network = MockNetwork()
+        let remote = Remote(network: network)
+        network.simulateError(
+            requestUrlSuffix: "something",
+            error: NetworkError.unacceptableStatusCode(
+                statusCode: 429,
+                response: Data("{\"code\":\"rest_rate_limited\",\"message\":\"Too many requests\"}".utf8)
+            )
+        )
+
+        // When
+        do {
+            try await remote.enqueue(request)
+            XCTFail("Expected the request to throw")
+        } catch {
+            // Then
+            XCTAssertFalse(error is UnexpectedStoreResponseError)
+        }
+    }
+
+    func test_enqueue_callback_when_plain_text_unauthorized_then_does_not_classify_as_successful_non_json_response() throws {
+        // Given
+        let data = Data("Unauthorized".utf8)
+        let network = BodyAndErrorNetwork(data: data, error: NetworkError.unacceptableStatusCode(statusCode: 401, response: data))
+        let remote = Remote(network: network)
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "products")
+
+        // When
+        let error: Error? = waitFor { promise in
+            remote.enqueue(request, mapper: FailingDummyMapper()) { _, error in
+                promise(error)
+            }
+        }
+
+        // Then
+        XCTAssertNotNil(error)
+        XCTAssertFalse(error is UnexpectedStoreResponseError)
+    }
+
+    func test_enqueue_with_mapper_when_jetpack_validation_error_contains_raw_body_then_logs_and_returns_safe_error() throws {
         // Given
         let network = MockNetwork()
         let mapper = DummyMapper()
@@ -1094,7 +1208,7 @@ final class RemoteTests: XCTestCase {
 
         // Then
         XCTAssertNil(result.0)
-        assertRawBodyDotcomError(result.1)
+        assertUnexpectedStoreResponseError(result.1)
 
         let call = try XCTUnwrap(logger.calls.first)
         XCTAssertEqual(logger.calls.count, 1)
@@ -1104,15 +1218,17 @@ final class RemoteTests: XCTestCase {
         XCTAssertNil(call.transportStatus)
     }
 
-    func test_enqueue_async_when_jetpack_network_error_response_contains_envelope_raw_body_then_logs_and_preserves_network_error() async throws {
+    func test_enqueue_async_when_jetpack_network_error_response_contains_envelope_raw_body_then_logs_and_returns_safe_error() async throws {
         // Given
         let network = MockNetwork()
         let remote = Remote(network: network)
         let logger = SpyJetpackTunnelRawBodyErrorLogger()
         remote.jetpackTunnelRawBodyErrorLogger = logger
         let responseData = try XCTUnwrap(Loader.contentsOf("jetpack-tunnel-raw-body-envelope-error"))
-        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500, response: responseData)
-        network.simulateError(requestUrlSuffix: "something", error: expectedError)
+        network.simulateError(
+            requestUrlSuffix: "something",
+            error: NetworkError.unacceptableStatusCode(statusCode: 500, response: responseData)
+        )
 
         // When
         do {
@@ -1120,7 +1236,7 @@ final class RemoteTests: XCTestCase {
             XCTFail("Expected the request to throw")
         } catch {
             // Then
-            XCTAssertEqual(error as? NetworkError, expectedError)
+            assertUnexpectedStoreResponseError(error)
         }
 
         let call = try XCTUnwrap(logger.calls.first)
@@ -1597,6 +1713,16 @@ final class RemoteTests: XCTestCase {
 }
 
 private extension RemoteTests {
+    func assertUnexpectedStoreResponseError(_ error: Error?, file: StaticString = #file, line: UInt = #line) {
+        guard let error else {
+            return XCTFail("Expected UnexpectedStoreResponseError", file: file, line: line)
+        }
+
+        XCTAssertTrue(error is UnexpectedStoreResponseError, file: file, line: line)
+        XCTAssertEqual(String(describing: error), "Unexpected store response", file: file, line: line)
+        XCTAssertEqual(error.localizedDescription, "Unexpected store response", file: file, line: line)
+    }
+
     func assertRawBodyDotcomError(_ error: Error?, file: StaticString = #file, line: UInt = #line) {
         guard let error,
               case let DotcomError.unknown(code, _, _) = error else {
@@ -1661,9 +1787,11 @@ private final class BodyAndErrorNetwork: Network {
 private final class SuccessfulNetwork: Network {
     private let data: Data
     private let headers: Network.ResponseHeaders?
+    private let simulatesJetpackTunnel: Bool
 
-    init(data: Data, headers: Network.ResponseHeaders? = [:]) {
+    init(data: Data, headers: Network.ResponseHeaders? = [:], simulatesJetpackTunnel: Bool = true) {
         self.data = data
+        self.simulatesJetpackTunnel = simulatesJetpackTunnel
         self.headers = headers
     }
 
@@ -1672,7 +1800,7 @@ private final class SuccessfulNetwork: Network {
     /// Stands in for a store reached through the tunnel.
     ///
     func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
-        request is JetpackRequest
+        simulatesJetpackTunnel && request is JetpackRequest
     }
 
     func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
@@ -1725,12 +1853,17 @@ private struct IsolationCapturingNetwork: Network {
     }
 }
 
-private final class MockStoreConnectionErrorRecorder: StoreConnectionErrorRecording {
+private final class MockStoreConnectionErrorRecorder: @unchecked Sendable, StoreConnectionErrorRecording {
     private(set) var invalidSignatureSiteIDs: [Int64] = []
+    private(set) var unexpectedStoreResponseSiteIDs: [Int64] = []
     private(set) var successfulConnectionSiteIDs: [Int64] = []
 
     func recordInvalidSignature(siteID: Int64) {
         invalidSignatureSiteIDs.append(siteID)
+    }
+
+    func recordUnexpectedStoreResponse(siteID: Int64) {
+        unexpectedStoreResponseSiteIDs.append(siteID)
     }
 
     func recordSuccessfulConnection(siteID: Int64) {

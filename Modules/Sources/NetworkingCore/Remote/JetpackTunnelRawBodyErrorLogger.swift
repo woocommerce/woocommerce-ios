@@ -23,8 +23,15 @@ struct JetpackTunnelRawBodyErrorLogger: JetpackTunnelRawBodyErrorLogging {
         warningSink(message)
     }
 
+    static func rawBodyError(in responseData: Data) -> (data: Data, statusCode: Int?)? {
+        guard let context = rawBodyErrorContext(from: responseData) else {
+            return nil
+        }
+        return (Data(context.rawBody.utf8), context.proxyStatus)
+    }
+
     private func buildMessage(responseData: Data, request: JetpackRequest, transportStatus: Int?) -> String? {
-        guard let rawBodyError = rawBodyErrorContext(from: responseData) else {
+        guard let rawBodyError = Self.rawBodyErrorContext(from: responseData) else {
             return nil
         }
 
@@ -171,7 +178,7 @@ private extension JetpackTunnelRawBodyErrorLogger {
 
     private static let whitespacePattern = #"\s+"#
 
-    private func rawBodyErrorContext(from responseData: Data) -> RawBodyErrorContext? {
+    private static func rawBodyErrorContext(from responseData: Data) -> RawBodyErrorContext? {
         guard let response = try? JSONDecoder().decode(RawBodyErrorResponse.self, from: responseData) else {
             return nil
         }
@@ -187,7 +194,7 @@ private extension JetpackTunnelRawBodyErrorLogger {
         return nil
     }
 
-    private func rawBodyErrorContext(from payload: RawBodyErrorPayload, fallbackProxyStatus: Int?) -> RawBodyErrorContext? {
+    private static func rawBodyErrorContext(from payload: RawBodyErrorPayload, fallbackProxyStatus: Int?) -> RawBodyErrorContext? {
         guard let rawBody = payload.data?.rawBody,
               rawBody.contains(where: { $0.isWhitespace == false }) else {
             return nil

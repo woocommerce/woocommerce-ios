@@ -69,6 +69,27 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         XCTAssertTrue(firstStorage === secondStorage)
     }
 
+    func test_wordpress_org_network_when_a_store_returns_html_then_returns_unexpected_store_response() async throws {
+        let server = try CookieNonceLoopbackServer { _ in
+            .init(statusCode: 503, headers: ["Content-Type": "text/html"], body: Data("<html>Service unavailable</html>".utf8))
+        }
+        defer { server.stop() }
+        let siteURL = server.siteURL
+        let endpoints = try CookieNonceAuthenticationEndpoints(siteURL: siteURL)
+        let network = WordPressOrgNetwork(
+            configuration: CookieNonceAuthenticatorConfiguration(username: sampleUser, password: samplePassword, endpoints: endpoints),
+            siteAddress: siteURL.absoluteString
+        )
+        let request = URLRequest(url: siteURL.appendingPathComponent("wp-json/wc/v3/orders"))
+
+        do {
+            _ = try await responseData(for: request, using: network)
+            XCTFail("Expected an unexpected store response")
+        } catch {
+            XCTAssertTrue(error is UnexpectedStoreResponseError)
+        }
+    }
+
     func test_cookie_nonce_authenticator_encode_parameters_correctly() throws {
         // Given
         let endpoints = try CookieNonceAuthenticationEndpoints(
@@ -509,7 +530,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         let data = try await network.responseData(for: request)
 
         // Then
-        XCTAssertEqual(String(data: data, encoding: .utf8), "success")
+        XCTAssertEqual(String(data: data, encoding: .utf8), #"{\"status\":\"success\"}"#)
         let trace = scenario.trace
         XCTAssertEqual(trace.protectedRequestCount, 2)
         XCTAssertEqual(trace.loginEntryRequestCount, 1)
@@ -547,8 +568,8 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         let secondData = try await secondNetwork.responseData(for: request)
 
         // Then
-        XCTAssertEqual(String(data: firstData, encoding: .utf8), "success")
-        XCTAssertEqual(String(data: secondData, encoding: .utf8), "success")
+        XCTAssertEqual(String(data: firstData, encoding: .utf8), #"{\"status\":\"success\"}"#)
+        XCTAssertEqual(String(data: secondData, encoding: .utf8), #"{\"status\":\"success\"}"#)
         let trace = scenario.trace
         XCTAssertEqual(trace.loginEntryRequestCount, 2)
         XCTAssertEqual(trace.credentialRequestCount, 1)
@@ -649,7 +670,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         let data = try await network.responseData(for: request)
 
         // Then
-        XCTAssertEqual(String(data: data, encoding: .utf8), "success")
+        XCTAssertEqual(String(data: data, encoding: .utf8), #"{\"status\":\"success\"}"#)
         let trace = scenario.trace
         XCTAssertEqual(trace.protectedRequestCount, 2)
         XCTAssertEqual(trace.loginEntryRequestCount, 1)
@@ -730,7 +751,7 @@ final class CookieNonceAuthenticatorTests: XCTestCase {
         // Then
         XCTAssertEqual(
             [responses.0, responses.1].compactMap { String(data: $0, encoding: .utf8) },
-            ["success", "success"]
+            [#"{\"status\":\"success\"}"#, #"{\"status\":\"success\"}"#]
         )
         let trace = scenario.trace
         XCTAssertEqual(trace.protectedRequestCount, 4)
@@ -985,7 +1006,7 @@ private final class CookieNonceLoopbackScenario: @unchecked Sendable {
         credentialRedirectsToAdminBase: Bool = false,
         protectedMethod: String = "GET",
         protectedTarget: String = "/wp-json/protected",
-        successfulProtectedBody: Data = Data("success".utf8)
+        successfulProtectedBody: Data = Data(#"{\"status\":\"success\"}"#.utf8)
     ) {
         self.requiredInitialProtectedRequests = requiredInitialProtectedRequests
         self.preflightBasicCredential = preflightBasicCredential

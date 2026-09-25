@@ -418,6 +418,13 @@ struct PointOfSaleDashboardView: View {
             } label: {
                 Label(Localization.phoneMenuOrders, systemImage: "text.document")
             }
+            Button {
+                analytics.track(.pointOfSaleCashDrawerMenuItemTapped)
+                presentCashDrawer()
+            } label: {
+                Label(Localization.phoneMenuCashDrawer, systemImage: "dollarsign.circle")
+            }
+            .accessibilityIdentifier("pos-cash-drawer-menu-item")
         } label: {
             Circle()
                 .foregroundColor(.posSurfaceContainerLow)
@@ -746,6 +753,11 @@ private extension PointOfSaleDashboardView {
             "pointOfSaleDashboard.phone.menu.orders",
             value: "Orders",
             comment: "Phone-only overflow menu item to open the historical orders view."
+        )
+        static let phoneMenuCashDrawer = NSLocalizedString(
+            "pointOfSaleDashboard.phone.menu.cashDrawer",
+            value: "Cash drawer",
+            comment: "Phone-only overflow menu item to open the Point of Sale cash drawer screen."
         )
         static let phoneMenuAccessibilityLabel = NSLocalizedString(
             "pointOfSaleDashboard.phone.menu.accessibilityLabel",

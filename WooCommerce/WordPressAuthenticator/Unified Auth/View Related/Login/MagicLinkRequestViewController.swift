@@ -90,8 +90,8 @@ private extension MagicLinkRequestViewController {
         vc.loginFields = self.loginFields
         if fallbackAction == .wpcomUsernamePassword {
             // The overwrite has to stay: SiteCredentialsViewController keys its WP.com mode off
-            // this value. loginFields is shared with vc, so skip the stash once siteAddress is
-            // already the marker, or re-entering the fallback would save it over the real address.
+            // this value. Skip the stash when the marker is already set, so it can't overwrite
+            // the real address.
             if self.loginFields.siteAddress != LoginFields.wpComSiteAddress {
                 vc.loginFields.siteAddressForEpilogue = self.loginFields.siteAddress
             }

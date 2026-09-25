@@ -39,6 +39,16 @@ public class LoginFields: NSObject {
         return siteAddressForEpilogue
     }
 
+    /// Undoes the `wpComSiteAddress` marker written for the WP.com fallback, so the screens
+    /// behind it stop showing `https://wordpress.com` in place of the typed store address.
+    @objc public func restoreSiteAddressAfterWPComFallback() {
+        guard siteAddress == Self.wpComSiteAddress, siteAddressForEpilogue.isEmpty == false else {
+            return
+        }
+        siteAddress = siteAddressForEpilogue
+        siteAddressForEpilogue = ""
+    }
+
     /// The two factor code entered by a user.
     @objc public var multifactorCode = "" // 2fa code
 

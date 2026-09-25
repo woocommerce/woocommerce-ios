@@ -220,11 +220,11 @@ extension POSCashManagementView {
 
         static let errorTitle = NSLocalizedString("pos.cashSession.drawer.errorTitle", value: "Could not load cash sessions", comment: "Cash session error title")
         static let retry = NSLocalizedString("pos.cashSession.drawer.retry", value: "Try again", comment: "Retry loading current cash session")
-        static let unsupportedTitle = NSLocalizedString("pos.cashSession.management.unsupportedTitle", value: "Cash management unavailable",
-                                                       comment: "Title when the store does not support cash sessions")
-        static let unsupportedMessage = NSLocalizedString("pos.cashSession.management.unsupportedMessage",
-                                                         value: "Cash sessions are not available on this store.",
-                                                         comment: "Message when the store does not support cash sessions")
+        static let unsupportedTitle = NSLocalizedString("pos.cashSession.management.updateWooCommerceTitle", value: "WooCommerce update required",
+                                                       comment: "Title when the store's WooCommerce version has no cash session API")
+        static let unsupportedMessage = NSLocalizedString("pos.cashSession.management.updateWooCommerceMessage",
+                                                         value: "Update WooCommerce to the latest version to use the cash drawer.",
+                                                         comment: "Message when the store's WooCommerce version has no cash session API")
     }
 }
 

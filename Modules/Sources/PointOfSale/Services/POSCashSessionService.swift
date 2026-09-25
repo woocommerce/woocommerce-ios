@@ -34,8 +34,10 @@ public enum POSCashSessionServiceError: LocalizedError {
 
     public var errorDescription: String? {
         switch self {
-        case .unsupported: return NSLocalizedString("pos.cashSession.error.unsupported", value: "Cash sessions are not available on this store.",
-                                                   comment: "Cash sessions are not supported by the store")
+        case .unsupported:
+            return NSLocalizedString("pos.cashSession.error.updateWooCommerce",
+                                     value: "Update WooCommerce to the latest version to use the cash drawer.",
+                                     comment: "Error shown when the store's WooCommerce version has no cash session API.")
         case .sessionAlreadyOpen: return NSLocalizedString("pos.cashSession.error.alreadyOpen", value: "A session is already open.", comment: "Cash session error")
         case .noOpenSession: return NSLocalizedString("pos.cashSession.error.noOpenSession", value: "There is no open session.", comment: "Cash session error")
         case .invalidAmount: return NSLocalizedString("pos.cashSession.error.invalidAmount", value: "Enter a valid cash amount.", comment: "Cash session error")

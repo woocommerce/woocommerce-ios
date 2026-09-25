@@ -33,13 +33,17 @@ final class POSCashSessionAdaptor: POSCashSessionService {
     }
 
     func currentSession() async throws -> POSCashSession? {
-        let sessions = try await remote.listSessions(siteID: siteID, deviceID: deviceID, status: "open", page: 1, perPage: 1)
+        let sessions = try await mappingUnsupportedEndpoint {
+            try await remote.listSessions(siteID: siteID, deviceID: deviceID, status: "open", page: 1, perPage: 1)
+        }
         guard let response = sessions.items.first else { return nil }
         return try await mappedSession(response, withMovements: true)
     }
 
     func pastSessions(page: Int, perPage: Int) async throws -> POSCashSessionPage {
-        let responses = try await remote.listSessions(siteID: siteID, deviceID: nil, status: "closed", page: page, perPage: perPage)
+        let responses = try await mappingUnsupportedEndpoint {
+            try await remote.listSessions(siteID: siteID, deviceID: nil, status: "closed", page: page, perPage: perPage)
+        }
         return try POSCashSessionPage(sessions: responses.items.map { try mapSession($0, movements: []) },
                                       hasMore: responses.hasMorePages && responses.items.count == perPage)
     }
@@ -146,6 +150,21 @@ final class POSCashSessionAdaptor: POSCashSessionService {
 }
 
 private extension POSCashSessionAdaptor {
+    /// A store whose WooCommerce version has no `wc/pos/v1/cash-sessions` route answers 404 `rest_no_route`,
+    /// as `DotcomError.noRestRoute` through the Jetpack tunnel or `NetworkError.notFound` over direct REST.
+    func mappingUnsupportedEndpoint<T>(_ operation: () async throws -> T) async throws -> T {
+        do {
+            return try await operation()
+        } catch DotcomError.noRestRoute {
+            throw POSCashSessionServiceError.unsupported
+        } catch let error as NetworkError {
+            if case .notFound = error, error.errorCode == "rest_no_route" {
+                throw POSCashSessionServiceError.unsupported
+            }
+            throw error
+        }
+    }
+
     func activeSessionID() async throws -> Int64? {
         let sessions = try await remote.listSessions(siteID: siteID, deviceID: deviceID, status: "open", page: 1, perPage: 1)
         return sessions.items.first?.id

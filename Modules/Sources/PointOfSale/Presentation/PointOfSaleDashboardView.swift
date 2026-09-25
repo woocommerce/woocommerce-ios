@@ -5,6 +5,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
+    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.posExternalViews) private var externalViews
     @Environment(\.dismiss) private var dismiss
@@ -179,7 +180,9 @@ struct PointOfSaleDashboardView: View {
             POSOrdersView(isPresented: $showOrders)
         }
         .posFullScreenCover(isPresented: $showCashManagement) {
-            POSCashManagementView(controller: posModel.cashSessions)
+            if featureFlags.isFeatureFlagEnabled(.pointOfSaleCashDrawer) {
+                POSCashManagementView(controller: posModel.cashSessions)
+            }
         }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
@@ -418,13 +421,15 @@ struct PointOfSaleDashboardView: View {
             } label: {
                 Label(Localization.phoneMenuOrders, systemImage: "text.document")
             }
-            Button {
-                analytics.track(.pointOfSaleCashDrawerMenuItemTapped)
-                presentCashManagement()
-            } label: {
-                Label(Localization.phoneMenuCashManagement, systemImage: "dollarsign.circle")
+            if featureFlags.isFeatureFlagEnabled(.pointOfSaleCashDrawer) {
+                Button {
+                    analytics.track(.pointOfSaleCashDrawerMenuItemTapped)
+                    presentCashManagement()
+                } label: {
+                    Label(Localization.phoneMenuCashManagement, systemImage: "dollarsign.circle")
+                }
+                .accessibilityIdentifier("pos-cash-drawer-menu-item")
             }
-            .accessibilityIdentifier("pos-cash-drawer-menu-item")
         } label: {
             Circle()
                 .foregroundColor(.posSurfaceContainerLow)
@@ -656,6 +661,7 @@ private extension PointOfSaleDashboardView {
 
     /// Opens the cash management screen.
     func presentCashManagement() {
+        guard featureFlags.isFeatureFlagEnabled(.pointOfSaleCashDrawer) else { return }
         showCashManagement = true
     }
 

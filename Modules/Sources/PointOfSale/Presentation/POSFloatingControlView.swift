@@ -119,16 +119,18 @@ private extension POSFloatingControlView {
                 )
             }
 
-            Button {
-                analytics.track(.pointOfSaleCashDrawerMenuItemTapped)
-                onCashManagementSelected()
-            } label: {
-                Label(
-                    title: { Text(Localization.cashManagement) },
-                    icon: { Image(systemName: "dollarsign.circle") }
-                )
+            if featureFlags.isFeatureFlagEnabled(.pointOfSaleCashDrawer) {
+                Button {
+                    analytics.track(.pointOfSaleCashDrawerMenuItemTapped)
+                    onCashManagementSelected()
+                } label: {
+                    Label(
+                        title: { Text(Localization.cashManagement) },
+                        icon: { Image(systemName: "dollarsign.circle") }
+                    )
+                }
+                .accessibilityIdentifier("pos-cash-drawer-menu-item")
             }
-            .accessibilityIdentifier("pos-cash-drawer-menu-item")
 
             if canLockPOS {
                 Button {

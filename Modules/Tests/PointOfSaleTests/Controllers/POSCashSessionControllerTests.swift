@@ -209,6 +209,30 @@ struct POSCashSessionControllerTests {
         #expect(controller.currentSession?.revision == 1)
     }
 
+    @Test func test_start_when_drawer_is_named_then_starts_session_with_the_drawer_name() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        let controller = POSCashSessionController(service: service, drawerID: { "Front till" })
+
+        // When
+        _ = await controller.start(openingCash: 100)
+
+        // Then
+        #expect(service.startSessionDrawerIDs == ["Front till"])
+    }
+
+    @Test func test_start_when_no_drawer_is_set_up_then_starts_session_without_a_drawer() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        let controller = POSCashSessionController(service: service)
+
+        // When
+        _ = await controller.start(openingCash: 100)
+
+        // Then
+        #expect(service.startSessionDrawerIDs == [nil])
+    }
+
     private func makeSession(id: Int64) -> POSCashSession {
         .init(id: id, openedAt: now, openedBy: "Tester", openingCash: 0, movements: [], closedAt: now, closedBy: "Tester")
     }

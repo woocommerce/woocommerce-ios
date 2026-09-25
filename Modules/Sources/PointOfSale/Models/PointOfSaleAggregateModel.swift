@@ -193,7 +193,8 @@ protocol PointOfSaleAggregateModelProtocol {
         self.tapToPayAvailabilityController = tapToPayAvailabilityController
         self.receiptPrinter = receiptPrinter
         self.cashDrawer = cashDrawer
-        self.cashSessions = POSCashSessionController(service: cashSessionService ?? POSMockCashSessionService())
+        self.cashSessions = POSCashSessionController(service: cashSessionService ?? POSMockCashSessionService(),
+                                                     drawerID: { [weak cashDrawer] in cashDrawer?.drawerName })
 
         // Payment controller is created with cart-specific dependencies.
         // The weak self captures below are safe because paymentModel is owned by self.

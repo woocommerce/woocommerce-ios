@@ -83,12 +83,13 @@ final class POSCashSessionAdaptor: POSCashSessionService {
         return try await mappedSession(response, withMovements: true)
     }
 
-    func startSession(openingCash: Decimal) async throws -> POSCashSession {
+    func startSession(openingCash: Decimal, drawerID: String?) async throws -> POSCashSession {
         guard openingCash >= 0 else { throw POSCashSessionServiceError.invalidAmount }
-        let requestKey = "open:\(decimalString(openingCash))"
+        let requestKey = "open:\(decimalString(openingCash)):\(drawerID ?? "")"
         do {
             let response = try await remote.openSession(siteID: siteID, requestID: requestID(for: requestKey),
-                                                        deviceID: deviceID, openingAmount: decimalString(openingCash))
+                                                        deviceID: deviceID, openingAmount: decimalString(openingCash),
+                                                        drawerID: drawerID)
             // An idempotent replay can return a session that another client has since closed.
             guard response.status == "open" else { throw POSCashSessionServiceError.sessionChanged }
             let session = try await mappedSession(response, withMovements: true)

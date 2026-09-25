@@ -37,8 +37,10 @@ public final class POSCashSessionRemoteService {
         try await perform { try await remote.movements(siteID: siteID, sessionID: sessionID, page: page, perPage: perPage) }
     }
 
-    public func openSession(siteID: Int64, requestID: UUID, deviceID: String, openingAmount: String) async throws -> POSCashSessionResponse {
-        try await perform { try await remote.openSession(siteID: siteID, requestID: requestID, deviceID: deviceID, openingAmount: openingAmount) }
+    public func openSession(siteID: Int64, requestID: UUID, deviceID: String, openingAmount: String,
+                            drawerID: String?) async throws -> POSCashSessionResponse {
+        try await perform { try await remote.openSession(siteID: siteID, requestID: requestID, deviceID: deviceID,
+                                                         openingAmount: openingAmount, drawerID: drawerID) }
     }
 
     public func recordMovement(siteID: Int64, sessionID: Int64, requestID: UUID, type: String,

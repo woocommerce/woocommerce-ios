@@ -10,7 +10,7 @@ struct POSMockCashSessionServiceTests {
                                                 mockCashSaleAmount: 24, mockCashRefundAmount: 12)
         #expect(try await service.recordCashSale(orderID: 42) == nil)
         #expect(try await service.recordCashRefund(orderID: 42, refundID: 7) == nil)
-        _ = try await service.startSession(openingCash: 100)
+        _ = try await service.startSession(openingCash: 100, drawerID: nil)
 
         // When
         _ = try await service.recordCashSale(orderID: 42)

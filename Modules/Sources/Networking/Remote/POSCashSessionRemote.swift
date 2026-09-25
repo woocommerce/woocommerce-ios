@@ -4,7 +4,7 @@ public protocol POSCashSessionRemoteProtocol {
     func listSessions(siteID: Int64, deviceID: String?, status: String, page: Int, perPage: Int) async throws -> PagedItems<POSCashSessionResponse>
     func session(siteID: Int64, id: Int64) async throws -> POSCashSessionResponse
     func movements(siteID: Int64, sessionID: Int64, page: Int, perPage: Int) async throws -> PagedItems<POSCashMovementResponse>
-    func openSession(siteID: Int64, requestID: UUID, deviceID: String, openingAmount: String) async throws -> POSCashSessionResponse
+    func openSession(siteID: Int64, requestID: UUID, deviceID: String, openingAmount: String, drawerID: String?) async throws -> POSCashSessionResponse
     func recordMovement(siteID: Int64, sessionID: Int64, requestID: UUID, type: String,
                         amount: String, reason: String) async throws -> POSCashMovementResponse
     func recordCashSale(siteID: Int64, sessionID: Int64, requestID: UUID, orderID: Int64) async throws -> POSCashMovementResponse
@@ -44,12 +44,16 @@ public final class POSCashSessionRemote: Remote, POSCashSessionRemoteProtocol {
         return createPagedItems(items: response.data, responseHeaders: response.headers, currentPageNumber: page)
     }
 
-    public func openSession(siteID: Int64, requestID: UUID, deviceID: String, openingAmount: String) async throws -> POSCashSessionResponse {
+    public func openSession(siteID: Int64, requestID: UUID, deviceID: String, openingAmount: String,
+                            drawerID: String?) async throws -> POSCashSessionResponse {
+        var parameters: RequestParameterConvertibleDictionary = ["request_id": requestID.uuidString,
+                                                                 "device_id": deviceID,
+                                                                 "opening_amount": openingAmount]
+        // Binds the session to the named cash drawer, so drawer events can be recorded against it.
+        if let drawerID { parameters["drawer_id"] = drawerID }
         let request = JetpackRequest(wooApiVersion: .wcPosV1, method: .post, siteID: siteID,
                                      path: Path.sessions,
-                                     parameters: ["request_id": requestID.uuidString,
-                                                  "device_id": deviceID,
-                                                  "opening_amount": openingAmount],
+                                     parameters: parameters,
                                      availableAsRESTRequest: true)
         return try await enqueue(request, mapper: SingleItemMapper<POSCashSessionResponse>(siteID: siteID))
     }

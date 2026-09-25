@@ -194,7 +194,8 @@ private final class MockPOSCashSessionRemote: POSCashSessionRemoteProtocol {
         return PagedItems(items: [], hasMorePages: false, totalItems: 0)
     }
 
-    func openSession(siteID: Int64, requestID: UUID, deviceID: String, openingAmount: String) async throws -> POSCashSessionResponse {
+    func openSession(siteID: Int64, requestID: UUID, deviceID: String, openingAmount: String,
+                     drawerID: String?) async throws -> POSCashSessionResponse {
         throw UnexpectedCallError()
     }
 

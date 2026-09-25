@@ -12,7 +12,8 @@ public protocol POSCashSessionService {
     func currentSession() async throws -> POSCashSession?
     func pastSessions(page: Int, perPage: Int) async throws -> POSCashSessionPage
     func session(id: Int64) async throws -> POSCashSession
-    func startSession(openingCash: Decimal) async throws -> POSCashSession
+    /// `drawerID` is the name of the cash drawer the session is bound to, or nil when no drawer is set up.
+    func startSession(openingCash: Decimal, drawerID: String?) async throws -> POSCashSession
     func recordMovement(sessionID: Int64, kind: POSCashSessionMovement.Kind, amount: Decimal,
                         note: String?, requestID: UUID) async throws -> POSCashSession
     func recordCashSale(orderID: Int64) async throws -> POSCashSession?
@@ -160,12 +161,12 @@ final class POSMockCashSessionService: POSCashSessionService {
         return session
     }
 
-    func startSession(openingCash: Decimal) async throws -> POSCashSession {
+    func startSession(openingCash: Decimal, drawerID: String?) async throws -> POSCashSession {
         try await Task.sleep(for: writeDelay)
         guard openSession == nil else { throw POSCashSessionServiceError.sessionAlreadyOpen }
         guard openingCash >= 0 else { throw POSCashSessionServiceError.invalidAmount }
         let session = POSCashSession(id: nextID, openedAt: now(), openedBy: currentActor,
-                                     openingCash: openingCash, movements: [], revision: 0, drawerID: drawerID)
+                                     openingCash: openingCash, movements: [], revision: 0, drawerID: drawerID ?? self.drawerID)
         nextID += 1
         openSession = session
         return session

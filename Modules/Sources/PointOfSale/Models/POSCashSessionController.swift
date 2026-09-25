@@ -27,14 +27,17 @@ final class POSCashSessionController {
     var isRetryingCashMovements: Bool { service.isRetryingCashMovements }
 
     @ObservationIgnored private let service: any POSCashSessionService
+    /// The name of the configured cash drawer, read when a session starts. Nil when no drawer is set up.
+    @ObservationIgnored private let drawerID: @MainActor () -> String?
     @ObservationIgnored private var pastPage = 0
     @ObservationIgnored private var hasLoadedPastSessions = false
     @ObservationIgnored private var detailRequest = 0
     @ObservationIgnored private let pageSize = 20
     @ObservationIgnored private var hasFreshSessionForClose = false
 
-    init(service: any POSCashSessionService) {
+    init(service: any POSCashSessionService, drawerID: @escaping @MainActor () -> String? = { nil }) {
         self.service = service
+        self.drawerID = drawerID
     }
 
     func load() async {
@@ -125,7 +128,7 @@ final class POSCashSessionController {
 
     func start(openingCash: Decimal) async -> Bool {
         await save(operation: .start) {
-            currentSession = try await service.startSession(openingCash: openingCash)
+            currentSession = try await service.startSession(openingCash: openingCash, drawerID: drawerID())
         }
     }
 

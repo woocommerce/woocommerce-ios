@@ -6,6 +6,7 @@ final class MockPOSCashSessionService: POSCashSessionService {
     private(set) var recordedCashSaleOrderIDs: [Int64] = []
     private(set) var recordedCashRefunds: [(orderID: Int64, refundID: Int64)] = []
     private(set) var requestedPastSessionPages: [Int] = []
+    private(set) var startSessionDrawerIDs: [String?] = []
     var onCashSaleRecorded: ((Int64) -> Void)?
     var onCashRefundRecorded: ((Int64, Int64) -> Void)?
     var onPastSessionsRequested: (@MainActor (Int) -> Void)?
@@ -68,7 +69,10 @@ final class MockPOSCashSessionService: POSCashSessionService {
     }
 
     func session(id: Int64) async throws -> POSCashSession { throw POSCashSessionServiceError.noOpenSession }
-    func startSession(openingCash: Decimal) async throws -> POSCashSession { throw POSCashSessionServiceError.noOpenSession }
+    func startSession(openingCash: Decimal, drawerID: String?) async throws -> POSCashSession {
+        startSessionDrawerIDs.append(drawerID)
+        throw POSCashSessionServiceError.noOpenSession
+    }
     func recordMovement(sessionID: Int64, kind: POSCashSessionMovement.Kind, amount: Decimal,
                         note: String?, requestID: UUID) async throws -> POSCashSession {
         recordedMovementRequestIDs.append(requestID)

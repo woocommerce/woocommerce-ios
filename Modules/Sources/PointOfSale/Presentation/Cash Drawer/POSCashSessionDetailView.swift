@@ -13,15 +13,8 @@ struct POSCashSessionDetailView: View {
         VStack(spacing: POSSpacing.none) {
             POSPageHeaderView(
                 title: String.localizedStringWithFormat(Localization.sessionNumber, String(session.id)),
-                backButtonConfiguration: .init(state: .enabled, action: onBack),
-                trailingContent: {
-                ShareLink(item: report) {
-                    Image(systemName: "square.and.arrow.up")
-                        .foregroundStyle(Color.posOnSurface)
-                        .padding(POSPadding.small)
-                }
-                .accessibilityLabel(Localization.share)
-            })
+                backButtonConfiguration: .init(state: .enabled, action: onBack)
+            )
             .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: onBack))
 
             ScrollView {
@@ -48,7 +41,7 @@ struct POSCashSessionDetailView: View {
                                 POSCashSessionMetricView(label: Localization.difference, amount: money.formatSigned(session.difference ?? 0))
                             }
 
-                            Divider()
+                            POSDivider()
                             summaryRow(Localization.cashSales, money.format(session.cashSales))
                             summaryRow(Localization.paidInOut, money.format(session.paidInOut))
                             summaryRow(Localization.cashRefunds, money.format(-session.cashRefunds))
@@ -90,25 +83,11 @@ struct POSCashSessionDetailView: View {
         .font(.posBodyMediumRegular())
         .accessibilityElement(children: .combine)
     }
-
-    private var report: String {
-        let rows = [
-            String.localizedStringWithFormat(Localization.sessionNumber, String(session.id)),
-            "\(Localization.opened): \(session.openedAt.formatted(date: .long, time: .shortened))",
-            "\(Localization.closed): \(session.closedAt?.formatted(date: .long, time: .shortened) ?? "")",
-            "\(Localization.startingCash): \(money.format(session.openingCash))",
-            "\(Localization.expectedCash): \(money.format(session.expectedCash))",
-            "\(Localization.countedCash): \(money.format(session.countedCash ?? 0))",
-            "\(Localization.difference): \(money.formatSigned(session.difference ?? 0))"
-        ]
-        return rows.joined(separator: "\n")
-    }
 }
 
 private extension POSCashSessionDetailView {
     enum Localization {
         static let sessionNumber = NSLocalizedString("pos.cashSession.detail.number", value: "Session #%1$@", comment: "Closed cash session title")
-        static let share = NSLocalizedString("pos.cashSession.detail.share", value: "Share session", comment: "Share closed cash session summary")
         static let opened = NSLocalizedString("pos.cashSession.detail.opened", value: "Opened", comment: "Session opening information")
         static let closed = NSLocalizedString("pos.cashSession.detail.closed", value: "Closed", comment: "Session closing information")
         static let drawerSummary = NSLocalizedString("pos.cashSession.detail.summary", value: "Drawer summary", comment: "Cash drawer summary title")

@@ -135,6 +135,38 @@ final class POSOrderListModelTests {
         #expect(mockOrdersController.loadOrderRefundsCalled == true)
     }
 
+    @Test func processRefund_when_cash_refund_succeeds_then_opens_the_cash_drawer() async throws {
+        // Given
+        let drawerService = MockCashDrawerService()
+        let cashDrawer = POSCashDrawerController(service: drawerService, userDefaults: try makeUserDefaults())
+        let sut = makeModel(cashDrawer: cashDrawer)
+        mockRefundController.stubIsCashRefund = true
+
+        // When
+        await withCheckedContinuation { continuation in
+            drawerService.onOpen = { continuation.resume() }
+            Task { try await sut.processRefund(reason: nil) }
+        }
+
+        // Then
+        #expect(drawerService.openCallCount == 1)
+        #expect(cashDrawer.lastEvent?.reason == .cashRefund)
+    }
+
+    @Test func processRefund_when_refund_is_not_cash_then_does_not_open_the_cash_drawer() async throws {
+        // Given
+        let drawerService = MockCashDrawerService()
+        let cashDrawer = POSCashDrawerController(service: drawerService, userDefaults: try makeUserDefaults())
+        let sut = makeModel(cashDrawer: cashDrawer)
+        mockRefundController.stubIsCashRefund = false
+
+        // When
+        try await sut.processRefund(reason: nil)
+
+        // Then
+        #expect(drawerService.openCallCount == 0)
+    }
+
     @Test func processRefund_when_order_refresh_fails_then_still_loads_the_refunds() async throws {
         // Given a successful refund whose post-refund order refresh fails
         mockRefundController.stubRefundedOrderID = 456
@@ -174,6 +206,20 @@ final class POSOrderListModelTests {
         }
         #expect(mockOrdersController.updateOrderCalled == false)
         #expect(mockOrdersController.loadOrderRefundsCalled == false)
+    }
+
+    private func makeModel(cashDrawer: POSCashDrawerController) -> POSOrderListModel {
+        POSOrderListModel(
+            ordersController: mockOrdersController,
+            refundController: mockRefundController,
+            receiptSender: mockReceiptSender,
+            refundSubmissionModel: POSRefundSubmissionModel(),
+            cashDrawer: cashDrawer
+        )
+    }
+
+    private func makeUserDefaults() throws -> UserDefaults {
+        try #require(UserDefaults(suiteName: UUID().uuidString))
     }
 
     private func makeTestOrder(id: Int64, email: String) -> POSOrder {

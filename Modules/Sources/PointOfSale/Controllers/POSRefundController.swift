@@ -228,6 +228,6 @@ protocol POSRefundControllerProtocol {
         )
 
         clearSelection()
-        return POSRefundSubmissionResult(refundedOrderID: order.id)
+        return POSRefundSubmissionResult(refundedOrderID: order.id, isCashRefund: order.isPaidInCash)
     }
 }

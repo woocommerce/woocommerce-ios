@@ -56,27 +56,27 @@ struct POSCashDrawerControllerTests {
         #expect(result == .failed)
     }
 
-    @Test func test_openForConfirmedCashPayment_when_automatic_opening_on_then_opens_for_cashSale() async {
+    @Test func test_openAutomatically_when_automatic_opening_on_then_opens_for_the_given_reason() async {
         // Given
         let service = MockCashDrawerService()
         let sut = makeController(service: service)
 
         // When
-        await sut.openForConfirmedCashPayment()
+        await sut.openAutomatically(for: .cashRefund)
 
         // Then
         #expect(service.openCallCount == 1)
-        #expect(sut.lastEvent?.reason == .cashSale)
+        #expect(sut.lastEvent?.reason == .cashRefund)
     }
 
-    @Test func test_openForConfirmedCashPayment_when_automatic_opening_off_then_does_not_open() async {
+    @Test func test_openAutomatically_when_automatic_opening_off_then_does_not_open() async {
         // Given
         let service = MockCashDrawerService()
         let sut = makeController(service: service)
         sut.opensAutomaticallyForCashPayments = false
 
         // When
-        await sut.openForConfirmedCashPayment()
+        await sut.openAutomatically(for: .cashSale)
 
         // Then
         #expect(service.openCallCount == 0)

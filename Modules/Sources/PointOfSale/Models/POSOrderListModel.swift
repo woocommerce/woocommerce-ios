@@ -9,16 +9,20 @@ import struct Yosemite.POSOrder
     let refundSubmissionModel: POSRefundSubmissionModel
     private let orderSelectionHandler: POSOrderSelectionHandling
     private let refundController: POSRefundControllerProtocol
+    /// Optional: nil when the cash drawer prototype is off (`.pointOfSaleCashDrawer`).
+    private let cashDrawer: POSCashDrawerController?
 
     init(ordersController: POSSearchingOrderListControllerProtocol & POSOrderSelectionHandling,
          refundController: POSRefundControllerProtocol,
          receiptSender: POSReceiptSending,
-         refundSubmissionModel: POSRefundSubmissionModel) {
+         refundSubmissionModel: POSRefundSubmissionModel,
+         cashDrawer: POSCashDrawerController? = nil) {
         self.ordersController = ordersController
         self.orderSelectionHandler = ordersController
         self.refundController = refundController
         self.receiptSender = receiptSender
         self.refundSubmissionModel = refundSubmissionModel
+        self.cashDrawer = cashDrawer
     }
 
     func sendReceipt(order: POSOrder, email: String) async throws {
@@ -108,6 +112,10 @@ import struct Yosemite.POSOrder
     @MainActor
     func processRefund(reason: String?) async throws {
         let result = try await refundController.processRefund(reason: reason)
+        // Open the drawer so the cashier can hand the cash back, without holding up the refund flow.
+        if result.isCashRefund, let cashDrawer {
+            Task { await cashDrawer.openAutomatically(for: .cashRefund) }
+        }
         do {
             try await ordersController.updateOrder(orderID: result.refundedOrderID)
         } catch {

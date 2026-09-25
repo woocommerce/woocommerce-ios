@@ -680,9 +680,9 @@ private extension POSSettingsHardwareDetailView {
         )
 
         static let cashDrawerAutomaticOpenSubtitle = NSLocalizedString(
-            "pointOfSaleSettingsHardwareDetailView.cashDrawerAutomaticOpenSubtitle",
-            value: "Open automatically for cash payments",
-            comment: "Subtitle of the setting that opens the cash drawer automatically when a cash payment is confirmed."
+            "pointOfSaleSettingsHardwareDetailView.cashDrawerAutomaticOpenSalesAndRefundsSubtitle",
+            value: "Open automatically for cash sales and refunds",
+            comment: "Subtitle of the setting that opens the cash drawer automatically when a cash sale or cash refund is confirmed."
         )
 
         static let cashDrawerTestTitle = NSLocalizedString(

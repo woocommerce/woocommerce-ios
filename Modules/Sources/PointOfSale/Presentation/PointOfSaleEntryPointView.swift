@@ -166,12 +166,14 @@ public struct PointOfSaleEntryPointView: View {
         self.barcodeScanService = barcodeScanService
         self.receiptSender = receiptSender
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
+        let cashDrawer = cashDrawerService.map { POSCashDrawerController(service: $0) }
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService)
         self.orderListModel = POSOrderListModel(ordersController: ordersController,
                                                 refundController: POSRefundController(refundSubmissionProcessor: refundSubmissionProcessor),
                                                 receiptSender: receiptSender,
-                                                refundSubmissionModel: refundSubmissionProcessor.stateModel)
+                                                refundSubmissionModel: refundSubmissionProcessor.stateModel,
+                                                cashDrawer: cashDrawer)
         if isLocalCatalogEligible, let grdbManager {
             self.cartProductObserver = POSCartProductObserver(
                 siteID: siteID,
@@ -189,7 +191,7 @@ public struct PointOfSaleEntryPointView: View {
         self.tapToPayAvailabilityChecker = tapToPayAvailabilityChecker
         self.preferredConnectionMethod = preferredConnectionMethod
         self.receiptPrinter = receiptPrinter
-        self.cashDrawer = cashDrawerService.map { POSCashDrawerController(service: $0) }
+        self.cashDrawer = cashDrawer
         self.httpsConfigurationNotice = httpsConfigurationNotice
     }
 

@@ -1,6 +1,7 @@
 import Foundation
 import enum Yosemite.OrderRefundEligibilityFailure
 import struct Yosemite.POSOrder
+import struct Yosemite.PaymentGateway
 
 enum StartRefundFlowResult: Equatable {
     case hasItemsToRefund
@@ -42,10 +43,22 @@ extension POSOrder {
     var refundActionAvailability: RefundActionAvailability {
         status == .completed ? .available : .unavailable
     }
+
+    /// Whether the order was paid in cash, so a refund hands cash back from the drawer.
+    var isPaidInCash: Bool {
+        paymentMethodID == PaymentGateway.Constants.cashOnDeliveryGatewayID
+    }
 }
 
 struct POSRefundSubmissionResult: Equatable {
     let refundedOrderID: Int64
+    /// Whether the refunded order was paid in cash, so the cashier hands the refund back from the drawer.
+    let isCashRefund: Bool
+
+    init(refundedOrderID: Int64, isCashRefund: Bool = false) {
+        self.refundedOrderID = refundedOrderID
+        self.isCashRefund = isCashRefund
+    }
 }
 
 enum POSRefundProcessingError: LocalizedError, Equatable {

@@ -2,7 +2,7 @@
 
 set -euo pipefail
 
-if [[ $ACTION == 'indexbuild' ]]; then
+if [[ ${ACTION:-} == 'indexbuild' ]]; then
   echo "ℹ️: Skipping code generation in 'indexbuild' build. See https://github.com/mac-cain13/R.swift/issues/719#issuecomment-937733804 for more info."
   exit 0
 fi
@@ -12,11 +12,20 @@ CREDS_INPUT_PATH=${SOURCE_ROOT}/Credentials/ApiCredentials.tpl
 CREDS_TEMPLATE_PATH=${SOURCE_ROOT}/Credentials/Templates/ApiCredentials-Template.swift
 SECRETS_PATH="${HOME}/.configure/woocommerce-ios/secrets/woo_app_credentials.json"
 
+# file:line:column so Xcode's issue navigator shows the message, not just PhaseScriptExecution.
+xcode_error() {
+    local file="$1"
+    local message="$2"
+    local diagnostic="${file}:1:1: error: ${message}"
+    echo "${diagnostic}" >&2
+    echo "${diagnostic}"
+}
+
 ## Collect output paths from the per-target build phase's `outputPaths`.
 ## Xcode exposes them as SCRIPT_OUTPUT_FILE_N (with SCRIPT_OUTPUT_FILE_COUNT).
 ##
 if [[ -z "${SCRIPT_OUTPUT_FILE_COUNT:-}" || "${SCRIPT_OUTPUT_FILE_COUNT}" -lt 1 ]]; then
-    echo "error: generate-credentials.sh expects at least one output file declared via the build phase's outputPaths." >&2
+    xcode_error "${BASH_SOURCE[0]}" "generate-credentials.sh expects at least one output file declared via the build phase's outputPaths."
     exit 1
 fi
 
@@ -56,9 +65,24 @@ else
       rbenv rehash
     fi
 
+    CREDENTIALS_TMP="$(mktemp)"
+    CREDENTIALS_ERR="$(mktemp)"
+    trap 'rm -f "${CREDENTIALS_TMP}" "${CREDENTIALS_ERR}"' EXIT
+
+    if ! ruby "${SCRIPT_PATH}" -i "${CREDS_INPUT_PATH}" -s "${SECRETS_PATH}" \
+        > "${CREDENTIALS_TMP}" 2> "${CREDENTIALS_ERR}"; then
+        if grep -q ': error:' "${CREDENTIALS_ERR}"; then
+            cat "${CREDENTIALS_ERR}" >&2
+            cat "${CREDENTIALS_ERR}"
+        else
+            xcode_error "${CREDS_INPUT_PATH}" "$(tr '\n' ' ' < "${CREDENTIALS_ERR}")"
+        fi
+        exit 1
+    fi
+
     for OUTPUT_PATH in "${OUTPUT_PATHS[@]}"; do
         echo ">> Generating Credentials ${OUTPUT_PATH}"
-        ruby "${SCRIPT_PATH}" -i "${CREDS_INPUT_PATH}" -s "${SECRETS_PATH}" > "${OUTPUT_PATH}"
+        cp "${CREDENTIALS_TMP}" "${OUTPUT_PATH}"
     done
 
 fi

@@ -58,7 +58,6 @@ struct SheetComponentView: View {
         }
     }
 
-    /// The design's "Date type" example: a header, radio rows and a footnote.
     @ViewBuilder private var sheetContent: some View {
         if showsCloseControl {
             StoreTopAppBar("Date type", navigation: .close { isPresented = false })
@@ -73,7 +72,6 @@ struct SheetComponentView: View {
         footnote
     }
 
-    /// Fit-content sheets scroll long content themselves; with system detents the content scrolls itself.
     @ViewBuilder private var longOptions: some View {
         let stack = VStack(spacing: StoreSpacing.s0) {
             ForEach(0..<6) { _ in

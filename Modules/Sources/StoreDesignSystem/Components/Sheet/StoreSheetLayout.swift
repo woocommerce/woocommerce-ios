@@ -1,17 +1,17 @@
 import CoreGraphics
 
-/// The layout rules of a ``StoreSheet``, kept as pure functions so they can be tested.
+/// The layout rules of a ``StoreSheet``, as pure functions.
 enum StoreSheetLayout {
-    /// The padding under the content. The design keeps `p5` between the content and the bottom of
-    /// the sheet as a minimum: the system's own bottom inset (the home indicator area) counts toward
-    /// it, so the padding only tops it up where that inset is smaller.
+    /// The strip the design reserves for the grabber above the content.
+    static let grabberStripHeight: CGFloat = StorePadding.p5
+
+    /// The design's `p5` minimum under the content; the system's bottom inset counts toward it.
     static func bottomInset(safeAreaInset: CGFloat) -> CGFloat {
         max(0, StorePadding.p5 - safeAreaInset)
     }
 
-    /// The height of a panel whose content measures `contentHeight`: the grabber strip, the content
-    /// and the bottom inset. Excludes the system's own bottom inset, as a `.height` detent does.
+    /// The panel height for a `.height` detent, which excludes the system's bottom inset.
     static func panelHeight(contentHeight: CGFloat, safeAreaInset: CGFloat) -> CGFloat {
-        StoreSize.sheetGrabberAreaHeight + contentHeight + bottomInset(safeAreaInset: safeAreaInset)
+        grabberStripHeight + contentHeight + bottomInset(safeAreaInset: safeAreaInset)
     }
 }

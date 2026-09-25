@@ -1,11 +1,8 @@
 import SwiftUI
 
 public extension View {
-    /// Presents `content` in a ``StoreSheet`` while `isPresented` is `true`.
-    ///
-    /// The system sheet provides drag-to-dismiss, the dimmed backdrop and the detents; this styles it
-    /// to the design (surface-bright container, extra-large top corners, the panel's own grabber in
-    /// place of the system indicator) and sizes it per `sizing`.
+    /// Presents `content` in a ``StoreSheet`` while `isPresented` is `true`: the system sheet styled to
+    /// the design (surface-bright container, extra-large top corners) and sized per `sizing`.
     func storeSheet<Content: View>(isPresented: Binding<Bool>,
                                    sizing: StoreSheetSizing = .fitContent,
                                    onDismiss: (() -> Void)? = nil,
@@ -16,7 +13,6 @@ public extension View {
     }
 
     /// Presents `content` for `item` in a ``StoreSheet`` while `item` is non-`nil`.
-    /// See `storeSheet(isPresented:sizing:onDismiss:content:)`.
     func storeSheet<Item: Identifiable, Content: View>(item: Binding<Item?>,
                                                         sizing: StoreSheetSizing = .fitContent,
                                                         onDismiss: (() -> Void)? = nil,
@@ -29,12 +25,8 @@ public extension View {
     }
 }
 
-/// The presented root: the panel pinned to the top of the sheet plus the presentation styling.
-///
-/// For `.fitContent` the content scrolls inside the panel, under the pinned grabber. The scroll view
-/// offers it unbounded height, so the measurement is the content's ideal height rather than what the
-/// opening detent would have squeezed it to, and content taller than the largest sheet (at large text
-/// sizes, say) scrolls instead of being clipped.
+/// The presented root. For `.fitContent` the content sits in a scroll view, so it is measured at its
+/// ideal height (not squeezed by the opening detent) and scrolls when taller than the largest sheet.
 private struct StoreSheetPresentation<Content: View>: View {
     let sizing: StoreSheetSizing
     @ViewBuilder let content: () -> Content
@@ -47,7 +39,6 @@ private struct StoreSheetPresentation<Content: View>: View {
             if sizing == .fitContent {
                 StoreSheet {
                     ScrollView {
-                        // Explicit stack: a multi-view `content` would otherwise get the default spacing.
                         VStack(spacing: StoreSpacing.s0) {
                             content()
                         }
@@ -66,12 +57,11 @@ private struct StoreSheetPresentation<Content: View>: View {
             }
         }
         .presentationDetents(sizing.detents(panelHeight: panelHeight))
-        .presentationDragIndicator(.hidden)
+        .presentationDragIndicator(.visible)
         .presentationBackground(Color.storeSurfaceBright)
         .presentationCornerRadius(StoreRadius.extraLarge)
     }
 
-    /// `0` until the content has been measured, so the sheet opens at the placeholder detent.
     private var panelHeight: CGFloat {
         guard contentHeight > 0 else { return 0 }
         return StoreSheetLayout.panelHeight(contentHeight: contentHeight, safeAreaInset: bottomSafeAreaInset)

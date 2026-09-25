@@ -71,6 +71,6 @@ import Testing
         let height = StoreSheetLayout.panelHeight(contentHeight: 300, safeAreaInset: 0)
 
         // Then it is the grabber strip, the content and the p5 minimum
-        #expect(height == StoreSize.sheetGrabberAreaHeight + 300 + StorePadding.p5)
+        #expect(height == StoreSheetLayout.grabberStripHeight + 300 + StorePadding.p5)
     }
 }

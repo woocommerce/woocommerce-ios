@@ -13,6 +13,11 @@
 # Usage:
 #   setup-jn-store.sh --site <domain> [--site-password <password>] [--wpcom-user <email>]
 #                     [--admin-user <name>] [--admin-id <id>] [--env-out <path>] [--app-creds <path>]
+#                     [--no-jetpack-site <domain>]
+#
+# --no-jetpack-site also writes the MAESTRO_WOO_NO_JETPACK_* values for
+# login_no_jetpack.yaml. Create that site with WooCommerce and without Jetpack,
+# and pass its admin password in JN_NO_JETPACK_SSH_PASS.
 #
 # Credentials are resolved in this order, so a second run needs no arguments
 # beyond --site:
@@ -26,6 +31,7 @@
 set -uo pipefail
 
 SITE="" SITE_PASS="" WPCOM_USER="" WPCOM_PASS=""
+NO_JETPACK_SITE="" NO_JETPACK_PASS="${JN_NO_JETPACK_SSH_PASS:-}"
 ADMIN_USER="demo"
 ADMIN_ID="1"
 ENV_OUT=""
@@ -45,13 +51,18 @@ while [ $# -gt 0 ]; do
     --admin-id) ADMIN_ID="$2"; shift 2 ;;
     --env-out) ENV_OUT="$2"; shift 2 ;;
     --app-creds) APP_CREDS="$2"; shift 2 ;;
-    -h|--help) sed -n '2,24p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
+    --no-jetpack-site) NO_JETPACK_SITE="$2"; shift 2 ;;
+    -h|--help) sed -n '2,29p' "$0" | sed 's/^# \{0,1\}//'; exit 0 ;;
     *) die "unknown argument: $1" ;;
   esac
 done
 
 [ -n "$SITE" ] || die "--site is required"
+if [ -n "$NO_JETPACK_SITE" ] && [ -z "$NO_JETPACK_PASS" ]; then
+  die "set JN_NO_JETPACK_SSH_PASS to the admin password of $NO_JETPACK_SITE"
+fi
 TOTAL_STEPS=6
+[ -z "$NO_JETPACK_SITE" ] || TOTAL_STEPS=7
 command -v expect >/dev/null || die "expect is required for password-based SSH"
 command -v python3 >/dev/null || die "python3 is required"
 [ -f "$APP_CREDS" ] || die "app credentials not found: $APP_CREDS (run 'rake dependencies')"
@@ -260,6 +271,30 @@ echo "OWNER:" . ( ! empty( $d["hasConnectedOwner"] ) ? "yes" : "no" ) . "\n";')"
 printf '%s' "$CONN" | grep -q "USERCONNECTED:yes" || die "the Jetpack user connection did not complete"
 ok "isUserConnected=yes, hasConnectedOwner=yes"
 
+if [ -n "$NO_JETPACK_SITE" ]; then
+  step "Waiting for the no-Jetpack site $NO_JETPACK_SITE"
+  DEADLINE=$(( $(date +%s) + 900 ))
+  NJ_STATE=""
+  while :; do
+    NJ_STATE="$(remote_on "$NO_JETPACK_SITE" "$NO_JETPACK_PASS" 'wp plugin is-active woocommerce && echo WC:active; wp plugin is-installed jetpack && echo JP:installed; echo WPCLI:ok')"
+    if ! printf '%s' "$NJ_STATE" | grep -q "WPCLI:ok"; then
+      nj_ssh_failures=$(( ${nj_ssh_failures:-0} + 1 ))
+      [ "$nj_ssh_failures" -lt 3 ] || die "could not run wp-cli on $NO_JETPACK_SITE over SSH. Check JN_NO_JETPACK_SSH_PASS."
+    fi
+    if printf '%s' "$NJ_STATE" | grep -q "WC:active"; then
+      printf '%s' "$NJ_STATE" | grep -q "JP:installed" && die "$NO_JETPACK_SITE has Jetpack installed; create it without Jetpack"
+      break
+    fi
+    [ "$(date +%s)" -lt "$DEADLINE" ] || die "$NO_JETPACK_SITE did not finish provisioning within 15 minutes"
+    printf '  still provisioning, waiting...\n'
+    sleep 15
+  done
+  # While auto_login is set, JN's companion plugin sends the first login on the site
+  # to /wp-admin instead of the requested redirect, and the app rejects that.
+  remote_on "$NO_JETPACK_SITE" "$NO_JETPACK_PASS" 'wp option delete auto_login' >/dev/null
+  ok "WooCommerce active, Jetpack not installed"
+fi
+
 # WooCommerce exposes no REST endpoint for API keys, so insert the row the same
 # way its own admin-ajax handler does.
 step "Creating WooCommerce API keys and writing $(basename "$ENV_OUT")"
@@ -299,6 +334,7 @@ fi
 mkdir -p "$(dirname "$ENV_OUT")"
 SITE="$SITE" ADMIN_USER="$ADMIN_USER" WPCOM_USER="$WPCOM_USER" WPCOM_PASS="$WPCOM_PASS" \
 SITE_PASS="$SITE_PASS" CK="$CK" CS="$CS" \
+NO_JETPACK_SITE="$NO_JETPACK_SITE" NO_JETPACK_PASS="$NO_JETPACK_PASS" \
 python3 - "$ENV_OUT" <<'PY'
 import os, re, sys, pathlib
 
@@ -312,6 +348,12 @@ values = {
     "MAESTRO_WOO_LAB_CONSUMER_KEY": os.environ["CK"],
     "MAESTRO_WOO_LAB_CONSUMER_SECRET": os.environ["CS"],
 }
+if os.environ["NO_JETPACK_SITE"]:
+    values.update({
+        "MAESTRO_WOO_NO_JETPACK_SITE_URL": "https://" + os.environ["NO_JETPACK_SITE"],
+        "MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME": os.environ["ADMIN_USER"],
+        "MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD": os.environ["NO_JETPACK_PASS"],
+    })
 
 def quote(value):
     if re.search(r"[\s()\"'!$&|;<>`\\#]", value):
@@ -340,5 +382,6 @@ PY
 ok "wrote $ENV_OUT (mode 600)"
 
 printf '\n\033[32mDone.\033[0m Lab store ready: https://%s (blogID %s)\n' "$SITE" "$BLOG_ID"
+[ -z "$NO_JETPACK_SITE" ] || printf 'No-Jetpack site ready: https://%s\n' "$NO_JETPACK_SITE"
 printf 'Verify with:\n'
 printf '  .maestro/scripts/doctor.sh --app "$APP" --include-tags products --exclude-tags "" --seed --device "$UDID"\n'

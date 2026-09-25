@@ -57,15 +57,17 @@ hand against a site created in a browser.
    user passed `--fresh`. Anything else means the store is gone or expired: continue, and
    reuse the existing WP.com account lines rather than asking for them again.
 
-2. **Provision a site.**
+2. **Provision two sites.** The lab store, and a WooCommerce site without Jetpack for
+   `login_no_jetpack`:
 
    ```
    provision-site  features: {"woocommerce":"true","woocommerce-import-sample-data":"true","jetpack":"true"}
+   provision-site  features: {"woocommerce":"true","jetpack":"false"}
    ```
 
-   Note the returned `domain`.
+   Note both returned domains.
 
-3. **Fetch its password.**
+3. **Fetch their passwords.**
 
    ```
    list-sites  domain: <domain>, include_passwords: true, include_config: true
@@ -74,13 +76,14 @@ hand against a site created in a browser.
    `JN_PASSWORD` in the returned config is both the wp-admin and the SSH password. The
    admin username is `demo`.
 
-   Do not echo this value in your reply.
+   Do not echo these values in your reply.
 
-4. **Configure the store.** Pass the password through the environment so it never lands
+4. **Configure the stores.** Pass the passwords through the environment so they never land
    in `ps` output:
 
    ```bash
-   JN_SSH_PASS='<JN_PASSWORD>' .maestro/scripts/setup-jn-store.sh --site <domain>
+   JN_SSH_PASS='<lab JN_PASSWORD>' JN_NO_JETPACK_SSH_PASS='<no-Jetpack JN_PASSWORD>' \
+     .maestro/scripts/setup-jn-store.sh --site <lab domain> --no-jetpack-site <no-Jetpack domain>
    ```
 
    The script waits for JN to finish provisioning (it answers HTTP before its plugins
@@ -112,9 +115,10 @@ It has **no orders, customers, or coupons**, and its onboarding profile is unset
 are expected to fail against it: `orders_list_and_search`, `dashboard_view_all_analytics`,
 `orders_create` (needs `MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH`), and the coupon flows.
 
-The negative-login fixtures (`MAESTRO_WOO_NO_JETPACK_*`, `MAESTRO_WOO_NOT_A_WOO_STORE_*`,
-`MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are filled in by hand, so the login flows that
-need them stay unconfigured until then.
+The no-Jetpack fixture (`MAESTRO_WOO_NO_JETPACK_*`) is written from the second site. The
+other negative-login fixtures (`MAESTRO_WOO_NOT_A_WOO_STORE_*`,
+`MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are shared read-only sites from the smoke testing
+guide and are filled in by hand.
 
 ## Notes
 

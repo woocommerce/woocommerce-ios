@@ -1,0 +1,11 @@
+{
+    "debt": "25.05",
+    "paymentsBlocked": false,
+    "payment_links": [
+        {
+            "date": "2025-06-19T00:12:09.000Z",
+            "amount": 25.05,
+            "url": "https://example.com/pay/826745"
+        }
+    ]
+}

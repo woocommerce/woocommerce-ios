@@ -321,10 +321,14 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
         // When
         stores.whenReceivingAction(ofType: BlazeAction.self) { action in
-            guard case let .synchronizeCampaignsList(_, _, _, onCompletion) = action else {
-                return
+            switch action {
+            case let .synchronizeCampaignsList(_, _, _, onCompletion):
+                onCompletion(.success(true))
+            case let .fetchBillingSummary(_, onCompletion):
+                onCompletion(.success(BlazeBillingSummary.fake().copy(debt: 0)))
+            default:
+                break
             }
-            onCompletion(.success(true))
         }
         viewModel.loadCampaigns()
 
@@ -337,6 +341,50 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
 
         // Then
         XCTAssertFalse(viewModel.shouldShowIntroView)
+    }
+
+    func test_shouldShowIntroView_is_false_when_there_are_no_campaigns_and_account_has_outstanding_balance() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .synchronizeCampaignsList(_, _, _, onCompletion):
+                onCompletion(.success(true))
+            case let .fetchBillingSummary(_, onCompletion):
+                onCompletion(.success(BlazeBillingSummary.fake().copy(debt: 25.05, paymentLinks: [.fake()])))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.loadCampaigns()
+
+        // Then
+        XCTAssertFalse(viewModel.shouldShowIntroView)
+    }
+
+    func test_shouldShowIntroView_is_true_when_there_are_no_campaigns_and_fetching_billing_summary_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores, storageManager: storageManager)
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case let .synchronizeCampaignsList(_, _, _, onCompletion):
+                onCompletion(.success(true))
+            case let .fetchBillingSummary(_, onCompletion):
+                onCompletion(.failure(NSError(domain: "test", code: 0)))
+            default:
+                break
+            }
+        }
+
+        // When
+        viewModel.loadCampaigns()
+
+        // Then
+        XCTAssertTrue(viewModel.shouldShowIntroView)
     }
 
     // MARK: `selectedCampaignURL`
@@ -423,9 +471,84 @@ final class BlazeCampaignListViewModelTests: XCTestCase {
         XCTAssertTrue(pushNotesManager.resetBadgeCountKinds.contains(.blazeRejectedNote))
         XCTAssertTrue(pushNotesManager.resetBadgeCountKinds.contains(.blazeApprovedNote))
     }
+
+    // MARK: - Outstanding balance
+
+    func test_outstandingBalance_is_set_after_loadCampaigns_when_account_has_debt() {
+        // Given
+        let summary = BlazeBillingSummary.fake().copy(debt: 25.05, paymentLinks: [.fake()])
+        let stores = mockStores(billingSummaryResult: .success(summary))
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        viewModel.loadCampaigns()
+
+        // Then
+        XCTAssertEqual(viewModel.outstandingBalance, summary)
+    }
+
+    func test_outstandingBalance_is_nil_after_loadCampaigns_when_account_has_no_debt() {
+        // Given
+        let stores = mockStores(billingSummaryResult: .success(BlazeBillingSummary.fake().copy(debt: 0)))
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        viewModel.loadCampaigns()
+
+        // Then
+        XCTAssertNil(viewModel.outstandingBalance)
+    }
+
+    func test_outstandingBalance_is_nil_after_loadCampaigns_when_fetching_billing_summary_fails() {
+        // Given
+        let stores = mockStores(billingSummaryResult: .failure(NSError(domain: "test", code: 0)))
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        viewModel.loadCampaigns()
+
+        // Then
+        XCTAssertNil(viewModel.outstandingBalance)
+    }
+
+    func test_didDismissPayment_fetches_billing_summary_and_campaigns_again() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        var billingSummaryFetchCount = 0
+        var campaignsSyncCount = 0
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            switch action {
+            case .fetchBillingSummary:
+                billingSummaryFetchCount += 1
+            case .synchronizeCampaignsList:
+                campaignsSyncCount += 1
+            default:
+                break
+            }
+        }
+        let viewModel = BlazeCampaignListViewModel(siteID: sampleSiteID, stores: stores)
+
+        // When
+        viewModel.didDismissPayment()
+
+        // Then
+        XCTAssertEqual(billingSummaryFetchCount, 1)
+        XCTAssertEqual(campaignsSyncCount, 1)
+    }
 }
 
 private extension BlazeCampaignListViewModelTests {
+    func mockStores(billingSummaryResult: Result<BlazeBillingSummary, Error>) -> MockStoresManager {
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: BlazeAction.self) { action in
+            guard case let .fetchBillingSummary(_, onCompletion) = action else {
+                return
+            }
+            onCompletion(billingSummaryResult)
+        }
+        return stores
+    }
+
     func insertCampaigns(_ readOnlyCampaigns: [BlazeCampaignListItem]) {
         readOnlyCampaigns.forEach { campaign in
             let newCampaign = storage.insertNewObject(ofType: StorageBlazeCampaignListItem.self)

@@ -249,7 +249,7 @@ let package = Package(
                 .target(name: "WordPressSharedObjC"),
             ],
             resources: [.process("Resources")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "WordPressSharedObjC",
@@ -297,7 +297,7 @@ let package = Package(
             dependencies: [
                 "EventHorizonSDK",
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .target(
             name: "PointOfSale",
@@ -383,13 +383,13 @@ let package = Package(
         .testTarget(
             name: "WordPressSharedTests",
             dependencies: [.target(name: "WordPressShared")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .testTarget(
             name: "WordPressSharedObjCTests",
             dependencies: [.target(name: "WordPressShared")],
             resources: [.process("Resources")],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .testTarget(
             name: "YosemiteTests",
@@ -432,7 +432,7 @@ let package = Package(
                 .target(name: "ParcelFittingCheck"),
                 "EventHorizonSDK",
             ],
-            swiftSettings: swift5
+            swiftSettings: swift6
         ),
         .testTarget(
             name: "StoreDesignSystemTests",

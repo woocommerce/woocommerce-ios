@@ -108,6 +108,9 @@ protocol PointOfSaleAggregateModelProtocol {
     /// Cash drawer connected to the receipt printer. Nil when the cash drawer prototype is off.
     private(set) var cashDrawer: POSCashDrawerController?
 
+    /// Cash sessions use the injected store service. Previews and tests use the mock default.
+    let cashSessions: POSCashSessionController
+
     private var cancellables: Set<AnyCancellable> = []
     // Private storage of the concrete coordinator
     private let _viewStateCoordinator = PointOfSaleViewStateCoordinator()
@@ -166,6 +169,7 @@ protocol PointOfSaleAggregateModelProtocol {
          tapToPayAvailabilityController: POSTapToPayAvailabilityController? = nil,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          cashDrawer: POSCashDrawerController? = nil,
+         cashSessionService: (any POSCashSessionService)? = nil,
          preferredConnectionMethod: CardReaderConnectionMethod = .bluetooth,
          cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large) {
         self.entryPointController = entryPointController
@@ -189,6 +193,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.tapToPayAvailabilityController = tapToPayAvailabilityController
         self.receiptPrinter = receiptPrinter
         self.cashDrawer = cashDrawer
+        self.cashSessions = POSCashSessionController(service: cashSessionService ?? POSMockCashSessionService())
 
         // Payment controller is created with cart-specific dependencies.
         // The weak self captures below are safe because paymentModel is owned by self.

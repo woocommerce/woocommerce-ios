@@ -179,7 +179,7 @@ struct PointOfSaleDashboardView: View {
             POSOrdersView(isPresented: $showOrders)
         }
         .posFullScreenCover(isPresented: $showCashDrawer) {
-            POSCashDrawerView()
+            POSCashDrawerView(controller: posModel.cashSessions)
         }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }

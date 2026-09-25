@@ -58,6 +58,7 @@ public struct PointOfSaleEntryPointView: View {
     private let preferredConnectionMethod: CardReaderConnectionMethod
     private let receiptPrinter: ReceiptPrinterServiceProtocol?
     private let cashDrawer: POSCashDrawerController?
+    private let cashSessionService: (any POSCashSessionService)?
     private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
 
     /// periphery: ignore - public in preparation of move to POS module
@@ -91,6 +92,7 @@ public struct PointOfSaleEntryPointView: View {
          staffFetcher: POSStaffFetching,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          cashDrawerService: CashDrawerService? = nil,
+         cashSessionService: (any POSCashSessionService)? = nil,
          staffSettingsService: POSStaffSettingsService? = nil,
          services: POSDependencyProviding,
          httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
@@ -192,6 +194,7 @@ public struct PointOfSaleEntryPointView: View {
         self.preferredConnectionMethod = preferredConnectionMethod
         self.receiptPrinter = receiptPrinter
         self.cashDrawer = cashDrawer
+        self.cashSessionService = cashSessionService
         self.httpsConfigurationNotice = httpsConfigurationNotice
     }
 
@@ -239,6 +242,7 @@ public struct PointOfSaleEntryPointView: View {
                 },
                 receiptPrinter: receiptPrinter,
                 cashDrawer: cashDrawer,
+                cashSessionService: cashSessionService,
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 

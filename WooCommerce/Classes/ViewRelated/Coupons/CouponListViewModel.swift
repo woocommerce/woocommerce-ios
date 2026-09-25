@@ -61,12 +61,12 @@ final class CouponListViewModel {
     // MARK: - Initialization and setup
     //
     init(siteID: Int64,
-         syncingCoordinator: SyncingCoordinatorProtocol = SyncingCoordinator(),
+         syncingCoordinator: SyncingCoordinatorProtocol? = nil,
          storesManager: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          featureFlags: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.siteID = siteID
-        self.syncingCoordinator = syncingCoordinator
+        self.syncingCoordinator = syncingCoordinator ?? SyncingCoordinator()
         self.storesManager = storesManager
         self.storageManager = storageManager
         self.resultsController = Self.createResultsController(siteID: siteID,

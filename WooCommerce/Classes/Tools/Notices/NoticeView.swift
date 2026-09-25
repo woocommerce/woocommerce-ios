@@ -18,7 +18,7 @@ class NoticeView: UIView {
 
     private let notice: Notice
 
-    var dismissHandler: (() -> Void)?
+    var dismissHandler: (@MainActor () -> Void)?
 
     override var bounds: CGRect {
         didSet {

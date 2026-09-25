@@ -357,6 +357,15 @@ private extension POSTabCoordinator {
                     return
                 }
 
+                guard let cashSessionService = POSCashSessionAdaptor(credentials: credentials,
+                                                                      selectedSite: defaultSitePublisher,
+                                                                      appPasswordSupportState: isAppPasswordSupported,
+                                                                      siteID: siteID) else {
+                    DDLogError("Could not start POS: cash session service unavailable")
+                    await hostingController.dismiss(animated: true)
+                    return
+                }
+
                 let receiptPrinter: ReceiptPrinterServiceProtocol? = ServiceLocator.featureFlagService
                     .isFeatureFlagEnabled(.starReceiptPrinterSupport) ? ServiceLocator.posReceiptPrinterService : nil
                 // The drawer opens through the receipt printer, so it needs printer support too.
@@ -415,6 +424,7 @@ private extension POSTabCoordinator {
                     staffFetcher: staffFetcher,
                     receiptPrinter: receiptPrinter,
                     cashDrawerService: cashDrawerService,
+                    cashSessionService: cashSessionService,
                     staffSettingsService: staffSettingsService,
                     services: serviceAdaptor,
                     httpsConfigurationNotice: httpsConfigurationNotice,

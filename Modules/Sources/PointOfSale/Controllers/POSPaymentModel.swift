@@ -94,6 +94,7 @@ final class POSPaymentModel {
     private let receiptPrinter: ReceiptPrinterServiceProtocol?
     /// Optional: nil when the cash drawer prototype is off (`.pointOfSaleCashDrawer`).
     private let cashDrawer: POSCashDrawerController?
+    private let cashSessionService: (any POSCashSessionService)?
     private let postPaymentStep: (() async throws -> Void)?
     let configuration: POSPaymentFlowConfiguration
     private let analytics: POSAnalyticsProviding
@@ -163,6 +164,7 @@ final class POSPaymentModel {
          receiptSender: POSReceiptSending,
          receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
          cashDrawer: POSCashDrawerController? = nil,
+         cashSessionService: (any POSCashSessionService)? = nil,
          postPaymentStep: (() async throws -> Void)? = nil,
          configuration: POSPaymentFlowConfiguration,
          analytics: POSAnalyticsProviding,
@@ -181,6 +183,7 @@ final class POSPaymentModel {
         self.receiptSender = receiptSender
         self.receiptPrinter = receiptPrinter
         self.cashDrawer = cashDrawer
+        self.cashSessionService = cashSessionService
         self.postPaymentStep = postPaymentStep
         self.configuration = configuration
         self.analytics = analytics
@@ -690,6 +693,16 @@ extension POSPaymentModel {
             currentOrder = order
         }
         try await cashPaymentHandler.completeCashPayment(for: order, changeDueAmount: changeDueAmount)
+        // The order is already paid. Record its drawer movement without delaying the success screen.
+        if let cashSessionService {
+            Task {
+                do {
+                    _ = try await cashSessionService.recordCashSale(orderID: order.orderID)
+                } catch {
+                    DDLogError("💵 [CashSession] Failed to record cash sale for order \(order.orderID): \(error)")
+                }
+            }
+        }
         // Open the drawer without waiting for it: a slow or missing drawer must not hold up the sale.
         if let cashDrawer {
             Task { await cashDrawer.openAutomatically(for: .cashSale) }

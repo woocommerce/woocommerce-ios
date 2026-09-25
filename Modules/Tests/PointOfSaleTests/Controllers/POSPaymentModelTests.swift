@@ -343,6 +343,27 @@ struct POSPaymentModelTests {
         #expect(celebration.celebrationWasCalled == true)
     }
 
+    @Test("collectCashPayment records a cash sale after the order succeeds")
+    @MainActor
+    func collectCashPayment_when_order_succeeds_then_records_cash_sale() async throws {
+        // Given
+        let order = Order.fake()
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = order
+        let cashSessionService = MockPOSCashSessionService()
+        let sut = makePaymentController(orderProvider: orderProvider, cashSessionService: cashSessionService)
+
+        // When
+        try await confirmation { confirm in
+            cashSessionService.onCashSaleRecorded = { _ in confirm() }
+            try await sut.collectCashPayment(changeDueAmount: nil)
+            try await Task.sleep(for: .milliseconds(50))
+        }
+
+        // Then
+        #expect(cashSessionService.recordedCashSaleOrderIDs == [order.orderID])
+    }
+
     @Test("collectCashPayment runs post-payment step")
     @MainActor
     func collectCashPayment_runsPostPaymentStep() async throws {
@@ -2776,6 +2797,7 @@ private func makePaymentController(
     markAsPaidHandler: POSMarkAsPaidHandling = MockPOSMarkAsPaidHandler(),
     receiptSender: POSReceiptSending = MockPOSReceiptSender(),
     receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
+    cashSessionService: (any POSCashSessionService)? = nil,
     postPaymentStep: (() async throws -> Void)? = nil,
     configuration: POSPaymentFlowConfiguration = .cart(onNewOrder: {}, onEditOrder: {}),
     analytics: POSAnalyticsProviding = MockPOSAnalytics(),
@@ -2797,6 +2819,7 @@ private func makePaymentController(
         markAsPaidHandler: markAsPaidHandler,
         receiptSender: receiptSender,
         receiptPrinter: receiptPrinter,
+        cashSessionService: cashSessionService,
         postPaymentStep: postPaymentStep,
         configuration: configuration,
         analytics: analytics,

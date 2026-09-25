@@ -2,6 +2,7 @@ import Testing
 import Foundation
 @testable import PointOfSale
 import struct Yosemite.POSOrder
+import struct Yosemite.POSOrderRefund
 import enum NetworkingCore.OrderStatusEnum
 
 @MainActor
@@ -153,6 +154,32 @@ final class POSOrderListModelTests {
         #expect(cashDrawer.lastEvent?.reason == .cashRefund)
     }
 
+    @Test func processRefund_when_cash_refund_succeeds_then_records_new_refund_id() async throws {
+        // Given
+        let cashSessionService = MockPOSCashSessionService()
+        mockRefundController.stubRefundedOrderID = 456
+        mockRefundController.stubIsCashRefund = true
+        mockOrdersController.selectedOrder = makeTestOrder(id: 456, email: "customer@example.com")
+        mockOrdersController.orderToReturnOnUpdate = makeTestOrder(
+            id: 456,
+            email: "customer@example.com",
+            refunds: [.init(refundID: 987, formattedTotal: "-$5.00")]
+        )
+        let sut = makeModel(cashSessionService: cashSessionService)
+
+        // When
+        try await confirmation { confirm in
+            cashSessionService.onCashRefundRecorded = { _, _ in confirm() }
+            try await sut.processRefund(reason: nil)
+            try await Task.sleep(for: .milliseconds(50))
+        }
+
+        // Then
+        #expect(cashSessionService.recordedCashRefunds.count == 1)
+        #expect(cashSessionService.recordedCashRefunds.first?.orderID == 456)
+        #expect(cashSessionService.recordedCashRefunds.first?.refundID == 987)
+    }
+
     @Test func processRefund_when_refund_is_not_cash_then_does_not_open_the_cash_drawer() async throws {
         // Given
         let drawerService = MockCashDrawerService()
@@ -208,13 +235,15 @@ final class POSOrderListModelTests {
         #expect(mockOrdersController.loadOrderRefundsCalled == false)
     }
 
-    private func makeModel(cashDrawer: POSCashDrawerController) -> POSOrderListModel {
+    private func makeModel(cashDrawer: POSCashDrawerController? = nil,
+                           cashSessionService: (any POSCashSessionService)? = nil) -> POSOrderListModel {
         POSOrderListModel(
             ordersController: mockOrdersController,
             refundController: mockRefundController,
             receiptSender: mockReceiptSender,
             refundSubmissionModel: POSRefundSubmissionModel(),
-            cashDrawer: cashDrawer
+            cashDrawer: cashDrawer,
+            cashSessionService: cashSessionService
         )
     }
 
@@ -222,7 +251,7 @@ final class POSOrderListModelTests {
         try #require(UserDefaults(suiteName: UUID().uuidString))
     }
 
-    private func makeTestOrder(id: Int64, email: String) -> POSOrder {
+    private func makeTestOrder(id: Int64, email: String, refunds: [POSOrderRefund] = []) -> POSOrder {
         POSOrder(
             id: id,
             number: "\(id)",
@@ -234,7 +263,7 @@ final class POSOrderListModelTests {
             paymentMethodID: "woocommerce_payments",
             paymentMethodTitle: "Test Payment",
             lineItems: [],
-            refunds: [],
+            refunds: refunds,
             formattedDiscountTotal: nil,
             formattedTotalTax: "$0.00",
             formattedPaymentTotal: "$10.00",

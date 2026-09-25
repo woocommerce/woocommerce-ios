@@ -349,6 +349,18 @@ struct POSOrderServiceTests {
     }
 
     @Test
+    func markOrderAsCompletedWithCashPayment_when_change_due_is_nil_then_sends_zero_cash_marker() async throws {
+        // Given
+        let order = OrderFactory.newOrder(currency: .USD)
+
+        // When
+        try await sut.markOrderAsCompletedWithCashPayment(order: order, changeDueAmount: nil)
+
+        // Then
+        #expect(mockOrdersRemote.spyUpdatePOSOrderCashPaymentChangeDueAmount == "0")
+    }
+
+    @Test
     func markOrderAsCompletedWithCashPayment_throws_error_when_update_fails() async throws {
         // Given
         let order = OrderFactory.newOrder(currency: .USD)

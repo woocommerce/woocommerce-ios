@@ -23,6 +23,7 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol,
     var updateOrderCalled = false
     var spyUpdateOrderID: Int64?
     var shouldThrowError = false
+    var orderToReturnOnUpdate: POSOrder?
     private(set) var loadOrderRefundsCalled = false
 
     enum TestError: Error {
@@ -45,6 +46,9 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol,
 
         if shouldThrowError {
             throw TestError.updateOrderFailed
+        }
+        if let orderToReturnOnUpdate {
+            selectedOrder = orderToReturnOnUpdate
         }
     }
 

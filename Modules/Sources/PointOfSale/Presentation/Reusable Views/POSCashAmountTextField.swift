@@ -4,6 +4,7 @@ import WooFoundation
 struct POSCashAmountTextField: View {
     @Binding var amount: String
     @FocusState.Binding var isFocused: Bool
+    let onEdit: () -> Void
     let onSubmit: () -> Void
 
     @State private var displayText: String = ""
@@ -18,11 +19,13 @@ struct POSCashAmountTextField: View {
          isFocused: FocusState<Bool>.Binding,
          currencySettings: CurrencySettings,
          preset: Decimal? = nil,
+         onEdit: @escaping () -> Void = {},
          onSubmit: @escaping () -> Void) {
         self._amount = amount
         self._isFocused = isFocused
         self.formatter = POSCashAmountInputFormatter(currencySettings: currencySettings)
         self.preset = preset
+        self.onEdit = onEdit
         self.onSubmit = onSubmit
     }
 
@@ -46,13 +49,20 @@ struct POSCashAmountTextField: View {
                     onSubmit()
                 }
                 .onAppear {
-                    if !hasAppliedPreset, let preset {
-                        inputDigits = formatter.digits(from: preset)
+                    if !hasAppliedPreset {
+                        if !amount.isEmpty {
+                            inputDigits = String(amount.filter(\.isNumber))
+                            isDisplayingPreset = false
+                        } else if let preset {
+                            inputDigits = formatter.digits(from: preset)
+                            isDisplayingPreset = true
+                        } else {
+                            return
+                        }
                         let formatted = formatter.formattedAmount(from: inputDigits)
                         displayText = formatted
                         amount = formatted
                         hasAppliedPreset = true
-                        isDisplayingPreset = true
                     }
                 }
                 .onDisappear {
@@ -79,6 +89,7 @@ struct POSCashAmountTextField: View {
         ) {
             inputDigits = updatedDigits
             isDisplayingPreset = false
+            onEdit()
         }
 
         let formattedAmount = formatter.formattedAmount(from: inputDigits)

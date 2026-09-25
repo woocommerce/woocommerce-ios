@@ -208,6 +208,7 @@ protocol PointOfSaleAggregateModelProtocol {
             receiptSender: receiptSender,
             receiptPrinter: receiptPrinter,
             cashDrawer: cashDrawer,
+            cashSessionService: cashSessionService,
             configuration: .cart(
                 onNewOrder: { weakSelf?.startNewCart() },
                 onEditOrder: { weakSelf?.addMoreToCart() },

@@ -102,7 +102,7 @@ struct POSPastCashSessionsView: View {
         } label: {
             HStack(spacing: POSSpacing.medium) {
                 VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-                    Text(session.openedAt.formatted(date: .abbreviated, time: .omitted))
+                    Text(session.openedAt.formatted(date: .numeric, time: .omitted))
                         .font(.posBodyLargeBold)
                         .foregroundStyle(Color.posOnSurface)
                     Text(String.localizedStringWithFormat(Localization.sessionNumber, String(session.id)))

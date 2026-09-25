@@ -175,7 +175,8 @@ public struct PointOfSaleEntryPointView: View {
                                                 refundController: POSRefundController(refundSubmissionProcessor: refundSubmissionProcessor),
                                                 receiptSender: receiptSender,
                                                 refundSubmissionModel: refundSubmissionProcessor.stateModel,
-                                                cashDrawer: cashDrawer)
+                                                cashDrawer: cashDrawer,
+                                                cashSessionService: cashSessionService)
         if isLocalCatalogEligible, let grdbManager {
             self.cartProductObserver = POSCartProductObserver(
                 siteID: siteID,

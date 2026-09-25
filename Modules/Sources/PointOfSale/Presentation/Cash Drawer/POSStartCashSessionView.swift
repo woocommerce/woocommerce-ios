@@ -12,6 +12,12 @@ struct POSStartCashSessionView: View {
     let controller: POSCashSessionController
     let onStarted: () -> Void
 
+    init(controller: POSCashSessionController, onStarted: @escaping () -> Void, initialError: String? = nil) {
+        self.controller = controller
+        self.onStarted = onStarted
+        _startError = State(initialValue: initialError)
+    }
+
     private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings) }
 
     var body: some View {

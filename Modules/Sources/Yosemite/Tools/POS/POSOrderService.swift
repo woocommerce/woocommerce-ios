@@ -208,7 +208,8 @@ public final class POSOrderService: POSOrderServiceProtocol {
             let _ = try await ordersRemote.updatePOSOrder(
                 siteID: siteID,
                 order: updatedOrder,
-                cashPaymentChangeDueAmount: changeDueAmount,
+                // Core uses this metadata to identify a POS cash sale, including exact-cash payments.
+                cashPaymentChangeDueAmount: changeDueAmount ?? "0",
                 fields: fieldsToUpdate
             )
         } catch {

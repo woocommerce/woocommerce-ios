@@ -14,6 +14,7 @@ struct POSCashSessionEntryView: View {
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @FocusState private var isAmountFocused: Bool
     @State private var amount = ""
+    @State private var hasEditedAmount = false
     @State private var note = ""
     @State private var step: Step = .amount
     @State private var submitError: String?
@@ -26,6 +27,7 @@ struct POSCashSessionEntryView: View {
     private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings) }
     private var parsedAmount: Decimal? { money.parse(amount) }
     private var canContinue: Bool {
+        guard action != .close || hasEditedAmount else { return false }
         guard let parsedAmount else { return false }
         return action == .close ? parsedAmount >= 0 : parsedAmount > 0
     }
@@ -72,6 +74,7 @@ struct POSCashSessionEntryView: View {
                                            isFocused: $isAmountFocused,
                                            currencySettings: currencyProvider.currencySettings,
                                            preset: 0,
+                                           onEdit: { hasEditedAmount = true },
                                            onSubmit: { isAmountFocused = false })
                     Spacer()
                 }
@@ -80,7 +83,7 @@ struct POSCashSessionEntryView: View {
                         .font(.posBodyMediumRegular())
                         .foregroundStyle(.secondary)
                         .frame(maxWidth: .infinity)
-                    if let parsedAmount, parsedAmount != expected {
+                    if hasEditedAmount, let parsedAmount, parsedAmount != expected {
                         Text(String.localizedStringWithFormat(Localization.discrepancy, money.formatSigned(parsedAmount - expected)))
                             .font(.posBodyMediumBold)
                             .foregroundStyle(Color.posError)
@@ -167,6 +170,21 @@ struct POSCashSessionEntryView: View {
     }
 }
 
+#if DEBUG
+extension POSCashSessionEntryView {
+    /// Starts on the optional note step so the full flow can be inspected in previews.
+    init(action: Action, controller: POSCashSessionController, onClosed: @escaping (Int64) -> Void,
+         previewNoteStep: Bool) {
+        self.action = action
+        self.controller = controller
+        self.onClosed = onClosed
+        _amount = State(initialValue: "23.50")
+        _hasEditedAmount = State(initialValue: true)
+        _step = State(initialValue: previewNoteStep ? .note : .amount)
+    }
+}
+#endif
+
 private extension POSCashSessionEntryView {
     enum Localization {
         static let back = NSLocalizedString("pos.cashSession.entry.back", value: "Back", comment: "Back to cash amount entry")
@@ -175,7 +193,8 @@ private extension POSCashSessionEntryView {
         static let payInAmount = NSLocalizedString("pos.cashSession.entry.payInAmount", value: "How much is the Pay in?", comment: "Pay in amount prompt")
         static let payOutAmount = NSLocalizedString("pos.cashSession.entry.payOutAmount", value: "How much is the Pay out?", comment: "Pay out amount prompt")
         static let closeAmount = NSLocalizedString("pos.cashSession.entry.closeAmount", value: "Current amount in drawer", comment: "Counted cash prompt")
-        static let expectedAmount = NSLocalizedString("pos.cashSession.entry.expectedAmount", value: "Expected amount is %1$@", comment: "Expected cash while counting")
+        static let expectedAmount = NSLocalizedString("pos.cashSession.entry.expectedAmount", value: "Expected amount is %1$@",
+                                                      comment: "Expected cash while counting")
         static let discrepancy = NSLocalizedString("pos.cashSession.entry.discrepancyAmount", value: "Discrepancy: %1$@",
                                                    comment: "Counted cash difference from expected")
         static let movementNote = NSLocalizedString("pos.cashSession.entry.movementNote", value: "Enter a description", comment: "Pay in or pay out description")
@@ -185,6 +204,7 @@ private extension POSCashSessionEntryView {
         static let recordPayIn = NSLocalizedString("pos.cashSession.entry.recordPayIn", value: "Record Pay in", comment: "Record pay in button")
         static let recordPayOut = NSLocalizedString("pos.cashSession.entry.recordPayOut", value: "Record Pay out", comment: "Record pay out button")
         static let closeButton = NSLocalizedString("pos.cashSession.entry.closeButton", value: "Close session", comment: "Close cash session button")
-        static let errorTitle = NSLocalizedString("pos.cashSession.entry.errorTitle", value: "Could not update session", comment: "Cash session update error title")
+        static let errorTitle = NSLocalizedString("pos.cashSession.entry.errorTitle", value: "Could not update session",
+                                                  comment: "Cash session update error title")
     }
 }

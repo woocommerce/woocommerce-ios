@@ -8,6 +8,8 @@ public protocol POSCashSessionService {
     func session(id: Int64) async throws -> POSCashSession
     func startSession(openingCash: Decimal) async throws -> POSCashSession
     func recordMovement(sessionID: Int64, kind: POSCashSessionMovement.Kind, amount: Decimal, note: String?) async throws -> POSCashSession
+    func recordCashSale(orderID: Int64) async throws -> POSCashSession?
+    func recordCashRefund(orderID: Int64, refundID: Int64) async throws -> POSCashSession?
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal, note: String?) async throws -> POSCashSession
 }
 
@@ -25,6 +27,7 @@ public enum POSCashSessionServiceError: LocalizedError {
     case sessionAlreadyOpen
     case noOpenSession
     case invalidAmount
+    case invalidReference
     case sessionChanged
     case previewUnavailable
 
@@ -33,6 +36,9 @@ public enum POSCashSessionServiceError: LocalizedError {
         case .sessionAlreadyOpen: return NSLocalizedString("pos.cashSession.error.alreadyOpen", value: "A session is already open.", comment: "Cash session error")
         case .noOpenSession: return NSLocalizedString("pos.cashSession.error.noOpenSession", value: "There is no open session.", comment: "Cash session error")
         case .invalidAmount: return NSLocalizedString("pos.cashSession.error.invalidAmount", value: "Enter a valid cash amount.", comment: "Cash session error")
+        case .invalidReference:
+            return NSLocalizedString("pos.cashSession.error.invalidReference", value: "The cash order reference is invalid.",
+                                     comment: "Cash session error")
         case .sessionChanged:
             return NSLocalizedString("pos.cashSession.error.sessionChanged", value: "The session changed. Try again.", comment: "Cash session error")
         case .previewUnavailable:
@@ -56,6 +62,10 @@ final class POSMockCashSessionService: POSCashSessionService {
     private let failCurrentLoad: Bool
     private let failPastLoad: Bool
     private let failDetailLoad: Bool
+    private let mockCashSaleAmount: Decimal
+    private let mockCashRefundAmount: Decimal
+    private var recordedSaleOrderIDs: Set<Int64> = []
+    private var recordedRefundIDs: Set<Int64> = []
 
     init(now: @escaping () -> Date = Date.init,
          currentActor: String = "Thomas",
@@ -64,7 +74,9 @@ final class POSMockCashSessionService: POSCashSessionService {
          hasSampleHistory: Bool = true,
          failCurrentLoad: Bool = false,
          failPastLoad: Bool = false,
-         failDetailLoad: Bool = false) {
+         failDetailLoad: Bool = false,
+         mockCashSaleAmount: Decimal = 24,
+         mockCashRefundAmount: Decimal = 12) {
         self.now = now
         self.currentActor = currentActor
         self.closedSessions = hasSampleHistory ? Self.sampleSessions() : []
@@ -73,6 +85,8 @@ final class POSMockCashSessionService: POSCashSessionService {
         self.failCurrentLoad = failCurrentLoad
         self.failPastLoad = failPastLoad
         self.failDetailLoad = failDetailLoad
+        self.mockCashSaleAmount = mockCashSaleAmount
+        self.mockCashRefundAmount = mockCashRefundAmount
     }
 
     func currentSession() async throws -> POSCashSession? {
@@ -120,6 +134,34 @@ final class POSMockCashSessionService: POSCashSessionService {
         session.movements.append(.init(id: UUID(), kind: kind, amount: amount, date: now(),
                                        actor: currentActor, orderID: nil, note: note))
         session.revision += 1
+        openSession = session
+        return session
+    }
+
+    func recordCashSale(orderID: Int64) async throws -> POSCashSession? {
+        try await Task.sleep(for: writeDelay)
+        guard var session = openSession else { return nil }
+        guard orderID > 0 else { throw POSCashSessionServiceError.invalidReference }
+        guard !recordedSaleOrderIDs.contains(orderID) else { return session }
+        guard mockCashSaleAmount > 0 else { throw POSCashSessionServiceError.invalidAmount }
+        session.movements.append(.init(id: UUID(), kind: .cashSale, amount: mockCashSaleAmount, date: now(),
+                                       actor: currentActor, orderID: orderID, note: nil))
+        session.revision += 1
+        recordedSaleOrderIDs.insert(orderID)
+        openSession = session
+        return session
+    }
+
+    func recordCashRefund(orderID: Int64, refundID: Int64) async throws -> POSCashSession? {
+        try await Task.sleep(for: writeDelay)
+        guard var session = openSession else { return nil }
+        guard orderID > 0, refundID > 0 else { throw POSCashSessionServiceError.invalidReference }
+        guard !recordedRefundIDs.contains(refundID) else { return session }
+        guard mockCashRefundAmount > 0 else { throw POSCashSessionServiceError.invalidAmount }
+        session.movements.append(.init(id: UUID(), kind: .cashRefund, amount: mockCashRefundAmount, date: now(),
+                                       actor: currentActor, orderID: orderID, note: nil))
+        session.revision += 1
+        recordedRefundIDs.insert(refundID)
         openSession = session
         return session
     }

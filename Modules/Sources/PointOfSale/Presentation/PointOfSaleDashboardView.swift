@@ -122,7 +122,8 @@ struct PointOfSaleDashboardView: View {
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
                                    onSettingsSelected: requestSettingsPermission,
-                                   onOrdersSelected: presentOrders)
+                                   onOrdersSelected: presentOrders,
+                                   onCashDrawerSelected: {})
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)

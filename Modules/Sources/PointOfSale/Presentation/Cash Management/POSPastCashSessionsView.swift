@@ -34,6 +34,7 @@ struct POSPastCashSessionsView: View {
                     title: Localization.sessionDetails,
                     backButtonConfiguration: .init(state: .enabled, action: { selectedSessionID = nil })
                 )
+                .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: { selectedSessionID = nil }))
                 if let message = controller.sessionDetailError {
                     POSListEmptyView(
                         viewModel: POSPastCashSessionsErrorViewModel(title: Localization.detailsError, subtitle: message),

@@ -119,10 +119,57 @@ struct POSCashDrawerControllerTests {
         #expect(sut.drawerName == nil)
         #expect(makeController(service: MockCashDrawerService()).drawerName == nil)
     }
+
+    @Test func test_open_when_drawer_is_named_then_records_open_requested_event_in_session() async {
+        // Given
+        let sessionService = MockPOSCashSessionService()
+        let sut = makeController(service: MockCashDrawerService(), sessionService: sessionService)
+        sut.updateDrawerName("Front till")
+
+        // When
+        let recorded = await withCheckedContinuation { continuation in
+            sessionService.onDrawerEventRecorded = { continuation.resume(returning: $0) }
+            Task { await sut.open(for: .cashSale, orderID: 42) }
+        }
+
+        // Then
+        #expect(recorded == POSCashDrawerEventRecord(outcome: .openRequested, reason: .cashSale, orderID: 42, occurredAt: date))
+    }
+
+    @Test func test_open_when_printer_not_connected_then_records_open_failed_event_in_session() async {
+        // Given
+        let drawerService = MockCashDrawerService()
+        drawerService.openError = PrinterError.printerNotConnected
+        let sessionService = MockPOSCashSessionService()
+        let sut = makeController(service: drawerService, sessionService: sessionService)
+        sut.updateDrawerName("Front till")
+
+        // When
+        let recorded = await withCheckedContinuation { continuation in
+            sessionService.onDrawerEventRecorded = { continuation.resume(returning: $0) }
+            Task { await sut.open(for: .noSale) }
+        }
+
+        // Then
+        #expect(recorded == POSCashDrawerEventRecord(outcome: .openFailed, reason: .noSale, orderID: nil, occurredAt: date))
+    }
+
+    @Test func test_open_when_drawer_is_not_named_then_does_not_record_event_in_session() async {
+        // Given
+        let sessionService = MockPOSCashSessionService()
+        let sut = makeController(service: MockCashDrawerService(), sessionService: sessionService)
+
+        // When
+        await sut.open(for: .test)
+
+        // Then
+        #expect(sessionService.recordedDrawerEvents.isEmpty)
+    }
 }
 
 private extension POSCashDrawerControllerTests {
-    func makeController(service: MockCashDrawerService) -> POSCashDrawerController {
-        POSCashDrawerController(service: service, userDefaults: userDefaults, now: { [date] in date })
+    func makeController(service: MockCashDrawerService,
+                        sessionService: MockPOSCashSessionService? = nil) -> POSCashDrawerController {
+        POSCashDrawerController(service: service, sessionService: sessionService, userDefaults: userDefaults, now: { [date] in date })
     }
 }

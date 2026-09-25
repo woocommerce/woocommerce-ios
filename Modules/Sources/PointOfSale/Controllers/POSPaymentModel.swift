@@ -705,7 +705,7 @@ extension POSPaymentModel {
         }
         // Open the drawer without waiting for it: a slow or missing drawer must not hold up the sale.
         if let cashDrawer {
-            Task { await cashDrawer.openAutomatically(for: .cashSale) }
+            Task { await cashDrawer.openAutomatically(for: .cashSale, orderID: order.orderID) }
         }
         try? await postPaymentStep?()
         cashPaymentSuccess()

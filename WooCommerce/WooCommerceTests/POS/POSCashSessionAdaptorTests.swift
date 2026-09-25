@@ -7,6 +7,7 @@ import enum NetworkingCore.DotcomError
 import struct NetworkingCore.PagedItems
 import struct Networking.POSCashSessionResponse
 import struct Networking.POSCashMovementResponse
+import struct Networking.POSCashDrawerEventResponse
 import protocol Networking.POSCashSessionRemoteProtocol
 import enum PointOfSale.POSCashSessionServiceError
 @testable import WooCommerce
@@ -204,6 +205,11 @@ private final class MockPOSCashSessionRemote: POSCashSessionRemoteProtocol {
         recordedMovementRequestIDs.append(requestID)
         guard let movementResponse else { throw UnexpectedCallError() }
         return movementResponse
+    }
+
+    func recordDrawerEvent(siteID: Int64, sessionID: Int64, requestID: UUID, type: String, reason: String,
+                           orderID: Int64?, occurredAt: String) async throws -> POSCashDrawerEventResponse {
+        throw UnexpectedCallError()
     }
 
     func recordCashSale(siteID: Int64, sessionID: Int64, requestID: UUID, orderID: Int64) async throws -> POSCashMovementResponse {

@@ -18,6 +18,8 @@ public protocol POSCashSessionService {
                         note: String?, requestID: UUID) async throws -> POSCashSession
     func recordCashSale(orderID: Int64) async throws -> POSCashSession?
     func recordCashRefund(orderID: Int64, refundID: Int64) async throws -> POSCashSession?
+    /// Records a cash drawer open attempt in the open session. Does nothing when no session is open.
+    func recordDrawerEvent(_ event: POSCashDrawerEventRecord) async throws
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal, note: String?) async throws -> POSCashSession
 }
 
@@ -34,6 +36,36 @@ public extension POSCashSessionService {
     }
 
     func retryPendingCashMovements() async {}
+}
+
+/// A cash drawer open attempt, recorded in the open cash session for accountability.
+/// Drawer events never change cash totals.
+public struct POSCashDrawerEventRecord: Equatable {
+    public enum Outcome: Equatable {
+        /// The open command reached the printer. This doesn't prove the drawer physically opened.
+        case openRequested
+        /// The printer wasn't connected or the open command failed.
+        case openFailed
+    }
+
+    public enum Reason: Equatable {
+        case cashSale
+        case cashRefund
+        case noSale
+        case test
+    }
+
+    public let outcome: Outcome
+    public let reason: Reason
+    public let orderID: Int64?
+    public let occurredAt: Date
+
+    public init(outcome: Outcome, reason: Reason, orderID: Int64?, occurredAt: Date) {
+        self.outcome = outcome
+        self.reason = reason
+        self.orderID = orderID
+        self.occurredAt = occurredAt
+    }
 }
 
 public struct POSCashSessionPage {
@@ -170,6 +202,10 @@ final class POSMockCashSessionService: POSCashSessionService {
         nextID += 1
         openSession = session
         return session
+    }
+
+    func recordDrawerEvent(_ event: POSCashDrawerEventRecord) async throws {
+        // Demo sessions don't keep a drawer history.
     }
 
     func recordMovement(sessionID: Int64, kind: POSCashSessionMovement.Kind, amount: Decimal,

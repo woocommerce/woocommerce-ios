@@ -159,6 +159,15 @@ final class POSCashSessionAdaptor: POSCashSessionService {
         return updated
     }
 
+    func recordDrawerEvent(_ event: POSCashDrawerEventRecord) async throws {
+        guard let activeID = try await activeSessionID() else { return }
+        _ = try await remote.recordDrawerEvent(siteID: siteID, sessionID: activeID, requestID: UUID(),
+                                               type: Self.drawerEventType(for: event.outcome),
+                                               reason: Self.drawerEventReason(for: event.reason),
+                                               orderID: event.orderID,
+                                               occurredAt: ISO8601DateFormatter().string(from: event.occurredAt))
+    }
+
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal,
                       note: String?) async throws -> POSCashSession {
         guard !hasPendingCashMovements else { throw POSCashSessionServiceError.pendingCashMovements }
@@ -222,6 +231,22 @@ private extension POSCashSessionAdaptor {
         let generated = UUID().uuidString
         UserDefaults.standard.set(generated, forKey: key)
         return generated
+    }
+
+    static func drawerEventType(for outcome: POSCashDrawerEventRecord.Outcome) -> String {
+        switch outcome {
+        case .openRequested: "open_requested"
+        case .openFailed: "open_failed"
+        }
+    }
+
+    static func drawerEventReason(for reason: POSCashDrawerEventRecord.Reason) -> String {
+        switch reason {
+        case .cashSale: "cash_sale"
+        case .cashRefund: "cash_refund"
+        case .noSale: "no_sale"
+        case .test: "test"
+        }
     }
 
     static func movementType(for kind: POSCashSessionMovement.Kind) -> String? {

@@ -118,7 +118,7 @@ import struct Yosemite.POSOrder
         let result = try await refundController.processRefund(reason: reason)
         // Open the drawer so the cashier can hand the cash back, without holding up the refund flow.
         if result.isCashRefund, let cashDrawer {
-            Task { await cashDrawer.openAutomatically(for: .cashRefund) }
+            Task { await cashDrawer.openAutomatically(for: .cashRefund, orderID: result.refundedOrderID) }
         }
         if result.isCashRefund, let cashSessionService, let cashSessionID {
             do {

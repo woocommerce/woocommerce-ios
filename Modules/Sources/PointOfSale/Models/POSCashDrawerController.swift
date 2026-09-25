@@ -30,6 +30,15 @@ struct POSCashDrawerEvent: Equatable {
     let reason: POSCashDrawerOpenReason
     let result: POSCashDrawerOpenResult
     let date: Date
+    /// The order the drawer opened for, for cash sales and refunds.
+    let orderID: Int64?
+
+    init(reason: POSCashDrawerOpenReason, result: POSCashDrawerOpenResult, date: Date, orderID: Int64? = nil) {
+        self.reason = reason
+        self.result = result
+        self.date = date
+        self.orderID = orderID
+    }
 }
 
 /// Opens the cash drawer connected to the receipt printer.
@@ -57,13 +66,17 @@ final class POSCashDrawerController {
     @ObservationIgnored var onDrawerEvent: ((POSCashDrawerEvent) -> Void)?
 
     @ObservationIgnored private let service: CashDrawerService
+    /// Records each open attempt in the open cash session. Nil when cash sessions aren't available.
+    @ObservationIgnored private let sessionService: (any POSCashSessionService)?
     @ObservationIgnored private let userDefaults: UserDefaults
     @ObservationIgnored private let now: () -> Date
 
     init(service: CashDrawerService,
+         sessionService: (any POSCashSessionService)? = nil,
          userDefaults: UserDefaults = .standard,
          now: @escaping () -> Date = Date.init) {
         self.service = service
+        self.sessionService = sessionService
         self.userDefaults = userDefaults
         self.now = now
         self.opensAutomaticallyForCashPayments = userDefaults.object(forKey: Constants.opensAutomaticallyKey) as? Bool ?? true
@@ -78,16 +91,16 @@ final class POSCashDrawerController {
     }
 
     /// Opens the drawer after a confirmed cash sale or cash refund, if automatic opening is on.
-    func openAutomatically(for reason: POSCashDrawerOpenReason) async {
+    func openAutomatically(for reason: POSCashDrawerOpenReason, orderID: Int64? = nil) async {
         guard opensAutomaticallyForCashPayments else {
             return
         }
-        await open(for: reason)
+        await open(for: reason, orderID: orderID)
     }
 
     /// Opens the drawer and reports the outcome. Never throws.
     @discardableResult
-    func open(for reason: POSCashDrawerOpenReason) async -> POSCashDrawerOpenResult {
+    func open(for reason: POSCashDrawerOpenReason, orderID: Int64? = nil) async -> POSCashDrawerOpenResult {
         let result: POSCashDrawerOpenResult
         do {
             try await service.openCashDrawer()
@@ -99,10 +112,46 @@ final class POSCashDrawerController {
             result = .failed
         }
 
-        let event = POSCashDrawerEvent(reason: reason, result: result, date: now())
+        let event = POSCashDrawerEvent(reason: reason, result: result, date: now(), orderID: orderID)
         lastEvent = event
         onDrawerEvent?(event)
+        recordInSession(event)
         return result
+    }
+}
+
+private extension POSCashDrawerController {
+    /// Records the event in the open cash session without waiting, so it never holds up a sale.
+    /// Core only accepts drawer events for a session opened with a drawer, so events are skipped until the drawer is named.
+    func recordInSession(_ event: POSCashDrawerEvent) {
+        guard let sessionService, drawerName != nil else {
+            return
+        }
+        let record = POSCashDrawerEventRecord(outcome: event.result == .opened ? .openRequested : .openFailed,
+                                              reason: Self.recordReason(for: event.reason),
+                                              orderID: event.orderID,
+                                              occurredAt: event.date)
+        Task {
+            do {
+                try await sessionService.recordDrawerEvent(record)
+                DDLogInfo("💵 [CashDrawer] Recorded drawer event \(record)")
+            } catch {
+                DDLogError("💵 [CashDrawer] Failed to record drawer event \(record): \(error)")
+            }
+        }
+    }
+
+    static func recordReason(for reason: POSCashDrawerOpenReason) -> POSCashDrawerEventRecord.Reason {
+        switch reason {
+        case .cashSale:
+            return .cashSale
+        case .cashRefund:
+            return .cashRefund
+        case .noSale:
+            return .noSale
+        case .test:
+            return .test
+        }
     }
 }
 

@@ -8,6 +8,8 @@ public protocol POSCashSessionRemoteProtocol {
     func recordMovement(siteID: Int64, sessionID: Int64, requestID: UUID, type: String,
                         amount: String, reason: String) async throws -> POSCashMovementResponse
     func recordCashSale(siteID: Int64, sessionID: Int64, requestID: UUID, orderID: Int64) async throws -> POSCashMovementResponse
+    func recordDrawerEvent(siteID: Int64, sessionID: Int64, requestID: UUID, type: String, reason: String,
+                           orderID: Int64?, occurredAt: String) async throws -> POSCashDrawerEventResponse
     func recordCashRefund(siteID: Int64, sessionID: Int64, requestID: UUID, orderID: Int64,
                           refundID: Int64) async throws -> POSCashMovementResponse
     func closeSession(siteID: Int64, sessionID: Int64, requestID: UUID, expectedRevision: Int,
@@ -92,6 +94,22 @@ public final class POSCashSessionRemote: Remote, POSCashSessionRemoteProtocol {
                                      path: "\(Path.sessions)/\(sessionID)/movements",
                                      parameters: parameters, availableAsRESTRequest: true)
         return try await enqueue(request, mapper: SingleItemMapper<POSCashMovementResponse>(siteID: siteID))
+    }
+
+    public func recordDrawerEvent(siteID: Int64, sessionID: Int64, requestID: UUID, type: String, reason: String,
+                                  orderID: Int64?, occurredAt: String) async throws -> POSCashDrawerEventResponse {
+        // No drawer_id: Core records the event against the drawer the session was opened with.
+        var parameters: RequestParameterConvertibleDictionary = [
+            "request_id": requestID.uuidString,
+            "type": type,
+            "reason": reason,
+            "occurred_at": occurredAt
+        ]
+        if let orderID { parameters["order_id"] = orderID }
+        let request = JetpackRequest(wooApiVersion: .wcPosV1, method: .post, siteID: siteID,
+                                     path: "\(Path.sessions)/\(sessionID)/drawer-events",
+                                     parameters: parameters, availableAsRESTRequest: true)
+        return try await enqueue(request, mapper: SingleItemMapper<POSCashDrawerEventResponse>(siteID: siteID))
     }
 
     public func closeSession(siteID: Int64, sessionID: Int64, requestID: UUID, expectedRevision: Int,

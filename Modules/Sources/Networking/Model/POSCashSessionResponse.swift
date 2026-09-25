@@ -58,3 +58,13 @@ public struct POSCashMovementResponse: Decodable {
         case createdByName = "created_by_name"
     }
 }
+
+public struct POSCashDrawerEventResponse: Decodable {
+    public let id: Int64
+    public let type: String
+    public let reason: String
+
+    private enum CodingKeys: String, CodingKey {
+        case id, type, reason
+    }
+}

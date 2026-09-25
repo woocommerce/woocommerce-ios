@@ -5,6 +5,7 @@ import NetworkingCore
 
 public typealias POSCashSessionResponse = Networking.POSCashSessionResponse
 public typealias POSCashMovementResponse = Networking.POSCashMovementResponse
+public typealias POSCashDrawerEventResponse = Networking.POSCashDrawerEventResponse
 public typealias POSCashSessionSite = NetworkingCore.JetpackSite
 
 /// Store API access for cash management. App adaptors depend on this Yosemite boundary.
@@ -55,6 +56,12 @@ public final class POSCashSessionRemoteService {
 
     public func recordCashRefund(siteID: Int64, sessionID: Int64, requestID: UUID, orderID: Int64, refundID: Int64) async throws -> POSCashMovementResponse {
         try await perform { try await remote.recordCashRefund(siteID: siteID, sessionID: sessionID, requestID: requestID, orderID: orderID, refundID: refundID) }
+    }
+
+    public func recordDrawerEvent(siteID: Int64, sessionID: Int64, requestID: UUID, type: String, reason: String,
+                                  orderID: Int64?, occurredAt: String) async throws -> POSCashDrawerEventResponse {
+        try await perform { try await remote.recordDrawerEvent(siteID: siteID, sessionID: sessionID, requestID: requestID,
+                                                               type: type, reason: reason, orderID: orderID, occurredAt: occurredAt) }
     }
 
     public func closeSession(siteID: Int64, sessionID: Int64, requestID: UUID, expectedRevision: Int,

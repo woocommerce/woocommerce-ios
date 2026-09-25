@@ -123,7 +123,7 @@ struct PointOfSaleDashboardView: View {
                                    showDocumentation: $showDocumentation,
                                    onSettingsSelected: requestSettingsPermission,
                                    onOrdersSelected: presentOrders,
-                                   onCashDrawerSelected: {})
+                                   onCashDrawerSelected: presentCashDrawer)
             .offset(x: Constants.floatingControlHorizontalOffset, y: -Constants.floatingControlVerticalOffset)
             .padding(.bottom, Constants.floatingControlBottomPadding)
             .trackSize(size: $floatingSize)
@@ -178,6 +178,9 @@ struct PointOfSaleDashboardView: View {
         .posFullScreenCover(isPresented: $showOrders) {
             POSOrdersView(isPresented: $showOrders)
         }
+        .posFullScreenCover(isPresented: $showCashDrawer) {
+            POSCashDrawerView()
+        }
         .onChange(of: showSettings) { oldValue, newValue in
             guard !newValue, oldValue else { return }
             Task {
@@ -193,6 +196,7 @@ struct PointOfSaleDashboardView: View {
             showDocumentation = false
             showSettings = false
             showOrders = false
+            showCashDrawer = false
         }
         .onChange(of: posModel.entryPointController.eligibilityState) { oldValue, newValue in
             guard case .eligible = newValue, oldValue != newValue else { return }
@@ -379,6 +383,7 @@ struct PointOfSaleDashboardView: View {
     }
 
     @State private var showOrders: Bool = false
+    @State private var showCashDrawer: Bool = false
     @State private var phoneShowingBarcodeScannerSetup: Bool = false
     @State private var phoneCartButtonPulse: Bool = false
 
@@ -640,6 +645,11 @@ private extension PointOfSaleDashboardView {
     func presentOrders() {
         posModel.cancelInFlightCheckout()
         showOrders = true
+    }
+
+    /// Opens the cash drawer screen.
+    func presentCashDrawer() {
+        showCashDrawer = true
     }
 
     /// Opens POS settings, gated on `.viewPOSSettings` via manager override.

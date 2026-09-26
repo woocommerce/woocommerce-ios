@@ -1,0 +1,45 @@
+appId: ${APP_ID}
+---
+# Multi-line evalScript blocks do not run on Maestro 2.9.0, so each step is a
+# single ${} expression.
+- evalScript: ${output.dashboardOriginalState = output['dashboardCardState_' + String(CARD_KEY)]}
+- assertTrue:
+    condition: ${!!output.dashboardOriginalState}
+    label: Captured dashboard state for ${CARD_TITLE}
+- evalScript: "${output.dashboardExpectedState = (typeof EXPECTED_MODE !== 'undefined' && String(EXPECTED_MODE) === 'inverse') ? (output.dashboardOriginalState === 'selected' ? 'unselected' : output.dashboardOriginalState === 'unselected' ? 'selected' : output.dashboardOriginalState) : output.dashboardOriginalState}"
+- repeat:
+    times: 6
+    commands:
+      - swipe: { start: "50%,25%", end: "50%,80%", duration: 300 }
+- scrollUntilVisible:
+    element: "${CARD_TITLE}"
+    direction: DOWN
+    timeout: 15000
+    optional: true
+- runFlow:
+    when:
+      true: ${output.dashboardExpectedState === 'selected'}
+    commands:
+      - assertVisible:
+          id: "selectable-item-selected-${CARD_TITLE}"
+- runFlow:
+    when:
+      true: ${output.dashboardExpectedState === 'unselected'}
+    commands:
+      - assertVisible:
+          id: "selectable-item-unselected-${CARD_TITLE}"
+- runFlow:
+    when:
+      true: ${output.dashboardExpectedState === 'unavailable'}
+    commands:
+      - assertVisible:
+          text: "${CARD_TITLE}"
+      - assertVisible:
+          text: "Unavailable"
+          rightOf:
+            text: "${CARD_TITLE}"
+- runFlow:
+    when:
+      true: ${output.dashboardExpectedState === 'hidden'}
+    commands:
+      - assertNotVisible: "${CARD_TITLE}"

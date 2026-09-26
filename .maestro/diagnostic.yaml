@@ -1,0 +1,8 @@
+appId: ${APP_ID}
+name: iOS app launch diagnostic
+tags:
+  - diagnostic
+---
+- launchApp:
+    clearState: false
+- takeScreenshot: diagnostic-launch

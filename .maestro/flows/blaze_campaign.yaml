@@ -1,0 +1,43 @@
+# p2: hub.blaze.create
+# The phone-full store must be eligible for Blaze, so a missing Blaze row fails the flow.
+appId: ${APP_ID}
+name: "Blaze - Campaign creation"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- scrollUntilVisible:
+    element:
+      id: "menu-blaze"
+    direction: DOWN
+    timeout: 15000
+    label: "Require a Blaze-eligible extended-smoke store"
+- tapOn:
+    id: "menu-blaze"
+- extendedWaitUntil:
+    visible: "Blaze Campaigns|Get your products seen by millions"
+    timeout: 25000
+- assertNotVisible:
+    id: "menu-blaze"
+- runFlow:
+    when:
+      visible: "Blaze Campaigns"
+    commands:
+      - assertVisible: "Create"
+- runFlow:
+    when:
+      visible: "Get your products seen by millions"
+    commands:
+      - assertVisible: "Create Your Campaign"
+- takeScreenshot: blaze_campaign_destination
+- tapOn:
+    id: "BackButton"
+- extendedWaitUntil:
+    visible:
+      id: "menu-blaze"
+    timeout: 15000

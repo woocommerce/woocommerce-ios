@@ -1,0 +1,37 @@
+# Reach the legacy site-address form from a fresh login surface. The primary
+# prologue CTA is intercepted asynchronously when QR login is enabled, so wait
+# for either destination before deciding whether the QR fallback is required.
+appId: ${APP_ID}
+---
+- extendedWaitUntil:
+    visible:
+      id: "Login Onboarding Skip Button|prologue-title-label"
+    timeout: 45000
+- runFlow:
+    when:
+      visible:
+        id: "Login Onboarding Skip Button"
+    commands:
+      - tapOn:
+          id: "Login Onboarding Skip Button"
+
+- extendedWaitUntil:
+    visible:
+      id: "prologue-title-label"
+    timeout: 15000
+- tapOn:
+    id: "Prologue Self Hosted Button"
+
+- extendedWaitUntil:
+    visible: 'No computer\? Log in with site address|Site address'
+    timeout: 30000
+- runFlow:
+    when:
+      visible: 'No computer\? Log in with site address'
+    commands:
+      - tapOn: 'No computer\? Log in with site address'
+
+- extendedWaitUntil:
+    visible:
+      id: "Site address"
+    timeout: 15000

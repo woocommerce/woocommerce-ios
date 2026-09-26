@@ -1,0 +1,66 @@
+# p2: hub.payments
+# The phone-full store supports card readers, so missing card-reader rows fail the flow.
+appId: ${APP_ID}
+name: "Hub Menu - Payments"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- tapOn:
+    id: "menu-payments"
+- extendedWaitUntil:
+    visible: "Payments"
+    timeout: 20000
+- assertVisible: "Payments"
+- extendedWaitUntil:
+    visible: "Pay In Person"
+    timeout: 20000
+- assertVisible: "Pay In Person"
+- takeScreenshot: hub_payments_top
+- scrollUntilVisible:
+    element:
+      id: "card-reader-manuals"
+    direction: DOWN
+    timeout: 15000
+    label: "Require a card-reader-eligible extended-smoke store"
+- assertVisible: "Order Card Reader"
+- assertVisible: "Manage Card Reader"
+- assertVisible: ".*Learn more about In.Person Payments.*"
+- tapOn: "Order Card Reader"
+- extendedWaitUntil:
+    notVisible: "Manage Card Reader"
+    timeout: 20000
+- takeScreenshot: hub_payments_order_reader
+# The purchase page is a pushed web view, and a swipe back lands on the
+# page itself while it is still loading.
+- tapOn:
+    id: "BackButton"
+- extendedWaitUntil:
+    visible:
+      id: "card-reader-manuals"
+    timeout: 20000
+- tapOn:
+    id: "card-reader-manuals"
+- extendedWaitUntil:
+    visible: "Card Reader Manuals"
+    timeout: 15000
+- assertVisible: "BBPOS Chipper 2X BT"
+- assertVisible: "Stripe Reader M2"
+- takeScreenshot: hub_payments_manuals
+- tapOn:
+    id: "BackButton"
+- extendedWaitUntil:
+    visible:
+      id: "card-reader-manuals"
+    timeout: 15000
+- tapOn:
+    id: "BackButton"
+- extendedWaitUntil:
+    visible:
+      id: "menu-payments"
+    timeout: 10000

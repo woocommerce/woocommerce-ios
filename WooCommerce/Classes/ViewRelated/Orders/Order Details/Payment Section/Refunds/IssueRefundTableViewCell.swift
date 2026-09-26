@@ -36,6 +36,7 @@ private extension IssueRefundTableViewCell {
     func configureIssueRefundButton() {
         issueRefundButton.applySecondaryButtonStyle()
         issueRefundButton.setTitle(Localization.buttonTitle, for: .normal)
+        accessibilityIdentifier = "order-details-issue-refund-button"
     }
 }
 

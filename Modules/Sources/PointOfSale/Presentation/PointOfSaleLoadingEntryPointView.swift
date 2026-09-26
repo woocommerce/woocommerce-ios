@@ -7,6 +7,7 @@ public struct PointOfSaleLoadingEntryPointView: View {
 
     public var body: some View {
         PointOfSaleLoadingView()
-            .ignoresSafeArea()
+            .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore)
+            .background(Color.posSurface.ignoresSafeArea())
     }
 }

@@ -82,7 +82,7 @@ struct PointOfSaleDashboardView: View {
                     onExit: { dismiss() }
                 )
                     .transition(.opacity)
-                    .ignoresSafeArea()
+                    .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore)
             case .ineligible(let reason):
                 POSIneligibleView(reason: reason, onRefresh: {
                     try await posModel.entryPointController.refreshEligibility(reason: reason)
@@ -140,12 +140,10 @@ struct PointOfSaleDashboardView: View {
         }
         .environment(\.posBackgroundAppearance, backgroundAppearance)
         .animation(.easeInOut, value: viewState == .loading())
-        .background(Color.posSurface)
+        .background(Color.posSurface.ignoresSafeArea())
         .navigationBarBackButtonHidden(true)
-        // Applied before the posModal/posRootModal modifiers so only the dashboard content
-        // ignores the iOS 26 container insets — the modal overlay must keep the top safe
-        // area, or full-screen phone modals lay out underneath the status bar.
-        .ignoresSafeArea(dashboardIgnoredSafeAreaRegions)
+        .ignoresSafeArea(.posBottomRegionsToIgnore(isCompact: isPhoneLayout,
+                                                 isFullSizeKeyboardVisible: keyboardObserver.isFullSizeKeyboardVisible), edges: .bottom)
         .posModal(item: $posModel.cardPresentPaymentOnboardingViewContainer, onDismiss: {
             posModel.cancelCardPaymentsOnboarding()
         }) { factory in
@@ -236,27 +234,29 @@ struct PointOfSaleDashboardView: View {
         Group {
             switch posModel.orderStage {
             case .building:
-                VStack(spacing: POSSpacing.none) {
-                    ItemListView(
-                        selectedItemListType: $viewStateCoordinator.selectedItemListType,
-                        searchTerm: $viewStateCoordinator.searchTerm,
-                        httpsConfigurationNotice: httpsConfigurationNotice,
-                        phoneHeaderAccessoryBuilder: { context in
-                            AnyView(phoneOverflowMenu(
-                                canCreateCoupon: context.canCreateCoupon,
-                                onCreateCoupon: context.onCreateCoupon
-                            ))
+                GeometryReader { geometry in
+                    VStack(spacing: POSSpacing.none) {
+                        ItemListView(
+                            selectedItemListType: $viewStateCoordinator.selectedItemListType,
+                            searchTerm: $viewStateCoordinator.searchTerm,
+                            httpsConfigurationNotice: httpsConfigurationNotice,
+                            phoneHeaderAccessoryBuilder: { context in
+                                AnyView(phoneOverflowMenu(
+                                    canCreateCoupon: context.canCreateCoupon,
+                                    onCreateCoupon: context.onCreateCoupon
+                                ))
+                            }
+                        )
+                        if PointOfSaleDashboardViewHelper.showsCompactCartButton(
+                            cartIsEmpty: posModel.cart.isEmpty,
+                            floatingControlSuppressed: floatingControlSuppressed
+                        ) {
+                            phoneCartButton(bottomSafeAreaInset: geometry.safeAreaInsets.bottom)
+                                .transition(.move(edge: .bottom).combined(with: .opacity))
                         }
-                    )
-                    if PointOfSaleDashboardViewHelper.showsCompactCartButton(
-                        cartIsEmpty: posModel.cart.isEmpty,
-                        floatingControlSuppressed: floatingControlSuppressed
-                    ) {
-                        phoneCartButton
-                            .transition(.move(edge: .bottom).combined(with: .opacity))
                     }
+                    .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: posModel.cart.isEmpty)
                 }
-                .animation(.snappy(duration: Constants.cartButtonAppearanceDuration), value: posModel.cart.isEmpty)
             case .finalizing:
                 NavigationStack(path: $navigationPath) {
                     phoneTotalsContainer
@@ -334,7 +334,7 @@ struct PointOfSaleDashboardView: View {
                 }
         }
         .animation(.default, value: posModel.orderStage)
-        .ignoresSafeArea()
+        .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore, edges: [.top, .horizontal])
         .background(Color.posSurface.ignoresSafeArea())
     }
 
@@ -437,7 +437,7 @@ struct PointOfSaleDashboardView: View {
         posModel.cart.totalItemCount
     }
 
-    private var phoneCartButton: some View {
+    private func phoneCartButton(bottomSafeAreaInset: CGFloat) -> some View {
         Button {
             phoneCartPresentationDetent = .medium
             phoneShowingCart = true
@@ -450,7 +450,7 @@ struct PointOfSaleDashboardView: View {
                 .animation(.snappy(duration: 0.25), value: phoneCartItemsCount)
         }
         .buttonStyle(POSFilledButtonStyle(size: .normal))
-        .posPhoneBottomButtonPadding()
+        .posPhoneBottomButtonPadding(bottom: POSCompactFooterLayout.bottomPadding(safeAreaInset: bottomSafeAreaInset))
         // Quick pulse to confirm an item was added — only on count increases, so removing items
         // doesn't bounce the button distractingly.
         .scaleEffect(phoneCartButtonPulse ? 1.04 : 1.0)
@@ -569,7 +569,7 @@ struct PointOfSaleDashboardView: View {
             .animation(.default, value: posModel.orderStage)
             .animation(.default, value: posModel.paymentState.card.shownFullScreen)
         }
-        .ignoresSafeArea()
+        .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore, edges: [.top, .horizontal])
         .background(Color.posSurface.ignoresSafeArea())
         .environment(\.posNavigationRouter, navigationRouter)
     }
@@ -749,17 +749,6 @@ private extension PointOfSaleDashboardView {
     }
 }
 
-private extension PointOfSaleDashboardView {
-    /// Ignore keyboard safe area only for the full-size on-screen keyboard, so floating
-    /// controls sit above the external keyboard's helper bar (pre-iOS 26 only; iOS 26 has no helper bar).
-    var dashboardIgnoredSafeAreaRegions: SafeAreaRegions {
-        if keyboardObserver.isFullSizeKeyboardVisible {
-            return SafeAreaRegions.posContainerRegionToIgnore.union(.keyboard)
-        } else {
-            return .posContainerRegionToIgnore
-        }
-    }
-}
 
 // Mark-as-paid confirmation now lives inside the right-pane NavigationStack via
 // `POSNavigationDestinationMarkAsPaidView`, not as a modal modifier on the dashboard.

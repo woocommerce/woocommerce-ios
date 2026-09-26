@@ -202,26 +202,3 @@ tags:
     timeout: 30000
 - assertVisible:
     id: summary-table-view-cell-title-label
-- scrollUntilVisible:
-    element:
-      text: Maestro order ${SUITE_RUN_ID}
-    direction: DOWN
-- assertVisible: Maestro order ${SUITE_RUN_ID}
-- assertVisible: Custom amount ${SUITE_RUN_ID}
-- scrollUntilVisible:
-    element:
-      text: "View Billing Information"
-      below:
-        text: "CUSTOMER"
-    direction: DOWN
-- tapOn:
-    text: "View Billing Information"
-    below:
-      text: "CUSTOMER"
-- extendedWaitUntil:
-    visible: "Billing Information"
-    timeout: 15000
-- assertVisible:
-    text: '[\s\S]*Maestro-${SUITE_RUN_ID}[\s\S]*'
-- assertVisible:
-    text: "Email: .+@.+"

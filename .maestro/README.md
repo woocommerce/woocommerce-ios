@@ -103,12 +103,9 @@ password grant cannot answer a 2FA challenge non-interactively. Use test account
 
 ### What a provisioned store covers
 
-It ships with the WooCommerce sample products and is known-good for the products flows
-and the basic dashboard flows.
-
-It has no orders, customers, or coupons, and an unset onboarding profile, so
-`orders_list_and_search`, `dashboard_view_all_analytics`, `orders_create` and the coupon
-flows fail against it. Pass `--no-jetpack-site` with a second Jurassic Ninja site created
+It ships with the WooCommerce sample products, and the script adds 25 completed orders,
+one customer and a `maestro10` coupon, so the order and analytics flows run against it.
+Pass `--no-jetpack-site` with a second Jurassic Ninja site created
 without Jetpack to fill in `MAESTRO_WOO_NO_JETPACK_*` as well. The other negative-login
 fixtures (`MAESTRO_WOO_NOT_A_WOO_STORE_*`, `MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL`) are
 filled in by hand.
@@ -165,11 +162,6 @@ manifest. This mode is the only one requiring consumer credentials.
 POS runs require a real-eligible store/account and an iPad simulator. System
 surface flows are quarantined separately. Neither profile turns an ineligible
 device/store into a passing no-op.
-
-The destructive order-creation flow additionally requires an exact synthetic
-existing-customer email. Configure `MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH` as
-documented in `env.example`; the runner fails preflight rather than capturing
-or persisting a live customer's address.
 
 The lab store used by `phone-full` must be eligible for Inbox, Blaze, Google
 for WooCommerce and card readers. The P2 lists all of them as required hub

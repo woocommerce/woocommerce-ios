@@ -126,7 +126,7 @@ items:
     flow: .maestro/flows/orders_create.yaml
   - id: orders.create.quantity
     title: Increase and decrease quantity
-    flow: .maestro/flows/orders_create.yaml
+    flow: .maestro/flows/orders_create_quantity.yaml
   - id: orders.create.product-discount
     title: Apply product discount
     flow: .maestro/flows/orders_create.yaml

@@ -61,8 +61,8 @@ done
 if [ -n "$NO_JETPACK_SITE" ] && [ -z "$NO_JETPACK_PASS" ]; then
   die "set JN_NO_JETPACK_SSH_PASS to the admin password of $NO_JETPACK_SITE"
 fi
-TOTAL_STEPS=6
-[ -z "$NO_JETPACK_SITE" ] || TOTAL_STEPS=7
+TOTAL_STEPS=7
+[ -z "$NO_JETPACK_SITE" ] || TOTAL_STEPS=8
 command -v expect >/dev/null || die "expect is required for password-based SSH"
 command -v python3 >/dev/null || die "python3 is required"
 [ -f "$APP_CREDS" ] || die "app credentials not found: $APP_CREDS (run 'rake dependencies')"
@@ -293,6 +293,47 @@ if [ -n "$NO_JETPACK_SITE" ]; then
   # to /wp-admin instead of the requested redirect, and the app rejects that.
   remote_on "$NO_JETPACK_SITE" "$NO_JETPACK_PASS" 'wp option delete auto_login' >/dev/null
   ok "WooCommerce active, Jetpack not installed"
+fi
+
+# The order list, analytics and order creation flows need orders and a customer,
+# and POS needs a coupon. A re-run against the same store keeps what is there.
+# The app reads customers and stats from the Analytics tables, which WooCommerce
+# fills in a scheduled batch, so import the new rows right away.
+step "Adding orders, a customer and a coupon"
+SEED="$(remote_php '<?php
+wp_set_current_user( __ADMIN_ID__ );
+if ( wc_get_orders( array( "limit" => 1, "return" => "ids" ) ) ) { echo "SKIPPED\n"; return; }
+$products = wc_get_products( array( "limit" => 10, "status" => "publish", "type" => "simple" ) );
+if ( ! $products ) { echo "ERR:no published simple products\n"; return; }
+$email = "maestro.customer@example.com";
+$customer_id = wc_create_new_customer( $email, "", wp_generate_password(), array( "first_name" => "Maestro", "last_name" => "Customer" ) );
+if ( is_wp_error( $customer_id ) ) { echo "ERR:" . $customer_id->get_error_message() . "\n"; return; }
+$billing = array( "first_name" => "Maestro", "last_name" => "Customer", "email" => $email );
+$customer = new WC_Customer( $customer_id );
+$customer->set_billing_first_name( $billing["first_name"] );
+$customer->set_billing_last_name( $billing["last_name"] );
+$customer->set_billing_email( $email );
+$customer->save();
+$coupon = new WC_Coupon();
+$coupon->set_code( "maestro10" );
+$coupon->set_discount_type( "percent" );
+$coupon->set_amount( 10 );
+$coupon->save();
+for ( $i = 0; $i < 25; $i++ ) {
+  $order = wc_create_order( array( "customer_id" => $customer_id ) );
+  $order->add_product( $products[ $i % count( $products ) ], 1 + $i % 3 );
+  $order->set_address( $billing, "billing" );
+  $order->calculate_totals();
+  $order->update_status( "completed" );
+  \Automattic\WooCommerce\Internal\Admin\Schedulers\OrdersScheduler::import( $order->get_id() );
+}
+\Automattic\WooCommerce\Internal\Admin\Schedulers\CustomersScheduler::import( $customer_id );
+echo "SEEDED\n";')"
+if printf '%s' "$SEED" | grep -q "^SKIPPED"; then
+  ok "the store already has orders, left as is"
+else
+  printf '%s' "$SEED" | grep -q "^SEEDED" || die "could not add the store data: $(printf '%s' "$SEED" | head -3)"
+  ok "25 orders, 1 customer and the maestro10 coupon added"
 fi
 
 # WooCommerce exposes no REST endpoint for API keys, so insert the row the same

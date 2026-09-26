@@ -4,7 +4,6 @@ appId: ${APP_ID}
 name: "Dashboard - View all store analytics"
 tags:
   - smoke_extended
-  - flaky_quarantine
   - dashboard
 ---
 - runFlow:

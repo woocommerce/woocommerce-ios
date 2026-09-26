@@ -16,6 +16,30 @@ tags:
 - assertVisible:
     id: new-order-create-button
 
+# Add the custom amount while the order is still empty. With products in the
+# order the app first asks for a fixed or percentage amount in a sheet that
+# Maestro cannot see.
+- tapOn:
+    id: new-order-add-custom-amount-button
+- inputText: "1"
+- tapOn:
+    id: order-add-custom-amount-name-field
+- runFlow:
+    file: ../subflows/paste_into_focused_field.yaml
+    env:
+      TEXT_TO_PASTE: Custom amount ${SUITE_RUN_ID}
+# With the keyboard up, the first tap on the button only ends editing.
+- tapOn:
+    id: order-add-custom-amount-view-add-custom-amount-button
+- runFlow:
+    when:
+      visible:
+        id: order-add-custom-amount-view-add-custom-amount-button
+    commands:
+      - tapOn:
+          id: order-add-custom-amount-view-add-custom-amount-button
+- assertVisible: Custom amount ${SUITE_RUN_ID}
+
 # Filter to Variable products so the order always goes through the variation
 # picker, then select the first variation of the first variable product.
 - tapOn:
@@ -78,8 +102,10 @@ tags:
 # Select the first existing customer. Edit Customer Details writes only the
 # draft order's copied billing and shipping snapshot; it never dispatches a
 # customer-update action.
-- swipe:
-    direction: UP
+- scrollUntilVisible:
+    element: Add Customer Details
+    direction: DOWN
+    timeout: 30000
 - tapOn: Add Customer Details
 - runFlow:
     when:
@@ -136,34 +162,21 @@ tags:
     id: add-shipping-button
 - inputText: "1"
 - tapOn:
-    id: add-shipping-name-field
-- runFlow:
-    file: ../subflows/paste_into_focused_field.yaml
-    env:
-      TEXT_TO_PASTE: Maestro ${SUITE_RUN_ID}
-- hideKeyboard
-- tapOn:
     id: add-shipping-done-button
-- scrollUntilVisible:
-    element:
-      id: new-order-add-custom-amount-button
-    direction: DOWN
-    timeout: 30000
-- tapOn:
-    id: new-order-add-custom-amount-button
-- tapOn:
-    id: custom-amount-fixed-button
-- inputText: "1"
-- tapOn:
-    id: order-add-custom-amount-name-field
 - runFlow:
-    file: ../subflows/paste_into_focused_field.yaml
-    env:
-      TEXT_TO_PASTE: Custom amount ${SUITE_RUN_ID}
-- hideKeyboard
-- tapOn:
-    id: order-add-custom-amount-view-add-custom-amount-button
-- assertVisible: Custom amount ${SUITE_RUN_ID}
+    when:
+      visible:
+        id: add-shipping-done-button
+    commands:
+      - tapOn:
+          id: add-shipping-done-button
+- runFlow:
+    when:
+      visible:
+        id: feedback-banner-popover-close-button
+    commands:
+      - tapOn:
+          id: feedback-banner-popover-close-button
 - scrollUntilVisible:
     element:
       id: add-customer-note-button

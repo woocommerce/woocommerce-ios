@@ -1,10 +1,7 @@
 import SwiftUI
 import Yosemite
 
-/// Hosts `NewStockNotificationPreferencesDetailView`. Navigation chrome
-/// (Save, back button, discard alert, saving spinner) is inherited from
-/// `NotificationDetailHostingController`.
-///
+/// Hosts `NewStockNotificationPreferencesDetailView`.
 final class NewStockNotificationPreferencesHostingController:
     NotificationDetailHostingController<NewStockNotificationPreferencesDetailView> {
 

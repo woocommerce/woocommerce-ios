@@ -533,6 +533,7 @@ extension POSPaymentModel {
     }
 
     private func collectPayment(for order: Order, using method: CardReaderConnectionMethod) async throws {
+        collectOrderPaymentAnalyticsTracker.prepareForCardPayment(order: POSPaymentAnalyticsOrder(order: order))
         _ = try await cardPresentPaymentService.collectPayment(for: order, using: method, channel: .pos)
     }
 
@@ -687,12 +688,12 @@ extension POSPaymentModel {
         }
         try await cashPaymentHandler.completeCashPayment(for: order, changeDueAmount: changeDueAmount)
         try? await postPaymentStep?()
-        cashPaymentSuccess()
+        cashPaymentSuccess(order: order)
     }
 
-    private func cashPaymentSuccess() {
+    private func cashPaymentSuccess(order: Order) {
         paymentState.cash = .paymentSuccess
-        collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment()
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder(order: order))
         celebration.celebrate()
     }
 }
@@ -777,15 +778,17 @@ extension POSPaymentModel {
         if currentOrder == nil {
             currentOrder = try await orderProvider.provideOrder().order
         }
+        guard let order = currentOrder else { return }
         try await scanToPayHandler.completeScanToPayPayment()
         try? await postPaymentStep?()
-        scanToPayPaymentSuccess()
+        scanToPayPaymentSuccess(order: order)
     }
 
-    private func scanToPayPaymentSuccess() {
+    private func scanToPayPaymentSuccess(order: Order) {
+        guard paymentState.scanToPay != .paymentSuccess else { return }
         stopScanToPayPolling()
         paymentState.scanToPay = .paymentSuccess
-        collectOrderPaymentAnalyticsTracker.trackSuccessfulScanToPayPayment()
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder(order: order))
         celebration.celebrate()
     }
 
@@ -819,8 +822,8 @@ extension POSPaymentModel {
                     guard stillShowingAfterCall else { return }
 
                     switch result {
-                    case .paid:
-                        await MainActor.run { self.handleScanToPayDetectedPayment() }
+                    case .paid(let order):
+                        await MainActor.run { self.handleScanToPayDetectedPayment(order: order) }
                         return
                     case .pending:
                         await MainActor.run {
@@ -854,13 +857,14 @@ extension POSPaymentModel {
 
     /// Backend confirmed the customer paid via the gateway. Skip the manual handler (no need
     /// to add a "merchant marked it paid" note) and transition straight to success.
-    private func handleScanToPayDetectedPayment() {
+    private func handleScanToPayDetectedPayment(order: Order) {
         guard paymentState.scanToPay.isShowingQRCode else { return }
+        currentOrder = order
         analytics.track(.pointOfSaleScanToPayPaymentDetectedViaPolling)
         paymentState.scanToPay = .showingQRCode(verification: .confirming)
         Task { @MainActor [weak self] in
             try? await self?.postPaymentStep?()
-            self?.scanToPayPaymentSuccess()
+            self?.scanToPayPaymentSuccess(order: order)
 
             await self?.scanToPayHandler.recordScanToPayPaymentMethod()
         }
@@ -933,7 +937,7 @@ extension POSPaymentModel {
             paymentState.markAsPaid = .processing
             try await markAsPaidHandler.markOrderAsPaid(for: order, note: note)
             try? await postPaymentStep?()
-            markAsPaidPaymentSuccess()
+            markAsPaidPaymentSuccess(order: order)
         } catch {
             // Roll back so the merchant can try again or cancel.
             paymentState.markAsPaid = .confirming
@@ -942,9 +946,9 @@ extension POSPaymentModel {
         }
     }
 
-    private func markAsPaidPaymentSuccess() {
+    private func markAsPaidPaymentSuccess(order: Order) {
         paymentState.markAsPaid = .paymentSuccess
-        collectOrderPaymentAnalyticsTracker.trackSuccessfulMarkAsPaidPayment()
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder(order: order))
         celebration.celebrate()
     }
 }

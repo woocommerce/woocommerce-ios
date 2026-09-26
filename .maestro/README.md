@@ -163,11 +163,6 @@ POS runs require a real-eligible store/account and an iPad simulator. System
 surface flows are quarantined separately. Neither profile turns an ineligible
 device/store into a passing no-op.
 
-The destructive order-creation flow additionally requires an exact synthetic
-existing-customer email. Configure `MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH` as
-documented in `env.example`; the runner fails preflight rather than capturing
-or persisting a live customer's address.
-
 The lab store used by `phone-full` must be eligible for Inbox, Blaze, Google
 for WooCommerce and card readers. The P2 lists all of them as required hub
 coverage, so an absent `menu-inbox`, `menu-blaze`, `menu-google-ads` or

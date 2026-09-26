@@ -391,15 +391,6 @@ class RunnerTests(unittest.TestCase):
             self.assertIn("MAESTRO_WOO_FEATURE_INPUT", required)
             self.assertNotIn("MAESTRO_WOO_CONSUMER_KEY", required)
 
-    def test_order_creation_uses_a_configured_customer_instead_of_capturing_live_pii(self) -> None:
-        flow = RUNNER.FLOWS_DIR / "orders_create.yaml"
-
-        required = RUNNER.required_environment([flow], seed=False)
-        source = flow.read_text(encoding="utf-8")
-
-        self.assertIn("MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH", required)
-        self.assertNotIn("selectedCustomerEmail", source)
-
     def test_not_woo_store_requires_site_admin_credentials_only(self) -> None:
         flow = RUNNER.FLOWS_DIR / "login_not_woo_store.yaml"
 

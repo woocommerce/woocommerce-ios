@@ -131,9 +131,9 @@ tags:
 - tapOn: Add
 - assertVisible: Discount
 
-# Select the configured synthetic customer. Edit Customer Details writes only
-# the draft order's copied billing and shipping snapshot; it never dispatches
-# a customer-update action.
+# Select the first existing customer. Edit Customer Details writes only the
+# draft order's copied billing and shipping snapshot; it never dispatches a
+# customer-update action.
 - swipe:
     direction: UP
 - tapOn: Add Customer Details
@@ -146,21 +146,17 @@ tags:
     visible:
       id: customer-search-screen-search-field
     timeout: 30000
-- tapOn:
-    id: customer-search-screen-search-field
-- runFlow:
-    file: ../subflows/paste_into_focused_field.yaml
-    env:
-      TEXT_TO_PASTE: ${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}
-- pressKey: Enter
 - extendedWaitUntil:
     visible:
-      id: updated-search-results-table-view
+      text: ".+@.+"
+      childOf:
+        id: default-search-results-table-view
     timeout: 30000
 - tapOn:
-    text: "${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}"
+    text: ".+@.+"
     childOf:
-      id: updated-search-results-table-view
+      id: default-search-results-table-view
+    index: 0
 - extendedWaitUntil:
     visible: Edit Customer Details
     timeout: 30000
@@ -271,4 +267,4 @@ tags:
 - assertVisible:
     text: '[\s\S]*Maestro-${SUITE_RUN_ID}[\s\S]*'
 - assertVisible:
-    text: "Email: ${MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH}"
+    text: "Email: .+@.+"

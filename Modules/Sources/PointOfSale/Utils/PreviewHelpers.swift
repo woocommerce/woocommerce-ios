@@ -583,7 +583,7 @@ final class POSReceiptSenderPreview: POSReceiptSending {
 }
 
 final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyticsTracking {
-    func prepareForCardPayment(order: Yosemite.Order) {}
+    func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {}
 
     func trackCustomerInteractionStarted() {}
 
@@ -595,11 +595,11 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 
     func trackCheckoutTapped() {}
 
-    func trackSuccessfulCashPayment(order: Yosemite.Order) {}
+    func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder) {}
 
-    func trackSuccessfulScanToPayPayment(order: Yosemite.Order) {}
+    func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder) {}
 
-    func trackSuccessfulMarkAsPaidPayment(order: Yosemite.Order) {}
+    func trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder) {}
 }
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {

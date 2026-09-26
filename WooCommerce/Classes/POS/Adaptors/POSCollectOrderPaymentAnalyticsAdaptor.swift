@@ -6,7 +6,7 @@ import PointOfSale
 /// Overrides the default event tracking for card present payments on IPP in Order Creation flow
 ///
 final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyticsTracking, CollectOrderPaymentAnalyticsTracking {
-    private var cardPaymentOrder: Order?
+    private var cardPaymentOrder: POSPaymentAnalyticsOrder?
     private var customerInteractionStarted: Double = 0
     private var orderSync: Double = 0
     private var cardReaderReady: Double = 0
@@ -44,7 +44,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         self.currentTimestamp = currentTimestamp
     }
 
-    func prepareForCardPayment(order: Order) {
+    func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {
         cardPaymentOrder = order
     }
 
@@ -106,7 +106,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         resetProcessingPaymentTracking()
     }
 
-    func trackSuccessfulCashPayment(order: Order) {
+    func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder) {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
         analytics.track(event: .PointOfSale.cashCollectPaymentSuccess(
@@ -117,7 +117,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         resetCheckoutTapCountTracker()
     }
 
-    func trackSuccessfulScanToPayPayment(order: Order) {
+    func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder) {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
         analytics.track(event: .PointOfSale.scanToPayCollectPaymentSuccess(
@@ -128,7 +128,7 @@ final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyt
         resetCheckoutTapCountTracker()
     }
 
-    func trackSuccessfulMarkAsPaidPayment(order: Order) {
+    func trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder) {
         let elapsedTimeSinceCustomerInteraction = calculateElapsedTimeInMilliseconds(since: customerInteractionStarted)
 
         analytics.track(event: .PointOfSale.markAsPaidSuccess(

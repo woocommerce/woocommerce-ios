@@ -22,7 +22,7 @@ struct POSPaymentModelTests {
         provider.orderToReturn = order
         provider.totalDecimalToReturn = 1000
         service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
-        service.onCollectPaymentCalled = { #expect(tracker.cardPaymentOrder == order) }
+        service.onCollectPaymentCalled = { #expect(tracker.cardPaymentOrder == POSPaymentAnalyticsOrder(order: order)) }
         let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider,
                                         collectOrderPaymentAnalyticsTracker: tracker)
 
@@ -31,7 +31,7 @@ struct POSPaymentModelTests {
 
         // Then
         #expect(service.collectPaymentWasCalled)
-        #expect(tracker.cardPaymentOrder == order)
+        #expect(tracker.cardPaymentOrder == POSPaymentAnalyticsOrder(order: order))
     }
 
     @Test @MainActor
@@ -47,7 +47,7 @@ struct POSPaymentModelTests {
         try await sut.collectCashPayment(changeDueAmount: "$5.00")
 
         // Then
-        #expect(tracker.cashPaymentOrder == order)
+        #expect(tracker.cashPaymentOrder == POSPaymentAnalyticsOrder(order: order))
         #expect(tracker.cashPaymentOrder?.total == "15.00")
     }
 
@@ -90,7 +90,7 @@ struct POSPaymentModelTests {
         try await sut.completeScanToPayPayment()
 
         // Then
-        #expect(tracker.scanToPayOrders == [paidOrder])
+        #expect(tracker.scanToPayOrders == [POSPaymentAnalyticsOrder(order: paidOrder)])
     }
 
     // MARK: - Init
@@ -564,7 +564,7 @@ struct POSPaymentModelTests {
         #expect(handler.markOrderAsPaidReceivedOrder?.orderID == order.orderID)
         #expect(sut.paymentState.markAsPaid == .paymentSuccess)
         #expect(celebration.celebrationWasCalled == true)
-        #expect(tracker.markAsPaidPaymentOrder == order)
+        #expect(tracker.markAsPaidPaymentOrder == POSPaymentAnalyticsOrder(order: order))
         #expect(analytics.events.contains { $0.eventName == WooAnalyticsStat.pointOfSaleMarkAsPaidConfirmed.rawValue })
     }
 

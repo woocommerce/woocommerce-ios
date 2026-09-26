@@ -533,7 +533,7 @@ extension POSPaymentModel {
     }
 
     private func collectPayment(for order: Order, using method: CardReaderConnectionMethod) async throws {
-        collectOrderPaymentAnalyticsTracker.prepareForCardPayment(order: order)
+        collectOrderPaymentAnalyticsTracker.prepareForCardPayment(order: POSPaymentAnalyticsOrder(order: order))
         _ = try await cardPresentPaymentService.collectPayment(for: order, using: method, channel: .pos)
     }
 
@@ -693,7 +693,7 @@ extension POSPaymentModel {
 
     private func cashPaymentSuccess(order: Order) {
         paymentState.cash = .paymentSuccess
-        collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment(order: order)
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder(order: order))
         celebration.celebrate()
     }
 }
@@ -788,7 +788,7 @@ extension POSPaymentModel {
         guard paymentState.scanToPay != .paymentSuccess else { return }
         stopScanToPayPolling()
         paymentState.scanToPay = .paymentSuccess
-        collectOrderPaymentAnalyticsTracker.trackSuccessfulScanToPayPayment(order: order)
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder(order: order))
         celebration.celebrate()
     }
 
@@ -948,7 +948,7 @@ extension POSPaymentModel {
 
     private func markAsPaidPaymentSuccess(order: Order) {
         paymentState.markAsPaid = .paymentSuccess
-        collectOrderPaymentAnalyticsTracker.trackSuccessfulMarkAsPaidPayment(order: order)
+        collectOrderPaymentAnalyticsTracker.trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder(order: order))
         celebration.celebrate()
     }
 }

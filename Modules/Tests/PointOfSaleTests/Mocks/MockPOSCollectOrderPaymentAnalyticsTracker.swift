@@ -1,12 +1,11 @@
 @testable import PointOfSale
 import struct Yosemite.PaymentIntent
-import struct Yosemite.Order
 
 final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking {
     var didCallTrackCheckoutTapped = false
 
-    var cardPaymentOrder: Order?
-    func prepareForCardPayment(order: Order) {
+    var cardPaymentOrder: POSPaymentAnalyticsOrder?
+    func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {
         cardPaymentOrder = order
     }
 
@@ -30,23 +29,23 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
         didCallTrackCheckoutTapped = true
     }
 
-    var cashPaymentOrder: Order?
+    var cashPaymentOrder: POSPaymentAnalyticsOrder?
     var didCallTrackSuccessfulCashPayment = false
-    func trackSuccessfulCashPayment(order: Yosemite.Order) {
+    func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder) {
         cashPaymentOrder = order
         didCallTrackSuccessfulCashPayment = true
     }
 
-    var markAsPaidPaymentOrder: Order?
+    var markAsPaidPaymentOrder: POSPaymentAnalyticsOrder?
     var didCallTrackSuccessfulMarkAsPaidPayment = false
-    func trackSuccessfulMarkAsPaidPayment(order: Yosemite.Order) {
+    func trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder) {
         markAsPaidPaymentOrder = order
         didCallTrackSuccessfulMarkAsPaidPayment = true
     }
 
-    var scanToPayOrders: [Order] = []
+    var scanToPayOrders: [POSPaymentAnalyticsOrder] = []
     var didCallTrackSuccessfulScanToPayPayment = false
-    func trackSuccessfulScanToPayPayment(order: Yosemite.Order) {
+    func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder) {
         scanToPayOrders.append(order)
         didCallTrackSuccessfulScanToPayPayment = true
     }

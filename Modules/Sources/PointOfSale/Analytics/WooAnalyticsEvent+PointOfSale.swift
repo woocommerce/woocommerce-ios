@@ -3,7 +3,6 @@ import enum Yosemite.CardPresentPaymentOnboardingState
 import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
 import enum Yosemite.POSSearchMethod
-import struct Yosemite.Order
 import enum WooFoundation.CurrencyCode
 import struct Yosemite.POSSimpleProduct
 import struct Yosemite.POSVariation
@@ -267,7 +266,7 @@ extension WooAnalyticsEvent {
                                                      countryCode: CountryCode,
                                                      paymentMethod: PaymentMethod,
                                                      cardReaderModel: String?,
-                                                     order: Order,
+                                                     order: POSPaymentAnalyticsOrder,
                                                      transport: String,
                                                      millisecondsSinceCustomerIteractionStarted: Double,
                                                      millisecondsSinceOrderSyncSuccess: Double,
@@ -366,7 +365,7 @@ extension WooAnalyticsEvent {
             }
         }
 
-        public static func cashCollectPaymentSuccess(order: Order,
+        public static func cashCollectPaymentSuccess(order: POSPaymentAnalyticsOrder,
                                                      countryCode: CountryCode,
                                                      millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleCashCollectPaymentSuccess, properties: paymentProperties(for: order).merging([
@@ -376,7 +375,7 @@ extension WooAnalyticsEvent {
             ], uniquingKeysWith: { _, new in new }))
         }
 
-        public static func scanToPayCollectPaymentSuccess(order: Order,
+        public static func scanToPayCollectPaymentSuccess(order: POSPaymentAnalyticsOrder,
                                                           countryCode: CountryCode,
                                                           millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleScanToPayCollectPaymentSuccess, properties: paymentProperties(for: order).merging([
@@ -387,7 +386,7 @@ extension WooAnalyticsEvent {
             ], uniquingKeysWith: { _, new in new }))
         }
 
-        private static func paymentProperties(for order: Order) -> [String: WooAnalyticsEventPropertyType] {
+        private static func paymentProperties(for order: POSPaymentAnalyticsOrder) -> [String: WooAnalyticsEventPropertyType] {
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.orderID: order.orderID,
                 Key.currency: order.currency
@@ -399,7 +398,7 @@ extension WooAnalyticsEvent {
             return properties
         }
 
-        public static func markAsPaidSuccess(order: Order,
+        public static func markAsPaidSuccess(order: POSPaymentAnalyticsOrder,
                                              countryCode: CountryCode,
                                              millisecondsSinceCustomerIteractionStarted: Double) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleMarkAsPaidSuccess, properties: paymentProperties(for: order).merging([

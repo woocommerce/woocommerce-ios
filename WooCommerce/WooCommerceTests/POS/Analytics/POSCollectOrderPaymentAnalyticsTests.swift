@@ -7,6 +7,7 @@ import enum WooFoundation.CountryCode
 import struct Yosemite.Order
 import enum Yosemite.OrderAction
 import struct Yosemite.PaymentGatewayAccount
+import struct PointOfSale.POSPaymentAnalyticsOrder
 import Foundation
 import Testing
 
@@ -28,7 +29,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         let tracker = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration)
         let order = Order.fake().copy(orderID: 42, currency: "USD", total: "19.99")
         let account = PaymentGatewayAccount.fake().copy(gatewayID: "stripe")
-        tracker.prepareForCardPayment(order: order)
+        tracker.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
         let preflight = MockCardPresentPaymentPreflightController()
         let stores = MockStoresManager(sessionManager: .testingInstance)
         stores.whenReceivingAction(ofType: OrderAction.self) { action in
@@ -76,7 +77,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         // Given
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
                                                          configuration: CardPresentPaymentsConfiguration(country: .US))
-        let order = Order.fake().copy(orderID: 42, currency: "KWD", total: "12.345")
+        let order = POSPaymentAnalyticsOrder(orderID: 42, currency: "KWD", total: "12.345", paymentMethodID: "")
         sut.prepareForCardPayment(order: order)
         let reader = tapToPay ? MockCardReader.tapToPay() : MockCardReader.wisePad3()
         sut.preflightResultReceived(.completed(reader, PaymentGatewayAccount.fake().copy(gatewayID: gateway)))
@@ -99,7 +100,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
                                                          configuration: CardPresentPaymentsConfiguration(country: .US))
         sut.preflightResultReceived(.completed(MockCardReader.wisePad3(), PaymentGatewayAccount.fake().copy(gatewayID: "woocommerce_payments")))
-        let order = Order.fake().copy(orderID: 42, currency: "EUR", total: "15.00", paymentMethodID: "stripe")
+        let order = POSPaymentAnalyticsOrder(orderID: 42, currency: "EUR", total: "15.00", paymentMethodID: "stripe")
 
         // When
         sut.trackSuccessfulScanToPayPayment(order: order)
@@ -132,7 +133,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         ]
 
         // When
-        sut.prepareForCardPayment(order: .fake().copy(orderID: 42, currency: "USD", total: "19.99"))
+        sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
         sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         // Then
@@ -152,7 +153,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
 
         // When
         clock.now = 1000
-        sut.prepareForCardPayment(order: .fake().copy(orderID: 42, currency: "USD", total: "19.99"))
+        sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
         sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         // Then
@@ -180,7 +181,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         clock.now = 1003 // card tapped
         sut.trackCardReaderTapped()
         clock.now = 1005 // payment success
-        sut.prepareForCardPayment(order: .fake().copy(orderID: 42, currency: "USD", total: "19.99"))
+        sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
         sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         // Then
@@ -206,7 +207,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         clock.now = 1004
         sut.trackCardReaderTapped()
         clock.now = 1006
-        sut.prepareForCardPayment(order: .fake().copy(orderID: 42, currency: "USD", total: "19.99"))
+        sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
         sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         // Then
@@ -227,7 +228,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         clock.now = 1001
         sut.trackCardReaderTapped()
         clock.now = 1002
-        sut.prepareForCardPayment(order: .fake().copy(orderID: 42, currency: "USD", total: "19.99"))
+        sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
         sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         clock.now = 2000
@@ -235,7 +236,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         clock.now = 2001
         sut.trackCardReaderTapped()
         clock.now = 2004
-        sut.prepareForCardPayment(order: .fake().copy(orderID: 42, currency: "USD", total: "19.99"))
+        sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
         sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         // Then
@@ -261,7 +262,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         clock.now = 1005
         sut.trackCardReaderTapped()
         clock.now = 1008
-        sut.prepareForCardPayment(order: .fake().copy(orderID: 42, currency: "USD", total: "19.99"))
+        sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
         sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         // Then
@@ -287,7 +288,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         clock.now = 1005
         sut.trackCardReaderTapped()
         clock.now = 1008
-        sut.prepareForCardPayment(order: .fake().copy(orderID: 42, currency: "USD", total: "19.99"))
+        sut.prepareForCardPayment(order: POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: ""))
         sut.trackSuccessfulCardPayment(capturedPaymentData: capturedPaymentData)
 
         // Then
@@ -341,7 +342,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         clock.now = 2000 // customer interaction started
         sut.trackCustomerInteractionStarted()
         clock.now = 2001 // cash payment success -> floor((2001 - 2000) * 1000) = 1000
-        sut.trackSuccessfulCashPayment(order: .fake().copy(currency: "USD", total: "19.99"))
+        sut.trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder(orderID: 0, currency: "USD", total: "19.99", paymentMethodID: ""))
 
         // Then
         #expect(property("milliseconds_since_customer_interaction_started", in: "cash_collect_payment_success") == "1000.0")

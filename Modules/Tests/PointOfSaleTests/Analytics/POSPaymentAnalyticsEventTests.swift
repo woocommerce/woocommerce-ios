@@ -8,7 +8,7 @@ struct POSPaymentAnalyticsEventTests {
     @Test(arguments: [("USD", "19.99", 1999), ("JPY", "1234", 1234), ("KWD", "12.345", 12345)])
     func test_success_events_when_order_currency_varies_then_report_gross_minor_units(currency: String, total: String, amount: Int) {
         // Given
-        let order = Order.fake().copy(orderID: 42, currency: currency, total: total, paymentMethodID: "stripe")
+        let order = POSPaymentAnalyticsOrder(orderID: 42, currency: currency, total: total, paymentMethodID: "stripe")
 
         // When
         let events = [
@@ -43,7 +43,7 @@ struct POSPaymentAnalyticsEventTests {
 
     @Test func test_interac_card_success_then_reports_value_on_canonical_event() {
         // Given
-        let order = Order.fake().copy(orderID: 42, currency: "CAD", total: "19.99")
+        let order = POSPaymentAnalyticsOrder(orderID: 42, currency: "CAD", total: "19.99", paymentMethodID: "")
 
         // When
         let event = WooAnalyticsEvent.PointOfSale.cardPresentCollectPaymentSuccess(
@@ -60,7 +60,7 @@ struct POSPaymentAnalyticsEventTests {
     @Test(arguments: [("USD", "invalid"), ("unsupported", "19.99")])
     func test_success_when_amount_or_currency_is_invalid_then_does_not_fabricate_value(currency: String, total: String) {
         // Given
-        let order = Order.fake().copy(currency: currency, total: total)
+        let order = POSPaymentAnalyticsOrder(orderID: 0, currency: currency, total: total, paymentMethodID: "")
 
         // When
         let event = WooAnalyticsEvent.PointOfSale.cashCollectPaymentSuccess(
@@ -73,7 +73,7 @@ struct POSPaymentAnalyticsEventTests {
 
     @Test func test_scan_to_pay_when_gateway_is_unknown_then_does_not_attribute_to_card_gateway() {
         // Given
-        let order = Order.fake().copy(currency: "USD", total: "10.00", paymentMethodID: "")
+        let order = POSPaymentAnalyticsOrder(orderID: 0, currency: "USD", total: "10.00", paymentMethodID: "")
 
         // When
         let event = WooAnalyticsEvent.PointOfSale.scanToPayCollectPaymentSuccess(
@@ -85,7 +85,7 @@ struct POSPaymentAnalyticsEventTests {
 
     @Test func test_mark_as_paid_success_then_reports_value_with_other_gateway() {
         // Given
-        let order = Order.fake().copy(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: "stripe")
+        let order = POSPaymentAnalyticsOrder(orderID: 42, currency: "USD", total: "19.99", paymentMethodID: "stripe")
 
         // When
         let event = WooAnalyticsEvent.PointOfSale.markAsPaidSuccess(

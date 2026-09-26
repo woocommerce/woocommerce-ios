@@ -1,9 +1,7 @@
 import WooFoundation
 
-/// Countries in the USPS domestic mail path — the store-origin and destination countries supported
-/// for shipping label purchase with the Woo Shipping and legacy WCShip plugins.
-/// This is hardcoded for now based on: https://git.io/JBuja.
-/// It would be great if this can be fetched remotely.
+/// Countries in the USPS domestic mail path. Mirrors `USPSTerritories::DOMESTIC_MAIL_TERRITORIES`,
+/// the source of truth in the WooCommerce Shipping plugin.
 enum USPSDomesticMailCountries {
     static let countryCodes: Set<CountryCode> = [
         .US, // United States
@@ -14,6 +12,7 @@ enum USPSDomesticMailCountries {
         .UM, // United States Minor Outlying Islands
         .MH, // Marshall Islands
         .FM, // Micronesia
+        .PW, // Palau
         .MP // Northern Mariana Islands
     ]
 

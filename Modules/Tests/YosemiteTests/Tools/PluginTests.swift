@@ -18,11 +18,15 @@ struct PluginTests {
         ("woocommerce-product-bundles/woocommerce-product-bundles.php", Plugin.wooProductBundles),
         ("woocommerce-subscriptions/woocommerce-subscriptions.php", Plugin.wooSubscriptions),
         ("woocommerce-shipment-tracking/woocommerce-shipment-tracking.php", Plugin.wooShipmentTracking),
+        ("woocommerce-shipping/woocommerce-shipping.php", Plugin.wooShipping),
+        ("woocommerce-services/woocommerce-services.php", Plugin.wooShippingAndTax),
         ("woocommerce-square/woocommerce-square.php", Plugin.wooSquare),
         // Altered paths
         ("_woocommerce-subscriptions/woocommerce-subscriptions.php", .wooSubscriptions),
         ("woocommerce-subscriptions.php", .wooSubscriptions),
-        ("test/woocommerce-dev.php", nil)
+        ("test/woocommerce-dev.php", nil),
+        ("woocommerce-shipping-usps/woocommerce-shipping-usps.php", nil),
+        ("woocommerce-shipping-ups/woocommerce-shipping-ups.php", nil)
     ])
     func init_with_systemPlugin_returns_correct_plugin(pluginPath: String, expectedPlugin: Plugin?) {
         // Given
@@ -81,9 +85,13 @@ struct PluginTests {
         ("woocommerce-product-bundles", Plugin.wooProductBundles),
         ("woocommerce-subscriptions", Plugin.wooSubscriptions),
         ("woocommerce-shipment-tracking", Plugin.wooShipmentTracking),
-        ("woocommerce-square", Plugin.wooSquare)
+        ("woocommerce-shipping", Plugin.wooShipping),
+        ("woocommerce-services", Plugin.wooShippingAndTax),
+        ("woocommerce-square", Plugin.wooSquare),
+        ("woocommerce-shipping-usps", nil),
+        ("woocommerce-shipping-ups", nil)
     ])
-    func init_with_fileNameWithoutExtension_returns_correct_plugin(fileName: String, expectedPlugin: Plugin) {
+    func init_with_fileNameWithoutExtension_returns_correct_plugin(fileName: String, expectedPlugin: Plugin?) {
         // When
         let plugin = Plugin(fileNameWithoutExtension: fileName)
 

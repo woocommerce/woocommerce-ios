@@ -108,12 +108,9 @@ not provision, and reports them missing.
 
 ## What the provisioned store supports
 
-A fresh store has the WooCommerce sample products, and is known-good for the products
-flows and basic dashboard flows.
-
-It has **no orders, customers, or coupons**, and its onboarding profile is unset, so these
-are expected to fail against it: `orders_list_and_search`, `dashboard_view_all_analytics`,
-`orders_create` (needs `MAESTRO_WOO_EXISTING_CUSTOMER_SEARCH`), and the coupon flows.
+A fresh store has the WooCommerce sample products, and the script adds 25 completed
+orders, one customer and a `maestro10` coupon, so the product, order and dashboard flows
+run against it.
 
 The no-Jetpack fixture (`MAESTRO_WOO_NO_JETPACK_*`) is written from the second site. The
 other negative-login fixtures (`MAESTRO_WOO_NOT_A_WOO_STORE_*`,

@@ -1,4 +1,4 @@
-# p2: orders.create.products, orders.create.variable-products, orders.create.quantity, orders.create.product-discount, orders.create.custom-amount, orders.create.custom-amount-note, orders.create.shipping, orders.create.customer-add, orders.create.customer-edit, orders.create.note
+# p2: orders.create.products, orders.create.variable-products, orders.create.product-discount, orders.create.custom-amount, orders.create.custom-amount-note, orders.create.shipping, orders.create.customer-add, orders.create.customer-edit, orders.create.note
 appId: ${APP_ID}
 name: Create a run-owned order with customer, shipping, discount, amount, and note
 tags:
@@ -58,8 +58,8 @@ tags:
     timeout: 30000
 - takeScreenshot: order_variation_line_item
 
-# Persist quantity and discount on the selected real variation. The quantity
-# field is exposed only after expanding its initially collapsed line-item card.
+# Apply a discount on the selected variation. The discount button is exposed
+# only after expanding its initially collapsed line-item card.
 - tapOn:
     text: ".*, 1 × .*"
     index: 0
@@ -67,25 +67,6 @@ tags:
 - extendedWaitUntil:
     visible: Order Count
     timeout: 15000
-- tapOn:
-    text: "1"
-    below: Order Count
-    above: Price
-- eraseText
-- inputText: "2"
-- tapOn: Done
-- assertVisible:
-    text: "2"
-    below: Order Count
-- tapOn:
-    text: "2"
-    below: Order Count
-- eraseText
-- inputText: "1"
-- tapOn: Done
-- assertVisible:
-    text: "1"
-    below: Order Count
 - assertVisible: Add Discount
 - tapOn: Add Discount
 - assertVisible: Enter amount

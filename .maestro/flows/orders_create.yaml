@@ -3,7 +3,6 @@ appId: ${APP_ID}
 name: Create a run-owned order with customer, shipping, discount, amount, and note
 tags:
   - smoke_extended
-  - flaky_quarantine
   - destructive
   - orders
 ---

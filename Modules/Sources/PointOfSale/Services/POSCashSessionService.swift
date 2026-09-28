@@ -4,6 +4,7 @@ import Foundation
 @MainActor
 public protocol POSCashSessionService {
     var hasPendingCashMovements: Bool { get }
+    func hasPendingCashMovements(in sessionID: Int64) -> Bool
     var isRetryingCashMovements: Bool { get }
     func captureCashSession() async throws -> Int64?
     func enqueueCashSale(orderID: Int64, sessionID: Int64) throws
@@ -25,6 +26,7 @@ public protocol POSCashSessionService {
 
 public extension POSCashSessionService {
     var hasPendingCashMovements: Bool { false }
+    func hasPendingCashMovements(in sessionID: Int64) -> Bool { hasPendingCashMovements }
     var isRetryingCashMovements: Bool { false }
 
     func captureCashSession() async throws -> Int64? {
@@ -66,13 +68,17 @@ public struct POSCashDrawerEventRecord: Equatable {
     public let occurredAt: Date
     /// Shared by a requested open and its sensor-confirmed open. Nil for opens the app didn't request.
     public let correlationID: UUID?
+    /// Kept across retries so Core can return the original event after an uncertain response.
+    public let requestID: UUID
 
-    public init(outcome: Outcome, reason: Reason, orderID: Int64?, occurredAt: Date, correlationID: UUID? = nil) {
+    public init(outcome: Outcome, reason: Reason, orderID: Int64?, occurredAt: Date,
+                correlationID: UUID? = nil, requestID: UUID = UUID()) {
         self.outcome = outcome
         self.reason = reason
         self.orderID = orderID
         self.occurredAt = occurredAt
         self.correlationID = correlationID
+        self.requestID = requestID
     }
 }
 
@@ -89,6 +95,9 @@ public struct POSCashSessionPage {
 public enum POSCashSessionServiceError: LocalizedError {
     case unsupported
     case sessionAlreadyOpen
+    case drawerAlreadyOpen
+    case sessionNotOwner
+    case insufficientCash
     case noOpenSession
     case invalidAmount
     case invalidReference
@@ -103,7 +112,22 @@ public enum POSCashSessionServiceError: LocalizedError {
             return NSLocalizedString("pos.cashSession.error.updateWooCommerceForCashManagement",
                                      value: "Update WooCommerce to the latest version to use cash management.",
                                      comment: "Error shown when the store's WooCommerce version has no cash session API.")
-        case .sessionAlreadyOpen: return NSLocalizedString("pos.cashSession.error.alreadyOpen", value: "A session is already open.", comment: "Cash session error")
+        case .sessionAlreadyOpen:
+            return NSLocalizedString("pos.cashSession.error.deviceAlreadyOpenAskManager",
+                                     value: "A cash session is already open on this device. Ask a store manager to close it if you cannot see it.",
+                                     comment: "Shown when a cash session belongs to another cashier on this device")
+        case .drawerAlreadyOpen:
+            return NSLocalizedString("pos.cashSession.error.drawerAlreadyOpen",
+                                     value: "This drawer already has an open cash session on another device.",
+                                     comment: "Shown when starting a session for a drawer that is already in use")
+        case .sessionNotOwner:
+            return NSLocalizedString("pos.cashSession.error.sessionNotOwner",
+                                     value: "Only the cashier who started this session or a store manager can change it.",
+                                     comment: "Shown when a cashier tries to change another cashier's session")
+        case .insufficientCash:
+            return NSLocalizedString("pos.cashSession.error.insufficientCashAfterUpdate",
+                                     value: "There is not enough cash for this pay out. Review the latest drawer total and enter a smaller amount.",
+                                     comment: "Shown when the server refuses a pay out above its current expected cash")
         case .noOpenSession: return NSLocalizedString("pos.cashSession.error.noOpenSession", value: "There is no open session.", comment: "Cash session error")
         case .invalidAmount: return NSLocalizedString("pos.cashSession.error.invalidAmount", value: "Enter a valid cash amount.", comment: "Cash session error")
         case .invalidReference:
@@ -119,9 +143,9 @@ public enum POSCashSessionServiceError: LocalizedError {
             return NSLocalizedString("pos.cashSession.error.previewUnavailable", value: "Could not connect to cash sessions. Try again.",
                                      comment: "Cash session preview error")
         case .pendingCashMovements:
-            return NSLocalizedString("pos.cashSession.error.pendingCashMovements",
-                                     value: "Some cash payments or refunds have not updated the session yet. Retry before closing the session.",
-                                     comment: "Shown when cash movements still need to be saved to the store")
+            return NSLocalizedString("pos.cashSession.error.pendingCashMovementsRetryOrManager",
+                                     value: "Some cash payments or refunds have not updated the session yet. Retry before closing. If access is denied, ask the cashier who opened the session or a store manager to sign in.",
+                                     comment: "Shown when cash movements still need to be saved, including after a cashier switch")
         }
     }
 }
@@ -221,6 +245,7 @@ final class POSMockCashSessionService: POSCashSessionService {
         try await Task.sleep(for: writeDelay)
         guard var session = openSession, session.id == sessionID else { throw POSCashSessionServiceError.noOpenSession }
         guard kind == .payIn || kind == .payOut, amount > 0 else { throw POSCashSessionServiceError.invalidAmount }
+        if kind == .payOut, amount > session.expectedCash { throw POSCashSessionServiceError.insufficientCash }
         session.movements.append(.init(id: UUID(), kind: kind, amount: amount, date: now(),
                                        actor: currentActor, orderID: nil, note: note))
         session.revision += 1

@@ -17,6 +17,9 @@ final class POSCashSessionAdaptor: POSCashSessionService {
     }
 
     var hasPendingCashMovements: Bool { cashEventRecorder.hasPendingEvents }
+    func hasPendingCashMovements(in sessionID: Int64) -> Bool {
+        cashEventRecorder.journalError != nil || cashEventRecorder.pendingEvents.contains { $0.sessionID == sessionID }
+    }
     var isRetryingCashMovements: Bool { cashEventRecorder.isRetrying }
 
     init(remote: POSCashSessionRemoteService, siteID: Int64, deviceID: String) {
@@ -95,8 +98,12 @@ final class POSCashSessionAdaptor: POSCashSessionService {
             let session = try await mappedSession(response, withMovements: true)
             pendingRequestIDs.removeValue(forKey: requestKey)
             return session
-        } catch let error as POSCashSessionAPIError where error.statusCode == 409 {
+        } catch let error as POSCashSessionAPIError where error.statusCode == 409 &&
+            error.code == "woocommerce_rest_cash_session_already_open" {
             throw POSCashSessionServiceError.sessionAlreadyOpen
+        } catch let error as POSCashSessionAPIError where error.statusCode == 409 &&
+            error.code == "woocommerce_rest_cash_drawer_already_open" {
+            throw POSCashSessionServiceError.drawerAlreadyOpen
         }
     }
 
@@ -112,8 +119,15 @@ final class POSCashSessionAdaptor: POSCashSessionService {
             _ = try await remote.recordMovement(siteID: siteID, sessionID: sessionID,
                                                 requestID: requestID, type: type,
                                                 amount: decimalString(amount), reason: resolvedReason)
-        } catch let error as POSCashSessionAPIError where error.statusCode == 404 {
+        } catch let error as POSCashSessionAPIError where error.statusCode == 404 &&
+            error.code == "woocommerce_rest_cash_session_not_found" {
             throw POSCashSessionServiceError.noOpenSession
+        } catch let error as POSCashSessionAPIError where error.statusCode == 403 &&
+            error.code == "woocommerce_rest_cash_session_not_owner" {
+            throw POSCashSessionServiceError.sessionNotOwner
+        } catch let error as POSCashSessionAPIError where error.statusCode == 409 &&
+            error.code == "woocommerce_rest_cash_insufficient_cash" {
+            throw POSCashSessionServiceError.insufficientCash
         }
         // The POST response confirms this adjustment was saved. A failed read must not
         // make the cashier submit the same adjustment again with a new request ID.
@@ -160,7 +174,7 @@ final class POSCashSessionAdaptor: POSCashSessionService {
     }
 
     func recordDrawerEvent(_ event: POSCashDrawerEventRecord, sessionID: Int64) async throws {
-        _ = try await remote.recordDrawerEvent(siteID: siteID, sessionID: sessionID, requestID: UUID(),
+        _ = try await remote.recordDrawerEvent(siteID: siteID, sessionID: sessionID, requestID: event.requestID,
                                                type: Self.drawerEventType(for: event.outcome),
                                                reason: Self.drawerEventReason(for: event.reason),
                                                orderID: event.orderID,
@@ -170,7 +184,7 @@ final class POSCashSessionAdaptor: POSCashSessionService {
 
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal,
                       note: String?) async throws -> POSCashSession {
-        guard !hasPendingCashMovements else { throw POSCashSessionServiceError.pendingCashMovements }
+        guard !hasPendingCashMovements(in: sessionID) else { throw POSCashSessionServiceError.pendingCashMovements }
         guard countedCash >= 0 else { throw POSCashSessionServiceError.invalidAmount }
         let trimmedNote = note?.trimmingCharacters(in: .whitespacesAndNewlines)
         let requestKey = "close:\(sessionID):\(expectedRevision):\(decimalString(countedCash)):\(trimmedNote ?? "")"
@@ -186,6 +200,9 @@ final class POSCashSessionAdaptor: POSCashSessionService {
         } catch let error as POSCashSessionAPIError where error.statusCode == 409 &&
             error.code == "woocommerce_rest_cash_session_revision_conflict" {
             throw POSCashSessionServiceError.sessionChanged
+        } catch let error as POSCashSessionAPIError where error.statusCode == 403 &&
+            error.code == "woocommerce_rest_cash_session_not_owner" {
+            throw POSCashSessionServiceError.sessionNotOwner
         }
     }
 }

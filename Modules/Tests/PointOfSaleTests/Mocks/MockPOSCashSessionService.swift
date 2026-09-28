@@ -20,6 +20,7 @@ final class MockPOSCashSessionService: POSCashSessionService {
     var pastSessionsToReturn = POSCashSessionPage(sessions: [], hasMore: false)
     var pastSessionsError: Error?
     var hasPendingCashMovements = false
+    var pendingMovementSessionIDs: Set<Int64> = []
     var isRetryingCashMovements = false
     var capturedSessionID: Int64? = 123
     var captureError: Error?
@@ -38,6 +39,10 @@ final class MockPOSCashSessionService: POSCashSessionService {
     var retryCallCount = 0
     var retrySucceeds = true
     private(set) var enqueuedSessionIDs: [Int64] = []
+
+    func hasPendingCashMovements(in sessionID: Int64) -> Bool {
+        hasPendingCashMovements || pendingMovementSessionIDs.contains(sessionID)
+    }
 
     func captureCashSession() async throws -> Int64? {
         captureCallCount += 1

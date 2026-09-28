@@ -25,7 +25,10 @@ final class POSCashSessionController {
     private(set) var closeRefreshError: String?
     var errorMessage: String?
 
-    var hasPendingCashMovements: Bool { service.hasPendingCashMovements }
+    var hasPendingCashMovements: Bool {
+        guard let currentSession else { return false }
+        return service.hasPendingCashMovements(in: currentSession.id)
+    }
     var isRetryingCashMovements: Bool { service.isRetryingCashMovements }
 
     @ObservationIgnored private let service: any POSCashSessionService
@@ -178,6 +181,11 @@ final class POSCashSessionController {
             currentLoadError = POSCashSessionServiceError.movementRecordedRefreshFailed.errorDescription
             openDrawerAfterMovement(in: session)
             return true
+        } catch POSCashSessionServiceError.insufficientCash {
+            // Another device may have changed the expected cash after local validation.
+            await refreshCurrentSession()
+            errorMessage = POSCashSessionErrorMessage.message(for: POSCashSessionServiceError.insufficientCash, operation: .recordPayOut)
+            return false
         } catch {
             let operation: POSCashSessionErrorMessage.Operation = kind == .payOut ? .recordPayOut : .recordPayIn
             errorMessage = POSCashSessionErrorMessage.message(for: error, operation: operation)

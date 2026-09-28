@@ -25,4 +25,17 @@ struct POSMockCashSessionServiceTests {
         #expect(session.movements.count == 2)
         #expect(session.revision == 2)
     }
+
+    @Test func test_pay_out_when_amount_exceeds_expected_cash_then_mock_matches_core_rejection() async throws {
+        // Given
+        let service = POSMockCashSessionService(writeDelay: .zero, hasSampleHistory: false)
+        let session = try await service.startSession(openingCash: 10, drawerID: nil)
+
+        // Then
+        await #expect(throws: POSCashSessionServiceError.insufficientCash) {
+            // When
+            _ = try await service.recordMovement(sessionID: session.id, kind: .payOut,
+                                                 amount: 11, note: nil, requestID: UUID())
+        }
+    }
 }

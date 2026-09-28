@@ -90,6 +90,42 @@ struct POSCashSessionControllerTests {
         #expect(service.recordedMovementRequestIDs == [requestID])
     }
 
+    @Test func test_record_when_server_rejects_pay_out_then_refreshes_expected_cash_and_keeps_error() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 100,
+                                                        movements: [], revision: 1)
+        let controller = POSCashSessionController(service: service)
+        await controller.loadCurrentSession()
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 40,
+                                                        movements: [], revision: 2)
+        service.movementError = POSCashSessionServiceError.insufficientCash
+
+        // When
+        let recorded = await controller.record(kind: .payOut, amount: 50, note: nil)
+
+        // Then
+        #expect(!recorded)
+        #expect(controller.currentSession?.expectedCash == 40)
+        #expect(controller.errorMessage == POSCashSessionServiceError.insufficientCash.errorDescription)
+        #expect(service.recordedMovementRequestIDs.count == 1)
+    }
+
+    @Test func test_current_session_when_only_an_old_session_has_pending_cash_then_close_is_not_blocked() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 100,
+                                                        movements: [], revision: 1)
+        service.pendingMovementSessionIDs = [11]
+        let controller = POSCashSessionController(service: service)
+
+        // When
+        await controller.loadCurrentSession()
+
+        // Then
+        #expect(!controller.hasPendingCashMovements)
+    }
+
     @Test(arguments: [false, true])
     func test_record_when_movement_is_saved_then_opens_drawer_in_recorded_session(isPayOut: Bool) async throws {
         // Given

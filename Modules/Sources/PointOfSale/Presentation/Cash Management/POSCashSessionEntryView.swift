@@ -232,6 +232,10 @@ struct POSCashSessionEntryView: View {
                 dismiss()
             } else {
                 showSaveError()
+                if controller.currentRefreshError == nil, payOutExceedsAvailableCash {
+                    isNoteFocused = false
+                    step = .amount
+                }
             }
         case .close:
             if let closedSession = await controller.close(countedCash: parsedAmount, note: optionalNote) {

@@ -33,7 +33,8 @@ enum POSCashSessionErrorMessage {
         switch error {
         case .sessionChanged:
             return operation == .close ? Localization.sessionChangedAtClose : Localization.sessionChangedDuringUpdate
-        case .unsupported, .sessionAlreadyOpen, .noOpenSession, .invalidAmount, .invalidReference, .previewUnavailable,
+        case .unsupported, .sessionAlreadyOpen, .drawerAlreadyOpen, .sessionNotOwner, .insufficientCash,
+             .noOpenSession, .invalidAmount, .invalidReference, .previewUnavailable,
              .pendingCashMovements, .movementRecordedRefreshFailed:
             return error.errorDescription ?? operation.fallback
         }

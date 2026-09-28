@@ -42,6 +42,9 @@ struct POSCashSessionErrorMessageTests {
     @Test(arguments: [
         POSCashSessionServiceError.unsupported,
         .sessionAlreadyOpen,
+        .drawerAlreadyOpen,
+        .sessionNotOwner,
+        .insufficientCash,
         .noOpenSession,
         .invalidAmount,
         .invalidReference,

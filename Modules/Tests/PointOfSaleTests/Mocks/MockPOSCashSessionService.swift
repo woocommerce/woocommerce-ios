@@ -14,6 +14,7 @@ final class MockPOSCashSessionService: POSCashSessionService {
     var onCashRefundRecorded: ((Int64, Int64) -> Void)?
     var onPastSessionsRequested: (@MainActor (Int) -> Void)?
     var onSessionRequested: (@MainActor (Int64) -> Void)?
+    var onSessionRequestedAsync: (@MainActor (Int64) async -> Void)?
     var onCurrentSessionRequested: (@MainActor () -> Void)?
     private(set) var requestedSessionIDs: [Int64] = []
     var pastSessionsToReturn = POSCashSessionPage(sessions: [], hasMore: false)
@@ -81,9 +82,12 @@ final class MockPOSCashSessionService: POSCashSessionService {
     func session(id: Int64) async throws -> POSCashSession {
         requestedSessionIDs.append(id)
         onSessionRequested?(id)
-        if let sessionError { throw sessionError }
-        guard let sessionToReturn else { throw POSCashSessionServiceError.noOpenSession }
-        return sessionToReturn
+        let response = sessionToReturn
+        let error = sessionError
+        await onSessionRequestedAsync?(id)
+        if let error { throw error }
+        guard let response else { throw POSCashSessionServiceError.noOpenSession }
+        return response
     }
     func startSession(openingCash: Decimal, drawerID: String?) async throws -> POSCashSession {
         startSessionDrawerIDs.append(drawerID)

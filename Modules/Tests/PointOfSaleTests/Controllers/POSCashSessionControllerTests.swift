@@ -278,6 +278,59 @@ struct POSCashSessionControllerTests {
         #expect(service.requestedSessionIDs == [12, 12, 12])
     }
 
+    @Test func test_loadSessionDetail_when_same_detail_reappears_during_refresh_then_uses_one_request() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.sessionToReturn = makeSession(id: 12)
+        let controller = POSCashSessionController(service: service)
+        let gate = SessionRequestGate()
+        service.onSessionRequestedAsync = { _ in await gate.suspend() }
+        var firstLoad: Task<Void, Never>?
+
+        // When
+        await withCheckedContinuation { continuation in
+            gate.started = continuation
+            firstLoad = Task { await controller.loadSessionDetail(id: 12) }
+        }
+        await controller.loadSessionDetail(id: 12)
+
+        // Then
+        #expect(service.requestedSessionIDs == [12])
+        #expect(controller.isLoadingSessionDetail)
+        gate.release?.resume()
+        await firstLoad?.value
+        #expect(controller.sessionDetail?.id == 12)
+        #expect(!controller.isLoadingSessionDetail)
+    }
+
+    @Test func test_loadSessionDetail_when_switching_ids_during_refresh_then_ignores_stale_response() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.sessionToReturn = makeSession(id: 12)
+        let controller = POSCashSessionController(service: service)
+        let gate = SessionRequestGate()
+        service.onSessionRequestedAsync = { id in
+            if id == 12 { await gate.suspend() }
+        }
+        var firstLoad: Task<Void, Never>?
+
+        // When
+        await withCheckedContinuation { continuation in
+            gate.started = continuation
+            firstLoad = Task { await controller.loadSessionDetail(id: 12) }
+        }
+        service.sessionToReturn = makeSession(id: 13)
+        await controller.loadSessionDetail(id: 13)
+        gate.release?.resume()
+        await firstLoad?.value
+
+        // Then
+        #expect(service.requestedSessionIDs == [12, 13])
+        #expect(controller.sessionDetail?.id == 13)
+        #expect(!controller.isLoadingSessionDetail)
+        #expect(controller.sessionDetailError == nil)
+    }
+
     @Test func test_refreshCurrentSession_when_refund_is_added_then_updates_totals_without_clearing_content() async {
         // Given
         let service = MockPOSCashSessionService()
@@ -300,6 +353,33 @@ struct POSCashSessionControllerTests {
         #expect(controller.currentSession?.cashRefunds == 25)
         #expect(controller.currentSession?.expectedCash == 75)
         #expect(controller.currentSession?.revision == 2)
+    }
+
+    @Test func test_refreshCurrentSession_when_refund_is_queued_then_retries_it_before_reading_updated_totals() async throws {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 100,
+                                                        movements: [], revision: 1)
+        let controller = POSCashSessionController(service: service)
+        await controller.loadCurrentSession()
+        try service.enqueueCashRefund(orderID: 42, refundID: 7, sessionID: 12)
+        let refund = POSCashSessionMovement(id: UUID(), kind: .cashRefund, amount: 25, date: now, actor: "Tester",
+                                            orderID: 42, refundID: 7, note: nil)
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 100,
+                                                        movements: [refund], revision: 2)
+        var pendingDuringRead: Bool?
+        service.onCurrentSessionRequested = { pendingDuringRead = service.hasPendingCashMovements }
+
+        // When
+        await controller.refreshCurrentSession()
+
+        // Then
+        #expect(service.recordedCashRefunds.map { $0.refundID } == [7])
+        #expect(service.enqueuedSessionIDs == [12])
+        #expect(service.retryCallCount == 2)
+        #expect(pendingDuringRead == false)
+        #expect(controller.currentSession?.cashRefunds == 25)
+        #expect(controller.currentSession?.expectedCash == 75)
     }
 
     @Test func test_refreshCurrentSession_when_fetch_fails_then_keeps_session_and_shows_retryable_error() async {
@@ -403,5 +483,18 @@ struct POSCashSessionControllerTests {
 
     private func makeSession(id: Int64) -> POSCashSession {
         .init(id: id, openedAt: now, openedBy: "Tester", openingCash: 0, movements: [], closedAt: now, closedBy: "Tester")
+    }
+}
+
+@MainActor
+private final class SessionRequestGate {
+    var started: CheckedContinuation<Void, Never>?
+    var release: CheckedContinuation<Void, Never>?
+
+    func suspend() async {
+        guard let started else { return }
+        self.started = nil
+        started.resume()
+        await withCheckedContinuation { release = $0 }
     }
 }

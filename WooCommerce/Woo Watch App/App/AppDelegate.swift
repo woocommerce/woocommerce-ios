@@ -57,13 +57,18 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                           didReceive response: UNNotificationResponse,
+                                           withCompletionHandler completionHandler: @escaping @Sendable () -> Void) {
         // Snapshot the payload before hopping; UserNotifications calls this delegate off the main actor.
         let userInfo = response.notification.request.content.userInfo
         let data = JSONSerialization.isValidJSONObject(userInfo)
             ? try? JSONSerialization.data(withJSONObject: userInfo)
             : nil
-        await MainActor.run {
+        Task { @MainActor in
+            // Completing the response can trigger watchOS snapshot updates, which require the main thread.
+            defer { completionHandler() }
+
             tracksProvider?.sendTracksEvent(.watchPushNotificationTapped)
 
             // The Watch app only supports order notifications.

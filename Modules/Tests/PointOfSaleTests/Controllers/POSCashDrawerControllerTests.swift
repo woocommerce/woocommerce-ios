@@ -61,6 +61,7 @@ struct POSCashDrawerControllerTests {
         let service = MockCashDrawerService()
         var clock = date
         let sut = POSCashDrawerController(service: service, userDefaults: userDefaults, now: { clock })
+        sut.sessionSnapshot = { POSCashDrawerSessionSnapshot(id: 123, drawerID: "Front till") }
         service.onOpen = { clock = date.addingTimeInterval(60) }
 
         // When
@@ -76,7 +77,7 @@ struct POSCashDrawerControllerTests {
         let sut = makeController(service: service)
 
         // When
-        await sut.openAutomatically(for: .cashRefund)
+        await sut.openAutomatically(for: .cashRefund, sessionID: 123)
 
         // Then
         #expect(service.openCallCount == 1)
@@ -269,7 +270,8 @@ struct POSCashDrawerControllerTests {
     @Test func test_automatic_open_when_payment_has_no_session_then_does_not_attach_event_to_later_session() async {
         // Given
         let sessionService = MockPOSCashSessionService()
-        let sut = makeController(service: MockCashDrawerService(), sessionService: sessionService)
+        let drawerService = MockCashDrawerService()
+        let sut = makeController(service: drawerService, sessionService: sessionService)
         sut.updateDrawerName("Front till")
 
         // When
@@ -277,6 +279,40 @@ struct POSCashDrawerControllerTests {
 
         // Then
         #expect(sessionService.captureCallCount == 0)
+        #expect(sessionService.recordedDrawerEvents.isEmpty)
+        #expect(drawerService.openCallCount == 0)
+    }
+
+    @Test func test_open_when_no_session_then_does_not_open_drawer() async {
+        // Given
+        let drawerService = MockCashDrawerService()
+        let sut = makeController(service: drawerService)
+        sut.sessionSnapshot = { nil }
+
+        // When
+        let noSaleResult = await sut.open(for: .noSale)
+        let testResult = await sut.open(for: .test)
+
+        // Then
+        #expect(noSaleResult == .noSession)
+        #expect(testResult == .noSession)
+        #expect(drawerService.openCallCount == 0)
+        #expect(sut.lastEvent == nil)
+    }
+
+    @Test func test_openBeforeSession_when_no_session_then_opens_drawer_without_recording_event() async {
+        // Given
+        let drawerService = MockCashDrawerService()
+        let sessionService = MockPOSCashSessionService()
+        sessionService.capturedSessionID = nil
+        let sut = makeController(service: drawerService, sessionService: sessionService)
+
+        // When
+        let result = await sut.openBeforeSession()
+
+        // Then
+        #expect(result == .opened)
+        #expect(drawerService.openCallCount == 1)
         #expect(sessionService.recordedDrawerEvents.isEmpty)
     }
 
@@ -297,22 +333,6 @@ struct POSCashDrawerControllerTests {
         #expect(recorded.reason == .cashRefund)
         #expect(sessionService.recordedDrawerEventSessionIDs == [123])
         #expect(sessionService.captureCallCount == 0)
-    }
-
-    @Test func test_open_when_session_starts_then_records_count_event_in_session() async {
-        // Given
-        let sessionService = MockPOSCashSessionService()
-        let sut = makeController(service: MockCashDrawerService(), sessionService: sessionService)
-        sut.updateDrawerName("Front till")
-
-        // When
-        let recorded = await withCheckedContinuation { continuation in
-            sessionService.onDrawerEventRecorded = { continuation.resume(returning: $0) }
-            Task { await sut.open(for: .sessionStart) }
-        }
-
-        // Then
-        #expect(recorded.reason == .count)
     }
 
     @Test func test_handleDrawerSignal_when_signal_changes_after_app_open_then_learns_open_value_and_records_linked_opened_event() async {
@@ -412,8 +432,12 @@ private extension POSCashDrawerControllerTests {
         let controller = POSCashDrawerController(service: service, sessionService: sessionService,
                                                  userDefaults: userDefaults, now: { [date] in date })
         controller.sessionSnapshot = { [weak controller, weak sessionService] in
-            guard let id = sessionService?.capturedSessionID else { return nil }
-            return POSCashDrawerSessionSnapshot(id: id, drawerID: controller?.drawerName)
+            guard let controller else { return nil }
+            if let sessionService {
+                guard let id = sessionService.capturedSessionID else { return nil }
+                return POSCashDrawerSessionSnapshot(id: id, drawerID: controller.drawerName)
+            }
+            return POSCashDrawerSessionSnapshot(id: 123, drawerID: controller.drawerName)
         }
         return controller
     }

@@ -14,8 +14,6 @@ enum POSCashDrawerOpenReason: Equatable {
     case noSale
     /// Opened from settings to check the drawer works.
     case test
-    /// A cash session started, so the cashier can put the opening float in.
-    case sessionStart
     /// The drawer's sensor reported an opening the app didn't request, for example with the key.
     case unknown
 }
@@ -23,6 +21,8 @@ enum POSCashDrawerOpenReason: Equatable {
 /// The outcome of asking the drawer to open.
 enum POSCashDrawerOpenResult: Equatable {
     case opened
+    /// An open was requested outside a cash session.
+    case noSession
     /// No printer is connected, so the drawer cannot be reached.
     case notConnected
     /// The printer was connected but the open command failed.
@@ -58,7 +58,7 @@ struct POSCashDrawerSessionSnapshot: Equatable {
 @MainActor
 @Observable
 final class POSCashDrawerController {
-    /// Whether the drawer opens by itself when a cash sale or cash refund is confirmed, or a cash session starts.
+    /// Whether the drawer opens by itself when a cash sale or cash refund is confirmed.
     var opensAutomaticallyForCashPayments: Bool {
         didSet {
             userDefaults.set(opensAutomaticallyForCashPayments, forKey: Constants.opensAutomaticallyKey)
@@ -111,12 +111,19 @@ final class POSCashDrawerController {
         userDefaults.set(drawerName, forKey: Constants.drawerNameKey)
     }
 
-    /// Opens the drawer after a confirmed cash sale or cash refund, or a started cash session, if automatic opening is on.
+    /// Opens the drawer after a confirmed cash sale or cash refund, if automatic opening is on.
     func openAutomatically(for reason: POSCashDrawerOpenReason, orderID: Int64? = nil, sessionID: Int64? = nil) async {
-        guard opensAutomaticallyForCashPayments else {
+        guard opensAutomaticallyForCashPayments, let sessionID else {
             return
         }
         await performOpen(for: reason, orderID: orderID, sessionID: sessionID, captureCurrentSession: false)
+    }
+
+    /// Opens the drawer so the cashier can count the float before starting a session.
+    /// This explicit action has no session to record a drawer event against.
+    @discardableResult
+    func openBeforeSession() async -> POSCashDrawerOpenResult {
+        await performOpen(for: .noSale, orderID: nil, sessionID: nil, captureCurrentSession: false)
     }
 
     /// Opens the drawer and reports the outcome. Never throws.
@@ -141,7 +148,8 @@ final class POSCashDrawerController {
             } else {
                 session = nil
             }
-            eventSessionID = session?.drawerID != nil ? session?.id : nil
+            guard let session else { return .noSession }
+            eventSessionID = session.drawerID != nil ? session.id : nil
         } else {
             // Payment and refund flows captured this ID from Core before the transaction.
             eventSessionID = sessionID
@@ -259,9 +267,6 @@ private extension POSCashDrawerController {
             return .noSale
         case .test:
             return .test
-        case .sessionStart:
-            // Core has no reason for the opening float; the cashier counts it into the drawer.
-            return .count
         case .unknown:
             return .unknown
         }

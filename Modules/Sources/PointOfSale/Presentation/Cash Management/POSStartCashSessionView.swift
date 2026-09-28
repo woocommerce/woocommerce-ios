@@ -3,12 +3,15 @@ import WooFoundation
 
 /// Detail pane shown when "Start session" is selected in `POSCashManagementView`.
 struct POSStartCashSessionView: View {
+    @Environment(PointOfSaleAggregateModel.self) private var posModel: PointOfSaleAggregateModel?
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @FocusState private var isAmountFocused: Bool
     @State private var startingCashAmount: String = ""
     @State private var startError: String?
+    @State private var drawerError: String?
+    @State private var isOpeningDrawer = false
 
     let controller: POSCashSessionController
     let onStarted: () -> Void
@@ -20,6 +23,9 @@ struct POSStartCashSessionView: View {
     }
 
     private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings) }
+    private var isDrawerConnected: Bool {
+        posModel?.cashDrawer != nil && posModel?.settingsController.printerConnectionController?.isConnected == true
+    }
 
     var body: some View {
         VStack(spacing: POSSpacing.none) {
@@ -50,6 +56,14 @@ struct POSStartCashSessionView: View {
                                 Text(startError)
                             }
                         }
+                        if let drawerError {
+                            POSNoticeView(title: Localization.drawerOpenFailed,
+                                          icon: Image(systemName: "exclamationmark.triangle"),
+                                          style: .alertLowest,
+                                          onDismiss: { self.drawerError = nil }) {
+                                Text(drawerError)
+                            }
+                        }
 
                         POSInformationCard {
                             VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -72,33 +86,86 @@ struct POSStartCashSessionView: View {
                                 .background(Color.posSurface)
                                 .clipShape(RoundedRectangle(cornerRadius: POSCornerRadiusStyle.medium.value))
 
-                                Button(Localization.startSessionButtonTitle) {
-                                    analytics.track(.pointOfSaleCashDrawerStartSessionButtonTapped)
-                                    startError = nil
-                                    guard let amount = money.parse(startingCashAmount), amount >= 0 else {
-                                        startError = Localization.invalidAmount
-                                        return
-                                    }
-                                    Task {
-                                        if await controller.start(openingCash: amount) {
-                                            onStarted()
-                                        } else {
-                                            startError = controller.errorMessage ?? Localization.startFailed
-                                            controller.errorMessage = nil
-                                        }
-                                    }
-                                }
-                                .buttonStyle(POSFilledButtonStyle(size: .normal))
-                                .frame(maxWidth: .infinity)
                             }
                         }
                     }
                 }
                 .padding(.horizontal, POSPadding.medium)
             }
+            .scrollDismissesKeyboard(.interactively)
+
+            if !controller.isSaving {
+                actionButtons
+                    .padding(.horizontal, POSPadding.medium)
+                    .padding(.vertical, POSPadding.medium)
+            }
         }
+        .ignoresSafeArea(.posContainerRegionToIgnore, edges: .bottom)
         .background(Color.posSurface)
         .accessibilityIdentifier("pos-cash-drawer-start-session-view")
+    }
+
+    private var actionButtons: some View {
+        VStack(spacing: POSSpacing.small) {
+            HStack(spacing: POSSpacing.small) {
+                Button {
+                    guard let cashDrawer = posModel?.cashDrawer else { return }
+                    drawerError = nil
+                    isOpeningDrawer = true
+                    Task {
+                        let result = await cashDrawer.openBeforeSession()
+                        isOpeningDrawer = false
+                        switch result {
+                        case .opened:
+                            isAmountFocused = true
+                        case .notConnected:
+                            drawerError = Localization.printerNotConnected
+                        case .failed, .noSession:
+                            drawerError = Localization.drawerOpenFailed
+                        }
+                    }
+                } label: {
+                    Text(Localization.openDrawerButtonTitle)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                }
+                .buttonStyle(POSOutlinedButtonStyle(size: .normal, isLoading: isOpeningDrawer))
+                .disabled(!isDrawerConnected || isOpeningDrawer)
+                .frame(maxWidth: .infinity)
+                .accessibilityIdentifier("pos-cash-drawer-open-before-session-button")
+
+                Button {
+                    analytics.track(.pointOfSaleCashDrawerStartSessionButtonTapped)
+                    startError = nil
+                    guard let amount = money.parse(startingCashAmount), amount >= 0 else {
+                        startError = Localization.invalidAmount
+                        return
+                    }
+                    Task {
+                        if await controller.start(openingCash: amount) {
+                            onStarted()
+                        } else {
+                            startError = controller.errorMessage ?? Localization.startFailed
+                            controller.errorMessage = nil
+                        }
+                    }
+                } label: {
+                    Text(Localization.startSessionButtonTitle)
+                        .lineLimit(1)
+                        .minimumScaleFactor(0.6)
+                }
+                .buttonStyle(POSFilledButtonStyle(size: .normal))
+                .disabled(isOpeningDrawer)
+                .frame(maxWidth: .infinity)
+            }
+
+            if !isDrawerConnected {
+                Text(Localization.printerNotConnected)
+                    .font(.posBodySmallRegular())
+                    .foregroundStyle(Color.posOnSurfaceVariantLowest)
+                    .frame(maxWidth: .infinity, alignment: .leading)
+            }
+        }
     }
 }
 
@@ -129,6 +196,24 @@ private extension POSStartCashSessionView {
             comment: "Title of the button that starts a new cash session."
         )
 
+        static let openDrawerButtonTitle = NSLocalizedString(
+            "pointOfSaleStartCashSessionView.openDrawerButtonTitle",
+            value: "Open drawer",
+            comment: "Button that opens the drawer before the cashier counts starting cash."
+        )
+
+        static let drawerOpenFailed = NSLocalizedString(
+            "pointOfSaleStartCashSessionView.drawerOpenFailed",
+            value: "Could not open the drawer",
+            comment: "Error shown when opening the cash drawer before a session fails."
+        )
+
+        static let printerNotConnected = NSLocalizedString(
+            "pointOfSaleStartCashSessionView.printerNotConnected",
+            value: "Connect the receipt printer in Settings, then try again.",
+            comment: "Error shown when the cash drawer cannot open because its receipt printer is disconnected."
+        )
+
         static let invalidAmount = NSLocalizedString(
             "pointOfSaleStartCashSessionView.invalidAmount",
             value: "Enter a valid starting cash amount.",
@@ -152,5 +237,6 @@ private extension POSStartCashSessionView {
 #if DEBUG
 #Preview {
     POSStartCashSessionView(controller: POSCashSessionController(service: POSMockCashSessionService()), onStarted: {})
+        .environment(POSPreviewHelpers.makePreviewAggregateModel())
 }
 #endif

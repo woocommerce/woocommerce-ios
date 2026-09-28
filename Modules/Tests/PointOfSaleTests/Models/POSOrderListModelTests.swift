@@ -137,7 +137,7 @@ final class POSOrderListModelTests {
         #expect(mockOrdersController.loadOrderRefundsCalled == true)
     }
 
-    @Test func processRefund_when_cash_refund_succeeds_then_opens_the_cash_drawer() async throws {
+    @Test func processRefund_when_cash_refund_has_no_session_then_does_not_open_the_cash_drawer() async throws {
         // Given
         let drawerService = MockCashDrawerService()
         let cashDrawer = POSCashDrawerController(service: drawerService, userDefaults: try makeUserDefaults())
@@ -145,14 +145,12 @@ final class POSOrderListModelTests {
         mockRefundController.stubIsCashRefund = true
 
         // When
-        await withCheckedContinuation { continuation in
-            drawerService.onOpen = { continuation.resume() }
-            Task { try await sut.processRefund(reason: nil) }
-        }
+        try await sut.processRefund(reason: nil)
+        await Task.yield()
 
         // Then
-        #expect(drawerService.openCallCount == 1)
-        #expect(cashDrawer.lastEvent?.reason == .cashRefund)
+        #expect(drawerService.openCallCount == 0)
+        #expect(cashDrawer.lastEvent == nil)
     }
 
     @Test(arguments: [false, true])

@@ -68,6 +68,18 @@ public final class StarPrinterService: PrinterDiscoveryService, CashDrawerServic
     public func openCashDrawer() async throws {
         try await coordinator.openCashDrawer()
     }
+
+    public func drawerSignalUpdates() -> AsyncStream<Bool> {
+        AsyncStream { [coordinator] continuation in
+            let id = UUID()
+            Task {
+                await coordinator.addDrawerSignalObserver(id: id, continuation: continuation)
+            }
+            continuation.onTermination = { _ in
+                Task { await coordinator.removeDrawerSignalObserver(id: id) }
+            }
+        }
+    }
 }
 
 /// Owns every StarIO10 object and all mutable connection/discovery state.
@@ -90,6 +102,27 @@ private actor StarPrinterCoordinator {
     /// `StarPrinter` holds `printerDelegate` weakly, so a strong reference here keeps ours from deallocating.
     // swiftlint:disable:next weak_delegate
     private var connectionDelegate: StarConnectionDelegate?
+
+    /// Retained for the connected printer's lifetime, like `connectionDelegate`, so drawer signals keep arriving.
+    // swiftlint:disable:next weak_delegate
+    private var drawerDelegate: StarDrawerDelegate?
+
+    /// One continuation per active `drawerSignalUpdates()` subscriber.
+    private var drawerSignalObservers: [UUID: AsyncStream<Bool>.Continuation] = [:]
+
+    func addDrawerSignalObserver(id: UUID, continuation: AsyncStream<Bool>.Continuation) {
+        drawerSignalObservers[id] = continuation
+    }
+
+    func removeDrawerSignalObserver(id: UUID) {
+        drawerSignalObservers[id] = nil
+    }
+
+    func emitDrawerSignal(_ signal: Bool) {
+        for continuation in drawerSignalObservers.values {
+            continuation.yield(signal)
+        }
+    }
 
     /// Whether a `connect(to:)` is in flight, so overlapping calls are rejected and we stay the delegate of at
     /// most one printer at a time. The check-and-set is atomic here because the actor admits no other call
@@ -186,14 +219,20 @@ private actor StarPrinterCoordinator {
         emit(.connecting)
         let delegate = StarConnectionDelegate()
         starPrinter.printerDelegate = delegate
+        let newDrawerDelegate = StarDrawerDelegate { [weak self] signal in
+            Task { await self?.emitDrawerSignal(signal) }
+        }
+        starPrinter.drawerDelegate = newDrawerDelegate
         do {
             try await starPrinter.open()
             printer = starPrinter
             connectionDelegate = delegate
+            drawerDelegate = newDrawerDelegate
             emit(.connected(device))
             DDLogInfo("🖨️ Connected to printer \(device.id)")
         } catch {
             starPrinter.printerDelegate = nil
+            starPrinter.drawerDelegate = nil
             emit(.disconnected)
             DDLogError("🖨️ Printer connection failed: \(error.localizedDescription)")
             throw error
@@ -204,9 +243,11 @@ private actor StarPrinterCoordinator {
         let current = printer
         printer = nil
         connectionDelegate = nil
+        drawerDelegate = nil
 
         emit(.disconnecting)
         current?.printerDelegate = nil
+        current?.drawerDelegate = nil
         await current?.close()
         emit(.disconnected)
     }
@@ -261,10 +302,12 @@ private extension StarPrinterCoordinator {
     /// new printer, so it stays quiet about connection status, which the in-flight `connect(to:)` then drives.
     func teardown(_ existing: StarPrinter) async {
         existing.printerDelegate = nil
+        existing.drawerDelegate = nil
         await existing.close()
         if printer === existing {
             printer = nil
             connectionDelegate = nil
+            drawerDelegate = nil
         }
     }
 
@@ -384,5 +427,24 @@ private final class StarConnectionDelegate: NSObject, PrinterDelegate {
 
     func printerIsCoverClose(_ printer: StarPrinter) {
         DDLogInfo("🖨️ Printer cover is closed")
+    }
+}
+
+/// Forwards the drawer's open/close sensor signal. Only the signal is used; which value means "open" is
+/// learned by POS, because it depends on the drawer.
+private final class StarDrawerDelegate: NSObject, DrawerDelegate {
+    private let onSignal: @Sendable (Bool) -> Void
+
+    init(onSignal: @escaping @Sendable (Bool) -> Void) {
+        self.onSignal = onSignal
+    }
+
+    func drawer(printer: StarPrinter, didSwitch openCloseSignal: Bool) {
+        DDLogInfo("🖨️ Cash drawer signal switched to \(openCloseSignal)")
+        onSignal(openCloseSignal)
+    }
+
+    func drawer(printer: StarPrinter, communicationErrorDidOccur error: any Error) {
+        DDLogError("🖨️ Cash drawer communication error: \(error.localizedDescription)")
     }
 }

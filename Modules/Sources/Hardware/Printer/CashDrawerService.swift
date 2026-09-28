@@ -6,4 +6,9 @@ public protocol CashDrawerService: AnyObject {
     /// Sends the open pulse to the drawer on the connected printer.
     /// Throws `PrinterError.printerNotConnected` when no printer is connected.
     func openCashDrawer() async throws
+
+    /// Streams the drawer's open/close sensor signal each time it changes while a printer is connected.
+    /// Which value means "open" depends on the drawer, and drawers without a sensor never emit.
+    /// Each call returns its own stream.
+    func drawerSignalUpdates() -> AsyncStream<Bool>
 }

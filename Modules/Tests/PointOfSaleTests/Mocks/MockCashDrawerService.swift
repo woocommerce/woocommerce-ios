@@ -10,6 +10,13 @@ final class MockCashDrawerService: CashDrawerService {
     /// Fired on every open, so tests can wait for an open that runs in its own task.
     var onOpen: (() -> Void)?
 
+    /// Emits drawer sensor signals to the controller under test.
+    let (drawerSignals, drawerSignalsContinuation) = AsyncStream.makeStream(of: Bool.self)
+
+    func drawerSignalUpdates() -> AsyncStream<Bool> {
+        drawerSignals
+    }
+
     func openCashDrawer() async throws {
         openCallCount += 1
         onOpen?()

@@ -5,6 +5,7 @@ import UserNotifications
 
 /// View Model for the `OrderNotificationViewController`type.
 ///
+@MainActor
 final class OrderNotificationViewModel {
 
     // Define possible error states.
@@ -16,7 +17,6 @@ final class OrderNotificationViewModel {
 
     /// Loads a Note object from a given push notification object.
     ///
-    @MainActor
     func loadOrder(from notification: UNNotification) async throws -> (Order, String) {
 
         /// Only store order notifications are supported.
@@ -33,8 +33,12 @@ final class OrderNotificationViewModel {
 
         let dataService = OrderNotificationDataService(credentials: credentials)
         if let notificationData = PushNotification.from(userInfo: notification.request.content.userInfo) {
-            async let order = dataService.loadOrderFrom(notification: notificationData)
-            async let storeName = dataService.loadStoreName(id: notificationData.siteID)
+            guard let orderID = notificationData.meta?.identifier(forKey: .order) else {
+                throw OrderNotificationDataService.Error.unsupportedNotification
+            }
+            let siteID = notificationData.siteID
+            async let order = dataService.loadOrder(siteID: siteID, orderID: orderID)
+            async let storeName = dataService.loadStoreName(id: siteID)
             return (try await order, try await storeName)
         } else {
             throw Error.unsupportedNotification

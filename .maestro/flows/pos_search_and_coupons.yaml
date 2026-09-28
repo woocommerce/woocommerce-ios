@@ -7,8 +7,12 @@ tags:
   - pos_ipad
 ---
 - runFlow: ../subflows/ensure_logged_in.yaml
-- tapOn:
-    id: tab-bar-pos-item
+# The POS tab appears only after the store's eligibility check finishes, and
+# right after login it has no accessibility id, so match its title.
+- extendedWaitUntil:
+    visible: "POS"
+    timeout: 30000
+- tapOn: "POS"
 - extendedWaitUntil:
     visible:
       id: "pos-product-card-.*|pos-ineligible-view"

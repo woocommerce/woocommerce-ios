@@ -22,6 +22,7 @@ final class MockPOSCashSessionService: POSCashSessionService {
     var currentSessionToReturn: POSCashSession?
     var currentSessionError: Error?
     var movementError: Error?
+    var movementSessionToReturn: POSCashSession?
     private(set) var recordedMovementRequestIDs: [UUID] = []
     var closeError: Error?
     var closeSessionToReturn: POSCashSession?
@@ -80,7 +81,8 @@ final class MockPOSCashSessionService: POSCashSessionService {
                         note: String?, requestID: UUID) async throws -> POSCashSession {
         recordedMovementRequestIDs.append(requestID)
         if let movementError { throw movementError }
-        throw POSCashSessionServiceError.noOpenSession
+        guard let movementSessionToReturn else { throw POSCashSessionServiceError.noOpenSession }
+        return movementSessionToReturn
     }
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal, note: String?) async throws -> POSCashSession {
         closeCallCount += 1

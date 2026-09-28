@@ -27,6 +27,7 @@ final class POSCashSessionController {
     var isRetryingCashMovements: Bool { service.isRetryingCashMovements }
 
     @ObservationIgnored private let service: any POSCashSessionService
+    @ObservationIgnored private let cashDrawer: POSCashDrawerController?
     /// The name of the configured cash drawer, read when a session starts. Nil when no drawer is set up.
     @ObservationIgnored private let drawerID: @MainActor () -> String?
     @ObservationIgnored private var pastPage = 0
@@ -36,8 +37,10 @@ final class POSCashSessionController {
     @ObservationIgnored private var hasFreshSessionForClose = false
 
     init(service: any POSCashSessionService,
+         cashDrawer: POSCashDrawerController? = nil,
          drawerID: @escaping @MainActor () -> String? = { nil }) {
         self.service = service
+        self.cashDrawer = cashDrawer
         self.drawerID = drawerID
     }
 
@@ -142,11 +145,13 @@ final class POSCashSessionController {
         do {
             currentSession = try await service.recordMovement(sessionID: session.id, kind: kind, amount: amount,
                                                               note: note, requestID: requestID)
+            openDrawerAfterMovement(in: session)
             return true
         } catch POSCashSessionServiceError.movementRecordedRefreshFailed {
             // The adjustment exists on the server. Dismiss the entry flow and require
             // a fresh read instead of offering a second submit of the same amount.
             currentLoadError = POSCashSessionServiceError.movementRecordedRefreshFailed.errorDescription
+            openDrawerAfterMovement(in: session)
             return true
         } catch {
             let operation: POSCashSessionErrorMessage.Operation = kind == .payOut ? .recordPayOut : .recordPayIn
@@ -215,6 +220,12 @@ final class POSCashSessionController {
 
     func retryPendingCashMovements() async {
         await loadCurrentSession()
+    }
+
+    private func openDrawerAfterMovement(in session: POSCashSession) {
+        guard let cashDrawer else { return }
+        // Use the session that received the movement. Hardware must not delay the entry flow.
+        Task { await cashDrawer.openAutomatically(for: .noSale, sessionID: session.id) }
     }
 
     private func save(operation: POSCashSessionErrorMessage.Operation, _ perform: () async throws -> Void) async -> Bool {

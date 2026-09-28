@@ -90,6 +90,58 @@ struct POSCashSessionControllerTests {
         #expect(service.recordedMovementRequestIDs == [requestID])
     }
 
+    @Test(arguments: [false, true])
+    func test_record_when_movement_is_saved_then_opens_drawer_in_recorded_session(isPayOut: Bool) async throws {
+        // Given
+        let session = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 10,
+                                     movements: [], revision: 1, drawerID: "Front till")
+        let service = MockPOSCashSessionService()
+        service.currentSessionToReturn = session
+        service.movementSessionToReturn = session
+        let drawerService = MockCashDrawerService()
+        let defaults = try #require(UserDefaults(suiteName: UUID().uuidString))
+        let drawer = POSCashDrawerController(service: drawerService, sessionService: service, userDefaults: defaults)
+        let controller = POSCashSessionController(service: service, cashDrawer: drawer)
+        await controller.loadCurrentSession()
+
+        // When
+        let event = await withCheckedContinuation { continuation in
+            service.onDrawerEventRecorded = { continuation.resume(returning: $0) }
+            Task { _ = await controller.record(kind: isPayOut ? .payOut : .payIn, amount: 5, note: nil) }
+        }
+
+        // Then
+        #expect(event.reason == .noSale)
+        #expect(service.recordedDrawerEventSessionIDs == [12])
+        #expect(drawerService.openCallCount == 1)
+        #expect(service.recordedMovementRequestIDs.count == 1)
+    }
+
+    @Test func test_record_when_write_is_confirmed_but_refresh_fails_then_opens_drawer() async throws {
+        // Given
+        let session = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 10,
+                                     movements: [], revision: 1, drawerID: "Front till")
+        let service = MockPOSCashSessionService()
+        service.currentSessionToReturn = session
+        service.movementError = POSCashSessionServiceError.movementRecordedRefreshFailed
+        let drawerService = MockCashDrawerService()
+        let defaults = try #require(UserDefaults(suiteName: UUID().uuidString))
+        let drawer = POSCashDrawerController(service: drawerService, sessionService: service, userDefaults: defaults)
+        let controller = POSCashSessionController(service: service, cashDrawer: drawer)
+        await controller.loadCurrentSession()
+
+        // When
+        let event = await withCheckedContinuation { continuation in
+            drawer.onDrawerEvent = { continuation.resume(returning: $0) }
+            Task { _ = await controller.record(kind: .payIn, amount: 5, note: nil) }
+        }
+
+        // Then
+        #expect(event.reason == .noSale)
+        #expect(drawerService.openCallCount == 1)
+        #expect(controller.currentLoadError == POSCashSessionServiceError.movementRecordedRefreshFailed.errorDescription)
+    }
+
     @Test(arguments: [
         (POSCashSessionMovement.Kind.payIn, "Could not record the pay in. Try again."),
         (.payOut, "Could not record the pay out. Try again.")
@@ -100,7 +152,9 @@ struct POSCashSessionControllerTests {
         let service = MockPOSCashSessionService()
         service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 10,
                                                         movements: [], revision: 1)
-        let controller = POSCashSessionController(service: service)
+        let drawerService = MockCashDrawerService()
+        let drawer = POSCashDrawerController(service: drawerService)
+        let controller = POSCashSessionController(service: service, cashDrawer: drawer)
         await controller.loadCurrentSession()
         service.movementError = NSError(domain: "test", code: 1)
 
@@ -110,6 +164,7 @@ struct POSCashSessionControllerTests {
         // Then
         #expect(!recorded)
         #expect(controller.errorMessage == expectedMessage)
+        #expect(drawerService.openCallCount == 0)
     }
 
     @Test func test_refreshPastSessions_when_service_returns_new_page_then_replaces_sessions_without_loading_state() async {

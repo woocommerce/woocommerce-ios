@@ -91,7 +91,7 @@ struct POSCashDrawerControllerTests {
         sut.opensAutomaticallyForCashPayments = false
 
         // When
-        await sut.openAutomatically(for: .cashSale)
+        await sut.openAutomatically(for: .noSale, sessionID: 123)
 
         // Then
         #expect(service.openCallCount == 0)

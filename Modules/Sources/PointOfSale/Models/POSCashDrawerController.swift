@@ -58,7 +58,7 @@ struct POSCashDrawerSessionSnapshot: Equatable {
 @MainActor
 @Observable
 final class POSCashDrawerController {
-    /// Whether the drawer opens by itself when a cash sale or cash refund is confirmed.
+    /// Whether the drawer opens by itself after a cash sale, refund, pay-in, or pay-out is recorded.
     var opensAutomaticallyForCashPayments: Bool {
         didSet {
             userDefaults.set(opensAutomaticallyForCashPayments, forKey: Constants.opensAutomaticallyKey)
@@ -111,7 +111,7 @@ final class POSCashDrawerController {
         userDefaults.set(drawerName, forKey: Constants.drawerNameKey)
     }
 
-    /// Opens the drawer after a confirmed cash sale or cash refund, if automatic opening is on.
+    /// Opens the drawer after a confirmed cash transaction or movement, if automatic opening is on.
     func openAutomatically(for reason: POSCashDrawerOpenReason, orderID: Int64? = nil, sessionID: Int64? = nil) async {
         guard opensAutomaticallyForCashPayments, let sessionID else {
             return

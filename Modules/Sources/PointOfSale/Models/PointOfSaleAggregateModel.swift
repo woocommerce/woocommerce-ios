@@ -194,6 +194,7 @@ protocol PointOfSaleAggregateModelProtocol {
         self.receiptPrinter = receiptPrinter
         self.cashDrawer = cashDrawer
         let cashSessions = POSCashSessionController(service: cashSessionService ?? POSMockCashSessionService(),
+                                                    cashDrawer: cashDrawer,
                                                     drawerID: { [weak cashDrawer] in cashDrawer?.drawerName })
         self.cashSessions = cashSessions
         cashDrawer?.sessionSnapshot = { [weak cashSessions] in

@@ -1,10 +1,12 @@
 import SwiftUI
+import struct Yosemite.POSOrder
 
 /// Cash management screen with current and past sessions from an injected session controller.
 struct POSCashManagementView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation?
     @State private var pendingClosedSessionID: Int64?
+    @State private var selectedOrderLink: OrderLink?
     @State private var isLoaded = false
 
     let controller: POSCashSessionController
@@ -46,6 +48,15 @@ struct POSCashManagementView: View {
         .task {
             await loadCurrentSession()
         }
+        .posFullScreenCover(item: $selectedOrderLink, onDismiss: {
+            if selection == .currentSession {
+                Task { await controller.loadCurrentSession() }
+            }
+        }) { link in
+            POSCashSessionLinkedOrderView(orderID: link.id) {
+                selectedOrderLink = nil
+            }
+        }
     }
 
     private var sessionStatusView: some View {
@@ -85,11 +96,117 @@ struct POSCashManagementView: View {
             POSCurrentCashSessionView(controller: controller, onClosed: { sessionID in
                 pendingClosedSessionID = sessionID
                 self.selection = .pastSessions
-            })
+            }, onOpenOrder: openOrder)
         case .pastSessions:
             POSPastCashSessionsView(detailNavigationPath: detailNavigationPath,
-                                    controller: controller)
+                                    controller: controller, onOpenOrder: openOrder)
         }
+    }
+
+    private func openOrder(_ id: Int64) {
+        selectedOrderLink = OrderLink(id: id)
+    }
+
+    private struct OrderLink: Identifiable, Equatable {
+        let id: Int64
+    }
+}
+
+private struct POSCashSessionLinkedOrderView: View {
+    @Environment(POSOrderListModel.self) private var orderListModel
+    @State private var order: POSOrder?
+    @State private var previousSelectedOrder: POSOrder?
+    @State private var loadError: String?
+    @State private var detailNavigationPath = NavigationPath()
+    @State private var activeRefundSelectionOrderID: Int64?
+
+    let orderID: Int64
+    let onClose: () -> Void
+
+    var body: some View {
+        Group {
+            if let order {
+                NavigationStack(path: $detailNavigationPath) {
+                    POSOrderDetailsView(order: order,
+                                        detailNavigationPath: $detailNavigationPath,
+                                        activeRefundSelectionOrderID: $activeRefundSelectionOrderID,
+                                        onBack: onClose,
+                                        showsBackButton: true)
+                        .id(order.id)
+                }
+            } else {
+                VStack(spacing: POSSpacing.none) {
+                    POSPageHeaderView(title: Localization.orderDetails,
+                                      backButtonConfiguration: .init(state: .enabled, action: onClose))
+                    if let loadError {
+                        POSListEmptyView(viewModel: POSCashSessionOrderLoadErrorViewModel(message: loadError),
+                                         onAction: { Task { await loadOrder() } })
+                    } else {
+                        VStack(spacing: POSSpacing.xLarge) {
+                            ProgressView()
+                                .progressViewStyle(POSProgressViewStyle())
+                            Text(Localization.loadingOrder)
+                                .font(.posBodyMediumRegular())
+                                .foregroundStyle(Color.posOnSurface)
+                        }
+                        .padding(POSPadding.large)
+                        .frame(maxWidth: .infinity, maxHeight: .infinity)
+                    }
+                }
+            }
+        }
+        .background(Color.posSurface)
+        .task {
+            await loadOrder()
+        }
+        .onDisappear {
+            if let order, orderListModel.ordersController.selectedOrder?.id == order.id {
+                if previousSelectedOrder?.id != order.id {
+                    orderListModel.selectOrder(previousSelectedOrder)
+                }
+            }
+        }
+    }
+
+    private func loadOrder() async {
+        order = nil
+        loadError = nil
+        do {
+            let loadedOrder = try await orderListModel.ordersController.loadOrder(orderID: orderID)
+            guard !Task.isCancelled else { return }
+            if order == nil {
+                previousSelectedOrder = orderListModel.ordersController.selectedOrder
+            }
+            orderListModel.selectOrder(loadedOrder)
+            order = loadedOrder
+        } catch {
+            guard !Task.isCancelled else { return }
+            loadError = Localization.loadError
+        }
+    }
+
+    private enum Localization {
+        static let orderDetails = NSLocalizedString("pos.cashSession.linkedOrder.details", value: "Order details",
+                                                    comment: "Title while loading an order from cash session activity")
+        static let loadingOrder = NSLocalizedString("pos.cashSession.linkedOrder.loading", value: "Loading order",
+                                                   comment: "Accessibility label while loading an order from cash session activity")
+        static let loadError = NSLocalizedString("pos.cashSession.linkedOrder.loadError", value: "Could not load this order. Try again.",
+                                                comment: "Error message when an order from cash session activity cannot load")
+    }
+}
+
+private struct POSCashSessionOrderLoadErrorViewModel: POSListEmptyViewModelProtocol {
+    let message: String
+    var title: String { Localization.title }
+    var subtitle: String { message }
+    var buttonTitle: String? { Localization.retry }
+    var icon: Image { Image(systemName: "exclamationmark.triangle") }
+
+    private enum Localization {
+        static let title = NSLocalizedString("pos.cashSession.linkedOrder.error", value: "Could not load order",
+                                           comment: "Error title when an order from cash session activity cannot load")
+        static let retry = NSLocalizedString("pos.cashSession.linkedOrder.retry", value: "Try again",
+                                           comment: "Retry loading an order from cash session activity")
     }
 }
 

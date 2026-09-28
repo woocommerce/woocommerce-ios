@@ -15,6 +15,7 @@ private enum POSOrderDetailsNavigationDestination: Hashable {
 struct POSOrderDetailsView: View {
     let order: POSOrder
     let onBack: () -> Void
+    let showsBackButton: Bool
     @Binding private var detailNavigationPath: NavigationPath
     @Binding private var activeRefundSelectionOrderID: Int64?
     @State var autoStartNextRefundFlow: Bool = false
@@ -35,7 +36,7 @@ struct POSOrderDetailsView: View {
     @State private var refundOverrideHandler = POSManagerOverrideHandler()
 
     private var shouldShowBackButton: Bool {
-        horizontalSizeClass == .compact
+        horizontalSizeClass == .compact || showsBackButton
     }
 
     private var dateFormatter: DateFormatter {
@@ -47,12 +48,14 @@ struct POSOrderDetailsView: View {
         detailNavigationPath: Binding<NavigationPath> = .constant(NavigationPath()),
         activeRefundSelectionOrderID: Binding<Int64?> = .constant(nil),
         onBack: @escaping () -> Void,
+        showsBackButton: Bool = false,
         autoStartNextRefundFlow: Bool = false,
         onRefundSuccess: (() -> Void)? = nil,
         onRefundFailure: ((Error) -> Void)? = nil
     ) {
         self.order = order
         self.onBack = onBack
+        self.showsBackButton = showsBackButton
         self._detailNavigationPath = detailNavigationPath
         self._activeRefundSelectionOrderID = activeRefundSelectionOrderID
         self._autoStartNextRefundFlow = State(initialValue: autoStartNextRefundFlow)

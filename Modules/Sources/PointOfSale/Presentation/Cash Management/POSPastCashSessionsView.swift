@@ -3,6 +3,7 @@ import SwiftUI
 struct POSPastCashSessionsView: View {
     @Binding var detailNavigationPath: NavigationPath
     let controller: POSCashSessionController
+    var onOpenOrder: ((Int64) -> Void)? = nil
 
     var body: some View {
         sessionList
@@ -23,7 +24,7 @@ struct POSPastCashSessionsView: View {
     @ViewBuilder
     private func selectedSessionView(id: Int64) -> some View {
         if let session = controller.sessionDetail, session.id == id {
-            POSCashSessionDetailView(session: session, onBack: popDetail)
+            POSCashSessionDetailView(session: session, onBack: popDetail, onOpenOrder: onOpenOrder)
         } else {
             VStack(spacing: POSSpacing.none) {
                 POSPageHeaderView(

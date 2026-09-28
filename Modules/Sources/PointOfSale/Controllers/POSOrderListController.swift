@@ -26,6 +26,7 @@ protocol POSOrderListControllerProtocol {
     func loadOrders() async
     func refreshOrders() async
     func loadNextOrders() async
+    func loadOrder(orderID: Int64) async throws -> POSOrder
     func updateOrder(orderID: Int64) async throws
     func loadOrderRefunds() async
 }
@@ -292,6 +293,11 @@ private enum POSOrderRefundDetailsState {
                 await loadFirstPage()
             }
         }
+    }
+
+    @MainActor
+    func loadOrder(orderID: Int64) async throws -> POSOrder {
+        try await fetchStrategy.loadOrder(orderID: orderID)
     }
 
     @MainActor

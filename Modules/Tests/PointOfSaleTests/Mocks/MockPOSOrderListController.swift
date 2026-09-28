@@ -40,6 +40,13 @@ final class MockPOSOrderListController: POSSearchingOrderListControllerProtocol,
         selectedOrder = order
     }
 
+    func loadOrder(orderID: Int64) async throws -> POSOrder {
+        guard let order = orderToReturnOnUpdate else {
+            throw TestError.updateOrderFailed
+        }
+        return order
+    }
+
     func updateOrder(orderID: Int64) async throws {
         updateOrderCalled = true
         spyUpdateOrderID = orderID

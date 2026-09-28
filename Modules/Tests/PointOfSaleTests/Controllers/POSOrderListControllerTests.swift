@@ -19,6 +19,20 @@ final class POSOrderListControllerTests {
     private lazy var sut = POSOrderListController(orderListFetchStrategyFactory: fetchStrategyFactory,
                                                    refundsService: refundsService)
 
+    @Test func loadOrder_when_order_is_outside_loaded_page_then_loads_by_id_without_changing_list_selection() async throws {
+        // Given
+        let pastOrder = try #require(MockPOSOrderListService.makeSecondPageOrders().first)
+        orderListService.loadOrderResult = pastOrder
+
+        // When
+        let loadedOrder = try await sut.loadOrder(orderID: pastOrder.id)
+
+        // Then
+        #expect(loadedOrder.id == pastOrder.id)
+        #expect(orderListService.lastLoadOrderID == pastOrder.id)
+        #expect(sut.selectedOrder == nil)
+    }
+
     @Test func loadOrders_requests_first_page_after_loading_two_pages() async throws {
         try #require(sut.ordersViewState.isLoading)
         orderListService.shouldSimulateTwoPages = true

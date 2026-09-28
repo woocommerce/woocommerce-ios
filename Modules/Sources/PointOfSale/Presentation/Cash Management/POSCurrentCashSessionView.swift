@@ -7,6 +7,7 @@ struct POSCurrentCashSessionView: View {
 
     let controller: POSCashSessionController
     let onClosed: (Int64) -> Void
+    var onOpenOrder: ((Int64) -> Void)? = nil
 
     private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings, session: controller.currentSession) }
 
@@ -64,7 +65,7 @@ struct POSCurrentCashSessionView: View {
                             }
                         }
 
-                        POSCashSessionActivityView(session: session)
+                        POSCashSessionActivityView(session: session, onOpenOrder: onOpenOrder)
                     }
                     .padding(POSPadding.medium)
                 }

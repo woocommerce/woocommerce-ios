@@ -541,11 +541,19 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     func loadNextOrders() async {}
     func refreshOrders() async {}
     func selectOrder(_ order: POSOrder?) {}
+    func loadOrder(orderID: Int64) async throws -> POSOrder {
+        guard let order = ordersViewState.orders.first(where: { $0.id == orderID }) else {
+            throw POSPreviewOrderNotFound()
+        }
+        return order
+    }
     func updateOrder(orderID: Int64) async throws {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
     func loadOrderRefunds() async {}
 }
+
+private struct POSPreviewOrderNotFound: Error {}
 
 final class POSPreviewRefundController: POSRefundControllerProtocol {
     var selectableItems: [POSRefundSelectableItem] = []

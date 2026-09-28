@@ -5,6 +5,7 @@
 -----
 - [Internal] Tracks events now carry cached_woo_core_version from the first event after launch and store switch. [https://github.com/woocommerce/woocommerce-ios/pull/17927]
 - [*] Products: Show a clear error when a category cannot be created because its name already exists. [https://github.com/woocommerce/woocommerce-ios/pull/17933]
+- [Internal] Shipping labels: eligibility, label sync, and `is_revamped_flow` analytics now follow the same WooCommerce Shipping support check (1.0.6+) as the creation form, and Palau stores are no longer excluded. [https://github.com/woocommerce/woocommerce-ios/pull/17945]
 - [*] Age verification: the "Access Restricted" alert and the parental consent screens now offer a Contact Support action that opens Help & Support while keeping the restriction in place. [https://github.com/woocommerce/woocommerce-ios/pull/17909]
 - [*] Login: Fix account matching for www and non-www store addresses [https://github.com/woocommerce/woocommerce-ios/pull/17906]
 - [*] Troubleshoot Connection and support chat diagnostics no longer report a false analytics failure on WordPress.com Commerce plan stores. [https://github.com/woocommerce/woocommerce-ios/pull/17895]

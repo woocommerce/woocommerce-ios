@@ -1,0 +1,21 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+    "queryParameters": {
+      "path": {
+        "equalTo": "/wc/pos/v1/cash-sessions&_method=get"
+      },
+      "query": {
+        "matches": ".*\"status\":\"closed\".*"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "data": []
+    }
+  }
+}

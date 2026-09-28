@@ -1,0 +1,41 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+    "queryParameters": {
+      "path": {
+        "equalTo": "/wc/pos/v1/cash-sessions/9001&_method=get"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "data": {
+        "id": 9001,
+        "device_id": "mock-device",
+        "drawer_id": "Front till",
+        "status": "open",
+        "revision": 3,
+        "currency": "USD",
+        "currency_precision": 2,
+        "opening_amount": "200.00",
+        "cash_sales_total": "146.00",
+        "cash_refunds_total": "12.00",
+        "paid_in_total": "50.00",
+        "paid_out_total": "30.00",
+        "expected_amount": "354.00",
+        "counted_amount": null,
+        "variance": null,
+        "note": "",
+        "opened_by": 1,
+        "closed_by": null,
+        "date_created_gmt": "2026-09-28T08:12:00Z",
+        "date_closed_gmt": null,
+        "opened_by_name": "Thomas",
+        "closed_by_name": null
+      }
+    }
+  }
+}

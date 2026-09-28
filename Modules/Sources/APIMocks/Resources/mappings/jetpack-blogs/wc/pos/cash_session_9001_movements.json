@@ -1,0 +1,103 @@
+{
+  "priority": 1,
+  "request": {
+    "method": "GET",
+    "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
+    "queryParameters": {
+      "path": {
+        "equalTo": "/wc/pos/v1/cash-sessions/9001/movements&_method=get"
+      }
+    }
+  },
+  "response": {
+    "status": 200,
+    "jsonBody": {
+      "data": [
+        {
+          "id": 1,
+          "session_id": 9001,
+          "type": "opening_float",
+          "direction": "in",
+          "amount": "200.00",
+          "reason": "",
+          "order_id": null,
+          "refund_id": null,
+          "created_by": 1,
+          "occurred_at": "2026-09-28T08:12:00Z",
+          "date_created_gmt": "2026-09-28T08:12:00Z",
+          "created_by_name": "Thomas"
+        },
+        {
+          "id": 2,
+          "session_id": 9001,
+          "type": "cash_sale",
+          "direction": "in",
+          "amount": "58.00",
+          "reason": "",
+          "order_id": 630,
+          "refund_id": null,
+          "created_by": 1,
+          "occurred_at": "2026-09-28T09:05:00Z",
+          "date_created_gmt": "2026-09-28T09:05:00Z",
+          "created_by_name": "Thomas"
+        },
+        {
+          "id": 3,
+          "session_id": 9001,
+          "type": "cash_sale",
+          "direction": "in",
+          "amount": "88.00",
+          "reason": "",
+          "order_id": 631,
+          "refund_id": null,
+          "created_by": 1,
+          "occurred_at": "2026-09-28T09:40:00Z",
+          "date_created_gmt": "2026-09-28T09:40:00Z",
+          "created_by_name": "Thomas"
+        },
+        {
+          "id": 4,
+          "session_id": 9001,
+          "type": "paid_in",
+          "direction": "in",
+          "amount": "50.00",
+          "reason": "Change from bank",
+          "order_id": null,
+          "refund_id": null,
+          "created_by": 1,
+          "occurred_at": "2026-09-28T10:00:00Z",
+          "date_created_gmt": "2026-09-28T10:00:00Z",
+          "created_by_name": "Maria"
+        },
+        {
+          "id": 5,
+          "session_id": 9001,
+          "type": "paid_out",
+          "direction": "out",
+          "amount": "30.00",
+          "reason": "Window cleaner",
+          "order_id": null,
+          "refund_id": null,
+          "created_by": 1,
+          "occurred_at": "2026-09-28T10:30:00Z",
+          "date_created_gmt": "2026-09-28T10:30:00Z",
+          "created_by_name": "Maria"
+        },
+        {
+          "id": 6,
+          "session_id": 9001,
+          "type": "cash_refund",
+          "direction": "out",
+          "amount": "12.00",
+          "reason": "",
+          "order_id": 630,
+          "refund_id": 700,
+          "created_by": 1,
+          "occurred_at": "2026-09-28T11:00:00Z",
+          "date_created_gmt": "2026-09-28T11:00:00Z",
+          "created_by_name": "Thomas"
+        }
+      ]
+    }
+  }
+}

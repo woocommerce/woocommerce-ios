@@ -62,6 +62,5 @@ tags:
 - extendedWaitUntil:
     visible: Copy
     timeout: 15000
-- assertVisible: Messages
-- assertVisible: Mail
+- assertVisible: "Pay for order.*"
 - takeScreenshot: order_payment_link_share_sheet

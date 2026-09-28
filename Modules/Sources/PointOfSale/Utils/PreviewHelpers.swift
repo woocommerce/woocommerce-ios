@@ -842,6 +842,8 @@ final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
 
     func printReceipt(order: Order,
                       storeInformation: ReceiptStoreInformation) async throws {}
+
+    func printText(_ text: String) async throws {}
 }
 
 #endif

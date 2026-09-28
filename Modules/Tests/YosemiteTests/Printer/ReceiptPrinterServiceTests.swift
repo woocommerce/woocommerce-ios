@@ -166,6 +166,29 @@ struct ReceiptPrinterServiceTests {
             try await sut.printReceipt(order: order, storeInformation: .empty)
         }
     }
+
+    @Test func test_printText_forwards_formatted_text_to_printer() async throws {
+        // Given
+        let sut = makeService()
+        let text = "CASH SESSION CLOSE-OUT\nSession #42\n"
+
+        // When
+        try await sut.printText(text)
+
+        // Then
+        #expect(printerDiscoveryService.printedText == text)
+    }
+
+    @Test func test_printText_when_printer_fails_then_propagates_error() async {
+        // Given
+        let sut = makeService()
+        printerDiscoveryService.printError = SampleError.connectionFailed
+
+        // When / Then
+        await #expect(throws: SampleError.connectionFailed) {
+            try await sut.printText("Cash session")
+        }
+    }
 }
 
 private extension ReceiptPrinterServiceTests {

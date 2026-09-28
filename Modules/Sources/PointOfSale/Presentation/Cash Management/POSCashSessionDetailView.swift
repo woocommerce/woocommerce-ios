@@ -19,12 +19,12 @@ struct POSCashSessionDetailView: View {
                 backButtonConfiguration: .init(state: .enabled, action: onBack),
                 trailingContent: {
                     if horizontalSizeClass != .compact {
-                        POSCashSessionExportButton(session: session)
+                        actions
                     }
                 },
                 bottomContent: {
                     if horizontalSizeClass == .compact {
-                        POSCashSessionExportButton(session: session)
+                        actions
                             .frame(maxWidth: .infinity, alignment: .trailing)
                             .padding(.top, POSPadding.small)
                     }
@@ -75,6 +75,13 @@ struct POSCashSessionDetailView: View {
         }
         .background(Color.posSurface)
         .accessibilityIdentifier("pos-cash-drawer-session-detail-view")
+    }
+
+    private var actions: some View {
+        HStack(spacing: POSSpacing.small) {
+            POSCashSessionExportButton(session: session)
+            POSCashSessionPrintButton(session: session, money: money)
+        }
     }
 
     private func dateCard(label: String, date: Date, actor: String) -> some View {

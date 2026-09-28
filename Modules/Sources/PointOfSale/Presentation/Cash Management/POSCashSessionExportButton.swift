@@ -19,18 +19,20 @@ struct POSCashSessionExportButton: View {
                 showsExportError = true
             }
         } label: {
-            Label(Localization.export, systemImage: "square.and.arrow.up")
+            Image(systemName: "square.and.arrow.up")
+                .frame(width: 20, height: 20)
         }
         .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .default))
         .disabled(session.closedAt == nil)
+        .accessibilityLabel(Localization.share)
         .accessibilityIdentifier("pos-cash-session-export")
         .sheet(item: $sharedFile, onDismiss: removeTemporaryFile) { file in
             POSCashSessionShareSheet(fileURL: file.url)
         }
-        .alert(Localization.exportFailed, isPresented: $showsExportError) {
+        .alert(Localization.shareFailed, isPresented: $showsExportError) {
             Button(Localization.dismiss, role: .cancel) {}
         } message: {
-            Text(Localization.exportFailedMessage)
+            Text(Localization.shareFailedMessage)
         }
     }
 
@@ -62,11 +64,11 @@ private struct POSCashSessionShareSheet: UIViewControllerRepresentable {
 
 private extension POSCashSessionExportButton {
     enum Localization {
-        static let export = NSLocalizedString("pos.cashSession.detail.export", value: "Export", comment: "Export a closed cash session summary")
-        static let exportFailed = NSLocalizedString("pos.cashSession.detail.exportFailed", value: "Could not export session",
-                                                  comment: "Cash session export error heading")
-        static let exportFailedMessage = NSLocalizedString("pos.cashSession.detail.exportFailedMessage",
-                                                         value: "Try exporting the session again.", comment: "Cash session export error message")
+        static let share = NSLocalizedString("pos.cashSession.detail.share", value: "Share session", comment: "Share a closed cash session summary")
+        static let shareFailed = NSLocalizedString("pos.cashSession.detail.shareFailed", value: "Could not share session",
+                                                 comment: "Cash session share error heading")
+        static let shareFailedMessage = NSLocalizedString("pos.cashSession.detail.shareFailedMessage",
+                                                        value: "Try sharing the session again.", comment: "Cash session share error message")
         static let dismiss = NSLocalizedString("pos.cashSession.detail.exportDismiss", value: "OK", comment: "Dismiss the cash session export error")
     }
 }

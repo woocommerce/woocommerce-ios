@@ -48,6 +48,7 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
     private(set) var printedStoreInformation: ReceiptStoreInformation?
     private(set) var printedCardDetails: CardPresentTransactionDetails?
     private(set) var printedOrder: Order?
+    private(set) var printedText: String?
 
     // MARK: - ReceiptPrinterServiceProtocol
 
@@ -118,6 +119,13 @@ final class MockReceiptPrinterService: ReceiptPrinterServiceProtocol {
                       storeInformation: ReceiptStoreInformation) async throws {
         printedOrder = order
         printedStoreInformation = storeInformation
+        if let printError {
+            throw printError
+        }
+    }
+
+    func printText(_ text: String) async throws {
+        printedText = text
         if let printError {
             throw printError
         }

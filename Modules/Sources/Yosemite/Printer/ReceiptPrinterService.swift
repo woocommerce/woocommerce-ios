@@ -38,6 +38,9 @@ public protocol ReceiptPrinterServiceProtocol: AnyObject {
     /// printed receipt carries no card details in this form (`cardDetails: nil`).
     func printReceipt(order: Order,
                       storeInformation: ReceiptStoreInformation) async throws
+
+    /// Prints already formatted text on the connected receipt printer.
+    func printText(_ text: String) async throws
 }
 
 /// Default `ReceiptPrinterServiceProtocol`, backed by an injected Hardware discovery service.
@@ -93,6 +96,10 @@ public final class ReceiptPrinterService: ReceiptPrinterServiceProtocol {
         let parameters = receiptParameters(for: order)
         let content = contentAssembler.makeContent(order: order, parameters: parameters, removingHtml: true)
         try await printReceipt(content: content, storeInformation: storeInformation, cardDetails: nil)
+    }
+
+    public func printText(_ text: String) async throws {
+        try await printerDiscoveryService.printReceipt(text: text)
     }
 
     private func receiptParameters(for order: Order) -> CardPresentReceiptParameters {

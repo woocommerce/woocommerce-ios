@@ -4,7 +4,6 @@
 appId: ${APP_ID}
 name: "POS - Search, products, cart, and coupons"
 tags:
-  - flaky_quarantine
   - pos_ipad
 ---
 - runFlow: ../subflows/ensure_logged_in.yaml

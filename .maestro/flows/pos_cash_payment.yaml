@@ -4,7 +4,6 @@
 appId: ${APP_ID}
 name: "POS - Cash payment and new order"
 tags:
-  - flaky_quarantine
   - destructive
   - pos_ipad
 ---

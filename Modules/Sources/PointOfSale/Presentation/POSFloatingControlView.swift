@@ -221,8 +221,8 @@ private extension POSFloatingControlView {
         )
 
         static let cashManagement = NSLocalizedString(
-            "pointOfSale.floatingButtons.cashManagement.button.title",
-            value: "Cash management",
+            "pointOfSale.floatingButtons.cash.button.title",
+            value: "Cash",
             comment: "The title of the menu button to manage Point of Sale cash sessions."
         )
     }

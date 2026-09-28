@@ -320,8 +320,8 @@ extension POSCashManagementView {
 
     enum Localization {
         static let navigationTitle = NSLocalizedString(
-            "pointOfSaleCashManagementView.navigationTitle",
-            value: "Cash management",
+            "pointOfSaleCashManagementView.cashNavigationTitle",
+            value: "Cash",
             comment: "Title of the Point of Sale cash management screen."
         )
 

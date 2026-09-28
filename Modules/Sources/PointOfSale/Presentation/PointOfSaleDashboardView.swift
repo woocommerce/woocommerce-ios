@@ -761,8 +761,8 @@ private extension PointOfSaleDashboardView {
             comment: "Phone-only overflow menu item to open the historical orders view."
         )
         static let phoneMenuCashManagement = NSLocalizedString(
-            "pointOfSaleDashboard.phone.menu.cashManagement",
-            value: "Cash management",
+            "pointOfSaleDashboard.phone.menu.cash",
+            value: "Cash",
             comment: "Phone-only overflow menu item to manage Point of Sale cash sessions."
         )
         static let phoneMenuAccessibilityLabel = NSLocalizedString(

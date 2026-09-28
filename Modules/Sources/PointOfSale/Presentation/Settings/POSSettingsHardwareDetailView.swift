@@ -458,11 +458,9 @@ private extension POSSettingsHardwareDetailView {
         switch event.result {
         case .opened:
             return Localization.cashDrawerTestOpened
-        case .noSession:
-            return Localization.cashDrawerTestNoSession
         case .notConnected:
             return Localization.cashDrawerTestNotConnected
-        case .failed:
+        case .noSession, .failed:
             return Localization.cashDrawerTestFailed
         }
     }
@@ -823,12 +821,6 @@ private extension POSSettingsHardwareDetailView {
             "pointOfSaleSettingsHardwareDetailView.cashDrawerTestOpened",
             value: "Drawer opened",
             comment: "Shown after a test open when the cash drawer opened."
-        )
-
-        static let cashDrawerTestNoSession = NSLocalizedString(
-            "pointOfSaleSettingsHardwareDetailView.cashDrawerTestNoSession",
-            value: "Start a cash session before opening the drawer here.",
-            comment: "Shown when a settings test cannot open the drawer without a cash session."
         )
 
         static let cashDrawerTestNotConnected = NSLocalizedString(

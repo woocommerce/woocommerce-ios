@@ -291,13 +291,29 @@ struct POSCashDrawerControllerTests {
 
         // When
         let noSaleResult = await sut.open(for: .noSale)
-        let testResult = await sut.open(for: .test)
 
         // Then
         #expect(noSaleResult == .noSession)
-        #expect(testResult == .noSession)
         #expect(drawerService.openCallCount == 0)
         #expect(sut.lastEvent == nil)
+    }
+
+    @Test func test_testOpen_when_no_session_then_opens_drawer_without_recording_event() async {
+        // Given
+        let drawerService = MockCashDrawerService()
+        let sessionService = MockPOSCashSessionService()
+        sessionService.capturedSessionID = nil
+        let sut = makeController(service: drawerService, sessionService: sessionService)
+        sut.sessionSnapshot = { nil }
+
+        // When
+        let result = await sut.open(for: .test)
+
+        // Then
+        #expect(result == .opened)
+        #expect(drawerService.openCallCount == 1)
+        #expect(sut.lastEvent?.reason == .test)
+        #expect(sessionService.recordedDrawerEvents.isEmpty)
     }
 
     @Test func test_openBeforeSession_when_no_session_then_opens_drawer_without_recording_event() async {

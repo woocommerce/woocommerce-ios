@@ -148,8 +148,14 @@ final class POSCashDrawerController {
             } else {
                 session = nil
             }
-            guard let session else { return .noSession }
-            eventSessionID = session.drawerID != nil ? session.id : nil
+            if let session {
+                eventSessionID = session.drawerID != nil ? session.id : nil
+            } else if reason == .test {
+                // Hardware tests can run before a session starts, with no event to record in Core.
+                eventSessionID = nil
+            } else {
+                return .noSession
+            }
         } else {
             // Payment and refund flows captured this ID from Core before the transaction.
             eventSessionID = sessionID

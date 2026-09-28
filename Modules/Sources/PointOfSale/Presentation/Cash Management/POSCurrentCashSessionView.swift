@@ -13,19 +13,19 @@ struct POSCurrentCashSessionView: View {
     var body: some View {
         if let session = controller.currentSession {
             VStack(spacing: POSSpacing.none) {
-                POSPageHeaderView(title: horizontalSizeClass == .compact ? Localization.compactTitle : Localization.title,
-                                  subtitle: String.localizedStringWithFormat(Localization.sessionNumber, String(session.id)),
-                                  trailingContent: {
-                    if horizontalSizeClass != .compact {
-                        headerActions
-                    }
-                }, bottomContent: {
-                    if horizontalSizeClass == .compact {
-                        headerActions
-                            .frame(maxWidth: .infinity, alignment: .trailing)
-                            .padding(.top, POSPadding.small)
-                    }
-                })
+                if horizontalSizeClass == .compact {
+                    POSPageHeaderView(title: String.localizedStringWithFormat(Localization.compactTitle, String(session.id)),
+                                      trailingContent: { movementMenu })
+                } else {
+                    POSPageHeaderView(title: Localization.title,
+                                      subtitle: String.localizedStringWithFormat(Localization.sessionNumber, String(session.id)),
+                                      trailingContent: {
+                        HStack(spacing: POSSpacing.small) {
+                            closeButton
+                            movementMenu
+                        }
+                    })
+                }
 
                 ScrollView {
                     VStack(alignment: .leading, spacing: POSSpacing.medium) {
@@ -68,6 +68,15 @@ struct POSCurrentCashSessionView: View {
                     }
                     .padding(POSPadding.medium)
                 }
+
+                if horizontalSizeClass == .compact {
+                    Button(Localization.closeButton) { entryAction = .close }
+                        .buttonStyle(POSFilledButtonStyle(size: .normal))
+                        .disabled(controller.hasPendingCashMovements)
+                        .frame(maxWidth: .infinity)
+                        .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+                        .padding(.vertical, POSPadding.medium)
+                }
             }
             .background(Color.posSurface)
             .posFullScreenCover(item: $entryAction) { action in
@@ -77,24 +86,25 @@ struct POSCurrentCashSessionView: View {
         }
     }
 
-    private var headerActions: some View {
-        HStack(spacing: POSSpacing.small) {
-            Button(Localization.closeButton) { entryAction = .close }
-                .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .primary, isLoading: false))
-                .disabled(controller.hasPendingCashMovements)
-            Menu {
-                Button(Localization.payIn) { entryAction = .payIn }
-                Button(Localization.payOut) { entryAction = .payOut }
-            } label: {
-                Image(systemName: "ellipsis")
-                    .font(.posBodyLargeBold)
-                    .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    .foregroundColor(.posOnSurface)
-                    .padding(POSPadding.small)
-            }
-            .menuIndicator(.hidden)
-            .accessibilityLabel(Localization.recordMovement)
+    private var closeButton: some View {
+        Button(Localization.closeButton) { entryAction = .close }
+            .buttonStyle(POSInfoCardButtonStyle(size: .compact, variant: .primary, isLoading: false))
+            .disabled(controller.hasPendingCashMovements)
+    }
+
+    private var movementMenu: some View {
+        Menu {
+            Button(Localization.payIn) { entryAction = .payIn }
+            Button(Localization.payOut) { entryAction = .payOut }
+        } label: {
+            Image(systemName: "ellipsis")
+                .font(.posBodyLargeBold)
+                .dynamicTypeSize(...DynamicTypeSize.accessibility2)
+                .foregroundColor(.posOnSurface)
+                .padding(POSPadding.small)
         }
+        .menuIndicator(.hidden)
+        .accessibilityLabel(Localization.recordMovement)
     }
 
     private var compactMetricLabelHeight: CGFloat? {
@@ -128,8 +138,8 @@ struct POSCashSessionMetricView: View {
 private extension POSCurrentCashSessionView {
     enum Localization {
         static let title = NSLocalizedString("pos.cashSession.current.title", value: "Current session", comment: "Current cash session title")
-        static let compactTitle = NSLocalizedString("pos.cashSession.current.compactTitle", value: "Cash session",
-                                                    comment: "Current cash session title on iPhone")
+        static let compactTitle = NSLocalizedString("pos.cashSession.current.compactTitleWithNumber", value: "Session #%1$@",
+                                                    comment: "Current cash session title on iPhone. %1$@ is the session number.")
         static let sessionNumber = NSLocalizedString("pos.cashSession.current.number", value: "#%1$@", comment: "Cash session number")
         static let closeButton = NSLocalizedString("pos.cashSession.current.close", value: "Close session", comment: "Close current cash session")
         static let payIn = NSLocalizedString("pos.cashSession.current.payIn", value: "Pay in", comment: "Record cash added to drawer")

@@ -6,7 +6,6 @@ struct POSCashManagementView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @State private var selection: SidebarNavigation?
     @State private var pendingClosedSessionID: Int64?
-    @State private var selectedOrderLink: OrderLink?
     @State private var isLoaded = false
 
     let controller: POSCashSessionController
@@ -48,14 +47,9 @@ struct POSCashManagementView: View {
         .task {
             await loadCurrentSession()
         }
-        .posFullScreenCover(item: $selectedOrderLink, onDismiss: {
-            if selection == .currentSession {
-                Task { await controller.loadCurrentSession() }
-            }
-        }) { link in
-            POSCashSessionLinkedOrderView(orderID: link.id) {
-                selectedOrderLink = nil
-            }
+        .onChange(of: controller.currentSession?.id) { _, sessionID in
+            guard sessionID == nil, selection == .currentSession else { return }
+            selection = horizontalSizeClass == .compact ? nil : .startSession
         }
     }
 
@@ -89,25 +83,35 @@ struct POSCashManagementView: View {
 
     @ViewBuilder
     private func detailView(for selection: SidebarNavigation, detailNavigationPath: Binding<NavigationPath>) -> some View {
-        switch selection {
-        case .startSession:
-            POSStartCashSessionView(controller: controller, onStarted: { self.selection = .currentSession })
-        case .currentSession:
-            POSCurrentCashSessionView(controller: controller, onClosed: { sessionID in
-                pendingClosedSessionID = sessionID
-                self.selection = .pastSessions
-            }, onOpenOrder: openOrder)
-        case .pastSessions:
-            POSPastCashSessionsView(detailNavigationPath: detailNavigationPath,
-                                    controller: controller, onOpenOrder: openOrder)
+        Group {
+            switch selection {
+            case .startSession:
+                POSStartCashSessionView(controller: controller, onStarted: { self.selection = .currentSession })
+            case .currentSession:
+                POSCurrentCashSessionView(controller: controller, onClosed: { sessionID in
+                    pendingClosedSessionID = sessionID
+                    self.selection = .pastSessions
+                }, onOpenOrder: { id in
+                    detailNavigationPath.wrappedValue.append(OrderDestination(id: id))
+                })
+            case .pastSessions:
+                POSPastCashSessionsView(detailNavigationPath: detailNavigationPath,
+                                        controller: controller, onOpenOrder: { id in
+                    detailNavigationPath.wrappedValue.append(OrderDestination(id: id))
+                })
+            }
+        }
+        .navigationDestination(for: OrderDestination.self) { destination in
+            POSCashSessionLinkedOrderView(orderID: destination.id, detailNavigationPath: detailNavigationPath) {
+                guard !detailNavigationPath.wrappedValue.isEmpty else { return }
+                detailNavigationPath.wrappedValue.removeLast()
+            }
+            .environment(\.posHeaderBackButtonConfiguration, nil)
+            .toolbar(.hidden, for: .navigationBar)
         }
     }
 
-    private func openOrder(_ id: Int64) {
-        selectedOrderLink = OrderLink(id: id)
-    }
-
-    private struct OrderLink: Identifiable, Equatable {
+    private struct OrderDestination: Hashable {
         let id: Int64
     }
 }
@@ -117,23 +121,22 @@ private struct POSCashSessionLinkedOrderView: View {
     @State private var order: POSOrder?
     @State private var previousSelectedOrder: POSOrder?
     @State private var loadError: String?
-    @State private var detailNavigationPath = NavigationPath()
     @State private var activeRefundSelectionOrderID: Int64?
+    @State private var orderPathDepth: Int?
 
     let orderID: Int64
+    @Binding var detailNavigationPath: NavigationPath
     let onClose: () -> Void
 
     var body: some View {
         Group {
             if let order {
-                NavigationStack(path: $detailNavigationPath) {
-                    POSOrderDetailsView(order: order,
-                                        detailNavigationPath: $detailNavigationPath,
-                                        activeRefundSelectionOrderID: $activeRefundSelectionOrderID,
-                                        onBack: onClose,
-                                        showsBackButton: true)
-                        .id(order.id)
-                }
+                POSOrderDetailsView(order: order,
+                                    detailNavigationPath: $detailNavigationPath,
+                                    activeRefundSelectionOrderID: $activeRefundSelectionOrderID,
+                                    onBack: onClose,
+                                    showsBackButton: true)
+                    .id(order.id)
             } else {
                 VStack(spacing: POSSpacing.none) {
                     POSPageHeaderView(title: Localization.orderDetails,
@@ -157,9 +160,15 @@ private struct POSCashSessionLinkedOrderView: View {
         }
         .background(Color.posSurface)
         .task {
-            await loadOrder()
+            if order == nil { await loadOrder() }
+        }
+        .onAppear {
+            orderPathDepth = detailNavigationPath.count
         }
         .onDisappear {
+            // The refund selection is pushed above this order. Keep its selected order
+            // until the order destination itself is popped from the cash-session path.
+            if let orderPathDepth, detailNavigationPath.count > orderPathDepth { return }
             if let order, orderListModel.ordersController.selectedOrder?.id == order.id {
                 if previousSelectedOrder?.id != order.id {
                     orderListModel.selectOrder(previousSelectedOrder)

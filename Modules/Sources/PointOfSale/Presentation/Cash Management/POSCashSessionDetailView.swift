@@ -6,6 +6,7 @@ struct POSCashSessionDetailView: View {
 
     let session: POSCashSession
     let onBack: () -> Void
+    var onOpenOrder: ((Int64) -> Void)? = nil
 
     private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings, session: session) }
 
@@ -15,7 +16,19 @@ struct POSCashSessionDetailView: View {
                 title: horizontalSizeClass == .compact ?
                     String.localizedStringWithFormat(Localization.compactSessionNumber, String(session.id)) :
                     String.localizedStringWithFormat(Localization.sessionNumber, String(session.id)),
-                backButtonConfiguration: .init(state: .enabled, action: onBack)
+                backButtonConfiguration: .init(state: .enabled, action: onBack),
+                trailingContent: {
+                    if horizontalSizeClass != .compact {
+                        POSCashSessionExportButton(session: session)
+                    }
+                },
+                bottomContent: {
+                    if horizontalSizeClass == .compact {
+                        POSCashSessionExportButton(session: session)
+                            .frame(maxWidth: .infinity, alignment: .trailing)
+                            .padding(.top, POSPadding.small)
+                    }
+                }
             )
             .environment(\.posHeaderBackButtonConfiguration, .init(state: .enabled, action: onBack))
 
@@ -55,7 +68,7 @@ struct POSCashSessionDetailView: View {
                         }
                     }
 
-                    POSCashSessionActivityView(session: session)
+                    POSCashSessionActivityView(session: session, onOpenOrder: onOpenOrder)
                 }
                 .padding(POSPadding.medium)
             }

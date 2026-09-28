@@ -3,6 +3,7 @@ import SwiftUI
 struct POSCashSessionActivityView: View {
     @Environment(\.posCurrencyProvider) private var currencyProvider
     let session: POSCashSession
+    var onOpenOrder: ((Int64) -> Void)? = nil
 
     private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings, session: session) }
 
@@ -19,8 +20,7 @@ struct POSCashSessionActivityView: View {
                 }
 
                 ForEach(session.movements.sorted(by: { $0.date > $1.date })) { movement in
-                    row(title: title(for: movement.kind), detail: detail(for: movement), amount: money.formatSigned(movement.signedAmount),
-                        amountColor: movement.signedAmount > 0 ? .posSuccess : .posOnSurface)
+                    movementRow(movement)
                 }
 
                 row(title: Localization.started,
@@ -30,7 +30,30 @@ struct POSCashSessionActivityView: View {
         }
     }
 
-    private func row(title: String, detail: String, amount: String, amountColor: Color = .posOnSurface) -> some View {
+    @ViewBuilder
+    private func movementRow(_ movement: POSCashSessionMovement) -> some View {
+        let title = title(for: movement.kind)
+        let detail = detail(for: movement)
+        let amount = money.formatSigned(movement.signedAmount)
+        let amountColor: Color = movement.signedAmount > 0 ? .posSuccess : .posOnSurface
+
+        if movement.kind == .cashSale || movement.kind == .cashRefund,
+           let orderID = movement.orderID, let onOpenOrder {
+            Button {
+                onOpenOrder(orderID)
+            } label: {
+                row(title: title, detail: detail, amount: amount, amountColor: amountColor, showsChevron: true)
+            }
+            .buttonStyle(.plain)
+            .accessibilityHint(Localization.viewOrderDetails)
+            .accessibilityIdentifier("pos-cash-session-order-\(orderID)")
+        } else {
+            row(title: title, detail: detail, amount: amount, amountColor: amountColor)
+        }
+    }
+
+    private func row(title: String, detail: String, amount: String, amountColor: Color = .posOnSurface,
+                     showsChevron: Bool = false) -> some View {
         HStack(alignment: .top, spacing: POSSpacing.medium) {
             VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
                 Text(title)
@@ -44,6 +67,11 @@ struct POSCashSessionActivityView: View {
             Text(amount)
                 .font(.posBodyMediumRegular())
                 .foregroundStyle(amountColor)
+            if showsChevron {
+                Image(systemName: "chevron.right")
+                    .foregroundStyle(.secondary)
+                    .accessibilityHidden(true)
+            }
         }
         .accessibilityElement(children: .combine)
     }
@@ -80,8 +108,11 @@ private extension POSCashSessionActivityView {
         static let cashRefund = NSLocalizedString("pos.cashSession.activity.refund", value: "Cash refund issued", comment: "Cash session activity")
         static let payIn = NSLocalizedString("pos.cashSession.activity.payIn", value: "Pay in recorded", comment: "Cash session activity")
         static let payOut = NSLocalizedString("pos.cashSession.activity.payOut", value: "Pay out recorded", comment: "Cash session activity")
+        static let viewOrderDetails = NSLocalizedString("pos.cashSession.activity.viewOrderDetails", value: "View order details",
+                                                        comment: "Accessibility hint for an order-related cash session activity")
         static let timeActorAndNote = NSLocalizedString("pos.cashSession.activity.timeActorAndNote", value: "%1$@ · By %2$@ · %3$@",
                                                        comment: "Time, staff member, and note in cash activity")
-        static let timeAndActor = NSLocalizedString("pos.cashSession.activity.timeAndActor", value: "%1$@ · By %2$@", comment: "Time and staff name in cash activity")
+        static let timeAndActor = NSLocalizedString("pos.cashSession.activity.timeAndActor", value: "%1$@ · By %2$@",
+                                                   comment: "Time and staff name in cash activity")
     }
 }

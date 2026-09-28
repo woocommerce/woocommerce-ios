@@ -44,6 +44,8 @@ public struct POSCashDrawerEventRecord: Equatable {
     public enum Outcome: Equatable {
         /// The open command reached the printer. This doesn't prove the drawer physically opened.
         case openRequested
+        /// The drawer's sensor reported it open.
+        case opened
         /// The printer wasn't connected or the open command failed.
         case openFailed
     }
@@ -54,18 +56,23 @@ public struct POSCashDrawerEventRecord: Equatable {
         case noSale
         case test
         case count
+        /// The drawer opened without an app action, for example with the key.
+        case unknown
     }
 
     public let outcome: Outcome
     public let reason: Reason
     public let orderID: Int64?
     public let occurredAt: Date
+    /// Shared by a requested open and its sensor-confirmed open. Nil for opens the app didn't request.
+    public let correlationID: UUID?
 
-    public init(outcome: Outcome, reason: Reason, orderID: Int64?, occurredAt: Date) {
+    public init(outcome: Outcome, reason: Reason, orderID: Int64?, occurredAt: Date, correlationID: UUID? = nil) {
         self.outcome = outcome
         self.reason = reason
         self.orderID = orderID
         self.occurredAt = occurredAt
+        self.correlationID = correlationID
     }
 }
 

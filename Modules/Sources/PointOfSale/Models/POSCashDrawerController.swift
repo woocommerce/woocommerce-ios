@@ -16,6 +16,8 @@ enum POSCashDrawerOpenReason: Equatable {
     case test
     /// A cash session started, so the cashier can put the opening float in.
     case sessionStart
+    /// The drawer's sensor reported an opening the app didn't request, for example with the key.
+    case unknown
 }
 
 /// The outcome of asking the drawer to open.
@@ -67,6 +69,10 @@ final class POSCashDrawerController {
     /// Nil until the merchant names the drawer.
     private(set) var drawerName: String?
 
+    /// Which sensor value means "open" for this drawer. It depends on the drawer, so it is learned from the first
+    /// signal change right after an open the app requested. Nil until learned, or for drawers without a sensor.
+    private(set) var openSignal: Bool?
+
     /// The most recent open attempt, so the UI can show a clear notice when the drawer is unavailable.
     private(set) var lastEvent: POSCashDrawerEvent?
 
@@ -79,6 +85,10 @@ final class POSCashDrawerController {
     @ObservationIgnored var sessionSnapshot: (@MainActor () -> POSCashDrawerSessionSnapshot?)?
     @ObservationIgnored private let userDefaults: UserDefaults
     @ObservationIgnored private let now: () -> Date
+    /// The latest open the app requested, so a sensor open shortly after is linked to it rather than treated as manual.
+    @ObservationIgnored private var lastRequestedOpen: RequestedOpen?
+    /// The last sensor value, so only a change to "open" counts as an opening.
+    @ObservationIgnored private var lastSignal: Bool?
 
     init(service: CashDrawerService,
          sessionService: (any POSCashSessionService)? = nil,
@@ -90,6 +100,8 @@ final class POSCashDrawerController {
         self.now = now
         self.opensAutomaticallyForCashPayments = userDefaults.object(forKey: Constants.opensAutomaticallyKey) as? Bool ?? true
         self.drawerName = userDefaults.string(forKey: Constants.drawerNameKey)
+        self.openSignal = userDefaults.object(forKey: Constants.openSignalKey) as? Bool
+        observeDrawerSignal()
     }
 
     /// Saves the drawer name without surrounding whitespace. A blank name clears it, as Core rejects blank drawer names.
@@ -147,24 +159,86 @@ final class POSCashDrawerController {
         }
 
         let event = POSCashDrawerEvent(reason: reason, result: result, date: attemptDate, orderID: orderID)
+        let correlationID = UUID()
+        if result == .opened {
+            lastRequestedOpen = RequestedOpen(event: event, correlationID: correlationID, sessionID: eventSessionID)
+        }
         lastEvent = event
         onDrawerEvent?(event)
-        recordInSession(event, sessionID: eventSessionID)
+        recordInSession(outcome: result == .opened ? .openRequested : .openFailed, event: event,
+                        correlationID: correlationID, sessionID: eventSessionID)
         return result
+    }
+
+    /// Handles a change of the drawer's sensor signal. Records an `opened` event when the drawer opens: in the
+    /// session of the app's request when it follows one, or as an unknown open (for example with the key) otherwise.
+    func handleDrawerSignal(_ signal: Bool) {
+        let previousSignal = lastSignal
+        lastSignal = signal
+        guard signal != previousSignal else {
+            return
+        }
+
+        let requestedOpen = lastRequestedOpen.flatMap { now().timeIntervalSince($0.event.date) <= Constants.sensorConfirmationWindow ? $0 : nil }
+        if openSignal == nil {
+            // Learn which value means open from the first change right after an open the app requested.
+            guard requestedOpen != nil else {
+                return
+            }
+            openSignal = signal
+            userDefaults.set(signal, forKey: Constants.openSignalKey)
+        }
+        guard signal == openSignal else {
+            return
+        }
+
+        if let requestedOpen {
+            lastRequestedOpen = nil
+            recordInSession(outcome: .opened, event: requestedOpen.event, correlationID: requestedOpen.correlationID,
+                            sessionID: requestedOpen.sessionID, occurredAt: now())
+        } else {
+            // Only the local session snapshot is used, so an opening is never recorded in a session it didn't happen in.
+            let session = sessionSnapshot?()
+            recordInSession(outcome: .opened, event: POSCashDrawerEvent(reason: .unknown, result: .opened, date: now()),
+                            correlationID: nil, sessionID: session?.drawerID != nil ? session?.id : nil)
+        }
     }
 }
 
 private extension POSCashDrawerController {
+    struct RequestedOpen {
+        let event: POSCashDrawerEvent
+        let correlationID: UUID
+        let sessionID: Int64?
+    }
+
+    func observeDrawerSignal() {
+        let signals = service.drawerSignalUpdates()
+        Task { [weak self] in
+            for await signal in signals {
+                guard let self else {
+                    return
+                }
+                self.handleDrawerSignal(signal)
+            }
+        }
+    }
+
     /// Records the event in the open cash session without waiting, so it never holds up a sale.
     /// Core only accepts drawer events for a session opened with a drawer.
-    func recordInSession(_ event: POSCashDrawerEvent, sessionID: Int64?) {
+    func recordInSession(outcome: POSCashDrawerEventRecord.Outcome,
+                         event: POSCashDrawerEvent,
+                         correlationID: UUID?,
+                         sessionID: Int64?,
+                         occurredAt: Date? = nil) {
         guard let sessionService, let sessionID else {
             return
         }
-        let record = POSCashDrawerEventRecord(outcome: event.result == .opened ? .openRequested : .openFailed,
+        let record = POSCashDrawerEventRecord(outcome: outcome,
                                               reason: Self.recordReason(for: event.reason),
                                               orderID: event.orderID,
-                                              occurredAt: event.date)
+                                              occurredAt: occurredAt ?? event.date,
+                                              correlationID: correlationID)
         Task {
             do {
                 try await sessionService.recordDrawerEvent(record, sessionID: sessionID)
@@ -188,6 +262,8 @@ private extension POSCashDrawerController {
         case .sessionStart:
             // Core has no reason for the opening float; the cashier counts it into the drawer.
             return .count
+        case .unknown:
+            return .unknown
         }
     }
 }
@@ -196,5 +272,8 @@ private extension POSCashDrawerController {
     enum Constants {
         static let opensAutomaticallyKey = "pos-cash-drawer-opens-automatically"
         static let drawerNameKey = "pos-cash-drawer-name"
+        static let openSignalKey = "pos-cash-drawer-open-signal"
+        /// How long after an app open a sensor change still counts as that open, rather than a manual one.
+        static let sensorConfirmationWindow: TimeInterval = 5
     }
 }

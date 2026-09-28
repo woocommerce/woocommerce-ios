@@ -59,9 +59,10 @@ public final class POSCashSessionRemoteService {
     }
 
     public func recordDrawerEvent(siteID: Int64, sessionID: Int64, requestID: UUID, type: String, reason: String,
-                                  orderID: Int64?, occurredAt: String) async throws -> POSCashDrawerEventResponse {
+                                  orderID: Int64?, occurredAt: String, correlationID: UUID?) async throws -> POSCashDrawerEventResponse {
         try await perform { try await remote.recordDrawerEvent(siteID: siteID, sessionID: sessionID, requestID: requestID,
-                                                               type: type, reason: reason, orderID: orderID, occurredAt: occurredAt) }
+                                                               type: type, reason: reason, orderID: orderID, occurredAt: occurredAt,
+                                                               correlationID: correlationID) }
     }
 
     public func closeSession(siteID: Int64, sessionID: Int64, requestID: UUID, expectedRevision: Int,

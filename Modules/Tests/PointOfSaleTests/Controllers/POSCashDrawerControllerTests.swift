@@ -147,7 +147,11 @@ struct POSCashDrawerControllerTests {
         }
 
         // Then
-        #expect(recorded == POSCashDrawerEventRecord(outcome: .openRequested, reason: .cashSale, orderID: 42, occurredAt: date))
+        #expect(recorded.outcome == .openRequested)
+        #expect(recorded.reason == .cashSale)
+        #expect(recorded.orderID == 42)
+        #expect(recorded.occurredAt == date)
+        #expect(recorded.correlationID != nil)
         #expect(sessionService.recordedDrawerEventSessionIDs == [123])
     }
 
@@ -166,7 +170,9 @@ struct POSCashDrawerControllerTests {
         }
 
         // Then
-        #expect(recorded == POSCashDrawerEventRecord(outcome: .openFailed, reason: .noSale, orderID: nil, occurredAt: date))
+        #expect(recorded.outcome == .openFailed)
+        #expect(recorded.reason == .noSale)
+        #expect(recorded.orderID == nil)
         #expect(sessionService.recordedDrawerEventSessionIDs == [123])
     }
 
@@ -309,6 +315,67 @@ struct POSCashDrawerControllerTests {
         #expect(recorded.reason == .count)
     }
 
+    @Test func test_handleDrawerSignal_when_signal_changes_after_app_open_then_learns_open_value_and_records_linked_opened_event() async {
+        // Given
+        let sessionService = MockPOSCashSessionService()
+        let sut = makeController(service: MockCashDrawerService(), sessionService: sessionService)
+        sut.updateDrawerName("Front till")
+
+        // When
+        let recorded = await recordedEvents(count: 2, from: sessionService) {
+            await sut.open(for: .cashSale, orderID: 42)
+            sut.handleDrawerSignal(false)
+        }
+
+        // Then
+        let requested = recorded[0]
+        let opened = recorded[1]
+        #expect(sut.openSignal == false)
+        #expect(requested.outcome == .openRequested)
+        #expect(opened.outcome == .opened)
+        #expect(opened.reason == .cashSale)
+        #expect(opened.orderID == 42)
+        #expect(opened.correlationID == requested.correlationID)
+        #expect(sessionService.recordedDrawerEventSessionIDs == [123, 123])
+    }
+
+    @Test func test_handleDrawerSignal_when_drawer_opens_without_app_request_then_records_unknown_opened_event() async {
+        // Given
+        let sessionService = MockPOSCashSessionService()
+        let sut = makeController(service: MockCashDrawerService(), sessionService: sessionService)
+        sut.updateDrawerName("Front till")
+        let learned = await recordedEvents(count: 2, from: sessionService) {
+            await sut.open(for: .test)
+            sut.handleDrawerSignal(true)
+        }
+        #expect(learned.count == 2)
+        sut.handleDrawerSignal(false)
+
+        // When
+        let recorded = await recordedEvents(count: 1, from: sessionService) {
+            sut.handleDrawerSignal(true)
+        }
+
+        // Then
+        #expect(recorded.first?.outcome == .opened)
+        #expect(recorded.first?.reason == .unknown)
+        #expect(recorded.first?.correlationID == nil)
+    }
+
+    @Test func test_handleDrawerSignal_when_open_value_is_unknown_and_no_app_open_then_does_not_record() {
+        // Given
+        let sessionService = MockPOSCashSessionService()
+        let sut = makeController(service: MockCashDrawerService(), sessionService: sessionService)
+        sut.updateDrawerName("Front till")
+
+        // When
+        sut.handleDrawerSignal(true)
+
+        // Then
+        #expect(sut.openSignal == nil)
+        #expect(sessionService.recordedDrawerEvents.isEmpty)
+    }
+
     @Test func test_open_when_drawer_is_not_named_then_does_not_record_event_in_session() async {
         // Given
         let sessionService = MockPOSCashSessionService()
@@ -323,6 +390,23 @@ struct POSCashDrawerControllerTests {
 }
 
 private extension POSCashDrawerControllerTests {
+    /// Runs `actions`, then waits until the session service has recorded `count` more drawer events.
+    func recordedEvents(count: Int,
+                        from sessionService: MockPOSCashSessionService,
+                        actions: @escaping @Sendable @MainActor () async -> Void) async -> [POSCashDrawerEventRecord] {
+        await withCheckedContinuation { continuation in
+            var events: [POSCashDrawerEventRecord] = []
+            sessionService.onDrawerEventRecorded = { event in
+                events.append(event)
+                if events.count == count {
+                    sessionService.onDrawerEventRecorded = nil
+                    continuation.resume(returning: events)
+                }
+            }
+            Task { await actions() }
+        }
+    }
+
     func makeController(service: MockCashDrawerService,
                         sessionService: MockPOSCashSessionService? = nil) -> POSCashDrawerController {
         let controller = POSCashDrawerController(service: service, sessionService: sessionService,

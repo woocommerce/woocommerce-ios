@@ -164,7 +164,8 @@ final class POSCashSessionAdaptor: POSCashSessionService {
                                                type: Self.drawerEventType(for: event.outcome),
                                                reason: Self.drawerEventReason(for: event.reason),
                                                orderID: event.orderID,
-                                               occurredAt: ISO8601DateFormatter().string(from: event.occurredAt))
+                                               occurredAt: ISO8601DateFormatter().string(from: event.occurredAt),
+                                               correlationID: event.correlationID)
     }
 
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal,
@@ -235,6 +236,7 @@ private extension POSCashSessionAdaptor {
     static func drawerEventType(for outcome: POSCashDrawerEventRecord.Outcome) -> String {
         switch outcome {
         case .openRequested: "open_requested"
+        case .opened: "opened"
         case .openFailed: "open_failed"
         }
     }
@@ -246,6 +248,7 @@ private extension POSCashSessionAdaptor {
         case .noSale: "no_sale"
         case .test: "test"
         case .count: "count"
+        case .unknown: "unknown"
         }
     }
 

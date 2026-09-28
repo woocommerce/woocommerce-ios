@@ -9,7 +9,7 @@ public protocol POSCashSessionRemoteProtocol {
                         amount: String, reason: String) async throws -> POSCashMovementResponse
     func recordCashSale(siteID: Int64, sessionID: Int64, requestID: UUID, orderID: Int64) async throws -> POSCashMovementResponse
     func recordDrawerEvent(siteID: Int64, sessionID: Int64, requestID: UUID, type: String, reason: String,
-                           orderID: Int64?, occurredAt: String) async throws -> POSCashDrawerEventResponse
+                           orderID: Int64?, occurredAt: String, correlationID: UUID?) async throws -> POSCashDrawerEventResponse
     func recordCashRefund(siteID: Int64, sessionID: Int64, requestID: UUID, orderID: Int64,
                           refundID: Int64) async throws -> POSCashMovementResponse
     func closeSession(siteID: Int64, sessionID: Int64, requestID: UUID, expectedRevision: Int,
@@ -97,7 +97,7 @@ public final class POSCashSessionRemote: Remote, POSCashSessionRemoteProtocol {
     }
 
     public func recordDrawerEvent(siteID: Int64, sessionID: Int64, requestID: UUID, type: String, reason: String,
-                                  orderID: Int64?, occurredAt: String) async throws -> POSCashDrawerEventResponse {
+                                  orderID: Int64?, occurredAt: String, correlationID: UUID?) async throws -> POSCashDrawerEventResponse {
         // No drawer_id: Core records the event against the drawer the session was opened with.
         var parameters: RequestParameterConvertibleDictionary = [
             "request_id": requestID.uuidString,
@@ -106,6 +106,8 @@ public final class POSCashSessionRemote: Remote, POSCashSessionRemoteProtocol {
             "occurred_at": occurredAt
         ]
         if let orderID { parameters["order_id"] = orderID }
+        // Links a requested open and the sensor-confirmed open of the same drawer operation.
+        if let correlationID { parameters["correlation_id"] = correlationID.uuidString }
         let request = JetpackRequest(wooApiVersion: .wcPosV1, method: .post, siteID: siteID,
                                      path: "\(Path.sessions)/\(sessionID)/drawer-events",
                                      parameters: parameters, availableAsRESTRequest: true)

@@ -263,7 +263,7 @@ private final class MockPOSCashSessionRemote: POSCashSessionRemoteProtocol {
     }
 
     func recordDrawerEvent(siteID: Int64, sessionID: Int64, requestID: UUID, type: String, reason: String,
-                           orderID: Int64?, occurredAt: String) async throws -> POSCashDrawerEventResponse {
+                           orderID: Int64?, occurredAt: String, correlationID: UUID?) async throws -> POSCashDrawerEventResponse {
         recordedDrawerEventSessionIDs.append(sessionID)
         guard let drawerEventResponse else { throw UnexpectedCallError() }
         return drawerEventResponse

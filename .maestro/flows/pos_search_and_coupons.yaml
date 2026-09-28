@@ -52,7 +52,13 @@ tags:
       id: "pos-cart-item-product-.*|pos-cart-item-variation-.*"
     timeout: 30000
 
-# Apply an actual live-store coupon and prove it reaches the cart.
+# Apply an actual live-store coupon and prove it reaches the cart. The item
+# type tabs are hidden while searching, so leave the search first.
+- tapOn:
+    id: pos-header-back-button
+- extendedWaitUntil:
+    visible: Coupons
+    timeout: 15000
 - tapOn: Coupons
 - extendedWaitUntil:
     visible:

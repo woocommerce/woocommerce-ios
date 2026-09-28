@@ -232,6 +232,97 @@ struct POSCashSessionControllerTests {
         #expect(service.requestedPastSessionPages == [1, 2, 1, 2])
     }
 
+    @Test func test_loadSessionDetail_when_reappearing_then_refreshes_cached_detail_without_clearing_it() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.sessionToReturn = makeSession(id: 12)
+        let controller = POSCashSessionController(service: service)
+        await controller.loadSessionDetail(id: 12)
+        service.sessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 20,
+                                                 movements: [], closedAt: now, closedBy: "Tester", revision: 2)
+        var visibleCashDuringRefresh: Decimal?
+        var wasLoadingDuringRefresh = false
+        service.onSessionRequested = { _ in
+            visibleCashDuringRefresh = controller.sessionDetail?.openingCash
+            wasLoadingDuringRefresh = controller.isLoadingSessionDetail
+        }
+
+        // When
+        await controller.loadSessionDetail(id: 12)
+
+        // Then
+        #expect(visibleCashDuringRefresh == 0)
+        #expect(wasLoadingDuringRefresh)
+        #expect(controller.sessionDetail?.openingCash == 20)
+        #expect(controller.sessionDetail?.revision == 2)
+        #expect(service.requestedSessionIDs == [12, 12])
+    }
+
+    @Test func test_loadSessionDetail_when_refresh_fails_then_retains_detail_and_clears_error_after_retry() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.sessionToReturn = makeSession(id: 12)
+        let controller = POSCashSessionController(service: service)
+        await controller.loadSessionDetail(id: 12)
+        service.sessionError = POSCashSessionServiceError.previewUnavailable
+
+        // When
+        await controller.loadSessionDetail(id: 12)
+
+        // Then
+        #expect(controller.sessionDetail?.id == 12)
+        #expect(controller.sessionDetailError != nil)
+        service.sessionError = nil
+        await controller.loadSessionDetail(id: 12)
+        #expect(controller.sessionDetailError == nil)
+        #expect(service.requestedSessionIDs == [12, 12, 12])
+    }
+
+    @Test func test_refreshCurrentSession_when_refund_is_added_then_updates_totals_without_clearing_content() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 100,
+                                                        movements: [], revision: 1)
+        let controller = POSCashSessionController(service: service)
+        await controller.loadCurrentSession()
+        let refund = POSCashSessionMovement(id: UUID(), kind: .cashRefund, amount: 25, date: now, actor: "Tester",
+                                            orderID: 42, refundID: 7, note: nil)
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 100,
+                                                        movements: [refund], revision: 2)
+        var visibleCashDuringRefresh: Decimal?
+        service.onCurrentSessionRequested = { visibleCashDuringRefresh = controller.currentSession?.expectedCash }
+
+        // When
+        await controller.refreshCurrentSession()
+
+        // Then
+        #expect(visibleCashDuringRefresh == 100)
+        #expect(controller.currentSession?.cashRefunds == 25)
+        #expect(controller.currentSession?.expectedCash == 75)
+        #expect(controller.currentSession?.revision == 2)
+    }
+
+    @Test func test_refreshCurrentSession_when_fetch_fails_then_keeps_session_and_shows_retryable_error() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 100,
+                                                        movements: [], revision: 1)
+        let controller = POSCashSessionController(service: service)
+        await controller.loadCurrentSession()
+        service.currentSessionError = POSCashSessionServiceError.previewUnavailable
+
+        // When
+        await controller.refreshCurrentSession()
+
+        // Then
+        #expect(controller.currentSession?.id == 12)
+        #expect(controller.currentRefreshError != nil)
+        #expect(controller.currentLoadError == nil)
+        service.currentSessionError = nil
+        await controller.refreshCurrentSession()
+        #expect(controller.currentRefreshError == nil)
+    }
+
     @Test func test_close_when_revision_conflicts_then_refreshes_and_requires_a_new_count() async throws {
         // Given
         let service = MockPOSCashSessionService()

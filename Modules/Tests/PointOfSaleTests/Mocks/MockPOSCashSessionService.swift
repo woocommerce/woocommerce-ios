@@ -13,6 +13,9 @@ final class MockPOSCashSessionService: POSCashSessionService {
     var onCashSaleRecorded: ((Int64) -> Void)?
     var onCashRefundRecorded: ((Int64, Int64) -> Void)?
     var onPastSessionsRequested: (@MainActor (Int) -> Void)?
+    var onSessionRequested: (@MainActor (Int64) -> Void)?
+    var onCurrentSessionRequested: (@MainActor () -> Void)?
+    private(set) var requestedSessionIDs: [Int64] = []
     var pastSessionsToReturn = POSCashSessionPage(sessions: [], hasMore: false)
     var pastSessionsError: Error?
     var hasPendingCashMovements = false
@@ -21,6 +24,8 @@ final class MockPOSCashSessionService: POSCashSessionService {
     var captureError: Error?
     var currentSessionToReturn: POSCashSession?
     var currentSessionError: Error?
+    var sessionToReturn: POSCashSession?
+    var sessionError: Error?
     var movementError: Error?
     var movementSessionToReturn: POSCashSession?
     private(set) var recordedMovementRequestIDs: [UUID] = []
@@ -59,6 +64,7 @@ final class MockPOSCashSessionService: POSCashSessionService {
     }
 
     func currentSession() async throws -> POSCashSession? {
+        onCurrentSessionRequested?()
         if let currentSessionError { throw currentSessionError }
         return currentSessionToReturn
     }
@@ -72,7 +78,13 @@ final class MockPOSCashSessionService: POSCashSessionService {
         return pastSessionsToReturn
     }
 
-    func session(id: Int64) async throws -> POSCashSession { throw POSCashSessionServiceError.noOpenSession }
+    func session(id: Int64) async throws -> POSCashSession {
+        requestedSessionIDs.append(id)
+        onSessionRequested?(id)
+        if let sessionError { throw sessionError }
+        guard let sessionToReturn else { throw POSCashSessionServiceError.noOpenSession }
+        return sessionToReturn
+    }
     func startSession(openingCash: Decimal, drawerID: String?) async throws -> POSCashSession {
         startSessionDrawerIDs.append(drawerID)
         throw POSCashSessionServiceError.noOpenSession

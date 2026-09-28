@@ -11,8 +11,8 @@ struct POSPastCashSessionsView: View {
             .navigationDestination(for: SessionDestination.self) { destination in
                 selectedSessionView(id: destination.id)
                     .toolbar(.hidden, for: .navigationBar)
-                    .task(id: destination.id) {
-                        await controller.loadSessionDetail(id: destination.id)
+                    .onAppear {
+                        Task { await controller.loadSessionDetail(id: destination.id) }
                     }
             }
             .task {
@@ -24,7 +24,11 @@ struct POSPastCashSessionsView: View {
     @ViewBuilder
     private func selectedSessionView(id: Int64) -> some View {
         if let session = controller.sessionDetail, session.id == id {
-            POSCashSessionDetailView(session: session, onBack: popDetail, onOpenOrder: onOpenOrder)
+            POSCashSessionDetailView(session: session,
+                                     onBack: popDetail,
+                                     onOpenOrder: onOpenOrder,
+                                     refreshError: controller.sessionDetailError,
+                                     onRetryRefresh: { Task { await controller.loadSessionDetail(id: id) } })
         } else {
             VStack(spacing: POSSpacing.none) {
                 POSPageHeaderView(

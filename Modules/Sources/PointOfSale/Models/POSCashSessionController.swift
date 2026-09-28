@@ -8,6 +8,7 @@ final class POSCashSessionController {
     private(set) var pastSessions: [POSCashSession] = []
     private(set) var sessionDetail: POSCashSession?
     private(set) var isLoading = false
+    private(set) var isRefreshingCurrentSession = false
     private(set) var isLoadingPastSessions = false
     private(set) var isLoadingNextPastSessions = false
     private(set) var isRefreshingPastSessions = false
@@ -15,6 +16,7 @@ final class POSCashSessionController {
     private(set) var isSaving = false
     private(set) var hasMorePastSessions = false
     private(set) var currentLoadError: String?
+    private(set) var currentRefreshError: String?
     private(set) var isCashSessionsUnsupported = false
     private(set) var pastLoadError: String?
     private(set) var pastPageError: String?
@@ -33,6 +35,7 @@ final class POSCashSessionController {
     @ObservationIgnored private var pastPage = 0
     @ObservationIgnored private var hasLoadedPastSessions = false
     @ObservationIgnored private var detailRequest = 0
+    @ObservationIgnored private var loadingSessionDetailID: Int64?
     @ObservationIgnored private let pageSize = 20
     @ObservationIgnored private var hasFreshSessionForClose = false
 
@@ -50,9 +53,10 @@ final class POSCashSessionController {
     }
 
     func loadCurrentSession() async {
-        guard !isLoading else { return }
+        guard !isLoading, !isRefreshingCurrentSession else { return }
         isLoading = true
         currentLoadError = nil
+        currentRefreshError = nil
         isCashSessionsUnsupported = false
         defer { isLoading = false }
         await service.retryPendingCashMovements()
@@ -62,6 +66,19 @@ final class POSCashSessionController {
             isCashSessionsUnsupported = true
         } catch {
             currentLoadError = POSCashSessionErrorMessage.message(for: error, operation: .loadCurrent)
+        }
+    }
+
+    func refreshCurrentSession() async {
+        guard !isLoading, !isRefreshingCurrentSession else { return }
+        isRefreshingCurrentSession = true
+        currentRefreshError = nil
+        defer { isRefreshingCurrentSession = false }
+        await service.retryPendingCashMovements()
+        do {
+            currentSession = try await service.currentSession()
+        } catch {
+            currentRefreshError = POSCashSessionErrorMessage.message(for: error, operation: .loadCurrent)
         }
     }
 
@@ -113,16 +130,24 @@ final class POSCashSessionController {
     }
 
     func loadSessionDetail(id: Int64) async {
-        guard sessionDetail?.id != id else { return }
+        guard loadingSessionDetailID != id else { return }
         detailRequest += 1
         let request = detailRequest
         isLoadingSessionDetail = true
-        sessionDetail = nil
+        loadingSessionDetailID = id
+        if sessionDetail?.id != id {
+            sessionDetail = nil
+        }
         sessionDetailError = nil
-        defer { if detailRequest == request { isLoadingSessionDetail = false } }
+        defer {
+            if detailRequest == request {
+                isLoadingSessionDetail = false
+                loadingSessionDetailID = nil
+            }
+        }
         do {
             let session = try await service.session(id: id)
-            if detailRequest == request { sessionDetail = session }
+            if detailRequest == request, !Task.isCancelled { sessionDetail = session }
         } catch {
             if detailRequest == request, !Task.isCancelled {
                 sessionDetailError = POSCashSessionErrorMessage.message(for: error, operation: .loadDetail)
@@ -185,6 +210,7 @@ final class POSCashSessionController {
             currentSession = nil
             detailRequest += 1
             isLoadingSessionDetail = false
+            loadingSessionDetailID = nil
             sessionDetail = closed
             pastSessions.removeAll { $0.id == closed.id }
             pastSessions.insert(closed, at: 0)

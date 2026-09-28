@@ -43,6 +43,18 @@ struct POSCurrentCashSessionView: View {
                                 }
                             }
                         }
+                        if let message = controller.currentRefreshError {
+                            POSNoticeView(title: Localization.refreshError,
+                                          icon: Image(systemName: "exclamationmark.triangle"), style: .alertLowest) {
+                                VStack(alignment: .leading, spacing: POSSpacing.small) {
+                                    Text(message)
+                                    Button(Localization.retry) {
+                                        Task { await controller.refreshCurrentSession() }
+                                    }
+                                    .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                                }
+                            }
+                        }
                         if let drawerID = session.drawerID, !drawerID.isEmpty {
                             POSCashSessionDrawerView(drawerID: drawerID)
                         }
@@ -80,9 +92,12 @@ struct POSCurrentCashSessionView: View {
                 }
             }
             .background(Color.posSurface)
+            .onAppear {
+                Task { await controller.refreshCurrentSession() }
+            }
             .posFullScreenCover(item: $entryAction, onDismiss: {
                 if controller.currentSession != nil {
-                    Task { await controller.loadCurrentSession() }
+                    Task { await controller.refreshCurrentSession() }
                 }
             }) { action in
                 POSCashSessionEntryView(action: action, controller: controller, onClosed: onClosed)
@@ -161,5 +176,7 @@ private extension POSCurrentCashSessionView {
                                                       comment: "Explains why a cash session cannot close yet")
         static let retry = NSLocalizedString("pos.cashSession.current.retry", value: "Retry", comment: "Retry pending cash activity")
         static let retrying = NSLocalizedString("pos.cashSession.current.retrying", value: "Retrying…", comment: "Pending cash activity is syncing")
+        static let refreshError = NSLocalizedString("pos.cashSession.current.refreshError", value: "Could not refresh session",
+                                                    comment: "Current cash session background refresh error title")
     }
 }

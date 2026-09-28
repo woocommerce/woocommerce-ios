@@ -7,6 +7,8 @@ struct POSCashSessionDetailView: View {
     let session: POSCashSession
     let onBack: () -> Void
     var onOpenOrder: ((Int64) -> Void)? = nil
+    var refreshError: String? = nil
+    var onRetryRefresh: (() -> Void)? = nil
 
     private var money: POSCashSessionMoney { .init(settings: currencyProvider.currencySettings, session: session) }
 
@@ -34,6 +36,18 @@ struct POSCashSessionDetailView: View {
 
             ScrollView {
                 VStack(alignment: .leading, spacing: POSSpacing.medium) {
+                    if let refreshError {
+                        POSNoticeView(title: Localization.refreshError,
+                                      icon: Image(systemName: "exclamationmark.triangle"), style: .alertLowest) {
+                            VStack(alignment: .leading, spacing: POSSpacing.small) {
+                                Text(refreshError)
+                                if let onRetryRefresh {
+                                    Button(Localization.retry, action: onRetryRefresh)
+                                        .buttonStyle(POSOutlinedButtonStyle(size: .normal))
+                                }
+                            }
+                        }
+                    }
                     HStack(alignment: .top, spacing: POSSpacing.small) {
                         dateCard(label: Localization.opened, date: session.openedAt, actor: session.openedBy)
                         if let closedAt = session.closedAt {
@@ -127,5 +141,8 @@ private extension POSCashSessionDetailView {
         static let cashSales = NSLocalizedString("pos.cashSession.detail.sales", value: "Cash sales", comment: "Cash sales total")
         static let paidInOut = NSLocalizedString("pos.cashSession.detail.paidInOut", value: "Paid in/out", comment: "Cash movements total")
         static let cashRefunds = NSLocalizedString("pos.cashSession.detail.refunds", value: "Cash refunds", comment: "Cash refunds total")
+        static let refreshError = NSLocalizedString("pos.cashSession.detail.refreshError", value: "Could not refresh session details",
+                                                    comment: "Closed cash session background refresh error title")
+        static let retry = NSLocalizedString("pos.cashSession.detail.retry", value: "Retry", comment: "Retry session detail refresh")
     }
 }

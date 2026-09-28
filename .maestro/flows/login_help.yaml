@@ -9,6 +9,8 @@ tags:
 - launchApp:
     clearState: true
     clearKeychain: true
+    arguments:
+      "-ui_testing": true
 - runFlow:
     file: ../subflows/open_site_address_login.yaml
 - extendedWaitUntil:

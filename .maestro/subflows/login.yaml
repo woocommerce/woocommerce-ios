@@ -6,6 +6,8 @@ appId: ${APP_ID}
 - launchApp:
     clearState: true
     clearKeychain: true
+    arguments:
+      "-ui_testing": true
 
 - runFlow:
     file: open_site_address_login.yaml

@@ -11,6 +11,8 @@ import WooFoundationCore
 /// Orchestrator class that fetches store stats for the widget and the Watch app.
 ///
 #if os(watchOS)
+// Keep iOS widget callers unchanged during the Watch app's Swift 6 migration.
+// Revisit uniform @MainActor isolation when StoreWidgetsExtension migrates to Swift 6.
 @MainActor
 #endif
 final class StoreInfoDataService {

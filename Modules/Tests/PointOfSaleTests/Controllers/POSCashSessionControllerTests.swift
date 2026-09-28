@@ -90,6 +90,28 @@ struct POSCashSessionControllerTests {
         #expect(service.recordedMovementRequestIDs == [requestID])
     }
 
+    @Test(arguments: [
+        (POSCashSessionMovement.Kind.payIn, "Could not record the pay in. Try again."),
+        (.payOut, "Could not record the pay out. Try again.")
+    ])
+    func test_record_when_request_fails_then_shows_specific_movement_error(kind: POSCashSessionMovement.Kind,
+                                                                            expectedMessage: String) async {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 10,
+                                                        movements: [], revision: 1)
+        let controller = POSCashSessionController(service: service)
+        await controller.loadCurrentSession()
+        service.movementError = NSError(domain: "test", code: 1)
+
+        // When
+        let recorded = await controller.record(kind: kind, amount: 5, note: nil)
+
+        // Then
+        #expect(!recorded)
+        #expect(controller.errorMessage == expectedMessage)
+    }
+
     @Test func test_refreshPastSessions_when_service_returns_new_page_then_replaces_sessions_without_loading_state() async {
         // Given
         let service = MockPOSCashSessionService()

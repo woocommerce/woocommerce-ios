@@ -14,23 +14,39 @@ struct POSCashAmountTextField: View {
 
     private let formatter: POSCashAmountInputFormatter
     private let preset: Decimal?
+    private let fillsWidth: Bool
 
     init(amount: Binding<String>,
          isFocused: FocusState<Bool>.Binding,
          currencySettings: CurrencySettings,
          preset: Decimal? = nil,
+         fillsWidth: Bool = false,
          onEdit: @escaping () -> Void = {},
          onSubmit: @escaping () -> Void) {
         self._amount = amount
         self._isFocused = isFocused
         self.formatter = POSCashAmountInputFormatter(currencySettings: currencySettings)
         self.preset = preset
+        self.fillsWidth = fillsWidth
         self.onEdit = onEdit
         self.onSubmit = onSubmit
+        if !amount.wrappedValue.isEmpty {
+            let digits = String(amount.wrappedValue.filter(\.isNumber))
+            _inputDigits = State(initialValue: digits)
+            _displayText = State(initialValue: formatter.formattedAmount(from: digits))
+        } else if let preset {
+            let digits = formatter.digits(from: preset)
+            _inputDigits = State(initialValue: digits)
+            _displayText = State(initialValue: formatter.formattedAmount(from: digits))
+            _isDisplayingPreset = State(initialValue: true)
+        }
     }
 
     var body: some View {
         HStack(spacing: 0) {
+            if fillsWidth {
+                Spacer(minLength: 0)
+            }
             Text(formatter.currencySymbol)
                 .foregroundStyle(Color.posOnSurface)
                 .font(.posHeadingRegular)
@@ -71,6 +87,9 @@ struct POSCashAmountTextField: View {
                 .onChange(of: displayText) { oldValue, newValue in
                     handleTextChange(oldValue: oldValue, newValue: newValue)
                 }
+            if fillsWidth {
+                Spacer(minLength: 0)
+            }
         }
     }
 

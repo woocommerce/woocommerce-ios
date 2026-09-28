@@ -12,6 +12,8 @@ private struct POSCashSessionPreviewGallery: View {
         case payInNote
         case payOut
         case payOutNote
+        case payOutExceedsCash
+        case payInSaveError
         case close
         case closeWithAmount
         case closeNote
@@ -79,6 +81,12 @@ private struct POSCashSessionPreviewGallery: View {
             POSCashSessionEntryView(action: .payOut, controller: controller, onClosed: { _ in })
         case .payOutNote:
             POSCashSessionEntryView(action: .payOut, controller: controller, onClosed: { _ in }, previewNoteStep: true)
+        case .payOutExceedsCash:
+            POSCashSessionEntryView(action: .payOut, controller: controller, onClosed: { _ in },
+                                    previewNoteStep: false, previewAmount: "300.00")
+        case .payInSaveError:
+            POSCashSessionEntryView(action: .payIn, controller: controller, onClosed: { _ in },
+                                    previewNoteStep: true, previewSubmitError: "Could not record the pay in. Try again.")
         case .close:
             POSCashSessionEntryView(action: .close, controller: controller, onClosed: { _ in })
         case .closeWithAmount:
@@ -100,7 +108,8 @@ private struct POSCashSessionPreviewGallery: View {
         switch screen {
         case .start, .startError:
             break
-        case .current, .payIn, .payInNote, .payOut, .payOutNote, .close, .closeWithAmount, .closeNote:
+        case .current, .payIn, .payInNote, .payOut, .payOutNote, .payOutExceedsCash, .payInSaveError,
+             .close, .closeWithAmount, .closeNote:
             _ = await controller.start(openingCash: 200)
             _ = await controller.record(kind: .payIn, amount: 100, note: "Change order from bank")
             _ = await controller.record(kind: .payOut, amount: 30, note: "Window cleaner")
@@ -144,6 +153,14 @@ private struct POSCashSessionPreviewGallery: View {
 
 #Preview("Pay out note") {
     POSCashSessionPreviewGallery(screen: .payOutNote)
+}
+
+#Preview("Pay out exceeds cash") {
+    POSCashSessionPreviewGallery(screen: .payOutExceedsCash)
+}
+
+#Preview("Pay in save error") {
+    POSCashSessionPreviewGallery(screen: .payInSaveError)
 }
 
 #Preview("Close session") {

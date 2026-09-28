@@ -9,7 +9,8 @@ struct POSCashSessionErrorMessageTests {
         (.loadMorePast, "Could not load more cash sessions. Try again."),
         (.loadDetail, "Could not load the cash session details. Try again."),
         (.start, "Could not start the cash session. Try again."),
-        (.record, "Could not record the cash adjustment. Try again."),
+        (.recordPayIn, "Could not record the pay in. Try again."),
+        (.recordPayOut, "Could not record the pay out. Try again."),
         (.close, "Could not close the cash session. Try again.")
     ])
     func test_message_when_unknown_error_then_explains_failed_operation(operation: POSCashSessionErrorMessage.Operation, expected: String) {
@@ -68,6 +69,17 @@ struct POSCashSessionErrorMessageTests {
 
         // Then
         #expect(message == "The session changed. Review the latest totals and count the cash again.")
+    }
+
+    @Test func test_message_when_session_changes_during_pay_out_then_requests_refresh() {
+        // Given
+        let error = POSCashSessionServiceError.sessionChanged
+
+        // When
+        let message = POSCashSessionErrorMessage.message(for: error, operation: .recordPayOut)
+
+        // Then
+        #expect(message == "The cash session changed. Close this form and try again.")
     }
 
     private struct ServerError: LocalizedError {

@@ -80,7 +80,11 @@ struct POSCurrentCashSessionView: View {
                 }
             }
             .background(Color.posSurface)
-            .posFullScreenCover(item: $entryAction) { action in
+            .posFullScreenCover(item: $entryAction, onDismiss: {
+                if controller.currentSession != nil {
+                    Task { await controller.loadCurrentSession() }
+                }
+            }) { action in
                 POSCashSessionEntryView(action: action, controller: controller, onClosed: onClosed)
             }
             .accessibilityIdentifier("pos-cash-drawer-current-session-view")

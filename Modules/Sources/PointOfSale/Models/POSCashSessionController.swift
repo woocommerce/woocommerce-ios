@@ -159,7 +159,8 @@ final class POSCashSessionController {
             currentLoadError = POSCashSessionServiceError.movementRecordedRefreshFailed.errorDescription
             return true
         } catch {
-            errorMessage = POSCashSessionErrorMessage.message(for: error, operation: .record)
+            let operation: POSCashSessionErrorMessage.Operation = kind == .payOut ? .recordPayOut : .recordPayIn
+            errorMessage = POSCashSessionErrorMessage.message(for: error, operation: operation)
             return false
         }
     }

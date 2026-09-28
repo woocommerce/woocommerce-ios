@@ -7,7 +7,8 @@ enum POSCashSessionErrorMessage {
         case loadMorePast
         case loadDetail
         case start
-        case record
+        case recordPayIn
+        case recordPayOut
         case close
 
         fileprivate var fallback: String {
@@ -17,7 +18,8 @@ enum POSCashSessionErrorMessage {
             case .loadMorePast: Localization.loadMorePast
             case .loadDetail: Localization.loadDetail
             case .start: Localization.start
-            case .record: Localization.record
+            case .recordPayIn: Localization.recordPayIn
+            case .recordPayOut: Localization.recordPayOut
             case .close: Localization.close
             }
         }
@@ -30,7 +32,7 @@ enum POSCashSessionErrorMessage {
 
         switch error {
         case .sessionChanged:
-            return Localization.sessionChanged
+            return operation == .close ? Localization.sessionChangedAtClose : Localization.sessionChangedDuringUpdate
         case .unsupported, .sessionAlreadyOpen, .noOpenSession, .invalidAmount, .invalidReference, .previewUnavailable,
              .pendingCashMovements, .movementRecordedRefreshFailed:
             return error.errorDescription ?? operation.fallback
@@ -65,20 +67,30 @@ private extension POSCashSessionErrorMessage {
             value: "Could not start the cash session. Try again.",
             comment: "Fallback message when starting a cash session fails."
         )
-        static let record = NSLocalizedString(
-            "pos.cashSession.error.record",
-            value: "Could not record the cash adjustment. Try again.",
-            comment: "Fallback message when recording cash paid in or paid out fails."
+        static let recordPayIn = NSLocalizedString(
+            "pos.cashSession.error.recordPayIn",
+            value: "Could not record the pay in. Try again.",
+            comment: "Fallback message when recording cash paid in fails."
+        )
+        static let recordPayOut = NSLocalizedString(
+            "pos.cashSession.error.recordPayOut",
+            value: "Could not record the pay out. Try again.",
+            comment: "Fallback message when recording cash paid out fails."
         )
         static let close = NSLocalizedString(
             "pos.cashSession.error.close",
             value: "Could not close the cash session. Try again.",
             comment: "Fallback message when closing a cash session fails."
         )
-        static let sessionChanged = NSLocalizedString(
+        static let sessionChangedAtClose = NSLocalizedString(
             "pos.cashSession.error.reviewChangedSession",
             value: "The session changed. Review the latest totals and count the cash again.",
             comment: "Message asking the cashier to review and recount after the cash session changes."
+        )
+        static let sessionChangedDuringUpdate = NSLocalizedString(
+            "pos.cashSession.error.sessionChangedDuringUpdate",
+            value: "The cash session changed. Close this form and try again.",
+            comment: "Message shown when a cash movement cannot be saved because the session changed."
         )
     }
 }

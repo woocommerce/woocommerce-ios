@@ -245,6 +245,7 @@ private extension POSCashSessionAdaptor {
         case .cashRefund: "cash_refund"
         case .noSale: "no_sale"
         case .test: "test"
+        case .count: "count"
         }
     }
 

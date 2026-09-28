@@ -233,7 +233,41 @@ struct POSCashSessionControllerTests {
         #expect(service.startSessionDrawerIDs == [nil])
     }
 
+    @Test func test_start_when_session_starts_then_opens_the_cash_drawer() async {
+        // Given
+        let service = POSMockCashSessionService(writeDelay: .zero, hasSampleHistory: false)
+
+        // When
+        let started = await withCheckedContinuation { continuation in
+            let controller = POSCashSessionController(service: service,
+                                                      openDrawerForNewSession: { _ in continuation.resume(returning: true) })
+            Task { _ = await controller.start(openingCash: 100) }
+        }
+
+        // Then
+        #expect(started)
+    }
+
+    @Test func test_start_when_session_fails_to_start_then_does_not_open_the_cash_drawer() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        let drawerOpens = DrawerOpenCounter()
+        let controller = POSCashSessionController(service: service, openDrawerForNewSession: { _ in drawerOpens.timesOpened += 1 })
+
+        // When
+        let started = await controller.start(openingCash: 100)
+
+        // Then
+        #expect(!started)
+        #expect(drawerOpens.timesOpened == 0)
+    }
+
     private func makeSession(id: Int64) -> POSCashSession {
         .init(id: id, openedAt: now, openedBy: "Tester", openingCash: 0, movements: [], closedAt: now, closedBy: "Tester")
     }
+}
+
+@MainActor
+private final class DrawerOpenCounter {
+    var timesOpened = 0
 }

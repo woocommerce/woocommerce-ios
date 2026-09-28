@@ -194,7 +194,13 @@ protocol PointOfSaleAggregateModelProtocol {
         self.receiptPrinter = receiptPrinter
         self.cashDrawer = cashDrawer
         let cashSessions = POSCashSessionController(service: cashSessionService ?? POSMockCashSessionService(),
-                                                    drawerID: { [weak cashDrawer] in cashDrawer?.drawerName })
+                                                    drawerID: { [weak cashDrawer] in cashDrawer?.drawerName },
+                                                    openDrawerForNewSession: { [weak cashDrawer] session in
+                                                        // Record the open against the new session only when it is bound to a drawer,
+                                                        // as Core rejects drawer events for sessions without one.
+                                                        await cashDrawer?.openAutomatically(for: .sessionStart,
+                                                                                            sessionID: session.drawerID != nil ? session.id : nil)
+                                                    })
         self.cashSessions = cashSessions
         cashDrawer?.sessionSnapshot = { [weak cashSessions] in
             guard let session = cashSessions?.currentSession else { return nil }

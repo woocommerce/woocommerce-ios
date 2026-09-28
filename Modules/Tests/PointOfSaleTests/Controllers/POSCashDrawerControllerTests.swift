@@ -293,6 +293,22 @@ struct POSCashDrawerControllerTests {
         #expect(sessionService.captureCallCount == 0)
     }
 
+    @Test func test_open_when_session_starts_then_records_count_event_in_session() async {
+        // Given
+        let sessionService = MockPOSCashSessionService()
+        let sut = makeController(service: MockCashDrawerService(), sessionService: sessionService)
+        sut.updateDrawerName("Front till")
+
+        // When
+        let recorded = await withCheckedContinuation { continuation in
+            sessionService.onDrawerEventRecorded = { continuation.resume(returning: $0) }
+            Task { await sut.open(for: .sessionStart) }
+        }
+
+        // Then
+        #expect(recorded.reason == .count)
+    }
+
     @Test func test_open_when_drawer_is_not_named_then_does_not_record_event_in_session() async {
         // Given
         let sessionService = MockPOSCashSessionService()

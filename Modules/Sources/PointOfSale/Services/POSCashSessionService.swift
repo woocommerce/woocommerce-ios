@@ -53,6 +53,7 @@ public struct POSCashDrawerEventRecord: Equatable {
         case cashRefund
         case noSale
         case test
+        case count
     }
 
     public let outcome: Outcome

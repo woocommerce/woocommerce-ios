@@ -29,15 +29,20 @@ final class POSCashSessionController {
     @ObservationIgnored private let service: any POSCashSessionService
     /// The name of the configured cash drawer, read when a session starts. Nil when no drawer is set up.
     @ObservationIgnored private let drawerID: @MainActor () -> String?
+    /// Opens the cash drawer once a session starts, so the cashier can put the opening float in.
+    @ObservationIgnored private let openDrawerForNewSession: (@MainActor (POSCashSession) async -> Void)?
     @ObservationIgnored private var pastPage = 0
     @ObservationIgnored private var hasLoadedPastSessions = false
     @ObservationIgnored private var detailRequest = 0
     @ObservationIgnored private let pageSize = 20
     @ObservationIgnored private var hasFreshSessionForClose = false
 
-    init(service: any POSCashSessionService, drawerID: @escaping @MainActor () -> String? = { nil }) {
+    init(service: any POSCashSessionService,
+         drawerID: @escaping @MainActor () -> String? = { nil },
+         openDrawerForNewSession: (@MainActor (POSCashSession) async -> Void)? = nil) {
         self.service = service
         self.drawerID = drawerID
+        self.openDrawerForNewSession = openDrawerForNewSession
     }
 
     func load() async {
@@ -127,9 +132,15 @@ final class POSCashSessionController {
     }
 
     func start(openingCash: Decimal) async -> Bool {
-        await save(operation: .start) {
+        let started = await save(operation: .start) {
             currentSession = try await service.startSession(openingCash: openingCash, drawerID: drawerID())
         }
+        // Open the drawer only once the session exists, so the open is recorded against it,
+        // and without waiting, so a missing drawer never holds up starting the session.
+        if started, let session = currentSession, let openDrawerForNewSession {
+            Task { await openDrawerForNewSession(session) }
+        }
+        return started
     }
 
     func record(kind: POSCashSessionMovement.Kind, amount: Decimal, note: String?, requestID: UUID = UUID()) async -> Bool {

@@ -70,7 +70,7 @@ struct POSCashManagementView: View {
         isLoaded = false
         await controller.loadCurrentSession()
         guard controller.currentLoadError == nil else { return }
-        if selection != .pastSessions {
+        if horizontalSizeClass == .regular, selection != .pastSessions {
             selection = controller.currentSession == nil ? .startSession : .currentSession
         }
         isLoaded = true

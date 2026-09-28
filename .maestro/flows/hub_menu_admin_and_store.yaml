@@ -156,7 +156,7 @@ tags:
     centerElement: true
 - tapOn:
     id: "url-label"
-    text: ".*${MAESTRO_WOO_LAB_JETPACK_STORE_HOST}.*"
+    text: ".*${MAESTRO_WOO_JETPACK_STORE_HOST}.*"
 - takeScreenshot: hub_store_picker_original_selected
 - extendedWaitUntil:
     visible:

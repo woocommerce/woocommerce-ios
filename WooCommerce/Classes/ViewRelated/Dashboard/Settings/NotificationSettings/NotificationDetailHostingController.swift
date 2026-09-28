@@ -146,6 +146,7 @@ class NotificationDetailHostingController<Content: NotificationDetailContent>: U
 
 /// Root view of a push-notification preference detail screen.
 /// `NotificationDetailHostingController` reads `navigationTitle` and injects the actions.
+@MainActor
 protocol NotificationDetailContent: View {
     static var navigationTitle: String { get }
 

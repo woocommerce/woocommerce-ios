@@ -276,6 +276,21 @@ def simulator_records() -> list[dict[str, str]]:
     return records
 
 
+# iOS offers to save the login password on top of the dashboard, and Maestro
+# can't see anything in the app while that system prompt is up.
+PASSWORD_AUTOFILL_DEFAULTS = (
+    ("com.apple.WebUI", "AutoFillPasswords"),
+    ("com.apple.WebUI", "SavePasswords"),
+    ("com.apple.Safari", "AutoFillPasswords"),
+    ("com.apple.Safari", "OfferToSaveLoginCredentials"),
+)
+
+
+def turn_off_password_autofill(udid: str) -> None:
+    for domain, key in PASSWORD_AUTOFILL_DEFAULTS:
+        run(["xcrun", "simctl", "spawn", udid, "defaults", "write", domain, key, "-bool", "NO"])
+
+
 def resolve_simulator(
     selector: str | None,
     family: str,
@@ -810,6 +825,7 @@ def main() -> int:
     )
     if locale.returncode:
         return locale.returncode
+    turn_off_password_autofill(simulator["udid"])
     run(["xcrun", "simctl", "install", simulator["udid"], str(app)])
     summary = {
         "run_id": run_id, "profile": args.profile, "store": args.store, "app": str(app), "app_id": app_id,

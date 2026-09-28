@@ -4,7 +4,6 @@
 appId: ${APP_ID}
 name: "iOS system - Order QR payment surface"
 tags:
-  - flaky_quarantine
   - destructive
   - orders
   - ios_system

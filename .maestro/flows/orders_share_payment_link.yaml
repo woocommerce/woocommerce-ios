@@ -4,7 +4,6 @@
 appId: ${APP_ID}
 name: "iOS system - Share an order payment link"
 tags:
-  - flaky_quarantine
   - destructive
   - orders
   - ios_system

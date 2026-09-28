@@ -6,7 +6,7 @@ group :screenshots, optional: true do
   # Needed by `create_promo_screenshots`. Floor: 4.x fails to load on Ruby 3.4 because it uses
   # `observer`, dropped from the default gems. Ceiling: the wpmreleasetoolkit PromoScreenshots
   # helper breaks on 7. See AINFRA-2482.
-  gem 'rmagick', '~> 6.0'
+  gem 'rmagick', '~> 7.1'
 end
 
 gem 'danger-dangermattic', '~> 1.4'

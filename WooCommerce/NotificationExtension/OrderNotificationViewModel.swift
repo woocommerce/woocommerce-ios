@@ -34,7 +34,7 @@ final class OrderNotificationViewModel {
         let dataService = OrderNotificationDataService(credentials: credentials)
         if let notificationData = PushNotification.from(userInfo: notification.request.content.userInfo) {
             guard let orderID = notificationData.meta?.identifier(forKey: .order) else {
-                throw OrderNotificationDataService.Error.unsupportedNotification
+                throw Error.unsupportedNotification
             }
             let siteID = notificationData.siteID
             async let order = dataService.loadOrder(siteID: siteID, orderID: orderID)

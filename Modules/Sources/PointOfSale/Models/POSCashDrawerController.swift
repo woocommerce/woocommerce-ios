@@ -82,6 +82,7 @@ final class POSCashDrawerController {
     @ObservationIgnored private let service: CashDrawerService
     /// Records each open attempt in the open cash session. Nil when cash sessions aren't available.
     @ObservationIgnored private let sessionService: (any POSCashSessionService)?
+    @ObservationIgnored private let eventRecorder: POSCashDrawerEventRecorder?
     @ObservationIgnored var sessionSnapshot: (@MainActor () -> POSCashDrawerSessionSnapshot?)?
     @ObservationIgnored private let userDefaults: UserDefaults
     @ObservationIgnored private let now: () -> Date
@@ -92,16 +93,34 @@ final class POSCashDrawerController {
 
     init(service: CashDrawerService,
          sessionService: (any POSCashSessionService)? = nil,
+         siteID: Int64? = nil,
+         eventRecorder: POSCashDrawerEventRecorder? = nil,
          userDefaults: UserDefaults = .standard,
          now: @escaping () -> Date = Date.init) {
         self.service = service
         self.sessionService = sessionService
+        if let eventRecorder {
+            self.eventRecorder = eventRecorder
+        } else if let sessionService, let siteID {
+            self.eventRecorder = POSCashDrawerEventRecorder.shared(siteID: siteID) { event, sessionID in
+                try await sessionService.recordDrawerEvent(event, sessionID: sessionID)
+            }
+        } else if let sessionService {
+            self.eventRecorder = POSCashDrawerEventRecorder(journal: POSCashDrawerEventMemoryJournal()) { event, sessionID in
+                try await sessionService.recordDrawerEvent(event, sessionID: sessionID)
+            }
+        } else {
+            self.eventRecorder = nil
+        }
         self.userDefaults = userDefaults
         self.now = now
         self.opensAutomaticallyForCashPayments = userDefaults.object(forKey: Constants.opensAutomaticallyKey) as? Bool ?? true
         self.drawerName = userDefaults.string(forKey: Constants.drawerNameKey)
         self.openSignal = userDefaults.object(forKey: Constants.openSignalKey) as? Bool
         observeDrawerSignal()
+        if siteID != nil, let eventRecorder = self.eventRecorder {
+            Task { await eventRecorder.retry() }
+        }
     }
 
     /// Saves the drawer name without surrounding whitespace. A blank name clears it, as Core rejects blank drawer names.
@@ -245,7 +264,7 @@ private extension POSCashDrawerController {
                          correlationID: UUID?,
                          sessionID: Int64?,
                          occurredAt: Date? = nil) {
-        guard let sessionService, let sessionID else {
+        guard let eventRecorder, let sessionID else {
             return
         }
         let record = POSCashDrawerEventRecord(outcome: outcome,
@@ -253,14 +272,11 @@ private extension POSCashDrawerController {
                                               orderID: event.orderID,
                                               occurredAt: occurredAt ?? event.date,
                                               correlationID: correlationID)
-        Task {
-            do {
-                try await sessionService.recordDrawerEvent(record, sessionID: sessionID)
-                DDLogInfo("💵 [CashDrawer] Recorded drawer event \(record)")
-            } catch {
-                DDLogError("💵 [CashDrawer] Failed to record drawer event \(record): \(error)")
-            }
+        eventRecorder.enqueue(record, sessionID: sessionID)
+        if let error = eventRecorder.lastError {
+            DDLogError("💵 [CashDrawer] Drawer event remains pending: \(error)")
         }
+        Task { await eventRecorder.retry() }
     }
 
     static func recordReason(for reason: POSCashDrawerOpenReason) -> POSCashDrawerEventRecord.Reason {

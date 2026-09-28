@@ -168,7 +168,7 @@ public struct PointOfSaleEntryPointView: View {
         self.barcodeScanService = barcodeScanService
         self.receiptSender = receiptSender
         self.posEntryPointController = POSEntryPointController(eligibilityChecker: posEligibilityChecker)
-        let cashDrawer = cashDrawerService.map { POSCashDrawerController(service: $0, sessionService: cashSessionService) }
+        let cashDrawer = cashDrawerService.map { POSCashDrawerController(service: $0, sessionService: cashSessionService, siteID: siteID) }
         let ordersController = POSOrderListController(orderListFetchStrategyFactory: orderListFetchStrategyFactory,
                                                       refundsService: refundsService)
         self.orderListModel = POSOrderListModel(ordersController: ordersController,

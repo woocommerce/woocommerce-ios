@@ -175,6 +175,34 @@ struct POSCashEventRecorderTests {
         #expect(attempts == [.sale(orderID: 56), .refund(orderID: 56, refundID: 78)])
         #expect(!recorder.hasPendingEvents)
     }
+
+    @Test func test_retryAndWait_when_retry_is_running_then_waits_for_refund_acknowledgement() async throws {
+        // Given
+        var releaseRecord: CheckedContinuation<Void, Never>?
+        let recorder = POSCashEventRecorder(journal: MockJournal()) { _ in
+            await withCheckedContinuation { releaseRecord = $0 }
+        }
+        try recorder.enqueue(siteID: 12, sessionID: 34, source: .refund(orderID: 56, refundID: 78))
+        let firstRetry = Task { await recorder.retry() }
+        while releaseRecord == nil { await Task.yield() }
+        var waiterFinished = false
+
+        // When
+        let waitingRetry = Task {
+            await recorder.retryAndWait()
+            waiterFinished = true
+        }
+        await Task.yield()
+
+        // Then
+        #expect(!waiterFinished)
+        #expect(recorder.hasPendingEvents)
+        releaseRecord?.resume()
+        await firstRetry.value
+        await waitingRetry.value
+        #expect(waiterFinished)
+        #expect(!recorder.hasPendingEvents)
+    }
 }
 
 private extension POSCashEventRecorderTests {

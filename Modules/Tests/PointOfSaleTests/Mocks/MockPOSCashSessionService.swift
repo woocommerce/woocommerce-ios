@@ -8,6 +8,7 @@ final class MockPOSCashSessionService: POSCashSessionService {
     private(set) var requestedPastSessionPages: [Int] = []
     private(set) var startSessionDrawerIDs: [String?] = []
     private(set) var recordedDrawerEvents: [POSCashDrawerEventRecord] = []
+    private(set) var recordedDrawerEventSessionIDs: [Int64] = []
     var onDrawerEventRecorded: ((POSCashDrawerEventRecord) -> Void)?
     var onCashSaleRecorded: ((Int64) -> Void)?
     var onCashRefundRecorded: ((Int64, Int64) -> Void)?
@@ -89,8 +90,9 @@ final class MockPOSCashSessionService: POSCashSessionService {
         return closeSessionToReturn
     }
 
-    func recordDrawerEvent(_ event: POSCashDrawerEventRecord) async throws {
+    func recordDrawerEvent(_ event: POSCashDrawerEventRecord, sessionID: Int64) async throws {
         recordedDrawerEvents.append(event)
+        recordedDrawerEventSessionIDs.append(sessionID)
         onDrawerEventRecorded?(event)
     }
 

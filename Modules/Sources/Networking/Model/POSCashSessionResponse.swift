@@ -48,12 +48,14 @@ public struct POSCashMovementResponse: Decodable {
     public let amount: String
     public let reason: String?
     public let orderID: Int64?
+    public let refundID: Int64?
     public let occurredAt: String
     public let createdByName: String
 
     private enum CodingKeys: String, CodingKey {
         case id, type, amount, reason
         case orderID = "order_id"
+        case refundID = "refund_id"
         case occurredAt = "occurred_at"
         case createdByName = "created_by_name"
     }

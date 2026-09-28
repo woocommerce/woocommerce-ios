@@ -18,8 +18,8 @@ public protocol POSCashSessionService {
                         note: String?, requestID: UUID) async throws -> POSCashSession
     func recordCashSale(orderID: Int64) async throws -> POSCashSession?
     func recordCashRefund(orderID: Int64, refundID: Int64) async throws -> POSCashSession?
-    /// Records a cash drawer open attempt in the open session. Does nothing when no session is open.
-    func recordDrawerEvent(_ event: POSCashDrawerEventRecord) async throws
+    /// Records a cash drawer open attempt in the session captured before the drawer command.
+    func recordDrawerEvent(_ event: POSCashDrawerEventRecord, sessionID: Int64) async throws
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal, note: String?) async throws -> POSCashSession
 }
 
@@ -204,7 +204,7 @@ final class POSMockCashSessionService: POSCashSessionService {
         return session
     }
 
-    func recordDrawerEvent(_ event: POSCashDrawerEventRecord) async throws {
+    func recordDrawerEvent(_ event: POSCashDrawerEventRecord, sessionID: Int64) async throws {
         // Demo sessions don't keep a drawer history.
     }
 

@@ -81,16 +81,18 @@ public struct POSCashSessionMovement: Identifiable, Equatable {
     public let date: Date
     public let actor: String
     public let orderID: Int64?
+    public let refundID: Int64?
     public let note: String?
 
     public init(id: UUID, kind: Kind, amount: Decimal, date: Date, actor: String,
-                orderID: Int64?, note: String?) {
+                orderID: Int64?, refundID: Int64? = nil, note: String?) {
         self.id = id
         self.kind = kind
         self.amount = amount
         self.date = date
         self.actor = actor
         self.orderID = orderID
+        self.refundID = refundID
         self.note = note
     }
 

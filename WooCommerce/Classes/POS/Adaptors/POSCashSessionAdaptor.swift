@@ -59,7 +59,7 @@ final class POSCashSessionAdaptor: POSCashSessionService {
     }
 
     func retryPendingCashMovements() async {
-        await cashEventRecorder.retry()
+        await cashEventRecorder.retryAndWait()
     }
 
     func currentSession() async throws -> POSCashSession? {
@@ -159,9 +159,8 @@ final class POSCashSessionAdaptor: POSCashSessionService {
         return updated
     }
 
-    func recordDrawerEvent(_ event: POSCashDrawerEventRecord) async throws {
-        guard let activeID = try await activeSessionID() else { return }
-        _ = try await remote.recordDrawerEvent(siteID: siteID, sessionID: activeID, requestID: UUID(),
+    func recordDrawerEvent(_ event: POSCashDrawerEventRecord, sessionID: Int64) async throws {
+        _ = try await remote.recordDrawerEvent(siteID: siteID, sessionID: sessionID, requestID: UUID(),
                                                type: Self.drawerEventType(for: event.outcome),
                                                reason: Self.drawerEventReason(for: event.reason),
                                                orderID: event.orderID,
@@ -325,7 +324,7 @@ private extension POSCashSessionAdaptor {
         return try POSCashSessionMovement(id: identifier, kind: kind,
                                           amount: decimal(response.amount), date: date(response.occurredAt),
                                           actor: response.createdByName, orderID: response.orderID,
-                                          note: response.reason)
+                                          refundID: response.refundID, note: response.reason)
     }
 
     func decimal(_ string: String) throws -> Decimal {

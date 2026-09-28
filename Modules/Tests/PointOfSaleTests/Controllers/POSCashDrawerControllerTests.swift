@@ -56,6 +56,20 @@ struct POSCashDrawerControllerTests {
         #expect(result == .failed)
     }
 
+    @Test func test_open_when_printer_returns_later_then_event_uses_attempt_time() async {
+        // Given
+        let service = MockCashDrawerService()
+        var clock = date
+        let sut = POSCashDrawerController(service: service, userDefaults: userDefaults, now: { clock })
+        service.onOpen = { clock = date.addingTimeInterval(60) }
+
+        // When
+        await sut.open(for: .noSale)
+
+        // Then
+        #expect(sut.lastEvent?.date == date)
+    }
+
     @Test func test_openAutomatically_when_automatic_opening_on_then_opens_for_the_given_reason() async {
         // Given
         let service = MockCashDrawerService()
@@ -134,6 +148,7 @@ struct POSCashDrawerControllerTests {
 
         // Then
         #expect(recorded == POSCashDrawerEventRecord(outcome: .openRequested, reason: .cashSale, orderID: 42, occurredAt: date))
+        #expect(sessionService.recordedDrawerEventSessionIDs == [123])
     }
 
     @Test func test_open_when_printer_not_connected_then_records_open_failed_event_in_session() async {
@@ -152,6 +167,130 @@ struct POSCashDrawerControllerTests {
 
         // Then
         #expect(recorded == POSCashDrawerEventRecord(outcome: .openFailed, reason: .noSale, orderID: nil, occurredAt: date))
+        #expect(sessionService.recordedDrawerEventSessionIDs == [123])
+    }
+
+    @Test func test_noSale_when_session_changes_during_drawer_command_then_records_in_captured_session() async {
+        // Given
+        let drawerService = MockCashDrawerService()
+        let sessionService = MockPOSCashSessionService()
+        let sut = makeController(service: drawerService, sessionService: sessionService)
+        sut.updateDrawerName("Front till")
+        drawerService.onOpen = { sessionService.capturedSessionID = 456 }
+
+        // When
+        let recorded = await withCheckedContinuation { continuation in
+            sessionService.onDrawerEventRecorded = { continuation.resume(returning: $0) }
+            Task { await sut.open(for: .noSale) }
+        }
+
+        // Then
+        #expect(recorded.reason == .noSale)
+        #expect(sessionService.recordedDrawerEventSessionIDs == [123])
+        #expect(sessionService.captureCallCount == 0)
+    }
+
+    @Test func test_noSale_when_cash_management_has_not_loaded_then_reads_session_before_drawer_opens() async {
+        // Given
+        let drawerService = MockCashDrawerService()
+        let sessionService = MockPOSCashSessionService()
+        sessionService.currentSessionToReturn = POSCashSession(id: 123, openedAt: date, openedBy: "Cashier",
+                                                              openingCash: 0, movements: [], drawerID: "Front till")
+        let sut = makeController(service: drawerService, sessionService: sessionService)
+        sut.sessionSnapshot = nil
+        drawerService.onOpen = { sessionService.currentSessionToReturn = nil }
+
+        // When
+        let recorded = await withCheckedContinuation { continuation in
+            sessionService.onDrawerEventRecorded = { continuation.resume(returning: $0) }
+            Task { await sut.open(for: .noSale) }
+        }
+
+        // Then
+        #expect(recorded.reason == .noSale)
+        #expect(sessionService.recordedDrawerEventSessionIDs == [123])
+    }
+
+    @Test func test_testOpen_when_session_service_is_slow_then_returns_without_network_lookup() async {
+        // Given
+        let drawerService = MockCashDrawerService()
+        let sessionService = MockPOSCashSessionService()
+        let sut = makeController(service: drawerService, sessionService: sessionService)
+        sut.updateDrawerName("Front till")
+
+        // When
+        let result = await sut.open(for: .test)
+
+        // Then
+        #expect(result == .opened)
+        #expect(drawerService.openCallCount == 1)
+        #expect(sessionService.captureCallCount == 0)
+    }
+
+    @Test func test_noSale_when_drawer_name_changes_then_uses_session_binding() async {
+        // Given
+        let sessionService = MockPOSCashSessionService()
+        let sut = makeController(service: MockCashDrawerService(), sessionService: sessionService)
+        sut.sessionSnapshot = { POSCashDrawerSessionSnapshot(id: 123, drawerID: "Front till") }
+        sut.updateDrawerName("Back room")
+
+        // When
+        let recorded = await withCheckedContinuation { continuation in
+            sessionService.onDrawerEventRecorded = { continuation.resume(returning: $0) }
+            Task { await sut.open(for: .noSale) }
+        }
+
+        // Then
+        #expect(recorded.reason == .noSale)
+        #expect(sessionService.recordedDrawerEventSessionIDs == [123])
+    }
+
+    @Test func test_noSale_when_session_has_no_bound_drawer_then_skips_event_despite_new_name() async {
+        // Given
+        let sessionService = MockPOSCashSessionService()
+        let sut = makeController(service: MockCashDrawerService(), sessionService: sessionService)
+        sut.sessionSnapshot = { POSCashDrawerSessionSnapshot(id: 123, drawerID: nil) }
+        sut.updateDrawerName("Front till")
+
+        // When
+        let result = await sut.open(for: .noSale)
+
+        // Then
+        #expect(result == .opened)
+        #expect(sessionService.recordedDrawerEvents.isEmpty)
+    }
+
+    @Test func test_automatic_open_when_payment_has_no_session_then_does_not_attach_event_to_later_session() async {
+        // Given
+        let sessionService = MockPOSCashSessionService()
+        let sut = makeController(service: MockCashDrawerService(), sessionService: sessionService)
+        sut.updateDrawerName("Front till")
+
+        // When
+        await sut.openAutomatically(for: .cashSale, orderID: 42, sessionID: nil)
+
+        // Then
+        #expect(sessionService.captureCallCount == 0)
+        #expect(sessionService.recordedDrawerEvents.isEmpty)
+    }
+
+    @Test func test_automatic_refund_open_when_session_changes_then_uses_refund_session() async {
+        // Given
+        let sessionService = MockPOSCashSessionService()
+        sessionService.capturedSessionID = 456
+        let sut = makeController(service: MockCashDrawerService(), sessionService: sessionService)
+        sut.updateDrawerName("Front till")
+
+        // When
+        let recorded = await withCheckedContinuation { continuation in
+            sessionService.onDrawerEventRecorded = { continuation.resume(returning: $0) }
+            Task { await sut.openAutomatically(for: .cashRefund, orderID: 42, sessionID: 123) }
+        }
+
+        // Then
+        #expect(recorded.reason == .cashRefund)
+        #expect(sessionService.recordedDrawerEventSessionIDs == [123])
+        #expect(sessionService.captureCallCount == 0)
     }
 
     @Test func test_open_when_drawer_is_not_named_then_does_not_record_event_in_session() async {
@@ -170,6 +309,12 @@ struct POSCashDrawerControllerTests {
 private extension POSCashDrawerControllerTests {
     func makeController(service: MockCashDrawerService,
                         sessionService: MockPOSCashSessionService? = nil) -> POSCashDrawerController {
-        POSCashDrawerController(service: service, sessionService: sessionService, userDefaults: userDefaults, now: { [date] in date })
+        let controller = POSCashDrawerController(service: service, sessionService: sessionService,
+                                                 userDefaults: userDefaults, now: { [date] in date })
+        controller.sessionSnapshot = { [weak controller, weak sessionService] in
+            guard let id = sessionService?.capturedSessionID else { return nil }
+            return POSCashDrawerSessionSnapshot(id: id, drawerID: controller?.drawerName)
+        }
+        return controller
     }
 }

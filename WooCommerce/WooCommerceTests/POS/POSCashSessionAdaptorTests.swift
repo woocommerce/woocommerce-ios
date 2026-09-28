@@ -10,6 +10,7 @@ import struct Networking.POSCashMovementResponse
 import struct Networking.POSCashDrawerEventResponse
 import protocol Networking.POSCashSessionRemoteProtocol
 import enum PointOfSale.POSCashSessionServiceError
+import struct PointOfSale.POSCashDrawerEventRecord
 @testable import WooCommerce
 
 @MainActor
@@ -134,6 +135,54 @@ struct POSCashSessionAdaptorTests {
         }
         #expect(remote.recordedMovementRequestIDs == [requestID])
     }
+
+    @Test func test_recordDrawerEvent_when_session_was_captured_then_posts_to_that_session() async throws {
+        // Given
+        let response = try JSONDecoder().decode(POSCashDrawerEventResponse.self,
+                                                from: Data("{\"id\":7,\"type\":\"open_requested\",\"reason\":\"no_sale\"}".utf8))
+        let remote = MockPOSCashSessionRemote(listError: UnexpectedCallError(), drawerEventResponse: response)
+        let sut = POSCashSessionAdaptor(remote: POSCashSessionRemoteService(remote: remote),
+                                        siteID: siteID, deviceID: UUID().uuidString)
+        let event = POSCashDrawerEventRecord(outcome: .openRequested, reason: .noSale,
+                                             orderID: nil, occurredAt: Date(timeIntervalSince1970: 1_000))
+
+        // When
+        try await sut.recordDrawerEvent(event, sessionID: 42)
+
+        // Then
+        #expect(remote.recordedDrawerEventSessionIDs == [42])
+    }
+
+    @Test func test_session_when_cash_refund_has_refund_id_then_preserves_order_and_refund_references() async throws {
+        // Given
+        let sessionResponse = try JSONDecoder().decode(POSCashSessionResponse.self, from: Data("""
+        {
+          "id": 42, "device_id": "pos-1", "drawer_id": "Front counter", "status": "open", "revision": 2,
+          "currency": "USD", "currency_precision": 2, "opening_amount": "100.00",
+          "cash_sales_total": "0.00", "cash_refunds_total": "15.00", "paid_in_total": "0.00",
+          "paid_out_total": "0.00", "expected_amount": "85.00", "counted_amount": null,
+          "variance": null, "note": null, "date_created_gmt": "2026-09-25T10:00:00Z",
+          "date_closed_gmt": null, "opened_by_name": "Thomas", "closed_by_name": null
+        }
+        """.utf8))
+        let refund = try JSONDecoder().decode(POSCashMovementResponse.self, from: Data("""
+        {"id": 7, "type": "cash_refund", "amount": "15.00", "reason": null,
+         "order_id": 55, "refund_id": 66, "occurred_at": "2026-09-25T10:05:00Z", "created_by_name": "Thomas"}
+        """.utf8))
+        let remote = MockPOSCashSessionRemote(listError: UnexpectedCallError(), sessionResponse: sessionResponse,
+                                              movementResponses: [refund])
+        let sut = POSCashSessionAdaptor(remote: POSCashSessionRemoteService(remote: remote),
+                                        siteID: siteID, deviceID: UUID().uuidString)
+
+        // When
+        let session = try await sut.session(id: 42)
+
+        // Then
+        #expect(session.movements.count == 1)
+        #expect(session.movements[0].orderID == 55)
+        #expect(session.movements[0].refundID == 66)
+        #expect(session.expectedCash == 85)
+    }
 }
 
 private extension POSCashSessionAdaptorTests {
@@ -169,15 +218,21 @@ private final class MockPOSCashSessionRemote: POSCashSessionRemoteProtocol {
     private let sessionResponse: POSCashSessionResponse?
     private let sessionError: Error?
     private let movementResponse: POSCashMovementResponse?
+    private let movementResponses: [POSCashMovementResponse]
+    private let drawerEventResponse: POSCashDrawerEventResponse?
     private(set) var recordedMovementRequestIDs: [UUID] = []
+    private(set) var recordedDrawerEventSessionIDs: [Int64] = []
 
     init(listError: Error, closeError: Error? = nil, sessionResponse: POSCashSessionResponse? = nil,
-         sessionError: Error? = nil, movementResponse: POSCashMovementResponse? = nil) {
+         sessionError: Error? = nil, movementResponse: POSCashMovementResponse? = nil,
+         movementResponses: [POSCashMovementResponse] = [], drawerEventResponse: POSCashDrawerEventResponse? = nil) {
         self.listError = listError
         self.closeError = closeError
         self.sessionResponse = sessionResponse
         self.sessionError = sessionError
         self.movementResponse = movementResponse
+        self.movementResponses = movementResponses
+        self.drawerEventResponse = drawerEventResponse
     }
 
     func listSessions(siteID: Int64, deviceID: String?, status: String, page: Int, perPage: Int) async throws -> PagedItems<POSCashSessionResponse> {
@@ -192,7 +247,7 @@ private final class MockPOSCashSessionRemote: POSCashSessionRemoteProtocol {
 
     func movements(siteID: Int64, sessionID: Int64, page: Int, perPage: Int) async throws -> PagedItems<POSCashMovementResponse> {
         guard sessionResponse != nil else { throw UnexpectedCallError() }
-        return PagedItems(items: [], hasMorePages: false, totalItems: 0)
+        return PagedItems(items: movementResponses, hasMorePages: false, totalItems: movementResponses.count)
     }
 
     func openSession(siteID: Int64, requestID: UUID, deviceID: String, openingAmount: String,
@@ -209,7 +264,9 @@ private final class MockPOSCashSessionRemote: POSCashSessionRemoteProtocol {
 
     func recordDrawerEvent(siteID: Int64, sessionID: Int64, requestID: UUID, type: String, reason: String,
                            orderID: Int64?, occurredAt: String) async throws -> POSCashDrawerEventResponse {
-        throw UnexpectedCallError()
+        recordedDrawerEventSessionIDs.append(sessionID)
+        guard let drawerEventResponse else { throw UnexpectedCallError() }
+        return drawerEventResponse
     }
 
     func recordCashSale(siteID: Int64, sessionID: Int64, requestID: UUID, orderID: Int64) async throws -> POSCashMovementResponse {

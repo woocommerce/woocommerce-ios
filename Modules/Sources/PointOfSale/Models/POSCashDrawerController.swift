@@ -41,6 +41,12 @@ struct POSCashDrawerEvent: Equatable {
     }
 }
 
+/// The session and drawer binding known by the cash management controller at an open attempt.
+struct POSCashDrawerSessionSnapshot: Equatable {
+    let id: Int64
+    let drawerID: String?
+}
+
 /// Opens the cash drawer connected to the receipt printer.
 ///
 /// The drawer is a device capability, separate from cash accounting: this controller never
@@ -68,6 +74,7 @@ final class POSCashDrawerController {
     @ObservationIgnored private let service: CashDrawerService
     /// Records each open attempt in the open cash session. Nil when cash sessions aren't available.
     @ObservationIgnored private let sessionService: (any POSCashSessionService)?
+    @ObservationIgnored var sessionSnapshot: (@MainActor () -> POSCashDrawerSessionSnapshot?)?
     @ObservationIgnored private let userDefaults: UserDefaults
     @ObservationIgnored private let now: () -> Date
 
@@ -91,16 +98,41 @@ final class POSCashDrawerController {
     }
 
     /// Opens the drawer after a confirmed cash sale or cash refund, if automatic opening is on.
-    func openAutomatically(for reason: POSCashDrawerOpenReason, orderID: Int64? = nil) async {
+    func openAutomatically(for reason: POSCashDrawerOpenReason, orderID: Int64? = nil, sessionID: Int64? = nil) async {
         guard opensAutomaticallyForCashPayments else {
             return
         }
-        await open(for: reason, orderID: orderID)
+        await performOpen(for: reason, orderID: orderID, sessionID: sessionID, captureCurrentSession: false)
     }
 
     /// Opens the drawer and reports the outcome. Never throws.
     @discardableResult
     func open(for reason: POSCashDrawerOpenReason, orderID: Int64? = nil) async -> POSCashDrawerOpenResult {
+        await performOpen(for: reason, orderID: orderID, sessionID: nil, captureCurrentSession: true)
+    }
+
+    private func performOpen(for reason: POSCashDrawerOpenReason, orderID: Int64?, sessionID: Int64?,
+                             captureCurrentSession: Bool) async -> POSCashDrawerOpenResult {
+        // The session snapshot is local and captured before hardware starts. The editable drawer
+        // name can change during a session; only the session's bound drawer decides event logging.
+        let eventSessionID: Int64?
+        if captureCurrentSession {
+            let session: POSCashDrawerSessionSnapshot?
+            if let snapshot = sessionSnapshot?() {
+                session = snapshot
+            } else if let current = try? await sessionService?.currentSession() {
+                // Cash Management may not have loaded yet. Read the binding before opening
+                // so a later session cannot receive this drawer event.
+                session = POSCashDrawerSessionSnapshot(id: current.id, drawerID: current.drawerID)
+            } else {
+                session = nil
+            }
+            eventSessionID = session?.drawerID != nil ? session?.id : nil
+        } else {
+            // Payment and refund flows captured this ID from Core before the transaction.
+            eventSessionID = sessionID
+        }
+        let attemptDate = now()
         let result: POSCashDrawerOpenResult
         do {
             try await service.openCashDrawer()
@@ -112,19 +144,19 @@ final class POSCashDrawerController {
             result = .failed
         }
 
-        let event = POSCashDrawerEvent(reason: reason, result: result, date: now(), orderID: orderID)
+        let event = POSCashDrawerEvent(reason: reason, result: result, date: attemptDate, orderID: orderID)
         lastEvent = event
         onDrawerEvent?(event)
-        recordInSession(event)
+        recordInSession(event, sessionID: eventSessionID)
         return result
     }
 }
 
 private extension POSCashDrawerController {
     /// Records the event in the open cash session without waiting, so it never holds up a sale.
-    /// Core only accepts drawer events for a session opened with a drawer, so events are skipped until the drawer is named.
-    func recordInSession(_ event: POSCashDrawerEvent) {
-        guard let sessionService, drawerName != nil else {
+    /// Core only accepts drawer events for a session opened with a drawer.
+    func recordInSession(_ event: POSCashDrawerEvent, sessionID: Int64?) {
+        guard let sessionService, let sessionID else {
             return
         }
         let record = POSCashDrawerEventRecord(outcome: event.result == .opened ? .openRequested : .openFailed,
@@ -133,7 +165,7 @@ private extension POSCashDrawerController {
                                               occurredAt: event.date)
         Task {
             do {
-                try await sessionService.recordDrawerEvent(record)
+                try await sessionService.recordDrawerEvent(record, sessionID: sessionID)
                 DDLogInfo("💵 [CashDrawer] Recorded drawer event \(record)")
             } catch {
                 DDLogError("💵 [CashDrawer] Failed to record drawer event \(record): \(error)")

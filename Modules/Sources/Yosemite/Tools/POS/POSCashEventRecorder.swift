@@ -26,6 +26,7 @@ public final class POSCashEventRecorder {
     @ObservationIgnored private let journal: POSCashEventJournal
     @ObservationIgnored private var record: @MainActor (POSCashEvent) async throws -> Void
     @ObservationIgnored private var hasLoadedJournal = false
+    @ObservationIgnored private var retryWaiters: [CheckedContinuation<Void, Never>] = []
 
     public init(journal: POSCashEventJournal, record: @escaping @MainActor (POSCashEvent) async throws -> Void) {
         self.journal = journal
@@ -82,7 +83,12 @@ public final class POSCashEventRecorder {
     public func retry() async {
         guard !isRetrying else { return }
         isRetrying = true
-        defer { isRetrying = false }
+        defer {
+            isRetrying = false
+            let waiters = retryWaiters
+            retryWaiters.removeAll()
+            waiters.forEach { $0.resume() }
+        }
         lastError = nil
         do {
             try prepare()
@@ -108,6 +114,16 @@ public final class POSCashEventRecorder {
             } catch {
                 lastError = error
             }
+        }
+    }
+
+    /// Waits for the current retry to finish, or starts one if none is running.
+    /// Use this before reading session totals so the read includes acknowledged cash events.
+    public func retryAndWait() async {
+        if isRetrying {
+            await withCheckedContinuation { retryWaiters.append($0) }
+        } else {
+            await retry()
         }
     }
 

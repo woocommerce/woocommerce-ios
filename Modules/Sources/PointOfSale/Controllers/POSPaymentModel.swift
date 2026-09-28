@@ -15,6 +15,7 @@ import class Yosemite.PaymentCaptureCelebration
 final class POSPaymentModel {
     // MARK: - State (read by views)
     private(set) var paymentState: PointOfSalePaymentState
+    private(set) var cashChangeDueMessage: String?
     var cardPresentPaymentAlertViewModel: PointOfSaleCardPresentPaymentAlertType?
     private(set) var cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
@@ -661,6 +662,7 @@ extension POSPaymentModel {
         startPaymentGeneration += 1
 
         paymentState.cash = .collectingCash
+        cashChangeDueMessage = nil
 
         cardPaymentCancelTask = Task { [weak self] in
             do {
@@ -674,6 +676,7 @@ extension POSPaymentModel {
     func cancelCashPayment() async {
         analytics.track(.pointOfSaleBackToCheckoutFromCashTapped)
         paymentState.cash = .idle
+        cashChangeDueMessage = nil
         paymentState.card = .idle
         cardPresentPaymentInlineMessage = nil
 
@@ -683,7 +686,7 @@ extension POSPaymentModel {
         await startPayment()
     }
 
-    func collectCashPayment(changeDueAmount: String?) async throws {
+    func collectCashPayment(changeDueAmount: String?, changeDueMessage: String? = nil) async throws {
         let order: Order
         if let currentOrder {
             order = currentOrder
@@ -708,6 +711,7 @@ extension POSPaymentModel {
             Task { await cashDrawer.openAutomatically(for: .cashSale, orderID: order.orderID, sessionID: cashSessionID) }
         }
         try? await postPaymentStep?()
+        cashChangeDueMessage = changeDueMessage
         cashPaymentSuccess()
     }
 
@@ -1040,6 +1044,7 @@ extension POSPaymentModel {
         stopScanToPayPolling()
         paymentSessionCancellables.removeAll()
         paymentState = .idle
+        cashChangeDueMessage = nil
         cardPresentPaymentInlineMessage = nil
         currentOrder = nil
         formattedOrderTotalPrice = nil

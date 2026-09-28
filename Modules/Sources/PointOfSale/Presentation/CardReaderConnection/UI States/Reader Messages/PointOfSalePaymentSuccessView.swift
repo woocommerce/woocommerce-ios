@@ -95,6 +95,15 @@ struct PointOfSalePaymentSuccessView: View {
                             .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
                             .opacity(isViewLoaded ? 1 : 0)
                     }
+
+                    if let changeDueMessage = viewModel.changeDueMessage {
+                        Text(changeDueMessage)
+                            .font(.posBodyLargeBold)
+                            .foregroundStyle(Color.posOnSurface)
+                            .accessibilityIdentifier("pos-payment-change-due")
+                            .offset(y: isViewLoaded ? 0 : Constants.animationOffset)
+                            .opacity(isViewLoaded ? 1 : 0)
+                    }
                 }
 
                 if let customerEmail, customerEmail.isNotEmpty {
@@ -157,6 +166,19 @@ private extension PointOfSalePaymentSuccessView {
         viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$3.00",
                                                       paymentMethod: .card),
         customerEmail: "test@example.com",
+        successAction: PaymentFlowAction(title: "New order", action: {}, analyticsEvent: nil),
+        onSuccessScreenBarcodeScanned: nil
+    )
+    .environment(model)
+}
+
+#Preview("Cash with change due") {
+    let model = POSPreviewHelpers.makePreviewAggregateModel()
+    PointOfSalePaymentSuccessView(
+        viewModel: PointOfSalePaymentSuccessViewModel(formattedOrderTotal: "$10.00",
+                                                      paymentMethod: .cash,
+                                                      changeDueMessage: "Change due: $5.00"),
+        customerEmail: nil,
         successAction: PaymentFlowAction(title: "New order", action: {}, analyticsEvent: nil),
         onSuccessScreenBarcodeScanned: nil
     )

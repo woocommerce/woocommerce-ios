@@ -3,12 +3,19 @@ import Foundation
 struct PointOfSalePaymentSuccessViewModel: Equatable {
     let title: String = Localization.title
     let message: String?
+    let changeDueMessage: String?
 
-    init(formattedOrderTotal: String?, paymentMethod: PointOfSalePaymentMethod) {
+    init(formattedOrderTotal: String?, paymentMethod: PointOfSalePaymentMethod, changeDueMessage: String? = nil) {
         if let formattedOrderTotal {
             self.message = String(format: paymentMethod.paymentSuccessMessageFormatString, formattedOrderTotal)
         } else {
             self.message = nil
+        }
+        switch paymentMethod {
+        case .cash:
+            self.changeDueMessage = changeDueMessage
+        case .card, .scanToPay, .markAsPaid:
+            self.changeDueMessage = nil
         }
     }
 }

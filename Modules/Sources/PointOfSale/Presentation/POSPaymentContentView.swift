@@ -107,7 +107,8 @@ struct POSPaymentContentView: View {
             PointOfSaleCardPresentPaymentInLineMessage(
                 messageType: .paymentSuccess(
                     viewModel: .init(formattedOrderTotal: formattedTotal,
-                                     paymentMethod: .cash)),
+                                     paymentMethod: .cash,
+                                     changeDueMessage: paymentModel.cashChangeDueMessage)),
                 animation: .init(namespace: paymentMessageNamespace))
         case .scanToPay:
             PointOfSaleCardPresentPaymentInLineMessage(

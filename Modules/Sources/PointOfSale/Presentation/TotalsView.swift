@@ -66,6 +66,7 @@ struct TotalsView: View {
                             isShowingTotalsFields: isShowingTotalsFields,
                             backgroundColor: backgroundColor,
                             orderState: posModel.orderState,
+                            cashChangeDueMessage: paymentModel.cashChangeDueMessage,
                             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                             cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
                             connectCardReaderAction: paymentModel.connectCardReader,
@@ -81,6 +82,7 @@ struct TotalsView: View {
                             isShowingTotalsFields: isShowingTotalsFields,
                             backgroundColor: backgroundColor,
                             orderState: posModel.orderState,
+                            cashChangeDueMessage: paymentModel.cashChangeDueMessage,
                             cardReaderConnectionStatus: paymentModel.cardReaderConnectionStatus,
                             cardPresentPaymentInlineMessage: paymentModel.cardPresentPaymentInlineMessage,
                             connectCardReaderAction: paymentModel.connectCardReader,
@@ -628,6 +630,7 @@ private struct PaymentViewContent: View {
     let isShowingTotalsFields: Bool
     let backgroundColor: Color
     let orderState: PointOfSaleOrderState
+    let cashChangeDueMessage: String?
     let cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus
     let cardPresentPaymentInlineMessage: PointOfSaleCardPresentPaymentMessageType?
     let connectCardReaderAction: () -> Void
@@ -655,7 +658,8 @@ private struct PaymentViewContent: View {
             PointOfSaleCardPresentPaymentInLineMessage(
                 messageType: .paymentSuccess(
                     viewModel: .init(formattedOrderTotal: total.orderTotal,
-                                     paymentMethod: .cash)),
+                                     paymentMethod: .cash,
+                                     changeDueMessage: cashChangeDueMessage)),
                 animation: .init(namespace: paymentMessageNamespace))
         } else if case .paymentSuccess = paymentState.scanToPay,
                   case .loaded(let total) = orderState {

@@ -343,6 +343,43 @@ struct POSPaymentModelTests {
         #expect(celebration.celebrationWasCalled == true)
     }
 
+    @Test @MainActor
+    func test_collectCashPayment_when_change_is_due_then_keeps_message_for_success_screen() async throws {
+        // Given
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = .fake()
+        let sut = makePaymentController(orderProvider: orderProvider)
+
+        // When
+        try await sut.collectCashPayment(changeDueAmount: "5.00", changeDueMessage: "Change due: $5.00")
+
+        // Then
+        #expect(sut.paymentState.cash == .paymentSuccess)
+        #expect(sut.cashChangeDueMessage == "Change due: $5.00")
+        sut.reset()
+        #expect(sut.cashChangeDueMessage == nil)
+    }
+
+    @Test @MainActor
+    func test_collectCashPayment_when_completion_fails_then_does_not_keep_change_message() async {
+        // Given
+        struct CompletionError: Error {}
+        let orderProvider = MockPOSPaymentOrderProvider()
+        orderProvider.orderToReturn = .fake()
+        let cashHandler = MockPOSCashPaymentHandler()
+        cashHandler.errorToThrow = CompletionError()
+        let sut = makePaymentController(orderProvider: orderProvider, cashPaymentHandler: cashHandler)
+
+        // When
+        await #expect(throws: CompletionError.self) {
+            try await sut.collectCashPayment(changeDueAmount: "5.00", changeDueMessage: "Change due: $5.00")
+        }
+
+        // Then
+        #expect(sut.cashChangeDueMessage == nil)
+        #expect(sut.paymentState.cash != .paymentSuccess)
+    }
+
     @Test("collectCashPayment records a cash sale after the order succeeds")
     @MainActor
     func collectCashPayment_when_order_succeeds_then_records_cash_sale() async throws {

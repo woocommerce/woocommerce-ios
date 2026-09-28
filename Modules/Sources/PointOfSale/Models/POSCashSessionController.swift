@@ -129,10 +129,24 @@ final class POSCashSessionController {
         }
     }
 
-    func record(kind: POSCashSessionMovement.Kind, amount: Decimal, note: String?) async -> Bool {
+    func record(kind: POSCashSessionMovement.Kind, amount: Decimal, note: String?, requestID: UUID = UUID()) async -> Bool {
         guard let session = currentSession else { return false }
-        return await save(operation: .record) {
-            currentSession = try await service.recordMovement(sessionID: session.id, kind: kind, amount: amount, note: note)
+        guard !isSaving else { return false }
+        isSaving = true
+        errorMessage = nil
+        defer { isSaving = false }
+        do {
+            currentSession = try await service.recordMovement(sessionID: session.id, kind: kind, amount: amount,
+                                                              note: note, requestID: requestID)
+            return true
+        } catch POSCashSessionServiceError.movementRecordedRefreshFailed {
+            // The adjustment exists on the server. Dismiss the entry flow and require
+            // a fresh read instead of offering a second submit of the same amount.
+            currentLoadError = POSCashSessionServiceError.movementRecordedRefreshFailed.errorDescription
+            return true
+        } catch {
+            errorMessage = POSCashSessionErrorMessage.message(for: error, operation: .record)
+            return false
         }
     }
 

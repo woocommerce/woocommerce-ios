@@ -13,7 +13,8 @@ public protocol POSCashSessionService {
     func pastSessions(page: Int, perPage: Int) async throws -> POSCashSessionPage
     func session(id: Int64) async throws -> POSCashSession
     func startSession(openingCash: Decimal) async throws -> POSCashSession
-    func recordMovement(sessionID: Int64, kind: POSCashSessionMovement.Kind, amount: Decimal, note: String?) async throws -> POSCashSession
+    func recordMovement(sessionID: Int64, kind: POSCashSessionMovement.Kind, amount: Decimal,
+                        note: String?, requestID: UUID) async throws -> POSCashSession
     func recordCashSale(orderID: Int64) async throws -> POSCashSession?
     func recordCashRefund(orderID: Int64, refundID: Int64) async throws -> POSCashSession?
     func closeSession(sessionID: Int64, expectedRevision: Int, countedCash: Decimal, note: String?) async throws -> POSCashSession
@@ -51,6 +52,7 @@ public enum POSCashSessionServiceError: LocalizedError {
     case invalidAmount
     case invalidReference
     case sessionChanged
+    case movementRecordedRefreshFailed
     case previewUnavailable
     case pendingCashMovements
 
@@ -68,6 +70,10 @@ public enum POSCashSessionServiceError: LocalizedError {
                                      comment: "Cash session error")
         case .sessionChanged:
             return NSLocalizedString("pos.cashSession.error.sessionChanged", value: "The session changed. Try again.", comment: "Cash session error")
+        case .movementRecordedRefreshFailed:
+            return NSLocalizedString("pos.cashSession.error.movementRecordedRefreshFailed",
+                                     value: "Cash adjustment recorded, but the latest totals could not load. Try again to refresh the session.",
+                                     comment: "Shown when a cash adjustment saves but its session refresh fails")
         case .previewUnavailable:
             return NSLocalizedString("pos.cashSession.error.previewUnavailable", value: "Could not connect to cash sessions. Try again.",
                                      comment: "Cash session preview error")
@@ -165,7 +171,8 @@ final class POSMockCashSessionService: POSCashSessionService {
         return session
     }
 
-    func recordMovement(sessionID: Int64, kind: POSCashSessionMovement.Kind, amount: Decimal, note: String?) async throws -> POSCashSession {
+    func recordMovement(sessionID: Int64, kind: POSCashSessionMovement.Kind, amount: Decimal,
+                        note: String?, requestID: UUID) async throws -> POSCashSession {
         try await Task.sleep(for: writeDelay)
         guard var session = openSession, session.id == sessionID else { throw POSCashSessionServiceError.noOpenSession }
         guard kind == .payIn || kind == .payOut, amount > 0 else { throw POSCashSessionServiceError.invalidAmount }

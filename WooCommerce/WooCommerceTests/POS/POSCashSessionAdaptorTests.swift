@@ -113,6 +113,26 @@ struct POSCashSessionAdaptorTests {
         // Then
         #expect(session.drawerID == "Front counter")
     }
+
+    @Test func test_recordMovement_when_saved_but_session_refresh_fails_then_reports_saved_adjustment() async throws {
+        // Given
+        let movement = try JSONDecoder().decode(POSCashMovementResponse.self, from: Data("""
+        {"id": 7, "type": "paid_in", "amount": "10.00", "reason": "Cash adjustment", "order_id": null,
+         "occurred_at": "2026-09-25T10:00:00Z", "created_by_name": "Thomas"}
+        """.utf8))
+        let remote = MockPOSCashSessionRemote(listError: UnexpectedCallError(), sessionError: UnexpectedCallError(),
+                                              movementResponse: movement)
+        let sut = POSCashSessionAdaptor(remote: POSCashSessionRemoteService(remote: remote),
+                                        siteID: siteID, deviceID: UUID().uuidString)
+        let requestID = UUID()
+
+        // Then
+        await #expect(throws: POSCashSessionServiceError.movementRecordedRefreshFailed) {
+            // When
+            _ = try await sut.recordMovement(sessionID: 1, kind: .payIn, amount: 10, note: nil, requestID: requestID)
+        }
+        #expect(remote.recordedMovementRequestIDs == [requestID])
+    }
 }
 
 private extension POSCashSessionAdaptorTests {
@@ -146,11 +166,17 @@ private final class MockPOSCashSessionRemote: POSCashSessionRemoteProtocol {
     private let listError: Error
     private let closeError: Error?
     private let sessionResponse: POSCashSessionResponse?
+    private let sessionError: Error?
+    private let movementResponse: POSCashMovementResponse?
+    private(set) var recordedMovementRequestIDs: [UUID] = []
 
-    init(listError: Error, closeError: Error? = nil, sessionResponse: POSCashSessionResponse? = nil) {
+    init(listError: Error, closeError: Error? = nil, sessionResponse: POSCashSessionResponse? = nil,
+         sessionError: Error? = nil, movementResponse: POSCashMovementResponse? = nil) {
         self.listError = listError
         self.closeError = closeError
         self.sessionResponse = sessionResponse
+        self.sessionError = sessionError
+        self.movementResponse = movementResponse
     }
 
     func listSessions(siteID: Int64, deviceID: String?, status: String, page: Int, perPage: Int) async throws -> PagedItems<POSCashSessionResponse> {
@@ -158,6 +184,7 @@ private final class MockPOSCashSessionRemote: POSCashSessionRemoteProtocol {
     }
 
     func session(siteID: Int64, id: Int64) async throws -> POSCashSessionResponse {
+        if let sessionError { throw sessionError }
         guard let sessionResponse else { throw UnexpectedCallError() }
         return sessionResponse
     }
@@ -173,7 +200,9 @@ private final class MockPOSCashSessionRemote: POSCashSessionRemoteProtocol {
 
     func recordMovement(siteID: Int64, sessionID: Int64, requestID: UUID, type: String,
                         amount: String, reason: String) async throws -> POSCashMovementResponse {
-        throw UnexpectedCallError()
+        recordedMovementRequestIDs.append(requestID)
+        guard let movementResponse else { throw UnexpectedCallError() }
+        return movementResponse
     }
 
     func recordCashSale(siteID: Int64, sessionID: Int64, requestID: UUID, orderID: Int64) async throws -> POSCashMovementResponse {

@@ -100,23 +100,26 @@ final class POSCashSessionAdaptor: POSCashSessionService {
     }
 
     func recordMovement(sessionID: Int64, kind: POSCashSessionMovement.Kind, amount: Decimal,
-                        note: String?) async throws -> POSCashSession {
+                        note: String?, requestID: UUID) async throws -> POSCashSession {
         guard amount > 0, let type = Self.movementType(for: kind) else {
             throw POSCashSessionServiceError.invalidAmount
         }
         // Core requires a reason for paid in/out. The UI description remains optional.
         let reason = note?.trimmingCharacters(in: .whitespacesAndNewlines)
         let resolvedReason = reason.flatMap { $0.isEmpty ? nil : $0 } ?? Self.defaultMovementReason
-        let requestKey = "movement:\(sessionID):\(type):\(decimalString(amount)):\(resolvedReason)"
         do {
             _ = try await remote.recordMovement(siteID: siteID, sessionID: sessionID,
-                                                requestID: requestID(for: requestKey), type: type,
+                                                requestID: requestID, type: type,
                                                 amount: decimalString(amount), reason: resolvedReason)
-            let session = try await self.session(id: sessionID)
-            pendingRequestIDs.removeValue(forKey: requestKey)
-            return session
         } catch let error as POSCashSessionAPIError where error.statusCode == 404 {
             throw POSCashSessionServiceError.noOpenSession
+        }
+        // The POST response confirms this adjustment was saved. A failed read must not
+        // make the cashier submit the same adjustment again with a new request ID.
+        do {
+            return try await self.session(id: sessionID)
+        } catch {
+            throw POSCashSessionServiceError.movementRecordedRefreshFailed
         }
     }
 

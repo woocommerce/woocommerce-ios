@@ -70,6 +70,26 @@ struct POSCashSessionControllerTests {
         #expect(controller.pastSessions.first?.id == closed.id)
     }
 
+    @Test func test_record_when_adjustment_saved_but_refresh_fails_then_requires_reload() async {
+        // Given
+        let service = MockPOSCashSessionService()
+        service.currentSessionToReturn = POSCashSession(id: 12, openedAt: now, openedBy: "Tester", openingCash: 10,
+                                                        movements: [], revision: 1)
+        let controller = POSCashSessionController(service: service)
+        await controller.loadCurrentSession()
+        service.movementError = POSCashSessionServiceError.movementRecordedRefreshFailed
+        let requestID = UUID()
+
+        // When
+        let shouldDismissEntry = await controller.record(kind: .payIn, amount: 5, note: nil, requestID: requestID)
+
+        // Then
+        #expect(shouldDismissEntry)
+        #expect(controller.currentLoadError == POSCashSessionServiceError.movementRecordedRefreshFailed.errorDescription)
+        #expect(controller.errorMessage == nil)
+        #expect(service.recordedMovementRequestIDs == [requestID])
+    }
+
     @Test func test_refreshPastSessions_when_service_returns_new_page_then_replaces_sessions_without_loading_state() async {
         // Given
         let service = MockPOSCashSessionService()

@@ -45,7 +45,8 @@ struct POSCashSessionErrorMessageTests {
         .invalidAmount,
         .invalidReference,
         .previewUnavailable,
-        .pendingCashMovements
+        .pendingCashMovements,
+        .movementRecordedRefreshFailed
     ])
     func test_message_when_known_cash_session_error_then_preserves_friendly_description(error: POSCashSessionServiceError) {
         // Given

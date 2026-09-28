@@ -32,7 +32,7 @@ enum POSCashSessionErrorMessage {
         case .sessionChanged:
             return Localization.sessionChanged
         case .unsupported, .sessionAlreadyOpen, .noOpenSession, .invalidAmount, .invalidReference, .previewUnavailable,
-             .pendingCashMovements:
+             .pendingCashMovements, .movementRecordedRefreshFailed:
             return error.errorDescription ?? operation.fallback
         }
     }

@@ -1,6 +1,6 @@
 import SwiftUI
 
-/// Demo flow for recording a cash movement or closing the current session.
+/// Full-screen flow for recording a cash movement or closing the current session.
 struct POSCashSessionEntryView: View {
     enum Action: String, Identifiable {
         case payIn
@@ -18,6 +18,8 @@ struct POSCashSessionEntryView: View {
     @State private var note = ""
     @State private var step: Step = .amount
     @State private var submitError: String?
+    @State private var movementRequestKey: String?
+    @State private var movementRequestID = UUID()
 
     let action: Action
     let controller: POSCashSessionController
@@ -185,13 +187,15 @@ struct POSCashSessionEntryView: View {
         let optionalNote = trimmedNote.isEmpty ? nil : trimmedNote
         switch action {
         case .payIn:
-            if await controller.record(kind: .payIn, amount: parsedAmount, note: optionalNote) {
+            if await controller.record(kind: .payIn, amount: parsedAmount, note: optionalNote,
+                                       requestID: requestID(for: parsedAmount, note: optionalNote)) {
                 dismiss()
             } else {
                 showSaveError()
             }
         case .payOut:
-            if await controller.record(kind: .payOut, amount: parsedAmount, note: optionalNote) {
+            if await controller.record(kind: .payOut, amount: parsedAmount, note: optionalNote,
+                                       requestID: requestID(for: parsedAmount, note: optionalNote)) {
                 dismiss()
             } else {
                 showSaveError()
@@ -214,6 +218,15 @@ struct POSCashSessionEntryView: View {
     private func showSaveError() {
         submitError = controller.errorMessage ?? Localization.errorTitle
         controller.errorMessage = nil
+    }
+
+    private func requestID(for amount: Decimal, note: String?) -> UUID {
+        let key = "\(NSDecimalNumber(decimal: amount).stringValue):\(note ?? "")"
+        if movementRequestKey != key {
+            movementRequestKey = key
+            movementRequestID = UUID()
+        }
+        return movementRequestID
     }
 }
 

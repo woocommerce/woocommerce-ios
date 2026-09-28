@@ -59,7 +59,10 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
 extension AppDelegate: UNUserNotificationCenterDelegate {
     nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
         // Snapshot the payload before hopping; UserNotifications calls this delegate off the main actor.
-        let data = try? JSONSerialization.data(withJSONObject: response.notification.request.content.userInfo)
+        let userInfo = response.notification.request.content.userInfo
+        let data = JSONSerialization.isValidJSONObject(userInfo)
+            ? try? JSONSerialization.data(withJSONObject: userInfo)
+            : nil
         await MainActor.run {
             tracksProvider?.sendTracksEvent(.watchPushNotificationTapped)
 

@@ -169,7 +169,8 @@ private extension ProductFormViewController {
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
         inProgressViewController.modalPresentationStyle = .overFullScreen
 
-        navigationController?.present(inProgressViewController, animated: true, completion: nil)
+        // Guarded: presenting into another modal transition corrupts sheet state on iOS 26 (WOOMOB-3923).
+        navigationController?.presentIfIdle(inProgressViewController)
     }
 }
 

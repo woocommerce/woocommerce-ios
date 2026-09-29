@@ -150,16 +150,19 @@ extension ProductFormViewController {
         displayInProgressView(title: Localization.ProgressView.variationDeletionTitle, message: Localization.ProgressView.variationDeletionMessage)
     }
 
-    /// Dismisses the in-progress UI when it is the presented modal; otherwise runs `completion`
-    /// directly, leaving any other presented modal up — the in-progress UI may have never been
-    /// shown (retry path) or its guarded presentation may have been dropped (WOOMOB-3923).
+    /// Dismisses the in-progress UI only when it is the presented modal, otherwise calls `completion` directly (WOOMOB-3923).
+    /// Never calls `completion` when the dismissal is already in flight.
     ///
     func dismissInProgressViewIfNeeded(completion: (() -> Void)? = nil) {
-        guard let navigationController, navigationController.presentedViewController is InProgressViewController else {
+        guard let navigationController, let presented = navigationController.presentedViewController as? InProgressViewController else {
             completion?()
             return
         }
-        navigationController.dismiss(animated: true, completion: completion)
+        guard !presented.isBeingDismissed else {
+            DDLogWarn("⚠️ Skipped in-progress view dismissal: already being dismissed")
+            return
+        }
+        presented.dismiss(animated: true, completion: completion)
     }
 }
 

@@ -236,7 +236,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     @objc func saveProductAndLogEvent() {
         // Bar button taps can slip through while the More Options menu is attached on iOS 26 (WOOMOB-3923).
-        guard presentedViewController == nil else {
+        if let presented = presentedViewController {
+            DDLogWarn("⚠️ Ignored product form save tap: already presenting \(type(of: presented))")
             return
         }
         eventLogger.logUpdateButtonTapped()
@@ -245,7 +246,8 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     @objc func publishProduct() {
         // Bar button taps can slip through while the More Options menu is attached on iOS 26 (WOOMOB-3923).
-        guard presentedViewController == nil else {
+        if let presented = presentedViewController {
+            DDLogWarn("⚠️ Ignored product form publish tap: already presenting \(type(of: presented))")
             return
         }
         if viewModel.formType == .add {

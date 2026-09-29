@@ -56,14 +56,15 @@ tags:
     timeout: 10000
 - assertVisible: "Title: A to Z"
 - tapOn: "Title: Z to A"
+# Picking the order that is already selected leaves the sheet open, and a swipe
+# does not close it.
 - runFlow:
     when:
       visible: "Date: Newest to Oldest"
     commands:
-      - swipe:
-          start: "50%,75%"
-          end: "50%,95%"
-          duration: 500
+      # The dimmed area above the sheet has no element to select.
+      - tapOn:
+          point: "50%,15%"
 - extendedWaitUntil:
     visible:
       id: "products-table-view"
@@ -88,14 +89,15 @@ tags:
     visible: "Title: A to Z"
     timeout: 10000
 - tapOn: "Title: A to Z"
+# Picking the order that is already selected leaves the sheet open, and a swipe
+# does not close it.
 - runFlow:
     when:
       visible: "Date: Newest to Oldest"
     commands:
-      - swipe:
-          start: "50%,75%"
-          end: "50%,95%"
-          duration: 500
+      # The dimmed area above the sheet has no element to select.
+      - tapOn:
+          point: "50%,15%"
 - extendedWaitUntil:
     visible:
       id: "products-table-view"

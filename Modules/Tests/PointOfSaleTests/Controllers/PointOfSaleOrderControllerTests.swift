@@ -734,6 +734,74 @@ struct PointOfSaleOrderControllerTests {
         #expect(totals.couponsTotals.map(\.hasDiscount) == [true, false])
     }
 
+    @Test @MainActor func syncOrder_marks_cart_items_with_discounted_order_lines_in_totals() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let discountedOrderItem = OrderItem.fake().copy(itemID: 1, quantity: 1, subtotal: "10.00", total: "8.00")
+        let fullPriceOrderItem = OrderItem.fake().copy(itemID: 2, quantity: 1, subtotal: "5.00", total: "5.00")
+        mockOrderService.orderToReturn = Order.fake().copy(currency: "USD", items: [discountedOrderItem, fullPriceOrderItem])
+        let discountedCartItem = makeItem(orderItemsToMatch: [discountedOrderItem])
+        let fullPriceCartItem = makeItem(orderItemsToMatch: [fullPriceOrderItem])
+
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [discountedCartItem, fullPriceCartItem]), retryHandler: {})
+
+        // Then
+        guard case .loaded(let totals, _) = sut.orderState else {
+            Issue.record("Expected loaded order state, got \(sut.orderState)")
+            return
+        }
+        #expect(totals.discountedCartItemIDs == [discountedCartItem.id])
+    }
+
+    @Test @MainActor func syncOrder_marks_all_cart_rows_of_a_discounted_grouped_order_line() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let discountedOrderItem = OrderItem.fake().copy(itemID: 1, quantity: 2, subtotal: "20.00", total: "16.00")
+        mockOrderService.orderToReturn = Order.fake().copy(currency: "USD", items: [discountedOrderItem])
+        let firstCartRow = makeItem(orderItemsToMatch: [discountedOrderItem])
+        let secondCartRow = makeItem(orderItemsToMatch: [discountedOrderItem])
+
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [firstCartRow, secondCartRow]), retryHandler: {})
+
+        // Then
+        guard case .loaded(let totals, _) = sut.orderState else {
+            Issue.record("Expected loaded order state, got \(sut.orderState)")
+            return
+        }
+        #expect(totals.discountedCartItemIDs == [firstCartRow.id, secondCartRow.id])
+    }
+
+    @Test @MainActor func syncOrder_does_not_mark_cart_items_for_rounding_deltas_or_unparseable_totals() async throws {
+        // Given
+        let sut = PointOfSaleOrderController(orderService: mockOrderService,
+                                             receiptSender: mockReceiptSender,
+                                             currencySettingsProvider: MockCurrencySettingsProvider(),
+                                             analytics: MockPOSAnalytics())
+        let roundingDeltaOrderItem = OrderItem.fake().copy(itemID: 1, quantity: 1, subtotal: "10.00", total: "9.999")
+        let unparseableOrderItem = OrderItem.fake().copy(itemID: 2, quantity: 1, subtotal: "", total: "5.00")
+        mockOrderService.orderToReturn = Order.fake().copy(currency: "USD", items: [roundingDeltaOrderItem, unparseableOrderItem])
+        let cart = Cart(purchasableItems: [makeItem(orderItemsToMatch: [roundingDeltaOrderItem]),
+                                           makeItem(orderItemsToMatch: [unparseableOrderItem])])
+
+        // When
+        await sut.syncOrder(for: cart, retryHandler: {})
+
+        // Then
+        guard case .loaded(let totals, _) = sut.orderState else {
+            Issue.record("Expected loaded order state, got \(sut.orderState)")
+            return
+        }
+        #expect(totals.discountedCartItemIDs.isEmpty)
+    }
+
     @Test func syncOrder_with_matching_items_but_different_coupons_calls_orderService() async throws {
         // Given
         let sut = PointOfSaleOrderController(orderService: mockOrderService,

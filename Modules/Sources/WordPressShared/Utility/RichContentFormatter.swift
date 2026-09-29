@@ -50,7 +50,7 @@ import WordPressSharedObjC
     ///
     /// - Returns: The formatted string.
     ///
-    @objc public class func formatContentString(_ string: String, isPrivateSite isPrivate: Bool) -> String {
+    @MainActor @objc public class func formatContentString(_ string: String, isPrivateSite isPrivate: Bool) -> String {
         guard !string.isEmpty else {
             return string
         }
@@ -214,7 +214,7 @@ import WordPressSharedObjC
     ///
     /// - Returns: The formatted string.
     ///
-    @objc public class func resizeGalleryImageURL(_ string: String, isPrivateSite isPrivate: Bool) -> String {
+    @MainActor @objc public class func resizeGalleryImageURL(_ string: String, isPrivateSite isPrivate: Bool) -> String {
         guard !string.isEmpty else {
             return string
         }

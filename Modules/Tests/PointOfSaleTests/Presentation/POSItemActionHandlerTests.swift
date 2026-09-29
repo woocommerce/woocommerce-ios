@@ -106,7 +106,7 @@ private func makePointOfSaleAggregateModel(
     purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSalePurchasableItemsSearchController(),
     couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
     couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
-    cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
+    cardPresentPaymentService: CardPresentPaymentFacade? = nil,
     orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderController(),
     settingsController: POSSettingsControllerProtocol = MockPOSSettingsController(),
     analytics: POSAnalyticsProviding = MockPOSAnalytics(),
@@ -115,7 +115,9 @@ private func makePointOfSaleAggregateModel(
     popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
     barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = MockPointOfSaleBarcodeScanService()
 ) -> PointOfSaleAggregateModel {
-    PointOfSaleAggregateModel(
+    let cardPresentPaymentService = cardPresentPaymentService ?? MockCardPresentPaymentService()
+
+    return PointOfSaleAggregateModel(
         entryPointController: entryPointController ?? POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
         itemsController: itemsController,
         purchasableItemsSearchController: purchasableItemsSearchController,

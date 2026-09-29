@@ -6,6 +6,7 @@ import enum Yosemite.CardReaderSoftwareUpdateState
 
 #if DEBUG
 
+@MainActor
 final class CardPresentPaymentPreviewService: CardPresentPaymentFacade {
     let paymentEventPublisher: AnyPublisher<CardPresentPaymentEvent, Never> = Just(.idle).eraseToAnyPublisher()
 

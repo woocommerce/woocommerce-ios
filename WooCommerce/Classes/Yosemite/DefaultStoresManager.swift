@@ -504,7 +504,6 @@ class DefaultStoresManager: StoresManager {
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
         sessionManager.defaultSite = nil
-        sessionManager.cachedWooCommerceVersion = nil
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
         defaults[.usedProductDescriptionAI] = nil
@@ -921,19 +920,20 @@ private extension DefaultStoresManager {
     ///
     @MainActor
     func synchronizeSystemInformation(siteID: Int64) async -> SystemInformation? {
-        await withCheckedContinuation { continuation in
-            dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { [weak self] result in
-                switch result {
-                case let .success(systemInformation):
-                    DDLogInfo("🟢 Successfully synced system information")
-                    self?.loadStoreUUID(siteID: siteID)
-                    self?.loadCachedWooCommerceVersion(siteID: siteID)
-                    continuation.resume(returning: systemInformation)
-                case let .failure(error):
-                    DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
-                    continuation.resume(returning: nil)
-                }
+        let result: Result<SystemInformation, Error> = await withCheckedContinuation { continuation in
+            dispatch(SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
+                continuation.resume(returning: result)
             })
+        }
+        switch result {
+        case let .success(systemInformation):
+            DDLogInfo("🟢 Successfully synced system information")
+            loadStoreUUID(siteID: siteID)
+            loadCachedWooCommerceVersion(siteID: siteID)
+            return systemInformation
+        case let .failure(error):
+            DDLogError("⛔️ Failed to sync system plugins for siteID: \(siteID). Error: \(error)")
+            return nil
         }
     }
 
@@ -966,6 +966,9 @@ private extension DefaultStoresManager {
     /// Loads the WooCommerce plugin version from storage and caches it in memory for the session only
     ///
     func loadCachedWooCommerceVersion(siteID: Int64) {
+        guard sessionManager.defaultStoreID == siteID else {
+            return
+        }
         let version = ServiceLocator.storageManager.viewStorage.loadSystemPlugin(
             siteID: siteID,
             fileNameWithoutExtension: Plugin.wooCommerce.fileNameWithoutExtension,
@@ -1033,6 +1036,7 @@ private extension DefaultStoresManager {
         //
         // Batch 1 (immediate): Site settings — needed for dashboard rendering.
         loadStoreUUID(siteID: siteID)
+        loadCachedWooCommerceVersion(siteID: siteID)
         synchronizeSettings(with: siteID) { [weak self] in
             guard let self else { return }
             ServiceLocator.shippingSettingsService.update(siteID: siteID)

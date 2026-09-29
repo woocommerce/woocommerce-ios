@@ -5,6 +5,7 @@ import struct Yosemite.Order
 import enum Yosemite.CardReaderSoftwareUpdateState
 @testable import PointOfSale
 
+@MainActor
 final class MockCardPresentPaymentService: CardPresentPaymentFacade {
     // MARK: - Variables for emitting events in unit tests
 

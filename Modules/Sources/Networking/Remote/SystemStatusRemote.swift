@@ -24,17 +24,9 @@ public class SystemStatusRemote: Remote {
     ///
     public func loadSystemInformation(for siteID: Int64,
                                       completion: @escaping (Result<SystemStatus, Error>) -> Void) {
-        Task { @MainActor in
-            do {
-                let mapper = SystemStatusMapper(siteID: siteID)
-                let systemStatus = try await loadSystemStatus(for: siteID,
-                                                              fields: [Field.environment, Field.activePlugins, Field.inactivePlugins],
-                                                              mapper: mapper)
-                completion(.success(systemStatus))
-            } catch {
-                completion(.failure(error))
-            }
-        }
+        let request = makeRequest(siteID: siteID, fields: [.environment, .activePlugins, .inactivePlugins])
+        let mapper = SystemStatusMapper(siteID: siteID)
+        enqueue(request, mapper: mapper, completion: completion)
     }
 
     /// Fetch details about system status for a given site.
@@ -45,17 +37,9 @@ public class SystemStatusRemote: Remote {
     ///
     public func fetchSystemStatusReport(for siteID: Int64,
                                         completion: @escaping (Result<SystemStatusReport, Error>) -> Void) {
-        Task { @MainActor in
-            do {
-                let mapper = SystemStatusReportMapper(siteID: siteID)
-                let systemStatus = try await loadSystemStatus(for: siteID,
-                                                              fields: nil,
-                                                              mapper: mapper)
-                completion(.success(systemStatus))
-            } catch {
-                completion(.failure(error))
-            }
-        }
+        let request = makeRequest(siteID: siteID, fields: nil)
+        let mapper = SystemStatusReportMapper(siteID: siteID)
+        enqueue(request, mapper: mapper, completion: completion)
     }
 
     /// Loads system status information with configurable fields for a given site.
@@ -71,7 +55,17 @@ public class SystemStatusRemote: Remote {
                                                fields: [Field]? = nil,
                                                mapper: M,
                                                isolation: isolated (any Actor)? = #isolation) async throws -> T where M.Output == T {
-        let path = Constants.systemStatusPath
+        let request = makeRequest(siteID: siteID, fields: fields)
+        return try await enqueue(request, mapper: mapper, isolation: isolation)
+    }
+}
+
+// MARK: - Request building
+//
+private extension SystemStatusRemote {
+    /// Builds the system status request for a site, restricted to `fields` when given.
+    ///
+    func makeRequest(siteID: Int64, fields: [Field]?) -> JetpackRequest {
         let parameters: RequestParameterDictionary? = {
             if let fields, !fields.isEmpty {
                 return [
@@ -81,13 +75,12 @@ public class SystemStatusRemote: Remote {
                 return nil
             }
         }()
-        let request = JetpackRequest(wooApiVersion: .mark3,
-                                     method: .get,
-                                     siteID: siteID,
-                                     path: path,
-                                     parameters: parameters,
-                                     availableAsRESTRequest: true)
-        return try await enqueue(request, mapper: mapper, isolation: isolation)
+        return JetpackRequest(wooApiVersion: .mark3,
+                              method: .get,
+                              siteID: siteID,
+                              path: Constants.systemStatusPath,
+                              parameters: parameters,
+                              availableAsRESTRequest: true)
     }
 }
 

@@ -2,7 +2,7 @@ import Foundation
 import GRDB
 
 // periphery:ignore - TODO: remove ignore when populating database
-public struct PersistedProductVariation: Codable {
+public struct PersistedProductVariation: Codable, Sendable {
     public let id: Int64
     public let siteID: Int64
     public let productID: Int64

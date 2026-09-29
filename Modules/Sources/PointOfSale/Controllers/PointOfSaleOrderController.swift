@@ -7,6 +7,7 @@ import class Yosemite.POSOrderService
 import protocol Yosemite.POSReceiptServiceProtocol
 import protocol Yosemite.PluginsServiceProtocol
 import struct Yosemite.Order
+import struct Yosemite.OrderItem
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
 import struct Yosemite.POSCustomAmount
@@ -120,7 +121,7 @@ protocol PointOfSaleOrderControllerProtocol {
                                                                currency: storeCurrency)
             self.order = syncedOrder
             self.lastSyncedCustomAmounts = posCart.customAmounts
-            orderState = .loaded(totals(for: syncedOrder), syncedOrder)
+            orderState = .loaded(totals(for: syncedOrder, cart: cart), syncedOrder)
             analytics.track(.orderCreationSuccess)
             return .success(.newOrder)
         } catch {
@@ -278,7 +279,7 @@ private extension PointOfSaleOrderController {
 }
 
 private extension PointOfSaleOrderController {
-    func totals(for order: Order) -> PointOfSaleOrderTotals {
+    func totals(for order: Order, cart: Cart) -> PointOfSaleOrderTotals {
         let totalsCalculator = OrderTotalsCalculator(for: order,
                                                      using: currencyFormatter)
         return PointOfSaleOrderTotals(
@@ -291,7 +292,27 @@ private extension PointOfSaleOrderController {
                                              currency: order.currency),
             customAmountsTotal: formattedCustomAmounts(totalsCalculator.feesTotal,
                                                        currency: order.currency),
-            couponsTotals: couponsTotals(order))
+            couponsTotals: couponsTotals(order),
+            discountedCartItemIDs: discountedCartItemIDs(in: cart, order: order))
+    }
+
+    /// Marks the cart rows whose order line item came back discounted (`subtotal` above
+    /// `total`). Matching is by product/variation ID, so all rows of a discounted product
+    /// are marked — the order groups them into a single line item.
+    func discountedCartItemIDs(in cart: Cart, order: Order) -> Set<UUID> {
+        let discountedOrderItems = order.items.filter(\.hasLineDiscount)
+        guard discountedOrderItems.isNotEmpty else {
+            return []
+        }
+
+        let ids = cart.purchasableItems.compactMap { cartItem -> UUID? in
+            guard case .loaded(let item) = cartItem.state,
+                  discountedOrderItems.contains(where: { item.matches(orderItem: $0) }) else {
+                return nil
+            }
+            return cartItem.id
+        }
+        return Set(ids)
     }
 
     func formattedPrice(_ price: String?, currency: String?, isNegative: Bool = false) -> String? {
@@ -337,6 +358,21 @@ private extension PointOfSaleOrderController {
         }
 
         return formattedFees
+    }
+}
+
+private extension OrderItem {
+    /// Whether the server discounted this line item: `subtotal` is the pre-discount line
+    /// total and `total` the post-discount one. The half-cent tolerance absorbs server-side
+    /// rounding, mirroring `POSOrderPriceChangeDetector`. The delta may come from a coupon
+    /// or any other discounting plugin — this only reports that a discount was applied.
+    var hasLineDiscount: Bool {
+        guard let subtotal = Decimal(string: subtotal),
+              let total = Decimal(string: total) else {
+            return false
+        }
+        let halfCent = Decimal(5) / Decimal(1000)
+        return subtotal - total > halfCent
     }
 }
 

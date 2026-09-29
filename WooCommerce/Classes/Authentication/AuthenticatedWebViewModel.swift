@@ -151,5 +151,5 @@ enum WebViewAuthenticationFlow {
 
 private enum Constants {
     static let errorResponseCodes = 400...599
-    static let wpcomAcceptedDomains = ["wordpress.com", "wp.com", "jetpack.com", "woocommerce.com", "jetpack.wordpress.com"]
+    static let wpcomAcceptedDomains = ["wordpress.com", "wp.com", "jetpack.com", "woocommerce.com", "jetpack.wordpress.com", "adpurchase.wordpress.com"]
 }

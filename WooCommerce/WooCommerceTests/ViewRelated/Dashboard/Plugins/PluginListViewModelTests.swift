@@ -49,7 +49,8 @@ class PluginListViewModelTests: XCTestCase {
         XCTAssertEqual(triggeredSiteID, sampleSiteID)
     }
 
-    func test_syncPlugins_returns_success_when_synchronizeSitePlugins_action_completes_successfully() {
+    @MainActor
+    func test_syncPlugins_returns_success_when_synchronizeSitePlugins_action_completes_successfully() async {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
@@ -63,9 +64,9 @@ class PluginListViewModelTests: XCTestCase {
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
             viewModel.syncPlugins { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
         }
 
@@ -73,7 +74,8 @@ class PluginListViewModelTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_syncPlugins_returns_error_when_synchronizeSitePlugins_action_fails() {
+    @MainActor
+    func test_syncPlugins_returns_error_when_synchronizeSitePlugins_action_fails() async {
         // Given
         let storesManager = MockStoresManager(sessionManager: .testingInstance)
         storesManager.whenReceivingAction(ofType: SystemStatusAction.self) { action in
@@ -87,9 +89,9 @@ class PluginListViewModelTests: XCTestCase {
         let viewModel = PluginListViewModel(siteID: sampleSiteID, storesManager: storesManager)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
             viewModel.syncPlugins { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
         }
 

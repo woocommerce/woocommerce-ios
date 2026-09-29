@@ -180,7 +180,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
 
     // MARK: SigninWPComSyncHandler methods
     open dynamic func finishedLogin(withAuthToken authToken: String, requiredMultifactorCode: Bool) {
-        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: requiredMultifactorCode, siteURL: loginFields.siteAddress)
+        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: requiredMultifactorCode, siteURL: loginFields.effectiveSiteAddress)
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
 
         syncWPComAndPresentEpilogue(credentials: credentials)

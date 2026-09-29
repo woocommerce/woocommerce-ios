@@ -1,5 +1,6 @@
 import ScreenObject
 import XCTest
+import XCUITestHelpers
 
 public final class TabNavComponent: ScreenObject {
     private let myStoreTabButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -40,8 +41,8 @@ public final class TabNavComponent: ScreenObject {
     }
     @discardableResult
     public func goToOrdersScreen() throws -> OrdersScreen {
-        ordersTabButton.tap()
-        return try OrdersScreen()
+        try selectOrdersTab()
+        return try OrdersScreen(app: app)
     }
     @discardableResult
     public func goToProductsScreen() throws -> ProductsScreen {
@@ -69,5 +70,30 @@ public final class TabNavComponent: ScreenObject {
     static func isVisible() -> Bool {
         guard let tabNavComponent = try? TabNavComponent() else { return false }
         return tabNavComponent.isLoaded && tabNavComponent.expectedElement.isHittable
+    }
+}
+
+private extension TabNavComponent {
+    func selectOrdersTab(maxAttempts: Int = 3) throws {
+        for _ in 0..<maxAttempts {
+            let ordersTabButton = ordersTabButtonGetter(app)
+            // XCUIElement is main-actor isolated and UI tests drive it from the main thread.
+            let selected = MainActor.assumeIsolated {
+                guard ordersTabButton.waitForIsHittable(timeout: 5) else {
+                    return false
+                }
+                ordersTabButton.tap()
+                return ordersTabButton.waitFor(predicateString: "isSelected == true", timeout: 2) == .completed
+            }
+            if selected {
+                return
+            }
+        }
+
+        throw TabNavigationError.ordersTabSelectionTimedOut
+    }
+
+    enum TabNavigationError: Error {
+        case ordersTabSelectionTimedOut
     }
 }

@@ -500,11 +500,51 @@ class LoginViewControllerTests: XCTestCase {
             "https://example.com/normalized-admin/"
         )
     }
+
+    func test_site_credentials_controller_when_popped_then_restores_the_site_address_stashed_by_the_wpcom_fallback() throws {
+        // Given the WP.com username and password fallback swapped the typed store for the marker
+        let delegate = WordPressAuthenticatorDelegateSpy()
+        let controller = try makeSiteCredentialsController(delegate: delegate, pushedOntoPlaceholderRoot: true)
+        let loginFields = controller.loginFields
+        loginFields.siteAddressForEpilogue = "https://example.com"
+        loginFields.siteAddress = LoginFields.wpComSiteAddress
+
+        // When the merchant goes back. The layout pass is required: UIKit does not deliver
+        // `didMove(toParent:)` from `popViewController` alone.
+        let navigationController = try XCTUnwrap(controller.navigationController)
+        navigationController.popViewController(animated: false)
+        navigationController.view.layoutIfNeeded()
+
+        // Then the screens behind it show the store the merchant typed, not the marker
+        XCTAssertEqual(loginFields.siteAddress, "https://example.com")
+        XCTAssertEqual(loginFields.siteAddressForEpilogue, "")
+    }
+
+    func test_site_credentials_controller_when_covered_by_a_push_then_keeps_the_wpcom_fallback_marker() throws {
+        // Given the WP.com username and password fallback swapped the typed store for the marker
+        let delegate = WordPressAuthenticatorDelegateSpy()
+        let controller = try makeSiteCredentialsController(delegate: delegate, pushedOntoPlaceholderRoot: true)
+        let loginFields = controller.loginFields
+        loginFields.siteAddressForEpilogue = "https://example.com"
+        loginFields.siteAddress = LoginFields.wpComSiteAddress
+
+        // When another screen is pushed on top, as the 2FA step does
+        let navigationController = try XCTUnwrap(controller.navigationController)
+        navigationController.pushViewController(UIViewController(), animated: false)
+        navigationController.view.layoutIfNeeded()
+
+        // Then the marker survives, because `isWPCom` is read at submit time
+        XCTAssertEqual(loginFields.siteAddress, LoginFields.wpComSiteAddress)
+        XCTAssertEqual(loginFields.siteAddressForEpilogue, "https://example.com")
+    }
 }
 
 private extension LoginViewControllerTests {
+    /// - Parameter pushedOntoPlaceholderRoot: when `true` the controller is pushed onto a throwaway
+    ///   root instead of being the root itself, so the test can pop it.
     func makeSiteCredentialsController(delegate: WordPressAuthenticatorDelegateSpy,
                                        manualErrorHandling: Bool = true,
+                                       pushedOntoPlaceholderRoot: Bool = false,
                                        onCompletion: @escaping (WordPressOrgCredentials) -> Void = { _ in }) throws -> SiteCredentialsViewController {
         WordPressAuthenticator.initializeForTesting()
         WordPressAuthenticator.shared.delegate = delegate
@@ -534,11 +574,16 @@ private extension LoginViewControllerTests {
         controller.loginFields.username = "merchant"
         controller.loginFields.password = "secret"
         controller.configureSubmitButton(animating: false)
-        let navigationController = UINavigationController(rootViewController: controller)
+        let navigationController = pushedOntoPlaceholderRoot
+            ? UINavigationController(rootViewController: UIViewController())
+            : UINavigationController(rootViewController: controller)
         let window = UIWindow(frame: UIScreen.main.bounds)
         window.rootViewController = navigationController
         window.isHidden = false
         retainedWindows.append(window)
+        if pushedOntoPlaceholderRoot {
+            navigationController.pushViewController(controller, animated: false)
+        }
         navigationController.view.layoutIfNeeded()
         return controller
     }

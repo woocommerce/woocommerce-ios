@@ -9,7 +9,8 @@ struct AuthenticatedWebViewModelTests {
         URL(string: "https://wordpress.com/jetpack/connect?url=%@&mobile_redirect=%@&from=mobile"),
         URL(string: "https://jetpack.wordpress.com/jetpack.authorize"),
         URL(string: "https://woocommerce.com/products/product-bundles/"),
-        URL(string: "https://jetpack.com/stats/")
+        URL(string: "https://jetpack.com/stats/"),
+        URL(string: "https://adpurchase.wordpress.com/checkout/order-pay/123/")
     ]
     private let siteURL = "http://example.com"
 

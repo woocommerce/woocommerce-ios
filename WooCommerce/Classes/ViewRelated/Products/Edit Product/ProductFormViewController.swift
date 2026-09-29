@@ -235,11 +235,19 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     @objc func saveProductAndLogEvent() {
+        // Bar button taps can slip through while the More Options menu is attached on iOS 26 (WOOMOB-3923).
+        guard presentedViewController == nil else {
+            return
+        }
         eventLogger.logUpdateButtonTapped()
         saveProduct()
     }
 
     @objc func publishProduct() {
+        // Bar button taps can slip through while the More Options menu is attached on iOS 26 (WOOMOB-3923).
+        guard presentedViewController == nil else {
+            return
+        }
         if viewModel.formType == .add {
             ServiceLocator.analytics.track(.addProductPublishTapped, withProperties: ["product_type": product.productType.rawValue])
         } else if viewModel.formType == .edit && isAIContent {

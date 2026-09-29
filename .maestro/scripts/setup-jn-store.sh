@@ -361,6 +361,24 @@ VERIFY="$(curl -s -o /dev/null -w '%{http_code}' -u "$CK:$CS" "https://$SITE/wp-
 [ "$VERIFY" = "200" ] || die "the API keys do not authenticate (http=$VERIFY)"
 ok "keys created and verified as read_write"
 
+# WordPress core rejects the WooCommerce keys, so cleanup deletes the images the
+# flows upload with an application password. A re-run replaces the previous one.
+APP_PASSWORD_OUT="$(remote_php '<?php
+foreach ( WP_Application_Passwords::get_user_application_passwords( __ADMIN_ID__ ) as $item ) {
+  if ( "maestro-smoke" === $item["name"] ) {
+    WP_Application_Passwords::delete_application_password( __ADMIN_ID__, $item["uuid"] );
+  }
+}
+$created = WP_Application_Passwords::create_new_application_password( __ADMIN_ID__, array( "name" => "maestro-smoke" ) );
+if ( is_wp_error( $created ) ) { echo "ERR:" . $created->get_error_message() . "\n"; exit( 1 ); }
+echo "AP:" . $created[0] . "\n";')"
+APP_PASSWORD="$(printf '%s' "$APP_PASSWORD_OUT" | sed -n 's/^AP:\(.*\)$/\1/p' | head -1)"
+[ -n "$APP_PASSWORD" ] || die "could not create an application password: $(printf '%s' "$APP_PASSWORD_OUT" | head -3)"
+
+VERIFY="$(curl -s -o /dev/null -w '%{http_code}' -u "$ADMIN_USER:$APP_PASSWORD" "https://$SITE/wp-json/wp/v2/users/me")"
+[ "$VERIFY" = "200" ] || die "the application password does not authenticate (http=$VERIFY)"
+ok "application password created and verified"
+
 if [ -f "$ENV_OUT" ]; then
   BACKUP_DIR="${TMPDIR:-/tmp}"; BACKUP_DIR="${BACKUP_DIR%/}/maestro-env-backups"
   mkdir -p "$BACKUP_DIR"; chmod 700 "$BACKUP_DIR"
@@ -374,7 +392,7 @@ fi
 
 mkdir -p "$(dirname "$ENV_OUT")"
 SITE="$SITE" ADMIN_USER="$ADMIN_USER" WPCOM_USER="$WPCOM_USER" WPCOM_PASS="$WPCOM_PASS" \
-SITE_PASS="$SITE_PASS" CK="$CK" CS="$CS" \
+SITE_PASS="$SITE_PASS" CK="$CK" CS="$CS" APP_PASSWORD="$APP_PASSWORD" \
 NO_JETPACK_SITE="$NO_JETPACK_SITE" NO_JETPACK_PASS="$NO_JETPACK_PASS" \
 python3 - "$ENV_OUT" <<'PY'
 import os, re, sys, pathlib
@@ -388,6 +406,7 @@ values = {
     "MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_PASSWORD": os.environ["SITE_PASS"],
     "MAESTRO_WOO_LAB_CONSUMER_KEY": os.environ["CK"],
     "MAESTRO_WOO_LAB_CONSUMER_SECRET": os.environ["CS"],
+    "MAESTRO_WOO_LAB_APPLICATION_PASSWORD": os.environ["APP_PASSWORD"],
 }
 if os.environ["NO_JETPACK_SITE"]:
     values.update({

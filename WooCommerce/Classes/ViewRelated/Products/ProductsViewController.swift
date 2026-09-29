@@ -856,7 +856,7 @@ private extension ProductsViewController {
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
 
         if #available(iOS 26.0, *) {
-            toolbar.setContentInsets(.init(top: 8, leading: 16, bottom: 8, trailing: 16))
+            toolbar.setContentInsets(Constants.liquidGlassToolbarContentInsets)
             toolbarBottomSeparator.backgroundColor = .clear
         } else {
             toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
@@ -1812,6 +1812,7 @@ private extension ProductsViewController {
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets.zero
         static let toolbarButtonInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+        static let liquidGlassToolbarContentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
     }
 
     enum Localization {

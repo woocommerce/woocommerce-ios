@@ -856,7 +856,7 @@ private extension ProductsViewController {
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
 
         if #available(iOS 26.0, *) {
-            toolbar.setContentInsets(Constants.liquidGlassToolbarContentInsets)
+            toolbar.setContentInsets(Constants.liquidGlassToolbarContentInsets, alignment: .center)
             toolbarBottomSeparator.backgroundColor = .clear
         } else {
             toolbarBottomSeparator.backgroundColor = .systemColor(.separator)

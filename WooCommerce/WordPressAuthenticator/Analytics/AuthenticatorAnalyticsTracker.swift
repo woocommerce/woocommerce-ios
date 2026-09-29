@@ -25,6 +25,12 @@ public class AuthenticatorAnalyticsTracker {
         case click
         case source
         case step
+
+        /// The store address the merchant entered.
+        case url
+
+        /// Whether the merchant's account already has at least one connected store.
+        case hasConnectedStores = "has_connected_stores"
     }
 
     public enum Source: String {
@@ -99,6 +105,10 @@ public class AuthenticatorAnalyticsTracker {
         /// QR-driven login flow (scan/poll/exchange).
         ///
         case loginQR = "login_qr"
+
+        /// Everything after authentication succeeds: the store picker and the after-login
+        /// error screens. Set once when the epilogue starts; later steps inherit it.
+        case epilogue
     }
 
     public enum Step: String {
@@ -175,6 +185,14 @@ public class AuthenticatorAnalyticsTracker {
         /// Any error is surfaced.
         ///
         case qrError = "qr_error"
+
+        // MARK: - After-login failure states (`flow = epilogue`)
+        //
+        // Raw values are the shared cross-platform vocabulary and must not be renamed.
+
+        /// The store address entered at login is not in the signed-in WP.com account.
+        ///
+        case wrongWordPressAccount = "wrong_wordpress_account"
     }
 
     public enum ClickTarget: String {
@@ -422,12 +440,12 @@ public class AuthenticatorAnalyticsTracker {
 
     /// Track a step within a flow.
     ///
-    public func track(step: Step) {
+    public func track(step: Step, properties extraProperties: [String: String] = [:]) {
         guard canTrack() else {
             return
         }
 
-        track(event(step: step))
+        track(event(step: step, extraProperties: extraProperties))
     }
 
     /// Track a click interaction.
@@ -504,10 +522,10 @@ public class AuthenticatorAnalyticsTracker {
     ///
     /// - Returns: an analytics event representing the step.
     ///
-    private func event(step: Step) -> AnalyticsEvent {
+    private func event(step: Step, extraProperties: [String: String] = [:]) -> AnalyticsEvent {
         let event = AnalyticsEvent(
             name: EventType.step.rawValue,
-            properties: properties(step: step))
+            properties: properties(step: step).merging(extraProperties) { base, _ in base })
 
         state.lastStep = step
 

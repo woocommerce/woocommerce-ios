@@ -109,7 +109,7 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
         }
 
         // Do not request the age range when running UI tests.
-        guard CommandLine.arguments.contains("-ui_testing") == false else {
+        guard ProcessConfiguration.isUITesting == false else {
             onResult(.allow, .featureUnavailable)
             return
         }

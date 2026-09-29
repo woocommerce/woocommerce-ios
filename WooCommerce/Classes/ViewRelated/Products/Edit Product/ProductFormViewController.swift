@@ -1068,17 +1068,16 @@ private extension ProductFormViewController {
             case .failure(let error):
                 DDLogError("⛔️ Error updating Product: \(error)")
 
-                // Dismisses the in-progress UI then presents the error alert.
-                // On the retry path no in-progress UI is shown, and `dismiss` does not call its
-                // completion when there is nothing to dismiss — so present the alert directly instead.
+                // Dismisses the in-progress UI (only it — another modal may be presented instead
+                // when the guarded HUD presentation was dropped) then presents the error alert.
                 let presentErrorAlert: () -> Void = {
                     self?.displayProductSavingErrorAlert(error: error, onRetry: {
                         self?.saveProductRemotely(status: status, onCompletion: onCompletion)
                     })
                     onCompletion(.failure(error))
                 }
-                if let navigationController = self?.navigationController, navigationController.presentedViewController != nil {
-                    navigationController.dismiss(animated: true, completion: presentErrorAlert)
+                if let self {
+                    self.dismissInProgressViewIfNeeded(completion: presentErrorAlert)
                 } else {
                     presentErrorAlert()
                 }
@@ -1098,12 +1097,11 @@ private extension ProductFormViewController {
                 (self?.viewModel as? ProductFormViewModel)?.isLinkedProductsPromoEnabled = true
                 self?.reloadLinkedPromoCell()
 
-                // Dismisses the in-progress UI, deferring the completion until the dismissal finishes
-                // so that completion handlers can present another modal safely (WOOMOB-3923).
-                // On the retry path no in-progress UI is shown, and `dismiss` does not call its
-                // completion when there is nothing to dismiss — so complete directly instead.
-                if let navigationController = self?.navigationController, navigationController.presentedViewController != nil {
-                    navigationController.dismiss(animated: true) {
+                // Dismisses the in-progress UI (only it — another modal may be presented instead
+                // when the guarded HUD presentation was dropped), deferring the completion until
+                // the dismissal finishes so completion handlers can present safely (WOOMOB-3923).
+                if let self {
+                    self.dismissInProgressViewIfNeeded {
                         onCompletion(.success(()))
                     }
                 } else {
@@ -1213,12 +1211,12 @@ private extension ProductFormViewController {
                 DDLogError("⛔️ Error duplicating Product: \(error)")
 
                 // Dismisses the in-progress UI then presents the error alert.
-                self?.navigationController?.dismiss(animated: true) {
+                self?.dismissInProgressViewIfNeeded {
                     self?.displayError(error: error, title: Localization.duplicateProductError)
                 }
             case .success(let duplicatedProduct):
                 // Dismisses the in-progress UI, then hands the duplicate to the navigation owner to replace this editor.
-                self?.navigationController?.dismiss(animated: true) {
+                self?.dismissInProgressViewIfNeeded {
                     guard let self else {
                         return
                     }
@@ -1266,7 +1264,7 @@ private extension ProductFormViewController {
                 ServiceLocator.analytics.track(.productDetailProductDeleted)
                 self.viewModel.removeFromFavorite()
                 // Dismisses the in-progress UI.
-                self.navigationController?.dismiss(animated: true, completion: nil)
+                self.dismissInProgressViewIfNeeded()
                 // Dismiss or Pop the Product Form
                 self.dismissOrPopViewController()
                 self.onDeleteCompletion()
@@ -1274,7 +1272,7 @@ private extension ProductFormViewController {
                 DDLogError("⛔️ Error deleting Product: \(error)")
 
                 // Dismisses the in-progress UI then presents the error alert.
-                self.navigationController?.dismiss(animated: true) { [weak self] in
+                self.dismissInProgressViewIfNeeded { [weak self] in
                     self?.displayError(error: error)
                 }
             }

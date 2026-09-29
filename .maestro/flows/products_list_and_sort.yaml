@@ -13,10 +13,17 @@ tags:
 - assertVisible:
     id: "products-table-view"
 
+# Rows that are not laid out yet report their labels at the top of the table, so
+# read names from inside a visible row (rows use the product name as id). The first
+# visible row can sit half under the header once the list is scrolled, so every read
+# uses the second one.
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: "products-table-view"
+      id: ".+"
+      childOf:
+        id: "products-table-view"
+      index: 1
     index: 0
 - evalScript: ${output.productSearchText = String(maestro.copiedText || '').trim()}
 - assertTrue:
@@ -30,7 +37,10 @@ tags:
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: "products-table-view"
+      id: ".+"
+      childOf:
+        id: "products-table-view"
+      index: 1
     index: 0
 - evalScript: ${output.afterScrollProductName = String(maestro.copiedText || '').trim()}
 - assertTrue:
@@ -38,8 +48,8 @@ tags:
     label: Products list exposes an additional row after scrolling
 - takeScreenshot: products_list_scrolled
 
-# Establish deterministic opposite sort orders, then prove their first rows
-# differ. This avoids relying on the store's persisted initial sort setting.
+# Establish deterministic opposite sort orders, then prove the row at the same
+# position differs. This avoids relying on the store's persisted initial sort setting.
 - tapOn: "Sort by"
 - extendedWaitUntil:
     visible: "Title: Z to A"
@@ -58,15 +68,18 @@ tags:
     visible:
       id: "products-table-view"
     timeout: 30000
-# Let the list finish re-sorting before reading the first row: the table stays visible
-# during the re-sort, so copyTextFrom can otherwise capture the previous order's first
+# Let the list finish re-sorting before reading the row: the table stays visible
+# during the re-sort, so copyTextFrom can otherwise capture the previous order's
 # row and the comparison below flakes.
 - waitForAnimationToEnd:
     timeout: 15000
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: "products-table-view"
+      id: ".+"
+      childOf:
+        id: "products-table-view"
+      index: 1
     index: 0
 - evalScript: ${output.firstProductDescending = String(maestro.copiedText || '').trim()}
 
@@ -87,19 +100,22 @@ tags:
     visible:
       id: "products-table-view"
     timeout: 30000
-# Same settle as the descending capture above, so the ascending first row is read from
+# Same settle as the descending capture above, so the ascending row is read from
 # the fully re-sorted list rather than the previous order.
 - waitForAnimationToEnd:
     timeout: 15000
 - copyTextFrom:
     text: ".+"
     childOf:
-      id: "products-table-view"
+      id: ".+"
+      childOf:
+        id: "products-table-view"
+      index: 1
     index: 0
 - evalScript: ${output.firstProductAscending = String(maestro.copiedText || '').trim()}
 - assertTrue:
     condition: ${output.firstProductAscending.length > 0 && output.firstProductAscending !== output.firstProductDescending}
-    label: Opposite product sort orders produce different first rows
+    label: Opposite product sort orders produce different rows
 - takeScreenshot: products_sorted
 
 - tapOn:

@@ -250,6 +250,48 @@ class SeedFixtureTests(unittest.TestCase):
             contents = json.loads(manifest.read_text(encoding="utf-8"))
             self.assertEqual([{"type": "product", "id": 11}], contents["entities"])
 
+    def test_media_requests_use_the_application_password_and_store_requests_the_rest_keys(self) -> None:
+        sent: list[tuple[str, str]] = []
+
+        def urlopen(request: object, timeout: int) -> object:
+            sent.append((request.full_url, request.get_header("Authorization")))
+            response = mock.MagicMock()
+            response.__enter__.return_value.read.return_value = b"{}"
+            return response
+
+        with (
+            mock.patch.dict(
+                os.environ,
+                {
+                    "MAESTRO_WOO_JETPACK_SITE_ADMIN_USERNAME": "demo",
+                    "MAESTRO_WOO_APPLICATION_PASSWORD": "abcd efgh",
+                },
+            ),
+            mock.patch.object(SEED.urllib.request, "urlopen", side_effect=urlopen),
+        ):
+            client = SEED.WooClient()
+            client.delete("media", 101, prefix=SEED.MEDIA_PREFIX)
+            client.delete("products", 11)
+
+        self.assertEqual(
+            [
+                ("https://shop.example.com/wp-json/wp/v2/media/101?force=true", SEED.basic_authorization("demo", "abcd efgh")),
+                ("https://shop.example.com/wp-json/wc/v3/products/11?force=true", SEED.basic_authorization("ck_test", "cs_test")),
+            ],
+            sent,
+        )
+
+    def test_media_deletion_without_an_application_password_names_the_missing_variable(self) -> None:
+        environment = {key: value for key, value in os.environ.items() if key != "MAESTRO_WOO_APPLICATION_PASSWORD"}
+        environment["MAESTRO_WOO_JETPACK_SITE_ADMIN_USERNAME"] = "demo"
+        with (
+            mock.patch.dict(os.environ, environment, clear=True),
+            mock.patch.object(SEED.urllib.request, "urlopen") as urlopen,
+            self.assertRaisesRegex(SEED.SmokeSetupError, "MAESTRO_WOO_APPLICATION_PASSWORD"),
+        ):
+            SEED.WooClient().delete("media", 101, prefix=SEED.MEDIA_PREFIX)
+        urlopen.assert_not_called()
+
 
 if __name__ == "__main__":
     unittest.main()

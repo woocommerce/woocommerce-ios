@@ -22,6 +22,8 @@ RUN_ID_RE = re.compile(r"^SUITE-\d{8}T\d{6}Z-[a-f0-9]{6}$")
 API_PREFIX = "/wp-json/wc/v3/"
 # Media items live in WordPress core, not the WooCommerce namespace. Deleting a product
 # does not remove the images it uploaded, so run-owned media is cleaned via this prefix.
+# WordPress core rejects WooCommerce API keys, so these requests use the store admin's
+# application password instead.
 MEDIA_PREFIX = "/wp-json/wp/v2/"
 LOCK_PREFIX = "SUITE-LOCK-"
 LOCK_TTL_SECONDS = 60 * 60
@@ -73,15 +75,25 @@ def read_manifest(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def basic_authorization(username: str, password: str) -> str:
+    return "Basic " + base64.b64encode(f"{username}:{password}".encode()).decode("ascii")
+
+
+def wordpress_authorization() -> str:
+    return basic_authorization(
+        required_environment("MAESTRO_WOO_JETPACK_SITE_ADMIN_USERNAME"),
+        required_environment("MAESTRO_WOO_APPLICATION_PASSWORD"),
+    )
+
+
 class WooClient:
     def __init__(self) -> None:
         self.site_url = required_environment("MAESTRO_WOO_JETPACK_STORE_URL").rstrip("/")
         key = required_environment("MAESTRO_WOO_CONSUMER_KEY")
         secret = required_environment("MAESTRO_WOO_CONSUMER_SECRET")
-        token = base64.b64encode(f"{key}:{secret}".encode()).decode("ascii")
         self.headers = {
             "Accept": "application/json",
-            "Authorization": f"Basic {token}",
+            "Authorization": basic_authorization(key, secret),
             "User-Agent": "woocommerce-ios-maestro-smoke",
         }
 
@@ -98,6 +110,8 @@ class WooClient:
         if query:
             url += "?" + urllib.parse.urlencode(query, doseq=True)
         headers = dict(self.headers)
+        if prefix == MEDIA_PREFIX:
+            headers["Authorization"] = wordpress_authorization()
         data = None
         if body is not None:
             data = json.dumps(body).encode("utf-8")

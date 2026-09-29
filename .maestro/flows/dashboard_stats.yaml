@@ -14,9 +14,12 @@ tags:
     id: "performance-time-range-menu"
 - assertVisible:
     id: "performance-revenue-type-picker"
+# The range menu stays disabled while stats load. Wait for it rather than for a
+# revenue figure, which the saved range may not have.
 - extendedWaitUntil:
     visible:
-      id: "revenue-value"
+      id: "performance-time-range-menu"
+      enabled: true
     timeout: 30000
 
 # The app saves the selected range, so record it here and switch back at the end.

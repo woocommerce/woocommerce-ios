@@ -152,7 +152,7 @@ struct POSIneligibleView: View {
                 "and %2$@ is a placeholder for the localized list of supported currency codes."
             )
             return String.localizedStringWithFormat(format, countryCode.readableCountry, formattedCurrencyList)
-        case .siteSettingsNotAvailable:
+        case .siteSettingsNotAvailable, .unsupportedCountry:
             return NSLocalizedString("pos.ineligible.suggestion.siteSettingsNotAvailable.1",
                                      value: "We were unable to load the site settings info. Please check your internet connection and try again. " +
                                      "If the issue persists, contact support for assistance.",
@@ -202,6 +202,7 @@ private extension POSIneligibleReason {
         case .noInternetConnection,
                 .unsupportedWooCommerceVersion,
                 .siteSettingsNotAvailable,
+                .unsupportedCountry,
                 .wooCommercePluginNotFound,
                 .unsupportedCurrency,
                 .selfDeallocated:

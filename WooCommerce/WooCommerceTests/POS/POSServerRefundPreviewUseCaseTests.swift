@@ -1,7 +1,6 @@
 import Testing
 import Foundation
 import Yosemite
-import Experiments
 import enum NetworkingCore.DotcomError
 import enum NetworkingCore.NetworkError
 @testable import WooCommerce
@@ -14,18 +13,6 @@ struct POSServerRefundPreviewUseCaseTests {
     private let orderID: Int64 = 456
 
     // MARK: - Gating without a network call
-
-    @Test func previewRefund_when_flag_disabled_then_falls_back_without_dispatch() async {
-        // Given
-        let (sut, service, _) = makeSUT(flagEnabled: false)
-
-        // When
-        let result = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
-
-        // Then
-        #expect(result == .fallbackToLocal)
-        #expect(service.previewRefundCallCount == 0)
-    }
 
     @Test func previewRefund_when_site_cached_unavailable_then_falls_back_without_dispatch() async {
         // Given
@@ -215,6 +202,62 @@ struct POSServerRefundPreviewUseCaseTests {
         #expect(isError(result))
         #expect(cache.isAvailable(siteID: siteID) == nil)
     }
+
+    @Test func previewRefund_when_route_missing_then_reports_the_fallback() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let (sut, _, _) = makeSUT(cachedWooVersion: Versions.minimum,
+                                  previewResult: .failure(DotcomError.noRestRoute()),
+                                  analyticsProvider: analyticsProvider)
+
+        // When
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then
+        #expect(analyticsProvider.receivedEvents.filter { $0 == "refund_server_flow_unavailable" }.count == 1)
+    }
+
+    @Test func previewRefund_when_the_route_is_missing_on_a_second_refund_then_reports_the_fallback_once() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let (sut, _, _) = makeSUT(cachedWooVersion: Versions.minimum,
+                                  previewResult: .failure(DotcomError.noRestRoute()),
+                                  analyticsProvider: analyticsProvider)
+
+        // When refunding twice on the same site
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then the event counts the store that fell back, not the refunds made afterwards:
+        // the cache short-circuits the resolver, so the second refund never probes the route.
+        #expect(analyticsProvider.receivedEvents.filter { $0 == "refund_server_flow_unavailable" }.count == 1)
+    }
+
+    @Test func previewRefund_when_the_site_is_not_eligible_then_reports_no_fallback() async {
+        // Given a store below the minimum version, which never probes the route
+        let analyticsProvider = MockAnalyticsProvider()
+        let (sut, _, _) = makeSUT(cachedWooVersion: Versions.belowMinimum,
+                                  previewResult: .failure(DotcomError.noRestRoute()),
+                                  analyticsProvider: analyticsProvider)
+
+        // When
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then
+        #expect(analyticsProvider.receivedEvents.contains("refund_server_flow_unavailable") == false)
+    }
+
+    @Test func previewRefund_when_preview_succeeds_then_reports_no_fallback() async {
+        // Given
+        let analyticsProvider = MockAnalyticsProvider()
+        let (sut, _, _) = makeSUT(previewResult: .success(preview()), analyticsProvider: analyticsProvider)
+
+        // When
+        _ = await sut.previewRefund(siteID: siteID, orderID: orderID, lineItems: [lineItem()])
+
+        // Then
+        #expect(analyticsProvider.receivedEvents.contains("refund_server_flow_unavailable") == false)
+    }
 }
 
 private extension POSServerRefundPreviewUseCaseTests {
@@ -227,10 +270,10 @@ private extension POSServerRefundPreviewUseCaseTests {
         static let belowMinimum = "11.0.9"
     }
 
-    func makeSUT(flagEnabled: Bool = true,
-                 cachedWooVersion: String? = Versions.minimum,
+    func makeSUT(cachedWooVersion: String? = Versions.minimum,
                  cache: ServerRefundAvailabilityCache? = nil,
-                 previewResult: Swift.Result<RefundPreview, Error>? = nil)
+                 previewResult: Swift.Result<RefundPreview, Error>? = nil,
+                 analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider())
     -> (POSServerRefundPreviewUseCase, MockRefundService, MockStoresManager) {
         // Resolved in the (main-actor) test body rather than as a default argument: the cache's
         // initializer is main-actor-isolated, and default arguments are evaluated nonisolated.
@@ -240,14 +283,12 @@ private extension POSServerRefundPreviewUseCaseTests {
         let stores = MockStoresManager(sessionManager: session)
         let service = MockRefundService()
         service.previewRefundResult = previewResult
-        let flags = MockFeatureFlagService()
-        flags.isFeatureFlagEnabledReturnValue = [.posServerCalculatedRefunds: flagEnabled]
         let sut = POSServerRefundPreviewUseCase(refundService: service,
                                                 flowResolver: POSRefundFlowResolver(stores: stores,
-                                                                                    featureFlagService: flags,
                                                                                     availabilityCache: cache,
                                                                                     minimumWooVersion: Versions.minimum),
-                                                availabilityCache: cache)
+                                                availabilityCache: cache,
+                                                analytics: WooAnalytics(analyticsProvider: analyticsProvider))
         return (sut, service, stores)
     }
 

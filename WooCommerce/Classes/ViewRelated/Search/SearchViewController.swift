@@ -173,11 +173,7 @@ where Cell.SearchModel == Command.CellViewModel {
         super.viewWillAppear(animated)
 
         if searchUICommand.hideNavigationBar {
-            navigationController?.setNavigationBarHidden(true, animated: searchUICommand.animateNavigationBarVisibilityChanges)
-        }
-
-        if searchUICommand.makeSearchBarFirstResponderOnStart {
-            searchBar.becomeFirstResponder()
+            navigationController?.setNavigationBarHiddenIfNeeded(true, animated: searchUICommand.animateNavigationBarVisibilityChanges)
         }
     }
 
@@ -186,12 +182,18 @@ where Cell.SearchModel == Command.CellViewModel {
 
         // Note: configuring the search bar text color does not work in `viewDidLoad` and `viewWillAppear`.
         configureSearchBar()
+
+        if searchUICommand.makeSearchBarFirstResponderOnStart {
+            searchBar.becomeFirstResponder()
+        }
     }
 
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 
-        navigationController?.setNavigationBarHidden(false, animated: searchUICommand.animateNavigationBarVisibilityChanges)
+        if searchUICommand.hideNavigationBar {
+            navigationController?.setNavigationBarHiddenIfNeeded(false, animated: searchUICommand.animateNavigationBarVisibilityChanges)
+        }
     }
 
     // MARK: - UITableViewDataSource Conformance

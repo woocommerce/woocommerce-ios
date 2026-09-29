@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductBackordersSetting Entity.
 ///
-public enum ProductBackordersSetting: Decodable, Hashable, GeneratedFakeable {
+public enum ProductBackordersSetting: Decodable, Hashable, GeneratedFakeable, Sendable {
     case allowed
     case allowedAndNotifyCustomer
     case notAllowed

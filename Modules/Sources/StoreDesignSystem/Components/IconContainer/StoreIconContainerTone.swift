@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// - Note: A closed type holding the background and foreground color roles per tone. The tones map
 ///   to the Woo palette ramps, matching the Android `WooIconContainerTone`.
-public struct StoreIconContainerTone {
+public struct StoreIconContainerTone: Sendable {
     struct Appearance {
         let background: Color
         let foreground: Color

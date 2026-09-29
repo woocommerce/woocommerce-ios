@@ -326,6 +326,20 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
             provider.assertReceived(event: "push_notifications_setup_introduction_error", with: ["error_type": "no_permission"])
         }
 
+        // When 403 error and Jetpack is in Offline Mode, then tracks offline_mode
+        do {
+            let provider = MockAnalyticsProvider()
+            let analytics = WooAnalytics(analyticsProvider: provider)
+            let connectionService = MockJetpackConnectionService()
+            connectionService.fetchConnectionDataResult = .failure(NetworkError.unacceptableStatusCode(statusCode: 403, response: nil))
+            connectionService.isJetpackInOfflineModeResult = true
+            let viewModel = makeViewModel(jetpackConnectionService: connectionService, analytics: analytics)
+
+            await viewModel.determineSetupVariant()
+
+            provider.assertReceived(event: "push_notifications_setup_introduction_error", with: ["error_type": "offline_mode"])
+        }
+
         // When generic error, then tracks generic
         do {
             let provider = MockAnalyticsProvider()
@@ -375,6 +389,41 @@ final class WPComPushNotificationsBenefitsViewModelTests: XCTestCase {
             return XCTFail("Expected noPermission error, got \(String(describing: viewModel.error))")
         }
         XCTAssertFalse(viewModel.isCheckingPlugin)
+    }
+
+    func test_error_is_offlineMode_when_fetching_connection_data_throws_403_and_jetpack_is_in_offline_mode() async {
+        // Given
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .failure(NetworkError.unacceptableStatusCode(statusCode: 403, response: nil))
+        connectionService.isJetpackInOfflineModeResult = true
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        guard case .offlineMode = viewModel.error else {
+            return XCTFail("Expected offlineMode error, got \(String(describing: viewModel.error))")
+        }
+        XCTAssertEqual(connectionService.isJetpackInOfflineModeCallCount, 1)
+        XCTAssertFalse(viewModel.isCheckingPlugin)
+    }
+
+    func test_error_is_noPermission_when_fetching_connection_data_throws_403_and_jetpack_is_not_in_offline_mode() async {
+        // Given
+        let connectionService = MockJetpackConnectionService()
+        connectionService.fetchConnectionDataResult = .failure(NetworkError.unacceptableStatusCode(statusCode: 403, response: nil))
+        connectionService.isJetpackInOfflineModeResult = false
+        let viewModel = makeViewModel(jetpackConnectionService: connectionService)
+
+        // When
+        await viewModel.determineSetupVariant()
+
+        // Then
+        guard case .noPermission = viewModel.error else {
+            return XCTFail("Expected noPermission error, got \(String(describing: viewModel.error))")
+        }
+        XCTAssertEqual(connectionService.isJetpackInOfflineModeCallCount, 1)
     }
 
     func test_error_is_generic_when_fetching_connection_data_throws_non_403_error() async {

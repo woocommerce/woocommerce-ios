@@ -107,6 +107,42 @@ final class PushNotificationTests: XCTestCase {
         XCTAssertEqual(notification.meta?.identifier(forKey: .order), 306)
     }
 
+    func test_resolved_site_id_when_selected_site_uses_site_credentials_then_returns_placeholder_id() throws {
+        // Given
+        let notification = try XCTUnwrap(WooCommerce.PushNotification.from(userInfo: userInfo))
+        let stores = makeStores(defaultStoreID: WooConstants.placeholderStoreID)
+
+        // When
+        let siteID = notification.resolvedSiteID(stores: stores)
+
+        // Then
+        XCTAssertEqual(siteID, WooConstants.placeholderStoreID)
+    }
+
+    func test_resolved_site_id_when_selected_site_uses_wpcom_then_returns_notification_site_id() throws {
+        // Given
+        let notification = try XCTUnwrap(WooCommerce.PushNotification.from(userInfo: userInfo))
+        let stores = makeStores(defaultStoreID: 123)
+
+        // When
+        let siteID = notification.resolvedSiteID(stores: stores)
+
+        // Then
+        XCTAssertEqual(siteID, notification.siteID)
+    }
+
+    func test_resolved_site_id_when_there_is_no_selected_site_then_returns_notification_site_id() throws {
+        // Given
+        let notification = try XCTUnwrap(WooCommerce.PushNotification.from(userInfo: userInfo))
+        let stores = makeStores(defaultStoreID: nil)
+
+        // When
+        let siteID = notification.resolvedSiteID(stores: stores)
+
+        // Then
+        XCTAssertEqual(siteID, notification.siteID)
+    }
+
     // MARK: Store Stock
     //
     func test_store_stock_user_info_is_parsed_correctly() throws {
@@ -190,6 +226,18 @@ final class PushNotificationTests: XCTestCase {
         XCTAssertEqual(notification.siteID, Int64(236807409))
         XCTAssertEqual(notification.title, "Your campaign \"Fly High\" ended on 21 Mar 2024. See how it performed.")
         XCTAssertEqual(notification.kind, Note.Kind.blazePerformedNote)
+    }
+}
+
+// MARK: Helpers
+//
+private extension PushNotificationTests {
+    /// Returns a `StoresManager` whose session points at the given store.
+    ///
+    func makeStores(defaultStoreID: Int64?) -> MockStoresManager {
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultStoreID = defaultStoreID
+        return MockStoresManager(sessionManager: sessionManager)
     }
 }
 

@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents a ProductReviewStatus Entity.
 ///
-public enum ProductReviewStatus: Decodable, Hashable, GeneratedFakeable {
+public enum ProductReviewStatus: Decodable, Hashable, Sendable, GeneratedFakeable {
     case approved
     case hold
     case spam

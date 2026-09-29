@@ -4,6 +4,7 @@ import Yosemite
 
 /// Adds a method to UITableViewDelegate so that we can
 /// trigger navigation from its implementation
+@MainActor
 protocol ReviewsInteractionDelegate: UITableViewDelegate {
     /// Called when users pick a review from the list
     ///
@@ -30,6 +31,7 @@ protocol ReviewsDataSourceCustomizing: AnyObject {
 }
 
 /// Abstracts the dataSource used to render the Product Review list
+@MainActor
 protocol ReviewsDataSourceProtocol: UITableViewDataSource, ReviewsInteractionDelegate {
     /// Boolean indicating if there are reviews
     ///

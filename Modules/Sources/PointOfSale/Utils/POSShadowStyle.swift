@@ -113,6 +113,13 @@ private class MultiShadowView: UIView {
 
     override func layoutSubviews() {
         super.layoutSubviews()
+        // SwiftUI can update a representable's frame repeatedly while an ancestor is being dragged.
+        // Core Animation otherwise interpolates these layer changes independently of the SwiftUI
+        // transform, which makes card shadows appear to lag behind their rows during interactive navigation.
+        CATransaction.begin()
+        CATransaction.setDisableActions(true)
+        defer { CATransaction.commit() }
+
         layer.sublayers?.removeAll(where: { $0.name == "posShadowLayer" })
         for (index, shadow) in shadowLayers.enumerated() {
             let shadowLayer = CALayer()

@@ -58,7 +58,7 @@ final class PluginListViewModel {
 
     /// Manually sync plugins.
     ///
-    func syncPlugins(onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func syncPlugins(onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void) {
         let action = SystemStatusAction.synchronizeSystemInformation(siteID: siteID, onCompletion: { result in
             switch result {
             case .success:

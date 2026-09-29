@@ -1,15 +1,23 @@
 import Combine
 import Photos
 import TestKit
+import protocol WooFoundation.Analytics
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class ProductImageActionHandlerTests: XCTestCase {
     private var productImageStatusesSubscription: AnyCancellable?
     private var assetUploadSubscription: AnyCancellable?
     private let siteID: Int64 = 1234
     private let productID = ProductOrVariationID.product(id: 5678)
+
+    override func tearDown() {
+        productImageStatusesSubscription = nil
+        assetUploadSubscription = nil
+        super.tearDown()
+    }
 
     func test_uploading_media_successfully() {
         let mockMedia = createMockMedia()
@@ -20,8 +28,6 @@ final class ProductImageActionHandlerTests: XCTestCase {
                                                     name: mockMedia.name,
                                                     alt: mockMedia.alt)
         let mockStoresManager = MockMediaStoresManager(media: mockMedia, sessionManager: SessionManager.testingInstance)
-        ServiceLocator.setStores(mockStoresManager)
-
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
@@ -31,7 +37,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  stores: mockStoresManager)
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -76,8 +83,7 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
     func test_uploading_media_unsuccessfully() {
         let mockStoresManager = MockMediaStoresManager(media: nil, sessionManager: SessionManager.testingInstance)
-        ServiceLocator.setStores(mockStoresManager)
-
+        let analyticsProvider = MockAnalyticsProvider()
         let mockProductImages = [
             ProductImage(imageID: 1, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: ""),
             ProductImage(imageID: 2, dateCreated: Date(), dateModified: Date(), src: "", name: "", alt: "")
@@ -87,7 +93,9 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: mockProduct)
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  stores: mockStoresManager,
+                                                                  analytics: WooAnalytics(analyticsProvider: analyticsProvider))
 
         let mockAsset = PHAsset()
         let expectedStatusUpdates: [[ProductImageStatus]] = [
@@ -120,16 +128,16 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(observedProductImageStatusChanges, expectedStatusUpdates)
+        XCTAssertEqual(analyticsProvider.receivedEvents, [WooAnalyticsStat.productImageUploadFailed.rawValue])
     }
 
     func test_uploading_UIImage_passes_filename_and_altText_to_MediaAction() {
         // Given
         let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
-        ServiceLocator.setStores(mockStoresManager)
-
         let model = EditableProductModel(product: .fake())
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  stores: mockStoresManager)
 
         // When
         let mediaMetadata: (filename: String?, altText: String?) = waitFor { promise in
@@ -152,11 +160,10 @@ final class ProductImageActionHandlerTests: XCTestCase {
     func test_uploading_UIImage_adds_uploading_status_with_UIImage_asset_type() {
         // Given
         let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
-        ServiceLocator.setStores(mockStoresManager)
-
         let model = EditableProductModel(product: Product.fake().copy(siteID: siteID, productID: productID.id))
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  stores: mockStoresManager)
         let mockImage = UIImage()
 
         // When
@@ -345,8 +352,6 @@ final class ProductImageActionHandlerTests: XCTestCase {
     func test_productImageStatuses_are_updated_correctly_after_discard_upload() {
         // Given
         let mockStoresManager = MockStoresManager(sessionManager: .testingInstance)
-        ServiceLocator.setStores(mockStoresManager)
-
         let uploadError = MediaActionError.unknown
         mockStoresManager.whenReceivingAction(ofType: MediaAction.self) { action in
             guard case let .uploadMedia(_, _, _, _, _, completion) = action else {
@@ -357,7 +362,8 @@ final class ProductImageActionHandlerTests: XCTestCase {
 
         let model = EditableProductModel(product: Product.fake().copy(siteID: siteID, productID: productID.id))
         let productImageActionHandler = ProductImageActionHandler(siteID: siteID,
-                                                                  product: model)
+                                                                  product: model,
+                                                                  stores: mockStoresManager)
 
         let expectation = self.expectation(description: "Wait for status update")
         expectation.expectedFulfillmentCount = 1
@@ -454,5 +460,19 @@ private extension ProductImageActionHandlerTests {
                      alt: "wc",
                      height: 120,
                      width: 120)
+    }
+}
+
+extension ProductImageActionHandler {
+    /// Test helper: builds a handler for a product form model with an injectable stores manager.
+    convenience init(siteID: Int64,
+                     product: ProductFormDataModel,
+                     stores: StoresManager = ServiceLocator.stores,
+                     analytics: Analytics = ServiceLocator.analytics) {
+        self.init(siteID: siteID,
+                  productID: .product(id: product.productID),
+                  imageStatuses: product.imageStatuses,
+                  stores: stores,
+                  analytics: analytics)
     }
 }

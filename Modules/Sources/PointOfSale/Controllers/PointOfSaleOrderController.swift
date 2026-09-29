@@ -7,6 +7,7 @@ import class Yosemite.POSOrderService
 import protocol Yosemite.POSReceiptServiceProtocol
 import protocol Yosemite.PluginsServiceProtocol
 import struct Yosemite.Order
+import struct Yosemite.OrderItem
 import struct Yosemite.POSCart
 import struct Yosemite.POSCartItem
 import struct Yosemite.POSCustomAmount
@@ -46,12 +47,17 @@ protocol PointOfSaleOrderControllerProtocol {
     ///
     /// - Parameter note: Optional merchant-supplied free-form note (e.g. "Bank transfer from
     ///   Maria"). When non-nil/non-empty it is appended to the order as a private note via
-    ///   `addOrderNote`, separately from the order completion call. The order's payment-method
-    ///   title stays "Other" regardless of the note's content.
+    ///   `addOrderNote`, separately from the order completion call.
     func markOrderAsPaidManually(note: String?) async throws
-    /// Adds the "Customer paid via Scan to Pay" note to the cached order so the merchant has
-    /// an audit trail in WP-Admin even if the gateway webhook hasn't flipped the status yet.
+    /// Records the payment method title on the cached order and adds the "Paid via Scan to Pay"
+    /// note, so the merchant has an audit trail in WP-Admin even if the gateway webhook hasn't
+    /// flipped the status yet. The note is best-effort: only a missing order throws.
     func confirmScanToPayPayment() async throws
+    /// Records Scan to Pay as the cached order's visible payment method title, but only when the
+    /// order does not already carry a gateway-supplied title. This is best-effort display
+    /// metadata: neither its failures nor its latency should block payment success, so callers
+    /// run it after the success transition rather than before it.
+    func recordScanToPayPaymentMethod() async
     /// Reloads the cached order from the server. Used by the Scan to Pay verifier to detect
     /// when the gateway webhook has flipped the order to `.processing`/`.completed`.
     func reloadCurrentOrder() async throws -> Order
@@ -115,7 +121,7 @@ protocol PointOfSaleOrderControllerProtocol {
                                                                currency: storeCurrency)
             self.order = syncedOrder
             self.lastSyncedCustomAmounts = posCart.customAmounts
-            orderState = .loaded(totals(for: syncedOrder), syncedOrder)
+            orderState = .loaded(totals(for: syncedOrder, cart: cart), syncedOrder)
             analytics.track(.orderCreationSuccess)
             return .success(.newOrder)
         } catch {
@@ -196,9 +202,34 @@ protocol PointOfSaleOrderControllerProtocol {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
         }
-        try await orderService.addOrderNote(orderID: order.orderID,
-                                            isCustomerNote: false,
-                                            note: Localization.scanToPayNote)
+
+        await recordScanToPayPaymentMethod()
+
+        do {
+            try await orderService.addOrderNote(orderID: order.orderID,
+                                                isCustomerNote: false,
+                                                note: Localization.scanToPayNote)
+        } catch {
+            DDLogWarn("⚠️ [ScanToPay] Payment confirmed but failed to attach the audit-trail note: \(error)")
+        }
+    }
+
+    @MainActor
+    func recordScanToPayPaymentMethod() async {
+        guard let order else {
+            DDLogWarn("⚠️ [ScanToPay] Could not record payment method title because there is no current order")
+            return
+        }
+
+        guard order.hasReplaceablePaymentMethodTitle else {
+            return
+        }
+
+        do {
+            try await orderService.recordScanToPayPaymentMethod(order: order)
+        } catch {
+            DDLogWarn("⚠️ [ScanToPay] Failed to record payment method title: \(error)")
+        }
     }
 
     @MainActor
@@ -226,18 +257,29 @@ protocol PointOfSaleOrderControllerProtocol {
     }
 }
 
+private extension Order {
+    var hasReplaceablePaymentMethodTitle: Bool {
+        let normalized = paymentMethodTitle.trimmingCharacters(in: .whitespacesAndNewlines).lowercased()
+        return normalized.isEmpty || normalized == Constants.genericPaymentMethodTitle
+    }
+
+    enum Constants {
+        static let genericPaymentMethodTitle = "other"
+    }
+}
+
 private extension PointOfSaleOrderController {
     enum Localization {
         static let scanToPayNote = NSLocalizedString(
-            "pointOfSale.scanToPay.orderNote",
-            value: "Customer paid via Scan to Pay",
+            "pointOfSale.scanToPay.orderNote.1",
+            value: "Paid via Scan to Pay",
             comment: "Order note added when the merchant confirms a scan-to-pay payment was received in Point of Sale."
         )
     }
 }
 
 private extension PointOfSaleOrderController {
-    func totals(for order: Order) -> PointOfSaleOrderTotals {
+    func totals(for order: Order, cart: Cart) -> PointOfSaleOrderTotals {
         let totalsCalculator = OrderTotalsCalculator(for: order,
                                                      using: currencyFormatter)
         return PointOfSaleOrderTotals(
@@ -250,7 +292,27 @@ private extension PointOfSaleOrderController {
                                              currency: order.currency),
             customAmountsTotal: formattedCustomAmounts(totalsCalculator.feesTotal,
                                                        currency: order.currency),
-            couponsTotals: couponsTotals(order))
+            couponsTotals: couponsTotals(order),
+            discountedCartItemIDs: discountedCartItemIDs(in: cart, order: order))
+    }
+
+    /// Marks the cart rows whose order line item came back discounted (`subtotal` above
+    /// `total`). Matching is by product/variation ID, so all rows of a discounted product
+    /// are marked — the order groups them into a single line item.
+    func discountedCartItemIDs(in cart: Cart, order: Order) -> Set<UUID> {
+        let discountedOrderItems = order.items.filter(\.hasLineDiscount)
+        guard discountedOrderItems.isNotEmpty else {
+            return []
+        }
+
+        let ids = cart.purchasableItems.compactMap { cartItem -> UUID? in
+            guard case .loaded(let item) = cartItem.state,
+                  discountedOrderItems.contains(where: { item.matches(orderItem: $0) }) else {
+                return nil
+            }
+            return cartItem.id
+        }
+        return Set(ids)
     }
 
     func formattedPrice(_ price: String?, currency: String?, isNegative: Bool = false) -> String? {
@@ -296,6 +358,21 @@ private extension PointOfSaleOrderController {
         }
 
         return formattedFees
+    }
+}
+
+private extension OrderItem {
+    /// Whether the server discounted this line item: `subtotal` is the pre-discount line
+    /// total and `total` the post-discount one. The half-cent tolerance absorbs server-side
+    /// rounding, mirroring `POSOrderPriceChangeDetector`. The delta may come from a coupon
+    /// or any other discounting plugin — this only reports that a discount was applied.
+    var hasLineDiscount: Bool {
+        guard let subtotal = Decimal(string: subtotal),
+              let total = Decimal(string: total) else {
+            return false
+        }
+        let halfCent = Decimal(5) / Decimal(1000)
+        return subtotal - total > halfCent
     }
 }
 

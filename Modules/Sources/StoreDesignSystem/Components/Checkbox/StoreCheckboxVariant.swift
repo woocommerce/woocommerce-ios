@@ -5,7 +5,7 @@ import SwiftUI
 /// - Note: A closed type holding the enabled accent and its `on`-color (the mark tint); the disabled
 ///   presentation is derived uniformly by ``StoreCheckboxStyle`` from the state-layer rule, so it
 ///   isn't duplicated per tone.
-public struct StoreCheckboxVariant {
+public struct StoreCheckboxVariant: Sendable {
     let accent: Color
     let onColor: Color
 

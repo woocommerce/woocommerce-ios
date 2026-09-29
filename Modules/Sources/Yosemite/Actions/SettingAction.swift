@@ -3,6 +3,10 @@ import Networking
 
 public enum SettingError: Error {
     case parseError
+
+    /// The site does not register the setting in its REST settings API (404 `rest_setting_setting_invalid`).
+    /// Hosts that hide a settings section from wp-admin also hide it from the API.
+    case settingNotExposed
 }
 
 /// SettingAction: Defines all of the Actions supported by the SettingStore.

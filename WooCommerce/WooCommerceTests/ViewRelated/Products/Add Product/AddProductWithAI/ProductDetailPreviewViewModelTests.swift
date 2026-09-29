@@ -331,10 +331,12 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
         let userDefaults = try XCTUnwrap(UserDefaults(suiteName: uuid))
         userDefaults[.aiPromptTone] = ["\(sampleSiteID)": sampleTone.rawValue]
 
-        let sampleCategories = [ProductCategory.fake().copy(siteID: sampleSiteID), ProductCategory.fake().copy(siteID: sampleSiteID)]
+        let sampleCategories = [ProductCategory.fake().copy(categoryID: 1, siteID: sampleSiteID),
+                                ProductCategory.fake().copy(categoryID: 2, siteID: sampleSiteID)]
         sampleCategories.forEach { storage.insertSampleProductCategory(readOnlyProductCategory: $0) }
 
-        let sampleTags = [ProductTag.fake().copy(siteID: sampleSiteID), ProductTag.fake().copy(siteID: sampleSiteID)]
+        let sampleTags = [ProductTag.fake().copy(siteID: sampleSiteID, tagID: 1),
+                          ProductTag.fake().copy(siteID: sampleSiteID, tagID: 2)]
         sampleTags.forEach { storage.insertSampleProductTag(readOnlyProductTag: $0) }
 
         // Insert categories and tags for other site to test correct items that belong to current site are sent
@@ -374,8 +376,8 @@ final class ProductDetailPreviewViewModelTests: XCTestCase {
                 XCTAssertEqual(currencySymbol, sampleCurrency)
                 XCTAssertEqual(dimensionUnit, sampleDimensionUnit)
                 XCTAssertEqual(weightUnit, sampleWeightUnit)
-                XCTAssertEqual(categories, sampleCategories)
-                XCTAssertEqual(tags, sampleTags)
+                XCTAssertEqual(categories.sorted { $0.categoryID < $1.categoryID }, sampleCategories)
+                XCTAssertEqual(tags.sorted { $0.tagID < $1.tagID }, sampleTags)
                 completion(.success(.fake()))
             case let .identifyLanguage(_, _, _, completion):
                 completion(.success(sampleLanguage))

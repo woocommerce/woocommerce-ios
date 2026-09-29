@@ -5,6 +5,7 @@ import XCTest
 @testable import WooCommerce
 import Yosemite
 
+@MainActor
 final class ProductVariationFormViewModel_ImageUploaderTests: XCTestCase {
     private var storesManager: MockStoresManager!
     private var subscriptions: Set<AnyCancellable> = []

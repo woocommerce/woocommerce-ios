@@ -28,10 +28,10 @@ struct AssistantToolCallTelemetryTests {
         await registry.setResult(for: "orders_list",
                                  result: .success(.init(toolName: "orders_list",
                                                         structured: .object(["count": .int(1)]))))
-        let tracker = await RecordingAssistantTelemetryTracker()
-        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
-                                                         toolRegistry: registry,
-                                                         telemetryTracker: tracker)
+        let tracker = RecordingAssistantTelemetryTracker()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   telemetryTracker: tracker)
 
         // When
         for try await _ in orchestrator.run(prompt: "list",
@@ -71,10 +71,10 @@ struct AssistantToolCallTelemetryTests {
                                  result: .failed(.init(toolName: "orders_update",
                                                        kind: .network,
                                                        reason: "boom")))
-        let tracker = await RecordingAssistantTelemetryTracker()
-        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
-                                                         toolRegistry: registry,
-                                                         telemetryTracker: tracker)
+        let tracker = RecordingAssistantTelemetryTracker()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   telemetryTracker: tracker)
 
         // When
         for try await _ in orchestrator.run(prompt: "go",
@@ -101,10 +101,10 @@ struct AssistantToolCallTelemetryTests {
             [.completed(.stop)]
         ])
         let registry = MockToolRegistry()
-        let tracker = await RecordingAssistantTelemetryTracker()
-        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
-                                                         toolRegistry: registry,
-                                                         telemetryTracker: tracker)
+        let tracker = RecordingAssistantTelemetryTracker()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   telemetryTracker: tracker)
 
         // When
         for try await _ in orchestrator.run(prompt: "go",
@@ -135,10 +135,10 @@ struct AssistantToolCallTelemetryTests {
             [.completed(.stop)]
         ])
         let registry = MockToolRegistry()
-        let tracker = await RecordingAssistantTelemetryTracker()
-        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
-                                                         toolRegistry: registry,
-                                                         telemetryTracker: tracker)
+        let tracker = RecordingAssistantTelemetryTracker()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   telemetryTracker: tracker)
 
         // When
         for try await _ in orchestrator.run(prompt: "go",
@@ -175,10 +175,10 @@ struct AssistantToolCallTelemetryTests {
         let proposal = ToolResult.ConfirmationProposal(toolName: "orders_list",
                                                        proposal: .object([:]))
         await registry.setResult(for: "orders_list", result: .awaitingConfirmation(proposal))
-        let tracker = await RecordingAssistantTelemetryTracker()
-        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
-                                                         toolRegistry: registry,
-                                                         telemetryTracker: tracker)
+        let tracker = RecordingAssistantTelemetryTracker()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   telemetryTracker: tracker)
 
         // When
         for try await _ in orchestrator.run(prompt: "go",
@@ -213,11 +213,11 @@ struct AssistantToolCallTelemetryTests {
         await registry.setResult(for: "orders_list",
                                  result: .success(.init(toolName: "orders_list",
                                                         structured: .object(["count": .int(0)]))))
-        let tracker = await RecordingAssistantTelemetryTracker()
-        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
-                                                         toolRegistry: registry,
-                                                         perToolPerTurnCap: 2,
-                                                         telemetryTracker: tracker)
+        let tracker = RecordingAssistantTelemetryTracker()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   perToolPerTurnCap: 2,
+                                                   telemetryTracker: tracker)
 
         // When
         for try await _ in orchestrator.run(prompt: "go",
@@ -247,10 +247,10 @@ struct AssistantToolCallTelemetryTests {
              .completed(.toolCalls)],
             [.completed(.stop)]
         ])
-        let tracker = await RecordingAssistantTelemetryTracker()
-        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
-                                                         toolRegistry: nil,
-                                                         telemetryTracker: tracker)
+        let tracker = RecordingAssistantTelemetryTracker()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: nil,
+                                                   telemetryTracker: tracker)
 
         // When
         for try await _ in orchestrator.run(prompt: "go",
@@ -290,10 +290,10 @@ struct AssistantToolCallTelemetryTests {
         await registry.setResult(for: "orders_list",
                                  result: .success(.init(toolName: "orders_list",
                                                         structured: .object(["count": .int(0)]))))
-        let tracker = await RecordingAssistantTelemetryTracker()
-        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
-                                                         toolRegistry: registry,
-                                                         telemetryTracker: tracker)
+        let tracker = RecordingAssistantTelemetryTracker()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   telemetryTracker: tracker)
 
         // When
         for try await _ in orchestrator.run(prompt: "go",
@@ -329,10 +329,10 @@ struct AssistantToolCallTelemetryTests {
         await registry.setResult(for: "orders_list",
                                  result: .success(.init(toolName: "orders_list",
                                                         structured: .object(["count": .int(0)]))))
-        let tracker = await RecordingAssistantTelemetryTracker()
-        let orchestrator = await AgenticLoopOrchestrator(chatService: chat,
-                                                         toolRegistry: registry,
-                                                         telemetryTracker: tracker)
+        let tracker = RecordingAssistantTelemetryTracker()
+        let orchestrator = AgenticLoopOrchestrator(chatService: chat,
+                                                   toolRegistry: registry,
+                                                   telemetryTracker: tracker)
 
         // When
         for try await _ in orchestrator.run(prompt: "go",

@@ -5,8 +5,8 @@ import protocol WooFoundation.Analytics
 
 @testable import WooCommerce
 
-@MainActor
 @Suite(.serialized)
+@MainActor
 struct ProductFormViewController_DuplicationTests {
     @Test func test_duplicate_when_saved_product_is_unchanged_then_starts_immediately() {
         // Given

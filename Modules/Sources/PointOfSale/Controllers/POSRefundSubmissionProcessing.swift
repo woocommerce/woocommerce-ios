@@ -3,7 +3,7 @@ import Observation
 import struct Yosemite.CardReaderInput
 import struct Yosemite.POSOrder
 
-public struct POSRefundPreparation: Equatable {
+public struct POSRefundPreparation: Equatable, Sendable {
     public let orderID: Int64
     public let selectableItems: [POSRefundSelectableItem]
     public let paymentMethodDescription: String
@@ -99,7 +99,8 @@ public final class POSNoOpRefundSubmissionProcessor: POSRefundSubmissionProcessi
                             paymentMethodDescription: preparation.paymentMethodDescription,
                             customerEmail: preparation.customerEmail,
                             refundReason: reason,
-                            isFullRefund: false)
+                            isFullRefund: false,
+                            calculationFlow: .local)
     }
 
     public func submitRefund(for order: POSOrder,

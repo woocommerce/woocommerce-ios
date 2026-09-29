@@ -566,6 +566,10 @@ extension PushNotificationsManager {
             return UNNotificationPresentationOptions(rawValue: 0)
         }
 
+        guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: content.userInfo) == false else {
+            return []
+        }
+
         handleRemoteNotificationInAllAppStates(content.userInfo)
 
         if let foregroundNotification = PushNotification.from(userInfo: content.userInfo) {
@@ -613,6 +617,9 @@ extension PushNotificationsManager {
 
         // Remote notification response is handled separately.
         if let notification = PushNotification.from(userInfo: userInfo) {
+            guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) == false else {
+                return
+            }
             handleRemoteNotificationInAllAppStates(userInfo)
             await handleInactiveRemoteNotification(notification: notification)
         } else {
@@ -634,6 +641,10 @@ extension PushNotificationsManager {
 
         guard PushNotificationSharedConstants.isKnownNotificationType(in: userInfo) else {
             DDLogVerbose("📱 Discarding background push notification with unknown type")
+            return .noData
+        }
+
+        guard registrationState.shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) == false else {
             return .noData
         }
 
@@ -1208,7 +1219,7 @@ private extension PushNotificationsManager {
     /// Tracks the specified Notification's Payload.
     ///
     func trackNotification(with userInfo: [AnyHashable: Any]) {
-        var properties = [String: Any]()
+        var properties = [String: WooAnalyticsEventPropertyType]()
 
         // Determine notification source - Woo driven PNs don't have `note_id` in the payload.
         // The value may be absent, Swift `nil`, or `NSNull`, so resolve it via `string(forKey:)`,
@@ -1234,19 +1245,33 @@ private extension PushNotificationsManager {
             properties[AnalyticKey.token] = theToken
         }
 
-        let notificationSiteID = userInfo[APNSKey.siteID] as? Int64
+        // Attribute the event to the notification's origin site, not the currently selected one.
+        let notificationSiteID = userInfo.integer(forKey: APNSKey.siteID)
+        let originSiteID: Int64?
+        let originSite: Yosemite.Site?
         if stores.isAuthenticatedWithoutWPCom {
+            // Application-password sessions are single-site and the payload site ID is unreliable, so use the selected site.
             properties[AnalyticKey.fromSelectedSite] = true
-        } else if let siteID, let notificationSiteID {
-            properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
+            originSiteID = siteID
+            originSite = stores.sessionManager.defaultSite
+        } else {
+            originSiteID = notificationSiteID
+            originSite = notificationSiteID.flatMap { loadTargetSite(siteID: $0) }
+            if let siteID, let notificationSiteID {
+                properties[AnalyticKey.fromSelectedSite] = siteID == notificationSiteID
+            }
         }
 
         switch applicationState {
         case .inactive:
-            analytics.track(.pushNotificationAlertPressed, withProperties: properties)
+            analytics.track(event: .PushNotifications.pushNotificationAlertPressed(originSiteID: originSiteID,
+                                                                                  originSite: originSite,
+                                                                                  properties: properties))
         default:
             properties[AnalyticKey.appState] = applicationState.rawValue
-            analytics.track(.pushNotificationReceived, withProperties: properties)
+            analytics.track(event: .PushNotifications.pushNotificationReceived(originSiteID: originSiteID,
+                                                                              originSite: originSite,
+                                                                              properties: properties))
         }
     }
 

@@ -7,6 +7,7 @@ final class ReviewsViewModelTests: XCTestCase {
 
     private let sampleSiteID: Int64 = 1334
 
+    @MainActor
     func testDataSourceReturnsInjectedReviewsDataSource() {
         // Given
         let mockDataSource = MockReviewsDataSource()
@@ -19,6 +20,7 @@ final class ReviewsViewModelTests: XCTestCase {
         XCTAssertNotNil(dataSource as? MockReviewsDataSource)
     }
 
+    @MainActor
     func testDelegateReturnsInjectedReviewsDelegate() {
         // Given
         let mockDataSource = MockReviewsDataSource()
@@ -31,6 +33,7 @@ final class ReviewsViewModelTests: XCTestCase {
         XCTAssertNotNil(delegate as? MockReviewsDataSource)
     }
 
+    @MainActor
     func testIsEmptyReturnsTheSameAsTheDataSource() {
         // Given
         let mockDataSource = MockReviewsDataSource()
@@ -40,6 +43,7 @@ final class ReviewsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.isEmpty, mockDataSource.isEmpty)
     }
 
+    @MainActor
     func testConfigureResultsControllerStartsForWardingEventsAndStartsObservingReviewsInDataSource() {
         // Given
         let table = UITableView()
@@ -53,6 +57,7 @@ final class ReviewsViewModelTests: XCTestCase {
         XCTAssertTrue(mockDataSource.startForwardingEventsWasHit && mockDataSource.startObservingWasHit)
     }
 
+    @MainActor
     func testSyncDataHitsExpectedReviewsAndProductsActions() {
         // Given
         let storesManager = MockReviewsStoresManager()
@@ -73,6 +78,7 @@ final class ReviewsViewModelTests: XCTestCase {
         waitForExpectations(timeout: 10, handler: nil)
     }
 
+    @MainActor
     func test_dataLoadingError_nil_after_successful_sync() {
         // Given
         let mockDataSource = MockReviewsDataSource()
@@ -95,6 +101,7 @@ final class ReviewsViewModelTests: XCTestCase {
         XCTAssertNil(viewModel.dataLoadingError)
     }
 
+    @MainActor
     func test_dataLoadingError_not_nil_after_failed_sync() {
         // Given
         let mockDataSource = MockReviewsDataSource()
@@ -118,6 +125,7 @@ final class ReviewsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.dataLoadingError as? SampleError, .first)
     }
 
+    @MainActor
     func test_synchronizeReviews_triggers_retrieveProducts_with_all_reviewsProductIDs() {
         // Given
         let mockDataSource = MockReviewsDataSource()
@@ -170,6 +178,7 @@ final class ReviewsViewModelTests: XCTestCase {
 
     // MARK: - Woo-driven Push Notifications Tests
 
+    @MainActor
     func test_hasUnreadNotifications_returns_false_when_supportsWPComNotifications_is_false() {
         // Given
         let mockDataSource = MockReviewsDataSource()
@@ -184,6 +193,7 @@ final class ReviewsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.hasUnreadNotifications)
     }
 
+    @MainActor
     func test_synchronizeReviews_skips_notification_sync_when_supportsWPComNotifications_is_false() {
         // Given
         let mockDataSource = MockReviewsDataSource()
@@ -235,6 +245,7 @@ final class ReviewsViewModelTests: XCTestCase {
         XCTAssertFalse(notificationSyncCalled)
     }
 
+    @MainActor
     func test_synchronizeReviews_syncs_notifications_when_supportsWPComNotifications_is_true() {
         // Given
         let mockDataSource = MockReviewsDataSource()
@@ -294,6 +305,7 @@ private extension ReviewsViewModelTests {
     final class MockError: Error { }
 }
 
+@MainActor
 final class MockReviewsDataSource: NSObject, ReviewsDataSourceProtocol {
 
     var reviews: [ProductReview] = []

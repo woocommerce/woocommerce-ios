@@ -1877,6 +1877,44 @@ extension AppSettingsStoreTests {
         XCTAssertTrue(mockSiteSpecificAppSettingsStoreMethods.setPOSLocalCatalogCellularDataAllowedCalled)
         XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.mockPOSLocalCatalogCellularDataAllowed, false)
     }
+
+    func test_setHTTPSConfigurationUpdateRequired_persists_requirement() {
+        // When
+        subject?.onAction(AppSettingsAction.setHTTPSConfigurationUpdateRequired(siteID: TestConstants.siteID, required: true))
+
+        // Then
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.storeSettings.requiresHTTPSConfigurationUpdate, true)
+    }
+
+    func test_dismissHTTPSConfigurationWarning_persists_dismissal_date() {
+        // Given
+        let date = Date(timeIntervalSince1970: 123)
+
+        // When
+        subject?.onAction(AppSettingsAction.dismissHTTPSConfigurationWarning(siteID: TestConstants.siteID, time: date))
+
+        // Then
+        XCTAssertEqual(mockSiteSpecificAppSettingsStoreMethods.storeSettings.lastHTTPSConfigurationWarningDismissedDate, date)
+    }
+
+    func test_getHTTPSConfigurationWarningState_returns_persisted_state() {
+        // Given
+        let date = Date(timeIntervalSince1970: 123)
+        mockSiteSpecificAppSettingsStoreMethods.storeSettings = GeneralStoreSettings(requiresHTTPSConfigurationUpdate: true,
+                                                                                     lastHTTPSConfigurationWarningDismissedDate: date)
+        var returnedRequirement: Bool?
+        var returnedDate: Date?
+
+        // When
+        subject?.onAction(AppSettingsAction.getHTTPSConfigurationWarningState(siteID: TestConstants.siteID) { requirement, dismissalDate in
+            returnedRequirement = requirement
+            returnedDate = dismissalDate
+        })
+
+        // Then
+        XCTAssertEqual(returnedRequirement, true)
+        XCTAssertEqual(returnedDate, date)
+    }
 }
 
 // MARK: - Utils

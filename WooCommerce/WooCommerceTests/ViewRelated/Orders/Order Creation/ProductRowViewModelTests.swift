@@ -273,10 +273,9 @@ final class ProductRowViewModelTests: XCTestCase {
         // Given
         let sku = "123456"
         let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue, sku: sku, bundledItems: [.fake()])
-        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, featureFlagService: featureFlagService, configure: {})
+        let viewModel = ProductRowViewModel(product: product, configure: {})
 
         // Then
         let format = NSLocalizedString("SKU: %1$@", comment: "SKU label in order details > product row. The variable shows the SKU of the product.")
@@ -289,10 +288,9 @@ final class ProductRowViewModelTests: XCTestCase {
         // Given
         let sku = ""
         let product = Product.fake().copy(productTypeKey: ProductType.bundle.rawValue, sku: sku, bundledItems: [.fake()])
-        let featureFlagService = MockFeatureFlagService(productBundlesInOrderForm: true)
 
         // When
-        let viewModel = ProductRowViewModel(product: product, featureFlagService: featureFlagService, configure: {})
+        let viewModel = ProductRowViewModel(product: product, configure: {})
 
         // Then
         XCTAssertEqual(viewModel.secondaryProductDetailsLabel, ProductType.bundle.description)
@@ -354,25 +352,12 @@ final class ProductRowViewModelTests: XCTestCase {
 
     // MARK: - `isConfigurable`
 
-    func test_isConfigurable_is_false_for_bundle_product_when_feature_flag_is_disabled() {
-        // Given
-        let product = Product.fake().copy(productTypeKey: "bundle")
-
-        // When
-        let viewModel = ProductRowViewModel(product: product,
-                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: false))
-
-        // Then
-        XCTAssertFalse(viewModel.isConfigurable)
-    }
-
     func test_isConfigurable_is_false_for_bundle_product_with_empty_bundle_items() {
         // Given
         let product = Product.fake().copy(productTypeKey: "bundle")
 
         // When
-        let viewModel = ProductRowViewModel(product: product,
-                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true))
+        let viewModel = ProductRowViewModel(product: product)
 
         // Then
         XCTAssertFalse(viewModel.isConfigurable)
@@ -383,9 +368,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "bundle", bundledItems: [.fake()])
 
         // When
-        let viewModel = ProductRowViewModel(product: product,
-                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true),
-                                            configure: {})
+        let viewModel = ProductRowViewModel(product: product, configure: {})
 
         // Then
         XCTAssertTrue(viewModel.isConfigurable)
@@ -396,9 +379,7 @@ final class ProductRowViewModelTests: XCTestCase {
         let product = Product.fake().copy(productTypeKey: "bundle", bundledItems: [.fake()])
 
         // When
-        let viewModel = ProductRowViewModel(product: product,
-                                            featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true),
-                                            configure: nil)
+        let viewModel = ProductRowViewModel(product: product, configure: nil)
 
         // Then
         XCTAssertFalse(viewModel.isConfigurable)
@@ -412,9 +393,7 @@ final class ProductRowViewModelTests: XCTestCase {
             let product = Product.fake().copy(productTypeKey: nonBundleProductType.rawValue)
 
             // When
-            let viewModel = ProductRowViewModel(product: product,
-                                                featureFlagService: createFeatureFlagService(productBundlesInOrderForm: true),
-                                                configure: {})
+            let viewModel = ProductRowViewModel(product: product, configure: {})
 
             // Then
             XCTAssertFalse(viewModel.isConfigurable)
@@ -519,10 +498,6 @@ final class ProductRowViewModelTests: XCTestCase {
 }
 
 private extension ProductRowViewModelTests {
-    func createFeatureFlagService(productBundlesInOrderForm: Bool = false) -> FeatureFlagService {
-        MockFeatureFlagService(productBundlesInOrderForm: productBundlesInOrderForm)
-    }
-
     func createFakeSubscription(price: String? = "5",
                                 periodInterval: String? = "1",
                                 period: SubscriptionPeriod? = .month,

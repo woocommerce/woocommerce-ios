@@ -1,13 +1,10 @@
 import WordPressAuthenticator
-import Experiments
 import class Networking.UserAgent
 import struct Networking.Settings
 
 extension WordPressAuthenticator {
-    static func initializeWithCustomConfigs(dotcomAuthScheme: String = Bundle.main.dotcomAuthScheme,
-                                            featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    static func initializeWithCustomConfigs(dotcomAuthScheme: String = Bundle.main.dotcomAuthScheme) {
         let isWPComMagicLinkShownAsSecondaryActionOnPasswordScreen = true
-        let isManualErrorHandlingEnabled = featureFlagService.isFeatureFlagEnabled(.manualErrorHandlingForSiteCredentialLogin)
         let configuration = WordPressAuthenticatorConfiguration(wpcomClientId: ApiCredentials.dotcomAppId,
                                                                 wpcomSecret: ApiCredentials.dotcomSecret,
                                                                 wpcomScheme: dotcomAuthScheme,
@@ -38,7 +35,7 @@ extension WordPressAuthenticator {
                                                                 skipXMLRPCCheckForSiteDiscovery: true,
                                                                 skipXMLRPCCheckForSiteAddressLogin: true,
                                                                 enableManualSiteCredentialLogin: true,
-                                                                enableManualErrorHandlingForSiteCredentialLogin: isManualErrorHandlingEnabled,
+                                                                enableManualErrorHandlingForSiteCredentialLogin: true,
                                                                 useEnterEmailAddressAsStepValueForGetStartedVC: true,
                                                                 // `enableSiteAddressLoginOnlyInPrologue: true` selects the
                                                                 // stacked-buttons prologue layout, whose site-address CTA is

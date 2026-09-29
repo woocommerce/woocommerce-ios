@@ -223,6 +223,15 @@ public enum AppSettingsAction: Action {
     ///
     case getTelemetryInfo(siteID: Int64, onCompletion: (Bool, Date?) -> Void)
 
+    /// Records whether a store's configured URL needed to be normalized from HTTP to HTTPS.
+    case setHTTPSConfigurationUpdateRequired(siteID: Int64, required: Bool)
+
+    /// Loads the persisted HTTPS warning requirement and last dismissal date for a store.
+    case getHTTPSConfigurationWarningState(siteID: Int64, onCompletion: (Bool?, Date?) -> Void)
+
+    /// Records that the merchant dismissed the HTTPS configuration warning.
+    case dismissHTTPSConfigurationWarning(siteID: Int64, time: Date)
+
     /// Clears all the products settings
     ///
     case resetGeneralStoreSettings

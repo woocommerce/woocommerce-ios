@@ -6,6 +6,18 @@ import UIKit
 //
 extension UINavigationController {
 
+    /// Updates the navigation bar visibility only when it differs from the requested state.
+    ///
+    /// Avoiding redundant visibility updates is important when this navigation controller is wrapped by a split view.
+    /// UIKit can otherwise try to lay out the wrapper's navigation bar using an item that still belongs to this bar.
+    func setNavigationBarHiddenIfNeeded(_ hidden: Bool, animated: Bool) {
+        guard isNavigationBarHidden != hidden else {
+            return
+        }
+
+        setNavigationBarHidden(hidden, animated: animated)
+    }
+
     /// Whenever there's a single viewController onscreen, this method will set the "Top" UIScrollView's
     /// Content Offset to zero.
     ///

@@ -18,10 +18,9 @@ final class ProductSearchUICommand: SearchUICommand {
 
     let cancelButtonAccessibilityIdentifier = "product-search-screen-cancel-button"
 
-    /// Product search replaces the primary navigation stack of a split view, unlike Order search, which is presented
-    /// in its own modal navigation controller. Avoid animating the navigation bar while UIKit transfers presentation
-    /// to the secondary navigation stack in a collapsed layout.
-    let animateNavigationBarVisibilityChanges = false
+    /// The split-view coordinator owns the primary navigation bar because it can coordinate visibility with the collapsed
+    /// split-view transition that presents the secondary navigation controller from the primary navigation stack.
+    let hideNavigationBar = false
 
     var reloadUIRequests: AnyPublisher<Void, Never> {
         reloadUINeeded.eraseToAnyPublisher()
@@ -35,7 +34,6 @@ final class ProductSearchUICommand: SearchUICommand {
     private let siteID: Int64
     private let stores: StoresManager
     private let analytics: Analytics
-    private let isSearchProductsBySKUEnabled: Bool
     private let onProductSelection: (Product) -> Void
     private let onCancel: () -> Void
 
@@ -48,13 +46,11 @@ final class ProductSearchUICommand: SearchUICommand {
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
-         isSearchProductsBySKUEnabled: Bool = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.searchProductsBySKU),
          onProductSelection: @escaping (Product) -> Void,
          onCancel: @escaping () -> Void) {
         self.siteID = siteID
         self.stores = stores
         self.analytics = analytics
-        self.isSearchProductsBySKUEnabled = isSearchProductsBySKUEnabled
         self.onProductSelection = onProductSelection
         self.onCancel = onCancel
 
@@ -74,9 +70,6 @@ final class ProductSearchUICommand: SearchUICommand {
     }
 
     func createHeaderView() -> UIView? {
-        guard isSearchProductsBySKUEnabled else {
-            return nil
-        }
         let segmentedControl: UISegmentedControl = {
             let segmentedControl = UISegmentedControl()
 
@@ -128,22 +121,20 @@ final class ProductSearchUICommand: SearchUICommand {
     /// Synchronizes the Products matching a given Keyword
     ///
     func synchronizeModels(siteID: Int64, keyword: String, pageNumber: Int, pageSize: Int, onCompletion: ((Bool) -> Void)?) {
-        if isSearchProductsBySKUEnabled {
-            // Returns early if the search query is the same for the given filter and for the first page to avoid duplicate API requests when
-            // switching filter tabs.
-            if let lastFilterSearchQuery = lastSearchQueryByFilter[filter],
-               lastFilterSearchQuery == keyword,
-               pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
-                onCompletion?(true)
-                return
-            }
-            // Skips the product search API request if the keyword is empty.
-            guard keyword.isNotEmpty else {
-                onCompletion?(true)
-                return
-            }
-            lastSearchQueryByFilter[filter] = keyword
+        // Returns early if the search query is the same for the given filter and for the first page to avoid duplicate API requests when
+        // switching filter tabs.
+        if let lastFilterSearchQuery = lastSearchQueryByFilter[filter],
+           lastFilterSearchQuery == keyword,
+           pageNumber == SyncingCoordinator.Defaults.pageFirstIndex {
+            onCompletion?(true)
+            return
         }
+        // Skips the product search API request if the keyword is empty.
+        guard keyword.isNotEmpty else {
+            onCompletion?(true)
+            return
+        }
+        lastSearchQueryByFilter[filter] = keyword
 
         let action = ProductAction.searchProducts(siteID: siteID,
                                                   keyword: keyword,
@@ -159,7 +150,7 @@ final class ProductSearchUICommand: SearchUICommand {
 
         stores.dispatch(action)
 
-        analytics.track(.productListSearched, withProperties: isSearchProductsBySKUEnabled ? ["filter": filter.analyticsValue]: nil)
+        analytics.track(.productListSearched, withProperties: ["filter": filter.analyticsValue])
     }
 
     func didSelectSearchResult(model: Product, from viewController: UIViewController, reloadData: () -> Void, updateActionButton: () -> Void) {
@@ -172,9 +163,6 @@ final class ProductSearchUICommand: SearchUICommand {
     }
 
     func searchResultsPredicate(keyword: String) -> NSPredicate? {
-        guard isSearchProductsBySKUEnabled else {
-            return NSPredicate(format: "ANY searchResults.keyword = %@", keyword)
-        }
         guard keyword.isNotEmpty else {
             return nil
         }

@@ -27,9 +27,16 @@ final class MockStoresManager: DefaultStoresManager {
     ///
     var testPOSCatalogEligibilityChecker: POSLocalCatalogEligibilityServiceProtocol?
 
+    private(set) var authenticatedCredentials: Credentials?
+    private(set) var authenticatedCookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?
+
     /// Accept a concrete implementation (in addition to the pre-existing Protocol-based initializer)
     ///
     init(sessionManager: SessionManager) {
+        super.init(sessionManager: sessionManager)
+    }
+
+    init(sessionManager: SessionManagerProtocol) {
         super.init(sessionManager: sessionManager)
     }
 
@@ -81,6 +88,24 @@ final class MockStoresManager: DefaultStoresManager {
 
     override func listenToWPCOMInvalidWPCOMTokenNotification() {
         // Don't listen to WPCOM token expiry notification to avoid de-authenticating while running tests.
+    }
+
+    @discardableResult
+    override func authenticate(credentials: Credentials) -> StoresManager {
+        authenticatedCredentials = credentials
+        authenticatedCookieNonceAuthenticationEndpoints = nil
+        return super.authenticate(credentials: credentials, cookieNonceAuthenticationEndpoints: nil)
+    }
+
+    @discardableResult
+    override func authenticate(credentials: Credentials,
+                               cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
+        authenticatedCredentials = credentials
+        authenticatedCookieNonceAuthenticationEndpoints = cookieNonceAuthenticationEndpoints
+        return super.authenticate(
+            credentials: credentials,
+            cookieNonceAuthenticationEndpoints: cookieNonceAuthenticationEndpoints
+        )
     }
 
     // MARK: - Public Methods

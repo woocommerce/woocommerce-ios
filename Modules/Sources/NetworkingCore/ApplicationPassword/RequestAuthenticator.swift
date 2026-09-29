@@ -64,7 +64,9 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
     ///
     init(credentials: Credentials?,
          selectedSite: JetpackSite? = nil,
+         cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
          applicationPasswordUseCase: ApplicationPasswordUseCase? = nil,
+         applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory = .init(),
          network: Network? = nil) {
         self.credentials = credentials
 
@@ -74,9 +76,12 @@ public struct DefaultRequestAuthenticator: RequestAuthenticator {
             }
             switch credentials {
             case let .some(.wporg(username, password, siteAddress)):
-                return try? DefaultApplicationPasswordUseCase(username: username,
-                                                              password: password,
-                                                              siteAddress: siteAddress)
+                return try? applicationPasswordUseCaseFactory.makeForWordPressOrg(
+                    username: username,
+                    password: password,
+                    siteAddress: siteAddress,
+                    authenticationEndpoints: cookieNonceAuthenticationEndpoints
+                )
             case .some(.applicationPassword(_, _, let siteAddress)):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)
             case .some(.wpcom):
@@ -175,8 +180,9 @@ private extension DefaultRequestAuthenticator {
         let siteBase = siteAddress.trimSlashes()
 
         // Use cached REST API root if available, otherwise fall back to default
-        let restRoot = WordPressRESTAPIRootCache.shared.root(for: siteAddress)
+        let restRoot = (WordPressRESTAPIRootCache.shared.root(for: siteAddress)
             ?? WordPressAPIDiscovery.defaultRESTAPIRootURL(for: siteBase)
+        ).normalizedToHTTPS()
         return absoluteString.hasPrefix(restRoot.trimSlashes())
     }
 

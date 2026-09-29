@@ -47,6 +47,7 @@ extension MockProductImageUploader: ProductImageUploaderProtocol {
         }
     }
 
+    @MainActor
     func actionHandler(key: ProductImageUploaderKey, originalStatuses: [ProductImageStatus]) -> ProductImageActionHandler {
         ProductImageActionHandler(siteID: 0, productID: .product(id: 0), imageStatuses: [])
     }

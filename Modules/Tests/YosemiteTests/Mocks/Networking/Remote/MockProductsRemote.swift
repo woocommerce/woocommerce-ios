@@ -273,7 +273,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
 
         switch result {
         case let .success(products):
-            return products
+            return Array(products.dropFirst((pageNumber - ProductsRemote.Default.pageNumber) * pageSize).prefix(pageSize))
         case let .failure(error):
             throw error
         }

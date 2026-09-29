@@ -2,7 +2,6 @@ import Foundation
 import UIKit
 import CocoaLumberjackSwift
 import Yosemite
-import Experiments
 
 /// Periodically syncs POS catalog while the app is in the foreground.
 /// Triggers `catalogCoordinator.performSmartSync()` every hour when active.
@@ -16,7 +15,6 @@ final actor ForegroundPOSCatalogSyncDispatcher {
     private let interval: TimeInterval
     private let notificationCenter: NotificationCenter
     private let timerProvider: DispatchTimerProviding
-    private let featureFlagService: FeatureFlagService
     private let storeProvider: POSCatalogStoreProviding
     private let isAppActive: () async -> Bool
     private var observers: [NSObjectProtocol] = []
@@ -30,22 +28,16 @@ final actor ForegroundPOSCatalogSyncDispatcher {
     init(interval: TimeInterval = Constants.syncInterval,
          notificationCenter: NotificationCenter = .default,
          timerProvider: DispatchTimerProviding = DefaultDispatchTimerProvider(),
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          storeProvider: POSCatalogStoreProviding = DefaultPOSCatalogStoreProvider(),
          isAppActive: @escaping () async -> Bool = UIApplication.isApplicationActive) {
         self.interval = interval
         self.notificationCenter = notificationCenter
         self.timerProvider = timerProvider
-        self.featureFlagService = featureFlagService
         self.storeProvider = storeProvider
         self.isAppActive = isAppActive
     }
 
     func start() async {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI) else {
-            return
-        }
-
         if syncSiteID != nil, syncSiteID != storeProvider.defaultStoreID {
             DDLogInfo("🔄 ForegroundPOSCatalogSyncDispatcher: Site has changed, resetting the sync")
             stop()
@@ -129,12 +121,6 @@ final actor ForegroundPOSCatalogSyncDispatcher {
     }
 
     private func performSync() {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI) else {
-            DDLogInfo("📋 ForegroundPOSCatalogSyncDispatcher: Feature flag disabled, skipping sync")
-            stop()
-            return
-        }
-
         guard let siteID = storeProvider.defaultStoreID else {
             DDLogInfo("📋 ForegroundPOSCatalogSyncDispatcher: No default store, skipping sync")
             stop()

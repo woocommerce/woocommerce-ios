@@ -4,6 +4,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class ProductListMultiSelectorSearchUICommandTests: XCTestCase {
     private let sampleSiteID: Int64 = 134
 

@@ -15,9 +15,19 @@ protocol PointOfSaleSoundPlayerProtocol {
     func playSound(_ sound: PointOfSaleSound) async
 }
 
-actor PointOfSaleSoundPlayer: NSObject, PointOfSaleSoundPlayerProtocol {
+actor PointOfSaleSoundPlayer: PointOfSaleSoundPlayerProtocol {
     private var playerCache: [PointOfSaleSound: AVAudioPlayer] = [:]
-    private var completionHandlers: [AVAudioPlayer: () -> Void] = [:]
+
+    /// Keyed by the player's identity, which is stable because every player stays in `playerCache`.
+    private var completionHandlers: [ObjectIdentifier: () -> Void] = [:]
+
+    /// `AVAudioPlayer` holds its delegate weakly, so it is retained here for the players' lifetime.
+    // swiftlint:disable:next weak_delegate
+    private lazy var playbackDelegate = PointOfSaleSoundPlaybackDelegate { [weak self] playerID in
+        Task {
+            await self?.handlePlayerFinished(playerID)
+        }
+    }
 
     func playSound(_ sound: PointOfSaleSound) async {
         await playSound(sound, completion: {})
@@ -51,24 +61,32 @@ actor PointOfSaleSoundPlayer: NSObject, PointOfSaleSoundPlayerProtocol {
     }
 
     private func play(_ player: AVAudioPlayer, completion: @escaping (() -> Void)) {
-        completionHandlers[player] = completion
-        player.delegate = self
+        completionHandlers[ObjectIdentifier(player)] = completion
+        player.delegate = playbackDelegate
         player.currentTime = 0
         player.play()
     }
-}
 
-extension PointOfSaleSoundPlayer: AVAudioPlayerDelegate {
-    nonisolated func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
-        Task { @MainActor in
-            await handlePlayerFinished(player)
-        }
-    }
-
-    private func handlePlayerFinished(_ player: AVAudioPlayer) {
-        if let completion = completionHandlers[player] {
-            completionHandlers.removeValue(forKey: player)
+    private func handlePlayerFinished(_ playerID: ObjectIdentifier) {
+        if let completion = completionHandlers.removeValue(forKey: playerID) {
             completion()
         }
+    }
+}
+
+/// Receives `AVAudioPlayerDelegate` callbacks on behalf of `PointOfSaleSoundPlayer`, which as an actor cannot
+/// conform to the main actor isolated delegate protocol itself. Only the player's identity is forwarded, so no
+/// `AVAudioPlayer` crosses into the actor.
+private final class PointOfSaleSoundPlaybackDelegate: NSObject {
+    private let onFinish: @Sendable (ObjectIdentifier) -> Void
+
+    init(onFinish: @escaping @Sendable (ObjectIdentifier) -> Void) {
+        self.onFinish = onFinish
+    }
+}
+
+extension PointOfSaleSoundPlaybackDelegate: AVAudioPlayerDelegate {
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        onFinish(ObjectIdentifier(player))
     }
 }

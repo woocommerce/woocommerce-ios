@@ -68,9 +68,7 @@ struct POSOrderListView: View {
                         POSSearchField(
                             searchTerm: $searchTerm,
                             searchable: POSOrderSearchable(ordersController: orderListModel.ordersController),
-                            onBack: {
-                                setSearch(false)
-                            }
+                            onBack: { setSearch(false) }
                         )
                         .posSearchTextFieldUnfocusedBorderColor(.posOutlineVariant)
                         .transition(.asymmetric(
@@ -115,6 +113,7 @@ struct POSOrderListView: View {
             analytics.track(event: WooAnalyticsEvent.PointOfSale.ordersListPullToRefresh())
             await orderListModel.ordersController.refreshOrders()
         }
+        .posEdgeSwipeBackAction(isEnabled: isSearching, onBack: { setSearch(false) })
     }
 
     @ViewBuilder

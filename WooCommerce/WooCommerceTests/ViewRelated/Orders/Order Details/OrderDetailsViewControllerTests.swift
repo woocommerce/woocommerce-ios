@@ -9,6 +9,32 @@ import YosemiteTestHelpers
 
 final class OrderDetailsViewControllerTests: XCTestCase {
     @MainActor
+    func test_refresh_control_when_view_loads_on_iOS26_then_is_attached_as_subview() throws {
+        guard #available(iOS 26.0, *) else {
+            throw XCTSkip("Requires iOS 26")
+        }
+
+        // Given
+        let storageManager = MockStorageManager()
+        let order = MockOrders().sampleOrder()
+        let storesManager = OrderDetailStoreManagerFactory.createManager(order: order)
+        let viewModel = OrderDetailsViewModel(order: order, stores: storesManager, storageManager: storageManager)
+        let viewController = OrderDetailsViewController(viewModel: viewModel)
+
+        // When
+        viewController.loadViewIfNeeded()
+
+        // Then
+        let tableView = try Self.mirror(of: viewController).tableView
+        let refreshControls = tableView.subviews.compactMap { $0 as? UIRefreshControl }
+        let refreshControl = try XCTUnwrap(refreshControls.first)
+        XCTAssertEqual(refreshControls.count, 1)
+        XCTAssertNil(tableView.refreshControl)
+        XCTAssertTrue(refreshControl.isHidden)
+        XCTAssertFalse(refreshControl.isEnabled)
+    }
+
+    @MainActor
     func test_products_cell_is_not_visible_on_order_with_no_items() throws {
         // Given
         let storageManager = MockStorageManager()

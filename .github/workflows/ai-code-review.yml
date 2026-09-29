@@ -1,0 +1,20 @@
+name: AI Code Review
+on:
+  pull_request:
+    types: [opened, ready_for_review, reopened]
+  issue_comment:
+    types: [created]
+
+concurrency:
+  group: ai-review-${{ github.event.pull_request.number || github.event.issue.number }}-${{ github.event_name }}
+  cancel-in-progress: true
+
+jobs:
+  review:
+    uses: woocommerce/.github/.github/workflows/ai-code-review.yml@trunk
+    with:
+      model: claude-fable-5-1
+    secrets:
+      AI_CODE_REVIEW_ANTHROPIC_API_KEY: ${{ secrets.AI_CODE_REVIEW_ANTHROPIC_API_KEY }}
+      AI_REVIEW_TELEMETRY_TOKEN: ${{ secrets.AI_REVIEW_TELEMETRY_TOKEN }}
+      AI_REVIEW_SLACK_WEBHOOK_URL: ${{ secrets.AI_REVIEW_SLACK_WEBHOOK_URL }}

@@ -71,12 +71,7 @@ struct PointOfSaleScanToPayView: View {
                         title: Localization.title,
                         subtitle: String.localizedStringWithFormat(Localization.subtitle, orderTotal),
                         backButtonConfiguration: .init(state: isLoading ? .disabled : .enabled,
-                                                       action: {
-                                                           Task { @MainActor in
-                                                               await paymentModel.cancelScanToPayPayment()
-                                                               router.popToRoot()
-                                                           }
-                                                       }))
+                                                       action: cancelScanToPayPayment))
 
                     Spacer()
 
@@ -113,6 +108,14 @@ struct PointOfSaleScanToPayView: View {
         }
         .frame(maxWidth: .infinity, maxHeight: .infinity)
         .background(Color.posSurface)
+        .posEdgeSwipeBackAction(isEnabled: !isLoading, onBack: cancelScanToPayPayment)
+    }
+
+    private func cancelScanToPayPayment() {
+        Task { @MainActor in
+            await paymentModel.cancelScanToPayPayment()
+            router.popToRoot()
+        }
     }
 
     @ViewBuilder

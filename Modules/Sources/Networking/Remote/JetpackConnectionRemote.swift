@@ -99,6 +99,16 @@ public final class JetpackConnectionRemote: Remote {
         enqueue(request, mapper: mapper, completion: completion)
     }
 
+    /// Fetches the site's Jetpack connection status, including Offline Mode.
+    /// Unlike `fetchJetpackConnectionData`, this endpoint is not gated by Jetpack capabilities,
+    /// so it stays reachable when the site is in Offline Mode.
+    ///
+    public func fetchJetpackConnectionStatus(siteID: Int64, completion: @escaping (Result<JetpackConnectionStatus, Error>) -> Void) {
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: Path.jetpackConnection, availableAsRESTRequest: true)
+        let mapper = JetpackConnectionStatusMapper()
+        enqueue(request, mapper: mapper, completion: completion)
+    }
+
     /// Establishes a site-level connection between the site and WordPress.com using Jetpack.
     /// Returns WPCom `blogID` of the connected site.
     /// periphery: ignore - used in `JetpackConnectionStore` later
@@ -146,6 +156,7 @@ extension JetpackConnectionRemote: URLSessionDataDelegate {
 
 private extension JetpackConnectionRemote {
     enum Path {
+        static let jetpackConnection = "/jetpack/v4/connection"
         static let jetpackConnectionURL = "/jetpack/v4/connection/url"
         static let jetpackConnectionData = "/jetpack/v4/connection/data"
         static let jetpackConnectionRegister = "/jetpack/v4/connection/register"

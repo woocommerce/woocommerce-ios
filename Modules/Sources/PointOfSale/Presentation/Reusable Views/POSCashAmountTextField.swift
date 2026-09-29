@@ -4,34 +4,36 @@ import WooFoundation
 struct POSCashAmountTextField: View {
     @Binding var amount: String
     @FocusState.Binding var isFocused: Bool
-    let sanitizer: CurrencyInputSanitizer
     let onSubmit: () -> Void
 
     @State private var displayText: String = ""
+    @State private var inputDigits: String = ""
     @State private var hasAppliedPreset: Bool = false
+    @State private var isDisplayingPreset: Bool = false
 
+    private let formatter: POSCashAmountInputFormatter
     private let preset: Decimal?
 
     init(amount: Binding<String>,
          isFocused: FocusState<Bool>.Binding,
-         sanitizer: CurrencyInputSanitizer,
+         currencySettings: CurrencySettings,
          preset: Decimal? = nil,
          onSubmit: @escaping () -> Void) {
         self._amount = amount
         self._isFocused = isFocused
-        self.sanitizer = sanitizer
+        self.formatter = POSCashAmountInputFormatter(currencySettings: currencySettings)
         self.preset = preset
         self.onSubmit = onSubmit
     }
 
     var body: some View {
         HStack(spacing: 0) {
-            Text(sanitizer.currencySymbol)
+            Text(formatter.currencySymbol)
                 .foregroundStyle(Color.posOnSurface)
                 .font(.posHeadingRegular)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
             TextField("", text: $displayText)
-                .keyboardType(.decimalPad)
+                .keyboardType(formatter.hasFractionDigits ? .decimalPad : .numberPad)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Color.posOnSurface)
                 .font(.posHeadingRegular)
@@ -45,10 +47,12 @@ struct POSCashAmountTextField: View {
                 }
                 .onAppear {
                     if !hasAppliedPreset, let preset {
-                        let formatted = sanitizer.formatDecimal(preset)
+                        inputDigits = formatter.digits(from: preset)
+                        let formatted = formatter.formattedAmount(from: inputDigits)
                         displayText = formatted
                         amount = formatted
                         hasAppliedPreset = true
+                        isDisplayingPreset = true
                     }
                 }
                 .onDisappear {
@@ -61,13 +65,26 @@ struct POSCashAmountTextField: View {
     }
 
     private func handleTextChange(oldValue: String, newValue: String) {
-        if let sanitized = sanitizer.sanitize(newValue) {
-            amount = sanitized
-            if displayText != sanitized {
-                displayText = sanitized
-            }
-        } else {
-            displayText = oldValue
+        let currentFormattedAmount = formatter.formattedAmount(from: inputDigits)
+        guard newValue != currentFormattedAmount else {
+            amount = currentFormattedAmount
+            return
+        }
+
+        if let updatedDigits = formatter.applyingEdit(
+            from: oldValue,
+            to: newValue,
+            currentDigits: inputDigits,
+            isReplacingPreset: isDisplayingPreset
+        ) {
+            inputDigits = updatedDigits
+            isDisplayingPreset = false
+        }
+
+        let formattedAmount = formatter.formattedAmount(from: inputDigits)
+        amount = formattedAmount
+        if displayText != formattedAmount {
+            displayText = formattedAmount
         }
     }
 }

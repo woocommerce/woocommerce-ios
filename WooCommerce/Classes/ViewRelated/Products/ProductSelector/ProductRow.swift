@@ -90,10 +90,12 @@ extension ProductRow {
         case partiallySelected
         case selected
         case unsupported(reason: String)
+        /// The row is waiting on a check before it can be acted on.
+        case verifying
 
         var image: UIImage {
             switch self {
-            case .notSelected, .unsupported:
+            case .notSelected, .unsupported, .verifying:
                 return .checkEmptyCircleImage
             case .selected:
                 return .checkCircleImage.withRenderingMode(.alwaysTemplate)

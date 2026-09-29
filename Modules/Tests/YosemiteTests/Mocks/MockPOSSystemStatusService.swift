@@ -2,6 +2,7 @@ import Foundation
 import Networking
 @testable import Yosemite
 
+@MainActor
 final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
     var pluginInfoToReturn: Result<POSPluginAndFeatureInfo, Error>
     var loadPluginCallCount = 0
@@ -13,8 +14,8 @@ final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
                 siteID: 123,
                 plugin: "woocommerce/woocommerce.php",
                 name: "WooCommerce",
-                version: "10.3.0",
-                versionLatest: "10.3.0",
+                version: "10.5.0",
+                versionLatest: "10.5.0",
                 url: "https://woocommerce.com",
                 authorName: "WooCommerce",
                 authorUrl: "https://woocommerce.com",
@@ -40,7 +41,6 @@ final class MockPOSSystemStatusService: POSSystemStatusServiceProtocol {
 
     var cachedPluginToReturn: SystemPlugin?
 
-    @MainActor
     func loadCachedWooCommercePlugin(siteID: Int64) -> SystemPlugin? {
         cachedPluginToReturn
     }

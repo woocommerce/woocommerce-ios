@@ -316,7 +316,7 @@ struct SupportFormProvider: PreviewProvider {
                 .init(title: "WooPayments", datasource: MockDataSource()),
                 .init(title: "WooCommerce Plugins", datasource: MockDataSource()),
                 .init(title: "Other Plugins", datasource: MockDataSource()),
-            ]))
+            ], mobileStatusReportProvider: MobileStatusReportProvider()))
         }
     }
 }

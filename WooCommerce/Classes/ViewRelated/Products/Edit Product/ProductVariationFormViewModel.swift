@@ -137,10 +137,6 @@ final class ProductVariationFormViewModel: ProductFormViewModelProtocol {
         }
     }
 
-    deinit {
-        cancellable?.cancel()
-    }
-
     func hasUnsavedChanges() -> Bool {
         let hasProductChangesExcludingImages =
         productVariation.productVariation.copy(image: .some(nil)) != originalProductVariation.productVariation.copy(image: .some(nil))

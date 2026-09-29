@@ -4,6 +4,7 @@ import Testing
 @testable import WooAIAssistant
 
 @Suite(.timeLimit(.minutes(1)))
+@MainActor
 struct MessageBubbleRenderingTests {
 
     private let docsURL = URL(string: "https://woocommerce.com/document/woocommerce-ios/")!

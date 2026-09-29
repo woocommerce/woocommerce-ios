@@ -2,7 +2,6 @@ import Combine
 import SwiftUI
 import UIKit
 import Yosemite
-import Experiments
 
 /// Hosting controller that wraps an `EditOrderAddressForm`.
 ///
@@ -94,7 +93,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     @Bindable private(set) var viewModel: ViewModel
 
     @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-    @State private var showingCustomerSearch: Bool = false
 
     var body: some View {
         Group {
@@ -158,16 +156,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                 })
             }
 
-            ToolbarItemGroup(placement: .automatic) {
-                if viewModel.showSearchButton {
-                    Button(action: {
-                        showingCustomerSearch = true
-                    }, label: {
-                        Image(systemName: "magnifyingglass")
-                    })
-                }
-            }
-
             ToolbarItem(placement: .confirmationAction) {
                 navigationBarTrailingItem()
             }
@@ -179,12 +167,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
             viewModel.onLoadTrigger.send()
         }
         .notice($viewModel.notice)
-        .sheet(isPresented: $showingCustomerSearch, content: {
-            OrderCustomerListView(siteID: viewModel.siteID, onCustomerTapped: { customer in
-                viewModel.customerSelectedFromSearch(customer: customer)
-                showingCustomerSearch = false
-            })
-        })
     }
 
     /// Decides if the navigation trailing item should be a done button or a loading indicator.
@@ -327,21 +309,19 @@ struct SingleAddressForm: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderAddressMapSearch) {
-                Button(action: {
-                    showMapPicker = true
-                    ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerTapped,
-                                                   withProperties: ["locale": Locale.current.identifier])
-                }) {
-                    HStack {
-                        Image(systemName: "map")
-                        Text(Localization.pickOnMap)
-                    }
+            Button(action: {
+                showMapPicker = true
+                ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerTapped,
+                                               withProperties: ["locale": Locale.current.identifier])
+            }) {
+                HStack {
+                    Image(systemName: "map")
+                    Text(Localization.pickOnMap)
                 }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.horizontal, Constants.horizontalPadding)
-                .padding(.vertical, Constants.mapPickerButtonVerticalPadding)
             }
+            .buttonStyle(PrimaryButtonStyle())
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.vertical, Constants.mapPickerButtonVerticalPadding)
 
             Group {
                 TitleAndTextFieldRow(title: Localization.companyField,

@@ -120,6 +120,7 @@ final class ConnectivityToolViewController: TabBarHidingHostingController<Connec
             additionalAttachmentsProvider: { [weak self] in
                 self?.buildTroubleshootingAttachment() ?? []
             },
+            mobileStatusReportProvider: MobileStatusReportProvider(),
             onTicketCreated: onTicketCreated
         )
         supportEscalationCoordinator?.handleEscalation(chatID: chatID,
@@ -268,6 +269,8 @@ struct ConnectivityToolCard: View {
         case success
         case empty(String)
         case error(String, [Action])
+        /// The site cannot answer the test. Never rendered as a card; the reason feeds the support attachment.
+        case skipped(String)
 
         /// Builds the icon based on the state
         ///
@@ -278,7 +281,7 @@ struct ConnectivityToolCard: View {
             case .success:
                 Image(uiImage: .checkCircleImage)
                     .environment(\.colorScheme, .light)
-            case .empty:
+            case .empty, .skipped:
                 EmptyView()
             case .error:
                 Image(uiImage: .exclamationFilledImage)

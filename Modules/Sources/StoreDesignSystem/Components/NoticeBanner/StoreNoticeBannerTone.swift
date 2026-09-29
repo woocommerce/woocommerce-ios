@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// - Note: A closed type holding the color roles for one tone. `background` and `border` are
 ///   optional (`nil` means no fill / no border); only the neutral-outlined tone is bordered.
-public struct StoreNoticeBannerTone {
+public struct StoreNoticeBannerTone: Sendable {
     /// The tone's color roles. `background` and `border` are optional: `nil` means no fill / no border.
     struct Appearance {
         let background: Color?

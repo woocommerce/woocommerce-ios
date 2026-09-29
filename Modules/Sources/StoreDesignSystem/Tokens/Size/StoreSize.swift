@@ -11,9 +11,14 @@ public enum StoreSize {
     /// new component reuses the pattern rather than reintroducing its own literal.
     public static let badgeHeight: CGFloat = 24
     public static let segmentedControlHeight: CGFloat = 32
+    public static let filterChipHeight: CGFloat = 32
 
     /// The fixed decorative container size of a `StoreIconContainer`. Equal in value to
     /// `minimumTapTarget` but a distinct design dimension: the component is non-interactive,
     /// so this is not a touch-target constant.
     public static let iconContainerSize: CGFloat = 44
+
+    /// The touch target of a `StoreTopAppBar` control (48 pt): the design's icon-button box, which
+    /// also sets the bar's row height. Larger than `minimumTapTarget` by design, not by accident.
+    public static let topAppBarControlSize: CGFloat = 48
 }

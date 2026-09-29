@@ -48,19 +48,22 @@ final class JetpackRequestTests: XCTestCase {
 
     /// Verifies that a POST JetpackRequest will serialize all of the Tunneling Parameters in the request body.
     ///
-    func test_post_request_queries_DotCom_Jetpack_tunnel_endpoint_with_its_parameters_in_the_body() {
+    func test_post_request_queries_DotCom_Jetpack_tunnel_endpoint_with_its_parameters_in_the_body() throws {
+        // Given
         let request = JetpackRequest(wooApiVersion: .mark3, method: .post, siteID: sampleSiteID, path: sampleRPC, parameters: sampleParameters)
 
-        guard let urlRequest = try? request.asURLRequest(),
-            let generatedBodyAsData = urlRequest.httpBody,
-            let generatedBody = String(data: generatedBodyAsData, encoding: .utf8)
-        else {
-            XCTFail()
-            return
-        }
+        // When
+        let urlRequest = try request.asURLRequest()
+        let bodyData = try XCTUnwrap(urlRequest.httpBody)
+        let body = try XCTUnwrap(String(data: bodyData, encoding: .utf8))
+        let formItems = try XCTUnwrap(URLComponents(string: "?\(body)")?.queryItems)
+        let json = try XCTUnwrap(formItems.first { $0.name == "body" }?.value)
+        let parameters = try JSONSerialization.jsonObject(with: Data(json.utf8)) as? [String: String]
 
-        let expectedBody = httpBody(for: request)
-        XCTAssertEqual(expectedBody, generatedBody)
+        // Then
+        XCTAssertEqual(parameters, sampleParameters)
+        XCTAssertEqual(formItems.first { $0.name == "json" }?.value, "true")
+        XCTAssertEqual(formItems.first { $0.name == "path" }?.value, "/wc/v3/sample&_method=post")
     }
 
     func test_post_request_with_no_parameters_encodes_empty_parameters_in_the_body() throws {
@@ -338,26 +341,6 @@ private extension JetpackRequestTests {
         default:
             return String()
         }
-    }
-
-    /// Returns the expected HTTP Body for a given Jetpack Request.
-    ///
-    func httpBody(for request: JetpackRequest) -> String {
-        guard request.method == .post else {
-            return String()
-        }
-
-        let parametersAsData = try? JSONSerialization.data(withJSONObject: request.parameters, options: [])
-        let parametersAsString = String(data: parametersAsData!, encoding: .utf8)!
-        let parametersAsPercentEncoded = parametersAsString.addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
-        let ampersandAsPercentEncoded = "&".addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
-        let methodAsPercentEncoded = String("method=" + request.method.rawValue.lowercased())
-            .addingPercentEncoding(withAllowedCharacters: .alphanumerics)!
-
-        return "body=" + parametersAsPercentEncoded +
-            "&json=true" +
-            "&path=" + sampleWooApiVersion.path + sampleRPC +
-            ampersandAsPercentEncoded + "_" + methodAsPercentEncoded
     }
 
     /// Concatenates the specified collection of Parameters for the URLRequest's httpBody.

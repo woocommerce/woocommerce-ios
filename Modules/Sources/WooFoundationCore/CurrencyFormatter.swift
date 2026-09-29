@@ -193,6 +193,38 @@ public class CurrencyFormatter {
                             isNegative: isNegative)
     }
 
+    /// Applies currency option settings to the amount (as String) and, when `currency` differs from the
+    /// store's default currency, appends its ISO code (e.g. "$10.00 CAD") so that amounts in a non-default
+    /// currency are unambiguous.
+    ///
+    /// Many currencies share the same symbol (USD, CAD, AUD, MXN… all render as "$"), so a bare symbol can't
+    /// tell them apart. When `currency` matches the store default this behaves exactly like
+    /// `formatAmount(_:with:)`; otherwise the ISO code is appended after the formatted amount.
+    ///
+    /// - Parameters:
+    ///     - amount: a raw string representation of the amount, from the API, with no formatting applied. e.g. "19.87"
+    ///     - currency: a 3-letter code for the currency the amount is in. e.g. "CAD"
+    ///     - annotatingNonDefaultCurrencyCode: when `true`, appends the ISO code for currencies other than the store default.
+    ///     - locale: the locale that is used to format the currency amount string.
+    ///
+    public func formatAmount(_ amount: String,
+                             with currency: String,
+                             annotatingNonDefaultCurrencyCode: Bool,
+                             locale: Locale = .current) -> String? {
+        guard let formattedAmount = formatAmount(amount, with: currency, locale: locale) else {
+            return nil
+        }
+
+        guard annotatingNonDefaultCurrencyCode,
+              let code = CurrencyCode(caseInsensitiveRawValue: currency),
+              code != currencySettings.currencyCode else {
+            return formattedAmount
+        }
+
+        // Non-breaking space keeps the amount and its code together on one line.
+        return "\(formattedAmount)\u{00a0}\(code.rawValue)"
+    }
+
     /// Formats the provided `amount` param into a human readable value and applies the currency option
     /// settings for the given currency.
     ///

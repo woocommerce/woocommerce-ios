@@ -54,13 +54,15 @@ final class ProductReviewTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureSubjectLabel()
-        configureSnippetLabel()
-        configureNoticonLabel()
-        configureStarView()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureSubjectLabel()
+            configureSnippetLabel()
+            configureNoticonLabel()
+            configureStarView()
 
-        initialiseReadStateToFalse()
+            initialiseReadStateToFalse()
+        }
     }
 
     override func setSelected(_ selected: Bool, animated: Bool) {

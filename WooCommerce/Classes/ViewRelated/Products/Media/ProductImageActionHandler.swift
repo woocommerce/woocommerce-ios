@@ -1,8 +1,10 @@
 import Combine
 import Photos
 import Yosemite
+import protocol WooFoundation.Analytics
 
 /// Interface of `ProductImageActionHandler` to allow mocking in unit tests.
+@MainActor
 protocol ProductImageActionHandlerProtocol {
     typealias OnAllStatusesUpdate = ([ProductImageStatus]) -> Void
     typealias OnAssetUpload = (ProductImageAssetType, Result<ProductImage, Error>) -> Void
@@ -33,6 +35,7 @@ protocol ProductImageActionHandlerProtocol {
 
 /// Encapsulates the implementation of Product images actions from the UI.
 ///
+@MainActor
 final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     typealias OnAllStatusesUpdate = ([ProductImageStatus]) -> Void
     typealias OnAssetUpload = (ProductImageAssetType, Result<ProductImage, Error>) -> Void
@@ -40,14 +43,12 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     private let siteID: Int64
     private var productOrVariationID: ProductOrVariationID
 
-    /// The queue where internal states like `allStatuses` and `observations` are updated on to maintain thread safety.
-    private let queue: DispatchQueue
-
     private let stores: StoresManager
+    private let analytics: Analytics
 
     private(set) var productImageStatuses: [ProductImageStatus] {
         didSet {
-            queue.async { [weak self] in
+            DispatchQueue.main.async { [weak self] in
                 guard let self else {
                     return
                 }
@@ -67,17 +68,17 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     ///   - siteID: the ID of a site/store where the product belongs to.
     ///   - productID: the ID of the product whose image statuses and actions are of concern.
     ///   - imageStatuses: the current image statuses of the product.
-    ///   - queue: the queue where the update callbacks are called on. Default to be the main queue.
     ///   - stores: stores that dispatch image upload action.
+    ///   - analytics: tracks image upload failures.
     init(siteID: Int64,
          productID: ProductOrVariationID,
          imageStatuses: [ProductImageStatus],
-         queue: DispatchQueue = .main,
-         stores: StoresManager = ServiceLocator.stores) {
+         stores: StoresManager = ServiceLocator.stores,
+         analytics: Analytics = ServiceLocator.analytics) {
         self.siteID = siteID
         self.productOrVariationID = productID
-        self.queue = queue
         self.stores = stores
+        self.analytics = analytics
         self.productImageStatuses = imageStatuses
     }
 
@@ -85,14 +86,14 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     ///
     /// - Parameters:
     ///   - observer: the observer that `onUpdate` is associated with.
-    ///   - onUpdate: called when the image statuses have been updated on the thread passed in the initializer (default to the main thread),
+    ///   - onUpdate: called on the main thread when the image statuses have been updated,
     ///               if `observer` is not nil.
     @discardableResult
     func addUpdateObserver<T: AnyObject>(_ observer: T,
                                          onUpdate: @escaping OnAllStatusesUpdate) -> AnyCancellable {
         let id = UUID()
 
-        queue.async { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let self else {
                 return
             }
@@ -117,7 +118,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
         }
 
         return AnyCancellable { [weak self] in
-            self?.queue.async { [weak self] in
+            DispatchQueue.main.async { [weak self] in
                 self?.observations.allStatusesUpdated.removeValue(forKey: id)
             }
         }
@@ -132,7 +133,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                                               onAssetUpload: @escaping OnAssetUpload) -> AnyCancellable {
         let id = UUID()
 
-        queue.async { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let self else {
                 return
             }
@@ -150,14 +151,14 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
         }
 
         return AnyCancellable { [weak self] in
-            self?.queue.async { [weak self] in
+            DispatchQueue.main.async { [weak self] in
                 self?.observations.assetUploaded.removeValue(forKey: id)
             }
         }
     }
 
     func addSiteMediaLibraryImagesToProduct(mediaItems: [Media]) {
-        queue.async { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let self else {
                 return
             }
@@ -171,7 +172,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     }
 
     func uploadMediaAssetToSiteMediaLibrary(asset: ProductImageAssetType) {
-        queue.async { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let self else {
                 return
             }
@@ -186,7 +187,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
             }
 
             self.uploadMediaAssetToSiteMediaLibrary(asset: asset) { [weak self] result in
-                                                self?.queue.async { [weak self] in
+                                                DispatchQueue.main.async { [weak self] in
                                                     guard let self else {
                                                         return
                                                     }
@@ -205,7 +206,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
                                                                                         alt: media.alt)
                                                         self.updateProductImageStatus(at: index, productImage: productImage)
                                                     case .failure(let error):
-                                                        ServiceLocator.analytics.track(.productImageUploadFailed, withError: error)
+                                                        self.analytics.track(.productImageUploadFailed, withError: error)
                                                         self.updateProductImageStatus(at: index, error: error)
                                                     }
                                                 }
@@ -238,7 +239,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     }
 
     func discardUpload(asset: ProductImageAssetType) {
-        queue.async { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let self else { return }
 
             guard let uploadIndex = index(of: asset) else {
@@ -255,7 +256,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     /// Used for updating the product ID during create product flow. i.e. To replace the local product ID with the remote product ID.
     ///
     func updateProductID(_ remoteProductID: ProductOrVariationID) {
-        queue.async { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let self else {
                 return
             }
@@ -274,7 +275,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     }
 
     func deleteProductImage(_ productImage: ProductImage) {
-        queue.async { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let self else {
                 return
             }
@@ -293,7 +294,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     /// Resets the product images to the ones from the given Product.
     ///
     func resetProductImages(to product: ProductFormDataModel) {
-        queue.async { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let self else {
                 return
             }
@@ -305,7 +306,7 @@ final class ProductImageActionHandler: ProductImageActionHandlerProtocol {
     /// Updates the product images with the given ones.
     ///
     func updateProductImageStatusesAfterReordering(_ productImageStatuses: [ProductImageStatus]) {
-        queue.async { [weak self] in
+        DispatchQueue.main.async { [weak self] in
             guard let self else {
                 return
             }

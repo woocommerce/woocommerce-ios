@@ -8,7 +8,7 @@ public enum ItemIdentifierSearchResult {
 
 /// Which property matched the looked identifier
 ///
-public enum ItemIdentifierSearchResultSource {
+public enum ItemIdentifierSearchResultSource: Sendable {
     case SKU
     case globalUniqueIdentifier
 }
@@ -62,6 +62,16 @@ public enum ProductAction: Action {
                              shouldDeleteStoredProductsOnFirstPage: Bool = true,
                              onCompletion: (Result<Bool, Error>) -> Void)
 
+    /// Synchronizes a page of products and additional products needed for order creation in one storage update.
+    ///
+    case synchronizeProductsForOrderCreation(siteID: Int64,
+                                              pageNumber: Int,
+                                              pageSize: Int = ProductsRemote.Default.pageSize,
+                                              sortOrder: ProductsSortOrder,
+                                              additionalProductIDs: [Int64],
+                                              shouldDeleteStoredProductsOnFirstPage: Bool = true,
+                                              onCompletion: (Result<(products: [Product], hasNextPage: Bool, missingProductIDs: [Int64]), Error>) -> Void)
+
     /// Retrieves a currency-scoped page of products without writing the results to local storage.
     ///
     case retrieveProductsTransiently(siteID: Int64,
@@ -107,6 +117,14 @@ public enum ProductAction: Action {
                           pageNumber: Int = ProductsRemote.Default.pageNumber,
                           pageSize: Int = ProductsRemote.Default.pageSize,
                           onCompletion: (Result<(products: [Product], hasNextPage: Bool), Error>) -> Void)
+
+    /// Retrieves every Product in a specified list, fetching only the ones which are not stored already.
+    ///
+    /// Products are fetched a page at a time until there are none left, so the caller does not have to page.
+    ///
+    case retrieveProductsIfNeeded(siteID: Int64,
+                                  productIDs: [Int64],
+                                  onCompletion: (Result<[Product], Error>) -> Void)
 
     /// Retrieves the first Product or Variation with exact-match SKU or, if that search is empty, global unique identifier
     ///

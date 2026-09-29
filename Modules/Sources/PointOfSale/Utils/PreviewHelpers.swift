@@ -226,7 +226,7 @@ struct POSPreviewHelpers {
         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
         couponsController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
         couponsSearchController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
+        cardPresentPaymentService: CardPresentPaymentFacade? = nil,
         orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
         settingsController: POSSettingsControllerProtocol = POSSettingsPreviewController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentPreviewAnalytics(),
@@ -238,9 +238,10 @@ struct POSPreviewHelpers {
         siteID: Int64 = 1,
         catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol? = nil,
         isLocalCatalogEligible: Bool = false,
-        sunsetWarningChecker: POSSunsetWarningChecking? = nil,
         receiptPrinter: ReceiptPrinterServiceProtocol? = nil
     ) -> PointOfSaleAggregateModel {
+        let cardPresentPaymentService = cardPresentPaymentService ?? CardPresentPaymentPreviewService()
+
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
             itemsController: itemsController,
@@ -259,14 +260,15 @@ struct POSPreviewHelpers {
             siteID: siteID,
             catalogSyncCoordinator: catalogSyncCoordinator,
             isLocalCatalogEligible: isLocalCatalogEligible,
-            sunsetWarningChecker: sunsetWarningChecker,
             receiptPrinter: receiptPrinter
         )
     }
 
+    @MainActor
     static func makePreviewOrdersModel(state: POSOrderListState) -> POSOrderListModel {
         return POSOrderListModel(
             ordersController: POSConfigurablePreviewOrderListController(state: state),
+            refundController: POSPreviewRefundController(),
             receiptSender: POSReceiptSenderPreview(),
             refundSubmissionModel: POSRefundSubmissionModel())
     }
@@ -513,13 +515,11 @@ struct POSPreviewHelpers {
 
 
 // MARK: - Preview Orders Controller
-final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol {
-    var refundSelectableItems: [POSRefundSelectableItem]
+final class POSConfigurablePreviewOrderListController: POSSearchingOrderListControllerProtocol, POSOrderSelectionHandling {
     let ordersViewState: POSOrderListState
 
     init(state: POSOrderListState) {
         self.ordersViewState = state
-        self.refundSelectableItems = []
     }
 
     var selectedOrder: POSOrder? {
@@ -536,26 +536,35 @@ final class POSConfigurablePreviewOrderListController: POSSearchingOrderListCont
     }
     var displayedLineItems: [POSOrderItem] { selectedOrder?.lineItems ?? [] }
     var displayedCustomAmounts: [POSOrderCustomAmount] { selectedOrder?.customAmounts ?? [] }
-    var refundActionAvailability: RefundActionAvailability { .available }
-    var currentRefundRequiresCardPresentRefund: Bool { false }
-    var hasModifiedRefundSelection = false
 
     func loadOrders() async {}
     func loadNextOrders() async {}
     func refreshOrders() async {}
     func selectOrder(_ order: POSOrder?) {}
     func updateOrder(orderID: Int64) async throws {}
-    func preloadRefundDetails() async {}
     func searchOrders(searchTerm: String) async {}
     func clearSearchOrders() {}
-    func startRefundFlow() async -> StartRefundFlowResult { .hasItemsToRefund }
-    func toggleRefundItemSelection(at index: Int) {}
-    func clearRefundSelection() {}
-    func toggleAllRefundItemsSelection() {}
-    var refundReviewPreparationState: POSRefundReviewPreparationState { .idle }
-    func prepareRefundReview() async -> POSRefundReviewPreparationResult { .preparationError }
-    func processRefund(reason: String?) async throws {}
     func loadOrderRefunds() async {}
+}
+
+final class POSPreviewRefundController: POSRefundControllerProtocol {
+    var selectableItems: [POSRefundSelectableItem] = []
+    var hasLoadedSelectableItems: Bool { !selectableItems.isEmpty }
+    var hasModifiedSelection = false
+    var reviewPreparationState: POSRefundReviewPreparationState = .idle
+    var requiresCardPresentRefund = false
+
+    func preloadRefund(for order: POSOrder) async {}
+    func startRefundFlow(for order: POSOrder) async -> StartRefundFlowResult { .hasItemsToRefund }
+    func refreshRefundableItems() async -> StartRefundFlowResult { .hasItemsToRefund }
+    func toggleItemSelection(at index: Int) {}
+    func toggleAllItemsSelection() {}
+    func clearSelection() {}
+    func reset() {}
+    func prepareReview() async -> POSRefundReviewPreparationResult { .preparationError }
+    func processRefund(reason: String?) async throws -> POSRefundSubmissionResult {
+        POSRefundSubmissionResult(refundedOrderID: 0)
+    }
 }
 
 // MARK: - Barcode Scan Service
@@ -565,6 +574,7 @@ final class PointOfSalePreviewBarcodeScanService: PointOfSaleBarcodeScanServiceP
     }
 }
 
+@MainActor
 final class PointOfSalePreviewTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
     func checkEligibility(forceRemoteCheck: Bool) async -> POSEligibilityState { .eligible }
     func refreshEligibility(ineligibleReason: POSIneligibleReason) async throws -> POSEligibilityState { .eligible }
@@ -575,6 +585,8 @@ final class POSReceiptSenderPreview: POSReceiptSending {
 }
 
 final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyticsTracking {
+    func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {}
+
     func trackCustomerInteractionStarted() {}
 
     func trackOrderSyncSuccess() {}
@@ -585,11 +597,11 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 
     func trackCheckoutTapped() {}
 
-    func trackSuccessfulCashPayment() {}
+    func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder) {}
 
-    func trackSuccessfulScanToPayPayment() {}
+    func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder) {}
 
-    func trackSuccessfulMarkAsPaidPayment() {}
+    func trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder) {}
 }
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {
@@ -610,6 +622,8 @@ final class POSOrderServicePreview: POSOrderServiceProtocol {
     func promoteOrderToPending(order: Yosemite.Order) async throws -> Yosemite.Order { order }
 
     func addOrderNote(orderID: Int64, isCustomerNote: Bool, note: String) async throws {}
+
+    func recordScanToPayPaymentMethod(order: Yosemite.Order) async throws {}
 }
 
 final class POSRefundsServicePreview: POSRefundsServiceProtocol {

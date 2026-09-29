@@ -1,6 +1,15 @@
 <!--
 Contains editorialized release notes. Raw release notes should go into `RELEASE-NOTES.txt`.
 -->
+## 25.7
+Age verification is now clearer: if parental consent is pending or denied, you'll see a screen explaining what to do next, not just a log out. If a connection issue stops your store loading, the app tells you what's happening and offers support, so you're not left guessing.
+
+## 25.6
+More fixes for your store: orders paid via Scan to Pay or Mark as Paid show the correct payment method. You’ll see a warning if your store’s currency can’t load. Purchased shipping labels now appear reliably, and rejected site logins show an error. We also fixed an iOS 26 crash, a Settings layout issue, and other product and order problems.
+
+## 25.5
+You can now see product prices and SKUs in your product list, and Dashboard stats stay visible even when there’s no revenue on the chosen dates. Refunds for gift card payments are now handled from your store admin. Plus, fixes across orders, payments, POS, and in-app displays keep your store running smoothly.
+
 ## 25.4
 Order statuses now show in your store's language everywhere you view orders. New order notifications look right in dark mode, and login issues are fixed for stores with certain hosting. Returning from product or order details no longer crashes in specific iOS versions.
 

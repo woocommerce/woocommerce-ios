@@ -100,15 +100,91 @@ final class DefaultConnectivityObserverTests: XCTestCase {
         XCTAssertEqual(observer.isConnectionMetered, true)
         XCTAssertEqual(observer.isLowDataModeEnabled, true)
     }
+
+    func test_statusPublisher_when_path_updates_then_callback_reads_the_new_snapshot() {
+        // Given
+        let networkMonitor = MockNetworkMonitor()
+        let observer = DefaultConnectivityObserver(networkMonitor: networkMonitor)
+        let expectation = expectation(description: "Snapshot visible inside callback")
+        observer.statusPublisher
+            .dropFirst()
+            .sink { status in
+                XCTAssertEqual(status, .reachable(type: .cellular))
+                XCTAssertEqual(observer.currentStatus, status)
+                XCTAssertEqual(observer.isConnectionMetered, true)
+                XCTAssertEqual(observer.isLowDataModeEnabled, true)
+                expectation.fulfill()
+            }
+            .store(in: &subscriptions)
+
+        // When
+        networkMonitor.fakeNetworkUpdate(network: MockNetwork(status: .satisfied,
+                                                              currentInterface: .cellular,
+                                                              isExpensive: true,
+                                                              isConstrained: true))
+
+        // Then
+        wait(for: [expectation], timeout: 1)
+    }
+
+    func test_statusPublisher_when_subscribing_after_update_then_replays_the_current_snapshot() {
+        // Given
+        let networkMonitor = MockNetworkMonitor()
+        let observer = DefaultConnectivityObserver(networkMonitor: networkMonitor)
+        let expectation = expectation(description: "Path updated before subscribing")
+        observer.statusPublisher
+            .dropFirst()
+            .sink { _ in expectation.fulfill() }
+            .store(in: &subscriptions)
+        networkMonitor.fakeNetworkUpdate(network: MockNetwork(status: .satisfied,
+                                                              currentInterface: .cellular,
+                                                              isExpensive: true,
+                                                              isConstrained: true))
+        wait(for: [expectation], timeout: 1)
+
+        // When
+        var replayedStatus: ConnectivityStatus?
+        observer.statusPublisher
+            .sink { status in
+                replayedStatus = status
+                XCTAssertEqual(observer.currentStatus, status)
+                XCTAssertEqual(observer.isConnectionMetered, true)
+                XCTAssertEqual(observer.isLowDataModeEnabled, true)
+            }
+            .store(in: &subscriptions)
+
+        // Then
+        XCTAssertEqual(replayedStatus, .reachable(type: .cellular))
+    }
+
+    func test_initializing_observer_when_monitor_updates_during_start_then_receives_the_update() {
+        // Given
+        let networkMonitor = MockNetworkMonitor(networkOnStart: MockNetwork(status: .satisfied, currentInterface: .wifi))
+        let expectation = expectation(description: "Update delivered during start")
+
+        // When
+        let observer = DefaultConnectivityObserver(networkMonitor: networkMonitor)
+        observer.statusPublisher
+            .filter { $0 == .reachable(type: .ethernetOrWiFi) }
+            .sink { _ in expectation.fulfill() }
+            .store(in: &subscriptions)
+
+        // Then
+        wait(for: [expectation], timeout: 1)
+        XCTAssertEqual(observer.currentStatus, .reachable(type: .ethernetOrWiFi))
+    }
 }
 
 final class MockNetworkMonitor: NetworkMonitoring {
-    var networkUpdateHandler: ((NetworkMonitorable) -> Void)?
+    var networkUpdateHandler: (@Sendable (NetworkMonitorable) -> Void)?
 
     private(set) var didStartMonitoring = false
     private(set) var didStopMonitoring = false
+    private let networkOnStart: NetworkMonitorable?
 
-    init() {}
+    init(networkOnStart: NetworkMonitorable? = nil) {
+        self.networkOnStart = networkOnStart
+    }
 
     func fakeNetworkUpdate(network: NetworkMonitorable) {
         networkUpdateHandler?(network)
@@ -116,6 +192,9 @@ final class MockNetworkMonitor: NetworkMonitoring {
 
     func start(queue: DispatchQueue) {
         didStartMonitoring = true
+        if let networkOnStart {
+            networkUpdateHandler?(networkOnStart)
+        }
     }
 
     func cancel() {

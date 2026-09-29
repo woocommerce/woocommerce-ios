@@ -49,30 +49,6 @@ struct POSTapToPayAvailabilityControllerTests {
 
     // MARK: - State Resolved to Unavailable
 
-    @Test func checkAvailability_when_checker_returns_featureFlagDisabled_then_state_transitions_to_unavailable_featureFlagDisabled() async {
-        // Given
-        let checker = MockPOSTapToPayAvailabilityChecker()
-        checker.resultToReturn = .unavailable(reason: .featureFlagDisabled)
-
-        // When
-        let sut = POSTapToPayAvailabilityController(availabilityChecker: checker)
-
-        // Then
-        await withCheckedContinuation { continuation in
-            withObservationTracking {
-                _ = sut.state
-            } onChange: {
-                Task { @MainActor in
-                    if case .unavailable = sut.state {
-                        continuation.resume()
-                    }
-                }
-            }
-        }
-
-        #expect(sut.state == .unavailable(reason: .featureFlagDisabled))
-    }
-
     @Test func checkAvailability_when_checker_returns_deviceNotSupported_then_state_transitions_to_unavailable_deviceNotSupported() async {
         // Given
         let checker = MockPOSTapToPayAvailabilityChecker()

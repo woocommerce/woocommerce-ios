@@ -34,6 +34,8 @@ final class OrderDetailsViewController: UIViewController {
     ///
     private lazy var refreshControl: UIRefreshControl = {
         let refreshControl = UIRefreshControl()
+        refreshControl.isEnabled = false
+        refreshControl.isHidden = true
         refreshControl.addTarget(self, action: #selector(pullToRefresh), for: .valueChanged)
         return refreshControl
     }()
@@ -104,10 +106,8 @@ final class OrderDetailsViewController: UIViewController {
                 self?.topLoaderView.isHidden = true
             }
 
-            /// We add the refresh control to the tableview just after the `topLoaderView` disappear for the first time.
-            if self?.tableView.refreshControl == nil {
-                self?.tableView.refreshControl = self?.refreshControl
-            }
+            self?.refreshControl.isHidden = false
+            self?.refreshControl.isEnabled = true
         }
     }
 
@@ -141,6 +141,13 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
+        if #available(iOS 26.0, *) {
+            // Work around WOOMOB-3694 by avoiding the navigation controller's refresh-control host, which can enter a recursive layout cycle.
+            // Order Details does not use large titles, so direct subview attachment preserves pull-to-refresh without that integration.
+            tableView.addSubview(refreshControl)
+        } else {
+            tableView.refreshControl = refreshControl
+        }
 
         tableView.dataSource = viewModel.dataSource
         tableView.accessibilityIdentifier = "order-details-table-view"
@@ -358,7 +365,6 @@ private extension OrderDetailsViewController {
 
     @objc func pullToRefresh() {
         ServiceLocator.analytics.track(.orderDetailPulledToRefresh)
-        refreshControl.beginRefreshing()
         syncEverything { [weak self] in
             NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
             self?.refreshControl.endRefreshing()
@@ -481,7 +487,7 @@ private extension OrderDetailsViewController {
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
             shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
                 if isOrderComplete {
-                    self?.markOrderCompleteFromShippingLabels()
+                    self?.markOrderCompleteFromShippingLabels(isRevampedFlow: false)
                 }
             }
             shippingLabelFormVC.onLabelSave = { [weak self] in
@@ -508,7 +514,7 @@ private extension OrderDetailsViewController {
                                                                        preselection: preSelection,
                                                                        onLabelPurchase: { [weak self] markOrderComplete in
             if markOrderComplete {
-                self?.markOrderCompleteFromShippingLabels()
+                self?.markOrderCompleteFromShippingLabels(isRevampedFlow: true)
             }
         })
         let shippingLabelCreationVC = WooShippingCreateLabelsViewHostingController(viewModel: shippingLabelCreationVM)
@@ -528,9 +534,8 @@ private extension OrderDetailsViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 
-    func markOrderCompleteFromShippingLabels() {
+    func markOrderCompleteFromShippingLabels(isRevampedFlow: Bool) {
         let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
-        let isRevampedFlow = ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation)
 
         var cancellables = Set<AnyCancellable>()
         var cancellable = AnyCancellable { }
@@ -629,16 +634,6 @@ private extension OrderDetailsViewController {
     }
 
     func refundShippingLabel(_ shippingLabel: ShippingLabel) {
-        guard ServiceLocator.featureFlagService.isFeatureFlagEnabled(.revampedShippingLabelCreation) else {
-            let refundViewController = RefundShippingLabelViewController(shippingLabel: shippingLabel) { [weak self] in
-                self?.navigationController?.popViewController(animated: true)
-            }
-            // Disables the bottom bar (tab bar) when requesting a refund.
-            refundViewController.hidesBottomBarWhenPushed = true
-            show(refundViewController, sender: self)
-            return
-        }
-
         let refundViewModel = WooShippingRefundViewModel(shippingLabel: shippingLabel)
         let view = WooShippingRefundView(viewModel: refundViewModel) { [weak self] updatedLabel in
             guard let self else { return }

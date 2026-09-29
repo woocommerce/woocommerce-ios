@@ -256,7 +256,6 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleReceiptEmailSendTapped,
             WooAnalyticsStat.pointOfSalePaymentsOnboardingShown,
             WooAnalyticsStat.pointOfSalePaymentsOnboardingDismissed,
-            WooAnalyticsStat.pointOfSaleCardReaderConnectionTapped,
             WooAnalyticsStat.pointOfSaleCheckoutTapToPayTapped,
             WooAnalyticsStat.pointOfSaleTapToPayNotAvailable,
             WooAnalyticsStat.pointOfSaleInteractionWithCustomerStarted,
@@ -321,6 +320,7 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleRefundProcessingFailed,
             WooAnalyticsStat.pointOfSaleRefundFlowAborted,
             WooAnalyticsStat.pointOfSaleRefundSelectAllTapped,
+            WooAnalyticsStat.pointOfSaleRefundServerFlowUnavailable,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedScreenShown,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedEditOrderTapped,
             WooAnalyticsStat.pointOfSaleCheckoutOutdatedItemDetectedRemoveTapped,
@@ -331,6 +331,10 @@ private extension TracksProvider {
             WooAnalyticsStat.orderCreationFailed,
 
             // Card Reader Connection
+            WooAnalyticsStat.cardReaderDiscoveryTapped,
+            WooAnalyticsStat.cardReaderDiscoveryReaderDiscovered,
+            WooAnalyticsStat.cardReaderConnectionTapped,
+            WooAnalyticsStat.cardReaderAutoConnectionStarted,
             WooAnalyticsStat.cardReaderDiscoveryFailed,
             WooAnalyticsStat.cardReaderConnectionFailed,
             WooAnalyticsStat.cardReaderConnectionSuccess,
@@ -368,6 +372,14 @@ private extension TracksProvider {
             WooAnalyticsStat.collectPaymentSuccess,
             WooAnalyticsStat.collectInteracPaymentSuccess,
 
+            // Refunds
+            WooAnalyticsStat.refundCreate,
+            WooAnalyticsStat.refundCreateSuccess,
+            WooAnalyticsStat.refundCreateFailed,
+            WooAnalyticsStat.interacRefundSuccess,
+            WooAnalyticsStat.interacRefundFailed,
+            WooAnalyticsStat.interacRefundCanceled,
+
             // Coupons
             WooAnalyticsStat.couponSettingEnabled,
             WooAnalyticsStat.couponCreationSuccess,
@@ -391,8 +403,6 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncCompleted,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningDismissed,
             WooAnalyticsStat.pointOfSaleLocalCatalogBlockedFellBackToRemote
         ]
 
@@ -409,8 +419,6 @@ private extension TracksProvider {
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncCompleted,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncFailed,
             WooAnalyticsStat.pointOfSaleLocalCatalogSyncSkipped,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningShown,
-            WooAnalyticsStat.pointOfSaleLocalCatalogSunsetWarningDismissed,
             WooAnalyticsStat.pointOfSaleLocalCatalogBlockedFellBackToRemote
         ]
 

@@ -511,7 +511,7 @@ final class MainTabBarControllerTests: XCTestCase {
         assertThat(tabBarController.tabRootViewController(tab: .orders, isPOSTabVisible: false),
                    isAnInstanceOf: OrdersSplitViewWrapperController.self)
         assertThat(tabBarController.tabRootViewController(tab: .products, isPOSTabVisible: false),
-                   isAnInstanceOf: ProductsViewController.self)
+                   isAnInstanceOf: ProductsSplitViewWrapperController.self)
 
         let hubMenuNavigationController = try XCTUnwrap(tabBarController.tabRootViewController(tab: .hubMenu, isPOSTabVisible: false) as? UINavigationController)
         assertThat(hubMenuNavigationController.topViewController,

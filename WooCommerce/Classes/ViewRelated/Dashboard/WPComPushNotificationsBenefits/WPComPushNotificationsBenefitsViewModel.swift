@@ -115,8 +115,16 @@ final class WPComPushNotificationsBenefitsViewModel {
         } catch {
             DDLogError("⛔️ Failed to fetch Jetpack connection data: \(error)")
             if case NetworkError.unacceptableStatusCode(403, _) = error {
-                self.error = .noPermission
-                analytics.track(.pushNotificationsSetupIntroductionError, withProperties: ["error_type": "no_permission"])
+                // A 403 can mean the account lacks permission, or that Jetpack is in Offline Mode
+                // (which revokes the capability gating the connection data endpoint for everyone).
+                // Distinguish them so administrators get an actionable message in the Offline Mode case.
+                if await jetpackConnectionService.isJetpackInOfflineMode() {
+                    self.error = .offlineMode
+                    analytics.track(.pushNotificationsSetupIntroductionError, withProperties: ["error_type": "offline_mode"])
+                } else {
+                    self.error = .noPermission
+                    analytics.track(.pushNotificationsSetupIntroductionError, withProperties: ["error_type": "no_permission"])
+                }
             } else {
                 self.error = .generic(underlyingError: error)
                 analytics.track(.pushNotificationsSetupIntroductionError, properties: ["error_type": "generic"], error: error)
@@ -184,12 +192,15 @@ private extension WPComPushNotificationsBenefitsViewModel {
 extension WPComPushNotificationsBenefitsViewModel {
     enum VariantCheckError: Error {
         case noPermission
+        case offlineMode
         case generic(underlyingError: Error)
 
         var message: String {
             switch self {
             case .noPermission:
                 Localization.noPermission
+            case .offlineMode:
+                Localization.offlineMode
             case .generic:
                 Localization.generic
             }
@@ -201,6 +212,12 @@ extension WPComPushNotificationsBenefitsViewModel {
                 value: "Your account does not have permission to complete push notifications setup. " +
                 "Please ask your store administrator to handle this.",
                 comment: "Error message in the Push Notifications Benefits View for users without admin role"
+            )
+            static let offlineMode = NSLocalizedString(
+                "wpcomPushNotificationsBenefitsViewModel.variantCheckError.storeInOfflineMode",
+                value: "Push notifications can’t be set up because your store is in Offline Mode. " +
+                "If you still need help, please contact support.",
+                comment: "Error message in the Push Notifications Benefits View when the store's Jetpack is in Offline Mode"
             )
             static let generic = NSLocalizedString(
                 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.generic",

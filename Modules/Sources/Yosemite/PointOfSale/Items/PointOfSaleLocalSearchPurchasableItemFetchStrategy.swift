@@ -7,7 +7,7 @@ import struct Storage.PersistedProductVariation
 import protocol Networking.ProductVariationsRemoteProtocol
 
 /// Fetch strategy for searching products in the local GRDB catalog.
-/// Uses FTS5 full-text search when enabled, otherwise falls back to LIKE-based queries.
+/// Uses FTS5 full-text search.
 struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     private let siteID: Int64
     private let searchTerm: String
@@ -17,7 +17,6 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
     private let itemMapper: PointOfSaleItemMapperProtocol
     private let analytics: POSItemFetchAnalyticsTracking
     private let pageSize: Int
-    private let isFTSSearchEnabled: Bool
 
     init(siteID: Int64,
          searchTerm: String,
@@ -25,8 +24,7 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
          variationsRemote: ProductVariationsRemoteProtocol,
          itemMapper: PointOfSaleItemMapperProtocol,
          analytics: POSItemFetchAnalyticsTracking,
-         pageSize: Int = 25,
-         isFTSSearchEnabled: Bool = true) {
+         pageSize: Int = 25) {
         self.siteID = siteID
         self.searchTerm = searchTerm
         self.grdbManager = grdbManager
@@ -34,7 +32,6 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
         self.itemMapper = itemMapper
         self.analytics = analytics
         self.pageSize = pageSize
-        self.isFTSSearchEnabled = isFTSSearchEnabled
     }
 
     var debounceStrategy: SearchDebounceStrategy {
@@ -44,43 +41,10 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
         .simple(duration: 150 * NSEC_PER_MSEC, loadingDelayThreshold: 300 * NSEC_PER_MSEC)
     }
 
+    /// Local search answers through `fetchMixedItems`, so the service never asks this strategy for products only.
+    /// Goes away with the rest of the two-path contract in WOOMOB-3967.
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct> {
-        let startTime = Date()
-
-        // Get total count and persisted products in one transaction
-        let (persistedProducts, totalCount) = try await grdbManager.databaseConnection.read { db in
-            let totalCount = try PersistedProduct
-                .posProductSearch(siteID: siteID, searchTerm: searchTerm)
-                .fetchCount(db)
-
-            let offset = (pageNumber - 1) * pageSize
-            let persistedProducts = try PersistedProduct
-                .posProductSearch(siteID: siteID, searchTerm: searchTerm)
-                .limit(pageSize, offset: offset)
-                .fetchAll(db)
-
-            return (persistedProducts, totalCount)
-        }
-
-        // Convert to POSProduct outside the read transaction
-        // toPOSProduct(db:) starts its own transaction, so we can't call it inside another transaction
-        let products = try persistedProducts.map { persistedProduct in
-            try persistedProduct.toPOSProduct(db: grdbManager.databaseConnection)
-        }
-
-        let hasMorePages = (pageNumber * pageSize) < totalCount
-
-        if pageNumber == 1 {
-            let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
-            analytics.trackSearchLocalResultsFetchComplete(millisecondsSinceRequestSent: milliseconds,
-                                                           totalItems: totalCount,
-                                                           searchMethod: .like,
-                                                           source: .product)
-        }
-
-        return PagedItems(items: products,
-                         hasMorePages: hasMorePages,
-                         totalItems: totalCount)
+        PagedItems(items: [], hasMorePages: false, totalItems: 0)
     }
 
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
@@ -112,9 +76,6 @@ struct PointOfSaleLocalSearchPurchasableItemFetchStrategy: PointOfSalePurchasabl
     }
 
     func fetchMixedItems(pageNumber: Int) async throws -> PagedItems<POSItem>? {
-        // When FTS is disabled, return nil to fall back to LIKE-based fetchProducts()
-        guard isFTSSearchEnabled else { return nil }
-
         let startTime = Date()
         let offset = (pageNumber - 1) * pageSize
 

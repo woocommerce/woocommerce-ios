@@ -2,7 +2,7 @@ import Foundation
 
 /// Eligibility state for local catalog feature
 /// Provides diagnostic information for UI display and decision-making
-public enum POSLocalCatalogEligibilityState: Equatable {
+public enum POSLocalCatalogEligibilityState: Equatable, Sendable {
     /// Local catalog is eligible for use
     case eligible
 
@@ -11,26 +11,23 @@ public enum POSLocalCatalogEligibilityState: Equatable {
 }
 
 /// Reasons why local catalog is ineligible
-public enum POSLocalCatalogIneligibleReason: Equatable {
+public enum POSLocalCatalogIneligibleReason: Equatable, Sendable {
     case posTabNotEligible
-    case featureFlagDisabled
+    case betaFeatureDisabled
     case unsupportedWooCommerceVersion(minimumVersion: String)
-    case catalogSizeTooLarge(totalCount: Int, limit: Int)
-    case catalogSizeCheckFailed(underlyingError: String)
+    case versionCheckFailed(underlyingError: String)
 
     /// Analytics skip reason string representation
     public var skipReason: String {
         switch self {
         case .posTabNotEligible:
             return "pos_not_eligible"
-        case .featureFlagDisabled:
+        case .betaFeatureDisabled:
             return "feature_flag_disabled"
         case .unsupportedWooCommerceVersion:
             return "unsupported_woocommerce_version"
-        case .catalogSizeTooLarge:
-            return "catalog_too_large"
-        case .catalogSizeCheckFailed:
-            return "catalog_size_check_failed"
+        case .versionCheckFailed:
+            return "version_check_failed"
         }
     }
 }
@@ -42,9 +39,17 @@ public enum POSLocalCatalogIneligibleReason: Equatable {
 /// - Settings UI can display eligibility status and reasons
 /// - Analytics can track why stores are ineligible
 ///
-/// NOTE: This service checks catalog-related eligibility (size limits) and feature flag state.
-/// The service performs an initial eligibility check during initialization.
-public protocol POSLocalCatalogEligibilityServiceProtocol {
+/// NOTE: This service checks catalog-related eligibility (WooCommerce version), the remote feature flag,
+/// and the user-facing beta toggle.
+/// It evaluates catalog eligibility when a caller requests or refreshes it, after the session-specific
+/// system status service is configured.
+public protocol POSLocalCatalogEligibilityServiceProtocol: Sendable {
+    /// Attaches the session-specific system status service before catalog eligibility is evaluated.
+    /// The service is created by the main-actor POS coordinator so it retains the authenticated
+    /// session that owns this catalog eligibility service.
+    @discardableResult
+    func configure(systemStatusService: POSSystemStatusServiceProtocol) async -> Bool
+
     /// Get catalog eligibility for a specific site
     /// - Parameter siteID: The site ID to check eligibility for
     /// - Returns: Cached eligibility state, or eligible if not yet checked
@@ -72,4 +77,10 @@ public protocol POSLocalCatalogEligibilityServiceProtocol {
     /// (local and cached remote feature flags plus the beta toggle), without any network checks.
     /// Used to gate POS entry from cached state when remote eligibility cannot be checked.
     func isLocalCatalogFeatureEnabled() async -> Bool
+}
+
+public extension POSLocalCatalogEligibilityServiceProtocol {
+    /// Test and preview implementations do not need a system status service.
+    @discardableResult
+    func configure(systemStatusService: POSSystemStatusServiceProtocol) async -> Bool { false }
 }

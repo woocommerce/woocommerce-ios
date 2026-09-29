@@ -49,7 +49,7 @@ struct EnableAnalyticsView: View {
 
         self.contactSupportAction = {
             if let viewController = presentingController?.presentedViewController {
-                let supportForm = SupportFormHostingController(viewModel: .init())
+                let supportForm = SupportFormHostingController(viewModel: .init(mobileStatusReportProvider: MobileStatusReportProvider()))
                 supportForm.show(from: viewController)
             }
         }

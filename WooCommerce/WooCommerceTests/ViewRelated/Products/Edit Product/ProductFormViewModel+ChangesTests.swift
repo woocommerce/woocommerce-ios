@@ -7,6 +7,7 @@ import Fakes
 import Yosemite
 
 /// Unit tests for unsaved changes (`hasUnsavedChanges`)
+@MainActor
 final class ProductFormViewModel_ChangesTests: XCTestCase {
     private let defaultSiteID: Int64 = 134
     private var productImageStatusesSubscription: AnyCancellable?

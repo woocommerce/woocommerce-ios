@@ -159,6 +159,15 @@ final class ConnectivityToolViewModel {
             // Time taken snapshot
             let timeTaken = Date().timeIntervalSince(startTime)
 
+            if case .skipped(let reason) = testResult {
+                // The site cannot answer this test: drop its card, keep the reason for support, move on.
+                DDLogInfo("Connectivity Tool: ⏭️ Skipped \(testCase.title): \(reason)")
+                cards.remove(at: cardIndex)
+                trackResponseEvent(for: testCase, success: true, timeTaken: timeTaken, skipped: true)
+                latestTestResult.append(ConnectivityTestResult(testCase: testCase, result: testResult, timeTaken: timeTaken))
+                continue
+            }
+
             // Update the test card with the test result.
             cards[cardIndex] = cards[cardIndex].updatingState(testResult)
 
@@ -348,6 +357,7 @@ final class ConnectivityToolViewModel {
     }
 
     /// Test whether WooCommerce Analytics is enabled on the site.
+    /// Skipped when the site does not expose the setting in its REST API.
     ///
     @MainActor
     func testAnalyticsSetting() async -> ConnectivityToolCard.ConnectivityState {
@@ -369,9 +379,14 @@ final class ConnectivityToolViewModel {
                             }
                         )
                         continuation.resume(returning: .error(Localization.ErrorMessage.analyticsDisabled,
-                                                                    [enableAction, self.retryAction(for: .analyticsSetting)]))
+                                                              [enableAction, self.retryAction(for: .analyticsSetting)]))
                     }
                 case .failure(let error):
+                    if let settingError = error as? SettingError, case .settingNotExposed = settingError {
+                        DDLogInfo("Connectivity Tool: ⏭️ Analytics setting is not exposed by the site")
+                        continuation.resume(returning: .skipped(Constants.analyticsSettingNotExposedReason))
+                        return
+                    }
                     DDLogError("Connectivity Tool: ❌ Analytics setting check failed\n\(error)")
                     let technicalDetails = error.formattedTechnicalDetails
                     let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
@@ -380,7 +395,7 @@ final class ConnectivityToolViewModel {
                         technicalDetails: technicalDetails
                     )
                     continuation.resume(returning: .error(Localization.ErrorMessage.analyticsCheckFailed,
-                                                                [viewDetailsAction, self.retryAction(for: .analyticsSetting)]))
+                                                          [viewDetailsAction, self.retryAction(for: .analyticsSetting)]))
                 }
             }
             stores.dispatch(action)
@@ -502,7 +517,7 @@ final class ConnectivityToolViewModel {
 
     /// Tracks the event with the respective test response.
     ///
-    private func trackResponseEvent(for test: ConnectivityToolViewModel.ConnectivityTest, success: Bool, timeTaken: Double) {
+    private func trackResponseEvent(for test: ConnectivityToolViewModel.ConnectivityTest, success: Bool, timeTaken: Double, skipped: Bool = false) {
         let eventTest: WooAnalyticsEvent.ConnectivityTool.Test = {
             switch test {
             case .internetConnection: return .internet
@@ -514,7 +529,7 @@ final class ConnectivityToolViewModel {
             case .notifications: return .notifications
             }
         }()
-        analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken))
+        analytics.track(event: .ConnectivityTool.requestResponse(test: eventTest, success: success, timeTaken: timeTaken, skipped: skipped))
     }
 
     private func noConnectionsIssueState() -> ConnectivityTool.Card {
@@ -628,6 +643,7 @@ fileprivate struct ConnectivityTestResult {
         case .inProgress: return "In progress"
         case .success: return "Success"
         case .empty(let message): return message
+        case .skipped(let reason): return reason
         case .error(_, let actions):
             let lines = actions.compactMap { $0.technicalDetails }
             return lines.joined(separator: "\n")
@@ -729,6 +745,8 @@ private extension ConnectivityToolViewModel {
 private extension ConnectivityToolViewModel {
     enum Constants {
         static let jetpackPluginSlug = "jetpack/"
+        /// Not user facing: recorded in the support attachment when the analytics test is skipped.
+        static let analyticsSettingNotExposedReason = "Skipped: the site does not expose the analytics setting in its REST API"
     }
 
     enum SystemImages: String {

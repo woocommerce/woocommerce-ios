@@ -1,11 +1,9 @@
 import SwiftUI
-import protocol Experiments.FeatureFlagService
 import struct Storage.GeneralAppSettingsStorage
 
 final class BetaFeaturesConfigurationViewModel: ObservableObject {
     @Published private(set) var availableFeatures: [BetaFeature] = []
     private let appSettings: GeneralAppSettingsStorage
-    private let featureFlagService: FeatureFlagService
     private let isPOSTabVisible: () async -> Bool
 
     private let betaFeatures = BetaFeature.allCases
@@ -13,10 +11,8 @@ final class BetaFeaturesConfigurationViewModel: ObservableObject {
     private let appPasswordsExperimentAvailabilityChecker: ApplicationPasswordsExperimentAvailabilityCheckerProtocol
 
     init(appSettings: GeneralAppSettingsStorage = ServiceLocator.generalAppSettings,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          isPOSTabVisible: @escaping () async -> Bool = BetaFeaturesConfigurationViewModel.defaultPOSTabVisibility) {
         self.appSettings = appSettings
-        self.featureFlagService = featureFlagService
         self.isPOSTabVisible = isPOSTabVisible
         self.appPasswordsExperimentAvailabilityChecker = ApplicationPasswordsExperimentAvailabilityChecker()
 
@@ -82,10 +78,7 @@ private extension BetaFeaturesConfigurationViewModel {
     }
 
     func shouldShowPOSLocalCatalog() async -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.pointOfSaleCatalogAPI) else {
-            return false
-        }
-        return await isPOSTabVisible()
+        await isPOSTabVisible()
     }
 }
 

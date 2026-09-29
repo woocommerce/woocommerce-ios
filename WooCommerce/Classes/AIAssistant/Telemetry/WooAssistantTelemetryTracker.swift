@@ -1,9 +1,10 @@
 import EventHorizonSDK
 import Foundation
-@preconcurrency import protocol WooFoundation.Analytics
+import protocol WooFoundation.Analytics
 import WooAIAssistant
 
-struct WooAssistantTelemetryTracker: AssistantTelemetryTracker {
+// Temporary: `Analytics` is not Sendable yet (WOOMOB-4111). Safe because the only stored value is an immutable reference.
+struct WooAssistantTelemetryTracker: @unchecked Sendable, AssistantTelemetryTracker {
 
     private let analytics: Analytics
 

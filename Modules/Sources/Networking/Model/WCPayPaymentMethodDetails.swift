@@ -7,7 +7,7 @@ import Codegen
 /// The endpoint returns a thin wrapper around the Stripe object, so
 /// [these docs are relevant](https://stripe.com/docs/api/charges/object#charge_object-payment_method_details)
 ///
-public enum WCPayPaymentMethodDetails: Decodable, GeneratedCopiable, GeneratedFakeable, Equatable {
+public enum WCPayPaymentMethodDetails: Decodable, Sendable, GeneratedCopiable, GeneratedFakeable, Equatable {
     case unknown
 
     /// A card payment, with `details`. This represents a payment made online, rather than in-person

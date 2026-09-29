@@ -146,6 +146,7 @@ final class ProductDetailPreviewViewModel: ObservableObject {
         return ResultsController<StorageProductTag>(storageManager: storageManager, matching: predicate, sortedBy: [descriptor])
     }()
 
+    @MainActor
     private lazy var productImageActionHandler: ProductImageActionHandler = {
         let key = ProductImageUploaderKey(siteID: siteID,
                                           productOrVariationID: .product(id: localProductID),
@@ -680,6 +681,7 @@ private extension ProductDetailPreviewViewModel {
 
     /// Sets up image uploader to upload packaging image if it's available.
     ///
+    @MainActor
     func uploadPackagingImageIfNeeded() {
         guard case let .success(packagingImage) = imageState else {
             return
@@ -698,6 +700,7 @@ private extension ProductDetailPreviewViewModel {
 
     /// Replaces the actual product ID for pending images for background upload.
     ///
+    @MainActor
     func replaceProductID(newID: Int64) {
         productImageUploader.replaceLocalID(siteID: siteID,
                                             localID: .product(id: localProductID),

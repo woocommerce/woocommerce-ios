@@ -7,6 +7,8 @@ agents:
 env:
   IMAGE_ID: $IMAGE_ID
 
+priority: 1
+
 steps:
   - label: New Hotfix Release
     plugins: [$CI_TOOLKIT]
@@ -16,9 +18,6 @@ steps:
 
       echo '--- :ruby: Setup Ruby Tools'
       install_gems
-
-      echo '--- :closed_lock_with_key: Access Secrets'
-      bundle exec fastlane run configure_apply
 
       echo '--- :fire: Start New Hotfix Release'
       bundle exec fastlane new_hotfix_release version:${VERSION} skip_confirm:true

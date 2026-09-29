@@ -3,11 +3,11 @@ import Codegen
 
 /// Represents a Payment Gateway.
 ///
-public struct PaymentGateway: Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct PaymentGateway: Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
 
     /// Features for payment gateway.
     ///
-    public enum Feature: Equatable {
+    public enum Feature: Equatable, Sendable {
         case products
         case refunds
         case custom(raw: String)
@@ -15,7 +15,7 @@ public struct PaymentGateway: Equatable, GeneratedFakeable, GeneratedCopiable {
 
     /// Setting for a payment gateway
     ///
-    public struct Setting: Equatable, GeneratedCopiable, GeneratedFakeable {
+    public struct Setting: Equatable, Sendable, GeneratedCopiable, GeneratedFakeable {
         public let settingID: String
         public let value: String
 

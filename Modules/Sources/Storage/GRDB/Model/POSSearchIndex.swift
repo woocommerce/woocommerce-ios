@@ -3,13 +3,13 @@ import GRDB
 
 /// Represents a search result from the POS FTS index.
 /// Decoded from raw SQL queries against the pos_search_fts virtual table.
-public struct POSSearchIndex: Codable, Equatable, FetchableRecord {
+public struct POSSearchIndex: Codable, Equatable, FetchableRecord, Sendable {
     public let siteID: Int64
     public let itemType: ItemType
     public let itemID: Int64
     public let parentProductID: Int64?
 
-    public enum ItemType: String, Codable {
+    public enum ItemType: String, Codable, Sendable {
         case product
         case variation
     }

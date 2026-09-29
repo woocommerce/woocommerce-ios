@@ -8,7 +8,7 @@ extension UICollectionViewCell {
 
     /// Returns a reuseIdentifier that matches the receiver's classname (non namespaced).
     ///
-    class var reuseIdentifier: String {
+    nonisolated class var reuseIdentifier: String {
         return classNameWithoutNamespaces
     }
 

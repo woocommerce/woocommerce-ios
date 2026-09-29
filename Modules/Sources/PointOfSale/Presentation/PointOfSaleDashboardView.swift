@@ -7,7 +7,6 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posCurrencyProvider) private var currencyProvider
     @Environment(\.posExternalViews) private var externalViews
-    @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(\.dismiss) private var dismiss
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAccessSession) private var session
@@ -25,6 +24,11 @@ struct PointOfSaleDashboardView: View {
     @State private var floatingControlSuppressed: Bool = false
     @State private var phoneShowingCart: Bool = false
     @State private var phoneCartPresentationDetent: PresentationDetent = .medium
+    private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
+
+    init(httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil) {
+        self.httpsConfigurationNotice = httpsConfigurationNotice
+    }
 
     /// Tracks Dynamic Type scaling for the phone overflow menu chip so it grows in sync with
     /// the adjacent `POSPageHeaderActionButton` (search) at large content sizes. Same 1.0…1.2x
@@ -70,7 +74,7 @@ struct PointOfSaleDashboardView: View {
 
     var body: some View {
         @Bindable var posModel = posModel
-        ZStack(alignment: .bottomLeading) {
+        Group {
             switch viewState {
             case .loading(let catalogSyncState):
                 PointOfSaleLoadingView(
@@ -109,7 +113,11 @@ struct PointOfSaleDashboardView: View {
                 contentView
                     .accessibilitySortPriority(2)
             }
-
+        }
+        .frame(maxWidth: .infinity, maxHeight: .infinity)
+        // Anchor the controls to stable dashboard bounds. The product-list banner can briefly
+        // report its own ideal height while POS is being presented, which must not drive this position.
+        .overlay(alignment: .bottomLeading) {
             POSFloatingControlView(onExitSelected: requestExitPermission,
                                    showSupport: $showSupport,
                                    showDocumentation: $showDocumentation,
@@ -120,7 +128,8 @@ struct PointOfSaleDashboardView: View {
             .trackSize(size: $floatingSize)
             .accessibilitySortPriority(1)
             .renderedIf(viewState.showsFloatingControl && !isPhoneLayout && !floatingControlSuppressed)
-
+        }
+        .overlay {
             POSConnectivityView()
         }
         .environment(\.floatingControlAreaSize,
@@ -213,8 +222,7 @@ struct PointOfSaleDashboardView: View {
     }
 
     private var isPhoneLayout: Bool {
-        horizontalSizeClass == .compact &&
-        featureFlags.isFeatureFlagEnabled(.pointOfSalePhonePrototype)
+        horizontalSizeClass == .compact
     }
 
     @ViewBuilder
@@ -232,6 +240,7 @@ struct PointOfSaleDashboardView: View {
                     ItemListView(
                         selectedItemListType: $viewStateCoordinator.selectedItemListType,
                         searchTerm: $viewStateCoordinator.searchTerm,
+                        httpsConfigurationNotice: httpsConfigurationNotice,
                         phoneHeaderAccessoryBuilder: { context in
                             AnyView(phoneOverflowMenu(
                                 canCreateCoupon: context.canCreateCoupon,
@@ -362,6 +371,10 @@ struct PointOfSaleDashboardView: View {
         }
         .background(Color.posSurface)
         .toolbar(.hidden, for: .navigationBar)
+        .posEdgeSwipeBackAction(
+            isEnabled: canExitFinalizingOnPhone,
+            onBack: { posModel.addMoreToCart() }
+        )
     }
 
     @State private var showOrders: Bool = false
@@ -491,7 +504,8 @@ struct PointOfSaleDashboardView: View {
 
             HStack(spacing: POSSpacing.none) {
                 ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
-                             searchTerm: $viewStateCoordinator.searchTerm)
+                             searchTerm: $viewStateCoordinator.searchTerm,
+                             httpsConfigurationNotice: httpsConfigurationNotice)
                     .frame(width: productsWidth)
                     .accessibilitySortPriority(posModel.orderStage == .building ? 2 : 0)
                     .allowsHitTesting(posModel.orderStage == .building)

@@ -39,6 +39,7 @@ final class ProductDetailNavigator {
     ///   - onDuplicate: Optional callback invoked with the new duplicate after a successful product duplication,
     ///     letting the caller decide how to open it (native flow only).
     /// - Returns: A ready-to-present view controller (native or web).
+    @MainActor
     func makeDestination(product: Product,
                          presentationStyle: Presentation = .push,
                          isReadOnly: Bool,
@@ -72,6 +73,7 @@ final class ProductDetailNavigator {
     }
 
     /// Replaces a native product editor with another product detail so Back cannot reveal the source editor's draft.
+    @MainActor
     func replaceDestination(sourceViewController: UIViewController, with duplicatedProduct: Product) {
         guard let navigationController = sourceViewController.navigationController,
               let sourceIndex = navigationController.viewControllers.firstIndex(where: { $0 === sourceViewController }) else {

@@ -59,7 +59,7 @@ final class OrderPaymentDetailsViewModel {
     }
 
     var totalValue: String {
-        order.totalValue(currencyFormatter: currencyFormatter)
+        currencyFormatter.formatAmount(order.total, with: order.currency, annotatingNonDefaultCurrencyCode: true) ?? String()
     }
 
     var paymentTotal: String {

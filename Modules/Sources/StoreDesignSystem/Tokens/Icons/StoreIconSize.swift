@@ -5,7 +5,7 @@ import CoreGraphics
 /// CGFloat parameters, icon size is a closed type: its only consumer is our own
 /// `StoreIconImage.image(size:)`, so typing it blocks arbitrary sizes and enables
 /// dot-shorthand (`.image(size: .medium)`).
-public struct StoreIconSize {
+public struct StoreIconSize: Sendable {
     let value: CGFloat
 
     private init(_ value: CGFloat) {

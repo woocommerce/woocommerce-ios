@@ -170,6 +170,14 @@ public class MockStoresManager: StoresManager {
             case let .loadRemoteFeatureFlagsInEffect(completion):
                 completion(nil)
             }
+        case let action as StoreOnboardingTasksAction:
+            switch action {
+            case let .loadOnboardingTasks(_, completion):
+                // No onboarding tasks: the mocked store reads as fully set up, so the dashboard
+                // onboarding card stays out of screenshots. Without this the dashboard's reload
+                // dispatches an unhandled action and the mock asserts, crashing the app.
+                completion(.success([]))
+            }
         default:
             let message = "⚠️ [MockStoresManager] Unhandled action type: \(action.identifier) \(String(describing: action))"
             DDLogWarn(message)
@@ -195,12 +203,18 @@ public class MockStoresManager: StoresManager {
     }
 
     @discardableResult
+    public func authenticate(credentials: Credentials,
+                             cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?) -> StoresManager {
+        return self
+    }
+
+    @discardableResult
     public func deauthenticate() -> StoresManager {
         return self
     }
 
     @discardableResult
-    public func synchronizeEntities(onCompletion: (() -> Void)?) -> StoresManager {
+    public func synchronizeEntities(preservingSelectedSite: Bool = false, onCompletion: (() -> Void)?) -> StoresManager {
         if let siteID = sessionManager.defaultStoreID {
             Task {
                 await synchronizeGeneralSiteSettings(siteID: siteID)

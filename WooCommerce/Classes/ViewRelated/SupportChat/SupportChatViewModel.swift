@@ -469,7 +469,7 @@ final class SupportChatViewModel {
             }
         } catch {
             DDLogError("⛔️ Failed to execute action \(action): \(error)")
-            state = .error(errorMessage(for: error))
+            state = .error(errorMessage(for: error, whileExecuting: action))
         }
     }
 
@@ -924,6 +924,15 @@ final class SupportChatViewModel {
         return Localization.errorMessage
     }
 
+    private func errorMessage(for error: Error, whileExecuting action: SupportDiagnosticsService.Action) -> String {
+        switch action {
+        case .registerDevice:
+            return Localization.deviceRegistrationErrorMessage
+        default:
+            return errorMessage(for: error)
+        }
+    }
+
     /// Persists a local bookmark for the chat so it appears in the chat history UI.
     /// Fire-and-forget: we don't surface storage errors to the user.
     private func persistChatBookmark(wasNewChat: Bool,
@@ -1088,6 +1097,11 @@ private extension SupportChatViewModel {
             "supportChatViewModel.aiChatConnectionErrorMessage",
             value: "We couldn't connect to AI chat right now.",
             comment: "Generic error message shown when an AI support chat request fails"
+        )
+        static let deviceRegistrationErrorMessage = NSLocalizedString(
+            "supportChatViewModel.deviceRegistrationErrorMessage",
+            value: "We couldn't register your device for push notifications. Please try again.",
+            comment: "Error message shown when device registration for push notifications fails from support chat"
         )
         static let rateLimitErrorMessage = NSLocalizedString(
             "supportChatViewModel.rateLimitErrorMessage",

@@ -45,6 +45,7 @@ struct OrderListSyncActionUseCase {
         case pullToRefresh = "pull_to_refresh"
         case viewWillAppear = "view_will_appear"
         case backgroundFetch = "background_fetch"
+        case pushNotification = "push_notification"
     }
 
     let siteID: Int64

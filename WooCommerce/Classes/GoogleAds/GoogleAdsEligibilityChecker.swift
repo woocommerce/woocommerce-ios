@@ -13,16 +13,13 @@ protocol GoogleAdsEligibilityChecker {
 final class DefaultGoogleAdsEligibilityChecker: GoogleAdsEligibilityChecker {
 
     private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
 
     /// In-flight eligibility checks keyed by siteID, shared across all instances.
     /// Thread-safe because all access is on @MainActor.
     private static var inFlightChecks: [Int64: Task<Bool, Never>] = [:]
 
-    init(stores: StoresManager = ServiceLocator.stores,
-         featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
+    init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        self.featureFlagService = featureFlagService
     }
 
     @MainActor
@@ -43,10 +40,6 @@ final class DefaultGoogleAdsEligibilityChecker: GoogleAdsEligibilityChecker {
 
     @MainActor
     private func performEligibilityCheck(siteID: Int64) async -> Bool {
-        guard featureFlagService.isFeatureFlagEnabled(.googleAdsCampaignCreationOnWebView) else {
-            return false
-        }
-
         do {
             let connection = try await checkGoogleAdsConnection(siteID: siteID)
             guard connection.status == .connected else {

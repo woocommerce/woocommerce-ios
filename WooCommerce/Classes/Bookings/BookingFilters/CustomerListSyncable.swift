@@ -59,7 +59,6 @@ struct CustomerListSyncable: ListSyncable {
             orderby: .name,
             order: .asc,
             keyword: keyword,
-            retrieveFullCustomersData: false,
             filter: .all,
             filterEmpty: .email,
             onCompletion: completion

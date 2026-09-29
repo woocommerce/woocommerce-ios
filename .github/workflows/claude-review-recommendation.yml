@@ -1,0 +1,14 @@
+name: Claude Review Recommendation
+
+on:
+  pull_request:
+    types: [opened, reopened, ready_for_review, synchronize]
+
+jobs:
+  review-recommendation:
+    uses: woocommerce/.github/.github/workflows/mobile-review-recommendation.yml@trunk
+    permissions:
+      contents: read
+      pull-requests: write
+    secrets:
+      ANTHROPIC_API_KEY: ${{ secrets.WOO_MOBILE_CI }}

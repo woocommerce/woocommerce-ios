@@ -83,8 +83,6 @@ final class DashboardViewModel: ObservableObject {
     @Published private(set) var analyticsImportUpdateMode: AnalyticsImportUpdateMode?
     @Published private var hasOrders = false
 
-    @Published private(set) var isEligibleForInbox = false
-
     @Published private(set) var isEligibleForStock = false
 
     @Published private(set) var isEligibleForStoreSetup = false
@@ -107,7 +105,6 @@ final class DashboardViewModel: ObservableObject {
     private let userDefaults: UserDefaults
     private let pushNotesManager: PushNotesManager
     private let storageManager: StorageManagerType
-    private let inboxEligibilityChecker: InboxEligibilityChecker
     private let aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol
     private let usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter
     private let blazeLocalNotificationScheduler: BlazeLocalNotificationScheduler
@@ -164,7 +161,6 @@ final class DashboardViewModel: ObservableObject {
          pushNotesManager: PushNotesManager = ServiceLocator.pushNotesManager,
          usageTracksEventEmitter: StoreStatsUsageTracksEventEmitter = StoreStatsUsageTracksEventEmitter(),
          blazeEligibilityChecker: BlazeEligibilityCheckerProtocol = BlazeEligibilityChecker(),
-         inboxEligibilityChecker: InboxEligibilityChecker = InboxEligibilityUseCase(),
          googleAdsEligibilityChecker: GoogleAdsEligibilityChecker = DefaultGoogleAdsEligibilityChecker(),
          aiAssistantEligibilityChecker: AIAssistantEligibilityCheckerProtocol = AIAssistantEligibilityChecker(),
          localNotificationScheduler: BlazeLocalNotificationScheduler? = nil,
@@ -201,7 +197,6 @@ final class DashboardViewModel: ObservableObject {
             stores: stores
         )
 
-        self.inboxEligibilityChecker = inboxEligibilityChecker
         self.aiAssistantEligibilityChecker = aiAssistantEligibilityChecker
         self.usageTracksEventEmitter = usageTracksEventEmitter
 
@@ -288,7 +283,6 @@ final class DashboardViewModel: ObservableObject {
         updateDashboardCards(canShowOnboarding: storeOnboardingViewModel.canShowInDashboard && isEligibleForStoreSetup,
                              canShowBlaze: blazeCampaignDashboardViewModel.canShowInDashboard,
                              canShowGoogle: googleAdsDashboardCardViewModel.canShowOnDashboard,
-                             canShowInbox: isEligibleForInbox,
                              canShowStock: isEligibleForStock,
                              canShowAIAssistant: isAIAssistantEligible,
                              hasOrders: hasOrders)
@@ -317,7 +311,6 @@ final class DashboardViewModel: ObservableObject {
     @MainActor
     func reloadAllData(forceCardsRefresh: Bool = false) async {
         isReloadingAllData = true
-        checkInboxEligibility()
         refreshAIAssistantEligibility(for: stores.sessionManager.defaultSite, useCache: false)
         await withTaskGroup(of: Void.self) { group in
             group.addTask { [weak self] in
@@ -743,21 +736,18 @@ private extension DashboardViewModel {
             .combineLatest(blazeCampaignDashboardViewModel.$canShowInDashboard,
                            $isEligibleForStock)
             .combineLatest(googleAdsDashboardCardViewModel.$canShowOnDashboard,
-                           $hasOrders,
-                           $isEligibleForInbox)
+                           $hasOrders)
             .combineLatest($isAIAssistantEligible)
             .receive(on: DispatchQueue.main)
             .sink { [weak self] combinedResult in
                 guard let self else { return }
                 let (((canShowOnboarding, canShowBlaze, canShowStock),
                       canShowGoogle,
-                      hasOrders,
-                      isEligibleForInbox),
+                      hasOrders),
                      isAIAssistantEligible) = combinedResult
                 updateDashboardCards(canShowOnboarding: canShowOnboarding,
                                      canShowBlaze: canShowBlaze,
                                      canShowGoogle: canShowGoogle,
-                                     canShowInbox: isEligibleForInbox,
                                      canShowStock: canShowStock,
                                      canShowAIAssistant: isAIAssistantEligible,
                                      hasOrders: hasOrders)
@@ -800,10 +790,6 @@ private extension DashboardViewModel {
             announcementViewModel = nil
             modalJustInTimeMessageViewModel = nil
         }
-    }
-
-    func checkInboxEligibility() {
-        isEligibleForInbox = inboxEligibilityChecker.isEligibleForInbox(siteID: siteID)
     }
 
     func observeStockEligibility() {
@@ -942,7 +928,6 @@ private extension DashboardViewModel {
                               canShowAnalytics: Bool,
                               canShowLastOrders: Bool,
                               canShowStock: Bool,
-                              canShowInbox: Bool,
                               canShowAIAssistant: Bool) -> [DashboardCard] {
         var cards = [DashboardCard]()
 
@@ -973,7 +958,7 @@ private extension DashboardViewModel {
                                    enabled: canShowBlaze))
 
         cards.append(DashboardCard(type: .inbox,
-                                   availability: canShowInbox ? .show : .hide,
+                                   availability: .show,
                                    enabled: false))
         cards.append(DashboardCard(type: .reviews, availability: .show, enabled: false))
         cards.append(DashboardCard(type: .coupons, availability: .show, enabled: false))
@@ -1001,7 +986,6 @@ private extension DashboardViewModel {
     func updateDashboardCards(canShowOnboarding: Bool,
                               canShowBlaze: Bool,
                               canShowGoogle: Bool,
-                              canShowInbox: Bool,
                               canShowStock: Bool,
                               canShowAIAssistant: Bool,
                               hasOrders: Bool) {
@@ -1016,7 +1000,6 @@ private extension DashboardViewModel {
                                                 canShowAnalytics: canShowAnalytics,
                                                 canShowLastOrders: canShowLastOrders,
                                                 canShowStock: canShowStock,
-                                                canShowInbox: canShowInbox,
                                                 canShowAIAssistant: canShowAIAssistant)
 
         // Next, get saved cards and preserve existing enabled state for all available cards.

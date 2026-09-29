@@ -11,6 +11,7 @@ struct ProductDetailsFactory {
     ///   - forceReadOnly: force the product detail to be presented in read only mode
     ///   - onDeleteCompletion: called when the product deletion completes in the product form.
     ///   - onDuplicateCompletion: called with the new duplicate when a product duplication completes in the product form.
+    @MainActor
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings = ServiceLocator.currencySettings,
@@ -30,6 +31,7 @@ struct ProductDetailsFactory {
 }
 
 private extension ProductDetailsFactory {
+    @MainActor
     static func productDetails(product: Product,
                                presentationStyle: ProductFormPresentationStyle,
                                currencySettings: CurrencySettings,

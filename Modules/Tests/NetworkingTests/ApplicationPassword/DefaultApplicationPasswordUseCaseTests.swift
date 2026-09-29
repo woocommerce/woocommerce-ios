@@ -6,6 +6,7 @@ import KeychainAccess
 
 /// DefaultApplicationPasswordUseCase Unit Tests
 ///
+@MainActor
 final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
     /// Mock Network: Allows us to inject predefined responses!
     ///
@@ -199,5 +200,27 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
 
         // Then
         XCTAssertNil(storage.applicationPassword)
+    }
+
+    func test_wporg_initializer_with_mismatched_endpoint_site_throws() throws {
+        // Given
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://other.example"))
+        )
+
+        // When / Then
+        XCTAssertThrowsError(
+            try DefaultApplicationPasswordUseCase(
+                username: "demo",
+                password: "password",
+                siteAddress: "https://test.com",
+                authenticationEndpoints: endpoints,
+                network: network
+            )
+        ) { error in
+            guard case ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress = error else {
+                return XCTFail("Unexpected error: \(error)")
+            }
+        }
     }
 }

@@ -3,6 +3,7 @@ import Combine
 import XCTest
 import Networking
 import Storage
+import TestKit
 @testable import WooCommerce
 import Yosemite
 
@@ -10,6 +11,9 @@ import Yosemite
 ///
 final class StoresManagerTests: XCTestCase {
     private var cancellable: AnyCancellable?
+    private var pushNotificationDefaults: UserDefaults!
+
+    private let pushNotificationDefaultsSuiteName = "StoresManagerTests.connectedSites"
 
     // MARK: - Overridden Methods
 
@@ -17,10 +21,17 @@ final class StoresManagerTests: XCTestCase {
         super.setUp()
         let session = SessionManager.testingInstance
         session.reset()
+        pushNotificationDefaults = UserDefaults(suiteName: pushNotificationDefaultsSuiteName)
+        pushNotificationDefaults.removePersistentDomain(forName: pushNotificationDefaultsSuiteName)
     }
 
     override func tearDown() {
         cancellable?.cancel()
+        pushNotificationDefaults.removePersistentDomain(forName: pushNotificationDefaultsSuiteName)
+        pushNotificationDefaults = nil
+        waitFor { promise in
+            ServiceLocator.storageManager.reset(onCompletion: { promise(()) })
+        }
         super.tearDown()
     }
 
@@ -79,6 +90,111 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertTrue(manager.isAuthenticated)
         XCTAssertTrue(manager.isAuthenticatedWithoutWPCom)
         XCTAssertEqual(isLoggedInValues, [true])
+    }
+
+    func test_authenticated_state_relaunch_passes_restored_custom_endpoints_to_network_factory() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        let credentials: Credentials = .wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        sessionManager.defaultCredentials = credentials
+        sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        var capturedCredentials: Credentials?
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+
+        // When
+        let state = AuthenticatedState(sessionManager: sessionManager) { credentials, _, _, endpoints in
+            capturedCredentials = credentials
+            capturedEndpoints = endpoints
+            return AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
+        }
+
+        // Then
+        XCTAssertNotNil(state)
+        XCTAssertEqual(capturedCredentials, credentials)
+        XCTAssertEqual(capturedEndpoints, endpoints)
+    }
+
+    func test_authenticated_state_transient_custom_endpoints_pass_to_network_factory() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        let credentials: Credentials = .wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        var capturedCredentials: Credentials?
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+
+        // When
+        _ = AuthenticatedState(
+            credentials: credentials,
+            sessionManager: sessionManager,
+            cookieNonceAuthenticationEndpoints: endpoints,
+            networkFactory: { credentials, _, _, endpoints in
+                capturedCredentials = credentials
+                capturedEndpoints = endpoints
+                return AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
+            }
+        )
+
+        // Then
+        XCTAssertEqual(capturedCredentials, credentials)
+        XCTAssertEqual(capturedEndpoints, endpoints)
+    }
+
+    func test_authenticated_state_in_session_reauthentication_restores_custom_endpoints_when_transient_value_is_missing() throws {
+        // Given
+        let sessionManager = SessionManager(
+            defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
+            keychainServiceName: UUID().uuidString
+        )
+        let credentials: Credentials = .wporg(
+            username: "merchant",
+            password: "password",
+            siteAddress: "https://example.com"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: "https://example.com")),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/custom-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/private-admin/"))
+        )
+        sessionManager.defaultCredentials = credentials
+        sessionManager.saveCookieNonceAuthenticationEndpoints(endpoints, for: credentials)
+        var capturedEndpoints: CookieNonceAuthenticationEndpoints?
+
+        // When
+        _ = AuthenticatedState(
+            credentials: credentials,
+            sessionManager: sessionManager,
+            cookieNonceAuthenticationEndpoints: nil,
+            networkFactory: { _, _, _, endpoints in
+                capturedEndpoints = endpoints
+                return AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil)
+            }
+        )
+
+        // Then
+        XCTAssertEqual(capturedEndpoints, endpoints)
     }
 
     /// Verifies that the Initial State is Authenticated with application password credentials.
@@ -380,6 +496,146 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(manager.sessionManager.defaultSite)
     }
 
+    func test_site_endpoint_overlay_when_direct_site_identities_match_then_replaces_only_login_and_admin_urls() throws {
+        // Given
+        let site = Site.fake().copy(
+            siteID: WooConstants.placeholderStoreID,
+            url: "https://example.com/store",
+            adminURL: "https://example.com/store/wp-admin/",
+            loginURL: "https://example.com/store/wp-login.php"
+        )
+        let endpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: "https://example.com/store/")
+        let (sut, sessionManager) = makeStoresManager(
+            credentials: .wporg(username: "merchant", password: "secret", siteAddress: "https://example.com/store/"),
+            endpoints: endpoints
+        )
+
+        // When
+        let result = sut.siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
+
+        // Then
+        XCTAssertEqual(result, site.copy(adminURL: endpoints.adminBaseURL.absoluteString, loginURL: endpoints.loginEntryURL.absoluteString))
+        XCTAssertEqual(sessionManager.cookieNonceAuthenticationEndpointCredentials, sessionManager.defaultCredentials)
+    }
+
+    func test_site_endpoint_overlay_when_site_is_default_port_HTTPS_promotion_then_replaces_login_and_admin_urls() throws {
+        // Given
+        let credentialSiteAddress = "http://example.com:80/store/"
+        let site = Site.fake().copy(
+            siteID: WooConstants.placeholderStoreID,
+            url: "https://example.com/store",
+            adminURL: "https://example.com/store/wp-admin/",
+            loginURL: "https://example.com/store/wp-login.php"
+        )
+        let endpoints = try CookieNonceAuthenticationEndpoints(
+            siteURL: XCTUnwrap(URL(string: credentialSiteAddress)),
+            loginEntryURL: XCTUnwrap(URL(string: "https://example.com/store/hidden-login")),
+            adminBaseURL: XCTUnwrap(URL(string: "https://example.com/store/hidden-admin/"))
+        )
+        let (sut, _) = makeStoresManager(
+            credentials: .wporg(username: "merchant", password: "secret", siteAddress: credentialSiteAddress),
+            endpoints: endpoints
+        )
+
+        // When
+        let result = sut.siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
+
+        // Then
+        XCTAssertEqual(result, site.copy(adminURL: endpoints.adminBaseURL.absoluteString, loginURL: endpoints.loginEntryURL.absoluteString))
+    }
+
+    func test_site_endpoint_overlay_when_non_default_port_changes_scheme_then_leaves_site_unchanged() throws {
+        // Given
+        let credentialSiteAddress = "http://example.com:8080/store"
+        let site = Site.fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://example.com:8080/store")
+        let endpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: credentialSiteAddress)
+        let (sut, _) = makeStoresManager(
+            credentials: .wporg(username: "merchant", password: "secret", siteAddress: credentialSiteAddress),
+            endpoints: endpoints
+        )
+
+        // When
+        let result = sut.siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
+
+        // Then
+        XCTAssertEqual(result, site)
+    }
+
+    func test_site_endpoint_overlay_when_site_has_positive_id_then_leaves_site_unchanged() throws {
+        // Given
+        let site = Site.fake().copy(siteID: 42, url: "https://example.com")
+        let endpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: site.url)
+        let (sut, sessionManager) = makeStoresManager(
+            credentials: .wporg(username: "merchant", password: "secret", siteAddress: site.url),
+            endpoints: endpoints
+        )
+        sessionManager.resetCookieNonceAuthenticationEndpointCredentials()
+
+        // When
+        let result = sut.siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
+
+        // Then
+        XCTAssertEqual(result, site)
+        XCTAssertNil(sessionManager.cookieNonceAuthenticationEndpointCredentials)
+    }
+
+    func test_site_endpoint_overlay_when_any_identity_differs_then_leaves_site_unchanged() throws {
+        // Given
+        let site = Site.fake().copy(siteID: WooConstants.placeholderStoreID, url: "https://site.example")
+        let siteEndpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: site.url)
+        let otherEndpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: "https://other.example")
+        let cases: [(Credentials, CookieNonceAuthenticationEndpoints?)] = [
+            (.wporg(username: "merchant", password: "secret", siteAddress: "https://credentials.example"), siteEndpoints),
+            (.wporg(username: "merchant", password: "secret", siteAddress: site.url), otherEndpoints),
+            (.wpcom(username: "merchant", authToken: "token", siteAddress: site.url), siteEndpoints),
+            (.wporg(username: "merchant", password: "secret", siteAddress: site.url), nil)
+        ]
+
+        // When
+        let results = cases.map { credentials, endpoints in
+            makeStoresManager(credentials: credentials, endpoints: endpoints).0
+                .siteByApplyingCookieNonceAuthenticationEndpoints(to: site)
+        }
+
+        // Then
+        XCTAssertEqual(results, Array(repeating: site, count: cases.count))
+    }
+
+    func test_update_default_store_when_direct_site_api_copy_completes_then_reapplies_latest_endpoints() throws {
+        // Given
+        let site = Site.fake().copy(
+            siteID: WooConstants.placeholderStoreID,
+            url: "https://example.com",
+            applicationPasswordAvailable: false
+        )
+        let initialEndpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: site.url, pathPrefix: "initial")
+        let latestEndpoints = try makeCookieNonceAuthenticationEndpoints(siteAddress: site.url, pathPrefix: "latest")
+        let sessionManager = MockSessionManager()
+        let sut = DeferredSiteAPIStoresManager(sessionManager: sessionManager)
+        sessionManager.defaultCredentials = .wporg(username: "merchant", password: "secret", siteAddress: site.url)
+        sessionManager.cookieNonceAuthenticationEndpointsToReturn = initialEndpoints
+        sessionManager.defaultStoreID = site.siteID
+        sut.updateDefaultStore(site)
+        XCTAssertEqual(
+            sessionManager.defaultSite,
+            site.copy(adminURL: initialEndpoints.adminBaseURL.absoluteString, loginURL: initialEndpoints.loginEntryURL.absoluteString)
+        )
+        sessionManager.cookieNonceAuthenticationEndpointsToReturn = latestEndpoints
+
+        // When
+        sut.completeSiteAPI(with: .success(SiteAPI(siteID: site.siteID, namespaces: [], applicationPasswordAvailable: true)))
+
+        // Then
+        XCTAssertEqual(
+            sessionManager.defaultSite,
+            site.copy(
+                adminURL: latestEndpoints.adminBaseURL.absoluteString,
+                loginURL: latestEndpoints.loginEntryURL.absoluteString,
+                applicationPasswordAvailable: true
+            )
+        )
+    }
+
     func test_deauthenticating_invokes_ProductImageUploader_reset() {
         // Given
         let mockProductImageUploader = MockProductImageUploader()
@@ -581,6 +837,10 @@ final class StoresManagerTests: XCTestCase {
     ///
     func test_it_resets_selected_store_and_stays_authenticated_upon_receiving_unknown_blog_error_notification() {
         // Given
+        let originalAnalytics = ServiceLocator.analytics
+        defer { ServiceLocator.setAnalytics(originalAnalytics) }
+        let analyticsProvider = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
         let sessionManager = SessionManager.testingInstance
         let manager = DefaultStoresManager(sessionManager: sessionManager,
                                            notificationCenter: MockNotificationCenter.testingInstance)
@@ -596,6 +856,8 @@ final class StoresManagerTests: XCTestCase {
         XCTAssertNil(sessionManager.defaultStoreID, "Selected store should be cleared")
         XCTAssertTrue(manager.isAuthenticated, "User should remain authenticated")
         XCTAssertTrue(manager.needsDefaultStore, "Should route to the store picker")
+        XCTAssertEqual(analyticsProvider.receivedEvents.last, "selected_site_reset")
+        XCTAssertEqual(analyticsProvider.receivedProperties.last?["reason"] as? String, "unknown_blog")
     }
 
     /// Verifies that default store is reset when initialized in an unexpected state: deauthenticated state with default store set.
@@ -609,6 +871,263 @@ final class StoresManagerTests: XCTestCase {
         // Then
         XCTAssertFalse(manager.isAuthenticated)
         XCTAssertTrue(manager.needsDefaultStore)
+    }
+
+    private func makeCookieNonceAuthenticationEndpoints(
+        siteAddress: String,
+        pathPrefix: String = "hidden"
+    ) throws -> CookieNonceAuthenticationEndpoints {
+        let siteURL = try XCTUnwrap(URL(string: siteAddress))
+        return try CookieNonceAuthenticationEndpoints(
+            siteURL: siteURL,
+            loginEntryURL: siteURL.appendingPathComponent("\(pathPrefix)-login"),
+            adminBaseURL: siteURL.appendingPathComponent("\(pathPrefix)-admin", isDirectory: true)
+        )
+    }
+
+    private func makeStoresManager(
+        credentials: Credentials,
+        endpoints: CookieNonceAuthenticationEndpoints?
+    ) -> (DefaultStoresManager, MockSessionManager) {
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultCredentials = credentials
+        sessionManager.cookieNonceAuthenticationEndpointsToReturn = endpoints
+        return (DefaultStoresManager(sessionManager: sessionManager), sessionManager)
+    }
+
+    func test_synchronizeSites_when_successful_response_omits_selected_site_then_resets_selection_and_persists_connected_site_ids() {
+        let originalAnalytics = ServiceLocator.analytics
+        defer { ServiceLocator.setAnalytics(originalAnalytics) }
+        let analyticsProvider = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
+        for responseSiteIDs: [Int64] in [[456], []] {
+            // Given
+            let (manager, state, sessionManager) = makeSiteSynchronizationTestContext()
+
+            // When
+            let onCompletion = startSiteSynchronization(manager: manager, state: state)
+            onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: responseSiteIDs)))
+
+            // Then
+            XCTAssertNil(sessionManager.defaultStoreID)
+            XCTAssertEqual(PushNotificationRegistrationState(defaults: pushNotificationDefaults).connectedSiteIDs, responseSiteIDs)
+            XCTAssertEqual(analyticsProvider.receivedEvents.last, "selected_site_reset")
+            XCTAssertEqual(analyticsProvider.receivedProperties.last?["reason"] as? String, "missing_from_sites_sync")
+        }
+    }
+
+    func test_synchronizeEntities_when_preserving_selected_site_then_keeps_selection_and_notifications_enabled() {
+        // Given
+        let (manager, state, sessionManager) = makeSiteSynchronizationTestContext()
+
+        // When
+        manager.synchronizeEntities(preservingSelectedSite: true, onCompletion: nil)
+        guard let action = state.receivedActions.last as? AccountAction,
+              case let .synchronizeSites(preservingSiteID, onCompletion) = action else {
+            return XCTFail("Expected synchronizeSites action")
+        }
+        onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [456])))
+
+        // Then
+        XCTAssertEqual(preservingSiteID, 123)
+        XCTAssertEqual(sessionManager.defaultStoreID, 123)
+        XCTAssertEqual(Set(PushNotificationRegistrationState(defaults: pushNotificationDefaults).connectedSiteIDs ?? []), [123, 456])
+    }
+
+    func test_synchronizeSites_when_request_fails_then_preserves_selected_store_and_connected_site_ids() {
+        // Given
+        pushNotificationDefaults.set("123", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        let (manager, state, sessionManager) = makeSiteSynchronizationTestContext()
+
+        // When
+        let onCompletion = startSiteSynchronization(manager: manager, state: state)
+        onCompletion(.failure(NSError(domain: "test", code: 1)))
+
+        // Then
+        XCTAssertEqual(sessionManager.defaultStoreID, 123)
+        XCTAssertEqual(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs), "123")
+    }
+
+    func test_synchronizeSites_when_session_changes_before_response_then_ignores_stale_connected_site_ids() {
+        // Given
+        pushNotificationDefaults.set("123", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        let (manager, state, sessionManager) = makeSiteSynchronizationTestContext()
+
+        // When
+        let onCompletion = startSiteSynchronization(manager: manager, state: state)
+        sessionManager.defaultCredentials = .wpcom(username: "new-user", authToken: "new-token", siteAddress: "site")
+        onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [456])))
+
+        // Then
+        XCTAssertEqual(sessionManager.defaultStoreID, 123)
+        XCTAssertEqual(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs), "123")
+    }
+
+    func test_synchronizeSites_when_authenticated_with_site_credentials_then_bypasses_wpcom_sync() {
+        // Given
+        let (manager, state, _) = makeSiteSynchronizationTestContext(credentials: SessionSettings.wporgCredentials)
+        var completionError: Error?
+
+        // When
+        manager.dispatch(AccountAction.synchronizeSites { result in
+            completionError = result.failure
+        })
+
+        // Then
+        XCTAssertNotNil(completionError)
+        XCTAssertTrue(state.receivedActions.isEmpty)
+    }
+
+    func test_authenticate_when_session_changes_then_clears_connected_site_ids_but_preserves_same_wpcom_session() {
+        // Given
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultCredentials = SessionSettings.wpcomCredentials
+        pushNotificationDefaults.set("123", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           pushNotificationDefaults: pushNotificationDefaults,
+                                           stateFactory: { _ in MockStoresManagerState() })
+
+        // When
+        manager.authenticate(credentials: .wpcom(username: "renamed-user", authToken: "authToken", siteAddress: "site"))
+
+        // Then
+        XCTAssertEqual(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs), "123")
+
+        // When
+        manager.authenticate(credentials: .wpcom(username: "other-user", authToken: "other-token", siteAddress: "site"))
+
+        // Then
+        XCTAssertNil(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs))
+
+        // When
+        pushNotificationDefaults.set("123", forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+        manager.authenticate(credentials: SessionSettings.wporgCredentials)
+
+        // Then
+        XCTAssertNil(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs))
+    }
+
+    // MARK: - Cached WooCommerce version
+
+    func test_initializeAfterDependenciesAreInitialized_when_woocommerce_plugin_is_in_storage_then_caches_woocommerce_version() {
+        // Given
+        let siteID: Int64 = 123
+        insertWooCommercePlugin(siteID: siteID, version: "10.8.1")
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultCredentials = SessionSettings.wpcomCredentials
+        sessionManager.defaultStoreID = siteID
+        sessionManager.cachedWooCommerceVersion = nil
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+
+        // When
+        manager.initializeAfterDependenciesAreInitialized()
+
+        // Then
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "10.8.1")
+    }
+
+    func test_initializeAfterDependenciesAreInitialized_when_woocommerce_plugin_is_not_in_storage_then_cached_woocommerce_version_is_nil() {
+        // Given
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultCredentials = SessionSettings.wpcomCredentials
+        sessionManager.defaultStoreID = 123
+        sessionManager.cachedWooCommerceVersion = "9.9.9"
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+
+        // When
+        manager.initializeAfterDependenciesAreInitialized()
+
+        // Then
+        XCTAssertNil(sessionManager.cachedWooCommerceVersion)
+    }
+
+    func test_updateDefaultStore_when_switching_store_then_caches_woocommerce_version_of_new_store() {
+        // Given
+        let firstSiteID: Int64 = 123
+        let secondSiteID: Int64 = 456
+        insertWooCommercePlugin(siteID: firstSiteID, version: "10.8.1")
+        insertWooCommercePlugin(siteID: secondSiteID, version: "11.1.0")
+        let sessionManager = SessionManager.testingInstance
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        manager.updateDefaultStore(storeID: firstSiteID)
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "10.8.1")
+
+        // When
+        manager.updateDefaultStore(storeID: secondSiteID)
+
+        // Then
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "11.1.0")
+    }
+
+    func test_updateDefaultStore_when_previous_store_system_information_sync_completes_after_switch_then_keeps_new_store_version() {
+        // Given
+        let firstSiteID: Int64 = 123
+        let secondSiteID: Int64 = 456
+        insertWooCommercePlugin(siteID: firstSiteID, version: "10.8.1")
+        insertWooCommercePlugin(siteID: secondSiteID, version: "11.1.0")
+        let sessionManager = SessionManager.testingInstance
+        let manager = CapturingSiteSyncStoresManager(sessionManager: sessionManager,
+                                                     notificationCenter: MockNotificationCenter.testingInstance)
+        manager.authenticate(credentials: SessionSettings.wporgCredentials)
+        manager.updateDefaultStore(storeID: firstSiteID)
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "10.8.1")
+        manager.completeSettingsSync(siteID: firstSiteID)
+        waitUntil {
+            manager.systemInformationCompletion(siteID: firstSiteID) != nil
+        }
+
+        // When
+        manager.updateDefaultStore(storeID: secondSiteID)
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "11.1.0")
+        manager.systemInformationCompletion(siteID: firstSiteID)?(.success(SystemInformation.fake()))
+        manager.orderStatusesCompletion(siteID: firstSiteID)?(.success([]))
+        waitUntil {
+            manager.didStartNonEssentialSync(siteID: firstSiteID)
+        }
+
+        // Then
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "11.1.0")
+    }
+}
+
+private extension StoresManagerTests {
+    func makeSiteSynchronizationTestContext(credentials: Credentials = SessionSettings.wpcomCredentials)
+        -> (DefaultStoresManager, MockStoresManagerState, MockSessionManager) {
+        let state = MockStoresManagerState()
+        let sessionManager = MockSessionManager()
+        sessionManager.defaultCredentials = credentials
+        sessionManager.defaultStoreID = 123
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           pushNotificationDefaults: pushNotificationDefaults,
+                                           stateFactory: { _ in state })
+        return (manager, state, sessionManager)
+    }
+
+    func insertWooCommercePlugin(siteID: Int64, version: String) {
+        let plugin = SystemPlugin.fake().copy(siteID: siteID,
+                                              plugin: "woocommerce/woocommerce.php",
+                                              version: version,
+                                              active: true)
+        waitFor { promise in
+            ServiceLocator.storageManager.performAndSave({ storage in
+                storage.insertNewObject(ofType: StorageSystemPlugin.self).update(with: plugin)
+            }, completion: { promise(()) }, on: .main)
+        }
+    }
+
+    func startSiteSynchronization(manager: DefaultStoresManager,
+                                  state: MockStoresManagerState) -> (Result<SiteSynchronizationResult, Error>) -> Void {
+        manager.dispatch(AccountAction.synchronizeSites { _ in })
+        guard let action = state.receivedActions.first as? AccountAction,
+              case let .synchronizeSites(_, onCompletion) = action else {
+            XCTFail("Expected synchronizeSites action")
+            return { _ in }
+        }
+        return onCompletion
     }
 }
 
@@ -649,18 +1168,89 @@ private final class MockGRDBManagerProvider: GRDBManagerProviding {
 }
 
 private final class MockGRDBManager: GRDBManagerProtocol {
-    private let onReset: () -> Void
+    private let onReset: @Sendable () -> Void
 
     var databaseConnection: GRDBDatabaseConnection {
         fatalError("MockGRDBManager.databaseConnection should not be accessed by these tests.")
     }
 
-    init(onReset: @escaping () -> Void) {
+    init(onReset: @escaping @Sendable () -> Void) {
         self.onReset = onReset
     }
 
     func reset() throws {
         onReset()
+    }
+}
+
+private final class DeferredSiteAPIStoresManager: DefaultStoresManager {
+    private var siteAPICompletion: ((Result<SiteAPI, Error>) -> Void)?
+
+    override func dispatch(_ action: Action) {
+        guard let action = action as? SettingAction,
+              case let .retrieveSiteAPI(_, completion) = action else {
+            return
+        }
+        siteAPICompletion = completion
+    }
+
+    func completeSiteAPI(with result: Result<SiteAPI, Error>) {
+        siteAPICompletion?(result)
+    }
+}
+
+/// Captures the site synchronization actions dispatched by `DefaultStoresManager` so tests can complete them in any order.
+///
+private final class CapturingSiteSyncStoresManager: DefaultStoresManager {
+    private var generalSettingsCompletions: [Int64: (Error?) -> Void] = [:]
+    private var productSettingsCompletions: [Int64: (Error?) -> Void] = [:]
+    private var orderStatusesCompletions: [Int64: (Result<[Yosemite.OrderStatus], Error>) -> Void] = [:]
+    private var systemInformationCompletions: [Int64: (Result<SystemInformation, Error>) -> Void] = [:]
+    private var paymentGatewaySyncSiteIDs: Set<Int64> = []
+
+    override func dispatch(_ action: Action) {
+        switch action {
+        case let action as SettingAction:
+            switch action {
+            case let .synchronizeGeneralSiteSettings(siteID, onCompletion):
+                generalSettingsCompletions[siteID] = onCompletion
+            case let .synchronizeProductSiteSettings(siteID, onCompletion):
+                productSettingsCompletions[siteID] = onCompletion
+            default:
+                break
+            }
+        case let action as OrderStatusAction:
+            if case let .retrieveOrderStatuses(siteID, onCompletion) = action {
+                orderStatusesCompletions[siteID] = onCompletion
+            }
+        case let action as SystemStatusAction:
+            if case let .synchronizeSystemInformation(siteID, onCompletion) = action {
+                systemInformationCompletions[siteID] = onCompletion
+            }
+        case let action as PaymentGatewayAction:
+            if case let .synchronizePaymentGateways(siteID, _) = action {
+                paymentGatewaySyncSiteIDs.insert(siteID)
+            }
+        default:
+            break
+        }
+    }
+
+    func completeSettingsSync(siteID: Int64) {
+        generalSettingsCompletions[siteID]?(nil)
+        productSettingsCompletions[siteID]?(nil)
+    }
+
+    func systemInformationCompletion(siteID: Int64) -> ((Result<SystemInformation, Error>) -> Void)? {
+        systemInformationCompletions[siteID]
+    }
+
+    func orderStatusesCompletion(siteID: Int64) -> ((Result<[Yosemite.OrderStatus], Error>) -> Void)? {
+        orderStatusesCompletions[siteID]
+    }
+
+    func didStartNonEssentialSync(siteID: Int64) -> Bool {
+        paymentGatewaySyncSiteIDs.contains(siteID)
     }
 }
 
@@ -701,11 +1291,30 @@ final class MockSessionManager: SessionManagerProtocol {
 
     var defaultCredentials: Yosemite.Credentials? = nil
 
+    var cookieNonceAuthenticationEndpointsToReturn: Yosemite.CookieNonceAuthenticationEndpoints?
+    private(set) var cookieNonceAuthenticationEndpointCredentials: Yosemite.Credentials?
+
+    func cookieNonceAuthenticationEndpoints(for credentials: Credentials) -> CookieNonceAuthenticationEndpoints? {
+        cookieNonceAuthenticationEndpointCredentials = credentials
+        return cookieNonceAuthenticationEndpointsToReturn
+    }
+
+    func resetCookieNonceAuthenticationEndpointCredentials() {
+        cookieNonceAuthenticationEndpointCredentials = nil
+    }
+
+    func saveCookieNonceAuthenticationEndpoints(_ endpoints: CookieNonceAuthenticationEndpoints,
+                                                for credentials: Credentials) { }
+
+    func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) { }
+
     func reset() {
         // Do nothing
     }
 
-    func deleteApplicationPassword(using credentials: Credentials?, locally: Bool) {
+    func deleteApplicationPassword(using credentials: Credentials?,
+                                   cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?,
+                                   locally: Bool) {
         deleteApplicationPasswordInvoked = true
         deleteApplicationPasswordLocally = locally
     }
@@ -713,6 +1322,18 @@ final class MockSessionManager: SessionManagerProtocol {
 
 private class MockNotificationCenter: NotificationCenter, @unchecked Sendable {
     static var testingInstance = MockNotificationCenter()
+}
+
+private final class MockStoresManagerState: StoresManagerState {
+    private(set) var receivedActions: [Action] = []
+
+    func willLeave() { }
+
+    func didEnter() { }
+
+    func onAction(_ action: Action) {
+        receivedActions.append(action)
+    }
 }
 
 final class MockCardPresentPaymentOnboardingStateCache: CardPresentPaymentOnboardingStateCache {

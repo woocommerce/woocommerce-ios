@@ -1,1 +1,1 @@
-Order statuses now show in your store's language everywhere you view orders. New order notifications look right in dark mode, and login issues are fixed for stores with certain hosting. Returning from product or order details no longer crashes in specific iOS versions.
+Age verification is now clearer: if parental consent is pending or denied, you'll see a screen explaining what to do next, not just a log out. If a connection issue stops your store loading, the app tells you what's happening and offers support, so you're not left guessing.

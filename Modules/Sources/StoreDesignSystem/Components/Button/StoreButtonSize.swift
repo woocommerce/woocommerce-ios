@@ -4,7 +4,7 @@ import SwiftUI
 ///
 /// - Note: A closed type — only the design sizes exist, each carrying its own typography, icon
 ///   size, padding, and corner radius, so there are no per-size branches at the call site or style.
-public struct StoreButtonSize {
+public struct StoreButtonSize: Sendable {
     let textStyle: StoreTextStyle
     let iconSize: StoreIconSize
     let horizontalPadding: CGFloat

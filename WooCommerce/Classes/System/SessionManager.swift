@@ -6,6 +6,7 @@ import KeychainAccess
 import protocol Networking.ApplicationPasswordUseCase
 import class Networking.OneTimeApplicationPasswordUseCase
 import class Networking.DefaultApplicationPasswordUseCase
+import struct Networking.ApplicationPasswordUseCaseFactory
 import class Kingfisher.ImageCache
 import class Networking.AlamofireNetwork
 
@@ -35,7 +36,6 @@ private extension UserDefaults {
 /// SessionManager provides persistent storage for Session-Y Properties.
 ///
 final class SessionManager: SessionManagerProtocol {
-
     /// Standard Session Manager
     ///
     static var standard: SessionManager {
@@ -53,6 +53,12 @@ final class SessionManager: SessionManagerProtocol {
     /// Cache which stores product images
     ///
     private let imageCache: ImageCache
+
+    private let applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory
+
+    /// Persists the non-secret cookie-nonce endpoint configuration alongside the session.
+    ///
+    private let cookieNonceEndpointStore: CookieNonceAuthenticationEndpointStore
 
     /// Serial queue for thread-safe credentials access
     ///
@@ -90,6 +96,7 @@ final class SessionManager: SessionManagerProtocol {
                 guard newValue != currentCredentials else {
                     return false
                 }
+                retainCookieNonceAuthenticationEndpoints(for: newValue)
 
                 removeCredentials()
 
@@ -195,6 +202,28 @@ final class SessionManager: SessionManagerProtocol {
     ///
     var cachedWooCommerceVersion: String?
 
+    func cookieNonceAuthenticationEndpoints(for credentials: Credentials) -> CookieNonceAuthenticationEndpoints? {
+        guard let identity = cookieNonceIdentity(for: credentials) else {
+            return nil
+        }
+        return cookieNonceEndpointStore.endpoints(siteURL: identity.siteURL, username: identity.username)
+    }
+
+    func saveCookieNonceAuthenticationEndpoints(_ endpoints: CookieNonceAuthenticationEndpoints,
+                                                for credentials: Credentials) {
+        guard let identity = cookieNonceIdentity(for: credentials) else {
+            return
+        }
+        cookieNonceEndpointStore.save(endpoints, siteURL: identity.siteURL, username: identity.username)
+    }
+
+    func removeCookieNonceAuthenticationEndpoints(for credentials: Credentials) {
+        guard let identity = cookieNonceIdentity(for: credentials) else {
+            return
+        }
+        cookieNonceEndpointStore.remove(siteURL: identity.siteURL, username: identity.username)
+    }
+
     /// Keeps strong reference of the use case to keep the password deletion request alive
     /// periphery: ignore
     var applicationPasswordUseCase: ApplicationPasswordUseCase?
@@ -203,10 +232,13 @@ final class SessionManager: SessionManagerProtocol {
     ///
     init(defaults: UserDefaults,
          keychainServiceName: String,
-         imageCache: ImageCache = ImageCache.default) {
+         imageCache: ImageCache = ImageCache.default,
+         applicationPasswordUseCaseFactory: ApplicationPasswordUseCaseFactory = .init()) {
         self.defaults = defaults
+        self.cookieNonceEndpointStore = CookieNonceAuthenticationEndpointStore(userDefaults: defaults)
         self.keychain = Keychain(service: keychainServiceName).accessibility(.afterFirstUnlock)
         self.imageCache = imageCache
+        self.applicationPasswordUseCaseFactory = applicationPasswordUseCaseFactory
 
         defaultStoreIDSubject = .init(defaults[.defaultStoreID])
 
@@ -224,6 +256,7 @@ final class SessionManager: SessionManagerProtocol {
     /// Nukes all of the known Session's properties.
     ///
     func reset() {
+        removeAllCookieNonceAuthenticationEndpoints()
         defaultAccount = nil
         defaultCredentials = nil
         defaultStoreID = nil
@@ -257,14 +290,22 @@ final class SessionManager: SessionManagerProtocol {
 
     /// Deletes application password
     ///
-    func deleteApplicationPassword(using creds: Credentials?, locally: Bool) {
+    func deleteApplicationPassword(using creds: Credentials?,
+                                   cookieNonceAuthenticationEndpoints: CookieNonceAuthenticationEndpoints?,
+                                   locally: Bool) {
         let useCase: ApplicationPasswordUseCase? = credentialsQueue.sync {
-            let credentials = creds ?? loadCredentials()
+            guard let credentials = creds ?? loadCredentials() else {
+                return nil
+            }
             switch credentials {
             case let .wporg(username, password, siteAddress):
-                return try? DefaultApplicationPasswordUseCase(username: username,
-                                                              password: password,
-                                                              siteAddress: siteAddress)
+                let authenticationEndpoints = cookieNonceAuthenticationEndpoints ?? self.cookieNonceAuthenticationEndpoints(for: credentials)
+                return try? applicationPasswordUseCaseFactory.makeForWordPressOrg(
+                    username: username,
+                    password: password,
+                    siteAddress: siteAddress,
+                    authenticationEndpoints: authenticationEndpoints
+                )
             case let .applicationPassword(_, _, siteAddress):
                 return OneTimeApplicationPasswordUseCase(siteAddress: siteAddress)
             case .wpcom:
@@ -273,8 +314,6 @@ final class SessionManager: SessionManagerProtocol {
                 }
                 let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
                 return DefaultApplicationPasswordUseCase(type: .wpcom(siteID: siteID), network: network)
-            case .none:
-                return nil
             }
         }
         guard let useCase else {
@@ -293,6 +332,30 @@ final class SessionManager: SessionManagerProtocol {
 // MARK: - Private Methods
 //
 private extension SessionManager {
+
+    /// Keeps the persisted endpoints only while they belong to the credentials being stored.
+    ///
+    func retainCookieNonceAuthenticationEndpoints(for credentials: Credentials?) {
+        guard let credentials,
+              let identity = cookieNonceIdentity(for: credentials) else {
+            removeAllCookieNonceAuthenticationEndpoints()
+            return
+        }
+        cookieNonceEndpointStore.removeUnlessOwned(siteURL: identity.siteURL, username: identity.username)
+    }
+
+    func cookieNonceIdentity(for credentials: Credentials) -> (siteURL: String, username: String)? {
+        guard case let .wporg(username, password, siteURL) = credentials,
+              username.isEmpty == false,
+              password.isEmpty == false else {
+            return nil
+        }
+        return (siteURL, username)
+    }
+
+    func removeAllCookieNonceAuthenticationEndpoints() {
+        cookieNonceEndpointStore.remove()
+    }
 
     /// Returns the Default Credentials, if any.
     ///

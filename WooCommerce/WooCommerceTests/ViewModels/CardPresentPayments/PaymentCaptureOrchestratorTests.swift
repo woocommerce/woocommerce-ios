@@ -418,6 +418,88 @@ final class PaymentCaptureOrchestratorTests: XCTestCase {
         let expectedFee = NSDecimalNumber(string: "2.65").decimalValue
         assertEqual(expectedFee, parameters.applicationFee)
     }
+
+    func test_collect_payment_when_reader_rearms_after_multiple_cards_then_keeps_message_visible_until_payment_advances() {
+        // Given
+        var onCardReaderMessage: ((CardReaderEvent) -> Void)?
+        var displayedMessages: [String] = []
+        var waitingForInputCount = 0
+        var processingMessageCount = 0
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            guard case let .collectPayment(_, _, _, _, _, readerMessage, _, _) = action else { return }
+            onCardReaderMessage = readerMessage
+        }
+        sut.collectPayment(
+            for: .fake(),
+            orderTotal: 1,
+            paymentGatewayAccount: .fake(),
+            paymentMethodTypes: [.cardPresent],
+            stripeSmallestCurrencyUnitMultiplier: 100,
+            countryCode: .US,
+            terminalPaymentPreparationEnabled: false,
+            channel: .storeManagement,
+            onPreparingReader: {},
+            onWaitingForInput: { _ in waitingForInputCount += 1 },
+            onCardInserted: {},
+            onProcessingMessage: { processingMessageCount += 1 },
+            onDisplayMessage: { displayedMessages.append($0) },
+            onProcessingCompletion: { _ in },
+            onCompletion: { _ in }
+        )
+
+        // When
+        onCardReaderMessage?(.displayMessage(.multipleContactlessCardsDetected("Try one card")))
+        onCardReaderMessage?(.waitingForInput(.tap))
+        onCardReaderMessage?(.cardDetailsCollected)
+
+        // Then
+        XCTAssertEqual(displayedMessages, ["Try one card"])
+        XCTAssertEqual(waitingForInputCount, 0)
+        XCTAssertEqual(processingMessageCount, 1)
+    }
+
+    func test_retry_payment_after_multiple_cards_then_forwards_waiting_for_input_for_new_attempt() {
+        // Given
+        var initialReaderMessage: ((CardReaderEvent) -> Void)?
+        var retryReaderMessage: ((CardReaderEvent) -> Void)?
+        var waitingForInputCount = 0
+        stores.whenReceivingAction(ofType: CardPresentPaymentAction.self) { action in
+            switch action {
+            case .collectPayment(_, _, _, _, _, let readerMessage, _, _):
+                initialReaderMessage = readerMessage
+            case .retryPayment(_, _, _, _, let readerMessage, _, _):
+                retryReaderMessage = readerMessage
+            default:
+                break
+            }
+        }
+        let order = Order.fake()
+        sut.collectPayment(
+            for: order,
+            orderTotal: 1,
+            paymentGatewayAccount: .fake(),
+            paymentMethodTypes: [.cardPresent],
+            stripeSmallestCurrencyUnitMultiplier: 100,
+            countryCode: .US,
+            terminalPaymentPreparationEnabled: false,
+            channel: .storeManagement,
+            onPreparingReader: {},
+            onWaitingForInput: { _ in waitingForInputCount += 1 },
+            onCardInserted: {},
+            onProcessingMessage: {},
+            onDisplayMessage: { _ in },
+            onProcessingCompletion: { _ in },
+            onCompletion: { _ in }
+        )
+        initialReaderMessage?(.displayMessage(.multipleContactlessCardsDetected("Try one card")))
+
+        // When
+        sut.retryPayment(for: order, onCompletion: { _ in })
+        retryReaderMessage?(.waitingForInput(.tap))
+
+        // Then
+        XCTAssertEqual(waitingForInputCount, 1)
+    }
 }
 
 struct MockReceiptEmailParameterDeterminer: ReceiptEmailParameterDeterminer {

@@ -105,7 +105,7 @@ struct NotificationSettingsViewModelTests {
             switch action {
             case let .synchronizeSites(_, onCompletion):
                 storageManager.insertSampleSite(readOnlySite: testSite4)
-                onCompletion(.success(false))
+                onCompletion(.success(.init(containsJetpackConnectionPackageSites: false, siteIDs: [])))
             default:
                 break
             }

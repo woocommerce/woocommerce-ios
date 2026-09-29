@@ -97,8 +97,9 @@ struct ProductsGetToolTests {
         let result = await tool.executor(#"{"id": 9999}"#, client)
 
         // Then
-        guard case .failed(let failed) = result else {
+        guard case .failed = result else {
             Issue.record("expected failed")
             return
-        }    }
+        }
+    }
 }

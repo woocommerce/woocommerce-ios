@@ -4,6 +4,29 @@ import protocol Networking.ApplicationPasswordUseCase
 import protocol WooFoundation.Analytics
 import enum Networking.ApplicationPasswordUseCaseError
 
+struct SiteCredentialAuthenticationEndpointPersistence {
+    enum Behavior {
+        case persist
+        case removeVerifiedStandard
+    }
+
+    let credentials: Credentials
+    let endpoints: CookieNonceAuthenticationEndpoints
+    let behavior: Behavior
+
+    init?(credentials: Credentials, endpoints: CookieNonceAuthenticationEndpoints) {
+        guard case let .wporg(_, _, siteURL) = credentials,
+              let siteURL = URL(string: siteURL),
+              let standardEndpoints = try? CookieNonceAuthenticationEndpoints(siteURL: siteURL),
+              standardEndpoints.siteURL == endpoints.siteURL else {
+            return nil
+        }
+        self.credentials = credentials
+        self.endpoints = endpoints
+        self.behavior = endpoints == standardEndpoints ? .removeVerifiedStandard : .persist
+    }
+}
+
 /// Checks if the user is eligible to use the app after logging in with site credentials only.
 /// The following checks are made:
 /// - Application password availability
@@ -11,21 +34,36 @@ import enum Networking.ApplicationPasswordUseCaseError
 /// - Whether WooCommerce is installed and activated on the logged in site.
 ///
 final class PostSiteCredentialLoginChecker {
+    typealias AuthenticationEndpointPersistenceAction = (SiteCredentialAuthenticationEndpointPersistence) -> Void
+
     private let stores: StoresManager
     private let applicationPasswordUseCase: ApplicationPasswordUseCase
     private let roleEligibilityUseCase: RoleEligibilityUseCaseProtocol
     private let analytics: Analytics
     private let previousViewController: UIViewController?
+    private let authenticationEndpointPersistence: SiteCredentialAuthenticationEndpointPersistence?
+    private let authenticationEndpointPersistenceAction: AuthenticationEndpointPersistenceAction
 
     init(applicationPasswordUseCase: ApplicationPasswordUseCase,
-         roleEligibilityUseCase: RoleEligibilityUseCaseProtocol = RoleEligibilityUseCase(stores: ServiceLocator.stores),
+         roleEligibilityUseCase: RoleEligibilityUseCaseProtocol? = nil,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
+         authenticationEndpointPersistence: SiteCredentialAuthenticationEndpointPersistence? = nil,
+         authenticationEndpointPersistenceAction: AuthenticationEndpointPersistenceAction? = nil,
          previousViewController: UIViewController?) {
         self.applicationPasswordUseCase = applicationPasswordUseCase
-        self.roleEligibilityUseCase = roleEligibilityUseCase
+        self.roleEligibilityUseCase = roleEligibilityUseCase ?? RoleEligibilityUseCase(stores: stores)
         self.stores = stores
         self.analytics = analytics
+        self.authenticationEndpointPersistence = authenticationEndpointPersistence
+        self.authenticationEndpointPersistenceAction = authenticationEndpointPersistenceAction ?? { persistence in
+            switch persistence.behavior {
+            case .persist:
+                stores.sessionManager.saveCookieNonceAuthenticationEndpoints(persistence.endpoints, for: persistence.credentials)
+            case .removeVerifiedStandard:
+                stores.sessionManager.removeCookieNonceAuthenticationEndpoints(for: persistence.credentials)
+            }
+        }
         self.previousViewController = previousViewController
     }
 
@@ -35,7 +73,9 @@ final class PostSiteCredentialLoginChecker {
         checkApplicationPassword(for: siteURL,
                                  with: applicationPasswordUseCase,
                                  in: navigationController) { [weak self] in
-            self?.checkRoleEligibility(for: siteURL, in: navigationController) {
+            guard let self else { return }
+            self.persistAuthenticationEndpointsIfNeeded()
+            self.checkRoleEligibility(for: siteURL, in: navigationController) { [weak self] in
                 self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
             }
         }
@@ -43,6 +83,14 @@ final class PostSiteCredentialLoginChecker {
 }
 
 private extension PostSiteCredentialLoginChecker {
+    func persistAuthenticationEndpointsIfNeeded() {
+        guard let authenticationEndpointPersistence else {
+            return
+        }
+
+        authenticationEndpointPersistenceAction(authenticationEndpointPersistence)
+    }
+
     /// Checks if application password is enabled for the specified site.
     ///
     func checkApplicationPassword(for siteURL: String,
@@ -164,8 +212,11 @@ private extension PostSiteCredentialLoginChecker {
                                       message: nil,
                                       preferredStyle: .alert)
         if let onRetry {
-            let retryAction = UIAlertAction(title: Localization.retryButton, style: .default) { _ in
-                onRetry()
+            let retryAction = UIAlertAction(title: Localization.retryButton, style: .default) { [weak alert] _ in
+                guard let alert, alert.presentingViewController != nil else {
+                    return onRetry()
+                }
+                alert.dismiss(animated: true, completion: onRetry)
             }
             alert.addAction(retryAction)
         } else {

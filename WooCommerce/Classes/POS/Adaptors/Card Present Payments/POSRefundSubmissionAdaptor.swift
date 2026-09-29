@@ -6,11 +6,19 @@ import UIKit
 import Yosemite
 import WooFoundation
 
+/// Prepares, previews and submits POS refunds.
+///
+/// Holds the second of the two checks a `compute_totals` create needs. `POSRefundFlowResolver`
+/// checks the site's WooCommerce version, which decides whether a preview runs at all. A successful
+/// preview stores its total under the selection it was calculated for. `submitRefund` sends
+/// computed line items only when a total exists for the selection being submitted. Every other case
+/// uses the classic v3 create.
+///
 @MainActor
 final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
     let stateModel = POSRefundSubmissionModel()
 
-    private struct PreparedRefundSnapshot {
+    private struct PreparedRefundSnapshot: Sendable {
         let preparation: POSRefundPreparation
         let context: POSRefundSubmissionMapping.PreparedRefundContext
     }
@@ -140,18 +148,20 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                               context: context,
                               preparation: preparation,
                               selectedItems: selectedItems,
-                              reason: reason)
+                              reason: reason,
+                              calculationFlow: .serverComputed)
         case .fallbackToLocal:
             serverPreviewTotals[selectionKey] = nil
             let components = refundMapping.refundComponents(from: selectedItems, context: context)
-            let values = refundMapping.refundValues(items: components.items, fees: components.fees)
+            let values = refundMapping.refundValues(items: components.items, fees: components.fees, order: context.order)
             return reviewData(subtotal: values.subtotal,
                               tax: values.tax,
                               total: values.total,
                               context: context,
                               preparation: preparation,
                               selectedItems: selectedItems,
-                              reason: reason)
+                              reason: reason,
+                              calculationFlow: .local)
         case .rejected(let rejection):
             // The server rejected this selection with an actionable code; the typed rejection
             // carries the cashier-facing copy shown inline on the selection step.
@@ -169,7 +179,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                             context: POSRefundSubmissionMapping.PreparedRefundContext,
                             preparation: POSRefundPreparation,
                             selectedItems: [POSRefundSelectableItem],
-                            reason: String?) -> POSRefundReviewData {
+                            reason: String?,
+                            calculationFlow: POSRefundReviewData.CalculationFlow) -> POSRefundReviewData {
         POSRefundReviewData(itemsCount: selectedItems.count,
                             formattedItemsSubtotal: currencyFormatter.formatAmount(subtotal, with: context.order.currency) ?? "",
                             formattedTax: currencyFormatter.formatAmount(tax, with: context.order.currency) ?? "",
@@ -177,7 +188,8 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
                             paymentMethodDescription: preparation.paymentMethodDescription,
                             customerEmail: preparation.customerEmail,
                             refundReason: reason,
-                            isFullRefund: selectedItems.count == preparation.selectableItems.count)
+                            isFullRefund: selectedItems.count == preparation.selectableItems.count,
+                            calculationFlow: calculationFlow)
     }
 
     func submitRefund(for order: POSOrder,
@@ -193,7 +205,7 @@ final class POSRefundSubmissionAdaptor: POSRefundSubmissionProcessing {
         }
 
         let components = refundMapping.refundComponents(from: selectedItems, context: context)
-        let values = refundMapping.refundValues(items: components.items, fees: components.fees)
+        let values = refundMapping.refundValues(items: components.items, fees: components.fees, order: context.order)
         // A server-computed create is only allowed when this exact selection was previewed
         // successfully; otherwise the classic v3 create path is used.
         let serverPreviewTotal = serverPreviewTotals[SelectionKey(orderID: preparation.orderID,

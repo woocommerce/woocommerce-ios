@@ -15,6 +15,7 @@ final class PluginVersionCheckerTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
     func test_compatible_when_plugin_meets_minimum_version() async throws {
         // Given
         let plugin = SystemPlugin.fake().copy(
@@ -39,6 +40,7 @@ final class PluginVersionCheckerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_incompatible_when_plugin_below_minimum_version() async throws {
         // Given
         let plugin = SystemPlugin.fake().copy(
@@ -65,6 +67,7 @@ final class PluginVersionCheckerTests: XCTestCase {
         XCTAssertEqual(requiredVersion, "14.4")
     }
 
+    @MainActor
     func test_throws_pluginNotFound_when_plugin_missing() async {
         // Given
         mockSystemInfo(with: [])
@@ -85,6 +88,7 @@ final class PluginVersionCheckerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_throws_when_system_info_sync_fails() async {
         // Given
         stores.whenReceivingAction(ofType: SystemStatusAction.self) { action in
@@ -108,7 +112,7 @@ final class PluginVersionCheckerTests: XCTestCase {
             _ = try await checker.checkCompatibility()
             XCTFail("Expected error to be thrown")
         } catch {
-            XCTAssertTrue(error is NSError)
+            XCTAssertEqual((error as NSError).domain, "test")
         }
     }
 }

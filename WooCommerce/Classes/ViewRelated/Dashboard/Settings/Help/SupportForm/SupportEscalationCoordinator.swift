@@ -7,6 +7,7 @@ import protocol WooFoundation.Analytics
 /// Handles routing based on confidence level, navigation to support form,
 /// direct ticket creation, and success/failure UI feedback.
 ///
+@MainActor
 final class SupportEscalationCoordinator {
     typealias TranscriptConsentPresenter = (_ presentingViewController: UIViewController,
                                              _ onSendTicket: @escaping () -> Void,
@@ -28,6 +29,8 @@ final class SupportEscalationCoordinator {
     private let stores: StoresManager
     private let onTicketCreated: (() -> Void)?
     private let transcriptConsentPresenter: TranscriptConsentPresenter
+    /// Tag identifying where Help & Support was opened from (e.g. `origin:age-restriction`), added to every ticket.
+    private let originTag: String?
 
     /// The chat ID to update when a ticket is created. Set via `handleEscalation`.
     private var chatID: Int64?
@@ -51,15 +54,17 @@ final class SupportEscalationCoordinator {
     ///   - onTicketCreated: Optional callback invoked after a Zendesk ticket is successfully created
     ///     (either via the form path or the high-confidence direct path), so the chat surface can
     ///     update its in-session state.
+    ///   - originTag: Support source tag of the screen Help & Support was opened from, if any.
     init(navigationController: UINavigationController?,
          additionalAttachmentsProvider: @escaping () -> [ZendeskAttachment] = { [] },
          attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),
-         mobileStatusReportProvider: MobileStatusReportProviding = MobileStatusReportProvider(),
+         mobileStatusReportProvider: MobileStatusReportProviding,
          zendeskProvider: ZendeskManagerProtocol = ZendeskProvider.shared,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
          onTicketCreated: (() -> Void)? = nil,
-         transcriptConsentPresenter: TranscriptConsentPresenter? = nil) {
+         transcriptConsentPresenter: TranscriptConsentPresenter? = nil,
+         originTag: String? = nil) {
         self.navigationController = navigationController
         self.additionalAttachmentsProvider = additionalAttachmentsProvider
         self.attachmentProvider = attachmentProvider
@@ -69,6 +74,7 @@ final class SupportEscalationCoordinator {
         self.stores = stores
         self.onTicketCreated = onTicketCreated
         self.transcriptConsentPresenter = transcriptConsentPresenter ?? Self.presentTranscriptConsentAlert
+        self.originTag = originTag
     }
 
     /// Handles the escalation from AI chat to human support.
@@ -269,6 +275,9 @@ final class SupportEscalationCoordinator {
         var tags = hasReceivedBotResponse ? Tags.additionalTags : []
         if let topic = supportAreaInfo?.topic, topic.isNotEmpty {
             tags.append(topic)
+        }
+        if let originTag, originTag.isNotEmpty {
+            tags.append(originTag)
         }
         return tags
     }

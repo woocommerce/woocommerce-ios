@@ -106,16 +106,54 @@ final class PushNotificationRegistrationState {
 
         deviceToken = newToken
     }
+
+    /// Site IDs from the last successful WordPress.com `/me/sites` synchronization.
+    ///
+    /// `nil` means no successful synchronization is available. An empty array means that the
+    /// synchronization returned no connected sites.
+    var connectedSiteIDs: [Int64]? {
+        guard let storedSiteIDsString = defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs) else {
+            return nil
+        }
+        return storedSiteIDsString
+            .components(separatedBy: ",")
+            .compactMap { Int64($0) }
+    }
+
+    func updateConnectedSiteIDs(_ siteIDs: [Int64]) {
+        defaults.set(siteIDs.map { "\($0)" }.joined(separator: ","),
+                     forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs)
+    }
+
+    func clearConnectedSiteIDs() { defaults.removeObject(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs) }
 }
 
-/// WPCom push notification suppression
+/// Push notification suppression
 extension PushNotificationRegistrationState {
-    /// Returns `true` when the notification should be suppressed because
-    /// the site already receives Woo-driven push notifications.
+    /// Returns `true` when a remote site notification should be suppressed.
     ///
-    /// Both `blog` (site ID) and `note_id` must be present in `userInfo`
-    /// and the site must be registered for Woo push notifications.
-    func shouldSuppressWPComNotification(userInfo: [AnyHashable: Any]) -> Bool {
+    /// A successful WordPress.com site synchronization suppresses both Woo-driven and WPCom
+    /// notifications for omitted sites. For connected sites, the existing WPCom/Woo deduplication
+    /// remains in place.
+    func shouldSuppressNotification(userInfo: [AnyHashable: Any]) -> Bool {
+        shouldSuppressDisconnectedSiteNotification(userInfo: userInfo) || shouldSuppressWPComDuplicateNotification(userInfo: userInfo)
+    }
+
+    /// Returns `true` when the last successful site synchronization omitted the notification's site.
+    /// This is deliberately separate from WPCom/Woo deduplication so notification taps retain
+    /// their established behavior for connected sites.
+    func shouldSuppressDisconnectedSiteNotification(userInfo: [AnyHashable: Any]) -> Bool {
+        guard let siteID = userInfo.integer(forKey: "blog") else {
+            return false
+        }
+        guard let connectedSiteIDs else {
+            return false
+        }
+        return connectedSiteIDs.contains(siteID) == false
+    }
+
+    /// Returns `true` when a WPCom notification duplicates a Woo-driven registration.
+    private func shouldSuppressWPComDuplicateNotification(userInfo: [AnyHashable: Any]) -> Bool {
         guard let siteID = userInfo["blog"] as? Int64,
               let _ = userInfo["note_id"] as? Int64 else {
             return false

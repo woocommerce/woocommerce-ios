@@ -5,6 +5,7 @@ import Yosemite
 import class AutomatticTracks.CrashLogging
 
 /// The Product Reviews view model used in ProductReviewsViewController
+@MainActor
 final class ProductReviewsViewModel {
     private let data: ReviewsDataSourceProtocol
 

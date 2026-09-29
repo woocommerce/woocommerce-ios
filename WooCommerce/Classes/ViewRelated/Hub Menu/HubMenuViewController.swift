@@ -14,13 +14,15 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
     init(siteID: Int64,
          stores: StoresManager = ServiceLocator.stores,
+         httpsConfigurationWarningViewModel: HTTPSConfigurationWarningViewModel,
          tapToPayBadgePromotionChecker: TapToPayBadgePromotionChecker) {
         self.viewModel = HubMenuViewModel(siteID: siteID,
                                           tapToPayBadgePromotionChecker: tapToPayBadgePromotionChecker,
                                           stores: stores)
 
         self.tapToPayBadgePromotionChecker = tapToPayBadgePromotionChecker
-        super.init(rootView: HubMenu(viewModel: viewModel))
+        super.init(rootView: HubMenu(viewModel: viewModel,
+                                    httpsConfigurationWarningViewModel: httpsConfigurationWarningViewModel))
         configureTabBarItem()
 
         rootView.switchStoreHandler = { [weak self] in
@@ -29,6 +31,11 @@ final class HubMenuViewController: UIHostingController<HubMenu> {
 
         rootView.googleAdsCampaignHandler = { [weak self] in
             self?.presentGoogleAds()
+        }
+
+        rootView.httpsConfigurationHelpHandler = { [weak self] in
+            guard let self else { return }
+            WebviewHelper.launch(HTTPSConfigurationWarningContent.helpURL, with: self)
         }
     }
 

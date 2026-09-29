@@ -130,6 +130,13 @@ final class MockCardPresentPaymentsStoresManager: DefaultStoresManager {
         }
     }
 
+    /// Emits discovered readers without releasing the held callback, so a test can simulate the
+    /// repeated callbacks that happen during a real scan.
+    ///
+    func emitHeldDiscovery(with readers: [CardReader]) {
+        heldReaderDiscoveredCallback?(readers)
+    }
+
     func completeHeldDiscovery(with readers: [CardReader]) {
         heldReaderDiscoveredCallback?(readers)
         heldReaderDiscoveredCallback = nil

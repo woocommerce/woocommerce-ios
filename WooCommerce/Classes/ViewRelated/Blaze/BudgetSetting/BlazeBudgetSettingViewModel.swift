@@ -105,7 +105,7 @@ final class BlazeBudgetSettingViewModel: ObservableObject {
         self.startDate = startDate
     }
 
-    func formatDayCount(_ count: Double) -> NSAttributedString {
+    func formatDayCount(_ count: Double, since startDate: Date) -> NSAttributedString {
         let dayCount = String.pluralize(Int(count),
                                         singular: Localization.singleDay,
                                         plural: Localization.multipleDays)

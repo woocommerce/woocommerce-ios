@@ -17,4 +17,10 @@ struct RequestConverter {
 
         return restRequest
     }
+
+    /// Whether `convert` would turn `request` into a direct `RESTRequest`, leaving the Jetpack tunnel.
+    ///
+    func convertsToDirectRequest(_ request: URLRequestConvertible) -> Bool {
+        !(request is RESTRequest) && convert(request) is RESTRequest
+    }
 }

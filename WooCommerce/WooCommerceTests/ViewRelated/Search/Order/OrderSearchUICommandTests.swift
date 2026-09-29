@@ -6,6 +6,7 @@ import YosemiteTestHelpers
 import Storage
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class OrderSearchUICommandTests: XCTestCase {
     let siteID: Int64 = 12345
     private var storageManager: MockOrderStatusesStoresManager!
@@ -14,21 +15,21 @@ final class OrderSearchUICommandTests: XCTestCase {
     private var systemUnderTest: OrderSearchUICommand!
     private var cancellables: Set<AnyCancellable> = []
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockOrderStatusesStoresManager()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         systemUnderTest = OrderSearchUICommand(siteID: siteID, onSelectSearchResult: { _, _ in }, storageManager: storageManager)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         cancellables.removeAll()
         storageManager = nil
         analyticsProvider = nil
         analytics = nil
         systemUnderTest = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_createStarterViewController_returns_nil_so_empty_results_table_shown_before_search() {

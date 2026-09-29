@@ -184,8 +184,8 @@ private extension BlazeBudgetSettingView {
         BlazeScheduleSettingView(startDate: viewModel.startDate,
                                  hasEndDate: viewModel.hasEndDate,
                                  duration: viewModel.dayCount,
-                                 durationTextFormatter: { duration in
-            viewModel.formatDayCount(duration)
+                                 durationTextFormatter: { startDate, duration in
+            viewModel.formatDayCount(duration, since: startDate)
         }, onCompletion: { startDate, hasEndDate, duration in
             viewModel.hasEndDate = hasEndDate
             viewModel.didTapApplyDuration(dayCount: duration, since: startDate)

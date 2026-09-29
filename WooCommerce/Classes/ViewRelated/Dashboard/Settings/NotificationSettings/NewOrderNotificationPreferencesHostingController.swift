@@ -1,9 +1,6 @@
 import SwiftUI
 
-/// Hosts `NewOrderNotificationPreferencesDetailView`. Navigation chrome
-/// (Save, back button, discard alert, saving spinner) is inherited from
-/// `NotificationDetailHostingController`.
-///
+/// Hosts `NewOrderNotificationPreferencesDetailView`.
 final class NewOrderNotificationPreferencesHostingController:
     NotificationDetailHostingController<NewOrderNotificationPreferencesDetailView> {
 

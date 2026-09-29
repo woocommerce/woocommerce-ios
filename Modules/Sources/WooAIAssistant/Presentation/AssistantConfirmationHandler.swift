@@ -1,9 +1,9 @@
 import SwiftUI
 
 /// Environment-injected so confirmation cards stay retain-cycle free and previewable.
-struct AssistantConfirmationHandler {
-    var onConfirm: (UUID) -> Void = { _ in }
-    var onCancel: (UUID) -> Void = { _ in }
+struct AssistantConfirmationHandler: Sendable {
+    var onConfirm: @MainActor (UUID) -> Void = { _ in }
+    var onCancel: @MainActor (UUID) -> Void = { _ in }
 }
 
 private struct AssistantConfirmationHandlerKey: EnvironmentKey {

@@ -4,24 +4,12 @@ import XCTest
 /// Tests for `ReviewsViewController`.
 ///
 final class ReviewsViewControllerTests: XCTestCase {
-    private var mockViewModel: MockReviewsViewModel!
-    private var sut: ReviewsViewController!
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
-
-        mockViewModel = MockReviewsViewModel(siteID: 123)
-        sut = ReviewsViewController(viewModel: mockViewModel)
-    }
-
-    override func tearDownWithError() throws {
-        mockViewModel = nil
-        sut = nil
-
-        try super.tearDownWithError()
-    }
-
+    @MainActor
     func test_menu_bar_button_item_is_not_present_if_there_are_no_unread_notifications() {
+        // Given
+        let (sut, mockViewModel) = makeSUT()
+
         // When
         mockViewModel.hasUnreadNotifications = false
         sut.makeViewAppear()
@@ -30,7 +18,11 @@ final class ReviewsViewControllerTests: XCTestCase {
         XCTAssertNil(sut.navigationItem.rightBarButtonItem)
     }
 
+    @MainActor
     func test_menu_bar_button_item_is_visible_if_there_are_unread_notifications_available() throws {
+        // Given
+        let (sut, mockViewModel) = makeSUT()
+
         // When
         mockViewModel.hasUnreadNotifications = true
         sut.makeViewAppear()
@@ -38,6 +30,15 @@ final class ReviewsViewControllerTests: XCTestCase {
         // Then
         let markAllAsReadyButton = try XCTUnwrap(sut.navigationItem.rightBarButtonItem)
         XCTAssertEqual(markAllAsReadyButton.accessibilityIdentifier, "reviews-open-menu-button")
+    }
+}
+
+private extension ReviewsViewControllerTests {
+    @MainActor
+    func makeSUT() -> (sut: ReviewsViewController, mockViewModel: MockReviewsViewModel) {
+        let mockViewModel = MockReviewsViewModel(siteID: 123)
+        let sut = ReviewsViewController(viewModel: mockViewModel)
+        return (sut, mockViewModel)
     }
 }
 
@@ -53,6 +54,7 @@ private extension ReviewsViewController {
 
 // MARK: Mocks
 //
+@MainActor
 private final class MockReviewsViewModel: ReviewsViewModelOutput, ReviewsViewModelActionsHandler {
 
     private let data: ReviewsDataSourceProtocol

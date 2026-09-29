@@ -12,6 +12,87 @@ import enum WooFoundationCore.WooAnalyticsStat
 @Suite(.timeLimit(.minutes(5)))
 struct POSPaymentModelTests {
 
+    @Test @MainActor
+    func test_start_payment_when_reader_connected_then_prepares_analytics_with_checkout_order() async {
+        // Given
+        let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
+        let service = MockCardPresentPaymentService()
+        let provider = MockPOSPaymentOrderProvider()
+        let order = Order.fake().copy(orderID: 42, currency: "JPY", total: "1000")
+        provider.orderToReturn = order
+        provider.totalDecimalToReturn = 1000
+        service.connectedReader = CardPresentPaymentCardReader(name: "Reader", batteryLevel: 1)
+        service.onCollectPaymentCalled = { #expect(tracker.cardPaymentOrder == POSPaymentAnalyticsOrder(order: order)) }
+        let sut = makePaymentController(cardPresentPaymentService: service, orderProvider: provider,
+                                        collectOrderPaymentAnalyticsTracker: tracker)
+
+        // When
+        await sut.startPayment()
+
+        // Then
+        #expect(service.collectPaymentWasCalled)
+        #expect(tracker.cardPaymentOrder == POSPaymentAnalyticsOrder(order: order))
+    }
+
+    @Test @MainActor
+    func test_cash_success_when_change_is_due_then_tracks_order_total() async throws {
+        // Given
+        let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
+        let provider = MockPOSPaymentOrderProvider()
+        let order = Order.fake().copy(orderID: 42, currency: "USD", total: "15.00")
+        provider.orderToReturn = order
+        let sut = makePaymentController(orderProvider: provider, collectOrderPaymentAnalyticsTracker: tracker)
+
+        // When
+        try await sut.collectCashPayment(changeDueAmount: "$5.00")
+
+        // Then
+        #expect(tracker.cashPaymentOrder == POSPaymentAnalyticsOrder(order: order))
+        #expect(tracker.cashPaymentOrder?.total == "15.00")
+    }
+
+    @Test @MainActor
+    func test_cash_failure_then_does_not_track_payment_success() async {
+        // Given
+        let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
+        let handler = MockPOSCashPaymentHandler()
+        handler.errorToThrow = NSError(domain: "test", code: 1)
+        let provider = MockPOSPaymentOrderProvider()
+        provider.orderToReturn = .fake()
+        let sut = makePaymentController(orderProvider: provider, cashPaymentHandler: handler, collectOrderPaymentAnalyticsTracker: tracker)
+
+        // When
+        try? await sut.collectCashPayment(changeDueAmount: nil)
+
+        // Then
+        #expect(!tracker.didCallTrackSuccessfulCashPayment)
+    }
+
+    @Test @MainActor
+    func test_scan_success_when_polled_then_tracks_refreshed_order_once() async throws {
+        // Given
+        let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
+        let provider = MockPOSPaymentOrderProvider()
+        let order = Order.fake().copy(orderID: 42, currency: "USD", total: "15.00", paymentMethodID: "")
+        provider.orderToReturn = order
+        let paidOrder = order.copy(currency: "EUR", total: "16.00", paymentMethodID: "stripe")
+        let verifier = MockPOSScanToPayVerifier()
+        verifier.resultQueue = [.success(.paid(paidOrder))]
+        let handler = MockPOSScanToPayHandler()
+        let sut = makePaymentController(orderProvider: provider, scanToPayHandler: handler, scanToPayVerifier: verifier,
+                                        collectOrderPaymentAnalyticsTracker: tracker, scanToPayPollInterval: 0)
+
+        // When
+        await fireOnce { fire in
+            handler.onRecordScanToPayPaymentMethodCalled = { fire() }
+            Task { @MainActor in await sut.startScanToPayPayment() }
+        }
+        try await sut.completeScanToPayPayment()
+
+        // Then
+        #expect(tracker.scanToPayOrders == [POSPaymentAnalyticsOrder(order: paidOrder)])
+    }
+
     // MARK: - Init
 
     @Test("init sets payment state to idle by default")
@@ -468,11 +549,13 @@ struct POSPaymentModelTests {
         orderProvider.orderToReturn = order
         let celebration = MockPaymentCaptureCelebration()
         let analytics = MockPOSAnalytics()
+        let tracker = MockPOSCollectOrderPaymentAnalyticsTracker()
 
         let sut = makePaymentController(
             orderProvider: orderProvider,
             markAsPaidHandler: handler,
             analytics: analytics,
+            collectOrderPaymentAnalyticsTracker: tracker,
             celebration: celebration)
 
         try await sut.confirmMarkAsPaidPayment()
@@ -481,6 +564,7 @@ struct POSPaymentModelTests {
         #expect(handler.markOrderAsPaidReceivedOrder?.orderID == order.orderID)
         #expect(sut.paymentState.markAsPaid == .paymentSuccess)
         #expect(celebration.celebrationWasCalled == true)
+        #expect(tracker.markAsPaidPaymentOrder == POSPaymentAnalyticsOrder(order: order))
         #expect(analytics.events.contains { $0.eventName == WooAnalyticsStat.pointOfSaleMarkAsPaidConfirmed.rawValue })
     }
 
@@ -1585,6 +1669,26 @@ struct POSPaymentModelTests {
     }
     // MARK: - Connect Card Reader Concurrency
 
+    @Test("connectCardReader called twice while the first is in progress only tracks discovery once")
+    @MainActor
+    func test_connectCardReader_when_called_twice_while_first_is_in_progress_then_tracks_discovery_once() async {
+        // Given
+        let service = MockCardPresentPaymentService()
+        let analytics = MockPOSAnalytics()
+        let sut = makePaymentController(cardPresentPaymentService: service, analytics: analytics)
+
+        // When
+        await fireOnce { fire in
+            service.onConnectReaderCalled = { fire() }
+            sut.connectCardReader()
+            sut.connectCardReader()
+        }
+
+        // Then
+        let discoveryEvents = analytics.events.filter { $0.eventName == "card_reader_discovery_tapped" }
+        #expect(discoveryEvents.count == 1)
+    }
+
     @Test("connectCardReader called twice only triggers one connectReader call on the service")
     @MainActor
     func test_connectCardReader_when_called_twice_while_first_is_in_progress_then_only_one_connectReader_call() async {
@@ -2025,7 +2129,6 @@ struct POSPaymentModelTests {
 
         // Then
         #expect(handler.completeScanToPayPaymentCalled == true)
-        #expect(handler.completeScanToPayPaymentReceivedOrder?.orderID == order.orderID)
         #expect(sut.paymentState.scanToPay == .paymentSuccess)
         #expect(celebration.celebrationWasCalled == true)
     }
@@ -2090,7 +2193,6 @@ struct POSPaymentModelTests {
 
         // Then: provideOrder was NOT called (cached order was reused)
         #expect(orderProvider.provideOrderCallCount == 0)
-        #expect(handler.completeScanToPayPaymentReceivedOrder?.orderID == cachedOrder.orderID)
     }
 
     // MARK: - Scan to Pay Polling
@@ -2129,33 +2231,34 @@ struct POSPaymentModelTests {
     func startScanToPayPayment_when_verifierReturnsPaid_then_transitions_to_success() async {
         // Given
         let verifier = MockPOSScanToPayVerifier()
-        verifier.resultQueue = [.success(.paid)]
+        verifier.resultQueue = [.success(.paid(.fake().copy(orderID: 123, currency: "USD", total: "10.00", paymentMethodID: "stripe")))]
         let orderProvider = MockPOSPaymentOrderProvider()
-        orderProvider.orderToReturn = Order.fake().copy(total: "10.00")
+        let order = Order.fake().copy(orderID: 123, total: "10.00")
+        orderProvider.orderToReturn = order
         orderProvider.scanToPayPaymentURL = URL(string: "https://example.com/pay")
         let celebration = MockPaymentCaptureCelebration()
+        let scanToPayHandler = MockPOSScanToPayHandler()
 
         let sut = makePaymentController(
             orderProvider: orderProvider,
+            scanToPayHandler: scanToPayHandler,
             scanToPayVerifier: verifier,
             celebration: celebration,
             scanToPayPollInterval: 0)
 
         // When
-        await sut.startScanToPayPayment()
-
-        // Wait for the polling task to process the .paid result and call scanToPayPaymentSuccess.
+        // The payment method write runs last, after the success transition, so waiting on it
+        // means the state change and the celebration have already happened. The hook is armed
+        // before the flow starts so a fast poll can't complete before we're listening.
         await fireOnce { fire in
-            withObservationTracking {
-                _ = sut.paymentState.scanToPay
-            } onChange: {
-                Task { @MainActor in fire() }
-            }
+            scanToPayHandler.onRecordScanToPayPaymentMethodCalled = { fire() }
+            Task { @MainActor in await sut.startScanToPayPayment() }
         }
 
         // Then
         #expect(sut.paymentState.scanToPay == .paymentSuccess)
         #expect(celebration.celebrationWasCalled == true)
+        #expect(scanToPayHandler.recordScanToPayPaymentMethodCalled == true)
     }
 
     @Test("startScanToPayPolling sets verification error state when verifier throws")
@@ -2749,7 +2852,7 @@ struct POSPaymentModelTests {
 
 @MainActor
 private func makePaymentController(
-    cardPresentPaymentService: CardPresentPaymentFacade = MockCardPresentPaymentService(),
+    cardPresentPaymentService: CardPresentPaymentFacade? = nil,
     orderProvider: POSPaymentOrderProviding = MockPOSPaymentOrderProvider(),
     cashPaymentHandler: POSCashPaymentHandling = MockPOSCashPaymentHandler(),
     scanToPayHandler: POSScanToPayHandling = MockPOSScanToPayHandler(),
@@ -2767,7 +2870,9 @@ private func makePaymentController(
     cardPaymentSelectionMode: POSCardPaymentSelectionMode = .large,
     paymentState: PointOfSalePaymentState = .idle
 ) -> POSPaymentModel {
-    POSPaymentModel(
+    let cardPresentPaymentService = cardPresentPaymentService ?? MockCardPresentPaymentService()
+
+    return POSPaymentModel(
         cardPresentPaymentService: cardPresentPaymentService,
         orderProvider: orderProvider,
         cashPaymentHandler: cashPaymentHandler,

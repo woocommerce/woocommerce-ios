@@ -1,6 +1,5 @@
 import Foundation
 import Yosemite
-import Experiments
 import class WooFoundation.VersionHelpers
 
 /// The two POS refund calculation flows.
@@ -16,45 +15,36 @@ enum POSRefundFlow: Equatable {
 /// Decides which refund calculation flow a site is eligible for.
 ///
 /// `serverComputed` requires all of:
-/// - the `posServerCalculatedRefunds` feature flag,
 /// - the site not being cached as unavailable (a preview already returned `rest_no_route`),
 /// - a cached WooCommerce version that is known and at least
 ///   ``Constants/minimumWooVersionForServerRefunds``; an unknown version fails closed to
 ///   `localComputed`.
 ///
-/// The version requirement is authoritative for the create capability and cannot be bypassed by a
-/// successful preview: the preview route and the `compute_totals` create support ship in separate
-/// WooCommerce core changes, so a preview succeeding only proves the preview route exists. A store
-/// with the preview but without `compute_totals` (partial backport, or the changes splitting
-/// across releases) would silently drop the parameter and create a zero-amount refund while
-/// restocking items. Only a version known to contain both changes unlocks the server flow.
+/// The version check is the only test of create support. A successful preview cannot replace it:
+/// the preview route and the `compute_totals` create shipped as separate WooCommerce changes, so a
+/// preview proves only that the preview route exists. A store that answers the preview but drops
+/// `compute_totals` records a zero-amount refund and restocks the items.
 ///
-/// Eligibility here only allows the *preview* probe. A computed create additionally requires that
-/// probe to succeed first — see `ServerRefundAvailabilityCache`.
+/// Eligibility here allows the *preview* only. Sending a computed create also needs a successful
+/// preview for the selection being submitted — see `POSRefundSubmissionAdaptor`.
 ///
 @MainActor
 struct POSRefundFlowResolver {
     private let stores: StoresManager
-    private let featureFlagService: FeatureFlagService
     private let availabilityCache: ServerRefundAvailabilityCache
     private let minimumWooVersion: String
 
     // Every dependency is explicit (no defaults) so a missing one is a compile error
     // rather than a silently picked service, per review.
     init(stores: StoresManager,
-         featureFlagService: FeatureFlagService,
          availabilityCache: ServerRefundAvailabilityCache,
          minimumWooVersion: String) {
         self.stores = stores
-        self.featureFlagService = featureFlagService
         self.availabilityCache = availabilityCache
         self.minimumWooVersion = minimumWooVersion
     }
 
     func resolveFlow(siteID: Int64) -> POSRefundFlow {
-        guard featureFlagService.isFeatureFlagEnabled(.posServerCalculatedRefunds) else {
-            return .localComputed
-        }
         guard availabilityCache.isAvailable(siteID: siteID) != false else {
             return .localComputed
         }

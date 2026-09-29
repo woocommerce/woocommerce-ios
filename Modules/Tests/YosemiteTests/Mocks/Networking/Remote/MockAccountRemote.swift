@@ -9,6 +9,7 @@ import XCTest
 final class MockAccountRemote {
     /// Returns the value as a publisher when `loadSites` is called.
     var loadSitesResult: Result<[Site], Error> = .success([])
+    var loadSitesPublisher: AnyPublisher<Result<[Site], Error>, Never>?
 
     /// Returns the requests that have been made to `AccountRemoteProtocol`.
     var invocations = [Invocation]()
@@ -112,7 +113,7 @@ extension MockAccountRemote: AccountRemoteProtocol {
 
     func loadSites() -> AnyPublisher<Result<[Site], Error>, Never> {
         invocations.append(.loadSites)
-        return Just<Result<[Site], Error>>(loadSitesResult).eraseToAnyPublisher()
+        return loadSitesPublisher ?? Just<Result<[Site], Error>>(loadSitesResult).eraseToAnyPublisher()
     }
 
     func checkIfWooCommerceIsActive(for siteID: Int64) -> AnyPublisher<Result<Bool, Error>, Never> {

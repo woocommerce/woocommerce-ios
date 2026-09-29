@@ -7,6 +7,7 @@ import TestKit
 import Experiments
 import protocol WooFoundation.Analytics
 
+@MainActor
 final class ProductFormViewModelTests: XCTestCase {
 
     private let siteID: Int64 = 123

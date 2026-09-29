@@ -96,6 +96,12 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
     ///
     public let applicationPasswordAvailable: Bool
 
+    /// Whether the site URL supplied by the server used HTTP and was normalized to HTTPS.
+    ///
+    /// `nil` means this information was unavailable, for example when restoring a site
+    /// from local storage created before this property existed.
+    public let wasURLNormalizedToHTTPS: Bool?
+
     /// Decodable Conformance.
     ///
     public init(from decoder: Decoder) throws {
@@ -104,7 +110,8 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         let siteID = try siteContainer.decode(Int64.self, forKey: .siteID)
         let name = try siteContainer.decode(String.self, forKey: .name)
         let description = try siteContainer.decode(String.self, forKey: .description)
-        let url = Self.safeURL(try siteContainer.decode(String.self, forKey: .url))
+        let originalURL = try siteContainer.decode(String.self, forKey: .url)
+        let url = originalURL.normalizedToHTTPS()
         let capabilitiesContainer = try siteContainer.nestedContainer(keyedBy: CapabilitiesKeys.self, forKey: .capabilities)
         let isSiteOwner = try capabilitiesContainer.decode(Bool.self, forKey: .isSiteOwner)
         let isAdmin = try capabilitiesContainer.decode(Bool.self, forKey: .isAdmin)
@@ -117,8 +124,8 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         let jetpackConnectionActivePlugins = try optionsContainer.decodeIfPresent([String].self, forKey: .jetpackConnectionActivePlugins) ?? []
         let timezone = try optionsContainer.decode(String.self, forKey: .timezone)
         let gmtOffset = try optionsContainer.decode(Double.self, forKey: .gmtOffset)
-        let adminURL = Self.safeURL(try optionsContainer.decode(String.self, forKey: .adminURL))
-        let loginURL = Self.safeURL(try optionsContainer.decode(String.self, forKey: .loginURL))
+        let adminURL = try optionsContainer.decode(String.self, forKey: .adminURL).normalizedToHTTPS()
+        let loginURL = try optionsContainer.decode(String.self, forKey: .loginURL).normalizedToHTTPS()
         let frameNonce = try optionsContainer.decode(String.self, forKey: .frameNonce)
         let canBlaze = optionsContainer.failsafeDecodeIfPresent(booleanForKey: .canBlaze) ?? false
         let visibility = optionsContainer.failsafeDecodeIfPresent(SiteVisibility.self, forKey: .visibility) ?? .privateSite
@@ -161,7 +168,8 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                   isAdmin: isAdmin,
                   wasEcommerceTrial: wasEcommerceTrial,
                   hasSSOEnabled: hasSSOEnabled,
-                  applicationPasswordAvailable: false) // to be updated by fetching SiteAPI
+                  applicationPasswordAvailable: false, // to be updated by fetching SiteAPI
+                  wasURLNormalizedToHTTPS: originalURL.requiresHTTPSNormalization)
     }
 
     /// Designated Initializer.
@@ -188,7 +196,8 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
                 isAdmin: Bool,
                 wasEcommerceTrial: Bool,
                 hasSSOEnabled: Bool,
-                applicationPasswordAvailable: Bool) {
+                applicationPasswordAvailable: Bool,
+                wasURLNormalizedToHTTPS: Bool? = nil) {
         self.siteID = siteID
         self.name = name
         self.description = description
@@ -212,6 +221,7 @@ public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, Generated
         self.wasEcommerceTrial = wasEcommerceTrial
         self.hasSSOEnabled = hasSSOEnabled
         self.applicationPasswordAvailable = applicationPasswordAvailable
+        self.wasURLNormalizedToHTTPS = wasURLNormalizedToHTTPS
     }
 }
 
@@ -303,21 +313,6 @@ public enum SiteVisibility: Int, Codable, GeneratedFakeable {
 /// Computed properties
 ///
 public extension Site {
-
-    /// Force URL to use HTTPS if possible to avoid App Transport Security errors
-    private static func safeURL(_ url: String) -> String {
-        guard let originalURL = URL(string: url),
-              originalURL.scheme?.lowercased() == "http"
-        else {
-            return url
-        }
-
-        var components = URLComponents(url: originalURL, resolvingAgainstBaseURL: false)
-        components?.scheme = "https"
-
-        return components?.string ?? url
-    }
-
     /// Returns the TimeZone using the gmtOffset
     ///
     var siteTimezone: TimeZone {

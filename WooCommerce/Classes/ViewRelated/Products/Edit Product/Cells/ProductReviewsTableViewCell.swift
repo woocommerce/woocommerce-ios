@@ -20,11 +20,12 @@ final class ProductReviewsTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        configureBackground()
-        configureImageView()
-        configureLabels()
-        configureStarView()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureImageView()
+            configureLabels()
+            configureStarView()
+        }
     }
 
     func configure(image: UIImage, title: String, details: String, ratingCount: Int, averageRating: String) {

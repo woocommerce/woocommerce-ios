@@ -4,7 +4,7 @@ import CoreGraphics
 ///
 /// - Note: A closed type holding the horizontal inset per variant. `full` spans edge to edge;
 ///   `inset` aligns the line with inset content.
-public struct StoreDividerVariant {
+public struct StoreDividerVariant: Sendable {
     let horizontalInset: CGFloat
 
     private init(horizontalInset: CGFloat) {

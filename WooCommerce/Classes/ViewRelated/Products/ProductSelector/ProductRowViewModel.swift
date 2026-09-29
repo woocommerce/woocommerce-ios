@@ -1,4 +1,3 @@
-import Experiments
 import Foundation
 import Yosemite
 import WooFoundation
@@ -68,14 +67,14 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     var rowOpacity: CGFloat {
         switch selectedState {
         case .unsupported: 0.7
-        case .notSelected, .selected, .partiallySelected: 1
+        case .notSelected, .selected, .partiallySelected, .verifying: 1
         }
     }
 
     /// Whether selection is enabled for the product row.
     var selectionEnabled: Bool {
         switch selectedState {
-        case .unsupported: false
+        case .unsupported, .verifying: false
         case .notSelected, .selected, .partiallySelected: true
         }
     }
@@ -85,7 +84,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
     /// Unsupported state returns false by default.
     var toggledSelectedValue: Bool {
         switch selectedState {
-        case .selected, .unsupported: false
+        case .selected, .unsupported, .verifying: false
         case .notSelected, .partiallySelected: true
         }
     }
@@ -303,7 +302,6 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
                      currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
                      currency: String? = nil,
                      analytics: Analytics = ServiceLocator.analytics,
-                     featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
                      configure: (() -> Void)? = nil) {
         // Don't show any price for variable products; price will be shown for each product variation.
         let price: String?
@@ -345,8 +343,7 @@ final class ProductRowViewModel: ObservableObject, Identifiable {
             }
         }()
 
-        let isConfigurable = featureFlagService.isFeatureFlagEnabled(.productBundlesInOrderForm)
-        && product.productType == .bundle
+        let isConfigurable = product.productType == .bundle
         && product.bundledItems.isNotEmpty
         && configure != nil
 

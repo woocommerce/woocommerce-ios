@@ -268,6 +268,30 @@ final class RESTRequestTests: XCTestCase {
         XCTAssertEqual(url.absoluteString, "https://wordpress.com/wp-json/sample")
     }
 
+    func test_request_url_normalizes_http_site_url_to_https() throws {
+        // Given
+        let request = RESTRequest(siteURL: "http://example.com", method: .get, path: sampleRPC)
+
+        // When
+        let url = try XCTUnwrap(request.asURLRequest().url)
+
+        // Then
+        XCTAssertEqual(url.absoluteString, "https://example.com/wp-json/sample")
+    }
+
+    func test_request_url_normalizes_cached_http_rest_route_root_to_https() throws {
+        // Given
+        let siteURL = "http://example.com"
+        WordPressRESTAPIRootCache.shared.setRoot("http://example.com/?rest_route=/", for: siteURL)
+        let request = RESTRequest(siteURL: siteURL, method: .get, path: sampleRPC)
+
+        // When
+        let url = try XCTUnwrap(request.asURLRequest().url)
+
+        // Then
+        XCTAssertEqual(url.absoluteString, "https://example.com/?rest_route=/sample")
+    }
+
     func test_request_url_with_cached_wp_json_root_and_api_version() throws {
         // Given
         WordPressRESTAPIRootCache.shared.setRoot("https://wordpress.com/wp-json/", for: sampleSiteAddress)

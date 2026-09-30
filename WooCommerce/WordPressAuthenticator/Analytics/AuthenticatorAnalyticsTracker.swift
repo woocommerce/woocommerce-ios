@@ -375,9 +375,10 @@ public class AuthenticatorAnalyticsTracker {
 
     /// Shared Instance.
     ///
-    public static var shared: AuthenticatorAnalyticsTracker = {
-        return AuthenticatorAnalyticsTracker()
-    }()
+    /// Process-wide state that predates strict concurrency and is never reassigned. Marking it
+    /// `nonisolated(unsafe)` states that once, here, instead of leaving all 21 references to it
+    /// warning individually.
+    public nonisolated(unsafe) static let shared = AuthenticatorAnalyticsTracker()
 
     /// State for the analytics tracker.
     ///

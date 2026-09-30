@@ -182,7 +182,7 @@ private extension QRLoginCoordinator {
 
     func fallbackToSiteAddress() {
         analytics.trackClick(.qrLoginFallback)
-        NavigateToEnterSite(trackedFlow: .loginQR).execute(from: navigationController)
+        handleEnterSiteURL()
     }
 
     static func copyLoginURL() {

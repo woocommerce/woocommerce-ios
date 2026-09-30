@@ -108,6 +108,9 @@ public class AuthenticatorAnalyticsTracker {
 
         /// Everything after authentication succeeds: the store picker and the after-login
         /// error screens. Set once when the epilogue starts; later steps inherit it.
+        ///
+        /// The same screens are also reachable from site discovery, where they keep
+        /// `siteDiscovery` instead — connecting another store is not a login epilogue.
         case epilogue
     }
 
@@ -186,9 +189,11 @@ public class AuthenticatorAnalyticsTracker {
         ///
         case qrError = "qr_error"
 
-        // MARK: - After-login failure states (`flow = epilogue`)
+        // MARK: - After-login failure states
         //
-        // Raw values are the shared cross-platform vocabulary and must not be renamed.
+        // `flow = epilogue`, or `site_discovery` when the screen was reached by adding a store
+        // from the picker. Raw values are the shared cross-platform vocabulary and must not be
+        // renamed.
 
         /// The store address entered at login is not in the signed-in WP.com account.
         ///

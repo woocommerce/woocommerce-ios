@@ -144,7 +144,8 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         } else {
             y = collapsedYPosition
         }
-        var width: CGFloat = containerView.bounds.width - (containerView.safeAreaInsets.left + containerView.safeAreaInsets.right)
+        let safeAreaWidth: CGFloat = containerView.bounds.width - (containerView.safeAreaInsets.left + containerView.safeAreaInsets.right)
+        var width = safeAreaWidth
 
         frame.origin.y = y
 
@@ -163,8 +164,8 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         }
         frame.size.width = width
 
-        /// If we constrain the width, this centers the view by applying the appropriate insets based on width
-        frame.origin.x = ((containerView.bounds.width - width) / 2)
+        /// Centers the view within the horizontal safe area, whose left and right insets can differ
+        frame.origin.x = containerView.safeAreaInsets.left + ((safeAreaWidth - width) / 2)
 
         return frame
     }
@@ -283,7 +284,7 @@ public class DrawerPresentationController: FancyAlertPresentationController {
             topMargin = calculatedTopMargin(for: height)
 
         case .hidden:
-            topMargin = UIScreen.main.bounds.height
+            topMargin = containerView?.bounds.height ?? 0
         }
 
         return topMargin

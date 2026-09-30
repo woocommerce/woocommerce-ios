@@ -209,7 +209,7 @@ class Login2FAViewController: LoginViewController, NUXKeyboardResponder, UITextF
         let allowedCharacters = CharacterSet.decimalDigits
         let resultCharacterSet = CharacterSet(charactersIn: codeStripped)
         let isOnlyNumbers = allowedCharacters.isSuperset(of: resultCharacterSet)
-        let isShortEnough = codeStripped.count <= SocialLogin2FANonceInfo.TwoFactorTypeLengths.backup.rawValue
+        let isShortEnough = codeStripped.count <= SocialLogin2FANonceInfo.TwoFactorTypeLengths.email.rawValue
 
         if isOnlyNumbers && isShortEnough {
             return .valid(codeStripped)

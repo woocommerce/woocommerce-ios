@@ -63,7 +63,7 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
                                                onLoginSuccess: { _ in })
 
         // When
-        viewModel.verificationCode = "185787878"
+        viewModel.verificationCode = "1857878789"
 
         //  Then
         XCTAssertFalse(viewModel.isValidCode)
@@ -82,6 +82,38 @@ final class WPCom2FALoginViewModelTests: XCTestCase {
 
         //  Then
         XCTAssertTrue(viewModel.isValidCode)
+    }
+
+    func test_isValidCode_when_verification_code_has_nine_digits_then_returns_true() {
+        // Given
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
+                                            onAuthWindowRequest: { window },
+                                            onLoginFailure: { _ in },
+                                            onLoginSuccess: { _ in })
+
+        // When
+        viewModel.verificationCode = "012345678"
+
+        // Then
+        XCTAssertTrue(viewModel.isValidCode)
+        XCTAssertEqual(viewModel.strippedCode, "012345678")
+    }
+
+    func test_isValidCode_when_nine_digit_code_contains_whitespace_then_returns_true() {
+        // Given
+        let window = UIWindow(frame: UIScreen.main.bounds)
+        let viewModel = WPCom2FALoginViewModel(loginFields: LoginFields(),
+                                            onAuthWindowRequest: { window },
+                                            onLoginFailure: { _ in },
+                                            onLoginSuccess: { _ in })
+
+        // When
+        viewModel.verificationCode = " 012 345 678\n"
+
+        // Then
+        XCTAssertTrue(viewModel.isValidCode)
+        XCTAssertEqual(viewModel.strippedCode, "012345678")
     }
 
     func test_isLoggingIn_is_updated_correctly_and_onLoginFailure_is_triggered_when_login_fails() {

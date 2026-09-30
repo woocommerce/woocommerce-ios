@@ -122,7 +122,7 @@ private extension QRLoginCoordinator {
             onBackTapped: { [weak self] in self?.handlePrologueBack() },
             onHelpTapped: { [weak self] in self?.showHelp() },
             onScanTapped: { [weak self] in self?.handleScanCTA() },
-            onSiteAddressTapped: { [weak self] in self?.fallbackToSiteAddress() },
+            onSiteAddressTapped: { [weak self] in self?.handleEnterSiteURL() },
             onURLTapped: { Self.copyLoginURL() }
         )
         // The dark prologue hides the shared navigation bar and draws its own
@@ -178,11 +178,6 @@ private extension QRLoginCoordinator {
 
     func popScanner() {
         navigationController.popViewController(animated: true)
-    }
-
-    func fallbackToSiteAddress() {
-        analytics.trackClick(.qrLoginFallback)
-        handleEnterSiteURL()
     }
 
     static func copyLoginURL() {
@@ -386,7 +381,13 @@ private extension QRLoginCoordinator {
     /// screen underneath stays on the stack and is reachable by going back, so
     /// its controls must keep working. It is released later, when the QR screens
     /// are popped (`handlePrologueBack`) or replaced on a successful sign-in.
+    ///
+    /// Shared by every "Log in with site address" entry point — the prologue, the
+    /// number-match host, and the scan-error screen — so all of them record the
+    /// `login_qr_fallback` click under the QR flow, preserving the "came from QR"
+    /// signal before the site-address screen switches to `login_site_address`.
     func handleEnterSiteURL() {
+        analytics.trackClick(.qrLoginFallback)
         onEnterSiteURL()
     }
 

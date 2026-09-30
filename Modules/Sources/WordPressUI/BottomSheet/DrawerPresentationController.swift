@@ -171,17 +171,32 @@ public class DrawerPresentationController: FancyAlertPresentationController {
     }
 
     override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        coordinator.animate(alongsideTransition: { _ in
+        isTransitioningSize = coordinator.animate(alongsideTransition: { _ in
             self.presentedView?.frame = self.frameOfPresentedViewInContainerView
             self.transition(to: self.currentPosition)
         }, completion: { _ in
-            /// The safe area can settle after the block above has run, so the horizontal frame is applied again
-            guard self.containerView != nil else { return }
-            let frame = self.frameOfPresentedViewInContainerView
-            self.presentedView?.frame.origin.x = frame.origin.x
-            self.presentedView?.frame.size.width = frame.width
+            self.isTransitioningSize = false
+            self.updateHorizontalFrame()
         })
         super.viewWillTransition(to: size, with: coordinator)
+    }
+
+    /// Whether a size transition is in flight; its animation block owns the frame until it completes
+    private var isTransitioningSize = false
+
+    /// Applies the horizontal part of `frameOfPresentedViewInContainerView`, leaving the vertical position untouched
+    private func updateHorizontalFrame() {
+        guard let presentedView, containerView != nil else {
+            return
+        }
+
+        let frame = frameOfPresentedViewInContainerView
+        guard abs(presentedView.frame.minX - frame.minX) > 0.5 || abs(presentedView.frame.width - frame.width) > 0.5 else {
+            return
+        }
+
+        presentedView.frame.origin.x = frame.minX
+        presentedView.frame.size.width = frame.width
     }
 
     /// Returns the current position of the drawer
@@ -315,6 +330,11 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         addGestures()
         observe(scrollView: presentableViewController?.scrollableView)
         registerTraitChanges()
+
+        /// The safe area can change without a size transition, or settle after one has completed
+        if hasCompletedPresentation && !isTransitioningSize {
+            updateHorizontalFrame()
+        }
     }
 
     private var hasCompletedPresentation = false

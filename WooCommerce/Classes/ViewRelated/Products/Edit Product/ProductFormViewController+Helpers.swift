@@ -151,7 +151,7 @@ extension ProductFormViewController {
     }
 
     /// Dismisses the in-progress UI only when it is the presented modal, otherwise calls `completion` directly (WOOMOB-3923).
-    /// Never calls `completion` when the dismissal is already in flight.
+    /// When the dismissal is already in flight, `completion` runs once that dismissal finishes.
     ///
     func dismissInProgressViewIfNeeded(completion: (() -> Void)? = nil) {
         guard let navigationController, let presented = navigationController.presentedViewController as? InProgressViewController else {
@@ -159,7 +159,12 @@ extension ProductFormViewController {
             return
         }
         guard !presented.isBeingDismissed else {
-            DDLogWarn("⚠️ Skipped in-progress view dismissal: already being dismissed")
+            DDLogWarn("⚠️ In-progress view already being dismissed: deferring completion")
+            if let coordinator = presented.transitionCoordinator {
+                coordinator.animate(alongsideTransition: nil) { _ in completion?() }
+            } else {
+                completion?()
+            }
             return
         }
         presented.dismiss(animated: true, completion: completion)

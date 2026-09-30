@@ -68,6 +68,28 @@ struct ProductFormViewController_ModalGuardTests {
         #expect(completionCallCount == 1)
     }
 
+    @Test func test_dismissInProgressViewIfNeeded_when_dismissal_is_in_flight_then_calls_completion_once_it_finishes() async throws {
+        // Given
+        let context = TestContext()
+        defer { context.cleanUp() }
+        let (productForm, _, _) = makeProductForm(in: context)
+        let navigationController = try #require(productForm.navigationController)
+        let inProgressViewController = InProgressViewController(viewProperties: .init(title: "Saving", message: ""))
+        navigationController.present(inProgressViewController, animated: false)
+        inProgressViewController.dismiss(animated: true, completion: nil)
+        try await waitUntil { inProgressViewController.isBeingDismissed }
+        var completionCallCount = 0
+
+        // When
+        productForm.dismissInProgressViewIfNeeded {
+            completionCallCount += 1
+        }
+
+        // Then
+        try await waitUntil { navigationController.presentedViewController == nil }
+        try await waitUntil { completionCallCount == 1 }
+    }
+
     // MARK: Bar button taps while a modal is attached
 
     @Test func test_saveProductAndLogEvent_when_a_modal_is_presented_then_ignores_the_tap() {
@@ -125,6 +147,35 @@ struct ProductFormViewController_ModalGuardTests {
         // Then
         #expect(stores.receivedActions.containsProductUpdate)
     }
+
+    @Test func test_saveDraftAndDisplayProductPreview_when_a_modal_is_presented_then_ignores_the_tap() {
+        // Given
+        let context = TestContext()
+        defer { context.cleanUp() }
+        let newProduct = Product.fake().copy(productID: 0, statusKey: ProductStatus.published.rawValue)
+        let (productForm, stores, _) = makeProductForm(in: context, product: newProduct, formType: .add)
+        productForm.present(UIViewController(), animated: false)
+
+        // When
+        productForm.saveDraftAndDisplayProductPreview()
+
+        // Then
+        #expect(stores.receivedActions.containsProductAdd == false)
+    }
+
+    @Test func test_saveDraftAndDisplayProductPreview_when_nothing_is_presented_then_saves_the_draft() {
+        // Given
+        let context = TestContext()
+        defer { context.cleanUp() }
+        let newProduct = Product.fake().copy(productID: 0, statusKey: ProductStatus.published.rawValue)
+        let (productForm, stores, _) = makeProductForm(in: context, product: newProduct, formType: .add)
+
+        // When
+        productForm.saveDraftAndDisplayProductPreview()
+
+        // Then
+        #expect(stores.receivedActions.containsProductAdd)
+    }
 }
 
 // MARK: - Helpers
@@ -133,6 +184,7 @@ struct ProductFormViewController_ModalGuardTests {
 private extension ProductFormViewController_ModalGuardTests {
     func makeProductForm(in context: TestContext,
                          product: Product = Product.fake().copy(productID: 123),
+                         formType: ProductFormType = .edit,
                          embedInNavigationController: Bool = true)
     -> (ProductFormViewController<ProductFormViewModel>, MockStoresManager, MockProductFormEventLogger) {
         let stores = MockStoresManager(sessionManager: .testingInstance)
@@ -142,7 +194,7 @@ private extension ProductFormViewController_ModalGuardTests {
                                                            imageStatuses: product.imageStatuses,
                                                            stores: stores)
         let viewModel = ProductFormViewModel(product: model,
-                                             formType: .edit,
+                                             formType: formType,
                                              productImageActionHandler: imageActionHandler,
                                              stores: stores)
         let eventLogger = MockProductFormEventLogger()
@@ -205,6 +257,15 @@ private extension Array where Element == Action {
     var containsProductUpdate: Bool {
         contains { action in
             guard let productAction = action as? ProductAction, case .updateProduct = productAction else {
+                return false
+            }
+            return true
+        }
+    }
+
+    var containsProductAdd: Bool {
+        contains { action in
+            guard let productAction = action as? ProductAction, case .addProduct = productAction else {
                 return false
             }
             return true

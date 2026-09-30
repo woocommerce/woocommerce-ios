@@ -235,9 +235,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     @objc func saveProductAndLogEvent() {
-        // Bar button taps can slip through while the More Options menu is attached on iOS 26 (WOOMOB-3923).
-        if let presented = presentedViewController {
-            DDLogWarn("⚠️ Ignored product form save tap: already presenting \(type(of: presented))")
+        guard !shouldIgnoreBarButtonTap("save") else {
             return
         }
         eventLogger.logUpdateButtonTapped()
@@ -245,9 +243,7 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
     }
 
     @objc func publishProduct() {
-        // Bar button taps can slip through while the More Options menu is attached on iOS 26 (WOOMOB-3923).
-        if let presented = presentedViewController {
-            DDLogWarn("⚠️ Ignored product form publish tap: already presenting \(type(of: presented))")
+        guard !shouldIgnoreBarButtonTap("publish") else {
             return
         }
         if viewModel.formType == .add {
@@ -302,7 +298,10 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
 
     // MARK: Product preview action handling
 
-    @objc private func saveDraftAndDisplayProductPreview() {
+    @objc func saveDraftAndDisplayProductPreview() {
+        guard !shouldIgnoreBarButtonTap("preview") else {
+            return
+        }
         if viewModel.formType == .add {
             ServiceLocator.analytics.track(.addProductSaveAsDraftTapped, withProperties: ["product_type": product.productType.rawValue])
         }
@@ -317,6 +316,15 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
                 self?.displayProductPreview()
             }
         }
+    }
+
+    /// Bar button taps can slip through while the More Options menu is attached on iOS 26 (WOOMOB-3923).
+    private func shouldIgnoreBarButtonTap(_ action: String) -> Bool {
+        guard let presented = presentedViewController else {
+            return false
+        }
+        DDLogWarn("⚠️ Ignored product form \(action) tap: already presenting \(type(of: presented))")
+        return true
     }
 
     private func displayProductPreview() {

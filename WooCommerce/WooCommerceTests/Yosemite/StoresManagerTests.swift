@@ -3,6 +3,7 @@ import Combine
 import XCTest
 import Networking
 import Storage
+import TestKit
 @testable import WooCommerce
 import Yosemite
 
@@ -28,6 +29,9 @@ final class StoresManagerTests: XCTestCase {
         cancellable?.cancel()
         pushNotificationDefaults.removePersistentDomain(forName: pushNotificationDefaultsSuiteName)
         pushNotificationDefaults = nil
+        waitFor { promise in
+            ServiceLocator.storageManager.reset(onCompletion: { promise(()) })
+        }
         super.tearDown()
     }
 
@@ -1002,6 +1006,92 @@ final class StoresManagerTests: XCTestCase {
         // Then
         XCTAssertNil(pushNotificationDefaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs))
     }
+
+    // MARK: - Cached WooCommerce version
+
+    func test_initializeAfterDependenciesAreInitialized_when_woocommerce_plugin_is_in_storage_then_caches_woocommerce_version() {
+        // Given
+        let siteID: Int64 = 123
+        insertWooCommercePlugin(siteID: siteID, version: "10.8.1")
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultCredentials = SessionSettings.wpcomCredentials
+        sessionManager.defaultStoreID = siteID
+        sessionManager.cachedWooCommerceVersion = nil
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+
+        // When
+        manager.initializeAfterDependenciesAreInitialized()
+
+        // Then
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "10.8.1")
+    }
+
+    func test_initializeAfterDependenciesAreInitialized_when_woocommerce_plugin_is_not_in_storage_then_cached_woocommerce_version_is_nil() {
+        // Given
+        let sessionManager = SessionManager.testingInstance
+        sessionManager.defaultCredentials = SessionSettings.wpcomCredentials
+        sessionManager.defaultStoreID = 123
+        sessionManager.cachedWooCommerceVersion = "9.9.9"
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+
+        // When
+        manager.initializeAfterDependenciesAreInitialized()
+
+        // Then
+        XCTAssertNil(sessionManager.cachedWooCommerceVersion)
+    }
+
+    func test_updateDefaultStore_when_switching_store_then_caches_woocommerce_version_of_new_store() {
+        // Given
+        let firstSiteID: Int64 = 123
+        let secondSiteID: Int64 = 456
+        insertWooCommercePlugin(siteID: firstSiteID, version: "10.8.1")
+        insertWooCommercePlugin(siteID: secondSiteID, version: "11.1.0")
+        let sessionManager = SessionManager.testingInstance
+        let manager = DefaultStoresManager(sessionManager: sessionManager,
+                                           notificationCenter: MockNotificationCenter.testingInstance)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+        manager.updateDefaultStore(storeID: firstSiteID)
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "10.8.1")
+
+        // When
+        manager.updateDefaultStore(storeID: secondSiteID)
+
+        // Then
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "11.1.0")
+    }
+
+    func test_updateDefaultStore_when_previous_store_system_information_sync_completes_after_switch_then_keeps_new_store_version() {
+        // Given
+        let firstSiteID: Int64 = 123
+        let secondSiteID: Int64 = 456
+        insertWooCommercePlugin(siteID: firstSiteID, version: "10.8.1")
+        insertWooCommercePlugin(siteID: secondSiteID, version: "11.1.0")
+        let sessionManager = SessionManager.testingInstance
+        let manager = CapturingSiteSyncStoresManager(sessionManager: sessionManager,
+                                                     notificationCenter: MockNotificationCenter.testingInstance)
+        manager.authenticate(credentials: SessionSettings.wporgCredentials)
+        manager.updateDefaultStore(storeID: firstSiteID)
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "10.8.1")
+        manager.completeSettingsSync(siteID: firstSiteID)
+        waitUntil {
+            manager.systemInformationCompletion(siteID: firstSiteID) != nil
+        }
+
+        // When
+        manager.updateDefaultStore(storeID: secondSiteID)
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "11.1.0")
+        manager.systemInformationCompletion(siteID: firstSiteID)?(.success(SystemInformation.fake()))
+        manager.orderStatusesCompletion(siteID: firstSiteID)?(.success([]))
+        waitUntil {
+            manager.didStartNonEssentialSync(siteID: firstSiteID)
+        }
+
+        // Then
+        XCTAssertEqual(sessionManager.cachedWooCommerceVersion, "11.1.0")
+    }
 }
 
 private extension StoresManagerTests {
@@ -1015,6 +1105,18 @@ private extension StoresManagerTests {
                                            pushNotificationDefaults: pushNotificationDefaults,
                                            stateFactory: { _ in state })
         return (manager, state, sessionManager)
+    }
+
+    func insertWooCommercePlugin(siteID: Int64, version: String) {
+        let plugin = SystemPlugin.fake().copy(siteID: siteID,
+                                              plugin: "woocommerce/woocommerce.php",
+                                              version: version,
+                                              active: true)
+        waitFor { promise in
+            ServiceLocator.storageManager.performAndSave({ storage in
+                storage.insertNewObject(ofType: StorageSystemPlugin.self).update(with: plugin)
+            }, completion: { promise(()) }, on: .main)
+        }
     }
 
     func startSiteSynchronization(manager: DefaultStoresManager,
@@ -1094,6 +1196,61 @@ private final class DeferredSiteAPIStoresManager: DefaultStoresManager {
 
     func completeSiteAPI(with result: Result<SiteAPI, Error>) {
         siteAPICompletion?(result)
+    }
+}
+
+/// Captures the site synchronization actions dispatched by `DefaultStoresManager` so tests can complete them in any order.
+///
+private final class CapturingSiteSyncStoresManager: DefaultStoresManager {
+    private var generalSettingsCompletions: [Int64: (Error?) -> Void] = [:]
+    private var productSettingsCompletions: [Int64: (Error?) -> Void] = [:]
+    private var orderStatusesCompletions: [Int64: (Result<[Yosemite.OrderStatus], Error>) -> Void] = [:]
+    private var systemInformationCompletions: [Int64: (Result<SystemInformation, Error>) -> Void] = [:]
+    private var paymentGatewaySyncSiteIDs: Set<Int64> = []
+
+    override func dispatch(_ action: Action) {
+        switch action {
+        case let action as SettingAction:
+            switch action {
+            case let .synchronizeGeneralSiteSettings(siteID, onCompletion):
+                generalSettingsCompletions[siteID] = onCompletion
+            case let .synchronizeProductSiteSettings(siteID, onCompletion):
+                productSettingsCompletions[siteID] = onCompletion
+            default:
+                break
+            }
+        case let action as OrderStatusAction:
+            if case let .retrieveOrderStatuses(siteID, onCompletion) = action {
+                orderStatusesCompletions[siteID] = onCompletion
+            }
+        case let action as SystemStatusAction:
+            if case let .synchronizeSystemInformation(siteID, onCompletion) = action {
+                systemInformationCompletions[siteID] = onCompletion
+            }
+        case let action as PaymentGatewayAction:
+            if case let .synchronizePaymentGateways(siteID, _) = action {
+                paymentGatewaySyncSiteIDs.insert(siteID)
+            }
+        default:
+            break
+        }
+    }
+
+    func completeSettingsSync(siteID: Int64) {
+        generalSettingsCompletions[siteID]?(nil)
+        productSettingsCompletions[siteID]?(nil)
+    }
+
+    func systemInformationCompletion(siteID: Int64) -> ((Result<SystemInformation, Error>) -> Void)? {
+        systemInformationCompletions[siteID]
+    }
+
+    func orderStatusesCompletion(siteID: Int64) -> ((Result<[Yosemite.OrderStatus], Error>) -> Void)? {
+        orderStatusesCompletions[siteID]
+    }
+
+    func didStartNonEssentialSync(siteID: Int64) -> Bool {
+        paymentGatewaySyncSiteIDs.contains(siteID)
     }
 }
 

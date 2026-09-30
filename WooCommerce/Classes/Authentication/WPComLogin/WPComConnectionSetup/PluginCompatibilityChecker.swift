@@ -12,6 +12,7 @@ protocol PluginVersionCheckerProtocol {
     func checkCompatibility() async throws -> PluginVersionResult
 }
 
+@MainActor
 final class PluginVersionChecker: PluginVersionCheckerProtocol {
     private let siteID: Int64
     private let pluginPath: String
@@ -61,15 +62,11 @@ private extension PluginVersionChecker {
     }
 
     func syncSystemInformation() async throws -> SystemInformation {
-        let stores = self.stores
-        let siteID = self.siteID
-        return try await withCheckedThrowingContinuation { continuation in
+        try await withCheckedThrowingContinuation { continuation in
             let action = SystemStatusAction.synchronizeSystemInformation(siteID: siteID) { result in
                 continuation.resume(with: result)
             }
-            Task { @MainActor in
-                stores.dispatch(action)
-            }
+            stores.dispatch(action)
         }
     }
 }
@@ -81,10 +78,12 @@ enum PluginVersionError: Error {
 // MARK: - Plugin Version Checker Factory
 
 protocol PluginVersionCheckerFactoryProtocol {
+    @MainActor
     func makeChecker(siteID: Int64, pluginPath: String, minimumVersion: String) -> PluginVersionCheckerProtocol
 }
 
 final class PluginVersionCheckerFactory: PluginVersionCheckerFactoryProtocol {
+    @MainActor
     func makeChecker(siteID: Int64, pluginPath: String, minimumVersion: String) -> PluginVersionCheckerProtocol {
         PluginVersionChecker(siteID: siteID, pluginPath: pluginPath, minimumVersion: minimumVersion)
     }

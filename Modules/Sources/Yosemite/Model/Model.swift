@@ -14,6 +14,7 @@ public typealias AIProduct = Networking.AIProduct
 public typealias Announcement = Networking.Announcement
 public typealias APNSDevice = Networking.APNSDevice
 public typealias ApplicationPassword = Networking.ApplicationPassword
+public typealias BlazeBillingSummary = Networking.BlazeBillingSummary
 public typealias BlazeCampaignObjective = Networking.BlazeCampaignObjective
 public typealias BlazeCampaignListItem = Networking.BlazeCampaignListItem
 public typealias BlazeCampaignBudget = Networking.BlazeCampaignBudget

@@ -103,6 +103,21 @@ extension CartViewHelper {
         }
     }
 
+    /// Positively marks the cart rows the order response shows as discounted, whatever the
+    /// discount's source — a product-restricted coupon, a whole-cart coupon, or a plugin.
+    func shouldShowItemDiscountedNote(
+        orderStage: PointOfSaleOrderStage,
+        orderState: PointOfSaleOrderState,
+        cartItem: Cart.PurchasableItem
+    ) -> Bool {
+        guard orderStage == .finalizing,
+              case .loaded(let totals) = orderState else {
+            return false
+        }
+
+        return totals.discountedCartItemIDs.contains(cartItem.id)
+    }
+
     func couponRowState(
         orderStage: PointOfSaleOrderStage,
         orderState: PointOfSaleOrderState,

@@ -307,6 +307,49 @@ struct CartViewHelperTests {
                                                                  cart: cart) == false)
     }
 
+    @Test func itemDiscountedNote_building_stage_returns_false() async throws {
+        // Given
+        let cartItem = makeItem()
+        let orderState = makeLoadedOrderState(discountedCartItemIDs: [cartItem.id])
+
+        // When, Then
+        #expect(sut.shouldShowItemDiscountedNote(orderStage: .building,
+                                                 orderState: orderState,
+                                                 cartItem: cartItem) == false)
+    }
+
+    @Test func itemDiscountedNote_finalizing_and_syncing_returns_false() async throws {
+        // Given
+        let cartItem = makeItem()
+
+        // When, Then
+        #expect(sut.shouldShowItemDiscountedNote(orderStage: .finalizing,
+                                                 orderState: .syncing,
+                                                 cartItem: cartItem) == false)
+    }
+
+    @Test func itemDiscountedNote_finalizing_and_item_discounted_returns_true() async throws {
+        // Given
+        let cartItem = makeItem()
+        let orderState = makeLoadedOrderState(discountedCartItemIDs: [cartItem.id])
+
+        // When, Then
+        #expect(sut.shouldShowItemDiscountedNote(orderStage: .finalizing,
+                                                 orderState: orderState,
+                                                 cartItem: cartItem) == true)
+    }
+
+    @Test func itemDiscountedNote_finalizing_and_item_not_discounted_returns_false() async throws {
+        // Given
+        let cartItem = makeItem()
+        let orderState = makeLoadedOrderState(discountedCartItemIDs: [UUID()])
+
+        // When, Then
+        #expect(sut.shouldShowItemDiscountedNote(orderStage: .finalizing,
+                                                 orderState: orderState,
+                                                 cartItem: cartItem) == false)
+    }
+
     @Test func shouldShowCheckout_when_not_building_stage_returns_false() async throws {
         // Given
         let cart = Cart(purchasableItems: [makeItem()])
@@ -411,11 +454,13 @@ private func makeCouponTotal(code: String = "TEST10", hasDiscount: Bool) -> Poin
     PointOfSaleCouponTotal(code: code, total: "-$1.00", hasDiscount: hasDiscount)
 }
 
-private func makeLoadedOrderState(couponsTotals: [PointOfSaleCouponTotal]) -> PointOfSaleOrderState {
+private func makeLoadedOrderState(couponsTotals: [PointOfSaleCouponTotal] = [],
+                                  discountedCartItemIDs: Set<UUID> = []) -> PointOfSaleOrderState {
     .loaded(PointOfSaleOrderTotals(
         cartTotal: "$10.00",
         orderTotal: "$12.00",
         taxTotal: "$2.00",
         orderTotalDecimal: 12.0,
-        couponsTotals: couponsTotals))
+        couponsTotals: couponsTotals,
+        discountedCartItemIDs: discountedCartItemIDs))
 }

@@ -788,6 +788,41 @@ final class BlazeRemoteTests: XCTestCase {
         }
     }
 
+    // MARK: - Fetch billing summary
+
+    func test_fetchBillingSummary_returns_parsed_summary() async throws {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1/user/billing-summary"
+        network.simulateResponse(requestUrlSuffix: suffix, filename: "blaze-billing-summary")
+
+        // When
+        let result = try await remote.fetchBillingSummary(siteID: sampleSiteID)
+
+        // Then
+        XCTAssertEqual(result.debt, 25.05)
+        XCTAssertEqual(result.paymentLinks.map(\.url), ["https://example.com/pay/826745"])
+    }
+
+    func test_fetchBillingSummary_properly_relays_networking_errors() async {
+        // Given
+        let remote = BlazeRemote(network: network)
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 403)
+        let suffix = "sites/\(sampleSiteID)/wordads/dsp/api/v1/user/billing-summary"
+        network.simulateError(requestUrlSuffix: suffix, error: expectedError)
+
+        do {
+            // When
+            _ = try await remote.fetchBillingSummary(siteID: sampleSiteID)
+
+            // Then
+            XCTFail("Request should fail")
+        } catch {
+            // Then
+            XCTAssertEqual(error as? NetworkError, expectedError)
+        }
+    }
+
     // MARK: - Fetch campaign objectives
 
     func test_fetchCampaignObjectives_returns_parsed_objectives() async throws {

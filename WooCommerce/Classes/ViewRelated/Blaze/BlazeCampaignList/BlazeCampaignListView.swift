@@ -125,6 +125,7 @@ struct BlazeCampaignListView: View {
                                               refreshAction: { completion in
                     viewModel.onRefreshAction(completion: completion)
                 }) {
+                    outstandingBalanceNotice
                     ForEach(viewModel.campaigns) { item in
                         BlazeCampaignItemView(campaign: item)
                             .onTapGesture {
@@ -133,10 +134,17 @@ struct BlazeCampaignListView: View {
                     }
                 }
             case .empty:
-                EmptyState(title: Localization.emptyStateTitle,
-                           description: Localization.emptyStateMessage,
-                           image: .emptyProductsImage)
-                    .frame(maxHeight: .infinity)
+                if viewModel.outstandingBalance != nil {
+                    ScrollView {
+                        VStack(spacing: Layout.contentSpacing) {
+                            outstandingBalanceNotice
+                            emptyState
+                        }
+                    }
+                } else {
+                    emptyState
+                        .frame(maxHeight: .infinity)
+                }
             case .syncingFirstPage:
                 ActivityIndicator(isAnimating: .constant(true), style: .medium)
             }
@@ -161,6 +169,11 @@ struct BlazeCampaignListView: View {
         }) { url in
             detailView(url: url)
         }
+        .sheet(item: $viewModel.selectedPaymentURL, onDismiss: {
+            viewModel.didDismissPayment()
+        }) { url in
+            paymentView(url: url)
+        }
         .onChange(of: viewModel.shouldShowIntroView) { _, shouldShow in
             /// Hack: since the campaign creation coordinator takes care of the intro modal,
             /// the view triggers creating coordinator in the hosting controller
@@ -174,6 +187,35 @@ struct BlazeCampaignListView: View {
 }
 
 private extension BlazeCampaignListView {
+
+    var emptyState: some View {
+        EmptyState(title: Localization.emptyStateTitle,
+                   description: Localization.emptyStateMessage,
+                   image: .emptyProductsImage)
+    }
+
+    @ViewBuilder
+    var outstandingBalanceNotice: some View {
+        if let outstandingBalance = viewModel.outstandingBalance {
+            BlazeOutstandingBalanceView(summary: outstandingBalance, onPay: viewModel.didSelectPayment)
+        }
+    }
+
+    func paymentView(url: URL) -> some View {
+        NavigationStack {
+            AuthenticatedWebView(isPresented: .constant(true),
+                                 viewModel: DefaultAuthenticatedWebViewModel(title: Localization.paymentTitle, initialURL: url))
+            .navigationTitle(Localization.paymentTitle)
+            .navigationBarTitleDisplayMode(.inline)
+            .toolbar {
+                ToolbarItem(placement: .confirmationAction) {
+                    Button(Localization.done) {
+                        viewModel.selectedPaymentURL = nil
+                    }
+                }
+            }
+        }
+    }
 
     func detailView(url: URL) -> some View {
         NavigationView {
@@ -214,6 +256,11 @@ private extension BlazeCampaignListView {
         )
         static let done = NSLocalizedString("Done", comment: "Button to dismiss the Blaze campaign detail view")
         static let detailTitle = NSLocalizedString("Campaign Details", comment: "Title of the Blaze campaign details view.")
+        static let paymentTitle = NSLocalizedString(
+            "blazeCampaignListView.paymentTitle",
+            value: "Pay Outstanding Balance",
+            comment: "Title of the web view to pay an unpaid Blaze order from the Blaze campaign list."
+        )
     }
 }
 

@@ -138,6 +138,27 @@ extension Networking.BlazeAISuggestion {
         )
     }
 }
+extension Networking.BlazeBillingSummary {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeBillingSummary {
+        .init(
+            debt: .fake(),
+            paymentLinks: .fake()
+        )
+    }
+}
+extension Networking.BlazeBillingSummary.PaymentLink {
+    /// Returns a "ready to use" type filled with fake values.
+    ///
+    public static func fake() -> Networking.BlazeBillingSummary.PaymentLink {
+        .init(
+            date: .fake(),
+            amount: .fake(),
+            url: .fake()
+        )
+    }
+}
 extension Networking.BlazeCampaignBudget {
     /// Returns a "ready to use" type filled with fake values.
     ///

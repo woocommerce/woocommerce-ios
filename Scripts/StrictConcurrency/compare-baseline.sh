@@ -6,6 +6,8 @@
 # warnings. Decreases never fail — they are reported so the baseline can be
 # shrunk in the same PR (edit baseline.json; that is the expected escape hatch
 # when an increase is genuinely justified, visible to reviewers).
+# The CI step is soft_fail, so trunk itself can be over baseline: a FAIL here
+# may predate the branch being compared rather than come from it.
 #
 # Usage:
 #   Scripts/StrictConcurrency/compare-baseline.sh <current.json> [baseline.json]
@@ -32,7 +34,8 @@ for path, allowed in sorted(baseline.items()):
         improvements.append((path, allowed, 0))
 
 if improvements:
-    print(f"{len(improvements)} file(s) improved vs baseline — shrink baseline.json:")
+    print(f"{len(improvements)} file(s) improved vs baseline — lower them with "
+          "Scripts/StrictConcurrency/update-baseline.sh from the CI run's strict-concurrency-current.json artifact:")
     for path, allowed, count in improvements[:20]:
         print(f"  {path}: {allowed} -> {count}")
 
@@ -43,8 +46,6 @@ if regressions:
     print(f"\nFAIL: {len(regressions)} file(s) exceed the strict-concurrency baseline "
           f"(+{added} warnings; current total {sum(current.values())}, "
           f"baseline total {sum(baseline.values())}).")
-    print("Refresh the baseline from a passing run's strict-concurrency-current.json "
-          "artifact (Scripts/StrictConcurrency/update-baseline.sh), never by hand-counting.")
     for path, allowed, count in regressions:
         print(f"  {path}: baseline {allowed}, now {count} (+{count - allowed})")
     sys.exit(1)

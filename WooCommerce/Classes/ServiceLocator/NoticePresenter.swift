@@ -2,6 +2,8 @@ import Foundation
 import UIKit
 
 /// Abstracts the In-App Notifications Presenter
+///
+/// Call on the main thread. Actor isolation will be added as callers migrate in their feature slices.
 protocol NoticePresenter {
 
     /// Enqueues the specified Notice for display.

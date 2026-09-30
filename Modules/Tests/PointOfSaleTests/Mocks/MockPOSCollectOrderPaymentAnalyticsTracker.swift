@@ -4,6 +4,11 @@ import struct Yosemite.PaymentIntent
 final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking {
     var didCallTrackCheckoutTapped = false
 
+    var cardPaymentOrder: POSPaymentAnalyticsOrder?
+    func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {
+        cardPaymentOrder = order
+    }
+
     func trackCustomerInteractionStarted() {
         // no-op
     }
@@ -24,18 +29,24 @@ final class MockPOSCollectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAn
         didCallTrackCheckoutTapped = true
     }
 
+    var cashPaymentOrder: POSPaymentAnalyticsOrder?
     var didCallTrackSuccessfulCashPayment = false
-    func trackSuccessfulCashPayment() {
+    func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder) {
+        cashPaymentOrder = order
         didCallTrackSuccessfulCashPayment = true
     }
 
+    var markAsPaidPaymentOrder: POSPaymentAnalyticsOrder?
     var didCallTrackSuccessfulMarkAsPaidPayment = false
-    func trackSuccessfulMarkAsPaidPayment() {
+    func trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder) {
+        markAsPaidPaymentOrder = order
         didCallTrackSuccessfulMarkAsPaidPayment = true
     }
 
+    var scanToPayOrders: [POSPaymentAnalyticsOrder] = []
     var didCallTrackSuccessfulScanToPayPayment = false
-    func trackSuccessfulScanToPayPayment() {
+    func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder) {
+        scanToPayOrders.append(order)
         didCallTrackSuccessfulScanToPayPayment = true
     }
 

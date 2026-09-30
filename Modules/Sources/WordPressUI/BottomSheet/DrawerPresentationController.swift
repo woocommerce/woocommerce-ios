@@ -174,7 +174,13 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         coordinator.animate(alongsideTransition: { _ in
             self.presentedView?.frame = self.frameOfPresentedViewInContainerView
             self.transition(to: self.currentPosition)
-        }, completion: nil)
+        }, completion: { _ in
+            /// The safe area can settle after the block above has run, so the horizontal frame is applied again
+            guard self.containerView != nil else { return }
+            let frame = self.frameOfPresentedViewInContainerView
+            self.presentedView?.frame.origin.x = frame.origin.x
+            self.presentedView?.frame.size.width = frame.width
+        })
         super.viewWillTransition(to: size, with: coordinator)
     }
 

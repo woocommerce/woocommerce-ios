@@ -816,15 +816,37 @@ final class StoresManagerTests: XCTestCase {
         defer { ServiceLocator.setAnalytics(originalAnalytics) }
         let analyticsProvider = MockAnalyticsProvider()
         ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
-        let manager = DefaultStoresManager.testingInstance
+        let notificationCenter = MockNotificationCenter()
+        let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                           notificationCenter: notificationCenter)
         manager.authenticate(credentials: SessionSettings.wpcomCredentials)
 
         // When
-        MockNotificationCenter.testingInstance.post(name: .RemoteDidReceiveInvalidTokenError, object: DotcomError.invalidToken, userInfo: nil)
+        notificationCenter.post(name: .RemoteDidReceiveInvalidTokenError, object: DotcomError.invalidToken, userInfo: nil)
 
         // Then
         XCTAssertEqual(analyticsProvider.receivedEvents.last, "account_involuntary_logout")
         XCTAssertEqual(analyticsProvider.receivedProperties.last?["reason"] as? String, "invalid_token")
+    }
+
+    func test_it_tracks_involuntary_logout_once_when_invalid_token_notification_is_posted_multiple_times() {
+        // Given
+        let originalAnalytics = ServiceLocator.analytics
+        defer { ServiceLocator.setAnalytics(originalAnalytics) }
+        let analyticsProvider = MockAnalyticsProvider()
+        ServiceLocator.setAnalytics(WooAnalytics(analyticsProvider: analyticsProvider))
+        let notificationCenter = MockNotificationCenter()
+        let manager = DefaultStoresManager(sessionManager: SessionManager.testingInstance,
+                                           notificationCenter: notificationCenter)
+        manager.authenticate(credentials: SessionSettings.wpcomCredentials)
+
+        // When
+        notificationCenter.post(name: .RemoteDidReceiveInvalidTokenError, object: DotcomError.invalidToken, userInfo: nil)
+        notificationCenter.post(name: .RemoteDidReceiveInvalidTokenError, object: DotcomError.invalidToken, userInfo: nil)
+
+        // Then
+        XCTAssertFalse(manager.isAuthenticated)
+        XCTAssertEqual(analyticsProvider.receivedEvents.filter { $0 == "account_involuntary_logout" }.count, 1)
     }
 
     func test_it_tracks_involuntary_logout_with_unauthorized_reason_when_non_wpcom_session_receives_application_password_invalidated_notification() {

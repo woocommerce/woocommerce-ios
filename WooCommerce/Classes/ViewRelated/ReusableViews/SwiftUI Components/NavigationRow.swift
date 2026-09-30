@@ -16,10 +16,6 @@ struct NavigationRow<Content: View>: View {
     ///
     let action: () -> Void
 
-    /// Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     init(selectable: Bool = true,
          @ViewBuilder content: () -> Content,
          action: @escaping () -> Void) {
@@ -37,7 +33,6 @@ struct NavigationRow<Content: View>: View {
                     .renderedIf(selectable)
             }
             .padding()
-            .padding(.horizontal, insets: safeAreaInsets)
             .frame(minHeight: Layout.minHeight)
             .contentShape(Rectangle())
         }

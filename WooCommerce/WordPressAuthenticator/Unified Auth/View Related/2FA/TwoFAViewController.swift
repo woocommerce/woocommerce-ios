@@ -12,6 +12,9 @@ final class TwoFAViewController: LoginViewController {
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     private weak var codeField: UITextField?
 
+    /// Injected so code validation can be tested without accessing the system clipboard.
+    var pasteboardStringProvider: () -> String? = { UIPasteboard.general.string }
+
     private var rows = [Row]()
     private var errorMessage: String?
     private var pasteboardChangeCountBeforeBackground: Int?
@@ -359,7 +362,7 @@ extension TwoFAViewController: UITextFieldDelegate {
         case .invalid(nonNumbers: true):
             displayError(message: LocalizedText.numericalCode)
         default:
-            if let pasteString = UIPasteboard.general.string, pasteString == replacementString {
+            if let pasteString = pasteboardStringProvider(), pasteString == replacementString {
                 displayError(message: LocalizedText.invalidCode)
             }
         }

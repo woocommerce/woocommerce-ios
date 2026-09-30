@@ -30,7 +30,7 @@ struct TwoFactorCodeValidationTests {
     @Test(arguments: Screen.allCases, ["123456", "1234567", "12345678", "012345678", " 012 345 678\n"])
     func test_pasting_when_code_has_supported_length_then_accepts_code_and_enables_submit(screen: Screen, code: String) throws {
         // Given
-        let (controller, textField) = try makeScreen(screen)
+        let (controller, textField) = try makeScreen(screen, pasteboardString: code)
 
         // When
         _ = textField.delegate?.textField?(textField, shouldChangeCharactersIn: NSRange(location: 0, length: 0), replacementString: code)
@@ -61,7 +61,7 @@ struct TwoFactorCodeValidationTests {
     @Test(arguments: Screen.allCases, ["0123456789", "01234a678"])
     func test_pasting_when_code_is_invalid_then_rejects_code(screen: Screen, code: String) throws {
         // Given
-        let (controller, textField) = try makeScreen(screen)
+        let (controller, textField) = try makeScreen(screen, pasteboardString: code)
 
         // When
         _ = textField.delegate?.textField?(textField, shouldChangeCharactersIn: NSRange(location: 0, length: 0), replacementString: code)
@@ -121,12 +121,13 @@ struct TwoFactorCodeValidationTests {
         #expect(controller.submitButton?.isEnabled == false)
     }
 
-    private func makeScreen(_ screen: Screen) throws -> (LoginViewController, UITextField) {
+    private func makeScreen(_ screen: Screen, pasteboardString: String? = nil) throws -> (LoginViewController, UITextField) {
         WordPressAuthenticator.initializeForTesting()
 
         switch screen {
         case .unified:
             let controller = try #require(TwoFAViewController.instantiate(from: .twoFA))
+            controller.pasteboardStringProvider = { pasteboardString }
             controller.loadViewIfNeeded()
             controller.configureSubmitButton(animating: false)
             let tableView: UITableView = try #require(firstSubview(in: controller.view))
@@ -137,6 +138,7 @@ struct TwoFactorCodeValidationTests {
             return (controller, cell.textField)
         case .legacy:
             let controller = try #require(Login2FAViewController.instantiate(from: .login))
+            controller.pasteboardStringProvider = { pasteboardString }
             controller.loadViewIfNeeded()
             return (controller, try #require(controller.verificationCodeField))
         }

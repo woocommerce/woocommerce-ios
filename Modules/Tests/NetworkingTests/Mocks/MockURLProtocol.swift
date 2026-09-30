@@ -1,36 +1,44 @@
 import Alamofire
 import Networking
+import Synchronization
 import XCTest
 
 extension MockURLProtocol {
     /// Stores the mocks for `URLRequest`s in memory to be used in `MockURLProtocol`.
+    ///
+    /// Tests write the mocks on the test thread and `startLoading()` reads them on the URL loading
+    /// thread, so the store is guarded by a lock.
+    ///
     final class Mocks {
-        private static var responsesByRequestURL: [String: (response: AnyCodable, statusCode: Int)] = [:]
+        private static let responsesByRequestURL = Mutex<[String: (response: Data?, statusCode: Int)]>([:])
 
-        /// Mocks the response of a given request.
+        /// Mocks the response of a given request. The response is encoded here, on the test thread, so only
+        /// `Data` is shared with the URL loading thread.
         static func mockResponse(_ response: AnyCodable, statusCode: Int, for request: URLRequest) {
             guard let url = request.url?.absoluteString else {
                 return
             }
-            responsesByRequestURL[url] = (response: response, statusCode: statusCode)
+            let data: Data?
+            do {
+                data = try JSONEncoder().encode(response)
+            } catch {
+                XCTFail("Couldn't convert response to Data: \(response)")
+                data = nil
+            }
+            responsesByRequestURL.withLock { $0[url] = (response: data, statusCode: statusCode) }
+        }
+
+        /// Removes every mocked response. Call from `tearDown` so mocks do not leak between tests.
+        static func reset() {
+            responsesByRequestURL.withLock { $0.removeAll() }
         }
 
         /// Returns the response for a request if it has been mocked.
         static func response(for request: URLRequest) -> (response: Data?, statusCode: Int)? {
-            guard let url = request.url?.absoluteString,
-                  let response = responsesByRequestURL[url] else {
+            guard let url = request.url?.absoluteString else {
                 return nil
             }
-
-            do {
-                let encoder = JSONEncoder()
-                let data = try encoder.encode(response.response)
-                return (response: data, statusCode: response.statusCode)
-            }
-            catch {
-                XCTFail("Couldn't convert response to Data: \(response)")
-                return (response: nil, statusCode: response.statusCode)
-            }
+            return responsesByRequestURL.withLock { $0[url] }
         }
     }
 }

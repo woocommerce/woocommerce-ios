@@ -6,11 +6,12 @@ import WordPressUI
 
 /// NoticePresenter: Coordinates Notice rendering, in both, FG and BG execution modes.
 ///
+@MainActor
 class DefaultNoticePresenter: NoticePresenter {
 
     /// UIKit Feedback Gen!
     ///
-    private let generator = UINotificationFeedbackGenerator()
+    private lazy var generator = UINotificationFeedbackGenerator()
 
     /// Notices Queue.
     ///
@@ -22,23 +23,45 @@ class DefaultNoticePresenter: NoticePresenter {
 
     var kvoToken: NSKeyValueObservation?
 
+    // ServiceLocator can construct the presenter outside the main actor. UIKit is initialized lazily when presenting.
+    nonisolated init() {}
+
+    private weak var presentingViewControllerOnMainActor: UIViewController?
+
     /// UIViewController to be used as Notice(s) Presenter
     ///
-    weak var presentingViewController: UIViewController?
+    // These synchronous protocol entry points are called on the main thread, as required by their UIKit work.
+    // Keep runtime checks until NoticePresenter and its callers are migrated to @MainActor in their feature slices.
+    nonisolated var presentingViewController: UIViewController? {
+        get {
+            MainActor.assumeIsolated { presentingViewControllerOnMainActor }
+        }
+        set {
+            MainActor.assumeIsolated { presentingViewControllerOnMainActor = newValue }
+        }
+    }
 
     /// Enqueues the specified Notice for display.
     ///
     @discardableResult
-    func enqueue(notice: Notice) -> Bool {
-        guard
-            noticeOnScreen != notice, // Ignore if we are already presenting this notice.
-            !notices.contains(notice) // Ignore if this notice is already enqueued and waiting for presentation.
-        else {
-            return false
+    nonisolated func enqueue(notice: Notice) -> Bool {
+        #if hasFeature(StrictConcurrency)
+        // The legacy Notice contains a non-Sendable action. This checked, synchronous bridge never changes executors.
+        // Remove this local escape hatch with the bridge when NoticePresenter's callers adopt @MainActor.
+        // Minimal checking infers Sendable for Notice and warns if this annotation is present.
+        nonisolated(unsafe) let notice = notice
+        #endif
+        return MainActor.assumeIsolated {
+            guard
+                noticeOnScreen != notice, // Ignore if we are already presenting this notice.
+                !notices.contains(notice) // Ignore if this notice is already enqueued and waiting for presentation.
+            else {
+                return false
+            }
+            notices.append(notice)
+            presentNextNoticeIfPossible()
+            return true
         }
-        notices.append(notice)
-        presentNextNoticeIfPossible()
-        return true
     }
 }
 
@@ -142,13 +165,15 @@ private extension DefaultNoticePresenter {
         }
 
         animatePresentation(fromState: offScreenState, toState: onScreenState, completion: {
-            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay, execute: dismiss)
+            DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + Animations.dismissDelay) {
+                dismiss()
+            }
         })
     }
 
     private func dismissHandler(for noticeContainerView: UIView,
-                                fromState: (() -> Void)? = nil,
-                                toState: @escaping () -> Void) -> () -> Void {
+                                fromState: (@MainActor () -> Void)? = nil,
+                                toState: @escaping @MainActor () -> Void) -> @MainActor @Sendable () -> Void {
         return {
             guard noticeContainerView.superview != nil else {
                 return
@@ -187,13 +212,16 @@ private extension DefaultNoticePresenter {
 
             if kvoToken == nil {
                 kvoToken = tabBarController.tabBar.observe(\.isHidden, options: .new) { tabBar, _ in
-                    guard tabBar.isHidden else {
-                        return
-                    }
+                    // UIKit changes this property on the main thread; KVO delivers the observation synchronously.
+                    MainActor.assumeIsolated {
+                        guard tabBar.isHidden else {
+                            return
+                        }
 
-                    // If the tab bar hides we also hide the notice, as trying to rearrange the notice accordingly might bring unexpected results
-                    // due to the internal logic of UITabBarController e.g they remove/recreate the tab bar when navigation happens
-                    container.isHidden = true
+                        // If the tab bar hides we also hide the notice, as trying to rearrange the notice accordingly might bring unexpected results
+                        // due to the internal logic of UITabBarController e.g they remove/recreate the tab bar when navigation happens
+                        container.isHidden = true
+                    }
                 }
             }
         } else {
@@ -212,9 +240,9 @@ private extension DefaultNoticePresenter {
         (presentingViewController as? UITabBarController)?.tabBar.bounds.height ?? 0
     }
 
-    func animatePresentation(fromState: (() -> Void)? = nil,
-                             toState: @escaping () -> Void,
-                             completion: (() -> Void)? = nil) {
+    func animatePresentation(fromState: (@MainActor () -> Void)? = nil,
+                             toState: @escaping @MainActor () -> Void,
+                             completion: (@MainActor () -> Void)? = nil) {
         fromState?()
 
         UIView.animate(withDuration: Animations.appearanceDuration,

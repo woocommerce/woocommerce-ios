@@ -121,7 +121,9 @@ tags:
 # Relaunch and assert the externally persisted inverse state for every
 # selectable non-anchor card plus the deliberately persisted Coupons change.
 - stopApp
-- launchApp
+- launchApp:
+    arguments:
+      "-ui_testing": true
 - runFlow: ../helpers/open_dashboard_customizer.yaml
 - runFlow:
     file: ../helpers/dashboard_assert_card.yaml
@@ -228,7 +230,9 @@ tags:
 
 # Prove all captured selections were restored across another relaunch.
 - stopApp
-- launchApp
+- launchApp:
+    arguments:
+      "-ui_testing": true
 - runFlow: ../helpers/open_dashboard_customizer.yaml
 - runFlow:
     file: ../helpers/dashboard_assert_card.yaml
@@ -294,7 +298,9 @@ tags:
       - assertVisible:
           id: "selectable-item-unselected-Most active coupons"
 - stopApp
-- launchApp
+- launchApp:
+    arguments:
+      "-ui_testing": true
 
 # Prepare two selected adjacent anchors, persist an inverse order, prove it
 # after relaunch, reverse it, and prove the restored order after relaunch.
@@ -329,7 +335,9 @@ tags:
     commands:
       - runFlow: ../helpers/save_dashboard_customizer.yaml
 - stopApp
-- launchApp
+- launchApp:
+    arguments:
+      "-ui_testing": true
 - runFlow: ../helpers/open_dashboard_customizer.yaml
 - scrollUntilVisible:
     element: "Most recent reviews"
@@ -382,7 +390,9 @@ tags:
       text: "Most active coupons"
 - runFlow: ../helpers/save_dashboard_customizer.yaml
 - stopApp
-- launchApp
+- launchApp:
+    arguments:
+      "-ui_testing": true
 - runFlow: ../helpers/open_dashboard_customizer.yaml
 - scrollUntilVisible:
     element: "Most recent reviews"
@@ -405,7 +415,9 @@ tags:
       text: "Most active coupons"
 - runFlow: ../helpers/save_dashboard_customizer.yaml
 - stopApp
-- launchApp
+- launchApp:
+    arguments:
+      "-ui_testing": true
 - runFlow: ../helpers/open_dashboard_customizer.yaml
 - scrollUntilVisible:
     element: "Most recent reviews"
@@ -438,7 +450,9 @@ tags:
     commands:
       - runFlow: ../helpers/save_dashboard_customizer.yaml
 - stopApp
-- launchApp
+- launchApp:
+    arguments:
+      "-ui_testing": true
 - runFlow: ../helpers/open_dashboard_customizer.yaml
 - scrollUntilVisible:
     element: "Most recent reviews"
@@ -473,6 +487,8 @@ tags:
       - assertVisible:
           id: "selectable-item-unselected-Most active coupons"
 - stopApp
-- launchApp
+- launchApp:
+    arguments:
+      "-ui_testing": true
 - runFlow: ../subflows/navigate_to_dashboard.yaml
 - takeScreenshot: dashboard_customize_restored

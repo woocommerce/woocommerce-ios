@@ -4,6 +4,8 @@ appId: ${APP_ID}
 ---
 - launchApp:
     clearState: false
+    arguments:
+      "-ui_testing": true
 
 - extendedWaitUntil:
     visible: "Manage Privacy|My store|Log In|Skip"

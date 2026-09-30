@@ -18,6 +18,11 @@ struct ProcessConfiguration {
         ProcessInfo.processInfo.arguments.contains("disable-animations")
     }
 
+    /// Returns `true` when running UI tests.
+    static var isUITesting: Bool {
+        ProcessInfo.processInfo.arguments.contains("-ui_testing")
+    }
+
     /// Returns `true` when wishing to simulate push notifications.
     static var shouldSimulatePushNotification: Bool {
         ProcessInfo.processInfo.arguments.contains("-mocks-push-notification")

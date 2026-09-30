@@ -35,14 +35,12 @@ final class String_HTMLTests: XCTestCase {
 
     /// Confidence-check that stripping works in the background thread too.
     ///
-    func test_it_can_strip_HTML_in_a_background_thread() {
+    func test_it_can_strip_HTML_in_a_background_thread() async {
         let source = "<p><strong>Pellentesque <em>habitant</em> morbi tristique</strong></p>"
 
-        var stripped: String?
-        waitForExpectation { expectation in
+        let stripped = await withCheckedContinuation { continuation in
             DispatchQueue.global().async {
-                stripped = source.strippedHTML
-                expectation.fulfill()
+                continuation.resume(returning: source.strippedHTML)
             }
         }
 

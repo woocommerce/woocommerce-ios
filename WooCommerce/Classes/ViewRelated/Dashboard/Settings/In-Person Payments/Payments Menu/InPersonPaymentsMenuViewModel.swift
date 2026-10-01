@@ -108,7 +108,8 @@ final class InPersonPaymentsMenuViewModel: ObservableObject {
         countryRecovery.$configuration.dropFirst().sink { [weak self] configuration in
             guard let self else { return }
             cardPresentPaymentsConfiguration = configuration
-            // A cached state may not be published again when country support returns.
+            onboardingUseCase.revalidateAfterCountryChange()
+            // Apply the new state immediately, before the debounced observation.
             refreshAfterNewOnboardingState(onboardingUseCase.state)
             runCardPresentPaymentsOnboardingIfPossible()
             updateCardReadersSection()
@@ -242,8 +243,6 @@ private extension InPersonPaymentsMenuViewModel {
             cardPresentPaymentsOnboardingNotice = nil
             backgroundOnboardingInProgress = false
             shouldShowOnboarding = false
-            shouldShowPaymentOptionsSection = false
-            shouldShowManagePaymentGatewaysRow = false
             updateForIncompleteOnboarding(selectedPlugin: nil)
             payInPersonToggleViewModel.selectedPlugin = nil
             return
@@ -300,6 +299,8 @@ private extension InPersonPaymentsMenuViewModel {
     }
 
     func updateForIncompleteOnboarding(selectedPlugin plugin: CardPresentPaymentsPlugin?) {
+        shouldShowPaymentOptionsSection = false
+        shouldShowManagePaymentGatewaysRow = false
         shouldDisableManageCardReaders = true
         selectedPaymentGatewayName = plugin?.pluginName
         selectedPaymentGatewayPlugin = plugin

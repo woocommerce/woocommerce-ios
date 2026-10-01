@@ -117,9 +117,9 @@ extension View {
     }
 }
 
-/// Standardizes the bottom-anchored action buttons across the phone POS so refund / totals /
-/// cart all share the same horizontal insets and home-indicator clearance as the phone cart
-/// button. iPad keeps the existing in-card padding so the centered modal still breathes.
+/// Refund actions share the horizontal and top padding of other compact POS actions.
+/// They retain bottom padding inside the safe area; the cart measures its bottom inset separately.
+/// Regular-width sheets keep their existing in-card padding.
 struct POSPhoneFullScreenButtonPaddingModifier: ViewModifier {
     let horizontalSizeClass: UserInterfaceSizeClass?
     let maxWidth: CGFloat

@@ -137,9 +137,12 @@ private extension LoginJetpackSetupCoordinator {
     }
 
     func showNoWooErrorScreen(for site: Site) {
+        let matcher = ULAccountMatcher()
+        matcher.refreshStoredSites()
         let viewModel = NoWooErrorViewModel(
             site: site,
             showsConnectedStores: false, // avoid looping from store picker > no woo > store picker
+            hasConnectedStores: matcher.hasConnectedStores,
             // Both screens that start this coordinator are login error screens, so a no-Woo
             // outcome here is a login funnel exit.
             reportsLoginStep: true,

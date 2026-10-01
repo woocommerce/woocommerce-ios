@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 
 /// The main file for Order Details data.
 ///
+@MainActor
 final class OrderDetailsDataSource: NSObject {
 
     /// This is only used to pass as a dependency to `OrderDetailsResultsControllers`.
@@ -233,14 +234,14 @@ final class OrderDetailsDataSource: NSObject {
 
     private let siteSettings: [SiteSetting]
 
-    init(order: Order,
-         storageManager: StorageManagerType = ServiceLocator.storageManager,
-         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
-         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
-         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
-         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-         siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
-         userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)) {
+    nonisolated init(order: Order,
+                     storageManager: StorageManagerType = ServiceLocator.storageManager,
+                     cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
+                     refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
+                     receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+                     currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+                     siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
+                     userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)) {
         self.storageManager = storageManager
         self.order = order
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration

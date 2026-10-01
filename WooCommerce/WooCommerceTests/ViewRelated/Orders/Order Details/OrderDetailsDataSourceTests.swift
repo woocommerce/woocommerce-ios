@@ -12,6 +12,7 @@ import YosemiteTestHelpers
 
 /// Test cases for `OrderDetailsDataSourceTests`
 ///
+@MainActor
 final class OrderDetailsDataSourceTests: XCTestCase {
 
     private typealias Title = OrderDetailsDataSource.Title
@@ -22,14 +23,14 @@ final class OrderDetailsDataSourceTests: XCTestCase {
         storageManager.viewStorage
     }
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         storageManager = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_payment_section_is_shown_right_after_the_products_custom_amounts_refunded_products_and_shipping_sections() throws {

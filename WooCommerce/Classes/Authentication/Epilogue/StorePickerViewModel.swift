@@ -39,6 +39,7 @@ final class StorePickerViewModel {
     private let analytics: Analytics
     private let tracker: AuthenticatorAnalyticsTracker
     private let roleEligibilityUseCase: RoleEligibilityUseCase
+    private var hasTrackedLoginOutcome = false
     init(configuration: StorePickerConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
@@ -62,26 +63,54 @@ final class StorePickerViewModel {
             "num_of_stores": wooStores.count,
             "num_of_non_woo_sites": nonWooSites.count
         ])
-        if configuration == .login && wooStores.isEmpty {
+    }
+
+    /// Reports what the merchant is looking at once the sites are settled, not when the screen is
+    /// built: before the sync the picker is showing a cache that may be empty for no other reason
+    /// than that this is the first run. Reported once, since a picker is visited once.
+    ///
+    /// A failed sync leaves whatever the cache held on screen. A list is still a list, so it counts,
+    /// but an empty one proves nothing about the account and is left unreported.
+    ///
+    func trackLoginOutcome(syncSucceeded: Bool) {
+        guard configuration == .login, !hasTrackedLoginOutcome else {
+            return
+        }
+
+        switch state {
+        case .empty:
+            guard syncSucceeded else {
+                return
+            }
+            hasTrackedLoginOutcome = true
             tracker.track(step: .noWooStores)
+        case .available:
+            hasTrackedLoginOutcome = true
+            // An account with no store still lands on the list, shown as the sites it does own, so
+            // both steps describe the same screen. This one goes first so the tracker's current
+            // step ends on siteList, since that is what later clicks on the screen are attributed to.
+            if allFetchedSites.allSatisfy({ $0.isWooCommerceActive == false }) {
+                tracker.track(step: .noWooStores)
+            }
+            tracker.track(step: .siteList)
         }
     }
 
     @MainActor
     func refreshSites(currentlySelectedSiteID: Int64?) async {
         await withCheckedContinuation { continuation in
-            refreshSites(currentlySelectedSiteID: currentlySelectedSiteID) {
+            refreshSites(currentlySelectedSiteID: currentlySelectedSiteID) { _ in
                 continuation.resume()
             }
         }
     }
 
-    func refreshSites(currentlySelectedSiteID: Int64?, completion: (() -> Void)? = nil) {
+    func refreshSites(currentlySelectedSiteID: Int64?, completion: ((Bool) -> Void)? = nil) {
         refetchSitesAndUpdateState()
 
-        synchronizeSites { [weak self] _ in
+        synchronizeSites { [weak self] result in
             self?.refetchSitesAndUpdateState()
-            completion?()
+            completion?(result.isSuccess)
         }
     }
 

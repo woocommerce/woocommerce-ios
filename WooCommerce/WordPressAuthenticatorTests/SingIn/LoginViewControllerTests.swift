@@ -2,12 +2,15 @@
 import WordPressUI
 import XCTest
 
+@MainActor
 class LoginViewControllerTests: XCTestCase {
     private var retainedWindows = [UIWindow]()
 
-    override func tearDown() {
-        retainedWindows.removeAll()
-        super.tearDown()
+    override func tearDown() async throws {
+        await MainActor.run {
+            retainedWindows.removeAll()
+        }
+        try await super.tearDown()
     }
 
     // showSignupEpilogue with loginFields.meta.appleUser set will pass SocialService.apple to

@@ -1,27 +1,56 @@
 import Foundation
+import Synchronization
 import protocol NetworkingCore.URLSessionProtocol
 
 final class MockURLSession: URLSessionProtocol {
-    var responses: [String: (Data, URLResponse)] = [:]
-    var errors: [String: Error] = [:]
+    private struct State {
+        var responses: [String: (Data, URLResponse)] = [:]
+        var errors: [String: Error] = [:]
+        var lastRequest: URLRequest?
+        var receivedRequests: [URLRequest] = []
+        var requestCount = 0
+    }
 
-    private(set) var lastRequest: URLRequest?
-    private(set) var receivedRequests: [URLRequest] = []
-    private(set) var requestCount = 0
+    // Setup and assertions can run on a different executor from URLSessionProtocol.data(for:).
+    private let state = Mutex(State())
+
+    var responses: [String: (Data, URLResponse)] {
+        get { state.withLock { $0.responses } }
+        set { state.withLock { $0.responses = newValue } }
+    }
+
+    var errors: [String: Error] {
+        get { state.withLock { $0.errors } }
+        set { state.withLock { $0.errors = newValue } }
+    }
+
+    var lastRequest: URLRequest? {
+        state.withLock { $0.lastRequest }
+    }
+
+    var receivedRequests: [URLRequest] {
+        state.withLock { $0.receivedRequests }
+    }
+
+    var requestCount: Int {
+        state.withLock { $0.requestCount }
+    }
 
     func data(for request: URLRequest) async throws -> (Data, URLResponse) {
-        lastRequest = request
-        receivedRequests.append(request)
-        requestCount += 1
-
         let key = request.url?.absoluteString ?? ""
-
-        if let error = errors[key] {
-            throw error
+        let (stubbedError, stubbedResponse) = state.withLock { state -> (Error?, (Data, URLResponse)?) in
+            state.lastRequest = request
+            state.receivedRequests.append(request)
+            state.requestCount += 1
+            return (state.errors[key], state.responses[key])
         }
 
-        if let response = responses[key] {
-            return response
+        if let stubbedError {
+            throw stubbedError
+        }
+
+        if let stubbedResponse {
+            return stubbedResponse
         }
 
         // Default success response
@@ -42,10 +71,10 @@ final class MockURLSession: URLSessionProtocol {
             httpVersion: nil,
             headerFields: headerFields
         )!
-        responses[url] = (data, response)
+        state.withLock { $0.responses[url] = (data, response) }
     }
 
     func simulateError(for url: String, error: Error) {
-        errors[url] = error
+        state.withLock { $0.errors[url] = error }
     }
 }

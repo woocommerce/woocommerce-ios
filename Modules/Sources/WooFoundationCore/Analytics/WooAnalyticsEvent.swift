@@ -73,7 +73,6 @@ extension WooAnalyticsEvent {
             static let responseContentType = "response_content_type"
             static let reason = "reason"
             static let wooCommerceVersion = "woocommerce_version"
-            static let cachedWooCoreVersion = "cached_woo_core_version"
         }
 
         // MARK: - Initial Launch & Loading Screen Events
@@ -109,14 +108,12 @@ extension WooAnalyticsEvent {
 
         public static func syncStarted(syncType: String,
                                        syncStrategy: String,
-                                       connectionType: String,
-                                       cachedWooCoreVersion: String? = nil) -> WooAnalyticsEvent {
+                                       connectionType: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncStarted,
                               properties: [
                                 Key.syncType: syncType,
                                 Key.syncStrategy: syncStrategy,
-                                Key.connectionType: connectionType,
-                                Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"
+                                Key.connectionType: connectionType
                               ])
         }
 
@@ -129,8 +126,7 @@ extension WooAnalyticsEvent {
             totalVariations: Int,
             syncDurationMs: Int,
             generationDurationMs: Int? = nil,
-            pollAttempts: Int? = nil,
-            cachedWooCoreVersion: String? = nil
+            pollAttempts: Int? = nil
         ) -> WooAnalyticsEvent {
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.syncType: syncType,
@@ -139,8 +135,7 @@ extension WooAnalyticsEvent {
                 Key.variationsSynced: "\(variationsSynced)",
                 Key.totalProducts: "\(totalProducts)",
                 Key.totalVariations: "\(totalVariations)",
-                Key.syncDurationMs: "\(syncDurationMs)",
-                Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"
+                Key.syncDurationMs: "\(syncDurationMs)"
             ]
             if let generationDurationMs {
                 properties[Key.generationDurationMs] = "\(generationDurationMs)"
@@ -160,15 +155,13 @@ extension WooAnalyticsEvent {
             lastGenerationState: String? = nil,
             failureStage: String? = nil,
             httpStatusCode: Int? = nil,
-            responseContentType: String? = nil,
-            cachedWooCoreVersion: String? = nil
+            responseContentType: String? = nil
         ) -> WooAnalyticsEvent {
             let errorType = errorClassifier(error)
             var properties: [String: WooAnalyticsEventPropertyType] = [
                 Key.syncType: syncType,
                 Key.syncStrategy: syncStrategy,
-                Key.errorType: errorType,
-                Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"
+                Key.errorType: errorType
             ]
             if let pollAttempts {
                 properties[Key.pollAttempts] = "\(pollAttempts)"
@@ -190,13 +183,11 @@ extension WooAnalyticsEvent {
 
         public static func syncSkipped(reason: String,
                                        syncType: String,
-                                       syncStrategy: String,
-                                       cachedWooCoreVersion: String? = nil) -> WooAnalyticsEvent {
+                                       syncStrategy: String) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .pointOfSaleLocalCatalogSyncSkipped,
                               properties: [Key.reason: reason,
                                            Key.syncType: syncType,
-                                           Key.syncStrategy: syncStrategy,
-                                           Key.cachedWooCoreVersion: cachedWooCoreVersion ?? "unknown"])
+                                           Key.syncStrategy: syncStrategy])
         }
 
         // MARK: - Host-Blocked Catalog File Events

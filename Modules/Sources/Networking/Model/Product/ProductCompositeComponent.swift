@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a component in a Composite Product
 ///
-public struct ProductCompositeComponent: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct ProductCompositeComponent: Codable, Equatable, GeneratedCopiable, GeneratedFakeable, Sendable {
     /// Component ID.
     public let componentID: String
 
@@ -86,7 +86,7 @@ private extension ProductCompositeComponent {
 
 /// Represents all query types for component options in a Composite product
 ///
-public enum CompositeComponentOptionType: String, Codable, GeneratedFakeable {
+public enum CompositeComponentOptionType: String, Codable, GeneratedFakeable, Sendable {
     case productIDs     = "product_ids"
     case categoryIDs    = "category_ids"
 }

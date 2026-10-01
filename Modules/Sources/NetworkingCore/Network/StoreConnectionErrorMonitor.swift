@@ -37,7 +37,7 @@ protocol StoreConnectionErrorRecording {
 /// once the merchant fixes their site. Not persisted: a relaunch starts clean and re-detects if the store
 /// is still unreachable.
 ///
-public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, StoreConnectionErrorRecording {
+public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, StoreConnectionErrorRecording, @unchecked Sendable {
     public static let shared = StoreConnectionErrorMonitor()
 
     /// The value itself, guarded by `lock` because the networking layer writes it from whatever queue a

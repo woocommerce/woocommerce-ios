@@ -92,7 +92,7 @@ extension CustomHelpCenterContent {
             step = "site_list" // Matching Android `Step` value
             url = WooConstants.URLs.helpCenterForStorePicker.asURL()
         case .wrongAccountError:
-            step = "wrong_wordpress_account" // Matching Android `Step` value
+            step = AuthenticatorAnalyticsTracker.Step.wrongWordPressAccount.rawValue
             url = WooConstants.URLs.helpCenterForWrongAccountError.asURL()
         case .noWooError:
             step = "not_woo_store" // Matching Android `Step` value

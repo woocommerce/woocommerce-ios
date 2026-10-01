@@ -14,6 +14,7 @@ public extension UnitLength {
     }
 }
 
+@MainActor
 public final class ParcelFittingCheckPresenter {
 
     public static func presentSizing(

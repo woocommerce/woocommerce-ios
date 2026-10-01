@@ -560,6 +560,8 @@ public enum WooAnalyticsStat: String {
     case orderListProductBarcodeScanningTapped = "order_list_product_barcode_scanning_tapped"
     case barcodeScanningSuccess = "barcode_scanning_success"
     case barcodeScanningFailure = "barcode_scanning_failure"
+    case barcodeScanningPermissionSettingsOpened = "barcode_scanning_permission_settings_opened"
+    case barcodeScanningPermissionSettingsTapped = "barcode_scanning_permission_settings_tapped"
     case orderProductSearchViaSKUSuccess = "product_search_via_sku_success"
     case orderProductSearchViaGlobalUniqueIdentifierSuccess = "product_search_via_global_unique_identifier_success"
     case orderProductSearchViaSKUFailure = "product_search_via_sku_failure"
@@ -1445,6 +1447,7 @@ public enum WooAnalyticsStat: String {
     // `..._verification_action`); the consent request/resolution events are iOS-only.
     case accountAgeRestrictionChecked = "account_age_restriction_checked"
     case accountAgeRestrictionDialogShown = "account_age_restriction_dialog_shown"
+    case accountAgeRestrictionContactSupportTapped = "account_age_restriction_contact_support_tapped"
     case accountAgeVerificationAction = "account_age_verification_action"
     case accountAgeConsentRequested = "account_age_consent_requested"
     case accountAgeConsentResolved = "account_age_consent_resolved"

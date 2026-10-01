@@ -262,6 +262,82 @@ final class ProductCategoryStoreTests: XCTestCase {
         XCTAssertNotNil(result?.failure)
     }
 
+    func test_addProductCategory_when_rest_api_returns_term_exists_then_returns_duplicate_name_error() throws {
+        // Given
+        let response = Data(#"{"code":"term_exists","message":"A term with the name provided already exists in this taxonomy.","data":{"status":400}}"#.utf8)
+        network.simulateError(requestUrlSuffix: "products/categories", error: NetworkError.unacceptableStatusCode(statusCode: 400, response: response))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(ProductCategoryAction.addProductCategory(siteID: self.sampleSiteID, name: "Dress", parentID: 0) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? ProductCategoryActionError)
+        guard case .duplicateName = error else {
+            return XCTFail("Expected a duplicate name error")
+        }
+        XCTAssertEqual(error.localizedDescription, "A category with this name already exists. Please choose a different name.")
+        XCTAssertEqual(storedProductCategoriesCount, 0)
+    }
+
+    func test_addProductCategory_when_dotcom_returns_term_exists_then_returns_duplicate_name_error() throws {
+        // Given
+        network.simulateError(requestUrlSuffix: "products/categories", error: DotcomError.unknown(code: "term_exists", message: nil, data: nil))
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(ProductCategoryAction.addProductCategory(siteID: self.sampleSiteID, name: "Dress", parentID: 0) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? ProductCategoryActionError)
+        guard case .duplicateName = error else {
+            return XCTFail("Expected a duplicate name error")
+        }
+        XCTAssertEqual(error.localizedDescription, "A category with this name already exists. Please choose a different name.")
+        XCTAssertEqual(storedProductCategoriesCount, 0)
+    }
+
+    func test_addProductCategory_when_rest_api_returns_another_error_then_preserves_error() {
+        // Given
+        let response = Data(#"{"code":"rest_invalid_param","data":{"status":400}}"#.utf8)
+        let expectedError = NetworkError.unacceptableStatusCode(statusCode: 400, response: response)
+        network.simulateError(requestUrlSuffix: "products/categories", error: expectedError)
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(ProductCategoryAction.addProductCategory(siteID: self.sampleSiteID, name: "Dress", parentID: 0) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? NetworkError, expectedError)
+        XCTAssertEqual(storedProductCategoriesCount, 0)
+    }
+
+    func test_addProductCategory_when_dotcom_returns_another_error_then_preserves_error() {
+        // Given
+        let expectedError = DotcomError.unknown(code: "rest_invalid_param", message: "Invalid parameter", data: nil)
+        network.simulateError(requestUrlSuffix: "products/categories", error: expectedError)
+
+        // When
+        let result = waitFor { promise in
+            self.store.onAction(ProductCategoryAction.addProductCategory(siteID: self.sampleSiteID, name: "Dress", parentID: 0) { result in
+                promise(result)
+            })
+        }
+
+        // Then
+        XCTAssertEqual(result.failure as? DotcomError, expectedError)
+        XCTAssertEqual(storedProductCategoriesCount, 0)
+    }
+
     func test_addProductCategory_then_it_returns_error_upon_empty_error() {
         // Given a an empty network response
         XCTAssertEqual(storedProductCategoriesCount, 0)

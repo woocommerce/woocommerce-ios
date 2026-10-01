@@ -3,7 +3,7 @@
 import Foundation
 import Yosemite
 
-final class PointOfSaleItemServiceUITestMock: Yosemite.PointOfSaleItemServiceProtocol {
+nonisolated final class PointOfSaleItemServiceUITestMock: Yosemite.PointOfSaleItemServiceProtocol {
     static let simpleProductID: Int64 = 1
     static let variableParentProductID: Int64 = 4
     static let variationID: Int64 = 401

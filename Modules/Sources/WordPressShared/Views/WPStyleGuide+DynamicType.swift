@@ -17,7 +17,7 @@ extension WPStyleGuide {
     /// - Parameters:
     ///     - tableView: The tableView to configure.
     ///
-    @objc public class func configureAutomaticHeightRows(for tableView: UITableView) {
+    @MainActor @objc public class func configureAutomaticHeightRows(for tableView: UITableView) {
         tableView.rowHeight = UITableView.automaticDimension
         tableView.estimatedRowHeight = defaultTableViewRowHeight
     }
@@ -28,7 +28,7 @@ extension WPStyleGuide {
     ///     - label: The label to configure.
     ///     - style: The desired UIFontTextStyle.
     ///
-    @objc public class func configureLabel(_ label: UILabel, textStyle style: UIFont.TextStyle) {
+    @MainActor @objc public class func configureLabel(_ label: UILabel, textStyle style: UIFont.TextStyle) {
         label.font = fontForTextStyle(style)
         label.adjustsFontForContentSizeCategory = true
     }
@@ -40,7 +40,7 @@ extension WPStyleGuide {
     ///     - style: The desired UIFontTextStyle.
     ///     - traits: The desired UIFontDescriptorSymbolicTraits.
     ///
-    @objc public class func configureLabel(_ label: UILabel, textStyle style: UIFont.TextStyle, symbolicTraits traits: UIFontDescriptor.SymbolicTraits) {
+    @MainActor @objc public class func configureLabel(_ label: UILabel, textStyle style: UIFont.TextStyle, symbolicTraits traits: UIFontDescriptor.SymbolicTraits) {
         label.font = fontForTextStyle(style, symbolicTraits: traits)
         label.adjustsFontForContentSizeCategory = true
     }
@@ -54,7 +54,7 @@ extension WPStyleGuide {
     ///       UIFontWeightRegular, UIFontWeightMedium, UIFontWeightSemibold, UIFontWeightBold,
     ///       UIFontWeightHeavy, UIFontWeightBlack).
     ///
-    @objc public class func configureLabel(_ label: UILabel, textStyle style: UIFont.TextStyle, fontWeight weight: UIFont.Weight) {
+    @MainActor @objc public class func configureLabel(_ label: UILabel, textStyle style: UIFont.TextStyle, fontWeight weight: UIFont.Weight) {
         label.font = fontForTextStyle(style, fontWeight: weight)
         label.adjustsFontForContentSizeCategory = true
     }
@@ -65,7 +65,7 @@ extension WPStyleGuide {
     ///     - label: The label to configure.
     ///     - style: The desired UIFontTextStyle.
     ///
-    @objc public class func configureLabelForNotoFont(_ label: UILabel, textStyle style: UIFont.TextStyle) {
+    @MainActor @objc public class func configureLabelForNotoFont(_ label: UILabel, textStyle style: UIFont.TextStyle) {
         label.font = notoFontForTextStyle(style)
         label.adjustsFontForContentSizeCategory = true
     }

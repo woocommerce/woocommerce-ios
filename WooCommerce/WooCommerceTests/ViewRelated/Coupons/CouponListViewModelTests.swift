@@ -8,6 +8,7 @@ import protocol Storage.StorageType
 import enum Storage.FeedbackType
 import struct Storage.FeedbackSettings
 
+@MainActor
 final class CouponListViewModelTests: XCTestCase {
     private var mockStorageManager: MockStorageManager!
     private var mockStoresManager: MockStoresManager!
@@ -18,8 +19,8 @@ final class CouponListViewModelTests: XCTestCase {
         mockStorageManager.viewStorage
     }
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         createMocks()
         sut = CouponListViewModel(siteID: 123)
     }
@@ -44,12 +45,12 @@ final class CouponListViewModelTests: XCTestCase {
         sut.buildCouponViewModels()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         mockStorageManager = nil
         mockSyncingCoordinator = nil
         mockStoresManager = nil
         sut = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     // MARK: - Tests

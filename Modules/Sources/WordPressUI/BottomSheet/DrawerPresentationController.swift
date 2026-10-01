@@ -319,7 +319,7 @@ public class DrawerPresentationController: FancyAlertPresentationController {
             topMargin = calculatedTopMargin(for: height)
 
         case .hidden:
-            topMargin = containerView?.bounds.height ?? 0
+            topMargin = containerView?.bounds.height ?? UIScreen.main.bounds.height
         }
 
         return topMargin

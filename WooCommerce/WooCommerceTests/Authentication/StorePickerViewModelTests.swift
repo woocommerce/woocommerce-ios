@@ -1,4 +1,6 @@
 import XCTest
+@testable import WordPressAuthenticator
+import WordPressShared
 import Yosemite
 import protocol Storage.StorageManagerType
 import YosemiteTestHelpers
@@ -251,6 +253,80 @@ final class StorePickerViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.numberOfRows(inSection: 1), 1)
         XCTAssertEqual(viewModel.site(at: IndexPath(row: 1, section: 0))?.siteID, testSite2.siteID)
         XCTAssertEqual(viewModel.site(at: IndexPath(row: 0, section: 1))?.siteID, testSite3.siteID)
+    }
+
+    func test_trackScreenView_when_the_account_owns_no_store_then_reports_no_woo_stores() {
+        // Given an account that owns sites, but none of them sell
+        storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123, isWooCommerceActive: false))
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        tracker.set(flow: .epilogue)
+        let viewModel = StorePickerViewModel(configuration: .login,
+                                             stores: MockStoresManager(sessionManager: .makeForTesting()),
+                                             storageManager: storageManager,
+                                             tracker: tracker)
+
+        // When
+        viewModel.refreshSites(currentlySelectedSiteID: nil)
+        viewModel.trackScreenView()
+
+        // Then
+        let reported = events.filter { $0.properties["step"] == "no_woo_stores" }
+        XCTAssertEqual(reported.count, 1)
+        XCTAssertEqual(reported.first?.properties["flow"], "epilogue")
+    }
+
+    func test_trackScreenView_when_the_account_owns_no_sites_at_all_then_reports_no_woo_stores() {
+        // Given a brand-new account with nothing in storage
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = StorePickerViewModel(configuration: .login,
+                                             stores: MockStoresManager(sessionManager: .makeForTesting()),
+                                             storageManager: storageManager,
+                                             tracker: tracker)
+
+        // When
+        viewModel.refreshSites(currentlySelectedSiteID: nil)
+        viewModel.trackScreenView()
+
+        // Then
+        XCTAssertEqual(events.filter { $0.properties["step"] == "no_woo_stores" }.count, 1)
+    }
+
+    func test_trackScreenView_when_a_store_exists_then_does_not_report_no_woo_stores() {
+        // Given
+        storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123, isWooCommerceActive: true))
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = StorePickerViewModel(configuration: .login,
+                                             stores: MockStoresManager(sessionManager: .makeForTesting()),
+                                             storageManager: storageManager,
+                                             tracker: tracker)
+
+        // When
+        viewModel.refreshSites(currentlySelectedSiteID: nil)
+        viewModel.trackScreenView()
+
+        // Then
+        XCTAssertFalse(events.contains { $0.properties["step"] == "no_woo_stores" })
+    }
+
+    func test_trackScreenView_when_outside_the_login_flow_then_does_not_report_no_woo_stores() {
+        // Given the merchant is switching stores, not signing in
+        storageManager.insertSampleSite(readOnlySite: Site.fake().copy(siteID: 123, isWooCommerceActive: false))
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = StorePickerViewModel(configuration: .switchingStores,
+                                             stores: MockStoresManager(sessionManager: .makeForTesting()),
+                                             storageManager: storageManager,
+                                             tracker: tracker)
+
+        // When
+        viewModel.refreshSites(currentlySelectedSiteID: nil)
+        viewModel.trackScreenView()
+
+        // Then
+        XCTAssertFalse(events.contains { $0.properties["step"] == "no_woo_stores" })
     }
 
     func test_trackScreenView_tracks_both_number_of_woo_and_non_woo_sites() throws {

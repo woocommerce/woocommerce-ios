@@ -47,8 +47,15 @@ final class MockAuthentication: Authentication {
     func errorViewController(for siteURL: String,
                              with matcher: ULAccountMatcher,
                              credentials: AuthenticatorCredentials?,
+                             reportsLoginStep: Bool,
                              navigationController: UINavigationController,
                              onStorePickerDismiss: @escaping () -> Void) -> UIViewController? {
         nil
+    }
+
+    private(set) var spyNoteSiteDiscoveryIsFromLogin: Bool?
+
+    func noteSiteDiscoveryOrigin(isFromLogin: Bool) {
+        spyNoteSiteDiscoveryIsFromLogin = isFromLogin
     }
 }

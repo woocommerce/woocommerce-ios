@@ -5,6 +5,7 @@ import WordPressShared
 import WordPressUI
 @testable import WooCommerce
 
+@MainActor
 final class WrongAccountErrorViewModelTests: XCTestCase {
 
     override func setUp() {
@@ -309,10 +310,12 @@ private extension WrongAccountErrorViewModelTests {
         static let url = "https://woocommerce.com"
         static let image = UIImage.productErrorImage
 
-        static let siteCredentials = WordPressOrgCredentials(username: "merchant",
-                                                             password: "secret",
-                                                             xmlrpc: "https://woocommerce.com/xmlrpc.php",
-                                                             options: [:])
+        static var siteCredentials: WordPressOrgCredentials {
+            WordPressOrgCredentials(username: "merchant",
+                                    password: "secret",
+                                    xmlrpc: "https://woocommerce.com/xmlrpc.php",
+                                    options: [:])
+        }
 
         static let primaryButtonTitle = NSLocalizedString("Connect Jetpack",
                                                           comment: "Action button to handle connecting the logged-in account to a given site."

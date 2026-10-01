@@ -86,7 +86,7 @@ private extension PaymentRemote {
 }
 
 /// Contains necessary data for rendering a WPCOM plan in the app.
-public struct WPComPlan: Decodable, Equatable {
+public struct WPComPlan: Decodable, Equatable, Sendable {
     public let productID: Int64
     public let name: String
     public let formattedPrice: String
@@ -106,7 +106,7 @@ public struct WPComPlan: Decodable, Equatable {
 
 /// Contains necessary data for a site's WPCOM plan.
 // periphery:ignore
-public struct WPComSitePlan: Equatable {
+public struct WPComSitePlan: Equatable, Sendable {
     /// ID of the WPCOM plan.
     ///
     public let id: String

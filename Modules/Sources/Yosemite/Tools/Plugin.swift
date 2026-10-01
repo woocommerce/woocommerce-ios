@@ -13,6 +13,8 @@ public enum Plugin: Equatable, CaseIterable, Sendable {
     case wooProductBundles
     case wooSubscriptions
     case wooShipmentTracking
+    case wooShipping
+    case wooShippingAndTax
     case wooSquare
 
     /// Creates a Plugin from a plugin file name in the plugin path.
@@ -63,6 +65,10 @@ public enum Plugin: Equatable, CaseIterable, Sendable {
             return "woocommerce-subscriptions"
         case .wooShipmentTracking:
             return "woocommerce-shipment-tracking"
+        case .wooShipping:
+            return "woocommerce-shipping"
+        case .wooShippingAndTax:
+            return "woocommerce-services"
         case .wooSquare:
             return "woocommerce-square"
         }

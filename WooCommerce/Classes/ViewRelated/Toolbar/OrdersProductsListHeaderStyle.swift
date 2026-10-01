@@ -2,6 +2,7 @@ import UIKit
 
 /// Shared background and scroll behavior for list headers that extend below the navigation bar.
 @available(iOS 26.0, *)
+@MainActor
 enum OrdersProductsListHeaderStyle {
     static func makeBackgroundView() -> UIView {
         let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .systemMaterial))

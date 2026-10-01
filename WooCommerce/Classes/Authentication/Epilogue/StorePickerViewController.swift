@@ -289,7 +289,9 @@ private extension StorePickerViewController {
     }
 
     func refreshResults() {
-        viewModel.refreshSites(currentlySelectedSiteID: currentlySelectedSite?.siteID)
+        viewModel.refreshSites(currentlySelectedSiteID: currentlySelectedSite?.siteID) { [weak self] syncSucceeded in
+            self?.viewModel.trackLoginOutcome(syncSucceeded: syncSucceeded)
+        }
         viewModel.trackScreenView()
     }
 

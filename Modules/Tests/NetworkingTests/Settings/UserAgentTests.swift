@@ -32,6 +32,7 @@ final class UserAgentTests: XCTestCase {
 
     // If this test fails, it may mean `WKWebView` uses a user agent with an unexpected format (see `webkitUserAgentRegex`)
     // and we may need to adjust `UserAgent.webkitUserAgent`'s implementation to match `WKWebView`'s user agent.
+    @MainActor
     func testWKWebViewUserAgentFormat() throws {
         let regulardExpression = try NSRegularExpression(pattern: webkitUserAgentRegex)
         // Please note: WKWebView's user agent may be different on different test device types.

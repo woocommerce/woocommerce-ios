@@ -6,6 +6,7 @@ import struct Yosemite.Coupon
 /// This is used as a workaround to enable POS modularization without requiring a larger refactoring effort
 ///
 
+@MainActor
 struct POSCouponCreationViewAdaptor: View {
     @StateObject private var viewModel: AddEditCouponViewModel
     @Binding private var showTypeSelection: Bool
@@ -39,6 +40,7 @@ struct POSCouponCreationViewAdaptor: View {
     }
 }
 
+@MainActor
 struct POSDiscountTypeSelectionSheetAdaptor: View {
     @Binding var isPresented: Bool
     let title: String

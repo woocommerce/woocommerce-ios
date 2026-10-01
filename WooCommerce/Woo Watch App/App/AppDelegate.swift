@@ -5,6 +5,7 @@ import struct NetworkingCore.Note
 import Sentry
 
 
+@MainActor
 class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
 
     /// Helper to send tracks events.
@@ -56,17 +57,30 @@ class AppDelegate: NSObject, ObservableObject, WKApplicationDelegate {
 }
 
 extension AppDelegate: UNUserNotificationCenterDelegate {
-    func userNotificationCenter(_ center: UNUserNotificationCenter, didReceive response: UNNotificationResponse) async {
+    nonisolated func userNotificationCenter(_ center: UNUserNotificationCenter,
+                                           didReceive response: UNNotificationResponse,
+                                           withCompletionHandler completionHandler: @escaping @Sendable () -> Void) {
+        // Snapshot the payload before hopping; UserNotifications calls this delegate off the main actor.
+        let userInfo = response.notification.request.content.userInfo
+        let data = JSONSerialization.isValidJSONObject(userInfo)
+            ? try? JSONSerialization.data(withJSONObject: userInfo)
+            : nil
+        Task { @MainActor in
+            // Completing the response can trigger watchOS snapshot updates, which require the main thread.
+            defer { completionHandler() }
 
-        tracksProvider?.sendTracksEvent(.watchPushNotificationTapped)
+            tracksProvider?.sendTracksEvent(.watchPushNotificationTapped)
 
-        // The Watch app only supports order notifications.
-        guard let notification = PushNotification.from(userInfo: response.notification.request.content.userInfo),
-              notification.kind == Note.Kind.storeOrder else {
-            return
+            // The Watch app only supports order notifications.
+            guard let data,
+                  let userInfo = try? JSONSerialization.jsonObject(with: data) as? [AnyHashable: Any],
+                  let notification = PushNotification.from(userInfo: userInfo),
+                  notification.kind == Note.Kind.storeOrder else {
+                return
+            }
+
+            // Trigger order notification app binding
+            appBindings.orderNotification = notification
         }
-
-        // Trigger order notification app binding
-        appBindings.orderNotification = notification
     }
 }

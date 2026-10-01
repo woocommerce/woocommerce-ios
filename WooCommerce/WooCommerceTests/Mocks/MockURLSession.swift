@@ -15,13 +15,11 @@ final class MockURLSession: URLSessionProtocol {
     private let state = Mutex(State())
 
     var responses: [String: (Data, URLResponse)] {
-        get { state.withLock { $0.responses } }
-        set { state.withLock { $0.responses = newValue } }
+        state.withLock { $0.responses }
     }
 
     var errors: [String: Error] {
-        get { state.withLock { $0.errors } }
-        set { state.withLock { $0.errors = newValue } }
+        state.withLock { $0.errors }
     }
 
     var lastRequest: URLRequest? {

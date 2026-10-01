@@ -29,6 +29,9 @@ final class ProductsViewController: UIViewController {
 
     private var barcodeScannerCoordinator: ProducBarcodeScannerCoordinator?
 
+    private let refreshUpdates = ListRefreshUpdates()
+    // Match UITableView's installed rows even while refresh updates change the backing store.
+    private var presentedProducts: [ProductListItem] = []
     private var isShowingLoadingRows = false
     private lazy var emptyStateView = ListEmptyView()
 
@@ -131,7 +134,7 @@ final class ProductsViewController: UIViewController {
         let resultsController = providedResultsController ?? createResultsController(siteID: siteID)
         configureResultsController(resultsController, onReload: { [weak self] in
             guard let self else { return }
-            self.reloadTableAndView()
+            refreshUpdates.perform { self.reloadTableAndView() }
         })
         return resultsController
     }()
@@ -146,7 +149,7 @@ final class ProductsViewController: UIViewController {
                 resultsController.updateSortOrder(sortOrder)
 
                 /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
-                tableView.reloadData()
+                reloadProducts()
 
                 paginationTracker.resync()
             }
@@ -193,7 +196,7 @@ final class ProductsViewController: UIViewController {
                     await updatePredicate(filters: filters)
 
                     /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-                    tableView.reloadData()
+                    reloadProducts()
 
                     paginationTracker.resync()
                 }
@@ -281,7 +284,7 @@ final class ProductsViewController: UIViewController {
         // when switching tabs mid-animation
         refreshControl.resetAnimation(in: tableView) { [weak self] in
             guard let self, isShowingLoadingRows else { return }
-            tableView.reloadData()
+            self.reloadProducts()
         }
 
         if #unavailable(iOS 26.0) {
@@ -327,7 +330,7 @@ final class ProductsViewController: UIViewController {
     /// Selects the first product if one is available. Invoked when no product is selected when data is loaded in split view expanded mode.
     func selectFirstProductIfAvailable() {
         loadViewIfNeeded()
-        guard let firstProduct = resultsController.safeObject(at: IndexPath(row: 0, section: 0)) else {
+        guard let firstProduct = presentedProduct(at: IndexPath(row: 0, section: 0)) else {
             return
         }
         didSelectProduct(product: firstProduct)
@@ -335,7 +338,7 @@ final class ProductsViewController: UIViewController {
 
     func hasFirstProductAvailable() -> Bool {
         loadViewIfNeeded()
-        return resultsController.safeObject(at: IndexPath(row: 0, section: 0)) != nil
+        return presentedProduct(at: IndexPath(row: 0, section: 0)) != nil
     }
 
     func startProductCreation() {
@@ -343,7 +346,7 @@ final class ProductsViewController: UIViewController {
     }
 
     func resync() {
-        tableView.reloadData()
+        reloadProducts()
         paginationTracker.resync()
     }
 }
@@ -480,7 +483,8 @@ private extension ProductsViewController {
     @objc func selectAllProducts() {
         ServiceLocator.analytics.track(event: .ProductsList.bulkUpdateSelectAllTapped())
 
-        viewModel.selectProducts(resultsController.fetchedObjects)
+        let displayedIDs = Set(presentedProducts.map(\.productID))
+        viewModel.selectProducts(resultsController.fetchedObjects.filter { displayedIDs.contains($0.productID) })
         updatedSelectedItems()
         tableView.reloadRows(at: tableView.indexPathsForVisibleRows ?? [], with: .none)
     }
@@ -1070,10 +1074,10 @@ private extension ProductsViewController {
             ServiceLocator.crashLogging.logError(error)
         }
 
-        guard let tableView else {
-            return
+        refreshUpdates.perform {
+            presentedProducts = resultsController.listItems
+            tableView?.reloadData()
         }
-        tableView.reloadData()
     }
 
     /// Set closure  to methods `onDidChangeContent` and `onDidResetContent
@@ -1088,10 +1092,28 @@ private extension ProductsViewController {
         }
     }
 
+    func reloadProducts() {
+        refreshUpdates.perform {
+            presentedProducts = resultsController.listItems
+            tableView.reloadData()
+        }
+    }
+
+    /// Resolve actions by the displayed identity, not the store's potentially changed row index.
+    func presentedProduct(at indexPath: IndexPath) -> Product? {
+        guard presentedProducts.indices.contains(indexPath.row),
+              let currentIndex = resultsController.indexPath(forObjectMatching: {
+                  $0.productID == presentedProducts[indexPath.row].productID
+              }) else {
+            return nil
+        }
+        return resultsController.safeObject(at: currentIndex)
+    }
+
     /// Manages view components and reload tableview
     ///
     func reloadTableAndView() {
-        guard let tableView else {
+        guard tableView != nil else {
             return
         }
         // Search can populate the shared cache while the initial sync is still running.
@@ -1101,7 +1123,7 @@ private extension ProductsViewController {
         }
         showOrHideToolbar()
         updateEmptyState()
-        tableView.reloadData()
+        reloadProducts()
         onDataReloaded.send(())
     }
 
@@ -1136,38 +1158,44 @@ private extension ProductsViewController {
     }
 
     func observeSelectedProductAndDataLoadedStateToUpdateSelectedRow() {
+        var presentedSelection: Product?
         Publishers.CombineLatest3(selectedProduct,
                                   // Giving it an initial value to enable the combined publisher from the beginning.
                                   onDataReloaded.merge(with: Just<Void>(())),
                                   // Giving it an initial value to enable the combined publisher from the beginning.
                                   onTableViewEditingEnd.merge(with: Just<Void>(())))
             .map { $0.0 }
-            .withPrevious()
-            .sink { [weak self] previousSelectedProduct, selectedProduct in
+            .sink { [weak self] selectedProduct in
                 guard let self, !isShowingLoadingRows else { return }
 
-                let currentSelectedIndexPath = tableView.indexPathForSelectedRow
-                let selectedIndexPath = selectedProduct != nil ? resultsController.indexPath(forObjectMatching: {
-                    $0.productID == selectedProduct?.productID
-                }): nil
-                if let selectedIndexPath {
-                    guard currentSelectedIndexPath != selectedIndexPath else {
-                        return
+                refreshUpdates.perform {
+                    defer {
+                        presentedSelection = selectedProduct
                     }
-                    if let currentSelectedIndexPath {
-                        tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
+                    let currentSelectedIndexPath = self.tableView.indexPathForSelectedRow
+                    let selectedIndexPath = self.presentedProducts.firstIndex { $0.productID == selectedProduct?.productID }
+                        .map { IndexPath(row: $0, section: 0) }
+                    if let selectedIndexPath {
+                        guard currentSelectedIndexPath != selectedIndexPath else {
+                            return
+                        }
+                        if let currentSelectedIndexPath {
+                            self.tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
+                        }
+
+                        let scrollPosition: UITableView.ScrollPosition = {
+                            let hasSelectedProductChanged = (selectedProduct != presentedSelection)
+                            guard hasSelectedProductChanged else {
+                                return .none
+                            }
+                            let isSelectedIndexPathVisible = self.isIndexPathVisible(selectedIndexPath)
+                            return isSelectedIndexPathVisible ? .none : .middle
+                        }()
+
+                        self.tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: scrollPosition)
+                    } else if let currentSelectedIndexPath {
+                        self.tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
                     }
-
-                    let scrollPosition: UITableView.ScrollPosition = {
-                        let hasSelectedProductChanged = (selectedProduct != previousSelectedProduct)
-                        guard hasSelectedProductChanged else { return .none }
-                        let isSelectedIndexPathVisible = self.isIndexPathVisible(selectedIndexPath)
-                        return isSelectedIndexPathVisible ? .none : .middle
-                    }()
-
-                    tableView.selectRow(at: selectedIndexPath, animated: false, scrollPosition: scrollPosition)
-                } else if let currentSelectedIndexPath {
-                    tableView.deselectRow(at: currentSelectedIndexPath, animated: false)
                 }
             }
             .store(in: &subscriptions)
@@ -1192,13 +1220,13 @@ private extension ProductsViewController {
 
                 guard !isShowingLoadingRows else { return }
                 var indexPathsToReload: [IndexPath] = []
-                for (index, object) in resultsController.listItems.enumerated() {
+                for (index, object) in presentedProducts.enumerated() {
                     if activeUploadIds.contains(object.productID) != oldIDs.contains(object.productID) {
                         indexPathsToReload.append(IndexPath(row: index, section: 0))
                     }
                 }
 
-                tableView.reloadRows(at: indexPathsToReload, with: .none)
+                refreshUpdates.perform { self.tableView.reloadRows(at: indexPathsToReload, with: .none) }
             }
             .store(in: &subscriptions)
     }
@@ -1211,7 +1239,7 @@ private extension ProductsViewController {
                   !isIndexPathVisible(selectedIndexPath) else {
                 return
             }
-            tableView.scrollToRow(at: selectedIndexPath, at: .middle, animated: false)
+            refreshUpdates.perform { self.tableView.scrollToRow(at: selectedIndexPath, at: .middle, animated: false) }
         }
     }
 
@@ -1242,7 +1270,7 @@ private extension ProductsViewController {
             await updatePredicate(filters: filters)
 
             /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-            tableView.reloadData()
+            reloadProducts()
 
             paginationTracker.resync()
         }
@@ -1271,11 +1299,11 @@ private extension ProductsViewController {
 extension ProductsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        isShowingLoadingRows ? 1 : resultsController.sections.count
+        isShowingLoadingRows || !presentedProducts.isEmpty ? 1 : 0
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        isShowingLoadingRows ? Constants.placeholderRowCount : resultsController.sections[section].numberOfObjects
+        isShowingLoadingRows ? Constants.placeholderRowCount : presentedProducts.count
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -1288,7 +1316,7 @@ extension ProductsViewController: UITableViewDataSource {
         }
 
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
-        let product = resultsController.listItem(at: indexPath)
+        let product = presentedProducts[indexPath.row]
         let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
         let viewModel = ProductsTabProductViewModel(product: product,
                                                     hasPendingUploads: hasPendingUploads,
@@ -1330,7 +1358,9 @@ extension ProductsViewController: UITableViewDelegate {
             tableView.deselectRow(at: indexPath, animated: true)
         }
 
-        let product = resultsController.object(at: indexPath)
+        guard let product = presentedProduct(at: indexPath) else {
+            return
+        }
 
         if tableView.isEditing {
             viewModel.selectProduct(product)
@@ -1349,7 +1379,9 @@ extension ProductsViewController: UITableViewDelegate {
             return
         }
 
-        let product = resultsController.object(at: indexPath)
+        guard let product = presentedProduct(at: indexPath) else {
+            return
+        }
         viewModel.deselectProduct(product)
         updatedSelectedItems()
     }
@@ -1369,7 +1401,9 @@ extension ProductsViewController: UITableViewDelegate {
 
         // Restore cell selection state
         if tableView.isEditing {
-            let product = resultsController.object(at: indexPath)
+            guard let product = presentedProduct(at: indexPath) else {
+                return
+            }
             if self.viewModel.productIsSelected(product) {
                 tableView.selectRow(at: indexPath, animated: false, scrollPosition: .none)
             } else {
@@ -1396,7 +1430,9 @@ extension ProductsViewController: UITableViewDelegate {
     ///
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
         guard !isShowingLoadingRows else { return nil }
-        let product = resultsController.object(at: indexPath)
+        guard let product = presentedProduct(at: indexPath) else {
+            return nil
+        }
         guard ServiceLocator.stores.sessionManager.defaultSite?.visibility == .publicSite,
               product.productStatus == .published,
               let url = URL(string: product.permalink),
@@ -1436,14 +1472,22 @@ private extension ProductsViewController {
 //
 private extension ProductsViewController {
     @objc private func pullToRefresh(sender: UIRefreshControl) {
-        Task { @MainActor in
+        refreshUpdates.beginRefreshing { [weak self] in
+            guard let self else { return }
+            transitionToResultsUpdatedState()
+            reloadTableAndView()
+            hideTopBannerView()
+            showTopBannerViewIfNeeded()
+        }
+        Task { @MainActor [weak self] in
+            guard let self else { return }
 
             ServiceLocator.analytics.track(.productListPulledToRefresh)
 
-            await updatePredicate(filters: filters)
+            await self.updatePredicate(filters: self.filters)
 
-            paginationTracker.resync {
-                sender.endRefreshing()
+            self.paginationTracker.resync { [weak self] in
+                self?.refreshUpdates.endRefreshing(sender)
             }
         }
     }
@@ -1590,7 +1634,7 @@ extension ProductsViewController: PaginationTrackerDelegate {
     /// Synchronizes the Products for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
-        transitionToSyncingState(pageNumber: pageNumber)
+        refreshUpdates.perform { transitionToSyncingState(pageNumber: pageNumber) }
         dataLoadingError = nil
 
         let action = ProductAction
@@ -1621,7 +1665,7 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                         )
                                     }
 
-                                    self.transitionToResultsUpdatedState()
+                                    self.refreshUpdates.perform { self.transitionToResultsUpdatedState() }
                                     onCompletion?(result)
         }
 
@@ -1730,7 +1774,7 @@ private extension ProductsViewController {
             if isFirstPage && resultsController.isEmpty {
                 removeEmptyState()
                 isShowingLoadingRows = true
-                tableView.reloadData()
+                reloadProducts()
             } else if !isFirstPage {
                 ensureFooterSpinnerIsStarted()
             }
@@ -1751,7 +1795,7 @@ private extension ProductsViewController {
             ensureFooterSpinnerIsStopped()
             if isShowingLoadingRows {
                 isShowingLoadingRows = false
-                tableView.reloadData()
+                reloadProducts()
                 onDataReloaded.send(())
             }
             showTopBannerViewIfNeeded()

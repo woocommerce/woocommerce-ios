@@ -274,13 +274,12 @@ class DefaultStoresManager: StoresManager {
                                                                                object: nil,
                                                                                queue: .main) { [weak self] _ in
             // Only track when a logout is actually about to happen. Multiple in-flight requests can each post
-            // this notification, and `deauthenticate()` removes the observer synchronously but already-queued
-            // `.main` blocks still run — guarding on `isAuthenticated` keeps the count to one per sign-out.
-            guard let self, self.isAuthenticated else {
-                return
+            // this notification, and already-queued `.main` blocks still run after the first sign-out —
+            // checking `isAuthenticated` keeps the count to one per sign-out.
+            if self?.isAuthenticated == true {
+                ServiceLocator.analytics.track(event: .Authentication.involuntaryLogout(reason: .invalidToken))
             }
-            ServiceLocator.analytics.track(event: .Authentication.involuntaryLogout(reason: .invalidToken))
-            _ = self.deauthenticate()
+            _ = self?.deauthenticate()
         }
     }
 

@@ -165,6 +165,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
                                                    showsConnectedStores: true,
                                                    siteCredentials: nil,
                                                    authenticatorType: MockAuthenticator.self,
+                                                   reportsLoginStep: true,
                                                    tracker: tracker,
                                                    onJetpackSetupCompletion: { _, _ in })
 
@@ -178,6 +179,25 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         XCTAssertEqual(events.first?.properties["has_connected_stores"], "true")
     }
 
+    func test_viewDidLoad_reports_no_step_outside_a_login_journey() {
+        // Given the screen was reached from an in-app store switch
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: true,
+                                                   siteCredentials: nil,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   reportsLoginStep: false,
+                                                   tracker: tracker,
+                                                   onJetpackSetupCompletion: { _, _ in })
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        XCTAssertTrue(events.isEmpty)
+    }
+
     func test_viewDidLoad_omits_url_when_the_site_address_is_missing() {
         // Given
         var events: [AnalyticsEvent] = []
@@ -186,6 +206,7 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
                                                    showsConnectedStores: false,
                                                    siteCredentials: nil,
                                                    authenticatorType: MockAuthenticator.self,
+                                                   reportsLoginStep: true,
                                                    tracker: tracker,
                                                    onJetpackSetupCompletion: { _, _ in })
 
@@ -224,6 +245,11 @@ private extension WrongAccountErrorViewModelTests {
     private enum Expectations {
         static let url = "https://woocommerce.com"
         static let image = UIImage.productErrorImage
+
+        static let siteCredentials = WordPressOrgCredentials(username: "merchant",
+                                                             password: "secret",
+                                                             xmlrpc: "https://woocommerce.com/xmlrpc.php",
+                                                             options: [:])
 
         static let primaryButtonTitle = NSLocalizedString("Connect Jetpack",
                                                           comment: "Action button to handle connecting the logged-in account to a given site."

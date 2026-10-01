@@ -252,22 +252,18 @@ final class OrderListViewController: UIViewController {
     /// Returns a function that creates cells for `dataSource`.
     private func makeCellProvider() -> UITableViewDiffableDataSource<Section, Item>.CellProvider {
         return { [weak self] tableView, indexPath, item in
-            let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
-            cell.stopGhostAnimation()
-            cell.isUserInteractionEnabled = true
-            cell.accessibilityElementsHidden = false
-
-            switch item {
-            case .order(let objectID):
-                cell.configureCell(viewModel: self?.viewModel.cellViewModel(withID: objectID))
-            case .placeholder:
+            if case .placeholder = item {
+                let cell = tableView.dequeueReusableCell(withIdentifier: Constants.loadingCellIdentifier, for: indexPath)
+                cell.stopGhostAnimation()
                 cell.isUserInteractionEnabled = false
                 cell.accessibilityElementsHidden = true
-                cell.accessibilityIdentifier = nil
-                cell.accessoryView = nil
                 cell.accessoryType = .none
+                cell.layoutIfNeeded()
+                return cell
             }
 
+            let cell = tableView.dequeueReusableCell(OrderTableViewCell.self, for: indexPath)
+            cell.configureCell(viewModel: item.objectID.flatMap { self?.viewModel.cellViewModel(withID: $0) })
             cell.layoutIfNeeded()
             return cell
         }
@@ -358,7 +354,7 @@ private extension OrderListViewController {
         tableView.backgroundColor = .listBackground
         tableView.refreshControl = refreshControl
         tableView.tableFooterView = footerSpinnerView
-        tableView.estimatedSectionHeaderHeight = Settings.estimatedHeaderHeight
+        tableView.estimatedSectionHeaderHeight = Constants.estimatedHeaderHeight
         tableView.sectionHeaderHeight = UITableView.automaticDimension
         tableView.sectionFooterHeight = .leastNonzeroMagnitude
         tableView.rowHeight = UITableView.automaticDimension
@@ -380,6 +376,8 @@ private extension OrderListViewController {
     ///
     func registerTableViewHeadersAndCells() {
         tableView.registerNib(for: OrderTableViewCell.self)
+        // Keep loading cells separate so their skeleton layout never inherits an order's content.
+        tableView.register(OrderTableViewCell.loadNib(), forCellReuseIdentifier: Constants.loadingCellIdentifier)
 
         let headerType = TwoColumnSectionHeaderView.self
         tableView.register(headerType.loadNib(), forHeaderFooterViewReuseIdentifier: headerType.reuseIdentifier)
@@ -864,7 +862,7 @@ private extension OrderListViewController {
         var snapshot = NSDiffableDataSourceSnapshot<Section, Item>()
         if state == .placeholder {
             snapshot.appendSections([.placeholder])
-            snapshot.appendItems((0..<Settings.placeholderRowCount).map(Item.placeholder))
+            snapshot.appendItems((0..<Constants.placeholderRowCount).map(Item.placeholder))
         } else {
             for section in ordersSnapshot.sectionIdentifiers {
                 snapshot.appendSections([.orders(section)])
@@ -1030,7 +1028,8 @@ private extension OrderListViewController {
         }
     }
 
-    enum Settings {
+    enum Constants {
+        static let loadingCellIdentifier = "OrderLoadingCell"
         static let placeholderRowCount = 3
         static let estimatedHeaderHeight = CGFloat(43)
     }

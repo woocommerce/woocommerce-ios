@@ -87,7 +87,7 @@ struct OrderListViewControllerTests {
     }
 
     @Test
-    func test_loading_error_and_results_use_the_same_table_and_refresh_control() async throws {
+    func test_sync_when_loading_fails_then_reuses_the_same_table_and_refresh_control() async throws {
         // Given
         let siteID: Int64 = 123
         let site = Site.fake().copy(siteID: siteID, url: "https://example.com", visibility: .publicSite)
@@ -116,6 +116,11 @@ struct OrderListViewControllerTests {
         // Then: placeholders are rows in the same table, with no overlay scroll view
         #expect(tableView.numberOfRows(inSection: 0) == 3)
         #expect(viewController.firstAvailableOrder == nil)
+        let firstRow = IndexPath(row: 0, section: 0)
+        let loadingCell = try #require(tableView.dataSource?.tableView(tableView, cellForRowAt: firstRow))
+        #expect(loadingCell is OrderTableViewCell)
+        #expect(loadingCell.accessibilityIdentifier == nil)
+        #expect(!loadingCell.isUserInteractionEnabled)
         #expect(viewController.tableView(tableView, willSelectRowAt: IndexPath(row: 0, section: 0)) == nil)
         #expect(viewController.tableView(tableView, canFocusRowAt: IndexPath(row: 0, section: 0)) == false)
         #expect(viewController.children.isEmpty)
@@ -143,6 +148,9 @@ struct OrderListViewControllerTests {
         // Then: results replace placeholders without replacing the scroll view or refresh control
         #expect(tableView.numberOfRows(inSection: 0) == 1)
         #expect(viewController.firstAvailableOrder?.orderID == order.orderID)
+        let orderCell = try #require(tableView.dataSource?.tableView(tableView, cellForRowAt: firstRow))
+        #expect(orderCell.reuseIdentifier != loadingCell.reuseIdentifier)
+        #expect(orderCell.isUserInteractionEnabled)
         #expect(tableView.tableFooterView is FooterSpinnerView)
         #expect(viewController.children.isEmpty)
         #expect(viewController.tableView === tableView)
@@ -213,17 +221,17 @@ private extension OrderListViewControllerTests {
         }
     }
 
-    struct EmptyStateViewControllerMirror {
+    struct ListEmptyViewMirror {
         let messageLabel: UILabel
         let imageView: UIImageView
         let detailsLabel: UILabel
         let actionButton: UIButton
     }
 
-    func mirror(of viewController: ListEmptyView) throws -> EmptyStateViewControllerMirror {
-        let mirror = Mirror(reflecting: viewController)
+    func mirror(of view: ListEmptyView) throws -> ListEmptyViewMirror {
+        let mirror = Mirror(reflecting: view)
 
-        return EmptyStateViewControllerMirror(
+        return ListEmptyViewMirror(
             messageLabel: try #require(mirror.descendant("messageLabel") as? UILabel),
             imageView: try #require(mirror.descendant("imageView") as? UIImageView),
             detailsLabel: try #require(mirror.descendant("detailsLabel") as? UILabel),

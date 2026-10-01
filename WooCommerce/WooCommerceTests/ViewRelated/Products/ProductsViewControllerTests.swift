@@ -138,7 +138,7 @@ struct ProductsViewControllerTests {
                                                  })
         controller.loadViewIfNeeded()
         let table = try #require(controller.tableView)
-        let refreshControl = try #require(table.refreshControl)
+        let refreshControl = try attachedRefreshControl(in: table)
         let completeSync = try await startRefresh(refreshControl, stores: stores)
         try #require(table.numberOfRows(inSection: 0) == 3)
 
@@ -194,7 +194,7 @@ struct ProductsViewControllerTests {
         table.layoutIfNeeded()
         let selectedIndexPath = IndexPath(row: products.count - 1, section: 0)
         try #require(!table.bounds.intersects(table.rectForRow(at: selectedIndexPath)))
-        let refreshControl = try #require(table.refreshControl)
+        let refreshControl = try attachedRefreshControl(in: table)
         let completeSync = try await startRefresh(refreshControl, stores: stores)
 
         // When: Search selects an offscreen product while the list refresh is pending.

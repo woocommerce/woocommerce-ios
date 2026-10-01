@@ -82,6 +82,11 @@ public protocol BlazeRemoteProtocol {
     ///
     func fetchPaymentInfo(siteID: Int64) async throws -> BlazePaymentInfo
 
+    /// Fetches the Blaze billing summary of the current user, including any outstanding balance.
+    /// - Parameter siteID: ID of the site to create Blaze campaigns for.
+    ///
+    func fetchBillingSummary(siteID: Int64) async throws -> BlazeBillingSummary
+
     /// Fetches objectives for campaign creation.
     /// - Parameters:
     ///    - siteID: WPCom ID for the site to create ads campaigns.
@@ -228,6 +233,15 @@ public final class BlazeRemote: Remote, BlazeRemoteProtocol {
         return try await enqueue(request, mapper: mapper)
     }
 
+    /// Fetches the Blaze billing summary of the current user.
+    ///
+    public func fetchBillingSummary(siteID: Int64) async throws -> BlazeBillingSummary {
+        let path = Paths.billingSummary(siteID: siteID)
+        let request = DotcomRequest(wordpressApiVersion: .wpcomMark2, method: .get, path: path)
+        let mapper = BlazeBillingSummaryMapper()
+        return try await enqueue(request, mapper: mapper)
+    }
+
     /// Fetches objectives for campaign creation.
     ///
     public func fetchCampaignObjectives(siteID: Int64, locale: String) async throws -> [BlazeCampaignObjective] {
@@ -287,6 +301,10 @@ private extension BlazeRemote {
 
         static func paymentInfo(siteID: Int64) -> String {
             "sites/\(siteID)/wordads/dsp/api/v1.1/payment-methods"
+        }
+
+        static func billingSummary(siteID: Int64) -> String {
+            "sites/\(siteID)/wordads/dsp/api/v1/user/billing-summary"
         }
 
         static func campaignObjective(siteID: Int64) -> String {

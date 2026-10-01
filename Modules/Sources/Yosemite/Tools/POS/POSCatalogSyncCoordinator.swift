@@ -171,8 +171,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             let reason = await getSyncSkipReason(for: siteID, maxAge: maxAge)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason,
                                                                       syncType: POSCatalogSyncType.full.rawValue,
-                                                                      syncStrategy: syncStrategy.rawValue,
-                                                                      cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)))
+                                                                      syncStrategy: syncStrategy.rawValue))
             throw POSCatalogSyncError.shouldNotSync
         }
 
@@ -189,8 +188,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let connectionType = getConnectionType()
         trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.full.rawValue,
                                                                   syncStrategy: syncStrategy.rawValue,
-                                                                  connectionType: connectionType,
-                                                                  cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)))
+                                                                  connectionType: connectionType))
 
         let allowCellular = isFirstSync || siteSettings.getPOSLocalCatalogCellularDataAllowed(siteID: siteID)
         DDLogInfo("🔄 POSCatalogSyncCoordinator starting full sync for site \(siteID)")
@@ -228,8 +226,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 totalVariations: totalVariations,
                 syncDurationMs: syncDurationMs,
                 generationDurationMs: syncedCatalog.syncMetadata?.generationDurationMs,
-                pollAttempts: syncedCatalog.syncMetadata?.pollAttempts,
-                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
+                pollAttempts: syncedCatalog.syncMetadata?.pollAttempts
             ))
         } catch AFError.explicitlyCancelled, is CancellationError {
             if isFirstSync {
@@ -242,8 +239,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 syncType: POSCatalogSyncType.full.rawValue,
                 syncStrategy: syncStrategy.rawValue,
                 error: POSCatalogSyncError.requestCancelled,
-                errorClassifier: POSCatalogSyncErrorClassifier.classify,
-                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
+                errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
             throw POSCatalogSyncError.requestCancelled
         } catch {
@@ -265,8 +261,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 lastGenerationState: lastGenerationState,
                 failureStage: catalogFileMetadata.failureStage,
                 httpStatusCode: catalogFileMetadata.httpStatusCode,
-                responseContentType: catalogFileMetadata.responseContentType,
-                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
+                responseContentType: catalogFileMetadata.responseContentType
             ))
             throw error
         }
@@ -336,8 +331,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 errorClassifier: POSCatalogSyncErrorClassifier.classify,
                 failureStage: catalogFileMetadata.failureStage,
                 httpStatusCode: catalogFileMetadata.httpStatusCode,
-                responseContentType: catalogFileMetadata.responseContentType,
-                cachedWooCoreVersion: wooCommerceVersion
+                responseContentType: catalogFileMetadata.responseContentType
             ))
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.blockedFellBackToRemote(wooCommerceVersion: wooCommerceVersion))
 
@@ -456,8 +450,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             let reason = await getIncrementalSyncSkipReason(for: siteID, maxAge: maxAge)
             trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncSkipped(reason: reason,
                                                                       syncType: POSCatalogSyncType.incremental.rawValue,
-                                                                      syncStrategy: syncStrategy.rawValue,
-                                                                      cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)))
+                                                                      syncStrategy: syncStrategy.rawValue))
             return
         }
 
@@ -487,8 +480,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
         let connectionType = getConnectionType()
         trackAnalytics(WooAnalyticsEvent.LocalCatalog.syncStarted(syncType: POSCatalogSyncType.incremental.rawValue,
                                                                   syncStrategy: syncStrategy.rawValue,
-                                                                  connectionType: connectionType,
-                                                                  cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)))
+                                                                  connectionType: connectionType))
 
         let syncStartTime = Date()
 
@@ -520,8 +512,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 variationsSynced: syncedCatalog.variations.count,
                 totalProducts: totalProducts,
                 totalVariations: totalVariations,
-                syncDurationMs: syncDurationMs,
-                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
+                syncDurationMs: syncDurationMs
             ))
         } catch AFError.explicitlyCancelled, is CancellationError {
             // Track sync failed analytics
@@ -529,8 +520,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 syncType: POSCatalogSyncType.incremental.rawValue,
                 syncStrategy: syncStrategy.rawValue,
                 error: POSCatalogSyncError.requestCancelled,
-                errorClassifier: POSCatalogSyncErrorClassifier.classify,
-                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
+                errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
             throw POSCatalogSyncError.requestCancelled
         } catch {
@@ -540,8 +530,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
                 syncType: POSCatalogSyncType.incremental.rawValue,
                 syncStrategy: syncStrategy.rawValue,
                 error: error,
-                errorClassifier: POSCatalogSyncErrorClassifier.classify,
-                cachedWooCoreVersion: await cachedWooCoreVersion(for: siteID)
+                errorClassifier: POSCatalogSyncErrorClassifier.classify
             ))
             throw error
         }

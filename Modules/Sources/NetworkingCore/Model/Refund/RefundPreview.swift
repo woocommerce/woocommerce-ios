@@ -7,7 +7,7 @@ import Codegen
 /// strings (possibly null); decoding is lenient, mapping null/missing values to zero and null
 /// sections to empty ones.
 ///
-public struct RefundPreview: Decodable, Equatable, GeneratedFakeable {
+public struct RefundPreview: Decodable, Equatable, Sendable, GeneratedFakeable {
     public let subtotal: Decimal
     public let tax: Decimal
     public let total: Decimal
@@ -45,7 +45,7 @@ public struct RefundPreview: Decodable, Equatable, GeneratedFakeable {
 
 public extension RefundPreview {
     /// Per-type breakdown of the previewed refund.
-    struct Breakdown: Decodable, Equatable, GeneratedFakeable {
+    struct Breakdown: Decodable, Equatable, Sendable, GeneratedFakeable {
         public let products: Section
         public let shipping: Section
         public let fees: Section
@@ -73,7 +73,7 @@ public extension RefundPreview {
     }
 
     /// One breakdown section (products, shipping, or fees) with its refunded lines and totals.
-    struct Section: Decodable, Equatable, GeneratedFakeable {
+    struct Section: Decodable, Equatable, Sendable, GeneratedFakeable {
         public let items: [Item]
         public let subtotal: Decimal
         public let tax: Decimal
@@ -105,7 +105,7 @@ public extension RefundPreview {
     }
 
     /// One previewed refund line.
-    struct Item: Decodable, Equatable, GeneratedFakeable {
+    struct Item: Decodable, Equatable, Sendable, GeneratedFakeable {
         public let id: Int64
         public let name: String
 

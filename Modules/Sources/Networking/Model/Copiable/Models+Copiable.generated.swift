@@ -140,6 +140,39 @@ extension Networking.BlazeAISuggestion {
     }
 }
 
+extension Networking.BlazeBillingSummary {
+    public func copy(
+        debt: CopiableProp<Double> = .copy,
+        paymentLinks: CopiableProp<[BlazeBillingSummary.PaymentLink]> = .copy
+    ) -> Networking.BlazeBillingSummary {
+        let debt = debt ?? self.debt
+        let paymentLinks = paymentLinks ?? self.paymentLinks
+
+        return Networking.BlazeBillingSummary(
+            debt: debt,
+            paymentLinks: paymentLinks
+        )
+    }
+}
+
+extension Networking.BlazeBillingSummary.PaymentLink {
+    public func copy(
+        date: NullableCopiableProp<Date> = .copy,
+        amount: CopiableProp<Double> = .copy,
+        url: CopiableProp<String> = .copy
+    ) -> Networking.BlazeBillingSummary.PaymentLink {
+        let date = date ?? self.date
+        let amount = amount ?? self.amount
+        let url = url ?? self.url
+
+        return Networking.BlazeBillingSummary.PaymentLink(
+            date: date,
+            amount: amount,
+            url: url
+        )
+    }
+}
+
 extension Networking.BlazeCampaignBudget {
     public func copy(
         mode: CopiableProp<BlazeCampaignBudget.Mode> = .copy,

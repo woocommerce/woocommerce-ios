@@ -8,6 +8,7 @@ import RealityKit
 /// `updateMaterials` toggles visibility per frame so edges adjacent to a
 /// camera-facing face render as solid and edges that would be hidden by an
 /// opaque cuboid render as dashed — the standard CAD hidden-line look.
+@MainActor
 struct ARCuboidEntity {
     enum Axis {
         case x, y, z

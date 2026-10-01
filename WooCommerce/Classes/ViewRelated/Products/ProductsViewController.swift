@@ -960,6 +960,8 @@ private extension ProductsViewController {
     ///
     func registerTableViewCells() {
         tableView.register(ProductsTabProductTableViewCell.self)
+        // Loading cells never receive product content or accessibility identifiers.
+        tableView.register(ProductsTabProductTableViewCell.self, forCellReuseIdentifier: Constants.loadingCellIdentifier)
     }
 
     /// Show or hide the toolbar based on number of products
@@ -1277,11 +1279,15 @@ extension ProductsViewController: UITableViewDataSource {
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        if isShowingLoadingRows {
+            let cell = tableView.dequeueReusableCell(withIdentifier: Constants.loadingCellIdentifier, for: indexPath)
+            cell.stopGhostAnimation()
+            cell.isUserInteractionEnabled = false
+            cell.accessibilityElementsHidden = true
+            return cell
+        }
+
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
-        cell.stopGhostAnimation()
-        cell.isUserInteractionEnabled = !isShowingLoadingRows
-        cell.accessibilityElementsHidden = isShowingLoadingRows
-        guard !isShowingLoadingRows else { return cell }
         let product = resultsController.listItem(at: indexPath)
         let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
         let viewModel = ProductsTabProductViewModel(product: product,
@@ -1808,6 +1814,7 @@ private extension ProductsViewController {
     enum Constants {
         static let headerViewSpacing = CGFloat(8)
         static let estimatedRowHeight = CGFloat(86)
+        static let loadingCellIdentifier = "ProductLoadingCell"
         static let placeholderRowCount = 3
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets.zero

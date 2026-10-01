@@ -9,7 +9,7 @@ import YosemiteTestHelpers
 @Suite(.serialized)
 struct ProductsViewControllerTests {
     @Test
-    func test_loading_failure_and_retry_keep_content_in_the_main_table() throws {
+    func test_sync_when_loading_fails_and_retries_then_keeps_content_in_the_main_table() throws {
         // Given
         let originalStores = ServiceLocator.stores
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -64,7 +64,7 @@ struct ProductsViewControllerTests {
     }
 
     @Test
-    func test_products_arriving_during_initial_sync_replace_placeholders_before_selection() async throws {
+    func test_sync_when_products_arrive_during_initial_load_then_replaces_placeholders_before_selection() async throws {
         // Given
         let originalStores = ServiceLocator.stores
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -85,6 +85,11 @@ struct ProductsViewControllerTests {
         let table = try #require(controller.tableView)
         controller.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
         try #require(table.numberOfRows(inSection: 0) == 3)
+        let firstRow = IndexPath(row: 0, section: 0)
+        let loadingCell = controller.tableView(table, cellForRowAt: firstRow)
+        #expect(loadingCell is ProductsTabProductTableViewCell)
+        #expect(loadingCell.accessibilityIdentifier == nil)
+        #expect(!loadingCell.isUserInteractionEnabled)
 
         // When: Search adds products to the cache before the list request completes
         let products = (1...4).map { index in
@@ -94,6 +99,9 @@ struct ProductsViewControllerTests {
 
         // Then: the table uses real product indexes before selection is published
         try #require(table.numberOfRows(inSection: 0) == 4)
+        let productCell = controller.tableView(table, cellForRowAt: firstRow)
+        #expect(productCell.reuseIdentifier != loadingCell.reuseIdentifier)
+        #expect(productCell.isUserInteractionEnabled)
         selectedProduct.send(products[3])
         #expect(table.indexPathForSelectedRow == IndexPath(row: 3, section: 0))
         #expect(controller.tableView(table, willSelectRowAt: IndexPath(row: 3, section: 0)) != nil)

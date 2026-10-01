@@ -977,7 +977,7 @@ private extension ProductsSection {
             comment: "Title for the barcode scanning button to add a product to an order")
     }
 
-    func openSettingsAction(completion: @escaping (Bool) -> Void) {
+    func openSettingsAction(completion: @escaping @MainActor @Sendable (Bool) -> Void) {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
             completion(false)
             return

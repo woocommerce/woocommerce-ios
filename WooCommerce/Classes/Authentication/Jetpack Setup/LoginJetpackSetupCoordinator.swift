@@ -140,6 +140,9 @@ private extension LoginJetpackSetupCoordinator {
         let viewModel = NoWooErrorViewModel(
             site: site,
             showsConnectedStores: false, // avoid looping from store picker > no woo > store picker
+            // Both screens that start this coordinator are login error screens, so a no-Woo
+            // outcome here is a login funnel exit.
+            reportsLoginStep: true,
             onSetupCompletion: { [weak self] siteID in
                 guard let self else { return }
                 self.navigationController.popViewController(animated: true)

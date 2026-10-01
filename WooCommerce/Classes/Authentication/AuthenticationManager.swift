@@ -74,6 +74,10 @@ class AuthenticationManager: Authentication {
     /// Keeps a reference to the QR-login coordinator while the flow is active.
     private var qrLoginCoordinator: QRLoginCoordinator?
 
+    /// Whether site discovery was entered from the login epilogue rather than from an
+    /// in-app store switch. Only the former is part of a login journey.
+    private var isSiteDiscoveryFromLogin = false
+
     /// Availability gate for the QR-login prologue / deep link entry.
     private let qrLoginAvailability: QRLoginAvailabilityProvider
 
@@ -383,6 +387,7 @@ class AuthenticationManager: Authentication {
     func errorViewController(for siteURL: String,
                              with matcher: ULAccountMatcher,
                              credentials: AuthenticatorCredentials? = nil,
+                             reportsLoginStep: Bool = false,
                              navigationController: UINavigationController,
                              onStorePickerDismiss: @escaping () -> Void) -> UIViewController? {
 
@@ -400,6 +405,7 @@ class AuthenticationManager: Authentication {
         if let matchedSite = matcher.matchedSite(originalURL: siteURL),
            matchedSite.isWooCommerceActive == false {
             return noWooUI(for: matchedSite,
+                           reportsLoginStep: reportsLoginStep,
                            with: matcher,
                            navigationController: navigationController,
                            onStorePickerDismiss: onStorePickerDismiss)
@@ -539,6 +545,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                 return
             } else {
                 let noWoo = noWooUI(for: matchedSite,
+                                    reportsLoginStep: isSiteDiscoveryFromLogin,
                                     with: matcher,
                                     navigationController: navigationController,
                                     onStorePickerDismiss: {})
@@ -788,6 +795,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         if let vc = errorViewController(for: siteURL,
                                         with: matcher,
                                         credentials: credentials,
+                                        reportsLoginStep: true,
                                         navigationController: navigationController,
                                         onStorePickerDismiss: onDismiss) {
             loggedOutAppSettings?.setErrorLoginSiteAddress(siteURL)
@@ -1191,12 +1199,14 @@ private extension AuthenticationManager {
     /// The error screen to be displayed when the user tries to enter a site without WooCommerce.
     ///
     func noWooUI(for site: Site,
+                 reportsLoginStep: Bool = false,
                  with matcher: ULAccountMatcher = .init(),
                  navigationController: UINavigationController,
                  onStorePickerDismiss: @escaping () -> Void) -> UIViewController {
         let viewModel = NoWooErrorViewModel(
             site: site,
             showsConnectedStores: matcher.hasConnectedStores,
+            reportsLoginStep: reportsLoginStep,
             onSetupCompletion: { [weak self] siteID in
                 guard let self else { return }
                 self.startStorePicker(with: siteID, in: navigationController, onDismiss: onStorePickerDismiss)
@@ -1278,6 +1288,12 @@ private extension AuthenticationManager {
 }
 
 extension AuthenticationManager {
+    /// Records whether the store picker about to present site discovery belongs to the login
+    /// epilogue. Site discovery is also reachable from an in-app store switch, which is not one.
+    func noteSiteDiscoveryOrigin(isFromLogin: Bool) {
+        isSiteDiscoveryFromLogin = isFromLogin
+    }
+
     /// Checks if the authenticated user is eligible to use the app and navigates to the home screen.
     /// Internal so tests can verify that the authentication callback forwards its validated endpoint context.
     ///

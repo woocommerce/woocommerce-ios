@@ -1,8 +1,10 @@
 import EventHorizonSDK
 import Experiments
+import AutomatticTracks
 import XCTest
 @testable import WooCommerce
 @testable import Yosemite
+@testable import WordPressAuthenticator
 
 /// WooAnalytics Unit Tests
 ///
@@ -29,6 +31,10 @@ class WooAnalyticsTests: XCTestCase {
     ///
     private var userDefaultsSuiteName: String!
 
+    private var consent: AnalyticsConsentProviding!
+
+    private var tracksRemoteCallsWereEnabled: Bool?
+
     private var notificationCenter: NotificationCenter!
 
     private let sampleSiteID: Int64 = 12345
@@ -47,14 +53,24 @@ class WooAnalyticsTests: XCTestCase {
         ServiceLocator.setStores(stores)
         userDefaultsSuiteName = UUID().uuidString
         userDefaults = UserDefaults(suiteName: userDefaultsSuiteName)!
+        consent = UserDefaultsAnalyticsConsent(userDefaults: userDefaults)
         notificationCenter = NotificationCenter()
-        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider(), userDefaults: userDefaults, notificationCenter: notificationCenter)
+        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider(), consent: consent, notificationCenter: notificationCenter)
     }
 
     override func tearDown() {
+        if let tracksRemoteCallsWereEnabled {
+            let events = receivedTracksEvents
+            withTracksService { service in
+                service.tracksEventService.removeTracksEvents(events)
+                service.remoteCallsEnabled = tracksRemoteCallsWereEnabled
+            }
+            self.tracksRemoteCallsWereEnabled = nil
+        }
         userDefaults.removePersistentDomain(forName: userDefaultsSuiteName)
         userDefaults = nil
         userDefaultsSuiteName = nil
+        consent = nil
         notificationCenter = nil
         super.tearDown()
         ServiceLocator.setStores(originalStores)
@@ -175,6 +191,169 @@ class WooAnalyticsTests: XCTestCase {
     func testClearAllEvents() {
         testingProvider?.clearEvents()
         XCTAssertEqual(testingProvider?.receivedEvents.count, 0)
+    }
+
+    func test_authenticator_events_when_fresh_install_then_tracks_names_and_properties() {
+        // Given
+        let tracker = makeAuthenticatorTracker()
+        tracker.set(flow: .loginWithGoogle)
+
+        // When
+        tracker.track(step: .start)
+        tracker.track(click: .loginWithGoogle)
+        tracker.track(failure: "test_failure")
+
+        // Then
+        let names = ["unified_login_step", "unified_login_interaction", "unified_login_failure"]
+        let events = receivedTracksEvents
+        XCTAssertEqual(events.map { tracksEventName($0) }.sorted(), names.sorted())
+        let expectedProperties = [
+            ["flow": "google_login", "source": "default", "step": "start"],
+            ["flow": "google_login", "source": "default", "step": "start", "click": "login_with_google"],
+            ["flow": "google_login", "source": "default", "step": "start", "failure": "test_failure"]
+        ]
+        for (name, expected) in zip(names, expectedProperties) {
+            let properties = events.first { tracksEventName($0) == name }?.customProperties
+            for (key, value) in expected {
+                XCTAssertEqual(properties?[key] as? String, value)
+            }
+        }
+    }
+
+    func test_authenticator_events_when_opted_out_then_does_not_track() {
+        // Given
+        analytics.setUserHasOptedOut(true)
+        let tracker = makeAuthenticatorTracker()
+
+        // When
+        tracker.track(step: .start)
+        tracker.track(click: .loginWithGoogle)
+        tracker.track(failure: "test_failure")
+
+        // Then
+        XCTAssertTrue(receivedTracksEvents.isEmpty)
+    }
+
+    func test_authenticator_events_when_consent_changes_then_uses_current_preference() {
+        // Given
+        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider(), consent: consent, startABTest: { _ in })
+        let tracker = makeAuthenticatorTracker()
+        tracker.track(step: .start)
+        XCTAssertEqual(receivedTracksEvents.map { tracksEventName($0) }, ["unified_login_step"])
+        analytics.setUserHasOptedOut(true)
+
+        // When
+        tracker.track(click: .loginWithGoogle)
+        XCTAssertEqual(receivedTracksEvents.map { tracksEventName($0) }, ["unified_login_step"])
+        analytics.setUserHasOptedOut(false)
+        tracker.track(click: .loginWithGoogle)
+
+        // Then
+        XCTAssertEqual(receivedTracksEvents.map { tracksEventName($0) }.sorted(), ["unified_login_interaction", "unified_login_step"])
+    }
+
+    func test_authenticator_events_when_opted_out_and_logged_out_then_preserves_preference_after_reinitialization() {
+        // Given
+        analytics.setUserHasOptedOut(true)
+        let sessionManager = SessionManager(defaults: userDefaults,
+                                            keychainServiceName: userDefaultsSuiteName,
+                                            imageCache: MockImageCache(name: userDefaultsSuiteName))
+
+        // When
+        sessionManager.reset()
+        consent = UserDefaultsAnalyticsConsent(userDefaults: userDefaults)
+        analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider(), consent: consent, startABTest: { _ in })
+        let tracker = makeAuthenticatorTracker()
+        tracker.track(step: .start)
+        tracker.track(click: .loginWithGoogle)
+        tracker.track(failure: "test_failure")
+
+        // Then
+        XCTAssertFalse(analytics.userHasOptedIn)
+        XCTAssertTrue(receivedTracksEvents.isEmpty)
+    }
+
+    func test_tracksProvider_events_when_opted_out_then_blocks_all_tracking_entry_points() {
+        // Given
+        analytics.setUserHasOptedOut(true)
+        let provider = makeTracksProvider()
+
+        // When
+        provider.track("direct_event_" + tracksTestSuffix)
+        provider.track("pos_checkout_tapped_" + tracksTestSuffix, withProperties: ["payment_method": "cash"])
+        provider.trackString("auth_event_" + tracksTestSuffix)
+        provider.trackString("auth_event_with_properties_" + tracksTestSuffix, withProperties: ["step": "start"])
+
+        // Then
+        XCTAssertTrue(receivedTracksEvents.isEmpty)
+    }
+
+    func test_tracksProvider_events_when_opted_in_then_records_events_and_preserves_POS_properties() {
+        // Given
+        let provider = makeTracksProvider()
+
+        // When
+        provider.track("direct_event_" + tracksTestSuffix)
+        provider.track("pos_checkout_tapped_" + tracksTestSuffix, withProperties: ["payment_method": "cash"])
+        provider.trackString("auth_event_" + tracksTestSuffix)
+        provider.trackString("auth_event_with_properties_" + tracksTestSuffix, withProperties: ["step": "start"])
+
+        // Then
+        let events = receivedTracksEvents
+        XCTAssertEqual(events.map { tracksEventName($0) }.sorted(), ["auth_event", "auth_event_with_properties", "direct_event", "pos_checkout_tapped"])
+        let posProperties = events.first { tracksEventName($0) == "pos_checkout_tapped" }?.customProperties
+        XCTAssertEqual(posProperties?["payment_method"] as? String, "cash")
+        XCTAssertEqual(posProperties?["device_type"] as? String, provider.deviceTypeForAnalytics)
+        let authProperties = events.first { tracksEventName($0) == "auth_event_with_properties" }?.customProperties
+        XCTAssertEqual(authProperties?["step"] as? String, "start")
+    }
+
+    private func makeTracksProvider() -> TracksProvider {
+        withTracksService { service in
+            self.tracksRemoteCallsWereEnabled = service.remoteCallsEnabled
+            service.remoteCallsEnabled = false
+        }
+        return TracksProvider(consent: consent)
+    }
+
+    private func makeAuthenticatorTracker() -> AuthenticatorAnalyticsTracker {
+        let provider = makeTracksProvider()
+        let testRun = userDefaultsSuiteName!
+        // Exercise the WPAnalyticsTracker bridge without changing WPAnalytics' global registry.
+        return AuthenticatorAnalyticsTracker(enabled: true, track: { event in
+            let properties = event.properties.merging(["test_run": testRun]) { current, _ in current }
+            provider.trackString(event.name, withProperties: properties)
+        })
+    }
+
+    private var tracksTestSuffix: String {
+        userDefaultsSuiteName.replacingOccurrences(of: "-", with: "").lowercased()
+    }
+
+    private func tracksEventName(_ event: TracksEvent) -> String {
+        event.eventName.replacingOccurrences(of: "woocommerceios_", with: "")
+            .replacingOccurrences(of: "_" + tracksTestSuffix, with: "")
+    }
+
+    private var receivedTracksEvents: [TracksEvent] {
+        let testRun = userDefaultsSuiteName!
+        let suffix = tracksTestSuffix
+        var events: [TracksEvent] = []
+        withTracksService { service in
+            events = (service.tracksEventService.allTracksEvents() as? [TracksEvent] ?? []).filter {
+                $0.customProperties["test_run"] as? String == testRun || $0.eventName.hasSuffix(suffix)
+            }
+        }
+        return events
+    }
+
+    private func withTracksService(_ operation: @escaping (TracksService) -> Void) {
+        let completed = expectation(description: "Tracks queue operation completed")
+        TracksProvider.TracksServiceExecutor.enqueue { service in
+            operation(service)
+            completed.fulfill()
+        }
+        wait(for: [completed], timeout: 5)
     }
 
     @MainActor

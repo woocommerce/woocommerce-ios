@@ -13,8 +13,15 @@ public enum POSAnalyticsEntryPoint: String {
 
 public class TracksProvider: NSObject, AnalyticsProvider {
 
+    private let consent: AnalyticsConsentProviding
+
+    init(consent: AnalyticsConsentProviding) {
+        self.consent = consent
+        super.init()
+    }
+
     /// `TracksServiceExecutor` ensures that we access the Tracks service on a background queue, while always creating the service on the main thread.
-    private enum TracksServiceExecutor {
+    enum TracksServiceExecutor {
         private static let contextManager = TracksContextManager()
 
         private static let service: TracksService = {
@@ -122,6 +129,10 @@ public extension TracksProvider {
     }
 
     func track(_ eventName: String, withProperties properties: [AnyHashable: Any]?) {
+        guard consent.userHasOptedIn else {
+            return
+        }
+
         let carriesPOSProperties = carriesPointOfSaleProperties(eventName)
         let eventName = needsPointOfSaleNamePrefix(eventName) ? Constants.pointOfSaleEventNamePrefix + eventName : eventName
         var properties = addHorizontalSizeClass(to: properties, sizeClass: currentHorizontalSizeClass())
@@ -130,7 +141,12 @@ public extension TracksProvider {
                                                   deviceType: deviceTypeForAnalytics,
                                                   entryPoint: Self.activePOSEntryPoint)
         }
-        Self.TracksServiceExecutor.enqueue { tracksService in
+        Self.TracksServiceExecutor.enqueue { [consent] tracksService in
+            // Consent may have changed while the event was waiting on the queue.
+            guard consent.userHasOptedIn else {
+                return
+            }
+
             if let properties {
                 guard tracksService.trackEventName(eventName, withCustomProperties: properties) else {
                     return DDLogError("🔴 Error tracking \(eventName) with properties: \(properties)")
@@ -159,7 +175,7 @@ public extension TracksProvider {
     /// When a user opts-out, wipe data
     ///
     func clearUsers() {
-        guard ServiceLocator.analytics.userHasOptedIn else {
+        guard consent.userHasOptedIn else {
             // To be safe, nil out the anonymousUserID guid so a fresh one is regenerated
             UserDefaults.standard[.defaultAnonymousID] = nil
             UserDefaults.standard[.analyticsUsername] = nil

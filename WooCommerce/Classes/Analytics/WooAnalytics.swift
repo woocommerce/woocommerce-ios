@@ -28,9 +28,9 @@ final class WooAnalytics: Analytics {
 
     private lazy var widgetSetupChangeTracker = WidgetSetupChangeTracker()
 
-    /// Defaults database used to persist the analytics opt-in state
+    /// Shared consent state, independent of the analytics provider and logged-in session.
     ///
-    private let userDefaults: UserDefaults
+    private let consent: AnalyticsConsentProviding
 
     private let startABTest: ABTestStarter
     private let notificationCenter: NotificationCenter
@@ -41,12 +41,10 @@ final class WooAnalytics: Analytics {
     ///
     var userHasOptedIn: Bool {
         get {
-            let isUITesting: Bool = CommandLine.arguments.contains("-ui_testing")
-            let optedIn: Bool? = userDefaults.object(forKey: .userOptedInAnalytics)
-            return ( optedIn ?? true ) && !isUITesting // analytics tracking on by default, but disabled for UI tests
+            consent.userHasOptedIn
         }
         set {
-            userDefaults.set(newValue, forKey: .userOptedInAnalytics)
+            consent.userHasOptedIn = newValue
         }
     }
 
@@ -57,6 +55,7 @@ final class WooAnalytics: Analytics {
     ///
     init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker,
          userDefaults: UserDefaults = .standard,
+         consent: AnalyticsConsentProviding? = nil,
          notificationCenter: NotificationCenter = .default,
          getWidgetConfigurations: @escaping WidgetConfigurationProvider = { completion in
              WidgetCenter.shared.getCurrentConfigurations(completion)
@@ -67,7 +66,7 @@ final class WooAnalytics: Analytics {
              }
          }) {
         self.analyticsProvider = analyticsProvider
-        self.userDefaults = userDefaults
+        self.consent = consent ?? UserDefaultsAnalyticsConsent(userDefaults: userDefaults)
         self.startABTest = startABTest
         self.notificationCenter = notificationCenter
         self.getWidgetConfigurations = getWidgetConfigurations

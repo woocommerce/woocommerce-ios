@@ -1116,10 +1116,15 @@ private extension ProductsViewController {
 
     /// Resolve actions by the displayed identity, not the store's potentially changed row index.
     func presentedProduct(at indexPath: IndexPath) -> Product? {
-        guard presentedProducts.indices.contains(indexPath.row),
-              let currentIndex = resultsController.indexPath(forObjectMatching: {
-                  $0.productID == presentedProducts[indexPath.row].productID
-              }) else {
+        guard presentedProducts.indices.contains(indexPath.row) else {
+            return nil
+        }
+        let productID = presentedProducts[indexPath.row].productID
+        if indexPath.row < resultsController.numberOfObjects,
+           resultsController.listItem(at: indexPath).productID == productID {
+            return resultsController.safeObject(at: indexPath)
+        }
+        guard let currentIndex = resultsController.indexPath(forObjectMatching: { $0.productID == productID }) else {
             return nil
         }
         return resultsController.safeObject(at: currentIndex)

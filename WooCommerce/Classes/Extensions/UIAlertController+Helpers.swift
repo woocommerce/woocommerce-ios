@@ -4,7 +4,7 @@ import UIKit
 /// UIAlertController Helpers
 ///
 extension UIAlertController {
-    typealias OpenSettingsAction = @MainActor @Sendable (@escaping @MainActor @Sendable (Bool) -> Void) -> Void
+    typealias OpenSettingsAction = (@escaping (Bool) -> Void) -> Void
 
     /// Discard Changes Action Sheet
     ///
@@ -168,7 +168,6 @@ private enum AlertWithLinkToOpenSettings {
                                               comment: "Button title to cancel opening device settings in an alert")
     }
 
-    @MainActor
     static let openSettings: UIAlertController.OpenSettingsAction = { completion in
         guard let targetURL = URL(string: UIApplication.openSettingsURLString) else {
             completion(false)

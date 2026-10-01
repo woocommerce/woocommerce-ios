@@ -294,6 +294,16 @@ final class ProductsViewController: UIViewController {
         reloadFavoriteProductsIfNeeded()
     }
 
+    override func viewIsAppearing(_ animated: Bool) {
+        super.viewIsAppearing(animated)
+
+        if #available(iOS 26.0, *) {
+            // Initial layout can leave a large title in a compact-height bar.
+            // Recalculate its height before display, without changing the list's scroll position.
+            navigationController?.navigationBar.sizeToFit()
+        }
+    }
+
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
 

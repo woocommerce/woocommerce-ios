@@ -227,6 +227,23 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual(["FLAKY", "FLAKY"], [item.get("value") for item in statuses])
             self.assertEqual({"dashboard_stats"}, RUNNER.failed_flow_stems(report))
 
+    def test_rerun_selects_only_the_failed_flow_when_another_flow_name_is_its_prefix(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "orders_create_quantity.yaml"
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            failed_junit = root / "failed.xml"
+            failed_junit.write_text(
+                '<testsuite name="orders" tests="1" failures="1">'
+                '<testcase name="orders"><failure message="failed" /></testcase>'
+                '</testsuite>'
+            )
+            attempts = [RUNNER.Attempt(flow, 1, 1, 1, failed_junit, root / "failed.log", root / "failed-debug")]
+            report = root / "report.xml"
+
+            RUNNER.finalize_suite(attempts, report)
+
+            self.assertEqual({"orders_create_quantity"}, RUNNER.failed_flow_stems(report))
+
     def test_completed_run_summary_records_final_status_and_attempts(self) -> None:
         flow = RUNNER.FLOWS_DIR / "dashboard_stats.yaml"
         attempts = [

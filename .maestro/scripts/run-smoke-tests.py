@@ -333,7 +333,10 @@ def failed_flow_stems(report: Path) -> set[str]:
         is_flaky = status is not None and status.get("value") == "FLAKY"
         if case.find("failure") is None and case.find("error") is None and not is_flaky:
             continue
-        haystack = " ".join([case.get("name", ""), case.get("classname", ""), case.get("file", "")])
+        if flow_file := case.get("file"):
+            stems.add(Path(flow_file).stem)
+            continue
+        haystack = " ".join([case.get("name", ""), case.get("classname", "")])
         stems.update(path.stem for path in FLOWS_DIR.glob("*.yaml") if path.stem in haystack)
     return stems
 

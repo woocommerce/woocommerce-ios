@@ -17,8 +17,8 @@ final class ServiceLocator {
     /// WooAnalytics Wrapper
     ///
     private static var _analytics: Analytics = {
-        let consent = UserDefaultsAnalyticsConsent()
-        return WooAnalytics(analyticsProvider: TracksProvider(consent: consent), consent: consent)
+        let provider = TracksProvider(consent: UserDefaultsAnalyticsConsent())
+        return WooAnalytics(analyticsProvider: provider, consent: provider.consent)
     }()
 
     /// StoresManager

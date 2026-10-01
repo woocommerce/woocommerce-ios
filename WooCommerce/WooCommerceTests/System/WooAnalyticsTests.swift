@@ -449,7 +449,7 @@ class WooAnalyticsTests: XCTestCase {
         provider.defersRefreshUserDataCompletion = true
         var startedContexts: [ExperimentContext] = []
         analytics = WooAnalytics(analyticsProvider: provider,
-                                 userDefaults: userDefaults,
+                                 consent: consent,
                                  notificationCenter: notificationCenter,
                                  startABTest: { context in
             startedContexts.append(context)
@@ -477,7 +477,7 @@ class WooAnalyticsTests: XCTestCase {
         let provider = MockAnalyticsProvider()
         var startedContexts: [ExperimentContext] = []
         analytics = WooAnalytics(analyticsProvider: provider,
-                                 userDefaults: userDefaults,
+                                 consent: consent,
                                  notificationCenter: notificationCenter,
                                  startABTest: { context in
             startedContexts.append(context)
@@ -498,7 +498,7 @@ class WooAnalyticsTests: XCTestCase {
         let provider = MockAnalyticsProvider()
         var startedContexts: [ExperimentContext] = []
         analytics = WooAnalytics(analyticsProvider: provider,
-                                 userDefaults: userDefaults,
+                                 consent: consent,
                                  notificationCenter: notificationCenter,
                                  startABTest: { context in
             startedContexts.append(context)
@@ -528,7 +528,7 @@ class WooAnalyticsTests: XCTestCase {
         provider.defersRefreshUserDataCompletion = true
         var startedContexts: [ExperimentContext] = []
         analytics = WooAnalytics(analyticsProvider: provider,
-                                 userDefaults: userDefaults,
+                                 consent: consent,
                                  notificationCenter: notificationCenter,
                                  startABTest: { context in
             startedContexts.append(context)
@@ -609,7 +609,7 @@ class WooAnalyticsTests: XCTestCase {
         let provider = MockAnalyticsProvider()
         provider.defersRefreshUserDataCompletion = true
         return WooAnalytics(analyticsProvider: provider,
-                     userDefaults: userDefaults,
+                     consent: consent,
                      notificationCenter: notificationCenter,
                      getWidgetConfigurations: { completion in
             completion(.failure(NSError(domain: "WidgetConfigurationError", code: 0)))
@@ -630,7 +630,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultStoreUUID: "sample_store_uuid",
                                                                    cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, consent: consent, notificationCenter: notificationCenter)
 
         // When
         analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
@@ -668,7 +668,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, consent: consent, notificationCenter: notificationCenter)
 
         // When
         analytics.track(.sitePickerContinueTapped, withProperties: Constants.testProperty1)
@@ -706,7 +706,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     siteID: sampleSiteID,
                                                                     url: sampleSiteURL)))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, consent: consent, notificationCenter: notificationCenter)
 
         // When
         analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
@@ -727,7 +727,7 @@ class WooAnalyticsTests: XCTestCase {
         }
         stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, consent: consent, notificationCenter: notificationCenter)
 
         // When
         analytics.track(Event.bookingDetailAttendanceStatusUpdate(bookingStatus: .attended))
@@ -755,7 +755,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultStoreUUID: "sample_store_uuid",
                                                                    cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, consent: consent, notificationCenter: notificationCenter)
 
         // When
         analytics.track(WooAnalyticsStat.cardReaderLocationSuccess.rawValue, properties: Constants.testProperty1, error: nil)
@@ -781,7 +781,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     url: sampleSiteURL),
                                                                    defaultStoreUUID: "sample_store_uuid"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, consent: consent, notificationCenter: notificationCenter)
 
         // When
         analytics.track(WooAnalyticsStat.wooPushTokenRegisterSuccess.rawValue, properties: Constants.testProperty1, error: nil)
@@ -805,7 +805,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                     url: sampleSiteURL),
                                                                    defaultStoreUUID: "sample_store_uuid"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, consent: consent, notificationCenter: notificationCenter)
 
         // When
         analytics.track("an_event_name_that_is_not_a_stat", properties: Constants.testProperty1, error: nil)
@@ -830,7 +830,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultStoreUUID: nil,
                                                                    cachedWooCommerceVersion: nil))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, consent: consent, notificationCenter: notificationCenter)
         let callerProperties: [AnyHashable: Any] = [
             "cached_woo_core_version": "9.8.0",
             "store_id": "caller_store_uuid"
@@ -860,7 +860,7 @@ class WooAnalyticsTests: XCTestCase {
                                                                    defaultStoreUUID: "session_store_uuid",
                                                                    cachedWooCommerceVersion: "10.0"))
         ServiceLocator.setStores(stores)
-        analytics = WooAnalytics(analyticsProvider: testingProvider, userDefaults: userDefaults, notificationCenter: notificationCenter)
+        analytics = WooAnalytics(analyticsProvider: testingProvider, consent: consent, notificationCenter: notificationCenter)
         let callerProperties: [AnyHashable: Any] = [
             "cached_woo_core_version": "9.8.0",
             "store_id": "caller_store_uuid"

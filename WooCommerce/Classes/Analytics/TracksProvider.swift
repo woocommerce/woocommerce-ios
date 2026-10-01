@@ -13,7 +13,7 @@ public enum POSAnalyticsEntryPoint: String {
 
 public class TracksProvider: NSObject, AnalyticsProvider {
 
-    private let consent: AnalyticsConsentProviding
+    let consent: AnalyticsConsentProviding
 
     init(consent: AnalyticsConsentProviding) {
         self.consent = consent

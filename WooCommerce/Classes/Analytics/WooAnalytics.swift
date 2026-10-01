@@ -51,11 +51,10 @@ final class WooAnalytics: Analytics {
 
     // MARK: - Initialization
 
-    /// Designated Initializer
+    /// When using TracksProvider, pass its consent instance so both consent checks use the same state.
     ///
     init(analyticsProvider: AnalyticsProvider & WPAnalyticsTracker,
-         userDefaults: UserDefaults = .standard,
-         consent: AnalyticsConsentProviding? = nil,
+         consent: AnalyticsConsentProviding = UserDefaultsAnalyticsConsent(),
          notificationCenter: NotificationCenter = .default,
          getWidgetConfigurations: @escaping WidgetConfigurationProvider = { completion in
              WidgetCenter.shared.getCurrentConfigurations(completion)
@@ -66,7 +65,7 @@ final class WooAnalytics: Analytics {
              }
          }) {
         self.analyticsProvider = analyticsProvider
-        self.consent = consent ?? UserDefaultsAnalyticsConsent(userDefaults: userDefaults)
+        self.consent = consent
         self.startABTest = startABTest
         self.notificationCenter = notificationCenter
         self.getWidgetConfigurations = getWidgetConfigurations

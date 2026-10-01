@@ -151,6 +151,16 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         }
 
         if isSelfHostedSite {
+            // Only this branch starts a Jetpack connection. The other one tells the merchant to
+            // ask the site owner for access, which is not a Jetpack state they can act on.
+            if reportsLoginStep {
+                var properties: [String: String] = [:]
+                // Same reason as viewDidLoad: `siteURL` falls back to a localized placeholder.
+                if let rawSiteURL {
+                    properties[AuthenticatorAnalyticsTracker.Property.url.rawValue] = rawSiteURL.trimHTTPScheme()
+                }
+                tracker.track(step: .jetpackNotConnected, properties: properties)
+            }
             return showSiteCredentialLoginAndJetpackConnection(from: viewController)
         }
         return presentConnectToWPComSiteAlert(from: viewController)

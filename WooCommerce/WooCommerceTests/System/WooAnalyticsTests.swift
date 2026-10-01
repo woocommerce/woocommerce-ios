@@ -310,7 +310,9 @@ class WooAnalyticsTests: XCTestCase {
 
     private func makeTracksProvider() -> TracksProvider {
         withTracksService { service in
-            self.tracksRemoteCallsWereEnabled = service.remoteCallsEnabled
+            if self.tracksRemoteCallsWereEnabled == nil {
+                self.tracksRemoteCallsWereEnabled = service.remoteCallsEnabled
+            }
             service.remoteCallsEnabled = false
         }
         return TracksProvider(consent: consent)

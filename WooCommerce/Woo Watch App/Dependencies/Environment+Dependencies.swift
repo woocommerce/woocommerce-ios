@@ -4,7 +4,8 @@ import class WooFoundationCore.CurrencySettings
 /// Environment dependencies setup
 ///
 private enum DependenciesKey: EnvironmentKey {
-    static let defaultValue: WatchDependencies = .fake()
+    // CurrencySettings is mutable, so each default must own its own instance.
+    static var defaultValue: WatchDependencies { .fake() }
 }
 
 extension EnvironmentValues {

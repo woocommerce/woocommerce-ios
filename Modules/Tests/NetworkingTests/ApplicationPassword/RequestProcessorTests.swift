@@ -1,4 +1,5 @@
 import XCTest
+import Synchronization
 @testable import Networking
 @testable import NetworkingCore
 @testable import Alamofire
@@ -729,10 +730,14 @@ private class MockRequest: Alamofire.DataRequest, @unchecked Sendable {
     }
 }
 
-private class MockRequestProcessorDelegate: RequestProcessorDelegate {
-    private(set) var didFailToAuthenticateRequestForSiteID: Int64?
+private final class MockRequestProcessorDelegate: RequestProcessorDelegate, Sendable {
+    private let failedSiteID = Mutex<Int64?>(nil)
+
+    var didFailToAuthenticateRequestForSiteID: Int64? {
+        failedSiteID.withLock { $0 }
+    }
 
     func didFailToAuthenticateRequestWithAppPassword(siteID: Int64, error: Error) {
-        didFailToAuthenticateRequestForSiteID = siteID
+        failedSiteID.withLock { $0 = siteID }
     }
 }

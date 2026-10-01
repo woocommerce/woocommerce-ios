@@ -44,6 +44,7 @@ struct OrderDetailLoader: View {
 
 /// View Model for the OrderDetailLoader
 ///
+@MainActor
 final class OrderDetailLoaderViewModel: ObservableObject {
 
     /// Represents the possible view states

@@ -2,7 +2,7 @@ import Foundation
 
 /// Represent a Stripe Account Entity.
 ///
-public struct StripeAccount: Decodable {
+public struct StripeAccount: Decodable, Sendable {
     public static let gatewayID = "woocommerce-stripe"
 
     public let status: WCPayAccountStatusEnum

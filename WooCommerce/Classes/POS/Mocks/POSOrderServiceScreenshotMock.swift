@@ -6,7 +6,7 @@ import struct NetworkingCore.OrderItem
 import PointOfSale
 
 /// Mock order service for screenshot tests that returns immediate loaded state
-final class POSOrderServiceScreenshotMock: POSOrderServiceProtocol {
+nonisolated final class POSOrderServiceScreenshotMock: POSOrderServiceProtocol {
     // periphery: ignore - needed for conformance, not explicitely for the mock
     private let currency: String
 

@@ -11,6 +11,7 @@ public enum StoreSize {
     /// new component reuses the pattern rather than reintroducing its own literal.
     public static let badgeHeight: CGFloat = 24
     public static let segmentedControlHeight: CGFloat = 32
+    public static let filterChipHeight: CGFloat = 32
 
     /// The fixed decorative container size of a `StoreIconContainer`. Equal in value to
     /// `minimumTapTarget` but a distinct design dimension: the component is non-interactive,

@@ -46,4 +46,27 @@ public enum ProductCategoryActionError: Error {
     /// The requested category cannot be found remotely
     ///
     case categoryDoesNotExistRemotely
+
+    /// A category with the same name already exists.
+    ///
+    case duplicateName
+}
+
+extension ProductCategoryActionError: LocalizedError {
+    public var errorDescription: String? {
+        switch self {
+        case .duplicateName:
+            return Localization.duplicateName
+        case .categoriesSynchronization, .categoryDoesNotExistRemotely:
+            return nil
+        }
+    }
+
+    private enum Localization {
+        static let duplicateName = NSLocalizedString(
+            "productCategoryActionError.duplicateName",
+            value: "A category with this name already exists. Please choose a different name.",
+            comment: "Error shown when creating a product category with a name that already exists."
+        )
+    }
 }

@@ -521,7 +521,8 @@ private extension HelpAndSupportViewController {
                                            onTicketCreated: @escaping () -> Void) {
         supportEscalationCoordinator = SupportEscalationCoordinator(navigationController: navigationController,
                                                                     mobileStatusReportProvider: MobileStatusReportProvider(),
-                                                                    onTicketCreated: onTicketCreated)
+                                                                    onTicketCreated: onTicketCreated,
+                                                                    originTag: sourceTag)
         supportEscalationCoordinator?.handleEscalation(chatID: chatID,
                                                        transcript: transcript,
                                                        supportAreaInfo: supportAreaInfo,

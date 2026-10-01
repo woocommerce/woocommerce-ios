@@ -2,6 +2,7 @@ import SwiftUI
 
 struct ItemRowView: View {
     private let cartItem: Cart.PurchasableItem
+    private let showsDiscountedNote: Bool
     private let onItemRemoveTapped: (() -> Void)?
     private let onCancelLoading: (() -> Void)?
 
@@ -13,10 +14,12 @@ struct ItemRowView: View {
     }
 
     init(cartItem: Cart.PurchasableItem,
+         showsDiscountedNote: Bool = false,
          showImage: Binding<Bool> = .constant(true),
          onItemRemoveTapped: (() -> Void)? = nil,
          onCancelLoading: (() -> Void)? = nil) {
         self.cartItem = cartItem
+        self.showsDiscountedNote = showsDiscountedNote
         self._showProductImage = showImage
         self.onItemRemoveTapped = onItemRemoveTapped
         self.onCancelLoading = onCancelLoading
@@ -69,7 +72,14 @@ struct ItemRowView: View {
                         .foregroundColor(PointOfSaleItemListCardConstants.detailColor)
                         .font(Constants.itemPriceFont)
                 }
+
+                if showsDiscountedNote {
+                    Text(Localization.discountApplied)
+                        .foregroundColor(.posSuccess)
+                        .font(Constants.itemPriceFont)
+                }
             }
+            .animation(.default, value: showsDiscountedNote)
             .multilineTextAlignment(.leading)
             .lineLimit(Constants.titleSubtitleLineLimit)
             .frame(maxWidth: .infinity, alignment: .leading)
@@ -116,7 +126,7 @@ struct ItemRowView: View {
         if let accessibilityLabel = cartItem.accessibilityLabel {
             accessibilityLabel
         } else {
-            [cartItem.title, cartItem.subtitle, cartItem.formattedPrice]
+            [cartItem.title, cartItem.subtitle, cartItem.formattedPrice, showsDiscountedNote ? Localization.discountApplied : nil]
                 .compactMap { $0 }
                 .joined(separator: ",")
         }
@@ -136,6 +146,14 @@ struct ItemRowView: View {
 }
 
 private extension ItemRowView {
+    enum Localization {
+        static let discountApplied = NSLocalizedString(
+            "pointOfSale.itemRow.discountApplied",
+            value: "Discount applied",
+            comment: "Note shown on a product row in the Point of Sale cart at checkout when the "
+                + "order response shows the line item received a discount, from a coupon or another source.")
+    }
+
     enum Constants {
         static let productCardSize: CGFloat = 96
         static let maximumProductCardSize: CGFloat = Self.productCardSize * 1.5
@@ -193,6 +211,18 @@ private extension ItemRowView {
                 subtitle: nil,
                 quantity: 2
             ),
+            onItemRemoveTapped: { }
+        )
+
+        ItemRowView(
+            cartItem: Cart.PurchasableItem(
+                id: UUID(),
+                item: PointOfSalePreviewItemService().providePointOfSaleItem(),
+                title: "Discounted Item",
+                subtitle: "Item Subtitle",
+                quantity: 2
+            ),
+            showsDiscountedNote: true,
             onItemRemoveTapped: { }
         )
 

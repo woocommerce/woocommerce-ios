@@ -1,3 +1,4 @@
+import AVFoundation
 import Foundation
 import UIKit
 import Yosemite
@@ -179,18 +180,18 @@ extension WooAnalyticsEvent {
         WooAnalyticsEvent(statName: .shipmentTrackingMenuAction, properties: ["action": action.rawValue])
     }
 
-    static func shippingLabelsAPIRequest(result: ShippingLabelsAPIRequestResult) -> WooAnalyticsEvent {
+    static func shippingLabelsAPIRequest(result: ShippingLabelsAPIRequestResult, isRevampedFlow: Bool) -> WooAnalyticsEvent {
         switch result {
         case .success:
             return WooAnalyticsEvent(statName: .shippingLabelsAPIRequest, properties: [
                 "action": result.rawValue,
-                "is_revamped_flow": true
+                "is_revamped_flow": isRevampedFlow
             ])
         case .failed(let error):
             return WooAnalyticsEvent(statName: .shippingLabelsAPIRequest, properties: [
                 "action": result.rawValue,
                 "error": error.localizedDescription,
-                "is_revamped_flow": true
+                "is_revamped_flow": isRevampedFlow
             ])
         }
     }
@@ -2796,20 +2797,6 @@ extension WooAnalyticsEvent {
     }
 }
 
-// MARK: - Jetpack connection
-//
-extension WooAnalyticsEvent {
-    enum LoginJetpackConnection {
-        enum Key: String {
-            case selfHosted = "is_selfhosted_site"
-        }
-
-        static func jetpackConnectionErrorShown(selfHostedSite: Bool) -> WooAnalyticsEvent {
-            WooAnalyticsEvent(statName: .loginJetpackConnectionErrorShown, properties: [Key.selfHosted.rawValue: selfHostedSite])
-        }
-    }
-}
-
 // MARK: - Widgets {
 extension WooAnalyticsEvent {
     enum Widgets {
@@ -3268,6 +3255,19 @@ extension WooAnalyticsEvent {
 
         enum BarcodeScanningFailureReason: String {
             case cameraAccessNotPermitted = "camera_access_not_permitted"
+            case cameraAccessRestricted = "camera_access_restricted"
+            case cameraAccessDeniedAtPrompt = "camera_access_denied_at_prompt"
+
+            init?(authorizationStatus: AVAuthorizationStatus) {
+                switch authorizationStatus {
+                case .denied:
+                    self = .cameraAccessNotPermitted
+                case .restricted:
+                    self = .cameraAccessRestricted
+                default:
+                    return nil
+                }
+            }
         }
 
         static func barcodeScanningSuccess(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
@@ -3277,6 +3277,17 @@ extension WooAnalyticsEvent {
         static func barcodeScanningFailure(from source: BarcodeScanning.Source, reason: BarcodeScanningFailureReason) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .barcodeScanningFailure, properties: [Keys.source: source.rawValue,
                                                                               Keys.reason: reason.rawValue])
+        }
+
+        static func barcodeScanningPermissionSettingsTapped(from source: BarcodeScanning.Source,
+                                                             reason: BarcodeScanningFailureReason) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .barcodeScanningPermissionSettingsTapped,
+                              properties: [Keys.source: source.rawValue,
+                                           Keys.reason: reason.rawValue])
+        }
+
+        static func barcodeScanningPermissionSettingsOpened(from source: BarcodeScanning.Source) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .barcodeScanningPermissionSettingsOpened, properties: [Keys.source: source.rawValue])
         }
 
         static func productSearchViaSKUSuccess(from source: String, stockManaged: Bool? = nil) -> WooAnalyticsEvent {

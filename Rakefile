@@ -79,8 +79,10 @@ end
 
 desc 'Run all code generation tasks'
 task :generate do
-  # See note in BuildTools/.sourcery.yml for why we call without arguments
-  run_package_plugin(cmd: 'sourcery-command --disableCache')
+  # See note in BuildTools/.sourcery.yml for why we call without arguments.
+  # Built in release until Sourcery handles type specifiers other than `inout`, such as
+  # `isolated`: its debug build fails an assertion on them and crashes.
+  run_package_plugin(cmd: 'sourcery-command --disableCache', configuration: 'release')
 end
 
 def command?(command)
@@ -102,8 +104,9 @@ def swiftlint(additional_args: [])
   run_package_plugin(cmd: "swiftlint --working-directory .. --quiet #{additional_args.join(' ')}")
 end
 
-def run_package_plugin(cmd:)
-  run_in_build_tools(cmd: "swift package plugin --allow-writing-to-directory .. --allow-writing-to-package-directory #{cmd}")
+def run_package_plugin(cmd:, configuration: nil)
+  configuration_flag = configuration ? " -c #{configuration}" : ''
+  run_in_build_tools(cmd: "swift package#{configuration_flag} plugin --allow-writing-to-directory .. --allow-writing-to-package-directory #{cmd}")
 end
 
 # We could use more idiomatic Ruby here, with `Dir.chdir`, but leaving as raw shell commands for when we'll drop Ruby and rake for tooling.

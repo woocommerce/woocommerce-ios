@@ -77,12 +77,15 @@ private extension TabNavComponent {
     func selectOrdersTab(maxAttempts: Int = 3) throws {
         for _ in 0..<maxAttempts {
             let ordersTabButton = ordersTabButtonGetter(app)
-            guard ordersTabButton.waitForIsHittable(timeout: 5) else {
-                continue
+            // XCUIElement is main-actor isolated and UI tests drive it from the main thread.
+            let selected = MainActor.assumeIsolated {
+                guard ordersTabButton.waitForIsHittable(timeout: 5) else {
+                    return false
+                }
+                ordersTabButton.tap()
+                return ordersTabButton.waitFor(predicateString: "isSelected == true", timeout: 2) == .completed
             }
-
-            ordersTabButton.tap()
-            if ordersTabButton.waitFor(predicateString: "isSelected == true", timeout: 2) == .completed {
+            if selected {
                 return
             }
         }

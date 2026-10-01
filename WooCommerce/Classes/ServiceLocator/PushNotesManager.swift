@@ -80,10 +80,13 @@ protocol PushNotesManager {
     /// - Throws: If any step in the registration pipeline fails.
     @MainActor func registerDeviceAndWaitForTokenAcceptance() async throws -> Int64
 
-    /// Registers a specific site for self-driven push notifications.
+    /// Registers a specific site for self-driven push notifications when it is not already registered and its next check is due.
     /// - Parameter siteID: The site ID to register.
     /// - Throws: If registration fails or device token is not available.
     @MainActor func registerSiteForSelfDrivenPushNotifications(_ siteID: Int64) async throws
+
+    /// Re-registers the device token with every visible store whose next check is due. Makes no requests otherwise.
+    @MainActor func refreshWooPushRegistrationsIfNeeded() async
 
     /// Registers the Application for Remote Notifications.
     ///

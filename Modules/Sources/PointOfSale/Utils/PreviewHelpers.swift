@@ -226,7 +226,7 @@ struct POSPreviewHelpers {
         purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
         couponsController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
         couponsSearchController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
-        cardPresentPaymentService: CardPresentPaymentFacade = CardPresentPaymentPreviewService(),
+        cardPresentPaymentService: CardPresentPaymentFacade? = nil,
         orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
         settingsController: POSSettingsControllerProtocol = POSSettingsPreviewController(),
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentPreviewAnalytics(),
@@ -240,6 +240,8 @@ struct POSPreviewHelpers {
         isLocalCatalogEligible: Bool = false,
         receiptPrinter: ReceiptPrinterServiceProtocol? = nil
     ) -> PointOfSaleAggregateModel {
+        let cardPresentPaymentService = cardPresentPaymentService ?? CardPresentPaymentPreviewService()
+
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
             itemsController: itemsController,
@@ -583,6 +585,8 @@ final class POSReceiptSenderPreview: POSReceiptSending {
 }
 
 final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyticsTracking {
+    func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {}
+
     func trackCustomerInteractionStarted() {}
 
     func trackOrderSyncSuccess() {}
@@ -593,11 +597,11 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 
     func trackCheckoutTapped() {}
 
-    func trackSuccessfulCashPayment() {}
+    func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder) {}
 
-    func trackSuccessfulScanToPayPayment() {}
+    func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder) {}
 
-    func trackSuccessfulMarkAsPaidPayment() {}
+    func trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder) {}
 }
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {

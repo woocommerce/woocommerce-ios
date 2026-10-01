@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductTaxStatus Entity.
 ///
-public enum ProductTaxStatus: Decodable, Hashable, GeneratedFakeable {
+public enum ProductTaxStatus: Decodable, Hashable, GeneratedFakeable, Sendable {
     case taxable
     case shipping
     case none

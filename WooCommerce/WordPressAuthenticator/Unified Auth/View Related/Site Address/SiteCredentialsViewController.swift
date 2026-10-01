@@ -34,7 +34,7 @@ final class SiteCredentialsViewController: LoginViewController {
     private let configuration: WordPressAuthenticatorConfiguration
 
     private var isWPCom: Bool {
-        return loginFields.siteAddress == "https://wordpress.com"
+        return loginFields.siteAddress == LoginFields.wpComSiteAddress
     }
 
     init?(coder: NSCoder,
@@ -119,6 +119,16 @@ final class SiteCredentialsViewController: LoginViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         unregisterForKeyboardEvents()
+    }
+
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+        guard parent == nil else {
+            return
+        }
+        // Not viewWillDisappear/isMovingFromParent: a cancelled back-swipe fires those and comes
+        // back here, and `isWPCom` is read at submit time.
+        loginFields.restoreSiteAddressAfterWPComFallback()
     }
 
     // MARK: - Overrides

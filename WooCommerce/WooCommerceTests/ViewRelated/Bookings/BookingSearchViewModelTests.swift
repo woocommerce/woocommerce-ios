@@ -58,7 +58,9 @@ struct BookingSearchViewModelTests {
         try await Task.sleep(nanoseconds: 400_000_000)
 
         // Then
-        #expect(invocationCount == 1)
+        withExtendedLifetime(viewModel) {
+            #expect(invocationCount == 1)
+        }
     }
 
     @Test func search_bookings_passes_correct_search_query() async throws {
@@ -86,7 +88,9 @@ struct BookingSearchViewModelTests {
         try await Task.sleep(nanoseconds: 400_000_000)
 
         // Then
-        #expect(capturedSearchQuery == "my test query")
+        withExtendedLifetime(viewModel) {
+            #expect(capturedSearchQuery == "my test query")
+        }
     }
 
     @Test func search_results_are_updated_on_successful_search() async throws {
@@ -257,8 +261,10 @@ struct BookingSearchViewModelTests {
         try await Task.sleep(nanoseconds: 400_000_000)
 
         // Then
-        #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z", "Today tab should filter after start of day")
-        #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z", "Today tab should filter before end of day")
+        withExtendedLifetime(viewModel) {
+            #expect(capturedFilters?.startDateAfter == "2020-12-31T23:59:59Z", "Today tab should filter after start of day")
+            #expect(capturedFilters?.startDateBefore == "2021-01-02T00:00:00Z", "Today tab should filter before end of day")
+        }
     }
 
     @Test func upcoming_tab_passes_correct_date_filters_to_search_action() async throws {
@@ -289,8 +295,10 @@ struct BookingSearchViewModelTests {
         try await Task.sleep(nanoseconds: 400_000_000)
 
         // Then
-        #expect(capturedFilters?.startDateBefore == nil, "Upcoming tab should not have startDateBefore filter")
-        #expect(capturedFilters?.startDateAfter == "2021-01-01T23:59:59Z", "Upcoming tab should filter after end of day")
+        withExtendedLifetime(viewModel) {
+            #expect(capturedFilters?.startDateBefore == nil, "Upcoming tab should not have startDateBefore filter")
+            #expect(capturedFilters?.startDateAfter == "2021-01-01T23:59:59Z", "Upcoming tab should filter after end of day")
+        }
     }
 
     @Test func all_tab_passes_no_date_filters_to_search_action() async throws {
@@ -321,8 +329,10 @@ struct BookingSearchViewModelTests {
         try await Task.sleep(nanoseconds: 400_000_000)
 
         // Then
-        #expect(capturedFilters?.startDateBefore == nil, "All tab should not have startDateBefore filter")
-        #expect(capturedFilters?.startDateAfter == nil, "All tab should not have startDateAfter filter")
+        withExtendedLifetime(viewModel) {
+            #expect(capturedFilters?.startDateBefore == nil, "All tab should not have startDateBefore filter")
+            #expect(capturedFilters?.startDateAfter == nil, "All tab should not have startDateAfter filter")
+        }
     }
 
     // MARK: - Filter merging

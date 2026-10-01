@@ -52,11 +52,8 @@ so boot the selected device before using it to validate language settings.
 `--store lab|shared` picks the credential block the flows run against. The
 default is the lab store.
 
-Destructive flows against the shared store are refused outside CI. In CI, they
-require `--seed`, the complete `MAESTRO_WOO_SHARED_*` login and REST credential
-block, and the exact `inpersonpayments.wpcomstaging.com` host. The runner
-acquires a REST-backed store lock before any simulator interaction and removes
-it on exit.
+The runner refuses destructive flows against the shared store. Run them with
+`--store lab`.
 
 ## Provisioning a lab store
 

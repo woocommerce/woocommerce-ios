@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import atexit
 import datetime as dt
 import hashlib
 import html
@@ -37,7 +36,6 @@ OUTPUT_DEFAULT = Path.home() / "woocommerce-maestro-output"
 NOT_WOO_STORE_FLOW = "login_not_woo_store.yaml"
 NO_JETPACK_FLOW = "login_no_jetpack.yaml"
 STORES = ("lab", "shared")
-SHARED_STORE_HOST = "inpersonpayments.wpcomstaging.com"
 # Flows read these store-neutral names; the runner fills them from the
 # MAESTRO_WOO_LAB_* or MAESTRO_WOO_SHARED_* block picked with --store.
 STORE_SCOPED_SUFFIXES = (
@@ -369,25 +367,11 @@ def has_destructive_flows(flows: list[Path]) -> bool:
     return any("destructive" in flow_tags(flow) for flow in flows)
 
 
-def running_in_ci() -> bool:
-    return bool(os.environ.get("CI") or os.environ.get("BUILDKITE"))
-
-
-def validate_shared_destructive(flows: list[Path], *, store: str, ci: bool) -> None:
-    if store == "shared" and has_destructive_flows(flows) and not ci:
+def validate_shared_destructive(flows: list[Path], *, store: str) -> None:
+    if store == "shared" and has_destructive_flows(flows):
         raise SystemExit(
-            "Refusing to run destructive flows against the shared store outside CI.\n"
+            "Refusing to run destructive flows against the shared store.\n"
             "Use --store lab for destructive iteration, or remove destructive flows from the selection."
-        )
-
-
-def validate_shared_store_host(flows: list[Path], values: dict[str, str], *, store: str) -> None:
-    if store != "shared" or not has_destructive_flows(flows):
-        return
-    host = normalized_store_host(values.get("MAESTRO_WOO_JETPACK_STORE_URL", ""))
-    if host != SHARED_STORE_HOST:
-        raise SystemExit(
-            f"Shared destructive runs require host {SHARED_STORE_HOST}; configured host is {host or '<empty>'}."
         )
 
 
@@ -764,7 +748,7 @@ def main() -> int:
         return 0
 
     validate_destructive_cleanup(flows, seed=args.seed)
-    validate_shared_destructive(flows, store=args.store, ci=running_in_ci())
+    validate_shared_destructive(flows, store=args.store)
     app = args.app.expanduser().resolve() if args.app is not None else discover_app()
     if not shutil.which("xcrun"):
         raise SystemExit("Required command is missing: xcrun")
@@ -786,28 +770,8 @@ def main() -> int:
 
     validate_environment(flows, values, seed=args.seed, store=args.store)
     validate_login_store_hosts(flows, values, store=args.store)
-    validate_shared_store_host(flows, values, store=args.store)
     values = normalized_flow_environment(flows, values)
     manifest = output / "run-manifest.json"
-    lock_held = False
-
-    def release_shared_lock() -> None:
-        nonlocal lock_held
-        if lock_held and manifest.is_file():
-            run([sys.executable, str(SCRIPT_DIR / "seed-fixtures.py"), "--mode", "unlock", "--run-id", run_id, "--manifest", str(manifest)], check=False, env=values)
-            lock_held = False
-
-    if args.store == "shared" and has_destructive_flows(flows):
-        print("--- Acquiring shared-store destructive lock", flush=True)
-        lock_result = run(
-            [sys.executable, str(SCRIPT_DIR / "seed-fixtures.py"), "--mode", "lock", "--run-id", run_id, "--manifest", str(manifest)],
-            check=False,
-            env=values,
-        )
-        if lock_result.returncode:
-            raise SystemExit(redact((lock_result.stderr or lock_result.stdout).strip() or "Could not lock the shared store", values))
-        lock_held = True
-        atexit.register(release_shared_lock)
     simulator = resolve_simulator(args.device, family)
     locale = run(
         [sys.executable, str(DEVICE_LOCALE), "--device", simulator["udid"]],
@@ -929,7 +893,6 @@ def main() -> int:
                 )
         elif args.seed:
             cleanup_status = "SKIPPED"
-        release_shared_lock()
 
     print("--- Generating reports", flush=True)
     result = finalize_suite(attempts, output / "report.xml")

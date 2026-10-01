@@ -1090,7 +1090,9 @@ private extension ProductFormViewController {
                 // when the guarded HUD presentation was dropped) then presents the error alert.
                 let presentErrorAlert: () -> Void = {
                     self?.displayProductSavingErrorAlert(error: error, onRetry: {
-                        self?.saveProductRemotely(status: status, onCompletion: onCompletion)
+                        // Retry through saveProduct so the progress HUD is shown again: without it,
+                        // a second failure's alert can race whatever else gets presented meanwhile.
+                        self?.saveProduct(status: status, onCompletion: onCompletion)
                     })
                     onCompletion(.failure(error))
                 }

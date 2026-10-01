@@ -1,4 +1,5 @@
 import SwiftUI
+import class WooFoundation.KeyboardObserver
 import struct Yosemite.POSCustomAmount
 
 struct CartView: View {

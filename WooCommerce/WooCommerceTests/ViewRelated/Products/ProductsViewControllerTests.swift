@@ -139,7 +139,7 @@ struct ProductsViewControllerTests {
         controller.loadViewIfNeeded()
         let table = try #require(controller.tableView)
         let refreshControl = try #require(table.refreshControl)
-        let completeSync = await startRefresh(refreshControl, stores: stores)
+        let completeSync = try await startRefresh(refreshControl, stores: stores)
         try #require(table.numberOfRows(inSection: 0) == 3)
 
         // When: the store removes A and moves B after C during the refresh.
@@ -195,7 +195,7 @@ struct ProductsViewControllerTests {
         let selectedIndexPath = IndexPath(row: products.count - 1, section: 0)
         try #require(!table.bounds.intersects(table.rectForRow(at: selectedIndexPath)))
         let refreshControl = try #require(table.refreshControl)
-        let completeSync = await startRefresh(refreshControl, stores: stores)
+        let completeSync = try await startRefresh(refreshControl, stores: stores)
 
         // When: Search selects an offscreen product while the list refresh is pending.
         selectedProduct.send(products.last)
@@ -220,17 +220,20 @@ private extension ProductsViewControllerTests {
         try #require(table.subviews.compactMap { $0 as? UIRefreshControl }.first)
     }
 
-    func startRefresh(_ refreshControl: UIRefreshControl, stores: MockStoresManager) async -> ((Result<Bool, Error>) -> Void) {
+    func startRefresh(_ refreshControl: UIRefreshControl, stores: MockStoresManager) async throws -> ((Result<Bool, Error>) -> Void) {
+        var completeSync: ((Result<Bool, Error>) -> Void)?
         await withCheckedContinuation { continuation in
             stores.whenReceivingAction(ofType: ProductAction.self) { action in
                 guard case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion) = action else {
                     return
                 }
-                continuation.resume(returning: onCompletion)
+                completeSync = onCompletion
+                continuation.resume()
             }
             refreshControl.beginRefreshing()
             refreshControl.sendActions(for: .valueChanged)
         }
+        return try #require(completeSync)
     }
 
     func finishRefresh(_ controller: ProductsViewController, completeSync: (Result<Bool, Error>) -> Void) async {

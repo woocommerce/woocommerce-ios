@@ -18,7 +18,7 @@ remain active in the current shell.
 
 The script selects an installed JDK 21, downloads the immutable Maestro 2.9.0
 release archive into the workspace, verifies the SHA-256 in
-`toolchain.properties`, and runs the checker. Buildkite uses the same path.
+`toolchain.properties`, and runs the checker.
 
 2. Build or locate a Debug or Alpha/prototype `.app`.
 3. Copy `env.example` to `.env.local` and fill it locally.

@@ -370,8 +370,11 @@ private extension StorePickerViewController {
     }
 
     func presentSiteDiscovery() {
-        ServiceLocator.authenticationManager.noteSiteDiscoveryOrigin(isFromLogin: configuration == .login)
-        guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
+        // One predicate for both gates, so the address screen's step and the outcome steps
+        // that follow it cannot disagree about whether this is a login.
+        let isFromLogin = configuration == .login
+        ServiceLocator.authenticationManager.noteSiteDiscoveryOrigin(isFromLogin: isFromLogin)
+        guard let viewController = WordPressAuthenticator.siteDiscoveryUI(tracksLoginSteps: isFromLogin) else {
             return
         }
         navigationController?.show(viewController, sender: nil)

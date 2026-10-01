@@ -30,6 +30,10 @@ final class SiteAddressViewController: LoginViewController {
     /// fallback).
     var trackedFlow: AuthenticatorAnalyticsTracker.Flow?
 
+    /// Whether this screen belongs to a login journey. Site discovery also opens from the
+    /// in-app store switcher, where a login step would be wrong.
+    var tracksLoginSteps = true
+
     /// A state variable that is `true` if network calls are currently happening and so the
     /// view should be showing a loading indicator.
     ///
@@ -97,16 +101,20 @@ final class SiteAddressViewController: LoginViewController {
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
-        if isSiteDiscovery {
-            tracker.set(flow: .siteDiscovery)
-        } else {
-            tracker.set(flow: trackedFlow ?? .loginWithSiteAddress)
-        }
+        // Setting the flow is gated too: latching it without emitting a step would leave the
+        // next genuine login step inheriting a flow this journey never belonged to.
+        if tracksLoginSteps {
+            if isSiteDiscovery {
+                tracker.set(flow: .siteDiscovery)
+            } else {
+                tracker.set(flow: trackedFlow ?? .loginWithSiteAddress)
+            }
 
-        if isMovingToParent {
-            tracker.track(step: .start)
-        } else {
-            tracker.set(step: .start)
+            if isMovingToParent {
+                tracker.track(step: .start)
+            } else {
+                tracker.set(step: .start)
+            }
         }
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),

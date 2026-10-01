@@ -10,7 +10,6 @@ import json
 import os
 import re
 import sys
-import time
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -25,8 +24,6 @@ API_PREFIX = "/wp-json/wc/v3/"
 # WordPress core rejects WooCommerce API keys, so these requests use the store admin's
 # application password instead.
 MEDIA_PREFIX = "/wp-json/wp/v2/"
-LOCK_PREFIX = "SUITE-LOCK-"
-LOCK_TTL_SECONDS = 60 * 60
 
 
 class SmokeSetupError(RuntimeError):
@@ -151,8 +148,6 @@ def manifest_template(run_id: str) -> dict[str, Any]:
 def initialize(args: argparse.Namespace) -> None:
     run_id = strict_run_id(args.run_id)
     manifest = manifest_template(run_id)
-    if args.manifest.is_file() and (lock_record := read_manifest(args.manifest).get("lock")):
-        manifest["lock"] = lock_record
     write_manifest(args.manifest, manifest)
     print(f"Initialized cleanup journal for {run_id}")
 
@@ -257,69 +252,15 @@ def cleanup(args: argparse.Namespace) -> None:
     print(f"Cleaned {original_count} run-owned entities")
 
 
-def parse_wc_date(value: Any) -> dt.datetime | None:
-    if not value:
-        return None
-    try:
-        parsed = dt.datetime.fromisoformat(str(value))
-    except ValueError:
-        return None
-    return parsed if parsed.tzinfo else parsed.replace(tzinfo=dt.timezone.utc)
-
-
-def lock(args: argparse.Namespace) -> None:
-    run_id = strict_run_id(args.run_id)
-    client = WooClient()
-    now = dt.datetime.now(dt.timezone.utc)
-    for item in client.list("products", search=LOCK_PREFIX, status="any"):
-        name = str(item.get("name", ""))
-        if not name.startswith(LOCK_PREFIX):
-            continue
-        created = parse_wc_date(item.get("date_created_gmt") or item.get("date_created"))
-        if created is None or (now - created).total_seconds() > LOCK_TTL_SECONDS:
-            print(f"Deleting expired shared-store lock product {item.get('id')}: {name}")
-            client.delete("products", int(item["id"]))
-            continue
-        raise SmokeSetupError(f"Shared store is locked by {name} (product {item.get('id')}).")
-    product = client.create(
-        "products",
-        {
-            "name": f"{LOCK_PREFIX}{run_id}-{int(time.time())}",
-            "type": "simple",
-            "status": "draft",
-            "catalog_visibility": "hidden",
-            "regular_price": "0",
-            "sku": f"lock-{run_id}",
-        },
-    )
-    manifest = read_manifest(args.manifest) if args.manifest.is_file() else manifest_template(run_id)
-    manifest["lock"] = {"type": "lock_product", "id": int(product["id"]), "label": product.get("name", "")}
-    write_manifest(args.manifest, manifest)
-    print(f"Acquired shared-store lock product {product['id']}")
-
-
-def unlock(args: argparse.Namespace) -> None:
-    lock_id = (read_manifest(args.manifest).get("lock") or {}).get("id") if args.manifest.is_file() else None
-    if not lock_id:
-        print("No shared-store lock to release")
-        return
-    WooClient().delete("products", int(lock_id))
-    print(f"Released shared-store lock product {lock_id}")
-
-
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--mode", choices=("seed", "cleanup", "lock", "unlock"), required=True)
+    parser.add_argument("--mode", choices=("seed", "cleanup"), required=True)
     parser.add_argument("--run-id", required=True)
     parser.add_argument("--manifest", type=Path, required=True)
     args = parser.parse_args()
     try:
         if args.mode == "seed":
             initialize(args)
-        elif args.mode == "lock":
-            lock(args)
-        elif args.mode == "unlock":
-            unlock(args)
         else:
             cleanup(args)
     except (SmokeSetupError, KeyError, ValueError, json.JSONDecodeError) as error:

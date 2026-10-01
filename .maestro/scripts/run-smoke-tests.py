@@ -4,7 +4,6 @@
 from __future__ import annotations
 
 import argparse
-import atexit
 import datetime as dt
 import hashlib
 import html
@@ -37,9 +36,6 @@ OUTPUT_DEFAULT = Path.home() / "woocommerce-maestro-output"
 NOT_WOO_STORE_FLOW = "login_not_woo_store.yaml"
 NO_JETPACK_FLOW = "login_no_jetpack.yaml"
 STORES = ("lab", "shared")
-# Profiles run against the lab store unless listed here, like the Android runner.
-PROFILE_STORES = {"release": "shared", "burst": "shared"}
-SHARED_STORE_HOST = "inpersonpayments.wpcomstaging.com"
 # Flows read these store-neutral names; the runner fills them from the
 # MAESTRO_WOO_LAB_* or MAESTRO_WOO_SHARED_* block picked with --store.
 STORE_SCOPED_SUFFIXES = (
@@ -60,12 +56,10 @@ NOT_WOO_STORE_WPCOM_FALLBACK = {
 }
 
 PROFILES = {
-    "core": (["smoke_core"], ["flaky_quarantine", "pos_ipad", "ios_system"], 1, "iphone"),
-    "phone-full": (["smoke_core", "smoke_extended", "destructive"], ["pos_ipad", "ios_system"], 1, "iphone"),
-    "release": (["smoke_core", "smoke_extended", "destructive"], ["flaky_quarantine", "pos_ipad", "ios_system"], 1, "iphone"),
-    "burst": (["smoke_core", "smoke_extended", "destructive"], ["flaky_quarantine", "pos_ipad", "ios_system"], 3, "iphone"),
-    "pos-ipad": (["pos_ipad"], [], 1, "ipad"),
-    "ios-system": (["ios_system"], [], 1, "iphone"),
+    "core": (["smoke_core"], ["flaky_quarantine", "pos_ipad", "ios_system"], "iphone"),
+    "phone-full": (["smoke_core", "smoke_extended", "destructive"], ["pos_ipad", "ios_system"], "iphone"),
+    "pos-ipad": (["pos_ipad"], [], "ipad"),
+    "ios-system": (["ios_system"], [], "iphone"),
 }
 
 ORDERED_FLOWS = [
@@ -133,10 +127,10 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--profile", choices=sorted(PROFILES), default="core")
     parser.add_argument("--device", help="Simulator name or UDID")
-    parser.add_argument("--store", choices=STORES, help="Store credentials block to run against; defaults to the profile's store")
+    parser.add_argument("--store", choices=STORES, default="lab", help="Store credentials block to run against")
     parser.add_argument("--include-tags")
     parser.add_argument("--exclude-tags")
-    parser.add_argument("--repeat", type=int)
+    parser.add_argument("--repeat", type=int, default=1)
     parser.add_argument("--flow-timeout-seconds", type=float, default=1800)
     parser.add_argument("--rerun-failed", type=Path)
     parser.add_argument("--output-dir", type=Path)
@@ -189,10 +183,6 @@ def select_store_environment(values: dict[str, str], store: str) -> dict[str, st
         else:
             selected.pop(neutral, None)
     return selected
-
-
-def profile_store(profile: str) -> str:
-    return PROFILE_STORES.get(profile, "lab")
 
 
 def scoped_store_name(name: str, store: str) -> str:
@@ -377,25 +367,11 @@ def has_destructive_flows(flows: list[Path]) -> bool:
     return any("destructive" in flow_tags(flow) for flow in flows)
 
 
-def running_in_ci() -> bool:
-    return bool(os.environ.get("CI") or os.environ.get("BUILDKITE"))
-
-
-def validate_shared_destructive(flows: list[Path], *, store: str, ci: bool) -> None:
-    if store == "shared" and has_destructive_flows(flows) and not ci:
+def validate_shared_destructive(flows: list[Path], *, store: str) -> None:
+    if store == "shared" and has_destructive_flows(flows):
         raise SystemExit(
-            "Refusing to run destructive flows against the shared store outside CI.\n"
+            "Refusing to run destructive flows against the shared store.\n"
             "Use --store lab for destructive iteration, or remove destructive flows from the selection."
-        )
-
-
-def validate_shared_store_host(flows: list[Path], values: dict[str, str], *, store: str) -> None:
-    if store != "shared" or not has_destructive_flows(flows):
-        return
-    host = normalized_store_host(values.get("MAESTRO_WOO_JETPACK_STORE_URL", ""))
-    if host != SHARED_STORE_HOST:
-        raise SystemExit(
-            f"Shared destructive runs require host {SHARED_STORE_HOST}; configured host is {host or '<empty>'}."
         )
 
 
@@ -730,18 +706,17 @@ def write_html(destination: Path, *, run_id: str, app: Path, app_id: str, simula
 
 def main() -> int:
     args = parse_args()
-    if args.repeat is not None and args.repeat < 1:
+    if args.repeat < 1:
         raise SystemExit("--repeat must be a positive integer")
     if args.flow_timeout_seconds <= 0:
         raise SystemExit("--flow-timeout-seconds must be positive")
 
-    include_default, exclude_default, repeat_default, family = PROFILES[args.profile]
-    args.store = args.store or profile_store(args.profile)
+    include_default, exclude_default, family = PROFILES[args.profile]
     include = csv(args.include_tags)
     exclude = csv(args.exclude_tags)
     include = include_default if include is None else include
     exclude = exclude_default if exclude is None else exclude
-    repeat = args.repeat or repeat_default
+    repeat = args.repeat
     flows = select_flows(args, include, exclude)
     if args.plan:
         destructive_cleanup_required = any("destructive" in flow_tags(flow) for flow in flows)
@@ -773,7 +748,7 @@ def main() -> int:
         return 0
 
     validate_destructive_cleanup(flows, seed=args.seed)
-    validate_shared_destructive(flows, store=args.store, ci=running_in_ci())
+    validate_shared_destructive(flows, store=args.store)
     app = args.app.expanduser().resolve() if args.app is not None else discover_app()
     if not shutil.which("xcrun"):
         raise SystemExit("Required command is missing: xcrun")
@@ -795,28 +770,8 @@ def main() -> int:
 
     validate_environment(flows, values, seed=args.seed, store=args.store)
     validate_login_store_hosts(flows, values, store=args.store)
-    validate_shared_store_host(flows, values, store=args.store)
     values = normalized_flow_environment(flows, values)
     manifest = output / "run-manifest.json"
-    lock_held = False
-
-    def release_shared_lock() -> None:
-        nonlocal lock_held
-        if lock_held and manifest.is_file():
-            run([sys.executable, str(SCRIPT_DIR / "seed-fixtures.py"), "--mode", "unlock", "--run-id", run_id, "--manifest", str(manifest)], check=False, env=values)
-            lock_held = False
-
-    if args.store == "shared" and has_destructive_flows(flows):
-        print("--- Acquiring shared-store destructive lock", flush=True)
-        lock_result = run(
-            [sys.executable, str(SCRIPT_DIR / "seed-fixtures.py"), "--mode", "lock", "--run-id", run_id, "--manifest", str(manifest)],
-            check=False,
-            env=values,
-        )
-        if lock_result.returncode:
-            raise SystemExit(redact((lock_result.stderr or lock_result.stdout).strip() or "Could not lock the shared store", values))
-        lock_held = True
-        atexit.register(release_shared_lock)
     simulator = resolve_simulator(args.device, family)
     locale = run(
         [sys.executable, str(DEVICE_LOCALE), "--device", simulator["udid"]],
@@ -938,7 +893,6 @@ def main() -> int:
                 )
         elif args.seed:
             cleanup_status = "SKIPPED"
-        release_shared_lock()
 
     print("--- Generating reports", flush=True)
     result = finalize_suite(attempts, output / "report.xml")
@@ -981,7 +935,7 @@ def main() -> int:
     )
     print(f"Overall status: {result.status}")
     print(f"Final results: {result.tests} tests, {result.failures} failures, {result.skipped} skipped")
-    if not args.no_open and not os.environ.get("CI") and not os.environ.get("BUILDKITE"):
+    if not args.no_open:
         run(["open", str(output / "report.html")], capture=False, check=False)
     return result.exit_code
 

@@ -1,7 +1,7 @@
 # WooCommerce iOS Maestro smoke tests
 
 This simulator-only suite complements XCUITest/WireMock with a production-like
-release signal against developer- or CI-supplied live WooCommerce test stores.
+release signal against developer-supplied live WooCommerce test stores.
 It never requires Android's store, POS mocks, an eligibility bypass, REST
 consumer keys for normal runs, a Linear issue, or a notification channel.
 
@@ -18,7 +18,7 @@ remain active in the current shell.
 
 The script selects an installed JDK 21, downloads the immutable Maestro 2.9.0
 release archive into the workspace, verifies the SHA-256 in
-`toolchain.properties`, and runs the checker. Buildkite uses the same path.
+`toolchain.properties`, and runs the checker.
 
 2. Build or locate a Debug or Alpha/prototype `.app`.
 3. Copy `env.example` to `.env.local` and fill it locally.
@@ -50,14 +50,10 @@ so boot the selected device before using it to validate language settings.
 ## Lab and shared stores
 
 `--store lab|shared` picks the credential block the flows run against. The
-`release` and `burst` profiles use the shared store, every other profile uses
-the lab store.
+default is the lab store.
 
-Destructive flows against the shared store are refused outside CI. In CI, they
-require `--seed`, the complete `MAESTRO_WOO_SHARED_*` login and REST credential
-block, and the exact `inpersonpayments.wpcomstaging.com` host. The runner
-acquires a REST-backed store lock before any simulator interaction and removes
-it on exit.
+The runner refuses destructive flows against the shared store. Run them with
+`--store lab`.
 
 ## Provisioning a lab store
 
@@ -86,7 +82,7 @@ is in `.env.local`, later runs against new sites reuse it and need only `--site`
 
 Passwords are prompted rather than passed as flags, because command-line arguments are
 written to shell history and are visible in `ps` output. When there is no terminal to
-prompt on — an agent, or CI — supply them through the environment instead:
+prompt on, as with an agent, supply them through the environment instead:
 
 ```bash
 JN_SSH_PASS=… MAESTRO_WOO_LAB_WPCOM_EMAIL=… MAESTRO_WOO_LAB_WPCOM_PASSWORD=… \
@@ -121,8 +117,6 @@ is reused.
 .maestro/scripts/run-smoke-tests.sh --profile core
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile core
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile phone-full --seed
-.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile release
-.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile burst
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile pos-ipad
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile ios-system
 ```
@@ -143,9 +137,6 @@ HTML with direct artifact links and a faithful rerun command, per-attempt logs,
 screenshots, hierarchy/debug evidence, and a redacted JSON summary with final
 status and durations. Credential values are passed in a minimal subprocess
 environment and are never written to the summary or echoed in commands.
-
-The CI wrapper accepts `phone-full`; the scheduled
-`phone-full` lane is non-gating and feeds its JUnit to Test Analytics.
 
 ## State and destructive data
 

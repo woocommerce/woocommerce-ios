@@ -935,7 +935,7 @@ def main() -> int:
     )
     print(f"Overall status: {result.status}")
     print(f"Final results: {result.tests} tests, {result.failures} failures, {result.skipped} skipped")
-    if not args.no_open and not os.environ.get("CI") and not os.environ.get("BUILDKITE"):
+    if not args.no_open:
         run(["open", str(output / "report.html")], capture=False, check=False)
     return result.exit_code
 

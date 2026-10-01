@@ -47,7 +47,7 @@ class CheckToolchainTests(unittest.TestCase):
         self.assertEqual(2, result.returncode)
         self.assertIn("Could not parse Maestro version output", result.stderr)
 
-    def test_ci_configuration_accepts_an_already_matching_toolchain_without_installing(self) -> None:
+    def test_configuration_accepts_an_already_matching_toolchain_without_installing(self) -> None:
         result = self.run_configuration_with_matching_toolchain("/bin/bash")
 
         self.assertEqual(0, result.returncode, result.stderr)
@@ -93,7 +93,7 @@ class CheckToolchainTests(unittest.TestCase):
 
         return result
 
-    def test_ci_configuration_installs_a_verified_release_into_the_job_workspace(self) -> None:
+    def test_configuration_installs_a_verified_release_into_the_toolchain_root(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
             bin_dir = root / "bin"

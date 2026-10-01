@@ -1,7 +1,7 @@
 # WooCommerce iOS Maestro smoke tests
 
 This simulator-only suite complements XCUITest/WireMock with a production-like
-release signal against developer- or CI-supplied live WooCommerce test stores.
+release signal against developer-supplied live WooCommerce test stores.
 It never requires Android's store, POS mocks, an eligibility bypass, REST
 consumer keys for normal runs, a Linear issue, or a notification channel.
 

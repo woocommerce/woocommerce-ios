@@ -1,5 +1,5 @@
 #!/bin/bash
-# Source from CI wrappers to select Java 21 and install the verified Maestro pin.
+# Source to select Java 21 and install the verified Maestro pin.
 
 if [[ -n "${BASH_VERSION:-}" ]]; then
   TOOLCHAIN_SCRIPT_PATH="${BASH_SOURCE[0]}"
@@ -43,17 +43,17 @@ if [[ "$(current_java_major)" != "$PINNED_JAVA" ]]; then
   fi
 fi
 if [[ "$(current_java_major)" != "$PINNED_JAVA" ]]; then
-  echo "CI requires Java $PINNED_JAVA, but no matching JDK is configured on this agent." >&2
+  echo "Maestro requires Java $PINNED_JAVA, but no matching JDK is installed." >&2
   return 2
 fi
 
 CURRENT_MAESTRO="$(maestro --version 2>/dev/null | tail -n 1 || true)"
 if [[ "$CURRENT_MAESTRO" != "$PINNED_MAESTRO" ]]; then
-  MAESTRO_TOOLCHAIN_DIR="${MAESTRO_TOOLCHAIN_ROOT:-${BUILDKITE_BUILD_CHECKOUT_PATH:-$PWD}/build/maestro-toolchain}"
+  MAESTRO_TOOLCHAIN_DIR="${MAESTRO_TOOLCHAIN_ROOT:-$PWD/build/maestro-toolchain}"
   MAESTRO_INSTALL_DIR="$MAESTRO_TOOLCHAIN_DIR/maestro-$PINNED_MAESTRO-$PINNED_MAESTRO_SHA256"
   MAESTRO_PINNED_BIN="$MAESTRO_INSTALL_DIR/bin/maestro"
   if [[ ! -x "$MAESTRO_PINNED_BIN" ]]; then
-    echo "Installing verified Maestro $PINNED_MAESTRO into the CI job workspace."
+    echo "Installing verified Maestro $PINNED_MAESTRO into the workspace."
     mkdir -p "$MAESTRO_TOOLCHAIN_DIR"
     MAESTRO_ARCHIVE="$(mktemp "$MAESTRO_TOOLCHAIN_DIR/maestro.zip.XXXXXX")"
     MAESTRO_STAGE="$(mktemp -d "$MAESTRO_TOOLCHAIN_DIR/install.XXXXXX")"

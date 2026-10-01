@@ -106,7 +106,6 @@ struct ProductsViewControllerTests {
         #expect(table.numberOfRows(inSection: 0) == 4)
         #expect(table.indexPathForSelectedRow == IndexPath(row: 3, section: 0))
     }
-
 }
 
 private extension ProductsViewControllerTests {

@@ -162,7 +162,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
         let currentPage = currentVariationPage
         let parentProductID = parentProduct.productID
 
-        struct ObservationResult {
+        struct ObservationResult: Sendable {
             let variations: [POSProductVariation]
             let parentProduct: POSVariableParentProduct
         }

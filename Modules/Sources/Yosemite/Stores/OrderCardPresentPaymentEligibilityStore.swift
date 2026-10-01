@@ -19,30 +19,31 @@ public final class OrderCardPresentPaymentEligibilityStore: Store {
         }
 
         switch action {
-        case .orderIsEligibleForCardPresentPayment(let orderID, let siteID, let cardPresentPaymentsConfiguration, let onCompletion):
-        orderIsEligibleForCardPresentPayment(orderID: orderID,
-                                             siteID: siteID,
-                                             cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
-                                             onCompletion: onCompletion)
+        case .checkEligibility(let orderID, let siteID, let cardPresentPaymentsConfiguration, let onCompletion):
+            checkEligibility(orderID: orderID,
+                             siteID: siteID,
+                             cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration,
+                             onCompletion: onCompletion)
         }
     }
 }
 
 private extension OrderCardPresentPaymentEligibilityStore {
-    func orderIsEligibleForCardPresentPayment(orderID: Int64,
-                                              siteID: Int64,
-                                              cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
-                                              onCompletion: (Result<Bool, Error>) -> Void) {
+    func checkEligibility(orderID: Int64,
+                          siteID: Int64,
+                          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
+                          onCompletion: (Result<OrderCardPresentPaymentEligibility, Error>) -> Void) {
         let storage = storageManager.viewStorage
 
         guard let order = storage.loadOrder(siteID: siteID, orderID: orderID)?.toReadOnly() else {
+            DDLogWarn("[Card payment eligibility] siteID=\(siteID) orderID=\(orderID) reason=order_not_found_in_storage")
             return onCompletion(.failure(OrderIsEligibleForCardPresentPaymentError.orderNotFoundInStorage))
         }
 
         let orderProductsIDs = order.items.map(\.productID)
         let products = storage.loadProducts(siteID: siteID, productsIDs: orderProductsIDs).map { $0.toReadOnly() }
 
-        onCompletion(.success(order.isEligibleForCardPresentPayment(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration, products: products)))
+        onCompletion(.success(order.cardPresentPaymentEligibility(cardPresentPaymentsConfiguration: cardPresentPaymentsConfiguration, products: products)))
     }
 }
 

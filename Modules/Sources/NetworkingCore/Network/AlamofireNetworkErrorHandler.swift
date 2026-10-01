@@ -2,7 +2,7 @@ import Foundation
 import Alamofire
 
 /// Thread-safe handler for network error tracking and retry logic
-final class AlamofireNetworkErrorHandler {
+final class AlamofireNetworkErrorHandler: @unchecked Sendable {
     private let queue = DispatchQueue(label: "com.networkingcore.errorhandler", attributes: .concurrent)
     /// Serial queue for UserDefaults operations to prevent race conditions while avoiding deadlocks
     private let userDefaultsQueue = DispatchQueue(label: "com.networkingcore.errorhandler.userdefaults")

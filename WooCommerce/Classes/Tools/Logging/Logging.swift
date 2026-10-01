@@ -17,12 +17,17 @@ import CocoaLumberjackSwift
 ///
 /// Example:
 ///     internal var defaultDebugLevel: DDLogLevel = .verbose
+#if os(watchOS)
+// The Watch app never changes its logging threshold.
+internal let defaultDebugLevel: DDLogLevel = .all
+#else
 internal var defaultDebugLevel: DDLogLevel = CocoaLumberjackSwift.dynamicLogLevel
 
 /// Reset the logging level threshold to the app-wide default.
 internal func resetDefaultDebugLevel() {
     defaultDebugLevel = CocoaLumberjackSwift.dynamicLogLevel
 }
+#endif
 
 internal func DDLogDebug(_ message: @autoclosure () -> String,
                          level: DDLogLevel = defaultDebugLevel,

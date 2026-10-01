@@ -117,8 +117,14 @@ private extension AppleIDCredentialChecker {
     }
 
     func logOutRevokedAppleAccount() {
+        // Captured before the keychain is cleared below. The session may have already ended while the credential
+        // state request was in flight (voluntary logout, or the revocation notification path already signed out),
+        // in which case this is not an involuntary sign-out and must not be tracked.
+        let isSignedInWithApple = isLoggedIn() && keychain.wooAppleID != nil
         removeAppleIDFromKeychain()
-        analytics.track(event: .Authentication.involuntaryLogout(reason: .appleIDCredentialRevoked))
+        if isSignedInWithApple {
+            analytics.track(event: .Authentication.involuntaryLogout(reason: .appleIDCredentialRevoked))
+        }
         DispatchQueue.main.async { [weak self] in
             self?.logout()
         }

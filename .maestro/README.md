@@ -50,8 +50,7 @@ so boot the selected device before using it to validate language settings.
 ## Lab and shared stores
 
 `--store lab|shared` picks the credential block the flows run against. The
-`release` and `burst` profiles use the shared store, every other profile uses
-the lab store.
+default is the lab store.
 
 Destructive flows against the shared store are refused outside CI. In CI, they
 require `--seed`, the complete `MAESTRO_WOO_SHARED_*` login and REST credential
@@ -121,8 +120,6 @@ is reused.
 .maestro/scripts/run-smoke-tests.sh --profile core
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile core
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile phone-full --seed
-.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile release
-.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile burst
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile pos-ipad
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile ios-system
 ```

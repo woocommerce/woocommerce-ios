@@ -73,12 +73,6 @@ class RunnerTests(unittest.TestCase):
 
         RUNNER.validate_destructive_cleanup([flow], seed=True)
 
-    def test_release_and_burst_profiles_default_to_the_shared_store(self) -> None:
-        self.assertEqual("shared", RUNNER.profile_store("release"))
-        self.assertEqual("shared", RUNNER.profile_store("burst"))
-        self.assertEqual("lab", RUNNER.profile_store("core"))
-        self.assertEqual("lab", RUNNER.profile_store("phone-full"))
-
     def test_jetpack_store_cannot_share_the_no_jetpack_host(self) -> None:
         flow = RUNNER.FLOWS_DIR / "dashboard_stats.yaml"
         values = {
@@ -320,9 +314,8 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual((1, 2), RUNNER.attempt_numbers(safe))
 
     def test_profile_contract(self) -> None:
-        self.assertEqual("iphone", RUNNER.PROFILES["core"][3])
-        self.assertEqual("ipad", RUNNER.PROFILES["pos-ipad"][3])
-        self.assertNotIn("flaky_quarantine", RUNNER.PROFILES["release"][0])
+        self.assertEqual("iphone", RUNNER.PROFILES["core"][2])
+        self.assertEqual("ipad", RUNNER.PROFILES["pos-ipad"][2])
 
     def test_sanitize_artifacts_redacts_text_and_keeps_images(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

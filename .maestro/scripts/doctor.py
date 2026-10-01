@@ -60,12 +60,11 @@ def main() -> int:
     parser.add_argument("--app", required=True, type=Path)
     parser.add_argument("--profile", choices=sorted(RUNNER.PROFILES), default="core")
     parser.add_argument("--device")
-    parser.add_argument("--store", choices=RUNNER.STORES)
+    parser.add_argument("--store", choices=RUNNER.STORES, default="lab")
     parser.add_argument("--include-tags")
     parser.add_argument("--exclude-tags")
     parser.add_argument("--seed", action="store_true")
     args = parser.parse_args()
-    args.store = args.store or RUNNER.profile_store(args.profile)
 
     checks: list[tuple[bool, str]] = []
     for command in ("bash", "python3", "maestro", "xcrun", "plutil"):
@@ -86,7 +85,7 @@ def main() -> int:
     except (SystemExit, subprocess.SubprocessError) as error:
         checks.append((False, f"app bundle: {error}"))
 
-    family = RUNNER.PROFILES[args.profile][3]
+    family = RUNNER.PROFILES[args.profile][2]
     try:
         simulator = RUNNER.resolve_simulator(args.device, family, boot=False)
         checks.append((True, f"simulator: {simulator['name']} ({simulator['udid']})"))

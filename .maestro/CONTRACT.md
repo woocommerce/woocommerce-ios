@@ -66,8 +66,6 @@ Profiles:
 | --- | --- | --- | --- |
 | `core` | `smoke_core` | `flaky_quarantine,pos_ipad,ios_system` | iPhone |
 | `phone-full` | `smoke_core,smoke_extended,destructive` | `pos_ipad,ios_system` | iPhone |
-| `release` | promoted non-quarantined phone flows | `flaky_quarantine,pos_ipad,ios_system` | iPhone |
-| `burst` | release, repeated three times | same as release | iPhone |
 | `pos-ipad` | `pos_ipad` | none | iPad |
 | `ios-system` | `ios_system` | none | iPhone |
 

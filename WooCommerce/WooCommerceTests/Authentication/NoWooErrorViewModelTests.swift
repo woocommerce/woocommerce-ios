@@ -196,6 +196,44 @@ final class NoWooErrorViewModelTests: XCTestCase {
         XCTAssertTrue(events.isEmpty)
     }
 
+    func test_viewDidLoad_when_the_account_owns_no_store_then_reports_has_connected_stores_false() {
+        // Given
+        let site = Site.fake().copy(url: "https://test.com")
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = NoWooErrorViewModel(site: site,
+                                            showsConnectedStores: false,
+                                            reportsLoginStep: true,
+                                            tracker: tracker,
+                                            onSetupCompletion: { _ in })
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        XCTAssertEqual(events.first?.properties["has_connected_stores"], "false")
+    }
+
+    func test_viewDidLoad_when_the_connected_stores_link_is_hidden_then_still_reports_the_account_fact() {
+        // Given the picker route hides the link to avoid a nav loop, while the account owns a store
+        let site = Site.fake().copy(url: "https://test.com")
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = NoWooErrorViewModel(site: site,
+                                            showsConnectedStores: false,
+                                            hasConnectedStores: true,
+                                            reportsLoginStep: true,
+                                            tracker: tracker,
+                                            onSetupCompletion: { _ in })
+
+        // When
+        viewModel.viewDidLoad(nil)
+
+        // Then
+        XCTAssertEqual(events.first?.properties["has_connected_stores"], "true")
+        XCTAssertTrue(viewModel.isAuxiliaryButtonHidden)
+    }
+
     func test_viewmodel_provides_expected_title_for_right_bar_button_item() {
         // Given
         let site = Site.fake().copy(url: "https://test.com")

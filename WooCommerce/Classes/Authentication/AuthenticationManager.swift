@@ -1077,6 +1077,11 @@ private extension AuthenticationManager {
         // poisons later `woocommerce://qr-login` deep links.
         qrLoginCoordinator = nil
 
+        // Every route here has finished signing in, so the steps that follow belong to the
+        // epilogue. `errorViewController` sets this too, but it is skipped on the signup
+        // epilogue, which would otherwise leave the social-login flow in place.
+        AuthenticatorAnalyticsTracker.shared.set(flow: .epilogue)
+
         // Start the store picker
         let config = StorePickerConfiguration.login
         storePickerCoordinator = StorePickerCoordinator(navigationController,

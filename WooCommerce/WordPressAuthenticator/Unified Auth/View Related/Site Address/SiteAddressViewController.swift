@@ -30,6 +30,18 @@ final class SiteAddressViewController: LoginViewController {
     /// fallback).
     var trackedFlow: AuthenticatorAnalyticsTracker.Flow?
 
+    /// Whether this screen belongs to a login journey. Site discovery also opens from the
+    /// in-app store switcher, where a login step would be wrong.
+    var tracksLoginSteps = true
+
+    /// The tracker, or `nil` when this screen is not part of a login journey. Every tracking
+    /// call on this screen goes through it: emitting any one event outside a login is wrong,
+    /// and latching flow or step without emitting leaves the next real login step inheriting
+    /// a journey it never belonged to.
+    private var loginTracker: AuthenticatorAnalyticsTracker? {
+        tracksLoginSteps ? tracker : nil
+    }
+
     /// A state variable that is `true` if network calls are currently happening and so the
     /// view should be showing a loading indicator.
     ///
@@ -65,7 +77,7 @@ final class SiteAddressViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
-        tracker.track(click: .submit)
+        loginTracker?.track(click: .submit)
 
         validateForm()
     }
@@ -98,15 +110,15 @@ final class SiteAddressViewController: LoginViewController {
         super.viewDidAppear(animated)
 
         if isSiteDiscovery {
-            tracker.set(flow: .siteDiscovery)
+            loginTracker?.set(flow: .siteDiscovery)
         } else {
-            tracker.set(flow: trackedFlow ?? .loginWithSiteAddress)
+            loginTracker?.set(flow: trackedFlow ?? .loginWithSiteAddress)
         }
 
         if isMovingToParent {
-            tracker.track(step: .start)
+            loginTracker?.track(step: .start)
         } else {
-            tracker.set(step: .start)
+            loginTracker?.set(step: .start)
         }
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
@@ -226,7 +238,7 @@ final class SiteAddressViewController: LoginViewController {
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         if errorMessage != message {
             if !message.isEmpty {
-                tracker.track(failure: message)
+                loginTracker?.track(failure: message)
             }
 
             errorMessage = message
@@ -377,26 +389,26 @@ private extension SiteAddressViewController {
                 return
             }
 
-            self.tracker.track(click: .showHelp)
+            self.loginTracker?.track(click: .showHelp)
 
             let alert = FancyAlertViewController.siteAddressHelpController(
                 loginFields: self.loginFields,
                 sourceTag: self.sourceTag,
                 moreHelpTapped: {
-                    self.tracker.track(click: .helpFindingSiteAddress)
+                    self.loginTracker?.track(click: .helpFindingSiteAddress)
             },
                 onDismiss: {
-                    self.tracker.track(click: .dismiss)
+                    self.loginTracker?.track(click: .dismiss)
 
                     // Since we're showing an alert on top of this VC, `viewDidAppear` will not be called
                     // once the alert is dismissed (which is where the step would be reset automagically),
                     // so we need to manually reset the step here.
-                    self.tracker.set(step: .start)
+                    self.loginTracker?.set(step: .start)
             })
             alert.modalPresentationStyle = .custom
             alert.transitioningDelegate = self
             self.present(alert, animated: true, completion: { [weak self] in
-                self?.tracker.track(step: .help)
+                self?.loginTracker?.track(step: .help)
             })
         }
     }

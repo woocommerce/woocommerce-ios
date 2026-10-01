@@ -293,10 +293,14 @@ import WordPressUI
 
     /// Returns a Site Address view controller and triggers the protocol method `troubleshootSite` after fetching the site info.
     ///
-    @objc public class func siteDiscoveryUI() -> UIViewController? {
-        return SiteAddressViewController.instantiate(from: .siteAddress) { coder in
+    /// - Parameter tracksLoginSteps: whether the screen belongs to a login journey. The store
+    ///   switcher opens site discovery too, and a login step is wrong there.
+    @objc public class func siteDiscoveryUI(tracksLoginSteps: Bool) -> UIViewController? {
+        let controller = SiteAddressViewController.instantiate(from: .siteAddress) { coder in
             SiteAddressViewController(isSiteDiscovery: true, coder: coder)
         }
+        controller?.tracksLoginSteps = tracksLoginSteps
+        return controller
     }
 
     // Helper used by WPAuthTokenIssueSolver

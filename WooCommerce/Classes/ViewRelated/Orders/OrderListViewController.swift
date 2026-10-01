@@ -211,6 +211,11 @@ final class OrderListViewController: UIViewController {
         refreshControl.endRefreshing()
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        refreshUpdates.cancel()
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 

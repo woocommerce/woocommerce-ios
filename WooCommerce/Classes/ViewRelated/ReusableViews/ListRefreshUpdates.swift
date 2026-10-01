@@ -26,6 +26,13 @@ final class ListRefreshUpdates {
         update()
     }
 
+    /// Release deferred presentation when the list leaves the screen, even if its request never completes.
+    func cancel() {
+        let cancelledRefresh = refresh
+        refresh = nil
+        cancelledRefresh?.render()
+    }
+
     func endRefreshing(_ refreshControl: UIRefreshControl) {
         let endingRefresh = refresh
         // Observe animations created by UIKit rather than guessing their duration.

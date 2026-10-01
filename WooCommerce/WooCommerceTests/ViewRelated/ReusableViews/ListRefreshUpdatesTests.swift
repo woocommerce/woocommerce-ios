@@ -49,6 +49,46 @@ struct ListRefreshUpdatesTests {
     }
 
     @Test
+    func test_cancel_when_request_never_completes_then_renders_once_and_resumes_updates() {
+        // Given
+        let updates = ListRefreshUpdates()
+        var renderCount = 0
+        var updateCount = 0
+        updates.beginRefreshing { renderCount += 1 }
+        updates.perform { updateCount += 1 }
+
+        // When
+        updates.cancel()
+        updates.cancel()
+        updates.perform { updateCount += 1 }
+
+        // Then
+        #expect(renderCount == 1)
+        #expect(updateCount == 1)
+    }
+
+    @Test
+    func test_cancel_when_dismissal_is_pending_then_does_not_render_twice() async {
+        // Given
+        let updates = ListRefreshUpdates()
+        let refreshControl = RefreshControlStartingAnotherRefresh()
+        var renderCount = 0
+        updates.beginRefreshing { renderCount += 1 }
+
+        // When
+        await withCheckedContinuation { continuation in
+            CATransaction.begin()
+            CATransaction.setCompletionBlock { continuation.resume() }
+            refreshControl.onEndRefreshing = { updates.cancel() }
+            updates.endRefreshing(refreshControl)
+            CATransaction.commit()
+        }
+
+        // Then
+        #expect(renderCount == 1)
+    }
+
+    @Test
     func test_older_dismissal_when_another_refresh_starts_then_keeps_new_updates_deferred() async {
         // Given
         let updates = ListRefreshUpdates()

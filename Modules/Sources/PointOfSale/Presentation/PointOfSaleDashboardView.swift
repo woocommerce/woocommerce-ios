@@ -512,21 +512,13 @@ struct PointOfSaleDashboardView: View {
 
                 NavigationStack(path: $navigationPath) {
                     HStack(spacing: POSSpacing.none) {
-                        if !posModel.paymentState.card.shownFullScreen
-                            && posModel.paymentState.cash != .paymentSuccess
-                            && posModel.paymentState.scanToPay != .paymentSuccess
-                            && posModel.paymentState.markAsPaid != .paymentSuccess {
+                        if showsCartDuringCheckout {
                             CartView()
                                 .frame(width: cartWidth)
                                 .accessibilitySortPriority(1)
                         }
 
-                        let totalsWidth = posModel.paymentState.card.shownFullScreen
-                            || posModel.paymentState.cash == .paymentSuccess
-                            || posModel.paymentState.scanToPay == .paymentSuccess
-                            || posModel.paymentState.markAsPaid == .paymentSuccess
-                            ? cartWidth + checkoutWidth
-                            : checkoutWidth
+                        let totalsWidth = showsCartDuringCheckout ? checkoutWidth : cartWidth + checkoutWidth
 
                         TotalsView()
                             .background(Color.posSurface)
@@ -534,6 +526,8 @@ struct PointOfSaleDashboardView: View {
                             .accessibilitySortPriority(posModel.orderStage == .finalizing ? 2 : 0)
                             .allowsHitTesting(posModel.orderStage == .finalizing)
                     }
+                    // Accept the navigation stack's proposed width without centering the wider, fixed-size panes.
+                    .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                     .posNavigationDestinations()
                 }
                 .scrollContentBackground(.hidden)
@@ -569,9 +563,55 @@ struct PointOfSaleDashboardView: View {
             .animation(.default, value: posModel.orderStage)
             .animation(.default, value: posModel.paymentState.card.shownFullScreen)
         }
+        .clipped()
         .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore, edges: [.top, .horizontal])
-        .background(Color.posSurface.ignoresSafeArea())
+        .background(tabletBackground)
         .environment(\.posNavigationRouter, navigationRouter)
+    }
+
+    private var showsCartDuringCheckout: Bool {
+        !posModel.paymentState.card.shownFullScreen
+            && posModel.paymentState.cash != .paymentSuccess
+            && posModel.paymentState.scanToPay != .paymentSuccess
+            && posModel.paymentState.markAsPaid != .paymentSuccess
+    }
+
+    private var tabletBackground: some View {
+        GeometryReader { geometry in
+            let showsCartBackground = showsCartDuringCheckout && navigationPath.isEmpty
+            HStack(spacing: 0) {
+                if posModel.orderStage == .building {
+                    Color.clear
+                        .frame(width: geometry.size.width * (1 - Constants.cartWidth))
+                        .background(Color.posSurface.ignoresSafeArea(.container, edges: [.top, .bottom, .leading]))
+                    Color.clear
+                        .background(Color.posSurfaceBright.ignoresSafeArea(.container, edges: [.top, .bottom, .trailing]))
+                } else {
+                    if showsCartBackground {
+                        Color.clear
+                            .frame(width: geometry.size.width * Constants.cartWidth)
+                            .background(Color.posSurfaceBright.ignoresSafeArea(.container, edges: [.top, .bottom, .leading]))
+                    }
+                    Color.clear
+                        .background {
+                            tabletPaymentBackgroundColor
+                                .background(Color.posSurface)
+                                .ignoresSafeArea(.container, edges: showsCartBackground ? [.top, .bottom, .trailing] : .all)
+                        }
+                }
+            }
+        }
+    }
+
+    private var tabletPaymentBackgroundColor: Color {
+        switch navigationPath.last {
+        case .cashPayment, .emailReceipt:
+            return .posSurfaceBright
+        case .scanToPay, .markAsPaid:
+            return .posSurface
+        case nil:
+            return POSPaymentViewHelper().paymentBackgroundColor(for: posModel.paymentState)
+        }
     }
 
     private var backgroundAppearance: POSBackgroundAppearanceKey.Appearance {

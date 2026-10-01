@@ -79,6 +79,7 @@ final class ProductsViewController: UIViewController {
     ///
     @IBOutlet private weak var toolbar: ToolbarView!
     @IBOutlet private weak var toolbarBottomSeparator: UIView!
+    @IBOutlet private weak var toolbarHeightConstraint: NSLayoutConstraint!
     @IBOutlet private weak var toolbarBottomSeparatorHeightConstraint: NSLayoutConstraint!
 
     private var hasConfiguredLiquidGlassHeaderOverlay = false
@@ -855,6 +856,7 @@ private extension ProductsViewController {
                 var configuration = UIButton.Configuration.glass()
                 configuration.buttonSize = .medium
                 configuration.baseForegroundColor = .label
+                OrdersProductsListHeaderStyle.configureButtonSizing($0)
                 $0.configuration = configuration
                 $0.setContentHuggingPriority(.required, for: .horizontal)
             } else {
@@ -869,6 +871,7 @@ private extension ProductsViewController {
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
 
         if #available(iOS 26.0, *) {
+            toolbarHeightConstraint.isActive = false
             toolbar.setContentInsets(Constants.liquidGlassToolbarContentInsets, alignment: .center)
             toolbarBottomSeparator.backgroundColor = .clear
         } else {

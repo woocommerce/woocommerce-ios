@@ -31,6 +31,9 @@ final class FilteredOrdersHeaderBar: UIView {
         super.awakeFromNib()
         configureLabels()
         configureButtons()
+        if #available(iOS 26.0, *) {
+            OrdersProductsListHeaderStyle.configureButtonSizing(filterButton)
+        }
         configureBackground()
         updateStackViewAxis(for: traitCollection)
     }

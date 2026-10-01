@@ -115,6 +115,14 @@ final class OrdersRootViewController: UIViewController {
         configureChildViewController()
         configureLiquidGlassTabBarUnderlap()
 
+        if #available(iOS 26.0, *) {
+            registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (controller: OrdersRootViewController, _: UITraitCollection) in
+                // Dynamic Type can leave the bar at its collapsed height even when the list is at the top.
+                controller.view.layoutIfNeeded()
+                controller.navigationController?.navigationBar.sizeToFit()
+            }
+        }
+
         /// We sync the local order settings for configuring local statuses and date range filters.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
         ///
@@ -444,14 +452,15 @@ private extension OrdersRootViewController {
 
         let previousTopInset = tableView.contentInset.top
         if abs(previousTopInset - height) > 0.5 {
+            let previousContentOffset = tableView.contentOffset
             var contentInset = tableView.contentInset
             contentInset.top = height
             tableView.contentInset = contentInset
-            if previousTopInset == 0,
-               !tableView.isTracking,
+            if !tableView.isTracking,
                !tableView.isDragging,
                !tableView.isDecelerating {
-                tableView.contentOffset.y -= height - previousTopInset
+                // UIKit may adjust the offset when the inset changes; use the original offset, as Products does.
+                tableView.contentOffset.y = previousContentOffset.y - (height - previousTopInset)
             }
         }
 

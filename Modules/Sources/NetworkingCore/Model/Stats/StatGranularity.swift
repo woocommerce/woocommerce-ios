@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents data granularity for stats (e.g. day, week, month, year)
 ///
-public enum StatGranularity: String, Decodable, GeneratedFakeable {
+public enum StatGranularity: String, Decodable, GeneratedFakeable, Sendable {
     case day
     case week
     case month

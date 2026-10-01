@@ -6,6 +6,8 @@ import XCTest
 class LoginViewControllerTests: XCTestCase {
     private var retainedWindows = [UIWindow]()
 
+    // The async form so it keeps the class's main-actor isolation; the synchronous
+    // `tearDown()` is nonisolated, which cannot touch `retainedWindows`.
     override func tearDown() async throws {
         retainedWindows.removeAll()
         try await super.tearDown()

@@ -5,13 +5,13 @@ import Foundation
 /// `unknown` while the check is in flight, then resolves to `available` or
 /// `unavailable(reason:)`. The reason is plumbed up to analytics so we can spot
 /// merchants who can't access TTP from their device or site.
-public enum POSTapToPayAvailabilityState: Equatable {
+public enum POSTapToPayAvailabilityState: Equatable, Sendable {
     case unknown
     case available
     case unavailable(reason: POSTapToPayUnavailableReason)
 }
 
-public enum POSTapToPayUnavailableReason: String, Equatable {
+public enum POSTapToPayUnavailableReason: String, Equatable, Sendable {
     /// The device hardware doesn't support TTP (e.g. older iPhone, iPad).
     case deviceNotSupported
     /// The store's country / payment plugin doesn't support TTP yet.

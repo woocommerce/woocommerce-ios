@@ -4,6 +4,8 @@
 #
 # A migration slice removes warnings, so its CI run reports "N file(s) improved".
 # This script folds those improvements into baseline.json.
+# Totals are derived for reporting, not stored: unrelated fixes should not
+# conflict on a shared total line in the committed baseline.
 #
 # It only ever LOWERS counts: for each file it keeps min(baseline, current), and drops
 # files that reached zero. Files whose count went UP are left at their baseline value and
@@ -55,10 +57,10 @@ if ignored:
 if not lowered and not removed:
     print("No improvements to fold in; baseline unchanged.")
 else:
-    result = {"total": sum(updated.values()), "perFile": dict(sorted(updated.items()))}
+    result = {"perFile": dict(sorted(updated.items()))}
     with open(baseline_path, "w") as f:
         json.dump(result, f, indent=2, sort_keys=True)
         f.write("\n")
-    print(f"\nBaseline now {result['total']} warnings across {len(result['perFile'])} files "
+    print(f"\nBaseline now {sum(updated.values())} warnings across {len(result['perFile'])} files "
           f"({len(lowered) + len(removed)} file(s) improved).")
 PY

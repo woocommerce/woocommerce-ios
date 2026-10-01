@@ -54,20 +54,26 @@ COMPARE_STATUS=${PIPESTATUS[0]}
 set -e
 
 if [[ $COMPARE_STATUS -ne 0 ]]; then
-  echo '😱 New strict-concurrency warnings detected!'
-  echo '💡 Fix the new warnings, or — if the increase is genuinely justified — bump the affected counts in Scripts/StrictConcurrency/baseline.json in this PR so reviewers see it.'
-  (echo "### New strict-concurrency warnings (baseline guard)"; echo ''; echo '```'; cat "$COMPARE_OUTPUT_FILE"; echo '```') \
+  echo '😱 Some files exceed the strict-concurrency baseline.'
+  echo '💡 The excess may come from this PR or may already be on trunk (the step is soft_fail). See the PR comment for next steps.'
+  (echo "### Files over the strict-concurrency baseline (baseline guard)"; echo ''; echo '```'; cat "$COMPARE_OUTPUT_FILE"; echo '```') \
     | buildkite-agent annotate --context strict-concurrency --style error
   # Surface the failure on the PR itself, Danger-style (idempotent: --id updates the same comment).
   comment_on_pr --id strict-concurrency-guard "## ⚠️ Strict-concurrency baseline guard
 
-This PR introduces new strict-concurrency warnings (full report in the <a href=\"${BUILDKITE_BUILD_URL}#annotations\" target=\"_blank\">build annotations</a>):
+These files exceed the committed strict-concurrency baseline (full report in the <a href=\"${BUILDKITE_BUILD_URL}#annotations\" target=\"_blank\">build annotations</a>):
 
 \`\`\`
 $(grep -A 100 'FAIL:' "$COMPARE_OUTPUT_FILE")
 \`\`\`
 
-Fix the new warnings, or — if the increase is genuinely justified — bump the affected counts in \`Scripts/StrictConcurrency/baseline.json\` in this PR so reviewers see the decision." \
+The excess may have been introduced by this PR, or it may already be on trunk: the step is advisory (\`soft_fail\`), so a regression can merge and then show up on every PR. Check trunk's latest guard result or the file's history before assuming it is yours.
+
+Next steps:
+- If this PR introduced the warnings, fix them in this PR.
+- If they were already on trunk, you are encouraged to open a new PR to fix them, or contact the author, creating a Linear issue if necessary.
+
+Fixing can mean changing the code, or raising the affected entries in \`Scripts/StrictConcurrency/baseline.json\` when the increase is justified, so reviewers see it." \
     || echo 'PR comment failed (not a PR build?) — Buildkite annotation still posted.'
 else
   buildkite-agent annotate --context strict-concurrency --style success \

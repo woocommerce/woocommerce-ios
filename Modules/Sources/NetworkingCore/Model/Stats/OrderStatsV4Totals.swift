@@ -3,7 +3,7 @@ import Foundation
 
 /// Represents the data associated with order stats over a specific period.
 /// v4
-public struct OrderStatsV4Totals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStatsTotals {
+public struct OrderStatsV4Totals: Decodable, Equatable, GeneratedCopiable, GeneratedFakeable, WCAnalyticsStatsTotals, Sendable {
     public let totalOrders: Int
     public let totalItemsSold: Int
     /// Maps to the API's `total_sales` — the UI labels this as "Total" revenue.

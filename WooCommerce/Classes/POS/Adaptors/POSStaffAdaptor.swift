@@ -9,7 +9,7 @@ import PointOfSale
 /// errors to the typed `POSStaffFetchError` so PointOfSale callers can branch by intent.
 ///
 /// HTTP 401/403, expired tokens, and `woocommerce_rest_cannot_view` map to `.adminMissingCapability`.
-final class POSStaffAdaptor: POSStaffFetching {
+nonisolated final class POSStaffAdaptor: POSStaffFetching {
     private let remote: POSStaffRemoteProtocol
 
     init(remote: POSStaffRemoteProtocol) {

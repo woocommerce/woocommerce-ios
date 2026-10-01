@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import WordPressAuthenticator
 import Yosemite
 import protocol Storage.StorageManagerType
 import protocol WooFoundation.Analytics
@@ -36,28 +37,34 @@ final class StorePickerViewModel {
     private let stores: StoresManager
     private let userDefaults: UserDefaults
     private let analytics: Analytics
+    private let tracker: AuthenticatorAnalyticsTracker
     private let roleEligibilityUseCase: RoleEligibilityUseCase
     init(configuration: StorePickerConfiguration,
          stores: StoresManager = ServiceLocator.stores,
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          userDefaults: UserDefaults = .standard,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         tracker: AuthenticatorAnalyticsTracker = .shared) {
         self.configuration = configuration
         self.stores = stores
         self.storageManager = storageManager
         self.userDefaults = userDefaults
         self.analytics = analytics
+        self.tracker = tracker
         self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores)
     }
 
     func trackScreenView() {
         let objects = resultsController.fetchedObjects
-        let stores = objects.filter { $0.isWooCommerceActive == true }
+        let wooStores = objects.filter { $0.isWooCommerceActive == true }
         let nonWooSites = objects.filter { $0.isWooCommerceActive == false }
         analytics.track(.sitePickerStoresShown, withProperties: [
-            "num_of_stores": stores.count,
+            "num_of_stores": wooStores.count,
             "num_of_non_woo_sites": nonWooSites.count
         ])
+        if configuration == .login && wooStores.isEmpty {
+            tracker.track(step: .noWooStores)
+        }
     }
 
     @MainActor

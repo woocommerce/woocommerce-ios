@@ -42,6 +42,8 @@ struct BatchedLoadResult<T> {
     let serverDate: Date?
 }
 
+extension BatchedLoadResult: Sendable where T: Sendable {}
+
 /// Generic utility for loading paginated data with batch processing and retry support.
 final class BatchedRequestLoader {
     private let batchSize: Int
@@ -150,3 +152,5 @@ private struct PageResult<T> {
     let pageNumber: Int
     let items: PagedItems<T>
 }
+
+extension PageResult: Sendable where T: Sendable {}

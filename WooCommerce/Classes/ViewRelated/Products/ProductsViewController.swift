@@ -9,7 +9,7 @@ import class AutomatticTracks.CrashLogging
 /// Shows a list of products with pull to refresh and infinite scroll
 /// TODO: it will be good to have unit tests for this, introducing a `ViewModel`
 ///
-final class ProductsViewController: UIViewController, GhostableViewController {
+final class ProductsViewController: UIViewController {
     enum NavigationContentType {
         case productForm(product: Product)
         case addProduct(sourceView: AddProductCoordinator.SourceView, isFirstProduct: Bool)
@@ -29,12 +29,8 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
     private var barcodeScannerCoordinator: ProducBarcodeScannerCoordinator?
 
-    lazy var ghostTableViewController = GhostTableViewController(options: GhostTableViewOptions(sectionHeaderVerticalSpace: .medium,
-                                                                                                cellClass: ProductsTabProductTableViewCell.self,
-                                                                                                rowsPerSection: Constants.placeholderRowsPerSection,
-                                                                                                estimatedRowHeight: Constants.estimatedRowHeight,
-                                                                                                separatorStyle: .none,
-                                                                                                isScrollEnabled: false))
+    private var isShowingLoadingRows = false
+    private lazy var emptyStateView = ListEmptyView()
 
     /// Pull To Refresh Support.
     ///
@@ -132,7 +128,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     /// ResultsController: Surrounds us. Binds the galaxy together. And also, keeps the UITableView <> (Stored) Products in sync.
     ///
     private lazy var resultsController: ResultsController<StorageProduct> = {
-        let resultsController = createResultsController(siteID: siteID)
+        let resultsController = providedResultsController ?? createResultsController(siteID: siteID)
         configureResultsController(resultsController, onReload: { [weak self] in
             guard let self else { return }
             self.reloadTableAndView()
@@ -208,10 +204,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     /// Set to `true` when a category is applied to the product filters and the value has changed after a remote sync.
     private var categoryHasChangedRemotely: Bool = false
 
-    /// Set when an empty state view controller is displayed.
-    ///
-    private var emptyStateViewController: UIViewController?
-
+    private let providedResultsController: ResultsController<StorageProduct>?
     private let siteID: Int64
 
     /// Set when sync fails, and used to display an error loading data banner
@@ -236,9 +229,11 @@ final class ProductsViewController: UIViewController, GhostableViewController {
     // MARK: - View Lifecycle
 
     init(siteID: Int64,
+         resultsController: ResultsController<StorageProduct>? = nil,
          selectedProduct: AnyPublisher<Product?, Never>,
          navigateToContent: @escaping (NavigationContentType) -> Void) {
         self.siteID = siteID
+        self.providedResultsController = resultsController
         self.viewModel = .init(siteID: siteID, stores: ServiceLocator.stores)
         self.selectedProduct = selectedProduct
         self.navigateToContent = navigateToContent
@@ -284,11 +279,9 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
         // Fix any incomplete animation of the refresh control
         // when switching tabs mid-animation
-        refreshControl.resetAnimation(in: tableView) { [unowned self] in
-            // ghost animation is also removed after switching tabs
-            // show make sure it's displayed again
-            self.removeGhostContent()
-            self.displayGhostContent(over: tableView)
+        refreshControl.resetAnimation(in: tableView) { [weak self] in
+            guard let self, isShowingLoadingRows else { return }
+            tableView.reloadData()
         }
 
         if #unavailable(iOS 26.0) {
@@ -324,6 +317,7 @@ final class ProductsViewController: UIViewController, GhostableViewController {
 
         updateTableHeaderViewHeight()
         updateLiquidGlassHeaderOverlayLayout()
+        updateEmptyStateHeight()
     }
 
     override var shouldShowOfflineBanner: Bool {
@@ -957,7 +951,8 @@ private extension ProductsViewController {
     func configurePaginationTracker() {
         paginationTracker.delegate = self
         scrollWatcherSubscription = scrollWatcher.trigger.sink { [weak self] _ in
-            self?.paginationTracker.ensureNextPageIsSynced()
+            guard let self, !isShowingLoadingRows else { return }
+            paginationTracker.ensureNextPageIsSynced()
         }
     }
 
@@ -1013,7 +1008,7 @@ private extension ProductsViewController {
     func requestAndShowErrorTopBannerView(for error: Error) {
         let errorBanner = ErrorTopBannerFactory.createTopBanner(for: error,
             expandedStateChangeHandler: { [weak self] in
-                self?.tableView.updateHeaderHeight()
+                self?.view.setNeedsLayout()
             },
             onTroubleshootButtonPressed: { [weak self] in
                 guard let self else { return }
@@ -1027,9 +1022,13 @@ private extension ProductsViewController {
                 )
                 supportForm.show(from: self)
             })
-        topBannerContainerView.updateSubview(errorBanner)
-        topBannerView = errorBanner
-        updateTableHeaderViewHeight()
+        // Resolve the new banner's initial layout without animating its content from zero-sized frames.
+        UIView.performWithoutAnimation {
+            topBannerContainerView.updateSubview(errorBanner)
+            topBannerView = errorBanner
+            updateTableHeaderViewHeight()
+            tableView.tableHeaderView?.layoutIfNeeded()
+        }
     }
 
     func hideTopBannerView() {
@@ -1043,16 +1042,16 @@ private extension ProductsViewController {
     func updateTableHeaderViewHeight() {
         topStackView.spacing = topBannerContainerView.subviews.isNotEmpty ? Constants.headerViewSpacing : 0
         tableView.updateHeaderHeight()
+        updateEmptyStateHeight()
     }
 
     func createResultsController(siteID: Int64) -> ResultsController<StorageProduct> {
-        let storageManager = ServiceLocator.storageManager
         let predicate = NSPredicate.createProductPredicate(siteID: siteID,
                                                            stockStatus: filters.stockStatus,
                                                            productStatus: filters.productStatus,
                                                            productType: filters.promotableProductType?.productType)
 
-        return ResultsController<StorageProduct>(storageManager: storageManager,
+        return ResultsController<StorageProduct>(storageManager: ServiceLocator.storageManager,
                                                  matching: predicate,
                                                  sortOrder: sortOrder)
     }
@@ -1093,22 +1092,25 @@ private extension ProductsViewController {
         guard let tableView else {
             return
         }
+        // Search can populate the shared cache while the initial sync is still running.
+        // Install real rows before publishing updates that select or reload product indexes.
+        if !resultsController.isEmpty {
+            isShowingLoadingRows = false
+        }
         showOrHideToolbar()
-        addOrRemoveOverlay()
+        updateEmptyState()
         tableView.reloadData()
         onDataReloaded.send(())
     }
 
-    /// Add or remove the overlay based on number of products
-    /// If there is 0 products, overlay will be added
-    /// if there is 1 or more products, toolbar will be removed
+    /// Updates the table footer based on the number of products.
     ///
-    func addOrRemoveOverlay() {
+    func updateEmptyState() {
         guard isEmpty else {
-            removeAllOverlays()
+            removeEmptyState()
             return
         }
-        displayNoResultsOverlay()
+        displayEmptyState()
     }
 
     /// We sync the local product settings for configuring local sorting and filtering.
@@ -1140,7 +1142,7 @@ private extension ProductsViewController {
             .map { $0.0 }
             .withPrevious()
             .sink { [weak self] previousSelectedProduct, selectedProduct in
-                guard let self else { return }
+                guard let self, !isShowingLoadingRows else { return }
 
                 let currentSelectedIndexPath = tableView.indexPathForSelectedRow
                 let selectedIndexPath = selectedProduct != nil ? resultsController.indexPath(forObjectMatching: {
@@ -1186,6 +1188,7 @@ private extension ProductsViewController {
                     .filter { $0.siteID == self.siteID }
                     .map { $0.productOrVariationID.id }
 
+                guard !isShowingLoadingRows else { return }
                 var indexPathsToReload: [IndexPath] = []
                 for (index, object) in resultsController.listItems.enumerated() {
                     if activeUploadIds.contains(object.productID) != oldIDs.contains(object.productID) {
@@ -1266,15 +1269,19 @@ private extension ProductsViewController {
 extension ProductsViewController: UITableViewDataSource {
 
     func numberOfSections(in tableView: UITableView) -> Int {
-        resultsController.sections.count
+        isShowingLoadingRows ? 1 : resultsController.sections.count
     }
 
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        resultsController.sections[section].numberOfObjects
+        isShowingLoadingRows ? Constants.placeholderRowCount : resultsController.sections[section].numberOfObjects
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(ProductsTabProductTableViewCell.self, for: indexPath)
+        cell.stopGhostAnimation()
+        cell.isUserInteractionEnabled = !isShowingLoadingRows
+        cell.accessibilityElementsHidden = isShowingLoadingRows
+        guard !isShowingLoadingRows else { return cell }
         let product = resultsController.listItem(at: indexPath)
         let hasPendingUploads = activeUploadIds.contains(where: { $0 == product.productID })
         let viewModel = ProductsTabProductViewModel(product: product,
@@ -1290,6 +1297,17 @@ extension ProductsViewController: UITableViewDataSource {
 // MARK: - UITableViewDelegate Conformance
 //
 extension ProductsViewController: UITableViewDelegate {
+    func tableView(_ tableView: UITableView, willSelectRowAt indexPath: IndexPath) -> IndexPath? {
+        isShowingLoadingRows ? nil : indexPath
+    }
+
+    func tableView(_ tableView: UITableView, canFocusRowAt indexPath: IndexPath) -> Bool {
+        !isShowingLoadingRows
+    }
+
+    func tableView(_ tableView: UITableView, didEndDisplaying cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        cell.stopGhostAnimation()
+    }
 
     func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
         return estimatedRowHeights[indexPath] ?? Constants.estimatedRowHeight
@@ -1300,6 +1318,7 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        guard !isShowingLoadingRows else { return }
         if splitViewController?.isCollapsed == true &&
             !tableView.isEditing {
             tableView.deselectRow(at: indexPath, animated: true)
@@ -1319,6 +1338,7 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        guard !isShowingLoadingRows else { return }
         guard tableView.isEditing else {
             return
         }
@@ -1329,6 +1349,11 @@ extension ProductsViewController: UITableViewDelegate {
     }
 
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if isShowingLoadingRows {
+            cell.layoutIfNeeded()
+            cell.startGhostAnimation(style: .wooDefaultGhostStyle)
+            return
+        }
         // Preserve the Cell Height
         // Why: Because Autosizing Cells, upon reload, will need to be laid yout yet again. This might cause
         // UI glitches / unwanted animations. By preserving it, *then* the estimated will be extremely close to
@@ -1364,6 +1389,7 @@ extension ProductsViewController: UITableViewDelegate {
     /// Provide an implementation to show cell swipe actions. Return `nil` to provide no action.
     ///
     func tableView(_ tableView: UITableView, trailingSwipeActionsConfigurationForRowAt indexPath: IndexPath) -> UISwipeActionsConfiguration? {
+        guard !isShowingLoadingRows else { return nil }
         let product = resultsController.object(at: indexPath)
         guard ServiceLocator.stores.sessionManager.defaultSite?.visibility == .publicSite,
               product.productStatus == .published,
@@ -1461,98 +1487,66 @@ private extension ProductsViewController {
 //
 private extension ProductsViewController {
 
-    /// Displays the overlay when there are no results.
+    /// Displays empty content in the table footer when there are no results.
     ///
-    func displayNoResultsOverlay() {
-        // Abort if we are already displaying this childController
-        guard emptyStateViewController?.parent == nil else {
-            return
-        }
-        let emptyStateViewController = EmptyStateViewController(style: .list)
-        let config = createFilterConfig()
-        displayEmptyStateViewController(emptyStateViewController)
-        emptyStateViewController.configure(config)
+    func displayEmptyState() {
+        guard !isShowingLoadingRows else { return }
+        configureEmptyStateView()
+        emptyStateView.show(in: tableView)
     }
 
-    func createFilterConfig() ->  EmptyStateViewController.Config {
+    func configureEmptyStateView() {
         if filters.numberOfActiveFilters == 0 {
-            return createNoProductsConfig()
+            configureNoProductsView()
         } else {
-            return createNoProductsMatchFilterConfig()
+            configureNoProductsMatchFilterView()
         }
     }
 
-    /// Creates EmptyStateViewController.Config for no products empty view
+    /// Configures the empty view when the store has no products
     ///
-    func createNoProductsConfig() ->  EmptyStateViewController.Config {
+    func configureNoProductsView() {
         let message = NSLocalizedString("No products yet",
                                         comment: "The text on the placeholder overlay when there are no products on the Products tab")
         let details = NSLocalizedString("Start selling today by adding your first product to the store.",
                                         comment: "The details on the placeholder overlay when there are no products on the Products tab")
         let buttonTitle = NSLocalizedString("Add Product",
                                             comment: "Action to add product on the placeholder overlay when there are no products on the Products tab")
-        return EmptyStateViewController.Config.withButton(
+        emptyStateView.configure(
             message: .init(string: message),
             image: .productBlouseImage,
             details: details,
             buttonTitle: buttonTitle,
-            onTap: { [weak self] button in
+            onAction: { [weak self] button in
                 self?.addProduct(sourceView: button, isFirstProduct: true)
-            },
-            onPullToRefresh: { [weak self] refreshControl in
-                self?.pullToRefresh(sender: refreshControl)
             })
     }
 
-    /// Creates EmptyStateViewController.Config for no products match the filter empty view
+    /// Configures the empty view when no products match the filters
     ///
-    func createNoProductsMatchFilterConfig() ->  EmptyStateViewController.Config {
+    func configureNoProductsMatchFilterView() {
         let message = NSLocalizedString("No matching products found",
                                         comment: "The text on the placeholder overlay when no products match the filter on the Products tab")
         let buttonTitle = NSLocalizedString("Clear Filters",
                                             comment: "Action to add product on the placeholder overlay when no products match the filter on the Products tab")
-        return EmptyStateViewController.Config.withButton(
+        emptyStateView.configure(
             message: .init(string: message),
             image: .productBlouseImage,
             details: "",
             buttonTitle: buttonTitle,
-            onTap: { [weak self] button in
+            onAction: { [weak self] button in
                 self?.clearFilter(sourceView: button)
-            },
-            onPullToRefresh: { [weak self] refreshControl in
-                self?.pullToRefresh(sender: refreshControl)
             })
     }
 
-    /// Shows the EmptyStateViewController as a child view controller.
-    ///
-    func displayEmptyStateViewController(_ emptyStateViewController: UIViewController) {
-        self.emptyStateViewController = emptyStateViewController
-        addChild(emptyStateViewController)
-
-        emptyStateViewController.view.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(emptyStateViewController.view)
-
-        NSLayoutConstraint.activate([
-            emptyStateViewController.view.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            emptyStateViewController.view.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            emptyStateViewController.view.topAnchor.constraint(equalTo: topStackView.bottomAnchor),
-            emptyStateViewController.view.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        ])
-        emptyStateViewController.didMove(toParent: self)
+    func updateEmptyStateHeight() {
+        emptyStateView.updateHeight(in: tableView)
     }
 
-    /// Removes EmptyStateViewController child view controller if applicable.
-    ///
-    func removeAllOverlays() {
-        guard let emptyStateViewController, emptyStateViewController.parent == self else {
-            return
+    func removeEmptyState() {
+        if tableView.tableFooterView === emptyStateView {
+            tableView.tableFooterView = footerEmptyView
         }
-
-        emptyStateViewController.willMove(toParent: nil)
-        emptyStateViewController.view.removeFromSuperview()
-        emptyStateViewController.removeFromParent()
-        self.emptyStateViewController = nil
     }
 
     func configureLeftBarBarButtomItemAsScanningButtonIfApplicable() {
@@ -1724,11 +1718,13 @@ private extension ProductsViewController {
     func didEnter(state: PaginatedListViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
-            displayNoResultsOverlay()
+            displayEmptyState()
         case .syncing(let pageNumber):
             let isFirstPage = pageNumber == SyncingCoordinator.Defaults.pageFirstIndex
             if isFirstPage && resultsController.isEmpty {
-                displayGhostContent(over: tableView)
+                removeEmptyState()
+                isShowingLoadingRows = true
+                tableView.reloadData()
             } else if !isFirstPage {
                 ensureFooterSpinnerIsStarted()
             }
@@ -1744,10 +1740,14 @@ private extension ProductsViewController {
     func didLeave(state: PaginatedListViewControllerState) {
         switch state {
         case .noResultsPlaceholder:
-            removeAllOverlays()
+            removeEmptyState()
         case .syncing:
             ensureFooterSpinnerIsStopped()
-            removeGhostContent()
+            if isShowingLoadingRows {
+                isShowingLoadingRows = false
+                tableView.reloadData()
+                onDataReloaded.send(())
+            }
             showTopBannerViewIfNeeded()
             showOrHideToolbar()
         case .results:
@@ -1808,7 +1808,7 @@ private extension ProductsViewController {
     enum Constants {
         static let headerViewSpacing = CGFloat(8)
         static let estimatedRowHeight = CGFloat(86)
-        static let placeholderRowsPerSection = [3]
+        static let placeholderRowCount = 3
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets.zero
         static let toolbarButtonInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)

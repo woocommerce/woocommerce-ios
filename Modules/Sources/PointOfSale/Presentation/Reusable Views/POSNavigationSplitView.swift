@@ -126,12 +126,13 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
             if isRegular {
                 GeometryReader { geometry in
                     HStack(spacing: 0) {
-                        Color.posSurfaceBright
+                        Color.clear
                             .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
-                        visibleDetailBackgroundColor
+                            .background(Color.posSurfaceBright.ignoresSafeArea(.container, edges: [.top, .bottom, .leading]))
+                        Color.clear
+                            .background(visibleDetailBackgroundColor.ignoresSafeArea(.container, edges: [.top, .bottom, .trailing]))
                     }
                 }
-                .ignoresSafeArea()
             } else {
                 (selection == nil ? Color.posSurfaceBright : visibleDetailBackgroundColor)
                     .ignoresSafeArea()

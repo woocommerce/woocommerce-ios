@@ -3,6 +3,7 @@
 
 25.8
 -----
+- [*] Login: QR code sign-in now shows "iPhone" or "iPad" on the web instead of the raw device identifier (e.g. "iPhone14,2"). [https://github.com/woocommerce/woocommerce-ios/pull/17983]
 - [*] Products: Fixed a remaining iOS 26 crash when tapping Save right as the "View product in store" sheet opens from the product form. [https://github.com/woocommerce/woocommerce-ios/pull/17963]
 - [*] The app now periodically refreshes push notification registrations for visible stores, and restores notifications for Jetpack stores when WooCommerce push becomes unavailable. [https://github.com/woocommerce/woocommerce-ios/pull/17967]
 - [Internal] Tracks events now carry cached_woo_core_version from the first event after launch and store switch. [https://github.com/woocommerce/woocommerce-ios/pull/17927]

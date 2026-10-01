@@ -12,6 +12,7 @@ import protocol WooFoundation.Analytics
 final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
     private let siteURL: String
+    private let rawSiteURL: String?
     private let showsConnectedStores: Bool
     private let defaultAccount: Account?
     private let storesManager: StoresManager
@@ -19,6 +20,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let jetpackSetupCompletionHandler: (_ email: String, _ xmlrpc: String) -> Void
     private let authentication: Authentication
     private let authenticatorType: Authenticator.Type
+    private let tracker: AuthenticatorAnalyticsTracker
 
     private var storePickerCoordinator: StorePickerCoordinator?
     private var jetpackSetupCoordinator: LoginJetpackSetupCoordinator?
@@ -30,8 +32,6 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     @Published private var primaryButtonLoading = false
     @Published private var termsAttributedString: NSAttributedString = .init(string: "")
 
-    private var siteInfoSubscription: AnyCancellable?
-
     init(siteURL: String?,
          showsConnectedStores: Bool,
          siteCredentials: WordPressOrgCredentials?,
@@ -39,8 +39,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
          storesManager: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
          authentication: Authentication = ServiceLocator.authenticationManager,
+         tracker: AuthenticatorAnalyticsTracker = .shared,
          onJetpackSetupCompletion: @escaping (String, String) -> Void) {
         self.siteURL = siteURL ?? Localization.yourSite
+        self.rawSiteURL = siteURL
         self.showsConnectedStores = showsConnectedStores
         self.defaultAccount = storesManager.sessionManager.defaultAccount
         self.storesManager = storesManager
@@ -48,6 +50,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         self.authentication = authentication
         self.jetpackSetupCompletionHandler = onJetpackSetupCompletion
         self.authenticatorType = authenticatorType
+        self.tracker = tracker
 
         if let credentials = siteCredentials {
             siteUsername = credentials.username
@@ -115,7 +118,15 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     // MARK: - Actions
     func viewDidLoad(_ viewController: UIViewController?) {
 
-        trackScreenView()
+        var properties = [
+            AuthenticatorAnalyticsTracker.Property.hasConnectedStores.rawValue: String(showsConnectedStores)
+        ]
+        // `siteURL` falls back to a localized placeholder for the UI, which would land in the
+        // analytics column as a translated string, so report the address only when there is one.
+        if let rawSiteURL {
+            properties[AuthenticatorAnalyticsTracker.Property.url.rawValue] = rawSiteURL.trimHTTPScheme()
+        }
+        tracker.track(step: .wrongWordPressAccount, properties: properties)
         configureTermsText()
 
         // Fetches site info if we're not sure whether the site is self-hosted.
@@ -170,16 +181,6 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
 
 // MARK: - Private helpers
 private extension WrongAccountErrorViewModel {
-    /// Waits for site info to log the screen view.
-    ///
-    func trackScreenView() {
-        siteInfoSubscription = $isSelfHostedSite
-            .dropFirst() // ignores first element
-            .sink { [weak self] isSelfHosted in
-                self?.analytics.track(event: .LoginJetpackConnection.jetpackConnectionErrorShown(selfHostedSite: isSelfHosted))
-            }
-    }
-
     /// Listens to changes to the self-hosted site check to update the content of the terms text.
     ///
     func configureTermsText() {

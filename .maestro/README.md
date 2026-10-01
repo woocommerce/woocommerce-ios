@@ -82,7 +82,7 @@ is in `.env.local`, later runs against new sites reuse it and need only `--site`
 
 Passwords are prompted rather than passed as flags, because command-line arguments are
 written to shell history and are visible in `ps` output. When there is no terminal to
-prompt on — an agent, or CI — supply them through the environment instead:
+prompt on, as with an agent, supply them through the environment instead:
 
 ```bash
 JN_SSH_PASS=… MAESTRO_WOO_LAB_WPCOM_EMAIL=… MAESTRO_WOO_LAB_WPCOM_PASSWORD=… \
@@ -137,9 +137,6 @@ HTML with direct artifact links and a faithful rerun command, per-attempt logs,
 screenshots, hierarchy/debug evidence, and a redacted JSON summary with final
 status and durations. Credential values are passed in a minimal subprocess
 environment and are never written to the summary or echoed in commands.
-
-The CI wrapper accepts `phone-full`; the scheduled
-`phone-full` lane is non-gating and feeds its JUnit to Test Analytics.
 
 ## State and destructive data
 

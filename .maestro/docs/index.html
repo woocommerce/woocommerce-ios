@@ -11,5 +11,5 @@
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile core</code></pre>
 <h2>Profiles</h2><table><tr><th>Name</th><th>Purpose</th></tr><tr><td>core</td><td>Stable phone release signal</td></tr><tr><td>phone-full</td><td>Core, extended, and destructive phone coverage</td></tr><tr><td>pos-ipad</td><td>Real-eligibility iPad POS</td></tr><tr><td>ios-system</td><td>Quarantined iOS system surfaces</td></tr></table>
 <h2>Evidence</h2><p>Runs produce JUnit XML, self-contained HTML, screenshots, diagnostics, redacted logs, and a summary. Inspect the failed attempt's log, hierarchy, screenshot, and app state before changing a selector or assertion.</p>
-<h2>Security</h2><p>Credentials live only in a local ignored file or protected CI environment variables. Consumer keys are optional and are validated only for an explicit seed request.</p>
+<h2>Security</h2><p>Credentials live only in a local ignored file. Consumer keys are optional and are validated only for an explicit seed request.</p>
 </html>

@@ -44,9 +44,8 @@ and `MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_PASSWORD`) are never required by a flow 
 never forwarded to Maestro; they exist so a provisioned store can be reconfigured later.
 
 `MAESTRO_WOO_CONSUMER_KEY` and `MAESTRO_WOO_CONSUMER_SECRET` are optional and
-are validated only when explicit REST seeding or cleanup is requested. Local
-runs may load `.maestro/.env.local`; CI injects protected environment variables
-and never creates that file. iOS does not require Android's store or account.
+are validated only when explicit REST seeding or cleanup is requested. Runs
+may load `.maestro/.env.local`. iOS does not require Android's store or account.
 
 The runner generates `SUITE_RUN_ID=SUITE-<UTC timestamp>-<random suffix>` and
 passes it to every flow. Created entities use this value wherever the UI permits.

@@ -84,15 +84,15 @@ final class OrderDetailsViewModel {
         return lookUpOrderStatus(for: order)
     }
 
-    nonisolated init(order: Order,
-                     stores: StoresManager = ServiceLocator.stores,
-                     storageManager: StorageManagerType = ServiceLocator.storageManager,
-                     currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
-                     syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
-                     receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
-                     siteCurrencyProvider: ((Int64) -> String?)? = nil,
-                     orderCurrencyEditingEligibility: OrderCurrencyEditingEligibility = .init(),
-                     pluginsService: PluginsServiceProtocol? = nil) {
+    init(order: Order,
+         stores: StoresManager = ServiceLocator.stores,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
+         syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+         siteCurrencyProvider: ((Int64) -> String?)? = nil,
+         orderCurrencyEditingEligibility: OrderCurrencyEditingEligibility = .init(),
+         pluginsService: PluginsServiceProtocol? = nil) {
         self.order = order
         self.stores = stores
         self.storageManager = storageManager
@@ -104,8 +104,7 @@ final class OrderDetailsViewModel {
         }
         self.orderCurrencyEditingEligibility = orderCurrencyEditingEligibility
         self.syncStateController = syncStateController
-        let configurationLoader = CardPresentConfigurationLoader()
-        self.configurationLoader = configurationLoader
+        self.configurationLoader = CardPresentConfigurationLoader()
         self.dataSource = OrderDetailsDataSource(order: order,
                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration)
         self.receiptEligibilityUseCase = receiptEligibilityUseCase

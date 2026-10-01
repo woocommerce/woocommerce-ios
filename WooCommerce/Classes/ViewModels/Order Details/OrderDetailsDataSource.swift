@@ -234,14 +234,14 @@ final class OrderDetailsDataSource: NSObject {
 
     private let siteSettings: [SiteSetting]
 
-    nonisolated init(order: Order,
-                     storageManager: StorageManagerType = ServiceLocator.storageManager,
-                     cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
-                     refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
-                     receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
-                     currencySettings: CurrencySettings = ServiceLocator.currencySettings,
-                     siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
-                     userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)) {
+    init(order: Order,
+         storageManager: StorageManagerType = ServiceLocator.storageManager,
+         cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
+         refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+         currencySettings: CurrencySettings = ServiceLocator.currencySettings,
+         siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
+         userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)) {
         self.storageManager = storageManager
         self.order = order
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration

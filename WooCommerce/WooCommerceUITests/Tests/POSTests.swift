@@ -108,6 +108,7 @@ final class POSTests: XCTestCase {
             .confirmExitPOS()
     }
 
+    @MainActor
     func test_POS_ipad_checkout_stays_in_place_when_product_search_keyboard_opens() throws {
         try XCTSkipIf(UIDevice.current.userInterfaceIdiom != .pad)
         let screen = try openPOS()

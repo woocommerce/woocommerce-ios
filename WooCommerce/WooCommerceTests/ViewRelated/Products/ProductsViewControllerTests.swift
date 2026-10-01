@@ -26,7 +26,7 @@ struct ProductsViewControllerTests {
                                                  navigateToContent: { _ in })
         controller.loadViewIfNeeded()
         let table = try #require(controller.tableView)
-        let refreshControl = try #require(table.refreshControl)
+        let refreshControl = try attachedRefreshControl(in: table)
 
         // When: the first page is loading
         controller.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
@@ -47,7 +47,7 @@ struct ProductsViewControllerTests {
         #expect((0..<table.numberOfSections).allSatisfy { table.numberOfRows(inSection: $0) == 0 })
         #expect(table.tableFooterView is ListEmptyView)
         #expect(controller.children.isEmpty)
-        #expect(table.refreshControl === refreshControl)
+        #expect(refreshControl.superview === table)
 
         // When: retry completes with an empty result
         controller.sync(pageNumber: 1, pageSize: 25, reason: nil, onCompletion: nil)
@@ -60,7 +60,7 @@ struct ProductsViewControllerTests {
         #expect((0..<table.numberOfSections).allSatisfy { table.numberOfRows(inSection: $0) == 0 })
         #expect(table.tableFooterView is ListEmptyView)
         #expect(controller.tableView === table)
-        #expect(table.refreshControl === refreshControl)
+        #expect(refreshControl.superview === table)
     }
 
     @Test
@@ -117,6 +117,11 @@ struct ProductsViewControllerTests {
 }
 
 private extension ProductsViewControllerTests {
+    func attachedRefreshControl(in table: UITableView) throws -> UIRefreshControl {
+        // Before iOS 26 the control is added as a subview rather than assigned to table.refreshControl.
+        try #require(table.subviews.compactMap { $0 as? UIRefreshControl }.first)
+    }
+
     func insert(_ products: [Product], into storageManager: MockStorageManager) async throws {
         try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
             storageManager.performAndSave({ storage in

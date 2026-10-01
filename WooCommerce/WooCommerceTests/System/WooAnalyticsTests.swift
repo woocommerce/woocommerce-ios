@@ -280,7 +280,8 @@ class WooAnalyticsTests: XCTestCase {
 
         // When
         provider.track("direct_event_" + tracksTestSuffix)
-        provider.track("pos_checkout_tapped_" + tracksTestSuffix, withProperties: ["payment_method": "cash"])
+        provider.track("checkout_tapped",
+                       withProperties: ["payment_method": "cash", "test_run": userDefaultsSuiteName!])
         provider.trackString("auth_event_" + tracksTestSuffix)
         provider.trackString("auth_event_with_properties_" + tracksTestSuffix, withProperties: ["step": "start"])
 
@@ -290,11 +291,14 @@ class WooAnalyticsTests: XCTestCase {
 
     func test_tracksProvider_events_when_opted_in_then_records_events_and_preserves_POS_properties() {
         // Given
+        TracksProvider.setPOSMode(true)
+        defer { TracksProvider.setPOSMode(false) }
         let provider = makeTracksProvider()
 
         // When
         provider.track("direct_event_" + tracksTestSuffix)
-        provider.track("pos_checkout_tapped_" + tracksTestSuffix, withProperties: ["payment_method": "cash"])
+        provider.track("checkout_tapped",
+                       withProperties: ["payment_method": "cash", "test_run": userDefaultsSuiteName!])
         provider.trackString("auth_event_" + tracksTestSuffix)
         provider.trackString("auth_event_with_properties_" + tracksTestSuffix, withProperties: ["step": "start"])
 

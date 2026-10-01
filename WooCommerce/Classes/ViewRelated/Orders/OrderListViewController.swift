@@ -880,7 +880,7 @@ private extension OrderListViewController {
         if state == .empty {
             configureEmptyStateView()
             emptyStateView.show(in: tableView)
-        } else {
+        } else if tableView.tableFooterView !== footerSpinnerView {
             tableView.tableFooterView = footerSpinnerView
         }
         ensureFooterSpinnerIsStopped()

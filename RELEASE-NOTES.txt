@@ -4,7 +4,6 @@
 25.8
 -----
 - [Internal] Login: the site-address screen reached from the QR prologue's "Log in with site address" fallback now tracks under the `login_site_address` flow instead of `login_qr`. [https://github.com/woocommerce/woocommerce-ios/pull/17915]
-- [Internal] Login: the "Log in with site address" action on the QR number-match and scan-error screens now tracks a `login_qr_fallback` click, matching the QR prologue's fallback. [https://github.com/woocommerce/woocommerce-ios/pull/17915]
 
 
 25.7

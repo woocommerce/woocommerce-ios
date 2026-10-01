@@ -384,6 +384,10 @@ class AuthenticationManager: Authentication {
                              navigationController: UINavigationController,
                              onStorePickerDismiss: @escaping () -> Void) -> UIViewController? {
 
+        // These screens are the epilogue, whether we arrived from a completed login or from a
+        // relaunch onto a stored error site, so set the flow here rather than at one caller.
+        AuthenticatorAnalyticsTracker.shared.set(flow: .epilogue)
+
         /// Account mismatched case
         guard matcher.match(originalURL: siteURL) else {
             DDLogWarn("⚠️ Present account mismatch error for site: \(String(describing: siteURL))")

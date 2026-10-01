@@ -25,6 +25,12 @@ public class AuthenticatorAnalyticsTracker {
         case click
         case source
         case step
+
+        /// The store address the merchant entered.
+        case url
+
+        /// Whether the merchant's account already has at least one connected store.
+        case hasConnectedStores = "has_connected_stores"
     }
 
     public enum Source: String {
@@ -99,6 +105,13 @@ public class AuthenticatorAnalyticsTracker {
         /// QR-driven login flow (scan/poll/exchange).
         ///
         case loginQR = "login_qr"
+
+        /// Everything after authentication succeeds: the store picker and the after-login
+        /// error screens. Set once when the epilogue starts; later steps inherit it.
+        ///
+        /// The same screens are also reachable from site discovery, where they keep
+        /// `siteDiscovery` instead — connecting another store is not a login epilogue.
+        case epilogue
     }
 
     public enum Step: String {
@@ -175,6 +188,16 @@ public class AuthenticatorAnalyticsTracker {
         /// Any error is surfaced.
         ///
         case qrError = "qr_error"
+
+        // MARK: - After-login failure states
+        //
+        // `flow = epilogue`, or `site_discovery` when the screen was reached by adding a store
+        // from the picker. Raw values are the shared cross-platform vocabulary and must not be
+        // renamed.
+
+        /// The store address entered at login is not in the signed-in WP.com account.
+        ///
+        case wrongWordPressAccount = "wrong_wordpress_account"
     }
 
     public enum ClickTarget: String {
@@ -352,9 +375,10 @@ public class AuthenticatorAnalyticsTracker {
 
     /// Shared Instance.
     ///
-    public static var shared: AuthenticatorAnalyticsTracker = {
-        return AuthenticatorAnalyticsTracker()
-    }()
+    /// Process-wide state that predates strict concurrency and is never reassigned. Marking it
+    /// `nonisolated(unsafe)` states that once, here, instead of leaving all 21 references to it
+    /// warning individually.
+    nonisolated(unsafe) public static let shared = AuthenticatorAnalyticsTracker()
 
     /// State for the analytics tracker.
     ///
@@ -422,12 +446,12 @@ public class AuthenticatorAnalyticsTracker {
 
     /// Track a step within a flow.
     ///
-    public func track(step: Step) {
+    public func track(step: Step, properties extraProperties: [String: String] = [:]) {
         guard canTrack() else {
             return
         }
 
-        track(event(step: step))
+        track(event(step: step, extraProperties: extraProperties))
     }
 
     /// Track a click interaction.
@@ -504,10 +528,10 @@ public class AuthenticatorAnalyticsTracker {
     ///
     /// - Returns: an analytics event representing the step.
     ///
-    private func event(step: Step) -> AnalyticsEvent {
+    private func event(step: Step, extraProperties: [String: String] = [:]) -> AnalyticsEvent {
         let event = AnalyticsEvent(
             name: EventType.step.rawValue,
-            properties: properties(step: step))
+            properties: properties(step: step).merging(extraProperties) { base, _ in base })
 
         state.lastStep = step
 

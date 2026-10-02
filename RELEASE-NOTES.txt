@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [*] Order creation: Keep the form, product selector and bundle configuration content inside the safe area after rotating or resizing the app. [https://github.com/woocommerce/woocommerce-ios/pull/17951]
 
 
 25.8

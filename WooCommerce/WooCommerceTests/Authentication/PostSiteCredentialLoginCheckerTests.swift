@@ -202,7 +202,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         }
         checker.checkEligibility(for: testURL, from: navigationController) {}
         waitUntil {
-            self.navigationController.presentedViewController != nil
+            events.isEmpty == false
         }
 
         // Then the site-credential route reports the same outcome Android does

@@ -1,10 +1,18 @@
 import XCTest
 import Yosemite
-import WordPressAuthenticator
+@testable import WordPressAuthenticator
+import WordPressShared
 import WordPressUI
 @testable import WooCommerce
 
 final class WrongAccountErrorViewModelTests: XCTestCase {
+
+    override func setUp() {
+        super.setUp()
+        // The view model's default tracker is a process-wide singleton that reads its enabled
+        // flag from the authenticator on first access, so the authenticator has to exist first.
+        WordPressAuthenticator.initializeAuthenticator()
+    }
 
     func test_viewmodel_provides_expected_image() {
         // Given
@@ -149,72 +157,46 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         XCTAssertTrue(MockAuthenticator.fetchSiteInfoTriggered)
     }
 
-    func test_error_view_is_tracked_with_selfhosted_site_if_credentials_are_present() throws {
+    func test_viewDidLoad_tracks_wrong_wordpress_account_step_with_url_and_connected_stores() {
         // Given
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-        let credentials = WordPressOrgCredentials(username: "test", password: "pwd", xmlrpc: "http://test.com/xmlrpc.php", options: [:])
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
         let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
-                                                   showsConnectedStores: false,
-                                                   siteCredentials: credentials,
-                                                   analytics: analytics,
+                                                   showsConnectedStores: true,
+                                                   siteCredentials: nil,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   tracker: tracker,
                                                    onJetpackSetupCompletion: { _, _ in })
 
         // When
         viewModel.viewDidLoad(nil)
 
         // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_error_shown" }))
-        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, true)
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.properties["step"], "wrong_wordpress_account")
+        XCTAssertEqual(events.first?.properties["url"], "woocommerce.com")
+        XCTAssertEqual(events.first?.properties["has_connected_stores"], "true")
     }
 
-    func test_error_view_is_tracked_with_selfhosted_site_if_siteInfo_returns_selfhosted() throws {
+    func test_viewDidLoad_omits_url_when_the_site_address_is_missing() {
         // Given
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-
-        let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": false])
-        MockAuthenticator.setMockSiteInfo(siteInfo)
-
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = WrongAccountErrorViewModel(siteURL: nil,
                                                    showsConnectedStores: false,
                                                    siteCredentials: nil,
                                                    authenticatorType: MockAuthenticator.self,
-                                                   analytics: analytics,
+                                                   tracker: tracker,
                                                    onJetpackSetupCompletion: { _, _ in })
 
         // When
         viewModel.viewDidLoad(nil)
 
         // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_error_shown" }))
-        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, true)
-    }
-
-    func test_error_view_is_tracked_without_selfhosted_site_if_siteInfo_returns_wpcom_site() throws {
-        // Given
-        let analyticsProvider = MockAnalyticsProvider()
-        let analytics = WooAnalytics(analyticsProvider: analyticsProvider)
-
-        let siteInfo = WordPressComSiteInfo(remote: ["isWordPressDotCom": true])
-        MockAuthenticator.setMockSiteInfo(siteInfo)
-
-        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
-                                                   showsConnectedStores: false,
-                                                   siteCredentials: nil,
-                                                   authenticatorType: MockAuthenticator.self,
-                                                   analytics: analytics,
-                                                   onJetpackSetupCompletion: { _, _ in })
-
-        // When
-        viewModel.viewDidLoad(nil)
-
-        // Then
-        let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == "login_jetpack_connection_error_shown" }))
-        let properties = try XCTUnwrap(analyticsProvider.receivedProperties[indexOfEvent])
-        XCTAssertEqual(properties["is_selfhosted_site"] as? Bool, false)
+        XCTAssertEqual(events.count, 1)
+        XCTAssertEqual(events.first?.properties["step"], "wrong_wordpress_account")
+        XCTAssertNil(events.first?.properties["url"])
+        XCTAssertEqual(events.first?.properties["has_connected_stores"], "false")
     }
 
     func test_primary_button_tap_is_tracked() {

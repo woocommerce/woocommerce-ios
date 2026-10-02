@@ -122,12 +122,13 @@ private extension QRLoginCoordinator {
             onBackTapped: { [weak self] in self?.handlePrologueBack() },
             onHelpTapped: { [weak self] in self?.showHelp() },
             onScanTapped: { [weak self] in self?.handleScanCTA() },
-            onSiteAddressTapped: { [weak self] in self?.fallbackToSiteAddress() },
+            onSiteAddressTapped: { [weak self] in self?.handleEnterSiteURL() },
             onURLTapped: { Self.copyLoginURL() }
         )
         // The dark prologue hides the shared navigation bar and draws its own
         // light Back / Help controls over the bubble background.
         prologueViewController = pushScreen(view,
+                                            analyticsStep: .qrPrologue,
                                             navigationBarStyle: .hidden,
                                             prefersLightStatusBar: true,
                                             showsHelpButton: false)
@@ -180,11 +181,6 @@ private extension QRLoginCoordinator {
         navigationController.popViewController(animated: true)
     }
 
-    func fallbackToSiteAddress() {
-        analytics.trackClick(.qrLoginFallback)
-        NavigateToEnterSite(trackedFlow: .loginQR).execute(from: navigationController)
-    }
-
     static func copyLoginURL() {
         UIPasteboard.general.string = WooConstants.qrLoginInstructionsURL
         // Snackbar / toast is owned by the prologue view — for now a Notice via
@@ -212,7 +208,7 @@ extension QRLoginCoordinator {
         )
         // The scanner is full-bleed camera UI with its own in-view chrome, so it
         // keeps the navigation bar hidden and does not use the toolbar Help item.
-        scannerViewController = pushScreen(view, navigationBarStyle: .hidden, showsHelpButton: false)
+        scannerViewController = pushScreen(view, analyticsStep: .qrScan, navigationBarStyle: .hidden, showsHelpButton: false)
     }
 }
 
@@ -386,7 +382,13 @@ private extension QRLoginCoordinator {
     /// screen underneath stays on the stack and is reachable by going back, so
     /// its controls must keep working. It is released later, when the QR screens
     /// are popped (`handlePrologueBack`) or replaced on a successful sign-in.
+    ///
+    /// Shared by every "Log in with site address" entry point — the prologue, the
+    /// number-match host, and the scan-error screen — so all of them record the
+    /// `login_qr_fallback` click under the QR flow, preserving the "came from QR"
+    /// signal before the site-address screen switches to `login_site_address`.
     func handleEnterSiteURL() {
+        analytics.trackClick(.qrLoginFallback)
         onEnterSiteURL()
     }
 
@@ -453,7 +455,7 @@ private extension QRLoginCoordinator {
             onPrimaryTapped: { [weak self] in self?.handleScanAgain() },
             onEnterSiteURLTapped: { [weak self] in self?.handleEnterSiteURL() }
         )
-        pushScreen(view)
+        pushScreen(view, analyticsStep: .qrError)
     }
 }
 
@@ -462,14 +464,27 @@ private extension QRLoginCoordinator {
 private extension QRLoginCoordinator {
     /// Wraps `view` in a `QRLoginHostingController` and pushes it onto the login
     /// navigation stack, showing the navigation bar with a "Help" item by default.
+    ///
+    /// Every appearance re-asserts `flow: login_qr` (and `analyticsStep`, when
+    /// given) as tracker state without tracking an event. A screen pushed on top —
+    /// e.g. the site-address fallback — switches the shared flow to its own, so
+    /// without this, events from a QR screen the merchant went back to would be
+    /// attributed to that other flow.
     @discardableResult
     func pushScreen<Content: View>(_ view: Content,
+                                   analyticsStep: AuthenticatorAnalyticsTracker.Step? = nil,
                                    navigationBarStyle: QRLoginNavigationBarStyle = .inherited,
                                    prefersLightStatusBar: Bool = false,
                                    showsHelpButton: Bool = true) -> QRLoginHostingController<Content> {
         let hosting = QRLoginHostingController(rootView: view)
         hosting.navigationBarStyle = navigationBarStyle
         hosting.prefersLightStatusBar = prefersLightStatusBar
+        hosting.onViewDidAppear = { [weak self] in
+            self?.analytics.setFlow(.loginQR)
+            if let analyticsStep {
+                self?.analytics.setStep(analyticsStep)
+            }
+        }
         if showsHelpButton {
             hosting.navigationItem.rightBarButtonItem = UIBarButtonItem(
                 title: Localization.help,

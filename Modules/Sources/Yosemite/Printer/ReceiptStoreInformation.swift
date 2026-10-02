@@ -2,7 +2,7 @@
 ///
 /// Hardware-domain mirror of the app's store receipt information, so the printer renderer
 /// can include store contact details without importing higher layers.
-public struct ReceiptStoreInformation: Equatable {
+public struct ReceiptStoreInformation: Equatable, Sendable {
     public let storeName: String?
     public let storeAddress: String?
     public let phone: String?

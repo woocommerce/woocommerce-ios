@@ -127,6 +127,8 @@ struct ItemListView: View {
             // set inside the pushed navigationDestination can stay stuck at its hidden value after
             // dismissal, leaving the phone cart button hidden until an unrelated re-render.
             .posHidesFloatingControl(isAddingCustomAmount)
+            .preference(key: POSItemListBackgroundPreferenceKey.self,
+                        value: isAddingCustomAmount ? .posSurfaceBright : .posSurface)
     }
 
     @ViewBuilder
@@ -148,10 +150,10 @@ struct ItemListView: View {
                     .opacity(selectedItemListType.isCoupons ? 1 : 0)
                     .accessibilityHidden(!selectedItemListType.isCoupons)
             }
-            .ignoresSafeArea(.container)
         }
         .navigationDestination(for: POSItem.self, destination: { item in
             childListView(parentItem: item)
+                .posIgnoresHiddenKeyboardSafeArea()
         })
         .modifier(CustomAmountFormPushModifier(
             isPresented: $isAddingCustomAmount,

@@ -373,6 +373,7 @@ private struct POSSettingsDetailPage<Content: View>: View {
             content()
         }
         .background(backgroundColor)
+        .posIgnoresHiddenKeyboardSafeArea()
         .navigationBarBackButtonHidden(true)
         .posEdgeSwipeBackAction(onBack: onBack)
     }

@@ -101,7 +101,7 @@ struct POSNavigationDestinationMarkAsPaidView: View {
         // Fill the right pane so the visual transition reads as "totals → confirmation → totals"
         // rather than a card landing on top.
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.posSurface)
+        .background(Color.posSurface.ignoresSafeArea())
         // Asks the dashboard to hide the floating control overlay (`…` menu, reader chip)
         // so the merchant can focus on the confirmation step without distractions.
         .posHidesFloatingControl()
@@ -147,16 +147,19 @@ extension View {
     /// Routes every `POSNavigationDestination` case to its wrapper view.
     func posNavigationDestinations() -> some View {
         navigationDestination(for: POSNavigationDestination.self) { destination in
-            switch destination {
-            case .cashPayment(let orderTotal):
-                POSNavigationDestinationCashPaymentView(orderTotal: orderTotal)
-            case .scanToPay(let orderTotal):
-                POSNavigationDestinationScanToPayView(orderTotal: orderTotal)
-            case .markAsPaid(let orderTotal):
-                POSNavigationDestinationMarkAsPaidView(orderTotal: orderTotal)
-            case .emailReceipt:
-                POSNavigationDestinationEmailReceiptView()
+            Group {
+                switch destination {
+                case .cashPayment(let orderTotal):
+                    POSNavigationDestinationCashPaymentView(orderTotal: orderTotal)
+                case .scanToPay(let orderTotal):
+                    POSNavigationDestinationScanToPayView(orderTotal: orderTotal)
+                case .markAsPaid(let orderTotal):
+                    POSNavigationDestinationMarkAsPaidView(orderTotal: orderTotal)
+                case .emailReceipt:
+                    POSNavigationDestinationEmailReceiptView()
+                }
             }
+            .posIgnoresHiddenKeyboardSafeArea()
         }
     }
 }

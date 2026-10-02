@@ -50,7 +50,6 @@ struct POSRootModalViewModifier: ViewModifier {
                             .posShadow(isFullScreen ? .none : .large,
                                        cornerRadius: isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
                             .padding(isFullScreen ? POSPadding.none : POSPadding.medium)
-                            .ignoresSafeArea(.container, edges: isFullScreen ? [.horizontal, .bottom] : [])
                     }
                     .zIndex(1)
                     // Scale the modal container in and out, fading appropriately.
@@ -61,6 +60,7 @@ struct POSRootModalViewModifier: ViewModifier {
                 }
             }
             .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
+            .posIgnoresHiddenKeyboardSafeArea()
     }
 
     private func updateModalParentSize(with size: CGSize) {

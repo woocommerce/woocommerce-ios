@@ -23,6 +23,8 @@ class DefaultNoticePresenter: NoticePresenter {
 
     var kvoToken: NSKeyValueObservation?
 
+    private var tabBarFrameToken: NSKeyValueObservation?
+
     // ServiceLocator can construct the presenter outside the main actor. UIKit is initialized lazily when presenting.
     nonisolated init() {}
 
@@ -196,6 +198,7 @@ private extension DefaultNoticePresenter {
     func dismiss() {
         noticeOnScreen = nil
         kvoToken = nil
+        tabBarFrameToken = nil
         presentNextNoticeIfPossible()
     }
 
@@ -221,6 +224,15 @@ private extension DefaultNoticePresenter {
             let safeAreaConstraint = container.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
             safeAreaConstraint.priority = .defaultHigh
             container.safeAreaBaselineConstraint = safeAreaConstraint
+            // The tab bar can change its orientation after the container's last layout pass of a transition.
+            tabBarFrameToken = tabBarController.tabBar.observe(\.frame) { [weak self, weak container] _, _ in
+                MainActor.assumeIsolated {
+                    guard let self, let container else {
+                        return
+                    }
+                    self.updateBaseline(of: container)
+                }
+            }
 
             if kvoToken == nil {
                 kvoToken = tabBarController.tabBar.observe(\.isHidden, options: .new) { tabBar, _ in

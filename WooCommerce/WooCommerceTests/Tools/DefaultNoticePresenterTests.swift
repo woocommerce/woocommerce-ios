@@ -148,4 +148,29 @@ struct DefaultNoticePresenterTests {
         #expect(bottomConstraints.count == 1)
         #expect(bottomConstraints.first?.secondItem === viewController.view.safeAreaLayoutGuide)
     }
+
+    @Test
+    func test_enqueue_when_tab_bar_turns_horizontal_then_notice_is_pinned_above_the_tab_bar() throws {
+        // Given
+        var presenter: NoticePresenter = DefaultNoticePresenter()
+        let viewController = UITabBarController()
+        viewController.viewControllers = [UIViewController()]
+        viewController.view.frame = CGRect(x: 0, y: 0, width: 951, height: 669)
+        viewController.view.layoutIfNeeded()
+        viewController.tabBar.frame = CGRect(x: 882, y: 0, width: 69, height: 669)
+        presenter.presentingViewController = viewController
+        let existingSubviews = viewController.view.subviews
+        presenter.enqueue(notice: Notice(title: "Notice"))
+        let noticeContainer = try #require(viewController.view.subviews.first { !existingSubviews.contains($0) })
+
+        // When
+        viewController.tabBar.frame = CGRect(x: 0, y: 868, width: 669, height: 83)
+
+        // Then
+        let bottomConstraints = viewController.view.constraints.filter {
+            $0.isActive && $0.firstItem === noticeContainer && $0.firstAttribute == .bottom && $0.relation == .equal
+        }
+        #expect(bottomConstraints.count == 1)
+        #expect(bottomConstraints.first?.secondItem === viewController.tabBar)
+    }
 }

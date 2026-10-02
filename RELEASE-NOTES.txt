@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [*] iPhone Duo: Notices now appear at the bottom of the screen when the tab bar is on the side, and no longer block taps on the content beside them. [https://github.com/woocommerce/woocommerce-ios/pull/17998]
 - [*] Layout: Fixed doubled side padding on the card reader manuals, plugins and booking details screens in landscape, and content insets of sheets on wide layouts. [https://github.com/woocommerce/woocommerce-ios/pull/17971]
 - [*] Order creation: Keep the form, product selector and bundle configuration content inside the safe area after rotating or resizing the app. [https://github.com/woocommerce/woocommerce-ios/pull/17951]
 

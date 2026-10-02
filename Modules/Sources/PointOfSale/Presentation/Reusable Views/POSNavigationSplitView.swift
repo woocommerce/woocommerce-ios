@@ -100,6 +100,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                     // arriving screen translucent for the length of the slide.
                     .animation(isRegular ? .default : nil, value: selection != nil)
                     .navigationBarHidden(true)
+                    .posIgnoresHiddenKeyboardSafeArea()
                 }
                 .frame(width: detailWidth(for: totalWidth))
                 // The stack has no backdrop of its own, so without this any moment where the

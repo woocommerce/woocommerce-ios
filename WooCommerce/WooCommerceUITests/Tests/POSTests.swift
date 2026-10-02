@@ -142,6 +142,78 @@ final class POSTests: XCTestCase {
         capture("Checkout with keyboard")
     }
 
+    @MainActor
+    func test_POS_ipad_can_submit_custom_amount_and_complete_cash_payment_after_rotation() throws {
+        try XCTSkipIf(UIDevice.current.userInterfaceIdiom != .pad)
+        XCUIDevice.shared.orientation = .portrait
+        defer { XCUIDevice.shared.orientation = .portrait }
+
+        // Given a product pane that rotates before presenting a keyboard-driven destination.
+        let screen = try openPOS(extraLaunchArguments: Self.customAmountsLaunchArguments)
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let landscapeWindow = XCTNSPredicateExpectation(
+            predicate: NSPredicate { object, _ in
+                guard let window = object as? XCUIElementAttributes else { return false }
+                return window.frame.width > window.frame.height
+            },
+            object: XCUIApplication().windows.firstMatch)
+        XCTAssertEqual(XCTWaiter.wait(for: [landscapeWindow], timeout: 10), .completed)
+
+        // When a custom amount is submitted and paid with cash.
+        screen.tapAddCustomAmount(amount: "12.34", name: "Handling")
+            .verifyCartContainsCustomAmount()
+            .tapCheckout()
+            .waitForTotalsLoaded()
+            .tapCashPayment()
+            .tapMarkPaymentComplete()
+            .waitForPaymentSuccess()
+
+        // Then the success action is reachable and returns to a usable product pane.
+        screen.tapNewOrder().verifyReadyForNewOrder()
+    }
+
+    @MainActor
+    func test_POS_ipad_settings_footer_stays_in_place_after_search_keyboard_closes() throws {
+        try XCTSkipIf(UIDevice.current.userInterfaceIdiom != .pad)
+        XCUIDevice.shared.orientation = .portrait
+        defer { XCUIDevice.shared.orientation = .portrait }
+
+        // Given an authenticated session without keyboard state from the login flow.
+        _ = try openPOS()
+        let app = XCUIApplication()
+        app.terminate()
+        app.launchArguments = (Self.baseLaunchArguments + Self.checkoutLaunchArguments)
+            .filter { $0 != "logout-at-launch" }
+        app.launch()
+        let screen = try TabNavComponent().goToPOSScreen()
+        XCUIDevice.shared.orientation = .landscapeLeft
+        let landscapeWindow = XCTNSPredicateExpectation(
+            predicate: NSPredicate { object, _ in
+                guard let window = object as? XCUIElementAttributes else { return false }
+                return window.frame.width > window.frame.height
+            },
+            object: XCUIApplication().windows.firstMatch)
+        XCTAssertEqual(XCTWaiter.wait(for: [landscapeWindow], timeout: 10), .completed)
+        screen.tapMenuButton().tapSettingsMenuItem().verifySettingsVisible()
+        let footer = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Get help and support")).firstMatch
+        XCTAssertTrue(footer.waitForIsHittable(timeout: 10))
+        let footerY = footer.frame.maxY
+        screen.dismissSettings()
+
+        // When the software keyboard opens and closes after rotation.
+        screen.tapSearchProducts()
+        let keyboard = app.keyboards.firstMatch
+        XCTAssertTrue(keyboard.waitForExistence(timeout: 5))
+        XCTAssertGreaterThan(keyboard.frame.intersection(app.frame).height, 90)
+        screen.dismissSearch()
+        screen.tapMenuButton().tapSettingsMenuItem().verifySettingsVisible()
+
+        // Then Settings uses the same space as before the keyboard appeared.
+        XCTAssertTrue(footer.waitForIsHittable(timeout: 10))
+        XCTAssertFalse(keyboard.exists)
+        XCTAssertEqual(footer.frame.maxY, footerY, accuracy: 1)
+    }
+
     private func beginTwoProductCheckout(extraLaunchArguments: [String] = []) throws -> POSScreen {
         return try openPOS(extraLaunchArguments: extraLaunchArguments)
             .tapAddProduct(productID: ProductIDs.simpleProduct)

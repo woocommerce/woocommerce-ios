@@ -60,6 +60,7 @@ struct POSRootModalViewModifier: ViewModifier {
                 }
             }
             .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
+            .posIgnoresHiddenKeyboardSafeArea()
     }
 
     private func updateModalParentSize(with size: CGSize) {

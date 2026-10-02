@@ -153,6 +153,7 @@ struct ItemListView: View {
         }
         .navigationDestination(for: POSItem.self, destination: { item in
             childListView(parentItem: item)
+                .posIgnoresHiddenKeyboardSafeArea()
         })
         .modifier(CustomAmountFormPushModifier(
             isPresented: $isAddingCustomAmount,

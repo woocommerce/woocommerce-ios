@@ -127,6 +127,8 @@ struct ItemListView: View {
             // set inside the pushed navigationDestination can stay stuck at its hidden value after
             // dismissal, leaving the phone cart button hidden until an unrelated re-render.
             .posHidesFloatingControl(isAddingCustomAmount)
+            .preference(key: POSItemListBackgroundPreferenceKey.self,
+                        value: isAddingCustomAmount ? .posSurfaceBright : .posSurface)
     }
 
     @ViewBuilder

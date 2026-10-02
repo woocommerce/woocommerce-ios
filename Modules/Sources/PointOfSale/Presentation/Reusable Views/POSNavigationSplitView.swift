@@ -128,9 +128,9 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                     HStack(spacing: 0) {
                         Color.clear
                             .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
-                            .background(Color.posSurfaceBright.ignoresSafeArea(.container, edges: [.top, .bottom, .leading]))
+                            .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                         Color.clear
-                            .background(visibleDetailBackgroundColor.ignoresSafeArea(.container, edges: [.top, .bottom, .trailing]))
+                            .background(visibleDetailBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
                     }
                 }
             } else {

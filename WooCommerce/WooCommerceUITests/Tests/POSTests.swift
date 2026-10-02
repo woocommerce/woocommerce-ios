@@ -79,6 +79,7 @@ final class POSTests: XCTestCase {
             .verifyReadyForNewOrder(previousProductID: ProductIDs.simpleProduct, previousVariationID: ProductIDs.variation)
     }
 
+    @MainActor
     func test_POS_eligible_site_can_search_manage_cart_open_settings_and_exit_POS() throws {
         try openPOS(extraLaunchArguments: Self.customAmountsLaunchArguments)
             .tapSearchProducts()

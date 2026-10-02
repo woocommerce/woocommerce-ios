@@ -39,6 +39,8 @@ struct POSPageHeaderItem: Identifiable {
 }
 
 /// A header view for POS pages.
+/// Compact headers keep the back button, title, and actions in one navigation row.
+/// Use `subtitle` or `bottomContent` for information below that row; callers need no row-height adjustments.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-450_24951
 struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomContent: View>: View {
     private let items: [POSPageHeaderItem]
@@ -54,11 +56,18 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     }
 
     private var hStackAlignment: VerticalAlignment {
-        items.first?.subtitle == nil ? .center: .firstTextBaseline
+        if horizontalSizeClass == .compact {
+            return .top
+        }
+        return items.first?.subtitle == nil ? .center: .firstTextBaseline
     }
 
     private var showsBackButton: Bool {
         effectiveBackButtonConfiguration != nil
+    }
+
+    private var navigationRowMinHeight: CGFloat? {
+        horizontalSizeClass == .compact ? POSHeaderLayoutConstants.minHeight : nil
     }
 
     init(
@@ -105,6 +114,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                 }
 
                 trailingContent
+                    .frame(minHeight: navigationRowMinHeight)
             }
 
             bottomContent
@@ -131,6 +141,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
                 if showsBackButton {
                     backButton
+                        .frame(minHeight: navigationRowMinHeight)
                 }
                 ForEach(0..<items.count, id: \.self) { index in
                     VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
@@ -154,6 +165,8 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                                     .transition(.opacity.combined(with: .scale))
                             }
                         }
+                        // Keep subtitles below the navigation row instead of moving its title and back button.
+                        .frame(minHeight: navigationRowMinHeight)
 
                         if let subtitle = items[index].subtitle {
                             subtitleText(subtitle)

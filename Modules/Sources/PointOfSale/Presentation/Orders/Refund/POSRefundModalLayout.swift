@@ -40,7 +40,7 @@ struct POSRefundNavigationHeader: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: POSSpacing.medium) {
+        HStack(alignment: horizontalSizeClass == .compact ? .center : .top, spacing: POSSpacing.medium) {
             if let backAction {
                 POSPageHeaderBackButton(configuration: .init(state: .enabled, action: backAction))
                     .accessibilityLabel(backAccessibilityLabel)

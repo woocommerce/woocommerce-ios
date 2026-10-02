@@ -32,9 +32,9 @@ public struct PointOfSaleEntryPointView: View {
     @State private var posEntryPointController: POSEntryPointController
     @State private var accessSession: POSAccessSession
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.isPresented) private var isPresented
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
+    private let registerOnDismiss: (@escaping () -> Void) -> Bool
     private let itemsController: PointOfSaleItemsControllerProtocol
     private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
@@ -92,7 +92,9 @@ public struct PointOfSaleEntryPointView: View {
          staffSettingsService: POSStaffSettingsService? = nil,
          services: POSDependencyProviding,
          httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
-         itemProvider: PointOfSaleItemServiceProtocol? = nil) {
+         itemProvider: PointOfSaleItemServiceProtocol? = nil,
+         registerOnDismiss: @escaping (@escaping () -> Void) -> Bool = { _ in true }) {
+        self.registerOnDismiss = registerOnDismiss
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
         self._accessSession = State(initialValue: POSAccessSessionFactory.make(
             siteID: siteID,
@@ -238,6 +240,17 @@ public struct PointOfSaleEntryPointView: View {
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 
+            let cleanup = { [posModel, posModalManager, onPointOfSaleModeActiveStateChange] in
+                onPointOfSaleModeActiveStateChange(false)
+                posModalManager.onDisappear()
+                posModel?.pointOfSaleClosed()
+            }
+            guard registerOnDismiss(cleanup) else {
+                cleanup()
+                return
+            }
+            onPointOfSaleModeActiveStateChange(true)
+
             // Warm the store's receipt settings while POS starts up so printing a receipt after a
             // payment doesn't wait on a fetch.
             await posModel?.preloadReceiptStoreInformation()
@@ -256,15 +269,6 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.siteTimezone, siteTimezone)
         .environment(\.posLayoutScale, isCompactLayout ? .compact : .regular)
         .injectKeyboardObserver()
-        .onAppear {
-            onPointOfSaleModeActiveStateChange(true)
-        }
-        .onChange(of: isPresented) { _, isPresented in
-            guard !isPresented else { return }
-            onPointOfSaleModeActiveStateChange(false)
-            posModalManager.onDisappear()
-            posModel?.pointOfSaleClosed()
-        }
         .posLockScreenOverlay()
         .environment(\.posAccessSession, accessSession)
         .task {

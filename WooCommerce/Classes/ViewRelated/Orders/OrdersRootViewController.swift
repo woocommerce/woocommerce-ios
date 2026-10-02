@@ -406,9 +406,7 @@ private extension OrdersRootViewController {
             return
         }
 
-        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .systemMaterial))
-        backgroundView.isUserInteractionEnabled = false
-        backgroundView.translatesAutoresizingMaskIntoConstraints = false
+        let backgroundView = OrdersProductsListHeaderStyle.makeBackgroundView()
         liquidGlassHeaderBackgroundView = backgroundView
         view.addSubview(backgroundView)
 
@@ -472,14 +470,8 @@ private extension OrdersRootViewController {
         // controller that owns the navigation item for native large title tracking.
         setContentScrollView(ordersViewController.tableView, for: [.top, .bottom])
 
-        // A single blur view spans the navigation bar and filter header so their backgrounds blend.
-        let appearance = UINavigationBarAppearance()
-        appearance.configureWithTransparentBackground()
-        navigationItem.standardAppearance = appearance
-        navigationItem.scrollEdgeAppearance = appearance
-        navigationItem.compactAppearance = appearance
-        navigationItem.compactScrollEdgeAppearance = appearance
-        ordersViewController.tableView.topEdgeEffect.isHidden = true
+        OrdersProductsListHeaderStyle.configureNavigationAppearance(navigationItem: navigationItem,
+                                                                    scrollView: ordersViewController.tableView)
 
         stackViewTopConstraint.isActive = false
         stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
@@ -577,15 +569,9 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
             return
         }
 
-        // One shared blur removes the navigation/filter background seam, but can also blur UIKit's table-hosted large title.
-        // Hide it at the top to keep the title sharp; 0.5 allows for layout rounding.
-        // Related reports: FB21613303 (SwiftUI large-title blur) and FB20756572 (UIKit edge-effect sizing):
-        // https://github.com/jensvansteen/ScrollEdgeBar#pull-requests
-        // https://developer.apple.com/forums/thread/803378
-        liquidGlassHeaderBackgroundView?.isHidden = scrollView.contentOffset.y + scrollView.adjustedContentInset.top <= 0.5
-        let transform = CGAffineTransform(translationX: 0, y: scrollView.topOverscrollDistance)
-        liquidGlassHeaderBackgroundView?.transform = transform
-        filtersBar.transform = transform
+        OrdersProductsListHeaderStyle.updateScrollPosition(backgroundView: liquidGlassHeaderBackgroundView,
+                                                           headerViews: [filtersBar],
+                                                           scrollView: scrollView)
     }
 }
 

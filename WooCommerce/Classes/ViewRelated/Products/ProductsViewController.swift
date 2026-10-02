@@ -790,6 +790,7 @@ private extension ProductsViewController {
         }
 
         setContentScrollView(tableView, for: [.top, .bottom])
+        updateLiquidGlassHeaderVisibility()
     }
 
     private func updateToolbarOverscrollPosition(from scrollView: UIScrollView) {
@@ -797,10 +798,10 @@ private extension ProductsViewController {
             return
         }
 
-        let transform = CGAffineTransform(translationX: 0, y: scrollView.topOverscrollDistance)
-        liquidGlassHeaderBackgroundView?.transform = transform
-        toolbar.transform = transform
-        toolbarBottomSeparator.transform = transform
+        OrdersProductsListHeaderStyle.updateScrollPosition(backgroundView: liquidGlassHeaderBackgroundView,
+                                                           headerViews: [toolbar, toolbarBottomSeparator],
+                                                           scrollView: scrollView,
+                                                           isHeaderHidden: toolbar.isHidden)
     }
 
     private func configureHiddenScrollView() {
@@ -837,16 +838,25 @@ private extension ProductsViewController {
         filterButton.accessibilityIdentifier = "product-filter-button"
 
         [sortButton, filterButton].forEach {
-            $0.applyLinkButtonStyle()
-            var configuration = UIButton.Configuration.plain()
-            configuration.contentInsets = Constants.toolbarButtonInsets
-            $0.configuration = configuration
+            if #available(iOS 26.0, *) {
+                var configuration = UIButton.Configuration.glass()
+                configuration.buttonSize = .medium
+                configuration.baseForegroundColor = .label
+                $0.configuration = configuration
+                $0.setContentHuggingPriority(.required, for: .horizontal)
+            } else {
+                $0.applyLinkButtonStyle()
+                var configuration = UIButton.Configuration.plain()
+                configuration.contentInsets = Constants.toolbarButtonInsets
+                $0.configuration = configuration
+            }
         }
 
         toolbar.backgroundColor = toolbarBackgroundColor
         toolbar.setSubviews(leftViews: [sortButton], rightViews: [filterButton])
 
         if #available(iOS 26.0, *) {
+            toolbar.setContentInsets(Constants.liquidGlassToolbarContentInsets, alignment: .center)
             toolbarBottomSeparator.backgroundColor = .clear
         } else {
             toolbarBottomSeparator.backgroundColor = .systemColor(.separator)
@@ -872,14 +882,14 @@ private extension ProductsViewController {
         stackView.removeArrangedSubview(toolbarBottomSeparator)
         toolbarBottomSeparator.removeFromSuperview()
 
-        let backgroundView = UIView.makePinnedHeaderBackgroundView(color: headerBackgroundColor)
+        let backgroundView = OrdersProductsListHeaderStyle.makeBackgroundView()
         liquidGlassHeaderBackgroundView = backgroundView
         view.addSubview(backgroundView)
         view.addSubview(toolbar)
         view.addSubview(toolbarBottomSeparator)
 
         NSLayoutConstraint.activate([
-            backgroundView.topAnchor.constraint(equalTo: toolbar.topAnchor),
+            backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
             backgroundView.leadingAnchor.constraint(equalTo: toolbar.leadingAnchor),
             backgroundView.trailingAnchor.constraint(equalTo: toolbar.trailingAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: toolbarBottomSeparator.bottomAnchor),
@@ -910,17 +920,20 @@ private extension ProductsViewController {
 
         let previousTopInset = tableView.contentInset.top
         if abs(previousTopInset - height) > 0.5 {
+            let previousContentOffset = tableView.contentOffset
             var contentInset = tableView.contentInset
             contentInset.top = height
             tableView.contentInset = contentInset
             if !tableView.isTracking && !tableView.isDragging && !tableView.isDecelerating {
-                tableView.contentOffset.y -= height - previousTopInset
+                // UIKit can adjust the offset when the inset changes. Use the original offset to avoid applying the change twice.
+                tableView.contentOffset.y = previousContentOffset.y - (height - previousTopInset)
             }
         }
 
         var verticalScrollIndicatorInsets = tableView.verticalScrollIndicatorInsets
         verticalScrollIndicatorInsets.top = height
         tableView.verticalScrollIndicatorInsets = verticalScrollIndicatorInsets
+        updateToolbarOverscrollPosition(from: tableView)
     }
 
     private func updateLiquidGlassHeaderVisibility() {
@@ -929,7 +942,12 @@ private extension ProductsViewController {
         }
 
         toolbarBottomSeparator.isHidden = toolbar.isHidden
-        liquidGlassHeaderBackgroundView?.isHidden = toolbar.isHidden
+
+        // Use UIKit's background when bulk editing or an empty list hides the toolbar.
+        OrdersProductsListHeaderStyle.configureNavigationAppearance(navigationItem: navigationItem,
+                                                                    scrollView: tableView,
+                                                                    isHeaderVisible: !toolbar.isHidden)
+        updateToolbarOverscrollPosition(from: tableView)
     }
 
     func configureScrollWatcher() {
@@ -1794,6 +1812,7 @@ private extension ProductsViewController {
         static let headerDefaultHeight = CGFloat(130)
         static let headerContainerInsets = UIEdgeInsets.zero
         static let toolbarButtonInsets = NSDirectionalEdgeInsets(top: 12, leading: 16, bottom: 12, trailing: 16)
+        static let liquidGlassToolbarContentInsets = NSDirectionalEdgeInsets(top: 8, leading: 16, bottom: 8, trailing: 16)
     }
 
     enum Localization {

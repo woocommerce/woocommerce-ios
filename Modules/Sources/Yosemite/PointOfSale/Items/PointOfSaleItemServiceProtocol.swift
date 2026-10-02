@@ -1,7 +1,7 @@
 import Foundation
 import struct Networking.PagedItems
 
-public enum POSItem: Equatable, Identifiable, Hashable {
+public enum POSItem: Equatable, Identifiable, Hashable, Sendable {
     case simpleProduct(POSSimpleProduct)
     case variableParentProduct(POSVariableParentProduct)
     case variation(POSVariation)

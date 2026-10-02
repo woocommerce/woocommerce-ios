@@ -13,23 +13,12 @@ struct DefaultQRLoginDeviceInfoProvider: QRLoginDeviceInfoProvider {
         QRLoginScanDevice(
             os: "iOS",
             osVersion: UIDevice.current.systemVersion,
-            model: Self.hardwareIdentifier,
+            // The web shows `model` to the merchant (and uses it in the sign-in email and the
+            // Application Password name), so send the generic `iPhone` / `iPad` rather than the
+            // hardware identifier (`iPhone14,2`). iOS has no public API for the marketing name.
+            model: UIDevice.current.model,
             brand: "Apple",
             appVersion: Bundle.main.marketingVersion
         )
-    }
-
-    /// e.g. `iPhone17,1`. Falls back to `UIDevice.current.model` (e.g. `iPhone`)
-    /// when the sysctl call yields nothing — server applies a per-field cap and
-    /// whitelist anyway.
-    private static var hardwareIdentifier: String {
-        var systemInfo = utsname()
-        uname(&systemInfo)
-        let mirror = Mirror(reflecting: systemInfo.machine)
-        let identifier = mirror.children.compactMap { element -> String? in
-            guard let value = element.value as? Int8, value != 0 else { return nil }
-            return String(UnicodeScalar(UInt8(value)))
-        }.joined()
-        return identifier.isEmpty ? UIDevice.current.model : identifier
     }
 }

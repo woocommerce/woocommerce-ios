@@ -101,6 +101,7 @@ struct AddCustomAmountView: View {
                 .padding(.vertical, POSPadding.medium)
         }
         .background(Color.posSurfaceBright.ignoresSafeArea())
+        .posIgnoresHiddenKeyboardSafeArea()
     }
 
     private var amountSection: some View {

@@ -146,6 +146,7 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
+        .posIgnoresHiddenKeyboardSafeArea()
         .animation(.default, value: posModel.orderState.isError)
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields

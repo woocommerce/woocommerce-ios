@@ -3,6 +3,7 @@
 
 25.8
 -----
+- [*] Payments: In-person card payments are now hidden for orders sold as a subscription, including variable and plan-based subscriptions the previous check missed. [https://github.com/woocommerce/woocommerce-ios/pull/17986]
 - [*] Login: Allow entering and submitting nine-digit verification codes from WordPress.com. [https://github.com/woocommerce/woocommerce-ios/pull/17969]
 - [Internal] Login: the site-address screen reached from the QR prologue's "Log in with site address" fallback now tracks under the `login_site_address` flow instead of `login_qr`. [https://github.com/woocommerce/woocommerce-ios/pull/17915]
 - [*] Products: Fixed a remaining iOS 26 crash when tapping Save right as the "View product in store" sheet opens from the product form. [https://github.com/woocommerce/woocommerce-ios/pull/17963]

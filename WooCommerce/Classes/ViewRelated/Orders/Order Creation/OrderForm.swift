@@ -235,8 +235,8 @@ struct OrderForm: View {
     }
 
     var body: some View {
-        SafeAreaInsetsReader { safeAreaInsets in
-            orderFormSummary(presentProductSelector, safeAreaInsets: safeAreaInsets)
+        SafeAreaInsetsReader { _ in
+            orderFormSummary(presentProductSelector)
         }
         .onAppear {
             updateSelectionSyncApproach(for: presentationStyle)
@@ -262,7 +262,7 @@ struct OrderForm: View {
         }
     }
 
-    @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?, safeAreaInsets: EdgeInsets) -> some View {
+    @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?) -> some View {
         ScrollViewReader { scroll in
             ScrollView {
                 Group {
@@ -278,7 +278,6 @@ struct OrderForm: View {
 
                         Group {
                             OrderStatusSection(viewModel: viewModel,
-                                               safeAreaInsets: safeAreaInsets,
                                                topDivider: !viewModel.shouldShowNonEditableIndicators,
                                                isEditButtonVisible: viewModel.isOrderStatusEditingEnabled)
                             Spacer(minLength: Layout.sectionSpacing)
@@ -290,8 +289,7 @@ struct OrderForm: View {
                                         presentProductSelector: presentProductSelector,
                                         viewModel: viewModel,
                                         navigationButtonID: $navigationButtonID,
-                                        isLoading: isLoading,
-                                        safeAreaInsets: safeAreaInsets)
+                                        isLoading: isLoading)
                         .disabled(viewModel.shouldShowNonEditableIndicators)
 
                         Group {
@@ -302,8 +300,7 @@ struct OrderForm: View {
                         .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
 
                         OrderCustomAmountsSection(viewModel: viewModel,
-                                                  sectionViewModel: viewModel.customAmountsSectionViewModel,
-                                                  safeAreaInsets: safeAreaInsets)
+                                                  sectionViewModel: viewModel.customAmountsSectionViewModel)
                             .disabled(viewModel.shouldShowNonEditableIndicators)
 
                         Divider()
@@ -311,7 +308,7 @@ struct OrderForm: View {
                         Spacer(minLength: Layout.sectionSpacing)
 
                         Group {
-                            OrderShippingSection(viewModel: viewModel.shippingLineViewModel, safeAreaInsets: safeAreaInsets)
+                            OrderShippingSection(viewModel: viewModel.shippingLineViewModel)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
                             Spacer(minLength: Layout.sectionSpacing)
                         }
@@ -319,8 +316,7 @@ struct OrderForm: View {
 
                         Group {
                             OrderCouponSectionView(viewModel: viewModel,
-                                                   couponViewModel: viewModel.couponLineViewModel,
-                                                   safeAreaInsets: safeAreaInsets)
+                                                   couponViewModel: viewModel.couponLineViewModel)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
                             Spacer(minLength: Layout.sectionSpacing)
                         }
@@ -331,8 +327,7 @@ struct OrderForm: View {
                             shippingLineViewModel: viewModel.shippingLineViewModel,
                             couponLineViewModel: viewModel.couponLineViewModel,
                             shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
-                            shouldShowGiftCardForm: $shouldShowGiftCardForm,
-                            safeAreaInsets: safeAreaInsets)
+                            shouldShowGiftCardForm: $shouldShowGiftCardForm)
                         .addingTopAndBottomDividers()
                         .disabled(viewModel.shouldShowNonEditableIndicators)
 
@@ -341,7 +336,7 @@ struct OrderForm: View {
 
                     VStack(spacing: Layout.noSpacing) {
                         Group {
-                            NewTaxRateSection(text: viewModel.taxRateRowText, safeAreaInsets: safeAreaInsets) {
+                            NewTaxRateSection(text: viewModel.taxRateRowText) {
                                 viewModel.onSetNewTaxRateTapped()
                                 switch viewModel.taxRateRowAction {
                                 case .storedTaxRateSheet:
@@ -377,8 +372,7 @@ struct OrderForm: View {
                         Divider()
 
                         OrderCustomerSection(viewModel: viewModel,
-                                             addressFormViewModel: viewModel.addressFormViewModel,
-                                             safeAreaInsets: safeAreaInsets)
+                                             addressFormViewModel: viewModel.addressFormViewModel)
 
                         Group {
                             Divider()
@@ -389,7 +383,7 @@ struct OrderForm: View {
                         }
                         .renderedIf(viewModel.shouldSplitCustomerAndNoteSections)
 
-                        CustomerNoteSection(viewModel: viewModel, safeAreaInsets: safeAreaInsets)
+                        CustomerNoteSection(viewModel: viewModel)
 
                         Divider()
                     }
@@ -557,7 +551,7 @@ struct OrderForm: View {
 
 private struct NewTaxRateSection: View {
     let text: String
-    let safeAreaInsets: EdgeInsets
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
     let onButtonTapped: (() -> Void)
 
     var body: some View {
@@ -615,7 +609,7 @@ private struct ProductsSection: View {
 
     /// Safe-area insets of the form's container.
     ///
-    let safeAreaInsets: EdgeInsets
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
     /// Environment variable that manages the presentation state of the AdaptiveModalContainer view
     /// which is used in the OrderForm for presenting either modally or side-by-side, based on device class size

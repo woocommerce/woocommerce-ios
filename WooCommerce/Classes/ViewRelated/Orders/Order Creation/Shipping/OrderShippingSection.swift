@@ -4,7 +4,7 @@ struct OrderShippingSection: View {
     /// View model to add, edit, or remove shipping lines
     @ObservedObject var viewModel: EditableOrderShippingLineViewModel
 
-    let safeAreaInsets: EdgeInsets
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
     var body: some View {
         VStack {

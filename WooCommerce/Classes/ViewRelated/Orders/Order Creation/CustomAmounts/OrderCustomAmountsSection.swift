@@ -38,7 +38,7 @@ struct OrderCustomAmountsSection: View {
 
     @State private var addCustomAmountOption: ConfirmationOption?
 
-    let safeAreaInsets: EdgeInsets
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
     @Environment(\.dynamicTypeSize) private var dynamicTypeSize: DynamicTypeSize
 

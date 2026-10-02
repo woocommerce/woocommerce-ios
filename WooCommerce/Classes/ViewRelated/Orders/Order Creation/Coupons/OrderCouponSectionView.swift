@@ -6,7 +6,7 @@ struct OrderCouponSectionView: View {
 
     /// Safe-area insets of the form's container.
     ///
-    let safeAreaInsets: EdgeInsets
+    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
     @State private var shouldShowCouponList: Bool = false
 

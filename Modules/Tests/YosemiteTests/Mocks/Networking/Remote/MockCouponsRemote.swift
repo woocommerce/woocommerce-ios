@@ -50,7 +50,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
     var resultForSearchCoupons: Result<[Coupon], Error>?
 
     // MARK: - CouponsRemoteProtocol conformance
-    func loadAllCoupons(for siteID: Int64,
+    nonisolated(nonsending) func loadAllCoupons(for siteID: Int64,
                         pageNumber: Int,
                         pageSize: Int) async throws -> [Coupon] {
         didCallLoadAllCoupons = true
@@ -82,7 +82,7 @@ final class MockCouponsRemote: CouponsRemoteProtocol {
         completion(result)
     }
 
-    func searchCoupons(for siteID: Int64,
+    nonisolated(nonsending) func searchCoupons(for siteID: Int64,
                        keyword: String,
                        pageNumber: Int,
                        pageSize: Int) async throws -> [Coupon] {

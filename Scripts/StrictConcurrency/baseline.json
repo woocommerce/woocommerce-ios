@@ -458,7 +458,7 @@
     "WooCommerce/Classes/ViewRelated/BottomSheet/ListSelector/BottomSheetListSelectorPresenter.swift": 6,
     "WooCommerce/Classes/ViewRelated/BottomSheet/ListSelector/BottomSheetListSelectorSectionHeaderView.swift": 3,
     "WooCommerce/Classes/ViewRelated/BottomSheet/ListSelector/BottomSheetListSelectorViewController+DrawerPresentable.swift": 1,
-    "WooCommerce/Classes/ViewRelated/CardPresentPayments/CardPresentPaymentPreflightController.swift": 2,
+    "WooCommerce/Classes/ViewRelated/CardPresentPayments/CardPresentPaymentPreflightController.swift": 4,
     "WooCommerce/Classes/ViewRelated/CardPresentPayments/CardReaderConnectionController.swift": 2,
     "WooCommerce/Classes/ViewRelated/CardPresentPayments/CardReaderModalFlowViewControllerProtocol.swift": 4,
     "WooCommerce/Classes/ViewRelated/CardPresentPayments/SeveralReadersFoundViewController.swift": 1,

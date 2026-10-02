@@ -150,6 +150,28 @@ struct DefaultNoticePresenterTests {
     }
 
     @Test
+    func test_hitTest_when_point_is_outside_the_notice_then_container_lets_the_touch_through() throws {
+        // Given
+        var presenter: NoticePresenter = DefaultNoticePresenter()
+        let viewController = UITabBarController()
+        viewController.viewControllers = [UIViewController()]
+        viewController.view.frame = CGRect(x: 0, y: 0, width: 393, height: 852)
+        presenter.presentingViewController = viewController
+        let existingSubviews = viewController.view.subviews
+        presenter.enqueue(notice: Notice(title: "Notice"))
+        let noticeContainer = try #require(viewController.view.subviews.first { !existingSubviews.contains($0) })
+        viewController.view.layoutIfNeeded()
+
+        // When
+        let hitInMargin = noticeContainer.hitTest(CGPoint(x: 1, y: 1), with: nil)
+        let hitInNotice = noticeContainer.hitTest(CGPoint(x: noticeContainer.bounds.midX, y: noticeContainer.bounds.midY), with: nil)
+
+        // Then
+        #expect(hitInMargin == nil)
+        #expect(hitInNotice != nil)
+    }
+
+    @Test
     func test_enqueue_when_tab_bar_turns_horizontal_then_notice_is_pinned_above_the_tab_bar() throws {
         // Given
         var presenter: NoticePresenter = DefaultNoticePresenter()

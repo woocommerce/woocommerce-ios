@@ -271,7 +271,11 @@ private extension DefaultNoticePresenter {
 
     /// Pins the notice above a bottom tab bar, or to the bottom safe area when the tab bar is a side bar.
     func updateBaseline(of container: NoticeContainerView) {
-        guard let safeAreaConstraint = container.safeAreaBaselineConstraint,
+        // UIKit can detach the tab bar; a constraint to a view outside the hierarchy cannot be activated.
+        guard let tabBarController = presentingViewController as? UITabBarController,
+              tabBarController.tabBar.isDescendant(of: tabBarController.view),
+              container.isDescendant(of: tabBarController.view),
+              let safeAreaConstraint = container.safeAreaBaselineConstraint,
               let baselineConstraint = container.baselineConstraint,
               safeAreaConstraint.isActive != isTabBarVertical else {
             return

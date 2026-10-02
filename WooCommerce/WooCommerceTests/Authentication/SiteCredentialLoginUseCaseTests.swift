@@ -8,6 +8,102 @@ import enum NetworkingCore.CookieNonceAuthenticationResponseStage
 @MainActor
 final class SiteCredentialLoginUseCaseTests: XCTestCase {
 
+    func test_handle_login_when_content_is_unexpected_then_reports_exact_stage_without_response_content() async throws {
+        for stage in credentialStages {
+            for data in [Data("<html>private-response-sentinel</html>".utf8), Data(), Data([0xff])] {
+                // Given / When
+                let error = try await responseFailure(at: stage, data: data)
+
+                // Then
+                guard case .unexpectedResponse(let failure) = error else {
+                    XCTFail("Expected unexpected content at \(stage), got \(error)")
+                    continue
+                }
+                XCTAssertEqual(failure, .init(stage: stage))
+                XCTAssertEqual(failure.kind, .unexpectedContent)
+                XCTAssertEqual(error.errorMessage, SiteCredentialLoginError.invalidLoginResponse.errorMessage)
+                XCTAssertEqual(error.offersBrowserAlternative(at: stage), stage == .credentials)
+                XCTAssertFalse(String(describing: error).contains("private-response-sentinel"))
+                XCTAssertFalse(String(describing: error.underlyingError.userInfo).contains("private-response-sentinel"))
+                XCTAssertFalse(String(describing: (error as NSError).userInfo).contains("private-response-sentinel"))
+            }
+        }
+    }
+
+    func test_handle_login_when_status_rejects_unexpected_content_then_reports_status_and_exact_stage() async throws {
+        for stage in credentialStages {
+            for code in [429, 500] {
+                for data in [Data("<html>private-response-sentinel</html>".utf8), Data("Service unavailable".utf8), Data(), Data([0xff])] {
+                    // Given / When
+                    let error = try await responseFailure(at: stage, data: data, statusCode: code)
+
+                    // Then
+                    guard case .unexpectedResponse(let failure) = error else {
+                        XCTFail("Expected unexpected status at \(stage), got \(error)")
+                        continue
+                    }
+                    XCTAssertEqual(failure, .init(stage: stage, statusCode: code))
+                    XCTAssertEqual(failure.kind, .unacceptableStatusCode)
+                    XCTAssertEqual(error.errorCode, code)
+                    XCTAssertEqual(error.errorMessage, SiteCredentialLoginError.unacceptableStatusCode(code: code).errorMessage)
+                    XCTAssertFalse(error.offersBrowserAlternative(at: stage))
+                }
+            }
+        }
+    }
+
+    func test_handle_login_when_status_rejects_recognized_content_then_preserves_plain_status_error() async throws {
+        for stage in credentialStages {
+            var documents = ["<div id=\"login_error\">Please solve the captcha</div>",
+                             "document.querySelector('form').classList.add('shake')"]
+            switch stage {
+            case .preflight: documents.append(loginForm())
+            case .dashboard: documents.append(authenticatedDashboard())
+            case .nonce: documents.append("validnonce")
+            case .credentials: break
+            }
+            for document in documents {
+                // Given / When
+                let error = try await responseFailure(at: stage, data: Data(document.utf8), statusCode: 500)
+
+                // Then
+                guard case .unacceptableStatusCode(500) = error else {
+                    XCTFail("Recognized content must retain the original status error, got \(error)")
+                    continue
+                }
+            }
+        }
+    }
+
+    func test_handle_login_when_basic_authentication_is_required_then_does_not_classify_unexpected_content() async throws {
+        for stage in credentialStages {
+            // Given / When
+            let error = try await responseFailure(at: stage, data: Data("Security page".utf8), statusCode: 401,
+                                                 headers: ["WWW-Authenticate": "Basic realm=store"])
+
+            // Then
+            guard case .basicAuthenticationRequired = error else {
+                XCTFail("Expected Basic authentication error, got \(error)")
+                continue
+            }
+        }
+    }
+
+    func test_handle_login_when_local_endpoint_configuration_is_invalid_then_has_no_unexpected_response_context() async {
+        // Given
+        let session = MockURLSession()
+        let useCase = SiteCredentialLoginUseCase(siteURL: "ftp://example.com", session: session)
+
+        // When
+        let result = await performLogin(using: useCase)
+
+        // Then
+        guard case .failure(.invalidLoginResponse) = result else {
+            return XCTFail("Expected the original local configuration error")
+        }
+        XCTAssertEqual(session.requestCount, 0)
+    }
+
     func test_cookieJar_is_cleared_upon_login() throws {
         // Given
         let cookieJar = MockCookieJar()
@@ -1307,6 +1403,37 @@ private extension SiteCredentialLoginLoopbackServer {
 
 // MARK: - Helpers
 private extension SiteCredentialLoginUseCaseTests {
+    var credentialStages: [CookieNonceAuthenticationResponseStage] { [.preflight, .credentials, .dashboard, .nonce] }
+
+    func responseFailure(at stage: CookieNonceAuthenticationResponseStage, data: Data,
+                         statusCode: Int = 200, headers: [String: String]? = nil) async throws -> SiteCredentialLoginError {
+        let siteURL = "https://test.com"
+        let loginURL = siteURL + "/wp-login.php"
+        let adminURL = siteURL + "/wp-admin/"
+        let nonceURL = siteURL + "/wp-admin/admin-ajax.php?action=rest-nonce"
+        let session = MockURLSession()
+        let loginSession = MockURLSession()
+        session.simulateResponse(for: loginURL, data: Data(loginForm().utf8))
+        loginSession.simulateResponse(for: loginURL, statusCode: 302, headerFields: ["Location": nonceURL])
+        session.simulateResponse(for: adminURL, data: Data(authenticatedDashboard().utf8))
+        session.simulateResponse(for: nonceURL, data: Data("validnonce".utf8))
+        let responseURL: String = switch stage {
+        case .preflight, .credentials: loginURL
+        case .dashboard: adminURL
+        case .nonce: nonceURL
+        }
+        let targetSession = stage == .credentials ? loginSession : session
+        targetSession.simulateResponse(for: responseURL, data: data, statusCode: statusCode, headerFields: headers)
+        let useCase = SiteCredentialLoginUseCase(siteURL: siteURL, verifyAdminDashboard: true,
+                                                session: session, loginSession: loginSession)
+        let result = await performLogin(using: useCase)
+        guard case .failure(let error) = result else {
+            XCTFail("Expected failure at \(stage)")
+            throw NSError(domain: "ExpectedFailure", code: 1)
+        }
+        return error
+    }
+
     func performLogin(siteURL: String,
                       endpoints: CookieNonceAuthenticationEndpoints? = nil,
                       verifyAdminDashboard: Bool = false,
@@ -1431,7 +1558,7 @@ private extension SiteCredentialLoginUseCaseTests {
             return
         }
 
-        switch (actualError, expectedError) {
+        switch (actualError.presentationError, expectedError) {
         case (.invalidLoginResponse, .invalidLoginResponse),
              (.inaccessibleAdminPage, .inaccessibleAdminPage),
              (.inaccessibleLoginPage, .inaccessibleLoginPage),

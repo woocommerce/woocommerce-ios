@@ -3015,6 +3015,15 @@ extension WooAnalyticsEvent {
 //
 extension WooAnalyticsEvent {
     enum Login {
+        static func unexpectedResponseShown(failure: LoginUnexpectedResponseFailure,
+                                            loginFlow: LoginUnexpectedResponseFailure.LoginFlow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginUnexpectedResponseErrorShown, properties: [
+                "login_flow": loginFlow.rawValue,
+                "failure_kind": failure.kind.rawValue,
+                "step": failure.step.rawValue
+            ])
+        }
+
         enum Key: String {
             case step
             case currentRoles = "current_roles"

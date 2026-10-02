@@ -627,7 +627,9 @@ private extension SiteCredentialsViewController {
                                     options: credentials.options)
             },
             onRecovery: { [weak self] recovery in
-                self?.showEndpointRecovery(recovery)
+                guard let self, viewIfLoaded?.window != nil else { return false }
+                showEndpointRecovery(recovery)
+                return true
             },
             onFailure: { [weak self] error, incorrectCredentials, verifiedLoginURL, offersBrowserAlternative in
                 self?.handleStructuredLoginFailure(

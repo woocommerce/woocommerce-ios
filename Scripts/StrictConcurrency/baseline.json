@@ -780,7 +780,6 @@
     "WooCommerce/Classes/ViewRelated/WhatsNew/WhatsNewFactory.swift": 3,
     "WooCommerce/Classes/Yosemite/AuthenticatedState.swift": 5,
     "WooCommerce/Classes/Yosemite/DefaultStoresManager.swift": 17,
-    "WooCommerce/NotificationExtension/OrderNotificationViewModel.swift": 3,
     "WooCommerce/StoreWidgets/StoreInfoDataService.swift": 7,
     "WooCommerce/StoreWidgets/StoreInfoProvider.swift": 3,
     "WooCommerce/StoreWidgets/StoreStatsConfigurationIntent.swift": 3,

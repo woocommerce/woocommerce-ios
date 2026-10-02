@@ -72,7 +72,6 @@ struct POSOrderDetailsView: View {
                 backButtonConfiguration: shouldShowBackButton ? .init(state: .enabled, action: onBack) : nil,
                 trailingContent: {
                     actionsSection(setup: availableActionsSetup)
-                        .frame(minHeight: horizontalSizeClass == .compact ? POSHeaderLayoutConstants.minHeight : nil)
                 },
                 bottomContent: {
                     headerBottomContent(for: order)

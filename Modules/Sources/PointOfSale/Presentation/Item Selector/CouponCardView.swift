@@ -25,7 +25,6 @@ struct CouponCardView: View {
             VStack(alignment: .leading, spacing: Constants.textSpacing) {
                 Text(coupon.code)
                     .foregroundStyle(titleColor)
-                    .multilineTextAlignment(.leading)
                     .font(Constants.itemTitleFont)
 
                 Text(coupon.summary)
@@ -41,6 +40,7 @@ struct CouponCardView: View {
                         .lineLimit(1)
                 }
             }
+            .multilineTextAlignment(.leading)
             .padding(.horizontal, Constants.horizontalTextPadding * (1 / scale))
             .padding(.vertical, Constants.verticalTextPadding * (1 / scale))
             Spacer()

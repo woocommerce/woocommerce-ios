@@ -1265,6 +1265,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(offersBrowserAlternative, true)
     }
 
+    @MainActor
     func test_unexpected_credential_failure_when_alert_is_presented_then_tracks_only_after_presentation() {
         for stage in [CookieNonceAuthenticationResponseStage.credentials, .dashboard, .nonce] {
             for code: Int? in [nil, 429] {
@@ -1350,6 +1351,7 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_ordinary_credential_failure_when_presented_then_does_not_track_unexpected_response() {
         // Given
         let provider = MockAnalyticsProvider()

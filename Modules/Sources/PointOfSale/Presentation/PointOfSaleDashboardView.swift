@@ -22,6 +22,7 @@ struct PointOfSaleDashboardView: View {
     @State private var navigationPath: [POSNavigationDestination] = []
     @State private var floatingSize: CGSize = .zero
     @State private var floatingControlSuppressed: Bool = false
+    @State private var itemListBackgroundColor: Color = .posSurface
     @State private var phoneShowingCart: Bool = false
     @State private var phoneCartPresentationDetent: PresentationDetent = .medium
     private let httpsConfigurationNotice: POSHTTPSConfigurationNotice?
@@ -137,6 +138,9 @@ struct PointOfSaleDashboardView: View {
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .onPreferenceChange(POSHidesFloatingControlPreferenceKey.self) { hides in
             floatingControlSuppressed = hides
+        }
+        .onPreferenceChange(POSItemListBackgroundPreferenceKey.self) { color in
+            itemListBackgroundColor = color ?? .posSurface
         }
         .environment(\.posBackgroundAppearance, backgroundAppearance)
         .animation(.easeInOut, value: viewState == .loading())
@@ -583,20 +587,20 @@ struct PointOfSaleDashboardView: View {
                 if posModel.orderStage == .building {
                     Color.clear
                         .frame(width: geometry.size.width * (1 - Constants.cartWidth))
-                        .background(Color.posSurface.ignoresSafeArea(.container, edges: [.top, .bottom, .leading]))
+                        .background(itemListBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                     Color.clear
-                        .background(Color.posSurfaceBright.ignoresSafeArea(.container, edges: [.top, .bottom, .trailing]))
+                        .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
                 } else {
                     if showsCartBackground {
                         Color.clear
                             .frame(width: geometry.size.width * Constants.cartWidth)
-                            .background(Color.posSurfaceBright.ignoresSafeArea(.container, edges: [.top, .bottom, .leading]))
+                            .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                     }
                     Color.clear
                         .background {
                             tabletPaymentBackgroundColor
                                 .background(Color.posSurface)
-                                .ignoresSafeArea(.container, edges: showsCartBackground ? [.top, .bottom, .trailing] : .all)
+                                .ignoresSafeArea(.all, edges: showsCartBackground ? [.top, .bottom, .trailing] : .all)
                         }
                 }
             }

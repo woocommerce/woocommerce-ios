@@ -83,7 +83,6 @@ struct PointOfSaleDashboardView: View {
                     onExit: { dismiss() }
                 )
                     .transition(.opacity)
-                    .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore)
             case .ineligible(let reason):
                 POSIneligibleView(reason: reason, onRefresh: {
                     try await posModel.entryPointController.refreshEligibility(reason: reason)
@@ -338,7 +337,6 @@ struct PointOfSaleDashboardView: View {
                 }
         }
         .animation(.default, value: posModel.orderStage)
-        .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore, edges: [.top, .horizontal])
         .background(Color.posSurface.ignoresSafeArea())
     }
 
@@ -568,7 +566,6 @@ struct PointOfSaleDashboardView: View {
             .animation(.default, value: posModel.paymentState.card.shownFullScreen)
         }
         .clipped()
-        .ignoresSafeArea(.posFullScreenForegroundRegionToIgnore, edges: [.top, .horizontal])
         .background(tabletBackground)
         .environment(\.posNavigationRouter, navigationRouter)
     }

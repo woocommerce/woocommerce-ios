@@ -301,7 +301,6 @@ extension LoginViewController {
         // This stat is part of a funnel that provides critical information. Please
         // consult with your lead before removing this event.
         WordPressAuthenticator.track(.signedIn, properties: properties)
-        tracker.track(step: .success)
     }
 
     /// Links the current WordPress Account to a Social Service (if possible!!).

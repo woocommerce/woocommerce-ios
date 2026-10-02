@@ -1,5 +1,6 @@
 import Foundation
 import UIKit
+import WordPressAuthenticator
 import Yosemite
 
 
@@ -21,6 +22,8 @@ final class StorePickerCoordinator: Coordinator {
     ///
     private let switchStoreUseCase: SwitchStoreUseCaseProtocol
 
+    private let tracker: AuthenticatorAnalyticsTracker
+
     /// The RoleEligibilityUseCase object initialized with the ServiceLocator stores
     ///
     private let roleEligibilityUseCase = RoleEligibilityUseCase(stores: ServiceLocator.stores)
@@ -35,10 +38,12 @@ final class StorePickerCoordinator: Coordinator {
 
     init(_ navigationController: UINavigationController,
          config: StorePickerConfiguration,
-         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil) {
+         switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
+         tracker: AuthenticatorAnalyticsTracker = .shared) {
         self.navigationController = navigationController
         self.selectedConfiguration = config
         self.switchStoreUseCase = switchStoreUseCase ?? SwitchStoreUseCase(stores: ServiceLocator.stores)
+        self.tracker = tracker
     }
 
     func start() {
@@ -115,6 +120,10 @@ private extension StorePickerCoordinator {
         switchStoreUseCase.switchStore(with: storeID) { [weak self] siteChanged in
             guard let self else { return }
             if self.selectedConfiguration == .login {
+                // The login ends here, where a store has been chosen and switched to — not when
+                // the credentials were accepted, which is a login that can still fail to reach a
+                // store. Android reports the step at this same point.
+                self.tracker.track(step: .success)
                 MainTabBarController.switchToMyStoreTab(animated: true)
             }
 

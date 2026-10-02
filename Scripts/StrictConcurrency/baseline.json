@@ -249,8 +249,6 @@
     "Modules/Tests/YosemiteTests/Mocks/Networking/Remote/MockProductReviewsRemote.swift": 4,
     "Modules/Tests/YosemiteTests/Mocks/Networking/Remote/MockProductVariationsRemote.swift": 29,
     "Modules/Tests/YosemiteTests/Mocks/Networking/Remote/MockProductsRemote.swift": 23,
-    "Modules/Tests/YosemiteTests/Mocks/Networking/Remote/MockShippingLabelRemote.swift": 51,
-    "Modules/Tests/YosemiteTests/Mocks/Networking/Remote/MockWooShippingRemote.swift": 83,
     "Modules/Tests/YosemiteTests/Model/Extensions/PaymentIntent+ReceiptParametersTests.swift": 2,
     "Modules/Tests/YosemiteTests/PointOfSale/GRDBObservableDataSourceTests.swift": 25,
     "Modules/Tests/YosemiteTests/PointOfSale/POSCouponTests.swift": 2,

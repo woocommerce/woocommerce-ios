@@ -88,7 +88,9 @@ public final class POSScreen: ScreenObject {
     @discardableResult
     public func tapAddCustomAmount(amount: String, name: String? = nil) -> Self {
         let customAmountEntryRow = app.buttons["pos-custom-amount-entry-row"]
-        customAmountEntryRow.scrollIntoView(app: app)
+        if !customAmountEntryRow.waitForIsHittable(timeout: 5) {
+            customAmountEntryRow.scrollIntoView(app: app)
+        }
         XCTAssertTrue(customAmountEntryRow.waitForIsHittable(timeout: 10), "Custom amount entry row should be tappable.")
         customAmountEntryRow.tap()
 
@@ -108,7 +110,10 @@ public final class POSScreen: ScreenObject {
         if let name {
             let nameField = app.textFields["pos-custom-amount-name-field"]
             XCTAssertTrue(nameField.waitForExistence(timeout: 10), "Custom amount name field should exist.")
-            nameField.scrollIntoView(app: app)
+            let form = app.scrollViews.containing(.textField, identifier: "pos-custom-amount-name-field").firstMatch
+            for _ in 0..<4 where !nameField.isHittable {
+                form.swipeUp()
+            }
             XCTAssertTrue(nameField.waitForIsHittable(timeout: 10), "Custom amount name field should be tappable.")
             nameField.tap()
             nameField.typeText(name)

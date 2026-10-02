@@ -75,10 +75,12 @@ final class FilteredOrdersHeaderBar: UIView {
 /// Laying out the overall stack view vertically avoids this with accessibility sizes.
 extension FilteredOrdersHeaderBar {
     private func updateStackViewAxis(for traitCollection: UITraitCollection) {
-        if traitCollection.preferredContentSizeCategory.isAccessibilityCategory {
-            headerBarLayoutStackView.axis = .vertical
+        let isAccessibilitySize = traitCollection.preferredContentSizeCategory.isAccessibilityCategory
+        headerBarLayoutStackView.axis = isAccessibilitySize ? .vertical : .horizontal
+        if #available(iOS 26.0, *) {
+            headerBarLayoutStackView.alignment = isAccessibilitySize ? .leading : .center
         } else {
-            headerBarLayoutStackView.axis = .horizontal
+            headerBarLayoutStackView.alignment = .fill
         }
     }
 }
@@ -120,14 +122,21 @@ private extension FilteredOrdersHeaderBar {
     /// Setup: Buttons
     ///
     func configureButtons() {
-        filterButton.applyLinkButtonStyle()
-        let title =  numberOfFilters == 0 ?
-        Localization.buttonWithoutActiveFilters :
-        String.localizedStringWithFormat(Localization.buttonWithActiveFilters, numberOfFilters)
+        let title = numberOfFilters == 0 ?
+            Localization.buttonWithoutActiveFilters :
+            String.localizedStringWithFormat(Localization.buttonWithActiveFilters, numberOfFilters)
 
+        if #available(iOS 26.0, *) {
+            var configuration = UIButton.Configuration.glass()
+            configuration.buttonSize = .medium
+            configuration.title = title
+            configuration.baseForegroundColor = .label
+            filterButton.configuration = configuration
+            filterButton.setContentHuggingPriority(.required, for: .horizontal)
+        } else {
+            filterButton.applyLinkButtonStyle()
+        }
         filterButton.setTitle(title, for: .normal)
-        var configuration = UIButton.Configuration.filled()
-        configuration.contentInsets = .init(.zero)
         filterButton.accessibilityIdentifier = "orders-filter-button"
     }
 

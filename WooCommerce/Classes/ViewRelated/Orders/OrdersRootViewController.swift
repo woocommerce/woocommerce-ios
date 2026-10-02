@@ -406,7 +406,9 @@ private extension OrdersRootViewController {
             return
         }
 
-        let backgroundView = UIView.makePinnedHeaderBackgroundView(color: .listBackground)
+        let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .systemMaterial))
+        backgroundView.isUserInteractionEnabled = false
+        backgroundView.translatesAutoresizingMaskIntoConstraints = false
         liquidGlassHeaderBackgroundView = backgroundView
         view.addSubview(backgroundView)
 
@@ -414,7 +416,7 @@ private extension OrdersRootViewController {
         view.addSubview(filtersBar)
 
         NSLayoutConstraint.activate([
-            backgroundView.topAnchor.constraint(equalTo: filtersBar.topAnchor),
+            backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
             backgroundView.leadingAnchor.constraint(equalTo: filtersBar.leadingAnchor),
             backgroundView.trailingAnchor.constraint(equalTo: filtersBar.trailingAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: filtersBar.bottomAnchor),
@@ -458,6 +460,7 @@ private extension OrdersRootViewController {
         var verticalScrollIndicatorInsets = tableView.verticalScrollIndicatorInsets
         verticalScrollIndicatorInsets.top = height
         tableView.verticalScrollIndicatorInsets = verticalScrollIndicatorInsets
+        updateFiltersBarOverscrollPosition(from: tableView)
     }
 
     func configureLiquidGlassTabBarUnderlap() {
@@ -468,6 +471,16 @@ private extension OrdersRootViewController {
         // The list table lives in a child controller, so register it from the root
         // controller that owns the navigation item for native large title tracking.
         setContentScrollView(ordersViewController.tableView, for: [.top, .bottom])
+
+        // A single blur view spans the navigation bar and filter header so their backgrounds blend.
+        let appearance = UINavigationBarAppearance()
+        appearance.configureWithTransparentBackground()
+        navigationItem.standardAppearance = appearance
+        navigationItem.scrollEdgeAppearance = appearance
+        navigationItem.compactAppearance = appearance
+        navigationItem.compactScrollEdgeAppearance = appearance
+        ordersViewController.tableView.topEdgeEffect.isHidden = true
+
         stackViewTopConstraint.isActive = false
         stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
@@ -564,6 +577,12 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
             return
         }
 
+        // One shared blur removes the navigation/filter background seam, but can also blur UIKit's table-hosted large title.
+        // Hide it at the top to keep the title sharp; 0.5 allows for layout rounding.
+        // Related reports: FB21613303 (SwiftUI large-title blur) and FB20756572 (UIKit edge-effect sizing):
+        // https://github.com/jensvansteen/ScrollEdgeBar#pull-requests
+        // https://developer.apple.com/forums/thread/803378
+        liquidGlassHeaderBackgroundView?.isHidden = scrollView.contentOffset.y + scrollView.adjustedContentInset.top <= 0.5
         let transform = CGAffineTransform(translationX: 0, y: scrollView.topOverscrollDistance)
         liquidGlassHeaderBackgroundView?.transform = transform
         filtersBar.transform = transform

@@ -459,9 +459,9 @@ private class NoticeContainerView: UIView {
         onLayoutChange?()
     }
 
-    // Only the notice takes touches, so the container never blocks the views beside it.
+    // Only a visible notice takes touches, so the container never blocks the views beside or under it.
     override func point(inside point: CGPoint, with event: UIEvent?) -> Bool {
-        noticeView.point(inside: convert(point, to: noticeView), with: event)
+        noticeView.alpha > UIKitConstants.alphaZero && noticeView.point(inside: convert(point, to: noticeView), with: event)
     }
 
     private func observeTraitChanges() {

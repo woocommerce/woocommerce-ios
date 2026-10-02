@@ -114,12 +114,135 @@ struct ProductsViewControllerTests {
         #expect(table.numberOfRows(inSection: 0) == 4)
         #expect(table.indexPathForSelectedRow == IndexPath(row: 3, section: 0))
     }
+
+    @Test
+    func test_refresh_when_products_are_deleted_and_reordered_then_keeps_displayed_rows_and_actions_consistent() async throws {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let storage = MockStorageManager()
+        let products = ["A", "B", "C"].enumerated().map {
+            Product.fake().copy(siteID: 123, productID: Int64($0.offset + 1), name: $0.element)
+        }
+        try await insert(products, into: storage)
+        var selectedIDs: [Int64] = []
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: storage, siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { content in
+                                                     if case let .productForm(product) = content {
+                                                         selectedIDs.append(product.productID)
+                                                     }
+                                                 })
+        controller.loadViewIfNeeded()
+        let table = try #require(controller.tableView)
+        let refreshControl = try attachedRefreshControl(in: table)
+        let completeSync = try await startRefresh(refreshControl, stores: stores)
+        try #require(table.numberOfRows(inSection: 0) == 3)
+
+        // When: the store removes A and moves B after C during the refresh.
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            storage.performAndSave({ storage in
+                if let deletedProduct = storage.loadProduct(siteID: 123, productID: 1) {
+                    storage.deleteObject(deletedProduct)
+                }
+                storage.loadProduct(siteID: 123, productID: 2)?.name = "Z"
+            }, completion: { continuation.resume(with: $0) }, on: .main)
+        }
+
+        // Then: cells retain their displayed identities; actions ignore deletions and use identity after reordering.
+        #expect(table.numberOfRows(inSection: 0) == 3)
+        for (index, name) in ["A", "B", "C"].enumerated() {
+            let indexPath = IndexPath(row: index, section: 0)
+            #expect(controller.tableView(table, cellForRowAt: indexPath).accessibilityIdentifier == name)
+            controller.tableView(table, didSelectRowAt: indexPath)
+        }
+        #expect(selectedIDs == [2, 3])
+
+        // When: dismissal completes and the latest data is rendered.
+        await finishRefresh(controller, completeSync: completeSync)
+
+        // Then
+        #expect(table.numberOfRows(inSection: 0) == 2)
+        #expect(controller.tableView(table, cellForRowAt: IndexPath(row: 0, section: 0)).accessibilityIdentifier == "C")
+        #expect(controller.tableView(table, cellForRowAt: IndexPath(row: 1, section: 0)).accessibilityIdentifier == "Z")
+    }
+
+    @Test
+    func test_refresh_when_an_offscreen_product_is_selected_then_scrolls_to_selection_after_refresh() async throws {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let storage = MockStorageManager()
+        let products = (1...30).map { index in
+            Product.fake().copy(siteID: 123, productID: Int64(index), name: String(format: "Product %02d", index))
+        }
+        try await insert(products, into: storage)
+        let selectedProduct = CurrentValueSubject<Product?, Never>(nil)
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: storage, siteID: 123),
+                                                 selectedProduct: selectedProduct.eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in })
+        controller.loadViewIfNeeded()
+        controller.view.frame = CGRect(x: 0, y: 0, width: 390, height: 844)
+        controller.view.layoutIfNeeded()
+        let table = try #require(controller.tableView)
+        table.layoutIfNeeded()
+        let selectedIndexPath = IndexPath(row: products.count - 1, section: 0)
+        try #require(!table.bounds.intersects(table.rectForRow(at: selectedIndexPath)))
+        let refreshControl = try attachedRefreshControl(in: table)
+        let completeSync = try await startRefresh(refreshControl, stores: stores)
+
+        // When: Search selects an offscreen product while the list refresh is pending.
+        selectedProduct.send(products.last)
+
+        // Then: selection remains deferred with the other presentation updates.
+        #expect(table.indexPathForSelectedRow == nil)
+        #expect(!table.bounds.intersects(table.rectForRow(at: selectedIndexPath)))
+
+        // When
+        await finishRefresh(controller, completeSync: completeSync)
+        table.layoutIfNeeded()
+
+        // Then
+        #expect(table.indexPathForSelectedRow == selectedIndexPath)
+        #expect(table.bounds.intersects(table.rectForRow(at: selectedIndexPath)))
+    }
 }
 
 private extension ProductsViewControllerTests {
     func attachedRefreshControl(in table: UITableView) throws -> UIRefreshControl {
         // Before iOS 26 the control is added as a subview rather than assigned to table.refreshControl.
         try #require(table.subviews.compactMap { $0 as? UIRefreshControl }.first)
+    }
+
+    func startRefresh(_ refreshControl: UIRefreshControl, stores: MockStoresManager) async throws -> ((Result<Bool, Error>) -> Void) {
+        var completeSync: ((Result<Bool, Error>) -> Void)?
+        await withCheckedContinuation { continuation in
+            stores.whenReceivingAction(ofType: ProductAction.self) { action in
+                guard case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion) = action else {
+                    return
+                }
+                completeSync = onCompletion
+                continuation.resume()
+            }
+            refreshControl.beginRefreshing()
+            refreshControl.sendActions(for: .valueChanged)
+        }
+        return try #require(completeSync)
+    }
+
+    func finishRefresh(_ controller: ProductsViewController, completeSync: (Result<Bool, Error>) -> Void) async {
+        var subscription: AnyCancellable?
+        await withCheckedContinuation { continuation in
+            subscription = controller.onDataReloaded.first().sink { continuation.resume() }
+            completeSync(.success(false))
+        }
+        subscription?.cancel()
     }
 
     func insert(_ products: [Product], into storageManager: MockStorageManager) async throws {

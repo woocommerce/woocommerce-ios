@@ -7,7 +7,13 @@ final class FilteredOrdersHeaderBar: UIView {
 
     @IBOutlet private weak var mainLabel: UILabel!
     @IBOutlet private weak var lastUpdatedLabel: UILabel!
-    @IBOutlet private weak var filterButton: UIButton!
+    @IBOutlet private weak var filterButton: UIButton! {
+        didSet {
+            if #available(iOS 26.0, *) {
+                OrdersProductsListHeaderStyle.configureButtonSizing(filterButton)
+            }
+        }
+    }
     @IBOutlet weak var headerBarLayoutStackView: UIStackView!
 
     private let bottomBorder = CALayer()

@@ -3,6 +3,7 @@ import NetworkingCore
 
 /// This wrapper to fetch orders from a notification.
 ///
+@MainActor
 final class OrderNotificationDataService {
     /// Possible error states.
     ///
@@ -17,7 +18,7 @@ final class OrderNotificationDataService {
     ///
     private let ordersRemote: OrdersRemote
 
-    private let siteRemote: SiteRemote
+    private let credentials: Credentials
 
     /// Notifications remote
     ///
@@ -28,36 +29,35 @@ final class OrderNotificationDataService {
     private let network: AlamofireNetwork
 
     init(credentials: Credentials) {
+        self.credentials = credentials
         network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil) // opt out from network switching
         ordersRemote = OrdersRemote(network: network)
         notesRemote = NotificationsRemote(network: network)
-        siteRemote = SiteRemote(network: network, dotcomClientID: "", dotcomClientSecret: "")
     }
 
     ///  Marks a notification as read when the given `orderID` matches `orderID` of the provided notification.
     ///
-    @MainActor
     func markOrderNoteAsReadIfNeeded(noteID: Int64, orderID: Int) async -> Result<Int64, MarkOrderAsReadUseCase.Error> {
         return await MarkOrderAsReadUseCase.markOrderNoteAsReadIfNeeded(network: network, noteID: noteID, orderID: orderID)
     }
 
-    @MainActor
     func loadOrderFrom(notification: PushNotification) async throws -> Order {
         guard let orderID = notification.meta?.identifier(forKey: .order) else {
             throw Error.unsupportedNotification
         }
-        return try await loadOrder(siteID: Int(notification.siteID), orderID: orderID)
+        return try await loadOrder(siteID: notification.siteID, orderID: orderID)
     }
 
-    @MainActor
     func loadStoreName(id: Int64) async throws -> String {
-        try await siteRemote.loadSite(siteID: id).name
+        // The async remote owns a separate network so it cannot race with order and notification requests.
+        let network = AlamofireNetwork(credentials: credentials, selectedSite: nil, appPasswordSupportState: nil)
+        let siteRemote = SiteRemote(network: network, dotcomClientID: "", dotcomClientSecret: "")
+        return try await siteRemote.loadSite(siteID: id).name
     }
 
-    @MainActor
-    private func loadOrder(siteID: Int, orderID: Int) async throws -> Order {
+    func loadOrder(siteID: Int64, orderID: Int) async throws -> Order {
         try await withCheckedThrowingContinuation { continuation in
-            ordersRemote.loadOrder(for: Int64(siteID), orderID: Int64(orderID)) { order, error in
+            ordersRemote.loadOrder(for: siteID, orderID: Int64(orderID)) { @Sendable order, error in
                 switch (order, error) {
                 case (let order?, nil):
                     continuation.resume(returning: order)

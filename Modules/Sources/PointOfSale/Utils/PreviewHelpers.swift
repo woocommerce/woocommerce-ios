@@ -585,6 +585,8 @@ final class POSReceiptSenderPreview: POSReceiptSending {
 }
 
 final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyticsTracking {
+    func prepareForCardPayment(order: POSPaymentAnalyticsOrder) {}
+
     func trackCustomerInteractionStarted() {}
 
     func trackOrderSyncSuccess() {}
@@ -595,11 +597,11 @@ final class POSCollectOrderPaymentPreviewAnalytics: POSCollectOrderPaymentAnalyt
 
     func trackCheckoutTapped() {}
 
-    func trackSuccessfulCashPayment() {}
+    func trackSuccessfulCashPayment(order: POSPaymentAnalyticsOrder) {}
 
-    func trackSuccessfulScanToPayPayment() {}
+    func trackSuccessfulScanToPayPayment(order: POSPaymentAnalyticsOrder) {}
 
-    func trackSuccessfulMarkAsPaidPayment() {}
+    func trackSuccessfulMarkAsPaidPayment(order: POSPaymentAnalyticsOrder) {}
 }
 
 final class POSOrderServicePreview: POSOrderServiceProtocol {

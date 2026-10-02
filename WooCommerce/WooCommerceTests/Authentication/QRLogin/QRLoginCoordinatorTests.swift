@@ -193,6 +193,40 @@ struct QRLoginCoordinatorTests {
         #expect(nav.viewControllers.count == 2)
         #expect(nav.viewControllers.contains { $0 === scanner } == false)
     }
+
+    @Test func prologue_when_reappears_then_reasserts_loginQR_flow_and_step_without_tracking() {
+        // Given — the prologue is shown, and a screen pushed on top of it (e.g. the
+        // site-address fallback) has since switched the shared flow to its own.
+        let nav = UINavigationController()
+        let spy = Spies()
+        let coordinator = makeCoordinator(mode: .camera, navigationController: nav, spies: spy)
+        coordinator.start()
+        let prologue = nav.viewControllers.first
+
+        // When — the merchant goes back and the prologue appears again.
+        prologue?.viewDidAppear(false)
+
+        // Then — `login_qr` + `qr_prologue` are re-set as state, with no extra step event.
+        #expect(spy.analytics.flows == [.loginQR, .loginQR])
+        #expect(spy.analytics.setSteps == [.qrPrologue])
+        #expect(spy.analytics.steps == [.qrPrologue])
+    }
+
+    @Test func error_screen_when_reappears_then_reasserts_loginQR_flow_and_qrError_step() {
+        // Given — the scan-error screen, which also offers the site-address fallback.
+        let nav = UINavigationController()
+        let spy = Spies()
+        let coordinator = makeCoordinator(mode: .deepLink(payload: .invalid), navigationController: nav, spies: spy)
+        coordinator.start()
+        let errorScreen = nav.viewControllers.last
+
+        // When
+        errorScreen?.viewDidAppear(false)
+
+        // Then
+        #expect(spy.analytics.flows == [.loginQR, .loginQR])
+        #expect(spy.analytics.setSteps == [.qrError])
+    }
 }
 
 // MARK: - Helpers
@@ -250,10 +284,12 @@ private extension QRLoginCoordinatorTests {
 final class SpyQRLoginAnalytics: QRLoginAnalyticsTracking {
     private(set) var flows: [AuthenticatorAnalyticsTracker.Flow] = []
     private(set) var steps: [AuthenticatorAnalyticsTracker.Step] = []
+    private(set) var setSteps: [AuthenticatorAnalyticsTracker.Step] = []
     private(set) var clicks: [AuthenticatorAnalyticsTracker.ClickTarget] = []
     private(set) var failures: [String] = []
 
     func setFlow(_ flow: AuthenticatorAnalyticsTracker.Flow) { flows.append(flow) }
+    func setStep(_ step: AuthenticatorAnalyticsTracker.Step) { setSteps.append(step) }
     func trackStep(_ step: AuthenticatorAnalyticsTracker.Step) { steps.append(step) }
     func trackClick(_ click: AuthenticatorAnalyticsTracker.ClickTarget) { clicks.append(click) }
     func trackFailure(_ failure: String) { failures.append(failure) }

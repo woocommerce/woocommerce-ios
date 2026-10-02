@@ -19,6 +19,7 @@ private class SyncingDelegateWrapper: SyncingCoordinatorDelegate {
 
 /// SyncCoordinator Tests
 ///
+@MainActor
 class SyncCoordinatorTests: XCTestCase {
 
     /// Quite self explanatory!
@@ -41,8 +42,8 @@ class SyncCoordinatorTests: XCTestCase {
 
     // MARK: - Overridden Methods
     //
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
 
         coordinator = SyncingCoordinator()
         coordinator.delegate = delegate

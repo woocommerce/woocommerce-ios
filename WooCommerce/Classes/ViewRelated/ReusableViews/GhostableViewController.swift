@@ -3,6 +3,7 @@ import Foundation
 import UIKit
 
 /// Make your `UIViewController` instance implement this protocol if you want to display/hide a ghost animation on top of it
+@MainActor
 protocol GhostableViewController: UIViewController {
     /// The `GhostTableViewController` to be displayed on top of the view. Configure as wished.
     var ghostTableViewController: GhostTableViewController { get }

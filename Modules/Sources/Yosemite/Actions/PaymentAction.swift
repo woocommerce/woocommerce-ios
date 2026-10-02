@@ -8,14 +8,14 @@ public enum PaymentAction: Action {
     ///   - productID: The ID of the WPCOM product to return.
     ///   - completion: Invoked when the WPCOM plan that matches the given ID is loaded.
     case loadPlan(productID: Int64,
-                  completion: (Result<WPComPlan, Error>) -> Void)
+                  completion: @Sendable (Result<WPComPlan, Error>) -> Void)
 
     /// Loads a site's current WPCOM plan.
     /// - Parameters:
     ///   - siteID: The ID of a site.
     ///   - completion: Invoked when the site's current plan is loaded.
     case loadSiteCurrentPlan(siteID: Int64,
-                             completion: (Result<WPComSitePlan, Error>) -> Void)
+                             completion: @Sendable (Result<WPComSitePlan, Error>) -> Void)
 
     /// Creates a cart with a WPCOM plan.
     /// - Parameters:
@@ -25,5 +25,5 @@ public enum PaymentAction: Action {
     ///   - completion: The result of cart creation.
     case createCart(productID: String,
                     siteID: Int64,
-                    completion: (Result<Void, Error>) -> Void)
+                    completion: @Sendable (Result<Void, Error>) -> Void)
 }

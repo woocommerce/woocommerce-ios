@@ -1,1 +1,1 @@
-Age verification is now clearer: if parental consent is pending or denied, you'll see a screen explaining what to do next, not just a log out. If a connection issue stops your store loading, the app tells you what's happening and offers support, so you're not left guessing.
+You now see friendly device names when signing in with a QR code, and can submit nine-digit codes from WordPress.com. Age verification alerts offer a Contact Support option. If a category name already exists, you’ll get a clear error. Notification delivery and Blaze balances are also easier to manage.

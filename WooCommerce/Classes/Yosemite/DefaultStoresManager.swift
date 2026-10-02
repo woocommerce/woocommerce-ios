@@ -273,6 +273,12 @@ class DefaultStoresManager: StoresManager {
         invalidWPCOMTokenNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveInvalidTokenError,
                                                                                object: nil,
                                                                                queue: .main) { [weak self] _ in
+            // Only track when a logout is actually about to happen. Multiple in-flight requests can each post
+            // this notification, and already-queued `.main` blocks still run after the first sign-out —
+            // checking `isAuthenticated` keeps the count to one per sign-out.
+            if self?.isAuthenticated == true {
+                ServiceLocator.analytics.track(event: .Authentication.involuntaryLogout(reason: .invalidToken))
+            }
             _ = self?.deauthenticate()
         }
     }
@@ -287,6 +293,7 @@ class DefaultStoresManager: StoresManager {
             guard self?.isAuthenticatedWithoutWPCom == true else {
                 return
             }
+            ServiceLocator.analytics.track(event: .Authentication.involuntaryLogout(reason: .applicationPasswordUnauthorized))
             _ = self?.deauthenticate()
         }
     }
@@ -504,7 +511,6 @@ class DefaultStoresManager: StoresManager {
         // Because `defaultSite` is loaded or synced asynchronously, it is reset here so that any UI that calls this does not show outdated data.
         // For example, `sessionManager.defaultSite` is used to show site name in various screens in the app.
         sessionManager.defaultSite = nil
-        sessionManager.cachedWooCommerceVersion = nil
         defaults[.storePhoneNumber] = nil
         defaults[.completedAllStoreOnboardingTasks] = nil
         defaults[.usedProductDescriptionAI] = nil
@@ -967,6 +973,9 @@ private extension DefaultStoresManager {
     /// Loads the WooCommerce plugin version from storage and caches it in memory for the session only
     ///
     func loadCachedWooCommerceVersion(siteID: Int64) {
+        guard sessionManager.defaultStoreID == siteID else {
+            return
+        }
         let version = ServiceLocator.storageManager.viewStorage.loadSystemPlugin(
             siteID: siteID,
             fileNameWithoutExtension: Plugin.wooCommerce.fileNameWithoutExtension,
@@ -1034,6 +1043,7 @@ private extension DefaultStoresManager {
         //
         // Batch 1 (immediate): Site settings — needed for dashboard rendering.
         loadStoreUUID(siteID: siteID)
+        loadCachedWooCommerceVersion(siteID: siteID)
         synchronizeSettings(with: siteID) { [weak self] in
             guard let self else { return }
             ServiceLocator.shippingSettingsService.update(siteID: siteID)

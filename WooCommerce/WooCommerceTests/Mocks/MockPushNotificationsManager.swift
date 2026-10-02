@@ -116,6 +116,9 @@ final class MockPushNotificationsManager: PushNotesManager {
         }
     }
 
+    func refreshWooPushRegistrationsIfNeeded() async {
+    }
+
     func registerForRemoteNotifications() {
         registerForRemoteNotificationsCallCount += 1
     }

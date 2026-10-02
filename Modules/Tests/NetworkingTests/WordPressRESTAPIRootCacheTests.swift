@@ -3,7 +3,7 @@ import Testing
 @testable import NetworkingCore
 
 @Suite("WordPressRESTAPIRootCache")
-struct WordPressRESTAPIRootCacheTests {
+struct WordPressRESTAPIRootCacheTests: Sendable {
 
     // Each test gets a fresh cache instance — no shared singleton, no tearDown needed.
     let sut = WordPressRESTAPIRootCache()

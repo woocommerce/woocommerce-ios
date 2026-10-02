@@ -3,6 +3,7 @@
 
 25.8
 -----
+- [*] Login: Allow entering and submitting nine-digit verification codes from WordPress.com. [https://github.com/woocommerce/woocommerce-ios/pull/17969]
 - [Internal] Login: the site-address screen reached from the QR prologue's "Log in with site address" fallback now tracks under the `login_site_address` flow instead of `login_qr`. [https://github.com/woocommerce/woocommerce-ios/pull/17915]
 - [*] Products: Fixed a remaining iOS 26 crash when tapping Save right as the "View product in store" sheet opens from the product form. [https://github.com/woocommerce/woocommerce-ios/pull/17963]
 - [*] The app now periodically refreshes push notification registrations for visible stores, and restores notifications for Jetpack stores when WooCommerce push becomes unavailable. [https://github.com/woocommerce/woocommerce-ios/pull/17967]

@@ -211,10 +211,11 @@ private extension POSTabCoordinator {
 
     func presentPOSView(siteID: Int64) {
         let httpsConfigurationNotice = httpsConfigurationNoticeProvider()
-        let hostingController = UIHostingController(
-            rootView: POSPresentationRootView(posView: nil)
+        let presentationSession = POSPresentationSession()
+        let hostingController = POSHostingController(
+            rootView: POSPresentationRootView(posView: nil),
+            session: presentationSession
         )
-        hostingController.modalPresentationStyle = .fullScreen
         viewControllerToPresent.present(hostingController, animated: true, completion: nil)
 
         Task { @MainActor [weak self, weak hostingController] in
@@ -414,7 +415,8 @@ private extension POSTabCoordinator {
                     staffSettingsService: staffSettingsService,
                     services: serviceAdaptor,
                     httpsConfigurationNotice: httpsConfigurationNotice,
-                    itemProvider: itemProvider
+                    itemProvider: itemProvider,
+                    presentationSession: presentationSession
                 )
 
                 guard hostingController.presentingViewController != nil else {

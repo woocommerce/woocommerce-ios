@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [*] Point of Sale: Fixed checkout resetting when using Tap to Pay. [https://github.com/woocommerce/woocommerce-ios/pull/17992]
 
 
 25.8

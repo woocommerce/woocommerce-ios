@@ -1,6 +1,6 @@
 import Foundation
 
-public struct POSCoupon: Equatable, Hashable {
+public struct POSCoupon: Equatable, Hashable, Sendable {
     public let id: POSItemIdentifier
     public let code: String
     public let summary: String

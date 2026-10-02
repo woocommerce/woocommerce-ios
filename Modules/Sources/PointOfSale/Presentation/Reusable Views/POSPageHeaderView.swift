@@ -110,8 +110,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             bottomContent
         }
         .frame(minHeight: POSHeaderLayoutConstants.minHeight)
-        .padding(.leading, shouldHaveLeadingPaddingForItems ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.none)
-        .padding(.trailing, POSHeaderLayoutConstants.sectionHorizontalPadding)
+        .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
         .padding(.top, horizontalSizeClass == .compact ? POSPadding.medium : POSHeaderLayoutConstants.sectionVerticalPadding)
         .padding(.bottom, POSHeaderLayoutConstants.sectionVerticalPadding)
     }
@@ -181,10 +180,6 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             .fixedSize(horizontal: true, vertical: false)
             .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             .foregroundColor(.posOnSurface)
-    }
-
-    private var shouldHaveLeadingPaddingForItems: Bool {
-        items.isNotEmpty || showsBackButton
     }
 
     private var shouldShowItemsContent: Bool {

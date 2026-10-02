@@ -59,7 +59,10 @@ struct POSRefundNavigationHeader: View {
             Spacer(minLength: POSSpacing.none)
         }
         .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
+        .frame(minHeight: horizontalSizeClass == .compact ? POSHeaderLayoutConstants.minHeight : nil)
+        .padding(.horizontal, horizontalSizeClass == .compact ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.xLarge)
+        .padding(.top, horizontalSizeClass == .compact ? POSPadding.medium : POSPadding.xLarge)
+        .padding(.bottom, horizontalSizeClass == .compact ? POSHeaderLayoutConstants.sectionVerticalPadding : POSPadding.xLarge)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }

@@ -4,6 +4,7 @@ import XCTest
 import Yosemite
 
 final class POSRefundCardPresentPaymentAlertsTests: XCTestCase {
+    @MainActor
     func test_present_when_payment_cancellation_runs_then_marks_refund_as_cancelled() {
         let stateModel = POSRefundSubmissionModel()
         var didMarkCancelled = false
@@ -25,6 +26,7 @@ final class POSRefundCardPresentPaymentAlertsTests: XCTestCase {
         XCTAssertTrue(didCancelPayment)
     }
 
+    @MainActor
     func test_present_when_multiple_reader_search_is_cancelled_then_marks_refund_as_cancelled() {
         let stateModel = POSRefundSubmissionModel()
         var didMarkCancelled = false
@@ -48,6 +50,7 @@ final class POSRefundCardPresentPaymentAlertsTests: XCTestCase {
         XCTAssertNil(selectedReaderID)
     }
 
+    @MainActor
     func test_present_when_multiple_reader_is_selected_then_does_not_mark_refund_as_cancelled() {
         let stateModel = POSRefundSubmissionModel()
         var didMarkCancelled = false

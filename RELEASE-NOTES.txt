@@ -1,6 +1,10 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+25.9
+-----
+
+
 25.8
 -----
 - [*] Login: QR code sign-in now shows "iPhone" or "iPad" on the web instead of the raw device identifier (e.g. "iPhone14,2"). [https://github.com/woocommerce/woocommerce-ios/pull/17983]

@@ -12,6 +12,7 @@ import enum Hardware.UnderlyingError
 /// Protocol to abstract the `CollectOrderPaymentUseCase`.
 /// Currently only used to facilitate unit tests.
 ///
+@MainActor
 protocol CollectOrderPaymentProtocol {
     /// Starts the collect payment flow.
     ///
@@ -31,6 +32,7 @@ protocol CollectOrderPaymentProtocol {
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
+@MainActor
 final class CollectOrderPaymentUseCase<TapToPayAlertProvider: CardReaderTransactionAlertsProviding,
                                         BluetoothAlertProvider: CardReaderTransactionAlertsProviding,
                                         AlertPresenter: CardPresentPaymentAlertsPresenting>:
@@ -240,7 +242,6 @@ private extension CollectOrderPaymentUseCase {
 
     /// Cancels an automatic card reader reconnection since a new payment cannot begin while a reconnection is ongoing
     ///
-    @MainActor
     func cancelReconnectionIfNeeded() async {
         await withCheckedContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, Never>? = continuation

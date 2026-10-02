@@ -5,7 +5,7 @@ import PointOfSale
 
 /// Overrides the default event tracking for card present payments on IPP in Order Creation flow
 ///
-final class POSCollectOrderPaymentAnalyticsAdaptor: POSCollectOrderPaymentAnalyticsTracking, CollectOrderPaymentAnalyticsTracking {
+final class POSCollectOrderPaymentAnalyticsAdaptor: @MainActor POSCollectOrderPaymentAnalyticsTracking, CollectOrderPaymentAnalyticsTracking {
     private var cardPaymentOrder: POSPaymentAnalyticsOrder?
     private var customerInteractionStarted: Double = 0
     private var orderSync: Double = 0

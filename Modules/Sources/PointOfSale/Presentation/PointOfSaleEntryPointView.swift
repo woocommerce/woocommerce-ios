@@ -206,7 +206,10 @@ public struct PointOfSaleEntryPointView: View {
             }
         }
         .task {
-            // Returning from a full-screen payment can restart this task.
+            // We create the posModel in a task, not init, to avoid creating multiple copies during the view's lifecycle.
+            // Confusingly, init can be called more than once, but `task` matches the lifecycle.
+            // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.
+            // Check for nil because returning from the full-screen Tap to Pay payment simulation can restart this task.
             guard posModel == nil else { return }
             posModel = PointOfSaleAggregateModel(
                 entryPointController: posEntryPointController,

@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 
+@MainActor
 protocol ShipmentProviderListDelegate: AnyObject {
     func shipmentProviderList(_ list: ShipmentProvidersViewController, didSelect: ShipmentTrackingProvider, groupName: String)
 }
@@ -159,7 +160,7 @@ private extension ShipmentProvidersViewController {
     }
 }
 
-extension ShipmentProvidersViewController: KeyboardScrollable {
+extension ShipmentProvidersViewController: @MainActor KeyboardScrollable {
     var scrollable: UIScrollView {
         return table
     }

@@ -2,18 +2,21 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class SummaryTableViewCellTests: XCTestCase {
     private var cell: SummaryTableViewCell!
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         let nib = Bundle.main.loadNibNamed("SummaryTableViewCell", owner: self, options: nil)
         cell = nib?.first as? SummaryTableViewCell
     }
 
-    override func tearDown() {
+    @MainActor
+    override func tearDown() async throws {
         cell = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_titleLabel_is_set_to_the_billedPersonName() throws {

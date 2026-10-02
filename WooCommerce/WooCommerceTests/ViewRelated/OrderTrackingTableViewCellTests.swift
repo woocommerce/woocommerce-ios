@@ -2,6 +2,7 @@ import XCTest
 @testable import WooCommerce
 @testable import Yosemite
 
+@MainActor
 final class OrderTrackingTableViewCellTests: XCTestCase {
     private var cell: OrderTrackingTableViewCell?
 
@@ -16,15 +17,17 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
                                                dateShipped: Date(timeIntervalSince1970: 0))
     }
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         let nib = Bundle.main.loadNibNamed("OrderTrackingTableViewCell", owner: self, options: nil)
         cell = nib?.first as? OrderTrackingTableViewCell
     }
 
-    override func tearDown() {
+    @MainActor
+    override func tearDown() async throws {
         cell = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func testTopLineTextMatchesTrackingProvider() {

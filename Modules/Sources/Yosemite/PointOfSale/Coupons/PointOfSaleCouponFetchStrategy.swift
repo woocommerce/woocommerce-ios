@@ -3,7 +3,8 @@ import struct Networking.PagedItems
 import class WooFoundation.CurrencySettings
 import protocol Storage.StorageManagerType
 
-public protocol PointOfSaleCouponFetchStrategy {
+@MainActor
+public protocol PointOfSaleCouponFetchStrategy: Sendable {
     func fetchCoupons(pageNumber: Int) async throws -> PagedItems<POSItem>
     func fetchLocalCoupons() async throws -> [POSItem]
     /// The debouncing strategy to use for search input.
@@ -18,6 +19,7 @@ public extension PointOfSaleCouponFetchStrategy {
     }
 }
 
+@MainActor
 struct PointOfSaleDefaultCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
     private let siteID: Int64
     private let currencySettings: CurrencySettings
@@ -38,7 +40,7 @@ struct PointOfSaleDefaultCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
         // Update local storage with data from the remote
         let hasMorePages = try await syncCouponsFromRemote(pageNumber: pageNumber)
         // Return all local coupons, including updated ones from the remote
-        let coupons = await fetchLocalCoupons(limit: nil)
+        let coupons = fetchLocalCoupons(limit: nil)
         return .init(items: coupons, hasMorePages: hasMorePages, totalItems: nil)
     }
 
@@ -46,7 +48,7 @@ struct PointOfSaleDefaultCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
     /// It does not accept any sort of pagination
     /// Limited to default page size to match remote results
     func fetchLocalCoupons() async throws -> [POSItem] {
-        return await fetchLocalCoupons(limit: Constants.defaultPageSize)
+        return fetchLocalCoupons(limit: Constants.defaultPageSize)
     }
 }
 
@@ -60,7 +62,6 @@ private extension PointOfSaleDefaultCouponFetchStrategy {
                                                                pageSize: Constants.defaultPageSize)
     }
 
-    @MainActor
     func fetchLocalCoupons(limit: Int? = nil) -> [POSItem] {
         let predicate = NSPredicate(format: "siteID == %lld", siteID)
         let resultsController = CouponResultsControllerAdapter(storage: storage, currencySettings: currencySettings)
@@ -76,6 +77,7 @@ extension PointOfSaleDefaultCouponFetchStrategy {
 
 // MARK: - Search Coupon Strategy
 
+@MainActor
 struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
     private let siteID: Int64
     private let couponStoreMethods: CouponStoreMethodsProtocol
@@ -111,7 +113,7 @@ struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
                                                    keyword: searchTerm,
                                                    pageNumber: pageNumber,
                                                    pageSize: PointOfSaleDefaultCouponFetchStrategy.Constants.defaultPageSize)
-        let results = await getSearchResults()
+        let results = getSearchResults()
 
         if pageNumber == 1 {
             let milliseconds = Int(Date().timeIntervalSince(startTime) * Double(MSEC_PER_SEC))
@@ -123,7 +125,6 @@ struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
         return PagedItems(items: results, hasMorePages: hasMorePages, totalItems: nil)
     }
 
-    @MainActor
     private func getSearchResults() -> [POSItem] {
         let sitePredicate = NSPredicate(format: "siteID == %lld", siteID)
         let searchPredicate = NSPredicate(format: "ANY searchResults.keyword = %@", searchTerm)
@@ -140,6 +141,7 @@ struct PointOfSaleSearchCouponFetchStrategy: PointOfSaleCouponFetchStrategy {
 
 // MARK: - Results Controller
 
+@MainActor
 private struct CouponResultsControllerAdapter {
     private let storage: StorageManagerType
     private let currencySettings: CurrencySettings

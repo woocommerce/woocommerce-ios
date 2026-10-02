@@ -6,6 +6,7 @@ import WooFoundation
 @testable import Yosemite
 
 @Suite("GRDBObservableDataSource Tests")
+@MainActor
 struct GRDBObservableDataSourceTests {
     private let siteID: Int64 = 123
     private var grdbManager: GRDBManager!
@@ -680,7 +681,7 @@ struct GRDBObservableDataSourceTests {
                 }
             }
 
-            @MainActor func observe() {
+            @Sendable @MainActor func observe() async {
                 let conditionMet = withObservationTracking {
                     // Access the observable properties and check condition
                     _ = sut.productItems
@@ -694,7 +695,7 @@ struct GRDBObservableDataSourceTests {
                 } onChange: {
                     // Re-observe on the main actor when changes occur
                     Task { @MainActor in
-                        observe()
+                        await observe()
                     }
                 }
 
@@ -705,7 +706,7 @@ struct GRDBObservableDataSourceTests {
             }
 
             Task { @MainActor in
-                observe()
+                await observe()
             }
         }
     }

@@ -2,7 +2,8 @@ import Foundation
 import class WooFoundation.CurrencySettings
 import class WooFoundation.CurrencyFormatter
 
-public protocol PointOfSaleItemMapperProtocol {
+@MainActor
+public protocol PointOfSaleItemMapperProtocol: Sendable {
     func mapProductsToPOSItems(products: [POSProduct]) -> [POSItem]
     func mapVariationsToPOSItems(variations: [POSProductVariation], parentProduct: POSVariableParentProduct) -> [POSItem]
 

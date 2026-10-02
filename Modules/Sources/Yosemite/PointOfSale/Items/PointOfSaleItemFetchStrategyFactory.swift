@@ -7,7 +7,8 @@ import struct NetworkingCore.JetpackSite
 import protocol Storage.GRDBManagerProtocol
 import class WooFoundation.CurrencySettings
 
-public protocol PointOfSaleItemFetchStrategyFactoryProtocol {
+@MainActor
+public protocol PointOfSaleItemFetchStrategyFactoryProtocol: Sendable {
     func defaultStrategy(analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy
 
     func searchStrategy(searchTerm: String,

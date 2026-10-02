@@ -1,6 +1,7 @@
 import XCTest
 @testable import Yosemite
 
+@MainActor
 final class PointOfSaleDefaultPurchasableItemFetchStrategyTests: XCTestCase {
     private let siteID: Int64 = 123
     private let productsRemote = MockProductsRemote()
@@ -8,8 +9,9 @@ final class PointOfSaleDefaultPurchasableItemFetchStrategyTests: XCTestCase {
     private let mockAnalytics = MockPOSItemFetchAnalyticsTracking()
     private var sut: PointOfSaleDefaultPurchasableItemFetchStrategy!
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         sut = PointOfSaleDefaultPurchasableItemFetchStrategy(
             siteID: siteID,
             productsRemote: productsRemote,
@@ -18,9 +20,10 @@ final class PointOfSaleDefaultPurchasableItemFetchStrategyTests: XCTestCase {
         )
     }
 
-    override func tearDown() {
+    @MainActor
+    override func tearDown() async throws {
         sut = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_fetchProducts_tracks_analytics_for_first_page() async throws {

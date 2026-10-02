@@ -13,6 +13,7 @@ import enum Yosemite.POSItemType
 import class Yosemite.AsyncPaginationTracker
 import enum Yosemite.SearchDebounceStrategy
 
+@MainActor
 protocol PointOfSaleItemsControllerProtocol {
     ///
     var itemsViewState: ItemsViewState { get }
@@ -24,6 +25,7 @@ protocol PointOfSaleItemsControllerProtocol {
     func loadNextItems(base: ItemListBaseItem) async
 }
 
+@MainActor
 protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsControllerProtocol {
     /// Searches for items
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async
@@ -59,18 +61,15 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
                                                                                                        analytics: analyticsProvider))
     }
 
-    @MainActor
     func loadItems(base: ItemListBaseItem) async {
         setLoadingState(base: base)
         await loadFirstPage(base: base)
     }
 
-    @MainActor
     func refreshItems(base: ItemListBaseItem) async {
         await loadFirstPage(base: base)
     }
 
-    @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
         fetchStrategy = itemFetchStrategyFactory.searchStrategy(searchTerm: searchTerm,
                                                                 analytics: POSItemFetchAnalytics(itemType: .product,
@@ -95,7 +94,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         return searchStrategy.debounceStrategy
     }
 
-    @MainActor
     private func loadFirstPage(base: ItemListBaseItem) async {
         switch base {
         case .root:
@@ -105,7 +103,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         }
     }
 
-    @MainActor
     private func loadRootItems() async {
         do {
             try await paginationTracker.resync { [weak self] pageNumber in
@@ -124,7 +121,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         }
     }
 
-    @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
         switch base {
         case .root:
@@ -134,7 +130,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         }
     }
 
-    @MainActor
     private func loadNextRootItems() async {
         guard paginationTracker.hasNextPage else {
             return
@@ -158,7 +153,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         }
     }
 
-    @MainActor
     private func loadChildItems(for parent: POSItem) async {
         let paginationTracker = paginationTracker(for: parent)
         do {
@@ -171,7 +165,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         }
     }
 
-    @MainActor
     private func loadNextChildItems(for parent: POSItem) async {
         let paginationTracker = paginationTracker(for: parent)
 
@@ -193,7 +186,6 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
         }
     }
 
-    @MainActor
     private func fetchChildItems(for parent: POSItem, pageNumber: Int, appendToExistingItems: Bool) async throws -> Bool {
         switch parent {
         case let .variableParentProduct(parentProduct):
@@ -269,7 +261,6 @@ private extension PointOfSaleItemsController {
     /// - Parameter pageNumber: Page number to fetch items from.
     /// - Parameter appendToExistingItems: Default true – set this to false when refreshing to make the new page the only page.
     /// - Returns: A boolean that indicates whether there is next page for the paginated items.
-    @MainActor
     func fetchItems(pageNumber: Int, appendToExistingItems: Bool = true) async throws -> Bool {
         do {
             let pagedItems = try await itemProvider.providePointOfSaleItems(pageNumber: pageNumber,
@@ -302,7 +293,6 @@ private extension PointOfSaleItemsController {
     /// Fetches variation items given a page number and appends new unique items to the existing items array.
     /// - Parameter pageNumber: Page number to fetch items from.
     /// - Parameter appendToExistingItems: Default true – set this to false when refreshing to make the new page the only page.
-    @MainActor
     private func fetchVariationItems(parentProduct: POSVariableParentProduct,
                                      parentItem: POSItem,
                                      pageNumber: Int,

@@ -306,10 +306,15 @@ enum NoticeLayout {
     static func isVerticalBar(frame: CGRect) -> Bool {
         frame.height > frame.width
     }
+
+    /// Notices are capped at half the width in wide, regular-width windows only.
+    static func widthMultiplier(availableWidth: CGFloat, isRegularWidth: Bool) -> CGFloat {
+        isRegularWidth && availableWidth >= NarrowWindowLayout.compactLayoutThreshold ? 0.5 : 1.0
+    }
 }
 
 // MARK: - NoticeContainerView: Small wrapper view that ensures a notice remains centered and at a maximum width when
-//         displayed in a regular size class.
+//         displayed in a wide window.
 //
 private class NoticeContainerView: UIView {
 
@@ -414,15 +419,21 @@ private class NoticeContainerView: UIView {
     }
 
     private lazy var noticeWidthConstraint: NSLayoutConstraint = {
-        // At regular width, the notice shouldn't be any wider than 1/2 the app's width
+        // In a wide window, the notice shouldn't be any wider than 1/2 the app's width
         return noticeView.widthAnchor.constraint(equalTo: widthAnchor, multiplier: 0.5)
     }()
 
     private func activateNoticeWidthIfNeeded() {
-        noticeWidthConstraint.isActive = traitCollection.horizontalSizeClass == .regular
+        let isRegularWidth = traitCollection.horizontalSizeClass == .regular
+        let isHalfWidth = NoticeLayout.widthMultiplier(availableWidth: bounds.width, isRegularWidth: isRegularWidth) < 1
+        guard noticeWidthConstraint.isActive != isHalfWidth else {
+            return
+        }
+        noticeWidthConstraint.isActive = isHalfWidth
     }
 
     override func layoutSubviews() {
+        activateNoticeWidthIfNeeded()
         onLayoutChange?()
         super.layoutSubviews()
     }

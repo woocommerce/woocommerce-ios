@@ -107,6 +107,24 @@ struct DefaultNoticePresenterTests {
         #expect(!isVertical)
     }
 
+    @Test(arguments: [(393.0, 1.0), (669.0, 1.0), (699.0, 1.0), (700.0, 0.5), (951.0, 0.5)] as [(CGFloat, CGFloat)])
+    func test_widthMultiplier_when_width_is_regular_then_halves_only_wide_windows(availableWidth: CGFloat, expected: CGFloat) {
+        // When
+        let multiplier = NoticeLayout.widthMultiplier(availableWidth: availableWidth, isRegularWidth: true)
+
+        // Then
+        #expect(multiplier == expected)
+    }
+
+    @Test
+    func test_widthMultiplier_when_width_is_compact_then_returns_full_width() {
+        // When
+        let multiplier = NoticeLayout.widthMultiplier(availableWidth: 874, isRegularWidth: false)
+
+        // Then
+        #expect(multiplier == 1)
+    }
+
     @Test
     func test_enqueue_when_tab_bar_is_vertical_then_notice_is_pinned_to_the_bottom_safe_area() throws {
         // Given

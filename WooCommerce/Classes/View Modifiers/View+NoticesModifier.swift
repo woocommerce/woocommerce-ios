@@ -109,7 +109,7 @@ struct NoticeModifier: ViewModifier {
                         }
                     }
                     .background(.thickMaterial)
-                    .frame(width: preferredSizeClassWidth(geometry))
+                    .frame(width: preferredWidth(geometry))
                     .fixedSize(horizontal: false, vertical: true)
                     .cornerRadius(13.0)
                     .onTapGesture {
@@ -168,11 +168,10 @@ struct NoticeModifier: ViewModifier {
         }
     }
 
-    /// Returns a scaled width for a regular horizontal size class.
+    /// Returns a scaled width for wide windows.
     ///
-    private func preferredSizeClassWidth(_ geometry: GeometryProxy) -> CGFloat {
-        let multiplier = horizontalSizeClass == .regular ? 0.5 : 1.0
-        return geometry.size.width * multiplier
+    private func preferredWidth(_ geometry: GeometryProxy) -> CGFloat {
+        geometry.size.width * NoticeLayout.widthMultiplier(availableWidth: geometry.size.width, isRegularWidth: horizontalSizeClass == .regular)
     }
 }
 

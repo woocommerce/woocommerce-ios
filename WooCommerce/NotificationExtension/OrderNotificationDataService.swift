@@ -57,7 +57,7 @@ final class OrderNotificationDataService {
 
     func loadOrder(siteID: Int64, orderID: Int) async throws -> Order {
         try await withCheckedThrowingContinuation { continuation in
-            ordersRemote.loadOrder(for: siteID, orderID: Int64(orderID)) { order, error in
+            ordersRemote.loadOrder(for: siteID, orderID: Int64(orderID)) { @Sendable order, error in
                 switch (order, error) {
                 case (let order?, nil):
                     continuation.resume(returning: order)

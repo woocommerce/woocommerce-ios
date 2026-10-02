@@ -21,6 +21,7 @@ protocol CardPresentPaymentPreflightControllerProtocol {
     var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> { get }
 }
 
+@MainActor
 final class CardPresentPaymentPreflightController<TapToPayAlertProvider: CardReaderConnectionAlertsProviding,
                                                   BluetoothAlertProvider: BluetoothReaderConnnectionAlertsProviding,
                                                   AlertPresenter: CardPresentPaymentAlertsPresenting>: CardPresentPaymentPreflightControllerProtocol
@@ -115,7 +116,6 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         self.supportDeterminer = CardReaderSupportDeterminer(siteID: siteID, configuration: configuration, stores: stores)
     }
 
-    @MainActor
     func start(discoveryMethod: CardReaderDiscoveryMethod?) async {
         let connectionAttemptID = invalidateConnectionAttempt()
         self.discoveryMethod = discoveryMethod
@@ -123,11 +123,10 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         await checkForConnectedReader(connectionAttemptID: connectionAttemptID)
     }
 
-    func cancelConnectionAttempt() {
+    nonisolated func cancelConnectionAttempt() {
         invalidateConnectionAttempt()
     }
 
-    @MainActor
     private func checkForConnectedReader(connectionAttemptID: Int) async {
         if let connectedReader,
            let paymentGatewayAccount = await selectedPaymentGateway() {
@@ -154,7 +153,6 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         }
     }
 
-    @MainActor
     private func automaticallyDisconnectFromReader() async throws {
         try await withCheckedThrowingContinuation { continuation in
             let action = CardPresentPaymentAction.disconnect { result in
@@ -175,7 +173,6 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         }
     }
 
-    @MainActor
     private func continuePreflight(connectionAttemptID: Int) async {
         // Once onboarding is complete, a Payment Gateway will have been chosen
         guard let paymentGatewayAccount = await selectedPaymentGateway() else {
@@ -216,14 +213,14 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
     }
 
     @discardableResult
-    private func invalidateConnectionAttempt() -> Int {
+    nonisolated private func invalidateConnectionAttempt() -> Int {
         connectionAttemptID.withLock { id in
             id += 1
             return id
         }
     }
 
-    private func isCurrentConnectionAttempt(_ id: Int) -> Bool {
+    nonisolated private func isCurrentConnectionAttempt(_ id: Int) -> Bool {
         connectionAttemptID.withLock { $0 == id }
     }
 
@@ -243,7 +240,6 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         }
     }
 
-    @MainActor
     private func promptForReaderTypeSelection(paymentGatewayAccount: PaymentGatewayAccount) {
         analytics.track(event: .InPersonPayments.cardReaderSelectTypeShown(forGatewayID: paymentGatewayAccount.gatewayID,
                                                                            countryCode: configuration.countryCode))
@@ -271,7 +267,6 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
         }))
     }
 
-    @MainActor
     private func selectedPaymentGateway() async -> PaymentGatewayAccount? {
         await withCheckedContinuation { continuation in
             let action = CardPresentPaymentAction.selectedPaymentGatewayAccount { paymentGatewayAccount in

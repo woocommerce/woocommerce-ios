@@ -6,6 +6,7 @@ import class WooFoundation.CurrencySettings
 @testable import Yosemite
 
 @Suite("PointOfSaleLocalSearchPurchasableItemFetchStrategy Tests")
+@MainActor
 struct PointOfSaleLocalSearchPurchasableItemFetchStrategyTests {
     private let siteID: Int64 = 123
     private let searchTerm = "test"

@@ -59,7 +59,8 @@ public extension Sequence where Element == POSOrderableItem {
     }
 }
 
-public protocol PointOfSaleItemServiceProtocol {
+@MainActor
+public protocol PointOfSaleItemServiceProtocol: Sendable {
     func providePointOfSaleItems(pageNumber: Int,
                                  fetchStrategy: PointOfSalePurchasableItemFetchStrategy) async throws -> PagedItems<POSItem>
     func providePointOfSaleVariationItems(for parentProduct: POSVariableParentProduct,

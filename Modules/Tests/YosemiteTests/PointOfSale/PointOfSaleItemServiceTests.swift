@@ -2,24 +2,27 @@ import XCTest
 import WooFoundation
 @testable import Yosemite
 
+@MainActor
 final class PointOfSaleItemServiceTests: XCTestCase {
     private var currencySettings: CurrencySettings!
     private var itemProvider: PointOfSaleItemServiceProtocol!
     private var mockItemMapper: MockPointOfSaleItemMapper!
     private let siteID: Int64 = 13092
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         currencySettings = CurrencySettings()
         mockItemMapper = MockPointOfSaleItemMapper()
         itemProvider = PointOfSaleItemService(currencySettings: currencySettings, itemMapper: mockItemMapper)
     }
 
-    override func tearDown() {
+    @MainActor
+    override func tearDown() async throws {
         currencySettings = nil
         itemProvider = nil
         mockItemMapper = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_PointOfSaleItemServiceProtocol_when_fails_request_with_requestFailed_then_throws_error() async throws {

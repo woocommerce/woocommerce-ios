@@ -101,7 +101,7 @@ struct POSNavigationDestinationMarkAsPaidView: View {
         // Fill the right pane so the visual transition reads as "totals → confirmation → totals"
         // rather than a card landing on top.
         .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(Color.posSurface)
+        .background(Color.posSurface.ignoresSafeArea())
         // Asks the dashboard to hide the floating control overlay (`…` menu, reader chip)
         // so the merchant can focus on the confirmation step without distractions.
         .posHidesFloatingControl()

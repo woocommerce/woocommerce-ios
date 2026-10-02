@@ -70,4 +70,64 @@ struct DefaultNoticePresenterTests {
         // Then
         #expect(presenter.presentingViewController == nil)
     }
+
+    @Test
+    func test_isVerticalBar_when_tab_bar_spans_the_bottom_then_returns_false() {
+        // Given
+        let frame = CGRect(x: 0, y: 769, width: 393, height: 83)
+
+        // When
+        let isVertical = NoticeLayout.isVerticalBar(frame: frame)
+
+        // Then
+        #expect(!isVertical)
+    }
+
+    @Test
+    func test_isVerticalBar_when_tab_bar_spans_the_trailing_edge_then_returns_true() {
+        // Given
+        let frame = CGRect(x: 882, y: 0, width: 69, height: 669)
+
+        // When
+        let isVertical = NoticeLayout.isVerticalBar(frame: frame)
+
+        // Then
+        #expect(isVertical)
+    }
+
+    @Test
+    func test_isVerticalBar_when_tab_bar_is_not_laid_out_then_returns_false() {
+        // Given
+        let frame = CGRect.zero
+
+        // When
+        let isVertical = NoticeLayout.isVerticalBar(frame: frame)
+
+        // Then
+        #expect(!isVertical)
+    }
+
+    @Test
+    func test_enqueue_when_tab_bar_is_vertical_then_notice_is_pinned_to_the_bottom_safe_area() throws {
+        // Given
+        var presenter: NoticePresenter = DefaultNoticePresenter()
+        let viewController = UITabBarController()
+        viewController.viewControllers = [UIViewController()]
+        viewController.view.frame = CGRect(x: 0, y: 0, width: 951, height: 669)
+        viewController.view.layoutIfNeeded()
+        viewController.tabBar.frame = CGRect(x: 882, y: 0, width: 69, height: 669)
+        presenter.presentingViewController = viewController
+        let existingSubviews = viewController.view.subviews
+
+        // When
+        presenter.enqueue(notice: Notice(title: "Notice"))
+        let noticeContainer = try #require(viewController.view.subviews.first { !existingSubviews.contains($0) })
+
+        // Then
+        let bottomConstraints = viewController.view.constraints.filter {
+            $0.isActive && $0.firstItem === noticeContainer && $0.firstAttribute == .bottom && $0.relation == .equal
+        }
+        #expect(bottomConstraints.count == 1)
+        #expect(bottomConstraints.first?.secondItem === viewController.view.safeAreaLayoutGuide)
+    }
 }

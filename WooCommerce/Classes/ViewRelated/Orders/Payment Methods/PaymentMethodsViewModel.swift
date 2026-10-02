@@ -22,6 +22,10 @@ final class PaymentMethodsViewModel: ObservableObject {
     @Published private(set) var showTapToPayRow = false
     @Published private(set) var cardPaymentUnavailableMessage: String?
 
+    /// Defines if the card payment rows should be shown as loading while the order is checked for subscriptions.
+    ///
+    @Published private(set) var isCheckingCardPaymentEligibility = false
+
     /// Allows the onboarding flow to be presented before a card present payment when required
     ///
     private let cardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting
@@ -478,9 +482,16 @@ private extension PaymentMethodsViewModel {
 
         tapToPayReaderSupported { [weak self] tapToPaySupportedByDevice in
             let tapToPaySupportedByStore = self?.cardPresentPaymentsConfiguration.supportedReaders.contains(.tapToPay) ?? false
+            let updateCardPaymentRows: (Bool) -> Void = { [weak self] isEligible in
+                self?.showPayWithCardRow = isEligible
+                self?.showTapToPayRow = isEligible && tapToPaySupportedByDevice && tapToPaySupportedByStore
+            }
             self?.orderIsEligibleForCardPresentPayment { [weak self] orderIsEligible in
-                self?.showPayWithCardRow = orderIsEligible
-                self?.showTapToPayRow = orderIsEligible && tapToPaySupportedByDevice && tapToPaySupportedByStore
+                updateCardPaymentRows(orderIsEligible)
+                guard orderIsEligible else {
+                    return
+                }
+                self?.orderIsFreeOfSubscriptions(onCompletion: updateCardPaymentRows)
             }
         }
     }
@@ -507,6 +518,26 @@ private extension PaymentMethodsViewModel {
                     }
                     onCompletion(eligibility == .eligible)
                 case .failure:
+                    onCompletion(false)
+                }
+            }
+
+        stores.dispatch(action)
+    }
+
+    /// Checks that the order wasn't sold as a subscription. Shows the card payment rows as loading meanwhile, and hides them
+    /// with an explanation when the check fails.
+    ///
+    private func orderIsFreeOfSubscriptions(onCompletion: @escaping (Bool) -> Void) {
+        isCheckingCardPaymentEligibility = true
+        let action = OrderCardPresentPaymentEligibilityAction
+            .checkOrderContainsSubscription(orderID: orderID, siteID: siteID) { [weak self] result in
+                self?.isCheckingCardPaymentEligibility = false
+                switch result {
+                case .success(let containsSubscription):
+                    onCompletion(!containsSubscription)
+                case .failure:
+                    self?.cardPaymentUnavailableMessage = Localization.subscriptionCheckFailed
                     onCompletion(false)
                 }
             }
@@ -612,6 +643,10 @@ private extension PaymentMethodsViewModel {
             "paymentMethods.cardPaymentsUnavailableForOrderCurrency",
             value: "Card payments aren’t available for this order’s currency (%1$@).",
             comment: "Explains why card payment methods are hidden. The placeholder is the order currency code, such as USD.")
+        static let subscriptionCheckFailed = NSLocalizedString(
+            "paymentMethods.cardPaymentsSubscriptionCheckFailed",
+            value: "Couldn’t check whether this order can be paid by card. Please try again.",
+            comment: "Explains why card payment methods are hidden when checking whether the order contains a subscription failed.")
 
         static let markAsPaidError = NSLocalizedString("There was an error while marking the order as paid.",
                                                        comment: "Text when there is an error while marking the order as paid for during payment.")

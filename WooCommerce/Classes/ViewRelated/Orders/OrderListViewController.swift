@@ -49,6 +49,7 @@ final class OrderListViewController: UIViewController, GhostableViewController {
     /// Main TableView.
     ///
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet private weak var tableViewTopConstraint: NSLayoutConstraint!
 
     /// The data source that is bound to `tableView`.
     private var dataSource: UITableViewDiffableDataSource<String, FetchResultSnapshotObjectID>?
@@ -381,6 +382,8 @@ private extension OrderListViewController {
             return
         }
 
+        tableViewTopConstraint.isActive = false
+        tableView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         view.pinSubviewBottomToBottomAnchorReplacingSafeArea(tableView)
     }
 

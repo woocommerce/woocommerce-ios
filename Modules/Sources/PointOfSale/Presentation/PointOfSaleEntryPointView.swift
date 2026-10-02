@@ -32,6 +32,7 @@ public struct PointOfSaleEntryPointView: View {
     @State private var posEntryPointController: POSEntryPointController
     @State private var accessSession: POSAccessSession
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.isPresented) private var isPresented
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
     private let itemsController: PointOfSaleItemsControllerProtocol
@@ -49,7 +50,6 @@ public struct PointOfSaleEntryPointView: View {
     private let receiptSender: POSReceiptSending
     private let siteTimezone: TimeZone
     private let services: POSDependencyProviding
-    private let presentationSession: POSPresentationSession
     private let siteID: Int64
     private let catalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol?
     private let cartProductObserver: POSCartProductObserving?
@@ -92,9 +92,7 @@ public struct PointOfSaleEntryPointView: View {
          staffSettingsService: POSStaffSettingsService? = nil,
          services: POSDependencyProviding,
          httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
-         itemProvider: PointOfSaleItemServiceProtocol? = nil,
-         presentationSession: POSPresentationSession = POSPresentationSession()) {
-        self.presentationSession = presentationSession
+         itemProvider: PointOfSaleItemServiceProtocol? = nil) {
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
         self._accessSession = State(initialValue: POSAccessSessionFactory.make(
             siteID: siteID,
@@ -208,8 +206,8 @@ public struct PointOfSaleEntryPointView: View {
             }
         }
         .task {
-            // A full-screen payment can restart this task when POS becomes visible again.
-            guard posModel == nil, !presentationSession.isEnded else { return }
+            // Returning from a full-screen payment can restart this task.
+            guard posModel == nil else { return }
             posModel = PointOfSaleAggregateModel(
                 entryPointController: posEntryPointController,
                 itemsController: itemsController,
@@ -237,13 +235,6 @@ public struct PointOfSaleEntryPointView: View {
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 
-            presentationSession.onEnd = { [posModel, posModalManager, onPointOfSaleModeActiveStateChange] in
-                onPointOfSaleModeActiveStateChange(false)
-                posModalManager.onDisappear()
-                posModel?.pointOfSaleClosed()
-            }
-            onPointOfSaleModeActiveStateChange(true)
-
             // Warm the store's receipt settings while POS starts up so printing a receipt after a
             // payment doesn't wait on a fetch.
             await posModel?.preloadReceiptStoreInformation()
@@ -262,6 +253,15 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.siteTimezone, siteTimezone)
         .environment(\.posLayoutScale, isCompactLayout ? .compact : .regular)
         .injectKeyboardObserver()
+        .onAppear {
+            onPointOfSaleModeActiveStateChange(true)
+        }
+        .onChange(of: isPresented) { _, isPresented in
+            guard !isPresented else { return }
+            onPointOfSaleModeActiveStateChange(false)
+            posModalManager.onDisappear()
+            posModel?.pointOfSaleClosed()
+        }
         .posLockScreenOverlay()
         .environment(\.posAccessSession, accessSession)
         .task {

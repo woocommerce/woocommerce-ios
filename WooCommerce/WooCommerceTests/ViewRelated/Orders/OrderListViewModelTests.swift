@@ -48,6 +48,7 @@ final class OrderListViewModelTests: XCTestCase {
 
     // MARK: - Orders Loading
 
+    @MainActor
     func test_given_a_filter_it_loads_the_orders_matching_that_filter_from_the_DB() throws {
         // Arrange
         let filters = FilterOrderListViewModel.Filters(orderStatus: [.processing],
@@ -75,6 +76,7 @@ final class OrderListViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.orderIDs(from: snapshot), processingOrders.orderIDs)
     }
 
+    @MainActor
     func test_given_no_filter_it_loads_all_the_today_and_past_orders_from_the_DB() throws {
         // Arrange
         let viewModel = OrderListViewModel(siteID: siteID, storageManager: storageManager, filters: nil)
@@ -98,6 +100,7 @@ final class OrderListViewModelTests: XCTestCase {
     }
 
     /// Test that all orders including orders dated in the future (dateCreated) will be fetched.
+    @MainActor
     func test_it_also_loads_future_orders_from_the_DB() throws {
 
         // Arrange
@@ -624,6 +627,7 @@ final class OrderListViewModelTests: XCTestCase {
 private extension OrderListViewModel {
     /// Returns the corresponding order IDs instances for all the given FetchResultSnapshot IDs.
     ///
+    @MainActor
     func orderIDs(from snapshot: FetchResultSnapshot) -> Set<Int64> {
         Set(snapshot.itemIdentifiers.compactMap { objectID in
             detailsViewModel(withID: objectID)?.order.orderID

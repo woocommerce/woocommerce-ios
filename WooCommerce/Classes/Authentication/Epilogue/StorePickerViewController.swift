@@ -370,6 +370,7 @@ private extension StorePickerViewController {
     }
 
     func presentSiteDiscovery() {
+        ServiceLocator.authenticationManager.noteSiteDiscoveryOrigin(isFromLogin: configuration == .login)
         guard let viewController = WordPressAuthenticator.siteDiscoveryUI() else {
             return
         }
@@ -788,6 +789,8 @@ private extension StorePickerViewController {
         let viewModel = NoWooErrorViewModel(
             site: site,
             showsConnectedStores: false, // avoid looping from store picker > no woo > store picker
+            hasConnectedStores: self.viewModel.allFetchedSites.contains(where: \.isWooCommerceActive),
+            reportsLoginStep: configuration == .login,
             onSetupCompletion: { [weak self] siteID in
                 guard let self else { return }
                 self.navigationController?.popViewController(animated: true)

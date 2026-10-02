@@ -1,4 +1,5 @@
 import UIKit
+import WordPressAuthenticator
 import Yosemite
 import protocol WooFoundation.Analytics
 
@@ -7,25 +8,38 @@ import protocol WooFoundation.Analytics
 final class NoWooErrorViewModel: ULErrorViewModel {
     private let site: Site
     private let showsConnectedStores: Bool
+    /// Whether the account owns at least one Woo store. Distinct from `showsConnectedStores`,
+    /// which some callers force off purely to break a picker > no-woo > picker loop.
+    private let hasConnectedStores: Bool
+    /// Whether this screen was reached inside a login journey; it is also reachable from an
+    /// in-app store switch, where a login step would be wrong.
+    private let reportsLoginStep: Bool
     private let analytics: Analytics
     private let stores: StoresManager
     private let setupCompletionHandler: (Int64) -> Void
     private let authentication: Authentication
+    private let tracker: AuthenticatorAnalyticsTracker
 
     private var storePickerCoordinator: StorePickerCoordinator?
 
     init(site: Site,
          showsConnectedStores: Bool,
+         hasConnectedStores: Bool? = nil,
+         reportsLoginStep: Bool = false,
          analytics: Analytics = ServiceLocator.analytics,
          stores: StoresManager = ServiceLocator.stores,
          authentication: Authentication = ServiceLocator.authenticationManager,
+         tracker: AuthenticatorAnalyticsTracker = .shared,
          onSetupCompletion: @escaping (Int64) -> Void) {
         self.site = site
         self.title = site.name
         self.showsConnectedStores = showsConnectedStores
+        self.hasConnectedStores = hasConnectedStores ?? showsConnectedStores
+        self.reportsLoginStep = reportsLoginStep
         self.analytics = analytics
         self.stores = stores
         self.authentication = authentication
+        self.tracker = tracker
         self.setupCompletionHandler = onSetupCompletion
     }
 
@@ -106,7 +120,20 @@ final class NoWooErrorViewModel: ULErrorViewModel {
     }
 
     func viewDidLoad(_ viewController: UIViewController?) {
+        // Tracks this screen outside a login journey, which the step below does not.
         analytics.track(.loginWooCommerceErrorShown)
+
+        guard reportsLoginStep else {
+            return
+        }
+
+        tracker.track(
+            step: .notWooStore,
+            properties: [
+                AuthenticatorAnalyticsTracker.Property.url.rawValue: site.url.trimHTTPScheme(),
+                AuthenticatorAnalyticsTracker.Property.hasConnectedStores.rawValue: String(hasConnectedStores)
+            ]
+        )
     }
 }
 

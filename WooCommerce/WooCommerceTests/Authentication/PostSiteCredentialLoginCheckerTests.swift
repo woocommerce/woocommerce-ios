@@ -1,4 +1,6 @@
 import XCTest
+@testable import WordPressAuthenticator
+import WordPressShared
 @testable import Yosemite
 @testable import Networking
 @testable import WooCommerce
@@ -177,6 +179,65 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         // Then
         XCTAssertFalse(isSuccess)
         XCTAssertTrue(navigationController.presentedViewController is UIAlertController)
+    }
+
+    func test_checkEligibility_when_the_site_has_no_woo_then_reports_not_woo_store() {
+        // Given
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword),
+                                                     roleEligibilityUseCase: MockRoleEligibilityUseCase(),
+                                                     stores: stores,
+                                                     tracker: tracker,
+                                                     previousViewController: nil)
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            switch action {
+            case .fetchSiteInfo(_, let completion):
+                completion(.success(Site.fake().copy(isWooCommerceActive: false)))
+            default:
+                break
+            }
+        }
+        checker.checkEligibility(for: testURL, from: navigationController) {}
+        waitUntil {
+            events.isEmpty == false
+        }
+
+        // Then the site-credential route reports the same outcome Android does
+        let steps = events.filter { $0.properties["step"] == "not_woo_store" }
+        XCTAssertEqual(steps.count, 1)
+        XCTAssertEqual(steps.first?.properties["url"], "test.com")
+    }
+
+    func test_checkEligibility_when_the_site_has_woo_then_reports_no_step() {
+        // Given
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: MockApplicationPasswordUseCase(mockGeneratedPassword: applicationPassword),
+                                                     roleEligibilityUseCase: MockRoleEligibilityUseCase(),
+                                                     stores: stores,
+                                                     tracker: tracker,
+                                                     previousViewController: nil)
+        var isSuccess = false
+
+        // When
+        stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            switch action {
+            case .fetchSiteInfo(_, let completion):
+                completion(.success(Site.fake().copy(isWooCommerceActive: true)))
+            default:
+                break
+            }
+        }
+        checker.checkEligibility(for: testURL, from: navigationController) {
+            isSuccess = true
+        }
+        waitUntil { isSuccess }
+
+        // Then
+        XCTAssertFalse(events.contains { $0.properties["step"] == "not_woo_store" })
     }
 
     func test_error_alert_is_displayed_if_the_site_info_cannot_be_fetched() {

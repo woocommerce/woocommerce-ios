@@ -95,7 +95,7 @@ extension CustomHelpCenterContent {
             step = AuthenticatorAnalyticsTracker.Step.wrongWordPressAccount.rawValue
             url = WooConstants.URLs.helpCenterForWrongAccountError.asURL()
         case .noWooError:
-            step = "not_woo_store" // Matching Android `Step` value
+            step = AuthenticatorAnalyticsTracker.Step.notWooStore.rawValue
             url = WooConstants.URLs.helpCenterForNoWooError.asURL()
         case .purchasePlanError:
             step = "purchase_plan_error"

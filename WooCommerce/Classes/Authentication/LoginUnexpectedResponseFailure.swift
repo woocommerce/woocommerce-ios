@@ -4,7 +4,9 @@ import enum NetworkingCore.CookieNonceAuthenticationResponseStage
 struct LoginUnexpectedResponseFailure: Equatable {
     enum LoginFlow: String {
         case siteCredentials = "site_credentials"
+        /// Reserved for follow-up instrumentation; this flow does not emit the event yet.
         case appPassword = "app_password"
+        /// Reserved for follow-up instrumentation; this flow does not emit the event yet.
         case storePicker = "store_picker"
     }
 

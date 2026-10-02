@@ -60,7 +60,7 @@ class LoginViewControllerTests: XCTestCase {
         XCTAssertEqual((cells[2] as? TextFieldTableViewCell)?.textField.text, "https://example.com/wp-login.php")
     }
 
-    func test_site_credentials_controller_when_offscreen_then_does_not_acknowledge_recovery_presentation() throws {
+    func test_site_credentials_controller_when_offscreen_then_preserves_recovery_without_acknowledging_presentation() throws {
         // Given
         let delegate = WordPressAuthenticatorDelegateSpy()
         delegate.siteCredentialRecoveries = [.login(draftURL: "https://example.com/wp-login.php", error: nil)]
@@ -72,6 +72,10 @@ class LoginViewControllerTests: XCTestCase {
 
         // Then
         XCTAssertEqual(delegate.siteCredentialRecoveryWasDisplayed, false)
+        let cells = try renderedCells(in: controller)
+        XCTAssertEqual(cells.count, 5)
+        XCTAssertEqual(labelText(in: cells[0]), "Where do you sign in to your store?")
+        XCTAssertEqual((cells[2] as? TextFieldTableViewCell)?.textField.text, "https://example.com/wp-login.php")
     }
 
     func test_site_credentials_controller_when_custom_login_is_submitted_then_verifies_it_and_asks_for_the_dashboard() throws {

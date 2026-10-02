@@ -1,0 +1,34 @@
+# p2: hub.google-for-woo
+# The phone-full store must be eligible for Google for WooCommerce, so a missing row fails the flow.
+appId: ${APP_ID}
+name: "Google for WooCommerce - Campaign webview"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- scrollUntilVisible:
+    element:
+      id: "menu-google-ads"
+    direction: DOWN
+    timeout: 15000
+    label: "Require a Google for WooCommerce-eligible extended-smoke store"
+- tapOn:
+    id: "menu-google-ads"
+- extendedWaitUntil:
+    visible: "Google for WooCommerce"
+    timeout: 30000
+- assertVisible: "Google for WooCommerce"
+- assertVisible: "Cancel"
+- assertNotVisible:
+    id: "menu-google-ads"
+- takeScreenshot: google_for_woo_webview
+- tapOn: "Cancel"
+- extendedWaitUntil:
+    visible:
+      id: "menu-google-ads"
+    timeout: 15000

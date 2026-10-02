@@ -431,7 +431,7 @@
     "WooCommerce/Classes/ViewModels/Feature Announcement Cards/ClientSideBannerProvider.swift": 15,
     "WooCommerce/Classes/ViewModels/Feature Announcement Cards/JustInTimeMessageViewModel.swift": 1,
     "WooCommerce/Classes/ViewModels/ManualTrackingViewModel.swift": 1,
-    "WooCommerce/Classes/ViewModels/Order Details/OrderDetailsDataSource.swift": 181,
+    "WooCommerce/Classes/ViewModels/Order Details/OrderDetailsDataSource.swift": 182,
     "WooCommerce/Classes/ViewModels/Order Details/OrderDetailsNotices.swift": 1,
     "WooCommerce/Classes/ViewModels/Order Details/OrderDetailsPaymentAlerts.swift": 7,
     "WooCommerce/Classes/ViewModels/Order Details/OrderDetailsViewModel.swift": 49,

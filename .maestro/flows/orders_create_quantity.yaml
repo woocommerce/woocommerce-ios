@@ -1,0 +1,89 @@
+# p2: orders.create.quantity
+# Quarantined: the quantity stepper buttons and the keyboard's Done button are
+# hidden from accessibility, so Maestro cannot commit a new quantity.
+appId: ${APP_ID}
+name: Change the quantity of a product in a new order
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - destructive
+  - orders
+---
+- stopApp
+- runFlow: ../subflows/ensure_logged_in.yaml
+
+- runFlow: ../subflows/navigate_to_orders.yaml
+- tapOn:
+    id: new-order-type-sheet-button
+- assertVisible:
+    id: new-order-create-button
+
+# Filter to Variable products so the order always goes through the variation
+# picker, then select the first variation of the first variable product.
+- tapOn:
+    id: new-order-add-product-button
+- extendedWaitUntil:
+    visible: Filter
+    timeout: 15000
+- tapOn: Filter
+- extendedWaitUntil:
+    visible: Product Type
+    timeout: 15000
+- tapOn: Product Type
+- extendedWaitUntil:
+    visible: Variable
+    timeout: 15000
+- tapOn: Variable
+- tapOn: Show Products
+- extendedWaitUntil:
+    visible:
+      id: product-item
+    timeout: 30000
+- tapOn:
+    text: ".*variations.*"
+    childOf:
+      id: product-item
+    index: 0
+- extendedWaitUntil:
+    visible:
+      id: product-variation-item
+    timeout: 30000
+- tapOn:
+    id: product-variation-item
+    index: 0
+- tapOn: Back
+- tapOn:
+    id: product-multiple-selection-done-button
+- extendedWaitUntil:
+    visible:
+      text: ".*, 1 × .*"
+    timeout: 30000
+- takeScreenshot: order_variation_line_item
+
+# The quantity field is exposed only after expanding the collapsed line-item card.
+- tapOn:
+    text: ".*, 1 × .*"
+    index: 0
+    point: "96%,20%"
+- extendedWaitUntil:
+    visible: Order Count
+    timeout: 15000
+- tapOn:
+    text: "1"
+    below: Order Count
+    above: Price
+- eraseText
+- inputText: "2"
+- tapOn: Done
+- assertVisible:
+    text: "2"
+    below: Order Count
+- tapOn:
+    text: "2"
+    below: Order Count
+- eraseText
+- inputText: "1"
+- tapOn: Done
+- assertVisible:
+    text: "1"
+    below: Order Count

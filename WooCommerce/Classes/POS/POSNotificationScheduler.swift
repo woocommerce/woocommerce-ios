@@ -62,6 +62,8 @@ final class POSNotificationScheduler: POSNotificationScheduling {
     }
 
     func scheduleLocalNotificationIfEligible(for merchantType: POSNotificationScheduler.MerchantType) async {
+        // Do not schedule the survey notification when running UI tests.
+        guard ProcessConfiguration.isUITesting == false else { return }
         guard stores.isAuthenticated else { return }
 
         let isScheduled = await isNotificationAlreadyScheduled(for: merchantType)

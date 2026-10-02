@@ -36,6 +36,7 @@ struct SelectableItemRow: View {
                 Text(title)
                     .bodyStyle(isEnabled)
                     .multilineTextAlignment(.leading)
+                    .accessibilityIdentifier("selectable-item-\(selected ? "selected" : "unselected")-\(title)")
                 subtitle.map {
                     Text($0)
                         .footnoteStyle(isEnabled: isEnabled)
@@ -53,6 +54,8 @@ struct SelectableItemRow: View {
         .padding([.top, .bottom], Constants.hStackPadding)
         .frame(minHeight: displayMode.minHeight)
         .contentShape(Rectangle())
+        .accessibilityElement(children: .contain)
+        .accessibilityIdentifier("selectable-item-row-\(title)")
     }
 
     private var selectionIcon: some View {

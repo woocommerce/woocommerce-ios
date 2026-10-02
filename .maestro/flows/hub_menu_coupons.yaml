@@ -1,0 +1,50 @@
+# p2: hub.coupons.create
+appId: ${APP_ID}
+name: "Hub Menu - Coupons"
+tags:
+  - smoke_extended
+  - flaky_quarantine
+  - hub_menu
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_more_menu.yaml
+- scrollUntilVisible:
+    element:
+      id: "menu-coupons"
+    direction: DOWN
+    timeout: 15000
+- tapOn:
+    id: "menu-coupons"
+- extendedWaitUntil:
+    visible:
+      id: "coupon-create-button"
+    timeout: 20000
+- assertVisible: "Coupons"
+- tapOn:
+    id: "coupon-create-button"
+- extendedWaitUntil:
+    visible: "Create Coupon"
+    timeout: 10000
+- assertVisible: "Percentage Discount"
+- assertVisible: "Fixed Cart Discount"
+- assertVisible: "Fixed Product Discount"
+- tapOn: "Percentage Discount"
+- extendedWaitUntil:
+    visible: "Create coupon"
+    timeout: 15000
+- assertVisible: "Coupon Code"
+- assertVisible: "Regenerate Coupon Code"
+- assertVisible: "Discount Type"
+- takeScreenshot: hub_coupon_creation_form
+- tapOn: "Cancel"
+- extendedWaitUntil:
+    visible:
+      id: "coupon-create-button"
+    timeout: 10000
+- tapOn: "Back"
+- extendedWaitUntil:
+    visible:
+      id: "menu-coupons"
+    timeout: 10000

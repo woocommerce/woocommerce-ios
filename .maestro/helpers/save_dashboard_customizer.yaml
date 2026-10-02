@@ -1,0 +1,35 @@
+appId: ${APP_ID}
+---
+- extendedWaitUntil:
+    visible:
+      text: "Save"
+      enabled: true
+    timeout: 15000
+- tapOn:
+    text: "Save"
+    enabled: true
+- waitForAnimationToEnd:
+    timeout: 5000
+- runFlow:
+    when:
+      visible:
+        text: "Save"
+        enabled: true
+    commands:
+      - tapOn:
+          text: "Save"
+          enabled: true
+- waitForAnimationToEnd:
+    timeout: 5000
+- runFlow:
+    when:
+      visible:
+        text: "Save"
+        enabled: true
+    commands:
+      - tapOn:
+          text: "Save"
+          enabled: true
+- extendedWaitUntil:
+    notVisible: "Customize"
+    timeout: 30000

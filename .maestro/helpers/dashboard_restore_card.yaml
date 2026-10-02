@@ -1,0 +1,26 @@
+appId: ${APP_ID}
+---
+- runFlow:
+    file: dashboard_assert_card.yaml
+    env:
+      CARD_TITLE: ${CARD_TITLE}
+      CARD_KEY: ${CARD_KEY}
+      EXPECTED_MODE: inverse
+- runFlow:
+    when:
+      true: ${output.dashboardExpectedState === 'selected'}
+    commands:
+      - runFlow:
+          file: set_dashboard_card_selection.yaml
+          env:
+            CARD_TITLE: ${CARD_TITLE}
+            DESIRED_STATE: unselected
+- runFlow:
+    when:
+      true: ${output.dashboardExpectedState === 'unselected'}
+    commands:
+      - runFlow:
+          file: set_dashboard_card_selection.yaml
+          env:
+            CARD_TITLE: ${CARD_TITLE}
+            DESIRED_STATE: selected

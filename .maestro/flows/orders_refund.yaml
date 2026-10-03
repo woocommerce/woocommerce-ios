@@ -90,11 +90,13 @@ tags:
     visible:
       id: order-details-issue-refund-button
     timeout: 30000
+# Centre the button: the floating tab bar covers the bottom of the list.
 - scrollUntilVisible:
     element:
       id: order-details-issue-refund-button
     direction: DOWN
     visibilityPercentage: 100
+    centerElement: true
 - tapOn:
     id: order-details-issue-refund-button
 - extendedWaitUntil:

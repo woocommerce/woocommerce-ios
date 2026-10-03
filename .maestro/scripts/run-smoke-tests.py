@@ -382,7 +382,7 @@ def failed_flow_stems(report: Path) -> set[str]:
 
 def select_flows(args: argparse.Namespace, include: list[str], exclude: list[str]) -> list[Path]:
     if args.flows:
-        selected = [(path if path.is_absolute() else REPO_ROOT / path).resolve() for path in args.flows]
+        selected = list(dict.fromkeys((path if path.is_absolute() else REPO_ROOT / path).resolve() for path in args.flows))
     else:
         selected = [FLOWS_DIR / name for name in ORDERED_FLOWS if (FLOWS_DIR / name).exists()]
         selected.extend(sorted(path for path in FLOWS_DIR.glob("*.yaml") if path not in selected))

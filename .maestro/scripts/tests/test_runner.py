@@ -65,6 +65,12 @@ class RunnerTests(unittest.TestCase):
         with self.assertRaisesRegex(SystemExit, "No Maestro flows matched"):
             RUNNER.select_flows(args, ["tag-that-does-not-exist"], [])
 
+    def test_a_flow_passed_twice_runs_once(self) -> None:
+        flow = Path(".maestro/flows/dashboard_stats.yaml")
+        args = argparse.Namespace(flows=[flow, flow], rerun_failed=None)
+
+        self.assertEqual([RUNNER.FLOWS_DIR / "dashboard_stats.yaml"], RUNNER.select_flows(args, [], []))
+
     def test_destructive_runtime_requires_the_cleanup_journal(self) -> None:
         flow = RUNNER.FLOWS_DIR / "orders_create.yaml"
 

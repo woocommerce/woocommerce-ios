@@ -107,7 +107,8 @@ tags:
 - assertVisible: "Attributes"
 - assertVisible: "Enabled"
 - takeScreenshot: products_variation_detail
-- back
+- tapOn:
+    id: "BackButton"
 - extendedWaitUntil:
     visible: "Variations"
     timeout: 10000

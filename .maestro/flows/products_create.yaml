@@ -506,8 +506,7 @@ tags:
     timeout: 15000
 - assertVisible: Maestro Upsell ${SUITE_RUN_ID}
 - tapOn:
-    text: Linked Products
-    index: 0
+    id: "BackButton"
 - tapOn: Done
 
 # Product type LAST - it is the bottom row of the settings section. Adding a

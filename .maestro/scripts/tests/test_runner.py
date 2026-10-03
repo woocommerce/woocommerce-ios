@@ -406,6 +406,13 @@ class RunnerTests(unittest.TestCase):
 
             self.assertEqual("[redacted]", artifact.read_text(encoding="utf-8"))
 
+    def test_env_values_are_read_the_way_bash_reads_them(self) -> None:
+        self.assertEqual("it's", RUNNER.decode_env_value("'it'\\''s'"))
+        self.assertEqual("two words", RUNNER.decode_env_value('"two words" # comment'))
+        self.assertEqual("merchant@example.com", RUNNER.decode_env_value("merchant@example.com # lab"))
+        self.assertEqual("ab#cd", RUNNER.decode_env_value("ab#cd"))
+        self.assertEqual("", RUNNER.decode_env_value(""))
+
     def test_flow_status_reports_pass_flaky_and_fail(self) -> None:
         self.assertEqual("PASS", RUNNER.flow_status([0]))
         self.assertEqual("FLAKY", RUNNER.flow_status([1, 0]))

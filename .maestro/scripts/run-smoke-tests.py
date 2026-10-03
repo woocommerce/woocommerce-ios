@@ -162,10 +162,14 @@ def csv(value: str | None) -> list[str] | None:
 
 
 def decode_env_value(raw: str) -> str:
+    """Read a value the way bash does, including quotes and a trailing comment."""
     value = raw.strip()
-    if len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}:
-        return value[1:-1]
-    return value
+    if value[:1] in {"'", '"'}:
+        try:
+            return "".join(shlex.split(value, comments=True))
+        except ValueError:
+            return value
+    return value.split(maxsplit=1)[0] if value else ""
 
 
 def load_environment() -> dict[str, str]:

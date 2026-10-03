@@ -29,8 +29,9 @@ tags:
     timeout: 5000
 - tapOn: "View"
 # The extension renders the order preview when it can load the order, and this
-# fallback text when it cannot. Either proves the extension opened.
+# fallback text when it cannot. Either proves the extension opened; the
+# notification's own title also contains "new order", so match the exact text.
 - extendedWaitUntil:
-    visible: ".*[Nn]ew order.*|Unable to load notification"
+    visible: "New order for|Unable to load notification"
     timeout: 15000
 - takeScreenshot: ios_notification_long_press

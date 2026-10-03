@@ -51,10 +51,15 @@ tags:
     visible:
       id: order-details-table-view
     timeout: 30000
+# The new order's details are still moving into place right after creation, and
+# the floating tab bar covers the bottom of the list.
+- waitForAnimationToEnd:
+    timeout: 5000
 - scrollUntilVisible:
     element:
       id: order-details-collect-payment-button
     direction: DOWN
+    centerElement: true
 - tapOn:
     id: order-details-collect-payment-button
 - assertVisible:
@@ -66,8 +71,11 @@ tags:
 - inputText: "9999"
 - assertVisible: Change due
 - tapOn: Mark Order as Complete
-- extendedWaitUntil:
-    visible:
+# Order details keep the scroll position that centred Collect Payment, so the
+# status at the top of the screen is out of view.
+- scrollUntilVisible:
+    element:
       text: Completed
+    direction: UP
     timeout: 30000
 - assertVisible: Completed

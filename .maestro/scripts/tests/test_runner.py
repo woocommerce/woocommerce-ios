@@ -95,9 +95,40 @@ class RunnerTests(unittest.TestCase):
         RUNNER.validate_shared_destructive([flow], store="lab")
         RUNNER.validate_shared_destructive([flow], store=None)
 
+    def test_flows_run_against_the_lab_store_unless_they_need_the_shared_store(self) -> None:
+        google = RUNNER.FLOWS_DIR / "google_for_woo.yaml"
+        stats = RUNNER.FLOWS_DIR / "dashboard_stats.yaml"
+
+        self.assertEqual("shared", RUNNER.flow_store(google))
+        self.assertEqual("lab", RUNNER.flow_store(stats))
+        self.assertEqual("lab", RUNNER.flow_store(google, "lab"))
+        self.assertEqual([stats, google], RUNNER.in_store_order([google, stats]))
+        self.assertEqual([google, stats], RUNNER.in_store_order([google, stats], "lab"))
+
     def test_shared_store_flows_are_never_destructive(self) -> None:
         for flow in RUNNER.FLOWS_DIR.glob("*.yaml"):
             self.assertFalse({"store_shared", "destructive"} <= RUNNER.flow_tags(flow), flow.name)
+
+    def test_plan_names_the_store_and_credentials_of_each_flow(self) -> None:
+        output = io.StringIO()
+        argv = [
+            str(SCRIPT),
+            "--plan",
+            ".maestro/flows/google_for_woo.yaml",
+            ".maestro/flows/dashboard_stats.yaml",
+        ]
+        with mock.patch.object(sys, "argv", argv), contextlib.redirect_stdout(output):
+            exit_code = RUNNER.main()
+
+        plan = output.getvalue()
+        self.assertEqual(0, exit_code)
+        self.assertIn("Store:        per flow", plan)
+        self.assertLess(
+            plan.index(".maestro/flows/dashboard_stats.yaml\n"),
+            plan.index(".maestro/flows/google_for_woo.yaml (shared store)\n"),
+        )
+        self.assertIn("MAESTRO_WOO_LAB_JETPACK_STORE_URL", plan)
+        self.assertIn("MAESTRO_WOO_SHARED_JETPACK_STORE_URL", plan)
 
     def test_app_session_is_cleared_only_when_it_belongs_to_another_store(self) -> None:
         commands: list[list[str]] = []

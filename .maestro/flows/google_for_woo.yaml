@@ -1,11 +1,12 @@
 # p2: hub.google-for-woo
-# The phone-full store must be eligible for Google for WooCommerce, so a missing row fails the flow.
+# Runs on the shared store, which has Google for WooCommerce, so a missing row fails the flow.
 appId: ${APP_ID}
 name: "Google for WooCommerce - Campaign webview"
 tags:
   - smoke_extended
   - flaky_quarantine
   - hub_menu
+  - store_shared
 ---
 - runFlow:
     file: ../subflows/ensure_logged_in.yaml

@@ -70,6 +70,17 @@ tags:
 - tapOn: Cash received
 - inputText: "9999"
 - assertVisible: Change due
+# Right after the decimal pad opens, Maestro can still report the button below it,
+# and the tap then types into the keyboard.
+- runFlow:
+    when:
+      visible: "1"
+    commands:
+      - extendedWaitUntil:
+          visible:
+            text: "Mark Order as Complete"
+            above: "1"
+          timeout: 10000
 - tapOn: Mark Order as Complete
 # Order details keep the scroll position that centred Collect Payment, so the
 # status at the top of the screen is out of view.

@@ -148,6 +148,9 @@ tags:
     visibilityPercentage: 100
 - tapOn: Mark Order Complete
 - assertVisible: Review Order
+# Review Order has the same button, and a tap is ignored while the screen slides in.
+- waitForAnimationToEnd:
+    timeout: 5000
 - tapOn: Mark Order Complete
 - extendedWaitUntil:
     visible:

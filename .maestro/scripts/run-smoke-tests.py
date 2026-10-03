@@ -516,7 +516,7 @@ def maestro_process_environment(
     run_id: str,
 ) -> dict[str, str]:
     rest_only = {"MAESTRO_WOO_CONSUMER_KEY", "MAESTRO_WOO_CONSUMER_SECRET"}
-    environment = {name: value for name, value in os.environ.items() if not name.startswith("MAESTRO_")}
+    environment = {name: value for name, value in os.environ.items() if not name.startswith("MAESTRO_WOO_")}
     for name in sorted(required_names - rest_only):
         if value := values.get(name):
             environment[name] = value

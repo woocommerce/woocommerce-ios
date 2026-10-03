@@ -418,6 +418,14 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual("text", RUNNER.process_output_text("text"))
         self.assertEqual("", RUNNER.process_output_text(None))
 
+    def test_maestro_keeps_its_own_settings_but_never_store_values_from_the_shell(self) -> None:
+        shell = {"MAESTRO_DRIVER_STARTUP_TIMEOUT": "120000", "MAESTRO_WOO_LAB_WPCOM_PASSWORD": "shell-secret"}
+        with mock.patch.dict(RUNNER.os.environ, shell):
+            environment = RUNNER.maestro_process_environment({}, set(), "run-1")
+
+        self.assertEqual("120000", environment["MAESTRO_DRIVER_STARTUP_TIMEOUT"])
+        self.assertNotIn("MAESTRO_WOO_LAB_WPCOM_PASSWORD", environment)
+
     def test_flow_status_reports_pass_flaky_and_fail(self) -> None:
         self.assertEqual("PASS", RUNNER.flow_status([0]))
         self.assertEqual("FLAKY", RUNNER.flow_status([1, 0]))

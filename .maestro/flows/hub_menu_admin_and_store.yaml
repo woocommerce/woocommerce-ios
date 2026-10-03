@@ -1,10 +1,12 @@
 # p2: hub.change-store, hub.wc-admin, hub.view-store
+# Runs on the shared store, whose account has a second working store to switch to.
 appId: ${APP_ID}
 name: "Hub Menu - WooCommerce Admin, View Store, and change store"
 tags:
   - smoke_extended
   - flaky_quarantine
   - hub_menu
+  - store_shared
 ---
 - runFlow:
     file: ../subflows/ensure_logged_in.yaml

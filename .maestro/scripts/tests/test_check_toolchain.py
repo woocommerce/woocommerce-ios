@@ -51,7 +51,7 @@ class CheckToolchainTests(unittest.TestCase):
         result = self.run_configuration_with_matching_toolchain("/bin/bash")
 
         self.assertEqual(0, result.returncode, result.stderr)
-        self.assertNotIn("Installing pinned Maestro", result.stdout)
+        self.assertNotIn("Installing verified Maestro", result.stdout)
 
     @unittest.skipUnless(shutil.which("zsh"), "Zsh is not installed")
     def test_local_configuration_can_be_sourced_from_zsh(self) -> None:

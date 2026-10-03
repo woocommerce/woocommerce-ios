@@ -80,13 +80,10 @@ appId: ${APP_ID}
     commands:
       - copyTextFrom:
           id: "url-label"
-      - evalScript: |
-          function normalized(value) {
-            return String(value || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '');
-          }
-          if (normalized(maestro.copiedText) !== normalized(MAESTRO_WOO_JETPACK_STORE_URL)) {
-            throw new Error('Login epilogue selected a different store');
-          }
+      # Maestro only runs single-line ${...} scripts that contain no "$".
+      - assertTrue:
+          condition: ${maestro.copiedText.toLowerCase().indexOf(MAESTRO_WOO_JETPACK_STORE_HOST.toLowerCase()) != -1}
+          label: Login epilogue selected the configured store
       - tapOn:
           id: "login-epilogue-continue-button"
 

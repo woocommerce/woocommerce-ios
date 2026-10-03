@@ -51,27 +51,13 @@ tags:
       id: "store-title"
     direction: UP
     timeout: 15000
-- copyTextFrom:
-    id: "store-title"
-- evalScript: |
-    output.storeOriginalName = String(maestro.copiedText || '').trim();
+# Maestro only runs single-line ${...} scripts, and only when they contain no
+# "$". The Hub row shows the store's host.
 - copyTextFrom:
     id: "store-url"
-- evalScript: |
-    function host(value) {
-      return String(value || '').trim().toLowerCase()
-        .replace(/^https?:\/\//, '')
-        .split('/')[0]
-        .split('?')[0]
-        .split('#')[0]
-        .replace(/:\d+$/, '')
-        .replace(/\.$/, '');
-    }
-    output.storeOriginalURL = String(maestro.copiedText || '').trim();
-    output.storeOriginalHost = host(output.storeOriginalURL);
-    if (!output.storeOriginalHost) {
-      throw new Error('Current Hub store URL is empty');
-    }
+- assertTrue:
+    condition: ${maestro.copiedText.trim().toLowerCase() == MAESTRO_WOO_JETPACK_STORE_HOST.toLowerCase()}
+    label: Hub shows the configured store before the switch
 - tapOn:
     id: "store-title"
 - extendedWaitUntil:
@@ -91,16 +77,16 @@ tags:
 # to the next command, so pick between them with inline conditions.
 - runFlow:
     when:
-      true: ${String(output.storeCandidateZeroURL).toLowerCase().split('://').pop().split('/')[0] != String(output.storeOriginalURL).toLowerCase().split('://').pop().split('/')[0]}
+      true: ${String(output.storeCandidateZeroURL).toLowerCase().indexOf(MAESTRO_WOO_JETPACK_STORE_HOST.toLowerCase()) == -1}
     commands:
       - evalScript: ${output.storeTargetURL = output.storeCandidateZeroURL}
 - runFlow:
     when:
-      true: ${String(output.storeCandidateZeroURL).toLowerCase().split('://').pop().split('/')[0] == String(output.storeOriginalURL).toLowerCase().split('://').pop().split('/')[0]}
+      true: ${String(output.storeCandidateZeroURL).toLowerCase().indexOf(MAESTRO_WOO_JETPACK_STORE_HOST.toLowerCase()) != -1}
     commands:
       - evalScript: ${output.storeTargetURL = output.storeCandidateOneURL}
 - assertTrue:
-    condition: ${output.storeTargetURL && String(output.storeTargetURL).toLowerCase().split('://').pop().split('/')[0] != String(output.storeOriginalURL).toLowerCase().split('://').pop().split('/')[0]}
+    condition: ${!!output.storeTargetURL && String(output.storeTargetURL).toLowerCase().indexOf(MAESTRO_WOO_JETPACK_STORE_HOST.toLowerCase()) == -1}
     label: Store picker exposes a different Woo store in its first two rows
 - takeScreenshot: hub_store_picker_discovery
 - tapOn:
@@ -124,7 +110,7 @@ tags:
 - copyTextFrom:
     id: "store-url"
 - assertTrue:
-    condition: ${String(maestro.copiedText || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '') !== String(MAESTRO_WOO_JETPACK_STORE_URL || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '')}
+    condition: ${maestro.copiedText.trim().toLowerCase() != MAESTRO_WOO_JETPACK_STORE_HOST.toLowerCase() && String(output.storeTargetURL).toLowerCase().indexOf(maestro.copiedText.trim().toLowerCase()) != -1}
     label: Hub identity changed to the dynamically selected store
 - tapOn: "Products"
 - extendedWaitUntil:
@@ -176,7 +162,7 @@ tags:
 - copyTextFrom:
     id: "store-url"
 - assertTrue:
-    condition: ${String(maestro.copiedText || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '') === String(MAESTRO_WOO_JETPACK_STORE_URL || '').trim().toLowerCase().replace(/^https?:\/\//, '').replace(/\/$/, '')}
+    condition: ${maestro.copiedText.trim().toLowerCase() == MAESTRO_WOO_JETPACK_STORE_HOST.toLowerCase()}
     label: Original Hub store identity is restored
 - tapOn: "Products"
 - extendedWaitUntil:

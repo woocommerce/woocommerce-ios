@@ -2,8 +2,9 @@
 
 This simulator-only suite complements XCUITest/WireMock with a production-like
 release signal against developer-supplied live WooCommerce test stores.
-It never requires Android's store, POS mocks, an eligibility bypass, REST
-consumer keys for normal runs, a Linear issue, or a notification channel.
+It never requires Android's store, POS mocks, a Linear issue, or a notification
+channel. Flows launch the app with `-ui_testing`, which turns off analytics and
+skips the privacy banner and login onboarding.
 
 ## Local setup
 
@@ -122,21 +123,24 @@ is reused.
 .maestro/scripts/run-smoke-tests.sh --profile core
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile core
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile phone-full --seed
-.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile pos-ipad
-.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile ios-system
+.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile pos-ipad --seed
+.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile ios-system --seed
 ```
 
 Run one flow or rerun failures:
 
 ```bash
 .maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app .maestro/flows/dashboard_stats.yaml
-.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --rerun-failed ~/woocommerce-maestro-output/SUITE-.../report.xml
+.maestro/scripts/run-smoke-tests.sh --app /path/to/WooCommerce.app --profile phone-full --seed --rerun-failed ~/woocommerce-maestro-output/SUITE-.../report.xml
 ```
+
+A rerun needs the same profile and options as the run it repeats. The HTML
+report prints that command.
 
 Each failed non-destructive flow is retried once. A pass on retry is reported as
 a passing flaky result: the runner exits successfully, the failed first attempt
-stays in JUnit and reports so Test Engine still sees the flake, and the flow
-remains selectable through `--rerun-failed`. Destructive mutation failures
+stays in JUnit and reports, and the flow remains selectable through
+`--rerun-failed`. Destructive mutation failures
 remain failed and proceed to cleanup without a blind retry. The final directory contains combined JUnit,
 HTML with direct artifact links and a faithful rerun command, per-attempt logs,
 screenshots, hierarchy/debug evidence, and a redacted JSON summary with final
@@ -153,7 +157,9 @@ configured destructive store are not accepted: a destructive runtime selection
 requires `--seed`, which initializes a cleanup journal before UI mutation,
 discovers only products/orders carrying the exact `SUITE_RUN_ID`, and records
 each successful REST deletion. A partial cleanup remains retryable from the
-manifest. This mode is the only one requiring consumer credentials.
+manifest. Seeding needs the store's REST keys, plus the site admin username and
+application password that cleanup uses to delete uploaded images. The runner
+checks them before any flow runs.
 
 POS runs require a real-eligible store/account and an iPad simulator. System
 surface flows are quarantined separately. Neither profile turns an ineligible

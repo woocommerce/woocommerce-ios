@@ -6,14 +6,16 @@ stack. Flow owners may reference these interfaces but must not redefine them.
 ## App and simulator
 
 - Every flow uses `appId: ${APP_ID}`.
-- `run-smoke-tests.sh` requires `--app PATH_TO_APP`, reads `CFBundleIdentifier`
-  from that bundle, installs that exact app, and exports the derived value as
+- `run-smoke-tests.sh` takes `--app PATH_TO_APP`, found automatically when exactly
+  one built app exists, reads `CFBundleIdentifier` from that bundle, installs that
+  exact app, and exports the derived value as
   `APP_ID`. Debug is the default build input; Alpha/prototype bundles work
   without a hard-coded identifier.
 - `--device` accepts a simulator name or UDID. With no device argument, the
   runner prefers an already booted compatible simulator. `pos-ipad` requires an
   iPad and never degrades to a phone no-op.
-- No Maestro invocation passes XCUITest mock or eligibility-bypass launch
+- Flows launch the app with `-ui_testing`, which turns off analytics and skips the
+  privacy banner and login onboarding. No Maestro invocation passes XCUITest mock
   arguments.
 
 ## Environment
@@ -43,8 +45,10 @@ Variables written by store-setup tooling (`MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_US
 and `MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_PASSWORD`) are never required by a flow and are
 never forwarded to Maestro; they exist so a provisioned store can be reconfigured later.
 
-`MAESTRO_WOO_CONSUMER_KEY` and `MAESTRO_WOO_CONSUMER_SECRET` are optional and
-are validated only when explicit REST seeding or cleanup is requested. Runs
+`MAESTRO_WOO_LAB_CONSUMER_KEY`, `MAESTRO_WOO_LAB_CONSUMER_SECRET`,
+`MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_USERNAME` and `MAESTRO_WOO_LAB_APPLICATION_PASSWORD`
+are required with `--seed`, which destructive flows need, and are checked before
+any flow runs. Runs
 may load `.maestro/.env.local`. iOS does not require Android's store or account.
 
 The runner generates `SUITE_RUN_ID=SUITE-<UTC timestamp>-<random suffix>` and
@@ -69,7 +73,8 @@ Profiles:
 | `ios-system` | `ios_system` | none | iPhone |
 
 Explicit `--include-tags` and `--exclude-tags` override profile tag defaults.
-Each failed flow is retried once; both attempts remain in the evidence. Reports
+Each failed non-destructive flow is retried once; both attempts remain in the
+evidence. Reports
 contain JUnit XML, self-contained HTML, screenshots, diagnostics, and a redacted
 summary outside the repository.
 
@@ -123,4 +128,4 @@ entries.
 - Credentials and long values use `paste_into_focused_field.yaml`; sensitive
   clipboard contents are cleared immediately.
 - Destructive flows create or identify only run-owned entities, verify persisted
-  state, and permit documented leftovers. Cleanup is optional.
+  state, and run with `--seed`, whose cleanup deletes those entities afterwards.

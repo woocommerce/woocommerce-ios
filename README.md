@@ -37,19 +37,26 @@
 
     We use Ruby to manage the third party dependencies and other tools and automation.
 
-2. Clone project in the folder of your preference
+3. Ensure you have [git-lfs](https://git-lfs.com/) installed.
+
+   You can install it via homebrew or visit [git-lfs](https://git-lfs.com/)) for other installation methods.
+   ```bash
+   brew install git-lfs
+   ```
+
+4. Clone project in the folder of your preference
 
     ```bash
     git clone https://github.com/woocommerce/woocommerce-ios.git
     ````
 
-3. Enter the project directory
+5. Enter the project directory
 
     ```bash
     cd woocommerce-ios
     ```
 
-4. Install the third party dependencies and tools required to run the project.
+6. Install the third party dependencies and tools required to run the project.
 
 
     ```bash
@@ -58,7 +65,7 @@
 
     This command installs the required build tools and dependencies.
 
-5. Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
+7. Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
 
 ### Credentials for External Contributors
 

@@ -372,7 +372,27 @@ class RunnerTests(unittest.TestCase):
 
     def test_redacts_all_woo_values(self) -> None:
         values = {"MAESTRO_WOO_LAB_WPCOM_PASSWORD": "do-not-print"}
-        self.assertEqual("failure: <redacted>", RUNNER.redact("failure: do-not-print", values))
+        self.assertEqual("failure: [redacted]", RUNNER.redact("failure: do-not-print", values))
+
+    def test_redaction_keeps_xml_valid_and_short_names_that_are_not_secrets(self) -> None:
+        values = {
+            "MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_USERNAME": "admin",
+            "MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_PASSWORD": "a&b",
+        }
+        report = '<testcase file="flows/hub_menu_admin_and_store.yaml"><failure message="a&amp;b" /></testcase>'
+
+        redacted = RUNNER.redact(report, values)
+
+        ET.fromstring(redacted)
+        self.assertIn("hub_menu_admin_and_store.yaml", redacted)
+        self.assertNotIn("a&amp;b", redacted)
+
+    def test_redacts_secrets_that_maestro_wrote_escaped_in_json(self) -> None:
+        values = {"MAESTRO_WOO_LAB_WPCOM_PASSWORD": 'pa"ss\\word'}
+
+        redacted = RUNNER.redact('{"text": "pa\\"ss\\\\word"}', values)
+
+        self.assertEqual('{"text": "[redacted]"}', redacted)
 
     def test_sanitizer_can_redact_one_new_artifact_without_rescanning_its_parent(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
@@ -384,7 +404,7 @@ class RunnerTests(unittest.TestCase):
                 {"MAESTRO_WOO_LAB_WPCOM_PASSWORD": "secret-value"},
             )
 
-            self.assertEqual("<redacted>", artifact.read_text(encoding="utf-8"))
+            self.assertEqual("[redacted]", artifact.read_text(encoding="utf-8"))
 
     def test_flow_status_reports_pass_flaky_and_fail(self) -> None:
         self.assertEqual("PASS", RUNNER.flow_status([0]))

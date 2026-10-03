@@ -88,6 +88,8 @@ ORDERED_FLOWS = [
 ]
 
 SECRET_NAME_RE = re.compile(r"(?:PASSWORD|SECRET|CONSUMER_KEY|TOKEN)", re.I)
+REDACTED = "[redacted]"
+MIN_REDACTED_VALUE_LENGTH = 8
 ENV_ASSIGNMENT_RE = re.compile(r"^(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)=(.*)$")
 ENV_REFERENCE_RE = re.compile(r"\$\{(MAESTRO_[A-Z0-9_]+)\}")
 SUBFLOW_REFERENCE_RE = re.compile(r"(?:file:|runFlow:)\s*([^\s#]+\.ya?ml)")
@@ -552,10 +554,32 @@ def maestro_env_args(app_id: str, run_id: str) -> list[str]:
     return ["--env", f"APP_ID={app_id}", "--env", f"SUITE_RUN_ID={run_id}"]
 
 
+def redaction_targets(values: dict[str, str]) -> set[str]:
+    targets: set[str] = set()
+    for name, value in values.items():
+        if not value:
+            continue
+        # Short values that are not secrets, such as a "demo" username, also
+        # appear inside flow names and artifact paths.
+        if not SECRET_NAME_RE.search(name) and not (
+            name.startswith("MAESTRO_WOO_") and len(value) >= MIN_REDACTED_VALUE_LENGTH
+        ):
+            continue
+        # Maestro's JSON and the XML and HTML reports keep some characters escaped.
+        targets.update(
+            {
+                value,
+                html.escape(value),
+                json.dumps(value)[1:-1],
+                json.dumps(value, ensure_ascii=False)[1:-1],
+            }
+        )
+    return targets
+
+
 def redact(text: str, values: dict[str, str]) -> str:
-    secrets_to_hide = [value for name, value in values.items() if value and (name.startswith("MAESTRO_WOO_") or SECRET_NAME_RE.search(name))]
-    for value in sorted(set(secrets_to_hide), key=len, reverse=True):
-        text = text.replace(value, "<redacted>")
+    for value in sorted(redaction_targets(values), key=len, reverse=True):
+        text = text.replace(value, REDACTED)
     return text
 
 

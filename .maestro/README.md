@@ -49,8 +49,12 @@ so boot the selected device before using it to validate language settings.
 
 ## Lab and shared stores
 
-`--store lab|shared` picks the credential block the flows run against. The
-default is the lab store.
+Each flow runs against the lab store unless it is tagged `store_shared`. Those
+flows need what only the shared store has, such as Google for WooCommerce. When
+a run includes both, the lab flows run first. Before each store's flows, the
+runner signs the app out if it was last logged in to a different store, in this
+run or an earlier one, so the next flow logs in with this store's account.
+`--store lab|shared` runs every selected flow against one store instead.
 
 The runner refuses destructive flows against the shared store. Run them with
 `--store lab`.

@@ -55,12 +55,32 @@ def check_simulator_locale(device: str) -> tuple[bool, str]:
     return False, f"simulator language: {reason}"
 
 
+def missing_environment(flows: list[Path], environment: dict[str, str], args: argparse.Namespace) -> list[str]:
+    store_values = {store: RUNNER.select_store_environment(environment, store) for store in RUNNER.STORES}
+    missing = set()
+    for flow in flows:
+        store = RUNNER.flow_store(flow, args.store)
+        missing.update(
+            RUNNER.scoped_store_name(name, store)
+            for name in RUNNER.required_environment([flow], seed=False)
+            if not store_values[store].get(name)
+        )
+    if args.seed:
+        store = args.store or "lab"
+        missing.update(
+            RUNNER.scoped_store_name(name, store)
+            for name in RUNNER.required_environment([], seed=True)
+            if not store_values[store].get(name)
+        )
+    return sorted(missing)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--app", required=True, type=Path)
     parser.add_argument("--profile", choices=sorted(RUNNER.PROFILES), default="core")
     parser.add_argument("--device")
-    parser.add_argument("--store", choices=RUNNER.STORES, default="lab")
+    parser.add_argument("--store", choices=RUNNER.STORES)
     parser.add_argument("--include-tags")
     parser.add_argument("--exclude-tags")
     parser.add_argument("--seed", action="store_true")
@@ -73,10 +93,10 @@ def main() -> int:
     checks.append(check_toolchain())
 
     try:
-        values = RUNNER.select_store_environment(RUNNER.load_environment(), args.store)
+        environment = RUNNER.load_environment()
         checks.append((True, "local environment syntax is valid"))
     except SystemExit:
-        values = RUNNER.select_store_environment(dict(os.environ), args.store)
+        environment = dict(os.environ)
         checks.append((False, "local environment syntax is invalid"))
 
     try:
@@ -104,13 +124,12 @@ def main() -> int:
     except SystemExit as error:
         checks.append((False, f"flow selection: {error}"))
 
-    required = RUNNER.required_environment(flows if 'flows' in locals() else [], seed=args.seed)
-    missing = sorted(RUNNER.scoped_store_name(name, args.store) for name in required if not values.get(name))
+    missing = missing_environment(flows if 'flows' in locals() else [], environment, args)
     checks.append((not missing, "required credentials are present" if not missing else "missing variables: " + ", ".join(missing)))
 
     print("WooCommerce iOS Maestro doctor")
     print(f"profile: {args.profile}")
-    print(f"store: {args.store}")
+    print(f"store: {args.store or 'per flow'}")
     failures = 0
     for passed, message in checks:
         print(f"[{'OK' if passed else 'FAIL'}] {message}")

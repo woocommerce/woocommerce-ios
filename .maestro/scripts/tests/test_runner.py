@@ -93,6 +93,42 @@ class RunnerTests(unittest.TestCase):
             RUNNER.validate_shared_destructive([flow], store="shared")
 
         RUNNER.validate_shared_destructive([flow], store="lab")
+        RUNNER.validate_shared_destructive([flow], store=None)
+
+    def test_shared_store_flows_are_never_destructive(self) -> None:
+        for flow in RUNNER.FLOWS_DIR.glob("*.yaml"):
+            self.assertFalse({"store_shared", "destructive"} <= RUNNER.flow_tags(flow), flow.name)
+
+    def test_app_session_is_cleared_only_when_it_belongs_to_another_store(self) -> None:
+        commands: list[list[str]] = []
+        with tempfile.TemporaryDirectory() as home:
+
+            def fake_run(command: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+                commands.append(command)
+                stdout = home if command[2] == "getenv" else ""
+                return subprocess.CompletedProcess(command, 0, stdout, "")
+
+            app = Path("WooCommerce.app")
+            with mock.patch.object(RUNNER, "run", side_effect=fake_run), contextlib.redirect_stdout(io.StringIO()):
+                RUNNER.switch_store("sim-1", app, "com.example.woo", "shared", "https://shared.example.com/")
+                first_switch = list(commands)
+                commands.clear()
+                RUNNER.switch_store("sim-1", app, "com.example.woo", "shared", "https://shared.example.com")
+
+            marker = (Path(home) / ".woo-maestro-store").read_text(encoding="utf-8")
+
+        self.assertEqual(
+            [
+                ["xcrun", "simctl", "getenv", "sim-1", "HOME"],
+                ["xcrun", "simctl", "terminate", "sim-1", "com.example.woo"],
+                ["xcrun", "simctl", "uninstall", "sim-1", "com.example.woo"],
+                ["xcrun", "simctl", "keychain", "sim-1", "reset"],
+                ["xcrun", "simctl", "install", "sim-1", "WooCommerce.app"],
+            ],
+            first_switch,
+        )
+        self.assertEqual([["xcrun", "simctl", "getenv", "sim-1", "HOME"]], commands)
+        self.assertEqual("shared.example.com\n", marker)
 
     def test_html_report_names_the_overall_status(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

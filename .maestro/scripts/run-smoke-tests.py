@@ -36,8 +36,14 @@ OUTPUT_DEFAULT = Path.home() / "woocommerce-maestro-output"
 NOT_WOO_STORE_FLOW = "login_not_woo_store.yaml"
 NO_JETPACK_FLOW = "login_no_jetpack.yaml"
 STORES = ("lab", "shared")
+# Flows with this tag run against the shared store, every other flow against
+# the lab store. --store runs every selected flow against one store instead.
+SHARED_STORE_TAG = "store_shared"
+# Kept in the simulator's home directory: the host of the store the app was
+# last logged in to, so a later run knows whether to sign the app out first.
+STORE_MARKER_NAME = ".woo-maestro-store"
 # Flows read these store-neutral names; the runner fills them from the
-# MAESTRO_WOO_LAB_* or MAESTRO_WOO_SHARED_* block picked with --store.
+# MAESTRO_WOO_LAB_* or MAESTRO_WOO_SHARED_* block of the store a flow runs against.
 STORE_SCOPED_SUFFIXES = (
     "JETPACK_STORE_URL",
     "WPCOM_EMAIL",
@@ -127,7 +133,11 @@ def parse_args() -> argparse.Namespace:
     )
     parser.add_argument("--profile", choices=sorted(PROFILES), default="core")
     parser.add_argument("--device", help="Simulator name or UDID")
-    parser.add_argument("--store", choices=STORES, default="lab", help="Store credentials block to run against")
+    parser.add_argument(
+        "--store",
+        choices=STORES,
+        help="Run every selected flow against this store instead of the store each flow needs",
+    )
     parser.add_argument("--include-tags")
     parser.add_argument("--exclude-tags")
     parser.add_argument("--repeat", type=int, default=1)
@@ -325,6 +335,19 @@ def flow_tags(path: Path) -> set[str]:
     return tags
 
 
+def flow_store(path: Path, store_override: str | None = None) -> str:
+    if store_override:
+        return store_override
+    return "shared" if SHARED_STORE_TAG in flow_tags(path) else "lab"
+
+
+def in_store_order(flows: list[Path], store_override: str | None = None) -> list[Path]:
+    """Lab flows run first, then the flows that need the shared store."""
+    return [flow for flow in flows if flow_store(flow, store_override) == "lab"] + [
+        flow for flow in flows if flow_store(flow, store_override) == "shared"
+    ]
+
+
 def failed_flow_stems(report: Path) -> set[str]:
     root = ET.parse(report).getroot()
     stems: set[str] = set()
@@ -370,7 +393,7 @@ def has_destructive_flows(flows: list[Path]) -> bool:
     return any("destructive" in flow_tags(flow) for flow in flows)
 
 
-def validate_shared_destructive(flows: list[Path], *, store: str) -> None:
+def validate_shared_destructive(flows: list[Path], *, store: str | None) -> None:
     if store == "shared" and has_destructive_flows(flows):
         raise SystemExit(
             "Refusing to run destructive flows against the shared store.\n"
@@ -399,6 +422,19 @@ def required_environment(flows: list[Path], *, seed: bool) -> set[str]:
     if seed:
         required.update({"MAESTRO_WOO_CONSUMER_KEY", "MAESTRO_WOO_CONSUMER_SECRET"})
     return required
+
+
+def scoped_required_environment(flows: list[Path], *, seed: bool, store_override: str | None) -> set[str]:
+    names = {
+        scoped_store_name(name, flow_store(flow, store_override))
+        for flow in flows
+        for name in required_environment([flow], seed=False)
+    }
+    if seed:
+        names.update(
+            scoped_store_name(name, store_override or "lab") for name in required_environment([], seed=True)
+        )
+    return names
 
 
 def validate_environment(flows: list[Path], values: dict[str, str], *, seed: bool, store: str = "lab") -> None:
@@ -481,6 +517,26 @@ def maestro_process_environment(
         environment["MAESTRO_WOO_JETPACK_STORE_HOST"] = store_host
     environment["MAESTRO_SUITE_RUN_ID"] = run_id
     return environment
+
+
+def store_marker(udid: str) -> Path:
+    home = run(["xcrun", "simctl", "getenv", udid, "HOME"]).stdout.strip()
+    return Path(home) / STORE_MARKER_NAME
+
+
+def switch_store(udid: str, app: Path, app_id: str, store: str, store_url: str) -> None:
+    """Sign the app out when it was last logged in to another store."""
+    marker = store_marker(udid)
+    store_host = normalized_store_host(store_url)
+    logged_in_host = marker.read_text(encoding="utf-8").strip() if marker.exists() else ""
+    if store_host == logged_in_host:
+        return
+    print(f"--- Clearing the app session before the {store} store flows", flush=True)
+    run(["xcrun", "simctl", "terminate", udid, app_id], check=False)
+    run(["xcrun", "simctl", "uninstall", udid, app_id])
+    run(["xcrun", "simctl", "keychain", udid, "reset"])
+    run(["xcrun", "simctl", "install", udid, str(app)])
+    marker.write_text(f"{store_host}\n", encoding="utf-8")
 
 
 def maestro_env_args(app_id: str, run_id: str) -> list[str]:
@@ -720,16 +776,19 @@ def main() -> int:
     include = include_default if include is None else include
     exclude = exclude_default if exclude is None else exclude
     repeat = args.repeat
-    flows = select_flows(args, include, exclude)
+    flows = in_store_order(select_flows(args, include, exclude), args.store)
     if args.plan:
         destructive_cleanup_required = any("destructive" in flow_tags(flow) for flow in flows)
         required = sorted(
-            scoped_store_name(name, args.store)
-            for name in required_environment(flows, seed=args.seed or destructive_cleanup_required)
+            scoped_required_environment(
+                flows,
+                seed=args.seed or destructive_cleanup_required,
+                store_override=args.store,
+            )
         )
         print("--- Maestro execution plan")
         print(f"Profile:      {args.profile}")
-        print(f"Store:        {args.store}")
+        print(f"Store:        {args.store or 'per flow'}")
         print(f"Device family: {family}")
         print(f"Repeat:       {repeat}")
         print(f"Include tags: {','.join(include) or '<none>'}")
@@ -741,7 +800,8 @@ def main() -> int:
         )
         print("Selected flows:")
         for flow in flows:
-            print(f"  - {flow.relative_to(REPO_ROOT)}")
+            suffix = " (shared store)" if not args.store and flow_store(flow) == "shared" else ""
+            print(f"  - {flow.relative_to(REPO_ROOT)}{suffix}")
         print("Required environment:")
         if required:
             for name in required:
@@ -759,7 +819,7 @@ def main() -> int:
     if toolchain.returncode:
         return toolchain.returncode
 
-    values = select_store_environment(load_environment(), args.store)
+    values = load_environment()
     app_id = app_identifier(app)
     app_sha256 = app_bundle_sha256(app)
     stamp = dt.datetime.now(dt.timezone.utc).strftime("%Y%m%dT%H%M%SZ")
@@ -771,9 +831,18 @@ def main() -> int:
     (output / "diagnostics").mkdir()
     (output / "logs").mkdir()
 
-    validate_environment(flows, values, seed=args.seed, store=args.store)
-    validate_login_store_hosts(flows, values, store=args.store)
     values = normalized_flow_environment(flows, values)
+    run_stores = [store for store in STORES if any(flow_store(flow, args.store) == store for flow in flows)]
+    store_flows = {store: [flow for flow in flows if flow_store(flow, args.store) == store] for store in run_stores}
+    store_values = {store: select_store_environment(values, store) for store in run_stores}
+    for store in run_stores:
+        validate_environment(store_flows[store], store_values[store], seed=False, store=store)
+        validate_login_store_hosts(store_flows[store], store_values[store], store=store)
+    # Seeding and cleanup reach the store the destructive flows run against.
+    seed_store = args.store or "lab"
+    seed_values = select_store_environment(values, seed_store)
+    if args.seed:
+        validate_environment([], seed_values, seed=True, store=seed_store)
     manifest = output / "run-manifest.json"
     simulator = resolve_simulator(args.device, family)
     locale = run(
@@ -786,7 +855,7 @@ def main() -> int:
     turn_off_password_autofill(simulator["udid"])
     run(["xcrun", "simctl", "install", simulator["udid"], str(app)])
     summary = {
-        "run_id": run_id, "profile": args.profile, "store": args.store, "app": str(app), "app_id": app_id,
+        "run_id": run_id, "profile": args.profile, "store": args.store or "per flow", "app": str(app), "app_id": app_id,
         "candidate_kind": args.candidate_kind,
         "candidate_evidence": "developer build; not release evidence" if args.candidate_kind == "developer" else "release candidate",
         "app_sha256": app_sha256,
@@ -799,13 +868,20 @@ def main() -> int:
     if args.seed:
         seed = SCRIPT_DIR / "seed-fixtures.py"
         print("--- Initializing run-owned cleanup journal", flush=True)
-        run([sys.executable, str(seed), "--mode", "seed", "--run-id", run_id, "--manifest", str(output / "run-manifest.json")], env=values)
+        run([sys.executable, str(seed), "--mode", "seed", "--run-id", run_id, "--manifest", str(output / "run-manifest.json")], env=seed_values)
 
 
     attempts: list[Attempt] = []
-    required_names = runtime_environment_names(flows, seed=args.seed)
     env_args = maestro_env_args(app_id, run_id)
-    maestro_environment = maestro_process_environment(values, required_names, run_id)
+    maestro_environments = {
+        store: maestro_process_environment(
+            store_values[store],
+            runtime_environment_names(store_flows[store], seed=args.seed),
+            run_id,
+        )
+        for store in run_stores
+    }
+    active_store: str | None = None
     total_runs = len(flows) * repeat
     suite_started = time.monotonic()
     run_index = 0
@@ -815,7 +891,7 @@ def main() -> int:
     print("--- Running Maestro flows", flush=True)
     print(f"Run ID:       {run_id}", flush=True)
     print(f"Profile:      {args.profile}", flush=True)
-    print(f"Store:        {args.store}", flush=True)
+    print(f"Store:        {args.store or 'per flow'}", flush=True)
     print(f"Simulator:    {simulator['name']} ({simulator['udid']})", flush=True)
     print(f"Output:       {output}", flush=True)
     print(f"Repeat:       {repeat}", flush=True)
@@ -824,6 +900,11 @@ def main() -> int:
     try:
         for repetition in range(1, repeat + 1):
             for flow in flows:
+                store = flow_store(flow, args.store)
+                if store != active_store:
+                    store_url = store_values[store].get("MAESTRO_WOO_JETPACK_STORE_URL", "")
+                    switch_store(simulator["udid"], app, app_id, store, store_url)
+                    active_store = store
                 run_index += 1
                 flow_started = time.monotonic()
                 flow_returncodes: list[int] = []
@@ -842,7 +923,7 @@ def main() -> int:
                         completed = run(
                             command,
                             check=False,
-                            env=maestro_environment,
+                            env=maestro_environments[store],
                             timeout=args.flow_timeout_seconds,
                         )
                     except subprocess.TimeoutExpired as error:
@@ -872,7 +953,7 @@ def main() -> int:
             cleanup_result = run(
                 [sys.executable, str(SCRIPT_DIR / "seed-fixtures.py"), "--mode", "cleanup", "--run-id", run_id, "--manifest", str(output / "run-manifest.json")],
                 check=False,
-                env=values,
+                env=seed_values,
             )
             cleanup_status = "PASS" if cleanup_result.returncode == 0 else "FAIL"
             # Surface cleanup output even when it succeeds. It reports orders it

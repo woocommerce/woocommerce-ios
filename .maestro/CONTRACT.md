@@ -54,8 +54,8 @@ passes it to every flow. Created entities use this value wherever the UI permits
 
 ```text
 .maestro/scripts/run-smoke-tests.sh --app APP [--profile PROFILE]
-  [--device NAME_OR_UDID] [--include-tags CSV] [--exclude-tags CSV]
-  [--repeat N] [--rerun-failed JUNIT_XML] [--seed] [FLOW ...]
+  [--device NAME_OR_UDID] [--store lab|shared] [--include-tags CSV]
+  [--exclude-tags CSV] [--repeat N] [--rerun-failed JUNIT_XML] [--seed] [FLOW ...]
 .maestro/scripts/doctor.sh --app APP [the same profile/device selection]
 ```
 
@@ -94,7 +94,8 @@ iOS-only system files are `ios_quick_actions.yaml`,
 
 Tags are limited to `smoke_core`, `smoke_extended`, `flaky_quarantine`,
 `destructive`, `login`, `dashboard`, `orders`, `products`, `hub_menu`,
-`pos_ipad`, and `ios_system`.
+`pos_ipad`, `ios_system`, and `store_shared`. A `store_shared` flow runs against
+the shared store and is never `destructive`.
 
 Coverage IDs come from the committed 98-item P2 snapshot. Flow-backed items
 default to `fidelity: full`. A partial or entry-point-only implementation uses

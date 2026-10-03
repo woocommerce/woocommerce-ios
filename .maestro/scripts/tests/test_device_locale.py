@@ -79,8 +79,9 @@ class DeviceLocaleTests(unittest.TestCase):
     def test_runner_checks_language_before_installing_the_app(self) -> None:
         runner = (SCRIPT.parent / "run-smoke-tests.py").read_text(encoding="utf-8")
 
-        locale_check = runner.index("str(DEVICE_LOCALE)")
-        app_install = runner.index('["xcrun", "simctl", "install"')
+        main = runner.index("def main(")
+        locale_check = runner.index("str(DEVICE_LOCALE)", main)
+        app_install = runner.index('["xcrun", "simctl", "install"', main)
 
         self.assertLess(locale_check, app_install)
 

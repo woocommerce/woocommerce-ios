@@ -587,6 +587,12 @@ def redact(text: str, values: dict[str, str]) -> str:
     return text
 
 
+def process_output_text(output: str | bytes | None) -> str:
+    if isinstance(output, bytes):
+        return output.decode("utf-8", errors="replace")
+    return output or ""
+
+
 def flow_status(returncodes: list[int]) -> str:
     if 124 in returncodes:
         return "TIMED_OUT"
@@ -966,8 +972,8 @@ def main() -> int:
                             timeout=args.flow_timeout_seconds,
                         )
                     except subprocess.TimeoutExpired as error:
-                        stdout = error.stdout if isinstance(error.stdout, str) else ""
-                        stderr = error.stderr if isinstance(error.stderr, str) else ""
+                        stdout = process_output_text(error.stdout)
+                        stderr = process_output_text(error.stderr)
                         stderr += f"\nTimed out after {args.flow_timeout_seconds:g} seconds\n"
                         completed = subprocess.CompletedProcess(command, 124, stdout, stderr)
                     log.write_text(redact(completed.stdout + completed.stderr, values), encoding="utf-8")

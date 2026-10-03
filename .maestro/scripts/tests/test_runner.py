@@ -413,6 +413,11 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual("ab#cd", RUNNER.decode_env_value("ab#cd"))
         self.assertEqual("", RUNNER.decode_env_value(""))
 
+    def test_timed_out_output_is_kept_even_though_python_returns_bytes(self) -> None:
+        self.assertEqual("Tapping on Login", RUNNER.process_output_text(b"Tapping on Login"))
+        self.assertEqual("text", RUNNER.process_output_text("text"))
+        self.assertEqual("", RUNNER.process_output_text(None))
+
     def test_flow_status_reports_pass_flaky_and_fail(self) -> None:
         self.assertEqual("PASS", RUNNER.flow_status([0]))
         self.assertEqual("FLAKY", RUNNER.flow_status([1, 0]))

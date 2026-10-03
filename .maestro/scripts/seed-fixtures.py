@@ -46,8 +46,9 @@ def rest_datetime(value: str) -> str:
     `created_at` is stored as a full ISO 8601 UTC timestamp, e.g.
     `2026-09-09T05:29:41.207439+00:00`. The API's `after`/`before` filters reject
     that: the same query returns zero rows with the offset present and the real
-    rows once it is removed. Everything is UTC, so dropping the offset and the
-    microseconds is lossless here.
+    rows once it is removed. The order queries pass `dates_are_gmt`, so the store
+    reads the result as UTC instead of its own time zone, and dropping the offset
+    and the microseconds is lossless.
     """
     text = str(value).strip()
     for separator in ("+", "Z"):
@@ -130,7 +131,14 @@ class WooClient:
 
     def list(self, path: str, **query: Any) -> list[dict[str, Any]]:
         query.setdefault("per_page", 100)
-        return self.request("GET", path, query=query)
+        items: list[dict[str, Any]] = []
+        page = 1
+        while True:
+            batch = self.request("GET", path, query={**query, "page": page})
+            items.extend(batch)
+            if len(batch) < int(query["per_page"]):
+                return items
+            page += 1
 
     def delete(self, path: str, entity_id: int, *, prefix: str = API_PREFIX) -> None:
         self.request("DELETE", f"{path}/{entity_id}", query={"force": "true"}, prefix=prefix)
@@ -195,6 +203,7 @@ def discover_entities(client: WooClient, manifest: dict[str, Any]) -> list[dict[
     for order in client.list(
         "orders",
         after=rest_datetime(manifest["created_at"]),
+        dates_are_gmt="true",
         status="any",
         order="asc",
     ):
@@ -213,6 +222,7 @@ def discover_entities(client: WooClient, manifest: dict[str, Any]) -> list[dict[
     for order in client.list(
         "orders",
         after=rest_datetime(manifest["created_at"]),
+        dates_are_gmt="true",
         status="auto-draft",
         order="asc",
     ):

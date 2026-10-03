@@ -172,6 +172,33 @@ class SeedFixtureTests(unittest.TestCase):
             # 41 carries the run ID in a fee line; 42 is unattributable.
             self.assertEqual([("orders", 41)], client.deleted)
 
+    def test_order_queries_read_the_journal_time_as_utc(self) -> None:
+        queries: list[dict[str, object]] = []
+
+        class RecordingClient(FakeClient):
+            def list(self, path: str, **query: object) -> list[dict[str, object]]:
+                if path == "orders":
+                    queries.append(query)
+                return []
+
+        with tempfile.TemporaryDirectory() as directory:
+            args = argparse.Namespace(run_id="SUITE-20260805T120000Z-abc123", manifest=Path(directory) / "manifest.json")
+            SEED.initialize(args)
+            with mock.patch.object(SEED, "WooClient", return_value=RecordingClient()):
+                SEED.cleanup(args)
+
+        self.assertEqual(2, len(queries))
+        self.assertTrue(all(query["dates_are_gmt"] == "true" for query in queries))
+
+    def test_list_reads_every_page(self) -> None:
+        pages = {1: [{"id": index} for index in range(100)], 2: [{"id": 100}]}
+        client = SEED.WooClient()
+
+        with mock.patch.object(client, "request", side_effect=lambda method, path, query: pages[query["page"]]):
+            items = client.list("orders", status="any")
+
+        self.assertEqual(101, len(items))
+
     def test_order_contains_run_id_matches_custom_amount_fee_lines(self) -> None:
         """Custom amounts are fee lines, not line items.
 

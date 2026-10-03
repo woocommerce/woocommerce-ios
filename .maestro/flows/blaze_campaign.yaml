@@ -35,6 +35,16 @@ tags:
     commands:
       - assertVisible: "Create Your Campaign"
 - takeScreenshot: blaze_campaign_destination
+# A store without campaigns shows the intro as a sheet over the campaign list.
+- runFlow:
+    when:
+      visible: "Get your products seen by millions"
+    commands:
+      - tapOn:
+          id: "blaze-intro-close-button"
+      - extendedWaitUntil:
+          visible: "Blaze Campaigns"
+          timeout: 10000
 - tapOn:
     id: "BackButton"
 - extendedWaitUntil:

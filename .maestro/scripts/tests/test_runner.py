@@ -426,6 +426,30 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual("120000", environment["MAESTRO_DRIVER_STARTUP_TIMEOUT"])
         self.assertNotIn("MAESTRO_WOO_LAB_WPCOM_PASSWORD", environment)
 
+    def test_rerun_command_keeps_the_options_that_chose_the_flows(self) -> None:
+        args = argparse.Namespace(
+            store="shared",
+            include_tags="products",
+            exclude_tags="",
+            repeat=2,
+            flows=[Path(".maestro/flows/google_for_woo.yaml")],
+        )
+
+        self.assertEqual(
+            [
+                "--store",
+                "shared",
+                "--include-tags",
+                "products",
+                "--exclude-tags",
+                "",
+                "--repeat",
+                "2",
+                str(RUNNER.FLOWS_DIR / "google_for_woo.yaml"),
+            ],
+            RUNNER.selection_arguments(args),
+        )
+
     def test_flow_status_reports_pass_flaky_and_fail(self) -> None:
         self.assertEqual("PASS", RUNNER.flow_status([0]))
         self.assertEqual("FLAKY", RUNNER.flow_status([1, 0]))

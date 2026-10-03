@@ -757,7 +757,22 @@ def write_json_atomic(destination: Path, value: dict[str, object]) -> None:
     temporary.replace(destination)
 
 
-def write_html(destination: Path, *, run_id: str, app: Path, app_id: str, simulator: dict[str, str], profile: str, attempts: list[Attempt], status: str, tests: int, failures: int, skipped: int, candidate_kind: str = "developer", app_sha256: str = "", seed: bool = False, flow_timeout_seconds: float = 900) -> None:
+def selection_arguments(args: argparse.Namespace) -> list[str]:
+    """Options beyond the profile that decided which flows ran and where."""
+    arguments: list[str] = []
+    if args.store:
+        arguments += ["--store", args.store]
+    if args.include_tags is not None:
+        arguments += ["--include-tags", args.include_tags]
+    if args.exclude_tags is not None:
+        arguments += ["--exclude-tags", args.exclude_tags]
+    if args.repeat > 1:
+        arguments += ["--repeat", str(args.repeat)]
+    arguments += [str((path if path.is_absolute() else REPO_ROOT / path).resolve()) for path in args.flows]
+    return arguments
+
+
+def write_html(destination: Path, *, run_id: str, app: Path, app_id: str, simulator: dict[str, str], profile: str, attempts: list[Attempt], status: str, tests: int, failures: int, skipped: int, candidate_kind: str = "developer", app_sha256: str = "", seed: bool = False, flow_timeout_seconds: float = 900, selection: list[str] | None = None) -> None:
     rows = []
     for attempt in attempts:
         state = "pass" if attempt.returncode == 0 else "timed_out" if attempt.returncode == 124 else "fail"
@@ -793,6 +808,7 @@ def write_html(destination: Path, *, run_id: str, app: Path, app_id: str, simula
             "--flow-timeout-seconds",
             shlex.quote(f"{flow_timeout_seconds:g}"),
             *(["--seed"] if seed else []),
+            *(shlex.quote(argument) for argument in selection or []),
             "--rerun-failed",
             "report.xml",
         ]
@@ -1043,6 +1059,7 @@ def main() -> int:
         app_sha256=app_sha256,
         seed=args.seed,
         flow_timeout_seconds=args.flow_timeout_seconds,
+        selection=selection_arguments(args),
     )
     sanitize_artifacts(output, values)
     flaky = statuses.count("FLAKY")

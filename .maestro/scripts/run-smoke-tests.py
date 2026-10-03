@@ -554,6 +554,10 @@ def switch_store(udid: str, app: Path, app_id: str, store: str, store_url: str) 
     marker.write_text(f"{store_host}\n", encoding="utf-8")
 
 
+def forget_store(udid: str) -> None:
+    store_marker(udid).unlink(missing_ok=True)
+
+
 def deliver_store_order_push(udid: str, app_id: str) -> None:
     # A notification that arrives while the app is open never reaches
     # Notification Center, where the notification flow opens it.
@@ -973,7 +977,10 @@ def main() -> int:
         for repetition in range(1, repeat + 1):
             for flow in flows:
                 store = flow_store(flow, args.store)
-                if store != active_store:
+                # Login flows reset the session themselves and can end signed in to
+                # another site, so the flow after them signs in again.
+                resets_session = "login" in flow_tags(flow)
+                if not resets_session and store != active_store:
                     store_url = store_values[store].get("MAESTRO_WOO_JETPACK_STORE_URL", "")
                     switch_store(simulator["udid"], app, app_id, store, store_url)
                     active_store = store
@@ -1018,6 +1025,9 @@ def main() -> int:
                         break
                     if attempt_number == 1 and len(allowed_attempts) > 1:
                         print("  first attempt failed; retrying once", flush=True)
+                if resets_session:
+                    forget_store(simulator["udid"])
+                    active_store = None
                 status = flow_status(flow_returncodes)
                 statuses.append(status)
                 duration = round(time.monotonic() - flow_started)

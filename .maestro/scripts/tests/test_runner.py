@@ -167,6 +167,17 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual([["xcrun", "simctl", "getenv", "sim-1", "HOME"]], commands)
         self.assertEqual("shared.example.com\n", marker)
 
+    def test_forgetting_the_store_makes_the_next_switch_sign_in_again(self) -> None:
+        with tempfile.TemporaryDirectory() as home:
+            marker = Path(home) / ".woo-maestro-store"
+            marker.write_text("shop.example.com\n", encoding="utf-8")
+            completed = subprocess.CompletedProcess([], 0, home, "")
+            with mock.patch.object(RUNNER, "run", return_value=completed):
+                RUNNER.forget_store("sim-1")
+                RUNNER.forget_store("sim-1")
+
+            self.assertFalse(marker.exists())
+
     def test_notification_flow_gets_an_order_notification_while_the_app_is_closed(self) -> None:
         commands: list[list[str]] = []
         with mock.patch.object(RUNNER, "run", side_effect=lambda command, **_: commands.append(command)):

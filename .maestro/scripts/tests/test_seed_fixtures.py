@@ -89,6 +89,32 @@ class SeedFixtureTests(unittest.TestCase):
             self.assertEqual([], contents["entities"])
             self.assertIn("created_at", contents)
 
+    def test_seed_checks_the_rest_keys_and_the_application_password_first(self) -> None:
+        requests: list[tuple[str, str]] = []
+
+        def urlopen(request: object, timeout: int) -> object:
+            requests.append((request.full_url, request.get_header("Authorization")))
+            response = mock.MagicMock()
+            response.__enter__.return_value.read.return_value = b"[]"
+            return response
+
+        with (
+            mock.patch.dict(
+                os.environ,
+                {"MAESTRO_WOO_JETPACK_SITE_ADMIN_USERNAME": "demo", "MAESTRO_WOO_APPLICATION_PASSWORD": "app pass"},
+            ),
+            mock.patch.object(SEED.urllib.request, "urlopen", side_effect=urlopen),
+        ):
+            SEED.verify_cleanup_access(SEED.WooClient())
+
+        self.assertEqual(
+            [
+                ("https://shop.example.com/wp-json/wc/v3/products?per_page=1", SEED.basic_authorization("ck_test", "cs_test")),
+                ("https://shop.example.com/wp-json/wp/v2/users/me", SEED.basic_authorization("demo", "app pass")),
+            ],
+            requests,
+        )
+
     def test_rest_datetime_strips_offset_and_microseconds(self) -> None:
         """The API's `after` filter returns nothing when the offset is present.
 

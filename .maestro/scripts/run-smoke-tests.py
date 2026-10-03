@@ -58,6 +58,14 @@ STORE_SCOPED_SUFFIXES = (
 )
 # Older .env.local files keep the lab REST keys without the LAB_ prefix.
 LEGACY_UNSCOPED_LAB_SUFFIXES = ("CONSUMER_KEY", "CONSUMER_SECRET")
+# Seeding and cleanup use the REST keys, and the admin's application password
+# to delete uploaded images. Maestro never receives them.
+CLEANUP_ONLY_ENVIRONMENT = {
+    "MAESTRO_WOO_CONSUMER_KEY",
+    "MAESTRO_WOO_CONSUMER_SECRET",
+    "MAESTRO_WOO_JETPACK_SITE_ADMIN_USERNAME",
+    "MAESTRO_WOO_APPLICATION_PASSWORD",
+}
 NOT_WOO_STORE_WPCOM_FALLBACK = {
     "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL",
     "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD",
@@ -428,7 +436,7 @@ def required_environment(flows: list[Path], *, seed: bool) -> set[str]:
             paths.append((path.parent / reference).resolve())
     required.discard("MAESTRO_WOO_JETPACK_STORE_HOST")
     if seed:
-        required.update({"MAESTRO_WOO_CONSUMER_KEY", "MAESTRO_WOO_CONSUMER_SECRET"})
+        required.update(CLEANUP_ONLY_ENVIRONMENT)
     return required
 
 
@@ -515,9 +523,8 @@ def maestro_process_environment(
     required_names: set[str],
     run_id: str,
 ) -> dict[str, str]:
-    rest_only = {"MAESTRO_WOO_CONSUMER_KEY", "MAESTRO_WOO_CONSUMER_SECRET"}
     environment = {name: value for name, value in os.environ.items() if not name.startswith("MAESTRO_WOO_")}
-    for name in sorted(required_names - rest_only):
+    for name in sorted(required_names - CLEANUP_ONLY_ENVIRONMENT):
         if value := values.get(name):
             environment[name] = value
     store_url = values.get("MAESTRO_WOO_JETPACK_STORE_URL", "")
@@ -927,7 +934,13 @@ def main() -> int:
     if args.seed:
         seed = SCRIPT_DIR / "seed-fixtures.py"
         print("--- Initializing run-owned cleanup journal", flush=True)
-        run([sys.executable, str(seed), "--mode", "seed", "--run-id", run_id, "--manifest", str(output / "run-manifest.json")], env=seed_values)
+        seeded = run(
+            [sys.executable, str(seed), "--mode", "seed", "--run-id", run_id, "--manifest", str(output / "run-manifest.json")],
+            check=False,
+            env=seed_values,
+        )
+        if seeded.returncode:
+            raise SystemExit(redact((seeded.stderr or seeded.stdout).strip(), values))
 
 
     attempts: list[Attempt] = []

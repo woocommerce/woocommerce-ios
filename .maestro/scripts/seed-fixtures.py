@@ -145,6 +145,12 @@ def manifest_template(run_id: str) -> dict[str, Any]:
     }
 
 
+def verify_cleanup_access(client: WooClient) -> None:
+    """Fail before any flow changes the store when cleanup could not undo it."""
+    client.request("GET", "products", query={"per_page": 1})
+    client.request("GET", "users/me", prefix=MEDIA_PREFIX)
+
+
 def initialize(args: argparse.Namespace) -> None:
     run_id = strict_run_id(args.run_id)
     manifest = manifest_template(run_id)
@@ -260,6 +266,7 @@ def main() -> int:
     args = parser.parse_args()
     try:
         if args.mode == "seed":
+            verify_cleanup_access(WooClient())
             initialize(args)
         else:
             cleanup(args)

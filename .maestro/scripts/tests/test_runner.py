@@ -659,10 +659,12 @@ class RunnerTests(unittest.TestCase):
             with self.assertRaisesRegex(SystemExit, "MAESTRO_WOO_SHARED_JETPACK_STORE_URL"):
                 RUNNER.validate_environment([flow], {}, seed=False, store="shared")
 
-    def test_seed_explicitly_requires_consumer_keys(self) -> None:
+    def test_seed_explicitly_requires_the_cleanup_credentials(self) -> None:
         required = RUNNER.required_environment([], seed=True)
         self.assertIn("MAESTRO_WOO_CONSUMER_KEY", required)
         self.assertIn("MAESTRO_WOO_CONSUMER_SECRET", required)
+        self.assertIn("MAESTRO_WOO_JETPACK_SITE_ADMIN_USERNAME", required)
+        self.assertIn("MAESTRO_WOO_APPLICATION_PASSWORD", required)
 
     def test_maestro_cli_args_contain_only_non_secret_run_values(self) -> None:
         args = RUNNER.maestro_env_args(

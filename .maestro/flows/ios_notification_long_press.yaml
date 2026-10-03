@@ -1,7 +1,6 @@
 # p2: other.ios-push-long-press
-# Prerequisite: a Woo order notification is delivered to this simulator before
-# the flow runs. `xcrun simctl push <udid> <bundle id> .maestro/helpers/store_order_push.json`
-# stages one with the store_order category the notification extension handles.
+# The runner delivers .maestro/helpers/store_order_push.json before the flow, an
+# order notification with the store_order category the notification extension handles.
 # On the simulator a long press never expands a notification; swiping left and
 # tapping View opens the same notification content extension.
 appId: ${APP_ID}

@@ -42,6 +42,8 @@ SHARED_STORE_TAG = "store_shared"
 # Kept in the simulator's home directory: the host of the store the app was
 # last logged in to, so a later run knows whether to sign the app out first.
 STORE_MARKER_NAME = ".woo-maestro-store"
+NOTIFICATION_FLOW = "ios_notification_long_press.yaml"
+STORE_ORDER_PUSH = MAESTRO_DIR / "helpers" / "store_order_push.json"
 # Flows read these store-neutral names; the runner fills them from the
 # MAESTRO_WOO_LAB_* or MAESTRO_WOO_SHARED_* block of the store a flow runs against.
 STORE_SCOPED_SUFFIXES = (
@@ -539,6 +541,13 @@ def switch_store(udid: str, app: Path, app_id: str, store: str, store_url: str) 
     marker.write_text(f"{store_host}\n", encoding="utf-8")
 
 
+def deliver_store_order_push(udid: str, app_id: str) -> None:
+    # A notification that arrives while the app is open never reaches
+    # Notification Center, where the notification flow opens it.
+    run(["xcrun", "simctl", "terminate", udid, app_id], check=False)
+    run(["xcrun", "simctl", "push", udid, app_id, str(STORE_ORDER_PUSH)])
+
+
 def maestro_env_args(app_id: str, run_id: str) -> list[str]:
     return ["--env", f"APP_ID={app_id}", "--env", f"SUITE_RUN_ID={run_id}"]
 
@@ -918,6 +927,8 @@ def main() -> int:
                     debug.mkdir()
                     screenshot_dir = output / "screenshots" / prefix
                     screenshot_dir.mkdir()
+                    if flow.name == NOTIFICATION_FLOW:
+                        deliver_store_order_push(simulator["udid"], app_id)
                     command = ["maestro", "test", "--udid", simulator["udid"], "--config", str(CONFIG_FILE), "--format", "JUNIT", "--output", str(junit), "--debug-output", str(debug), "--test-output-dir", str(screenshot_dir), *env_args, str(flow)]
                     try:
                         completed = run(

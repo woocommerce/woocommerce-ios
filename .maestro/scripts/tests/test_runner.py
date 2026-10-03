@@ -161,6 +161,20 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual([["xcrun", "simctl", "getenv", "sim-1", "HOME"]], commands)
         self.assertEqual("shared.example.com\n", marker)
 
+    def test_notification_flow_gets_an_order_notification_while_the_app_is_closed(self) -> None:
+        commands: list[list[str]] = []
+        with mock.patch.object(RUNNER, "run", side_effect=lambda command, **_: commands.append(command)):
+            RUNNER.deliver_store_order_push("sim-1", "com.example.woo")
+
+        self.assertTrue(RUNNER.STORE_ORDER_PUSH.is_file())
+        self.assertEqual(
+            [
+                ["xcrun", "simctl", "terminate", "sim-1", "com.example.woo"],
+                ["xcrun", "simctl", "push", "sim-1", "com.example.woo", str(RUNNER.STORE_ORDER_PUSH)],
+            ],
+            commands,
+        )
+
     def test_html_report_names_the_overall_status(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)

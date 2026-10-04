@@ -75,6 +75,28 @@ def missing_environment(flows: list[Path], environment: dict[str, str], args: ar
     return sorted(missing)
 
 
+def selection_problems(flows: list[Path], environment: dict[str, str], args: argparse.Namespace) -> list[str]:
+    """Return the reasons the runner would refuse this selection before running any flow."""
+    checks = [
+        lambda: RUNNER.validate_destructive_cleanup(flows, seed=args.seed),
+        lambda: RUNNER.validate_shared_destructive(flows, store=args.store),
+    ]
+    for store in RUNNER.STORES:
+        store_flows = [flow for flow in flows if RUNNER.flow_store(flow, args.store) == store]
+        values = RUNNER.select_store_environment(environment, store)
+        checks.append(lambda flows=store_flows, values=values, store=store: (
+            RUNNER.validate_login_store_hosts(flows, values, store=store),
+            RUNNER.validate_not_woo_store_fallback(flows, values),
+        ))
+    problems = []
+    for check in checks:
+        try:
+            check()
+        except SystemExit as error:
+            problems.append(str(error).splitlines()[0])
+    return problems
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--app", required=True, type=Path)
@@ -113,7 +135,9 @@ def main() -> int:
     except (SystemExit, subprocess.SubprocessError) as error:
         checks.append((False, f"simulator: {error}"))
 
-    include = RUNNER.csv(args.include_tags) or RUNNER.PROFILES[args.profile][0]
+    include = RUNNER.csv(args.include_tags)
+    if include is None:
+        include = RUNNER.PROFILES[args.profile][0]
     exclude = RUNNER.csv(args.exclude_tags)
     if exclude is None:
         exclude = RUNNER.PROFILES[args.profile][1]
@@ -126,6 +150,7 @@ def main() -> int:
 
     missing = missing_environment(flows if 'flows' in locals() else [], environment, args)
     checks.append((not missing, "required credentials are present" if not missing else "missing variables: " + ", ".join(missing)))
+    checks.extend((False, problem) for problem in selection_problems(flows if 'flows' in locals() else [], environment, args))
 
     print("WooCommerce iOS Maestro doctor")
     print(f"profile: {args.profile}")

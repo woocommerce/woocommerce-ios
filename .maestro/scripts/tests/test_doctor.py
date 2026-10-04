@@ -53,6 +53,20 @@ class DoctorTests(unittest.TestCase):
             message,
         )
 
+    def test_reports_the_selections_the_runner_refuses_before_running(self) -> None:
+        flows = [DOCTOR.RUNNER.FLOWS_DIR / "orders_create.yaml"]
+        cases = [
+            (DOCTOR.argparse.Namespace(seed=False, store=None), "Destructive flows require --seed"),
+            (DOCTOR.argparse.Namespace(seed=True, store="shared"), "Refusing to run destructive flows against the shared store."),
+        ]
+        for args, expected in cases:
+            with self.subTest(store=args.store, seed=args.seed):
+                problems = DOCTOR.selection_problems(flows, {}, args)
+
+                self.assertTrue(any(problem.startswith(expected) for problem in problems), problems)
+
+        self.assertEqual([], DOCTOR.selection_problems(flows, {}, DOCTOR.argparse.Namespace(seed=True, store="lab")))
+
 
 if __name__ == "__main__":
     unittest.main()

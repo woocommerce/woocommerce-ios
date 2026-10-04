@@ -387,7 +387,8 @@ if [ -f "$ENV_OUT" ]; then
   BACKUP_DIR="${TMPDIR:-/tmp}"; BACKUP_DIR="${BACKUP_DIR%/}/maestro-env-backups"
   mkdir -p "$BACKUP_DIR"; chmod 700 "$BACKUP_DIR"
   BACKUP="$BACKUP_DIR/$(basename "$ENV_OUT").$(date +%Y%m%d-%H%M%S).$$"
-  cp "$ENV_OUT" "$BACKUP"; chmod 600 "$BACKUP"
+  cp "$ENV_OUT" "$BACKUP" || die "could not back up $ENV_OUT"
+  chmod 600 "$BACKUP"
   # Deliberately outside the repository: .gitignore matches "**/.env.local"
   # only, so a ".env.local.bak" sibling would not be ignored and could be
   # committed with credentials in it.
@@ -398,7 +399,7 @@ mkdir -p "$(dirname "$ENV_OUT")"
 SITE="$SITE" ADMIN_USER="$ADMIN_USER" WPCOM_USER="$WPCOM_USER" WPCOM_PASS="$WPCOM_PASS" \
 SITE_PASS="$SITE_PASS" CK="$CK" CS="$CS" APP_PASSWORD="$APP_PASSWORD" \
 NO_JETPACK_SITE="$NO_JETPACK_SITE" NO_JETPACK_PASS="$NO_JETPACK_PASS" \
-python3 - "$ENV_OUT" <<'PY'
+python3 - "$ENV_OUT" <<'PY' || die "could not write $ENV_OUT${BACKUP:+; the previous copy is $BACKUP}"
 import os, re, sys, pathlib
 
 path = pathlib.Path(sys.argv[1])

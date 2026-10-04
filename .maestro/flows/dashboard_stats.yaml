@@ -97,11 +97,14 @@ tags:
     when:
       true: ${output.statsOriginalRangeId !== ''}
     commands:
+      # Centre the menu: right under the navigation bar a tap reaches the bar's
+      # Customize button instead.
       - scrollUntilVisible:
           element:
             id: "performance-time-range-menu"
           direction: UP
           timeout: 20000
+          centerElement: true
       - repeat:
           while:
             notVisible:

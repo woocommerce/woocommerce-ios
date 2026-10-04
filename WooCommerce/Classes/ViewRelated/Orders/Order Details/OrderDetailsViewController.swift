@@ -111,6 +111,11 @@ final class OrderDetailsViewController: UIViewController {
         }
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        restoreCollapsedTableViewMarginsIfNeeded()
+    }
+
     override var shouldShowOfflineBanner: Bool {
         true
     }
@@ -162,6 +167,25 @@ private extension OrderDetailsViewController {
         // the native tab bar underlap this screen without changing unrelated tab roots.
         setContentScrollView(tableView, for: .bottom)
         view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
+    }
+
+    /// On iPhone Duo, UIKit drops the table's default margin on every side that is inset from the window edge.
+    func restoreCollapsedTableViewMarginsIfNeeded() {
+        let margins = tableView.layoutMargins
+        let safeAreaInsets = tableView.safeAreaInsets
+        let left = margins.left - safeAreaInsets.left
+        let right = margins.right - safeAreaInsets.right
+        guard left != right || left <= 0 else {
+            return
+        }
+
+        let systemMinimum = systemMinimumLayoutMargins
+        let widestMargin = max(left, right)
+        let horizontalMargin = widestMargin > 0 ? widestMargin : max(systemMinimum.leading, systemMinimum.trailing)
+        tableView.layoutMargins = UIEdgeInsets(top: margins.top - safeAreaInsets.top,
+                                               left: horizontalMargin,
+                                               bottom: margins.bottom - safeAreaInsets.bottom,
+                                               right: horizontalMargin)
     }
 
     func configureStackView() {

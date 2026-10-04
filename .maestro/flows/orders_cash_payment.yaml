@@ -37,8 +37,8 @@ tags:
 - tapOn:
     id: edit-note-done-button
 # Verify the note on the order form, where it is rendered as a "Customer Note"
-# section. The order details screen has no customer-note section at all, so the
-# original post-creation assertion could never pass.
+# section. Order details shows it wrapped in quotation marks, so the plain text
+# does not match there.
 - scrollUntilVisible:
     element:
       text: Cash ${SUITE_RUN_ID}

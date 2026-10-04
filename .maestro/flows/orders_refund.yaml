@@ -37,8 +37,8 @@ tags:
 - tapOn:
     id: edit-note-done-button
 # Verify the note here, where it renders as a "Customer Note" section. Order
-# details has no customer-note section, so asserting it after creation cannot
-# pass.
+# details shows it wrapped in quotation marks, so the plain text does not match
+# there.
 - scrollUntilVisible:
     element:
       text: Refund ${SUITE_RUN_ID}

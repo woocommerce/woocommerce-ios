@@ -177,7 +177,7 @@ Validate traceability and static files with:
 ```bash
 python3 .maestro/scripts/check-smoke-coverage.py
 python3 -m unittest discover .maestro/scripts/tests
-bash -n .maestro/scripts/*.sh
+for script in .maestro/scripts/*.sh; do bash -n "$script"; done
 ```
 
 The coverage checker reports full, partial, and manual item counts separately.

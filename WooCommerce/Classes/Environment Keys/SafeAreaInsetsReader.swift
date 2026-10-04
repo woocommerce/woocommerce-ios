@@ -4,13 +4,22 @@ import SwiftUI
 /// Place it at a screen root, outside any `ScrollView`: inside scroll content there is no safe area left to read.
 ///
 struct SafeAreaInsetsReader<Content: View>: View {
-    @ViewBuilder let content: (EdgeInsets) -> Content
+    private let content: (EdgeInsets, CGSize) -> Content
+
+    init(@ViewBuilder content: @escaping (EdgeInsets) -> Content) {
+        self.content = { safeAreaInsets, _ in content(safeAreaInsets) }
+    }
+
+    /// Also hands over the size of the container inside its safe area.
+    init(@ViewBuilder content: @escaping (_ safeAreaInsets: EdgeInsets, _ containerSize: CGSize) -> Content) {
+        self.content = content
+    }
 
     @Environment(\.navigationColumnEdgesInsideSafeArea) private var navigationColumnEdgesInsideSafeArea
 
     var body: some View {
         GeometryReader { geometry in
-            content(geometry.safeAreaInsets)
+            content(geometry.safeAreaInsets, geometry.size)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         }
         .ignoresSafeArea(.container, edges: navigationColumnEdgesInsideSafeArea)

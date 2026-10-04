@@ -91,6 +91,7 @@ final class TooltipPresenter {
     }
 
     func showTooltip() {
+        matchTooltipToContainerWidth()
         tooltip.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(tooltip)
         self.tooltip.alpha = 0
@@ -125,6 +126,16 @@ final class TooltipPresenter {
     func removeTooltip() {
         tooltip.removeFromSuperview()
         NotificationCenter.default.removeObserver(self)
+    }
+
+    /// Re-creates the tooltip when the container width differs from the one it was sized for.
+    private func matchTooltipToContainerWidth() {
+        let containerWidth = containerView.bounds.width
+        guard containerWidth > 0, tooltip.containerWidth != containerWidth else {
+            return
+        }
+        tooltip.removeFromSuperview()
+        tooltip = tooltip.copy(containerWidth: containerWidth)
     }
 
     private func animateTooltipIn() {

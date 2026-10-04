@@ -178,6 +178,26 @@ class RunnerTests(unittest.TestCase):
 
             self.assertFalse(marker.exists())
 
+    def test_store_is_named_again_only_after_a_non_login_flow_that_passed(self) -> None:
+        cases = [
+            ("PASS", False, True),
+            ("FLAKY", False, True),
+            ("FAIL", False, False),
+            ("TIMED_OUT", False, False),
+            ("PASS", True, False),
+        ]
+        for status, resets_session, keeps_store in cases:
+            with self.subTest(status=status, resets_session=resets_session), tempfile.TemporaryDirectory() as home:
+                marker = Path(home) / ".woo-maestro-store"
+                completed = subprocess.CompletedProcess([], 0, home, "")
+                with mock.patch.object(RUNNER, "run", return_value=completed):
+                    kept = RUNNER.settle_store("sim-1", "https://shop.example.com/", status, resets_session)
+
+                self.assertEqual(keeps_store, kept)
+                self.assertEqual(keeps_store, marker.exists())
+                if keeps_store:
+                    self.assertEqual("shop.example.com\n", marker.read_text(encoding="utf-8"))
+
     def test_notification_flow_gets_an_order_notification_while_the_app_is_closed(self) -> None:
         commands: list[list[str]] = []
         with mock.patch.object(RUNNER, "run", side_effect=lambda command, **_: commands.append(command)):

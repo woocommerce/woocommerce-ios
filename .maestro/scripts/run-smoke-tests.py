@@ -558,6 +558,14 @@ def forget_store(udid: str) -> None:
     store_marker(udid).unlink(missing_ok=True)
 
 
+def settle_store(udid: str, store_url: str, status: str, resets_session: bool) -> bool:
+    """Name the store again once a flow passed on it; False means the next flow signs in again."""
+    if resets_session or status not in ("PASS", "FLAKY"):
+        return False
+    store_marker(udid).write_text(f"{normalized_store_host(store_url)}\n", encoding="utf-8")
+    return True
+
+
 def deliver_store_order_push(udid: str, app_id: str) -> None:
     # A notification that arrives while the app is open never reaches
     # Notification Center, where the notification flow opens it.
@@ -977,13 +985,16 @@ def main() -> int:
         for repetition in range(1, repeat + 1):
             for flow in flows:
                 store = flow_store(flow, args.store)
+                store_url = store_values[store].get("MAESTRO_WOO_JETPACK_STORE_URL", "")
                 # Login flows reset the session themselves and can end signed in to
                 # another site, so the flow after them signs in again.
                 resets_session = "login" in flow_tags(flow)
                 if not resets_session and store != active_store:
-                    store_url = store_values[store].get("MAESTRO_WOO_JETPACK_STORE_URL", "")
                     switch_store(simulator["udid"], app, app_id, store, store_url)
                     active_store = store
+                # A flow that fails or is stopped half way can leave the app signed in
+                # to another site, so the marker names a store only between flows.
+                forget_store(simulator["udid"])
                 run_index += 1
                 flow_started = time.monotonic()
                 flow_returncodes: list[int] = []
@@ -1025,10 +1036,9 @@ def main() -> int:
                         break
                     if attempt_number == 1 and len(allowed_attempts) > 1:
                         print("  first attempt failed; retrying once", flush=True)
-                if resets_session:
-                    forget_store(simulator["udid"])
-                    active_store = None
                 status = flow_status(flow_returncodes)
+                if not settle_store(simulator["udid"], store_url, status, resets_session):
+                    active_store = None
                 statuses.append(status)
                 duration = round(time.monotonic() - flow_started)
                 print(f"  {status} in {duration}s", flush=True)

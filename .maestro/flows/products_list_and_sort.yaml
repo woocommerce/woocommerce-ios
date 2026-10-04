@@ -13,15 +13,18 @@ tags:
 - assertVisible:
     id: "products-table-view"
 
-# Rows that are not laid out yet report their labels at the top of the table, so
-# read names from inside a visible row (rows use the product name as id). The first
-# visible row can sit half under the header once the list is scrolled, so every read
-# uses the second one.
+# Rows that are not laid out yet report their labels at the top of the table, and rows
+# scrolled past stay in the hierarchy above it, so read names from inside a row that
+# starts below the table's top edge (rows use the product name as id). The first such
+# row can sit half under the header once the list is scrolled, so every read uses the
+# second one.
 - copyTextFrom:
     text: ".+"
     childOf:
       id: ".+"
       childOf:
+        id: "products-table-view"
+      below:
         id: "products-table-view"
       index: 1
     index: 0
@@ -39,6 +42,8 @@ tags:
     childOf:
       id: ".+"
       childOf:
+        id: "products-table-view"
+      below:
         id: "products-table-view"
       index: 1
     index: 0
@@ -80,6 +85,8 @@ tags:
       id: ".+"
       childOf:
         id: "products-table-view"
+      below:
+        id: "products-table-view"
       index: 1
     index: 0
 - evalScript: ${output.firstProductDescending = String(maestro.copiedText || '').trim()}
@@ -111,6 +118,8 @@ tags:
     childOf:
       id: ".+"
       childOf:
+        id: "products-table-view"
+      below:
         id: "products-table-view"
       index: 1
     index: 0

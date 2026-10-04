@@ -182,25 +182,29 @@ public class DrawerPresentationController: FancyAlertPresentationController {
     }
 
     override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        let transitionID = UUID()
+        activeSizeTransitions.insert(transitionID)
+
         let isAnimating = coordinator.animate(alongsideTransition: { _ in
             self.presentedView?.frame = self.frameOfPresentedViewInContainerView
             self.transition(to: self.currentPosition)
         }, completion: { _ in
-            self.sizeTransitionsInFlight = max(self.sizeTransitionsInFlight - 1, 0)
+            self.activeSizeTransitions.remove(transitionID)
             self.updateHorizontalFrame()
         })
-        if isAnimating {
-            sizeTransitionsInFlight += 1
+        if !isAnimating {
+            activeSizeTransitions.remove(transitionID)
+            updateHorizontalFrame()
         }
         super.viewWillTransition(to: size, with: coordinator)
     }
 
-    /// Number of size transitions in flight; their animation blocks own the frame until they complete
-    private var sizeTransitionsInFlight = 0
+    /// Size transitions in flight; their animation blocks own the frame until they complete
+    private var activeSizeTransitions: Set<UUID> = []
 
     /// Applies the horizontal frame of the drawer, leaving the vertical position untouched
     private func updateHorizontalFrame() {
-        guard let presentedView, let containerView, sizeTransitionsInFlight == 0 else {
+        guard let presentedView, let containerView, activeSizeTransitions.isEmpty else {
             return
         }
 

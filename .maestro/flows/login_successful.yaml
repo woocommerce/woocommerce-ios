@@ -1,5 +1,6 @@
 # p2: install.fresh, login.jetpack
-# Kept last in config execution order so the suite leaves a reusable session.
+# The runner signs the app in again after every login flow, so later flows do not
+# reuse this session.
 appId: ${APP_ID}
 name: "Login - Successful Jetpack store login"
 tags:

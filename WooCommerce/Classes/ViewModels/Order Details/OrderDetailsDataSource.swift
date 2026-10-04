@@ -557,6 +557,7 @@ private extension OrderDetailsDataSource {
             "Composes a new order note.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note."
         )
+        cell.accessibilityIdentifier = "order-details-add-note-button"
     }
 
     private func configureOrderNoteHeader(cell: OrderNoteHeaderTableViewCell, at indexPath: IndexPath) {

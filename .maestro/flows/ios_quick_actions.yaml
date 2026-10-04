@@ -1,6 +1,6 @@
 # p2: other.quick-actions
-# Exercises the installed app's real UIApplicationShortcutItems. The icon label
-# intentionally matches Debug (Woo (Dev)) and Alpha/prototype display names.
+# Exercises the installed app's real UIApplicationShortcutItems. The runner passes
+# the app's display name, so a Debug or Alpha build is found by its own label.
 appId: ${APP_ID}
 name: "iOS system - Home-screen Quick Actions"
 tags:
@@ -10,22 +10,19 @@ tags:
 - runFlow: ../subflows/ensure_logged_in.yaml
 - stopApp
 - pressKey: HOME
-# Long-press the icon on the Home screen, not a Spotlight result. Long-pressing
-# an app in search results offers only "Delete App" and no shortcut items, so
-# the flow previously asserted against a menu that never contained them.
-# Search for the exact app. The simulator also carries WooCommerce, Woo
-# (Pre-Alpha) and maestro-driver, so the previous `Woo.*` at index 0 matched
-# whichever happened to sort first - a different app, whose context menu offers
-# only "Delete App".
+# Search for the exact app. The simulator can also carry WooCommerce, other Woo
+# builds and maestro-driver, so a loose `Woo.*` at index 0 matched whichever
+# sorted first - a different app, whose context menu offers only "Delete App".
+# Maestro also matches a selector as literal text, so the name needs no escaping.
 - tapOn:
     text: Search
     index: 0
-- inputText: Woo (Dev)
+- inputText: ${APP_DISPLAY_NAME}
 - hideKeyboard
 - extendedWaitUntil:
-    visible: "Woo \\(Dev\\)"
+    visible: ${APP_DISPLAY_NAME}
     timeout: 15000
-- longPressOn: "Woo \\(Dev\\)"
+- longPressOn: ${APP_DISPLAY_NAME}
 - assertVisible: New Order
 - assertVisible: Orders
 - assertVisible: Add a product

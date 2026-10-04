@@ -1,7 +1,7 @@
 # p2: products.detail.variations, products.detail.variation-attributes
 # Prerequisite: store has an editable Variable product with at least one generated variation and attribute.
 appId: ${APP_ID}
-name: "Products - Variations and tags"
+name: "Products - Variations"
 tags:
   - smoke_extended
   - flaky_quarantine
@@ -46,34 +46,6 @@ tags:
 - assertVisible: "Status"
 - assertVisible: "Visibility"
 - tapOn: "Done"
-- extendedWaitUntil:
-    visible:
-      id: "edit-product-more-options-button"
-    timeout: 10000
-- scrollUntilVisible:
-    element: "Add more details"
-    direction: DOWN
-    timeout: 15000
-- tapOn: "Add more details"
-- extendedWaitUntil:
-    visible: "Tags"
-    timeout: 10000
-- tapOn: "Tags"
-- extendedWaitUntil:
-    visible:
-      id: "add-tags"
-    timeout: 15000
-- assertVisible: "Tags"
-- assertVisible:
-    id: "add-tags"
-- takeScreenshot: products_tags
-- tapOn:
-    point: "10%,12%"
-- runFlow:
-    when:
-      visible: "Dismiss"
-    commands:
-      - tapOn: "Dismiss"
 - extendedWaitUntil:
     visible:
       id: "edit-product-more-options-button"

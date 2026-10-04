@@ -29,6 +29,13 @@ tags:
       id: "pos-product-card-.*"
     index: 0
 - evalScript: ${output.posProductName = String(maestro.copiedText || '').trim()}
+- copyTextFrom:
+    text: ".+"
+    childOf:
+      id: "pos-product-card-.*"
+      index: 1
+    index: 0
+- evalScript: ${output.posOtherProductName = String(maestro.copiedText || '').trim()}
 - assertTrue:
     condition: ${output.posProductName.length > 0}
     label: First live POS product exposes a searchable name
@@ -47,6 +54,18 @@ tags:
       childOf:
         id: "pos-product-card-.*"
     timeout: 30000
+# The searched product was on screen before the search, so also wait for another
+# product to leave the results, unless the query matches it too.
+- runFlow:
+    when:
+      true: ${output.posOtherProductName.length > 0 && output.posOtherProductName.toLowerCase().indexOf(output.posProductName.toLowerCase()) == -1}
+    commands:
+      - extendedWaitUntil:
+          notVisible:
+            text: ${output.posOtherProductName}
+            childOf:
+              id: "pos-product-card-.*"
+          timeout: 15000
 - tapOn:
     id: "pos-product-card-.*"
     index: 0

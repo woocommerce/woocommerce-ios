@@ -25,12 +25,13 @@ appId: ${APP_ID}
         id: "selectable-item-unselected-${CARD_TITLE}"
     commands:
       - evalScript: ${output['dashboardCardState_' + String(CARD_KEY)] = 'unselected'}
+# A card that can't be shown sits in the inactive section, which has no
+# selection row. Matching the "Unavailable" badge by position would also pick
+# up another card's badge.
 - runFlow:
     when:
-      visible:
-        text: "Unavailable"
-        rightOf:
-          text: "${CARD_TITLE}"
+      true: ${output['dashboardCardState_' + String(CARD_KEY)] === ''}
+      visible: "${CARD_TITLE}"
     commands:
       - evalScript: ${output['dashboardCardState_' + String(CARD_KEY)] = 'unavailable'}
       - evalScript: ${console.log('DASHBOARD_CARD_UNAVAILABLE ' + String(CARD_TITLE))}

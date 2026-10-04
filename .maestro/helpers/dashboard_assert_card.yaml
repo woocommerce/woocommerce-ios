@@ -34,10 +34,11 @@ appId: ${APP_ID}
     commands:
       - assertVisible:
           text: "${CARD_TITLE}"
-      - assertVisible:
-          text: "Unavailable"
-          rightOf:
-            text: "${CARD_TITLE}"
+      - assertNotVisible:
+          id: "selectable-item-selected-${CARD_TITLE}"
+      - assertNotVisible:
+          id: "selectable-item-unselected-${CARD_TITLE}"
+      - assertVisible: "Unavailable"
 - runFlow:
     when:
       true: ${output.dashboardExpectedState === 'hidden'}

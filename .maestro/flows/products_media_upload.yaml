@@ -77,3 +77,4 @@ tags:
       id: edit-product-more-options-button
     timeout: 20000
 - assertNotVisible: Add a product image
+- assertVisible: "Cover"

@@ -201,3 +201,14 @@ tags:
     timeout: 30000
 - assertVisible:
     id: summary-table-view-cell-title-label
+- scrollUntilVisible:
+    element:
+      text: Custom amount ${SUITE_RUN_ID}
+    direction: DOWN
+    timeout: 20000
+# Order details show the customer note inside quotation marks.
+- scrollUntilVisible:
+    element:
+      text: ".*Maestro order ${SUITE_RUN_ID}.*"
+    direction: DOWN
+    timeout: 20000

@@ -156,8 +156,9 @@ allows and later mutations target only that run-owned data. Leftovers on the
 configured destructive store are not accepted: a destructive runtime selection
 requires `--seed`, which initializes a cleanup journal before UI mutation,
 discovers only products/orders carrying the exact `SUITE_RUN_ID`, and records
-each successful REST deletion. A partial cleanup remains retryable from the
-manifest. Seeding needs the store's REST keys, plus the site admin username and
+each successful REST deletion. If cleanup stops part way, `run-manifest.json`
+in the run's output folder still lists every entity it did not delete. Seeding
+needs the store's REST keys, plus the site admin username and
 application password that cleanup uses to delete uploaded images. The runner
 checks them before any flow runs.
 

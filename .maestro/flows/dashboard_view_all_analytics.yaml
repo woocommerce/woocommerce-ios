@@ -24,7 +24,8 @@ tags:
 # The hub opens on the dashboard's last range, so match the line every range shows.
 - assertVisible: "Compared to .*"
 - assertVisible: "REVENUE"
-- assertVisible: "ORDERS"
+# "ORDERS" alone would also match the Orders tab.
+- assertVisible: "Total Orders"
 - assertVisible: "See report"
 - assertVisible: "Edit"
 - takeScreenshot: dashboard_view_all_analytics

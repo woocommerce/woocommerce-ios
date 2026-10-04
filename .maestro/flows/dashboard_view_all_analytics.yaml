@@ -21,7 +21,8 @@ tags:
     visible: "Analytics"
     timeout: 20000
 - assertVisible: "Analytics"
-- assertVisible: "Today"
+# The hub opens on the dashboard's last range, so match the line every range shows.
+- assertVisible: "Compared to .*"
 - assertVisible: "REVENUE"
 - assertVisible: "ORDERS"
 - assertVisible: "See report"

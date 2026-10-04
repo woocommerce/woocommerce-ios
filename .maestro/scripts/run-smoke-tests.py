@@ -554,6 +554,12 @@ def switch_store(udid: str, app: Path, app_id: str, store: str, store_url: str) 
     marker.write_text(f"{store_host}\n", encoding="utf-8")
 
 
+def command_failure(error: subprocess.CalledProcessError) -> str:
+    output = (error.stderr or error.stdout or "").strip()
+    message = f"{' '.join(str(part) for part in error.cmd)} failed with exit status {error.returncode}"
+    return f"{message}: {output}" if output else message
+
+
 def forget_store(udid: str) -> None:
     store_marker(udid).unlink(missing_ok=True)
 
@@ -713,7 +719,9 @@ def finalize_suite(attempts: list[Attempt], destination: Path) -> SuiteResult:
     return SuiteResult(status, tests, failures, skipped)
 
 
-def add_setup_error(result: SuiteResult, destination: Path, message: str) -> SuiteResult:
+def add_setup_error(
+    result: SuiteResult, destination: Path, message: str, case_name: str = "fixture cleanup"
+) -> SuiteResult:
     root = ET.parse(destination).getroot()
     suite = ET.SubElement(
         root,
@@ -722,7 +730,7 @@ def add_setup_error(result: SuiteResult, destination: Path, message: str) -> Sui
         tests="1",
         failures="1",
     )
-    case = ET.SubElement(suite, "testcase", name="fixture cleanup")
+    case = ET.SubElement(suite, "testcase", name=case_name)
     ET.SubElement(case, "failure", message=message).text = message
     tests = result.tests + 1
     failures = result.failures + 1
@@ -931,7 +939,9 @@ def main() -> int:
     if locale.returncode:
         return locale.returncode
     turn_off_password_autofill(simulator["udid"])
-    run(["xcrun", "simctl", "install", simulator["udid"], str(app)])
+    installed = run(["xcrun", "simctl", "install", simulator["udid"], str(app)], check=False)
+    if installed.returncode:
+        raise SystemExit(redact(f"Installing the app failed: {(installed.stderr or installed.stdout).strip()}", values))
     summary = {
         "run_id": run_id, "profile": args.profile, "store": args.store or "per flow", "app": str(app), "app_id": app_id,
         "candidate_kind": args.candidate_kind,
@@ -972,6 +982,7 @@ def main() -> int:
     statuses: list[str] = []
     cleanup_status = "NOT_REQUESTED"
     cleanup_error = ""
+    simulator_error = ""
     print("--- Running Maestro flows", flush=True)
     print(f"Run ID:       {run_id}", flush=True)
     print(f"Profile:      {args.profile}", flush=True)
@@ -1042,6 +1053,10 @@ def main() -> int:
                 statuses.append(status)
                 duration = round(time.monotonic() - flow_started)
                 print(f"  {status} in {duration}s", flush=True)
+    except subprocess.CalledProcessError as error:
+        # The simulator is in an unknown state, so stop and still report the flows that ran.
+        simulator_error = redact(command_failure(error), values)
+        print(simulator_error, file=sys.stderr, flush=True)
     finally:
         if args.seed and not args.no_cleanup:
             cleanup_result = run(
@@ -1074,6 +1089,8 @@ def main() -> int:
 
     print("--- Generating reports", flush=True)
     result = finalize_suite(attempts, output / "report.xml")
+    if simulator_error:
+        result = add_setup_error(result, output / "report.xml", simulator_error, case_name="simulator command")
     if cleanup_error:
         result = add_setup_error(result, output / "report.xml", cleanup_error)
     write_html(

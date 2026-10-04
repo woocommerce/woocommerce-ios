@@ -407,6 +407,34 @@ class RunnerTests(unittest.TestCase):
             self.assertEqual("1", root.get("failures"))
             self.assertIn("fixture cleanup failed", report.read_text(encoding="utf-8"))
 
+    def test_simulator_command_failure_is_reported_with_its_output(self) -> None:
+        error = subprocess.CalledProcessError(
+            1,
+            ["xcrun", "simctl", "uninstall", "sim-1", "com.example.woo"],
+            "",
+            "Simulator device failed to complete the requested operation.\n",
+        )
+
+        message = RUNNER.command_failure(error)
+
+        self.assertEqual(
+            "xcrun simctl uninstall sim-1 com.example.woo failed with exit status 1: "
+            "Simulator device failed to complete the requested operation.",
+            message,
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            report = Path(directory) / "report.xml"
+            report.write_text(
+                '<?xml version="1.0"?><testsuites tests="0" failures="0" skipped="0"></testsuites>',
+                encoding="utf-8",
+            )
+            result = RUNNER.SuiteResult("PASS", 0, 0, 0)
+            updated = RUNNER.add_setup_error(result, report, message, case_name="simulator command")
+            case = ET.parse(report).getroot().find("./testsuite/testcase")
+
+        self.assertEqual("SETUP_ERROR", updated.status)
+        self.assertEqual("simulator command", case.get("name") if case is not None else None)
+
     def test_redacts_all_woo_values(self) -> None:
         values = {"MAESTRO_WOO_LAB_WPCOM_PASSWORD": "do-not-print"}
         self.assertEqual("failure: [redacted]", RUNNER.redact("failure: do-not-print", values))

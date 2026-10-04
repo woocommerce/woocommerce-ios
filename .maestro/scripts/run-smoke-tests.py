@@ -405,6 +405,13 @@ def validate_destructive_cleanup(flows: list[Path], *, seed: bool) -> None:
         )
 
 
+def validate_destructive_repeat(flows: list[Path], *, repeat: int) -> None:
+    if repeat > 1 and has_destructive_flows(flows):
+        raise SystemExit(
+            "Destructive flows use up the fixtures of one seed, so run them once per run instead of with --repeat."
+        )
+
+
 def has_destructive_flows(flows: list[Path]) -> bool:
     return any("destructive" in flow_tags(flow) for flow in flows)
 
@@ -902,6 +909,7 @@ def main() -> int:
         return 0
 
     validate_destructive_cleanup(flows, seed=args.seed)
+    validate_destructive_repeat(flows, repeat=args.repeat)
     validate_shared_destructive(flows, store=args.store)
     app = args.app.expanduser().resolve() if args.app is not None else discover_app()
     if not shutil.which("xcrun"):

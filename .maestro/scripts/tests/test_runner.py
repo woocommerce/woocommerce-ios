@@ -79,6 +79,14 @@ class RunnerTests(unittest.TestCase):
 
         RUNNER.validate_destructive_cleanup([flow], seed=True)
 
+    def test_destructive_flows_are_not_repeated_on_one_seed(self) -> None:
+        flow = RUNNER.FLOWS_DIR / "orders_refund.yaml"
+
+        with self.assertRaisesRegex(SystemExit, "run them once per run instead of with --repeat"):
+            RUNNER.validate_destructive_repeat([flow], repeat=3)
+        RUNNER.validate_destructive_repeat([flow], repeat=1)
+        RUNNER.validate_destructive_repeat([RUNNER.FLOWS_DIR / "dashboard_stats.yaml"], repeat=3)
+
     def test_jetpack_store_cannot_share_the_no_jetpack_host(self) -> None:
         flow = RUNNER.FLOWS_DIR / "dashboard_stats.yaml"
         values = {

@@ -459,16 +459,21 @@ def validate_environment(flows: list[Path], values: dict[str, str], *, seed: boo
     )
     if missing:
         raise SystemExit("Missing environment required by selected flows: " + ", ".join(missing))
-    if any(flow.name == NOT_WOO_STORE_FLOW for flow in flows):
-        configured_fallback = [bool(values.get(name)) for name in NOT_WOO_STORE_WPCOM_FALLBACK]
-        not_woo_host = normalized_store_host(values.get("MAESTRO_WOO_NOT_A_WOO_STORE_URL", ""))
-        if not_woo_host == "wordpress.com" or not_woo_host.endswith(".wordpress.com"):
-            if not all(configured_fallback):
-                raise SystemExit(
-                    "WordPress.com-hosted not-Woo-store fixture requires WP.com email and password"
-                )
-        elif any(configured_fallback) and not all(configured_fallback):
-            raise SystemExit("Not-Woo-store WP.com fallback requires both email and password, or neither")
+    validate_not_woo_store_fallback(flows, values)
+
+
+def validate_not_woo_store_fallback(flows: list[Path], values: dict[str, str]) -> None:
+    if not any(flow.name == NOT_WOO_STORE_FLOW for flow in flows):
+        return
+    configured_fallback = [bool(values.get(name)) for name in NOT_WOO_STORE_WPCOM_FALLBACK]
+    not_woo_host = normalized_store_host(values.get("MAESTRO_WOO_NOT_A_WOO_STORE_URL", ""))
+    if not_woo_host == "wordpress.com" or not_woo_host.endswith(".wordpress.com"):
+        if not all(configured_fallback):
+            raise SystemExit(
+                "WordPress.com-hosted not-Woo-store fixture requires WP.com email and password"
+            )
+    elif any(configured_fallback) and not all(configured_fallback):
+        raise SystemExit("Not-Woo-store WP.com fallback requires both email and password, or neither")
 
 
 def validate_login_store_hosts(flows: list[Path], values: dict[str, str], *, store: str) -> None:

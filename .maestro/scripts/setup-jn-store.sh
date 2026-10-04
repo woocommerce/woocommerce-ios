@@ -22,7 +22,8 @@
 # Credentials are resolved in this order, so a second run needs no arguments
 # beyond --site:
 #   1. command-line flags
-#   2. existing values in .maestro/.env.local
+#   2. existing values in .maestro/.env.local (the site password only when
+#      --site is the store already written there)
 #   3. an interactive prompt (never echoed, never in shell history)
 #
 # The WordPress.com account must not have two-factor authentication enabled:
@@ -104,7 +105,10 @@ prompt_secret() {
 # Resolution order per value: flag, then environment, then .env.local, then an
 # interactive prompt.
 [ -n "$SITE_PASS" ]   || SITE_PASS="${JN_SSH_PASS:-}"
-[ -n "$SITE_PASS" ]   || SITE_PASS="$(env_value MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_PASSWORD)"
+# The stored password belongs to the stored site, so a new site is asked for its own.
+if [ -z "$SITE_PASS" ] && [ "$(env_value MAESTRO_WOO_LAB_JETPACK_STORE_URL)" = "https://$SITE" ]; then
+  SITE_PASS="$(env_value MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_PASSWORD)"
+fi
 [ -n "$WPCOM_USER" ]  || WPCOM_USER="${MAESTRO_WOO_LAB_WPCOM_EMAIL:-}"
 [ -n "$WPCOM_USER" ]  || WPCOM_USER="$(env_value MAESTRO_WOO_LAB_WPCOM_EMAIL)"
 [ -n "$WPCOM_PASS" ]  || WPCOM_PASS="${MAESTRO_WOO_LAB_WPCOM_PASSWORD:-}"

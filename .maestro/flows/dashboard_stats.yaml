@@ -23,6 +23,8 @@ tags:
     timeout: 30000
 
 # The app saves the selected range, so record it here and switch back at the end.
+# Maestro compares only the x position for leftOf, so "above" keeps the Top
+# performers card's range label out of the match.
 # A custom range is left as This Year, the flow cannot pick its dates again.
 - evalScript: ${output.statsOriginalRangeId = ''}
 - runFlow:
@@ -31,6 +33,8 @@ tags:
         text: "Today"
         leftOf:
           id: "performance-time-range-menu"
+        above:
+          id: "performance-revenue-type-picker"
     commands:
       - evalScript: ${output.statsOriginalRangeId = 'time-range-today'}
       - evalScript: ${output.statsOriginalRangeTitle = 'Today'}
@@ -40,6 +44,8 @@ tags:
         text: "This Week"
         leftOf:
           id: "performance-time-range-menu"
+        above:
+          id: "performance-revenue-type-picker"
     commands:
       - evalScript: ${output.statsOriginalRangeId = 'time-range-this-week'}
       - evalScript: ${output.statsOriginalRangeTitle = 'This Week'}
@@ -49,6 +55,8 @@ tags:
         text: "This Month"
         leftOf:
           id: "performance-time-range-menu"
+        above:
+          id: "performance-revenue-type-picker"
     commands:
       - evalScript: ${output.statsOriginalRangeId = 'time-range-this-month'}
       - evalScript: ${output.statsOriginalRangeTitle = 'This Month'}
@@ -58,6 +66,8 @@ tags:
         text: "This Year"
         leftOf:
           id: "performance-time-range-menu"
+        above:
+          id: "performance-revenue-type-picker"
     commands:
       - evalScript: ${output.statsOriginalRangeId = 'time-range-this-year'}
       - evalScript: ${output.statsOriginalRangeTitle = 'This Year'}
@@ -110,4 +120,6 @@ tags:
             text: "${output.statsOriginalRangeTitle}"
             leftOf:
               id: "performance-time-range-menu"
+            above:
+              id: "performance-revenue-type-picker"
           timeout: 15000

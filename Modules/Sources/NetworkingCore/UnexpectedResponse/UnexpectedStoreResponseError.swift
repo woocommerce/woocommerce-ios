@@ -16,6 +16,7 @@ public struct UnexpectedStoreResponseError: Error, Equatable, Sendable, CustomNS
     public let kind: Kind
     public let statusCode: Int?
     public let diagnostics: Diagnostics?
+    var isDecodingFailure = false
 
     public init(kind: Kind, statusCode: Int? = nil) {
         self.kind = kind

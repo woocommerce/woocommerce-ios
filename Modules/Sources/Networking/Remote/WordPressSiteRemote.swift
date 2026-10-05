@@ -27,11 +27,11 @@ public final class WordPressSiteRemote: Remote {
 
     /// Fetches info for a WordPress site given its URL.
     ///
-    public func fetchSiteInfo(for siteURL: String) async throws -> WordPressSite {
+    public func fetchSiteInfo(for siteURL: String, detectUnexpectedResponses: Bool = false) async throws -> WordPressSite {
         let cachedRoot = apiRootCache.root(for: siteURL)
         let root = await resolvedRESTAPIRoot(for: siteURL)
         do {
-            return try await fetchSiteInfo(at: root)
+            return try await fetchSiteInfo(at: root, detectUnexpectedResponses: detectUnexpectedResponses)
         } catch {
             guard cachedRoot == root else {
                 throw error
@@ -42,7 +42,7 @@ public final class WordPressSiteRemote: Remote {
                   replacementRoot != root else {
                 throw error
             }
-            return try await fetchSiteInfo(at: replacementRoot)
+            return try await fetchSiteInfo(at: replacementRoot, detectUnexpectedResponses: detectUnexpectedResponses)
         }
     }
 
@@ -57,13 +57,13 @@ public final class WordPressSiteRemote: Remote {
 }
 
 private extension WordPressSiteRemote {
-    func fetchSiteInfo(at root: String) async throws -> WordPressSite {
+    func fetchSiteInfo(at root: String, detectUnexpectedResponses: Bool) async throws -> WordPressSite {
         guard let url = URL(string: root) else {
             throw NetworkError.invalidURL
         }
         let request = try URLRequest(url: url, method: .get)
-        let mapper = WordPressSiteMapper()
-        return try await enqueue(request, mapper: mapper)
+        let mapper = WordPressSiteMapper(validateAuthorization: detectUnexpectedResponses)
+        return try await enqueue(request, mapper: mapper, detectUnexpectedResponses: detectUnexpectedResponses)
     }
 
     /// Returns the URL for the pages endpoint, using the discovered REST API root when available.

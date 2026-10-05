@@ -30,6 +30,25 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
+    func test_generation_when_opted_in_and_payload_is_malformed_then_returns_typed_failure() async throws {
+        // Given
+        network.simulateResponse(requestUrlSuffix: URLSuffix.applicationPassword, filename: "order")
+        let useCase = try DefaultApplicationPasswordUseCase(username: "demo", password: "secret", siteAddress: "https://test.com",
+                                                            network: network,
+                                                            rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"))
+        useCase.detectUnexpectedResponses = true
+        // When
+        do {
+            _ = try await useCase.generateNewPassword()
+            XCTFail("Expected malformed response")
+        } catch {
+            // Then
+            XCTAssertEqual((error as? UnexpectedStoreResponseError)?.kind, .unexpectedContent)
+            XCTAssertNil((error as? UnexpectedStoreResponseError)?.diagnostics?.excerpt)
+        }
+    }
+
     func test_password_is_generated_with_correct_values_upon_success_response() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: URLSuffix.applicationPassword,

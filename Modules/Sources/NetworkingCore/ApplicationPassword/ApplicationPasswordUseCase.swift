@@ -62,6 +62,8 @@ public extension ApplicationPasswordUseCase {
 }
 
 public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
+    var detectUnexpectedResponses = false
+
     /// Authentication type
     ///
     private let authenticationType: AuthenticationType
@@ -249,7 +251,7 @@ private extension DefaultApplicationPasswordUseCase {
     }
 
     private func constructRequest(method: HTTPMethod, path: String, requestParameters: RequestParameterDictionary?) -> Request {
-        switch authenticationType {
+        let request: Request = switch authenticationType {
         case .wpcom(let siteID):
             JetpackRequest(wooApiVersion: .none,
                            method: method,
@@ -262,6 +264,7 @@ private extension DefaultApplicationPasswordUseCase {
                         path: path,
                         parameters: requestParameters)
         }
+        return UnexpectedResponseRequest.wrap(request, enabled: detectUnexpectedResponses)
     }
 
     /// Creates application password using WordPress.com authentication token
@@ -294,7 +297,11 @@ private extension DefaultApplicationPasswordUseCase {
                         let password = try mapper.map(response: data)
                         continuation.resume(returning: password)
                     } catch {
-                        continuation.resume(throwing: error)
+                        if self.detectUnexpectedResponses, error is DecodingError, let policy = request as? UnexpectedResponseRequest {
+                            continuation.resume(throwing: policy.makeError(kind: .unexpectedContent, data: data))
+                        } else {
+                            continuation.resume(throwing: error)
+                        }
                     }
                 case .failure(let error):
                     guard let error = error as? AFError else {
@@ -302,6 +309,11 @@ private extension DefaultApplicationPasswordUseCase {
                         return
                     }
 
+                    if self.detectUnexpectedResponses,
+                       let code = error.responseCode, [404, 501].contains(code) {
+                        continuation.resume(throwing: error)
+                        return
+                    }
                     switch error {
                     case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.notFound)):
                         continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
@@ -338,7 +350,11 @@ private extension DefaultApplicationPasswordUseCase {
                             continuation.resume(throwing: ApplicationPasswordUseCaseError.unableToFindPasswordUUID)
                         }
                     } catch {
-                        continuation.resume(throwing: error)
+                        if self.detectUnexpectedResponses, error is DecodingError, let policy = request as? UnexpectedResponseRequest {
+                            continuation.resume(throwing: policy.makeError(kind: .unexpectedContent, data: data))
+                        } else {
+                            continuation.resume(throwing: error)
+                        }
                     }
                 case .failure(let error):
                     continuation.resume(throwing: error)

@@ -25,7 +25,10 @@ public struct ApplicationPasswordUseCaseFactory {
     public func makeForWordPressOrg(username: String,
                                     password: String,
                                     siteAddress: String,
-                                    authenticationEndpoints: CookieNonceAuthenticationEndpoints?) throws -> ApplicationPasswordUseCase {
-        try makeWordPressOrgUseCase(username, password, siteAddress, authenticationEndpoints)
+                                    authenticationEndpoints: CookieNonceAuthenticationEndpoints?,
+                                    detectUnexpectedResponses: Bool = false) throws -> ApplicationPasswordUseCase {
+        let useCase = try makeWordPressOrgUseCase(username, password, siteAddress, authenticationEndpoints)
+        (useCase as? DefaultApplicationPasswordUseCase)?.detectUnexpectedResponses = detectUnexpectedResponses
+        return useCase
     }
 }

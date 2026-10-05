@@ -178,7 +178,6 @@ public class AlamofireNetwork: Network {
             self?.alamofireSession.request(convertedRequest)
                 .validateIfRestRequest(for: convertedRequest)
                 .responseData { [weak self] response in
-                    let unexpectedError = response.unexpectedResponseError(for: request, tunneled: convertedRequest is JetpackRequest)
                     self?.errorHandler.handleFailureForDirectRequestIfNeeded(
                         originalRequest: request.originalResponseRequest,
                         convertedRequest: convertedRequest,
@@ -187,6 +186,7 @@ public class AlamofireNetwork: Network {
                             self?.responseData(for: request, completion: completion)
                         },
                         onCompletion: {
+                            let unexpectedError = response.unexpectedResponseError(for: request, tunneled: convertedRequest is JetpackRequest)
                             completion(unexpectedError == nil ? response.value : nil, unexpectedError ?? response.networkingError)
                         }
                     )
@@ -209,7 +209,6 @@ public class AlamofireNetwork: Network {
             self?.alamofireSession.request(convertedRequest)
                 .validateIfRestRequest(for: convertedRequest)
                 .responseData { [weak self] response in
-                    let unexpectedError = response.unexpectedResponseError(for: request, tunneled: convertedRequest is JetpackRequest)
                     self?.errorHandler.handleFailureForDirectRequestIfNeeded(
                         originalRequest: request.originalResponseRequest,
                         convertedRequest: convertedRequest,
@@ -218,6 +217,7 @@ public class AlamofireNetwork: Network {
                             self?.responseData(for: request, completion: completion)
                         },
                         onCompletion: {
+                            let unexpectedError = response.unexpectedResponseError(for: request, tunneled: convertedRequest is JetpackRequest)
                             if let error = unexpectedError ?? response.networkingError {
                                 completion(.failure(error))
                             } else {
@@ -237,7 +237,6 @@ public class AlamofireNetwork: Network {
             .validateIfRestRequest(for: convertedRequest)
         let response = await sessionRequest.serializingData().response
         let failure = response.networkingError
-        let unexpectedError = response.unexpectedResponseError(for: request, tunneled: convertedRequest is JetpackRequest)
 
         if errorHandler.shouldRetryJetpackRequest(
             originalRequest: request.originalResponseRequest,
@@ -248,6 +247,7 @@ public class AlamofireNetwork: Network {
         }
 
         errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: request.originalResponseRequest, failure: failure)
+        let unexpectedError = response.unexpectedResponseError(for: request, tunneled: convertedRequest is JetpackRequest)
 
         if let error = unexpectedError ?? response.networkingError {
             throw error

@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a Shipment Tracking Provider Entity (from the WC Shipment Tracking extension).
 ///
-public struct ShipmentTrackingProvider: Equatable, GeneratedFakeable {
+public struct ShipmentTrackingProvider: Sendable, Equatable, GeneratedFakeable {
     /// Tracking provider name
     ///
     public let name: String

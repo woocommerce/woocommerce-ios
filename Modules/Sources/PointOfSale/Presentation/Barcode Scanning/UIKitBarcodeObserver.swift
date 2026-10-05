@@ -6,6 +6,8 @@ import WooFoundation
 /// An observer that processes UIKit UIPress events for barcode scanner input.
 /// This class serves as a fallback for VoiceOver scenarios where GameController framework
 /// keyChangeHandler doesn't work properly.
+/// Main actor isolated because it reads `UIKey` values from `UIPress` events.
+@MainActor
 final class UIKitBarcodeObserver {
     /// A closure that is called when a barcode scan is completed.
     /// The result will be a `success` with the barcode string or a `failure` with an HIDBarcodeParserError.

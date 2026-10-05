@@ -1,5 +1,6 @@
 import Foundation
 import GameController
+import Synchronization
 
 /// An observer that uses the `GameController` framework to monitor for connected barcode scanners/keyboards
 /// and parse their input into barcode strings.
@@ -28,7 +29,8 @@ final class GameControllerBarcodeObserver {
     /// Since all keyboards are coalesced into a single GCKeyboard, multiple observers share
     /// one keyChangedHandler slot. This token prevents an older observer's cleanup from
     /// nilling out a handler that was set by a newer observer during SwiftUI view transitions.
-    private static var activeHandlerToken: UUID?
+    /// A `Mutex` keeps the compare-and-clear atomic, including when `deinit` runs it.
+    private static let activeHandlerToken = Mutex<UUID?>(nil)
     private var handlerToken: UUID?
 
     /// Initializes a new barcode scanner observer.
@@ -101,7 +103,7 @@ final class GameControllerBarcodeObserver {
 
         let token = UUID()
         handlerToken = token
-        Self.activeHandlerToken = token
+        Self.activeHandlerToken.withLock { $0 = token }
 
         coalescedKeyboard = keyboard
         barcodeParser = GameControllerBarcodeParser(
@@ -129,9 +131,10 @@ final class GameControllerBarcodeObserver {
     /// Only nils the shared keyChangedHandler if this observer is still the active owner,
     /// preventing cleanup of a stale observer from destroying a newer observer's handler.
     private func cleanupKeyboard() {
-        if let handlerToken, handlerToken == Self.activeHandlerToken {
+        Self.activeHandlerToken.withLock { activeHandlerToken in
+            guard let handlerToken, handlerToken == activeHandlerToken else { return }
             coalescedKeyboard?.keyboardInput?.keyChangedHandler = nil
-            Self.activeHandlerToken = nil
+            activeHandlerToken = nil
         }
         barcodeParser?.cancel()
         coalescedKeyboard = nil

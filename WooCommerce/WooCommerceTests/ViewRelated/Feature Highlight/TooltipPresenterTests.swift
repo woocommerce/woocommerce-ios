@@ -65,6 +65,22 @@ final class TooltipPresenterTests: XCTestCase {
         XCTAssertTrue(sut.tooltip === toolTip)
     }
 
+    func test_showTooltip_when_container_has_no_width_then_tooltip_is_kept() {
+        // Given
+        let containerView = UIView()
+        let toolTip = Tooltip(containerWidth: 320)
+        let sut = TooltipPresenter(containerView: containerView,
+                                   tooltip: toolTip,
+                                   target: .point(tooltipTargetPoint),
+                                   animation: TooltipAnimationMock.self)
+
+        // When
+        sut.showTooltip()
+
+        // Then
+        XCTAssertTrue(sut.tooltip === toolTip)
+    }
+
     // MARK: `removeTooltip`
 
     func test_removeTooltip_does_not_fire_primaryTooltipAction() {

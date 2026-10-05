@@ -10,7 +10,7 @@ struct SafeAreaInsetsReader<Content: View>: View {
         self.content = { safeAreaInsets, _ in content(safeAreaInsets) }
     }
 
-    /// Also hands over the size of the container inside its safe area.
+    /// Also hands over the container size: inside the safe area, except on the ignored navigation column edges.
     init(@ViewBuilder content: @escaping (_ safeAreaInsets: EdgeInsets, _ containerSize: CGSize) -> Content) {
         self.content = content
     }

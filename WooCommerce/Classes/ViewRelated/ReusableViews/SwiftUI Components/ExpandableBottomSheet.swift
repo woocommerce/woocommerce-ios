@@ -126,7 +126,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                 }
         })
         .onChange(of: containerHeight) {
-            guard !isDragging else {
+            guard !isDragging, hasMeasuredCollapsedContent else {
                 return
             }
             withAnimation {

@@ -175,13 +175,16 @@ private extension OrderDetailsViewController {
         let safeAreaInsets = tableView.safeAreaInsets
         let left = margins.left - safeAreaInsets.left
         let right = margins.right - safeAreaInsets.right
-        guard left != right || left <= 0 else {
+        guard abs(left - right) > Constants.marginTolerance || left <= 0 else {
             return
         }
 
         let systemMinimum = systemMinimumLayoutMargins
         let widestMargin = max(left, right)
         let horizontalMargin = widestMargin > 0 ? widestMargin : max(systemMinimum.leading, systemMinimum.trailing)
+        guard horizontalMargin > 0 else {
+            return
+        }
         tableView.layoutMargins = UIEdgeInsets(top: margins.top - safeAreaInsets.top,
                                                left: horizontalMargin,
                                                bottom: margins.bottom - safeAreaInsets.bottom,
@@ -1118,6 +1121,7 @@ private extension OrderDetailsViewController {
         static let sectionHeight = CGFloat(44)
         static let maxWidth = CGFloat(525)
         static let borderWidth = CGFloat(0.5)
+        static let marginTolerance = CGFloat(0.5)
     }
 
     /// Mailing a receipt failed but the SDK didn't return a more specific error

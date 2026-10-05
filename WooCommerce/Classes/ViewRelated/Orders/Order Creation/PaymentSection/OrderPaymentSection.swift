@@ -18,10 +18,6 @@ struct OrderPaymentSection: View {
     ///
     @State private var shouldShowTaxEducationalDialog: Bool = false
 
-    ///   Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     var giftCard: String? {
         guard let giftCard = viewModel.giftCardToApply,
               giftCard.isNotEmpty else {

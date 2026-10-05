@@ -197,6 +197,7 @@ public struct PointOfSaleEntryPointView: View {
             // Keep native compact windows compact; collapse regular windows that cannot fit two panes.
             let isCompactLayout = horizontalSizeClass == .compact || geometry.size.width < Constants.minimumSplitWidth
             content(isCompactLayout: isCompactLayout)
+                .environment(\.posHeaderTopPadding, geometry.safeAreaInsets.top > Constants.maximumTopClearance ? POSPadding.none : nil)
                 .environment(\.horizontalSizeClass, isCompactLayout ? .compact : .regular)
         }
     }
@@ -292,6 +293,8 @@ public struct PointOfSaleEntryPointView: View {
 
     private enum Constants {
         static let minimumSplitWidth: CGFloat = 700
+        // Preserve usual phone and tablet padding; a taller system bar supplies the top clearance.
+        static let maximumTopClearance: CGFloat = 64
     }
 }
 

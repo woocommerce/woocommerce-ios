@@ -4,6 +4,7 @@ import protocol Yosemite.POSOrderableItem
 import struct WooFoundationCore.WooAnalyticsEvent
 
 struct ItemListView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -139,6 +140,8 @@ struct ItemListView: View {
         @Bindable var viewStateCoordinator = posModel.viewStateCoordinatorForView
         NavigationStack(path: $viewStateCoordinator.itemNavigationPath) {
             content
+                // The regular pane is already inside the dashboard's horizontal safe bounds.
+                .ignoresSafeArea(.container, edges: horizontalSizeClass == .regular ? .horizontal : [])
         }
     }
 

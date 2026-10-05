@@ -63,7 +63,8 @@ public final class SiteStore: Store {
 private extension SiteStore {
     func createSite(name: String,
                     flow: SiteCreationFlow,
-                    completion: @escaping (Result<SiteCreationResult, SiteCreationError>) -> Void) {
+                    completion: @escaping @Sendable (Result<SiteCreationResult, SiteCreationError>) -> Void) {
+        nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
                 let response = try await remote.createSite(name: name, flow: flow)
@@ -84,7 +85,8 @@ private extension SiteStore {
         }
     }
 
-    func launchSite(siteID: Int64, completion: @escaping (Result<Void, SiteLaunchError>) -> Void) {
+    func launchSite(siteID: Int64, completion: @escaping @Sendable (Result<Void, SiteLaunchError>) -> Void) {
+        nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
                 try await remote.launchSite(siteID: siteID)
@@ -95,7 +97,8 @@ private extension SiteStore {
         }
     }
 
-    func enableFreeTrial(siteID: Int64, completion: @escaping (Result<Void, Error>) -> Void) {
+    func enableFreeTrial(siteID: Int64, completion: @escaping @Sendable (Result<Void, Error>) -> Void) {
+        nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
                 try await remote.enableFreeTrial(siteID: siteID)
@@ -106,7 +109,8 @@ private extension SiteStore {
         }
     }
 
-    func syncSite(siteID: Int64, completion: @escaping (Result<Site, Error>) -> Void) {
+    func syncSite(siteID: Int64, completion: @escaping @Sendable (Result<Site, Error>) -> Void) {
+        nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
                 let site = try await remote.loadSite(siteID: siteID)
@@ -123,7 +127,8 @@ private extension SiteStore {
         }
     }
 
-    func syncSite(domain: String, completion: @escaping (Result<Site, Error>) -> Void) {
+    func syncSite(domain: String, completion: @escaping @Sendable (Result<Site, Error>) -> Void) {
+        nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
                 let site = try await remote.loadSite(domain: domain)
@@ -140,7 +145,8 @@ private extension SiteStore {
         }
     }
 
-    func updateSiteTitle(siteID: Int64, title: String, completion: @escaping (Result<Void, Error>) -> Void) {
+    func updateSiteTitle(siteID: Int64, title: String, completion: @escaping @Sendable (Result<Void, Error>) -> Void) {
+        nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
                 try await remote.updateSiteTitle(siteID: siteID, title: title)
@@ -153,7 +159,8 @@ private extension SiteStore {
         }
     }
 
-    func uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers, completion: @escaping (Result<Void, Error>) -> Void) {
+    func uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers, completion: @escaping @Sendable (Result<Void, Error>) -> Void) {
+        nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
                 try await remote.uploadStoreProfilerAnswers(siteID: siteID, answers: answers)
@@ -173,6 +180,7 @@ private extension SiteStore {
         dispatcher.dispatch(AppSettingsAction.setHTTPSConfigurationUpdateRequired(siteID: site.siteID, required: required))
     }
 
+    @MainActor
     func upsertStoredSiteInBackground(readOnlySite: Networking.Site) async {
         await withCheckedContinuation { continuation in
             storageManager.performAndSave({ derivedStorage in
@@ -184,6 +192,7 @@ private extension SiteStore {
         }
     }
 
+    @MainActor
     func upsertStoredSiteInBackground(siteID: Int64, name: String) async {
         await withCheckedContinuation { continuation in
             storageManager.performAndSave({ derivedStorage in

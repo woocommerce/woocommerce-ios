@@ -56,7 +56,8 @@ final class SiteStoreTests: XCTestCase {
 
     // MARK: - `createSite`
 
-    func test_createSite_returns_site_result_on_success() throws {
+    @MainActor
+    func test_createSite_returns_site_result_on_success() async throws {
         // Given
         remote.whenCreatingSite(thenReturn: .success(
             .init(site: .init(siteID: "134",
@@ -66,11 +67,11 @@ final class SiteStoreTests: XCTestCase {
                   success: true)))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.createSite(name: "Salsa",
+        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
-                promise(result)
+                continuation.resume(returning: result)
             }))
         }
 
@@ -80,7 +81,8 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertEqual(siteResult, .init(siteID: 134, name: "Salsa verde", url: "https://salsa.verde/", siteSlug: "salsa.verde"))
     }
 
-    func test_createSite_returns_unsuccessful_error_on_false_success() throws {
+    @MainActor
+    func test_createSite_returns_unsuccessful_error_on_false_success() async throws {
         // Given
         remote.whenCreatingSite(thenReturn: .success(
             .init(site: .init(siteID: "134",
@@ -91,11 +93,11 @@ final class SiteStoreTests: XCTestCase {
                   success: false)))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.createSite(name: "Salsa",
+        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
-                promise(result)
+                continuation.resume(returning: result)
             }))
         }
 
@@ -104,18 +106,19 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertEqual(error, .unsuccessful)
     }
 
-    func test_createSite_returns_invalidDomain_error_on_Networking_domain_error() throws {
+    @MainActor
+    func test_createSite_returns_invalidDomain_error_on_Networking_domain_error() async throws {
         // Given
         remote.whenCreatingSite(thenReturn: .failure(
             Networking.SiteCreationError.invalidDomain
         ))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.createSite(name: "Salsa",
+        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
-                promise(result)
+                continuation.resume(returning: result)
             }))
         }
 
@@ -124,18 +127,19 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertEqual(error, .invalidDomain)
     }
 
-    func test_createSite_returns_domainExists_error_on_Dotcom_blog_name_exists_error() throws {
+    @MainActor
+    func test_createSite_returns_domainExists_error_on_Dotcom_blog_name_exists_error() async throws {
         // Given
         remote.whenCreatingSite(thenReturn: .failure(
             DotcomError.unknown(code: "blog_name_exists", message: "Sorry, that site already exists!", data: nil)
         ))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.createSite(name: "Salsa",
+        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
-                promise(result)
+                continuation.resume(returning: result)
             }))
         }
 
@@ -144,7 +148,8 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertEqual(error, .domainExists)
     }
 
-    func test_createSite_returns_invalidDomain_error_on_Dotcom_blog_name_error() throws {
+    @MainActor
+    func test_createSite_returns_invalidDomain_error_on_Dotcom_blog_name_error() async throws {
         // Given
         remote.whenCreatingSite(thenReturn: .failure(
             DotcomError.unknown(code: "blog_name_only_lowercase_letters_and_numbers",
@@ -153,11 +158,11 @@ final class SiteStoreTests: XCTestCase {
         ))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.createSite(name: "Salsa",
+        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
-                promise(result)
+                continuation.resume(returning: result)
             }))
         }
 
@@ -168,14 +173,15 @@ final class SiteStoreTests: XCTestCase {
 
     // MARK: - `launchSite`
 
-    func test_launchSite_returns_success_on_success() throws {
+    @MainActor
+    func test_launchSite_returns_success_on_success() async throws {
         // Given
         remote.whenLaunchingSite(thenReturn: .success(()))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.launchSite(siteID: 134) { result in
-                promise(result)
+        let result: Result<Void, SiteLaunchError> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.launchSite(siteID: 134) { result in
+                continuation.resume(returning: result)
             })
         }
 
@@ -183,14 +189,15 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_launchSite_returns_alreadyLaunched_error_on_already_launched_WordPressApiError() throws {
+    @MainActor
+    func test_launchSite_returns_alreadyLaunched_error_on_already_launched_WordPressApiError() async throws {
         // Given
         remote.whenLaunchingSite(thenReturn: .failure(WordPressApiError.unknown(code: "already-launched", message: "")))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.launchSite(siteID: 134) { result in
-                promise(result)
+        let result: Result<Void, SiteLaunchError> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.launchSite(siteID: 134) { result in
+                continuation.resume(returning: result)
             })
         }
 
@@ -199,14 +206,15 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertEqual(error, .alreadyLaunched)
     }
 
-    func test_launchSite_returns_unexpected_error_on_unauthorized_WordPressApiError() throws {
+    @MainActor
+    func test_launchSite_returns_unexpected_error_on_unauthorized_WordPressApiError() async throws {
         // Given
         remote.whenLaunchingSite(thenReturn: .failure(WordPressApiError.unknown(code: "unauthorized", message: "")))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.launchSite(siteID: 134) { result in
-                promise(result)
+        let result: Result<Void, SiteLaunchError> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.launchSite(siteID: 134) { result in
+                continuation.resume(returning: result)
             })
         }
 
@@ -217,14 +225,15 @@ final class SiteStoreTests: XCTestCase {
 
     // MARK: - `enableFreeTrial`
 
-    func test_enableFreeTrial_returns_success_on_success() throws {
+    @MainActor
+    func test_enableFreeTrial_returns_success_on_success() async throws {
         // Given
         remote.whenEnablingFreeTrial(thenReturn: .success(()))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.enableFreeTrial(siteID: 134) { result in
-                promise(result)
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.enableFreeTrial(siteID: 134) { result in
+                continuation.resume(returning: result)
             })
         }
 
@@ -232,14 +241,15 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_enableFreeTrial_returns_error_on_failure() throws {
+    @MainActor
+    func test_enableFreeTrial_returns_error_on_failure() async throws {
         // Given
         remote.whenEnablingFreeTrial(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.enableFreeTrial(siteID: 134) { result in
-                promise(result)
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.enableFreeTrial(siteID: 134) { result in
+                continuation.resume(returning: result)
             })
         }
 
@@ -250,16 +260,17 @@ final class SiteStoreTests: XCTestCase {
 
      // MARK: - `updateSiteTitle`
 
-    func test_updateSiteTitle_returns_on_success() {
+    @MainActor
+    func test_updateSiteTitle_returns_on_success() async {
         // Given
         let siteID: Int64 = 123
         remote.whenUpdatingSiteTitle(thenReturn: .success(()))
         storeSite(Site.fake().copy(siteID: siteID, name: "Miffy"))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: { result in
-                promise(result)
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: { result in
+                continuation.resume(returning: result)
             }))
         }
 
@@ -269,15 +280,16 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertEqual(site?.name, "Test")
     }
 
-    func test_updateSiteTitle_returns_error_on_failure() throws {
+    @MainActor
+    func test_updateSiteTitle_returns_error_on_failure() async throws {
         // Given
         let siteID: Int64 = 123
         remote.whenUpdatingSiteTitle(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: { result in
-                promise(result)
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: { result in
+                continuation.resume(returning: result)
             }))
         }
 
@@ -289,17 +301,18 @@ final class SiteStoreTests: XCTestCase {
 
     // MARK: - `uploadStoreProfilerAnswers`
 
-    func test_uploadStoreProfilerAnswers_returns_success_on_success() throws {
+    @MainActor
+    func test_uploadStoreProfilerAnswers_returns_success_on_success() async throws {
         // Given
         remote.whenUploadingStoreProfilerAnswers(thenReturn: .success(()))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
                                                                                                   sellingPlatforms: "wordpress",
                                                                                                   category: "clothing_and_accessories",
                                                                                                   countryCode: "US")) { result in
-                promise(result)
+                continuation.resume(returning: result)
             })
         }
 
@@ -307,17 +320,18 @@ final class SiteStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_uploadStoreProfilerAnswers_returns_error_on_failure() throws {
+    @MainActor
+    func test_uploadStoreProfilerAnswers_returns_error_on_failure() async throws {
         // Given
         remote.whenUploadingStoreProfilerAnswers(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
         // When
-        let result = waitFor { promise in
-            self.store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+            store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
                                                                                                   sellingPlatforms: "wordpress",
                                                                                                   category: "clothing_and_accessories",
                                                                                                   countryCode: "US")) { result in
-                promise(result)
+                continuation.resume(returning: result)
             })
         }
 
@@ -328,7 +342,8 @@ final class SiteStoreTests: XCTestCase {
 
     // MARK: - `syncSiteByDomain`
 
-   func test_syncSite_returns_URL_normalization_state_on_success() throws {
+   @MainActor
+   func test_syncSite_returns_URL_normalization_state_on_success() async throws {
        // Given
        let siteID: Int64 = 123
        let site = Site.fake().copy(siteID: siteID, wasURLNormalizedToHTTPS: .some(true))
@@ -337,9 +352,9 @@ final class SiteStoreTests: XCTestCase {
        dispatcher.register(processor: mockProcessor, for: AppSettingsAction.self)
 
        // When
-       let result = waitFor { promise in
-           self.store.onAction(SiteAction.syncSite(siteID: siteID, completion: { result in
-               promise(result)
+       let result: Result<Site, Error> = await withCheckedContinuation { continuation in
+           store.onAction(SiteAction.syncSite(siteID: siteID, completion: { result in
+               continuation.resume(returning: result)
            }))
        }
 
@@ -353,7 +368,8 @@ final class SiteStoreTests: XCTestCase {
        XCTAssertTrue(required)
    }
 
-   func test_syncSiteByDomain_returns_site_and_URL_normalization_state_on_success() throws {
+   @MainActor
+   func test_syncSiteByDomain_returns_site_and_URL_normalization_state_on_success() async throws {
        // Given
        let siteID: Int64 = 123
        let domain = "example.com"
@@ -364,9 +380,9 @@ final class SiteStoreTests: XCTestCase {
        remote.whenLoadingSite(thenReturn: .success(site))
 
        // When
-       let result = waitFor { promise in
-           self.store.onAction(SiteAction.syncSiteByDomain(domain: domain, completion: { result in
-               promise(result)
+       let result: Result<Site, Error> = await withCheckedContinuation { continuation in
+           store.onAction(SiteAction.syncSiteByDomain(domain: domain, completion: { result in
+               continuation.resume(returning: result)
            }))
        }
 
@@ -377,15 +393,16 @@ final class SiteStoreTests: XCTestCase {
        XCTAssertEqual(loadedSite?.name, "Miffy")
    }
 
-   func test_syncSiteByDomain_returns_error_on_failure() throws {
+   @MainActor
+   func test_syncSiteByDomain_returns_error_on_failure() async throws {
        // Given
        let domain = "example.com"
        remote.whenLoadingSite(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
        // When
-       let result = waitFor { promise in
-           self.store.onAction(SiteAction.syncSiteByDomain(domain: domain, completion: { result in
-               promise(result)
+       let result: Result<Site, Error> = await withCheckedContinuation { continuation in
+           store.onAction(SiteAction.syncSiteByDomain(domain: domain, completion: { result in
+               continuation.resume(returning: result)
            }))
        }
 

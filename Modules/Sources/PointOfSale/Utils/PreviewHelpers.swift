@@ -721,6 +721,9 @@ final class POSPreviewServices: POSDependencyProviding {
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
     var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
     var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
+
+    /// Main actor isolated because `externalNavigation` and `externalViews` are main actor requirements.
+    @MainActor init() {}
 }
 
 // MARK: - Preview Catalog Services

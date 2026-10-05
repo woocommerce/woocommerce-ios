@@ -1,7 +1,6 @@
 import Alamofire
 import Foundation
 
-/// Opt-in metadata; the wrapped request still controls conversion, authentication and validation.
 struct UnexpectedResponseRequest: Request {
     let original: Request
 
@@ -24,7 +23,6 @@ struct UnexpectedResponseRequest: Request {
         }
         let kind = UnexpectedResponseClassifier.classify(data: body, status: responseStatus, contentType: mediaType)
         let failure = kind.map { makeError(kind: $0, data: body, status: responseStatus, contentType: mediaType) }
-        // Known feature restrictions retain their business handling even when diagnostics classify a 501.
         if let body, let json = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
            let code = (json["code"] ?? json["error"]) as? String,
            ["application_passwords_disabled", "application_passwords_disabled_for_user"].contains(code) {
@@ -34,15 +32,16 @@ struct UnexpectedResponseRequest: Request {
     }
 
     func makeError(kind: UnexpectedStoreResponseError.Kind, data: Data?, status: Int? = nil,
-                   contentType: String? = nil) -> UnexpectedStoreResponseError {
+                   contentType: String? = nil, isDecodingFailure: Bool = false) -> UnexpectedStoreResponseError {
         var diagnosticRequest = try? original.asURLRequest()
         if let tunnel = original as? JetpackRequest {
             diagnosticRequest = URL(string: "https://store.invalid/" + tunnel.path.trimmingCharacters(in: CharacterSet(charactersIn: "/")))
                 .map { URLRequest(url: $0) }
             diagnosticRequest?.httpMethod = tunnel.method.rawValue
         }
-        let error = UnexpectedStoreResponseError(kind: kind, statusCode: status, data: data,
+        var error = UnexpectedStoreResponseError(kind: kind, statusCode: status, data: data,
                                                 contentType: contentType, request: diagnosticRequest)
+        error.isDecodingFailure = isDecodingFailure
         DDLogWarn(error.logMessage)
         return error
     }

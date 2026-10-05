@@ -20,6 +20,57 @@ final class RemoteTests: XCTestCase {
 
     private var cancellables = Set<AnyCancellable>()
 
+    func test_enqueue_when_opted_in_mapper_fails_then_posts_sanitized_parsing_notification() throws {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "", filename: "order")
+        let remote = Remote(network: network)
+        let notifications = LockedCollector<ParsingErrorNotification>()
+        let notificationExpectation = expectation(forNotification: .RemoteDidReceiveJSONParsingError, object: nil) { note in
+            notifications.append(ParsingErrorNotification(note))
+            return true
+        }
+        // When
+        let result: Result<Any, Error> = waitFor { promise in
+            remote.enqueue(self.request, mapper: SensitiveFailingMapper(), detectUnexpectedResponses: true, completion: promise)
+        }
+        wait(for: [notificationExpectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.failure is UnexpectedStoreResponseError)
+        let notification = try XCTUnwrap(notifications.values.first)
+        XCTAssertEqual(notifications.values.count, 1)
+        XCTAssertEqual(notification.path, "something")
+        XCTAssertEqual(notification.entity, "Any")
+        XCTAssertTrue(notification.isDecodingError)
+        XCTAssertFalse(notification.errorDescription?.contains("private-sentinel") == true)
+    }
+
+    func test_enqueue_async_when_opted_in_mapper_fails_then_posts_parsing_notification() async throws {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "", filename: "order")
+        let remote = Remote(network: network)
+        let notifications = LockedCollector<ParsingErrorNotification>()
+        let notificationExpectation = expectation(forNotification: .RemoteDidReceiveJSONParsingError, object: nil) { note in
+            notifications.append(ParsingErrorNotification(note))
+            return true
+        }
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: SensitiveFailingMapper(), detectUnexpectedResponses: true)
+            XCTFail("Expected a mapping failure")
+        } catch {
+            // Then
+            XCTAssertTrue(error is UnexpectedStoreResponseError)
+        }
+        await fulfillment(of: [notificationExpectation], timeout: Constants.expectationTimeout)
+        XCTAssertEqual(notifications.values.count, 1)
+        XCTAssertEqual(notifications.values.first?.path, "something")
+        XCTAssertEqual(notifications.values.first?.entity, "Any")
+        XCTAssertEqual(notifications.values.first?.isDecodingError, true)
+        XCTAssertFalse(notifications.values.first?.errorDescription?.contains("private-sentinel") == true)
+    }
+
     func test_enqueue_when_opted_in_and_payload_shape_is_wrong_then_returns_typed_failure() async {
         // Given
         let network = MockNetwork()
@@ -1662,10 +1713,14 @@ private final class LockedCollector<Value: Sendable>: Sendable {
 private struct ParsingErrorNotification: Sendable {
     let path: String?
     let entity: String?
+    let isDecodingError: Bool
+    let errorDescription: String?
 
     init(_ notification: Notification) {
         path = notification.userInfo?["path"] as? String
         entity = notification.userInfo?["entity"] as? String
+        isDecodingError = notification.object is DecodingError
+        errorDescription = (notification.object as? DecodingError).map { String(describing: $0) }
     }
 }
 
@@ -1835,5 +1890,11 @@ private class FailingDummyMapper: Mapper {
     func map(response: Data) throws -> Any {
         let decoder = JSONDecoder()
         return try decoder.decode(String.self, from: Data())
+    }
+}
+
+private struct SensitiveFailingMapper: Mapper {
+    func map(response: Data) throws -> Any {
+        throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "private-sentinel"))
     }
 }

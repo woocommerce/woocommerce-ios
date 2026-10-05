@@ -289,6 +289,26 @@ class WooAnalyticsTests: XCTestCase {
         XCTAssertTrue(receivedTracksEvents.isEmpty)
     }
 
+    @MainActor
+    func test_tracksProvider_when_consent_revoked_while_event_queued_then_does_not_record_event() {
+        // Given
+        let provider = makeTracksProvider()
+        XCTAssertTrue(consent.userHasOptedIn)
+        let releaseQueue = DispatchSemaphore(value: 0)
+        defer { releaseQueue.signal() }
+        TracksProvider.TracksServiceExecutor.enqueue { _ in
+            releaseQueue.wait()
+        }
+
+        // When
+        provider.track("queued_event_" + tracksTestSuffix)
+        consent.userHasOptedIn = false
+        releaseQueue.signal()
+
+        // Then — the helper reads events after the queued tracking operation completes.
+        XCTAssertTrue(receivedTracksEvents.isEmpty)
+    }
+
     func test_tracksProvider_events_when_opted_in_then_records_events_and_preserves_POS_properties() {
         // Given
         TracksProvider.setPOSMode(true)

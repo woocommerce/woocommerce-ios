@@ -195,7 +195,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
 
         switch (discoveryMethod, tapToPayReaderSupported) {
         case (.none, true):
-            await promptForReaderTypeSelection(paymentGatewayAccount: paymentGatewayAccount)
+            promptForReaderTypeSelection(paymentGatewayAccount: paymentGatewayAccount)
         case (.bluetoothScan, _),
             (.none, false):
             connectionController.searchAndConnect(onCompletion: { [weak self] result in

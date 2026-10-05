@@ -1,4 +1,5 @@
 import SwiftUI
+import class WooFoundation.KeyboardObserver
 import enum Yosemite.POSItem
 import struct Yosemite.POSCoupon
 

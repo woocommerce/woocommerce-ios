@@ -1,4 +1,5 @@
 import SwiftUI
+import class WooFoundation.KeyboardObserver
 
 struct POSErrorView: View {
     @Environment(\.keyboardObserver) private var keyboard

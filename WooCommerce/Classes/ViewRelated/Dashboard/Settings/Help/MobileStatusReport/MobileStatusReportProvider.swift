@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 
 /// Builds the Mobile Status Report. A protocol so the ticket-creation callers can be tested against a canned
 /// report instead of assembling the provider's dependencies.
+@MainActor
 protocol MobileStatusReportProviding {
     /// - Parameter siteAddress: the address the merchant typed into the support form, which can differ from the
     /// selected store when they are contacting us precisely because the app picked up the wrong one.

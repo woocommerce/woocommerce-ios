@@ -5,6 +5,7 @@ import protocol WooFoundation.Analytics
 
 /// Type to handle the privacy banner presentation.
 ///
+@MainActor
 final class PrivacyBannerPresenter {
 
     /// User Defaults database
@@ -32,14 +33,14 @@ final class PrivacyBannerPresenter {
         let useCase = PrivacyBannerPresentationUseCase(defaults: defaults)
         Task {
             if await useCase.shouldShowPrivacyBanner() {
-                await presentPrivacyBanner(from: viewController)
+                presentPrivacyBanner(from: viewController)
             }
         }
     }
 
     /// Presents the privacy banner using a `BottomSheetViewController`
     ///
-    @MainActor private func presentPrivacyBanner(from viewController: UIViewController) {
+    private func presentPrivacyBanner(from viewController: UIViewController) {
         let privacyBanner = PrivacyBannerViewController(onCompletion: { [weak self] result in
             switch result {
             case .success(let destination):

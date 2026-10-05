@@ -75,6 +75,7 @@ private extension MobileStatusReportSystemSnapshot {
 
     static let unknown = "unknown"
 
+    @MainActor
     static func freeSpace() -> String {
         UIDevice.current.freeDiskSpaceInEnglish ?? unknown
     }

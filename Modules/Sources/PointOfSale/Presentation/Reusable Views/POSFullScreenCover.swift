@@ -52,6 +52,10 @@ extension View {
 
 final class POSFullScreenCoverManager: ObservableObject {
     @Published fileprivate(set) var isPresented: Bool = false
+
+    func clearPresentation() {
+        isPresented = false
+    }
 }
 
 // MARK: - Modifiers
@@ -74,7 +78,6 @@ struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
             .fullScreenCover(isPresented: $isPresented, onDismiss: onDismiss, content: {
                 coverContent()
                     .onAppear { parentCoverManager.isPresented = true }
-                    .onDisappear { parentCoverManager.isPresented = false }
                     .environment(\.horizontalSizeClass, horizontalSizeClass)
                     .posRootModal()
                     .environment(\.posHeaderBackButtonConfiguration, nil)
@@ -106,7 +109,6 @@ struct POSFullScreenCoverModifierForItem<Item: Identifiable & Equatable, CoverCo
             .fullScreenCover(item: $item, onDismiss: onDismiss, content: {
                 coverContent($0)
                     .onAppear { parentCoverManager.isPresented = true }
-                    .onDisappear { parentCoverManager.isPresented = false }
                     .environment(\.horizontalSizeClass, horizontalSizeClass)
                     .posRootModal()
                     .environment(\.posHeaderBackButtonConfiguration, nil)

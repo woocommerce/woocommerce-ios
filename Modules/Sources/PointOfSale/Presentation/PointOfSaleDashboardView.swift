@@ -11,6 +11,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAccessSession) private var session
     @EnvironmentObject private var modalManager: POSModalManager
+    @EnvironmentObject private var coverManager: POSFullScreenCoverManager
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -137,6 +138,10 @@ struct PointOfSaleDashboardView: View {
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
         .onChange(of: isPhoneLayout) { _, isPhoneLayout in
             if !isPhoneLayout {
+                // These compact-only cover hosts are removed by the layout change.
+                if phoneShowingBarcodeScannerSetup || posModel.editingCustomAmount != nil {
+                    coverManager.clearPresentation()
+                }
                 phoneShowingCart = false
                 phoneShowingBarcodeScannerSetup = false
             }

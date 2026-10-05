@@ -133,7 +133,8 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
         // system regions beyond this view's safe bounds, including Duo's vertical bar.
         .clipped()
         .onGeometryChange(for: Bool.self) { geometry in
-            geometry.safeAreaInsets.leading > 0 || geometry.safeAreaInsets.trailing > 0
+            // A landscape phone notch reserves both sides equally; keep its bottom home-indicator inset.
+            geometry.safeAreaInsets.leading != geometry.safeAreaInsets.trailing
         } action: { hasHorizontalSafeAreaInset = $0 }
         .ignoresSafeArea(.container, edges: ignoresBottomContainerInset ? .bottom : [])
         // Paint behind the system regions outside the clipped panes. In regular width each

@@ -3,6 +3,43 @@ import Testing
 @testable import NetworkingCore
 
 struct UnexpectedStoreResponseTests {
+    @Test func test_policy_when_disabled_password_error_then_preserves_business_error() {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .post, path: "wp/v2/users/me/application-passwords")
+        let policy = UnexpectedResponseRequest(original: request)
+        for code in ["application_passwords_disabled", "application_passwords_disabled_for_user"] {
+            // When
+            let body = Data("{\"code\":\"\(code)\",\"message\":\"Disabled\"}".utf8)
+            let error = policy.responseError(data: body, status: 501, tunneled: false)
+            // Then
+            #expect((error as? ApplicationPasswordUseCaseError) == .applicationPasswordsDisabled)
+        }
+    }
+
+    @Test func test_policy_when_tunnel_transport_fails_then_requires_store_evidence() {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: 123, path: "wp/v2/users/me")
+        let policy = UnexpectedResponseRequest(original: request)
+        // When / Then
+        #expect(policy.responseError(data: Data("<html>Proxy error</html>".utf8), status: 502, tunneled: true) == nil)
+        let body = Data("{\"data\":{\"status\":403,\"raw_body\":\"<html>Blocked</html>\"}}".utf8)
+        let error = policy.responseError(data: body, status: 500, tunneled: true) as? UnexpectedStoreResponseError
+        #expect(error?.statusCode == 403)
+        #expect(error?.kind == .unacceptableStatusCode)
+        #expect(error?.diagnostics?.request == "GET /wp/v2/users/me")
+    }
+
+    @Test func test_policy_when_request_has_credentials_and_query_then_diagnostics_omit_them() {
+        // Given
+        let request = RESTRequest(siteURL: "https://user:secret@example.com", method: .get, path: "", parameters: ["token": "secret"])
+        // When
+        let error = UnexpectedResponseRequest(original: request).makeError(kind: .unexpectedContent, data: nil)
+        // Then
+        #expect(error.diagnostics?.request == "GET /wp-json")
+        #expect(!error.logMessage.contains("secret"))
+        #expect(!error.logMessage.contains("example.com"))
+    }
+
     @Test func test_classification_when_status_and_body_vary_then_preserves_api_errors() {
         // Given
         let cases: [(Int, String, UnexpectedStoreResponseError.Kind?)] = [
@@ -33,6 +70,8 @@ struct UnexpectedStoreResponseTests {
         #expect(excerpt.contains("[email]"))
         #expect(excerpt.contains("[ip]"))
         #expect(!excerpt.contains("secret"))
+        #expect(UnexpectedResponseExcerpt.make("Authorization: Basic private-token") == "Authorization: [redacted]")
+        #expect(UnexpectedResponseExcerpt.make("abcd efgh ijkl mnop qrst uvwx") == "[redacted]")
     }
 
     @Test func test_excerpt_when_json_or_debug_prefix_then_omits_store_payload() {
@@ -74,5 +113,7 @@ struct UnexpectedStoreResponseTests {
         let response = UnexpectedResponseClassifier.tunnelResponse(in: Data(body.utf8))
         #expect(response?.status == 403)
         #expect(response?.data == Data("<html>Blocked</html>".utf8))
+        let nested = Data("{\"status\":\"503\",\"body\":{\"data\":{\"raw_body\":\"Unavailable\"}}}".utf8)
+        #expect(UnexpectedResponseClassifier.tunnelResponse(in: nested)?.status == 503)
     }
 }

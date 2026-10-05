@@ -16,17 +16,22 @@ enum UnexpectedResponseClassifier {
     }
 
     /// Only an attributed store body may override a tunnel/WordPress.com error.
-    static func tunnelResponse(in data: Data) -> (data: Data, status: Int)? {
+    static func tunnelResponse(in data: Data, enclosingStatus: Int? = nil) -> (data: Data, status: Int)? {
         guard let object = try? JSONSerialization.jsonObject(with: data) as? [String: Any] else { return nil }
+        let proxyStatus = statusCode(object["status"]) ?? enclosingStatus
         if let payload = object["data"] as? [String: Any], let body = payload["raw_body"] as? String,
            !body.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty,
-           let status = (payload["status"] as? Int) ?? (object["status"] as? Int), (100...599).contains(status) {
+           let status = statusCode(payload["status"]) ?? proxyStatus, (100...599).contains(status) {
             return (Data(body.utf8), status)
         }
-        if let body = object["body"] as? String { return tunnelResponse(in: Data(body.utf8)) }
+        if let body = object["body"] as? String { return tunnelResponse(in: Data(body.utf8), enclosingStatus: proxyStatus) }
         if let body = object["body"] as? [String: Any], let nested = try? JSONSerialization.data(withJSONObject: body) {
-            return tunnelResponse(in: nested)
+            return tunnelResponse(in: nested, enclosingStatus: proxyStatus)
         }
         return nil
+    }
+
+    private static func statusCode(_ value: Any?) -> Int? {
+        (value as? Int) ?? (value as? String).flatMap(Int.init)
     }
 }

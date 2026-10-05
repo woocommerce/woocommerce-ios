@@ -20,6 +20,37 @@ final class RemoteTests: XCTestCase {
 
     private var cancellables = Set<AnyCancellable>()
 
+    func test_enqueue_when_opted_in_and_payload_shape_is_wrong_then_returns_typed_failure() async {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "", filename: "order")
+        let remote = Remote(network: network)
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: UserMapper(siteID: 123), detectUnexpectedResponses: true)
+            XCTFail("Expected a malformed user response")
+        } catch {
+            // Then
+            XCTAssertEqual((error as? UnexpectedStoreResponseError)?.kind, .unexpectedContent)
+            XCTAssertNil((error as? UnexpectedStoreResponseError)?.diagnostics?.excerpt)
+        }
+    }
+
+    func test_enqueue_when_not_opted_in_and_payload_shape_is_wrong_then_preserves_decoding_error() async {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "", filename: "order")
+        let remote = Remote(network: network)
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: UserMapper(siteID: 123))
+            XCTFail("Expected a malformed user response")
+        } catch {
+            // Then
+            XCTAssertTrue(error is DecodingError)
+        }
+    }
+
     func test_responseDataAndHeaders_when_called_from_mainActor_then_forwards_caller_isolation() async throws {
         // Given
         let network: any Network = IsolationCapturingNetwork()

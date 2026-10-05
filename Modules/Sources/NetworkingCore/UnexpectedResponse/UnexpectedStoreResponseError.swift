@@ -27,7 +27,7 @@ public struct UnexpectedStoreResponseError: Error, Equatable, Sendable, CustomNS
         self.kind = kind
         self.statusCode = statusCode
         self.diagnostics = Diagnostics(
-            contentType: contentType?.split(separator: ";").first.map { String($0).lowercased() },
+            contentType: contentType?.split(separator: ";").first.map { UnexpectedResponseExcerpt.sanitize(String($0).lowercased()) },
             request: UnexpectedResponseExcerpt.sanitize("\(request?.httpMethod ?? "GET") \(request?.url?.path ?? "/")"),
             excerpt: data.flatMap { String(data: $0, encoding: .utf8) }.flatMap(UnexpectedResponseExcerpt.make)
         )

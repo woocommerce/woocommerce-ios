@@ -26,7 +26,8 @@ enum UnexpectedResponseExcerpt {
     static func sanitize(_ value: String) -> String {
         let patterns: [(String, String)] = [
             (#"(?i)\bBearer\s+[^\s,;]+"#, "Bearer [redacted]"),
-            (#"(?i)\b(?:Set-Cookie|Cookie):[^\r\n]+"#, "Cookie: [redacted]"),
+            (#"(?i)\b(Set-Cookie|Cookie|Authorization):[^\r\n]+"#, "$1: [redacted]"),
+            (#"\b[A-Za-z0-9]{4}(?: [A-Za-z0-9]{4}){5}\b"#, "[redacted]"),
             (#"(?i)(\b(?:consumer_key|consumer_secret|access_token|token|application_password|password|pwd)\b[\"']?\s*[:=]\s*)(?:\"[^\"]*\"|'[^']*'|[^\s&;,<>]+)"#,
              "$1[redacted]"),
             (#"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"#, "[email]"),
@@ -38,7 +39,9 @@ enum UnexpectedResponseExcerpt {
     }
 
     private static func visibleText(_ value: String) -> String {
-        replace(#"(?s)<[^>]*>"#, in: value, with: " ").strippedHTML
+        let visible = replace(#"(?is)<!--.*?(?:-->|$)|<(script|style|noscript|template|textarea)\b[^>]*>.*?(?:</\1\s*>|$)"#,
+                              in: value, with: " ")
+        return replace(#"(?s)<[^>]*>"#, in: visible, with: " ").strippedHTML
     }
 
     private static func replace(_ pattern: String, in value: String, with replacement: String) -> String {

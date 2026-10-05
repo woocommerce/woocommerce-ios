@@ -21,6 +21,35 @@ final class AlamofireNetworkTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_responseData_when_direct_500_is_opted_in_then_preserves_status_in_typed_error() throws {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "wp-json")
+        MockURLProtocol.Mocks.mockResponse(["code": "critical_error"], statusCode: 500, for: try request.asURLRequest())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        // When
+        let error = waitFor { promise in
+            network.responseData(for: UnexpectedResponseRequest(original: request)) { _, error in promise(error) }
+        }
+        // Then
+        XCTAssertEqual((error as? UnexpectedStoreResponseError)?.kind, .unacceptableStatusCode)
+        XCTAssertEqual((error as? UnexpectedStoreResponseError)?.statusCode, 500)
+    }
+
+    func test_responseData_when_known_501_is_opted_in_then_preserves_disabled_password_error() throws {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .post, path: "wp-json")
+        MockURLProtocol.Mocks.mockResponse(["code": "application_passwords_disabled"], statusCode: 501, for: try request.asURLRequest())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        // When
+        let error = waitFor { promise in
+            network.responseData(for: UnexpectedResponseRequest(original: request)) { _, error in promise(error) }
+        }
+        // Then
+        XCTAssertEqual(error as? ApplicationPasswordUseCaseError, .applicationPasswordsDisabled)
+    }
+
     // MARK: - `responseData` with data and error in the callback
 
     func test_responseData_completion_block_returns_NetworkError_unacceptableStatusCode_when_status_code_is_invalid() throws {

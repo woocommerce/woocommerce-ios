@@ -21,13 +21,13 @@ struct UnexpectedResponseRequest: Request {
             responseStatus = storeResponse.status
             mediaType = nil
         }
-        let kind = UnexpectedResponseClassifier.classify(data: body, status: responseStatus, contentType: mediaType)
-        let failure = kind.map { makeError(kind: $0, data: body, status: responseStatus, contentType: mediaType) }
         if let body, let json = try? JSONSerialization.jsonObject(with: body) as? [String: Any],
            let code = (json["code"] ?? json["error"]) as? String,
            ["application_passwords_disabled", "application_passwords_disabled_for_user"].contains(code) {
             return ApplicationPasswordUseCaseError.applicationPasswordsDisabled
         }
+        let kind = UnexpectedResponseClassifier.classify(data: body, status: responseStatus, contentType: mediaType)
+        let failure = kind.map { makeError(kind: $0, data: body, status: responseStatus, contentType: mediaType) }
         return failure
     }
 

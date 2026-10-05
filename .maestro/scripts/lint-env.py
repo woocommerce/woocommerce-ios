@@ -13,16 +13,6 @@ from pathlib import Path
 ASSIGNMENT_RE = re.compile(r"^(?:export\s+)?([A-Za-z_][A-Za-z0-9_]*)=(.*)$")
 INLINE_COMMENT_RE = re.compile(r"\s+#")
 SHELL_META_RE = re.compile(r"""[\s()&;<>|`$]""")
-DEPRECATED_ALIASES = {
-    "MAESTRO_WOO_LAB_STORE_URL": "MAESTRO_WOO_LAB_JETPACK_STORE_URL",
-    "MAESTRO_WOO_LAB_EMAIL": "MAESTRO_WOO_LAB_WPCOM_EMAIL",
-    "MAESTRO_WOO_LAB_PASSWORD": "MAESTRO_WOO_LAB_WPCOM_PASSWORD",
-    "MAESTRO_WOO_JN_SITE_URL": "MAESTRO_WOO_NO_JETPACK_SITE_URL",
-    "MAESTRO_WOO_JN_USERNAME": "MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME",
-    "MAESTRO_WOO_JN_PASSWORD": "MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD",
-    "MAESTRO_WOO_CONSUMER_KEY": "MAESTRO_WOO_LAB_CONSUMER_KEY",
-    "MAESTRO_WOO_CONSUMER_SECRET": "MAESTRO_WOO_LAB_CONSUMER_SECRET",
-}
 
 
 def expected_names(example_path: Path) -> set[str]:
@@ -77,11 +67,8 @@ def lint(path: Path, example_path: Path, seed: bool) -> tuple[list[str], list[st
         seen.add(name)
 
         value = strip_inline_comment(raw_value)
-        if name.startswith("MAESTRO_WOO_") and expected and name not in expected and name not in DEPRECATED_ALIASES:
+        if name.startswith("MAESTRO_WOO_") and expected and name not in expected:
             warnings.append(f"{path}:{line_number}: {name} is not declared in .maestro/env.example.")
-
-        if name in DEPRECATED_ALIASES:
-            warnings.append(f"{path}:{line_number}: {name} is supported as a legacy alias; prefer {DEPRECATED_ALIASES[name]}.")
 
         if not seed and re.search(r"MAESTRO_WOO_.*CONSUMER_(KEY|SECRET)$", name):
             warnings.append(f"{path}:{line_number}: {name} is only needed when running with --seed.")

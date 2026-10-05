@@ -106,6 +106,7 @@ struct POSErrorButtonViewModel {
     let buttonStyle: AnyButtonStyle
     let action: () -> Void
 
+    @MainActor
     init(title: String, buttonStyle: any ButtonStyle, action: @escaping () -> Void) {
         self.title = title
         self.buttonStyle = AnyButtonStyle(buttonStyle)

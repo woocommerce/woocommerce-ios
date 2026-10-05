@@ -26,15 +26,16 @@ final class WordPressSiteStoreTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_fetchSiteInfo_returns_correct_site() throws {
+    @MainActor
+    func test_fetchSiteInfo_returns_correct_site() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info")
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<Site, Error> = waitFor { promise in
+        let result: Result<Site, Error> = await withCheckedContinuation { continuation in
             let action = WordPressSiteAction.fetchSiteInfo(siteURL: self.sampleSiteURL) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -55,15 +56,16 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertFalse(site.isJetpackThePluginInstalled)
     }
 
-    func test_fetchSiteInfo_relays_error_properly() throws {
+    @MainActor
+    func test_fetchSiteInfo_relays_error_properly() async throws {
         // Given
         network.simulateError(requestUrlSuffix: "wp-json/", error: NetworkError.notFound())
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<Site, Error> = waitFor { promise in
+        let result: Result<Site, Error> = await withCheckedContinuation { continuation in
             let action = WordPressSiteAction.fetchSiteInfo(siteURL: self.sampleSiteURL) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -73,15 +75,16 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertTrue(result.failure is NetworkError)
     }
 
-    func test_fetchApplicationPasswordAuthorizationURL_returns_nil_authorization_url_if_application_password_is_not_available() throws {
+    @MainActor
+    func test_fetchApplicationPasswordAuthorizationURL_returns_nil_authorization_url_if_application_password_is_not_available() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info")
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<URL?, Error> = waitFor { promise in
+        let result: Result<URL?, Error> = await withCheckedContinuation { continuation in
             let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -92,15 +95,16 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertNil(url)
     }
 
-    func test_fetchApplicationPasswordAuthorizationURL_returns_correct_authorization_url_if_available() throws {
+    @MainActor
+    func test_fetchApplicationPasswordAuthorizationURL_returns_correct_authorization_url_if_available() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "wp-json/", filename: "wordpress-site-info-with-auth-url")
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<URL?, Error> = waitFor { promise in
+        let result: Result<URL?, Error> = await withCheckedContinuation { continuation in
             let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -111,15 +115,16 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertEqual(url?.absoluteString, "https://example.com/wp-admin/authorize-application.php")
     }
 
-    func test_fetchApplicationPasswordAuthorizationURL_relays_error_properly() throws {
+    @MainActor
+    func test_fetchApplicationPasswordAuthorizationURL_relays_error_properly() async throws {
         // Given
         network.simulateError(requestUrlSuffix: "wp-json/", error: NetworkError.notFound())
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<URL?, Error> = waitFor { promise in
+        let result: Result<URL?, Error> = await withCheckedContinuation { continuation in
             let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -129,15 +134,16 @@ final class WordPressSiteStoreTests: XCTestCase {
         XCTAssertTrue(result.failure is NetworkError)
     }
 
-    func test_fetchPageList_returns_correct_page_list() throws {
+    @MainActor
+    func test_fetchPageList_returns_correct_page_list() async throws {
         // Given
         network.simulateResponse(requestUrlSuffix: "wp-json/wp/v2/pages?_fields=id,title,link", filename: "wp-page-list-success")
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<[WordPressPage], Error> = waitFor { promise in
+        let result: Result<[WordPressPage], Error> = await withCheckedContinuation { continuation in
             let action = WordPressSiteAction.fetchPageList(siteURL: self.sampleSiteURL) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -152,15 +158,16 @@ final class WordPressSiteStoreTests: XCTestCase {
         ])
     }
 
-    func test_fetchPageList_relays_error_properly() throws {
+    @MainActor
+    func test_fetchPageList_relays_error_properly() async throws {
         // Given
         network.simulateError(requestUrlSuffix: "wp-json/wp/v2/pages?_fields=id,title,link", error: NetworkError.notFound())
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<[WordPressPage], Error> = waitFor { promise in
+        let result: Result<[WordPressPage], Error> = await withCheckedContinuation { continuation in
             let action = WordPressSiteAction.fetchPageList(siteURL: self.sampleSiteURL) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }

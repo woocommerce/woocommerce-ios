@@ -2,7 +2,7 @@ import Foundation
 
 /// Represents basic information for a WordPress site.
 ///
-public struct WordPressSite: Decodable, Equatable {
+public struct WordPressSite: Decodable, Equatable, Sendable {
 
     /// Site's Name.
     ///

@@ -4,7 +4,7 @@ import Codegen
 
 /// Represents a specific setting entity for a specific site.
 ///
-public struct SiteSetting: Decodable, Equatable, GeneratedFakeable, GeneratedCopiable {
+public struct SiteSetting: Decodable, Equatable, Sendable, GeneratedFakeable, GeneratedCopiable {
     public let siteID: Int64
     public let settingID: String
     public let label: String

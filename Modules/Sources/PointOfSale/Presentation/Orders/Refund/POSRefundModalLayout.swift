@@ -25,6 +25,7 @@ enum POSRefundModalLayout {
 }
 
 struct POSRefundNavigationHeader: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     let title: String?
     let backAction: (() -> Void)?
     let backAccessibilityLabel: String

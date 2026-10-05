@@ -340,6 +340,82 @@ final class AlamofireNetworkTests: XCTestCase {
         XCTAssertTrue(usesTunnel)
     }
 
+    func test_responseData_with_completion_when_opted_in_direct_request_fails_then_returns_tunnel_success() throws {
+        // Given
+        let siteID: Int64 = 123
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "products")
+        let restRequest = createRESTRequest(path: "products")
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try setupMockForDirectRequestFailure(jetpackRequest: jetpackRequest,
+                                             restRequest: restRequest,
+                                             failureStatusCode: 500,
+                                             failureResponse: ["error": "unauthorized"])
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: UnexpectedResponseRequest(original: jetpackRequest)) { data, error in
+                promise((data, error))
+            }
+        }
+
+        // Then
+        XCTAssertNil(result.1)
+        XCTAssertNotNil(result.0)
+        let responseDict = try JSONSerialization.jsonObject(with: try XCTUnwrap(result.0), options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["success"], "data")
+    }
+
+    func test_responseData_with_result_when_opted_in_direct_request_fails_then_returns_tunnel_success() throws {
+        // Given
+        let siteID: Int64 = 456
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "orders")
+        let restRequest = createRESTRequest(path: "orders")
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                             restRequest: restRequest,
+                                                             failureStatusCode: 500,
+                                                             failureResponse: ["error": "forbidden"],
+                                                             successResponse: ["success": "orders"])
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: UnexpectedResponseRequest(original: jetpackRequest)) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let data = try XCTUnwrap(result.get())
+        let responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["success"], "orders")
+    }
+
+    @MainActor
+    func test_responseDataAndHeaders_when_opted_in_direct_request_fails_then_returns_tunnel_success() async throws {
+        // Given
+        let siteID: Int64 = 101
+        let testParameters: RequestParameterDictionary = ["name": "Test Product"]
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "products", method: .post, parameters: testParameters)
+        let restRequest = createRESTRequest(path: "products", method: .post, parameters: testParameters)
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                             restRequest: restRequest,
+                                                             failureStatusCode: 500,
+                                                             failureResponse: ["error": "rate_limited"],
+                                                             successResponse: ["product": "created"])
+
+        // When
+        let result = try await network.responseDataAndHeaders(for: UnexpectedResponseRequest(original: jetpackRequest))
+
+        // Then
+        let responseDict = try JSONSerialization.jsonObject(with: result.0, options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["product"], "created")
+    }
+
     // MARK: - Retry Logic Tests
 
     func test_responseData_with_completion_retries_direct_request_when_converted_request_fails() throws {

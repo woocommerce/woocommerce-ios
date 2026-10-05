@@ -281,6 +281,9 @@ public struct PointOfSaleEntryPointView: View {
         .injectKeyboardObserver()
         .posLockScreenOverlay()
         .environment(\.posAccessSession, accessSession)
+        .onChange(of: isCompactLayout) { _, isCompactLayout in
+            posModel?.paymentModel.updateCardPaymentSelectionMode(isCompactLayout ? .compact : .large)
+        }
         .task {
             await accessSession.refreshPINStatus()
         }

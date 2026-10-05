@@ -708,21 +708,13 @@ class RunnerTests(unittest.TestCase):
     def test_shared_store_never_falls_back_to_lab_or_unscoped_values(self) -> None:
         values = {
             "MAESTRO_WOO_LAB_JETPACK_STORE_URL": "https://lab.example.com",
-            "MAESTRO_WOO_CONSUMER_KEY": "legacy-lab-key",
+            "MAESTRO_WOO_CONSUMER_KEY": "unscoped-key",
         }
 
         shared = RUNNER.select_store_environment(values, "shared")
 
         self.assertNotIn("MAESTRO_WOO_JETPACK_STORE_URL", shared)
         self.assertNotIn("MAESTRO_WOO_CONSUMER_KEY", shared)
-
-    def test_lab_store_accepts_legacy_unscoped_rest_keys(self) -> None:
-        values = {"MAESTRO_WOO_CONSUMER_KEY": "legacy-key", "MAESTRO_WOO_CONSUMER_SECRET": "legacy-secret"}
-
-        lab = RUNNER.select_store_environment(values, "lab")
-
-        self.assertEqual("legacy-key", lab["MAESTRO_WOO_CONSUMER_KEY"])
-        self.assertEqual("legacy-secret", lab["MAESTRO_WOO_CONSUMER_SECRET"])
 
     def test_missing_store_values_are_reported_with_the_selected_block_name(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

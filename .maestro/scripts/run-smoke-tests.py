@@ -56,8 +56,6 @@ STORE_SCOPED_SUFFIXES = (
     "CONSUMER_SECRET",
     "APPLICATION_PASSWORD",
 )
-# Older .env.local files keep the lab REST keys without the LAB_ prefix.
-LEGACY_UNSCOPED_LAB_SUFFIXES = ("CONSUMER_KEY", "CONSUMER_SECRET")
 # Seeding and cleanup use the REST keys, and the admin's application password
 # to delete uploaded images. Maestro never receives them.
 CLEANUP_ONLY_ENVIRONMENT = {
@@ -202,8 +200,6 @@ def select_store_environment(values: dict[str, str], store: str) -> dict[str, st
     for suffix in STORE_SCOPED_SUFFIXES:
         neutral = f"MAESTRO_WOO_{suffix}"
         value = values.get(scoped_store_name(neutral, store), "")
-        if not value and store == "lab" and suffix in LEGACY_UNSCOPED_LAB_SUFFIXES:
-            value = values.get(neutral, "")
         if value:
             selected[neutral] = value
         else:

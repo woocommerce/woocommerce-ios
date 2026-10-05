@@ -1,6 +1,7 @@
 import Testing
 @testable import PointOfSale
 
+@Suite(.timeLimit(.minutes(5)))
 @MainActor
 struct PointOfSaleBarcodeScannerSetupScanTesterTests {
 
@@ -93,5 +94,63 @@ struct PointOfSaleBarcodeScannerSetupScanTesterTests {
 
         // Then it provides the correct barcode asset
         #expect(sut.barcode == .testEan13Barcode)
+    }
+
+    @Test func test_startTimer_when_timeout_elapses_then_calls_onTestTimeout() async {
+        // Given
+        var sut: PointOfSaleBarcodeScannerSetupScanTester?
+
+        // When
+        await withCheckedContinuation { continuation in
+            sut = makeTimedSUT(onTestTimeout: { continuation.resume() })
+            sut?.startTimer()
+        }
+
+        // Then the continuation resumed, so the timeout fired
+        #expect(sut != nil)
+    }
+
+    @Test func test_stopTimer_when_called_before_timeout_then_does_not_call_onTestTimeout() async throws {
+        // Given
+        var timeoutCount = 0
+        let sut = makeTimedSUT(onTestTimeout: { timeoutCount += 1 })
+        sut.startTimer()
+
+        // When
+        sut.stopTimer()
+        try await Task.sleep(for: Constants.waitPastTimeout)
+
+        // Then
+        #expect(timeoutCount == 0)
+    }
+
+    @Test func test_startTimer_when_called_twice_then_calls_onTestTimeout_once() async throws {
+        // Given
+        var timeoutCount = 0
+        let sut = makeTimedSUT(onTestTimeout: { timeoutCount += 1 })
+
+        // When
+        sut.startTimer()
+        sut.startTimer()
+        try await Task.sleep(for: Constants.waitPastTimeout)
+
+        // Then
+        #expect(timeoutCount == 1)
+    }
+}
+
+private extension PointOfSaleBarcodeScannerSetupScanTesterTests {
+    enum Constants {
+        static let timeout: Duration = .milliseconds(10)
+        static let waitPastTimeout: Duration = .milliseconds(300)
+    }
+
+    func makeTimedSUT(onTestTimeout: @escaping () -> Void) -> PointOfSaleBarcodeScannerSetupScanTester {
+        PointOfSaleBarcodeScannerSetupScanTester(
+            onTestPass: {},
+            onTestFailure: { _ in },
+            onTestTimeout: onTestTimeout,
+            barcodeDefinition: .ean13,
+            timeout: Constants.timeout)
     }
 }

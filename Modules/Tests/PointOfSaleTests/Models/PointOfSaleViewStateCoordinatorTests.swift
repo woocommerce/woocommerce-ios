@@ -11,7 +11,8 @@ struct PointOfSaleViewStateCoordinatorTests {
         sut.itemNavigationPath = [.variableParentProduct(.init(id: .init(underlyingType: .product, itemID: 1),
                                                              name: "Product", productImageSource: nil, productID: 1))]
         sut.cashAmountInput = .init(amount: "6.00", displayText: "6.00", inputDigits: "600",
-                                   hasAppliedPreset: true, isDisplayingPreset: false)
+                                   hasAppliedPreset: true, isDisplayingPreset: false,
+                                   isSubmitting: true, errorMessage: "Failed")
 
         // When
         sut.reset()

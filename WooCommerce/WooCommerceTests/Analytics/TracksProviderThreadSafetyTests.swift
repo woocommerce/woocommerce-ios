@@ -8,7 +8,7 @@ final class TracksProviderThreadSafetyTests: XCTestCase {
 
     func test_concurrent_track_and_refreshUserData_does_not_crash() {
         // Given
-        let provider = TracksProvider()
+        let provider = TracksProvider(consent: MockAnalyticsConsent())
         let iterations = 50
         let allDone = expectation(description: "All concurrent operations completed")
         allDone.expectedFulfillmentCount = iterations * 2
@@ -32,7 +32,7 @@ final class TracksProviderThreadSafetyTests: XCTestCase {
 
     func test_refreshUserData_calls_completion_after_queued_refresh() {
         // Given
-        let provider = TracksProvider()
+        let provider = TracksProvider(consent: MockAnalyticsConsent())
         let refreshCompleted = expectation(description: "Refresh completed")
 
         // When

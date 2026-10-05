@@ -20,32 +20,32 @@ extension EnvironmentValues {
 
 /// Environment key for POS analytics service in SwiftUI
 struct POSAnalyticsKey: EnvironmentKey {
-    static let defaultValue: POSAnalyticsProviding = EmptyPOSAnalytics()
+    static var defaultValue: POSAnalyticsProviding { EmptyPOSAnalytics() }
 }
 
 /// Environment key for POS currency settings
 struct POSCurrencySettingsKey: EnvironmentKey {
-    static let defaultValue: POSCurrencySettingsProviding = EmptyPOSCurrencySettings()
+    static var defaultValue: POSCurrencySettingsProviding { EmptyPOSCurrencySettings() }
 }
 
 /// Environment key for POS feature flags service
 struct POSFeatureFlagsKey: EnvironmentKey {
-    static let defaultValue: POSFeatureFlagProviding = EmptyPOSFeatureFlags()
+    static var defaultValue: POSFeatureFlagProviding { EmptyPOSFeatureFlags() }
 }
 
 /// Environment key for POS connectivity
 struct POSConnectivityKey: EnvironmentKey {
-    static let defaultValue: POSConnectivityProviding = EmptyPOSConnectivityProvider()
+    static var defaultValue: POSConnectivityProviding { EmptyPOSConnectivityProvider() }
 }
 
 /// Environment key for POS navigation service
 struct POSExternalNavigationKey: EnvironmentKey {
-    static let defaultValue: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
+    static var defaultValue: POSExternalNavigationProviding { EmptyPOSExternalNavigation() }
 }
 
 /// Environment key for POS external view service
 struct POSExternalViewKey: EnvironmentKey {
-    static let defaultValue: POSExternalViewProviding = EmptyPOSExternalView()
+    static var defaultValue: POSExternalViewProviding { EmptyPOSExternalView() }
 }
 
 /// Environment key for POS payment navigation router
@@ -59,7 +59,7 @@ struct POSSearchTextFieldUnfocusedBorderColorKey: EnvironmentKey {
 }
 
 struct POSAccessSessionKey: EnvironmentKey {
-    static let defaultValue: POSAccessSession = UnrestrictedPOSAccessSession()
+    static var defaultValue: POSAccessSession { UnrestrictedPOSAccessSession() }
 }
 
 extension EnvironmentValues {

@@ -264,7 +264,7 @@ extension EnvironmentValues {
 /// the binding-based dismiss path in `POSModalViewModifier` from firing.
 /// This environment action provides a reliable alternative that calls `POSModalManager.dismiss()` directly.
 struct POSModalDismissActionKey: EnvironmentKey {
-    static let defaultValue: (() -> Void)? = nil
+    static var defaultValue: (() -> Void)? { nil }
 }
 
 extension EnvironmentValues {

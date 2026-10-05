@@ -225,7 +225,7 @@ private enum Constants {
 }
 
 struct POSHeaderBackButtonConfigurationKey: EnvironmentKey {
-    static let defaultValue: POSPageHeaderBackButtonConfiguration? = nil
+    static var defaultValue: POSPageHeaderBackButtonConfiguration? { nil }
 }
 
 struct POSHeaderBackButtonIconKey: EnvironmentKey {

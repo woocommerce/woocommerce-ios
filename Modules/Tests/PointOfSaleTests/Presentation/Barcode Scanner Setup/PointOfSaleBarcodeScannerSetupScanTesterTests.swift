@@ -1,6 +1,7 @@
 import Testing
 @testable import PointOfSale
 
+@MainActor
 struct PointOfSaleBarcodeScannerSetupScanTesterTests {
 
     @Test func test_scanTester_calls_onTestPass_when_scan_received_for_expected_barcode() {

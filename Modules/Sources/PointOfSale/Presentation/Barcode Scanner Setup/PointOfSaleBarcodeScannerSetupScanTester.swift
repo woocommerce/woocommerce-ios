@@ -1,12 +1,13 @@
 import Foundation
 
+@MainActor
 @Observable
 class PointOfSaleBarcodeScannerSetupScanTester {
     private let onTestPass: () -> Void
     private let onTestFailure: (String) -> Void
     private let onTestTimeout: () -> Void
     private let barcodeDefinition: PointOfSaleBarcodeScannerTestBarcode
-    private var timer: Timer?
+    @ObservationIgnored private var timeoutTask: Task<Void, Never>?
 
     init(onTestPass: @escaping () -> Void,
          onTestFailure: @escaping (String) -> Void,
@@ -34,13 +35,26 @@ class PointOfSaleBarcodeScannerSetupScanTester {
     }
 
     func startTimer() {
-        timer = Timer.scheduledTimer(withTimeInterval: 10.0, repeats: false) { [weak self] _ in
+        timeoutTask?.cancel()
+        timeoutTask = Task { [weak self] in
+            do {
+                try await Task.sleep(for: Constants.timeout)
+            } catch {
+                // Cancelled by `stopTimer()`.
+                return
+            }
             self?.onTestTimeout()
         }
     }
 
     func stopTimer() {
-        timer?.invalidate()
-        timer = nil
+        timeoutTask?.cancel()
+        timeoutTask = nil
+    }
+}
+
+private extension PointOfSaleBarcodeScannerSetupScanTester {
+    enum Constants {
+        static let timeout: Duration = .seconds(10)
     }
 }

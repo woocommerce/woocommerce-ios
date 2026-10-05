@@ -9,10 +9,10 @@ enum UnexpectedResponseExcerpt {
                   let message = error["message"] as? String else { return nil }
             text = "\(code) | \(visibleText(message))"
         } else {
+            let stripped = replace(#"(?is)<!--.*?(?:-->|$)|<(script|style|noscript|template|svg|iframe|textarea|select)\b[^>]*>.*?(?:</\1\s*>|$)"#,
+                                   in: trimmed, with: " ")
             // Do not include JSON appended to plugin/debug output, including malformed JSON.
-            let prefix = String(trimmed.prefix { $0 != "{" && $0 != "[" })
-            let visible = replace(#"(?is)<!--.*?(?:-->|$)|<(script|style|noscript|template|svg|iframe|textarea|select)\b[^>]*>.*?(?:</\1\s*>|$)"#,
-                                  in: prefix, with: " ")
+            let visible = String(stripped.prefix { $0 != "{" && $0 != "[" })
             let title = capture(#"(?is)<title\b[^>]*>(.*?)</title\s*>"#, in: visible).map(visibleText) ?? ""
             let page = visibleText(replace(#"(?is)<head\b[^>]*>.*?(?:</head\s*>|(?=<body\b)|$)"#, in: visible, with: " "))
             text = title.isEmpty || page.hasPrefix(title) ? page : "\(title) | \(page)"

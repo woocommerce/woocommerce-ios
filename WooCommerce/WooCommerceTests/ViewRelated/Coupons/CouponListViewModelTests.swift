@@ -195,10 +195,12 @@ final class CouponListViewModelTests: XCTestCase {
         sut.handleCouponSyncResult(result: .failure(error), pageNumber: 1)
 
         // Then
-        assertEqual(.couponsDisabled, sut.state)
+        waitUntil {
+            self.sut.state == .couponsDisabled
+        }
     }
 
-    func test_state_is_coupons_if_enableCoupons_and_synchronizeFirstPage_succeed() {
+    func test_state_is_coupons_if_enableCoupons_and_synchronizeFirstPage_succeed() async {
         // Given
         let sampleSiteID: Int64 = 123
         mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: sampleSiteID, couponID: 1, code: "senth"))
@@ -227,13 +229,13 @@ final class CouponListViewModelTests: XCTestCase {
 
         // When
         sut.buildCouponViewModels()
-        sut.enableCoupons()
+        await sut.enableCoupons()
 
         // Then
         assertEqual(.coupons, sut.state)
     }
 
-    func test_state_is_couponDisabled_if_enableCoupons_fails() {
+    func test_state_is_couponDisabled_if_enableCoupons_fails() async {
         // Given
         let sampleSiteID: Int64 = 123
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -251,7 +253,7 @@ final class CouponListViewModelTests: XCTestCase {
                                   storageManager: mockStorageManager)
 
         // When
-        sut.enableCoupons()
+        await sut.enableCoupons()
 
         // Then
         assertEqual(.couponsDisabled, sut.state)

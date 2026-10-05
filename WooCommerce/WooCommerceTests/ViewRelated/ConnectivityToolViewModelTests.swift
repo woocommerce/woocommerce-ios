@@ -5,6 +5,7 @@ import Yosemite
 @testable import WooCommerce
 
 @MainActor
+@Suite(.timeLimit(.minutes(5)))
 struct ConnectivityToolViewModelTests {
 
     // MARK: - testAnalyticsSetting
@@ -138,8 +139,10 @@ struct ConnectivityToolViewModelTests {
         // When — trigger enableAnalytics through the action callback (simulates tapping the button).
         enableAction.action()
 
-        // Then — MockStoresManager dispatches synchronously so the card update is immediate.
-        let updatedCard = sut.cards.last(where: { $0.testCase == .analyticsSetting })
+        // Then
+        let updatedCard = await analyticsCard(of: sut) { state in
+            if case .empty = state { true } else { false }
+        }
         guard case let .empty(message) = updatedCard?.state else {
             Issue.record("Expected .empty state after enabling analytics but got \(String(describing: updatedCard?.state))")
             return
@@ -178,11 +181,13 @@ struct ConnectivityToolViewModelTests {
             state: testResult
         ))
 
-        // When — trigger enableAnalytics; it will fail, auto-retry (retries: 1), then restore error state.
+        // When — trigger enableAnalytics; it will fail, auto-retry once, then restore error state.
         enableAction.action()
 
-        // Then — after two synchronous failures, the card should be restored to the error state.
-        let restoredCard = sut.cards.last(where: { $0.testCase == .analyticsSetting })
+        // Then
+        let restoredCard = await analyticsCard(of: sut) { state in
+            if case .error = state { true } else { false }
+        }
         guard case let .error(_, restoredActions) = restoredCard?.state else {
             Issue.record("Expected error state to be restored but got \(String(describing: restoredCard?.state))")
             return
@@ -467,4 +472,15 @@ private func assertState(_ actual: ConnectivityToolCard.ConnectivityState,
         }
     }()
     #expect(matches, "Expected \(expected) but got \(actual)", sourceLocation: sourceLocation)
+}
+
+@MainActor
+private func analyticsCard(of sut: ConnectivityToolViewModel,
+                           where matches: (ConnectivityToolCard.ConnectivityState) -> Bool) async -> ConnectivityTool.Card? {
+    for await cards in sut.$cards.values {
+        if let card = cards.last(where: { $0.testCase == .analyticsSetting }), matches(card.state) {
+            return card
+        }
+    }
+    return nil
 }

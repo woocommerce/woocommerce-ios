@@ -31,6 +31,7 @@ public class SettingStore: Store {
             return
         }
 
+        nonisolated(unsafe) let methods = methods
         switch action {
         case .synchronizeGeneralSiteSettings(let siteID, let onCompletion):
             methods.synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)

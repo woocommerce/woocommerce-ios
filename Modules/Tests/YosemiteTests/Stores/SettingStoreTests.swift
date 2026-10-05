@@ -44,34 +44,33 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` effectively persists any retrieved SiteSettings.
     ///
-    func testRetrieveGerneralSiteSettingsEffectivelyPersistsRetrievedSettings() {
-        let expectation = self.expectation(description: "Persist general site settings")
+    @MainActor
+    func testRetrieveGerneralSiteSettingsEffectivelyPersistsRetrievedSettings() async {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
 
-        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { error in
-            XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 20)
-
-            let readOnlySiteSetting = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleGeneralSiteSetting().settingID)
-            XCTAssertEqual(readOnlySiteSetting?.toReadOnly(), self.sampleGeneralSiteSetting())
-
-            let readOnlySiteSetting2 = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleGeneralSiteSetting2().settingID)
-            XCTAssertEqual(readOnlySiteSetting2?.toReadOnly(), self.sampleGeneralSiteSetting2())
-
-            expectation.fulfill()
+        let error: Error? = await withCheckedContinuation { continuation in
+            settingStore.onAction(SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { error in
+                continuation.resume(returning: error)
+            })
         }
 
-        settingStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertNil(error)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 20)
+
+        let readOnlySiteSetting = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleGeneralSiteSetting().settingID)
+        XCTAssertEqual(readOnlySiteSetting?.toReadOnly(), self.sampleGeneralSiteSetting())
+
+        let readOnlySiteSetting2 = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleGeneralSiteSetting2().settingID)
+        XCTAssertEqual(readOnlySiteSetting2?.toReadOnly(), self.sampleGeneralSiteSetting2())
     }
 
     /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` effectively persists any updated SiteSettings.
     ///
-    func testRetrieveGeneralSiteSettingsEffectivelyPersistsUpdatedSettings() {
-        let expectation = self.expectation(description: "Persist updated general site settings")
+    @MainActor
+    func testRetrieveGeneralSiteSettingsEffectivelyPersistsUpdatedSettings() async {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
@@ -81,20 +80,20 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
 
         network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general-alt")
-        let action = SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { error in
-            XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 19)
-
-            let readOnlySiteSetting = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleGeneralSiteSetting().settingID)
-            XCTAssertEqual(readOnlySiteSetting?.toReadOnly(), self.sampleGeneralSiteSettingMutated())
-
-            let readOnlySiteSetting2 = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleGeneralSiteSetting2().settingID)
-            XCTAssertEqual(readOnlySiteSetting2?.toReadOnly(), self.sampleGeneralSiteSetting2Mutated())
-            expectation.fulfill()
+        let error: Error? = await withCheckedContinuation { continuation in
+            settingStore.onAction(SettingAction.synchronizeGeneralSiteSettings(siteID: sampleSiteID) { error in
+                continuation.resume(returning: error)
+            })
         }
 
-        settingStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertNil(error)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 19)
+
+        let readOnlySiteSetting = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleGeneralSiteSetting().settingID)
+        XCTAssertEqual(readOnlySiteSetting?.toReadOnly(), self.sampleGeneralSiteSettingMutated())
+
+        let readOnlySiteSetting2 = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleGeneralSiteSetting2().settingID)
+        XCTAssertEqual(readOnlySiteSetting2?.toReadOnly(), self.sampleGeneralSiteSetting2Mutated())
     }
 
     /// Verifies that `SettingAction.synchronizeGeneralSiteSettings` returns an error whenever there is an error response from the backend.
@@ -221,34 +220,33 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.synchronizeProductSiteSettings` effectively persists any retrieved SiteSettings.
     ///
-    func testRetrieveProductSiteSettingsEffectivelyPersistsRetrievedSettings() {
-        let expectation = self.expectation(description: "Persist product site settings")
+    @MainActor
+    func testRetrieveProductSiteSettingsEffectivelyPersistsRetrievedSettings() async {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         network.simulateResponse(requestUrlSuffix: "settings/products", filename: "settings-product")
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
 
-        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { error in
-            XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 23)
-
-            let readOnlySiteSetting = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleProductSiteSetting().settingID)
-            XCTAssertEqual(readOnlySiteSetting?.toReadOnly(), self.sampleProductSiteSetting())
-
-            let readOnlySiteSetting2 = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleProductSiteSetting2().settingID)
-            XCTAssertEqual(readOnlySiteSetting2?.toReadOnly(), self.sampleProductSiteSetting2())
-
-            expectation.fulfill()
+        let error: Error? = await withCheckedContinuation { continuation in
+            settingStore.onAction(SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { error in
+                continuation.resume(returning: error)
+            })
         }
 
-        settingStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertNil(error)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 23)
+
+        let readOnlySiteSetting = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleProductSiteSetting().settingID)
+        XCTAssertEqual(readOnlySiteSetting?.toReadOnly(), self.sampleProductSiteSetting())
+
+        let readOnlySiteSetting2 = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleProductSiteSetting2().settingID)
+        XCTAssertEqual(readOnlySiteSetting2?.toReadOnly(), self.sampleProductSiteSetting2())
     }
 
     /// Verifies that `SettingAction.synchronizeProductSiteSettings` effectively persists any updated SiteSettings.
     ///
-    func testRetrieveProductSiteSettingsEffectivelyPersistsUpdatedSettings() {
-        let expectation = self.expectation(description: "Persist updated product site settings")
+    @MainActor
+    func testRetrieveProductSiteSettingsEffectivelyPersistsUpdatedSettings() async {
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 0)
@@ -258,20 +256,20 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.countObjects(ofType: Storage.SiteSetting.self), 2)
 
         network.simulateResponse(requestUrlSuffix: "settings/products", filename: "settings-product-alt")
-        let action = SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { error in
-            XCTAssertNil(error)
-            XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 22)
-
-            let readOnlySiteSetting = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleProductSiteSetting().settingID)
-            XCTAssertEqual(readOnlySiteSetting?.toReadOnly(), self.sampleProductSiteSettingMutated())
-
-            let readOnlySiteSetting2 = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleProductSiteSetting2().settingID)
-            XCTAssertEqual(readOnlySiteSetting2?.toReadOnly(), self.sampleProductSiteSetting2Mutated())
-            expectation.fulfill()
+        let error: Error? = await withCheckedContinuation { continuation in
+            settingStore.onAction(SettingAction.synchronizeProductSiteSettings(siteID: sampleSiteID) { error in
+                continuation.resume(returning: error)
+            })
         }
 
-        settingStore.onAction(action)
-        wait(for: [expectation], timeout: Constants.expectationTimeout)
+        XCTAssertNil(error)
+        XCTAssertEqual(self.viewStorage.countObjects(ofType: Storage.SiteSetting.self), 22)
+
+        let readOnlySiteSetting = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleProductSiteSetting().settingID)
+        XCTAssertEqual(readOnlySiteSetting?.toReadOnly(), self.sampleProductSiteSettingMutated())
+
+        let readOnlySiteSetting2 = self.viewStorage.loadSiteSetting(siteID: self.sampleSiteID, settingID: self.sampleProductSiteSetting2().settingID)
+        XCTAssertEqual(readOnlySiteSetting2?.toReadOnly(), self.sampleProductSiteSetting2Mutated())
     }
 
     /// Verifies that `SettingAction.synchronizeProductSiteSettings` returns an error whenever there is an error response from the backend.
@@ -478,15 +476,16 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns the expected API information.
     ///
-    func test_retrieveSiteAPI_returns_expected_status() throws {
+    @MainActor
+    func test_retrieveSiteAPI_returns_expected_status() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "", filename: "site-api")
 
         // When
-        let result: Result<SiteAPI, Error> = waitFor { promise in
+        let result: Result<SiteAPI, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -499,15 +498,16 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns the expected API information.
     ///
-    func test_retrieveSiteAPI_returns_expected_status_for_non_woo_site() throws {
+    @MainActor
+    func test_retrieveSiteAPI_returns_expected_status_for_non_woo_site() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "", filename: "site-api-no-woo")
 
         // When
-        let result: Result<SiteAPI, Error> = waitFor { promise in
+        let result: Result<SiteAPI, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -520,15 +520,16 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns an error whenever there is an error response from the backend.
     ///
-    func test_retrieveSiteAPI_returns_error_upon_reponse_error() {
+    @MainActor
+    func test_retrieveSiteAPI_returns_error_upon_reponse_error() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "", filename: "generic_error")
 
         // When
-        let result: Result<SiteAPI, Error> = waitFor { promise in
+        let result: Result<SiteAPI, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -539,14 +540,15 @@ final class SettingStoreTests: XCTestCase {
 
     /// Verifies that `SettingAction.retrieveSiteAPI` returns an error whenever there is no backend response.
     ///
-    func test_retrieveSiteAPI_returns_error_upon_empty_response() {
+    @MainActor
+    func test_retrieveSiteAPI_returns_error_upon_empty_response() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<SiteAPI, Error> = waitFor { promise in
+        let result: Result<SiteAPI, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -555,15 +557,16 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
-    func test_retrieveCouponSetting_returns_correct_setting() throws {
+    @MainActor
+    func test_retrieveCouponSetting_returns_correct_setting() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", filename: "setting-coupon")
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -573,15 +576,16 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
-    func test_retrieveTaxBasedOnSetting_returns_correct_setting() throws {
+    @MainActor
+    func test_retrieveTaxBasedOnSetting_returns_correct_setting() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/tax/woocommerce_tax_based_on", filename: "setting-tax-based-on-shipping-success")
 
         // When
-        let result: Result<TaxBasedOnSetting, Error> = waitFor { promise in
+        let result: Result<TaxBasedOnSetting, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveTaxBasedOnSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -591,15 +595,16 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(taxBasedOnSetting, .customerShippingAddress)
     }
 
-    func test_retrieveTaxBasedOnSetting_returns_error_when_it_cannot_be_parsed() throws {
+    @MainActor
+    func test_retrieveTaxBasedOnSetting_returns_error_when_it_cannot_be_parsed() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/tax/woocommerce_tax_based_on", filename: "setting-tax-based-on-parse-error")
 
         // When
-        let result: Result<TaxBasedOnSetting, Error> = waitFor { promise in
+        let result: Result<TaxBasedOnSetting, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveTaxBasedOnSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -613,7 +618,8 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(error as? SettingError, .parseError)
     }
 
-    func test_retrieveCouponSetting_updates_stored_settings() {
+    @MainActor
+    func test_retrieveCouponSetting_updates_stored_settings() async {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: oldSetting)
@@ -621,9 +627,9 @@ final class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", filename: "setting-coupon")
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -634,7 +640,8 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(updated?.value, "yes")
     }
 
-    func test_retrieveCouponSetting_returns_error_when_loading_fails_and_setting_is_found_in_storage() throws {
+    @MainActor
+    func test_retrieveCouponSetting_returns_error_when_loading_fails_and_setting_is_found_in_storage() async throws {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: oldSetting)
@@ -643,9 +650,9 @@ final class SettingStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", error: expectedError)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -654,7 +661,8 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
-    func test_enableCouponSetting_updates_stored_settings() {
+    @MainActor
+    func test_enableCouponSetting_updates_stored_settings() async {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: oldSetting)
@@ -662,9 +670,9 @@ final class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", filename: "setting-coupon")
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.enableCouponSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -675,16 +683,17 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(updated?.value, "yes")
     }
 
-    func test_enableCouponSetting_returns_error_if_remote_request_fails() {
+    @MainActor
+    func test_enableCouponSetting_returns_error_if_remote_request_fails() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", error: expectedError)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.enableCouponSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -693,15 +702,16 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
-    func test_retrieveAnalyticsSetting_returns_correct_setting() throws {
+    @MainActor
+    func test_retrieveAnalyticsSetting_returns_correct_setting() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/advanced/woocommerce_analytics_enabled", filename: "setting-analytics")
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -711,7 +721,8 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(isEnabled)
     }
 
-    func test_retrieveAnalyticsSetting_updates_stored_settings() {
+    @MainActor
+    func test_retrieveAnalyticsSetting_updates_stored_settings() async {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_analytics_enabled", value: "no", settingGroupKey: "advanced")
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: oldSetting)
@@ -719,9 +730,9 @@ final class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/advanced/woocommerce_analytics_enabled", filename: "setting-analytics")
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -732,7 +743,8 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(updated?.value, "yes")
     }
 
-    func test_retrieveAnalyticsSetting_returns_error_when_loading_fails_and_setting_is_found_in_storage() throws {
+    @MainActor
+    func test_retrieveAnalyticsSetting_returns_error_when_loading_fails_and_setting_is_found_in_storage() async throws {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_analytics_enabled", value: "no", settingGroupKey: "general")
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: oldSetting)
@@ -741,9 +753,9 @@ final class SettingStoreTests: XCTestCase {
         network.simulateError(requestUrlSuffix: "settings/advanced/woocommerce_analytics_enabled", error: expectedError)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -752,16 +764,17 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
-    func test_retrieveAnalyticsSetting_returns_settingNotExposed_when_tunnel_reports_invalid_setting() {
+    @MainActor
+    func test_retrieveAnalyticsSetting_returns_settingNotExposed_when_tunnel_reports_invalid_setting() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let tunnelError = DotcomError.unknown(code: "rest_setting_setting_invalid", message: "Invalid setting.", data: nil)
         network.simulateError(requestUrlSuffix: "settings/advanced/woocommerce_analytics_enabled", error: tunnelError)
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -772,16 +785,17 @@ final class SettingStoreTests: XCTestCase {
         }
     }
 
-    func test_retrieveAnalyticsSetting_returns_settingNotExposed_when_direct_rest_reports_invalid_setting() {
+    @MainActor
+    func test_retrieveAnalyticsSetting_returns_settingNotExposed_when_direct_rest_reports_invalid_setting() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let body = Data("{\"code\":\"rest_setting_setting_invalid\",\"message\":\"Invalid setting.\",\"data\":{\"status\":404}}".utf8)
         network.simulateError(requestUrlSuffix: "settings/advanced/woocommerce_analytics_enabled", error: NetworkError.notFound(response: body))
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -792,16 +806,17 @@ final class SettingStoreTests: XCTestCase {
         }
     }
 
-    func test_enableAnalyticsSetting_returns_settingNotExposed_when_setting_is_invalid() {
+    @MainActor
+    func test_enableAnalyticsSetting_returns_settingNotExposed_when_setting_is_invalid() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let tunnelError = DotcomError.unknown(code: "rest_setting_setting_invalid", message: "Invalid setting.", data: nil)
         network.simulateError(requestUrlSuffix: "settings/advanced/woocommerce_analytics_enabled", error: tunnelError)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.enableAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -812,7 +827,8 @@ final class SettingStoreTests: XCTestCase {
         }
     }
 
-    func test_enableAnalyticsSetting_updates_stored_settings() {
+    @MainActor
+    func test_enableAnalyticsSetting_updates_stored_settings() async {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_analytics_enabled", value: "no", settingGroupKey: "advanced")
         storageManager.insertSampleSiteSetting(readOnlySiteSetting: oldSetting)
@@ -820,9 +836,9 @@ final class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/advanced/woocommerce_analytics_enabled", filename: "setting-analytics")
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.enableAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -833,16 +849,17 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(updated?.value, "yes")
     }
 
-    func test_enableAnalyticsSetting_returns_error_if_remote_request_fails() {
+    @MainActor
+    func test_enableAnalyticsSetting_returns_error_if_remote_request_fails() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: "settings/advanced/woocommerce_analytics_enabled", error: expectedError)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.enableAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -851,7 +868,8 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
-    func test_retrieveCouponSetting_does_not_remove_other_settings_in_same_group() {
+    @MainActor
+    func test_retrieveCouponSetting_does_not_remove_other_settings_in_same_group() async {
         // Given
         let oldSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_enable_coupons", value: "no", settingGroupKey: "general")
         let otherSetting = SiteSetting.fake().copy(siteID: sampleSiteID, settingID: "woocommerce_currency", value: "USD", settingGroupKey: "general")
@@ -861,9 +879,9 @@ final class SettingStoreTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", filename: "setting-coupon")
 
         // When
-        let result: Result<Bool, Error> = waitFor { promise in
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -886,15 +904,16 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.retrievePointOfSaleSettings
 
-    func test_retrievePointOfSaleSettings_returns_expected_settings() throws {
+    @MainActor
+    func test_retrievePointOfSaleSettings_returns_expected_settings() async throws {
         // Given
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/point-of-sale", filename: "settings-point-of-sale")
 
         // When
-        let result: Result<[Networking.SiteSetting], Error> = waitFor { promise in
+        let result: Result<[Networking.SiteSetting], Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             settingStore.onAction(action)
         }
@@ -930,15 +949,16 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(refundPolicySetting?.settingGroupKey, "point-of-sale")
     }
 
-    func test_retrievePointOfSaleSettings_returns_error_upon_response_error() {
+    @MainActor
+    func test_retrievePointOfSaleSettings_returns_error_upon_response_error() async {
         // Given
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/point-of-sale", filename: "generic_error")
 
         // When
-        let result: Result<[Networking.SiteSetting], Error> = waitFor { promise in
+        let result: Result<[Networking.SiteSetting], Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             settingStore.onAction(action)
         }
@@ -947,14 +967,15 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isFailure)
     }
 
-    func test_retrievePointOfSaleSettings_returns_error_upon_empty_response() {
+    @MainActor
+    func test_retrievePointOfSaleSettings_returns_error_upon_empty_response() async {
         // Given
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result: Result<[Networking.SiteSetting], Error> = waitFor { promise in
+        let result: Result<[Networking.SiteSetting], Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             settingStore.onAction(action)
         }
@@ -965,36 +986,34 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.isFeatureEnabled
 
-    func test_isFeatureEnabled_returns_true_when_feature_is_enabled() {
+    @MainActor
+    func test_isFeatureEnabled_returns_true_when_feature_is_enabled() async throws {
         // Given
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/advanced/woocommerce_feature_point_of_sale_enabled",
                                  filename: "settings-advanced-feature-pos-enabled")
 
         // When
-        let isFeatureEnabled = waitFor { promise in
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
             settingStore.onAction(SettingAction.isFeatureEnabled(siteID: self.sampleSiteID, feature: .pointOfSale) { result in
-                switch result {
-                case .success(let isEnabled):
-                    promise(isEnabled)
-                case .failure(let error):
-                    XCTFail("Expected success but got error: \(error)")
-                }
+                continuation.resume(returning: result)
             })
         }
 
         // Then
+        let isFeatureEnabled = try result.get()
         XCTAssertTrue(isFeatureEnabled)
     }
 
-    func test_isFeatureEnabled_returns_failure_when_no_response() {
+    @MainActor
+    func test_isFeatureEnabled_returns_failure_when_no_response() async {
         // Given
         let settingStore = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
 
         // When
-        let result = waitFor { promise in
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
             settingStore.onAction(SettingAction.isFeatureEnabled(siteID: self.sampleSiteID, feature: .pointOfSale) { result in
-                promise(result)
+                continuation.resume(returning: result)
             })
         }
 
@@ -1004,16 +1023,17 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.retrieveAnalyticsOrderDateType
 
-    func test_retrieveAnalyticsOrderDateType_returns_paid_value() throws {
+    @MainActor
+    func test_retrieveAnalyticsOrderDateType_returns_paid_value() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
                                  filename: "setting-analytics-date-type-paid")
 
         // When
-        let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
+        let result: Result<AnalyticsOrderDateType, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -1023,16 +1043,17 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(dateType, .paid)
     }
 
-    func test_retrieveAnalyticsOrderDateType_returns_completed_value() throws {
+    @MainActor
+    func test_retrieveAnalyticsOrderDateType_returns_completed_value() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
                                  filename: "setting-analytics-date-type-completed")
 
         // When
-        let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
+        let result: Result<AnalyticsOrderDateType, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -1042,16 +1063,17 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(dateType, .completed)
     }
 
-    func test_retrieveAnalyticsOrderDateType_returns_parse_error_and_skips_cache_when_value_is_unknown() {
+    @MainActor
+    func test_retrieveAnalyticsOrderDateType_returns_parse_error_and_skips_cache_when_value_is_unknown() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
                                  filename: "setting-analytics-date-type-parse-error")
 
         // When
-        let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
+        let result: Result<AnalyticsOrderDateType, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -1064,16 +1086,17 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_date_type"))
     }
 
-    func test_retrieveAnalyticsOrderDateType_returns_failure_when_network_fails() {
+    @MainActor
+    func test_retrieveAnalyticsOrderDateType_returns_failure_when_network_fails() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type", error: expectedError)
 
         // When
-        let result: Result<AnalyticsOrderDateType, Error> = waitFor { promise in
+        let result: Result<AnalyticsOrderDateType, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -1084,16 +1107,17 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.updateAnalyticsOrderDateType
 
-    func test_updateAnalyticsOrderDateType_returns_success_when_response_parses() throws {
+    @MainActor
+    func test_updateAnalyticsOrderDateType_returns_success_when_response_parses() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
                                  filename: "setting-analytics-date-type-completed")
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .completed) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -1102,16 +1126,17 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_updateAnalyticsOrderDateType_returns_parse_error_and_skips_cache_when_value_is_unknown() {
+    @MainActor
+    func test_updateAnalyticsOrderDateType_returns_parse_error_and_skips_cache_when_value_is_unknown() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type",
                                  filename: "setting-analytics-date-type-parse-error")
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .completed) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -1124,16 +1149,17 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertNil(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_date_type"))
     }
 
-    func test_updateAnalyticsOrderDateType_returns_failure_when_network_fails() {
+    @MainActor
+    func test_updateAnalyticsOrderDateType_returns_failure_when_network_fails() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: "settings/wc_admin/woocommerce_date_type", error: expectedError)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .allOrders) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -1144,16 +1170,17 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.retrieveAnalyticsImportUpdateMode
 
-    func test_retrieveAnalyticsImportUpdateMode_returns_scheduled_value() throws {
+    @MainActor
+    func test_retrieveAnalyticsImportUpdateMode_returns_scheduled_value() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
                                  filename: "setting-analytics-scheduled-import-yes")
 
         // When
-        let result: Result<AnalyticsImportUpdateMode, Error> = waitFor { promise in
+        let result: Result<AnalyticsImportUpdateMode, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -1163,16 +1190,17 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(mode, .scheduled)
     }
 
-    func test_retrieveAnalyticsImportUpdateMode_when_value_is_null_then_returns_immediate_value_and_caches_no() throws {
+    @MainActor
+    func test_retrieveAnalyticsImportUpdateMode_when_value_is_null_then_returns_immediate_value_and_caches_no() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
                                  filename: "setting-analytics-scheduled-import-null")
 
         // When
-        let result: Result<AnalyticsImportUpdateMode, Error> = waitFor { promise in
+        let result: Result<AnalyticsImportUpdateMode, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -1183,16 +1211,17 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertEqual(viewStorage.loadSiteSetting(siteID: sampleSiteID, settingID: "woocommerce_analytics_scheduled_import")?.value, "no")
     }
 
-    func test_retrieveAnalyticsImportUpdateMode_returns_parse_error_and_skips_cache_when_value_is_unknown() {
+    @MainActor
+    func test_retrieveAnalyticsImportUpdateMode_returns_parse_error_and_skips_cache_when_value_is_unknown() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
                                  filename: "setting-analytics-scheduled-import-parse-error")
 
         // When
-        let result: Result<AnalyticsImportUpdateMode, Error> = waitFor { promise in
+        let result: Result<AnalyticsImportUpdateMode, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: self.sampleSiteID) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -1207,16 +1236,17 @@ final class SettingStoreTests: XCTestCase {
 
     // MARK: - SettingAction.updateAnalyticsImportUpdateMode
 
-    func test_updateAnalyticsImportUpdateMode_returns_success_when_response_parses() throws {
+    @MainActor
+    func test_updateAnalyticsImportUpdateMode_returns_success_when_response_parses() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         network.simulateResponse(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import",
                                  filename: "setting-analytics-scheduled-import-no")
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.updateAnalyticsImportUpdateMode(siteID: self.sampleSiteID, value: .immediate) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }
@@ -1225,16 +1255,17 @@ final class SettingStoreTests: XCTestCase {
         XCTAssertTrue(result.isSuccess)
     }
 
-    func test_updateAnalyticsImportUpdateMode_returns_failure_when_network_fails() {
+    @MainActor
+    func test_updateAnalyticsImportUpdateMode_returns_failure_when_network_fails() async {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
         let expectedError = NetworkError.unacceptableStatusCode(statusCode: 500)
         network.simulateError(requestUrlSuffix: "settings/wc_admin/woocommerce_analytics_scheduled_import", error: expectedError)
 
         // When
-        let result: Result<Void, Error> = waitFor { promise in
+        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
             let action = SettingAction.updateAnalyticsImportUpdateMode(siteID: self.sampleSiteID, value: .scheduled) { result in
-                promise(result)
+                continuation.resume(returning: result)
             }
             store.onAction(action)
         }

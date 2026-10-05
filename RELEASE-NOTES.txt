@@ -5,11 +5,11 @@
 -----
 - [*] Layout: Fixed doubled side padding on the card reader manuals, plugins and booking details screens in landscape, and content insets of sheets on wide layouts. [https://github.com/woocommerce/woocommerce-ios/pull/17971]
 - [*] Order creation: Keep the form, product selector and bundle configuration content inside the safe area after rotating or resizing the app. [https://github.com/woocommerce/woocommerce-ios/pull/17951]
+- [*] Privacy: Respect your analytics preference throughout login, including after logging out. [https://github.com/woocommerce/woocommerce-ios/pull/17973]
 
 
 25.8
 -----
-- [*] Privacy: Respect your analytics preference throughout login, including after logging out. [https://github.com/woocommerce/woocommerce-ios/pull/17973]
 - [*] Login: QR code sign-in now shows "iPhone" or "iPad" on the web instead of the raw device identifier (e.g. "iPhone14,2"). [https://github.com/woocommerce/woocommerce-ios/pull/17983]
 - [*] Login: Allow entering and submitting nine-digit verification codes from WordPress.com. [https://github.com/woocommerce/woocommerce-ios/pull/17969]
 - [Internal] Login: the site-address screen reached from the QR prologue's "Log in with site address" fallback now tracks under the `login_site_address` flow instead of `login_qr`. [https://github.com/woocommerce/woocommerce-ios/pull/17915]

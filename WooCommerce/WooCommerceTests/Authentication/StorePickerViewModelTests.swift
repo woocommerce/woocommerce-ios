@@ -17,6 +17,33 @@ final class StorePickerViewModelTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_role_check_when_configuration_changes_then_only_login_opts_into_response_detection() {
+        for configuration in [StorePickerConfiguration.login, .standard, .switchingStores] {
+            // Given
+            let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+            let failure = UnexpectedStoreResponseError(kind: .unexpectedContent)
+            var optedIn: Bool?
+            stores.whenReceivingAction(ofType: UserAction.self) { action in
+                if case let .retrieveUser(_, enabled, completion) = action {
+                    optedIn = enabled
+                    completion(.failure(failure))
+                }
+            }
+            let viewModel = StorePickerViewModel(configuration: configuration, stores: stores, storageManager: storageManager)
+            var receivedFailure: LoginUnexpectedResponseFailure?
+            // When
+            viewModel.checkEligibility(for: 123) { result in
+                if case .failure(let error) = result {
+                    receivedFailure = LoginUnexpectedResponseFailure(error: error, step: .userRoleCheck)
+                }
+            }
+            // Then
+            XCTAssertEqual(optedIn, configuration == .login)
+            XCTAssertEqual(receivedFailure?.kind, .unexpectedContent)
+            XCTAssertEqual(receivedFailure?.step, .userRoleCheck)
+        }
+    }
+
     func test_siteToPreselect_when_multiple_woo_stores_have_no_matching_site_address_then_returns_nil() {
         // Given
         let firstSite = Site.fake().copy(siteID: 123, url: "https://first.example.com", isWooCommerceActive: true)

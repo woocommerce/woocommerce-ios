@@ -3,6 +3,7 @@ import SwiftUI
 struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posHeaderTopPadding) private var topPadding
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
@@ -21,8 +22,6 @@ struct POSRootModalViewModifier: ViewModifier {
             .overlay {
                 GeometryReader { geometry in
                     let modalPadding = isFullScreen ? POSPadding.none : POSPadding.medium
-                    let availableSize = CGSize(width: max(0, geometry.size.width - 2 * modalPadding),
-                                               height: max(0, geometry.size.height - 2 * modalPadding))
                     ZStack {
                         if modalManager.isPresented {
                             Color.posSurfaceDim.opacity(0.8)
@@ -44,7 +43,8 @@ struct POSRootModalViewModifier: ViewModifier {
                             }
                             ZStack {
                                 modalManager.getContent()
-                                    .environment(\.posModalParentSize, availableSize)
+                                    .environment(\.posModalParentSize, geometry.size)
+                                    .environment(\.posHeaderTopPadding, isFullScreen ? topPadding : nil)
                                     .environment(\.posModalDismissAction, { modalManager.dismiss() })
                                     .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
                                     .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)

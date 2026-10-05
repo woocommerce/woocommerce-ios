@@ -12,7 +12,6 @@ private struct CardWaveProgressView: View {
     private let inactiveInset: CGFloat = 0.025
 
     @State private var activeArcIndex: Int = 0
-    @State private var animationTimer: Timer?
 
     private var waveCount: Int {
         radii.count
@@ -51,30 +50,24 @@ private struct CardWaveProgressView: View {
             Constants.cardColor
                 .clipShape(RoundedRectangle(cornerRadius: 13))
         }
-        .onAppear {
-            startAnimating()
-        }
-        .onDisappear {
-            stopAnimating()
+        .task {
+            await animateWaves()
         }
         .accessibilityLabel(Localization.accessibilityLabel)
     }
 
-    private func startAnimating() {
-        guard animationTimer == nil else {
-            return
-        }
-
-        animationTimer = Timer.scheduledTimer(withTimeInterval: animationDuration, repeats: true) { _ in
+    /// Advances the active wave until SwiftUI cancels the task when the view disappears.
+    private func animateWaves() async {
+        while !Task.isCancelled {
+            do {
+                try await Task.sleep(for: .seconds(animationDuration))
+            } catch {
+                return
+            }
             withAnimation(.easeInOut(duration: animationDuration)) {
                 activeArcIndex = (activeArcIndex + 1) % waveCount
             }
         }
-    }
-
-    private func stopAnimating() {
-        animationTimer?.invalidate()
-        animationTimer = nil
     }
 }
 

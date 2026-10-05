@@ -134,16 +134,17 @@ struct EmptyPOSCurrencySettings: POSCurrencySettingsProviding {
     init() {}
 }
 
-class EmptyPOSConnectivityProvider: POSConnectivityProviding {
-    var connectivityObserver: WooFoundation.ConnectivityObserver = EmptyPOSConnectivity()
+struct EmptyPOSConnectivityProvider: POSConnectivityProviding {
+    let connectivityObserver: WooFoundation.ConnectivityObserver = EmptyPOSConnectivity()
     init() {}
 }
 
-class EmptyPOSConnectivity: ConnectivityObserver {
-    @Published private(set) var currentStatus: ConnectivityStatus = .reachable(type: .ethernetOrWiFi)
+/// Always reachable. A constant value, so each environment default read is equivalent.
+struct EmptyPOSConnectivity: ConnectivityObserver {
+    let currentStatus: ConnectivityStatus = .reachable(type: .ethernetOrWiFi)
     var isConnectionMetered: Bool? { nil }
     var isLowDataModeEnabled: Bool? { nil }
-    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { $currentStatus.eraseToAnyPublisher() }
+    var statusPublisher: AnyPublisher<ConnectivityStatus, Never> { Just(currentStatus).eraseToAnyPublisher() }
     init() {}
 }
 

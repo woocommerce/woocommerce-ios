@@ -74,6 +74,25 @@ struct UnexpectedStoreResponseTests {
         #expect(UnexpectedResponseExcerpt.make("abcd efgh ijkl mnop qrst uvwx") == "[redacted]")
     }
 
+    @Test func test_excerpt_when_wordpress_error_has_styles_then_preserves_message_and_omits_private_regions() {
+        // Given
+        let body = """
+        <html><head><title>WordPress › Error</title>
+        <style>body { color: red; } /* private-style */</style>
+        <script>const data = {secret: "private-script"};</script></head>
+        <body><!-- {private-comment} --><p>There has been a critical error on this website.</p></body></html>
+        {"orders":[{"secret":"private-payload"}]}
+        """
+        // When
+        let excerpt = UnexpectedResponseExcerpt.make(body) ?? ""
+        // Then
+        #expect(excerpt.contains("WordPress › Error"))
+        #expect(excerpt.contains("There has been a critical error on this website."))
+        #expect(!excerpt.contains("private-"))
+        #expect(!excerpt.contains("color: red"))
+        #expect(!excerpt.contains("orders"))
+    }
+
     @Test func test_excerpt_when_json_or_debug_prefix_then_omits_store_payload() {
         // Given / When / Then
         #expect(UnexpectedResponseExcerpt.make("{\"orders\":[{\"email\":\"private\"}]}") == nil)

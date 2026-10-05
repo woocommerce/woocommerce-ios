@@ -108,12 +108,6 @@ final class AgeRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProt
             return
         }
 
-        // Do not request the age range when running UI tests.
-        guard ProcessConfiguration.isUITesting == false else {
-            onResult(.allow, .featureUnavailable)
-            return
-        }
-
         // Never run two decision flows concurrently: racing flows can send duplicate consent
         // questions and fight over the blocker presentation. A trigger that lands mid-flow is
         // not dropped, though — it may carry news the running flow read too early (e.g. a

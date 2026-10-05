@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 import YosemiteTestHelpers
 @testable import WooCommerce
 
+@MainActor
 final class SettingsViewModelTests: XCTestCase {
 
     /// Mock Storage: InMemory
@@ -26,8 +27,8 @@ final class SettingsViewModelTests: XCTestCase {
 
     private var analytics: WooAnalytics!
 
-    override func setUpWithError() throws {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         storageManager = MockStorageManager()
         sessionManager = .makeForTesting(authenticated: true)
         stores = MockStoresManager(sessionManager: sessionManager)
@@ -37,14 +38,14 @@ final class SettingsViewModelTests: XCTestCase {
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         storageManager = nil
         stores = nil
         sessionManager = nil
         defaults = nil
         analytics = nil
         analyticsProvider = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func test_sections_is_not_empty_after_view_did_load() {

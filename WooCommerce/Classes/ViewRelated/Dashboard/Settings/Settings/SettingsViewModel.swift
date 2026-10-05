@@ -8,6 +8,7 @@ import protocol WooFoundation.Analytics
 import class WooFoundation.VersionHelpers
 import enum WooFoundation.BuildConfiguration
 
+@MainActor
 protocol SettingsViewModelOutput {
     typealias Section = SettingsViewController.Section
 
@@ -32,6 +33,7 @@ protocol SettingsViewModelOutput {
     var siteUrl: String? { get }
 }
 
+@MainActor
 protocol SettingsViewModelActionsHandler {
     /// Sets up the view model and loads the settings.
     /// Presenter (SettingsViewController in this case) is responsible for calling this from viewDidLoad method.
@@ -48,10 +50,12 @@ protocol SettingsViewModelActionsHandler {
     func reloadSettings()
 }
 
+@MainActor
 protocol SettingsViewModelInput: AnyObject {
     var presenter: SettingsViewPresenter? { get set }
 }
 
+@MainActor
 final class SettingsViewModel: SettingsViewModelOutput, SettingsViewModelActionsHandler, SettingsViewModelInput {
 
     typealias Row = SettingsViewController.Row

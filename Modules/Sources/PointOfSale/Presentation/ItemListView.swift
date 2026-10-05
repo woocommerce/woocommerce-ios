@@ -136,7 +136,8 @@ struct ItemListView: View {
 
     @ViewBuilder
     private var navigationContainer: some View {
-        NavigationStack {
+        @Bindable var viewStateCoordinator = posModel.viewStateCoordinatorForView
+        NavigationStack(path: $viewStateCoordinator.itemNavigationPath) {
             content
         }
     }

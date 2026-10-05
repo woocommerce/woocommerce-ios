@@ -14,7 +14,9 @@ struct PointOfSaleCollectCashView: View {
     private let currencySettings: CurrencySettings
     private let presetAmount: Decimal?
 
-    @State private var textFieldAmountInput: String = ""
+    @Binding private var amountInput: POSCashAmountInputState
+
+    private var textFieldAmountInput: String { amountInput.amount }
     @State private var isLoading: Bool = false
     @State private var errorMessage: String?
     @State private var changeDueMessage: String?
@@ -40,7 +42,8 @@ struct PointOfSaleCollectCashView: View {
                                           isLoading: isLoading)
     }
 
-    init(orderTotal: String, currencySettings: CurrencySettings) {
+    init(orderTotal: String, currencySettings: CurrencySettings, amountInput: Binding<POSCashAmountInputState>) {
+        self._amountInput = amountInput
         self.viewHelper = CollectCashViewHelper(currencySettings: currencySettings)
         self.currencySettings = currencySettings
         self.presetAmount = viewHelper.parseCurrency(orderTotal)
@@ -76,7 +79,7 @@ struct PointOfSaleCollectCashView: View {
 
                         VStack(alignment: .center, spacing: conditionalPadding(POSSpacing.xSmall)) {
                             POSCashAmountTextField(
-                                amount: $textFieldAmountInput,
+                                input: $amountInput,
                                 isFocused: $isTextFieldFocused,
                                 currencySettings: currencySettings,
                                 preset: presetAmount,
@@ -218,7 +221,7 @@ private extension PointOfSaleCollectCashView {
 #if DEBUG
 #Preview {
     let model = POSPreviewHelpers.makePreviewAggregateModel()
-    PointOfSaleCollectCashView(orderTotal: "$1.23", currencySettings: CurrencySettings())
+    PointOfSaleCollectCashView(orderTotal: "$1.23", currencySettings: CurrencySettings(), amountInput: .constant(.init()))
         .environment(model.paymentModel)
 }
 #endif

@@ -135,6 +135,11 @@ struct PointOfSaleDashboardView: View {
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
+        .onChange(of: posModel.paymentState.cash) { _, newValue in
+            if newValue != .collectingCash {
+                viewStateCoordinator.cashAmountInput = .init()
+            }
+        }
         .onPreferenceChange(POSHidesFloatingControlPreferenceKey.self) { hides in
             floatingControlSuppressed = hides
         }

@@ -39,11 +39,14 @@ struct POSNavigationRouter {
 /// Thin wrapper that resolves environment dependencies for the cash payment NavigationStack destination.
 struct POSNavigationDestinationCashPaymentView: View {
     let orderTotal: String
+    @Environment(PointOfSaleAggregateModel.self) private var posModel
     @Environment(\.posCurrencyProvider) private var currencyProvider
 
     var body: some View {
+        @Bindable var viewStateCoordinator = posModel.viewStateCoordinatorForView
         PointOfSaleCollectCashView(orderTotal: orderTotal,
-                                   currencySettings: currencyProvider.currencySettings)
+                                   currencySettings: currencyProvider.currencySettings,
+                                   amountInput: $viewStateCoordinator.cashAmountInput)
         .toolbar(.hidden, for: .navigationBar)
     }
 }

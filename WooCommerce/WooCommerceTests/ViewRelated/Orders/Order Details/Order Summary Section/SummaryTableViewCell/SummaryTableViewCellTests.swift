@@ -6,14 +6,12 @@ import XCTest
 final class SummaryTableViewCellTests: XCTestCase {
     private var cell: SummaryTableViewCell!
 
-    @MainActor
     override func setUp() async throws {
         try await super.setUp()
         let nib = Bundle.main.loadNibNamed("SummaryTableViewCell", owner: self, options: nil)
         cell = nib?.first as? SummaryTableViewCell
     }
 
-    @MainActor
     override func tearDown() async throws {
         cell = nil
         try await super.tearDown()

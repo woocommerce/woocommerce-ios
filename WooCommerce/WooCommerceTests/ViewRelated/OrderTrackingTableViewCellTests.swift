@@ -17,14 +17,12 @@ final class OrderTrackingTableViewCellTests: XCTestCase {
                                                dateShipped: Date(timeIntervalSince1970: 0))
     }
 
-    @MainActor
     override func setUp() async throws {
         try await super.setUp()
         let nib = Bundle.main.loadNibNamed("OrderTrackingTableViewCell", owner: self, options: nil)
         cell = nib?.first as? OrderTrackingTableViewCell
     }
 
-    @MainActor
     override func tearDown() async throws {
         cell = nil
         try await super.tearDown()

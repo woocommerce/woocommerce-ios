@@ -10,7 +10,6 @@ final class ManualTrackingViewControllerTests: XCTestCase {
         static let order = MockOrders().sampleOrder()
     }
 
-    @MainActor
     override func setUp() async throws {
         try await super.setUp()
         viewModel = AddTrackingViewModel(order: MockData.order)
@@ -19,7 +18,6 @@ final class ManualTrackingViewControllerTests: XCTestCase {
         let _ = subject?.view
     }
 
-    @MainActor
     override func tearDown() async throws {
         subject = nil
         viewModel = nil

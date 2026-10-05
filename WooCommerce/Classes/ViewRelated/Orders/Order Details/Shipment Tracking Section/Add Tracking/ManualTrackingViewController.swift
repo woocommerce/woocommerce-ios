@@ -602,7 +602,7 @@ private extension ManualTrackingViewController {
     }
 }
 
-extension ManualTrackingViewController: @MainActor KeyboardScrollable {
+extension ManualTrackingViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         return table
     }

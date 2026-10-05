@@ -160,7 +160,7 @@ private extension ShipmentProvidersViewController {
     }
 }
 
-extension ShipmentProvidersViewController: @MainActor KeyboardScrollable {
+extension ShipmentProvidersViewController: KeyboardScrollable {
     var scrollable: UIScrollView {
         return table
     }

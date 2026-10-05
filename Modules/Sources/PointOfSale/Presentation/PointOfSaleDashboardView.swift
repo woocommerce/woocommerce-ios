@@ -138,6 +138,7 @@ struct PointOfSaleDashboardView: View {
         .onChange(of: isPhoneLayout) { _, isPhoneLayout in
             if !isPhoneLayout {
                 phoneShowingCart = false
+                phoneShowingBarcodeScannerSetup = false
             }
         }
         .onChange(of: posModel.paymentState.cash) { _, newValue in

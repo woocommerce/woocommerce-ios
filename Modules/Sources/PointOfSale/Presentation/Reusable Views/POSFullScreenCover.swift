@@ -73,6 +73,8 @@ struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
         content
             .fullScreenCover(isPresented: $isPresented, onDismiss: onDismiss, content: {
                 coverContent()
+                    .onAppear { parentCoverManager.isPresented = true }
+                    .onDisappear { parentCoverManager.isPresented = false }
                     .environment(\.horizontalSizeClass, horizontalSizeClass)
                     .posRootModal()
                     .environment(\.posHeaderBackButtonConfiguration, nil)
@@ -103,6 +105,8 @@ struct POSFullScreenCoverModifierForItem<Item: Identifiable & Equatable, CoverCo
         content
             .fullScreenCover(item: $item, onDismiss: onDismiss, content: {
                 coverContent($0)
+                    .onAppear { parentCoverManager.isPresented = true }
+                    .onDisappear { parentCoverManager.isPresented = false }
                     .environment(\.horizontalSizeClass, horizontalSizeClass)
                     .posRootModal()
                     .environment(\.posHeaderBackButtonConfiguration, nil)

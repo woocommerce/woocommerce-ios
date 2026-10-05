@@ -10,6 +10,7 @@ protocol QRLoginAnalyticsTracking {
     func trackClick(_ click: AuthenticatorAnalyticsTracker.ClickTarget)
     func trackFailure(_ failure: String)
     func setFlow(_ flow: AuthenticatorAnalyticsTracker.Flow)
+    func setStep(_ step: AuthenticatorAnalyticsTracker.Step)
 }
 
 @MainActor
@@ -22,6 +23,10 @@ struct DefaultQRLoginAnalyticsTracking: QRLoginAnalyticsTracking {
 
     func setFlow(_ flow: AuthenticatorAnalyticsTracker.Flow) {
         tracker.set(flow: flow)
+    }
+
+    func setStep(_ step: AuthenticatorAnalyticsTracker.Step) {
+        tracker.set(step: step)
     }
 
     func trackStep(_ step: AuthenticatorAnalyticsTracker.Step) {

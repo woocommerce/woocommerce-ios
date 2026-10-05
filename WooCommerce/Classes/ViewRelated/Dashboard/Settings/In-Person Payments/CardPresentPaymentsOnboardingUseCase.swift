@@ -34,6 +34,10 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     ///
     func updateState()
 
+    /// Rechecks cached onboarding against the newly synchronized store country.
+    ///
+    func revalidateAfterCountryChange()
+
     /// Pending requirements can be skipped so the merchant can continue to collect payments.
     /// Eventually, these become overdue requirements, which can also be skipped (see `skipOverdueRequirements()`).
     ///
@@ -215,6 +219,16 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
     func updateState() {
         state = checkOnboardingState()
+    }
+
+    func revalidateAfterCountryChange() {
+        let hadCompletedCache = cardPresentPaymentOnboardingStateCache.value?.isCompleted == true
+        cardPresentPaymentOnboardingStateCache.invalidate()
+        updateState()
+        // Preserve the initial network check when onboarding has not already been cached.
+        if hadCompletedCache && state.isCompleted {
+            cardPresentPaymentOnboardingStateCache.update(state)
+        }
     }
 
     func selectPlugin(_ selectedPlugin: CardPresentPaymentsPlugin) {

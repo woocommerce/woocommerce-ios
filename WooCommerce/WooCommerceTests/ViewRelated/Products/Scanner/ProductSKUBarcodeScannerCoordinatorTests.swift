@@ -201,6 +201,7 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
         XCTAssertEqual(openedCallCount, 0)
     }
 
+    @MainActor
     func test_coordinator_when_settings_action_is_tapped_and_settings_open_then_reports_tapped_and_opened() throws {
         // Given
         var reportedReasons: [ProducBarcodeScannerCoordinator.FailureReason] = []
@@ -222,6 +223,7 @@ final class ProductSKUBarcodeScannerCoordinatorTests: XCTestCase {
         XCTAssertEqual(openedCallCount, 1)
     }
 
+    @MainActor
     func test_coordinator_when_settings_action_is_tapped_but_settings_do_not_open_then_reports_only_tapped() throws {
         // Given
         var reportedReasons: [ProducBarcodeScannerCoordinator.FailureReason] = []

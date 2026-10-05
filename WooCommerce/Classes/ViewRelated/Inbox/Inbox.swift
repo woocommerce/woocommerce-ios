@@ -4,9 +4,6 @@ import Yosemite
 
 /// Shows a list of inbox notes as shown in WooCommerce Admin in core.
 struct Inbox: View {
-    /// Environment safe areas
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     /// View model that drives the view.
     @ObservedObject private(set) var viewModel: InboxViewModel
     @State private var showingActionSheet: Bool = false
@@ -17,6 +14,12 @@ struct Inbox: View {
     }
 
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         VStack(alignment: .leading, spacing: 0) {
             Group {
                 switch viewModel.syncState {

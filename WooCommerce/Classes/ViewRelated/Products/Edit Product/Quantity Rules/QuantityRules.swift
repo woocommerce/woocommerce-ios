@@ -20,11 +20,13 @@ struct QuantityRules: View {
     ///
     @ObservedObject var viewModel: QuantityRulesViewModel
 
-    /// Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
-
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         ScrollView {
             VStack(alignment: .leading) {
                 TitleAndTextFieldRow(title: Localization.minQuantity,

@@ -699,6 +699,57 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         assertEqual(analytics.receivedProperties.first?["order_id"] as? Int64, orderID)
     }
 
+    func test_card_payment_when_only_order_currency_is_unsupported_then_explains_hidden_methods() {
+        // Given
+        simulate(tapToPayDeviceAvailability: true, on: stores)
+        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
+            guard case let .checkEligibility(_, _, _, completion) = action else { return }
+            completion(.success(.unsupportedCurrency("USD")))
+        }
+        let dependencies = Dependencies(stores: stores, storage: storage, cardPresentPaymentsConfiguration: .init(country: .GB))
+
+        // When
+        let viewModel = PaymentMethodsViewModel(siteID: 1212, orderID: 111, total: "5", formattedTotal: "$5.00",
+                                                flow: .simplePayment, channel: .storeManagement, dependencies: dependencies)
+
+        // Then
+        XCTAssertFalse(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
+        XCTAssertEqual(viewModel.cardPaymentUnavailableMessage,
+                       "Card payments aren’t available for this order’s currency (USD).")
+    }
+
+    func test_country_changes_when_same_screen_is_retained_then_updates_card_methods_and_currency_message() {
+        // Given
+        let settings = MockSelectedSiteSettings()
+        let changes = PassthroughSubject<MockSelectedSiteSettings.SettingsUpdate, Never>()
+        settings.mockSettingsStream = changes.eraseToAnyPublisher()
+        simulate(tapToPayDeviceAvailability: true, on: stores)
+        stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
+            guard case let .checkEligibility(_, _, configuration, completion) = action else { return }
+            completion(.success(configuration.currencies.contains(.USD) ? .eligible : .unsupportedCurrency("USD")))
+        }
+        let dependencies = Dependencies(stores: stores, storage: storage,
+                                        cardPresentPaymentsConfiguration: .init(country: .unknown), siteSettings: settings)
+        let viewModel = PaymentMethodsViewModel(siteID: 1212, orderID: 111, total: "5", formattedTotal: "$5.00",
+                                                flow: .simplePayment, channel: .storeManagement, dependencies: dependencies)
+        XCTAssertFalse(viewModel.showPayWithCardRow)
+        XCTAssertFalse(viewModel.showTapToPayRow)
+        XCTAssertNil(viewModel.cardPaymentUnavailableMessage)
+
+        for country in ["GB", "US", "LT"] {
+            // When
+            let setting = SiteSetting.fake().copy(siteID: 1212, settingID: "woocommerce_default_country",
+                                                  value: country, settingGroupKey: "general")
+            changes.send((siteID: 1212, settings: [setting], source: .storageChange))
+
+            // Then
+            XCTAssertEqual(viewModel.showPayWithCardRow, country == "US")
+            XCTAssertEqual(viewModel.showTapToPayRow, country == "US")
+            XCTAssertEqual(viewModel.cardPaymentUnavailableMessage != nil, country == "GB")
+        }
+    }
+
     func test_card_row_is_shown_for_eligible_order_and_country_even_when_ttp_is_not_supported() {
         // Given
         let configuration = CardPresentPaymentsConfiguration(country: .US)
@@ -767,7 +818,7 @@ final class PaymentMethodsViewModelTests: XCTestCase {
         let configuration = CardPresentPaymentsConfiguration(country: .US)
         stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
             switch action {
-            case let .orderIsEligibleForCardPresentPayment(_, _, _, completion):
+            case let .checkEligibility(_, _, _, completion):
                 completion(.failure(NSError(domain: "Error", code: 0)))
             }
         }
@@ -1172,8 +1223,8 @@ private extension PaymentMethodsViewModelTests {
     private func simulate(cardPaymentEligibility: Bool, on stores: MockStoresManager) {
         stores.whenReceivingAction(ofType: OrderCardPresentPaymentEligibilityAction.self) { action in
             switch action {
-            case let .orderIsEligibleForCardPresentPayment(_, _, _, completion):
-                completion(.success(cardPaymentEligibility))
+            case let .checkEligibility(_, _, _, completion):
+                completion(.success(cardPaymentEligibility ? .eligible : .ineligible))
             }
         }
     }

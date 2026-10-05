@@ -8,7 +8,7 @@ import Codegen
 /// so we wanted a smaller representation and to reduce the risk of decoding issues
 /// caused by plugin incompatibilities.
 ///
-public struct POSProductVariation: Codable, Equatable, GeneratedCopiable, GeneratedFakeable {
+public struct POSProductVariation: Codable, Equatable, Sendable, GeneratedCopiable, GeneratedFakeable {
     public let siteID: Int64
     public let productID: Int64
 

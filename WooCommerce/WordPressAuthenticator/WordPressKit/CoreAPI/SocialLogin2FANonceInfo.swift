@@ -21,6 +21,8 @@ public class SocialLogin2FANonceInfo: NSObject {
         case authenticator = 6
         case sms = 7
         case backup = 8
+        /// Account-lock verification codes sent by email during password login.
+        case email = 9
     }
 
     public func authTypeAndNonce(for code: String) -> (String, String) {

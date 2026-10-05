@@ -80,4 +80,19 @@ final class PushNotificationRegistrationStateTests: XCTestCase {
         XCTAssertEqual(state.deviceToken, "sample-token")
         XCTAssertEqual(defaults.string(forKey: PushNotificationSharedConstants.UserDefaultsKeys.deviceToken), "sample-token")
     }
+
+    func test_unmarkSiteAsRegisteredForWooPNs_when_site_is_not_registered_then_still_removes_next_check() {
+        // Given
+        let siteOneDate = Date(timeIntervalSince1970: 100)
+        let siteTwoDate = Date(timeIntervalSince1970: 200)
+        state.setWooPushNextCheck(siteOneDate, for: 5)
+        state.setWooPushNextCheck(siteTwoDate, for: 6)
+
+        // When
+        state.unmarkSiteAsRegisteredForWooPNs(5)
+
+        // Then
+        XCTAssertNil(state.wooPushNextCheck(for: 5))
+        XCTAssertEqual(state.wooPushNextCheck(for: 6), siteTwoDate)
+    }
 }

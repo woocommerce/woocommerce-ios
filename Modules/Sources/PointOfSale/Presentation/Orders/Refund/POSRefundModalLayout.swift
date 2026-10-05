@@ -29,8 +29,6 @@ struct POSRefundNavigationHeader: View {
     let backAction: (() -> Void)?
     let backAccessibilityLabel: String
 
-    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-
     init(title: String? = nil,
          backAction: (() -> Void)?,
          backAccessibilityLabel: String) {
@@ -50,8 +48,12 @@ struct POSRefundNavigationHeader: View {
                 Text(title)
                     .font(.posHeadingBold)
                     .dynamicTypeSize(...DynamicTypeSize.accessibility2)
-                    .lineLimit(1)
-                    .minimumScaleFactor(horizontalSizeClass == .compact ? 0.7 : 1.0)
+                    // Wraps rather than shrinking and then truncating, matching
+                    // `POSPageHeaderView`. Translations run longer than the English the
+                    // layout was sized for. The stack is top aligned, so the back button
+                    // stays level with the first line.
+                    .lineLimit(Constants.titleLineLimit)
+                    .multilineTextAlignment(.leading)
             }
 
             Spacer(minLength: POSSpacing.none)
@@ -59,6 +61,14 @@ struct POSRefundNavigationHeader: View {
         .foregroundColor(Color.posOnSurface)
         .padding(POSPadding.xLarge)
         .frame(maxWidth: .infinity, alignment: .leading)
+    }
+}
+
+private extension POSRefundNavigationHeader {
+    enum Constants {
+        /// Two lines hold the longest translated refund headings on a phone without the
+        /// header taking over the screen. Matches `POSPageHeaderView`.
+        static let titleLineLimit: Int = 2
     }
 }
 

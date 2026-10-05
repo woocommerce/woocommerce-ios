@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-09-08 09:58:24+0000 */
+/* Translation-Revision-Date: 2026-09-24 09:57:28+0000 */
 /* Plural-Forms: nplurals=1; plural=0; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: ja_JP */
@@ -59,9 +59,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
 "%1$@ off · %2$@" = "%1$@ 割引 (%2$@)";
-
-/* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
-"%1$@ refund requested (%2$@)" = "%1$@ の返金がリクエストされました (%2$@)";
 
 /* Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected */
 "%1$@ selected" = "%1$@件を選択済み";
@@ -617,9 +614,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
 "Amount (%@)" = "合計 (%@)";
-
-/* Title of shipping label eligible refund amount in Refund Shipping Label screen */
-"Amount Eligible For Refund" = "返金対象額";
 
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
@@ -5278,9 +5272,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Puerto Rico" = "プエルトリコ";
 
-/* Title of shipping label purchase date in Refund Shipping Label screen */
-"Purchase Date" = "購入日";
-
 /* Create Shipping Label form -> Purchase Label button */
 "Purchase Label" = "ラベルを購入";
 
@@ -5380,9 +5371,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Refund Details section title */
 "Refund Details" = "返金詳細";
-
-/* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
-"Refund Label (%1$@)" = "返金ラベル (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "配送料を返金";
@@ -5505,8 +5493,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the report section on the privacy screen */
 "Reports" = "レポート";
 
-/* Navigation bar title to request a refund for a shipping label
-   Request a refund on a shipping label from the shipping label more menu action sheet */
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "返金をリクエスト";
 
 /* Name text field placeholder in Shipping Label Address Validation when it's required
@@ -6173,9 +6160,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error message in the Add Edit Coupon screen when the update of the coupon goes in error. */
 "Something went wrong while updating the coupon." = "クーポンの更新中にエラーが発生しました。";
-
-/* Notice format when a shipping label refund request fails. */
-"Something went wrong with the refund. Please try again." = "返金処理でエラーが発生しました。 もう一度お試しください。";
 
 /* Error message for when we can't create variations remotely
    Error message for when we can't fetch existing variations. */
@@ -8180,9 +8164,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "ウェブダッシュボードではバリエーションのあるサブスクリプションのみを追加できます";
 
-/* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "荷物の配送に使用されていない配送ラベルの返金をリクエストできます。\n処理には少なくとも14日かかります。";
-
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "ストアの郵便番号は「wp-admin」>「WooCommerce」>「設定 (一般)」で設定できます";
 
@@ -9884,6 +9865,42 @@ which should be translated separately and considered part of this sentence. */
 
 /* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue" = "変更期限: %1$@";
+
+/* Description shown when asking for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.description" = "セキュリティプラグインによって WordPress ダッシュボードが移動する場合があります。 ダッシュボードを開くために使用するアドレスを入力します。";
+
+/* Placeholder for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.placeholder" = "WordPress ダッシュボードのアドレス";
+
+/* Title shown when asking for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.title" = "ストアのダッシュボードはどこにありますか ?";
+
+/* Browser authentication button shown during custom address recovery. */
+"com.woocommerce.siteCredentials.recovery.browserAlternative" = "代わりにブラウザーでログインしてみてください";
+
+/* Button returning to the username and password form. */
+"com.woocommerce.siteCredentials.recovery.cancel" = "キャンセル";
+
+/* Error shown when no WordPress dashboard exists at the custom address. */
+"com.woocommerce.siteCredentials.recovery.error.adminNotFound" = "そのアドレスでは WordPress ダッシュボードにアクセスできませんでした。 確認してからもう一度お試しください。";
+
+/* Error shown when a custom WordPress address does not belong to the current site. */
+"com.woocommerce.siteCredentials.recovery.error.differentSite" = "安全な接続やポートを変更せずに、同じサイトのアドレスを入力します。";
+
+/* Error shown when a custom WordPress address is not a full web address. */
+"com.woocommerce.siteCredentials.recovery.error.invalidURL" = "http:\/\/または https:\/\/ を含む完全なウェブアドレスを入力します。";
+
+/* Error shown when no WordPress sign-in page exists at the custom address. */
+"com.woocommerce.siteCredentials.recovery.error.loginNotFound" = "そのアドレスに WordPress のログインページが見つかりませんでした。 確認してからもう一度お試しください。";
+
+/* Description shown when asking for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.description" = "セキュリティプラグインではカスタム WordPress ログインアドレスを使用する場合があります。 ログインに使用するアドレスを入力してください。";
+
+/* Placeholder for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.placeholder" = "WordPress のログインアドレス";
+
+/* Title shown when asking for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.title" = "どこでストアにログインしますか ?";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Blaze キャンペーンの製品を選択します。";
@@ -15064,11 +15081,44 @@ which should be translated separately and considered part of this sentence. */
 /* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
 "shipping_item_row.quantity.format" = "%2$@ の%1$d個のアイテム";
 
-/* PermissionKit description shown when the app age rating changes.ratingCode: %1$d is the new rating code. */
-"significantChangeConsent.ageRatingChange.description" = "アプリの年齢評価が%1$dに変更されました。";
+/* Description a parent or guardian sees in the system consent request when the app's App Store age rating changes. */
+"significantChangeConsent.ageRatingChange.request.description" = "App Store でのこのアプリの年齢評価が引き上げられました。";
 
-/* PermissionKit description shown for a manual significant change.manualChangeID: %1$@ is a short description. */
-"significantChangeConsent.manual.description" = "アプリの大幅な更新:  %1$@。";
+/* Button on the significant-change blocking screen that sends the approval request again. */
+"significantChangeConsent.blocking.askAgain.button" = "もう一度送信";
+
+/* Button on the significant-change blocking screen that re-checks the approval status. */
+"significantChangeConsent.blocking.checkAgain.button" = "再確認";
+
+/* Button on the significant-change blocking screen that dismisses it after the approval was granted. */
+"significantChangeConsent.blocking.continue.button" = "続行";
+
+/* Message of the blocking screen shown when a parent/guardian declined the approval for a significant app change. */
+"significantChangeConsent.blocking.denied.message" = "このアプリの使用を続けるために必要な承認を保護者が拒否しました。承認リクエストをもう一度送信できます。";
+
+/* Title of the blocking screen shown when a parent/guardian declined the approval for a significant app change. */
+"significantChangeConsent.blocking.denied.title" = "承認が拒否されました";
+
+/* Message of the blocking screen shown once a parent/guardian approved the significant app change, before the user continues into the app. */
+"significantChangeConsent.blocking.granted.message" = "保護者がこのアプリに対する最近の変更を承認しました。設定が完了しました。";
+
+/* Title of the blocking screen shown once a parent/guardian approved the significant app change, before the user continues into the app. */
+"significantChangeConsent.blocking.granted.title" = "承認が付与されました";
+
+/* Message of the blocking screen shown when a significant app change requires a parent/guardian approval that hasn't been requested yet. */
+"significantChangeConsent.blocking.needed.message" = "続行する前に、このアプリに対する最近の変更を保護者に承認してもらう必要があります。 続行するには承認リクエストを送信します。";
+
+/* Title of the blocking screen shown when a significant app change requires a parent/guardian approval that hasn't been requested yet. */
+"significantChangeConsent.blocking.needed.title" = "承認が必要";
+
+/* Message of the blocking screen shown after an approval request for a significant app change was sent to a parent/guardian and is awaiting their response. */
+"significantChangeConsent.blocking.pendingRequested.message" = "このアプリへの最近の変更に関する承認リクエストを保護者に送信しました。 保護者が対応したら、「再確認」をタップして続行します。";
+
+/* Title of the blocking screen shown after an approval request for a significant app change was sent to a parent/guardian and is awaiting their response. */
+"significantChangeConsent.blocking.pendingRequested.title" = "承認がリクエストされました";
+
+/* Button on the significant-change blocking screen that sends the approval request to a parent/guardian. */
+"significantChangeConsent.blocking.requestApproval.button" = "承認をリクエスト";
 
 /* Error message shown when the site info check and API discovery both fail. */
 "siteAddress.siteConnectionError" = "このサイトとの接続中に問題が発生しました。 サイトのアドレスを確認して、もう一度お試しください。";
@@ -15135,6 +15185,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver value announced for an unselected checkbox. */
 "storeCheckbox.accessibilityValue.unchecked" = "チェックなし";
+
+/* Explanation shown when the app cannot reach the merchant's store because of a problem on their site. */
+"storeConnectionError.body.v2" = "ストアとの接続中に問題が発生しました。 通常これは WordPress サイトでの接続の問題であり、多くの場合、セキュリティプラグイン、最近のプラグインの更新、または更新が必要な Jetpack 接続が原因です。 WooCommerce アプリでは、スマートフォンからこの問題を修正することはできません。";
+
+/* Title of the button that opens the support form from the store connection warning. */
+"storeConnectionError.contactSupport" = "サポートに連絡";
+
+/* Title of the button that hides the store connection warning for the current session. */
+"storeConnectionError.dismiss" = "閉じる";
+
+/* Title of the warning shown when the app cannot reach the merchant's store. */
+"storeConnectionError.title" = "ストアにアクセスできません";
 
 /* Default accessibility label for dismissing a store notice banner. */
 "storeNoticeBanner.dismiss.accessibilityLabel" = "閉じる";
@@ -15225,6 +15287,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback label for a store stats widget site entity when its name is unknown. */
 "storeStatsWidget.storeEntity.fallbackName" = "ストア";
+
+/* VoiceOver label of the back control in a top app bar. */
+"storeTopAppBar.navigation.back" = "戻る";
+
+/* VoiceOver label of the close control in a top app bar. */
+"storeTopAppBar.navigation.close" = "閉じる";
 
 /* Range label for the Last Month option in the Store Stats widget */
 "storeWidgets.dateRange.lastMonth" = "先月";
@@ -15457,6 +15525,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic error message shown when an AI support chat request fails */
 "supportChatViewModel.aiChatConnectionErrorMessage" = "現在、AI チャットに接続できません。";
+
+/* Error message shown when device registration for push notifications fails from support chat */
+"supportChatViewModel.deviceRegistrationErrorMessage" = "プッシュ通知に端末を登録できませんでした。 もう一度お試しください。";
 
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "こんにちは。 Woo モバイルサポートボットです。 今日は何かお手伝いできることはありますか ?";
@@ -17131,6 +17202,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message in the Push Notifications Benefits View for users without admin role */
 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.noPermission" = "お使いのアカウントには、プッシュ通知の設定を完了する権限がありません。 ストア管理者にこの処理を依頼してください。";
+
+/* Error message in the Push Notifications Benefits View when the store's Jetpack is in Offline Mode */
+"wpcomPushNotificationsBenefitsViewModel.variantCheckError.storeInOfflineMode" = "ストアがオフラインモードになっているため、プッシュ通知を設定できません。 ヘルプが必要な場合は、サポートにお問い合わせください。";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";

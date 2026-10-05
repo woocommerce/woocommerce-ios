@@ -1,6 +1,5 @@
 import Foundation
 
-/// Produces diagnostic text only; never retains or renders the original document.
 enum UnexpectedResponseExcerpt {
     static func make(_ body: String) -> String? {
         let trimmed = body.trimmingCharacters(in: .whitespacesAndNewlines)

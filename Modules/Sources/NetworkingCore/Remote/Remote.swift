@@ -315,7 +315,7 @@ private extension Remote {
             return try mapper.map(response: data)
         } catch {
             guard error is DecodingError, let policy = request as? UnexpectedResponseRequest else { throw error }
-            throw policy.makeError(kind: .unexpectedContent, data: data)
+            throw policy.makeError(kind: .unexpectedContent, data: data, isDecodingFailure: true)
         }
     }
 
@@ -495,7 +495,10 @@ private extension Remote {
     /// Handles decoding errors when parsing the response data fails.
     ///
     func handleDecodingError(error: Error, for request: Request, entityName: String) {
-        guard let decodingError = error as? DecodingError else {
+        // Preserve parsing analytics without retaining or reporting response-derived decoding details.
+        let replacedError: DecodingError? = (error as? UnexpectedStoreResponseError)?.isDecodingFailure == true
+            ? .dataCorrupted(.init(codingPath: [], debugDescription: "Unexpected API response.")) : nil
+        guard let decodingError = (error as? DecodingError) ?? replacedError else {
             return
         }
         publishJSONParsingErrorNotification(error: decodingError, path: request.pathForAnalytics, entityName: entityName)

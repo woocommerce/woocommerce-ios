@@ -1,6 +1,5 @@
 import Foundation
 
-/// Classification is separate from business-error presentation and never emits analytics.
 enum UnexpectedResponseClassifier {
     static func classify(data: Data?, status: Int, contentType: String?) -> UnexpectedStoreResponseError.Kind? {
         if (500...599).contains(status) { return .unacceptableStatusCode }

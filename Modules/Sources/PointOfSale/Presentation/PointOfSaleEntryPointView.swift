@@ -193,6 +193,15 @@ public struct PointOfSaleEntryPointView: View {
     }
 
     public var body: some View {
+        GeometryReader { geometry in
+            // Keep native compact windows compact; collapse regular windows that cannot fit two panes.
+            let isCompactLayout = horizontalSizeClass == .compact || geometry.size.width < Constants.minimumSplitWidth
+            content(isCompactLayout: isCompactLayout)
+                .environment(\.horizontalSizeClass, isCompactLayout ? .compact : .regular)
+        }
+    }
+
+    private func content(isCompactLayout: Bool) -> some View {
         Group {
             if let posModel {
                 PointOfSaleDashboardView(httpsConfigurationNotice: httpsConfigurationNotice)
@@ -281,8 +290,8 @@ public struct PointOfSaleEntryPointView: View {
         }
     }
 
-    private var isCompactLayout: Bool {
-        horizontalSizeClass == .compact
+    private enum Constants {
+        static let minimumSplitWidth: CGFloat = 700
     }
 }
 

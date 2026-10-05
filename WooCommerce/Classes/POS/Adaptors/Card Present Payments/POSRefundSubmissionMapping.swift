@@ -169,7 +169,7 @@ struct POSRefundSubmissionMapping {
         if let paymentGateway = context.paymentGateway {
             return paymentGateway.features.contains(.refunds)
         }
-        return context.order.paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
+        return !Constants.manualPaymentMethodIDs.contains(context.order.paymentMethodID)
     }
 
     func requiresCardPresentRefund(context: PreparedRefundContext) -> Bool {
@@ -223,6 +223,15 @@ private extension POSRefundSubmissionMapping {
     func cardDescription(brand: WCPayCardBrand, last4: String) -> String {
         brand.refundCardDescription(last4: last4)
     }
+}
+
+private enum Constants {
+    /// Payment methods collected outside a refund-capable gateway. When their gateway isn't stored locally,
+    /// refunds are recorded only (`api_refund=false`): requesting a gateway refund fails server-side.
+    static let manualPaymentMethodIDs: Set<String> = [
+        PaymentGateway.Constants.cashOnDeliveryGatewayID,
+        PaymentGateway.Constants.manualPaymentMethodID
+    ]
 }
 
 private enum Localization {

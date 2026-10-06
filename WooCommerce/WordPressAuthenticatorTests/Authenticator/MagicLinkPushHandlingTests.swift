@@ -28,6 +28,24 @@ struct MagicLinkPushHandlingTests {
         #expect(linkAuthViewController?.navigationItem.hidesBackButton == true)
     }
 
+    @Test func test_handleWordPressAuthUrl_pushingOnto_when_navigation_bar_hidden_then_shows_navigation_bar() {
+        // Given
+        WordPressAuthenticator.initializeForTesting()
+        let spy = WordPressAuthenticatorDelegateSpy()
+        WordPressAuthenticator.shared.delegate = spy
+        let navigationController = UINavigationController(rootViewController: UIViewController())
+        navigationController.setNavigationBarHidden(true, animated: false)
+        let url = URL(string: "woocommerce://magic-login?token=token")!
+
+        // When
+        _ = WordPressAuthenticator.shared.handleWordPressAuthUrl(url,
+                                                                 pushingOnto: navigationController,
+                                                                 restoresSiteAddress: false)
+
+        // Then
+        #expect(navigationController.isNavigationBarHidden == false)
+    }
+
     @Test func test_handleWordPressAuthUrl_pushingOnto_when_sync_completes_then_presents_login_epilogue_in_given_navigation_controller() {
         // Given
         WordPressAuthenticator.initializeForTesting()

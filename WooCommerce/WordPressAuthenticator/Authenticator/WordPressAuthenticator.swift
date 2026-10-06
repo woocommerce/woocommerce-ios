@@ -415,6 +415,8 @@ import WordPressUI
 
         // Going back mid-sync would orphan the controller before the epilogue runs.
         loginVC.navigationItem.hidesBackButton = true
+        // The screen underneath may have hidden the bar; the presented variant always showed one.
+        navigationController.setNavigationBarHidden(false, animated: true)
         navigationController.pushViewController(loginVC, animated: true)
         loginVC.syncAndContinue(authToken: link.authToken, flow: link.flow, isJetpackConnect: url.isJetpackConnect)
         return true

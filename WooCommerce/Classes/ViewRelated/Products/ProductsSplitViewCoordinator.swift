@@ -11,12 +11,6 @@ final class ProductsSplitViewCoordinator: NSObject {
         case productForm(product: Product?)
     }
 
-    private enum CompactProductLargeTitleState: Equatable {
-        case inactive
-        case productShown
-        case returning
-    }
-
     /// The source of truth of the content shown in the secondary view.
     @Published private var contentTypes: [SecondaryViewContentType] = []
     private var selectedProduct: AnyPublisher<Product?, Never> {
@@ -33,8 +27,6 @@ final class ProductsSplitViewCoordinator: NSObject {
     private let splitViewController: UISplitViewController
     private let primaryNavigationController: UINavigationController
     private let secondaryNavigationController: UINavigationController
-    private let usesIOS26CompactProductLargeTitleWorkaround: Bool
-    private var compactProductLargeTitleState: CompactProductLargeTitleState = .inactive
     private var swipeBackVetoAllowedStartRegion = CGRect.zero
     private lazy var swipeBackVetoGestureRecognizer: UIPanGestureRecognizer = {
         let gestureRecognizer = UIPanGestureRecognizer(target: nil, action: nil)
@@ -54,19 +46,11 @@ final class ProductsSplitViewCoordinator: NSObject {
 
     private var addProductCoordinator: AddProductCoordinator?
 
-    init(siteID: Int64,
-         splitViewController: UISplitViewController,
-         usesIOS26CompactProductLargeTitleWorkaround: Bool = {
-             if #available(iOS 26.0, *) {
-                 return true
-             }
-             return false
-         }()) {
+    init(siteID: Int64, splitViewController: UISplitViewController) {
         self.siteID = siteID
         self.splitViewController = splitViewController
         self.primaryNavigationController = WooTabNavigationController()
         self.secondaryNavigationController = WooNavigationController()
-        self.usesIOS26CompactProductLargeTitleWorkaround = usesIOS26CompactProductLargeTitleWorkaround
     }
 
     /// Called when the split view is ready to be shown, like after the split view is added to the view hierarchy.
@@ -78,9 +62,6 @@ final class ProductsSplitViewCoordinator: NSObject {
     /// Called when the split view is collapsing from the expanded state to determine which column to show in the collapsed mode.
     /// - Returns: The column to show when the split view is collapsed.
     func columnToShowWhenSplitViewIsCollapsing() -> UISplitViewController.Column {
-        if case .productForm? = contentTypes.last {
-            prepareProductsLargeTitleForCompactProductPresentationIfNeeded(forCollapsingSplitView: true)
-        }
         navigationStack.prepareForCollapsing(showsSecondaryContent: contentTypes.last != .empty)
         return .primary
     }
@@ -92,7 +73,6 @@ final class ProductsSplitViewCoordinator: NSObject {
 
     /// Called when the split view transitions from collapsed to expanded mode.
     func didExpand() {
-        restoreProductsLargeTitleAfterCompactProductPresentation()
         navigationStack.didExpand()
 
         // Auto-selects the first product if there is no content to be shown.
@@ -165,18 +145,6 @@ final class ProductsSplitViewCoordinator: NSObject {
         transitionCoordinator.animate(alongsideTransition: nil) { [weak self] context in
             self?.hidePrimaryNavigationBarWhenTransitionCompletes(isCancelled: context.isCancelled)
         }
-    }
-
-    /// Prepares the hidden Products item before a compact Product form is added to the shared navigation bar.
-    func prepareProductsLargeTitleForCompactProductPresentationIfNeeded(forCollapsingSplitView: Bool = false) {
-        guard usesIOS26CompactProductLargeTitleWorkaround,
-              splitViewController.isCollapsed || forCollapsingSplitView,
-              primaryNavigationController.topViewController === productsViewController else {
-            return
-        }
-
-        productsViewController.navigationItem.largeTitleDisplayMode = .never
-        compactProductLargeTitleState = .productShown
     }
 
     /// Returns the product form of the given product ID being displayed on the secondary column if available.
@@ -317,10 +285,6 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func showSecondaryView(contentType: SecondaryViewContentType, viewController: UIViewController, replacesNavigationStack: Bool) {
-        if case .productForm = contentType {
-            prepareProductsLargeTitleForCompactProductPresentationIfNeeded()
-        }
-
         if replacesNavigationStack {
             navigationStack.setContentViewControllers([viewController],
                                                       showsInCollapsedLayout: contentType != .empty,
@@ -339,7 +303,6 @@ private extension ProductsSplitViewCoordinator {
     }
 
     func onSecondaryProductFormDeletion() {
-        restoreProductsLargeTitleAfterCompactProductPresentation()
         navigationStack.removeAllContent()
         contentTypes = []
         if !splitViewController.isCollapsed {
@@ -493,8 +456,6 @@ extension ProductsSplitViewCoordinator: UIGestureRecognizerDelegate {
 
 extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
     func navigationController(_ navigationController: UINavigationController, didShow viewController: UIViewController, animated: Bool) {
-        finishCompactProductReturnIfNeeded(afterShowing: viewController, in: navigationController)
-
         // Split-view stack updates can replace the native pop recognizers, so restore the dependency after navigation settles.
         DispatchQueue.main.async { [weak self] in
             self?.refreshSwipeBackVetoRelationships()
@@ -528,51 +489,10 @@ extension ProductsSplitViewCoordinator: UINavigationControllerDelegate {
         if let tabNavigationController = navigationController as? WooTabNavigationController {
             tabNavigationController.navigationController(navigationController, willShow: viewController, animated: animated)
         }
-
-        beginCompactProductReturnIfNeeded(showing: viewController,
-                                          in: navigationController,
-                                          animated: animated)
     }
 }
 
 private extension ProductsSplitViewCoordinator {
-    func beginCompactProductReturnIfNeeded(showing viewController: UIViewController,
-                                           in navigationController: UINavigationController,
-                                           animated: Bool) {
-        guard usesIOS26CompactProductLargeTitleWorkaround,
-              animated,
-              splitViewController.isCollapsed,
-              navigationController === primaryNavigationController,
-              viewController === productsViewController,
-              compactProductLargeTitleState == .productShown else {
-            return
-        }
-
-        compactProductLargeTitleState = .returning
-    }
-
-    func finishCompactProductReturnIfNeeded(afterShowing viewController: UIViewController,
-                                            in navigationController: UINavigationController) {
-        guard navigationController === primaryNavigationController else {
-            return
-        }
-
-        if viewController === productsViewController {
-            compactProductLargeTitleState = .inactive
-        } else if compactProductLargeTitleState == .returning {
-            productsViewController.navigationItem.largeTitleDisplayMode = .never
-            compactProductLargeTitleState = .productShown
-        }
-    }
-
-    func restoreProductsLargeTitleAfterCompactProductPresentation() {
-        guard compactProductLargeTitleState != .inactive else {
-            return
-        }
-        productsViewController.navigationItem.largeTitleDisplayMode = .always
-        compactProductLargeTitleState = .inactive
-    }
-
     /// The split-view coordinator owns these updates because, in a collapsed layout, UIKit temporarily wraps the secondary
     /// navigation controller in the primary navigation stack. Updating from the search view controller's lifecycle can
     /// force layout while the product detail item still belongs to the secondary bar.

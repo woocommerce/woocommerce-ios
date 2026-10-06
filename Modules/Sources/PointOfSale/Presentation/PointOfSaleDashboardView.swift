@@ -591,6 +591,7 @@ struct PointOfSaleDashboardView: View {
             .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
             .clipped()
             .background(tabletBackground(layout))
+            .environment(\.posContentPaddingContext, layout.contentPadding)
             .posBookPoseAnimation(layout)
         }
         .environment(\.posNavigationRouter, navigationRouter)

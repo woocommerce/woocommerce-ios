@@ -1,6 +1,29 @@
 import SwiftUI
 
+struct POSContentPaddingContext: Sendable {
+    var bounds = CGRect.zero
+    var regions: [(frame: CGRect, margins: EdgeInsets)] = []
+
+    func clearance(for frame: CGRect, layoutDirection: LayoutDirection) -> EdgeInsets {
+        var clearance = EdgeInsets()
+        let x = layoutDirection == .rightToLeft ? bounds.maxX - frame.maxX : frame.minX - bounds.minX
+        for region in regions {
+            let localFrame = region.frame.offsetBy(dx: -x, dy: bounds.minY - frame.minY)
+            let margins = POSContentPadding.clearance(size: frame.size, frame: localFrame, margins: region.margins)
+            clearance.leading = max(clearance.leading, margins.leading)
+            clearance.trailing = max(clearance.trailing, margins.trailing)
+        }
+        return clearance
+    }
+}
+
+extension EnvironmentValues {
+    @Entry var posContentPaddingContext = POSContentPaddingContext()
+}
+
 private struct POSContentPaddingModifier: ViewModifier {
+    @Environment(\.posContentPaddingContext) private var context
+    @Environment(\.layoutDirection) private var layoutDirection
     let padding: EdgeInsets
     @State private var clearance = EdgeInsets()
 
@@ -11,17 +34,7 @@ private struct POSContentPaddingModifier: ViewModifier {
                                 bottom: padding.bottom,
                                 trailing: max(0, padding.trailing - clearance.trailing)))
             .onGeometryChange(for: EdgeInsets.self) { geometry in
-                var clearance = EdgeInsets()
-                #if canImport(SwiftUI, _version: 8.0.85.27)
-                if #available(iOS 27.1, *) {
-                    for region in geometry.reservedRegions(kind: .division) where region.isActive {
-                        let margins = POSContentPadding.clearance(size: geometry.size, frame: region.frame, margins: region.margins)
-                        clearance.leading = max(clearance.leading, margins.leading)
-                        clearance.trailing = max(clearance.trailing, margins.trailing)
-                    }
-                }
-                #endif
-                return clearance
+                context.clearance(for: geometry.frame(in: .global), layoutDirection: layoutDirection)
             } action: { clearance = $0 }
     }
 }

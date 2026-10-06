@@ -144,6 +144,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                 }
             }
             .posBookPoseAnimation(layout)
+            .environment(\.posContentPaddingContext, layout.contentPadding)
             .simultaneousGesture(
                 compactBackGesture(totalWidth: totalWidth),
                 isEnabled: isCompactBackGestureActive

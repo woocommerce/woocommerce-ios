@@ -3,6 +3,7 @@ import AuthenticationServices
 import SwiftUI
 import UIKit
 import WordPressAuthenticator
+import protocol WooFoundationCore.CrashLogger
 
 /// Drives the QR-login UI flow end-to-end.
 ///
@@ -29,6 +30,7 @@ final class QRLoginCoordinator {
     private let parser: QRLoginPayloadParser
     private let cameraPermissionChecker: QRLoginCameraPermissionCheckerProtocol
     private let analytics: QRLoginAnalyticsTracking
+    private let crashLogging: CrashLogger
     private let onEnterSiteURL: () -> Void
     private let onShowHelp: () -> Void
     private let onSuccess: () -> Void
@@ -66,6 +68,7 @@ final class QRLoginCoordinator {
          parser: QRLoginPayloadParser = QRLoginPayloadParser(),
          cameraPermissionChecker: QRLoginCameraPermissionCheckerProtocol = DefaultQRLoginCameraPermissionChecker(),
          analytics: QRLoginAnalyticsTracking? = nil,
+         crashLogging: CrashLogger = ServiceLocator.crashLogging,
          onEnterSiteURL: @escaping () -> Void,
          onShowHelp: @escaping () -> Void,
          onSuccess: @escaping () -> Void,
@@ -78,6 +81,7 @@ final class QRLoginCoordinator {
         // a default parameter expression. The coordinator is @MainActor so
         // constructing it in the body is fine.
         self.analytics = analytics ?? DefaultQRLoginAnalyticsTracking()
+        self.crashLogging = crashLogging
         self.onEnterSiteURL = onEnterSiteURL
         self.onShowHelp = onShowHelp
         self.onSuccess = onSuccess
@@ -212,6 +216,34 @@ extension QRLoginCoordinator {
     }
 }
 
+// MARK: - Magic-link callback
+
+extension QRLoginCoordinator {
+    /// Hands the captured magic-link callback to `WordPressAuthenticator`. Internal
+    /// (not private) so tests can drive it without an auth session.
+    func handleMagicLinkCallback(_ callbackURL: URL) {
+        // Push, don't present: the auth-session sheet is still dismissing here, and a modal
+        // presented over it can be dropped, leaving "Signing you in…" up. (WOOMOB-4262)
+        // QR login shares the magic-link `.login` case but never saved a site address,
+        // so it must not restore one (would leak a stale address from an abandoned
+        // email magic-link request into this account — wrong-store error).
+        let handled = WordPressAuthenticator.shared.handleWordPressAuthUrl(callbackURL,
+                                                                           pushingOnto: navigationController,
+                                                                           restoresSiteAddress: false)
+        guard handled else {
+            // Unwind so the merchant can retry instead of being stranded on "Signing you in…".
+            // The URL carries the auth token, so it is never logged.
+            DDLogError("⛔️ QR login: the magic-link callback could not be handled.")
+            crashLogging.logMessage("QR login magic-link callback could not be handled", properties: nil, level: .error)
+            handleMagicLinkCancelled()
+            return
+        }
+        // Sign-in proceeds through WordPressAuthenticator from here —
+        // release the coordinator; the login UI is about to be replaced.
+        finish()
+    }
+}
+
 // MARK: - Live flow
 
 private extension QRLoginCoordinator {
@@ -297,20 +329,8 @@ private extension QRLoginCoordinator {
         let window = navigationController.view.window
         let runner = QRLoginMagicLinkAuthRunner(
             anchor: window,
-            onCallback: { [weak self, weak navigationController] callbackURL in
-                if let navigationController {
-                    // Push, don't present: the auth-session sheet is still dismissing here, and a modal
-                    // presented over it can be dropped, leaving "Signing you in…" up. (WOOMOB-4262)
-                    // QR login shares the magic-link `.login` case but never saved a site address,
-                    // so it must not restore one (would leak a stale address from an abandoned
-                    // email magic-link request into this account — wrong-store error).
-                    _ = WordPressAuthenticator.shared.handleWordPressAuthUrl(callbackURL,
-                                                                             pushingOnto: navigationController,
-                                                                             restoresSiteAddress: false)
-                }
-                // Sign-in proceeds through WordPressAuthenticator from here —
-                // release the coordinator; the login UI is about to be replaced.
-                self?.finish()
+            onCallback: { [weak self] callbackURL in
+                self?.handleMagicLinkCallback(callbackURL)
             },
             onCancel: { [weak self] in
                 self?.handleMagicLinkCancelled()

@@ -307,7 +307,8 @@ private extension Remote {
                                           recorder: StoreConnectionErrorRecording?,
                                           outcome: ResponseOutcome) throws -> M.Output {
         if let policy = request as? UnexpectedResponseRequest,
-           let error = policy.responseError(data: data, status: 200, tunneled: recorder != nil) {
+           let error = policy.responseError(data: data, status: policy.responseMetadata?.status ?? 200,
+                                            contentType: policy.responseMetadata?.contentType, tunneled: recorder != nil) {
             throw error
         }
         try validateResponse(data, for: request, recorder: recorder, outcome: outcome)
@@ -315,7 +316,7 @@ private extension Remote {
             return try mapper.map(response: data)
         } catch {
             guard error is DecodingError, let policy = request as? UnexpectedResponseRequest else { throw error }
-            throw policy.makeError(kind: .unexpectedContent, data: data, isDecodingFailure: true)
+            throw policy.makeError(kind: .unexpectedContent, isDecodingFailure: true)
         }
     }
 

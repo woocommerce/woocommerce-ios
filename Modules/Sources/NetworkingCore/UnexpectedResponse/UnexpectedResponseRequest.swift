@@ -1,8 +1,26 @@
 import Alamofire
 import Foundation
+import os
 
-struct UnexpectedResponseRequest: Request {
+final class UnexpectedResponseRequest: Request {
     let original: Request
+    private let metadata = OSAllocatedUnfairLock<(status: Int, contentType: String?)?>(initialState: nil)
+
+    init(original: Request) {
+        self.original = original
+    }
+
+    // The network writes before completion; mappers read on a different queue.
+    var responseMetadata: (status: Int, contentType: String?)? {
+        metadata.withLock { $0 }
+    }
+
+    func recordResponse(status: Int, contentType: String?, tunneled: Bool) {
+        metadata.withLock {
+            // Outer tunnel metadata does not describe the store's successful response.
+            $0 = tunneled ? nil : (status, contentType)
+        }
+    }
 
     func asURLRequest() throws -> URLRequest { try original.asURLRequest() }
     func responseDataValidator() -> ResponseDataValidator { original.responseDataValidator() }
@@ -27,11 +45,11 @@ struct UnexpectedResponseRequest: Request {
             return ApplicationPasswordUseCaseError.applicationPasswordsDisabled
         }
         let kind = UnexpectedResponseClassifier.classify(data: body, status: responseStatus, contentType: mediaType)
-        let failure = kind.map { makeError(kind: $0, data: body, status: responseStatus, contentType: mediaType) }
+        let failure = kind.map { makeError(kind: $0, status: responseStatus, contentType: mediaType) }
         return failure
     }
 
-    func makeError(kind: UnexpectedStoreResponseError.Kind, data: Data?, status: Int? = nil,
+    func makeError(kind: UnexpectedStoreResponseError.Kind, status: Int? = nil,
                    contentType: String? = nil, isDecodingFailure: Bool = false) -> UnexpectedStoreResponseError {
         var diagnosticRequest = try? original.asURLRequest()
         if let tunnel = original as? JetpackRequest {
@@ -39,8 +57,9 @@ struct UnexpectedResponseRequest: Request {
                 .map { URLRequest(url: $0) }
             diagnosticRequest?.httpMethod = tunnel.method.rawValue
         }
-        var error = UnexpectedStoreResponseError(kind: kind, statusCode: status, data: data,
-                                                contentType: contentType, request: diagnosticRequest)
+        let metadata = responseMetadata
+        var error = UnexpectedStoreResponseError(kind: kind, statusCode: status ?? metadata?.status,
+                                                contentType: contentType ?? metadata?.contentType, request: diagnosticRequest)
         error.isDecodingFailure = isDecodingFailure
         DDLogWarn(error.logMessage)
         return error
@@ -58,7 +77,8 @@ extension Alamofire.DataResponse {
         guard let request = request as? UnexpectedResponseRequest, let response,
               error?.asAFError?.isSessionTaskError != true,
               error?.asAFError?.isRequestRetryError != true else { return nil }
-        return request.responseError(data: data, status: response.statusCode,
-                                     contentType: response.value(forHTTPHeaderField: "Content-Type"), tunneled: tunneled)
+        let contentType = response.value(forHTTPHeaderField: "Content-Type")
+        request.recordResponse(status: response.statusCode, contentType: contentType, tunneled: tunneled)
+        return request.responseError(data: data, status: response.statusCode, contentType: contentType, tunneled: tunneled)
     }
 }

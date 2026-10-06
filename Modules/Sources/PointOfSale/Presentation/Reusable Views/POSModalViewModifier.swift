@@ -244,7 +244,9 @@ extension View {
 
 /// Environment key for tracking the current screen size in POS modals
 struct POSModalParentSizeKey: EnvironmentKey {
-    static let defaultValue: CGSize = UIScreen.main.bounds.size
+    /// `POSRootModalViewModifier` injects the measured size for every presented modal, so only previews read this
+    /// default. It is a fixed iPad size because reading `UIScreen` requires the main actor.
+    static let defaultValue = CGSize(width: 1192, height: 822)
 }
 
 extension EnvironmentValues {

@@ -876,6 +876,10 @@ extension OrderListViewController: UITableViewDelegate {
         }()
         header.rightText = nil
 
+        if #available(iOS 26.0, *) {
+            header.backgroundConfiguration = .clear()
+        }
+
         return header
     }
 

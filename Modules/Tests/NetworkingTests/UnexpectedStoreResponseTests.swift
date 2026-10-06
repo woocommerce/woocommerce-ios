@@ -3,6 +3,21 @@ import Testing
 @testable import NetworkingCore
 
 struct UnexpectedStoreResponseTests {
+    @Test func test_metadata_when_direct_response_falls_back_to_tunnel_then_discards_outer_metadata() {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: 123, path: "wp/v2/users/me")
+        let policy = UnexpectedResponseRequest(original: request)
+        policy.recordResponse(status: 202, contentType: "application/json", tunneled: false)
+
+        // When
+        policy.recordResponse(status: 200, contentType: "application/json", tunneled: true)
+        let error = policy.makeError(kind: .unexpectedContent)
+
+        // Then
+        #expect(error.statusCode == nil)
+        #expect(error.diagnostics?.contentType == nil)
+    }
+
     @Test func test_policy_when_disabled_password_error_then_preserves_business_error() {
         // Given
         let request = RESTRequest(siteURL: "https://example.com", method: .post, path: "wp/v2/users/me/application-passwords")
@@ -33,7 +48,7 @@ struct UnexpectedStoreResponseTests {
         // Given
         let request = RESTRequest(siteURL: "https://user:secret@example.com", method: .get, path: "", parameters: ["token": "secret"])
         // When
-        let error = UnexpectedResponseRequest(original: request).makeError(kind: .unexpectedContent, data: nil)
+        let error = UnexpectedResponseRequest(original: request).makeError(kind: .unexpectedContent)
         // Then
         #expect(error.diagnostics?.request == "GET /wp-json")
         #expect(!error.logMessage.contains("secret"))
@@ -56,70 +71,32 @@ struct UnexpectedStoreResponseTests {
         }
     }
 
-    @Test func test_excerpt_when_html_contains_private_regions_then_only_sanitized_visible_text_remains() {
+    @Test func test_error_when_response_contains_private_text_then_logs_metadata_only() {
         // Given
-        let body = """
-        <html><head><title>Blocked</title><script>secretScript</script></head>
-        <body><!-- secretComment --><input value="secretInput"><textarea>secretTextarea</textarea>
-        <p>Contact admin@example.com. IP 203.0.113.7. password=secretPassword token=secretToken</p></body></html>
-        """
-        // When
-        let excerpt = UnexpectedResponseExcerpt.make(body) ?? ""
-        // Then
-        #expect(excerpt.contains("Blocked"))
-        #expect(excerpt.contains("[email]"))
-        #expect(excerpt.contains("[ip]"))
-        #expect(!excerpt.contains("secret"))
-        #expect(UnexpectedResponseExcerpt.make("Authorization: Basic private-token") == "Authorization: [redacted]")
-        #expect(UnexpectedResponseExcerpt.make("abcd efgh ijkl mnop qrst uvwx") == "[redacted]")
-    }
-
-    @Test func test_excerpt_when_wordpress_error_has_styles_then_preserves_message_and_omits_private_regions() {
-        // Given
-        let body = """
-        <html><head><title>WordPress › Error</title>
-        <style>body { color: red; } /* private-style */</style>
-        <script>const data = {secret: "private-script"};</script></head>
-        <body><!-- {private-comment} --><p>There has been a critical error on this website.</p></body></html>
-        {"orders":[{"secret":"private-payload"}]}
-        """
-        // When
-        let excerpt = UnexpectedResponseExcerpt.make(body) ?? ""
-        // Then
-        #expect(excerpt.contains("WordPress › Error"))
-        #expect(excerpt.contains("There has been a critical error on this website."))
-        #expect(!excerpt.contains("private-"))
-        #expect(!excerpt.contains("color: red"))
-        #expect(!excerpt.contains("orders"))
-    }
-
-    @Test func test_excerpt_when_json_or_debug_prefix_then_omits_store_payload() {
-        // Given / When / Then
-        #expect(UnexpectedResponseExcerpt.make("{\"orders\":[{\"email\":\"private\"}]}") == nil)
-        #expect(UnexpectedResponseExcerpt.make("[1,2,3]") == nil)
-        #expect(UnexpectedResponseExcerpt.make("Debug: /orders\n{\"orders\":[1]}") == "Debug: /orders")
-        let apiError = "{\"code\":\"critical_error\",\"message\":\"Failed\",\"data\":\"private\"}"
-        #expect(UnexpectedResponseExcerpt.make(apiError) == "critical_error | Failed")
-        #expect(UnexpectedResponseExcerpt.make(" ") == nil)
-    }
-
-    @Test func test_excerpt_when_long_then_redacts_before_truncating() {
-        // Given
-        let body = "password=" + String(repeating: "x", count: 500) + " " + String(repeating: "visible ", count: 100)
-        // When
-        let excerpt = UnexpectedResponseExcerpt.make(body) ?? ""
-        // Then
-        #expect(excerpt.count == 300)
-        #expect(excerpt.hasSuffix("…"))
-        #expect(!excerpt.contains("xxx"))
+        let bodies = [
+            "<div hidden>private-secret</div>",
+            "<input hidden title=\"a > b\" value=\"private-nonce\">",
+            "<div style=\"display:none\">private-hidden</div>",
+            "{\"code\":\"critical_error\",\"message\":\"private-message\"}"
+        ]
+        for body in bodies {
+            // When
+            let policy = UnexpectedResponseRequest(original: RESTRequest(siteURL: "https://example.com", method: .get, path: ""))
+            let error = policy.responseError(data: Data(body.utf8), status: 500,
+                                             contentType: "text/html; charset=utf-8", tunneled: false) as? UnexpectedStoreResponseError
+            // Then
+            #expect(error?.diagnostics?.contentType == "text/html")
+            #expect(error?.logMessage.contains("private-") == false)
+            #expect(error?.logMessage.contains("excerpt") == false)
+        }
     }
 
     @Test func test_error_when_described_then_diagnostics_do_not_leak() {
         // Given
         let error = UnexpectedStoreResponseError(kind: .unexpectedContent, statusCode: 202,
-                                                data: Data("private-sentinel".utf8), contentType: "text/html", request: nil)
+                                                contentType: "text/html", request: nil)
         // When / Then
-        #expect(error.diagnostics?.excerpt == "private-sentinel")
+        #expect(!error.logMessage.contains("private-sentinel"))
         #expect(!String(describing: error).contains("private-sentinel"))
         #expect(!String(reflecting: error).contains("private-sentinel"))
         #expect(!String(describing: (error as NSError).userInfo).contains("private-sentinel"))

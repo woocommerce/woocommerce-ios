@@ -21,6 +21,51 @@ final class AlamofireNetworkTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
+    func test_remote_when_opted_in_mapper_fails_then_preserves_successful_response_metadata() throws {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "wp/v2/users/me")
+        MockURLProtocol.Mocks.mockResponse(["unexpected": "schema"], statusCode: 202, for: try request.asURLRequest(),
+                                          headers: ["Content-Type": "application/json; charset=utf-8"])
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let remote = Remote(network: network)
+
+        // When
+        let result: Result<User, Error> = waitFor { promise in
+            remote.enqueue(request, mapper: UserMapper(siteID: 123), detectUnexpectedResponses: true, completion: promise)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? UnexpectedStoreResponseError)
+        XCTAssertEqual(error.kind, .unexpectedContent)
+        XCTAssertEqual(error.statusCode, 202)
+        XCTAssertEqual(error.diagnostics?.contentType, "application/json")
+    }
+
+    @MainActor
+    func test_remote_async_when_opted_in_mapper_fails_then_preserves_successful_response_metadata() async throws {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "wp/v2/users/me")
+        MockURLProtocol.Mocks.mockResponse(["unexpected": "schema"], statusCode: 202, for: try request.asURLRequest(),
+                                          headers: ["Content-Type": "application/json; charset=utf-8"])
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let remote = Remote(network: network)
+
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: UserMapper(siteID: 123), detectUnexpectedResponses: true)
+            XCTFail("Expected a malformed user response")
+        } catch {
+            // Then
+            let error = try XCTUnwrap(error as? UnexpectedStoreResponseError)
+            XCTAssertEqual(error.kind, .unexpectedContent)
+            XCTAssertEqual(error.statusCode, 202)
+            XCTAssertEqual(error.diagnostics?.contentType, "application/json")
+        }
+    }
+
     func test_responseData_when_direct_500_is_opted_in_then_preserves_status_in_typed_error() throws {
         // Given
         let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "wp-json")

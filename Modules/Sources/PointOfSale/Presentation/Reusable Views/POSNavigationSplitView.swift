@@ -124,42 +124,36 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                     leadingEdgeShadow(progress: progress)
                 }
             }
-            .animation(.default, value: layout)
             .offset(x: edgeSwipePolicy.incomingOffset(progress: progress, totalWidth: totalWidth))
-            .simultaneousGesture(
-                compactBackGesture(totalWidth: totalWidth),
-                isEnabled: isCompactBackGestureActive
-            )
-        }
-        // The offscreen pane stays in the HStack for state preservation. Keep it out of
-        // system regions beyond this view's safe bounds, including Duo's vertical bar.
-        .clipped()
-        .onGeometryChange(for: Bool.self) { geometry in
-            // A landscape phone notch reserves both sides equally; keep its bottom home-indicator inset.
-            geometry.safeAreaInsets.leading != geometry.safeAreaInsets.trailing
-        } action: { hasHorizontalSafeAreaInset = $0 }
-        .ignoresSafeArea(.container, edges: ignoresBottomContainerInset ? .bottom : [])
-        // Paint behind the system regions outside the clipped panes. In regular width each
-        // edge follows its pane; in compact width the visible pane supplies the color.
-        .background {
-            if isRegular {
-                GeometryReader { geometry in
-                    let layout = POSBookPoseLayout(geometry: geometry, defaultLeadingFraction: Constants.sidebarWidthFraction)
-                    HStack(spacing: layout.spacing) {
+            .frame(width: totalWidth, height: geometry.size.height, alignment: .leading)
+            // Clip offscreen panes before adding the background that extends into system regions.
+            .clipped()
+            .background {
+                if isRegular {
+                    HStack(spacing: 0) {
                         Color.clear
-                            .frame(width: layout.leadingWidth)
+                            .frame(width: layout.backgroundLeadingWidth)
                             .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                         Color.clear
                             .background(visibleDetailBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
                     }
                     .background(Color.posSurface)
-                    .animation(.default, value: layout)
+                } else {
+                    (selection == nil ? Color.posSurfaceBright : visibleDetailBackgroundColor)
+                        .ignoresSafeArea()
                 }
-            } else {
-                (selection == nil ? Color.posSurfaceBright : visibleDetailBackgroundColor)
-                    .ignoresSafeArea()
             }
+            .posBookPoseAnimation(layout)
+            .simultaneousGesture(
+                compactBackGesture(totalWidth: totalWidth),
+                isEnabled: isCompactBackGestureActive
+            )
         }
+        .onGeometryChange(for: Bool.self) { geometry in
+            // A landscape phone notch reserves both sides equally; keep its bottom home-indicator inset.
+            geometry.safeAreaInsets.leading != geometry.safeAreaInsets.trailing
+        } action: { hasHorizontalSafeAreaInset = $0 }
+        .ignoresSafeArea(.container, edges: ignoresBottomContainerInset ? .bottom : [])
         // Anchors the gesture's coordinates to this view rather than to the window. `.global` is
         // only the same thing as "this split view" when the window fills the screen, which is why
         // measuring the edge against it worked on a phone and failed in a collapsed iPad window.

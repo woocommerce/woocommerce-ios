@@ -552,6 +552,8 @@ struct PointOfSaleDashboardView: View {
                     }
                     // Accept the navigation stack's proposed width without centering the wider, fixed-size panes.
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
+                    // Paint the fold gap inside the stack; its hosting background covers the dashboard backdrop.
+                    .background(tabletBackground)
                     .posNavigationDestinations()
                 }
                 .scrollContentBackground(.hidden)
@@ -584,12 +586,13 @@ struct PointOfSaleDashboardView: View {
                     navigationRouter.popToRoot()
                 }
             }
-            .animation(.default, value: layout)
             .animation(.default, value: posModel.orderStage)
             .animation(.default, value: posModel.paymentState.card.shownFullScreen)
+            .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
+            .clipped()
+            .background(tabletBackground)
+            .posBookPoseAnimation(layout)
         }
-        .clipped()
-        .background(tabletBackground)
         .environment(\.posNavigationRouter, navigationRouter)
     }
 
@@ -605,17 +608,17 @@ struct PointOfSaleDashboardView: View {
             let showsCartBackground = showsCartDuringCheckout && navigationPath.isEmpty
             let layout = POSBookPoseLayout(geometry: geometry,
                                            defaultLeadingFraction: posModel.orderStage == .building ? 1 - Constants.cartWidth : Constants.cartWidth)
-            HStack(spacing: layout.spacing) {
+            HStack(spacing: 0) {
                 if posModel.orderStage == .building {
                     Color.clear
-                        .frame(width: layout.leadingWidth)
+                        .frame(width: layout.backgroundLeadingWidth)
                         .background(itemListBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                     Color.clear
                         .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
                 } else {
                     if showsCartBackground {
                         Color.clear
-                            .frame(width: layout.leadingWidth)
+                            .frame(width: layout.backgroundLeadingWidth)
                             .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                     }
                     Color.clear
@@ -627,7 +630,6 @@ struct PointOfSaleDashboardView: View {
                 }
             }
             .background(Color.posSurface)
-            .animation(.default, value: layout)
         }
     }
 

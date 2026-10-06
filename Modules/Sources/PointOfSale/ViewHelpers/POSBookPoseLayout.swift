@@ -5,26 +5,35 @@ struct POSBookPoseLayout: Equatable {
     let leadingWidth: CGFloat
     let trailingWidth: CGFloat
     let spacing: CGFloat
+    let hasDivisionRegion: Bool
+
+    /// Backgrounds meet at the fold; only content leaves the division gap empty.
+    var backgroundLeadingWidth: CGFloat { leadingWidth + spacing / 2 }
 
     init(geometry: GeometryProxy, defaultLeadingFraction: CGFloat) {
         let divisionFrames: [CGRect]
+        let hasDivisionRegion: Bool
         // The iOS 27.1 SDK ships SwiftUI 8.0.85.27; older SDKs do not declare this API.
         #if canImport(SwiftUI, _version: 8.0.85.27)
         if #available(iOS 27.1, *) {
-            divisionFrames = geometry.reservedRegions(kind: .division)
-                .filter(\.isActive)
-                .map(\.frame)
+            let regions = geometry.reservedRegions(kind: .division, options: .includeInactive)
+            divisionFrames = regions.filter(\.isActive).map(\.frame)
+            hasDivisionRegion = !regions.isEmpty
         } else {
             divisionFrames = []
+            hasDivisionRegion = false
         }
         #else
         divisionFrames = []
+        hasDivisionRegion = false
         #endif
-        self.init(size: geometry.size, defaultLeadingFraction: defaultLeadingFraction, divisionFrames: divisionFrames)
+        self.init(size: geometry.size, defaultLeadingFraction: defaultLeadingFraction,
+                  divisionFrames: divisionFrames, hasDivisionRegion: hasDivisionRegion)
     }
 
     /// Frames use semantic local coordinates, including the system's division margins.
-    init(size: CGSize, defaultLeadingFraction: CGFloat, divisionFrames: [CGRect] = []) {
+    init(size: CGSize, defaultLeadingFraction: CGFloat, divisionFrames: [CGRect] = [], hasDivisionRegion: Bool = false) {
+        self.hasDivisionRegion = hasDivisionRegion || !divisionFrames.isEmpty
         if let division = divisionFrames.first(where: { frame in
             frame.origin.x.isFinite && frame.origin.y.isFinite
                 && frame.width.isFinite && frame.height.isFinite
@@ -40,5 +49,26 @@ struct POSBookPoseLayout: Equatable {
             trailingWidth = size.width - leadingWidth
             spacing = 0
         }
+    }
+}
+
+private struct POSBookPoseAnimationModifier: ViewModifier {
+    let layout: POSBookPoseLayout
+    @State private var hasInitialDivision = false
+
+    func body(content: Content) -> some View {
+        content
+            .animation(hasInitialDivision ? .default : nil, value: layout.spacing > 0)
+            // The first reported region seeds the layout; later pose changes animate.
+            .onChange(of: layout.hasDivisionRegion, initial: true) { _, hasDivisionRegion in
+                if hasDivisionRegion { hasInitialDivision = true }
+            }
+            .onDisappear { hasInitialDivision = false }
+    }
+}
+
+extension View {
+    func posBookPoseAnimation(_ layout: POSBookPoseLayout) -> some View {
+        modifier(POSBookPoseAnimationModifier(layout: layout))
     }
 }

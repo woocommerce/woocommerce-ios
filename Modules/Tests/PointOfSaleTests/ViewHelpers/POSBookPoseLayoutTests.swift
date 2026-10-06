@@ -13,8 +13,10 @@ struct POSBookPoseLayoutTests {
 
         // Then
         #expect(layout.leadingWidth == 480)
+        #expect(layout.hasDivisionRegion)
         #expect(layout.trailingWidth == 480)
         #expect(layout.spacing == 40)
+        #expect(layout.backgroundLeadingWidth == division.midX)
     }
 
     @Test func test_layout_when_local_insets_are_asymmetric_then_keeps_distinct_page_widths() {
@@ -29,6 +31,7 @@ struct POSBookPoseLayoutTests {
         #expect(layout.leadingWidth == 420)
         #expect(layout.trailingWidth == 480)
         #expect(layout.spacing == 40)
+        #expect(layout.backgroundLeadingWidth == division.midX)
         #expect(layout.leadingWidth + layout.spacing + layout.trailingWidth == size.width)
     }
 
@@ -43,6 +46,7 @@ struct POSBookPoseLayoutTests {
         // Then
         #expect(layout.leadingWidth == 480)
         #expect(layout.trailingWidth == 420)
+        #expect(layout.backgroundLeadingWidth == mirroredDivision.midX)
         #expect(layout.spacing == 40)
     }
 
@@ -56,7 +60,23 @@ struct POSBookPoseLayoutTests {
 
         // Then
         #expect(layout.leadingWidth == 1000 * fraction)
+        #expect(!layout.hasDivisionRegion)
         #expect(layout.trailingWidth == 1000 - layout.leadingWidth)
+        #expect(layout.spacing == 0)
+        #expect(layout.backgroundLeadingWidth == layout.leadingWidth)
+    }
+
+    @Test func test_layout_when_inactive_division_reported_then_preserves_default_split() {
+        // Given
+        let size = CGSize(width: 1000, height: 700)
+
+        // When
+        let layout = POSBookPoseLayout(size: size, defaultLeadingFraction: 0.65, hasDivisionRegion: true)
+
+        // Then
+        #expect(layout.hasDivisionRegion)
+        #expect(layout.leadingWidth == 650)
+        #expect(layout.trailingWidth == 350)
         #expect(layout.spacing == 0)
     }
 
@@ -82,5 +102,6 @@ struct POSBookPoseLayoutTests {
         #expect(layout.leadingWidth == 650)
         #expect(layout.trailingWidth == 350)
         #expect(layout.spacing == 0)
+        #expect(layout.backgroundLeadingWidth == layout.leadingWidth)
     }
 }

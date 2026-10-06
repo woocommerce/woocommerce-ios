@@ -134,7 +134,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     /// Several selectable titles (Products / Coupons) keep the horizontal scroll fallback, so a
     /// long translation can never hide the title the merchant needs to tap. A single title does
     /// not scroll: scrolling a heading is undiscoverable, and the scroll view clips it with no
-    /// ellipsis. It wraps instead — see `titleText`.
+    /// ellipsis. It scales modestly instead — see `titleText`.
     @ViewBuilder
     private var itemsContent: some View {
         if hasSelectableTitles {
@@ -194,10 +194,11 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private func titleText(_ title: String, isSelected: Bool) -> some View {
         Text(title)
             .font(.posHeadingBold)
-            // A single title wraps onto a second line rather than being clipped, because
-            // translations run longer than the English the layout was sized for. Several
-            // titles keep their natural width so `ViewThatFits` can measure the row.
-            .lineLimit(hasSelectableTitles ? 1 : Constants.singleTitleLineLimit)
+            // Keep words intact. Single titles can shrink by up to 20%; selectable
+            // titles keep their natural width for the horizontal scroll fallback.
+            .lineLimit(1)
+            .minimumScaleFactor(hasSelectableTitles ? 1 : 0.8)
+            .allowsTightening(!hasSelectableTitles)
             .fixedSize(horizontal: hasSelectableTitles, vertical: false)
             .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             .foregroundColor(isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)

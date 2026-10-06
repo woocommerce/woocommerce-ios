@@ -141,7 +141,7 @@ final class ServiceLocator {
     private static var _cardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
 
-    private static var _tapToPayReconnectionController = TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
+    private static let _tapToPayReconnectionController = TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
             connectionControllerFactory: TapToPayCardReaderConnectionControllerFactory(
                 alertProvider: TapToPayReaderConnectionAlertsProvider()))
 

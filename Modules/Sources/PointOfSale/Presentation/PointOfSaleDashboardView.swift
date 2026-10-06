@@ -520,7 +520,7 @@ struct PointOfSaleDashboardView: View {
             let isBuilding = posModel.orderStage == .building
             let layout = POSBookPoseLayout(geometry: geometry,
                                            defaultLeadingFraction: isBuilding ? 1 - Constants.cartWidth : Constants.cartWidth)
-            let productsWidth = isBuilding ? layout.leadingWidth : layout.trailingWidth
+            let productsWidth = layout.spacing > 0 ? layout.leadingWidth : geometry.size.width * (1 - Constants.cartWidth)
             let cartWidth = isBuilding ? layout.trailingWidth : layout.leadingWidth
             let checkoutWidth = isBuilding ? layout.leadingWidth : layout.trailingWidth
             let dashboardWidth = productsWidth + layout.spacing + geometry.size.width

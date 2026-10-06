@@ -209,7 +209,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             .font(.posBodyLargeRegular())
             // Follows the title: without the scroll fallback a single-title header would
             // otherwise clip a long subtitle, such as the date and email on order details.
-            .lineLimit(hasSelectableTitles ? 1 : Constants.singleTitleLineLimit)
+            .lineLimit(hasSelectableTitles ? 1 : Constants.subtitleLineLimit)
             .fixedSize(horizontal: hasSelectableTitles, vertical: false)
             .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             .foregroundColor(.posOnSurface)
@@ -230,9 +230,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 private enum Constants {
     static let horizontalSpacing: CGFloat = POSSpacing.medium
     static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
-    /// Two lines hold the longest translated POS headings on a phone without the header
-    /// taking over the screen.
-    static let singleTitleLineLimit: Int = 2
+    static let subtitleLineLimit: Int = 2
 }
 
 struct POSHeaderBackButtonConfigurationKey: EnvironmentKey {

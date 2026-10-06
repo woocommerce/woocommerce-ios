@@ -44,6 +44,7 @@ SHARED_STORE_TAG = "store_shared"
 STORE_MARKER_NAME = ".woo-maestro-store"
 NOTIFICATION_FLOW = "ios_notification_long_press.yaml"
 STORE_ORDER_PUSH = MAESTRO_DIR / "helpers" / "store_order_push.json"
+LOGIN_FLOW = MAESTRO_DIR / "subflows" / "login.yaml"
 # Flows read these store-neutral names; the runner fills them from the
 # MAESTRO_WOO_LAB_* or MAESTRO_WOO_SHARED_* block of the store a flow runs against.
 STORE_SCOPED_SUFFIXES = (
@@ -587,8 +588,19 @@ def deliver_store_order_push(udid: str, app_id: str) -> None:
     run(["xcrun", "simctl", "push", udid, app_id, str(STORE_ORDER_PUSH)])
 
 
-def maestro_env_args(app_id: str, run_id: str) -> list[str]:
-    return ["--env", f"APP_ID={app_id}", "--env", f"SUITE_RUN_ID={run_id}"]
+def sign_in_allowing_notifications(udid: str, env_args: list[str], environment: dict[str, str]) -> subprocess.CompletedProcess[str]:
+    # Flows sign in turning notifications down, which drops the pushed order
+    # notification, so sign in again turning them on.
+    command = ["maestro", "test", "--udid", udid, "--config", str(CONFIG_FILE), *env_args, str(LOGIN_FLOW)]
+    return run(command, check=False, env=environment)
+
+
+def maestro_env_args(app_id: str, run_id: str, notifications: str = "deny") -> list[str]:
+    return [
+        "--env", f"APP_ID={app_id}",
+        "--env", f"SUITE_RUN_ID={run_id}",
+        "--env", f"NOTIFICATIONS={notifications}",
+    ]
 
 
 def redaction_targets(values: dict[str, str]) -> set[str]:
@@ -1007,8 +1019,9 @@ def main() -> int:
                 store = flow_store(flow, args.store)
                 store_url = store_values[store].get("MAESTRO_WOO_JETPACK_STORE_URL", "")
                 # Login flows reset the session themselves and can end signed in to
-                # another site, so the flow after them signs in again.
-                resets_session = "login" in flow_tags(flow)
+                # another site, and the notification flow ends with notifications
+                # turned on, so the flow after them signs in again.
+                resets_session = "login" in flow_tags(flow) or flow.name == NOTIFICATION_FLOW
                 if not resets_session and store != active_store:
                     switch_store(simulator["udid"], app, app_id, store, store_url)
                     active_store = store
@@ -1029,6 +1042,13 @@ def main() -> int:
                     screenshot_dir = output / "screenshots" / prefix
                     screenshot_dir.mkdir()
                     if flow.name == NOTIFICATION_FLOW:
+                        signed_in = sign_in_allowing_notifications(
+                            simulator["udid"],
+                            maestro_env_args(app_id, run_id, notifications="allow"),
+                            maestro_environments[store],
+                        )
+                        sign_in_log = output / "logs" / f"{prefix}-sign-in.log"
+                        sign_in_log.write_text(redact(signed_in.stdout + signed_in.stderr, values), encoding="utf-8")
                         deliver_store_order_push(simulator["udid"], app_id)
                     command = ["maestro", "test", "--udid", simulator["udid"], "--config", str(CONFIG_FILE), "--format", "JUNIT", "--output", str(junit), "--debug-output", str(debug), "--test-output-dir", str(screenshot_dir), *env_args, str(flow)]
                     try:

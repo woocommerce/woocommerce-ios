@@ -17,6 +17,10 @@ stack. Flow owners may reference these interfaces but must not redefine them.
 - Flows launch the app with `-ui_testing`, which turns off analytics and skips the
   privacy banner and login onboarding. No Maestro invocation passes XCUITest mock
   arguments.
+- The runner passes `NOTIFICATIONS=deny`, and `login.yaml` has Maestro answer the
+  app's notification prompt with it, so no notification banner can take a tap.
+  Before the notification flow, the runner signs in again with
+  `NOTIFICATIONS=allow`.
 
 ## Environment
 

@@ -8,6 +8,11 @@ appId: ${APP_ID}
     clearKeychain: true
     arguments:
       "-ui_testing": true
+    # Maestro answers the notification prompt the app shows once signed in.
+    # Flows turn notifications down so no banner can take a tap.
+    permissions:
+      all: allow
+      notifications: ${NOTIFICATIONS}
 
 - runFlow:
     file: open_site_address_login.yaml

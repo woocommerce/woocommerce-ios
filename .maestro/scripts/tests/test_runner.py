@@ -220,6 +220,23 @@ class RunnerTests(unittest.TestCase):
             commands,
         )
 
+    def test_notification_flow_signs_in_again_turning_notifications_on(self) -> None:
+        commands: list[list[str]] = []
+        env_args = RUNNER.maestro_env_args(
+            "com.example.woo",
+            "run-1",
+            notifications="allow",
+        )
+        with mock.patch.object(RUNNER, "run", side_effect=lambda command, **_: commands.append(command)):
+            RUNNER.sign_in_allowing_notifications("sim-1", env_args, {})
+
+        self.assertTrue(RUNNER.LOGIN_FLOW.is_file())
+        self.assertEqual(
+            ["maestro", "test", "--udid", "sim-1", "--config", str(RUNNER.CONFIG_FILE), *env_args, str(RUNNER.LOGIN_FLOW)],
+            commands[0],
+        )
+        self.assertIn("NOTIFICATIONS=allow", commands[0])
+
     def test_html_report_names_the_overall_status(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory)
@@ -738,7 +755,11 @@ class RunnerTests(unittest.TestCase):
         )
 
         self.assertEqual(
-            ["--env", "APP_ID=com.example.app", "--env", "SUITE_RUN_ID=run-1"],
+            [
+                "--env", "APP_ID=com.example.app",
+                "--env", "SUITE_RUN_ID=run-1",
+                "--env", "NOTIFICATIONS=deny",
+            ],
             args,
         )
 

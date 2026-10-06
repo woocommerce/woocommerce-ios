@@ -73,7 +73,6 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 
     private var navigationRowMinHeight: CGFloat? {
         horizontalSizeClass == .compact ? POSHeaderLayoutConstants.minHeight : nil
-
     }
 
     init(

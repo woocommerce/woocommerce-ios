@@ -517,14 +517,16 @@ struct PointOfSaleDashboardView: View {
     private var tabletContentView: some View {
         @Bindable var viewStateCoordinator = viewStateCoordinator
         return GeometryReader { geometry in
-            // Fixed widths ensure views don't resize during offset-based transitions.
-            let productsWidth = geometry.size.width * (1 - Constants.cartWidth)
-            let cartWidth = geometry.size.width * Constants.cartWidth
-            let checkoutWidth = geometry.size.width * (1 - Constants.cartWidth)
-            let dashboardWidth = productsWidth + cartWidth + checkoutWidth
-            let dashboardOffset: CGFloat = posModel.orderStage == .building ? 0 : -productsWidth
+            let isBuilding = posModel.orderStage == .building
+            let layout = POSBookPoseLayout(geometry: geometry,
+                                           defaultLeadingFraction: isBuilding ? 1 - Constants.cartWidth : Constants.cartWidth)
+            let productsWidth = isBuilding ? layout.leadingWidth : layout.trailingWidth
+            let cartWidth = isBuilding ? layout.trailingWidth : layout.leadingWidth
+            let checkoutWidth = isBuilding ? layout.leadingWidth : layout.trailingWidth
+            let dashboardWidth = productsWidth + layout.spacing + geometry.size.width
+            let dashboardOffset: CGFloat = isBuilding ? 0 : -(productsWidth + layout.spacing)
 
-            HStack(spacing: POSSpacing.none) {
+            HStack(spacing: layout.spacing) {
                 ItemListView(selectedItemListType: $viewStateCoordinator.selectedItemListType,
                              searchTerm: $viewStateCoordinator.searchTerm,
                              httpsConfigurationNotice: httpsConfigurationNotice)
@@ -533,14 +535,14 @@ struct PointOfSaleDashboardView: View {
                     .allowsHitTesting(posModel.orderStage == .building)
 
                 NavigationStack(path: $navigationPath) {
-                    HStack(spacing: POSSpacing.none) {
+                    HStack(spacing: layout.spacing) {
                         if showsCartDuringCheckout {
                             CartView()
                                 .frame(width: cartWidth)
                                 .accessibilitySortPriority(1)
                         }
 
-                        let totalsWidth = showsCartDuringCheckout ? checkoutWidth : cartWidth + checkoutWidth
+                        let totalsWidth = showsCartDuringCheckout ? checkoutWidth : geometry.size.width
 
                         TotalsView()
                             .background(Color.posSurface)
@@ -554,7 +556,7 @@ struct PointOfSaleDashboardView: View {
                 }
                 .scrollContentBackground(.hidden)
                 .background(Color.posSurface)
-                .frame(width: cartWidth + checkoutWidth)
+                .frame(width: geometry.size.width)
             }
             .frame(width: dashboardWidth, alignment: .leading)
             .offset(x: dashboardOffset)
@@ -582,6 +584,7 @@ struct PointOfSaleDashboardView: View {
                     navigationRouter.popToRoot()
                 }
             }
+            .animation(.default, value: layout)
             .animation(.default, value: posModel.orderStage)
             .animation(.default, value: posModel.paymentState.card.shownFullScreen)
         }
@@ -600,17 +603,19 @@ struct PointOfSaleDashboardView: View {
     private var tabletBackground: some View {
         GeometryReader { geometry in
             let showsCartBackground = showsCartDuringCheckout && navigationPath.isEmpty
-            HStack(spacing: 0) {
+            let layout = POSBookPoseLayout(geometry: geometry,
+                                           defaultLeadingFraction: posModel.orderStage == .building ? 1 - Constants.cartWidth : Constants.cartWidth)
+            HStack(spacing: layout.spacing) {
                 if posModel.orderStage == .building {
                     Color.clear
-                        .frame(width: geometry.size.width * (1 - Constants.cartWidth))
+                        .frame(width: layout.leadingWidth)
                         .background(itemListBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                     Color.clear
                         .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
                 } else {
                     if showsCartBackground {
                         Color.clear
-                            .frame(width: geometry.size.width * Constants.cartWidth)
+                            .frame(width: layout.leadingWidth)
                             .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                     }
                     Color.clear
@@ -621,6 +626,8 @@ struct PointOfSaleDashboardView: View {
                         }
                 }
             }
+            .background(Color.posSurface)
+            .animation(.default, value: layout)
         }
     }
 

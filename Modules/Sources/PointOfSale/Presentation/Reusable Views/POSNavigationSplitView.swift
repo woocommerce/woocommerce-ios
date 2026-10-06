@@ -76,10 +76,11 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
         GeometryReader { geometry in
             let totalWidth = geometry.size.width
             let progress = detailProgress(for: totalWidth)
+            let layout = POSBookPoseLayout(geometry: geometry, defaultLeadingFraction: Constants.sidebarWidthFraction)
 
-            HStack(spacing: 0) {
+            HStack(spacing: isRegular ? layout.spacing : 0) {
                 sidebar(sidebarSelection)
-                    .frame(width: sidebarWidth(for: totalWidth))
+                    .frame(width: isRegular ? layout.leadingWidth : totalWidth)
                     .offset(x: edgeSwipePolicy.outgoingParallaxOffset(progress: progress, totalWidth: totalWidth))
                     // The panes lay out inside the safe area, so anything drawn over them stops at
                     // the status bar and the home indicator. A dim that stops short of those leaves
@@ -113,7 +114,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                     .posIgnoresHiddenKeyboardSafeArea()
                     .ignoresSafeArea(.container, edges: ignoresBottomContainerInset ? .bottom : [])
                 }
-                .frame(width: detailWidth(for: totalWidth))
+                .frame(width: isRegular ? layout.trailingWidth : totalWidth)
                 // The stack has no backdrop of its own, so without this any moment where the
                 // detail is not yet drawn shows the host's background instead. It has to reach into
                 // the safe areas too, because the sidebar now passes behind this pane rather than
@@ -123,6 +124,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                     leadingEdgeShadow(progress: progress)
                 }
             }
+            .animation(.default, value: layout)
             .offset(x: edgeSwipePolicy.incomingOffset(progress: progress, totalWidth: totalWidth))
             .simultaneousGesture(
                 compactBackGesture(totalWidth: totalWidth),
@@ -142,13 +144,16 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
         .background {
             if isRegular {
                 GeometryReader { geometry in
-                    HStack(spacing: 0) {
+                    let layout = POSBookPoseLayout(geometry: geometry, defaultLeadingFraction: Constants.sidebarWidthFraction)
+                    HStack(spacing: layout.spacing) {
                         Color.clear
-                            .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
+                            .frame(width: layout.leadingWidth)
                             .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                         Color.clear
                             .background(visibleDetailBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
                     }
+                    .background(Color.posSurface)
+                    .animation(.default, value: layout)
                 }
             } else {
                 (selection == nil ? Color.posSurfaceBright : visibleDetailBackgroundColor)
@@ -187,14 +192,6 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     }
 
     // MARK: - Layout
-
-    private func sidebarWidth(for totalWidth: CGFloat) -> CGFloat {
-        isRegular ? totalWidth * Constants.sidebarWidthFraction : totalWidth
-    }
-
-    private func detailWidth(for totalWidth: CGFloat) -> CGFloat {
-        isRegular ? totalWidth * (1 - Constants.sidebarWidthFraction) : totalWidth
-    }
 
     /// How far the detail pane has travelled over the sidebar: `1` when it covers it, `0` when the
     /// sidebar is fully back. Zero in regular width, where both panes are on screen at once and

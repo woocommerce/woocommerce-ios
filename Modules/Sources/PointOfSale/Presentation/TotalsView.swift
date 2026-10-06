@@ -522,10 +522,13 @@ private struct TotalsFieldsContent: View {
         .if(horizontalSizeClass == .compact) {
             $0.frame(maxWidth: .infinity)
         }
-        .if(horizontalSizeClass != .compact) {
-            $0
-                .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
-                .fixedSize(horizontal: true, vertical: false)
+        .if(horizontalSizeClass != .compact) { content in
+            ViewThatFits(in: .horizontal) {
+                content
+                    .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
+                    .fixedSize(horizontal: true, vertical: false)
+                content.frame(maxWidth: .infinity)
+            }
         }
         .matchedGeometryEffect(id: Self.matchedGeometryId, in: totalsFieldAnimation)
     }

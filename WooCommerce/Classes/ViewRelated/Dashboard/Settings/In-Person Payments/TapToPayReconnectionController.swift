@@ -102,7 +102,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         }
     }
 
-    /// Callable from any thread, because `SwitchStoreUseCase` cancels the reconnection from nonisolated code.
+    /// Callable from any thread: some callers cancel the reconnection from nonisolated code.
     nonisolated func cancelReconnection() {
         if Thread.isMainThread {
             MainActor.assumeIsolated {

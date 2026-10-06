@@ -9,8 +9,10 @@ import enum Networking.RequestAuthenticatorError
 /// View with embedded web view to authorize application password for a site.
 ///
 final class ApplicationPasswordAuthorizationWebViewController: UIViewController {
+    typealias AlertPresenter = (UIViewController, UIAlertController, @escaping () -> Void) -> Void
 
     private let analytics: Analytics
+    private let alertPresenter: AlertPresenter
 
     /// Callback when application password is authorized.
     private let onSuccess: (ApplicationPassword, UINavigationController?) -> Void
@@ -57,11 +59,15 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
     init(viewModel: ApplicationPasswordAuthorizationViewModel,
          previousViewController: UIViewController?,
          analytics: Analytics = ServiceLocator.analytics,
+         alertPresenter: @escaping AlertPresenter = { controller, alert, completion in
+             controller.present(alert, animated: true, completion: completion)
+         },
          onSuccess: @escaping (ApplicationPassword, UINavigationController?) -> Void) {
         self.viewModel = viewModel
         self.previousViewController = previousViewController
         self.onSuccess = onSuccess
         self.analytics = analytics
+        self.alertPresenter = alertPresenter
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -251,7 +257,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             }
             alertController.addAction(retryAction)
         }
-        present(alertController, animated: true) { [weak self] in
+        alertPresenter(self, alertController) { [weak self] in
             guard let self, let failure else { return }
             analytics.track(event: .Login.unexpectedResponseShown(failure: failure, loginFlow: .appPassword))
         }

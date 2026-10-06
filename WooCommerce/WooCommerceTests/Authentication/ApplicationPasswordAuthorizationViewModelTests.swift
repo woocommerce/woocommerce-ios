@@ -5,7 +5,7 @@ import Yosemite
 
 @MainActor
 struct ApplicationPasswordAuthorizationViewModelTests {
-    @Test func test_authorization_failure_when_alert_is_presented_then_tracks_app_password_flow() async throws {
+    @Test func test_authorization_failure_when_alert_is_presented_then_tracks_app_password_flow() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         let failure = UnexpectedStoreResponseError(kind: .unacceptableStatusCode, statusCode: 500)
@@ -16,21 +16,33 @@ struct ApplicationPasswordAuthorizationViewModelTests {
         }
         let provider = MockAnalyticsProvider()
         let model = ApplicationPasswordAuthorizationViewModel(siteURL: "https://example.com", stores: stores)
-        let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: model, previousViewController: nil,
-                                                                           analytics: WooAnalytics(analyticsProvider: provider)) { _, _ in }
-        let window = UIWindow(frame: UIScreen.main.bounds)
-        window.rootViewController = controller
-        defer { window.isHidden = true }
         let event = WooAnalyticsStat.loginUnexpectedResponseErrorShown.rawValue
-        // When
-        #expect(!provider.receivedEvents.contains(event))
-        window.makeKeyAndVisible()
-        let deadline = ContinuousClock.now.advanced(by: .seconds(5))
-        while !provider.receivedEvents.contains(event), ContinuousClock.now < deadline {
-            try await Task.sleep(for: .milliseconds(20))
+        var presentedAlert: UIAlertController?
+        var presentationCompletion: (() -> Void)?
+        var controller: ApplicationPasswordAuthorizationWebViewController?
+
+        // When: wait for the presentation request, without a key window or animation.
+        await withCheckedContinuation { continuation in
+            controller = ApplicationPasswordAuthorizationWebViewController(
+                viewModel: model,
+                previousViewController: nil,
+                analytics: WooAnalytics(analyticsProvider: provider),
+                alertPresenter: { _, alert, completion in
+                    presentedAlert = alert
+                    presentationCompletion = completion
+                    continuation.resume()
+                },
+                onSuccess: { _, _ in }
+            )
+            controller?.loadViewIfNeeded()
         }
-        // Then
-        #expect(controller.presentedViewController is UIAlertController)
+
+        // Then: tracking waits for presentation to complete.
+        #expect(presentedAlert != nil)
+        #expect(!provider.receivedEvents.contains(event))
+        withExtendedLifetime(controller) {
+            presentationCompletion?()
+        }
         #expect(provider.receivedEvents.filter { $0 == event }.count == 1)
         #expect(provider.receivedProperties.last?["login_flow"] as? String == "app_password")
         #expect(provider.receivedProperties.last?["step"] as? String == "app_password_authorization_url")

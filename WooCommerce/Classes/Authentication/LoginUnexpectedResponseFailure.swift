@@ -1,7 +1,7 @@
 import Yosemite
 import enum NetworkingCore.CookieNonceAuthenticationResponseStage
 
-/// Context for an unexpected response during login. Diagnostics never enter analytics properties.
+/// Analytics dimensions for an unexpected response during login.
 struct LoginUnexpectedResponseFailure: Equatable {
     enum LoginFlow: String {
         case siteCredentials = "site_credentials"
@@ -9,10 +9,7 @@ struct LoginUnexpectedResponseFailure: Equatable {
         case storePicker = "store_picker"
     }
 
-    enum Kind: String {
-        case unexpectedContent = "unexpected_content"
-        case unacceptableStatusCode = "unacceptable_status_code"
-    }
+    typealias Kind = UnexpectedStoreResponseError.Kind
 
     enum Step: String {
         case loginPage = "login_page"
@@ -28,15 +25,13 @@ struct LoginUnexpectedResponseFailure: Equatable {
     let step: Step
     let statusCode: Int?
     let kind: Kind
-    let diagnostics: UnexpectedStoreResponseError.Diagnostics?
 
     init?(error: Error, step: Step) {
         let underlying = (error as? RoleEligibilityError)?.underlyingError ?? error
         guard let response = underlying as? UnexpectedStoreResponseError else { return nil }
         self.step = step
         self.statusCode = response.statusCode
-        self.kind = response.kind == .unexpectedContent ? .unexpectedContent : .unacceptableStatusCode
-        self.diagnostics = response.diagnostics
+        self.kind = response.kind
     }
 
     init(stage: CookieNonceAuthenticationResponseStage, statusCode: Int? = nil) {
@@ -48,6 +43,5 @@ struct LoginUnexpectedResponseFailure: Equatable {
         }
         self.statusCode = statusCode
         self.kind = statusCode == nil ? .unexpectedContent : .unacceptableStatusCode
-        self.diagnostics = nil
     }
 }

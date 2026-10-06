@@ -216,7 +216,8 @@ private extension PostSiteCredentialLoginChecker {
                    siteURL: String,
                    in navigationController: UINavigationController,
                    onRetry: (() -> Void)? = nil) {
-        // Login callbacks deliver on the main queue; all alert work shares UIKit's isolation.
+        // Generation runs in Task { @MainActor }; Remote delivers role/site callbacks on DispatchQueue.main.
+        // Retry actions run through UIKit on the main actor and re-enter these same paths.
         MainActor.assumeIsolated {
             let alert = UIAlertController(title: message,
                                           message: nil,

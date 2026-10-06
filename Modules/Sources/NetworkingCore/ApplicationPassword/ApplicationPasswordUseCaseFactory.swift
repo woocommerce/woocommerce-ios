@@ -6,7 +6,8 @@ public struct ApplicationPasswordUseCaseFactory {
         _ username: String,
         _ password: String,
         _ siteAddress: String,
-        _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?
+        _ authenticationEndpoints: CookieNonceAuthenticationEndpoints?,
+        _ detectUnexpectedResponses: Bool
     ) throws -> ApplicationPasswordUseCase
 
     private let makeWordPressOrgUseCase: MakeWordPressOrgUseCase
@@ -16,7 +17,8 @@ public struct ApplicationPasswordUseCaseFactory {
             username: $0,
             password: $1,
             siteAddress: $2,
-            authenticationEndpoints: $3
+            authenticationEndpoints: $3,
+            detectUnexpectedResponses: $4
         )
     }) {
         self.makeWordPressOrgUseCase = makeWordPressOrgUseCase
@@ -27,8 +29,6 @@ public struct ApplicationPasswordUseCaseFactory {
                                     siteAddress: String,
                                     authenticationEndpoints: CookieNonceAuthenticationEndpoints?,
                                     detectUnexpectedResponses: Bool = false) throws -> ApplicationPasswordUseCase {
-        let useCase = try makeWordPressOrgUseCase(username, password, siteAddress, authenticationEndpoints)
-        (useCase as? DefaultApplicationPasswordUseCase)?.detectUnexpectedResponses = detectUnexpectedResponses
-        return useCase
+        try makeWordPressOrgUseCase(username, password, siteAddress, authenticationEndpoints, detectUnexpectedResponses)
     }
 }

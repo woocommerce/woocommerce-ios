@@ -309,11 +309,6 @@ private extension DefaultApplicationPasswordUseCase {
                         return
                     }
 
-                    if self.detectUnexpectedResponses,
-                       let code = error.responseCode, [404, 501].contains(code) {
-                        continuation.resume(throwing: error)
-                        return
-                    }
                     switch error {
                     case .responseValidationFailed(reason: .unacceptableStatusCode(code: ErrorCode.notFound)):
                         continuation.resume(throwing: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)

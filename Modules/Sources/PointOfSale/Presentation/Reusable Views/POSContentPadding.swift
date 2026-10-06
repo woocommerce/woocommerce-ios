@@ -27,6 +27,7 @@ private struct POSContentPaddingModifier: ViewModifier {
 }
 
 enum POSContentPadding {
+    /// The frame includes margins. Credit the margin already between the division and this content edge.
     static func clearance(size: CGSize, frame: CGRect, margins: EdgeInsets) -> EdgeInsets {
         var clearance = EdgeInsets()
         if frame.maxX <= 0 {
@@ -45,7 +46,7 @@ extension View {
     }
 
     /// Counts nearby fold clearance toward content spacing at the requested edges.
-    func posContentPadding(_ edges: Edge.Set = .all, _ padding: CGFloat) -> some View {
+    func posContentPadding(_ edges: Edge.Set, _ padding: CGFloat) -> some View {
         posContentPadding(EdgeInsets(top: edges.contains(.top) ? padding : 0,
                                     leading: edges.contains(.leading) ? padding : 0,
                                     bottom: edges.contains(.bottom) ? padding : 0,

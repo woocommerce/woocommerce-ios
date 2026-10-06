@@ -1,7 +1,7 @@
 import SwiftUI
 
 /// Uses the local division region to keep each pane on its own page in book pose.
-struct POSBookPoseLayout: Equatable {
+struct POSBookPoseLayout {
     let leadingWidth: CGFloat
     let trailingWidth: CGFloat
     let spacing: CGFloat

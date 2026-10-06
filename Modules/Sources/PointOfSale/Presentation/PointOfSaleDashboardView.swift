@@ -553,7 +553,7 @@ struct PointOfSaleDashboardView: View {
                     // Accept the navigation stack's proposed width without centering the wider, fixed-size panes.
                     .frame(minWidth: 0, maxWidth: .infinity, alignment: .leading)
                     // Paint the fold gap inside the stack; its hosting background covers the dashboard backdrop.
-                    .background(tabletBackground)
+                    .background(tabletBackground(layout))
                     .posNavigationDestinations()
                 }
                 .scrollContentBackground(.hidden)
@@ -590,7 +590,7 @@ struct PointOfSaleDashboardView: View {
             .animation(.default, value: posModel.paymentState.card.shownFullScreen)
             .frame(width: geometry.size.width, height: geometry.size.height, alignment: .leading)
             .clipped()
-            .background(tabletBackground)
+            .background(tabletBackground(layout))
             .posBookPoseAnimation(layout)
         }
         .environment(\.posNavigationRouter, navigationRouter)
@@ -603,34 +603,30 @@ struct PointOfSaleDashboardView: View {
             && posModel.paymentState.markAsPaid != .paymentSuccess
     }
 
-    private var tabletBackground: some View {
-        GeometryReader { geometry in
-            let showsCartBackground = showsCartDuringCheckout && navigationPath.isEmpty
-            let layout = POSBookPoseLayout(geometry: geometry,
-                                           defaultLeadingFraction: posModel.orderStage == .building ? 1 - Constants.cartWidth : Constants.cartWidth)
-            HStack(spacing: 0) {
-                if posModel.orderStage == .building {
+    private func tabletBackground(_ layout: POSBookPoseLayout) -> some View {
+        let showsCartBackground = showsCartDuringCheckout && navigationPath.isEmpty
+        return HStack(spacing: 0) {
+            if posModel.orderStage == .building {
+                Color.clear
+                    .frame(width: layout.backgroundLeadingWidth)
+                    .background(itemListBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
+                Color.clear
+                    .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
+            } else {
+                if showsCartBackground {
                     Color.clear
                         .frame(width: layout.backgroundLeadingWidth)
-                        .background(itemListBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
-                    Color.clear
-                        .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
-                } else {
-                    if showsCartBackground {
-                        Color.clear
-                            .frame(width: layout.backgroundLeadingWidth)
-                            .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
-                    }
-                    Color.clear
-                        .background {
-                            tabletPaymentBackgroundColor
-                                .background(Color.posSurface)
-                                .ignoresSafeArea(.all, edges: showsCartBackground ? [.top, .bottom, .trailing] : .all)
-                        }
+                        .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
                 }
+                Color.clear
+                    .background {
+                        tabletPaymentBackgroundColor
+                            .background(Color.posSurface)
+                            .ignoresSafeArea(.all, edges: showsCartBackground ? [.top, .bottom, .trailing] : .all)
+                    }
             }
-            .background(Color.posSurface)
         }
+        .background(Color.posSurface)
     }
 
     private var tabletPaymentBackgroundColor: Color {

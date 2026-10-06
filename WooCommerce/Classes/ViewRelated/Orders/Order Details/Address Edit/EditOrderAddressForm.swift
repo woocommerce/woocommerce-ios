@@ -2,7 +2,6 @@ import Combine
 import SwiftUI
 import UIKit
 import Yosemite
-import Experiments
 
 /// Hosting controller that wraps an `EditOrderAddressForm`.
 ///
@@ -93,9 +92,13 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     ///
     @Bindable private(set) var viewModel: ViewModel
 
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         Group {
             ScrollView {
                 SingleAddressForm(fields: $viewModel.fields,
@@ -105,7 +108,8 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                   sectionTitle: viewModel.sectionTitle,
                                   showEmailField: viewModel.showEmailField,
                                   showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
-                                  showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
+                                  showStateFieldAsSelector: viewModel.showStateFieldAsSelector,
+                                  safeAreaInsets: safeAreaInsets)
                          .accessibilityElement(children: .contain)
                          .accessibilityIdentifier("order-address-form")
 
@@ -136,7 +140,8 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                       sectionTitle: viewModel.secondarySectionTitle,
                                       showEmailField: false,
                                       showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
-                                      showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector)
+                                      showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector,
+                                      safeAreaInsets: safeAreaInsets)
                         .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("secondary-order-address-form")
                 }
@@ -192,8 +197,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
 
 struct SingleAddressForm: View {
 
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     @Binding var fields: AddressFormFields
 
     let countryViewModelClosure: () -> CountrySelectorViewModel
@@ -204,6 +207,7 @@ struct SingleAddressForm: View {
     let showEmailField: Bool
     let showPhoneCountryCodeField: Bool
     let showStateFieldAsSelector: Bool
+    let safeAreaInsets: EdgeInsets
 
     /// Set it to `true` to present the country selector.
     ///
@@ -310,21 +314,19 @@ struct SingleAddressForm: View {
             .padding(.horizontal, insets: safeAreaInsets)
             .accessibility(addTraits: .isHeader)
         VStack(spacing: 0) {
-            if ServiceLocator.featureFlagService.isFeatureFlagEnabled(.orderAddressMapSearch) {
-                Button(action: {
-                    showMapPicker = true
-                    ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerTapped,
-                                                   withProperties: ["locale": Locale.current.identifier])
-                }) {
-                    HStack {
-                        Image(systemName: "map")
-                        Text(Localization.pickOnMap)
-                    }
+            Button(action: {
+                showMapPicker = true
+                ServiceLocator.analytics.track(.orderDetailEditAddressMapPickerTapped,
+                                               withProperties: ["locale": Locale.current.identifier])
+            }) {
+                HStack {
+                    Image(systemName: "map")
+                    Text(Localization.pickOnMap)
                 }
-                .buttonStyle(PrimaryButtonStyle())
-                .padding(.horizontal, Constants.horizontalPadding)
-                .padding(.vertical, Constants.mapPickerButtonVerticalPadding)
             }
+            .buttonStyle(PrimaryButtonStyle())
+            .padding(.horizontal, Constants.horizontalPadding)
+            .padding(.vertical, Constants.mapPickerButtonVerticalPadding)
 
             Group {
                 TitleAndTextFieldRow(title: Localization.companyField,
@@ -553,7 +555,8 @@ struct EditAddressForm_Previews: PreviewProvider {
                           sectionTitle: viewModel.sectionTitle,
                           showEmailField: viewModel.showEmailField,
                           showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
-                          showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
+                          showStateFieldAsSelector: viewModel.showStateFieldAsSelector,
+                          safeAreaInsets: .zero)
     }
 }
 

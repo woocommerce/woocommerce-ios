@@ -12,6 +12,9 @@ final class TwoFAViewController: LoginViewController {
     @IBOutlet var bottomContentConstraint: NSLayoutConstraint?
     private weak var codeField: UITextField?
 
+    /// Injected so code validation can be tested without accessing the system clipboard.
+    var pasteboardStringProvider: () -> String? = { UIPasteboard.general.string }
+
     private var rows = [Row]()
     private var errorMessage: String?
     private var pasteboardChangeCountBeforeBackground: Int?
@@ -203,7 +206,7 @@ private extension TwoFAViewController {
     }
 
     func finishedLogin(withNonceAuthToken authToken: String) {
-        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: true, siteURL: loginFields.siteAddress)
+        let wpcom = WordPressComCredentials(authToken: authToken, isJetpackLogin: isJetpackLogin, multifactor: true, siteURL: loginFields.effectiveSiteAddress)
         let credentials = AuthenticatorCredentials(wpcom: wpcom)
         syncWPComAndPresentEpilogue(credentials: credentials)
     }
@@ -265,7 +268,7 @@ private extension TwoFAViewController {
         let allowedCharacters = CharacterSet.decimalDigits
         let resultCharacterSet = CharacterSet(charactersIn: codeStripped)
         let isOnlyNumbers = allowedCharacters.isSuperset(of: resultCharacterSet)
-        let isShortEnough = codeStripped.count <= SocialLogin2FANonceInfo.TwoFactorTypeLengths.backup.rawValue
+        let isShortEnough = codeStripped.count <= SocialLogin2FANonceInfo.TwoFactorTypeLengths.email.rawValue
 
         if isOnlyNumbers && isShortEnough {
             return .valid(codeStripped)
@@ -359,7 +362,7 @@ extension TwoFAViewController: UITextFieldDelegate {
         case .invalid(nonNumbers: true):
             displayError(message: LocalizedText.numericalCode)
         default:
-            if let pasteString = UIPasteboard.general.string, pasteString == replacementString {
+            if let pasteString = pasteboardStringProvider(), pasteString == replacementString {
                 displayError(message: LocalizedText.invalidCode)
             }
         }

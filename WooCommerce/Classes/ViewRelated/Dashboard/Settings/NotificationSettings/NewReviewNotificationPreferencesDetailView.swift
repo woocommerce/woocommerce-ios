@@ -1,13 +1,16 @@
 import SwiftUI
 
-/// Detail screen for the New reviews push notification preferences. Reached by
-/// tapping the New reviews row in `PushNotificationPreferencesView`. Navigation
-/// chrome (title, Save bar button, discard confirmation) lives on the wrapping
-/// `NewReviewNotificationPreferencesHostingController`.
+/// Detail screen for the new reviews push notification preferences. Reached by
+/// tapping the New reviews row in `PushNotificationPreferencesView`.
 ///
-struct NewReviewNotificationPreferencesDetailView: View {
+struct NewReviewNotificationPreferencesDetailView: NotificationDetailContent {
 
     @Bindable private var viewModel: PushNotificationPreferencesViewModel
+
+    static var navigationTitle: String { Localization.title }
+
+    var onBack: (() -> Void)?
+    var onSave: (() -> Void)?
 
     init(viewModel: PushNotificationPreferencesViewModel) {
         self.viewModel = viewModel
@@ -21,12 +24,9 @@ struct NewReviewNotificationPreferencesDetailView: View {
         .listStyle(.insetGrouped)
         .background(Color(.listBackground))
         .disabled(viewModel.isSaving)
-        .navigationTitle(Localization.title)
+        .navigationTitle(Self.navigationTitle)
         .navigationBarTitleDisplayMode(.inline)
-        // `leftBarButtonItem` set in UIKit doesn't suppress SwiftUI's own back
-        // button, so without this both render side-by-side and only the UIKit
-        // one routes through the discard handler.
-        .navigationBarBackButtonHidden(true)
+        .notificationDetailToolbar(viewModel: viewModel, onBack: onBack, onSave: onSave)
         .notice($viewModel.errorNotice)
         .onAppear {
             viewModel.detailDidAppear(notificationType: .newReview)

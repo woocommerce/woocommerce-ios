@@ -235,20 +235,22 @@ struct OrderForm: View {
     }
 
     var body: some View {
-        orderFormSummary(presentProductSelector)
-            .onAppear {
-                updateSelectionSyncApproach(for: presentationStyle)
+        SafeAreaInsetsReader { safeAreaInsets in
+            orderFormSummary(presentProductSelector, safeAreaInsets: safeAreaInsets)
+        }
+        .onAppear {
+            updateSelectionSyncApproach(for: presentationStyle)
+        }
+        .onChange(of: horizontalSizeClass) {
+            viewModel.saveInFlightOrderNotes()
+            viewModel.saveInflightCustomerDetails()
+        }
+        .background(
+            GeometryReader { geometryProxy in
+                Color.clear
+                    .preference(key: WidthPreferenceKey.self, value: geometryProxy.size.width)
             }
-            .onChange(of: horizontalSizeClass) {
-                viewModel.saveInFlightOrderNotes()
-                viewModel.saveInflightCustomerDetails()
-            }
-            .background(
-                GeometryReader { geometryProxy in
-                    Color.clear
-                        .preference(key: WidthPreferenceKey.self, value: geometryProxy.size.width)
-                }
-            )
+        )
     }
 
     private func updateSelectionSyncApproach(for presentationStyle: AdaptiveModalContainerPresentationStyle?) {
@@ -260,7 +262,7 @@ struct OrderForm: View {
         }
     }
 
-    @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?) -> some View {
+    @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?, safeAreaInsets: EdgeInsets) -> some View {
         ScrollViewReader { scroll in
             ScrollView {
                 Group {
@@ -276,6 +278,7 @@ struct OrderForm: View {
 
                         Group {
                             OrderStatusSection(viewModel: viewModel,
+                                               safeAreaInsets: safeAreaInsets,
                                                topDivider: !viewModel.shouldShowNonEditableIndicators,
                                                isEditButtonVisible: viewModel.isOrderStatusEditingEnabled)
                             Spacer(minLength: Layout.sectionSpacing)
@@ -287,7 +290,8 @@ struct OrderForm: View {
                                         presentProductSelector: presentProductSelector,
                                         viewModel: viewModel,
                                         navigationButtonID: $navigationButtonID,
-                                        isLoading: isLoading)
+                                        isLoading: isLoading,
+                                        safeAreaInsets: safeAreaInsets)
                         .disabled(viewModel.shouldShowNonEditableIndicators)
 
                         Group {
@@ -297,7 +301,9 @@ struct OrderForm: View {
                         }
                         .renderedIf(viewModel.shouldSplitProductsAndCustomAmountsSections)
 
-                        OrderCustomAmountsSection(viewModel: viewModel, sectionViewModel: viewModel.customAmountsSectionViewModel)
+                        OrderCustomAmountsSection(viewModel: viewModel,
+                                                  sectionViewModel: viewModel.customAmountsSectionViewModel,
+                                                  safeAreaInsets: safeAreaInsets)
                             .disabled(viewModel.shouldShowNonEditableIndicators)
 
                         Divider()
@@ -305,14 +311,16 @@ struct OrderForm: View {
                         Spacer(minLength: Layout.sectionSpacing)
 
                         Group {
-                            OrderShippingSection(viewModel: viewModel.shippingLineViewModel)
+                            OrderShippingSection(viewModel: viewModel.shippingLineViewModel, safeAreaInsets: safeAreaInsets)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
                             Spacer(minLength: Layout.sectionSpacing)
                         }
                         .renderedIf(viewModel.shippingLineViewModel.shippingLineRows.isNotEmpty)
 
                         Group {
-                            OrderCouponSectionView(viewModel: viewModel, couponViewModel: viewModel.couponLineViewModel)
+                            OrderCouponSectionView(viewModel: viewModel,
+                                                   couponViewModel: viewModel.couponLineViewModel,
+                                                   safeAreaInsets: safeAreaInsets)
                                 .disabled(viewModel.shouldShowNonEditableIndicators)
                             Spacer(minLength: Layout.sectionSpacing)
                         }
@@ -323,7 +331,8 @@ struct OrderForm: View {
                             shippingLineViewModel: viewModel.shippingLineViewModel,
                             couponLineViewModel: viewModel.couponLineViewModel,
                             shouldShowCouponsInfoTooltip: $shouldShowInformationalCouponTooltip,
-                            shouldShowGiftCardForm: $shouldShowGiftCardForm)
+                            shouldShowGiftCardForm: $shouldShowGiftCardForm,
+                            safeAreaInsets: safeAreaInsets)
                         .addingTopAndBottomDividers()
                         .disabled(viewModel.shouldShowNonEditableIndicators)
 
@@ -332,7 +341,7 @@ struct OrderForm: View {
 
                     VStack(spacing: Layout.noSpacing) {
                         Group {
-                            NewTaxRateSection(text: viewModel.taxRateRowText) {
+                            NewTaxRateSection(text: viewModel.taxRateRowText, safeAreaInsets: safeAreaInsets) {
                                 viewModel.onSetNewTaxRateTapped()
                                 switch viewModel.taxRateRowAction {
                                 case .storedTaxRateSheet:
@@ -367,7 +376,9 @@ struct OrderForm: View {
 
                         Divider()
 
-                        OrderCustomerSection(viewModel: viewModel, addressFormViewModel: viewModel.addressFormViewModel)
+                        OrderCustomerSection(viewModel: viewModel,
+                                             addressFormViewModel: viewModel.addressFormViewModel,
+                                             safeAreaInsets: safeAreaInsets)
 
                         Group {
                             Divider()
@@ -378,7 +389,7 @@ struct OrderForm: View {
                         }
                         .renderedIf(viewModel.shouldSplitCustomerAndNoteSections)
 
-                        CustomerNoteSection(viewModel: viewModel)
+                        CustomerNoteSection(viewModel: viewModel, safeAreaInsets: safeAreaInsets)
 
                         Divider()
                     }
@@ -397,7 +408,7 @@ struct OrderForm: View {
                 FeedbackBannerPopover(isPresented: $viewModel.shippingLineViewModel.isSurveyPromptPresented,
                                       config: viewModel.shippingLineViewModel.feedbackBannerConfig)
 
-                ExpandableBottomSheet(onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
+                ExpandableBottomSheet(safeAreaInsets: safeAreaInsets, onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
                     VStack(spacing: .zero) {
                         HStack {
                             Text(Localization.orderTotal)
@@ -546,6 +557,7 @@ struct OrderForm: View {
 
 private struct NewTaxRateSection: View {
     let text: String
+    let safeAreaInsets: EdgeInsets
     let onButtonTapped: (() -> Void)
 
     var body: some View {
@@ -554,6 +566,7 @@ private struct NewTaxRateSection: View {
                     Text(text)
                         .multilineTextAlignment(.center)
                         .padding(OrderForm.Layout.sectionSpacing)
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .frame(maxWidth: .infinity)
         })
         .background(Color(.listForeground(modal: true)))
@@ -600,9 +613,9 @@ private struct ProductsSection: View {
     ///
     @Namespace var addProductViaSKUScannerButton
 
-    /// Environment safe areas
+    /// Safe-area insets of the form's container.
     ///
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
     /// Environment variable that manages the presentation state of the AdaptiveModalContainer view
     /// which is used in the OrderForm for presenting either modally or side-by-side, based on device class size
@@ -702,7 +715,15 @@ private struct ProductsSection: View {
                     message: Text(OrderForm.Localization.permissionsMessage),
                      buttons: [
                         .default(Text(OrderForm.Localization.permissionsOpenSettings), action: {
-                            openSettingsAction()
+                            if case let .notPermitted(authorizationStatus) = viewModel.capturePermissionStatus,
+                               let reason = WooAnalyticsEvent.BarcodeScanning.BarcodeScanningFailureReason(
+                                authorizationStatus: authorizationStatus) {
+                                viewModel.trackBarcodeScanningPermissionSettingsTapped(reason: reason)
+                            }
+                            openSettingsAction { didOpenSettings in
+                                guard didOpenSettings else { return }
+                                viewModel.trackBarcodeScanningPermissionSettingsOpened()
+                            }
                          }),
                         .cancel()
                      ]
@@ -718,9 +739,11 @@ private extension ProductsSection {
         viewModel.trackBarcodeScanningButtonTapped()
         let capturePermissionStatus = viewModel.capturePermissionStatus
         switch capturePermissionStatus {
-        case .notPermitted:
-            viewModel.trackBarcodeScanningNotPermitted()
-            logPermissionStatus(status: .notPermitted)
+        case let .notPermitted(authorizationStatus):
+            if let reason = WooAnalyticsEvent.BarcodeScanning.BarcodeScanningFailureReason(authorizationStatus: authorizationStatus) {
+                viewModel.trackBarcodeScanningNotPermitted(reason: reason)
+            }
+            logPermissionStatus(status: capturePermissionStatus)
             self.showPermissionsSheet = true
         case .notDetermined:
             logPermissionStatus(status: .notDetermined)
@@ -728,6 +751,8 @@ private extension ProductsSection {
                 if isPermissionGranted {
                     showAddProductViaSKUScanner = true
                     logPermissionStatus(status: .permitted)
+                } else {
+                    viewModel.trackBarcodeScanningNotPermitted(reason: .cameraAccessDeniedAtPrompt)
                 }
             })
         case .permitted:
@@ -965,11 +990,12 @@ private extension ProductsSection {
             comment: "Title for the barcode scanning button to add a product to an order")
     }
 
-    func openSettingsAction() {
+    func openSettingsAction(completion: @escaping @MainActor @Sendable (Bool) -> Void) {
         guard let settingsURL = URL(string: UIApplication.openSettingsURLString) else {
+            completion(false)
             return
         }
-        UIApplication.shared.open(settingsURL)
+        UIApplication.shared.open(settingsURL, options: [:], completionHandler: completion)
     }
 
     func logPermissionStatus(status: EditableOrderViewModel.CapturePermissionStatus) {

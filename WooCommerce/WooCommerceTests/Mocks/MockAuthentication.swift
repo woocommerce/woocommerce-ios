@@ -12,8 +12,14 @@ final class MockAuthentication: Authentication {
         presentSupportFromScreen = screen
     }
 
+    private(set) var presentSupportWithSourceTagInvoked = false
+    private(set) var presentSupportSourceTag: WordPressSupportSourceTag?
+    private(set) weak var presentSupportSourceViewController: UIViewController?
+
     func presentSupport(from sourceViewController: UIViewController, sourceTag: WordPressSupportSourceTag, siteURL: URL?) {
-        // no-op
+        presentSupportWithSourceTagInvoked = true
+        presentSupportSourceTag = sourceTag
+        presentSupportSourceViewController = sourceViewController
     }
 
     @MainActor

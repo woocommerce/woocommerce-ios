@@ -1,9 +1,6 @@
 import SwiftUI
 
-/// Hosts `NewReviewNotificationPreferencesDetailView`. Navigation chrome
-/// (Save, back button, discard alert, saving spinner) is inherited from
-/// `NotificationDetailHostingController`.
-///
+/// Hosts `NewReviewNotificationPreferencesDetailView`.
 final class NewReviewNotificationPreferencesHostingController:
     NotificationDetailHostingController<NewReviewNotificationPreferencesDetailView> {
 

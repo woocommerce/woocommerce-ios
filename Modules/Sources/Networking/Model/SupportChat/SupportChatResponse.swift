@@ -6,7 +6,7 @@ import Foundation
 /// endpoint `/wpcom/v2/odie/chat/{bot_slug}/{chat_id}`. Each POST returns the thread
 /// with any new bot messages appended to `messages`.
 ///
-public struct SupportChatResponse: Decodable, Equatable {
+public struct SupportChatResponse: Decodable, Equatable, Sendable {
     public let chatID: Int64
     public let sessionID: String
     public let botSlug: String
@@ -36,7 +36,7 @@ public struct SupportChatResponse: Decodable, Equatable {
 
 /// Role of a message sender in a support chat thread.
 ///
-public enum SupportChatRole: String, Decodable, Equatable {
+public enum SupportChatRole: String, Decodable, Equatable, Sendable {
     case bot
     case user
     case unknown
@@ -50,7 +50,7 @@ public enum SupportChatRole: String, Decodable, Equatable {
 
 /// A single message in a chat thread.
 ///
-public struct SupportChatMessage: Decodable, Equatable {
+public struct SupportChatMessage: Decodable, Equatable, Sendable {
     public let messageID: Int64
     public let role: SupportChatRole
     public let content: String
@@ -76,7 +76,7 @@ public struct SupportChatMessage: Decodable, Equatable {
 
 /// Per-message metadata attached by the bot: RAG sources + routing/branch flags.
 ///
-public struct SupportChatMessageContext: Decodable, Equatable {
+public struct SupportChatMessageContext: Decodable, Equatable, Sendable {
     public let sources: [SupportChatSource]
     public let flags: SupportChatFlags?
     public let supportArea: SupportChatSupportArea?
@@ -110,7 +110,7 @@ public struct SupportChatMessageContext: Decodable, Equatable {
 
 /// A source document cited by the bot (RAG grounding).
 ///
-public struct SupportChatSource: Decodable, Equatable {
+public struct SupportChatSource: Decodable, Equatable, Sendable {
     public let title: String
     public let url: String
     public let heading: String?
@@ -126,7 +126,7 @@ public struct SupportChatSource: Decodable, Equatable {
 
 /// Confidence level for support area classification.
 ///
-public enum SupportAreaConfidence: String, Decodable, Equatable {
+public enum SupportAreaConfidence: String, Decodable, Equatable, Sendable {
     case high
     case medium
     case low
@@ -140,7 +140,7 @@ public enum SupportAreaConfidence: String, Decodable, Equatable {
 
 /// Support area categories for ticket routing.
 ///
-public enum SupportAreaType: String, Decodable, Equatable {
+public enum SupportAreaType: String, Decodable, Equatable, Sendable {
     case mobileApp = "mobile-app"
     case cardReader = "card-reader"
     case wooPayments = "woopayments"
@@ -156,7 +156,7 @@ public enum SupportAreaType: String, Decodable, Equatable {
 
 /// Support area classification returned by the bot for ticket routing.
 ///
-public struct SupportChatSupportArea: Decodable, Equatable {
+public struct SupportChatSupportArea: Decodable, Equatable, Sendable {
     public let area: SupportAreaType
     public let topic: String?
     public let confidence: SupportAreaConfidence
@@ -174,7 +174,7 @@ public struct SupportChatSupportArea: Decodable, Equatable {
 
 /// Routing / state flags returned alongside a bot message.
 ///
-public struct SupportChatFlags: Decodable, Equatable {
+public struct SupportChatFlags: Decodable, Equatable, Sendable {
     public let forwardToHumanSupport: Bool
     public let cannedResponse: Bool
     public let loggedIn: Bool

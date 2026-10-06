@@ -10,6 +10,7 @@ final class OrdersRootViewController: UIViewController {
 
     // The stack view which will contain the top bar filters and the order list.
     @IBOutlet private weak var stackView: UIStackView!
+    @IBOutlet private weak var stackViewTopConstraint: NSLayoutConstraint!
 
     // MARK: Child view controller
     private lazy var orderListViewModel = OrderListViewModel(siteID: siteID, filters: filters)
@@ -113,6 +114,14 @@ final class OrdersRootViewController: UIViewController {
         configureFiltersBar()
         configureChildViewController()
         configureLiquidGlassTabBarUnderlap()
+
+        if #available(iOS 26.0, *) {
+            registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (controller: OrdersRootViewController, _: UITraitCollection) in
+                // Dynamic Type can leave the bar at its collapsed height even when the list is at the top.
+                controller.view.layoutIfNeeded()
+                controller.navigationController?.navigationBar.sizeToFit()
+            }
+        }
 
         /// We sync the local order settings for configuring local statuses and date range filters.
         /// If there are some info stored when this screen is loaded, the data will be updated using the stored filters.
@@ -287,8 +296,12 @@ final class OrdersRootViewController: UIViewController {
                 }
                 navigationItem.leftBarButtonItem = createAddOrderByProductScanningButtonItem()
             }
-        }, onPermissionsDenied: { [weak self] in
-            self?.analytics.track(event: .BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: .cameraAccessNotPermitted))
+        }, onPermissionsDenied: { [weak self] reason in
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningFailure(from: .orderList, reason: reason))
+        }, onSettingsTapped: { [weak self] reason in
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningPermissionSettingsTapped(from: .orderList, reason: reason))
+        }, onSettingsOpened: { [weak self] in
+            self?.analytics.track(event: .BarcodeScanning.barcodeScanningPermissionSettingsOpened(from: .orderList))
         })
         barcodeScannerCoordinator = productSKUBarcodeScannerCoordinator
         productSKUBarcodeScannerCoordinator.start()
@@ -401,7 +414,7 @@ private extension OrdersRootViewController {
             return
         }
 
-        let backgroundView = UIView.makePinnedHeaderBackgroundView(color: .listBackground)
+        let backgroundView = OrdersProductsListHeaderStyle.makeBackgroundView()
         liquidGlassHeaderBackgroundView = backgroundView
         view.addSubview(backgroundView)
 
@@ -409,7 +422,7 @@ private extension OrdersRootViewController {
         view.addSubview(filtersBar)
 
         NSLayoutConstraint.activate([
-            backgroundView.topAnchor.constraint(equalTo: filtersBar.topAnchor),
+            backgroundView.topAnchor.constraint(equalTo: view.topAnchor),
             backgroundView.leadingAnchor.constraint(equalTo: filtersBar.leadingAnchor),
             backgroundView.trailingAnchor.constraint(equalTo: filtersBar.trailingAnchor),
             backgroundView.bottomAnchor.constraint(equalTo: filtersBar.bottomAnchor),
@@ -439,20 +452,22 @@ private extension OrdersRootViewController {
 
         let previousTopInset = tableView.contentInset.top
         if abs(previousTopInset - height) > 0.5 {
+            let previousContentOffset = tableView.contentOffset
             var contentInset = tableView.contentInset
             contentInset.top = height
             tableView.contentInset = contentInset
-            if previousTopInset == 0,
-               !tableView.isTracking,
+            if !tableView.isTracking,
                !tableView.isDragging,
                !tableView.isDecelerating {
-                tableView.contentOffset.y -= height - previousTopInset
+                // UIKit may adjust the offset when the inset changes; use the original offset, as Products does.
+                tableView.contentOffset.y = previousContentOffset.y - (height - previousTopInset)
             }
         }
 
         var verticalScrollIndicatorInsets = tableView.verticalScrollIndicatorInsets
         verticalScrollIndicatorInsets.top = height
         tableView.verticalScrollIndicatorInsets = verticalScrollIndicatorInsets
+        updateFiltersBarOverscrollPosition(from: tableView)
     }
 
     func configureLiquidGlassTabBarUnderlap() {
@@ -463,6 +478,12 @@ private extension OrdersRootViewController {
         // The list table lives in a child controller, so register it from the root
         // controller that owns the navigation item for native large title tracking.
         setContentScrollView(ordersViewController.tableView, for: [.top, .bottom])
+
+        OrdersProductsListHeaderStyle.configureNavigationAppearance(navigationItem: navigationItem,
+                                                                    scrollView: ordersViewController.tableView)
+
+        stackViewTopConstraint.isActive = false
+        stackView.topAnchor.constraint(equalTo: view.topAnchor).isActive = true
         view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
     }
 
@@ -557,9 +578,9 @@ extension OrdersRootViewController: OrderListViewControllerDelegate {
             return
         }
 
-        let transform = CGAffineTransform(translationX: 0, y: scrollView.topOverscrollDistance)
-        liquidGlassHeaderBackgroundView?.transform = transform
-        filtersBar.transform = transform
+        OrdersProductsListHeaderStyle.updateScrollPosition(backgroundView: liquidGlassHeaderBackgroundView,
+                                                           headerViews: [filtersBar],
+                                                           scrollView: scrollView)
     }
 }
 

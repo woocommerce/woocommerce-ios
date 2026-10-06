@@ -87,7 +87,8 @@ private extension POSRefundItemsSelectionView {
     }
 
     var itemsHeaderView: some View {
-        HStack(spacing: POSSpacing.small) {
+        // Top aligned so the checkbox stays level with the first line once the label wraps.
+        HStack(alignment: .top, spacing: POSSpacing.small) {
             POSCheckbox(
                 isSelected: allItemsSelected,
                 onToggle: {
@@ -98,21 +99,40 @@ private extension POSRefundItemsSelectionView {
             )
             .accessibilityLabel(Localization.selectAllAccessibilityLabel)
 
-            HStack(spacing: POSSpacing.xSmall) {
-                Text(Localization.itemsHeaderTitle)
-                    .font(.caption.weight(.semibold))
-                    .foregroundColor(.posOnSurface)
-                    .textCase(.uppercase)
+            // Side by side only while both fit. Forced side by side, each label wrapped
+            // inside its own narrow column, which left the two ragged against each other
+            // in translations longer than the English this was sized for.
+            ViewThatFits(in: .horizontal) {
+                HStack(spacing: POSSpacing.xSmall) {
+                    selectAllLabel
+                    selectedCountLabel
+                }
 
-                Text(String(format: Localization.itemsSelectedCountFormat, selectedItems.count))
-                    .font(.caption.weight(.regular))
-                    .foregroundColor(.posOnSurfaceVariantLowest)
-                    .textCase(.uppercase)
+                VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
+                    selectAllLabel
+                    selectedCountLabel
+                }
             }
 
             Spacer()
         }
         .padding(.bottom, POSPadding.medium)
+    }
+
+    private var selectAllLabel: some View {
+        Text(Localization.itemsHeaderTitle)
+            .font(.posCaptionBold)
+            .foregroundColor(.posOnSurface)
+            .textCase(.uppercase)
+            .multilineTextAlignment(.leading)
+    }
+
+    private var selectedCountLabel: some View {
+        Text(String(format: Localization.itemsSelectedCountFormat, selectedItems.count))
+            .font(.posCaptionRegular)
+            .foregroundColor(.posOnSurfaceVariantLowest)
+            .textCase(.uppercase)
+            .multilineTextAlignment(.leading)
     }
 
     var itemsList: some View {

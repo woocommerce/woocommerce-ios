@@ -141,13 +141,7 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        if #available(iOS 26.0, *) {
-            // Work around WOOMOB-3694 by avoiding the navigation controller's refresh-control host, which can enter a recursive layout cycle.
-            // Order Details does not use large titles, so direct subview attachment preserves pull-to-refresh without that integration.
-            tableView.addSubview(refreshControl)
-        } else {
-            tableView.refreshControl = refreshControl
-        }
+        tableView.refreshControl = refreshControl
 
         tableView.dataSource = viewModel.dataSource
         tableView.accessibilityIdentifier = "order-details-table-view"
@@ -487,7 +481,7 @@ private extension OrderDetailsViewController {
             let shippingLabelFormVC = ShippingLabelFormViewController(order: viewModel.order)
             shippingLabelFormVC.onLabelPurchase = { [weak self] isOrderComplete in
                 if isOrderComplete {
-                    self?.markOrderCompleteFromShippingLabels()
+                    self?.markOrderCompleteFromShippingLabels(isRevampedFlow: false)
                 }
             }
             shippingLabelFormVC.onLabelSave = { [weak self] in
@@ -514,7 +508,7 @@ private extension OrderDetailsViewController {
                                                                        preselection: preSelection,
                                                                        onLabelPurchase: { [weak self] markOrderComplete in
             if markOrderComplete {
-                self?.markOrderCompleteFromShippingLabels()
+                self?.markOrderCompleteFromShippingLabels(isRevampedFlow: true)
             }
         })
         let shippingLabelCreationVC = WooShippingCreateLabelsViewHostingController(viewModel: shippingLabelCreationVM)
@@ -534,7 +528,7 @@ private extension OrderDetailsViewController {
         navigationController?.pushViewController(controller, animated: true)
     }
 
-    func markOrderCompleteFromShippingLabels() {
+    func markOrderCompleteFromShippingLabels(isRevampedFlow: Bool) {
         let fulfillmentProcess = self.viewModel.markCompleted(flow: .editing)
 
         var cancellables = Set<AnyCancellable>()
@@ -542,11 +536,11 @@ private extension OrderDetailsViewController {
         cancellable = fulfillmentProcess.result.sink { completion in
             if case .failure = completion {
                 ServiceLocator.analytics.track(.shippingLabelOrderFulfillFailed,
-                                               withProperties: ["is_revamped_flow": true])
+                                               withProperties: ["is_revamped_flow": isRevampedFlow])
             }
             else {
                 ServiceLocator.analytics.track(.shippingLabelOrderFulfillSucceeded,
-                                               withProperties: ["is_revamped_flow": true])
+                                               withProperties: ["is_revamped_flow": isRevampedFlow])
             }
             cancellables.remove(cancellable)
         } receiveValue: {

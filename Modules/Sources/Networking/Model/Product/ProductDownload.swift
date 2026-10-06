@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductDownload entity.
 ///
-public struct ProductDownload: Codable, Equatable, GeneratedFakeable {
+public struct ProductDownload: Codable, Equatable, GeneratedFakeable, Sendable {
     public let downloadID: String
     public let name: String?
     public let fileURL: String?

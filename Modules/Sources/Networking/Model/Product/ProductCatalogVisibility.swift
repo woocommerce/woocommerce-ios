@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a ProductCatalogVisibility Entity.
 ///
-public enum ProductCatalogVisibility: Decodable, Hashable, GeneratedFakeable {
+public enum ProductCatalogVisibility: Decodable, Hashable, GeneratedFakeable, Sendable {
     case visible
     case catalog
     case search

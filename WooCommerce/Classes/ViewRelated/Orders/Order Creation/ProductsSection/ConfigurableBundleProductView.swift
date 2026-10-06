@@ -5,7 +5,6 @@ struct ConfigurableBundleProductView: View {
     @ObservedObject private var viewModel: ConfigurableBundleProductViewModel
     @Environment(\.presentationMode) private var presentation
     @Environment(\.presentationMode) private var presentationMode
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
 
     init(viewModel: ConfigurableBundleProductViewModel) {
         self.viewModel = viewModel
@@ -13,67 +12,73 @@ struct ConfigurableBundleProductView: View {
 
     var body: some View {
         NavigationStack {
-            VStack(alignment: .leading) {
-                ScrollView {
-                    VStack(spacing: Layout.noSpacing) {
-                        if let loadProductsErrorMessage = viewModel.loadProductsErrorMessage {
-                            Group {
-                                Text(loadProductsErrorMessage)
-                                    .errorStyle()
-                                Button(Localization.retry) {
-                                    viewModel.retry()
-                                }
-                                .buttonStyle(PrimaryButtonStyle())
-                            }
-                            .padding()
-                        }
-
-                        ForEach(viewModel.bundleItemViewModels) { bundleItemViewModel in
-                            ConfigurableBundleItemView(viewModel: bundleItemViewModel)
-                            Divider()
-                                .dividerStyle()
-                                .padding(.leading, Layout.defaultPadding)
-                        }
-                        .renderedIf(viewModel.bundleItemViewModels.isNotEmpty)
-
-                        ForEach(viewModel.placeholderItemViewModels) { bundleItemViewModel in
-                            ConfigurableBundleItemView(viewModel: bundleItemViewModel)
-                            Divider()
-                                .dividerStyle()
-                                .padding(.leading, Layout.defaultPadding)
-                        }
-                        .redacted(reason: .placeholder)
-                        .shimmering()
-                        .renderedIf(viewModel.bundleItemViewModels.isEmpty && viewModel.loadProductsErrorMessage == nil)
-                    }
-                }
-
-                ConfigurableBundleNoticeView(validationState: viewModel.validationState)
-                    .padding(.horizontal, insets: .init(top: 0, leading: Layout.defaultPadding, bottom: 0, trailing: Layout.defaultPadding))
-                    .renderedIf(viewModel.showsValidationNotice)
-
-                Button(Localization.save) {
-                    viewModel.configure()
-                    presentation.wrappedValue.dismiss()
-                }
-                .buttonStyle(PrimaryButtonStyle())
-                .disabled(!viewModel.isConfigureEnabled)
-                .padding(Layout.defaultPadding)
-            }
-            .padding(.horizontal, insets: safeAreaInsets)
-            .background(Color(.listForeground(modal: false)))
-            .ignoresSafeArea(.container, edges: [.horizontal])
-            .navigationTitle(Localization.title)
-            .navigationBarTitleDisplayMode(.inline)
-            .toolbar {
-                ToolbarItem(placement: .cancellationAction) {
-                    Button(Localization.close) {
-                        presentation.wrappedValue.dismiss()
-                    }
-                }
+            SafeAreaInsetsReader { safeAreaInsets in
+                content(safeAreaInsets: safeAreaInsets)
             }
         }
         .wooNavigationBarStyle()
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
+        VStack(alignment: .leading) {
+            ScrollView {
+                VStack(spacing: Layout.noSpacing) {
+                    if let loadProductsErrorMessage = viewModel.loadProductsErrorMessage {
+                        Group {
+                            Text(loadProductsErrorMessage)
+                                .errorStyle()
+                            Button(Localization.retry) {
+                                viewModel.retry()
+                            }
+                            .buttonStyle(PrimaryButtonStyle())
+                        }
+                        .padding()
+                    }
+
+                    ForEach(viewModel.bundleItemViewModels) { bundleItemViewModel in
+                        ConfigurableBundleItemView(viewModel: bundleItemViewModel)
+                        Divider()
+                            .dividerStyle()
+                            .padding(.leading, Layout.defaultPadding)
+                    }
+                    .renderedIf(viewModel.bundleItemViewModels.isNotEmpty)
+
+                    ForEach(viewModel.placeholderItemViewModels) { bundleItemViewModel in
+                        ConfigurableBundleItemView(viewModel: bundleItemViewModel)
+                        Divider()
+                            .dividerStyle()
+                            .padding(.leading, Layout.defaultPadding)
+                    }
+                    .redacted(reason: .placeholder)
+                    .shimmering()
+                    .renderedIf(viewModel.bundleItemViewModels.isEmpty && viewModel.loadProductsErrorMessage == nil)
+                }
+            }
+
+            ConfigurableBundleNoticeView(validationState: viewModel.validationState)
+                .padding(.horizontal, insets: .init(top: 0, leading: Layout.defaultPadding, bottom: 0, trailing: Layout.defaultPadding))
+                .renderedIf(viewModel.showsValidationNotice)
+
+            Button(Localization.save) {
+                viewModel.configure()
+                presentation.wrappedValue.dismiss()
+            }
+            .buttonStyle(PrimaryButtonStyle())
+            .disabled(!viewModel.isConfigureEnabled)
+            .padding(Layout.defaultPadding)
+        }
+        .padding(.horizontal, insets: safeAreaInsets)
+        .background(Color(.listForeground(modal: false)))
+        .ignoresSafeArea(.container, edges: [.horizontal])
+        .navigationTitle(Localization.title)
+        .navigationBarTitleDisplayMode(.inline)
+        .toolbar {
+            ToolbarItem(placement: .cancellationAction) {
+                Button(Localization.close) {
+                    presentation.wrappedValue.dismiss()
+                }
+            }
+        }
     }
 }
 

@@ -13,9 +13,10 @@ protocol TapToPayCardReaderConnectionControlling {
     func searchAndConnect(onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void)
 }
 
+@MainActor
 final class TapToPayCardReaderConnectionController<AlertProvider: CardReaderConnectionAlertsProviding,
                                                   AlertPresenter: CardPresentPaymentAlertsPresenting>:
-                                                    TapToPayCardReaderConnectionControlling
+                                                    @MainActor TapToPayCardReaderConnectionControlling
 where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     private enum ControllerState {
         /// Initial state of the controller

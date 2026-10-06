@@ -126,7 +126,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             bottomContent
         }
         .frame(minHeight: POSHeaderLayoutConstants.minHeight)
-        .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+        .posContentPadding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
         .padding(.top, topPadding ?? (horizontalSizeClass == .compact ? POSPadding.medium : POSHeaderLayoutConstants.sectionVerticalPadding))
         .padding(.bottom, POSHeaderLayoutConstants.sectionVerticalPadding)
     }

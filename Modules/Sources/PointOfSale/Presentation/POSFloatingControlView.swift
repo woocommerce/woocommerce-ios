@@ -53,7 +53,7 @@ struct POSFloatingControlView: View {
             .cornerRadius(Constants.cornerRadius)
             .disabled(posModel.paymentState.card == .processingPayment)
 
-            if case .unavailable = posModel.tapToPayAvailabilityController?.state {
+            if shouldShowReaderStatus {
                 CardReaderConnectionStatusView()
                     .foregroundStyle(fontColor)
                     .background(backgroundColor)
@@ -76,6 +76,13 @@ struct POSFloatingControlView: View {
 }
 
 private extension POSFloatingControlView {
+    var shouldShowReaderStatus: Bool {
+        switch posModel.tapToPayAvailabilityController?.state {
+        case .unavailable, nil: true
+        case .available, .unknown: false
+        }
+    }
+
     @ViewBuilder private func menuOptions() -> some View {
         // First-declared items render nearest the ellipsis button (the bottom), so declaring the staff
         // row here keeps it at the bottom of the menu.

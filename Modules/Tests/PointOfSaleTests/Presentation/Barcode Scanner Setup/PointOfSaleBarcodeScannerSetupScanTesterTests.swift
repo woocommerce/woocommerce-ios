@@ -96,43 +96,52 @@ struct PointOfSaleBarcodeScannerSetupScanTesterTests {
         #expect(sut.barcode == .testEan13Barcode)
     }
 
-    @Test func test_startTimer_when_timeout_elapses_then_calls_onTestTimeout() async {
+    @Test func test_startTimer_when_sleep_finishes_then_calls_onTestTimeout_after_ten_seconds() async {
         // Given
-        var sut: PointOfSaleBarcodeScannerSetupScanTester?
+        let sleeper = MockTimeoutSleeper()
+        var timeoutCount = 0
+        let sut = makeTimedSUT(sleeper: sleeper, onTestTimeout: { timeoutCount += 1 })
 
         // When
-        await withCheckedContinuation { continuation in
-            sut = makeTimedSUT(onTestTimeout: { continuation.resume() })
-            sut?.startTimer()
-        }
+        sut.startTimer()
+        sleeper.finish()
+        await sut.timeoutTask?.value
 
-        // Then the continuation resumed, so the timeout fired
-        #expect(sut != nil)
+        // Then
+        #expect(timeoutCount == 1)
+        #expect(sleeper.requestedDurations == [.seconds(10)])
     }
 
-    @Test func test_stopTimer_when_called_before_timeout_then_does_not_call_onTestTimeout() async throws {
+    @Test func test_stopTimer_when_sleep_finishes_after_stop_then_does_not_call_onTestTimeout() async {
         // Given
+        let sleeper = MockTimeoutSleeper()
         var timeoutCount = 0
-        let sut = makeTimedSUT(onTestTimeout: { timeoutCount += 1 })
+        let sut = makeTimedSUT(sleeper: sleeper, onTestTimeout: { timeoutCount += 1 })
         sut.startTimer()
+        let timeoutTask = sut.timeoutTask
 
-        // When
+        // When the sleep returns normally after the task was cancelled
         sut.stopTimer()
-        try await Task.sleep(for: Constants.waitPastTimeout)
+        sleeper.finish()
+        await timeoutTask?.value
 
         // Then
         #expect(timeoutCount == 0)
     }
 
-    @Test func test_startTimer_when_called_twice_then_calls_onTestTimeout_once() async throws {
+    @Test func test_startTimer_when_called_twice_then_calls_onTestTimeout_once() async {
         // Given
+        let sleeper = MockTimeoutSleeper()
         var timeoutCount = 0
-        let sut = makeTimedSUT(onTestTimeout: { timeoutCount += 1 })
+        let sut = makeTimedSUT(sleeper: sleeper, onTestTimeout: { timeoutCount += 1 })
+        sut.startTimer()
+        let firstTimeoutTask = sut.timeoutTask
 
         // When
         sut.startTimer()
-        sut.startTimer()
-        try await Task.sleep(for: Constants.waitPastTimeout)
+        sleeper.finish()
+        await firstTimeoutTask?.value
+        await sut.timeoutTask?.value
 
         // Then
         #expect(timeoutCount == 1)
@@ -140,17 +149,35 @@ struct PointOfSaleBarcodeScannerSetupScanTesterTests {
 }
 
 private extension PointOfSaleBarcodeScannerSetupScanTesterTests {
-    enum Constants {
-        static let timeout: Duration = .milliseconds(10)
-        static let waitPastTimeout: Duration = .milliseconds(300)
-    }
-
-    func makeTimedSUT(onTestTimeout: @escaping () -> Void) -> PointOfSaleBarcodeScannerSetupScanTester {
+    func makeTimedSUT(sleeper: MockTimeoutSleeper, onTestTimeout: @escaping () -> Void) -> PointOfSaleBarcodeScannerSetupScanTester {
         PointOfSaleBarcodeScannerSetupScanTester(
             onTestPass: {},
             onTestFailure: { _ in },
             onTestTimeout: onTestTimeout,
             barcodeDefinition: .ean13,
-            timeout: Constants.timeout)
+            sleep: { [sleeper] duration in await sleeper.sleep(for: duration) })
+    }
+}
+
+/// Lets a test decide when the scan tester's timeout sleep returns. The sleep ignores cancellation, so a test can
+/// reproduce a sleep that finishes after `stopTimer()` cancelled the task.
+@MainActor
+private final class MockTimeoutSleeper {
+    private(set) var requestedDurations: [Duration] = []
+    private var isFinished = false
+    private var waitingSleeps: [CheckedContinuation<Void, Never>] = []
+
+    func sleep(for duration: Duration) async {
+        requestedDurations.append(duration)
+        guard !isFinished else {
+            return
+        }
+        await withCheckedContinuation { waitingSleeps.append($0) }
+    }
+
+    func finish() {
+        isFinished = true
+        waitingSleeps.forEach { $0.resume() }
+        waitingSleeps.removeAll()
     }
 }

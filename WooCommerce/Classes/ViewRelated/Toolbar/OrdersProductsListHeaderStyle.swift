@@ -4,6 +4,15 @@ import UIKit
 @available(iOS 26.0, *)
 @MainActor
 enum OrdersProductsListHeaderStyle {
+    static func configureButtonSizing(_ button: UIButton) {
+        // Keep the side-by-side controls within a narrow list column.
+        button.maximumContentSizeCategory = .extraExtraExtraLarge
+        button.registerForTraitChanges([UITraitPreferredContentSizeCategory.self]) { (button: UIButton, _: UITraitCollection) in
+            // Glass buttons can retain their old intrinsic width after their title font changes.
+            button.invalidateIntrinsicContentSize()
+        }
+    }
+
     static func makeBackgroundView() -> UIView {
         let backgroundView = UIVisualEffectView(effect: UIBlurEffect(style: .systemMaterial))
         backgroundView.isUserInteractionEnabled = false

@@ -54,6 +54,7 @@ final class OrderListViewController: UIViewController {
     /// The data source that is bound to `tableView`.
     private var dataSource: UITableViewDiffableDataSource<Section, Item>?
     private var ordersSnapshot = FetchResultSnapshot()
+    private let refreshUpdates = ListRefreshUpdates()
 
     /// Returns the first Order in the OrderList datasource
     ///
@@ -210,6 +211,11 @@ final class OrderListViewController: UIViewController {
         refreshControl.endRefreshing()
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        refreshUpdates.cancel()
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
 
@@ -301,12 +307,8 @@ private extension OrderListViewController {
             guard let self else { return }
 
             ordersSnapshot = snapshot
-            transitionToResultsUpdatedState(updateSnapshot: true)
-
-            /// Check that view is loaded and displayed to prevent UI tests failing while synching orders from other screens.
-            if isViewLoaded == true && view.window != nil,
-               self.splitViewController?.isCollapsed == false {
-                self.checkSelectedItem()
+            refreshUpdates.perform {
+                self.transitionToResultsUpdatedState(updateSnapshot: true)
             }
         }.store(in: &cancellables)
 
@@ -314,10 +316,8 @@ private extension OrderListViewController {
         /// pick up the latest server-provided names (e.g. after the first sync completes).
         viewModel.statusesDidChange
             .sink { [weak self] in
-                guard let self else {
-                    return
-                }
-                reconfigureOrderRows()
+                guard let self else { return }
+                refreshUpdates.perform { self.reconfigureOrderRows() }
             }
             .store(in: &cancellables)
 
@@ -325,14 +325,7 @@ private extension OrderListViewController {
         viewModel.$topBanner
             .sink { [weak self] topBannerType in
                 guard let self else { return }
-                switch topBannerType {
-                case .none:
-                    self.hideTopBannerView()
-                case .error(let error):
-                    self.setErrorTopBanner(for: error)
-                case .currencyUnavailable:
-                    self.setCurrencyUnavailableTopBanner()
-                }
+                refreshUpdates.perform { self.renderTopBanner(topBannerType) }
             }
             .store(in: &cancellables)
     }
@@ -391,8 +384,14 @@ extension OrderListViewController {
         ServiceLocator.analytics.track(.ordersListPulledToRefresh)
         delegate?.orderListViewControllerWillSynchronizeOrders(self)
         NotificationCenter.default.post(name: .ordersBadgeReloadRequired, object: nil)
-        syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) {
-            sender.endRefreshing()
+        refreshUpdates.beginRefreshing { [weak self] in
+            guard let self else { return }
+            ordersSnapshot.reconfigureItems(ordersSnapshot.itemIdentifiers)
+            transitionToResultsUpdatedState(updateSnapshot: true)
+            renderTopBanner(viewModel.topBanner)
+        }
+        syncingCoordinator.resynchronize(reason: SyncReason.pullToRefresh.rawValue) { [weak self] in
+            self?.refreshUpdates.endRefreshing(sender)
         }
     }
 
@@ -448,7 +447,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
             }
         }
 
-        transitionToSyncingState()
+        refreshUpdates.perform { transitionToSyncingState() }
         viewModel.dataLoadingError = nil
 
         let action = viewModel.synchronizationAction(
@@ -470,6 +469,7 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
 
                         self.sync(pageNumber: pageNumber, pageSize: pageSize, reason: reason, retryTimeout: false, onCompletion: onCompletion)
                         ServiceLocator.analytics.track(event: .ConnectivityTool.automaticTimeoutRetry())
+                        return
                     } else {
                         self.viewModel.dataLoadingError = error
                     }
@@ -486,8 +486,10 @@ extension OrderListViewController: SyncingCoordinatorDelegate {
                                                                             totalCompletedOrders: totalCompletedOrderCount))
                 }
 
-                self.transitionToResultsUpdatedState()
-                self.refreshControl.endRefreshing()
+                self.refreshUpdates.perform {
+                    self.transitionToResultsUpdatedState()
+                    self.refreshControl.endRefreshing()
+                }
                 onCompletion?(error == nil)
         }
 
@@ -906,11 +908,28 @@ private extension OrderListViewController {
         } else {
             ensureFooterSpinnerIsStopped()
         }
+
+        // Check that view is loaded and displayed to prevent UI tests failing while synching orders from other screens.
+        if updateSnapshot, isViewLoaded, view.window != nil,
+           splitViewController?.isCollapsed == false {
+            checkSelectedItem()
+        }
     }
 }
 
 // MARK: Top Banner Factories
 private extension OrderListViewController {
+    func renderTopBanner(_ topBanner: OrderListViewModel.TopBanner) {
+        switch topBanner {
+        case .none:
+            hideTopBannerView()
+        case .error(let error):
+            setErrorTopBanner(for: error)
+        case .currencyUnavailable:
+            setCurrencyUnavailableTopBanner()
+        }
+    }
+
     /// Sets the `topBannerView` property to an error banner.
     ///
     func setErrorTopBanner(for error: Error) {

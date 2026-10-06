@@ -363,14 +363,75 @@ import WordPressUI
         restoresSiteAddress: Bool,
         automatedTesting: Bool = false) -> Bool {
 
+        guard let link = parseAuthenticationURL(url, restoresSiteAddress: restoresSiteAddress) else {
+            return false
+        }
+
+        if !automatedTesting {
+            guard let loginVC = makeLinkAuthViewController(loginFields: link.loginFields) else {
+                return false
+            }
+
+            let navController = LoginNavigationController(rootViewController: loginVC)
+            navController.modalPresentationStyle = .fullScreen
+
+            // The way the magic link flow works some view controller might
+            // still be presented when the app is resumed by tapping on the auth link.
+            // We need to do a little work to present the SigninLinkAuth controller
+            // from the right place.
+            // - If the rootViewController is not presenting another vc then just
+            // present the auth controller.
+            // - If the rootViewController is presenting another NUX vc, dismiss the
+            // NUX vc then present the auth controller.
+            // - If the rootViewController is presenting *any* other vc, present the
+            // auth controller from the presented vc.
+            let presenter = rootViewController.topmostPresentedViewController
+            if presenter.isKind(of: NUXNavigationController.self) || presenter.isKind(of: LoginNavigationController.self),
+                let parent = presenter.presentingViewController {
+                parent.dismiss(animated: false, completion: {
+                    parent.present(navController, animated: false, completion: nil)
+                })
+            } else {
+                presenter.present(navController, animated: false, completion: nil)
+            }
+
+            loginVC.syncAndContinue(authToken: link.authToken, flow: link.flow, isJetpackConnect: url.isJetpackConnect)
+        }
+
+        return true
+    }
+
+    /// WooCommerce addition — handles an authentication link by pushing the signin view controller onto
+    /// `navigationController` rather than presenting it modally. Used by QR login, whose auth-session sheet
+    /// is still dismissing when the link arrives, so a modal presentation there can be silently dropped.
+    ///
+    /// - Returns: *true* when the URL was a valid authentication link.
+    ///
+    public func handleWordPressAuthUrl(_ url: URL, pushingOnto navigationController: UINavigationController, restoresSiteAddress: Bool) -> Bool {
+        guard let link = Self.parseAuthenticationURL(url, restoresSiteAddress: restoresSiteAddress),
+              let loginVC = Self.makeLinkAuthViewController(loginFields: link.loginFields) else {
+            return false
+        }
+
+        // Going back mid-sync would orphan the controller before the epilogue runs.
+        loginVC.navigationItem.hidesBackButton = true
+        navigationController.pushViewController(loginVC, animated: true)
+        loginVC.syncAndContinue(authToken: link.authToken, flow: link.flow, isJetpackConnect: url.isJetpackConnect)
+        return true
+    }
+
+    private class func parseAuthenticationURL(
+        _ url: URL,
+        restoresSiteAddress: Bool) -> (authToken: String, flow: NUXLinkAuthViewController.Flow, loginFields: LoginFields)? {
+
         guard let queryDictionary = url.query?.dictionaryFromQueryString() else {
             WPAuthenticatorLogError("Magic link error: we couldn't retrieve the query dictionary from the sign-in URL.")
-            return false
+            return nil
         }
 
         guard let authToken = queryDictionary.string(forKey: "token") else {
             WPAuthenticatorLogError("Magic link error: we couldn't retrieve the authentication token from the sign-in URL.")
-            return false
+            return nil
         }
 
         // A magic-login callback is a login unless it explicitly says `signup`,
@@ -408,44 +469,20 @@ import WordPressUI
             Self.track(.loginMagicLinkOpened)
         default:
             WPAuthenticatorLogError("Magic link error: the flow should be either `signup` or `login`. We can't handle an unsupported flow.")
-            return false
+            return nil
         }
 
-        if !automatedTesting {
-            let storyboard = Storyboard.emailMagicLink.instance
-            guard let loginVC = storyboard.instantiateViewController(withIdentifier: "LinkAuthView") as? NUXLinkAuthViewController else {
-                WPAuthenticatorLogInfo("App opened with authentication link but couldn't create login screen.")
-                return false
-            }
-            loginVC.loginFields = loginFields
+        return (authToken, flow, loginFields)
+    }
 
-            let navController = LoginNavigationController(rootViewController: loginVC)
-            navController.modalPresentationStyle = .fullScreen
-
-            // The way the magic link flow works some view controller might
-            // still be presented when the app is resumed by tapping on the auth link.
-            // We need to do a little work to present the SigninLinkAuth controller
-            // from the right place.
-            // - If the rootViewController is not presenting another vc then just
-            // present the auth controller.
-            // - If the rootViewController is presenting another NUX vc, dismiss the
-            // NUX vc then present the auth controller.
-            // - If the rootViewController is presenting *any* other vc, present the
-            // auth controller from the presented vc.
-            let presenter = rootViewController.topmostPresentedViewController
-            if presenter.isKind(of: NUXNavigationController.self) || presenter.isKind(of: LoginNavigationController.self),
-                let parent = presenter.presentingViewController {
-                parent.dismiss(animated: false, completion: {
-                    parent.present(navController, animated: false, completion: nil)
-                })
-            } else {
-                presenter.present(navController, animated: false, completion: nil)
-            }
-
-            loginVC.syncAndContinue(authToken: authToken, flow: flow, isJetpackConnect: url.isJetpackConnect)
+    private class func makeLinkAuthViewController(loginFields: LoginFields) -> NUXLinkAuthViewController? {
+        let storyboard = Storyboard.emailMagicLink.instance
+        guard let loginVC = storyboard.instantiateViewController(withIdentifier: "LinkAuthView") as? NUXLinkAuthViewController else {
+            WPAuthenticatorLogInfo("App opened with authentication link but couldn't create login screen.")
+            return nil
         }
-
-        return true
+        loginVC.loginFields = loginFields
+        return loginVC
     }
 
     // MARK: - Site URL helper

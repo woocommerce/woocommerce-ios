@@ -288,35 +288,24 @@ private extension QRLoginCoordinator {
     /// system prompt on the redirect back. The QR "signing in" screen stays
     /// visible underneath the sheet.
     ///
-    /// On a captured callback the auth sheet is dismissed and the URL then runs
-    /// through the existing `WordPressAuthenticator` handler — sign-in completes
-    /// and the app swaps to the logged-in UI — and the coordinator finishes. If
+    /// On a captured callback the URL runs through the existing
+    /// `WordPressAuthenticator` handler, pushed onto the QR navigation stack —
+    /// sign-in completes and the store picker follows — and the coordinator finishes. If
     /// the merchant dismisses the sheet instead, `handleMagicLinkCancelled`
     /// unwinds the QR surface so they can retry.
     func openMagicLink(_ url: URL) {
         let window = navigationController.view.window
         let runner = QRLoginMagicLinkAuthRunner(
             anchor: window,
-            onCallback: { [weak self] callbackURL in
-                guard let rootViewController = window?.rootViewController else {
-                    self?.finish()
-                    return
-                }
-                // `WordPressAuthenticator.openAuthenticationURL` presents the
-                // magic-link sign-in controller on whatever is topmost. The
-                // ASWebAuthenticationSession sheet is still being torn down when
-                // this callback fires, so handing the URL over right away would
-                // present that controller on the dismissing sheet — it would
-                // never reach the window and its navigation controller would
-                // deallocate before the login epilogue runs, tripping the
-                // `showLoginEpilogue` assertion. Dismiss the sheet first, then
-                // hand off from the now-stable root.
-                rootViewController.dismiss(animated: false) {
+            onCallback: { [weak self, weak navigationController] callbackURL in
+                if let navigationController {
+                    // Push, don't present: the auth-session sheet is still dismissing here, and a modal
+                    // presented over it can be dropped, leaving "Signing you in…" up. (WOOMOB-4262)
                     // QR login shares the magic-link `.login` case but never saved a site address,
                     // so it must not restore one (would leak a stale address from an abandoned
                     // email magic-link request into this account — wrong-store error).
                     _ = WordPressAuthenticator.shared.handleWordPressAuthUrl(callbackURL,
-                                                                             rootViewController: rootViewController,
+                                                                             pushingOnto: navigationController,
                                                                              restoresSiteAddress: false)
                 }
                 // Sign-in proceeds through WordPressAuthenticator from here —

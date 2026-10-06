@@ -302,7 +302,7 @@ private extension DefaultApplicationPasswordUseCase {
                         continuation.resume(returning: password)
                     } catch {
                         if self.detectUnexpectedResponses, error is DecodingError, let policy = request as? UnexpectedResponseRequest {
-                            continuation.resume(throwing: policy.makeError(kind: .unexpectedContent, data: data))
+                            continuation.resume(throwing: policy.makeError(kind: .unexpectedContent))
                         } else {
                             continuation.resume(throwing: error)
                         }
@@ -350,7 +350,7 @@ private extension DefaultApplicationPasswordUseCase {
                         }
                     } catch {
                         if self.detectUnexpectedResponses, error is DecodingError, let policy = request as? UnexpectedResponseRequest {
-                            continuation.resume(throwing: policy.makeError(kind: .unexpectedContent, data: data))
+                            continuation.resume(throwing: policy.makeError(kind: .unexpectedContent))
                         } else {
                             continuation.resume(throwing: error)
                         }

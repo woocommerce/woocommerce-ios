@@ -53,12 +53,14 @@ struct POSFloatingControlView: View {
             .cornerRadius(Constants.cornerRadius)
             .disabled(posModel.paymentState.card == .processingPayment)
 
-            CardReaderConnectionStatusView()
-                .foregroundStyle(fontColor)
-                .background(backgroundColor)
-                .cornerRadius(Constants.cornerRadius)
-                .disabled(posModel.paymentState.disablesCardReaderConnectionControl)
-                .disabled(horizontalSizeClass != .regular)
+            if case .unavailable = posModel.tapToPayAvailabilityController?.state {
+                CardReaderConnectionStatusView()
+                    .foregroundStyle(fontColor)
+                    .background(backgroundColor)
+                    .cornerRadius(Constants.cornerRadius)
+                    .disabled(posModel.paymentState.disablesCardReaderConnectionControl)
+                    .disabled(horizontalSizeClass != .regular)
+            }
         }
         .posModal(isPresented: $showProductRestrictionsModal) {
             SimpleProductsOnlyInformation(isPresented: $showProductRestrictionsModal)

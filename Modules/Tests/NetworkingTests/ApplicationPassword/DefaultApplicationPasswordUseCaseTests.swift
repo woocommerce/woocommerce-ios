@@ -36,8 +36,8 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
         network.simulateResponse(requestUrlSuffix: URLSuffix.applicationPassword, filename: "order")
         let useCase = try DefaultApplicationPasswordUseCase(username: "demo", password: "secret", siteAddress: "https://test.com",
                                                             network: network,
-                                                            rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"))
-        useCase.detectUnexpectedResponses = true
+                                                            rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"),
+                                                            detectUnexpectedResponses: true)
         // When
         do {
             _ = try await useCase.generateNewPassword()
@@ -57,8 +57,8 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
             network.simulateError(requestUrlSuffix: URLSuffix.applicationPassword, error: error)
             let useCase = try DefaultApplicationPasswordUseCase(username: "demo", password: "secret", siteAddress: "https://test.com",
                                                                 network: network,
-                                                                rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"))
-            useCase.detectUnexpectedResponses = true
+                                                                rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"),
+                                                                detectUnexpectedResponses: true)
 
             // When
             do {
@@ -79,8 +79,8 @@ final class DefaultApplicationPasswordUseCaseTests: XCTestCase {
             network.simulateError(requestUrlSuffix: URLSuffix.applicationPassword, error: failure)
             let useCase = try DefaultApplicationPasswordUseCase(username: "demo", password: "secret", siteAddress: "https://test.com",
                                                                 network: network,
-                                                                rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"))
-            useCase.detectUnexpectedResponses = true
+                                                                rootCache: MockRESTAPIRootCache(stubbedRoot: "https://test.com/wp-json/"),
+                                                                detectUnexpectedResponses: true)
 
             // When
             do {

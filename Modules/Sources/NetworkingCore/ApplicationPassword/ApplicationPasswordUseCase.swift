@@ -62,7 +62,7 @@ public extension ApplicationPasswordUseCase {
 }
 
 public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
-    var detectUnexpectedResponses = false
+    private let detectUnexpectedResponses: Bool
 
     /// Authentication type
     ///
@@ -91,7 +91,9 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 network: Network,
                 passwordName: String? = nil,
                 storage: ApplicationPasswordStorageType? = nil,
-                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared) {
+                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared,
+                detectUnexpectedResponses: Bool = false) {
+        self.detectUnexpectedResponses = detectUnexpectedResponses
         self.authenticationType = type
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.network = network
@@ -111,7 +113,8 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 authenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
                 network: Network? = nil,
                 storage: ApplicationPasswordStorageType? = nil,
-                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared) throws {
+                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared,
+                detectUnexpectedResponses: Bool = false) throws {
         let defaultEndpoints: CookieNonceAuthenticationEndpoints
         do {
             guard let siteURL = URL(string: siteAddress) else {
@@ -129,6 +132,7 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
             throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
         }
 
+        self.detectUnexpectedResponses = detectUnexpectedResponses
         self.authenticationType = .wporg(username: username, password: password, siteAddress: siteAddress)
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.applicationPasswordName = Self.createPasswordName()

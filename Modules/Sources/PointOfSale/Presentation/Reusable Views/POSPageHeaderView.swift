@@ -67,13 +67,14 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         effectiveBackButtonConfiguration != nil
     }
 
-    /// Whether the header has selectable titles, such as Products and Coupons.
-    private var hasSelectableTitles: Bool {
-        items.count > 1
-    }
-
     private var navigationRowMinHeight: CGFloat? {
         horizontalSizeClass == .compact ? POSHeaderLayoutConstants.minHeight : nil
+    }
+
+    /// Whether the header shows more than one title for the merchant to switch between,
+    /// as the Products / Coupons header does. A single title is a plain heading.
+    private var hasSelectableTitles: Bool {
+        items.count > 1
     }
 
     init(

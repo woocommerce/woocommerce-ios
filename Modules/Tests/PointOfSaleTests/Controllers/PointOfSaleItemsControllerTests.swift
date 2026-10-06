@@ -10,6 +10,7 @@ import WooFoundation
 @testable import struct Yosemite.PointOfSaleSearchPurchasableItemFetchStrategy
 import Observation
 
+@MainActor
 final class PointOfSaleItemsControllerTests {
     @Test func loadItems_requests_first_page_after_loading_two_pages() async throws {
         // Given

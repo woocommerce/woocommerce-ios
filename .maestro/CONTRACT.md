@@ -21,6 +21,10 @@ stack. Flow owners may reference these interfaces but must not redefine them.
   app's notification prompt with it, so no notification banner can take a tap.
   Before the notification flow, the runner signs in again with
   `NOTIFICATIONS=allow`.
+- From iOS 26 the app asks the system for the user's age range at every launch
+  while signed in, which on the simulator drops taps for about a second. On those
+  runtimes the runner passes `AGE_RANGE_CHECK=true`, and
+  `wait_for_age_range_check.yaml` waits for the request after each launch.
 
 ## Environment
 
@@ -98,6 +102,7 @@ Only the Core owner edits `.maestro/subflows/`. Shared names are:
 - `navigate_to_orders.yaml`
 - `navigate_to_products.yaml`
 - `navigate_to_more_menu.yaml`
+- `wait_for_age_range_check.yaml`
 
 Flow filenames use the Android-equivalent names in the implementation plan.
 iOS-only system files are `ios_quick_actions.yaml`,

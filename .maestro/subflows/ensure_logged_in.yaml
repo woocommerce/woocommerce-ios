@@ -28,8 +28,18 @@ appId: ${APP_ID}
     commands:
       - runFlow:
           file: login.yaml
+      # After signing in, the age range request runs at no fixed point of the
+      # login steps. Relaunch so wait_for_age_range_check.yaml can wait for it.
+      - runFlow:
+          when:
+            true: ${AGE_RANGE_CHECK == 'true'}
+          commands:
+            - launchApp:
+                arguments:
+                  "-ui_testing": true
 
 - extendedWaitUntil:
     visible:
       id: "tab-bar-my-store-item"
     timeout: 60000
+- runFlow: wait_for_age_range_check.yaml

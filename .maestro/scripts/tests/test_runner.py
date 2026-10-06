@@ -225,6 +225,7 @@ class RunnerTests(unittest.TestCase):
         env_args = RUNNER.maestro_env_args(
             "com.example.woo",
             "run-1",
+            "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
             notifications="allow",
         )
         with mock.patch.object(RUNNER, "run", side_effect=lambda command, **_: commands.append(command)):
@@ -752,6 +753,7 @@ class RunnerTests(unittest.TestCase):
         args = RUNNER.maestro_env_args(
             "com.example.app",
             "run-1",
+            "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
         )
 
         self.assertEqual(
@@ -759,9 +761,15 @@ class RunnerTests(unittest.TestCase):
                 "--env", "APP_ID=com.example.app",
                 "--env", "SUITE_RUN_ID=run-1",
                 "--env", "NOTIFICATIONS=deny",
+                "--env", "AGE_RANGE_CHECK=true",
             ],
             args,
         )
+
+    def test_flows_wait_for_the_age_range_request_only_from_ios_26(self) -> None:
+        self.assertFalse(RUNNER.asks_for_age_range("com.apple.CoreSimulator.SimRuntime.iOS-18-6"))
+        self.assertTrue(RUNNER.asks_for_age_range("com.apple.CoreSimulator.SimRuntime.iOS-26-0"))
+        self.assertTrue(RUNNER.asks_for_age_range("com.apple.CoreSimulator.SimRuntime.iOS-27-0"))
 
     def test_maestro_process_receives_only_selected_flow_environment_and_no_rest_secrets(self) -> None:
         values = {

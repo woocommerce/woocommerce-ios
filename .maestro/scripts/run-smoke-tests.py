@@ -595,11 +595,18 @@ def sign_in_allowing_notifications(udid: str, env_args: list[str], environment: 
     return run(command, check=False, env=environment)
 
 
-def maestro_env_args(app_id: str, run_id: str, notifications: str = "deny") -> list[str]:
+def asks_for_age_range(runtime: str) -> bool:
+    """The app asks the system for the user's age range from iOS 26."""
+    match = re.search(r"iOS-(\d+)", runtime)
+    return bool(match) and int(match.group(1)) >= 26
+
+
+def maestro_env_args(app_id: str, run_id: str, runtime: str, notifications: str = "deny") -> list[str]:
     return [
         "--env", f"APP_ID={app_id}",
         "--env", f"SUITE_RUN_ID={run_id}",
         "--env", f"NOTIFICATIONS={notifications}",
+        "--env", f"AGE_RANGE_CHECK={str(asks_for_age_range(runtime)).lower()}",
     ]
 
 
@@ -987,7 +994,7 @@ def main() -> int:
 
 
     attempts: list[Attempt] = []
-    env_args = maestro_env_args(app_id, run_id)
+    env_args = maestro_env_args(app_id, run_id, simulator["runtime"])
     maestro_environments = {
         store: maestro_process_environment(
             store_values[store],
@@ -1044,7 +1051,7 @@ def main() -> int:
                     if flow.name == NOTIFICATION_FLOW:
                         signed_in = sign_in_allowing_notifications(
                             simulator["udid"],
-                            maestro_env_args(app_id, run_id, notifications="allow"),
+                            maestro_env_args(app_id, run_id, simulator["runtime"], notifications="allow"),
                             maestro_environments[store],
                         )
                         sign_in_log = output / "logs" / f"{prefix}-sign-in.log"

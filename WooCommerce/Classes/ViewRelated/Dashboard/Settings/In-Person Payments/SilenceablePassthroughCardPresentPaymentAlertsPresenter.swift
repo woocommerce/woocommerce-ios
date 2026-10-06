@@ -1,7 +1,8 @@
 import Foundation
 import Combine
 
-nonisolated final class SilenceablePassthroughCardPresentPaymentAlertsPresenter<AlertPresenter: CardPresentPaymentAlertsPresenting>: CardPresentPaymentAlertsPresenting {
+nonisolated final class SilenceablePassthroughCardPresentPaymentAlertsPresenter<AlertPresenter: CardPresentPaymentAlertsPresenting>:
+    CardPresentPaymentAlertsPresenting {
     private var alertSubject: CurrentValueSubject<AlertPresenter.AlertDetails?, Never> = CurrentValueSubject(nil)
     private var alertsPresenter: (any CardPresentPaymentAlertsPresenting<AlertPresenter.AlertDetails>)?
 

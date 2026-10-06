@@ -97,7 +97,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
     private var cancellables: Set<AnyCancellable> = []
 
     private let notificationCenter: NotificationCenter
-    private let applicationStateProvider: () -> UIApplication.State
+    private let applicationStateProvider: @MainActor () -> UIApplication.State
     private var applicationInactivationCancellable: AnyCancellable?
     private var applicationReactivationCancellable: AnyCancellable?
     private var didObserveApplicationInactiveDuringCancellation = false
@@ -136,7 +136,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil,
          receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
          notificationCenter: NotificationCenter = .default,
-         applicationStateProvider: @escaping () -> UIApplication.State = { UIApplication.shared.applicationState }) {
+         applicationStateProvider: @escaping @MainActor () -> UIApplication.State = { UIApplication.shared.applicationState }) {
         self.siteID = siteID
         self.order = order
         self.formattedAmount = formattedAmount

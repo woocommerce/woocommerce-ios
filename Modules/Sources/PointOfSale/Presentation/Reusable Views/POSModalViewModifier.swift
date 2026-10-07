@@ -245,9 +245,9 @@ extension View {
 
 /// Environment key for the space available to POS modals, measured by `POSRootModalViewModifier`
 struct POSModalParentSizeKey: EnvironmentKey {
-    /// `POSRootModalViewModifier` injects the measured size into every presented modal, so only previews without a root
-    /// modal read this default. It matches the iPad size the refund previews inject.
-    static let defaultValue = CGSize(width: 1192, height: 822)
+    /// `.zero` means not measured. `POSRootModalViewModifier` injects the measured size into every presented modal, and
+    /// previews inject `POSPreviewHelpers.modalParentSize`.
+    static let defaultValue: CGSize = .zero
 }
 
 extension EnvironmentValues {

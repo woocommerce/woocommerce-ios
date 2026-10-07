@@ -1,6 +1,7 @@
 #if DEBUG
 
 import Foundation
+import SwiftUI
 import WooFoundation
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
@@ -838,6 +839,18 @@ final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
 
     func printReceipt(order: Order,
                       storeInformation: ReceiptStoreInformation) async throws {}
+}
+
+extension POSPreviewHelpers {
+    /// iPad landscape space for POS modal content in previews, where no `POSRootModalViewModifier` measures it.
+    static let modalParentSize = CGSize(width: 1192, height: 822)
+}
+
+extension View {
+    /// Gives modal content in a preview the space `POSRootModalViewModifier` measures at runtime.
+    func posPreviewModalParentSize() -> some View {
+        environment(\.posModalParentSize, POSPreviewHelpers.modalParentSize)
+    }
 }
 
 #endif

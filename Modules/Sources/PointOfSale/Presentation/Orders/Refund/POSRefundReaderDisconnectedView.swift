@@ -104,6 +104,6 @@ private extension POSRefundReaderDisconnectedView {
     POSRefundReaderDisconnectedView(onConnect: {},
                                     onCancel: {},
                                     onBack: {})
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 #endif

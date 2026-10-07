@@ -445,6 +445,30 @@ final class MainTabBarControllerTests: XCTestCase {
     }
 
     @MainActor
+    func test_navigating_to_order_creation_presents_order_form_on_first_visit_to_orders_tab() throws {
+        // Given
+        let siteID: Int64 = 256
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService())
+
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        TestingAppDelegate.mockTabBarController = tabBarController
+        window.rootViewController = tabBarController
+
+        // When
+        tabBarController.navigate(to: OrdersDestination.createOrder)
+
+        // Then
+        waitUntil {
+            tabBarController.presentedViewController is OrderFormHostingController
+        }
+
+        // Resets the tab bar controller mock at the end of the test.
+        TestingAppDelegate.mockTabBarController = nil
+    }
+
+    @MainActor
     func test_pos_tab_becomes_invisible_after_being_selected_when_initially_visible_then_eligibility_changes() throws {
         // Given
         let mockPOSEligibilityChecker = MockAsyncPOSEligibilityChecker()

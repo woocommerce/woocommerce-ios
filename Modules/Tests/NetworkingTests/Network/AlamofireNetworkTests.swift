@@ -25,7 +25,8 @@ final class AlamofireNetworkTests: XCTestCase {
     func test_remote_when_opted_in_mapper_fails_then_preserves_successful_response_metadata() throws {
         // Given
         let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "wp/v2/users/me")
-        MockURLProtocol.Mocks.mockResponse(["unexpected": "schema"], statusCode: 202, for: try request.asURLRequest(),
+        MockURLProtocol.Mocks.mockResponse(["code": "blocked", "message": "Contact admin@example.com", "data": "private-sentinel"],
+                                          statusCode: 202, for: try request.asURLRequest(),
                                           headers: ["Content-Type": "application/json; charset=utf-8"])
         let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
                                        sessionManager: createSessionWithMockURLProtocol())
@@ -41,13 +42,15 @@ final class AlamofireNetworkTests: XCTestCase {
         XCTAssertEqual(error.kind, .unexpectedContent)
         XCTAssertEqual(error.statusCode, 202)
         XCTAssertEqual(error.diagnostics?.contentType, "application/json")
+        XCTAssertEqual(error.diagnostics?.excerpt, "blocked | Contact [email]")
     }
 
     @MainActor
     func test_remote_async_when_opted_in_mapper_fails_then_preserves_successful_response_metadata() async throws {
         // Given
         let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "wp/v2/users/me")
-        MockURLProtocol.Mocks.mockResponse(["unexpected": "schema"], statusCode: 202, for: try request.asURLRequest(),
+        MockURLProtocol.Mocks.mockResponse(["code": "blocked", "message": "Contact admin@example.com", "data": "private-sentinel"],
+                                          statusCode: 202, for: try request.asURLRequest(),
                                           headers: ["Content-Type": "application/json; charset=utf-8"])
         let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
                                        sessionManager: createSessionWithMockURLProtocol())
@@ -63,6 +66,7 @@ final class AlamofireNetworkTests: XCTestCase {
             XCTAssertEqual(error.kind, .unexpectedContent)
             XCTAssertEqual(error.statusCode, 202)
             XCTAssertEqual(error.diagnostics?.contentType, "application/json")
+            XCTAssertEqual(error.diagnostics?.excerpt, "blocked | Contact [email]")
         }
     }
 

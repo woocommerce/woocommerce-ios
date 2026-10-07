@@ -10,6 +10,7 @@ public struct UnexpectedStoreResponseError: Error, Equatable, Sendable, CustomNS
     public struct Diagnostics: Equatable, Sendable {
         public let contentType: String?
         public let request: String
+        public let excerpt: String?
     }
 
     public let kind: Kind
@@ -23,12 +24,13 @@ public struct UnexpectedStoreResponseError: Error, Equatable, Sendable, CustomNS
         self.diagnostics = nil
     }
 
-    init(kind: Kind, statusCode: Int?, contentType: String?, request: URLRequest?) {
+    init(kind: Kind, statusCode: Int?, data: Data? = nil, contentType: String?, request: URLRequest?) {
         self.kind = kind
         self.statusCode = statusCode
         self.diagnostics = Diagnostics(
             contentType: contentType?.split(separator: ";").first.map { UnexpectedResponseMetadata.sanitize(String($0).lowercased()) },
-            request: UnexpectedResponseMetadata.sanitize("\(request?.httpMethod ?? "GET") \(request?.url?.path ?? "/")")
+            request: UnexpectedResponseMetadata.sanitize("\(request?.httpMethod ?? "GET") \(request?.url?.path ?? "/")"),
+            excerpt: data.flatMap { String(data: $0, encoding: .utf8) }.flatMap(UnexpectedResponseExcerpt.make)
         )
     }
 
@@ -40,6 +42,6 @@ public struct UnexpectedStoreResponseError: Error, Equatable, Sendable, CustomNS
 
     var logMessage: String {
         "Unexpected store response: kind=\(kind.rawValue), status=\(statusCode.map(String.init) ?? "unknown"), " +
-        "content_type=\(diagnostics?.contentType ?? ""), request=\(diagnostics?.request ?? "")"
+        "content_type=\(diagnostics?.contentType ?? ""), request=\(diagnostics?.request ?? ""), excerpt=\(diagnostics?.excerpt ?? "")"
     }
 }

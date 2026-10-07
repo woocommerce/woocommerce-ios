@@ -136,8 +136,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
         case .featureSwitchDisabled:
             _ = try await siteSettingService.setFeature(siteID: siteID, feature: .pointOfSale, enabled: true)
             return await checkEligibility(forceRemoteCheck: false)
-        case .selfDeallocated:
-            return await checkEligibility(forceRemoteCheck: false)
         }
     }
 }
@@ -215,7 +213,7 @@ private extension POSIneligibleReason {
         switch self {
         case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound, .featureSwitchDisabled, .unsupportedCurrency:
             return true
-        case .noInternetConnection, .siteSettingsNotAvailable, .unsupportedCountry, .selfDeallocated:
+        case .noInternetConnection, .siteSettingsNotAvailable, .unsupportedCountry:
             return false
         }
     }

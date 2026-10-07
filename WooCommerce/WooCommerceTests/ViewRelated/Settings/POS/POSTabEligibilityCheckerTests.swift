@@ -578,20 +578,6 @@ struct POSTabEligibilityCheckerTests {
         #expect(result == .eligible)
     }
 
-    @Test func refreshEligibility_checks_eligibility_for_selfDeallocated() async throws {
-        // Given
-        setupCountry(country: .us, currency: .USD)
-        setupWooCommerceVersion("9.6.0", featureSwitchEnabled: true)
-
-        let checker = makeEligibilityChecker()
-
-        // When
-        let result = try await checker.refreshEligibility(ineligibleReason: .selfDeallocated)
-
-        // Then - Should check eligibility again (now eligible)
-        #expect(result == .eligible)
-    }
-
     @Test func refreshEligibility_rechecks_eligibility_for_noInternetConnection() async throws {
         // Given
         setupCountry(country: .us, currency: .USD)

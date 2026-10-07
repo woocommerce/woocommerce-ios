@@ -67,11 +67,16 @@ tags:
 # Open the first generated variation by its "#<id> <attributes>" row rather than a
 # fixed screen point. The point tap on the row's chevron was flaky while the list was
 # still loading; waiting for a row and matching its label is deterministic.
+# Only match rows below the Generate New Variation button: the More button in the
+# navigation bar has no label of its own, so iOS reads the list's text for it.
 - extendedWaitUntil:
-    visible: "#\\d+.*"
+    visible:
+      text: "#\\d+.*"
+      below: "Generate New Variation"
     timeout: 20000
 - tapOn:
     text: "#\\d+.*"
+    below: "Generate New Variation"
     retryTapIfNoChange: true
 - extendedWaitUntil:
     visible: "Attributes"

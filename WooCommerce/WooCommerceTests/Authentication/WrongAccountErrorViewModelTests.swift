@@ -202,6 +202,27 @@ final class WrongAccountErrorViewModelTests: XCTestCase {
         XCTAssertEqual(jetpackSteps.first?.properties["url"], "woocommerce.com")
     }
 
+    func test_tapping_connect_jetpack_twice_reports_jetpack_not_connected_once() {
+        // Given the merchant can come back to this screen and tap again
+        var events: [AnalyticsEvent] = []
+        let tracker = AuthenticatorAnalyticsTracker(enabled: true, track: { events.append($0) })
+        let viewModel = WrongAccountErrorViewModel(siteURL: Expectations.url,
+                                                   showsConnectedStores: false,
+                                                   siteCredentials: Expectations.siteCredentials,
+                                                   authenticatorType: MockAuthenticator.self,
+                                                   reportsLoginStep: true,
+                                                   tracker: tracker,
+                                                   onJetpackSetupCompletion: { _, _ in })
+        viewModel.viewDidLoad(nil)
+
+        // When
+        viewModel.didTapPrimaryButton(in: UIViewController())
+        viewModel.didTapPrimaryButton(in: UIViewController())
+
+        // Then
+        XCTAssertEqual(events.filter { $0.properties["step"] == "jetpack_not_connected" }.count, 1)
+    }
+
     func test_tapping_connect_jetpack_omits_url_when_the_site_address_is_missing() {
         // Given no site address, so the UI falls back to a localized placeholder
         var events: [AnalyticsEvent] = []

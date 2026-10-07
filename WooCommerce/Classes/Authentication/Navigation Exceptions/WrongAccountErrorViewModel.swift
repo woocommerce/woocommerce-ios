@@ -26,6 +26,10 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
     private let tracker: AuthenticatorAnalyticsTracker
 
     private var storePickerCoordinator: StorePickerCoordinator?
+
+    /// The Jetpack step is reported on the tap rather than on a screen, so it needs its own guard
+    /// against the merchant coming back and tapping again.
+    private var hasReportedJetpackStep = false
     private var jetpackSetupCoordinator: LoginJetpackSetupCoordinator?
 
     private var siteXMLRPC: String = ""
@@ -153,7 +157,13 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
         if isSelfHostedSite {
             // Only this branch starts a Jetpack connection. The other one tells the merchant to
             // ask the site owner for access, which is not a Jetpack state they can act on.
-            if reportsLoginStep {
+            //
+            // Reported on the tap, not on a screen appearing, because this button opens store
+            // credentials rather than a Jetpack screen — there is no impression to hook. Android
+            // reports the same step from its Jetpack activation screen, which its mismatch screen
+            // navigates to; iOS would otherwise stay silent on this route (WOOMOB-4237).
+            if reportsLoginStep, !hasReportedJetpackStep {
+                hasReportedJetpackStep = true
                 var properties: [String: String] = [:]
                 // Same reason as viewDidLoad: `siteURL` falls back to a localized placeholder.
                 if let rawSiteURL {
@@ -171,7 +181,7 @@ final class WrongAccountErrorViewModel: ULAccountMismatchViewModel {
             return
         }
 
-        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores)
+        storePickerCoordinator = StorePickerCoordinator(navigationController, config: .listStores, isFromLogin: reportsLoginStep)
         storePickerCoordinator?.start()
     }
 

@@ -51,7 +51,7 @@ struct UnexpectedStoreResponseTests {
         let policy = UnexpectedResponseRequest(original: request)
         let payload = """
         {"error":"no_response_body","message":"Server could not read response.",
-         "data":{"raw_body":"<html>private-sentinel Store temporarily blocked</html>"}}
+         "data":{"raw_body":"<html><div hidden>private-sentinel</div><p>Store temporarily blocked token=private-token</p></html>"}}
         """
         let envelopes: [Data] = [
             Data(payload.utf8),
@@ -67,7 +67,9 @@ struct UnexpectedStoreResponseTests {
             #expect(error?.kind == .unacceptableStatusCode)
             #expect(error?.statusCode == 503)
             #expect(error?.diagnostics?.request == "GET /")
+            #expect(error?.diagnostics?.excerpt == "Store temporarily blocked token=[redacted]")
             #expect(error?.logMessage.contains("private-sentinel") == false)
+            #expect(error?.logMessage.contains("private-token") == false)
         }
     }
 

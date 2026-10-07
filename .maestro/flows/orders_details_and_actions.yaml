@@ -67,6 +67,9 @@ tags:
 - extendedWaitUntil:
     visible: "WRITE NOTE"
     timeout: 15000
+# The note field takes focus only once the screen has finished appearing.
+- waitForAnimationToEnd:
+    timeout: 5000
 - inputText: "Order note ${SUITE_RUN_ID}"
 - tapOn: "Add"
 # The editor still shows the note text while it closes.

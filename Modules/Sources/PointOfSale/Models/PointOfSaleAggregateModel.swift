@@ -244,6 +244,8 @@ extension PointOfSaleAggregateModel {
         for type in types {
             switch type {
             case .purchasableItem:
+                // Queued scans must not repopulate the cleared cart.
+                checkoutGeneration += 1
                 cart.purchasableItems.removeAll()
             case .coupon:
                 cart.coupons.removeAll()

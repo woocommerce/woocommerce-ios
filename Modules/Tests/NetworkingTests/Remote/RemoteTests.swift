@@ -83,6 +83,7 @@ final class RemoteTests: XCTestCase {
         } catch {
             // Then
             XCTAssertEqual((error as? UnexpectedStoreResponseError)?.kind, .unexpectedContent)
+            XCTAssertNil((error as? UnexpectedStoreResponseError)?.diagnostics?.excerpt)
         }
     }
 

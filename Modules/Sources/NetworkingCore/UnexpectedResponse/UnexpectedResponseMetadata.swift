@@ -2,11 +2,13 @@ import Foundation
 
 enum UnexpectedResponseMetadata {
     static func sanitize(_ value: String) -> String {
+        let secretFields = "consumer_key|consumer_secret|api_key|api_secret|access_token|refresh_token|token|" +
+            "application_password|password|pwd|key|secret|authorization|cookie|cookies"
         let patterns: [(String, String)] = [
             (#"(?i)\bBearer\s+[^\s,;]+"#, "Bearer [redacted]"),
             (#"(?i)\b(Set-Cookie|Cookie|Authorization):[^\r\n]+"#, "$1: [redacted]"),
             (#"\b[A-Za-z0-9]{4}(?: [A-Za-z0-9]{4}){5}\b"#, "[redacted]"),
-            (#"(?i)(\b(?:consumer_key|consumer_secret|access_token|token|application_password|password|pwd)\b[\"']?\s*[:=]\s*)(?:\"[^\"]*\"|'[^']*'|[^\s&;,<>]+)"#,
+            (#"(?i)(\b(?:\#(secretFields))\b[\"']?\s*[:=]\s*)(?:\"[^\"]*\"|'[^']*'|[^\s&;,<>]+)"#,
              "$1[redacted]"),
             (#"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}"#, "[email]"),
             (#"\b(?:\d{1,3}\.){3}\d{1,3}\b"#, "[ip]"),

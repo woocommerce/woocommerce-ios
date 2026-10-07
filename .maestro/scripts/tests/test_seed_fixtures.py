@@ -253,12 +253,18 @@ class SeedFixtureTests(unittest.TestCase):
             )
             SEED.initialize(args)
             client = FakeClient(fail_delete_id=101)
+            stdout = io.StringIO()
             stderr = io.StringIO()
 
-            with mock.patch.object(SEED, "WooClient", return_value=client), contextlib.redirect_stderr(stderr):
+            with (
+                mock.patch.object(SEED, "WooClient", return_value=client),
+                contextlib.redirect_stdout(stdout),
+                contextlib.redirect_stderr(stderr),
+            ):
                 SEED.cleanup(args)
 
             self.assertIn("warning: could not delete uploaded image 101", stderr.getvalue())
+            self.assertIn("Cleaned 3 run-owned entities", stdout.getvalue())
             self.assertEqual([("products/tags", 31), ("orders", 21), ("products", 11)], client.deleted)
             contents = json.loads(manifest.read_text(encoding="utf-8"))
             self.assertEqual([{"type": "media", "id": 101}], contents["entities"])

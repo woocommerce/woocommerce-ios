@@ -270,7 +270,7 @@ def cleanup(args: argparse.Namespace) -> None:
             write_manifest(args.manifest, manifest)
     if errors:
         raise SmokeSetupError(f"Cleanup completed with {len(errors)} deletion error(s)")
-    print(f"Cleaned {original_count} run-owned entities")
+    print(f"Cleaned {original_count - len(manifest['entities'])} run-owned entities")
 
 
 def main() -> int:

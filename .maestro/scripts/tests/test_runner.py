@@ -624,62 +624,17 @@ class RunnerTests(unittest.TestCase):
             self.assertIn("MAESTRO_WOO_FEATURE_INPUT", required)
             self.assertNotIn("MAESTRO_WOO_CONSUMER_KEY", required)
 
-    def test_not_woo_store_requires_site_admin_credentials_only(self) -> None:
+    def test_not_woo_store_logs_in_with_the_shared_store_account(self) -> None:
         flow = RUNNER.FLOWS_DIR / "login_not_woo_store.yaml"
 
         required = RUNNER.required_environment([flow], seed=False)
 
+        self.assertEqual("shared", RUNNER.flow_store(flow, None))
         self.assertIn("MAESTRO_WOO_NOT_A_WOO_STORE_URL", required)
         self.assertIn("MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_USERNAME", required)
         self.assertIn("MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD", required)
-        self.assertNotIn("MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL", required)
-        self.assertNotIn("MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD", required)
-        self.assertNotIn("MAESTRO_WOO_WPCOM_EMAIL", required)
-        self.assertNotIn("MAESTRO_WOO_WPCOM_PASSWORD", required)
-
-    def test_not_woo_store_wpcom_fallback_must_be_complete(self) -> None:
-        flow = RUNNER.FLOWS_DIR / "login_not_woo_store.yaml"
-        values = {
-            "MAESTRO_WOO_NOT_A_WOO_STORE_URL": "https://example.com",
-            "MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_USERNAME": "admin",
-            "MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD": "password",
-            "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL": "merchant@example.com",
-        }
-
-        with self.assertRaisesRegex(SystemExit, "requires both email and password"):
-            RUNNER.validate_environment([flow], values, seed=False)
-
-        values.pop("MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL")
-        RUNNER.validate_environment([flow], values, seed=False)
-
-    def test_wordpress_dot_com_not_woo_store_requires_explicit_wpcom_credentials(self) -> None:
-        flow = RUNNER.FLOWS_DIR / "login_not_woo_store.yaml"
-        values = {
-            "MAESTRO_WOO_NOT_A_WOO_STORE_URL": "https://not-woo.wordpress.com/",
-            "MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_USERNAME": "site-admin",
-            "MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD": "site-password",
-        }
-
-        with self.assertRaisesRegex(SystemExit, "requires WP.com email and password"):
-            RUNNER.validate_environment([flow], values, seed=False)
-
-    def test_not_woo_store_runtime_environment_includes_explicit_wpcom_fallback(self) -> None:
-        flow = RUNNER.FLOWS_DIR / "login_not_woo_store.yaml"
-
-        names = RUNNER.runtime_environment_names([flow], seed=False)
-
-        self.assertTrue(RUNNER.NOT_WOO_STORE_WPCOM_FALLBACK.issubset(names))
-
-        environment = RUNNER.maestro_process_environment(
-            {
-                "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL": "wpcom-user",
-                "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD": "wpcom-password",
-            },
-            names,
-            "run-1",
-        )
-        self.assertEqual("wpcom-user", environment["MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL"])
-        self.assertEqual("wpcom-password", environment["MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD"])
+        self.assertIn("MAESTRO_WOO_WPCOM_EMAIL", required)
+        self.assertIn("MAESTRO_WOO_WPCOM_PASSWORD", required)
 
     def test_no_jetpack_wp_admin_url_is_normalized_for_the_flow(self) -> None:
         flow = RUNNER.FLOWS_DIR / "login_no_jetpack.yaml"

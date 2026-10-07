@@ -84,10 +84,9 @@ def selection_problems(flows: list[Path], environment: dict[str, str], args: arg
     for store in RUNNER.STORES:
         store_flows = [flow for flow in flows if RUNNER.flow_store(flow, args.store) == store]
         values = RUNNER.select_store_environment(environment, store)
-        checks.append(lambda flows=store_flows, values=values, store=store: (
-            RUNNER.validate_login_store_hosts(flows, values, store=store),
-            RUNNER.validate_not_woo_store_fallback(flows, values),
-        ))
+        checks.append(
+            lambda flows=store_flows, values=values, store=store: RUNNER.validate_login_store_hosts(flows, values, store=store)
+        )
     problems = []
     for check in checks:
         try:

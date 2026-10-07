@@ -1,12 +1,13 @@
 # p2: login.not-woo-store
 # Required fixture: a WordPress site without WooCommerce and its site-admin
-# credentials. WP.com email/password are required for wordpress.com-hosted
-# fixtures and optional for self-hosted fixtures that expose site credentials.
+# credentials. A wordpress.com-hosted site logs in with the shared store's
+# WP.com account.
 appId: ${APP_ID}
 name: "Login - Not a WooCommerce store error"
 tags:
   - smoke_core
   - login
+  - store_shared
 ---
 - launchApp:
     clearState: true
@@ -59,7 +60,7 @@ tags:
       - hideKeyboard
       - tapOn: "Continue"
 
-# Fall back to WP.com credentials when no site-admin route is available.
+# Fall back to the WP.com account when no site-admin route is available.
 - runFlow:
     when:
       visible:
@@ -70,7 +71,7 @@ tags:
       - runFlow:
           file: ../subflows/paste_into_focused_field.yaml
           env:
-            TEXT_TO_PASTE: ${MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL}
+            TEXT_TO_PASTE: ${MAESTRO_WOO_WPCOM_EMAIL}
       - hideKeyboard
       - tapOn:
           id: "Get Started Email Continue Button"
@@ -83,7 +84,7 @@ tags:
       - runFlow:
           file: ../subflows/paste_into_focused_field.yaml
           env:
-            TEXT_TO_PASTE: ${MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD}
+            TEXT_TO_PASTE: ${MAESTRO_WOO_WPCOM_PASSWORD}
       - hideKeyboard
       - runFlow:
           when:

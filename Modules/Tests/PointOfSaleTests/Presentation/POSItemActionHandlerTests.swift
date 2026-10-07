@@ -102,34 +102,34 @@ private func makeProductItem() -> POSItem {
 @MainActor
 private func makePointOfSaleAggregateModel(
     entryPointController: POSEntryPointController? = nil,
-    itemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
-    purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSalePurchasableItemsSearchController(),
-    couponsController: PointOfSaleCouponsControllerProtocol = MockPointOfSaleCouponsController(),
-    couponsSearchController: PointOfSaleSearchingItemsControllerProtocol = MockPointOfSaleCouponsController(),
+    itemsController: PointOfSaleItemsControllerProtocol? = nil,
+    purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol? = nil,
+    couponsController: PointOfSaleCouponsControllerProtocol? = nil,
+    couponsSearchController: PointOfSaleSearchingItemsControllerProtocol? = nil,
     cardPresentPaymentService: CardPresentPaymentFacade? = nil,
-    orderController: PointOfSaleOrderControllerProtocol = MockPointOfSaleOrderController(),
-    settingsController: POSSettingsControllerProtocol = MockPOSSettingsController(),
+    orderController: PointOfSaleOrderControllerProtocol? = nil,
+    settingsController: POSSettingsControllerProtocol? = nil,
     analytics: POSAnalyticsProviding = MockPOSAnalytics(),
     collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = MockPOSCollectOrderPaymentAnalyticsTracker(),
     searchHistoryService: POSSearchHistoryProviding = MockPOSSearchHistoryService(),
-    popularPurchasableItemsController: PointOfSaleItemsControllerProtocol = MockPointOfSaleItemsController(),
+    popularPurchasableItemsController: PointOfSaleItemsControllerProtocol? = nil,
     barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = MockPointOfSaleBarcodeScanService()
 ) -> PointOfSaleAggregateModel {
     let cardPresentPaymentService = cardPresentPaymentService ?? MockCardPresentPaymentService()
 
     return PointOfSaleAggregateModel(
         entryPointController: entryPointController ?? POSEntryPointController(eligibilityChecker: MockPOSEligibilityChecker()),
-        itemsController: itemsController,
-        purchasableItemsSearchController: purchasableItemsSearchController,
-        couponsController: couponsController,
-        couponsSearchController: couponsSearchController,
+        itemsController: itemsController ?? MockPointOfSaleItemsController(),
+        purchasableItemsSearchController: purchasableItemsSearchController ?? MockPointOfSalePurchasableItemsSearchController(),
+        couponsController: couponsController ?? MockPointOfSaleCouponsController(),
+        couponsSearchController: couponsSearchController ?? MockPointOfSaleCouponsController(),
         cardPresentPaymentService: cardPresentPaymentService,
-        orderController: orderController,
-        settingsController: settingsController,
+        orderController: orderController ?? MockPointOfSaleOrderController(),
+        settingsController: settingsController ?? MockPOSSettingsController(),
         analytics: analytics,
         collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
         searchHistoryService: searchHistoryService,
-        popularPurchasableItemsController: popularPurchasableItemsController,
+        popularPurchasableItemsController: popularPurchasableItemsController ?? MockPointOfSaleItemsController(),
         barcodeScanService: barcodeScanService,
         receiptSender: MockPOSReceiptSender(),
         siteID: 0

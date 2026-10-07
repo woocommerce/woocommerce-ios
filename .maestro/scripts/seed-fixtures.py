@@ -260,13 +260,17 @@ def cleanup(args: argparse.Namespace) -> None:
         try:
             client.delete(paths[entity["type"]], int(entity["id"]), prefix=prefixes[entity["type"]])
         except SmokeSetupError as error:
-            errors.append(str(error))
+            # An image left on the store does not affect later runs.
+            if entity["type"] == "media":
+                print(f"warning: could not delete uploaded image {entity['id']}: {error}", file=sys.stderr)
+            else:
+                errors.append(str(error))
         else:
             manifest["entities"].remove(entity)
             write_manifest(args.manifest, manifest)
     if errors:
         raise SmokeSetupError(f"Cleanup completed with {len(errors)} deletion error(s)")
-    print(f"Cleaned {original_count} run-owned entities")
+    print(f"Cleaned {original_count - len(manifest['entities'])} run-owned entities")
 
 
 def main() -> int:

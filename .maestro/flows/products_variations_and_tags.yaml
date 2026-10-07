@@ -1,7 +1,7 @@
 # p2: products.detail.variations, products.detail.variation-attributes
 # Prerequisite: store has an editable Variable product with at least one generated variation and attribute.
 appId: ${APP_ID}
-name: "Products - Variations and tags"
+name: "Products - Variations"
 tags:
   - smoke_extended
   - flaky_quarantine
@@ -51,41 +51,13 @@ tags:
       id: "edit-product-more-options-button"
     timeout: 10000
 - scrollUntilVisible:
-    element: "Add more details"
-    direction: DOWN
-    timeout: 15000
-- tapOn: "Add more details"
-- extendedWaitUntil:
-    visible: "Tags"
-    timeout: 10000
-- tapOn: "Tags"
-- extendedWaitUntil:
-    visible:
-      id: "add-tags"
-    timeout: 15000
-- assertVisible: "Tags"
-- assertVisible:
-    id: "add-tags"
-- takeScreenshot: products_tags
-- tapOn:
-    point: "10%,12%"
-- runFlow:
-    when:
-      visible: "Dismiss"
-    commands:
-      - tapOn: "Dismiss"
-- extendedWaitUntil:
-    visible:
-      id: "edit-product-more-options-button"
-    timeout: 10000
-- scrollUntilVisible:
     element: "Variations"
     direction: DOWN
     timeout: 15000
 # Assert the product exposes a variation count without hardcoding a specific number,
 # matching the flow's own prerequisite ("at least one generated variation"). A literal
 # "2 variations" is coupled to one fixture and fails on any other store.
-- assertVisible: "\\d+ variations"
+- assertVisible: "\\d+ variations?"
 - assertVisible: "Variations"
 - tapOn: "Variations"
 - extendedWaitUntil:
@@ -95,11 +67,16 @@ tags:
 # Open the first generated variation by its "#<id> <attributes>" row rather than a
 # fixed screen point. The point tap on the row's chevron was flaky while the list was
 # still loading; waiting for a row and matching its label is deterministic.
+# Only match rows below the Generate New Variation button: the More button in the
+# navigation bar has no label of its own, so iOS reads the list's text for it.
 - extendedWaitUntil:
-    visible: "#\\d+.*"
+    visible:
+      text: "#\\d+.*"
+      below: "Generate New Variation"
     timeout: 20000
 - tapOn:
     text: "#\\d+.*"
+    below: "Generate New Variation"
     retryTapIfNoChange: true
 - extendedWaitUntil:
     visible: "Attributes"

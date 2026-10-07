@@ -157,7 +157,9 @@ configured destructive store are not accepted: a destructive runtime selection
 requires `--seed`, which initializes a cleanup journal before UI mutation,
 discovers only products/orders carrying the exact `SUITE_RUN_ID`, and records
 each successful REST deletion. If cleanup stops part way, `run-manifest.json`
-in the run's output folder still lists every entity it did not delete. Seeding
+in the run's output folder still lists every entity it did not delete. An
+uploaded image that cannot be deleted is reported as a warning and does not
+fail cleanup. Seeding
 needs the store's REST keys, plus the site admin username and
 application password that cleanup uses to delete uploaded images. The runner
 checks them before any flow runs. Seeding also creates a product named

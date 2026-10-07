@@ -24,6 +24,10 @@ tags:
     file: ../subflows/paste_into_focused_field.yaml
     env:
       TEXT_TO_PASTE: Share ${SUITE_RUN_ID}
+# The button moves above the keyboard as it opens, and a tap at its old place
+# types a space into the name, so let it settle first.
+- waitForAnimationToEnd:
+    timeout: 5000
 # With the keyboard up, the first tap on the button only ends editing.
 - tapOn:
     id: order-add-custom-amount-view-add-custom-amount-button

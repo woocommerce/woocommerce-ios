@@ -51,6 +51,16 @@ enum StorePickerConfiguration: Equatable {
     /// Setup the store picker for use as list of stores
     ///
     case listStores
+
+    /// Login recovery screens also show connected stores before a store is selected.
+    var detectsUnexpectedLoginResponses: Bool {
+        switch self {
+        case .login, .listStores:
+            return true
+        case .standard, .switchingStores:
+            return false
+        }
+    }
 }
 
 
@@ -524,7 +534,7 @@ private extension StorePickerViewController {
         updateActionButtonAndTableState(animating: true, enabled: false)
         let checkID = UUID()
         requirementCheckID = checkID
-        requirementsChecker.checkSiteEligibility(for: site, detectUnexpectedResponses: configuration == .login) { [weak self] result in
+        requirementsChecker.checkSiteEligibility(for: site, detectUnexpectedResponses: configuration.detectsUnexpectedLoginResponses) { [weak self] result in
             guard self?.requirementCheckID == checkID else { return }
             switch result {
             case .success(.validWCVersion):
@@ -615,7 +625,7 @@ private extension StorePickerViewController {
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = self
         present(viewController, animated: true) { [weak self] in
-            guard let self, configuration == .login, let failure else { return }
+            guard let self, configuration.detectsUnexpectedLoginResponses, let failure else { return }
             analytics.track(event: .Login.unexpectedResponseShown(failure: failure, loginFlow: .storePicker))
         }
     }

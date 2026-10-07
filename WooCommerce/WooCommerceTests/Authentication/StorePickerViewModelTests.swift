@@ -17,8 +17,9 @@ final class StorePickerViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_role_check_when_configuration_changes_then_only_login_opts_into_response_detection() {
-        for configuration in [StorePickerConfiguration.login, .standard, .switchingStores] {
+    func test_role_check_when_configuration_changes_then_only_login_and_recovery_opt_into_response_detection() {
+        for (configuration, expectedDetection) in [(StorePickerConfiguration.login, true), (.listStores, true),
+                                                   (.standard, false), (.switchingStores, false)] {
             // Given
             let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
             let failure = UnexpectedStoreResponseError(kind: .unexpectedContent)
@@ -38,7 +39,7 @@ final class StorePickerViewModelTests: XCTestCase {
                 }
             }
             // Then
-            XCTAssertEqual(optedIn, configuration == .login)
+            XCTAssertEqual(optedIn, expectedDetection)
             XCTAssertEqual(receivedFailure?.kind, .unexpectedContent)
             XCTAssertEqual(receivedFailure?.step, .userRoleCheck)
         }

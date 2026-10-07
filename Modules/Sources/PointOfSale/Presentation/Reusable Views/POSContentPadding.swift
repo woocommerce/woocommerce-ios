@@ -33,7 +33,7 @@ private struct POSContentPaddingModifier: ViewModifier {
                                 leading: max(0, padding.leading - clearance.leading),
                                 bottom: padding.bottom,
                                 trailing: max(0, padding.trailing - clearance.trailing)))
-            .onGeometryChange(for: EdgeInsets.self) { geometry in
+            .onGeometryChange(for: EdgeInsets.self) { [context, layoutDirection] geometry in
                 context.clearance(for: geometry.frame(in: .global), layoutDirection: layoutDirection)
             } action: { clearance = $0 }
     }

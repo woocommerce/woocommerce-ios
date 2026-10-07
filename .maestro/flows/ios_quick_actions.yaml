@@ -4,7 +4,6 @@
 appId: ${APP_ID}
 name: "iOS system - Home-screen Quick Actions"
 tags:
-  - flaky_quarantine
   - ios_system
 ---
 - runFlow: ../subflows/ensure_logged_in.yaml

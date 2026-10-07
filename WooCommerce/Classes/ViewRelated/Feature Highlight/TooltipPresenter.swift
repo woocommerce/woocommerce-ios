@@ -5,6 +5,7 @@ import UIKit
 
 /// A helper class for presentation of the Tooltip in respect to a `targetView`.
 /// Must be retained to respond to device orientation and size category changes.
+@MainActor
 final class TooltipPresenter {
     private enum Constants {
         static let verticalTooltipDistanceToFocus: CGFloat = 0
@@ -21,7 +22,7 @@ final class TooltipPresenter {
 
     enum Target {
         case view(UIView)
-        case point((() -> CGPoint))
+        case point((@MainActor () -> CGPoint))
     }
 
     private let containerView: UIView
@@ -291,6 +292,7 @@ final class TooltipPresenter {
 // MARK: - TooltipAnimation
 
 /// Enable dependency injection for animation
+@MainActor
 protocol TooltipAnimation: AnyObject {
     static func animate(withDuration duration: TimeInterval,
                         delay: TimeInterval,

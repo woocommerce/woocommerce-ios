@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 
+@MainActor
 final class TooltipPresenterTests: XCTestCase {
     // MARK: `dismissTooltip`
 

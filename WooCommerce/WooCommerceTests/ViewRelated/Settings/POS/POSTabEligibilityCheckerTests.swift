@@ -502,6 +502,7 @@ struct POSTabEligibilityCheckerTests {
 
         // Then
         #expect(syncCalled == true)
+        #expect(siteSettings.refreshCallCount == 1)
         #expect(result == .eligible)
     }
 
@@ -534,6 +535,7 @@ struct POSTabEligibilityCheckerTests {
             try await checker.refreshEligibility(ineligibleReason: ineligibleReason)
         }
         #expect(syncCalled == true) // Called during the attempt
+        #expect(siteSettings.refreshCallCount == 0)
     }
 
     @Test func refreshEligibility_returns_noInternetConnection_when_site_settings_sync_fails_with_connectivity_error() async throws {

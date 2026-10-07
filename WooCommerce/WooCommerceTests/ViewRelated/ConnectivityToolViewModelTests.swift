@@ -153,11 +153,13 @@ struct ConnectivityToolViewModelTests {
     @Test func test_enableAnalytics_when_fails_twice_then_restores_error_state() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var enableAttempts = 0
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
             case let .retrieveAnalyticsSetting(_, onCompletion):
                 onCompletion(.success(false))
             case let .enableAnalyticsSetting(_, onCompletion):
+                enableAttempts += 1
                 let error = NSError(domain: "TestDomain", code: 500, userInfo: nil)
                 onCompletion(.failure(error))
             default:
@@ -193,6 +195,57 @@ struct ConnectivityToolViewModelTests {
             return
         }
         #expect(restoredActions.contains(where: { $0.title == "Enable Analytics" }))
+        #expect(enableAttempts == 2)
+    }
+
+    @Test func test_enableAnalytics_when_first_attempt_fails_then_retries_and_updates_card_to_relaunch_message() async {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var enableAttempts = 0
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .retrieveAnalyticsSetting(_, onCompletion):
+                onCompletion(.success(false))
+            case let .enableAnalyticsSetting(_, onCompletion):
+                enableAttempts += 1
+                if enableAttempts == 1 {
+                    onCompletion(.failure(NSError(domain: "TestDomain", code: 500, userInfo: nil)))
+                } else {
+                    onCompletion(.success(()))
+                }
+            default:
+                break
+            }
+        }
+        let sut = ConnectivityToolViewModel(session: SessionManager.makeForTesting(authenticated: true), stores: stores)
+
+        let testResult = await sut.testAnalyticsSetting()
+        guard case let .error(_, actions) = testResult,
+              let enableAction = actions.first(where: { $0.title == "Enable Analytics" }) else {
+            Issue.record("Expected error card with Enable Analytics action but got \(testResult)")
+            return
+        }
+
+        sut.cards.append(ConnectivityTool.Card(
+            testCase: .analyticsSetting,
+            title: ConnectivityToolViewModel.ConnectivityTest.analyticsSetting.title,
+            icon: ConnectivityToolViewModel.ConnectivityTest.analyticsSetting.icon,
+            state: testResult
+        ))
+
+        // When
+        enableAction.action()
+
+        // Then
+        let updatedCard = await analyticsCard(of: sut) { state in
+            if case .empty = state { true } else { false }
+        }
+        guard case let .empty(message) = updatedCard?.state else {
+            Issue.record("Expected .empty state after enabling analytics but got \(String(describing: updatedCard?.state))")
+            return
+        }
+        #expect(message.contains("relaunch"))
+        #expect(enableAttempts == 2)
     }
 
     // MARK: - Analytics tracking

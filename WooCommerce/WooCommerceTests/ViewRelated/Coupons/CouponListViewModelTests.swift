@@ -293,6 +293,50 @@ final class CouponListViewModelTests: XCTestCase {
         XCTAssertEqual(enableRequests, 1)
     }
 
+    func test_state_is_coupons_if_coupon_sync_fails_and_coupon_setting_returns_true() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .retrieveCouponSetting(_, onCompletion) = action {
+                onCompletion(.success(true))
+            }
+        }
+        setUpWithCouponFetched(injectedStores: stores)
+        sut.viewDidLoad()
+        XCTAssertNotEqual(sut.state, .coupons)
+
+        // When
+        sut.handleCouponSyncResult(result: .failure(NSError(domain: "Test", code: 503, userInfo: nil)), pageNumber: 1)
+
+        // Then
+        waitUntil {
+            self.sut.state == .coupons
+        }
+    }
+
+    func test_state_is_empty_if_coupon_sync_fails_and_coupon_setting_request_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .retrieveCouponSetting(_, onCompletion) = action {
+                onCompletion(.failure(NSError(domain: "Test", code: 500, userInfo: nil)))
+            }
+        }
+        sut = CouponListViewModel(siteID: 123,
+                                  storesManager: stores,
+                                  storageManager: mockStorageManager)
+        sut.viewDidLoad()
+        XCTAssertNotEqual(sut.state, .empty)
+
+        // When
+        sut.handleCouponSyncResult(result: .failure(NSError(domain: "Test", code: 503, userInfo: nil)), pageNumber: 1)
+
+        // Then
+        waitUntil {
+            self.sut.state == .empty
+        }
+    }
+
     func test_state_is_empty_when_all_coupons_gets_deleted() {
         // Given
         mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: 123, couponID: 1, code: "riset"))

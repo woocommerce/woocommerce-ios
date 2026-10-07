@@ -529,9 +529,11 @@ struct SupportDiagnosticsServiceTests {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let testError = NSError(domain: "TestDomain", code: 500, userInfo: nil)
+        var attempts = 0
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
             case let .enableAnalyticsSetting(_, onCompletion):
+                attempts += 1
                 onCompletion(.failure(testError))
             default:
                 break
@@ -546,6 +548,33 @@ struct SupportDiagnosticsServiceTests {
         } catch {
             // Expected
         }
+        #expect(attempts == 2)
+    }
+
+    @Test func test_enableAnalytics_when_first_attempt_fails_then_retries_and_completes_without_error() async throws {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var attempts = 0
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            switch action {
+            case let .enableAnalyticsSetting(_, onCompletion):
+                attempts += 1
+                if attempts == 1 {
+                    onCompletion(.failure(NSError(domain: "TestDomain", code: 500, userInfo: nil)))
+                } else {
+                    onCompletion(.success(()))
+                }
+            default:
+                break
+            }
+        }
+        let sut = makeSUT(stores: stores)
+
+        // When
+        try await sut.enableAnalytics()
+
+        // Then
+        #expect(attempts == 2)
     }
 
     // MARK: - Register Device Action

@@ -659,6 +659,74 @@ struct GameControllerBarcodeParserTests {
     // MARK: - Terminator Tests
 
     struct TerminatorTests {
+        @Test(arguments: [1, 6])
+        func test_terminator_when_timeout_delivery_is_delayed_then_reports_only_timeout(barcodeLength: Int) {
+            // Given
+            var results: [HIDBarcodeParserResult] = []
+            let timeProvider = MockTimeProvider()
+            let parser = GameControllerBarcodeParser(
+                configuration: .default,
+                onScan: { results.append($0) },
+                timeProvider: timeProvider
+            )
+            for _ in 0..<barcodeLength {
+                parser.processKeyPress(.one)
+            }
+            // Model a timer that has not run before the late terminator arrives.
+            timeProvider.clearScheduledTimers()
+
+            // When
+            timeProvider.advance(by: 0.3)
+            parser.processKeyPress(.returnOrEnter)
+
+            // Then
+            #expect(results.count == 1)
+            if case .failure(let error, let duration) = results.first,
+               case .timedOut(let barcode) = error {
+                #expect(barcode == String(repeating: "1", count: barcodeLength))
+                #expect(duration == 300)
+            } else {
+                Issue.record("Expected one timeout for the buffered barcode")
+            }
+
+            // A subsequent valid scan must still work.
+            for key: GCKeyCode in [.one, .two, .three, .four, .five, .six, .returnOrEnter] {
+                parser.processKeyPress(key)
+            }
+            #expect(results.count == 2)
+            if case .success(let barcode, _) = results.last {
+                #expect(barcode == "123456")
+            } else {
+                Issue.record("Expected the next barcode to succeed")
+            }
+        }
+
+        @Test
+        func test_terminator_when_timeout_already_fired_then_does_not_report_another_failure() {
+            // Given
+            var results: [HIDBarcodeParserResult] = []
+            let timeProvider = MockTimeProvider()
+            let parser = GameControllerBarcodeParser(
+                configuration: .default,
+                onScan: { results.append($0) },
+                timeProvider: timeProvider
+            )
+            parser.processKeyPress(.one)
+
+            // When
+            timeProvider.advance(by: 0.3)
+            parser.processKeyPress(.returnOrEnter)
+
+            // Then
+            #expect(results.count == 1)
+            if case .failure(let error, _) = results.first,
+               case .timedOut(let barcode) = error {
+                #expect(barcode == "1")
+            } else {
+                Issue.record("Expected one timeout for the buffered barcode")
+            }
+        }
+
         @Test("carriage return terminates scan")
         func carriage_return_when_pressed_terminates_scan() {
             // Given

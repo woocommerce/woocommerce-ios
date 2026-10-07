@@ -224,6 +224,12 @@ final class GameControllerBarcodeParser {
     private func processScan() {
         cancelTimeoutTimer()
         checkForTimeoutBetweenKeystrokes()
+        // A late terminator may have just timed out and cleared the scan above.
+        // Do not report a second failure for the empty buffer.
+        guard !buffer.isEmpty else {
+            resetScan()
+            return
+        }
         let scanDurationMs = calculateScanDurationMs()
 
         if buffer.count >= configuration.minimumBarcodeLength {

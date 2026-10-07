@@ -78,7 +78,10 @@ struct ItemListView: View {
             // field would otherwise feed each character to the HID barcode listener and add
             // bogus rows to the cart.
             get: {
-                !isSearching
+                // The iPad item list stays mounted off-screen during checkout, where cash
+                // and note fields must not feed the raw keyboard scanner.
+                posModel.orderStage == .building
+                && !isSearching
                 && !modalManager.isPresented
                 && !sheetManager.isPresented
                 && !coverManager.isPresented

@@ -8,14 +8,17 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     var supportEnabled: Bool = true
     var allowWPComLogin: Bool = true
     var shouldHandleError: Bool = false
+    var completesSync = false
 
     private(set) var presentSignupEpilogueCalled = false
     private(set) var presentLoginEpilogueCalled = false
+    private(set) var loginEpilogueNavigationController: UINavigationController?
     private(set) var trackedEvents: [WPAnalyticsStat] = []
     private(set) var lastTrackedProperties: [AnyHashable: Any]?
     private(set) var socialUser: SocialUser?
     var siteCredentialCredentialsToReturn: WordPressOrgCredentials?
     var siteCredentialRecoveries = [SiteCredentialRecovery]()
+    private(set) var siteCredentialRecoveryWasDisplayed: Bool?
     var defersSiteCredentialAuthentication = false
     private(set) var siteCredentialAuthenticationRequests = [SiteCredentialAuthenticationRequest]()
     private(set) var siteCredentialAuthenticationLoadingHandler: ((Bool) -> Void)?
@@ -43,6 +46,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
 
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, source: SignInSource?, onDismiss: @escaping () -> Void) {
         presentLoginEpilogueCalled = true
+        loginEpilogueNavigationController = navigationController
     }
 
     func presentSignupEpilogue(
@@ -81,7 +85,9 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     }
 
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
-        // no-op
+        if completesSync {
+            onCompletion()
+        }
     }
 
     func handleSiteInfoFailure(siteURL: String, error: Error, completion: @escaping (Bool) -> Void) {
@@ -94,7 +100,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
                                      endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
                                      onLoading: @escaping (Bool) -> Void,
                                      onSuccess: @escaping (WordPressOrgCredentials) -> Void,
-                                     onRecovery: @escaping (SiteCredentialRecovery) -> Void,
+                                     onRecovery: @escaping (SiteCredentialRecovery) -> Bool,
                                      onFailure: @escaping (Error, Bool, String?, Bool) -> Void) {
         siteCredentialAuthenticationRequests.append(.init(
             credentials: credentials,
@@ -119,7 +125,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
         } else if siteCredentialRecoveries.isEmpty {
             onSuccess(siteCredentialCredentialsToReturn ?? credentials)
         } else {
-            onRecovery(siteCredentialRecoveries.removeFirst())
+            siteCredentialRecoveryWasDisplayed = onRecovery(siteCredentialRecoveries.removeFirst())
         }
     }
 

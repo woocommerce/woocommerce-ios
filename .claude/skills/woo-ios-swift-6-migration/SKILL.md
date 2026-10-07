@@ -1,6 +1,8 @@
 ---
 name: woo-ios-swift-6-migration
 description: Diagnose and fix Swift strict-concurrency warnings in WooCommerce iOS. Use for Swift 6 migration, actor-isolation changes, and Sendable diagnostics in this repository.
+user-invocable: true
+allowed-tools: "Bash, Read, Write, Edit, Grep, Glob"
 ---
 
 # WooCommerce iOS Swift 6 migration

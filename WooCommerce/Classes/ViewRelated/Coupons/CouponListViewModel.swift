@@ -121,6 +121,9 @@ final class CouponListViewModel {
     /// Enable coupons for the store
     ///
     func enableCoupons() async {
+        guard state != .loading else {
+            return
+        }
         ServiceLocator.analytics.track(.couponSettingEnabled)
 
         state = .loading

@@ -259,6 +259,40 @@ final class CouponListViewModelTests: XCTestCase {
         assertEqual(.couponsDisabled, sut.state)
     }
 
+    func test_enableCoupons_when_already_enabling_then_does_not_send_a_second_request() async {
+        // Given
+        var enableRequests = 0
+        var pendingCompletion: ((Result<Void, Error>) -> Void)?
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .enableCouponSetting(_, onCompletion) = action {
+                enableRequests += 1
+                if enableRequests == 1 {
+                    pendingCompletion = onCompletion
+                } else {
+                    onCompletion(.failure(NSError(domain: "Test", code: 503, userInfo: nil)))
+                }
+            }
+        }
+        sut = CouponListViewModel(siteID: 123,
+                                  storesManager: stores,
+                                  storageManager: mockStorageManager)
+        Task { await sut.enableCoupons() }
+        await until {
+            pendingCompletion != nil
+        }
+
+        // When
+        await sut.enableCoupons()
+        pendingCompletion?(.failure(NSError(domain: "Test", code: 503, userInfo: nil)))
+
+        // Then
+        await until {
+            self.sut.state == .couponsDisabled
+        }
+        XCTAssertEqual(enableRequests, 1)
+    }
+
     func test_state_is_empty_when_all_coupons_gets_deleted() {
         // Given
         mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: 123, couponID: 1, code: "riset"))

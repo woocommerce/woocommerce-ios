@@ -580,29 +580,7 @@ platform :ios do
   # @example Running the lane
   #          bundle exec fastlane finalize_hotfix_release skip_confirm:true
   #
-  lane :finalize_hotfix_release do |skip_confirm: false|
-    ensure_git_branch_is_release_branch!
-    ensure_git_status_clean
-
-    hotfix_version = release_version_current
-
-    UI.important("Triggering hotfix build for version: #{hotfix_version}")
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
-
-    trigger_release_build(branch_to_build: "release/#{hotfix_version}")
-
-    create_backmerge_pr
-
-    # Close hotfix milestone
-    begin
-      close_milestone(
-        repository: GITHUB_REPO,
-        milestone: hotfix_version
-      )
-    rescue StandardError => e
-      report_milestone_error(error_title: "Error closing milestone `#{hotfix_version}`: #{e.message}")
-    end
-  end
+  import A8c::ReleaseWorkflows.lanes_path(:hotfix_finalization)
 
   # Downloads and prepares the latest translations from GlotPress for App Store submission,
   # then pushes the changes to the remote repository
@@ -764,7 +742,7 @@ platform :ios do
   # @param [String] branch_to_build The git branch the CI build should run on.
   #
   # @example Running the lane
-  #          bundle exec fastlane trigger_release_build branch_to_build:main
+  #          bundle exec fastlane trigger_release_build branch_to_build:release/10.6
   #
   lane :trigger_release_build do |branch_to_build:|
     trigger_buildkite_release_build(
@@ -1496,28 +1474,7 @@ end
 # Kicks off a Buildkite build
 # -----------------------------------------------------------------------------------
 def trigger_buildkite_release_build(branch:, beta:)
-  environment = {
-    IS_BETA_RELEASE: beta,
-    RELEASE_VERSION: release_version_current
-  }
-
-  # If we're running on CI, we can directly start the release pipeline jobs within the same build
-  if is_ci
-    buildkite_pipeline_upload(
-      pipeline_file: BUILDKITE_RELEASE_PIPELINE,
-      environment: environment
-    )
-  else
-    build_url = buildkite_trigger_build(
-      buildkite_organization: 'automattic',
-      buildkite_pipeline: 'woocommerce-ios',
-      branch: branch,
-      pipeline_file: BUILDKITE_RELEASE_PIPELINE,
-      environment: environment
-    )
-
-    UI.success("Release build triggered on #{branch}: #{build_url}")
-  end
+  @release_workflows.dispatch_build(branch: branch, beta: beta, fastlane: self)
 end
 
 # -----------------------------------------------------------------------------------
@@ -1725,27 +1682,7 @@ def publish_release_notes_pr_url(pr_url, reused:)
 end
 
 def create_backmerge_pr
-  version = release_version_current
-
-  create_release_backmerge_pull_request(
-    repository: GITHUB_REPO,
-    source_branch: "release/#{version}",
-    labels: ['Releases'],
-    milestone_title: release_version_next
-  )
-rescue StandardError => e
-  error_message = <<-MESSAGE
-    Error creating backmerge pull request:
-
-    #{e.message}
-
-    If this is not the first time you are running the release task, the backmerge PR for the version `#{version}` might have already been previously created.
-    Please close any previous backmerge PR for `#{version}`, delete the previous merge branch, then run the release task again.
-  MESSAGE
-
-  buildkite_annotate(style: 'error', context: 'error-creating-backmerge', message: error_message) if is_ci
-
-  UI.user_error!(error_message)
+  @release_workflows.backmerge(fastlane: self)
 end
 
 def ensure_git_branch_is_release_branch!

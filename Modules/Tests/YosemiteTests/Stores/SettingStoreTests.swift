@@ -578,6 +578,42 @@ final class SettingStoreTests: XCTestCase {
     }
 
     @MainActor
+    func test_retrieveCouponSetting_when_store_is_released_before_the_response_then_calls_completion() async throws {
+        // Given
+        let network = MockDeferredNetwork()
+        network.simulateResponse(requestUrlSuffix: "settings/general/woocommerce_enable_coupons", filename: "setting-coupon")
+        var store: SettingStore? = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let result: Result<Bool, Error> = try await waitForCompletion { completion in
+            store?.onAction(SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID, onCompletion: completion))
+            store = nil
+            network.deliverPendingResponses()
+        }
+
+        // Then
+        XCTAssertTrue(try result.get())
+    }
+
+    @MainActor
+    func test_synchronizeGeneralSiteSettings_when_store_is_released_before_the_response_then_calls_completion() async throws {
+        // Given
+        let network = MockDeferredNetwork()
+        network.simulateResponse(requestUrlSuffix: "settings/general", filename: "settings-general")
+        var store: SettingStore? = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)
+
+        // When
+        let error: Error? = try await waitForCompletion { completion in
+            store?.onAction(SettingAction.synchronizeGeneralSiteSettings(siteID: self.sampleSiteID, onCompletion: completion))
+            store = nil
+            network.deliverPendingResponses()
+        }
+
+        // Then
+        XCTAssertNil(error)
+    }
+
+    @MainActor
     func test_retrieveTaxBasedOnSetting_returns_correct_setting() async throws {
         // Given
         let store = SettingStore(dispatcher: dispatcher, storageManager: storageManager, network: network)

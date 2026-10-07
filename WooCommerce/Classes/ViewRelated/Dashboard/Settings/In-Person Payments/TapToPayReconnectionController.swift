@@ -102,17 +102,8 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         }
     }
 
-    /// Callable from any thread: some callers cancel the reconnection from nonisolated code.
-    nonisolated func cancelReconnection() {
-        if Thread.isMainThread {
-            MainActor.assumeIsolated {
-                reset()
-            }
-        } else {
-            Task { @MainActor [weak self] in
-                self?.reset()
-            }
-        }
+    func cancelReconnection() {
+        reset()
     }
 
     /// Allows another connection process to adopt an in-progress background automatic Tap to Pay reconnection.

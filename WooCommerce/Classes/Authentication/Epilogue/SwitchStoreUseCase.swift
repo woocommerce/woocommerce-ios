@@ -110,7 +110,16 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         }
         stores.dispatch(reviewAction)
 
-        ServiceLocator.tapToPayReconnectionController.cancelReconnection()
+        // The reconnection controller is main actor, but this method is not.
+        if Thread.isMainThread {
+            MainActor.assumeIsolated {
+                ServiceLocator.tapToPayReconnectionController.cancelReconnection()
+            }
+        } else {
+            Task { @MainActor in
+                ServiceLocator.tapToPayReconnectionController.cancelReconnection()
+            }
+        }
 
         group.enter()
         let resetAction = CardPresentPaymentAction.reset {

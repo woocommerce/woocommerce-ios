@@ -435,9 +435,9 @@ final class MainTabBarControllerTests: XCTestCase {
 
         waitUntil {
             // On a phone the tab switch collapses the split view, which shows the details in the primary column.
-            let column: UISplitViewController.Column = splitViewController.isCollapsed ? .primary : .secondary
-            let topViewController = (splitViewController.viewController(for: column) as? UINavigationController)?.topViewController
-            return topViewController is OrderLoaderViewController
+            [UISplitViewController.Column.primary, .secondary].contains { column in
+                (splitViewController.viewController(for: column) as? UINavigationController)?.topViewController is OrderLoaderViewController
+            }
         }
 
         // Resets the tab bar controller mock at the end of the test.

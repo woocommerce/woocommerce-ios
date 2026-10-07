@@ -44,6 +44,51 @@ struct UnexpectedStoreResponseTests {
         #expect(error?.diagnostics?.request == "GET /wp/v2/users/me")
     }
 
+    @Test func test_policy_when_tunnel_raw_body_has_no_inner_status_then_uses_transport_status() throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: 123, path: "")
+        let policy = UnexpectedResponseRequest(original: request)
+        let payload = """
+        {"error":"no_response_body","message":"Server could not read response.",
+         "data":{"raw_body":"<html>private-sentinel Store temporarily blocked</html>"}}
+        """
+        let envelopes: [Data] = [
+            Data(payload.utf8),
+            try JSONSerialization.data(withJSONObject: ["body": payload]),
+            try JSONSerialization.data(withJSONObject: ["body": JSONSerialization.jsonObject(with: Data(payload.utf8))])
+        ]
+
+        for envelope in envelopes {
+            // When
+            let error = policy.responseError(data: envelope, status: 503, tunneled: true) as? UnexpectedStoreResponseError
+
+            // Then
+            #expect(error?.kind == .unacceptableStatusCode)
+            #expect(error?.statusCode == 503)
+            #expect(error?.diagnostics?.request == "GET /")
+            #expect(error?.logMessage.contains("private-sentinel") == false)
+        }
+    }
+
+    @Test func test_policy_when_tunnel_transport_fails_without_store_body_then_does_not_classify() {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: 123, path: "")
+        let policy = UnexpectedResponseRequest(original: request)
+        let envelopes = [
+            "{\"error\":\"no_response_body\"}",
+            "{\"error\":\"no_response_body\",\"data\":{\"raw_body\":\"\"}}",
+            "{\"error\":\"no_response_body\",\"data\":{\"raw_body\":\"  \"}}"
+        ]
+
+        for envelope in envelopes {
+            // When
+            let error = policy.responseError(data: Data(envelope.utf8), status: 503, tunneled: true)
+
+            // Then
+            #expect(error == nil)
+        }
+    }
+
     @Test func test_policy_when_request_has_credentials_and_query_then_diagnostics_omit_them() {
         // Given
         let request = RESTRequest(siteURL: "https://user:secret@example.com", method: .get, path: "", parameters: ["token": "secret"])

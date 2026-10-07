@@ -187,7 +187,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
     }
 
     private func calculateHeight(offsetBy dragAmount: CGFloat = 0) -> CGFloat {
-        let maxExpandedHeight = containerHeight * Layout.maxExpandedHeightRatio
+        // A container that has not been measured yet must not pin the sheet to its collapsed height.
+        let maxExpandedHeight = containerHeight > 0 ? containerHeight * Layout.maxExpandedHeightRatio : .greatestFiniteMagnitude
         let fullHeight = min(collapsedHeight + expandingContentSize.height + Layout.dividerPadding, maxExpandedHeight)
         let currentHeight = isExpanded ? fullHeight : collapsedHeight
         let dragAdjustedHeight = currentHeight - dragAmount

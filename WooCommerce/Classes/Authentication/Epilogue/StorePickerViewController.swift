@@ -65,6 +65,10 @@ final class StorePickerViewController: UIViewController {
     ///
     private let configuration: StorePickerConfiguration
 
+    /// Whether this picker is part of a login journey. `.listStores` is opened from the login
+    /// error screens, which are themselves reachable outside a login, so the caller decides.
+    private let isFromLogin: Bool
+
     /// View model for the controller
     ///
     private let viewModel: StorePickerViewModel
@@ -163,10 +167,12 @@ final class StorePickerViewController: UIViewController {
     private let featureFlagService: FeatureFlagService
 
     init(configuration: StorePickerConfiguration,
+         isFromLogin: Bool? = nil,
          appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService) {
         self.configuration = configuration
+        self.isFromLogin = isFromLogin ?? (configuration == .login)
         self.appleIDCredentialChecker = appleIDCredentialChecker
         self.stores = stores
         self.featureFlagService = featureFlagService
@@ -372,7 +378,6 @@ private extension StorePickerViewController {
     func presentSiteDiscovery() {
         // One predicate for both gates, so the address screen's step and the outcome steps
         // that follow it cannot disagree about whether this is a login.
-        let isFromLogin = configuration == .login
         ServiceLocator.authenticationManager.noteSiteDiscoveryOrigin(isFromLogin: isFromLogin)
         guard let viewController = WordPressAuthenticator.siteDiscoveryUI(tracksLoginSteps: isFromLogin) else {
             return

@@ -22,8 +22,10 @@ public final class POSScreen: ScreenObject {
     public func tapAddProduct(productID: Int) -> Self {
         let productButton = app.buttons["pos-product-card-\(productID)"]
 
-        XCTAssertTrue(productButton.waitForIsHittable(timeout: 15), "Product \(productID) should be tappable in POS.")
-        productButton.tap()
+        // On iOS 27 the card can be on screen and uncovered while never reporting `isHittable`,
+        // so tap its center once it is visible. Callers verify the cart afterwards.
+        XCTAssertTrue(waitForVisibleElement(productButton, timeout: 15), "Product \(productID) should be visible in POS.")
+        productButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
 
         return self
     }

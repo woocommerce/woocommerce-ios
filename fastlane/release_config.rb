@@ -7,5 +7,6 @@
   milestones: { annotation_context: 'start-code-freeze' },
   build: {
     pipeline: 'woocommerce-ios', pipeline_file: 'release-builds.yml', beta_environment: 'IS_BETA_RELEASE'
-  }
+  },
+  preparation: { beta: :prepare_beta_localizations, freeze_completion: :prepare_code_freeze }
 }

@@ -294,23 +294,11 @@ platform :ios do
   # bundle exec fastlane complete_code_freeze
   # bundle exec fastlane complete_code_freeze skip_confirm:true
   #####################################################################################
-  desc 'Creates a new release branch from the current trunk'
-  lane :complete_code_freeze do |skip_confirm: false|
-    ensure_git_status_clean
-    ensure_git_branch_is_release_branch!
+  import A8c::ReleaseWorkflows.lanes_path(:freeze_completion)
 
-    UI.important("Completing code freeze for: #{release_version_current}")
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
-
+  private_lane :prepare_code_freeze do
     update_app_store_strings
-
     generate_strings_file_for_glotpress
-
-    push_to_git_remote(tags: false)
-
-    trigger_beta_build(branch_to_build: "release/#{release_version_current}")
-
-    create_backmerge_pr
   end
 
   # Generates AI-drafted, merchant-facing release notes for the given version
@@ -521,42 +509,11 @@ platform :ios do
   # bundle exec fastlane new_beta_release
   # bundle exec fastlane new_beta_release skip_confirm:true
   #####################################################################################
-  desc 'Updates a release branch for a new beta release'
-  lane :new_beta_release do |options|
-    ensure_git_status_clean
-    ensure_git_branch_is_release_branch!
+  import A8c::ReleaseWorkflows.lanes_path(:beta)
 
-    UI.important <<-MESSAGE
-
-      Current build code: #{build_code_current}
-      New build code: #{build_code_next}
-
-    MESSAGE
-    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
-      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
-    end
-
-    # Download the latest translations from GlotPress
+  private_lane :prepare_beta_localizations do
     download_localized_strings_and_metadata_from_glotpress
     lint_localizations
-
-    # Bump the build code
-    UI.message('Bumping build code...')
-    ensure_git_branch_is_release_branch!
-    VERSION_FILE.write(version_long: build_code_next)
-    commit_version_bump
-    UI.success("Done! New Build Code: #{build_code_current}")
-
-    UI.important('Pushing changes to remote and triggering the beta build')
-    unless options[:skip_confirm] || UI.confirm('Do you want to continue?')
-      UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.")
-    end
-
-    push_to_git_remote(tags: false)
-
-    trigger_beta_build(branch_to_build: "release/#{release_version_current}")
-
-    create_backmerge_pr
   end
 
   #####################################################################################
@@ -742,7 +699,7 @@ platform :ios do
   # @param [String] branch_to_build The git branch the CI build should run on.
   #
   # @example Running the lane
-  #          bundle exec fastlane trigger_release_build branch_to_build:release/10.6
+  #          bundle exec fastlane trigger_release_build branch_to_build:main
   #
   lane :trigger_release_build do |branch_to_build:|
     trigger_buildkite_release_build(

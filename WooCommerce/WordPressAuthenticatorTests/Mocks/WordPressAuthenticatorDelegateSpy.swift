@@ -18,6 +18,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     private(set) var socialUser: SocialUser?
     var siteCredentialCredentialsToReturn: WordPressOrgCredentials?
     var siteCredentialRecoveries = [SiteCredentialRecovery]()
+    private(set) var siteCredentialRecoveryWasDisplayed: Bool?
     var defersSiteCredentialAuthentication = false
     private(set) var siteCredentialAuthenticationRequests = [SiteCredentialAuthenticationRequest]()
     private(set) var siteCredentialAuthenticationLoadingHandler: ((Bool) -> Void)?
@@ -99,7 +100,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
                                      endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
                                      onLoading: @escaping (Bool) -> Void,
                                      onSuccess: @escaping (WordPressOrgCredentials) -> Void,
-                                     onRecovery: @escaping (SiteCredentialRecovery) -> Void,
+                                     onRecovery: @escaping (SiteCredentialRecovery) -> Bool,
                                      onFailure: @escaping (Error, Bool, String?, Bool) -> Void) {
         siteCredentialAuthenticationRequests.append(.init(
             credentials: credentials,
@@ -124,7 +125,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
         } else if siteCredentialRecoveries.isEmpty {
             onSuccess(siteCredentialCredentialsToReturn ?? credentials)
         } else {
-            onRecovery(siteCredentialRecoveries.removeFirst())
+            siteCredentialRecoveryWasDisplayed = onRecovery(siteCredentialRecoveries.removeFirst())
         }
     }
 

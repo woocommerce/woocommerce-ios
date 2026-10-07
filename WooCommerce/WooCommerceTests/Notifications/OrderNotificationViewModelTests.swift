@@ -4,6 +4,7 @@ import XCTest
 
 final class OrderNotificationViewModelTests: XCTestCase {
 
+    @MainActor
     func test_view_model_extract_information_correctly() {
         // Given
         let storeName = "Miffy Store"

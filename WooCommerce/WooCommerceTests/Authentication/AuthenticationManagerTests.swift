@@ -940,7 +940,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: .login,
             onLoading: { loading.append($0) },
             onSuccess: { _ in XCTFail("Expected endpoint recovery") },
-            onRecovery: { recovery = $0 },
+            onRecovery: { recovery = $0; return true },
             onFailure: { _, _, _, _ in XCTFail("Expected endpoint recovery") }
         )
 
@@ -970,7 +970,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: nil,
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected endpoint recovery") },
-            onRecovery: { _ in },
+            onRecovery: { _ in true },
             onFailure: { _, _, _, _ in XCTFail("Expected endpoint recovery") }
         )
         useCase.fail(with: .inaccessibleLoginPage, loginEntryVerified: false)
@@ -996,7 +996,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: nil,
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected failure") },
-            onRecovery: { _ in XCTFail("Expected failure") },
+            onRecovery: { _ in XCTFail("Expected failure"); return true },
             onFailure: { _, _, _, _ in }
         )
         useCase.fail(with: .invalidCredentials, loginEntryVerified: true)
@@ -1028,6 +1028,7 @@ final class AuthenticationManagerTests: XCTestCase {
             onRecovery: {
                 recovery = $0
                 events.append("recovery")
+                return true
             },
             onFailure: { _, _, _, _ in XCTFail("Expected endpoint recovery") }
         )
@@ -1061,7 +1062,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: nil,
             onLoading: { events.append("loading:\($0)") },
             onSuccess: { _ in events.append("success") },
-            onRecovery: { _ in XCTFail("Expected the login to succeed") },
+            onRecovery: { _ in XCTFail("Expected the login to succeed"); return true },
             onFailure: { _, _, _, _ in XCTFail("Expected the login to succeed") }
         )
         useCase.succeed()
@@ -1114,7 +1115,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: .login,
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected recovery") },
-            onRecovery: { recovery = $0 },
+            onRecovery: { recovery = $0; return true },
             onFailure: { _, _, _, _ in didFail = true }
         )
         useCase.fail(with: .invalidLoginResponse, loginEntryVerified: false)
@@ -1142,7 +1143,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: nil,
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected recovery") },
-            onRecovery: { recovery = $0 },
+            onRecovery: { recovery = $0; return true },
             onFailure: { _, _, _, _ in didFail = true }
         )
         useCase.fail(with: .invalidLoginResponse, loginEntryVerified: false)
@@ -1175,7 +1176,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: .login,
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected endpoint recovery") },
-            onRecovery: { recovery = $0 },
+            onRecovery: { recovery = $0; return true },
             onFailure: { _, _, _, _ in XCTFail("Expected endpoint recovery") }
         )
         useCase.fail(with: .inaccessibleAdminPage, loginEntryVerified: true)
@@ -1214,7 +1215,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: .admin,
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected failure") },
-            onRecovery: { _ in didRecover = true },
+            onRecovery: { _ in didRecover = true; return true },
             onFailure: { error, isIncorrectCredentials, loginURL, _ in
                 receivedError = error
                 incorrectCredentials = isIncorrectCredentials
@@ -1249,7 +1250,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: .login,
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected failure") },
-            onRecovery: { _ in XCTFail("Expected ordinary failure") },
+            onRecovery: { _ in XCTFail("Expected ordinary failure"); return true },
             onFailure: {
                 incorrectCredentials = $1
                 verifiedLoginURL = $2
@@ -1262,6 +1263,108 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertEqual(incorrectCredentials, true)
         XCTAssertEqual(verifiedLoginURL, "https://example.com/custom-login")
         XCTAssertEqual(offersBrowserAlternative, true)
+    }
+
+    @MainActor
+    func test_unexpected_credential_failure_when_alert_is_presented_then_tracks_only_after_presentation() {
+        for stage in [CookieNonceAuthenticationResponseStage.credentials, .dashboard, .nonce] {
+            for code: Int? in [nil, 429] {
+                // Given
+                let provider = MockAnalyticsProvider()
+                let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: provider))
+                let presenter = DeferredCredentialAlertPresenter()
+                let context = LoginUnexpectedResponseFailure(stage: stage, statusCode: code)
+
+                // When
+                manager.presentSiteCredentialLoginFailure(error: SiteCredentialLoginError.unexpectedResponse(context),
+                                                          offersBrowserAlternative: stage == .credentials && code == nil,
+                                                          for: "https://example.com", in: presenter)
+
+                // Then
+                XCTAssertTrue(provider.receivedEvents.isEmpty)
+                presenter.completePresentation()
+                XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginUnexpectedResponseErrorShown.rawValue])
+                XCTAssertEqual(provider.receivedProperties.first?["step"] as? String, context.step.rawValue)
+                XCTAssertEqual(provider.receivedProperties.first?["failure_kind"] as? String, context.kind.rawValue)
+                XCTAssertEqual(provider.receivedProperties.first?["login_flow"] as? String, "site_credentials")
+            }
+        }
+    }
+
+    func test_unexpected_credential_failure_when_forwarded_then_preserves_context_without_tracking_shown() throws {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: provider),
+                                            siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+        let context = LoginUnexpectedResponseFailure(stage: .credentials)
+        var receivedError: Error?
+        manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: nil, adminURL: nil,
+                                            endpointUnderVerification: nil, onLoading: { _ in }, onSuccess: { _ in XCTFail("Expected failure") },
+                                            onRecovery: { _ in XCTFail("Expected failure"); return false },
+                                            onFailure: { error, incorrectCredentials, _, browserAlternative in
+            receivedError = error
+            XCTAssertFalse(incorrectCredentials)
+            XCTAssertTrue(browserAlternative)
+        })
+
+        // When
+        useCase.fail(with: .unexpectedResponse(context), loginEntryVerified: true, offersBrowserAlternative: true)
+
+        // Then
+        guard case .unexpectedResponse(let receivedContext) = try XCTUnwrap(receivedError as? SiteCredentialLoginError) else {
+            return XCTFail("Expected preserved response context")
+        }
+        XCTAssertEqual(receivedContext, context)
+        XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginSiteCredentialsFailed.rawValue])
+        XCTAssertEqual(provider.receivedProperties.first?["error_description"] as? String,
+                       SiteCredentialLoginError.invalidLoginResponse.underlyingError.description)
+    }
+
+    func test_unexpected_login_page_when_recovery_is_acknowledged_then_tracks_once_per_attempt() {
+        for isDisplayed in [true, false] {
+            // Given
+            let provider = MockAnalyticsProvider()
+            let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+            let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: provider),
+                                                siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+            var recoveryCount = 0
+
+            for attempt in 1...2 {
+                // When
+                manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: nil, adminURL: nil,
+                                                    endpointUnderVerification: nil, onLoading: { _ in }, onSuccess: { _ in XCTFail("Expected recovery") },
+                                                    onRecovery: { recovery in
+                    XCTAssertEqual(recovery, .login(draftURL: "https://example.com/wp-login.php", error: nil))
+                    recoveryCount += 1
+                    return isDisplayed
+                }, onFailure: { _, _, _, _ in XCTFail("Expected recovery") })
+                useCase.fail(with: .unexpectedResponse(.init(stage: .preflight)), loginEntryVerified: false)
+
+                // Then
+                XCTAssertEqual(recoveryCount, attempt)
+                XCTAssertEqual(provider.receivedEvents.filter { $0 == WooAnalyticsStat.loginUnexpectedResponseErrorShown.rawValue }.count,
+                               isDisplayed ? attempt : 0)
+                XCTAssertEqual(provider.receivedEvents.filter { $0 == WooAnalyticsStat.loginSiteCredentialsInvalidLoginPageDetected.rawValue }.count, attempt)
+                XCTAssertFalse(provider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsFailed.rawValue))
+            }
+        }
+    }
+
+    @MainActor
+    func test_ordinary_credential_failure_when_presented_then_does_not_track_unexpected_response() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: provider))
+        let presenter = DeferredCredentialAlertPresenter()
+
+        // When
+        manager.presentSiteCredentialLoginFailure(error: SiteCredentialLoginError.invalidCredentials,
+                                                  offersBrowserAlternative: true, for: "https://example.com", in: presenter)
+        presenter.completePresentation()
+
+        // Then
+        XCTAssertTrue(provider.receivedEvents.isEmpty)
     }
 
     func test_present_site_credential_login_failure_presents_centered_fancy_alert() throws {
@@ -1297,7 +1400,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: nil,
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected endpoint recovery") },
-            onRecovery: { _ in },
+            onRecovery: { _ in true },
             onFailure: { _, _, _, _ in XCTFail("Expected endpoint recovery") }
         )
         useCase.fail(with: .inaccessibleLoginPage, loginEntryVerified: false)
@@ -1324,7 +1427,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: .login,
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected endpoint recovery") },
-            onRecovery: { _ in },
+            onRecovery: { _ in true },
             onFailure: { _, _, _, _ in XCTFail("Expected endpoint recovery") }
         )
         useCase.fail(with: .invalidLoginResponse, loginEntryVerified: false)
@@ -1351,7 +1454,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: nil,
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected endpoint recovery") },
-            onRecovery: { _ in },
+            onRecovery: { _ in true },
             onFailure: { _, _, _, _ in XCTFail("Expected endpoint recovery") }
         )
         useCase.fail(with: .inaccessibleAdminPage, loginEntryVerified: true)
@@ -1433,7 +1536,7 @@ final class AuthenticationManagerTests: XCTestCase {
             endpointUnderVerification: .admin,
             onLoading: { loading.append($0) },
             onSuccess: { receivedCredentials = $0 },
-            onRecovery: { _ in XCTFail("Expected success") },
+            onRecovery: { _ in XCTFail("Expected success"); return true },
             onFailure: { _, _, _, _ in XCTFail("Expected success") }
         )
         useCase.succeed()
@@ -1544,4 +1647,18 @@ private final class MockAuthenticationManagerApplicationPasswordUseCase: Applica
     }
 
     func deletePassword(locally: Bool) async throws {}
+}
+
+private final class DeferredCredentialAlertPresenter: UIViewController {
+    private var completion: (() -> Void)?
+
+    override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        self.completion = completion
+    }
+
+    func completePresentation() {
+        let callback = completion
+        completion = nil
+        callback?()
+    }
 }

@@ -141,7 +141,7 @@ class WordPressAuthenticatorTests: XCTestCase {
             endpointUnderVerification: nil,
             onLoading: { _ in },
             onSuccess: { receivedCredentials.append($0) },
-            onRecovery: { _ in XCTFail("Expected legacy success") },
+            onRecovery: { _ in XCTFail("Expected legacy success"); return true },
             onFailure: { _, _, _, _ in XCTFail("Expected legacy success") }
         )
 
@@ -177,7 +177,7 @@ class WordPressAuthenticatorTests: XCTestCase {
             endpointUnderVerification: nil,
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected legacy failure") },
-            onRecovery: { _ in XCTFail("Expected legacy failure") },
+            onRecovery: { _ in XCTFail("Expected legacy failure"); return true },
             onFailure: {
                 receivedError = $0 as NSError
                 incorrectCredentials = $1

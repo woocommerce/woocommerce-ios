@@ -14,13 +14,16 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
     @ViewBuilder private var expandableContent: () -> ExpandableContent
 
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    /// Safe-area insets of the container the sheet is pinned to.
+    private let safeAreaInsets: EdgeInsets
 
     private var onChangeOfExpansion: ((Bool) -> Void)?
 
-    public init(onChangeOfExpansion: ((Bool) -> Void)? = nil,
+    public init(safeAreaInsets: EdgeInsets,
+                onChangeOfExpansion: ((Bool) -> Void)? = nil,
                 @ViewBuilder alwaysVisibleContent: @escaping () -> AlwaysVisibleContent,
                 @ViewBuilder expandableContent: @escaping () -> ExpandableContent) {
+        self.safeAreaInsets = safeAreaInsets
         self.onChangeOfExpansion = onChangeOfExpansion
         self.alwaysVisibleContent = alwaysVisibleContent
         self.expandableContent = expandableContent
@@ -244,7 +247,7 @@ fileprivate enum Localization {
 
 struct ExpandableBottomSheet_Previews: PreviewProvider {
     static var previews: some View {
-        ExpandableBottomSheet {
+        ExpandableBottomSheet(safeAreaInsets: .zero) {
             Text("Always visible")
         } expandableContent: {
             Text("Can be hidden")

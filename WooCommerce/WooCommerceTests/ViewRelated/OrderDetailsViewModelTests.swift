@@ -14,7 +14,7 @@ final class OrderDetailsViewModelTests: XCTestCase {
     private var storesManager: MockStoresManager!
     private var storageManager: MockStorageManager!
 
-    override func setUp() {
+    override func setUp() async throws {
         storesManager = MockStoresManager(sessionManager: SessionManager.makeForTesting())
         storageManager = MockStorageManager()
 
@@ -24,11 +24,11 @@ final class OrderDetailsViewModelTests: XCTestCase {
 
         let analytics = WooAnalytics(analyticsProvider: MockAnalyticsProvider())
         ServiceLocator.setAnalytics(analytics)
-        super.setUp()
+        try await super.setUp()
     }
 
-    override func tearDown() {
-        super.tearDown()
+    override func tearDown() async throws {
+        try await super.tearDown()
         viewModel = nil
         order = nil
         storesManager = nil

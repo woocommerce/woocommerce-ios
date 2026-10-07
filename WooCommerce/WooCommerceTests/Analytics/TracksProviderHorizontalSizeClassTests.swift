@@ -4,7 +4,7 @@ import UIKit
 
 struct TracksProviderHorizontalSizeClassTests {
 
-    private let sut = TracksProvider()
+    private let sut = TracksProvider(consent: MockAnalyticsConsent())
     private let key = "horizontal_size_class"
 
     @Test func test_addHorizontalSizeClass_when_regular_then_adds_regular_value() {

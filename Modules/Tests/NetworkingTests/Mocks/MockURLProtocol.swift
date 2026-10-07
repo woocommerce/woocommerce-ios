@@ -10,11 +10,11 @@ extension MockURLProtocol {
     /// thread, so the store is guarded by a lock.
     ///
     final class Mocks {
-        private static let responsesByRequestURL = Mutex<[String: (response: Data?, statusCode: Int)]>([:])
+        private static let responsesByRequestURL = Mutex<[String: (response: Data?, statusCode: Int, headers: [String: String])]>([:])
 
         /// Mocks the response of a given request. The response is encoded here, on the test thread, so only
         /// `Data` is shared with the URL loading thread.
-        static func mockResponse(_ response: AnyCodable, statusCode: Int, for request: URLRequest) {
+        static func mockResponse(_ response: AnyCodable, statusCode: Int, for request: URLRequest, headers: [String: String] = [:]) {
             guard let url = request.url?.absoluteString else {
                 return
             }
@@ -25,7 +25,7 @@ extension MockURLProtocol {
                 XCTFail("Couldn't convert response to Data: \(response)")
                 data = nil
             }
-            responsesByRequestURL.withLock { $0[url] = (response: data, statusCode: statusCode) }
+            responsesByRequestURL.withLock { $0[url] = (response: data, statusCode: statusCode, headers: headers) }
         }
 
         /// Removes every mocked response. Call from `tearDown` so mocks do not leak between tests.
@@ -34,7 +34,7 @@ extension MockURLProtocol {
         }
 
         /// Returns the response for a request if it has been mocked.
-        static func response(for request: URLRequest) -> (response: Data?, statusCode: Int)? {
+        static func response(for request: URLRequest) -> (response: Data?, statusCode: Int, headers: [String: String])? {
             guard let url = request.url?.absoluteString else {
                 return nil
             }
@@ -68,7 +68,7 @@ final class MockURLProtocol: URLProtocol {
             return
         }
 
-        guard let urlResponse = HTTPURLResponse(url: url, statusCode: response.statusCode, httpVersion: nil, headerFields: [:]) else {
+        guard let urlResponse = HTTPURLResponse(url: url, statusCode: response.statusCode, httpVersion: nil, headerFields: response.headers) else {
             return
         }
 

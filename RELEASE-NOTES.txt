@@ -4,8 +4,12 @@
 25.9
 -----
 - [Internal] Layout: Support chat bubbles, expandable bottom sheets, the feature highlight tooltip and the subscription period toolbar size from their container instead of the main screen. [https://github.com/woocommerce/woocommerce-ios/pull/17999]
+- [*] Quick actions, links and Shortcuts open the new order form and product creation again on iOS 26 and later. [https://github.com/woocommerce/woocommerce-ios/pull/18021]
+- [*] Login: QR code sign-in with a WordPress.com account no longer gets stuck on "Signing you in…" after approving on the web. [https://github.com/woocommerce/woocommerce-ios/pull/18019]
+- [*] Notices no longer block taps on the content beside them, and on iPhone Duo they appear at the bottom of the screen when the tab bar is on the side. [https://github.com/woocommerce/woocommerce-ios/pull/17998]
 - [*] Layout: Fixed doubled side padding on the card reader manuals, plugins and booking details screens in landscape, and content insets of sheets on wide layouts. [https://github.com/woocommerce/woocommerce-ios/pull/17971]
 - [*] Order creation: Keep the form, product selector and bundle configuration content inside the safe area after rotating or resizing the app. [https://github.com/woocommerce/woocommerce-ios/pull/17951]
+- [*] Privacy: Respect your analytics preference throughout login, including after logging out. [https://github.com/woocommerce/woocommerce-ios/pull/17973]
 
 
 25.8
@@ -15,6 +19,7 @@
 - [Internal] Login: the site-address screen reached from the QR prologue's "Log in with site address" fallback now tracks under the `login_site_address` flow instead of `login_qr`. [https://github.com/woocommerce/woocommerce-ios/pull/17915]
 - [*] Products: Fixed a remaining iOS 26 crash when tapping Save right as the "View product in store" sheet opens from the product form. [https://github.com/woocommerce/woocommerce-ios/pull/17963]
 - [*] The app now periodically refreshes push notification registrations for visible stores, and restores notifications for Jetpack stores when WooCommerce push becomes unavailable. [https://github.com/woocommerce/woocommerce-ios/pull/17967]
+- [*] Orders and Products: Improve Liquid Glass headers and fix title, refresh, loading, and error layouts on iPhone and iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17977]
 - [Internal] Tracks events now carry cached_woo_core_version from the first event after launch and store switch. [https://github.com/woocommerce/woocommerce-ios/pull/17927]
 - [*] Products: Show a clear error when a category cannot be created because its name already exists. [https://github.com/woocommerce/woocommerce-ios/pull/17933]
 - [Internal] Shipping labels: eligibility, label sync, and `is_revamped_flow` analytics now follow the same WooCommerce Shipping support check (1.0.6+) as the creation form, and Palau stores are no longer excluded. [https://github.com/woocommerce/woocommerce-ios/pull/17945]

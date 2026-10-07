@@ -58,6 +58,9 @@
 
     This command installs the required build tools and dependencies.
 
+    Automattic contributors should first install and set up [`a8c-secrets`](https://github.com/Automattic/a8c-secrets); the command above then decrypts the project secrets.
+    Re-run it, or `a8c-secrets decrypt`, whenever the secrets are rotated.
+
 5. Open the project by double clicking on `WooCommerce.xcworkspace` file, or launching Xcode and choose File > Open and browse to `WooCommerce.xcworkspace`
 
 ### Credentials for External Contributors

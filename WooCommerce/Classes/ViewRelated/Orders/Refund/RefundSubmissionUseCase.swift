@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 /// Protocol to abstract the `RefundSubmissionUseCase`.
 /// TODO: 5983 - Use this to facilitate unit tests.
 ///
+@MainActor
 protocol RefundSubmissionProtocol {
     /// Starts the refund submission flow.
     ///
@@ -23,6 +24,7 @@ protocol RefundSubmissionProtocol {
 /// If in-person refund is required for the payment method (e.g. Interac in Canada), orchestrates reader connection, refund, UI alerts,
 /// submit refund to the site, and analytics.
 /// Otherwise, it submits the refund to the site directly with analytics.
+@MainActor
 final class RefundSubmissionUseCase<AlertProvider: BluetoothReaderConnnectionAlertsProviding,
                                         AlertPresenter: CardPresentPaymentAlertsPresenting>: NSObject, RefundSubmissionProtocol
 where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
@@ -465,7 +467,6 @@ private extension RefundSubmissionUseCase {
         trackCreateRefundRequest()
     }
 
-    @MainActor
     private func submitComputedRefundToSite(refund: Refund,
                                             lineItems: [ComputedRefundLineItem],
                                             refundService: RefundServiceProtocol,

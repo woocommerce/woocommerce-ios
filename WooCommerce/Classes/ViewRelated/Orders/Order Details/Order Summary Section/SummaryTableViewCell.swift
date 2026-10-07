@@ -46,10 +46,11 @@ final class SummaryTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        configureBackground()
-        configureLabels()
-        configureIcon()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureLabels()
+            configureIcon()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {

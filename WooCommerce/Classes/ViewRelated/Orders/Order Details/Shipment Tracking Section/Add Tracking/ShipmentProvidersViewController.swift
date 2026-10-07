@@ -1,6 +1,7 @@
 import UIKit
 import Yosemite
 
+@MainActor
 protocol ShipmentProviderListDelegate: AnyObject {
     func shipmentProviderList(_ list: ShipmentProvidersViewController, didSelect: ShipmentTrackingProvider, groupName: String)
 }

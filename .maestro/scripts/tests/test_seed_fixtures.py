@@ -1,7 +1,9 @@
 from __future__ import annotations
 
 import argparse
+import contextlib
 import importlib.util
+import io
 import json
 import os
 import sys
@@ -268,6 +270,31 @@ class SeedFixtureTests(unittest.TestCase):
         }
 
         self.assertTrue(SEED.order_contains_run_id(order, "SUITE-20260805T120000Z-abc123"))
+
+    def test_cleanup_only_warns_when_an_uploaded_image_cannot_be_deleted(self) -> None:
+        with tempfile.TemporaryDirectory() as directory:
+            manifest = Path(directory) / "manifest.json"
+            args = argparse.Namespace(
+                run_id="SUITE-20260805T120000Z-abc123",
+                manifest=manifest,
+            )
+            SEED.initialize(args)
+            client = FakeClient(fail_delete_id=101)
+            stdout = io.StringIO()
+            stderr = io.StringIO()
+
+            with (
+                mock.patch.object(SEED, "WooClient", return_value=client),
+                contextlib.redirect_stdout(stdout),
+                contextlib.redirect_stderr(stderr),
+            ):
+                SEED.cleanup(args)
+
+            self.assertIn("warning: could not delete uploaded image 101", stderr.getvalue())
+            self.assertIn("Cleaned 3 run-owned entities", stdout.getvalue())
+            self.assertEqual([("products/tags", 31), ("orders", 21), ("products", 11)], client.deleted)
+            contents = json.loads(manifest.read_text(encoding="utf-8"))
+            self.assertEqual([{"type": "media", "id": 101}], contents["entities"])
 
     def test_partial_cleanup_keeps_only_entities_that_still_need_deletion(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

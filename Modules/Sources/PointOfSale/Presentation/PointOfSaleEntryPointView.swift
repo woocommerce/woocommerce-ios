@@ -34,6 +34,7 @@ public struct PointOfSaleEntryPointView: View {
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
 
     private let onPointOfSaleModeActiveStateChange: ((Bool) -> Void)
+    private let registerOnDismiss: (@escaping () -> Void) -> Bool
     private let itemsController: PointOfSaleItemsControllerProtocol
     private let purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol
     private let couponsController: PointOfSaleCouponsControllerProtocol
@@ -91,7 +92,9 @@ public struct PointOfSaleEntryPointView: View {
          staffSettingsService: POSStaffSettingsService? = nil,
          services: POSDependencyProviding,
          httpsConfigurationNotice: POSHTTPSConfigurationNotice? = nil,
-         itemProvider: PointOfSaleItemServiceProtocol? = nil) {
+         itemProvider: PointOfSaleItemServiceProtocol? = nil,
+         registerOnDismiss: @escaping (@escaping () -> Void) -> Bool = { _ in true }) {
+        self.registerOnDismiss = registerOnDismiss
         self.onPointOfSaleModeActiveStateChange = onPointOfSaleModeActiveStateChange
         self._accessSession = State(initialValue: POSAccessSessionFactory.make(
             siteID: siteID,
@@ -208,6 +211,8 @@ public struct PointOfSaleEntryPointView: View {
             // We create the posModel in a task, not init, to avoid creating multiple copies during the view's lifecycle.
             // Confusingly, init can be called more than once, but `task` matches the lifecycle.
             // See https://developer.apple.com/documentation/swiftui/state#Store-observable-objects for details.
+            // Check for nil because returning from the full-screen Tap to Pay payment simulation can restart this task.
+            guard posModel == nil else { return }
             posModel = PointOfSaleAggregateModel(
                 entryPointController: posEntryPointController,
                 itemsController: itemsController,
@@ -235,6 +240,17 @@ public struct PointOfSaleEntryPointView: View {
                 preferredConnectionMethod: preferredConnectionMethod,
                 cardPaymentSelectionMode: isCompactLayout ? .compact : .large)
 
+            let cleanup = { [posModel, posModalManager, onPointOfSaleModeActiveStateChange] in
+                onPointOfSaleModeActiveStateChange(false)
+                posModalManager.onDisappear()
+                posModel?.pointOfSaleClosed()
+            }
+            guard registerOnDismiss(cleanup) else {
+                cleanup()
+                return
+            }
+            onPointOfSaleModeActiveStateChange(true)
+
             // Warm the store's receipt settings while POS starts up so printing a receipt after a
             // payment doesn't wait on a fetch.
             await posModel?.preloadReceiptStoreInformation()
@@ -253,14 +269,6 @@ public struct PointOfSaleEntryPointView: View {
         .environment(\.siteTimezone, siteTimezone)
         .environment(\.posLayoutScale, isCompactLayout ? .compact : .regular)
         .injectKeyboardObserver()
-        .onAppear {
-            onPointOfSaleModeActiveStateChange(true)
-        }
-        .onDisappear {
-            onPointOfSaleModeActiveStateChange(false)
-            posModalManager.onDisappear()
-            posModel?.pointOfSaleClosed()
-        }
         .posLockScreenOverlay()
         .environment(\.posAccessSession, accessSession)
         .task {

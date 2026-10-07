@@ -33,7 +33,6 @@ LINT_ENV = SCRIPT_DIR / "lint-env.py"
 CHECK_TOOLCHAIN = SCRIPT_DIR / "check-toolchain.py"
 DEVICE_LOCALE = SCRIPT_DIR / "device_locale.py"
 OUTPUT_DEFAULT = Path.home() / "woocommerce-maestro-output"
-NOT_WOO_STORE_FLOW = "login_not_woo_store.yaml"
 NO_JETPACK_FLOW = "login_no_jetpack.yaml"
 STORES = ("lab", "shared")
 # Flows with this tag run against the shared store, every other flow against
@@ -64,10 +63,6 @@ CLEANUP_ONLY_ENVIRONMENT = {
     "MAESTRO_WOO_CONSUMER_SECRET",
     "MAESTRO_WOO_JETPACK_SITE_ADMIN_USERNAME",
     "MAESTRO_WOO_APPLICATION_PASSWORD",
-}
-NOT_WOO_STORE_WPCOM_FALLBACK = {
-    "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_EMAIL",
-    "MAESTRO_WOO_NOT_A_WOO_STORE_WPCOM_PASSWORD",
 }
 
 PROFILES = {
@@ -442,10 +437,7 @@ def required_environment(flows: list[Path], *, seed: bool) -> set[str]:
             continue
         visited.add(path)
         text = path.read_text(errors="replace")
-        references = set(ENV_REFERENCE_RE.findall(text))
-        if path.name == NOT_WOO_STORE_FLOW:
-            references.difference_update(NOT_WOO_STORE_WPCOM_FALLBACK)
-        required.update(references)
+        required.update(ENV_REFERENCE_RE.findall(text))
         for reference in SUBFLOW_REFERENCE_RE.findall(text):
             paths.append((path.parent / reference).resolve())
     required.discard("MAESTRO_WOO_JETPACK_STORE_HOST")
@@ -473,21 +465,6 @@ def validate_environment(flows: list[Path], values: dict[str, str], *, seed: boo
     )
     if missing:
         raise SystemExit("Missing environment required by selected flows: " + ", ".join(missing))
-    validate_not_woo_store_fallback(flows, values)
-
-
-def validate_not_woo_store_fallback(flows: list[Path], values: dict[str, str]) -> None:
-    if not any(flow.name == NOT_WOO_STORE_FLOW for flow in flows):
-        return
-    configured_fallback = [bool(values.get(name)) for name in NOT_WOO_STORE_WPCOM_FALLBACK]
-    not_woo_host = normalized_store_host(values.get("MAESTRO_WOO_NOT_A_WOO_STORE_URL", ""))
-    if not_woo_host == "wordpress.com" or not_woo_host.endswith(".wordpress.com"):
-        if not all(configured_fallback):
-            raise SystemExit(
-                "WordPress.com-hosted not-Woo-store fixture requires WP.com email and password"
-            )
-    elif any(configured_fallback) and not all(configured_fallback):
-        raise SystemExit("Not-Woo-store WP.com fallback requires both email and password, or neither")
 
 
 def validate_login_store_hosts(flows: list[Path], values: dict[str, str], *, store: str) -> None:
@@ -522,13 +499,6 @@ def normalized_flow_environment(flows: list[Path], values: dict[str, str]) -> di
         if value := normalized.get(name):
             normalized[name] = site_url_without_wp_admin(value)
     return normalized
-
-
-def runtime_environment_names(flows: list[Path], *, seed: bool) -> set[str]:
-    names = required_environment(flows, seed=seed)
-    if any(flow.name == NOT_WOO_STORE_FLOW for flow in flows):
-        names.update(NOT_WOO_STORE_WPCOM_FALLBACK)
-    return names
 
 
 def normalized_store_host(value: str) -> str:
@@ -1009,7 +979,7 @@ def main() -> int:
     maestro_environments = {
         store: maestro_process_environment(
             store_values[store],
-            runtime_environment_names(store_flows[store], seed=args.seed),
+            required_environment(store_flows[store], seed=args.seed),
             run_id,
         )
         for store in run_stores

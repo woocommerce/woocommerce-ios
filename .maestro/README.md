@@ -51,8 +51,8 @@ so boot the selected device before using it to validate language settings.
 ## Lab and shared stores
 
 Each flow runs against the lab store unless it is tagged `store_shared`. Those
-flows need what only the shared store has: a second store to switch to, and
-Google for WooCommerce. When a run includes both, the lab flows run first.
+flows need what only the shared store has: a second store to switch to, Google
+for WooCommerce, and the account of the site without WooCommerce. When a run includes both, the lab flows run first.
 Before each store's flows, the runner signs the app out if it was last logged in
 to a different store, in this run or an earlier one, so the next flow logs in
 with this store's account. `--store lab|shared` runs every selected flow against
@@ -157,7 +157,9 @@ configured destructive store are not accepted: a destructive runtime selection
 requires `--seed`, which initializes a cleanup journal before UI mutation,
 discovers only products/orders carrying the exact `SUITE_RUN_ID`, and records
 each successful REST deletion. If cleanup stops part way, `run-manifest.json`
-in the run's output folder still lists every entity it did not delete. Seeding
+in the run's output folder still lists every entity it did not delete. An
+uploaded image that cannot be deleted is reported as a warning and does not
+fail cleanup. Seeding
 needs the store's REST keys, plus the site admin username and
 application password that cleanup uses to delete uploaded images. The runner
 checks them before any flow runs. Seeding also creates a product named

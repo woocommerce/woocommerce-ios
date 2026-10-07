@@ -38,8 +38,6 @@ struct ProductSelectorView: View {
 
     ///   Environment safe areas
     ///
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
-
     @State private var showingFilters: Bool = false
 
     @State private var searchHeaderisBeingEdited = false
@@ -112,8 +110,14 @@ struct ProductSelectorView: View {
     }
 
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    @ViewBuilder private func content(safeAreaInsets: EdgeInsets) -> some View {
         VStack(spacing: 0) {
-            productSelectorHeader
+            productSelectorHeader(safeAreaInsets: safeAreaInsets)
 
             switch viewModel.syncStatus {
             case .results:
@@ -175,6 +179,7 @@ struct ProductSelectorView: View {
                 ScrollView {
                     EmptyState(title: Localization.emptyStateMessage, image: .productBlouseImage)
                         .frame(maxWidth: .infinity)
+                        .padding(.horizontal, insets: safeAreaInsets)
                         .containerRelativeFrame(.vertical)
                 }
             case .loading:
@@ -196,6 +201,7 @@ struct ProductSelectorView: View {
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
         .scrollDismissesKeyboard(.interactively)
         .background(Color(configuration.searchHeaderBackgroundColor).ignoresSafeArea())
+        .ignoresSafeArea(.container, edges: .horizontal)
         .navigationTitle(navigationTitle)
         .navigationBarTitleDisplayMode(configuration.prefersLargeTitle ? .large : .inline)
         .toolbar {
@@ -332,24 +338,24 @@ struct ProductSelectorView: View {
 }
 
 private extension ProductSelectorView {
-    @ViewBuilder var productSelectorHeader: some View {
+    @ViewBuilder func productSelectorHeader(safeAreaInsets: EdgeInsets) -> some View {
         if horizontalSizeClass == .regular {
             if !isHeaderCollapsedForKeyboard {
-                productSelectorHeaderTitleRow
+                productSelectorHeaderTitleRow(safeAreaInsets: safeAreaInsets)
             }
-            productSelectorHeaderSearchRow
+            productSelectorHeaderSearchRow(safeAreaInsets: safeAreaInsets)
                 .padding(.bottom, Constants.defaultPadding)
                 .background(Color(.listForeground(modal: false)))
         } else {
-            productSelectorHeaderSearchRow
+            productSelectorHeaderSearchRow(safeAreaInsets: safeAreaInsets)
             if !isHeaderCollapsedForKeyboard {
-                productSelectorHeaderTitleRow
+                productSelectorHeaderTitleRow(safeAreaInsets: safeAreaInsets)
             }
         }
         Divider()
     }
 
-    @ViewBuilder private var productSelectorHeaderTitleRow: some View {
+    @ViewBuilder private func productSelectorHeaderTitleRow(safeAreaInsets: EdgeInsets) -> some View {
         GeometryReader { geometry in
             HStack {
                 Text(viewModel.selectProductsTitle)
@@ -387,7 +393,7 @@ private extension ProductSelectorView {
 
     // The search field keeps a single structural position across size class changes so it is not
     // recreated on rotation, which would drop keyboard focus and skip the editing-ended callback.
-    @ViewBuilder private var productSelectorHeaderSearchRow: some View {
+    @ViewBuilder private func productSelectorHeaderSearchRow(safeAreaInsets: EdgeInsets) -> some View {
         VStack(spacing: 0) {
             HStack(spacing: 0) {
                 searchHeader
@@ -405,6 +411,7 @@ private extension ProductSelectorView {
                     .transition(.opacity)
             }
         }
+        .padding(.horizontal, insets: safeAreaInsets)
         .frame(height: productSelectorHeaderSearchRowHeight)
         .animation(.easeInOut(duration: 0.2), value: shouldShowProductSearchFilter)
         .background(Color(.listForeground(modal: false)))

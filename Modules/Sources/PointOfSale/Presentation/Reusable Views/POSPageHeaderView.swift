@@ -60,6 +60,12 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         effectiveBackButtonConfiguration != nil
     }
 
+    /// Whether the header shows more than one title for the merchant to switch between,
+    /// as the Products / Coupons header does. A single title is a plain heading.
+    private var hasSelectableTitles: Bool {
+        items.count > 1
+    }
+
     init(
         title: String,
         subtitle: String? = nil,
@@ -114,14 +120,22 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
     }
 
+    /// Several selectable titles (Products / Coupons) keep the horizontal scroll fallback, so a
+    /// long translation can never hide the title the merchant needs to tap. A single title does
+    /// not scroll: scrolling a heading is undiscoverable, and the scroll view clips it with no
+    /// ellipsis. It wraps instead — see `titleText`.
     @ViewBuilder
     private var itemsContent: some View {
-        ViewThatFits(in: .horizontal) {
-            itemsRow
-
-            ScrollView(.horizontal, showsIndicators: false) {
+        if hasSelectableTitles {
+            ViewThatFits(in: .horizontal) {
                 itemsRow
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    itemsRow
+                }
             }
+        } else {
+            itemsRow
         }
     }
 
@@ -166,8 +180,11 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private func titleText(_ title: String, isSelected: Bool) -> some View {
         Text(title)
             .font(.posHeadingBold)
-            .lineLimit(1)
-            .fixedSize(horizontal: true, vertical: false)
+            // A single title wraps onto a second line rather than being clipped, because
+            // translations run longer than the English the layout was sized for. Several
+            // titles keep their natural width so `ViewThatFits` can measure the row.
+            .lineLimit(hasSelectableTitles ? 1 : Constants.singleTitleLineLimit)
+            .fixedSize(horizontal: hasSelectableTitles, vertical: false)
             .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             .foregroundColor(isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
     }
@@ -175,8 +192,10 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private func subtitleText(_ subtitle: String) -> some View {
         Text(subtitle)
             .font(.posBodyLargeRegular())
-            .lineLimit(1)
-            .fixedSize(horizontal: true, vertical: false)
+            // Follows the title: without the scroll fallback a single-title header would
+            // otherwise clip a long subtitle, such as the date and email on order details.
+            .lineLimit(hasSelectableTitles ? 1 : Constants.singleTitleLineLimit)
+            .fixedSize(horizontal: hasSelectableTitles, vertical: false)
             .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             .foregroundColor(.posOnSurface)
     }
@@ -200,6 +219,9 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 private enum Constants {
     static let horizontalSpacing: CGFloat = POSSpacing.medium
     static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
+    /// Two lines hold the longest translated POS headings on a phone without the header
+    /// taking over the screen.
+    static let singleTitleLineLimit: Int = 2
 }
 
 struct POSHeaderBackButtonConfigurationKey: EnvironmentKey {

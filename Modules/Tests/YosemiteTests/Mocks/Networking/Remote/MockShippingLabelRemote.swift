@@ -5,6 +5,7 @@ import XCTest
 
 /// Mock for `ShippingLabelRemote`.
 ///
+@MainActor
 final class MockShippingLabelRemote {
 
     private(set) var purchaseShippingLabelCalled = false
@@ -200,9 +201,9 @@ final class MockShippingLabelRemote {
 }
 
 // MARK: - ShippingLabelRemoteProtocol
-extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
+extension MockShippingLabelRemote: @MainActor ShippingLabelRemoteProtocol {
     func loadShippingLabels(siteID: Int64, orderID: Int64, completion: @escaping (Result<OrderShippingLabelListResponse, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = LoadAllResultKey(siteID: siteID, orderID: orderID)
@@ -218,7 +219,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
                             shippingLabelIDs: [Int64],
                             paperSize: ShippingLabelPaperSize,
                             completion: @escaping (Result<ShippingLabelPrintData, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = PrintResultKey(siteID: siteID, shippingLabelIDs: shippingLabelIDs, paperSize: paperSize.rawValue)
@@ -231,7 +232,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
     }
 
     func refundShippingLabel(siteID: Int64, orderID: Int64, shippingLabelID: Int64, completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
@@ -245,7 +246,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
 
     func addressValidation(siteID: Int64, address: ShippingLabelAddressVerification,
                            completion: @escaping (Result<ShippingLabelAddressValidationSuccess, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = AddressValidationResultKey(siteID: siteID)
@@ -258,7 +259,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
     }
 
     func packagesDetails(siteID: Int64, completion: @escaping (Result<ShippingLabelPackagesResponse, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = PackagesDetailsResultKey(siteID: siteID)
@@ -274,7 +275,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
                        customPackage: ShippingLabelCustomPackage?,
                        predefinedOption: ShippingLabelPredefinedOption?,
                        completion: @escaping (Result<Bool, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = CreatePackageResultKey(siteID: siteID)
@@ -292,7 +293,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
                               destinationAddress: ShippingLabelAddress,
                               packages: [ShippingLabelPackageSelected],
                               completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
             let key = LoadCarriersAndRatesKey(siteID: siteID)
 
@@ -305,7 +306,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
     }
 
     func loadShippingLabelAccountSettings(siteID: Int64, completion: @escaping (Result<ShippingLabelAccountSettings, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = LoadAccountSettingsResultKey(siteID: siteID)
@@ -320,7 +321,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
     func updateShippingLabelAccountSettings(siteID: Int64,
                                             settings: ShippingLabelAccountSettings,
                                             completion: @escaping (Result<Bool, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = UpdateAccountSettingsResultKey(siteID: siteID)
@@ -335,7 +336,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
     func checkCreationEligibility(siteID: Int64,
                                   orderID: Int64,
                                   completion: @escaping (Result<ShippingLabelCreationEligibilityResponse, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = CreationEligibilityResultKey(siteID: siteID,
@@ -355,7 +356,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
                                packages: [ShippingLabelPackagePurchase],
                                emailCustomerReceipt: Bool,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = PurchaseShippingLabelResultKey(siteID: siteID)
@@ -372,7 +373,7 @@ extension MockShippingLabelRemote: ShippingLabelRemoteProtocol {
                           orderID: Int64,
                           labelIDs: [Int64],
                           completion: @escaping (Result<[ShippingLabelStatusPollingResponse], Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = CheckLabelStatusResultKey(siteID: siteID)

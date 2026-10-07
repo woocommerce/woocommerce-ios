@@ -63,6 +63,7 @@ struct OrderCurrencyEditingEligibility {
     }
 }
 
+@MainActor
 final class OrderDetailsViewModel {
 
     private let stores: StoresManager
@@ -116,7 +117,6 @@ final class OrderDetailsViewModel {
         editNoteViewModel.update(order: order)
     }
 
-    @MainActor
     func refreshReceiptEligibility() async {
         dataSource.isEligibleForBackendReceipt = await isEligibleForBackendReceipt()
     }
@@ -244,7 +244,6 @@ final class OrderDetailsViewModel {
 
     /// Returns edit action availability given the internal state.
     ///
-    @MainActor
     var editButtonBehaviour: EditButtonBehaviour {
         guard syncStateController.syncState == .synced else {
             return .disabledForSyncing
@@ -264,7 +263,6 @@ final class OrderDetailsViewModel {
         return .enabled
     }
 
-    @MainActor
     var editOrderRequestCurrency: String? {
         orderCurrencyEditingEligibility.requestCurrency(
             orderCurrency: order.currency,
@@ -273,7 +271,6 @@ final class OrderDetailsViewModel {
         )
     }
 
-    @MainActor
     private func activeWooCommerceVersion() -> String? {
         pluginsService.loadPluginInStorage(siteID: order.siteID, plugin: .wooCommerce, isActive: true)?.version
     }
@@ -318,7 +315,6 @@ final class OrderDetailsViewModel {
 extension OrderDetailsViewModel {
     /// Syncs all data related to the current order.
     ///
-    @MainActor
     func syncEverything(onReloadSections: (() -> ())? = nil, onCompletion: (() -> ())? = nil) {
         let group = DispatchGroup()
 
@@ -439,7 +435,6 @@ extension OrderDetailsViewModel {
 
     /// Checks if shipment tracking is enabled for the order.
     /// - Returns: Whether shipment tracking is enabled for the user by checking the products and if the Shipment Tracking plugin is active.
-    @MainActor
     func isShipmentTrackingEnabled() -> Bool {
         guard orderContainsOnlyVirtualProducts == false,
               isPluginActive(.wooShipmentTracking) else {
@@ -449,7 +444,6 @@ extension OrderDetailsViewModel {
     }
 
     /// Syncs trackings when shipment tracking is enabled.
-    @MainActor
     func syncTrackingsWhenShipmentTrackingIsEnabled() async {
         let orderID = order.orderID
         let siteID = order.siteID
@@ -755,7 +749,6 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    @MainActor
     func syncShippingLabelState() async {
         // Resolve the supported plugin once, so the creation flow, eligibility endpoint, label sync and analytics all use the same decision.
         let support = fetchShippingLabelSupport()
@@ -774,7 +767,6 @@ extension OrderDetailsViewModel {
         }
     }
 
-    @MainActor
     func syncShippingLabelsOrShipments(for support: ShippingLabelSupport) async {
         guard storeCountrySupportsShippingLabels else {
             return
@@ -797,7 +789,6 @@ extension OrderDetailsViewModel {
         }
     }
 
-    @MainActor
     func syncSubscriptions(onCompletion: ((Error?) -> ())? = nil) {
         // If the plugin is not active, there is no point in continuing with a request that will fail.
         isPluginActive(.wooSubscriptions) { [weak self] isActive in
@@ -836,7 +827,6 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    @MainActor
     func checkShippingLabelCreationEligibility(for support: ShippingLabelSupport) async -> Bool {
         guard storeCountrySupportsShippingLabels else {
             return false
@@ -872,7 +862,6 @@ extension OrderDetailsViewModel {
     }
 
     /// Resolves the shipping label flow supported by the store's active plugins. See `ShippingLabelSupport` for precedence.
-    @MainActor
     func fetchShippingLabelSupport() -> ShippingLabelSupport {
         if isWooShippingSupported() {
             return .wooShipping
@@ -885,7 +874,6 @@ extension OrderDetailsViewModel {
 
     /// Checks if the Woo Shipping extension is active, with the minimum version required for its shipping label flow.
     ///
-    @MainActor
     func isWooShippingSupported() -> Bool {
         guard let plugin = fetchPlugin(.wooShipping, isActive: true) else {
             return false
@@ -951,14 +939,12 @@ extension OrderDetailsViewModel {
     /// Helper function that returns `true` in its callback if the provided plugin is active on the order's store.
     /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
     ///
-    @MainActor
     private func isPluginActive(_ plugin: Plugin) -> Bool {
         let plugin = fetchPlugin(plugin, isActive: true)
         return plugin != nil && plugin?.active == true
     }
 
     /// Legacy helper function that returns plugin active value in a completion closure.
-    @MainActor
     private func isPluginActive(_ plugin: Plugin, completion: @escaping (Bool) -> (Void)) {
         completion(isPluginActive(plugin))
     }
@@ -966,7 +952,6 @@ extension OrderDetailsViewModel {
     /// Fetches a plugin from storage, based on the provided list of plugin names.
     /// Additionally it logs to tracks if the plugin store is accessed without it being in sync so we can handle that edge-case if it happens recurrently.
     ///
-    @MainActor
     private func fetchPlugin(_ plugin: Plugin, isActive: Bool? = nil) -> SystemPlugin? {
         guard arePluginsSynced() else {
             DDLogError("⚠️ SystemPlugins accessed without being in sync.")
@@ -1018,7 +1003,7 @@ private extension OrderDetailsViewModel {
         return SiteAddress(siteSettings: resultsController.fetchedObjects).countryCode
     }
 
-    @MainActor func checkShippingLabelCreationEligibilityForWooShipping() async -> Bool {
+    func checkShippingLabelCreationEligibilityForWooShipping() async -> Bool {
         await withCheckedContinuation { continuation in
             stores.dispatch(WooShippingAction.checkCreationEligibility(siteID: order.siteID,
                                                                          orderID: order.orderID) { isEligible in
@@ -1027,7 +1012,7 @@ private extension OrderDetailsViewModel {
         }
     }
 
-    @MainActor func checkShippingLabelCreationEligibilityForLegacyPlugin() async -> Bool {
+    func checkShippingLabelCreationEligibilityForLegacyPlugin() async -> Bool {
         await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.checkCreationEligibility(siteID: order.siteID,
                                                                          orderID: order.orderID) { isEligible in
@@ -1056,7 +1041,7 @@ private extension OrderDetailsViewModel {
         })
     }
 
-    @MainActor func syncShippingLabelsForLegacyPlugin() async -> [ShippingLabel] {
+    func syncShippingLabelsForLegacyPlugin() async -> [ShippingLabel] {
         await withCheckedContinuation { continuation in
             stores.dispatch(ShippingLabelAction.synchronizeShippingLabels(siteID: order.siteID, orderID: order.orderID) { result in
                 switch result {
@@ -1089,7 +1074,6 @@ extension OrderDetailsViewModel {
         stores.dispatch(action)
     }
 
-    @MainActor
     private func isEligibleForBackendReceipt() async -> Bool {
         return await withCheckedContinuation { continuation in
             receiptEligibilityUseCase.isEligibleForReceipt(order.status, datePaid: order.datePaid) { isEligible in
@@ -1113,7 +1097,6 @@ extension OrderDetailsViewModel {
         DDLogError("Failed to retrieve receipt for order: \(order.orderID). Site \(order.siteID). Error: \(String(describing: error))")
     }
 
-    @MainActor
     func showNoticeForEditingWithCurrencyConflict(in viewController: UIViewController) {
         guard let siteCurrency = siteCurrencyProvider(order.siteID) else {
             return

@@ -90,10 +90,8 @@ default.profraw
 .env
 **/.env.local
 
-# All secrets should be stored under .configure-files
-# Everything without a .enc extension is ignored
-.configure-files/*
-!.configure-files/*.enc
+# Legacy decrypted secrets from before a8c-secrets. Remove in AINFRA-3243.
+.configure-files/
 
 # Can't imagine ever needing to commit one of these
 *.bak

@@ -8,6 +8,7 @@ import protocol Storage.StorageManagerType
 
 /// The main file for Order Details data.
 ///
+@MainActor
 final class OrderDetailsDataSource: NSObject {
 
     /// This is only used to pass as a dependency to `OrderDetailsResultsControllers`.

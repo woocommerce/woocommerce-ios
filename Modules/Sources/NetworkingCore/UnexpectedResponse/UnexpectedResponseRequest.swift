@@ -45,11 +45,11 @@ final class UnexpectedResponseRequest: Request {
             return ApplicationPasswordUseCaseError.applicationPasswordsDisabled
         }
         let kind = UnexpectedResponseClassifier.classify(data: body, status: responseStatus, contentType: mediaType)
-        let failure = kind.map { makeError(kind: $0, status: responseStatus, contentType: mediaType) }
+        let failure = kind.map { makeError(kind: $0, data: body, status: responseStatus, contentType: mediaType) }
         return failure
     }
 
-    func makeError(kind: UnexpectedStoreResponseError.Kind, status: Int? = nil,
+    func makeError(kind: UnexpectedStoreResponseError.Kind, data: Data? = nil, status: Int? = nil,
                    contentType: String? = nil, isDecodingFailure: Bool = false) -> UnexpectedStoreResponseError {
         var diagnosticRequest = try? original.asURLRequest()
         if let tunnel = original as? JetpackRequest {
@@ -58,7 +58,7 @@ final class UnexpectedResponseRequest: Request {
             diagnosticRequest?.httpMethod = tunnel.method.rawValue
         }
         let metadata = responseMetadata
-        var error = UnexpectedStoreResponseError(kind: kind, statusCode: status ?? metadata?.status,
+        var error = UnexpectedStoreResponseError(kind: kind, statusCode: status ?? metadata?.status, data: data,
                                                 contentType: contentType ?? metadata?.contentType, request: diagnosticRequest)
         error.isDecodingFailure = isDecodingFailure
         DDLogWarn(error.logMessage)

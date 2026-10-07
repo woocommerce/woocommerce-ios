@@ -316,7 +316,7 @@ private extension Remote {
             return try mapper.map(response: data)
         } catch {
             guard error is DecodingError, let policy = request as? UnexpectedResponseRequest else { throw error }
-            throw policy.makeError(kind: .unexpectedContent, isDecodingFailure: true)
+            throw policy.makeError(kind: .unexpectedContent, data: data, isDecodingFailure: true)
         }
     }
 

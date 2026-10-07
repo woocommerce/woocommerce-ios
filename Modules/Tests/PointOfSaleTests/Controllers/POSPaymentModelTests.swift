@@ -2853,11 +2853,11 @@ struct POSPaymentModelTests {
 @MainActor
 private func makePaymentController(
     cardPresentPaymentService: CardPresentPaymentFacade? = nil,
-    orderProvider: POSPaymentOrderProviding = MockPOSPaymentOrderProvider(),
-    cashPaymentHandler: POSCashPaymentHandling = MockPOSCashPaymentHandler(),
-    scanToPayHandler: POSScanToPayHandling = MockPOSScanToPayHandler(),
+    orderProvider: POSPaymentOrderProviding? = nil,
+    cashPaymentHandler: POSCashPaymentHandling? = nil,
+    scanToPayHandler: POSScanToPayHandling? = nil,
     scanToPayVerifier: POSScanToPayVerifying? = nil,
-    markAsPaidHandler: POSMarkAsPaidHandling = MockPOSMarkAsPaidHandler(),
+    markAsPaidHandler: POSMarkAsPaidHandling? = nil,
     receiptSender: POSReceiptSending = MockPOSReceiptSender(),
     receiptPrinter: ReceiptPrinterServiceProtocol? = nil,
     postPaymentStep: (() async throws -> Void)? = nil,
@@ -2874,11 +2874,11 @@ private func makePaymentController(
 
     return POSPaymentModel(
         cardPresentPaymentService: cardPresentPaymentService,
-        orderProvider: orderProvider,
-        cashPaymentHandler: cashPaymentHandler,
-        scanToPayHandler: scanToPayHandler,
+        orderProvider: orderProvider ?? MockPOSPaymentOrderProvider(),
+        cashPaymentHandler: cashPaymentHandler ?? MockPOSCashPaymentHandler(),
+        scanToPayHandler: scanToPayHandler ?? MockPOSScanToPayHandler(),
         scanToPayVerifier: scanToPayVerifier,
-        markAsPaidHandler: markAsPaidHandler,
+        markAsPaidHandler: markAsPaidHandler ?? MockPOSMarkAsPaidHandler(),
         receiptSender: receiptSender,
         receiptPrinter: receiptPrinter,
         postPaymentStep: postPaymentStep,

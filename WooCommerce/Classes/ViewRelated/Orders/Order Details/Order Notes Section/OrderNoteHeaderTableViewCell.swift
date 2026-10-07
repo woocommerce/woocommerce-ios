@@ -9,8 +9,10 @@ final class OrderNoteHeaderTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureLabels()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureLabels()
+        }
     }
 
     /// Date of Creation: To be displayed in the cell

@@ -22,7 +22,8 @@
 # Credentials are resolved in this order, so a second run needs no arguments
 # beyond --site:
 #   1. command-line flags
-#   2. existing values in .maestro/.env.local
+#   2. existing values in .maestro/.env.local (the site password only when
+#      --site is the store already written there)
 #   3. an interactive prompt (never echoed, never in shell history)
 #
 # The WordPress.com account must not have two-factor authentication enabled:
@@ -104,7 +105,10 @@ prompt_secret() {
 # Resolution order per value: flag, then environment, then .env.local, then an
 # interactive prompt.
 [ -n "$SITE_PASS" ]   || SITE_PASS="${JN_SSH_PASS:-}"
-[ -n "$SITE_PASS" ]   || SITE_PASS="$(env_value MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_PASSWORD)"
+# The stored password belongs to the stored site, so a new site is asked for its own.
+if [ -z "$SITE_PASS" ] && [ "$(env_value MAESTRO_WOO_LAB_JETPACK_STORE_URL)" = "https://$SITE" ]; then
+  SITE_PASS="$(env_value MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_PASSWORD)"
+fi
 [ -n "$WPCOM_USER" ]  || WPCOM_USER="${MAESTRO_WOO_LAB_WPCOM_EMAIL:-}"
 [ -n "$WPCOM_USER" ]  || WPCOM_USER="$(env_value MAESTRO_WOO_LAB_WPCOM_EMAIL)"
 [ -n "$WPCOM_PASS" ]  || WPCOM_PASS="${MAESTRO_WOO_LAB_WPCOM_PASSWORD:-}"
@@ -383,7 +387,8 @@ if [ -f "$ENV_OUT" ]; then
   BACKUP_DIR="${TMPDIR:-/tmp}"; BACKUP_DIR="${BACKUP_DIR%/}/maestro-env-backups"
   mkdir -p "$BACKUP_DIR"; chmod 700 "$BACKUP_DIR"
   BACKUP="$BACKUP_DIR/$(basename "$ENV_OUT").$(date +%Y%m%d-%H%M%S).$$"
-  cp "$ENV_OUT" "$BACKUP"; chmod 600 "$BACKUP"
+  cp "$ENV_OUT" "$BACKUP" || die "could not back up $ENV_OUT"
+  chmod 600 "$BACKUP"
   # Deliberately outside the repository: .gitignore matches "**/.env.local"
   # only, so a ".env.local.bak" sibling would not be ignored and could be
   # committed with credentials in it.
@@ -394,7 +399,7 @@ mkdir -p "$(dirname "$ENV_OUT")"
 SITE="$SITE" ADMIN_USER="$ADMIN_USER" WPCOM_USER="$WPCOM_USER" WPCOM_PASS="$WPCOM_PASS" \
 SITE_PASS="$SITE_PASS" CK="$CK" CS="$CS" APP_PASSWORD="$APP_PASSWORD" \
 NO_JETPACK_SITE="$NO_JETPACK_SITE" NO_JETPACK_PASS="$NO_JETPACK_PASS" \
-python3 - "$ENV_OUT" <<'PY'
+python3 - "$ENV_OUT" <<'PY' || die "could not write $ENV_OUT${BACKUP:+; the previous copy is $BACKUP}"
 import os, re, sys, pathlib
 
 path = pathlib.Path(sys.argv[1])

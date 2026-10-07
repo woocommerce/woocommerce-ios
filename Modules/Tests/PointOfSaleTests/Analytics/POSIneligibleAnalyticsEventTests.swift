@@ -5,7 +5,6 @@ import struct WooFoundation.WooAnalyticsEvent
 struct POSIneligibleAnalyticsEventTests {
     @Test(arguments: [
         (POSIneligibleReason.siteSettingsNotAvailable, "site_settings_unavailable"),
-        (.selfDeallocated, "self_deallocated"),
         (.unsupportedCountry, "store_country"),
         (.noInternetConnection, "no_internet_connection"),
         (.unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD]), "store_currency"),

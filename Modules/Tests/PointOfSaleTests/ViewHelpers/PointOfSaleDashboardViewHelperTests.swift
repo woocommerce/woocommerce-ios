@@ -27,8 +27,7 @@ struct PointOfSaleDashboardViewHelperTests {
         POSIneligibleReason.unsupportedCurrency(countryCode: .US, supportedCurrencies: [.USD, .GBP]),
         POSIneligibleReason.siteSettingsNotAvailable,
         POSIneligibleReason.wooCommercePluginNotFound,
-        POSIneligibleReason.featureSwitchDisabled,
-        POSIneligibleReason.selfDeallocated
+        POSIneligibleReason.featureSwitchDisabled
     ])
     func determineViewState_when_ineligible_returns_ineligible(reason: POSIneligibleReason) async throws {
         // Given

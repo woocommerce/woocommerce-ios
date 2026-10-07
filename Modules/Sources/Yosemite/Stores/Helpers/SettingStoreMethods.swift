@@ -39,13 +39,13 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Synchronizes the general site settings associated with the provided Site ID (if any!).
     ///
     func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        siteSettingsRemote.loadGeneralSettings(for: siteID) { [weak self] settings, error in
+        siteSettingsRemote.loadGeneralSettings(for: siteID) { settings, error in
             guard let settings else {
                 onCompletion(error)
                 return
             }
 
-            self?.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
+            self.upsertStoredGeneralSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
                 onCompletion(nil)
             }
         }
@@ -54,13 +54,13 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Synchronizes the product site settings associated with the provided Site ID (if any!).
     ///
     func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void) {
-        siteSettingsRemote.loadProductSettings(for: siteID) { [weak self] settings, error in
+        siteSettingsRemote.loadProductSettings(for: siteID) { settings, error in
             guard let settings else {
                 onCompletion(error)
                 return
             }
 
-            self?.upsertStoredProductSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
+            self.upsertStoredProductSettingsInBackground(siteID: siteID, readOnlySiteSettings: settings) {
                 onCompletion(nil)
             }
         }
@@ -83,8 +83,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Retrieves the setting for whether coupons are enabled for the specified store
     ///
     func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons) { [weak self] result in
-            guard let self else { return }
+        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons) { result in
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -100,8 +99,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Enables coupons for the specified store
     ///
     func enableCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Void, Error>) -> Void) {
-        siteSettingsRemote.updateSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons, value: SettingValue.yes) { [weak self] result in
-            guard let self else { return }
+        siteSettingsRemote.updateSetting(for: siteID, settingGroup: .general, settingID: SettingKeys.coupons, value: SettingValue.yes) { result in
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -116,8 +114,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Retrieves the setting for whether WC Analytics are enabled for the specified store
     ///
     func retrieveAnalyticsSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void) {
-        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .advanced, settingID: SettingKeys.analytics) { [weak self] result in
-            guard let self else { return }
+        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .advanced, settingID: SettingKeys.analytics) { result in
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -136,8 +133,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
         siteSettingsRemote.updateSetting(for: siteID,
                                             settingGroup: .advanced,
                                             settingID: SettingKeys.analytics,
-                                            value: SettingValue.yes) { [weak self] result in
-            guard let self else { return }
+                                            value: SettingValue.yes) { result in
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {
@@ -152,8 +148,7 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Retrieves the used address to calculate the tax
     ///
     func retrieveTaxBasedOnSetting(siteID: Int64, onCompletion: @escaping (Result<TaxBasedOnSetting, Error>) -> Void) {
-        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .custom("tax"), settingID: SettingKeys.taxBasedOn) { [weak self] result in
-            guard let self else { return }
+        siteSettingsRemote.loadSetting(for: siteID, settingGroup: .custom("tax"), settingID: SettingKeys.taxBasedOn) { result in
             switch result {
             case .success(let setting):
                 self.upsertSingleStoredSettingInBackground(siteID: siteID, readOnlySiteSetting: setting) {

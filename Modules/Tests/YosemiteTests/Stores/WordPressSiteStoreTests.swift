@@ -2,6 +2,7 @@ import XCTest
 @testable import Yosemite
 @testable import Networking
 @testable import NetworkingCore
+import TestKit
 
 final class WordPressSiteStoreTests: XCTestCase {
     /// Mock Network: Allows us to inject predefined responses!
@@ -33,9 +34,9 @@ final class WordPressSiteStoreTests: XCTestCase {
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<Site, Error> = await withCheckedContinuation { continuation in
+        let result: Result<Site, Error> = try await waitForCompletion { completion in
             let action = WordPressSiteAction.fetchSiteInfo(siteURL: self.sampleSiteURL) { result in
-                continuation.resume(returning: result)
+                completion(result)
             }
             store.onAction(action)
         }
@@ -63,9 +64,9 @@ final class WordPressSiteStoreTests: XCTestCase {
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<Site, Error> = await withCheckedContinuation { continuation in
+        let result: Result<Site, Error> = try await waitForCompletion { completion in
             let action = WordPressSiteAction.fetchSiteInfo(siteURL: self.sampleSiteURL) { result in
-                continuation.resume(returning: result)
+                completion(result)
             }
             store.onAction(action)
         }
@@ -82,9 +83,9 @@ final class WordPressSiteStoreTests: XCTestCase {
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<URL?, Error> = await withCheckedContinuation { continuation in
+        let result: Result<URL?, Error> = try await waitForCompletion { completion in
             let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL) { result in
-                continuation.resume(returning: result)
+                completion(result)
             }
             store.onAction(action)
         }
@@ -102,9 +103,9 @@ final class WordPressSiteStoreTests: XCTestCase {
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<URL?, Error> = await withCheckedContinuation { continuation in
+        let result: Result<URL?, Error> = try await waitForCompletion { completion in
             let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL) { result in
-                continuation.resume(returning: result)
+                completion(result)
             }
             store.onAction(action)
         }
@@ -122,9 +123,9 @@ final class WordPressSiteStoreTests: XCTestCase {
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<URL?, Error> = await withCheckedContinuation { continuation in
+        let result: Result<URL?, Error> = try await waitForCompletion { completion in
             let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL) { result in
-                continuation.resume(returning: result)
+                completion(result)
             }
             store.onAction(action)
         }
@@ -141,9 +142,9 @@ final class WordPressSiteStoreTests: XCTestCase {
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<[WordPressPage], Error> = await withCheckedContinuation { continuation in
+        let result: Result<[WordPressPage], Error> = try await waitForCompletion { completion in
             let action = WordPressSiteAction.fetchPageList(siteURL: self.sampleSiteURL) { result in
-                continuation.resume(returning: result)
+                completion(result)
             }
             store.onAction(action)
         }
@@ -165,9 +166,9 @@ final class WordPressSiteStoreTests: XCTestCase {
         let store = WordPressSiteStore(network: network, dispatcher: dispatcher)
 
         // When
-        let result: Result<[WordPressPage], Error> = await withCheckedContinuation { continuation in
+        let result: Result<[WordPressPage], Error> = try await waitForCompletion { completion in
             let action = WordPressSiteAction.fetchPageList(siteURL: self.sampleSiteURL) { result in
-                continuation.resume(returning: result)
+                completion(result)
             }
             store.onAction(action)
         }

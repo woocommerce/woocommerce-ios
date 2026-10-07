@@ -1,83 +1,113 @@
 ---
 name: auto-login
-description: Launch the WooCommerce app on a simulator already authenticated into a given store (site credentials, application password, or WPCom), skipping the manual login UI. Meant to be referenced by other skills/workflows that need a logged-in session fast, but also directly runnable.
+description: "Log the simulator into a live WooCommerce store through the DEBUG shortcut. Use WireMock UI login when mocks are requested. Jurassic Ninja is one option when no site is specified."
 user-invocable: true
-allowed-tools: "Bash"
-argument-hint: "<UDID> <site-address> <username> <secret> [auth-type: wporg|applicationPassword|wpcom] [store-id]"
+allowed-tools: "Bash, Read, mcp__mobile-mcp__*"
+argument-hint: "[mocks|site] [UDID] [site-address] [credential-file]"
 ---
 
 # Auto-Login
 
-Launch the app already authenticated into a store, skipping the manual login UI. Backed by a `DEBUG`-only
-shortcut in `ProcessConfiguration.swift` that seeds `SessionManager` credentials + store ID at launch, before
-`AppCoordinator` decides whether to show the login screen or the tab bar.
+Use **live site** by default for `auto-login`, preserving the existing DEBUG login shortcut.
+Use **WireMock UI login** only for `auto-login with mocks` or the `mocks` skill argument.
+Use **live site** for `auto-login with a test site`, `auto-login with a real site`,
+`auto-login with a live site`, or `auto-login with my site`, even when no URL is supplied.
+Reuse a session only when its site and data fit the task.
+Preserve unrelated sessions: use a separate simulator. Erase or uninstall only for an explicit clean test.
+For authentication tests, start logged out and test the required login UI instead of the DEBUG shortcut.
+Skill arguments `mocks` and `site` select the flow; they are not `launch.sh` flags.
 
-**Scope**: this skill only launches. It does not build the app, install it, or provision a site — those are
-the caller's responsibility (see `/build`, `/simulator`, and JN site provisioning tools/skills).
+## Prepare the Simulator
 
-## Prerequisites
+Use `/simulator` to select a device and `/build` to build the current DEBUG app.
+Install it with `xcrun simctl install <UDID> <path-to-.app>` before launch.
+Use Xcode's standard signed simulator build. Simulator Keychain entitlements can be embedded in
+the executable; empty `codesign` entitlement output alone does not justify re-signing the app.
+For a missing mobile-mcp device helper, follow `.claude/rules/verification.md`.
 
-- A booted simulator (use the `/simulator` skill approach if none is booted)
-- The app already built **and installed** for that simulator, from a `DEBUG` configuration (the default for
-  simulator builds). If not installed yet, build first and `xcrun simctl install <UDID> <path-to-.app>`.
-- Credentials for the target store:
-  - `wporg` (default) — the wp-admin username + real password (e.g. a fresh Jurassic Ninja site's admin
-    credentials). Works with no extra setup: the app's networking layer automatically does the
-    cookie/nonce handshake and generates+stores a proper application password on the first REST call.
-  - `applicationPassword` — a wp-admin username + an application password created on that site (e.g. via
-    `wp user application-password create <user> <name> --porcelain` over SSH). Use this if `wporg` doesn't
-    work for some reason (e.g. a security plugin blocking the wp-login.php handshake).
-  - `wpcom` — a WordPress.com username + auth token, plus the store's real numeric site ID (`store-id`).
+## WireMock UI Login
 
-## Usage
+This flow uses mocked authentication, simulated 2FA, and fixture data.
 
-```bash
-bash .claude/skills/auto-login/Scripts/launch.sh <UDID> <site-address> <username> <secret> [auth-type] [store-id]
+1. Start this checkout's fixtures with `/mocks`. Confirm that the server serves this checkout.
+   If another server owns port 8282, leave it unchanged and use a separate port.
+2. Launch with the mocked arguments in `/verify`. For a separate API port, follow its override guidance.
+3. Use mobile-mcp to complete “Login (from prologue)” in `.claude/references/screen-identifiers.md`,
+   including the mocked 2FA step. Refresh UI elements after typing before selecting Continue.
+4. Confirm the tab bar and expected fixture data. Relaunch without `logout-at-launch` to check persistence.
+
+## Live Site
+
+### Select a Site
+
+For `my site`, use the site identified in the task context. Ask for its URL or authorized access
+when missing; do not substitute a provisioned site. For other live requests, use the supplied site first,
+then a suitable existing test store. If neither is available,
+read the full descriptions of available MCP tools, including generic provider loaders,
+before asking for credentials. If a loader advertises Jurassic Ninja, load that provider
+and read its schemas. A missing standalone tool does not establish provider unavailability.
+
+Jurassic Ninja is one option alongside other providers or a user-supplied site.
+Offer available options. If temporary site creation is already authorized, use a suitable provider
+without asking for credentials that provisioning supplies. A request to create a temporary test site
+includes creating its test login credential. A provisioned site is a real test store.
+Install and activate WooCommerce, wait for readiness, and prepare the required plugins and data.
+Get the actual WordPress username from site configuration or a user lookup.
+A returned password does not identify its username. Report provider failures and offer another option.
+
+### Prepare Credentials
+
+For a clean simulator, use a normal WordPress password (`wporg`). The app performs the cookie/nonce
+handshake and stores its API password; the normal password also remains in the simulator Keychain.
+For a new temporary site, use provisioning access to create a temporary user with a generated password.
+Use `shop_manager` for product/order checks; use administrator only when the feature requires it.
+Prefer an authenticated admin/API tool or authorized admin session with a REST nonce over retrieving
+an existing administrator password. Request only the provisioning fields needed for that access.
+For a supplied site, keep test-user creation within the user's authorization; preserve existing users.
+
+Ask for a protected credential-file path or local setup, never a password in chat. If credentials were
+already supplied, transfer them to the protected file without repeating them in output or messages.
+Create the credential file outside the repository with `umask 077` before writing.
+Capture the HTTPS site URL, actual username, and WordPress password directly into the entries below.
+
+Use an absolute path to a regular file owned by the current user, with mode `600`.
+Write these three raw `KEY=value` entries without shell quotes or `export`:
+
+```text
+SITE_URL=https://test-site.example
+USERNAME=actual-wordpress-login
+WP_PASSWORD=normal-wordpress-password
 ```
 
-Examples:
+Keep secrets and one-click login URLs out of output, task messages, and repository files.
+Keep shell tracing off. Retain task-created credentials through review. At task completion, delete
+temporary users (which revokes their API passwords), or revoke task-created API passwords separately
+for existing users; preserve existing accounts and credentials. End only task-created admin sessions before
+removing local cookies and credential files. Report any remote cleanup that could not be confirmed.
+
+### Launch and Verify
+
+Use the protected-file interface (requires Python 3). `WP_PASSWORD` selects `wporg`:
+
 ```bash
-# Self-hosted / JN site via its real admin username+password (auth-type defaults to wporg)
-bash .claude/skills/auto-login/Scripts/launch.sh "$UDID" https://example-jn-site.com admin "real-admin-password"
-
-# Self-hosted site via an application password instead
-bash .claude/skills/auto-login/Scripts/launch.sh "$UDID" https://example-jn-site.com admin "abcd 1234 efgh 5678" applicationPassword
-
-# WPCom-connected site (needs the real site ID)
-bash .claude/skills/auto-login/Scripts/launch.sh "$UDID" https://example.com someuser somewpcomtoken wpcom 123456789
+bash .claude/skills/auto-login/Scripts/launch.sh --from-environment <UDID> <site-address> <absolute-credential-file>
 ```
 
-The script launches twice: a seeding launch that reads the credentials and persists them to
-Keychain/UserDefaults, then a second plain relaunch (no debug env vars) that boots already-authenticated
-from the start — this is what makes launch-time steps gated on already-being-authenticated (push
-notification registration, analytics identity refresh) run normally, since the seeding launch alone starts
-out deauthenticated and misses that window. See the comments in `launch.sh` for details.
+The existing positional interface remains supported:
 
-After it returns, wait ~3 seconds, then verify: screenshot the simulator or use `list_ui_elements` (if
-mobile-mcp is available) and confirm the tab bar is visible (not the login screen), and that the store name
-matches the target site.
+```text
+launch.sh <UDID> <site-address> <username> <secret> [auth-type] [store-id]
+```
 
-## Never commit secrets
+The legacy positional `applicationPassword` mode uses an API password already stored by the app.
+It does not install the supplied secret as the stored API password; use `WP_PASSWORD` for a clean simulator.
+Use `wpcom` for a token and real store ID. Positional secrets can be visible in process arguments;
+prefer the protected-file interface. If the site's cookie/nonce handshake fails, report that failure
+and use an authorized login UI for the same store or request working access. Offer another test site
+only when the task permits a different store; keep the specified store for `my site`.
 
-Credentials only ever exist as arguments to this one shell invocation and the resulting `SIMCTL_CHILD_*`
-environment variables passed to `simctl launch` — never write them to a file in this repo, a scheme, or any
-other persisted location.
-
-## Known limitations
-
-These stem from the app-side `DEBUG` shortcut itself and are accepted tradeoffs, not bugs in this script:
-
-- **Don't persist these env vars on a personal Xcode scheme.** If set that way instead of via this script,
-  every subsequent debug launch — not just the one you intended — silently re-authenticates and re-syncs.
-  Always prefer invoking `launch.sh` fresh (it only sets them for that one `simctl launch` call).
-- **`wpcom` requires a real `store-id`.** This script validates that, but if you ever set the env vars
-  directly (bypassing this script), a missing/invalid store ID for `wpcom` credentials silently falls back
-  to the self-hosted placeholder site ID, producing a broken/inconsistent session.
-- **No error is surfaced on bad credentials.** Unlike the real login UI, this shortcut doesn't validate role
-  eligibility, WooCommerce installation, or application-password validity. Bad credentials just produce a
-  blank/broken dashboard — check the simulator's console log (`DDLogError`) if the store doesn't load.
-- **`wporg` needs the wp-login.php cookie/nonce handshake to succeed on first REST call.** If a security
-  plugin (e.g. Jetpack's account-protection module) blocks that handshake, `wporg` will silently fail the
-  same way as any other bad credentials — fall back to `applicationPassword` in that case.
-- If you also pass `logout-at-launch` in the same launch, auto-login will silently re-authenticate right
-  after it deauthenticates — the two aren't designed to be combined.
+The script seeds credentials, then relaunches without debug login variables. Keep those variables
+out of Xcode schemes and omit `logout-at-launch` from this flow.
+After launch and a plain relaunch, confirm the tab bar, target store, and loaded data through mobile-mcp.
+Script success means launch succeeded, not login. Report verified, failed, or unverified from UI evidence.
+If the outcome is unclear, inspect the current UI before another login attempt; avoid concurrent attempts.

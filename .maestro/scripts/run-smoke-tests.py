@@ -241,6 +241,16 @@ def app_identifier(app: Path) -> str:
     return identifier
 
 
+def app_display_name(app: Path) -> str:
+    """Return the name the app shows on the Home screen, which differs between Debug and Alpha."""
+    plist = app.expanduser().resolve() / "Info.plist"
+    for key in ("CFBundleDisplayName", "CFBundleName"):
+        result = run(["/usr/bin/plutil", "-extract", key, "raw", "-o", "-", str(plist)], check=False)
+        if result.returncode == 0 and result.stdout.strip():
+            return result.stdout.strip()
+    raise SystemExit(f"CFBundleDisplayName and CFBundleName are missing from {plist}")
+
+
 def discover_app(search_roots: list[Path] | None = None) -> Path:
     if search_roots is None:
         search_roots = [
@@ -571,12 +581,13 @@ def asks_for_age_range(runtime: str) -> bool:
     return bool(match) and int(match.group(1)) >= 26
 
 
-def maestro_env_args(app_id: str, run_id: str, runtime: str, notifications: str = "deny") -> list[str]:
+def maestro_env_args(app_id: str, run_id: str, runtime: str, display_name: str, notifications: str = "deny") -> list[str]:
     return [
         "--env", f"APP_ID={app_id}",
         "--env", f"SUITE_RUN_ID={run_id}",
         "--env", f"NOTIFICATIONS={notifications}",
         "--env", f"AGE_RANGE_CHECK={str(asks_for_age_range(runtime)).lower()}",
+        "--env", f"APP_DISPLAY_NAME={display_name}",
     ]
 
 
@@ -964,7 +975,7 @@ def main() -> int:
 
 
     attempts: list[Attempt] = []
-    env_args = maestro_env_args(app_id, run_id, simulator["runtime"])
+    env_args = maestro_env_args(app_id, run_id, simulator["runtime"], app_display_name(app))
     maestro_environments = {
         store: maestro_process_environment(
             store_values[store],
@@ -1021,7 +1032,7 @@ def main() -> int:
                     if flow.name == NOTIFICATION_FLOW:
                         signed_in = sign_in_allowing_notifications(
                             simulator["udid"],
-                            maestro_env_args(app_id, run_id, simulator["runtime"], notifications="allow"),
+                            maestro_env_args(app_id, run_id, simulator["runtime"], app_display_name(app), notifications="allow"),
                             maestro_environments[store],
                         )
                         sign_in_log = output / "logs" / f"{prefix}-sign-in.log"

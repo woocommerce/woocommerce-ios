@@ -5,4 +5,9 @@ import UIKit
 /// This is useful when you want to add extra padding on the top and bottom.
 /// See xib file for height value.
 ///
-final class LargeHeightLeftImageTableViewCell: LeftImageTableViewCell {}
+final class LargeHeightLeftImageTableViewCell: LeftImageTableViewCell {
+    override func prepareForReuse() {
+        super.prepareForReuse()
+        accessibilityIdentifier = nil
+    }
+}

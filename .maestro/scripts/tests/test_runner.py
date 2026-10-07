@@ -226,6 +226,7 @@ class RunnerTests(unittest.TestCase):
             "com.example.woo",
             "run-1",
             "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+            "Woo (Dev)",
             notifications="allow",
         )
         with mock.patch.object(RUNNER, "run", side_effect=lambda command, **_: commands.append(command)):
@@ -709,6 +710,7 @@ class RunnerTests(unittest.TestCase):
             "com.example.app",
             "run-1",
             "com.apple.CoreSimulator.SimRuntime.iOS-27-0",
+            "Woo (Dev)",
         )
 
         self.assertEqual(
@@ -717,6 +719,7 @@ class RunnerTests(unittest.TestCase):
                 "--env", "SUITE_RUN_ID=run-1",
                 "--env", "NOTIFICATIONS=deny",
                 "--env", "AGE_RANGE_CHECK=true",
+                "--env", "APP_DISPLAY_NAME=Woo (Dev)",
             ],
             args,
         )
@@ -725,6 +728,15 @@ class RunnerTests(unittest.TestCase):
         self.assertFalse(RUNNER.asks_for_age_range("com.apple.CoreSimulator.SimRuntime.iOS-18-6"))
         self.assertTrue(RUNNER.asks_for_age_range("com.apple.CoreSimulator.SimRuntime.iOS-26-0"))
         self.assertTrue(RUNNER.asks_for_age_range("com.apple.CoreSimulator.SimRuntime.iOS-27-0"))
+
+    def test_display_name_falls_back_to_the_bundle_name(self) -> None:
+        def fake_run(command: list[str], **_: object) -> subprocess.CompletedProcess[str]:
+            if command[2] == "CFBundleDisplayName":
+                return subprocess.CompletedProcess(command, 1, "", "No value at that key path")
+            return subprocess.CompletedProcess(command, 0, "Woo (Pre-Alpha)\n", "")
+
+        with mock.patch.object(RUNNER, "run", side_effect=fake_run):
+            self.assertEqual("Woo (Pre-Alpha)", RUNNER.app_display_name(Path("WooCommerce.app")))
 
     def test_maestro_process_receives_only_selected_flow_environment_and_no_rest_secrets(self) -> None:
         values = {

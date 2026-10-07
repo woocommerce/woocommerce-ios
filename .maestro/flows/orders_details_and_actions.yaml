@@ -37,8 +37,8 @@ tags:
 - tapOn:
     id: edit-note-done-button
 # Verify the note on the order form, where it renders as a "Customer Note"
-# section. Order details has no customer-note section, so asserting it after
-# creation can never pass.
+# section. Order details shows it wrapped in quotation marks, so the plain text
+# does not match there.
 - scrollUntilVisible:
     element:
       text: Details ${SUITE_RUN_ID}
@@ -51,10 +51,41 @@ tags:
     visible:
       id: order-details-table-view
     timeout: 30000
+# orders.note: add a private order note from order details and find it listed.
+# Find the row by its id: while the row is off screen, iOS reports its title
+# inside the screen, so the title alone never scrolls the list.
+- scrollUntilVisible:
+    element:
+      id: order-details-add-note-button
+    direction: DOWN
+    timeout: 20000
+    centerElement: true
+- tapOn:
+    id: order-details-add-note-button
+# The email switch shows only when the order has a billing email, which this
+# guest order lacks, so wait for the note section instead.
+- extendedWaitUntil:
+    visible: "WRITE NOTE"
+    timeout: 15000
+# The note field takes focus only once the screen has finished appearing.
+- waitForAnimationToEnd:
+    timeout: 5000
+- inputText: "Order note ${SUITE_RUN_ID}"
+- tapOn: "Add"
+# The editor still shows the note text while it closes.
+- extendedWaitUntil:
+    notVisible: "WRITE NOTE"
+    timeout: 15000
+- scrollUntilVisible:
+    element: "Order note ${SUITE_RUN_ID}"
+    direction: DOWN
+    timeout: 30000
+- assertVisible: "Order note ${SUITE_RUN_ID}"
 # Take a cash payment so this same run-owned order becomes receipt-eligible.
-# Order details reloads asynchronously after the order is created, which moves
-# this row. A single tap therefore lands mid-reload and is swallowed roughly two
-# runs in three. Re-scroll and retry until the payment methods screen pushes.
+# The note above left the list at its end, so the row is above. Order details
+# reloads asynchronously after the order is created, which moves this row. A
+# single tap therefore lands mid-reload and is swallowed roughly two runs in
+# three. Re-scroll and retry until the payment methods screen pushes.
 - repeat:
     times: 3
     commands:
@@ -66,7 +97,7 @@ tags:
             - scrollUntilVisible:
                 element:
                   id: order-details-collect-payment-button
-                direction: DOWN
+                direction: UP
                 visibilityPercentage: 100
             - tapOn:
                 id: order-details-collect-payment-button
@@ -95,10 +126,12 @@ tags:
 - tapOn: Mark Order as Complete
 # Order details reloads after the payment completes. Wait for the reloaded
 # screen to settle on the completed order before touching it, otherwise the
-# scroll and tap below race the reload and the tap lands on nothing.
-- extendedWaitUntil:
-    visible:
+# scroll and tap below race the reload and the tap lands on nothing. The status
+# sits at the top, above where the payment left the list.
+- scrollUntilVisible:
+    element:
       text: Completed
+    direction: UP
     timeout: 30000
 - scrollUntilVisible:
     element:

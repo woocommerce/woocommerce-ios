@@ -103,12 +103,17 @@ final class StorePickerCoordinatorTests: XCTestCase {
                 }
             }
             let provider = MockAnalyticsProvider()
+            var presentedModal: UIViewController?
+            var presentationCompletion: (() -> Void)?
             let picker = StorePickerViewController(
                 configuration: configuration,
                 stores: stores,
-                analytics: WooAnalytics(analyticsProvider: provider)
+                analytics: WooAnalytics(analyticsProvider: provider),
+                errorPresenter: { _, modal, completion in
+                    presentedModal = modal
+                    presentationCompletion = completion
+                }
             )
-            window.rootViewController = picker
 
             // When
             picker.loadViewIfNeeded()
@@ -120,21 +125,16 @@ final class StorePickerCoordinatorTests: XCTestCase {
             XCTAssertEqual(requestedDetection, expectedDetection)
             XCTAssertFalse(provider.receivedEvents.contains(event))
             try XCTUnwrap(completeRequirementCheck)()
-            waitUntil { picker.presentedViewController != nil }
-            let modal = try XCTUnwrap(picker.presentedViewController)
-            XCTAssertTrue(modal.isBeingPresented)
+            waitUntil { presentationCompletion != nil }
+            XCTAssertTrue(presentedModal is StorePickerErrorHostingController)
             XCTAssertFalse(provider.receivedEvents.contains(event))
-            waitUntil { !modal.isBeingPresented }
-            if expectedDetection {
-                waitUntil { provider.receivedEvents.contains(event) }
-            }
+            try XCTUnwrap(presentationCompletion)()
             XCTAssertEqual(provider.receivedEvents.filter { $0 == event }.count, expectedDetection ? 1 : 0)
             if expectedDetection {
                 XCTAssertEqual(provider.properties(for: event)?["step"] as? String, "woo_plugin_check")
                 XCTAssertEqual(provider.properties(for: event)?["login_flow"] as? String, "store_picker")
                 XCTAssertEqual(provider.properties(for: event)?["failure_kind"] as? String, "unacceptable_status_code")
             }
-            picker.dismiss(animated: false)
         }
     }
 }

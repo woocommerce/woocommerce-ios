@@ -67,6 +67,7 @@ enum StorePickerConfiguration: Equatable {
 /// Allows the user to pick which WordPress.com (OR) Jetpack-Connected-Store we should set up as the Main Store.
 ///
 final class StorePickerViewController: UIViewController {
+    typealias ErrorPresenter = (UIViewController, UIViewController, @escaping () -> Void) -> Void
 
     /// StorePickerViewController Delegate
     ///
@@ -86,6 +87,7 @@ final class StorePickerViewController: UIViewController {
     private var requirementCheckID = UUID()
     private var roleCheckID = UUID()
     private let analytics: Analytics
+    private let errorPresenter: ErrorPresenter
 
     // MARK: - Private Properties
 
@@ -182,9 +184,13 @@ final class StorePickerViewController: UIViewController {
          appleIDCredentialChecker: AppleIDCredentialCheckerProtocol = AppleIDCredentialChecker(),
          stores: StoresManager = ServiceLocator.stores,
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
-         analytics: Analytics = ServiceLocator.analytics) {
+         analytics: Analytics = ServiceLocator.analytics,
+         errorPresenter: @escaping ErrorPresenter = { source, modal, completion in
+             source.present(modal, animated: true, completion: completion)
+         }) {
         self.configuration = configuration
         self.analytics = analytics
+        self.errorPresenter = errorPresenter
         self.appleIDCredentialChecker = appleIDCredentialChecker
         self.stores = stores
         self.featureFlagService = featureFlagService
@@ -624,7 +630,7 @@ private extension StorePickerViewController {
         let viewController = StorePickerErrorHostingController.createWithActions(presenting: self, isPermissionError: isPermissionError)
         viewController.modalPresentationStyle = .custom
         viewController.transitioningDelegate = self
-        present(viewController, animated: true) { [weak self] in
+        errorPresenter(self, viewController) { [weak self] in
             guard let self, configuration.detectsUnexpectedLoginResponses, let failure else { return }
             analytics.track(event: .Login.unexpectedResponseShown(failure: failure, loginFlow: .storePicker))
         }

@@ -316,7 +316,11 @@ struct PointOfSaleDashboardView: View {
         .if(isPhoneLayout) { view in
             view
                 .posFullScreenCover(isPresented: $phoneShowingBarcodeScannerSetup) {
-                    POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
+                    // A full-screen cover isn't a presented modal, so measure the cover for the size the setup lays out in.
+                    GeometryReader { proxy in
+                        POSBarcodeScannerSetup(isPresented: $phoneShowingBarcodeScannerSetup, analytics: analytics)
+                            .environment(\.posModalParentSize, proxy.size)
+                    }
                 }
                 .posFullScreenCover(item: Binding(
                     get: { posModel.editingCustomAmount },

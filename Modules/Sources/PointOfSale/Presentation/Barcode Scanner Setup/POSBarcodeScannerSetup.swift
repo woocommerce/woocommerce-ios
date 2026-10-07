@@ -68,8 +68,7 @@ struct POSBarcodeScannerSetup: View {
         }
         .padding(POSPadding.xLarge)
         .background(Color.posSurfaceBright)
-        // Fills the presenting full-screen cover or modal, whatever the window size.
-        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
+        .frame(width: parentSize.width, height: parentSize.height, alignment: .top)
     }
 
     private var modalContent: some View {

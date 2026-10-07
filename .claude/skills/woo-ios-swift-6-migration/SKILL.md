@@ -52,6 +52,8 @@ Read the reference that applies to the change:
 - [Session service boundaries](references/session-services.md): POS eligibility, session construction, publishers, protocol witnesses, and legacy async remotes.
 - [Runtime boundaries](references/runtime-boundaries.md): language-mode switches, mixed Swift 5/6 callbacks, supported OS runtimes, shared target sources, and callback-to-async changes.
 
+For general Swift concurrency guidance, use the `swift-concurrency` skill if available. Otherwise, read the public [Swift Concurrency skill](https://github.com/AvdLee/Swift-Concurrency-Agent-Skill/blob/main/skills/swift-concurrency/SKILL.md). Read only the reference needed for the diagnostic. Resolve its relative links from the upstream skill directory. Check guidance against the active toolchain. Keep this repository's scope and verification rules.
+
 If complete isolation needs a larger migration, use a limited adapter when possible. The compiler must check its isolation, and it must keep the same behavior. Describe the remaining work and when to remove the adapter. Expand `ServiceLocator` or `StoresManager` only when the required ownership change justifies it.
 
 ## Check compatibility annotations

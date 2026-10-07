@@ -24,6 +24,9 @@ API_PREFIX = "/wp-json/wc/v3/"
 # WordPress core rejects WooCommerce API keys, so these requests use the store admin's
 # application password instead.
 MEDIA_PREFIX = "/wp-json/wp/v2/"
+# The POS cash payment flow sells this product. Its name carries the run id, so
+# cleanup finds the product and the order POS creates for it.
+POS_PRODUCT_PREFIX = "Maestro POS"
 
 
 class SmokeSetupError(RuntimeError):
@@ -158,6 +161,14 @@ def initialize(args: argparse.Namespace) -> None:
     print(f"Initialized cleanup journal for {run_id}")
 
 
+def seed_pos_product(client: WooClient, run_id: str) -> None:
+    client.create(
+        "products",
+        {"name": f"{POS_PRODUCT_PREFIX} {run_id}", "type": "simple", "regular_price": "1.00", "status": "publish"},
+    )
+    print(f"Created the POS product for {run_id}")
+
+
 def order_contains_run_id(order: dict[str, Any], run_id: str) -> bool:
     candidates = [str(order.get("customer_note", ""))]
     candidates.extend(str(item.get("name", "")) for item in order.get("line_items", []))
@@ -266,8 +277,10 @@ def main() -> int:
     args = parser.parse_args()
     try:
         if args.mode == "seed":
-            verify_cleanup_access(WooClient())
+            client = WooClient()
+            verify_cleanup_access(client)
             initialize(args)
+            seed_pos_product(client, strict_run_id(args.run_id))
         else:
             cleanup(args)
     except (SmokeSetupError, KeyError, ValueError, json.JSONDecodeError) as error:

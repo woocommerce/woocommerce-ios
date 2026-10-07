@@ -160,7 +160,9 @@ each successful REST deletion. If cleanup stops part way, `run-manifest.json`
 in the run's output folder still lists every entity it did not delete. Seeding
 needs the store's REST keys, plus the site admin username and
 application password that cleanup uses to delete uploaded images. The runner
-checks them before any flow runs.
+checks them before any flow runs. Seeding also creates a product named
+`Maestro POS <run id>`, which the POS cash payment flow sells so cleanup can
+find its order.
 
 POS runs require a real-eligible store/account and an iPad simulator. System
 surface flows are quarantined separately. Neither profile turns an ineligible

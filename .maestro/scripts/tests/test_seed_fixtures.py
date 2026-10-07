@@ -217,6 +217,31 @@ class SeedFixtureTests(unittest.TestCase):
             contents = json.loads(manifest.read_text(encoding="utf-8"))
             self.assertEqual([], contents["entities"])
 
+    def test_seed_creates_the_pos_product_with_the_run_id_in_its_name(self) -> None:
+        client = mock.Mock()
+
+        SEED.seed_pos_product(client, "SUITE-20260805T120000Z-abc123")
+
+        client.create.assert_called_once_with(
+            "products",
+            {
+                "name": "Maestro POS SUITE-20260805T120000Z-abc123",
+                "type": "simple",
+                "regular_price": "1.00",
+                "status": "publish",
+            },
+        )
+
+    def test_cleanup_deletes_the_pos_order_by_the_seeded_product_name(self) -> None:
+        order = {
+            "customer_note": "",
+            "line_items": [{"name": "Maestro POS SUITE-20260805T120000Z-abc123"}],
+            "fee_lines": [],
+            "meta_data": [],
+        }
+
+        self.assertTrue(SEED.order_contains_run_id(order, "SUITE-20260805T120000Z-abc123"))
+
     def test_partial_cleanup_keeps_only_entities_that_still_need_deletion(self) -> None:
         with tempfile.TemporaryDirectory() as directory:
             manifest = Path(directory) / "manifest.json"

@@ -1,6 +1,6 @@
 # p2: pos.add-products, pos.pay-cash
 # Prerequisites: an authenticated, genuinely POS-eligible store on an iPad
-# with at least one purchasable product and cash payments available.
+# with cash payments available, and the product seeding creates for this run.
 appId: ${APP_ID}
 name: "POS - Cash payment and new order"
 tags:
@@ -20,9 +20,20 @@ tags:
     timeout: 90000
 - assertNotVisible:
     id: pos-ineligible-view
-- tapOn:
-    id: "pos-product-card-.*"
-    index: 0
+# POS lists products from a local copy of the catalog that syncs hourly. Pull to
+# refresh so it includes the product seeded for this run, whose name carries the
+# run id so cleanup finds the POS order.
+- swipe:
+    from:
+      id: "pos-product-card-.*"
+      index: 0
+    direction: DOWN
+- scrollUntilVisible:
+    element: Maestro POS ${SUITE_RUN_ID}
+    direction: DOWN
+    timeout: 60000
+    centerElement: true
+- tapOn: Maestro POS ${SUITE_RUN_ID}
 - extendedWaitUntil:
     visible:
       id: "pos-cart-item-product-.*|pos-cart-item-variation-.*"

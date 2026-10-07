@@ -3,7 +3,8 @@ import SwiftUI
 struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var modalParentSize: CGSize = UIScreen.main.bounds.size
+    /// Measured from the root content, so it follows the window rather than the screen.
+    @State private var modalParentSize: CGSize = .zero
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
@@ -16,8 +17,6 @@ struct POSRootModalViewModifier: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            // Content outside a presented modal, such as a full-screen cover's root view, sizes itself to the screen.
-            .environment(\.posModalParentSize, UIScreen.main.bounds.size)
             .blur(radius: modalManager.isPresented ? 8 : 0)
             .allowsHitTesting(!modalManager.isPresented)
             .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
@@ -244,11 +243,10 @@ extension View {
 
 // MARK: - POS Modal Parent Size Environment
 
-/// Environment key for tracking the current screen size in POS modals
+/// Environment key for the space available to POS modals, measured by `POSRootModalViewModifier`
 struct POSModalParentSizeKey: EnvironmentKey {
-    /// `POSRootModalViewModifier` injects the screen size into its content and the measured size into presented modals,
-    /// so only previews without a root modal read this default. It is a fixed iPad size because reading `UIScreen`
-    /// requires the main actor.
+    /// `POSRootModalViewModifier` injects the measured size into every presented modal, so only previews without a root
+    /// modal read this default. It matches the iPad size the refund previews inject.
     static let defaultValue = CGSize(width: 1192, height: 822)
 }
 

@@ -23,21 +23,31 @@ tags:
         id: "orders-table-view"
     timeout: 30000
 
-# Capture the first live order title (for example, "#560 Pamela Nguyen").
+# Capture a live order title (for example, "#560 Pamela Nguyen").
 # Match the order-number shape rather than ".+": the table also exposes section
 # headers ("YESTERDAY"), row dates ("Sep 7"), status chips ("Completed") and
 # amounts ("$135.26"), and which of those lands at index 0 is not stable between
 # runs.
-- copyTextFrom:
-    text: "#.*"
-    childOf:
-      id: "orders-table-view"
-    index: 0
-- evalScript: ${output.initialOrderTitle = String(maestro.copiedText || '').trim()}
+# Seeded orders carry the run id in fields the search also matches, so skip an
+# order whose number appears in the run id's digits.
+- evalScript: ${output.orderRow = 0}
+- evalScript: ${output.orderSearchText = ''}
+- repeat:
+    while:
+      true: ${output.orderSearchText == '' || String(SUITE_RUN_ID).replace(/[^0-9]/g, '').indexOf(output.orderSearchText) != -1}
+    times: 4
+    commands:
+      - copyTextFrom:
+          text: "#.*"
+          childOf:
+            id: "orders-table-view"
+          index: ${output.orderRow}
+      - evalScript: ${output.initialOrderTitle = String(maestro.copiedText || '').trim()}
+      - evalScript: ${output.orderSearchText = output.initialOrderTitle.split(' ')[0].replace('#', '')}
+      - evalScript: ${output.orderRow = output.orderRow + 1}
 - assertTrue:
-    condition: ${output.initialOrderTitle.startsWith('#')}
-    label: First live order row exposes an order number
-- evalScript: ${output.orderSearchText = output.initialOrderTitle.split(' ')[0].replace('#', '')}
+    condition: ${output.initialOrderTitle.startsWith('#') && String(SUITE_RUN_ID).replace(/[^0-9]/g, '').indexOf(output.orderSearchText) == -1}
+    label: Picked an order number that the run id cannot match
 - takeScreenshot: orders_list
 
 # Moving to another live row proves the list is scrollable and populated past

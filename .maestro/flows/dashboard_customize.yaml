@@ -9,6 +9,19 @@ tags:
   - smoke_extended
   - flaky_quarantine
   - dashboard
+# The dashboard layout is saved on the device. When the flow stops half way,
+# clear it so the retry and later flows start from the default layout.
+onFlowComplete:
+  - runFlow:
+      when:
+        true: ${!output.dashboardCustomizeFinished}
+      commands:
+        - launchApp:
+            clearState: true
+            clearKeychain: true
+            arguments:
+              "-ui_testing": true
+        - stopApp
 ---
 - runFlow: ../subflows/ensure_logged_in.yaml
 - runFlow: ../subflows/navigate_to_dashboard.yaml
@@ -500,3 +513,4 @@ tags:
 - runFlow: ../subflows/wait_for_age_range_check.yaml
 - runFlow: ../subflows/navigate_to_dashboard.yaml
 - takeScreenshot: dashboard_customize_restored
+- evalScript: ${output.dashboardCustomizeFinished = true}

@@ -487,7 +487,7 @@ struct PointOfSaleDashboardView: View {
             // Keep scanning available while the cart sheet is open: ItemListView's scanner is
             // gated off whenever a POSSheetManager sheet is presented (this one included), so
             // without this a scan with the sheet open would silently do nothing.
-            .barcodeScanning(enabled: Binding(get: { !modalManager.isPresented }, set: { _ in })) { result in
+            .barcodeScanning(enabled: Binding(get: { posModel.orderStage == .building && !modalManager.isPresented }, set: { _ in })) { result in
                 posModel.barcodeScanned(result)
             }
     }

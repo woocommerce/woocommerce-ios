@@ -329,9 +329,14 @@ extension PointOfSaleAggregateModel {
 
 // MARK: - Barcode Scanning
 extension PointOfSaleAggregateModel {
-    func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) {
-        Task { [weak self] in
-            guard let self else { return }
+    @discardableResult
+    func barcodeScanned(_ result: Result<String, HIDBarcodeParserError>) -> Task<Void, Never> {
+        let currentCheckoutGeneration = checkoutGeneration
+        return Task { [weak self] in
+            // A queued result must still belong to this cart, even after returning to building.
+            guard let self,
+                  self.orderStage == .building,
+                  self.checkoutGeneration == currentCheckoutGeneration else { return }
             switch result {
             case .success(let barcode):
                 await handleSuccessfulScan(barcode: barcode)

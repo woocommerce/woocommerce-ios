@@ -656,6 +656,81 @@ struct GameControllerBarcodeParserTests {
         )
     }
 
+    struct TabTests {
+        @Test(arguments: [0, 3, 6])
+        func test_tab_when_not_a_terminator_then_does_not_change_barcode(position: Int) {
+            // Given
+            var results: [HIDBarcodeParserResult] = []
+            let timeProvider = MockTimeProvider()
+            let parser = GameControllerBarcodeParser(configuration: .default,
+                                                      onScan: { results.append($0) }, timeProvider: timeProvider)
+            var keys: [GCKeyCode] = [.one, .two, .three, .four, .five, .six]
+            keys.insert(.tab, at: position)
+
+            // When
+            for key in keys + [.returnOrEnter] {
+                parser.processKeyPress(key)
+            }
+            timeProvider.advance(by: 0.3)
+
+            // Then
+            #expect(results.count == 1)
+            if case .success(let barcode, _) = results.first {
+                #expect(barcode == "123456")
+            } else {
+                Issue.record("Expected the barcode without Tab")
+            }
+        }
+
+        @Test
+        func test_tab_when_sent_after_enter_then_does_not_start_another_scan() {
+            // Given
+            var results: [HIDBarcodeParserResult] = []
+            let timeProvider = MockTimeProvider()
+            let parser = GameControllerBarcodeParser(configuration: .default,
+                                                      onScan: { results.append($0) }, timeProvider: timeProvider)
+
+            // When
+            for key: GCKeyCode in [.one, .two, .three, .four, .five, .six, .returnOrEnter, .tab] {
+                parser.processKeyPress(key)
+            }
+            timeProvider.advance(by: 0.3)
+            for key: GCKeyCode in [.one, .two, .three, .four, .five, .six, .returnOrEnter] {
+                parser.processKeyPress(key)
+            }
+
+            // Then
+            #expect(results.count == 2)
+            #expect(results.allSatisfy {
+                if case .success(let barcode, _) = $0 { return barcode == "123456" }
+                return false
+            })
+        }
+
+        @Test
+        func test_tab_when_sent_before_timeout_then_does_not_extend_timeout() {
+            // Given
+            var results: [HIDBarcodeParserResult] = []
+            let timeProvider = MockTimeProvider()
+            let parser = GameControllerBarcodeParser(configuration: .default,
+                                                      onScan: { results.append($0) }, timeProvider: timeProvider)
+            parser.processKeyPress(.one)
+
+            // When
+            timeProvider.advance(by: 0.15)
+            parser.processKeyPress(.tab)
+            timeProvider.advance(by: 0.06)
+
+            // Then
+            #expect(results.count == 1)
+            if case .failure(let error, _) = results.first, case .timedOut(let barcode) = error {
+                #expect(barcode == "1")
+            } else {
+                Issue.record("Expected the original partial scan to time out")
+            }
+        }
+    }
+
     // MARK: - Terminator Tests
 
     struct TerminatorTests {

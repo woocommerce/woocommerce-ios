@@ -1310,6 +1310,73 @@ struct PointOfSaleAggregateModelTests {
     }
 
     @MainActor struct BarcodeTests {
+        @Test(arguments: [true, false])
+        func test_barcode_when_queued_before_checkout_then_does_not_change_checkout_cart(isSuccess: Bool) async throws {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let sut = makePointOfSaleAggregateModel(analytics: analytics,
+                                                     barcodeScanService: MockPointOfSaleBarcodeScanService())
+            sut.addToCart(makePurchasableItem())
+            let originalItems = sut.cart.purchasableItems.map(\.id)
+            let result: Result<String, HIDBarcodeParserError> = isSuccess ? .success("123456") : .failure(.scanTooShort(barcode: "1"))
+
+            // When: the task cannot run until this actor yields; checkout changes its stage first.
+            let pendingScan = sut.barcodeScanned(result)
+            await sut.checkOut()
+            await pendingScan.value
+
+            // Then
+            #expect(sut.orderStage == .finalizing)
+            #expect(sut.cart.purchasableItems.map(\.id) == originalItems)
+            #expect(sut.cart.latestScannedItemID == nil)
+            #expect(!analytics.events.contains { $0.eventName == WooAnalyticsStat.pointOfSaleAddItemToCart.rawValue })
+
+            // Returning to the product list must restore scanning.
+            sut.addMoreToCart()
+            await sut.barcodeScanned(.success("123456")).value
+            #expect(sut.cart.latestScannedItemID != nil)
+            #expect(analytics.events.contains { $0.eventName == WooAnalyticsStat.pointOfSaleAddItemToCart.rawValue })
+        }
+
+        @Test(arguments: [true, false])
+        func test_barcode_when_cart_resets_before_queued_work_then_does_not_add_to_new_cart(isSuccess: Bool) async {
+            // Given
+            let analytics = MockPOSAnalytics()
+            let sut = makePointOfSaleAggregateModel(analytics: analytics,
+                                                     barcodeScanService: MockPointOfSaleBarcodeScanService())
+
+            let result: Result<String, HIDBarcodeParserError> = isSuccess ? .success("123456") : .failure(.scanTooShort(barcode: "1"))
+
+            // When: both stages are building, but the queued result belongs to the previous cart.
+            let pendingScan = sut.barcodeScanned(result)
+            sut.startNewCart()
+            await pendingScan.value
+
+            // Then
+            #expect(sut.cart.isEmpty)
+            #expect(!analytics.events.contains { $0.eventName == WooAnalyticsStat.pointOfSaleAddItemToCart.rawValue })
+        }
+
+        @Test
+        func test_barcode_when_received_on_success_screen_then_starts_new_cart_and_scans() async throws {
+            // Given
+            let sut = makePointOfSaleAggregateModel(barcodeScanService: MockPointOfSaleBarcodeScanService())
+            sut.addToCart(makePurchasableItem())
+            await sut.checkOut()
+            try #require(sut.orderStage == .finalizing)
+            let onScan = try #require(sut.paymentModel.configuration.onSuccessScreenBarcodeScanned)
+
+            // When
+            await waitForScannedItemChange(on: sut) {
+                onScan(.success("123456"))
+            }
+
+            // Then
+            #expect(sut.orderStage == .building)
+            #expect(sut.cart.purchasableItems.count == 1)
+            #expect(sut.cart.latestScannedItemID != nil)
+        }
+
         @Test func barcodeScanned_when_fails_then_plays_sound() async {
             // Given
             let soundPlayer = MockPointOfSaleSoundPlayer()

@@ -7,6 +7,7 @@ import YosemiteTestHelpers
 @testable import class Networking.MockNetwork
 @testable import Yosemite
 @testable import Storage
+import TestKit
 
 final class SiteStoreTests: XCTestCase {
     /// Mock Dispatcher.
@@ -67,11 +68,11 @@ final class SiteStoreTests: XCTestCase {
                   success: true)))
 
         // When
-        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = await withCheckedContinuation { continuation in
+        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
-                continuation.resume(returning: result)
+                completion(result)
             }))
         }
 
@@ -93,11 +94,11 @@ final class SiteStoreTests: XCTestCase {
                   success: false)))
 
         // When
-        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = await withCheckedContinuation { continuation in
+        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
-                continuation.resume(returning: result)
+                completion(result)
             }))
         }
 
@@ -114,11 +115,11 @@ final class SiteStoreTests: XCTestCase {
         ))
 
         // When
-        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = await withCheckedContinuation { continuation in
+        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
-                continuation.resume(returning: result)
+                completion(result)
             }))
         }
 
@@ -135,11 +136,11 @@ final class SiteStoreTests: XCTestCase {
         ))
 
         // When
-        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = await withCheckedContinuation { continuation in
+        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
-                continuation.resume(returning: result)
+                completion(result)
             }))
         }
 
@@ -158,11 +159,11 @@ final class SiteStoreTests: XCTestCase {
         ))
 
         // When
-        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = await withCheckedContinuation { continuation in
+        let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
                                                       completion: { result in
-                continuation.resume(returning: result)
+                completion(result)
             }))
         }
 
@@ -179,9 +180,9 @@ final class SiteStoreTests: XCTestCase {
         remote.whenLaunchingSite(thenReturn: .success(()))
 
         // When
-        let result: Result<Void, SiteLaunchError> = await withCheckedContinuation { continuation in
+        let result: Result<Void, SiteLaunchError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.launchSite(siteID: 134) { result in
-                continuation.resume(returning: result)
+                completion(result)
             })
         }
 
@@ -195,9 +196,9 @@ final class SiteStoreTests: XCTestCase {
         remote.whenLaunchingSite(thenReturn: .failure(WordPressApiError.unknown(code: "already-launched", message: "")))
 
         // When
-        let result: Result<Void, SiteLaunchError> = await withCheckedContinuation { continuation in
+        let result: Result<Void, SiteLaunchError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.launchSite(siteID: 134) { result in
-                continuation.resume(returning: result)
+                completion(result)
             })
         }
 
@@ -212,9 +213,9 @@ final class SiteStoreTests: XCTestCase {
         remote.whenLaunchingSite(thenReturn: .failure(WordPressApiError.unknown(code: "unauthorized", message: "")))
 
         // When
-        let result: Result<Void, SiteLaunchError> = await withCheckedContinuation { continuation in
+        let result: Result<Void, SiteLaunchError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.launchSite(siteID: 134) { result in
-                continuation.resume(returning: result)
+                completion(result)
             })
         }
 
@@ -231,9 +232,9 @@ final class SiteStoreTests: XCTestCase {
         remote.whenEnablingFreeTrial(thenReturn: .success(()))
 
         // When
-        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+        let result: Result<Void, Error> = try await waitForCompletion { completion in
             store.onAction(SiteAction.enableFreeTrial(siteID: 134) { result in
-                continuation.resume(returning: result)
+                completion(result)
             })
         }
 
@@ -247,9 +248,9 @@ final class SiteStoreTests: XCTestCase {
         remote.whenEnablingFreeTrial(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
         // When
-        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+        let result: Result<Void, Error> = try await waitForCompletion { completion in
             store.onAction(SiteAction.enableFreeTrial(siteID: 134) { result in
-                continuation.resume(returning: result)
+                completion(result)
             })
         }
 
@@ -261,16 +262,16 @@ final class SiteStoreTests: XCTestCase {
      // MARK: - `updateSiteTitle`
 
     @MainActor
-    func test_updateSiteTitle_returns_on_success() async {
+    func test_updateSiteTitle_returns_on_success() async throws {
         // Given
         let siteID: Int64 = 123
         remote.whenUpdatingSiteTitle(thenReturn: .success(()))
         storeSite(Site.fake().copy(siteID: siteID, name: "Miffy"))
 
         // When
-        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+        let result: Result<Void, Error> = try await waitForCompletion { completion in
             store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: { result in
-                continuation.resume(returning: result)
+                completion(result)
             }))
         }
 
@@ -287,9 +288,9 @@ final class SiteStoreTests: XCTestCase {
         remote.whenUpdatingSiteTitle(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
         // When
-        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+        let result: Result<Void, Error> = try await waitForCompletion { completion in
             store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: { result in
-                continuation.resume(returning: result)
+                completion(result)
             }))
         }
 
@@ -307,12 +308,12 @@ final class SiteStoreTests: XCTestCase {
         remote.whenUploadingStoreProfilerAnswers(thenReturn: .success(()))
 
         // When
-        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+        let result: Result<Void, Error> = try await waitForCompletion { completion in
             store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
                                                                                                   sellingPlatforms: "wordpress",
                                                                                                   category: "clothing_and_accessories",
                                                                                                   countryCode: "US")) { result in
-                continuation.resume(returning: result)
+                completion(result)
             })
         }
 
@@ -326,12 +327,12 @@ final class SiteStoreTests: XCTestCase {
         remote.whenUploadingStoreProfilerAnswers(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
         // When
-        let result: Result<Void, Error> = await withCheckedContinuation { continuation in
+        let result: Result<Void, Error> = try await waitForCompletion { completion in
             store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
                                                                                                   sellingPlatforms: "wordpress",
                                                                                                   category: "clothing_and_accessories",
                                                                                                   countryCode: "US")) { result in
-                continuation.resume(returning: result)
+                completion(result)
             })
         }
 
@@ -352,9 +353,9 @@ final class SiteStoreTests: XCTestCase {
        dispatcher.register(processor: mockProcessor, for: AppSettingsAction.self)
 
        // When
-       let result: Result<Site, Error> = await withCheckedContinuation { continuation in
+       let result: Result<Site, Error> = try await waitForCompletion { completion in
            store.onAction(SiteAction.syncSite(siteID: siteID, completion: { result in
-               continuation.resume(returning: result)
+               completion(result)
            }))
        }
 
@@ -380,9 +381,9 @@ final class SiteStoreTests: XCTestCase {
        remote.whenLoadingSite(thenReturn: .success(site))
 
        // When
-       let result: Result<Site, Error> = await withCheckedContinuation { continuation in
+       let result: Result<Site, Error> = try await waitForCompletion { completion in
            store.onAction(SiteAction.syncSiteByDomain(domain: domain, completion: { result in
-               continuation.resume(returning: result)
+               completion(result)
            }))
        }
 
@@ -400,9 +401,9 @@ final class SiteStoreTests: XCTestCase {
        remote.whenLoadingSite(thenReturn: .failure(DotcomError.unknown(code: "error", message: nil, data: nil)))
 
        // When
-       let result: Result<Site, Error> = await withCheckedContinuation { continuation in
+       let result: Result<Site, Error> = try await waitForCompletion { completion in
            store.onAction(SiteAction.syncSiteByDomain(domain: domain, completion: { result in
-               continuation.resume(returning: result)
+               completion(result)
            }))
        }
 

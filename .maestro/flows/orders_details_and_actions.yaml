@@ -83,8 +83,9 @@ tags:
 - assertVisible: "Order note ${SUITE_RUN_ID}"
 # Take a cash payment so this same run-owned order becomes receipt-eligible.
 # The note above left the list at its end, so the row is above. Order details
-# reloads asynchronously after the order is created, which moves this row. A single tap therefore lands mid-reload and is swallowed roughly two
-# runs in three. Re-scroll and retry until the payment methods screen pushes.
+# reloads asynchronously after the order is created, which moves this row. A
+# single tap therefore lands mid-reload and is swallowed roughly two runs in
+# three. Re-scroll and retry until the payment methods screen pushes.
 - repeat:
     times: 3
     commands:

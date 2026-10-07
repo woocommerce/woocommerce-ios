@@ -34,12 +34,13 @@ final class SiteAddressViewController: LoginViewController {
     /// in-app store switcher, where a login step would be wrong.
     var tracksLoginSteps = true
 
-    /// The tracker, or `nil` when this screen is not part of a login journey. Every tracking
-    /// call on this screen goes through it: emitting any one event outside a login is wrong,
-    /// and latching flow or step without emitting leaves the next real login step inheriting
-    /// a journey it never belonged to.
-    private var loginTracker: AuthenticatorAnalyticsTracker? {
-        tracksLoginSteps ? tracker : nil
+    /// A disabled tracker reports nothing and keeps its own state, so neither this screen's
+    /// events nor the ones `LoginViewController` sends on its behalf reach the shared tracker
+    /// or latch a flow this journey never belonged to.
+    private lazy var silentTracker = AuthenticatorAnalyticsTracker(enabled: false, track: { _ in })
+
+    override var tracker: AuthenticatorAnalyticsTracker {
+        tracksLoginSteps ? super.tracker : silentTracker
     }
 
     /// A state variable that is `true` if network calls are currently happening and so the
@@ -77,7 +78,7 @@ final class SiteAddressViewController: LoginViewController {
 
     // MARK: - Actions
     @IBAction func handleContinueButtonTapped(_ sender: NUXButton) {
-        loginTracker?.track(click: .submit)
+        tracker.track(click: .submit)
 
         validateForm()
     }
@@ -110,15 +111,15 @@ final class SiteAddressViewController: LoginViewController {
         super.viewDidAppear(animated)
 
         if isSiteDiscovery {
-            loginTracker?.set(flow: .siteDiscovery)
+            tracker.set(flow: .siteDiscovery)
         } else {
-            loginTracker?.set(flow: trackedFlow ?? .loginWithSiteAddress)
+            tracker.set(flow: trackedFlow ?? .loginWithSiteAddress)
         }
 
         if isMovingToParent {
-            loginTracker?.track(step: .start)
+            tracker.track(step: .start)
         } else {
-            loginTracker?.set(step: .start)
+            tracker.set(step: .start)
         }
 
         registerForKeyboardEvents(keyboardWillShowAction: #selector(handleKeyboardWillShow(_:)),
@@ -238,7 +239,7 @@ final class SiteAddressViewController: LoginViewController {
     override func displayError(message: String, moveVoiceOverFocus: Bool = false) {
         if errorMessage != message {
             if !message.isEmpty {
-                loginTracker?.track(failure: message)
+                tracker.track(failure: message)
             }
 
             errorMessage = message
@@ -389,26 +390,26 @@ private extension SiteAddressViewController {
                 return
             }
 
-            self.loginTracker?.track(click: .showHelp)
+            self.tracker.track(click: .showHelp)
 
             let alert = FancyAlertViewController.siteAddressHelpController(
                 loginFields: self.loginFields,
                 sourceTag: self.sourceTag,
                 moreHelpTapped: {
-                    self.loginTracker?.track(click: .helpFindingSiteAddress)
+                    self.tracker.track(click: .helpFindingSiteAddress)
             },
                 onDismiss: {
-                    self.loginTracker?.track(click: .dismiss)
+                    self.tracker.track(click: .dismiss)
 
                     // Since we're showing an alert on top of this VC, `viewDidAppear` will not be called
                     // once the alert is dismissed (which is where the step would be reset automagically),
                     // so we need to manually reset the step here.
-                    self.loginTracker?.set(step: .start)
+                    self.tracker.set(step: .start)
             })
             alert.modalPresentationStyle = .custom
             alert.transitioningDelegate = self
             self.present(alert, animated: true, completion: { [weak self] in
-                self?.loginTracker?.track(step: .help)
+                self?.tracker.track(step: .help)
             })
         }
     }

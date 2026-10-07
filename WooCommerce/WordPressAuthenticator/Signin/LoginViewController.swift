@@ -5,7 +5,10 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
     @IBOutlet var instructionLabel: UILabel?
     @objc var errorToPresent: Error?
 
-    let tracker = AuthenticatorAnalyticsTracker.shared
+    /// Overridable so a screen that is not part of a login journey can swap in a tracker that
+    /// reports nothing — this class tracks on its subclasses' behalf (dismiss, failures), so a
+    /// gate applied only in a subclass would miss those.
+    var tracker: AuthenticatorAnalyticsTracker { .shared }
 
     /// Constraints on the table view container.
     /// Used to adjust the table width in unified views.

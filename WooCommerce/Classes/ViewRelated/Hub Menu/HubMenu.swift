@@ -31,21 +31,31 @@ struct HubMenu: View {
         NavigationStack(path: $viewModel.navigationPath) {
             /// TODO: switch to `navigationDestination(item:destination)`
             /// when we drop support for iOS 16.
-            menuList
-                .safeAreaInset(edge: .top, spacing: 0) {
-                    if httpsConfigurationWarningViewModel.isVisible {
-                        HTTPSConfigurationWarningBanner(
-                            onAction: httpsConfigurationHelpHandler,
-                            onDismiss: httpsConfigurationWarningViewModel.dismiss
-                        )
+            SafeAreaInsetsReader { safeAreaInsets in
+                menuList
+                    .safeAreaInset(edge: .top, spacing: 0) {
+                        VStack(spacing: 0) {
+                            // A zero top inset next to a one-sided horizontal inset means the system bars run down one side
+                            // (iPhone Duo closed, or open in landscape), so the status bar is not above the list to space it.
+                            if safeAreaInsets.top == 0 && safeAreaInsets.leading != safeAreaInsets.trailing {
+                                Spacer(minLength: 0)
+                                    .frame(height: Constants.topSpacingWithoutStatusBar)
+                            }
+                            if httpsConfigurationWarningViewModel.isVisible {
+                                HTTPSConfigurationWarningBanner(
+                                    onAction: httpsConfigurationHelpHandler,
+                                    onDismiss: httpsConfigurationWarningViewModel.dismiss
+                                )
+                            }
+                        }
                     }
-                }
-                .navigationDestination(for: HubMenuNavigationDestination.self) { destination in
-                    detailView(destination: destination)
-                }
-                .onAppear {
-                    viewModel.setupMenuElements()
-                }
+            }
+            .navigationDestination(for: HubMenuNavigationDestination.self) { destination in
+                detailView(destination: destination)
+            }
+            .onAppear {
+                viewModel.setupMenuElements()
+            }
         }
     }
 
@@ -369,6 +379,8 @@ private extension HubMenu {
         static let iconSize: CGFloat = 20
         static let dotBadgePadding = EdgeInsets(top: 6, leading: 0, bottom: 0, trailing: 2)
         static let dotBadgeSize: CGFloat = 6
+        /// Gap between the status bar and the first card on iPhone: the inset-grouped list's own top padding (iOS 18–27).
+        static let topSpacingWithoutStatusBar: CGFloat = 35
 
         /// Spacing for the badge view in the avatar row.
         ///

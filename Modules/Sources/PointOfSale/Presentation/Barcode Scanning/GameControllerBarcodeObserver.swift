@@ -29,7 +29,9 @@ final class GameControllerBarcodeObserver {
     /// Since all keyboards are coalesced into a single GCKeyboard, multiple observers share
     /// one keyChangedHandler slot. This token prevents an older observer's cleanup from
     /// nilling out a handler that was set by a newer observer during SwiftUI view transitions.
-    /// A `Mutex` keeps the compare-and-clear atomic, including when `deinit` runs it.
+    /// `deinit` must clear the slot synchronously and stays nonisolated until `isolated deinit` (iOS 18.4),
+    /// so the token can't be main-actor state or live in an actor that needs `await`.
+    /// A `Mutex` keeps the compare-and-clear atomic and synchronous from any context.
     private static let activeHandlerToken = Mutex<UUID?>(nil)
     private var handlerToken: UUID?
 

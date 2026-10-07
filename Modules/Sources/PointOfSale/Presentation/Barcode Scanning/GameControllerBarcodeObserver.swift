@@ -36,6 +36,7 @@ final class GameControllerBarcodeObserver {
     /// - Parameters:
     ///   - configuration: The configuration to use for the barcode parser. Defaults to the standard configuration.
     ///   - analytics: The analytics service for tracking events.
+    ///   - isScanningEnabled: A live check that controls whether input and scan results are accepted. Defaults to true.
     ///   - onScan: The closure to be called when a scan is completed.
     init(configuration: HIDBarcodeParserConfiguration = .default,
          analytics: POSAnalyticsProviding,

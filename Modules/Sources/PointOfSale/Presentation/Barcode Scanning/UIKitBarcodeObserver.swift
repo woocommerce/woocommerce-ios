@@ -20,8 +20,9 @@ final class UIKitBarcodeObserver {
     /// Initializes a new UIKit barcode scanner observer.
     /// - Parameters:
     ///   - configuration: The configuration to use for the barcode parser. Defaults to the standard configuration.
+    ///   - analytics: The analytics service for tracking events.
+    ///   - isScanningEnabled: A live check that controls whether input and scan results are accepted. Defaults to true.
     ///   - onScan: The closure to be called when a scan is completed.
-    ///   - analyticsTracker: The analytics tracker to use. Defaults to a new instance.
     ///   - timeProvider: The time provider to use for timing operations. Defaults to the system time provider.
     init(
         configuration: HIDBarcodeParserConfiguration = .default,

@@ -47,7 +47,7 @@ struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
     let isScanningEnabled: () -> Bool
     let onScan: (Result<String, HIDBarcodeParserError>) -> Void
 
-    func makeUIViewController(context: Context) -> UIViewController {
+    func makeUIViewController(context: Context) -> GameControllerBarcodeScannerHostingController {
         return GameControllerBarcodeScannerHostingController(
             configuration: configuration,
             analytics: analytics,
@@ -56,8 +56,8 @@ struct BarcodeScannerContainerRepresentable: UIViewControllerRepresentable {
         )
     }
 
-    func updateUIViewController(_ uiViewController: UIViewController, context: Context) {
-        (uiViewController as? GameControllerBarcodeScannerHostingController)?.isScanningEnabled = isScanningEnabled
+    func updateUIViewController(_ uiViewController: GameControllerBarcodeScannerHostingController, context: Context) {
+        uiViewController.isScanningEnabled = isScanningEnabled
     }
 }
 

@@ -163,7 +163,8 @@ private extension OrderDetailsViewController {
         view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
     }
 
-    /// On iPhone Duo, UIKit drops the table's default margin on every side that is inset from the window edge.
+    /// On iPhone Duo (iOS 27.1) the table zeroes its default margin on the sides inset from the window edge (WOOMOB-4267).
+    /// The explicit margins set here persist across pose and orientation changes; the widest observed side matches the iPhone default.
     func restoreCollapsedTableViewMarginsIfNeeded() {
         let margins = tableView.layoutMargins
         let safeAreaInsets = tableView.safeAreaInsets

@@ -15,7 +15,9 @@ gem 'fastlane', '~> 2.240'
 gem 'fastlane-plugin-firebase_app_distribution', '~> 1.0'
 gem 'fastlane-plugin-sentry', '~> 2.8'
 # gem 'fastlane-plugin-wpmreleasetoolkit', git: 'git@github.com:wordpress-mobile/release-toolkit', branch: ''
-gem 'fastlane-plugin-wpmreleasetoolkit', '~> 15.1'
+# Local workflow pilot: replace sibling paths with released versions before CI adoption.
+gem 'a8c-release-workflows', '0.1.0.pre.1', path: '../a8c-release-workflows'
+gem 'fastlane-plugin-wpmreleasetoolkit', '~> 15.1', path: '../release-toolkit'
 # To avoid errors like:
 #
 # SSL_connect returned=1 errno=0 peeraddr=3.5.132.155:443 state=error: certificate verify failed (unable to get certificate CRL)

@@ -3019,7 +3019,7 @@ extension WooAnalyticsEvent {
                                                   loginFlow: LoginUnexpectedResponseFailure.LoginFlow,
                                                   action: LoginUnexpectedResponseFailure.Action) -> WooAnalyticsEvent {
             var properties = unexpectedResponseShown(failure: failure, loginFlow: loginFlow).properties
-            properties["action"] = action.rawValue
+            properties[Key.action.rawValue] = action.rawValue
             return WooAnalyticsEvent(statName: .loginUnexpectedResponseActionTapped, properties: properties)
         }
 
@@ -3027,7 +3027,7 @@ extension WooAnalyticsEvent {
                                                  loginFlow: LoginUnexpectedResponseFailure.LoginFlow,
                                                  success: Bool) -> WooAnalyticsEvent {
             var properties = unexpectedResponseShown(failure: failure, loginFlow: loginFlow).properties
-            properties["result"] = success ? "success" : "failure"
+            properties[Key.result.rawValue] = success ? "success" : "failure"
             return WooAnalyticsEvent(statName: .loginUnexpectedResponseRetryResult, properties: properties)
         }
 
@@ -3041,6 +3041,7 @@ extension WooAnalyticsEvent {
         }
 
         enum Key: String {
+            case action
             case step
             case loginFlow = "login_flow"
             case failureKind = "failure_kind"
@@ -3054,6 +3055,7 @@ extension WooAnalyticsEvent {
             case isJetpackConnected = "is_jetpack_connected"
             case urlAfterRedirects = "url_after_redirects"
             case requiredAuthChallenge = "required_auth_challenge"
+            case result
         }
 
         enum LoginSiteCredentialStep: String {

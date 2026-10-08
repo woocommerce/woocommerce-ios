@@ -60,7 +60,6 @@ private extension POSRolesPersistenceTests {
     }
 }
 
-@MainActor
 private final class UserDefaultsTestScope {
     let defaults: UserDefaults
     private let suiteName: String

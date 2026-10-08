@@ -1264,7 +1264,7 @@ private final class DeferredSiteAPIStoresManager: DefaultStoresManager {
 
     override func dispatch(_ action: Action) {
         guard let action = action as? SettingAction,
-              case let .retrieveSiteAPI(_, completion) = action else {
+              case let .retrieveSiteAPI(_, _, completion) = action else {
             return
         }
         siteAPICompletion = completion

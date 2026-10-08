@@ -274,5 +274,6 @@ private extension POSRefundItemsSelectionView {
         onRefreshItems: { }
     )
     .environment(POSPreviewHelpers.makePreviewOrdersModel(state: POSPreviewHelpers.loadedState()))
+    .posPreviewModalParentSize()
 }
 #endif

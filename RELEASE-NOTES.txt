@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [*] Order details: Fixed row content touching the edges of the details pane on iPhone Duo. [https://github.com/woocommerce/woocommerce-ios/pull/18001]
 - [*] Quick actions, links and Shortcuts open the new order form and product creation again on iOS 26 and later. [https://github.com/woocommerce/woocommerce-ios/pull/18021]
 - [*] Login: QR code sign-in with a WordPress.com account no longer gets stuck on "Signing you in…" after approving on the web. [https://github.com/woocommerce/woocommerce-ios/pull/18019]
 - [*] Notices no longer block taps on the content beside them, and on iPhone Duo they appear at the bottom of the screen when the tab bar is on the side. [https://github.com/woocommerce/woocommerce-ios/pull/17998]

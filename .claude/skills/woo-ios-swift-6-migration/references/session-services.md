@@ -22,6 +22,12 @@ Keep cancellation, discovery, and retry unchanged when you call a legacy async r
 
 Where supported, consider an `isolation: isolated (any Actor)? = #isolation` parameter. It can pass caller isolation through the affected Remote and Network API. This avoids declaring a mutable network object `Sendable`. Check how the active compiler handles the async body and each forwarding call. Include retry paths.
 
+This parameter only moves warnings when an actor method calls a service that is not `Sendable`. The service's `self` joins the actor's region. Each onward call to the service, its dependencies, or its private helpers then produces a new `sending` warning. Child tasks that capture the service still warn. In that case, the root cause is the non-`Sendable` service, such as a `Remote` subclass. Fix or report that root cause. `nonisolated(nonsending)` (SE-0461) is another option with Swift 6.2, also in Swift 5 mode. It runs synchronous setup and decoding on the caller's actor. That is an execution change, so verify it.
+
+## Action completions
+
+Add `@Sendable` to Yosemite Action completions one Action case at a time. The compiler checks explicit `@Sendable` closures even under `minimal` checking. Use plain `@Sendable`, not `@MainActor @Sendable`, because the main-actor form makes nonisolated mock stubs fail. A `@Sendable` closure cannot change a captured `var`. Use a lock or async code in those callers.
+
 ## Transitional configuration
 
 Before you add a public eligibility case or error for a missing service, check two facts:

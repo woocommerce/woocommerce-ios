@@ -43,15 +43,23 @@ Isolate individual protocol requirements when only those operations need the mai
 
 If all state belongs to the main actor, declare isolation explicitly on the owner type. Do not rely only on inferred isolation from a conformance. Some helpers inherit UIKit isolation but only read type metadata. Consider `nonisolated` on these helpers before you change their callers. See [explicit owner isolation](https://github.com/woocommerce/woocommerce-ios/pull/17949#discussion_r4103103821) and [reuse identifiers](https://github.com/woocommerce/woocommerce-ios/pull/17867#discussion_r4025100655).
 
+A main-actor type that conforms to a nonisolated protocol gets a warning on the conformance itself. To isolate one conformer without changing the shared protocol or its other conformers, use an isolated conformance, such as `extension WordPressMediaLibraryPickerDataSource: @MainActor WPMediaCollectionDataSource`. Objective-C protocol requirements are nonisolated. An isolated conformance is correct only if the framework calls the delegate on the main thread, as `OrderEmailComposer` does with `MFMailComposeViewControllerDelegate`. If the delegate can be called from another queue, keep its methods nonisolated and move the work to the main actor inside them. Types from the fenced `WordPressAuthenticator` target need wrappers, not new conformances.
+
 If an actor-isolated default argument fails in a supported build configuration, accept `nil` as the default. Construct the dependency inside the isolated function body. Verify strict and default build settings. Compiler versions can evaluate default arguments differently.
+
+Do not use a `nonisolated init` on a global-actor class to avoid changing callers. Each assignment of a non-`Sendable` stored property in that initializer produces a warning. It stays quiet only when every stored property is `Sendable`. See [the order details data source](https://github.com/woocommerce/woocommerce-ios/pull/17981), where it added 14 warnings.
 
 An implementation without state can provide a `nonisolated` async witness for an isolated UI-facing requirement. Use this option only if its dependencies control concurrent access. Check direct calls to the concrete implementation separately. Protocol isolation alone does not make the implementation `Sendable`.
 
 If a `@Sendable` closure captures a generic SwiftUI view, capture only the required `Sendable` dependencies when possible. For Combine callbacks, check the scheduler and actor isolation.
 
-Check each UIKit lifecycle or Objective-C callback separately. Use `MainActor.assumeIsolated` only if the framework guarantees main-actor delivery and the body accesses UI state. Test the callback path. A documented main-queue notification callback can meet these conditions. For app-owned protocols, declare isolation that the compiler checks.
+Check each UIKit lifecycle or Objective-C callback separately. Use `MainActor.assumeIsolated` only if the framework guarantees main-actor delivery and the body accesses UI state. Test the callback path. A documented main-queue notification callback can meet these conditions. For app-owned protocols, declare isolation that the compiler checks. An `assumeIsolated` wrapper reached from a nonisolated requirement can add a `sending` warning for each captured value. In one uploader, the count went from 7 to 14.
 
 ## Test fixtures and mocks
+
+Put `@MainActor` on XCTest methods, not on the `XCTestCase` subclass. The class-level annotation conflicts with the nonisolated `setUp()` and `tearDown()` overrides. Use `override func setUp() async throws` if setup must run on the main actor. The same conflict occurs with other nonisolated superclasses, such as `ScreenObject`. When the type under test is an actor, do not make the suite `@MainActor`. Make its mocks actors instead. See [catalog test isolation](https://github.com/woocommerce/woocommerce-ios/pull/18006).
+
+Keep tests that run work in parallel on purpose nonisolated. Examples are tests that use `concurrentPerform`, `async let`, or `TaskGroup`. Main-actor isolation stops the parallel execution that they test. Protect their shared state with a lock or `Mutex`. If a test depends on main-actor ordering, make that dependency explicit.
 
 Construct UI fixtures inside a main-actor test or factory. Nonisolated XCTest setup is not suitable for their construction. Use computed fixtures to create separate mutable values for each test. Keep immutable `Sendable` fixtures shared when their identity or generated timestamp must remain constant. A computed property can return different test data on each read. See [the fixture review](https://github.com/woocommerce/woocommerce-ios/pull/17867#discussion_r4025136932).
 

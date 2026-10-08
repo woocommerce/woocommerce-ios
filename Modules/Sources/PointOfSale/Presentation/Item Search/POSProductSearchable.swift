@@ -5,7 +5,7 @@ import enum Yosemite.POSItem
 import enum Yosemite.SearchDebounceStrategy
 
 @MainActor
-final class POSProductSearchable: @MainActor POSSearchable {
+final class POSProductSearchable: POSSearchable {
     private let itemListType: ItemListType
     private let itemsController: PointOfSaleSearchingItemsControllerProtocol
     private let searchHistoryProvider: POSSearchHistoryProviding

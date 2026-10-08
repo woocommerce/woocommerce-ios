@@ -919,6 +919,7 @@ final class AuthenticationManagerTests: XCTestCase {
         })
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_login_url_is_cross_site_then_recovers_without_starting_login() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -953,6 +954,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.isEmpty)
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_network_failure_surfaces_recovery_then_does_not_track_login_failure() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -979,6 +981,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsFailed.rawValue))
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_genuine_failure_occurs_then_tracks_login_failure() {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
@@ -1005,6 +1008,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsFailed.rawValue))
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_login_retry_is_missing_then_recovers_not_found_after_loading_starts() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1047,6 +1051,7 @@ final class AuthenticationManagerTests: XCTestCase {
     /// seconds more. Ending the loading state here would re-enable the submit button and restore the back
     /// button while the merchant is still being signed in.
     ///
+    @MainActor
     func test_authenticate_site_credentials_when_login_succeeds_then_the_loading_state_is_not_ended() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1100,6 +1105,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(stores.isAuthenticated)
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_login_retry_has_invalid_unverified_response_then_recovers_not_found() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1128,6 +1134,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(didFail)
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_initial_login_has_invalid_unverified_response_then_recovers_without_error() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1156,6 +1163,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(didFail)
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_admin_is_missing_after_verified_custom_login_then_recovers_admin() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1194,6 +1202,7 @@ final class AuthenticationManagerTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_admin_retry_login_preflight_fails_then_routes_to_ordinary_failure() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1234,6 +1243,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(didRecover)
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_verified_credentials_are_invalid_then_marks_incorrect_and_preserves_login_url() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1291,6 +1301,7 @@ final class AuthenticationManagerTests: XCTestCase {
         }
     }
 
+    @MainActor
     func test_unexpected_credential_failure_when_forwarded_then_preserves_context_without_tracking_shown() throws {
         // Given
         let provider = MockAnalyticsProvider()
@@ -1321,6 +1332,7 @@ final class AuthenticationManagerTests: XCTestCase {
                        SiteCredentialLoginError.invalidLoginResponse.underlyingError.description)
     }
 
+    @MainActor
     func test_unexpected_login_page_when_authentication_fails_then_forwards_to_alert_without_recovery_or_shown_tracking() {
         // Given
         let provider = MockAnalyticsProvider()
@@ -1454,6 +1466,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertTrue(provider.receivedEvents.isEmpty)
     }
 
+    @MainActor
     func test_present_site_credential_login_failure_presents_centered_fancy_alert() throws {
         // Given
         let presenter = SiteCredentialAlertPresenter()
@@ -1472,6 +1485,7 @@ final class AuthenticationManagerTests: XCTestCase {
         try assertCenteredFancyAlertPresented(by: presenter)
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_login_recovery_is_requested_then_tracks_invalid_login_page_detected() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1499,6 +1513,7 @@ final class AuthenticationManagerTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_unverified_response_recovers_login_then_tracks_invalid_login_page_detected() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1526,6 +1541,7 @@ final class AuthenticationManagerTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_admin_recovery_is_requested_then_does_not_track_invalid_login_page_detected() {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
@@ -1603,6 +1619,7 @@ final class AuthenticationManagerTests: XCTestCase {
         try assertCenteredFancyAlertPresented(by: presenter)
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_custom_or_standard_login_succeeds_then_persists_only_nondefault_endpoints() throws {
         // Given
         let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()

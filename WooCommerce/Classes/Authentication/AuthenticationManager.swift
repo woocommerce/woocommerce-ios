@@ -587,6 +587,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Authenticates site credentials against explicitly configured endpoints, asking the merchant where
     /// the sign-in page or the dashboard lives when the standard addresses do not work.
     ///
+    @MainActor
     func authenticateSiteCredentials(credentials: WordPressOrgCredentials,
                                      loginURL: String?,
                                      adminURL: String?,
@@ -598,7 +599,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                      onRecovery: @escaping (SiteCredentialRecovery) -> Bool,
                                      onFailure: @escaping (Error, Bool, String?, Bool) -> Void) {
         if onRetryResult == nil {
-            MainActor.assumeIsolated { unexpectedResponsePresenter.invalidate() }
+            unexpectedResponsePresenter.invalidate()
         }
         cancelSiteCredentialLoginAttempt()
         let attemptID = credentialAttemptID
@@ -697,15 +698,14 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the failure without ever navigating to the browser flow on its own. The browser alternative
     /// is only ever offered as a button the merchant has to tap.
     ///
+    @MainActor
     func presentSiteCredentialLoginFailure(error: Error,
                                            offersBrowserAlternative: Bool,
                                            for siteURL: String,
                                            in viewController: UIViewController,
                                            onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
         if case .unexpectedResponse(let failure) = error as? SiteCredentialLoginError {
-            MainActor.assumeIsolated {
-                unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, onRetry: onRetry)
-            }
+            unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, onRetry: onRetry)
             return
         }
         let browserAction: (() -> Void)? = offersBrowserAlternative ? { [weak self, weak viewController] in
@@ -719,9 +719,10 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         )
     }
 
+    @MainActor
     func cancelSiteCredentialLogin() {
         cancelSiteCredentialLoginAttempt()
-        MainActor.assumeIsolated { unexpectedResponsePresenter.invalidate() }
+        unexpectedResponsePresenter.invalidate()
     }
 
     private func cancelSiteCredentialLoginAttempt() {

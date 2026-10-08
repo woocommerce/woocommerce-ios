@@ -326,6 +326,7 @@ private extension SiteCredentialLoginUseCase {
 
     /// Fetches a document, following only same-site redirects and never more than the shared bound.
     /// Returns the first non-redirect response, so callers only express their own terminal check.
+    @MainActor
     func loadDocument(
         from startURL: URL,
         stage: CookieNonceAuthenticationResponseStage,
@@ -351,6 +352,7 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
+    @MainActor
     func preflight(endpoints: CookieNonceAuthenticationEndpoints) async throws -> URL {
         let document = try await loadDocument(from: endpoints.loginEntryURL, stage: .preflight, endpoints: endpoints)
         guard let submissionURL = try endpointValue(stage: .preflight, {
@@ -361,6 +363,7 @@ private extension SiteCredentialLoginUseCase {
         return submissionURL
     }
 
+    @MainActor
     func retrieveNonce(
         at nonceURL: URL,
         afterLoginAt loginURL: URL,
@@ -375,6 +378,7 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
+    @MainActor
     func verifyDashboard(afterLoginAt loginURL: URL, endpoints: CookieNonceAuthenticationEndpoints) async throws {
         let adminBaseURL = try endpointValue { try endpoints.derivedAdminBaseURL(afterLoginAt: loginURL) }
         let document = try await loadDocument(from: adminBaseURL, stage: .dashboard, endpoints: endpoints)
@@ -389,6 +393,7 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
+    @MainActor
     func load(_ request: URLRequest, using session: URLSessionProtocol,
               stage: CookieNonceAuthenticationResponseStage) async throws -> (data: Data, http: HTTPURLResponse) {
         try Task.checkCancellation()

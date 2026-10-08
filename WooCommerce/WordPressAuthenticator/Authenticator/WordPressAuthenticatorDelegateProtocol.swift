@@ -176,6 +176,7 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///       login failed with incorrect credentials, the verified login entry address when one is already known,
     ///       and whether browser authentication could plausibly solve this credential-response failure.
     ///
+    @MainActor
     func authenticateSiteCredentials(credentials: WordPressOrgCredentials,
                                      loginURL: String?,
                                      adminURL: String?,
@@ -204,12 +205,14 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///     - siteURL: The site URL of the login failure.
     ///     - viewController: the view controller containing the site credential input.
     ///
+    @MainActor
     func presentSiteCredentialLoginFailure(error: Error,
                                            offersBrowserAlternative: Bool,
                                            for siteURL: String,
                                            in viewController: UIViewController,
                                            onRetry: @escaping (@escaping (Bool) -> Void) -> Void)
 
+    @MainActor
     func cancelSiteCredentialLogin()
 
     /// Signals to the Host App to handle an error for site credential login.
@@ -288,6 +291,7 @@ public extension WordPressAuthenticatorDelegate {
     /// Bridges the endpoint-aware contract onto Host Apps that only adopt the legacy one, so they keep
     /// their existing behaviour and never see an endpoint recovery request.
     ///
+    @MainActor
     func authenticateSiteCredentials(credentials: WordPressOrgCredentials,
                                      loginURL: String?,
                                      adminURL: String?,
@@ -312,6 +316,7 @@ public extension WordPressAuthenticatorDelegate {
         // No-op
     }
 
+    @MainActor
     func presentSiteCredentialLoginFailure(error: Error,
                                            offersBrowserAlternative: Bool,
                                            for siteURL: String,
@@ -320,6 +325,7 @@ public extension WordPressAuthenticatorDelegate {
         handleSiteCredentialLoginFailure(error: error, for: siteURL, in: viewController)
     }
 
+    @MainActor
     func cancelSiteCredentialLogin() {
         // No-op for hosts without a cancellable credential transaction.
     }

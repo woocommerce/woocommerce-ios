@@ -1,6 +1,7 @@
 import SwiftUI
 
 // MARK: - Button Customization Protocol
+@MainActor
 protocol PointOfSaleBarcodeScannerButtonCustomization {
     func customizeButtons(for flow: PointOfSaleBarcodeScannerSetupFlow) -> PointOfSaleFlowButtonConfiguration
 }
@@ -18,6 +19,7 @@ struct PointOfSaleBarcodeScannerSetupStep {
     let buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization?
     let transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerStepID]
 
+    @MainActor
     init(@ViewBuilder content: () -> any View,
          buttonCustomization: PointOfSaleBarcodeScannerButtonCustomization? = nil,
          transitions: [PointOfSaleBarcodeScannerTransitionType: PointOfSaleBarcodeScannerStepID] = [:]) {

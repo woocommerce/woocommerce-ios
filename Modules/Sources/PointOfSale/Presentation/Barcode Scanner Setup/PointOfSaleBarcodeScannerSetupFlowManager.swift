@@ -3,13 +3,16 @@ import GameController
 import WooFoundation
 
 // MARK: - Point of Sale Barcode Scanner Setup Flow Manager
+@MainActor
 @Observable
 class PointOfSaleBarcodeScannerSetupFlowManager {
     var currentState: PointOfSaleBarcodeScannerSetupFlowState = .scannerSelection
     @ObservationIgnored @Binding var isPresented: Bool
     private var currentFlow: PointOfSaleBarcodeScannerSetupFlow?
     private let analytics: POSAnalyticsProviding
-    private var keyboardObserver: NSObjectProtocol?
+    // Read from the nonisolated deinit; otherwise only set once from `init` on the main actor.
+    // Remove `nonisolated(unsafe)` once the deployment target allows `isolated deinit` (iOS 18.4).
+    @ObservationIgnored nonisolated(unsafe) private var keyboardObserver: NSObjectProtocol?
 
     var currentStepKey: String? {
         currentFlow?.currentStepKey.rawValue
@@ -22,7 +25,9 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
     }
 
     deinit {
-        removeKeyboardObserver()
+        if let keyboardObserver {
+            NotificationCenter.default.removeObserver(keyboardObserver)
+        }
     }
 
     func selectScanner(_ scannerType: PointOfSaleBarcodeScannerType) {
@@ -81,14 +86,10 @@ class PointOfSaleBarcodeScannerSetupFlowManager {
             object: nil,
             queue: .main
         ) { [weak self] _ in
-            self?.handleKeyboardConnected()
-        }
-    }
-
-    private func removeKeyboardObserver() {
-        if let keyboardObserver {
-            NotificationCenter.default.removeObserver(keyboardObserver)
-            self.keyboardObserver = nil
+            // `queue: .main` delivers the notification on the main thread.
+            MainActor.assumeIsolated {
+                self?.handleKeyboardConnected()
+            }
         }
     }
 

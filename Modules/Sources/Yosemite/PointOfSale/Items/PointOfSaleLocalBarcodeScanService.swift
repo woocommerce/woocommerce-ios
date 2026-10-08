@@ -83,29 +83,27 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
 
     // MARK: - Conversion to POSItem
 
-    private func convertProductToItem(_ persistedProduct: POSProduct, scannedCode: String) throws(PointOfSaleBarcodeScanError) -> POSItem {
+    private func convertProductToItem(_ product: POSProduct, scannedCode: String) throws(PointOfSaleBarcodeScanError) -> POSItem {
         do {
-            let posProduct = persistedProduct
-
             // Validate that the product status is allowed for POS
-            try validateProductStatus(posProduct, scannedCode: scannedCode)
+            try validateProductStatus(product, scannedCode: scannedCode)
 
-            guard !posProduct.downloadable else {
-                throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode, productName: posProduct.name)
+            guard !product.downloadable else {
+                throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode, productName: product.name)
             }
 
             // Validate product type - only simple products can be scanned directly
             // Variable parent products cannot be added to cart (only their variations can)
-            guard posProduct.productType == .simple else {
+            guard product.productType == .simple else {
                 throw PointOfSaleBarcodeScanError.unsupportedProductType(
                     scannedCode: scannedCode,
-                    productName: posProduct.name,
-                    productType: posProduct.productType
+                    productName: product.name,
+                    productType: product.productType
                 )
             }
 
             // Convert to POSItem
-            let items = itemMapper.mapProductsToPOSItems(products: [posProduct])
+            let items = itemMapper.mapProductsToPOSItems(products: [product])
             guard let item = items.first else {
                 throw PointOfSaleBarcodeScanError.unknown(scannedCode: scannedCode)
             }
@@ -118,24 +116,21 @@ public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanSer
         }
     }
 
-    private func convertVariationToItem(_ persistedVariation: POSProductVariation,
+    private func convertVariationToItem(_ variation: POSProductVariation,
                                         parentProduct: POSProduct,
                                         scannedCode: String) throws(PointOfSaleBarcodeScanError) -> POSItem {
         do {
-            let posVariation = persistedVariation
-            let parentPOSProduct = parentProduct
-
             // Validate that the parent product status is allowed for POS
-            try validateProductStatus(parentPOSProduct, scannedCode: scannedCode)
+            try validateProductStatus(parentProduct, scannedCode: scannedCode)
 
             // Map to POSItem
-            guard let mappedParent = itemMapper.mapProductsToPOSItems(products: [parentPOSProduct]).first,
+            guard let mappedParent = itemMapper.mapProductsToPOSItems(products: [parentProduct]).first,
                   case .variableParentProduct(let variableParentProduct) = mappedParent,
-                  let item = itemMapper.mapVariationsToPOSItems(variations: [posVariation], parentProduct: variableParentProduct).first else {
+                  let item = itemMapper.mapVariationsToPOSItems(variations: [variation], parentProduct: variableParentProduct).first else {
                 throw PointOfSaleBarcodeScanError.variationCouldNotBeConverted(scannedCode: scannedCode)
             }
 
-            guard !persistedVariation.downloadable else {
+            guard !variation.downloadable else {
                 throw PointOfSaleBarcodeScanError.downloadableProduct(scannedCode: scannedCode,
                                                                       productName: variationName(for: item))
             }

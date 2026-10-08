@@ -89,9 +89,7 @@ public final class POSScreen: ScreenObject {
     @discardableResult
     public func tapAddCustomAmount(amount: String, name: String? = nil) -> Self {
         let customAmountEntryRow = app.buttons["pos-custom-amount-entry-row"]
-        if !customAmountEntryRow.waitForIsHittable(timeout: 5) {
-            customAmountEntryRow.scrollIntoView(app: app)
-        }
+        customAmountEntryRow.scrollIntoView(app: app)
         XCTAssertTrue(customAmountEntryRow.waitForIsHittable(timeout: 10), "Custom amount entry row should be tappable.")
         customAmountEntryRow.tap()
 
@@ -104,10 +102,10 @@ public final class POSScreen: ScreenObject {
         }
         if let firstDigit = amount.first {
             XCTAssertTrue(app.keys[String(firstDigit)].waitForExistence(timeout: 5), "Custom amount keyboard should be visible.")
+            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.3))
         }
         app.typeText(amount)
 
-        // Move focus from the hidden amount input to a visible field before submitting.
         let nameField = app.textFields["pos-custom-amount-name-field"]
         XCTAssertTrue(nameField.waitForExistence(timeout: 10), "Custom amount name field should exist.")
         let form = app.scrollViews.containing(.textField, identifier: "pos-custom-amount-name-field").firstMatch
@@ -427,9 +425,9 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func dismissSettings() -> Self {
-        let closeButton = app.buttons["pos-settings-close-button"]
-        XCTAssertTrue(closeButton.waitForIsHittable(timeout: 10), "POS settings close button should be tappable.")
-        closeButton.tap()
+        let settingsTitle = app.staticTexts["Settings"]
+        XCTAssertTrue(waitForVisibleElement(settingsTitle, timeout: 10), "POS settings title should be visible.")
+        settingsTitle.coordinate(withNormalizedOffset: CGVector(dx: -0.65, dy: 0.5)).tap()
         XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15), "POS product list should be visible after dismissing settings.")
         return self
     }

@@ -59,8 +59,7 @@ extension POSSettingsView {
                                                    action: {
                                                        analytics.track(.pointOfSaleSettingsCloseButtonTapped)
                                                        dismiss()
-                                                   },
-                                                   accessibilityIdentifier: "pos-settings-close-button"))
+                                                   }))
                 .posHeaderBackButtonIcon(systemName: "xmark")
                 .foregroundColor(.posSurface)
                 .accessibilityAddTraits(.isHeader)
@@ -103,7 +102,6 @@ extension POSSettingsView {
                 .padding(.horizontal, POSPadding.medium)
             }
             .background(Color.posSurfaceBright)
-            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("pos-settings-view")
         }
 
@@ -135,7 +133,6 @@ extension POSSettingsView {
             .buttonStyle(.plain)
             .accessibilityAddTraits(.isButton)
             .accessibilityLabel(SidebarNavigation.help.title)
-            .accessibilityIdentifier("pos-settings-help-button")
         }
     }
 

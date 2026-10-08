@@ -382,6 +382,45 @@ class LoginViewControllerTests: XCTestCase {
         XCTAssertTrue(cancelButton.isEnabled)
     }
 
+    func test_site_credentials_controller_when_alert_retry_is_selected_then_resubmits_current_values_with_original_failure() throws {
+        // Given
+        let delegate = WordPressAuthenticatorDelegateSpy()
+        let error = NSError(domain: "UnexpectedResponse", code: 500)
+        delegate.siteCredentialFailure = (error, false, nil)
+        let controller = try makeSiteCredentialsController(delegate: delegate)
+        try tapContinue(in: controller)
+        controller.loginFields.username = "edited-user"
+        controller.loginFields.password = "edited-password"
+        delegate.defersSiteCredentialAuthentication = true
+
+        // When
+        delegate.presentedSiteCredentialRetry?({ _ in })
+
+        // Then
+        XCTAssertEqual(delegate.siteCredentialAuthenticationRequests.count, 2)
+        XCTAssertEqual(delegate.siteCredentialAuthenticationRequests.last?.credentials.username, "edited-user")
+        XCTAssertEqual(delegate.siteCredentialAuthenticationRequests.last?.credentials.password, "edited-password")
+        XCTAssertEqual(delegate.siteCredentialRetryFailure as NSError?, error)
+        XCTAssertNotNil(delegate.siteCredentialRetryResult)
+        XCTAssertEqual(controller.submitButton?.isEnabled, false)
+    }
+
+    func test_site_credentials_controller_when_popped_then_cancels_active_authentication() throws {
+        // Given
+        let delegate = WordPressAuthenticatorDelegateSpy()
+        let controller = try makeSiteCredentialsController(delegate: delegate, pushedOntoPlaceholderRoot: true)
+        delegate.defersSiteCredentialAuthentication = true
+        try tapContinue(in: controller)
+
+        // When
+        let navigation = try XCTUnwrap(controller.navigationController)
+        navigation.popViewController(animated: false)
+        navigation.view.layoutIfNeeded()
+
+        // Then
+        XCTAssertEqual(delegate.credentialCancellationCount, 1)
+    }
+
     func test_site_credentials_controller_when_ordinary_failure_occurs_then_preserves_manual_handling_configuration() throws {
         // Given
         let inlineDelegate = WordPressAuthenticatorDelegateSpy()

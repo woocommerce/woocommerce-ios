@@ -8,6 +8,44 @@ import enum NetworkingCore.CookieNonceAuthenticationResponseStage
 @MainActor
 final class SiteCredentialLoginUseCaseTests: XCTestCase {
 
+    func test_cancellation_when_login_page_passes_then_stops_before_credential_submission_without_terminal_callback() async {
+        // Given
+        let session = MockURLSession()
+        let loginSession = MockURLSession()
+        session.simulateResponse(for: "https://test.com/wp-login.php", data: Data(loginForm().utf8))
+        let useCase = SiteCredentialLoginUseCase(siteURL: "https://test.com", session: session, loginSession: loginSession)
+        let pagePassed = expectation(description: "Login page validated")
+        let terminal = expectation(description: "No completion after cancellation")
+        terminal.isInverted = true
+        useCase.setupHandlers(onLoginSuccess: { terminal.fulfill() }, onLoginFailure: { _, _, _ in terminal.fulfill() })
+        useCase.onStageSuccess = { [weak useCase] _ in
+            useCase?.cancel()
+            pagePassed.fulfill()
+        }
+
+        // When
+        useCase.handleLogin(username: "merchant", password: "password")
+        await fulfillment(of: [pagePassed], timeout: 1)
+        await fulfillment(of: [terminal], timeout: 0.1)
+
+        // Then
+        XCTAssertEqual(session.requestCount, 1)
+        XCTAssertEqual(loginSession.requestCount, 0)
+    }
+
+    func test_stage_progress_when_a_later_stage_fails_then_reports_only_validated_stages() async throws {
+        for (index, stage) in credentialStages.enumerated() {
+            // Given
+            var passed = [CookieNonceAuthenticationResponseStage]()
+
+            // When
+            _ = try await responseFailure(at: stage, data: Data("unexpected page".utf8), onStageSuccess: { passed.append($0) })
+
+            // Then
+            XCTAssertEqual(passed, Array(credentialStages.prefix(index)))
+        }
+    }
+
     func test_handle_login_when_content_is_unexpected_then_reports_exact_stage_without_response_content() async throws {
         for stage in credentialStages {
             for data in [Data("<html>private-response-sentinel</html>".utf8), Data(), Data([0xff])] {
@@ -1406,7 +1444,8 @@ private extension SiteCredentialLoginUseCaseTests {
     var credentialStages: [CookieNonceAuthenticationResponseStage] { [.preflight, .credentials, .dashboard, .nonce] }
 
     func responseFailure(at stage: CookieNonceAuthenticationResponseStage, data: Data,
-                         statusCode: Int = 200, headers: [String: String]? = nil) async throws -> SiteCredentialLoginError {
+                         statusCode: Int = 200, headers: [String: String]? = nil,
+                         onStageSuccess: ((CookieNonceAuthenticationResponseStage) -> Void)? = nil) async throws -> SiteCredentialLoginError {
         let siteURL = "https://test.com"
         let loginURL = siteURL + "/wp-login.php"
         let adminURL = siteURL + "/wp-admin/"
@@ -1426,6 +1465,7 @@ private extension SiteCredentialLoginUseCaseTests {
         targetSession.simulateResponse(for: responseURL, data: data, statusCode: statusCode, headerFields: headers)
         let useCase = SiteCredentialLoginUseCase(siteURL: siteURL, verifyAdminDashboard: true,
                                                 session: session, loginSession: loginSession)
+        useCase.onStageSuccess = onStageSuccess
         let result = await performLogin(using: useCase)
         guard case .failure(let error) = result else {
             XCTFail("Expected failure at \(stage)")

@@ -1305,7 +1305,7 @@ final class AuthenticationManagerTests: XCTestCase {
                                             onFailure: { error, incorrectCredentials, _, browserAlternative in
             receivedError = error
             XCTAssertFalse(incorrectCredentials)
-            XCTAssertTrue(browserAlternative)
+            XCTAssertFalse(browserAlternative)
         })
 
         // When
@@ -1321,34 +1321,121 @@ final class AuthenticationManagerTests: XCTestCase {
                        SiteCredentialLoginError.invalidLoginResponse.underlyingError.description)
     }
 
-    func test_unexpected_login_page_when_recovery_is_acknowledged_then_tracks_once_per_attempt() {
-        for isDisplayed in [true, false] {
+    func test_unexpected_login_page_when_authentication_fails_then_forwards_to_alert_without_recovery_or_shown_tracking() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: provider),
+                                            siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+        var failureCount = 0
+
+        // When
+        manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: nil, adminURL: nil,
+                                            endpointUnderVerification: nil, onLoading: { _ in }, onSuccess: { _ in XCTFail("Expected failure") },
+                                            onRecovery: { _ in XCTFail("Unexpected endpoint recovery"); return false },
+                                            onFailure: { _, _, _, _ in failureCount += 1 })
+        useCase.fail(with: .unexpectedResponse(.init(stage: .preflight)), loginEntryVerified: false)
+
+        // Then
+        XCTAssertEqual(failureCount, 1)
+        XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginSiteCredentialsFailed.rawValue])
+    }
+
+    @MainActor
+    func test_retry_when_original_step_passes_and_later_step_fails_then_reports_success_once() {
+        for stage in [CookieNonceAuthenticationResponseStage.preflight, .credentials, .dashboard, .nonce] {
             // Given
-            let provider = MockAnalyticsProvider()
             let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
-            let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: provider),
-                                                siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
-            var recoveryCount = 0
+            let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+            var results = [Bool]()
+            manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: nil, adminURL: nil,
+                                                endpointUnderVerification: .admin,
+                                                retryingFailure: SiteCredentialLoginError.unexpectedResponse(.init(stage: stage)),
+                                                onRetryResult: { results.append($0) }, onLoading: { _ in }, onSuccess: { _ in },
+                                                onRecovery: { _ in false }, onFailure: { _, _, _, _ in })
 
-            for attempt in 1...2 {
-                // When
-                manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: nil, adminURL: nil,
-                                                    endpointUnderVerification: nil, onLoading: { _ in }, onSuccess: { _ in XCTFail("Expected recovery") },
-                                                    onRecovery: { recovery in
-                    XCTAssertEqual(recovery, .login(draftURL: "https://example.com/wp-login.php", error: nil))
-                    recoveryCount += 1
-                    return isDisplayed
-                }, onFailure: { _, _, _, _ in XCTFail("Expected recovery") })
-                useCase.fail(with: .unexpectedResponse(.init(stage: .preflight)), loginEntryVerified: false)
+            // When
+            useCase.onStageSuccess?(stage)
+            useCase.onStageSuccess?(stage)
+            useCase.fail(with: .invalidCredentials, loginEntryVerified: true)
 
-                // Then
-                XCTAssertEqual(recoveryCount, attempt)
-                XCTAssertEqual(provider.receivedEvents.filter { $0 == WooAnalyticsStat.loginUnexpectedResponseErrorShown.rawValue }.count,
-                               isDisplayed ? attempt : 0)
-                XCTAssertEqual(provider.receivedEvents.filter { $0 == WooAnalyticsStat.loginSiteCredentialsInvalidLoginPageDetected.rawValue }.count, attempt)
-                XCTAssertFalse(provider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsFailed.rawValue))
-            }
+            // Then
+            XCTAssertEqual(results, [true])
         }
+    }
+
+    @MainActor
+    func test_retry_when_an_earlier_step_fails_then_reports_failure_once() {
+        // Given
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+        var results = [Bool]()
+        manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: nil, adminURL: nil,
+                                            endpointUnderVerification: nil,
+                                            retryingFailure: SiteCredentialLoginError.unexpectedResponse(.init(stage: .nonce)),
+                                            onRetryResult: { results.append($0) }, onLoading: { _ in }, onSuccess: { _ in },
+                                            onRecovery: { _ in false }, onFailure: { _, _, _, _ in })
+
+        // When
+        useCase.onStageSuccess?(.preflight)
+        XCTAssertTrue(results.isEmpty)
+        useCase.fail(with: .invalidCredentials, loginEntryVerified: true)
+
+        // Then
+        XCTAssertEqual(results, [false])
+    }
+
+    @MainActor
+    func test_retry_when_cancelled_then_ignores_stale_stage_and_terminal_callbacks() {
+        // Given
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+        var results = [Bool]()
+        manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: nil, adminURL: nil,
+                                            endpointUnderVerification: nil,
+                                            retryingFailure: SiteCredentialLoginError.unexpectedResponse(.init(stage: .nonce)),
+                                            onRetryResult: { results.append($0) }, onLoading: { _ in },
+                                            onSuccess: { _ in XCTFail("Stale success") }, onRecovery: { _ in XCTFail("Stale recovery"); return false },
+                                            onFailure: { _, _, _, _ in XCTFail("Stale failure") })
+
+        // When
+        manager.cancelSiteCredentialLogin()
+        useCase.onStageSuccess?(.nonce)
+        useCase.succeed()
+        useCase.fail(with: .invalidCredentials, loginEntryVerified: true)
+
+        // Then
+        XCTAssertTrue(results.isEmpty)
+        XCTAssertEqual(useCase.cancellationCount, 1)
+    }
+
+    @MainActor
+    func test_retry_when_started_then_uses_current_credentials_and_configured_endpoints() throws {
+        // Given
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        var endpoints: CookieNonceAuthenticationEndpoints?
+        var verifiesDashboard = false
+        let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, value, verifies in
+            endpoints = value
+            verifiesDashboard = verifies
+            return useCase
+        })
+        let credentials = WordPressOrgCredentials(username: "edited-user", password: "edited-password",
+                                                 xmlrpc: "https://example.com/xmlrpc.php", options: [:])
+
+        // When
+        manager.authenticateSiteCredentials(credentials: credentials, loginURL: "https://example.com/custom-login",
+                                            adminURL: "https://example.com/custom-admin/", endpointUnderVerification: .admin,
+                                            retryingFailure: SiteCredentialLoginError.unexpectedResponse(.init(stage: .dashboard)),
+                                            onRetryResult: { _ in }, onLoading: { _ in }, onSuccess: { _ in },
+                                            onRecovery: { _ in false }, onFailure: { _, _, _, _ in })
+
+        // Then
+        XCTAssertEqual(useCase.receivedUsername, "edited-user")
+        XCTAssertEqual(useCase.receivedPassword, "edited-password")
+        XCTAssertEqual(try XCTUnwrap(endpoints).loginEntryURL.absoluteString, "https://example.com/custom-login")
+        XCTAssertEqual(try XCTUnwrap(endpoints).adminBaseURL.absoluteString, "https://example.com/custom-admin/")
+        XCTAssertTrue(verifiesDashboard)
     }
 
     @MainActor
@@ -1605,6 +1692,9 @@ private final class SiteCredentialAlertPresenter: UIViewController, UIViewContro
 }
 
 private final class MockAuthenticationManagerSiteCredentialLoginUseCase: SiteCredentialLoginProtocol {
+    var onStageSuccess: ((CookieNonceAuthenticationResponseStage) -> Void)?
+    private(set) var cancellationCount = 0
+    func cancel() { cancellationCount += 1 }
     var onHandleLogin: (() -> Void)?
     private(set) var receivedUsername: String?
     private(set) var receivedPassword: String?

@@ -22,6 +22,10 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     private(set) var siteCredentialAuthenticationLoadingHandler: ((Bool) -> Void)?
     var siteCredentialFailure: (error: Error, incorrectCredentials: Bool, verifiedLoginURL: String?)?
     var siteCredentialFailureOffersBrowserAlternative = false
+    private(set) var siteCredentialRetryFailure: Error?
+    private(set) var siteCredentialRetryResult: ((Bool) -> Void)?
+    private(set) var presentedSiteCredentialRetry: ((@escaping (Bool) -> Void) -> Void)?
+    private(set) var credentialCancellationCount = 0
     private(set) var presentedSiteCredentialFailureCount = 0
     private(set) var presentedSiteCredentialFailureOffersBrowserAlternative: Bool?
     private(set) var presentedSiteCredentialBrowserAlternativeCount = 0
@@ -93,10 +97,14 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
                                      loginURL: String?,
                                      adminURL: String?,
                                      endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
+                                     retryingFailure: Error? = nil,
+                                     onRetryResult: ((Bool) -> Void)? = nil,
                                      onLoading: @escaping (Bool) -> Void,
                                      onSuccess: @escaping (WordPressOrgCredentials) -> Void,
                                      onRecovery: @escaping (SiteCredentialRecovery) -> Bool,
                                      onFailure: @escaping (Error, Bool, String?, Bool) -> Void) {
+        siteCredentialRetryFailure = retryingFailure
+        siteCredentialRetryResult = onRetryResult
         siteCredentialAuthenticationRequests.append(.init(
             credentials: credentials,
             loginURL: loginURL,
@@ -127,10 +135,14 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     func presentSiteCredentialLoginFailure(error: Error,
                                            offersBrowserAlternative: Bool,
                                            for siteURL: String,
-                                           in viewController: UIViewController) {
+                                           in viewController: UIViewController,
+                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
+        presentedSiteCredentialRetry = onRetry
         presentedSiteCredentialFailureCount += 1
         presentedSiteCredentialFailureOffersBrowserAlternative = offersBrowserAlternative
     }
+
+    func cancelSiteCredentialLogin() { credentialCancellationCount += 1 }
 
     func presentSiteCredentialBrowserAlternative(for siteURL: String, in viewController: UIViewController) {
         presentedSiteCredentialBrowserAlternativeCount += 1

@@ -121,11 +121,19 @@ final class SiteCredentialsViewController: LoginViewController {
         unregisterForKeyboardEvents()
     }
 
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        if isBeingDismissed || navigationController?.isBeingDismissed == true {
+            WordPressAuthenticator.shared.delegate?.cancelSiteCredentialLogin()
+        }
+    }
+
     override func didMove(toParent parent: UIViewController?) {
         super.didMove(toParent: parent)
         guard parent == nil else {
             return
         }
+        WordPressAuthenticator.shared.delegate?.cancelSiteCredentialLogin()
         // Not viewWillDisappear/isMovingFromParent: a cancelled back-swipe fires those and comes
         // back here, and `isWPCom` is read at submit time.
         loginFields.restoreSiteAddressAfterWPComFallback()
@@ -602,7 +610,8 @@ private extension SiteCredentialsViewController {
         authenticateSiteCredentials(verifying: recoveryEndpoint)
     }
 
-    func authenticateSiteCredentials(verifying endpoint: SiteCredentialRecoveryEndpoint?) {
+    func authenticateSiteCredentials(verifying endpoint: SiteCredentialRecoveryEndpoint?,
+                                     retryingFailure: Error? = nil, onRetryResult: ((Bool) -> Void)? = nil) {
         guard let delegate = WordPressAuthenticator.shared.delegate else {
             // The authenticator cannot present this screen without a delegate, so the flow is already unusable here.
             fatalError("Error: Where did the delegate go?")
@@ -619,6 +628,8 @@ private extension SiteCredentialsViewController {
             loginURL: recoveredLoginURL,
             adminURL: recoveredAdminURL,
             endpointUnderVerification: endpoint,
+            retryingFailure: retryingFailure,
+            onRetryResult: onRetryResult,
             onLoading: { [weak self] in self?.configureViewLoading($0) },
             onSuccess: { [weak self] credentials in
                 self?.finishedLogin(withUsername: credentials.username,
@@ -730,7 +741,11 @@ private extension SiteCredentialsViewController {
             error: error,
             offersBrowserAlternative: recoveryEndpoint == nil && offersBrowserAlternative,
             for: loginFields.siteAddress,
-            in: self
+            in: self,
+            onRetry: { [weak self] result in
+                guard let self else { return }
+                authenticateSiteCredentials(verifying: recoveryEndpoint, retryingFailure: error, onRetryResult: result)
+            }
         )
     }
 

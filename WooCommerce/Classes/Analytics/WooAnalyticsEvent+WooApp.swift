@@ -3015,6 +3015,22 @@ extension WooAnalyticsEvent {
 //
 extension WooAnalyticsEvent {
     enum Login {
+        static func unexpectedResponseActionTapped(failure: LoginUnexpectedResponseFailure,
+                                                  loginFlow: LoginUnexpectedResponseFailure.LoginFlow,
+                                                  action: LoginUnexpectedResponseFailure.Action) -> WooAnalyticsEvent {
+            var properties = unexpectedResponseShown(failure: failure, loginFlow: loginFlow).properties
+            properties["action"] = action.rawValue
+            return WooAnalyticsEvent(statName: .loginUnexpectedResponseActionTapped, properties: properties)
+        }
+
+        static func unexpectedResponseRetryResult(failure: LoginUnexpectedResponseFailure,
+                                                 loginFlow: LoginUnexpectedResponseFailure.LoginFlow,
+                                                 success: Bool) -> WooAnalyticsEvent {
+            var properties = unexpectedResponseShown(failure: failure, loginFlow: loginFlow).properties
+            properties["result"] = success ? "success" : "failure"
+            return WooAnalyticsEvent(statName: .loginUnexpectedResponseRetryResult, properties: properties)
+        }
+
         static func unexpectedResponseShown(failure: LoginUnexpectedResponseFailure,
                                             loginFlow: LoginUnexpectedResponseFailure.LoginFlow) -> WooAnalyticsEvent {
             WooAnalyticsEvent(statName: .loginUnexpectedResponseErrorShown, properties: [

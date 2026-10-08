@@ -167,6 +167,8 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///     - loginURL: the login entry address to use, or `nil` to use the standard one.
     ///     - adminURL: the admin base address to use, or `nil` to use the standard one.
     ///     - endpointUnderVerification: the endpoint this attempt is trying to confirm, or `nil` for an ordinary attempt.
+    ///     - retryingFailure: the original failure when this is an explicit alert retry.
+    ///     - onRetryResult: called once when the originally failed step passes or this attempt fails before it passes.
     ///     - onLoading: the block to update the loading state on the site credentials form when necessary.
     ///     - onSuccess: the block to finish the login flow, carrying credentials that record the verified endpoints.
     ///     - onRecovery: asks for an endpoint address; returns whether the recovery UI was displayed.
@@ -178,6 +180,8 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
                                      loginURL: String?,
                                      adminURL: String?,
                                      endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
+                                     retryingFailure: Error?,
+                                     onRetryResult: ((Bool) -> Void)?,
                                      onLoading: @escaping (Bool) -> Void,
                                      onSuccess: @escaping (WordPressOrgCredentials) -> Void,
                                      onRecovery: @escaping (SiteCredentialRecovery) -> Bool,
@@ -203,7 +207,10 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     func presentSiteCredentialLoginFailure(error: Error,
                                            offersBrowserAlternative: Bool,
                                            for siteURL: String,
-                                           in viewController: UIViewController)
+                                           in viewController: UIViewController,
+                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void)
+
+    func cancelSiteCredentialLogin()
 
     /// Signals to the Host App to handle an error for site credential login.
     ///
@@ -285,6 +292,8 @@ public extension WordPressAuthenticatorDelegate {
                                      loginURL: String?,
                                      adminURL: String?,
                                      endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
+                                     retryingFailure: Error? = nil,
+                                     onRetryResult: ((Bool) -> Void)? = nil,
                                      onLoading: @escaping (Bool) -> Void,
                                      onSuccess: @escaping (WordPressOrgCredentials) -> Void,
                                      onRecovery: @escaping (SiteCredentialRecovery) -> Bool,
@@ -306,8 +315,13 @@ public extension WordPressAuthenticatorDelegate {
     func presentSiteCredentialLoginFailure(error: Error,
                                            offersBrowserAlternative: Bool,
                                            for siteURL: String,
-                                           in viewController: UIViewController) {
+                                           in viewController: UIViewController,
+                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
         handleSiteCredentialLoginFailure(error: error, for: siteURL, in: viewController)
+    }
+
+    func cancelSiteCredentialLogin() {
+        // No-op for hosts without a cancellable credential transaction.
     }
 
     func handleSiteCredentialLoginFailure(error: Error,

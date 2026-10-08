@@ -85,6 +85,7 @@ public final class POSScreen: ScreenObject {
         return self
     }
 
+    @MainActor
     @discardableResult
     public func tapAddCustomAmount(amount: String, name: String? = nil) -> Self {
         let customAmountEntryRow = app.buttons["pos-custom-amount-entry-row"]

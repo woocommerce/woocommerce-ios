@@ -222,11 +222,23 @@ tags:
     timeout: 30000
 - assertVisible:
     id: summary-table-view-cell-title-label
+    text: ".*Maestro-${SUITE_RUN_ID}.*"
+- assertVisible: ".*・1 × .*"
+- assertVisible:
+    text: ".*1 × .*"
+    index: 1
 - scrollUntilVisible:
     element:
       text: Custom amount ${SUITE_RUN_ID}
     direction: DOWN
     timeout: 20000
+- scrollUntilVisible:
+    element:
+      text: 'Shipping \$1\.00'
+    direction: DOWN
+    timeout: 20000
+# The product discount is the only negative line in the payment totals.
+- assertVisible: '.*-\$1\.00'
 # Order details show the customer note inside quotation marks.
 - scrollUntilVisible:
     element:

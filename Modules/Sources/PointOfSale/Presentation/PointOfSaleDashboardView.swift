@@ -11,6 +11,7 @@ struct PointOfSaleDashboardView: View {
     @Environment(\.keyboardObserver) private var keyboardObserver
     @Environment(\.posAccessSession) private var session
     @EnvironmentObject private var modalManager: POSModalManager
+    @EnvironmentObject private var coverManager: POSFullScreenCoverManager
 
     @State private var showExitPOSModal: Bool = false
     @State private var showSupport: Bool = false
@@ -135,6 +136,21 @@ struct PointOfSaleDashboardView: View {
         .environment(\.floatingControlAreaSize,
                       CGSizeMake(floatingSize.width + Constants.floatingControlHorizontalOffset,
                                  floatingSize.height + Constants.floatingControlVerticalOffset))
+        .onChange(of: isPhoneLayout) { _, isPhoneLayout in
+            if !isPhoneLayout {
+                // These compact-only cover hosts are removed by the layout change.
+                if phoneShowingBarcodeScannerSetup || posModel.editingCustomAmount != nil {
+                    coverManager.clearPresentation()
+                }
+                phoneShowingCart = false
+                phoneShowingBarcodeScannerSetup = false
+            }
+        }
+        .onChange(of: posModel.paymentState.cash) { _, newValue in
+            if newValue != .collectingCash {
+                viewStateCoordinator.cashAmountInput = .init()
+            }
+        }
         .onPreferenceChange(POSHidesFloatingControlPreferenceKey.self) { hides in
             floatingControlSuppressed = hides
         }

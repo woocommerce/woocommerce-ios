@@ -249,18 +249,9 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func verifyReturnedFromCheckoutToProductSelector(variationID: Int) -> Self {
-        let compactCartButton = app.buttons["pos-compact-cart-button"]
-        if compactCartButton.exists {
-            // Compact layouts swap ItemListView out while checkout is shown, so returning to edit
-            // rebuilds the selector at the root. Regular layouts keep the item pane alive off-screen.
-            XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15),
-                          "POS product list should be visible when returning to edit the cart in compact layout.")
-            return self
-        }
-
         let variationButton = app.buttons["pos-variation-card-\(variationID)"]
         XCTAssertTrue(waitForVisibleElement(variationButton, timeout: 15),
-                      "POS variation selector should remain visible when returning to edit the cart on tablet.")
+                      "POS variation selector should remain visible when returning to edit the cart.")
 
         return self
     }

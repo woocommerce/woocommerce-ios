@@ -12,6 +12,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     @Environment(\.layoutDirection) private var layoutDirection
     @Binding private var selection: SelectionValue?
     @State private var detailNavigationPath = NavigationPath()
+    @State private var hasHorizontalSafeAreaInset = false
     /// Distance the in-progress back drag has travelled towards the sidebar, always positive
     /// however the layout runs. Zero whenever no drag is in flight.
     @State private var dragTranslation: CGFloat = 0
@@ -44,6 +45,15 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
 
     private var isRegular: Bool {
         horizontalSizeClass == .regular
+    }
+
+    private var ignoresBottomContainerInset: Bool {
+        // Match the dashboard's iOS 26+ workaround when the system bar occupies a side.
+        // Ordinary bottom system bars keep their safe area.
+        if #available(iOS 26, *) {
+            return isRegular && hasHorizontalSafeAreaInset
+        }
+        return false
     }
 
     private var visibleDetailBackgroundColor: Color {
@@ -101,6 +111,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                     .animation(isRegular ? .default : nil, value: selection != nil)
                     .navigationBarHidden(true)
                     .posIgnoresHiddenKeyboardSafeArea()
+                    .ignoresSafeArea(.container, edges: ignoresBottomContainerInset ? .bottom : [])
                 }
                 .frame(width: detailWidth(for: totalWidth))
                 // The stack has no backdrop of its own, so without this any moment where the
@@ -121,6 +132,11 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
         // The offscreen pane stays in the HStack for state preservation. Keep it out of
         // system regions beyond this view's safe bounds, including Duo's vertical bar.
         .clipped()
+        .onGeometryChange(for: Bool.self) { geometry in
+            // A landscape phone notch reserves both sides equally; keep its bottom home-indicator inset.
+            geometry.safeAreaInsets.leading != geometry.safeAreaInsets.trailing
+        } action: { hasHorizontalSafeAreaInset = $0 }
+        .ignoresSafeArea(.container, edges: ignoresBottomContainerInset ? .bottom : [])
         // Paint behind the system regions outside the clipped panes. In regular width each
         // edge follows its pane; in compact width the visible pane supplies the color.
         .background {

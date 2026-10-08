@@ -50,6 +50,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private let bottomContent: BottomContent
     @Environment(\.posHeaderBackButtonConfiguration) private var environmentBackButtonConfiguration
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posHeaderTopPadding) private var topPadding
 
     private var effectiveBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
         environmentBackButtonConfiguration ?? backButtonConfiguration
@@ -126,7 +127,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         }
         .frame(minHeight: POSHeaderLayoutConstants.minHeight)
         .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
-        .padding(.top, horizontalSizeClass == .compact ? POSPadding.medium : POSHeaderLayoutConstants.sectionVerticalPadding)
+        .padding(.top, topPadding ?? (horizontalSizeClass == .compact ? POSPadding.medium : POSHeaderLayoutConstants.sectionVerticalPadding))
         .padding(.bottom, POSHeaderLayoutConstants.sectionVerticalPadding)
     }
 
@@ -417,4 +418,15 @@ extension View {
         )
     }
     .background(Color.posSurface)
+}
+
+private struct POSHeaderTopPaddingKey: EnvironmentKey {
+    static let defaultValue: CGFloat? = nil
+}
+
+extension EnvironmentValues {
+    var posHeaderTopPadding: CGFloat? {
+        get { self[POSHeaderTopPaddingKey.self] }
+        set { self[POSHeaderTopPaddingKey.self] = newValue }
+    }
 }

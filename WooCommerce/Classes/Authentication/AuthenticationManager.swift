@@ -725,6 +725,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     }
 
     private func cancelSiteCredentialLoginAttempt() {
+        postSiteCredentialLoginChecker?.cancel()
         credentialAttemptID = UUID()
         siteCredentialLoginUseCase?.cancel()
         siteCredentialLoginUseCase = nil
@@ -1205,6 +1206,7 @@ private extension AuthenticationManager {
         let viewModel = ApplicationPasswordAuthorizationViewModel(siteURL: siteURL)
         let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel,
                                                                            previousViewController: previousVC,
+                                                                           onCancel: { [weak self] in self?.postSiteCredentialLoginChecker?.cancel() },
                                                                            onSuccess: { [weak self] applicationPassword, navigationController in
             guard let navigationController else {
                 DDLogInfo("⚠️ No navigation controller found")
@@ -1213,20 +1215,22 @@ private extension AuthenticationManager {
             guard let self else {
                 return
             }
-            didAuthorizeApplicationPassword(applicationPassword, for: siteURL, in: navigationController)
+            didAuthorizeApplicationPassword(applicationPassword, for: siteURL, in: navigationController, previousViewController: previousVC)
         })
         return controller
     }
 
     func didAuthorizeApplicationPassword(_ applicationPassword: ApplicationPassword,
                                          for siteURL: String,
-                                         in navigationController: UINavigationController) {
+                                         in navigationController: UINavigationController,
+                                         previousViewController: UIViewController? = nil) {
         let credentials = Self.credentials(for: applicationPassword, siteURL: siteURL)
         let useCase = OneTimeApplicationPasswordUseCase(applicationPassword: applicationPassword, siteAddress: siteURL)
         /// IMPORTANT: authenticate after creating the use case above to make sure that
         /// the application password is saved into keychain.
         stores.authenticate(credentials: credentials)
-        checkSiteCredentialLogin(to: siteURL, with: useCase, loginFlow: .appPassword, in: navigationController)
+        checkSiteCredentialLogin(to: siteURL, with: useCase, loginFlow: .appPassword, in: navigationController,
+                                 previousViewController: previousViewController)
     }
 
     /// The error screen to be displayed when Jetpack setup for a site is required.
@@ -1300,7 +1304,7 @@ extension AuthenticationManager {
             loginFlow: .siteCredentials,
             in: navigationController,
             authenticationEndpointPersistence: endpointPersistence,
-            previousViewController: nil
+            previousViewController: navigationController.topViewController
         )
     }
 }
@@ -1312,6 +1316,7 @@ private extension AuthenticationManager {
                                   in navigationController: UINavigationController,
                                   authenticationEndpointPersistence: SiteCredentialAuthenticationEndpointPersistence? = nil,
                                   previousViewController: UIViewController? = nil) {
+        postSiteCredentialLoginChecker?.cancel()
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
                                                      loginFlow: loginFlow,
                                                      stores: stores,

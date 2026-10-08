@@ -17,8 +17,8 @@ final class StorePickerViewModelTests: XCTestCase {
         super.tearDown()
     }
 
-    func test_role_check_when_configuration_changes_then_only_login_and_recovery_opt_into_response_detection() {
-        for (configuration, expectedDetection) in [(StorePickerConfiguration.login, true), (.listStores, true),
+    func test_role_check_when_configuration_changes_then_only_login_opt_into_response_detection() {
+        for (configuration, expectedDetection) in [(StorePickerConfiguration.login, true), (.listStores, false),
                                                    (.standard, false), (.switchingStores, false)] {
             // Given
             let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))

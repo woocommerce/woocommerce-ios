@@ -69,6 +69,138 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         }
     }
 
+    @MainActor
+    func test_retry_when_original_step_passes_but_later_step_fails_then_reports_original_success_without_regenerating_password() throws {
+        for step in [LoginUnexpectedResponseFailure.Step.appPasswordGeneration, .userRoleCheck] {
+            // Given
+            let fixture = makeRecoveryFixture(step: step)
+            fixture.checker.checkEligibility(for: testURL, from: fixture.navigation) {}
+            waitUntil { fixture.navigation.alert != nil }
+            fixture.navigation.presentationCompletion?()
+            fixture.navigation.alert = nil
+            fixture.password.mockGenerationError = nil
+            fixture.password.mockGeneratedPassword = applicationPassword
+            fixture.role.errorToReturn = nil
+
+            // When
+            fixture.checker.unexpectedResponsePresenter.select(.retry)
+            waitUntil { fixture.navigation.alert != nil }
+            fixture.navigation.presentationCompletion?()
+
+            // Then
+            let event = WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue
+            XCTAssertEqual(fixture.provider.receivedEvents.filter { $0 == event }.count, 1)
+            XCTAssertEqual(fixture.provider.properties(for: event)?["step"] as? String, step.rawValue)
+            XCTAssertEqual(fixture.provider.properties(for: event)?["result"] as? String, "success")
+            XCTAssertEqual(fixture.password.generationCallCount, step == .appPasswordGeneration ? 2 : 1)
+            XCTAssertEqual(fixture.navigation.alert?.title, "Unable to log in")
+            XCTAssertEqual(fixture.provider.receivedProperties.last?["step"] as? String,
+                           "woo_plugin_check")
+        }
+    }
+
+    @MainActor
+    func test_retry_when_fault_persists_then_reports_failure_once_and_shows_next_alert() {
+        for step in [LoginUnexpectedResponseFailure.Step.appPasswordGeneration, .userRoleCheck, .wooPluginCheck] {
+            // Given
+            let fixture = makeRecoveryFixture(step: step)
+            fixture.checker.checkEligibility(for: testURL, from: fixture.navigation) {}
+            waitUntil { fixture.navigation.alert != nil }
+            fixture.navigation.presentationCompletion?()
+            fixture.navigation.alert = nil
+
+            // When
+            fixture.checker.unexpectedResponsePresenter.select(.retry)
+            waitUntil { fixture.navigation.alert != nil }
+            fixture.navigation.presentationCompletion?()
+
+            // Then
+            let event = WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue
+            XCTAssertEqual(fixture.provider.receivedEvents.filter { $0 == event }.count, 1)
+            XCTAssertEqual(fixture.provider.properties(for: event)?["result"] as? String, "failure")
+            XCTAssertEqual(fixture.provider.properties(for: event)?["step"] as? String, step.rawValue)
+            XCTAssertEqual(fixture.navigation.alert?.actions.map(\.title), ["Try Again", "Contact Support", "Dismiss"])
+            XCTAssertEqual(fixture.provider.receivedEvents.filter { $0 == WooAnalyticsStat.loginUnexpectedResponseErrorShown.rawValue }.count, 2)
+            XCTAssertEqual(fixture.password.generationCallCount, step == .appPasswordGeneration ? 2 : 1)
+        }
+    }
+
+    @MainActor
+    func test_dismiss_or_support_when_post_login_fails_then_clears_session_and_restores_original_form() {
+        for step in [LoginUnexpectedResponseFailure.Step.appPasswordGeneration, .userRoleCheck, .wooPluginCheck] {
+            for action in [LoginUnexpectedResponseFailure.Action.dismiss, .contactSupport] {
+                // Given: the browser is above the originating form.
+                let fixture = makeRecoveryFixture(step: step, flow: .appPassword)
+                fixture.navigation.pushViewController(UIViewController(), animated: false)
+                fixture.checker.checkEligibility(for: testURL, from: fixture.navigation) {}
+                waitUntil { fixture.navigation.alert != nil }
+
+                // When
+                fixture.checker.unexpectedResponsePresenter.select(action)
+
+                // Then: the same form remains in place; support adds only AI chat.
+                XCTAssertFalse(fixture.stores.isAuthenticated)
+                XCTAssertTrue(fixture.navigation.viewControllers.first === fixture.form)
+                XCTAssertEqual(fixture.navigation.viewControllers.count, action == .dismiss ? 1 : 2)
+                if action == .contactSupport { XCTAssertTrue(fixture.navigation.topViewController is SupportChatHostingController) }
+                XCTAssertFalse(fixture.provider.receivedEvents.contains(WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue))
+                XCTAssertEqual(fixture.password.generationCallCount, 1)
+            }
+        }
+    }
+
+    @MainActor
+    func test_cancellation_when_role_retry_is_pending_then_ignores_stale_success_and_emits_no_result() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let navigation = DeferredPostLoginPresenter()
+        var completeRole: ((Result<User, Error>) -> Void)?
+        stores.whenReceivingAction(ofType: UserAction.self) { action in
+            if case let .retrieveUser(_, _, completion) = action { completeRole = completion }
+        }
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: MockApplicationPasswordUseCase(mockApplicationPassword: applicationPassword),
+                                                     stores: stores, analytics: WooAnalytics(analyticsProvider: provider), previousViewController: nil)
+        var succeeded = false
+        checker.checkEligibility(for: testURL, from: navigation) { succeeded = true }
+        completeRole?(.failure(UnexpectedStoreResponseError(kind: .unexpectedContent)))
+        navigation.presentationCompletion?()
+        checker.unexpectedResponsePresenter.select(.retry)
+        let staleCompletion = completeRole
+
+        // When
+        checker.cancel()
+        staleCompletion?(.success(makeUser(eligible: true)))
+
+        // Then
+        XCTAssertFalse(succeeded)
+        XCTAssertFalse(provider.receivedEvents.contains(WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue))
+        XCTAssertFalse(stores.receivedActions.compactMap { $0 as? WordPressSiteAction }.contains { if case .fetchSiteInfo = $0 { return true }; return false })
+    }
+
+    @MainActor
+    func test_woo_retry_when_successful_then_finishes_login_without_repeating_generation_or_role_check() {
+        // Given
+        let fixture = makeRecoveryFixture(step: .wooPluginCheck)
+        var succeeded = false
+        fixture.checker.checkEligibility(for: testURL, from: fixture.navigation) { succeeded = true }
+        waitUntil { fixture.navigation.alert != nil }
+        fixture.stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            if case let .fetchSiteInfo(_, enabled, completion) = action {
+                XCTAssertTrue(enabled)
+                completion(.success(.fake().copy(isWooCommerceActive: true)))
+            }
+        }
+
+        // When
+        fixture.checker.unexpectedResponsePresenter.select(.retry)
+
+        // Then
+        XCTAssertTrue(succeeded)
+        XCTAssertEqual(fixture.password.generationCallCount, 1)
+        XCTAssertEqual(fixture.role.syncEligibilityCallCount, 1)
+        XCTAssertEqual(fixture.provider.properties(for: WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue)?["result"] as? String, "success")
+    }
+
     func test_application_password_disabled_error_is_displayed_when_application_password_is_disabled() {
         // Given
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
@@ -383,6 +515,40 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
 }
 
 private extension PostSiteCredentialLoginCheckerTests {
+    @MainActor
+    func makeRecoveryFixture(step: LoginUnexpectedResponseFailure.Step,
+                             flow: LoginUnexpectedResponseFailure.LoginFlow = .siteCredentials) -> RecoveryFixture {
+        let failure = UnexpectedStoreResponseError(kind: .unexpectedContent)
+        let password = MockApplicationPasswordUseCase(mockGeneratedPassword: step == .appPasswordGeneration ? nil : applicationPassword,
+                                                      mockGenerationError: step == .appPasswordGeneration ? failure : nil)
+        let role = MockRoleEligibilityUseCase()
+        role.errorToReturn = step == .userRoleCheck ? .unknown(error: failure) : nil
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
+        stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+            if case let .fetchSiteInfo(_, _, completion) = action { completion(.failure(failure)) }
+        }
+        let provider = MockAnalyticsProvider()
+        let form = UIViewController()
+        let navigation = DeferredPostLoginPresenter(rootViewController: form)
+        navigation.loadViewIfNeeded()
+        navigation.view.layoutIfNeeded()
+        let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: password, loginFlow: flow,
+                                                     roleEligibilityUseCase: role, stores: stores,
+                                                     analytics: WooAnalytics(analyticsProvider: provider), previousViewController: form)
+        return RecoveryFixture(checker: checker, password: password, role: role, stores: stores,
+                               provider: provider, navigation: navigation, form: form)
+    }
+
+    struct RecoveryFixture {
+        let checker: PostSiteCredentialLoginChecker
+        let password: MockApplicationPasswordUseCase
+        let role: MockRoleEligibilityUseCase
+        let stores: MockStoresManager
+        let provider: MockAnalyticsProvider
+        let navigation: DeferredPostLoginPresenter
+        let form: UIViewController
+    }
+
     struct Constants {
         static let eligibleRoles = ["shop_manager", "editor"]
         static let ineligibleRoles = ["author", "editor"]
@@ -410,8 +576,8 @@ private extension PostSiteCredentialLoginCheckerTests {
 ///
 private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
     var mockApplicationPassword: ApplicationPassword?
-    let mockGeneratedPassword: ApplicationPassword?
-    let mockGenerationError: Error?
+    var mockGeneratedPassword: ApplicationPassword?
+    var mockGenerationError: Error?
     let mockDeletionError: Error?
     var generationCallCount = 0
     var onGenerate: (() -> Void)?
@@ -449,8 +615,10 @@ private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
 
 private final class DeferredPostLoginPresenter: UINavigationController {
     var presentationCompletion: (() -> Void)?
+    var alert: UIAlertController?
 
     override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
         presentationCompletion = completion
+        alert = viewControllerToPresent as? UIAlertController
     }
 }

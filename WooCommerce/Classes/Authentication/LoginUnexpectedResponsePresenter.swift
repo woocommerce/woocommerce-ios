@@ -66,6 +66,7 @@ final class LoginUnexpectedResponsePresenter {
         for (action, title) in [(LoginUnexpectedResponseFailure.Action.retry, Localization.retry),
                                 (.contactSupport, Localization.support), (.dismiss, Localization.dismiss)] {
             alert.addAction(UIAlertAction(title: title, style: action == .dismiss ? .cancel : .default) { [weak self] _ in
+                guard self?.attemptID == id else { return }
                 self?.select(action)
             })
         }
@@ -107,7 +108,7 @@ final class LoginUnexpectedResponsePresenter {
         model = chat
         let chatController = SupportChatHostingController(viewModel: chat)
         host = chatController
-        chatController.show(from: controller)
+        chatController.show(from: (controller as? UINavigationController)?.topViewController ?? controller)
     }
 
     private enum Localization {

@@ -3,6 +3,7 @@
 
 25.8
 -----
+- [*] Login: Retry unexpected application password and store verification responses without repeating completed steps. [https://github.com/woocommerce/woocommerce-ios/pull/18031]
 - [*] Login: Unexpected store responses now offer Try Again, Contact Support, and Dismiss actions. [https://github.com/woocommerce/woocommerce-ios/pull/18030]
 - [Internal] Tracks events now carry cached_woo_core_version from the first event after launch and store switch. [https://github.com/woocommerce/woocommerce-ios/pull/17927]
 - [*] Products: Show a clear error when a category cannot be created because its name already exists. [https://github.com/woocommerce/woocommerce-ios/pull/17933]

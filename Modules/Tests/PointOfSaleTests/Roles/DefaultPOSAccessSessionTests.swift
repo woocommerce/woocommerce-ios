@@ -480,7 +480,6 @@ private extension DefaultPOSAccessSessionTests {
     }
 }
 
-@MainActor
 private final class UserDefaultsTestScope {
     let defaults: UserDefaults
     private let suiteName: String

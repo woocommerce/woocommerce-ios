@@ -7,6 +7,69 @@ import WooFoundation
 @MainActor
 struct UIKitBarcodeObserverTests {
 
+    @Test
+    func test_scan_when_disabled_before_timeout_then_does_not_track_or_deliver_result() {
+        // Given
+        var enabled = true
+        var results: [Result<String, HIDBarcodeParserError>] = []
+        let analytics = MockPOSAnalytics()
+        let timeProvider = MockTimeProvider()
+        let observer = UIKitBarcodeObserver(analytics: analytics,
+                                             isScanningEnabled: { enabled },
+                                             onScan: { results.append($0) }, timeProvider: timeProvider)
+        observer.processUIPress([MockUIPress(key: MockUIKey(keyCode: .keyboard1, modifierFlags: []))])
+
+        // When
+        enabled = false
+        timeProvider.advance(by: 0.3)
+
+        // Then
+        #expect(results.isEmpty)
+        #expect(analytics.events.isEmpty)
+
+        // Scanning must recover without recreating the observer.
+        enabled = true
+        for code: UIKeyboardHIDUsage in [.keyboard1, .keyboard2, .keyboard3, .keyboard4, .keyboard5, .keyboard6, .keyboardReturnOrEnter] {
+            observer.processUIPress([MockUIPress(key: MockUIKey(keyCode: code, modifierFlags: []))])
+        }
+        #expect(results.count == 1)
+        #expect(analytics.events.count == 1)
+        if case .success(let barcode) = results.first {
+            #expect(barcode == "123456")
+        } else {
+            Issue.record("Expected scanning to resume")
+        }
+    }
+
+    @Test
+    func test_keys_when_disabled_then_cancel_partial_scan_and_do_not_leak_into_next_scan() {
+        // Given
+        var enabled = true
+        var results: [Result<String, HIDBarcodeParserError>] = []
+        let analytics = MockPOSAnalytics()
+        let observer = UIKitBarcodeObserver(analytics: analytics,
+                                             isScanningEnabled: { enabled }, onScan: { results.append($0) },
+                                             timeProvider: MockTimeProvider())
+        observer.processUIPress([MockUIPress(key: MockUIKey(keyCode: .keyboard1, modifierFlags: []))])
+
+        // When
+        enabled = false
+        observer.processUIPress([MockUIPress(key: MockUIKey(keyCode: .keyboard2, modifierFlags: []))])
+        enabled = true
+        for code: UIKeyboardHIDUsage in [.keyboard1, .keyboard2, .keyboard3, .keyboard4, .keyboard5, .keyboard6, .keyboardReturnOrEnter] {
+            observer.processUIPress([MockUIPress(key: MockUIKey(keyCode: code, modifierFlags: []))])
+        }
+
+        // Then
+        #expect(results.count == 1)
+        #expect(analytics.events.count == 1)
+        if case .success(let barcode) = results.first {
+            #expect(barcode == "123456")
+        } else {
+            Issue.record("Expected only the new barcode")
+        }
+    }
+
     // MARK: - UIPress Processing Tests
 
     @Test("UIKit observer successfully scans barcode with shift modifier")

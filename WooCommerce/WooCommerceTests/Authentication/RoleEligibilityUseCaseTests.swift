@@ -47,7 +47,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         // Given
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.whenReceivingAction(ofType: UserAction.self) { action in
-            guard case let .retrieveUser(_, completion) = action else {
+            guard case let .retrieveUser(_, _, completion) = action else {
                 return
             }
             completion(.failure(SampleError.first)) // returns unknown error (for caller)
@@ -75,7 +75,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         let sampleUser = makeUser()
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.whenReceivingAction(ofType: UserAction.self) { action in
-            guard case let .retrieveUser(_, completion) = action else {
+            guard case let .retrieveUser(_, _, completion) = action else {
                 return
             }
             completion(.success(sampleUser))
@@ -107,7 +107,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         sessionManager.setStoreId(storeID)
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.whenReceivingAction(ofType: UserAction.self) { action in
-            guard case let .retrieveUser(_, completion) = action else {
+            guard case let .retrieveUser(_, _, completion) = action else {
                 return
             }
             completion(.success(ineligibleUser))
@@ -139,7 +139,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         sessionManager.setStoreId(storeID)
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.whenReceivingAction(ofType: UserAction.self) { action in
-            guard case let .retrieveUser(_, completion) = action else {
+            guard case let .retrieveUser(_, _, completion) = action else {
                 return
             }
             completion(.success(ineligibleUser))
@@ -170,7 +170,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         var resetErrorInfoInvoked = false
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.whenReceivingAction(ofType: UserAction.self) { action in
-            guard case let .retrieveUser(_, completion) = action else {
+            guard case let .retrieveUser(_, _, completion) = action else {
                 return
             }
             completion(.success(eligibleUser))
@@ -200,7 +200,7 @@ final class RoleEligibilityUseCaseTests: XCTestCase {
         let eligibleUser = makeUser(eligible: true)
         stores.authenticate(credentials: SessionSettings.wpcomCredentials)
         stores.whenReceivingAction(ofType: UserAction.self) { action in
-            guard case let .retrieveUser(_, completion) = action else {
+            guard case let .retrieveUser(_, _, completion) = action else {
                 return
             }
             completion(.success(eligibleUser))

@@ -32,7 +32,7 @@ struct POSOrdersView: View {
             POSNavigationSplitView(selection: Binding(
                 get: { orderListModel.ordersController.selectedOrder },
                 set: { selectOrder($0) }
-            )) { _ in
+            ), pushedDetailBackgroundColor: .posSurfaceBright) { _ in
                 POSOrderListView(
                     isSearching: $isSearching,
                     searchTerm: $searchTerm,

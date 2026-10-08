@@ -255,7 +255,7 @@
     "WooCommerce/Classes/AppDelegate.swift": 12,
     "WooCommerce/Classes/Authentication/AppleIDCredentialChecker.swift": 2,
     "WooCommerce/Classes/Authentication/AuthenticatedWebViewController.swift": 3,
-    "WooCommerce/Classes/Authentication/AuthenticationManager.swift": 57,
+    "WooCommerce/Classes/Authentication/AuthenticationManager.swift": 58,
     "WooCommerce/Classes/Authentication/Epilogue/AccountHeaderView.swift": 2,
     "WooCommerce/Classes/Authentication/Epilogue/EditStoreList/EditStoreListViewModel.swift": 2,
     "WooCommerce/Classes/Authentication/Epilogue/EmptyStoresTableViewCell.swift": 2,

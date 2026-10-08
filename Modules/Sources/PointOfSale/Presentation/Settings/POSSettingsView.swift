@@ -102,6 +102,7 @@ extension POSSettingsView {
                 .padding(.horizontal, POSPadding.medium)
             }
             .background(Color.posSurfaceBright)
+            .accessibilityElement(children: .contain)
             .accessibilityIdentifier("pos-settings-view")
         }
 

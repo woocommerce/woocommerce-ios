@@ -3,7 +3,8 @@ import SwiftUI
 struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @State private var modalParentSize: CGSize = UIScreen.main.bounds.size
+    /// Measured from the root content, so it follows the window rather than the screen.
+    @State private var modalParentSize: CGSize = .zero
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
@@ -242,9 +243,11 @@ extension View {
 
 // MARK: - POS Modal Parent Size Environment
 
-/// Environment key for tracking the current screen size in POS modals
+/// Environment key for the space available to POS modals, measured by `POSRootModalViewModifier`
 struct POSModalParentSizeKey: EnvironmentKey {
-    static let defaultValue: CGSize = UIScreen.main.bounds.size
+    /// `.zero` means not measured. `POSRootModalViewModifier` injects the measured size into every presented modal, and
+    /// previews inject `POSPreviewHelpers.modalParentSize`.
+    static let defaultValue: CGSize = .zero
 }
 
 extension EnvironmentValues {
@@ -264,7 +267,7 @@ extension EnvironmentValues {
 /// the binding-based dismiss path in `POSModalViewModifier` from firing.
 /// This environment action provides a reliable alternative that calls `POSModalManager.dismiss()` directly.
 struct POSModalDismissActionKey: EnvironmentKey {
-    static let defaultValue: (() -> Void)? = nil
+    static var defaultValue: (() -> Void)? { nil }
 }
 
 extension EnvironmentValues {

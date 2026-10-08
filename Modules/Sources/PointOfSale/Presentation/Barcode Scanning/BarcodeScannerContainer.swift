@@ -100,8 +100,8 @@ final class GameControllerBarcodeScannerHostingController: UIHostingController<E
     }
 
     deinit {
+        // Releasing the container releases its observers; `GameControllerBarcodeObserver` cleans up in its own deinit.
         NotificationCenter.default.removeObserver(self)
-        cleanupObservers()
     }
 
     // MARK: - Observer Management

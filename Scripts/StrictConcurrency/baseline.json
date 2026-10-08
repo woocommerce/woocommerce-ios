@@ -340,7 +340,7 @@
     "WooCommerce/Classes/ServiceLocator/MessageComposerPresenter.swift": 7,
     "WooCommerce/Classes/ServiceLocator/ProductImageUploader.swift": 6,
     "WooCommerce/Classes/ServiceLocator/PushNotesManager.swift": 1,
-    "WooCommerce/Classes/ServiceLocator/ServiceLocator.swift": 34,
+    "WooCommerce/Classes/ServiceLocator/ServiceLocator.swift": 33,
     "WooCommerce/Classes/Spotlight/SearchableActivityConvertable.swift": 1,
     "WooCommerce/Classes/Spotlight/SpotlightManager.swift": 4,
     "WooCommerce/Classes/System/SessionManager.swift": 2,

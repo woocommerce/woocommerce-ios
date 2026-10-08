@@ -3,18 +3,18 @@ import Yosemite
 import Combine
 import Foundation
 
-@MainActor
 protocol CardPresentPaymentsOnboardingPresenting {
+    @MainActor
     func showOnboardingIfRequired(from: ViewControllerPresenting,
                                   readyToCollectPayment: @escaping () -> Void)
 
+    @MainActor
     func refresh()
 }
 
 /// Checks for the current user status regarding Card Present Payments,
 /// and shows the onboarding if the user didn't finish the onboarding to use CPP
 ///
-@MainActor
 final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting {
 
     private let stores: StoresManager
@@ -27,13 +27,14 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     private var readinessSubscription: AnyCancellable?
 
-    nonisolated init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
         onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
         readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
         onboardingViewModel = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
     }
 
+    @MainActor
     func showOnboardingIfRequired(from viewController: ViewControllerPresenting,
                                   readyToCollectPayment completion: @escaping () -> Void) {
         readinessUseCase.checkCardPaymentReadiness()
@@ -43,6 +44,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
         completion()
     }
 
+    @MainActor
     private func showOnboarding(from viewController: ViewControllerPresenting,
                                 readyToCollectPayment completion: @escaping () -> Void) {
         let onboardingViewController = CardPresentPaymentsOnboardingViewController(viewModel: onboardingViewModel,
@@ -68,6 +70,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     // The corresponding `show` we used can either push or present the onboardingViewController.
     // This function allows us to hide it in the appropriate way for how it was shown.
+    @MainActor
     private func hideOnboarding(_ onboardingViewController: UIViewController) {
         if let navigationController = onboardingViewController.navigationController {
             navigationController.popViewController(animated: true)
@@ -76,6 +79,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
         }
     }
 
+    @MainActor
     func refresh() {
         onboardingUseCase.refreshIfNecessary()
     }

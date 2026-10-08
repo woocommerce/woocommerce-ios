@@ -52,11 +52,16 @@ extension View {
 
 final class POSFullScreenCoverManager: ObservableObject {
     @Published fileprivate(set) var isPresented: Bool = false
+
+    func clearPresentation() {
+        isPresented = false
+    }
 }
 
 // MARK: - Modifiers
 // periphery:ignore
 struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding var isPresented: Bool
     let onDismiss: (() -> Void)?
     let coverContent: () -> CoverContent
@@ -72,6 +77,8 @@ struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
         content
             .fullScreenCover(isPresented: $isPresented, onDismiss: onDismiss, content: {
                 coverContent()
+                    .onAppear { parentCoverManager.isPresented = true }
+                    .environment(\.horizontalSizeClass, horizontalSizeClass)
                     .posRootModal()
                     .environment(\.posHeaderBackButtonConfiguration, nil)
                     .environmentObject(modalManager)
@@ -85,6 +92,7 @@ struct POSFullScreenCoverModifier<CoverContent: View>: ViewModifier {
 }
 // periphery:ignore
 struct POSFullScreenCoverModifierForItem<Item: Identifiable & Equatable, CoverContent: View>: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Binding var item: Item?
     let onDismiss: (() -> Void)?
     let coverContent: (Item) -> CoverContent
@@ -100,6 +108,8 @@ struct POSFullScreenCoverModifierForItem<Item: Identifiable & Equatable, CoverCo
         content
             .fullScreenCover(item: $item, onDismiss: onDismiss, content: {
                 coverContent($0)
+                    .onAppear { parentCoverManager.isPresented = true }
+                    .environment(\.horizontalSizeClass, horizontalSizeClass)
                     .posRootModal()
                     .environment(\.posHeaderBackButtonConfiguration, nil)
                     .environmentObject(modalManager)

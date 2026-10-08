@@ -1,13 +1,13 @@
 import SwiftUI
 
 extension SafeAreaRegions {
-    /// iOS 26 NavigationStack introduces container insets that shift content.
-    /// Use this to ignore `.container` only on iOS 26+.
-    static var posContainerRegionToIgnore: SafeAreaRegions {
-        if #available(iOS 26, *) {
-            return .container
-        } else {
-            return []
+    /// Preserve the iOS 26+ regular-width bottom inset workaround. A full software keyboard
+    /// must not move them, while the short external-keyboard helper bar still can.
+    static func posBottomRegionsToIgnore(isCompact: Bool, isFullSizeKeyboardVisible: Bool) -> SafeAreaRegions {
+        var container: SafeAreaRegions = []
+        if !isCompact, #available(iOS 26, *) {
+            container = .container
         }
+        return isFullSizeKeyboardVisible ? container.union(.keyboard) : container
     }
 }

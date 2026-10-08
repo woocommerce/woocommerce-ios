@@ -286,6 +286,9 @@ private enum Localization {
     )
 }
 
+#if DEBUG
 #Preview {
     PointOfSaleBarcodeScannerInformationModal(isPresented: .constant(true))
+        .posPreviewModalParentSize()
 }
+#endif

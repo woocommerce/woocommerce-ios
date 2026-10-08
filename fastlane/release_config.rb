@@ -9,5 +9,6 @@
   build: {
     pipeline: 'woocommerce-ios', pipeline_file: 'release-builds.yml', beta_environment: 'IS_BETA_RELEASE'
   },
+  publication: { branch_protection: :remove },
   preparation: { freeze_after_version: :prepare_freeze_notes, beta: :prepare_beta_localizations, freeze_completion: :prepare_code_freeze }
 }

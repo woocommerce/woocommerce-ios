@@ -88,7 +88,7 @@ open class LoginViewController: NUXViewController, LoginFacadeDelegate {
         instructionLabel?.textColor = WordPressAuthenticator.shared.style.instructionColor
     }
 
-    func configureViewLoading(_ loading: Bool) {
+    public func configureViewLoading(_ loading: Bool) {
         configureSubmitButton(animating: loading)
         navigationItem.hidesBackButton = loading
     }

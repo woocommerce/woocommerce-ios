@@ -1,4 +1,5 @@
 import UIKit
+import WordPressAuthenticator
 import Yosemite
 import protocol Networking.ApplicationPasswordUseCase
 import protocol WooFoundation.Analytics
@@ -252,10 +253,11 @@ private extension PostSiteCredentialLoginChecker {
                 unexpectedResponsePresenter.present(failure: failure, flow: loginFlow, from: navigationController, onRetry: onRetry,
                                                     onDismiss: { [weak self] in
                     self?.cancel()
-                    self?.stores.deauthenticate()
-                    if let previous = self?.previousViewController, navigationController.viewControllers.contains(previous) {
-                        navigationController.popToViewController(previous, animated: false)
-                    }
+                    self?.restorePreviousViewController(in: navigationController)
+                }, onContactSupport: { [weak self] in
+                    self?.cancel()
+                    // Logging out replaces the navigation stack, which would discard the support chat.
+                    self?.restorePreviousViewController(in: navigationController)
                 })
                 return
             }
@@ -284,6 +286,14 @@ private extension PostSiteCredentialLoginChecker {
             }
             alert.addAction(restartAction)
             navigationController.present(alert, animated: true)
+        }
+    }
+
+    @MainActor
+    func restorePreviousViewController(in navigationController: UINavigationController) {
+        if let previousViewController, navigationController.viewControllers.contains(previousViewController) {
+            (previousViewController as? LoginViewController)?.configureViewLoading(false)
+            navigationController.popToViewController(previousViewController, animated: false)
         }
     }
 

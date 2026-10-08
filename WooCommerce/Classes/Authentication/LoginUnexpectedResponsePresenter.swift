@@ -22,7 +22,8 @@ final class LoginUnexpectedResponsePresenter {
     }
 
     func present(failure: LoginUnexpectedResponseFailure, flow: LoginUnexpectedResponseFailure.LoginFlow,
-                 from controller: UIViewController, onRetry: @escaping Retry, onDismiss: @escaping () -> Void = {}) {
+                 from controller: UIViewController, onRetry: @escaping Retry, onDismiss: @escaping () -> Void = {},
+                 onContactSupport: @escaping () -> Void = {}) {
         guard attemptID == nil, controller.presentedViewController == nil else {
             return
         }
@@ -51,9 +52,11 @@ final class LoginUnexpectedResponsePresenter {
                     }
                 } else {
                     attemptID = nil
-                    onDismiss()
                     if action == .contactSupport {
+                        onContactSupport()
                         showSupport(from: controller)
+                    } else {
+                        onDismiss()
                     }
                 }
             }

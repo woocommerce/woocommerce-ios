@@ -52,9 +52,14 @@ enum StorePickerConfiguration: Equatable {
     ///
     case listStores
 
-    /// Unexpected-response recovery is limited to the login picker.
+    /// Login recovery screens also show connected stores before a store is selected.
     var detectsUnexpectedLoginResponses: Bool {
-        self == .login
+        switch self {
+        case .login, .listStores:
+            return true
+        case .standard, .switchingStores:
+            return false
+        }
     }
 }
 
@@ -650,7 +655,8 @@ private extension StorePickerViewController {
 
     func presentUnexpectedFailure(error: Error, step: LoginUnexpectedResponseFailure.Step,
                                   onRetry: @escaping LoginUnexpectedResponsePresenter.Retry, canContinue: Bool) -> Bool {
-        guard configuration == .login, let failure = LoginUnexpectedResponseFailure(error: error, step: step) else { return false }
+        guard configuration.detectsUnexpectedLoginResponses,
+              let failure = LoginUnexpectedResponseFailure(error: error, step: step) else { return false }
         toggleDismissButton(enabled: true)
         updateActionButtonAndTableState(animating: false, enabled: canContinue)
         unexpectedResponsePresenter.present(failure: failure, flow: .storePicker, from: self, onRetry: onRetry)

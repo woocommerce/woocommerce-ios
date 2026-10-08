@@ -1,4 +1,5 @@
 import XCTest
+import WordPressAuthenticator
 @testable import Yosemite
 @testable import Networking
 @testable import WooCommerce
@@ -126,12 +127,14 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
     }
 
     @MainActor
-    func test_dismiss_or_support_when_post_login_fails_then_clears_session_and_restores_original_form() {
+    func test_dismiss_or_support_when_post_login_fails_then_keeps_session_and_restores_usable_form() {
         for step in [LoginUnexpectedResponseFailure.Step.appPasswordGeneration, .userRoleCheck, .wooPluginCheck] {
             for action in [LoginUnexpectedResponseFailure.Action.dismiss, .contactSupport] {
                 // Given: the browser is above the originating form.
                 let fixture = makeRecoveryFixture(step: step, flow: .appPassword)
                 fixture.navigation.pushViewController(UIViewController(), animated: false)
+                fixture.form.configureViewLoading(true)
+                XCTAssertTrue(fixture.form.navigationItem.hidesBackButton)
                 fixture.checker.checkEligibility(for: testURL, from: fixture.navigation) {}
                 waitUntil { fixture.navigation.alert != nil }
 
@@ -139,7 +142,8 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
                 fixture.checker.unexpectedResponsePresenter.select(action)
 
                 // Then: the same form remains in place; support adds only AI chat.
-                XCTAssertFalse(fixture.stores.isAuthenticated)
+                XCTAssertTrue(fixture.stores.isAuthenticated)
+                XCTAssertFalse(fixture.form.navigationItem.hidesBackButton)
                 XCTAssertTrue(fixture.navigation.viewControllers.first === fixture.form)
                 XCTAssertEqual(fixture.navigation.viewControllers.count, action == .dismiss ? 1 : 2)
                 if action == .contactSupport { XCTAssertTrue(fixture.navigation.topViewController is SupportChatHostingController) }
@@ -528,7 +532,7 @@ private extension PostSiteCredentialLoginCheckerTests {
             if case let .fetchSiteInfo(_, _, completion) = action { completion(.failure(failure)) }
         }
         let provider = MockAnalyticsProvider()
-        let form = UIViewController()
+        let form = LoginViewController()
         let navigation = DeferredPostLoginPresenter(rootViewController: form)
         navigation.loadViewIfNeeded()
         navigation.view.layoutIfNeeded()
@@ -546,7 +550,7 @@ private extension PostSiteCredentialLoginCheckerTests {
         let stores: MockStoresManager
         let provider: MockAnalyticsProvider
         let navigation: DeferredPostLoginPresenter
-        let form: UIViewController
+        let form: LoginViewController
     }
 
     struct Constants {

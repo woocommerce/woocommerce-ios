@@ -286,7 +286,8 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         if let failure {
             unexpectedResponsePresenter.present(failure: failure, flow: .appPassword, from: navigationController ?? self,
                                                 onRetry: { [weak self] result in self?.fetchAuthorizationURL(onRetryResult: result) },
-                                                onDismiss: { [weak self] in self?.restorePreviousViewController(animated: false) })
+                                                onDismiss: { [weak self] in self?.restorePreviousViewController(animated: false) },
+                                                onContactSupport: { [weak self] in self?.restorePreviousViewController(animated: false) })
             return
         }
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)

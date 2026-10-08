@@ -88,8 +88,8 @@ final class StorePickerCoordinatorTests: XCTestCase {
     }
 
     @MainActor
-    func test_requirement_failure_when_picker_configuration_changes_then_only_login_track_after_presentation() throws {
-        for (configuration, expectedDetection) in [(StorePickerConfiguration.login, true), (.listStores, false),
+    func test_requirement_failure_when_picker_configuration_changes_then_login_and_listStores_track_after_presentation() throws {
+        for (configuration, expectedDetection) in [(StorePickerConfiguration.login, true), (.listStores, true),
                                                    (.standard, false), (.switchingStores, false)] {
             // Given
             let site = Site.fake().copy(siteID: 123, url: "https://first.example.test", isJetpackConnected: true, isWooCommerceActive: true)
@@ -121,7 +121,7 @@ final class StorePickerCoordinatorTests: XCTestCase {
             picker.selectSite(site)
             waitUntil { completeRequirementCheck != nil }
 
-            // Then: detection follows login scope, and no event precedes the failure UI.
+            // Then: login and connected-store pickers detect failures, and no event precedes the failure UI.
             let event = WooAnalyticsStat.loginUnexpectedResponseErrorShown.rawValue
             XCTAssertEqual(requestedDetection, expectedDetection)
             XCTAssertFalse(provider.receivedEvents.contains(event))
@@ -141,8 +141,15 @@ final class StorePickerCoordinatorTests: XCTestCase {
     }
     @MainActor
     func test_plugin_retry_when_successful_then_rechecks_same_store_and_later_role_failure_does_not_change_result() throws {
+        for configuration in [StorePickerConfiguration.login, .listStores] {
+            try assertPluginRetry(configuration: configuration)
+        }
+    }
+
+    @MainActor
+    private func assertPluginRetry(configuration: StorePickerConfiguration) throws {
         // Given
-        let fixture = PickerRecoveryFixture()
+        let fixture = makeRecoveryFixture(configuration: configuration)
         fixture.picker.selectSite(fixture.site)
         waitUntil { fixture.completeRequirements != nil }
         fixture.completeRequirements?(.failure(fixture.failure))
@@ -171,8 +178,15 @@ final class StorePickerCoordinatorTests: XCTestCase {
 
     @MainActor
     func test_role_retry_when_successful_then_rechecks_same_store_without_repeating_requirements() {
+        for configuration in [StorePickerConfiguration.login, .listStores] {
+            assertRoleRetry(configuration: configuration)
+        }
+    }
+
+    @MainActor
+    private func assertRoleRetry(configuration: StorePickerConfiguration) {
         // Given
-        let fixture = PickerRecoveryFixture()
+        let fixture = makeRecoveryFixture(configuration: configuration)
         fixture.picker.selectSite(fixture.site)
         waitUntil { fixture.completeRequirements != nil }
         fixture.completeRequirements?(.success(fixture.validAPI))
@@ -251,8 +265,15 @@ final class StorePickerCoordinatorTests: XCTestCase {
 
     @MainActor
     func test_dismiss_when_role_check_fails_then_retains_selection_and_allows_continue_without_rechecking_requirements() {
+        for configuration in [StorePickerConfiguration.login, .listStores] {
+            assertRoleDismiss(configuration: configuration)
+        }
+    }
+
+    @MainActor
+    private func assertRoleDismiss(configuration: StorePickerConfiguration) {
         // Given
-        let fixture = PickerRecoveryFixture()
+        let fixture = makeRecoveryFixture(configuration: configuration)
         fixture.picker.selectSite(fixture.site)
         waitUntil { fixture.completeRequirements != nil }
         fixture.completeRequirements?(.success(fixture.validAPI))
@@ -271,6 +292,44 @@ final class StorePickerCoordinatorTests: XCTestCase {
         XCTAssertEqual(fixture.requirementSiteIDs, [fixture.site.siteID])
         XCTAssertEqual(fixture.selectionSpy.selectedStoreIDs, [fixture.site.siteID])
         XCTAssertFalse(fixture.provider.receivedEvents.contains(WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue))
+    }
+
+    @MainActor
+    func test_dismiss_or_support_when_requirements_fail_then_preserves_session_and_allows_reselection() {
+        for configuration in [StorePickerConfiguration.login, .listStores] {
+            for action in [LoginUnexpectedResponseFailure.Action.dismiss, .contactSupport] {
+                // Given
+                let fixture = makeRecoveryFixture(configuration: configuration)
+                let navigation = UINavigationController(rootViewController: fixture.picker)
+                navigation.loadViewIfNeeded()
+                fixture.picker.selectSite(fixture.site)
+                waitUntil { fixture.completeRequirements != nil }
+                fixture.completeRequirements?(.failure(fixture.failure))
+                waitUntil { fixture.alert != nil }
+
+                // When
+                fixture.picker.unexpectedResponsePresenter.select(action)
+
+                // Then
+                XCTAssertTrue(fixture.stores.isAuthenticated)
+                XCTAssertTrue(navigation.viewControllers.contains(fixture.picker))
+                XCTAssertEqual(navigation.topViewController is SupportChatHostingController, action == .contactSupport)
+                XCTAssertFalse(fixture.continueButton?.isEnabled ?? true)
+                XCTAssertFalse(fixture.provider.receivedEvents.contains(WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue))
+
+                // When: return from support and select the same store again.
+                navigation.popToViewController(fixture.picker, animated: false)
+                fixture.picker.selectSite(fixture.site)
+                waitUntil { fixture.requirementSiteIDs.count == 2 }
+                fixture.completeRequirements?(.success(fixture.validAPI))
+                waitUntil { fixture.continueButton?.isEnabled == true }
+                fixture.continueButton?.sendActions(for: .touchUpInside)
+
+                // Then
+                XCTAssertEqual(fixture.roleSiteIDs, [fixture.site.siteID])
+                XCTAssertEqual(fixture.requirementSiteIDs, [fixture.site.siteID, fixture.site.siteID])
+            }
+        }
     }
 
     @MainActor
@@ -297,10 +356,25 @@ final class StorePickerCoordinatorTests: XCTestCase {
         XCTAssertEqual(fixture.provider.receivedEvents.filter { $0 == WooAnalyticsStat.loginUnexpectedResponseErrorShown.rawValue }.count, 2)
         XCTAssertEqual(fixture.alert?.actions.map(\.title), ["Try Again", "Contact Support", "Dismiss"])
     }
+
+    @MainActor
+    private func makeRecoveryFixture(configuration: StorePickerConfiguration) -> PickerRecoveryFixture {
+        let fixture = PickerRecoveryFixture(configuration: configuration)
+        if configuration == .listStores {
+            // Finish the initial automatic selection before testing an explicit selection.
+            waitUntil { fixture.completeRequirements != nil }
+            fixture.completeRequirements?(.success(fixture.validAPI))
+            waitUntil { fixture.continueButton?.isEnabled == true }
+            fixture.requirementSiteIDs.removeAll()
+            fixture.completeRequirements = nil
+        }
+        return fixture
+    }
 }
 
 @MainActor
 private final class PickerRecoveryFixture {
+    private let configuration: StorePickerConfiguration
     let site = Site.fake().copy(siteID: 123, url: "https://first.example.test", isJetpackConnected: true, isWooCommerceActive: true)
     let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
     let provider = MockAnalyticsProvider()
@@ -315,9 +389,9 @@ private final class PickerRecoveryFixture {
     var alert: UIAlertController?
     var presentationCompletion: (() -> Void)?
     var alertCount = 0
-    lazy var picker = StorePickerViewController(configuration: .login, stores: stores,
+    lazy var picker = StorePickerViewController(configuration: configuration, stores: stores,
                                                 analytics: WooAnalytics(analyticsProvider: provider),
-                                                viewModel: StorePickerViewModel(configuration: .login, stores: stores, storageManager: storageManager),
+                                                viewModel: StorePickerViewModel(configuration: configuration, stores: stores, storageManager: storageManager),
                                                 errorPresenter: { [weak self] _, modal, completion in
         self?.alert = modal as? UIAlertController
         self?.presentationCompletion = completion
@@ -325,7 +399,8 @@ private final class PickerRecoveryFixture {
     })
     var continueButton: UIButton? { findButton(in: picker.view) }
 
-    init() {
+    init(configuration: StorePickerConfiguration = .login) {
+        self.configuration = configuration
         let sites = [site, site.copy(siteID: 456, url: "https://second.example.test")]
         storageManager.performAndSave({ storage in
             for site in sites { storage.insertNewObject(ofType: StorageSite.self).update(with: site) }

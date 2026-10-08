@@ -72,12 +72,34 @@ tags:
     id: product-variation-item
     index: 0
 - tapOn: Back
+# Keep the variation and add a Simple product as the second line item. A
+# different product type can't be the variation or its parent.
+- tapOn: "Filter.*"
+- extendedWaitUntil:
+    visible: Product Type
+    timeout: 15000
+- tapOn: Product Type
+- extendedWaitUntil:
+    visible: Simple
+    timeout: 15000
+- tapOn: Simple
+- tapOn: Show Products
+- extendedWaitUntil:
+    visible:
+      id: product-item
+    timeout: 30000
+- tapOn:
+    id: product-item
+    index: 0
 - tapOn:
     id: product-multiple-selection-done-button
 - extendedWaitUntil:
     visible:
       text: ".*, 1 × .*"
     timeout: 30000
+- assertVisible:
+    text: ".*, 1 × .*"
+    index: 1
 - takeScreenshot: order_variation_line_item
 
 # Apply a discount on the selected variation. The discount button is exposed

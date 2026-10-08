@@ -104,7 +104,6 @@ public final class POSScreen: ScreenObject {
         }
         if let firstDigit = amount.first {
             XCTAssertTrue(app.keys[String(firstDigit)].waitForExistence(timeout: 5), "Custom amount keyboard should be visible.")
-            RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.3))
         }
         app.typeText(amount)
 
@@ -428,9 +427,9 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func dismissSettings() -> Self {
-        let settingsTitle = app.staticTexts["Settings"]
-        XCTAssertTrue(waitForVisibleElement(settingsTitle, timeout: 10), "POS settings title should be visible.")
-        settingsTitle.coordinate(withNormalizedOffset: CGVector(dx: -0.65, dy: 0.5)).tap()
+        let closeButton = app.buttons["pos-settings-close-button"]
+        XCTAssertTrue(closeButton.waitForIsHittable(timeout: 10), "POS settings close button should be tappable.")
+        closeButton.tap()
         XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15), "POS product list should be visible after dismissing settings.")
         return self
     }

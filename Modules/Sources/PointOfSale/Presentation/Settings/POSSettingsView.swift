@@ -59,7 +59,8 @@ extension POSSettingsView {
                                                    action: {
                                                        analytics.track(.pointOfSaleSettingsCloseButtonTapped)
                                                        dismiss()
-                                                   }))
+                                                   },
+                                                   accessibilityIdentifier: "pos-settings-close-button"))
                 .posHeaderBackButtonIcon(systemName: "xmark")
                 .foregroundColor(.posSurface)
                 .accessibilityAddTraits(.isHeader)

@@ -233,6 +233,35 @@ struct GRDBObservableDataSourceTests {
         #expect(sut.productItems.count == 3)
     }
 
+    @Test("Releasing the data source with active observations deallocates it")
+    func test_release_when_observations_are_active_then_data_source_is_deallocated() async throws {
+        // Given: A data source with product, variation and statistics observations running
+        let parentProduct = createPersistedProduct(id: 100, name: "Parent", type: "variable")
+        try await insertProducts([parentProduct])
+        try await insertTestVariations(parentID: 100, count: 2)
+        var dataSource: GRDBObservableDataSource? = GRDBObservableDataSource(
+            siteID: siteID,
+            grdbManager: grdbManager,
+            currencySettings: CurrencySettings(),
+            pageSize: 5
+        )
+        dataSource?.loadProducts()
+        dataSource?.loadVariations(for: POSVariableParentProduct(
+            id: POSItemIdentifier(underlyingType: .product, itemID: 1),
+            name: "Parent",
+            productImageSource: nil,
+            productID: 100,
+            allAttributes: []
+        ))
+        weak var weakDataSource = dataSource
+
+        // When
+        dataSource = nil
+
+        // Then: No observation retains the data source, so releasing it also releases its cancellables
+        #expect(weakDataSource == nil)
+    }
+
     @Test("Load more products guards against concurrent loads")
     func test_load_more_products_guards_against_concurrent_loads() async throws {
         // Given: Products already loaded

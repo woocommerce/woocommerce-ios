@@ -4,19 +4,19 @@ import XCUITestHelpers
 
 public final class TabNavComponent: ScreenObject {
     private let myStoreTabButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["tab-bar-my-store-item"]
+        $0.tabBars.firstMatch.buttons["tab-bar-my-store-item"]
     }
     private let ordersTabButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["tab-bar-orders-item"]
+        $0.tabBars.firstMatch.buttons["tab-bar-orders-item"]
     }
     private let productsTabButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["tab-bar-products-item"]
+        $0.tabBars.firstMatch.buttons["tab-bar-products-item"]
     }
     private let posTabButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["tab-bar-pos-item"]
+        $0.tabBars.firstMatch.buttons["tab-bar-pos-item"]
     }
     private let menuTabButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["tab-bar-menu-item"]
+        $0.tabBars.firstMatch.buttons["tab-bar-menu-item"]
     }
     private var myStoreTabButton: XCUIElement { myStoreTabButtonGetter(app) }
     private var ordersTabButton: XCUIElement { ordersTabButtonGetter(app) }

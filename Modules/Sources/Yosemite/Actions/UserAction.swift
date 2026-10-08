@@ -9,7 +9,7 @@ public enum UserAction: Action {
     /// The account must be connected to a dotcom account. Additionally, for self-hosted
     /// sites, it *must* be connected to dotcom via Jetpack.
     ///
-    case retrieveUser(siteID: Int64, onCompletion: (Result<User, Error>) -> Void)
+    case retrieveUser(siteID: Int64, detectUnexpectedResponses: Bool = false, onCompletion: (Result<User, Error>) -> Void)
 
     /// Fetches the user IP's country code. Uses the WordPress public API..
     ///

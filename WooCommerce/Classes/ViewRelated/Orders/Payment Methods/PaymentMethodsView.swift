@@ -26,11 +26,13 @@ struct PaymentMethodsView: View {
 
     @State private var showingLearnMore = false
 
-    ///   Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.noSpacing) {
 
@@ -47,14 +49,18 @@ struct PaymentMethodsView: View {
                         if viewModel.showTapToPayRow {
                             MethodRow(icon: Image(systemName: "wave.3.right.circle"),
                                       title: Localization.tapToPay,
-                                      accessibilityID: Accessibility.tapToPayMethod) {
+                                      accessibilityID: Accessibility.tapToPayMethod,
+                                      safeAreaInsets: safeAreaInsets) {
                                 viewModel.collectPayment(using: .tapToPay, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
 
                             Divider()
                         }
 
-                        MethodRow(icon: Image.gridicon(.money), title: Localization.cash, accessibilityID: Accessibility.cashMethod) {
+                        MethodRow(icon: Image.gridicon(.money),
+                                  title: Localization.cash,
+                                  accessibilityID: Accessibility.cashMethod,
+                                  safeAreaInsets: safeAreaInsets) {
                             showingCashAlert = true
                             viewModel.trackCollectByCash()
                         }
@@ -65,7 +71,8 @@ struct PaymentMethodsView: View {
                             MethodRow(
                                 icon: Image.gridicon(.creditCard),
                                 title: Localization.card,
-                                accessibilityID: Accessibility.cardMethod
+                                accessibilityID: Accessibility.cardMethod,
+                                safeAreaInsets: safeAreaInsets
                             ) {
                                 viewModel.collectPayment(using: .bluetoothScan, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
@@ -74,7 +81,10 @@ struct PaymentMethodsView: View {
                         if viewModel.showPaymentLinkRow {
                             Divider()
 
-                            MethodRow(icon: Image.gridicon(.link), title: Localization.link, accessibilityID: Accessibility.paymentLink) {
+                            MethodRow(icon: Image.gridicon(.link),
+                                      title: Localization.link,
+                                      accessibilityID: Accessibility.paymentLink,
+                                      safeAreaInsets: safeAreaInsets) {
                                 sharingPaymentLink = true
                                 viewModel.trackCollectByPaymentLink()
                             }
@@ -96,7 +106,8 @@ struct PaymentMethodsView: View {
                             MethodRow(
                                 icon: Image(systemName: "qrcode.viewfinder"),
                                 title: Localization.scanToPay,
-                                accessibilityID: Accessibility.scanToPayMethod
+                                accessibilityID: Accessibility.scanToPayMethod,
+                                safeAreaInsets: safeAreaInsets
                             ) {
                                 showingScanToPayView = true
                                 viewModel.trackCollectByScanToPay()
@@ -193,21 +204,23 @@ private struct MethodRow: View {
     ///
     @ScaledMetric private var scale = 1
 
-    ///   Environment safe areas
+    /// Safe-area insets of the screen's container.
     ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    private let safeAreaInsets: EdgeInsets
 
-    init(icon: UIImage, title: String, accessibilityID: String = "", action: @escaping () -> ()) {
+    init(icon: UIImage, title: String, accessibilityID: String = "", safeAreaInsets: EdgeInsets, action: @escaping () -> ()) {
         self.icon = Image(uiImage: icon)
         self.title = title
         self.accessibilityID = accessibilityID
+        self.safeAreaInsets = safeAreaInsets
         self.action = action
     }
 
-    init(icon: Image, title: String, accessibilityID: String = "", action: @escaping () -> ()) {
+    init(icon: Image, title: String, accessibilityID: String = "", safeAreaInsets: EdgeInsets, action: @escaping () -> ()) {
         self.icon = icon
         self.title = title
         self.accessibilityID = accessibilityID
+        self.safeAreaInsets = safeAreaInsets
         self.action = action
     }
 

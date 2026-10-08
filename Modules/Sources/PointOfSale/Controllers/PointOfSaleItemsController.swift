@@ -14,7 +14,7 @@ import class Yosemite.AsyncPaginationTracker
 import enum Yosemite.SearchDebounceStrategy
 
 @MainActor
-protocol PointOfSaleItemsControllerProtocol {
+protocol PointOfSaleItemsControllerProtocol: Sendable {
     ///
     var itemsViewState: ItemsViewState { get }
     /// Loads the first page of items for a given base item.
@@ -37,6 +37,7 @@ protocol PointOfSaleSearchingItemsControllerProtocol: PointOfSaleItemsController
 }
 
 
+@MainActor
 @Observable final class PointOfSaleItemsController: PointOfSaleSearchingItemsControllerProtocol {
     var itemsViewState: ItemsViewState
     private let paginationTracker: AsyncPaginationTracker

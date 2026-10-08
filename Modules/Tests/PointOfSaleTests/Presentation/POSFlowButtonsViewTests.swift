@@ -2,6 +2,7 @@ import SwiftUI
 import Testing
 @testable import PointOfSale
 
+@MainActor
 struct POSFlowButtonsViewTests {
     @Test func test_usesStackedLayout_when_horizontalSizeClass_is_compact_then_returns_true() {
         // Given

@@ -35,6 +35,7 @@ enum SyncOrderStateError: Error {
     case syncFailure
 }
 
+@MainActor
 protocol PointOfSaleOrderControllerProtocol {
     var orderState: PointOfSaleInternalOrderState { get }
 
@@ -66,6 +67,7 @@ protocol PointOfSaleOrderControllerProtocol {
     func promoteCurrentOrderToPending() async throws -> Order
 }
 
+@MainActor
 @Observable final class PointOfSaleOrderController: PointOfSaleOrderControllerProtocol {
     init(orderService: POSOrderServiceProtocol,
          receiptSender: POSReceiptSending,
@@ -99,7 +101,7 @@ protocol PointOfSaleOrderControllerProtocol {
         currencySettingsProvider.currencySettings.currencyCode
     }
 
-    @MainActor @discardableResult
+    @discardableResult
     func syncOrder(for cart: Cart,
                    retryHandler: @escaping () async -> Void) async -> Result<SyncOrderState, Error> {
         let posCart = POSCart(cart: cart)
@@ -142,7 +144,6 @@ protocol PointOfSaleOrderControllerProtocol {
         })
     }
 
-    @MainActor
     func sendReceipt(recipientEmail: String) async throws {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
@@ -157,7 +158,6 @@ protocol PointOfSaleOrderControllerProtocol {
         orderState = .idle
     }
 
-    @MainActor
     func collectCashPayment(changeDueAmount: String?) async throws {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
@@ -171,7 +171,6 @@ protocol PointOfSaleOrderControllerProtocol {
         }
     }
 
-    @MainActor
     func markOrderAsPaidManually(note: String?) async throws {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
@@ -197,7 +196,6 @@ protocol PointOfSaleOrderControllerProtocol {
         }
     }
 
-    @MainActor
     func confirmScanToPayPayment() async throws {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
@@ -214,7 +212,6 @@ protocol PointOfSaleOrderControllerProtocol {
         }
     }
 
-    @MainActor
     func recordScanToPayPaymentMethod() async {
         guard let order else {
             DDLogWarn("⚠️ [ScanToPay] Could not record payment method title because there is no current order")
@@ -232,7 +229,6 @@ protocol PointOfSaleOrderControllerProtocol {
         }
     }
 
-    @MainActor
     func reloadCurrentOrder() async throws -> Order {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder
@@ -242,7 +238,6 @@ protocol PointOfSaleOrderControllerProtocol {
         return refreshed
     }
 
-    @MainActor
     func promoteCurrentOrderToPending() async throws -> Order {
         guard let order else {
             throw PointOfSaleOrderControllerError.noOrder

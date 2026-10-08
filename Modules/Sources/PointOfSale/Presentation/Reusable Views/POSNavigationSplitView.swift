@@ -24,9 +24,11 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     private let detail: (SelectionValue, Binding<NavigationPath>) -> Detail
     private let detailPlaceholderView: () -> DetailPlaceholder
     private let setDefaultValue: (() -> Void)?
+    private let pushedDetailBackgroundColor: Color
 
     init(
         selection: Binding<SelectionValue?> = .constant(nil),
+        pushedDetailBackgroundColor: Color = .posSurface,
         @ViewBuilder sidebar: @escaping (Binding<SelectionValue?>) -> Sidebar,
         @ViewBuilder detail: @escaping (SelectionValue, Binding<NavigationPath>) -> Detail,
         @ViewBuilder detailPlaceholderView: @escaping () -> DetailPlaceholder,
@@ -37,10 +39,15 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
         self.detail = detail
         self.detailPlaceholderView = detailPlaceholderView
         self.setDefaultValue = setDefaultValue
+        self.pushedDetailBackgroundColor = pushedDetailBackgroundColor
     }
 
     private var isRegular: Bool {
         horizontalSizeClass == .regular
+    }
+
+    private var visibleDetailBackgroundColor: Color {
+        detailNavigationPath.isEmpty ? .posSurface : pushedDetailBackgroundColor
     }
 
     private var sidebarSelection: Binding<SelectionValue?> {
@@ -93,6 +100,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                     // arriving screen translucent for the length of the slide.
                     .animation(isRegular ? .default : nil, value: selection != nil)
                     .navigationBarHidden(true)
+                    .posIgnoresHiddenKeyboardSafeArea()
                 }
                 .frame(width: detailWidth(for: totalWidth))
                 // The stack has no backdrop of its own, so without this any moment where the
@@ -109,6 +117,27 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                 compactBackGesture(totalWidth: totalWidth),
                 isEnabled: isCompactBackGestureActive
             )
+        }
+        // The offscreen pane stays in the HStack for state preservation. Keep it out of
+        // system regions beyond this view's safe bounds, including Duo's vertical bar.
+        .clipped()
+        // Paint behind the system regions outside the clipped panes. In regular width each
+        // edge follows its pane; in compact width the visible pane supplies the color.
+        .background {
+            if isRegular {
+                GeometryReader { geometry in
+                    HStack(spacing: 0) {
+                        Color.clear
+                            .frame(width: geometry.size.width * Constants.sidebarWidthFraction)
+                            .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
+                        Color.clear
+                            .background(visibleDetailBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
+                    }
+                }
+            } else {
+                (selection == nil ? Color.posSurfaceBright : visibleDetailBackgroundColor)
+                    .ignoresSafeArea()
+            }
         }
         // Anchors the gesture's coordinates to this view rather than to the window. `.global` is
         // only the same thing as "this split view" when the window fills the screen, which is why

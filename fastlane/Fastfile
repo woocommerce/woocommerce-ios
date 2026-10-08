@@ -219,67 +219,18 @@ platform :ios do
   # @example Running the lane
   #          bundle exec fastlane start_code_freeze skip_confirm:true
   #
-  lane :start_code_freeze do |version: nil, skip_confirm: false|
-    ensure_git_status_clean
+  import A8c::ReleaseWorkflows.lanes_path(:freeze_start)
 
-    # Check out the up-to-date default branch, the designated starting point for the code freeze
-    Fastlane::Helper::GitHelper.checkout_and_pull(DEFAULT_BRANCH)
-
-    # If a new version is passed, use it as source of truth from now on
-    new_version = version || release_version_next
-    new_release_branch = "release/#{new_version}"
-    new_build_code = build_code_code_freeze(version_short: new_version)
-
-    UI.important <<-MESSAGE
-
-      Code Freeze:
-      • New release branch from #{DEFAULT_BRANCH}: #{new_release_branch}
-
-      • Current release version and build code: #{release_version_current} (#{build_code_current}).
-      • New release version and build code: #{new_version} (#{new_build_code}).
-
-    MESSAGE
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
-
-    # Create the release branch
-    ensure_branch_does_not_exist!(new_release_branch)
-
-    UI.message('Creating release branch...')
-    Fastlane::Helper::GitHelper.create_branch(new_release_branch, from: DEFAULT_BRANCH)
-    UI.success("Done! New release branch is: #{git_branch}")
-
-    # Bump the release version and build code and write it to the `xcconfig` file
-    UI.message('Bumping release version and build code...')
-    VERSION_FILE.write(
-      version_short: new_version,
-      version_long: new_build_code
-    )
-    commit_version_bump
-    UI.success("Done! New Release Version: #{release_version_current}. New Build Code: #{build_code_current}")
-
+  private_lane :prepare_freeze_notes do |context:|
     extract_release_notes_for_version(
-      version: new_version,
+      version: context.version,
       release_notes_file_path: RELEASE_NOTES_SOURCE_PATH,
       extracted_notes_file_path: RELEASE_NOTES_PATH
     )
     ios_update_release_notes(
-      new_version: new_version,
+      next_version: context.next_version,
       release_notes_file_path: RELEASE_NOTES_SOURCE_PATH
     )
-
-    UI.important('Pushing changes to remote and configuring the release on GitHub')
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
-
-    push_to_git_remote(tags: false)
-
-    # Protect release/* branch
-    copy_branch_protection(
-      repository: GITHUB_REPO,
-      from_branch: DEFAULT_BRANCH,
-      to_branch: new_release_branch
-    )
-
-    @release_workflows.rollover_milestone(from: new_version, to: release_version_next, fastlane: self)
   end
 
   #####################################################################################

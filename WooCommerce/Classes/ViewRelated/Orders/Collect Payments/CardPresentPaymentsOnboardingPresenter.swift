@@ -3,6 +3,7 @@ import Yosemite
 import Combine
 import Foundation
 
+@MainActor
 protocol CardPresentPaymentsOnboardingPresenting {
     func showOnboardingIfRequired(from: ViewControllerPresenting,
                                   readyToCollectPayment: @escaping () -> Void)
@@ -13,6 +14,7 @@ protocol CardPresentPaymentsOnboardingPresenting {
 /// Checks for the current user status regarding Card Present Payments,
 /// and shows the onboarding if the user didn't finish the onboarding to use CPP
 ///
+@MainActor
 final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardingPresenting {
 
     private let stores: StoresManager
@@ -25,7 +27,7 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     private var readinessSubscription: AnyCancellable?
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    nonisolated init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
         onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
         readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)

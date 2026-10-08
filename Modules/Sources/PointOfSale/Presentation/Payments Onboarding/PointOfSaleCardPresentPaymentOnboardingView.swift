@@ -46,5 +46,6 @@ final class PreviewOnboardingViewContainerConfiguration: CardPresentPaymentsOnbo
     PointOfSaleCardPresentPaymentOnboardingView(viewModel: .init(
         onboardingViewContainer: .init(configuration: PreviewOnboardingViewContainerConfiguration()), onDismissTap: nil)
     )
+    .posPreviewModalParentSize()
 }
 #endif

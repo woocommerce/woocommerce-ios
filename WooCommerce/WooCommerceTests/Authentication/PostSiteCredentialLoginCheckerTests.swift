@@ -130,7 +130,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             switch action {
-            case .fetchSiteInfo(_, let completion):
+            case .fetchSiteInfo(_, _, let completion):
                 let site = Site.fake().copy(isWooCommerceActive: true)
                 completion(.success(site))
             default:
@@ -160,7 +160,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             switch action {
-            case .fetchSiteInfo(_, let completion):
+            case .fetchSiteInfo(_, _, let completion):
                 let site = Site.fake().copy(isWooCommerceActive: false)
                 completion(.success(site))
             default:
@@ -192,7 +192,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         // When
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
             switch action {
-            case .fetchSiteInfo(_, let completion):
+            case .fetchSiteInfo(_, _, let completion):
                 completion(.failure(NetworkError.timeout()))
             default:
                 break
@@ -218,7 +218,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         let roleCheckUseCase = MockRoleEligibilityUseCase()
         roleCheckUseCase.onCheckEligibility = { events.append("role") }
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
-            guard case .fetchSiteInfo(_, let completion) = action else { return }
+            guard case .fetchSiteInfo(_, _, let completion) = action else { return }
             events.append("woo")
             completion(.success(.fake().copy(isWooCommerceActive: true)))
         }
@@ -289,7 +289,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
             XCTAssertNil(sessionManager.cookieNonceAuthenticationEndpoints(for: credentials))
         }
         isolatedStores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
-            guard case .fetchSiteInfo(_, let completion) = action else { return }
+            guard case .fetchSiteInfo(_, _, let completion) = action else { return }
             completion(.success(.fake().copy(isWooCommerceActive: true)))
         }
         let persistence = try XCTUnwrap(
@@ -319,7 +319,7 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         var persistenceCallCount = 0
         let roleCheckUseCase = MockRoleEligibilityUseCase()
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
-            guard case .fetchSiteInfo(_, let completion) = action else { return }
+            guard case .fetchSiteInfo(_, _, let completion) = action else { return }
             completion(.success(.fake().copy(isWooCommerceActive: true)))
         }
         let checker = PostSiteCredentialLoginChecker(

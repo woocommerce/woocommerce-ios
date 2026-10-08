@@ -6,7 +6,8 @@ import struct WooFoundation.WooAnalyticsEvent
 
 /// Protocol for providing VoiceOver state, enabling testable VoiceOver detection
 protocol VoiceOverStateProvider {
-    var isVoiceOverRunning: Bool { get }
+    /// Main actor isolated because `UIAccessibility` state is UI state.
+    @MainActor var isVoiceOverRunning: Bool { get }
 }
 
 /// System implementation of VoiceOverStateProvider that uses UIAccessibility

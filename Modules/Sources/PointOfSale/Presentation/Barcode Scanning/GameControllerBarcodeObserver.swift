@@ -20,6 +20,7 @@ final class GameControllerBarcodeObserver {
     private(set) var barcodeParser: GameControllerBarcodeParser?
     private let configuration: HIDBarcodeParserConfiguration
     private let analyticsTracker: BarcodeAnalyticsTracker
+    private let isScanningEnabled: () -> Bool
 
     /// Tracks current shift state to be applied to the next character key
     private var isShiftPressed: Bool = false
@@ -35,11 +36,14 @@ final class GameControllerBarcodeObserver {
     /// - Parameters:
     ///   - configuration: The configuration to use for the barcode parser. Defaults to the standard configuration.
     ///   - analytics: The analytics service for tracking events.
+    ///   - isScanningEnabled: A live check that controls whether input and scan results are accepted. Defaults to true.
     ///   - onScan: The closure to be called when a scan is completed.
     init(configuration: HIDBarcodeParserConfiguration = .default,
          analytics: POSAnalyticsProviding,
+         isScanningEnabled: @escaping () -> Bool = { true },
          onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void) {
         self.onScan = onScan
+        self.isScanningEnabled = isScanningEnabled
         self.configuration = configuration
         self.analyticsTracker = BarcodeAnalyticsTracker(analytics: analytics)
         addObservers()
@@ -120,6 +124,10 @@ final class GameControllerBarcodeObserver {
             }
 
             guard pressed else { return }
+            guard self.isScanningEnabled() else {
+                self.barcodeParser?.cancel()
+                return
+            }
 
             self.barcodeParser?.processKeyPress(keyCode, isShiftPressed: isShiftPressed)
         }
@@ -141,6 +149,8 @@ final class GameControllerBarcodeObserver {
     }
 
     private func handleScanResult(_ result: HIDBarcodeParserResult) {
+        // SwiftUI can remove the scanner after the model has already entered checkout.
+        guard isScanningEnabled() else { return }
         analyticsTracker.track(result: result)
         onScan(result.asResult)
     }

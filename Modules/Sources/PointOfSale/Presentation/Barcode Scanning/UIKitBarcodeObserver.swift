@@ -15,20 +15,24 @@ final class UIKitBarcodeObserver {
     private(set) var barcodeParser: GameControllerBarcodeParser?
     private let analyticsTracker: BarcodeAnalyticsTracker
     private let timeProvider: TimeProvider
+    private let isScanningEnabled: () -> Bool
 
     /// Initializes a new UIKit barcode scanner observer.
     /// - Parameters:
     ///   - configuration: The configuration to use for the barcode parser. Defaults to the standard configuration.
+    ///   - analytics: The analytics service for tracking events.
+    ///   - isScanningEnabled: A live check that controls whether input and scan results are accepted. Defaults to true.
     ///   - onScan: The closure to be called when a scan is completed.
-    ///   - analyticsTracker: The analytics tracker to use. Defaults to a new instance.
     ///   - timeProvider: The time provider to use for timing operations. Defaults to the system time provider.
     init(
         configuration: HIDBarcodeParserConfiguration = .default,
         analytics: POSAnalyticsProviding,
+        isScanningEnabled: @escaping () -> Bool = { true },
         onScan: @escaping (Result<String, HIDBarcodeParserError>) -> Void,
         timeProvider: TimeProvider = DefaultTimeProvider()
     ) {
         self.onScan = onScan
+        self.isScanningEnabled = isScanningEnabled
         self.configuration = configuration
         self.analyticsTracker = BarcodeAnalyticsTracker(analytics: analytics)
         self.timeProvider = timeProvider
@@ -38,13 +42,18 @@ final class UIKitBarcodeObserver {
     /// Process UIPress events for barcode scanning.
     /// Translates UIKey input to GCKeyCode and feeds to existing parser infrastructure.
     func processUIPress(_ presses: Set<UIPress>) {
+        guard isScanningEnabled() else {
+            barcodeParser?.cancel()
+            return
+        }
         // Lazily initialize parser when needed
         if barcodeParser == nil {
             barcodeParser = GameControllerBarcodeParser(
                 configuration: configuration,
                 onScan: { [weak self] result in
-                    self?.analyticsTracker.track(result: result)
-                    self?.onScan(result.asResult)
+                    guard let self, self.isScanningEnabled() else { return }
+                    self.analyticsTracker.track(result: result)
+                    self.onScan(result.asResult)
                 },
                 timeProvider: timeProvider
             )

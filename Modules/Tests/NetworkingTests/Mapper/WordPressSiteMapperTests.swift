@@ -17,7 +17,7 @@ final class WordPressSiteMapperTests: XCTestCase {
             // When / Then
             XCTAssertNoThrow(try WordPressSiteMapper().map(response: data))
             XCTAssertThrowsError(try WordPressSiteMapper(validateAuthorization: true).map(response: data)) { error in
-                XCTAssertTrue(error is DecodingError)
+                XCTAssertEqual(error as? UnexpectedStoreResponseError, UnexpectedStoreResponseError(kind: .unexpectedContent))
             }
         }
     }

@@ -29,7 +29,7 @@ struct WordPressSiteMapper: Mapper {
         return try decoder.decode(WordPressSite.self, from: response)
     }
 
-    private func invalidAuthorization() -> DecodingError {
-        .dataCorrupted(.init(codingPath: [], debugDescription: "Invalid application password authorization metadata"))
+    private func invalidAuthorization() -> UnexpectedStoreResponseError {
+        UnexpectedStoreResponseError(kind: .unexpectedContent)
     }
 }

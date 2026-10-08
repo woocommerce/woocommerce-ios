@@ -199,6 +199,9 @@ struct UnexpectedStoreResponseTests {
 
     @Test(arguments: [
         "<div hidden><span>private-hidden</span></div>",
+        "<div hidden><div>private-a</div><div>private-b</div>private-c</div>",
+        "<p hidden><p>private-hidden</p>private-tail</p>",
+        "<li hidden><li>private-hidden</li>private-tail</li>",
         "<div HIDDEN=\"false\">private-hidden</div>",
         "<div aria-hidden=\"true\">private-hidden</div>",
         "<div style=\"color:red; DISPLAY : none !important;\">private-hidden</div>",
@@ -236,6 +239,72 @@ struct UnexpectedStoreResponseTests {
         #expect(excerpt.hasSuffix("Try again"))
         #expect(!excerpt.contains("private-"))
         #expect(!excerpt.contains("a > b"))
+    }
+
+    @Test(arguments: [
+        "<input value=\"private-nonce",
+        "<input title='a > b' value='private-nonce",
+        "<a title=\"private-attribute > private-tail",
+        "<div hidden><div>private-hidden</div><p>private-tail",
+        "<div style='display:none'><div>private-hidden</div><p>private-tail",
+        "<p hidden>private-hidden<p>private-tail",
+        "<li style='visibility:hidden'>private-hidden<li>private-tail"
+    ])
+    func test_excerpt_when_markup_is_unterminated_then_omits_private_tail(markup: String) {
+        // Given
+        let body = "<p>Blocked</p>\(markup)"
+
+        // When
+        let excerpt = UnexpectedResponseExcerpt.make(body)
+
+        // Then
+        #expect(excerpt == "Blocked")
+    }
+
+    @Test func test_excerpt_when_attributes_only_mention_hidden_then_preserves_visible_text() {
+        // Given
+        let body = """
+        <p data-state="hidden" title="hidden style='display:none'">Shown</p>
+        <p style="--hidden: true; display:block">Also shown</p>
+        <input type="hidden" name="_wpnonce" value="private-nonce"><p>End</p>
+        """
+
+        // When
+        let excerpt = UnexpectedResponseExcerpt.make(body)
+
+        // Then
+        #expect(excerpt == "Shown Also shown End")
+    }
+
+    @Test func test_excerpt_when_script_or_comment_contains_hidden_markup_then_preserves_following_text() {
+        // Given
+        let body = """
+        <script>const markup = "<p hidden>private-script";</script>
+        <!-- <div hidden>private-comment -->
+        <div hidden><script>const markup = "<div>private-script";</script>private-hidden</div>
+        <p>Shown</p><p>2 &lt; 3 and 4 &gt; 3</p>
+        """
+
+        // When
+        let excerpt = UnexpectedResponseExcerpt.make(body)
+
+        // Then
+        #expect(excerpt == "Shown 2 < 3 and 4 > 3")
+    }
+
+    @Test func test_excerpt_when_json_error_message_has_unclosed_hidden_element_then_omits_private_tail() throws {
+        // Given
+        let data = try JSONSerialization.data(withJSONObject: [
+            "code": "blocked",
+            "message": "<p>Contact support</p><p hidden>private-hidden<p>private-tail"
+        ])
+        let body = try #require(String(data: data, encoding: .utf8))
+
+        // When
+        let excerpt = UnexpectedResponseExcerpt.make(body)
+
+        // Then
+        #expect(excerpt == "blocked | Contact support")
     }
 
     @Test func test_excerpt_when_headers_and_secret_fields_are_present_then_masks_values() {

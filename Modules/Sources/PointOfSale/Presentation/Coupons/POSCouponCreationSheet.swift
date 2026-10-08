@@ -1,6 +1,6 @@
 import SwiftUI
 import class WooFoundation.CurrencySettings
-import struct Yosemite.Coupon
+import typealias Yosemite.CouponDiscountType
 import enum Yosemite.POSItem
 import struct Yosemite.POSItemIdentifier
 import struct Yosemite.POSCoupon
@@ -74,7 +74,7 @@ private struct POSCouponCreationSheetModifier: ViewModifier {
 
 private struct POSCouponDiscountType: Identifiable, Equatable {
     var id: String { discountType.rawValue }
-    let discountType: Coupon.DiscountType
+    let discountType: CouponDiscountType
 }
 
 private enum Localization {

@@ -78,7 +78,10 @@ struct ItemListView: View {
             // field would otherwise feed each character to the HID barcode listener and add
             // bogus rows to the cart.
             get: {
-                !isSearching
+                // The iPad item list stays mounted off-screen during checkout, where cash
+                // and note fields must not feed the raw keyboard scanner.
+                posModel.orderStage == .building
+                && !isSearching
                 && !modalManager.isPresented
                 && !sheetManager.isPresented
                 && !coverManager.isPresented
@@ -127,6 +130,8 @@ struct ItemListView: View {
             // set inside the pushed navigationDestination can stay stuck at its hidden value after
             // dismissal, leaving the phone cart button hidden until an unrelated re-render.
             .posHidesFloatingControl(isAddingCustomAmount)
+            .preference(key: POSItemListBackgroundPreferenceKey.self,
+                        value: isAddingCustomAmount ? .posSurfaceBright : .posSurface)
     }
 
     @ViewBuilder
@@ -148,10 +153,10 @@ struct ItemListView: View {
                     .opacity(selectedItemListType.isCoupons ? 1 : 0)
                     .accessibilityHidden(!selectedItemListType.isCoupons)
             }
-            .ignoresSafeArea(.container)
         }
         .navigationDestination(for: POSItem.self, destination: { item in
             childListView(parentItem: item)
+                .posIgnoresHiddenKeyboardSafeArea()
         })
         .modifier(CustomAmountFormPushModifier(
             isPresented: $isAddingCustomAmount,

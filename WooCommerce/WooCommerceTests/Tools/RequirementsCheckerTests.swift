@@ -59,7 +59,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
-            case .retrieveSiteAPI(_, let onCompletion):
+            case .retrieveSiteAPI(_, _, let onCompletion):
                 onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: ["wc/v3"], applicationPasswordAvailable: true)))
             default:
                 break
@@ -92,7 +92,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
-            case .retrieveSiteAPI(_, let onCompletion):
+            case .retrieveSiteAPI(_, _, let onCompletion):
                 onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: ["wc/v2"], applicationPasswordAvailable: true)))
             default:
                 break
@@ -133,7 +133,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
-            case .retrieveSiteAPI(_, let onCompletion):
+            case .retrieveSiteAPI(_, _, let onCompletion):
                 onCompletion(.failure(NSError(domain: "Test", code: 500)))
             default:
                 break
@@ -163,7 +163,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
-            case .retrieveSiteAPI(_, let onCompletion):
+            case .retrieveSiteAPI(_, _, let onCompletion):
                 onCompletion(.success(SiteAPI(siteID: site.siteID, namespaces: [], applicationPasswordAvailable: true)))
             default:
                 break
@@ -187,7 +187,7 @@ final class RequirementsCheckerTests: XCTestCase {
 
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             switch action {
-            case .retrieveSiteAPI(_, let completion):
+            case .retrieveSiteAPI(_, _, let completion):
                 completion(.success(SiteAPI(siteID: site.siteID, namespaces: [], applicationPasswordAvailable: true)))
             default:
                 break

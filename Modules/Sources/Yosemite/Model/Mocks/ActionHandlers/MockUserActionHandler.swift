@@ -9,7 +9,7 @@ struct MockUserActionHandler: MockActionHandler {
 
     func handle(action: ActionType) {
         switch action {
-        case .retrieveUser(let siteID, let onCompletion):
+        case .retrieveUser(let siteID, _, let onCompletion):
             onCompletion(.success(User(localID: 0,
                                        siteID: siteID,
                                        email: "",

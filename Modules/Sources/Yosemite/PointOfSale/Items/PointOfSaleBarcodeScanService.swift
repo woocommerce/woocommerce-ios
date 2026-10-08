@@ -28,6 +28,7 @@ public enum PointOfSaleBarcodeScanError: Error {
 }
 
 /// Service for handling barcode scanning in Point of Sale
+@MainActor
 public final class PointOfSaleBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
     private let productsRemote: ProductsRemoteProtocol
     private let siteID: Int64

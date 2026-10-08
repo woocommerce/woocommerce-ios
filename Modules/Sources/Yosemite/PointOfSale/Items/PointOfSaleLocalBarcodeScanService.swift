@@ -4,6 +4,7 @@ import enum Networking.ProductStatus
 import class WooFoundation.CurrencySettings
 
 /// Service for handling barcode scanning using local GRDB catalog
+@MainActor
 public final class PointOfSaleLocalBarcodeScanService: PointOfSaleBarcodeScanServiceProtocol {
     private let grdbManager: GRDBManagerProtocol
     private let siteID: Int64

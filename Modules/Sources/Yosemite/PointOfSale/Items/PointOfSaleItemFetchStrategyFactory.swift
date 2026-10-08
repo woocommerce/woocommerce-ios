@@ -15,6 +15,7 @@ public protocol PointOfSaleItemFetchStrategyFactoryProtocol: Sendable {
                         analytics: POSItemFetchAnalyticsTracking) -> PointOfSalePurchasableItemFetchStrategy
 }
 
+@MainActor
 public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol {
     private let siteID: Int64
     private let productsRemote: ProductsRemote
@@ -75,6 +76,7 @@ public final class PointOfSaleItemFetchStrategyFactory: PointOfSaleItemFetchStra
     }
 }
 
+@MainActor
 public final class PointOfSaleFixedItemFetchStrategyFactory: PointOfSaleItemFetchStrategyFactoryProtocol {
     private let fixedStrategy: PointOfSalePurchasableItemFetchStrategy
 

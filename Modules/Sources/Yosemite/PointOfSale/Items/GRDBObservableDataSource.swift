@@ -9,6 +9,7 @@ import WooFoundation
 /// Observable data source for GRDB-based POS items using ValueObservation
 /// Provides automatic SwiftUI updates when database changes occur
 @Observable
+@MainActor
 public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
     // MARK: - Observable Properties
 

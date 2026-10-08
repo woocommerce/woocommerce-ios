@@ -16,6 +16,7 @@ public protocol PointOfSaleCouponServiceProtocol: Sendable {
     func enableCoupons() async throws
 }
 
+@MainActor
 public final class PointOfSaleCouponService: PointOfSaleCouponServiceProtocol {
     private var siteID: Int64
     private let storage: StorageManagerType

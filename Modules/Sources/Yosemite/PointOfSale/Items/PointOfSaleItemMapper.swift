@@ -17,6 +17,7 @@ public protocol PointOfSaleItemMapperProtocol: Sendable {
 /// Maps products and variations to POSItems, and populates the output with:
 /// - Formatted price based on store's currency settings.
 /// - Product thumbnail, if any.
+@MainActor
 final class PointOfSaleItemMapper: PointOfSaleItemMapperProtocol {
     private let currencyFormatter: CurrencyFormatter
 

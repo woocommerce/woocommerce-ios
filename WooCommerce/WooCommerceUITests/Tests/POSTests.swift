@@ -135,7 +135,6 @@ final class POSTests: XCTestCase {
         screen.tapSearchProducts()
         XCTAssertTrue(app.textFields["pos-search-field"].waitForIsHittable(timeout: 10))
         XCTAssertTrue(app.keyboards.firstMatch.waitForExistence(timeout: 5))
-        RunLoop.current.run(until: Date(timeIntervalSinceNow: 0.7))
         XCTAssertEqual(checkout.frame.minY, checkoutY, accuracy: 1)
         XCTAssertEqual(menu.frame.minY, menuY, accuracy: 1)
         XCTAssertEqual(checkout.frame.maxY, menu.frame.maxY, accuracy: 1)
@@ -195,7 +194,7 @@ final class POSTests: XCTestCase {
             object: XCUIApplication().windows.firstMatch)
         XCTAssertEqual(XCTWaiter.wait(for: [landscapeWindow], timeout: 10), .completed)
         screen.tapMenuButton().tapSettingsMenuItem().verifySettingsVisible()
-        let footer = app.buttons.matching(NSPredicate(format: "label CONTAINS %@", "Get help and support")).firstMatch
+        let footer = app.buttons["pos-settings-help-button"]
         XCTAssertTrue(footer.waitForIsHittable(timeout: 10))
         let footerY = footer.frame.maxY
         screen.dismissSettings()

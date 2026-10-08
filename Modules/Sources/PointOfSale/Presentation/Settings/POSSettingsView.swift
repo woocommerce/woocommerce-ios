@@ -133,6 +133,7 @@ extension POSSettingsView {
             .buttonStyle(.plain)
             .accessibilityAddTraits(.isButton)
             .accessibilityLabel(SidebarNavigation.help.title)
+            .accessibilityIdentifier("pos-settings-help-button")
         }
     }
 

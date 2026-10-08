@@ -575,48 +575,8 @@ platform :ios do
   # @example Running the lane
   #          bundle exec fastlane finalize_release skip_confirm:true
   #
-  lane :finalize_release do |skip_confirm: false|
-    UI.user_error!('To finalize a hotfix, please use the `finalize_hotfix_release` lane instead') if release_is_hotfix?
+  import A8c::ReleaseWorkflows.lanes_path(:finalization)
 
-    ensure_git_status_clean
-    ensure_git_branch_is_release_branch!
-
-    UI.important("Finalizing release: #{release_version_current}")
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
-
-    # Bump the build code
-    UI.message('Bumping build code...')
-    VERSION_FILE.write(version_long: build_code_next)
-    commit_version_bump
-    UI.success("Done! New Build Code: #{build_code_current}")
-
-    # Start the build
-    UI.important('Pushing changes to remote and triggering the release build')
-    UI.user_error!("Terminating as requested. Don't forget to run the remainder of this automation manually.") unless skip_confirm || UI.confirm('Do you want to continue?')
-
-    push_to_git_remote(tags: false)
-
-    version = release_version_current
-
-    trigger_release_build(branch_to_build: "release/#{version}")
-
-    create_backmerge_pr
-
-    # Close milestone
-    begin
-      set_milestone_frozen_marker(
-        repository: GITHUB_REPO,
-        milestone: version,
-        freeze: false
-      )
-      close_milestone(
-        repository: GITHUB_REPO,
-        milestone: version
-      )
-    rescue StandardError => e
-      report_milestone_error(error_title: "Error closing milestone `#{version}`: #{e.message}")
-    end
-  end
 
   # This lane publishes a release on GitHub and creates a PR to backmerge the current release branch into the next release/ branch
   #

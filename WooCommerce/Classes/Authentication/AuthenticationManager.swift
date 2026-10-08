@@ -691,6 +691,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         useCase.handleLogin(username: credentials.username, password: credentials.password)
     }
 
+    @MainActor
     func presentSiteCredentialBrowserAlternative(for siteURL: String, in viewController: UIViewController) {
         presentAppPasswordTutorial(error: SiteCredentialLoginError.inaccessibleLoginPage, for: siteURL, in: viewController)
     }
@@ -732,6 +733,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
         siteCredentialLoginUseCase = nil
     }
 
+    @MainActor
     func handleSiteCredentialLoginFailure(error: Error,
                                           for siteURL: String,
                                           in viewController: UIViewController) {
@@ -1203,6 +1205,7 @@ private extension AuthenticationManager {
 
     /// Web view to authorize application password for a given site.
     ///
+    @MainActor
     func applicationPasswordWebView(for siteURL: String, previousVC: UIViewController?) -> UIViewController {
         let viewModel = ApplicationPasswordAuthorizationViewModel(siteURL: siteURL)
         let controller = ApplicationPasswordAuthorizationWebViewController(viewModel: viewModel,
@@ -1338,6 +1341,7 @@ private extension AuthenticationManager {
 
     /// Presents Application Passwords tutorial before redirecting user to the site login using a web view.
     ///
+    @MainActor
     private func presentAppPasswordTutorial(error: Error, for siteURL: String, in viewController: UIViewController) {
         let tutorialVC = ApplicationPasswordTutorialViewController(error: error)
         tutorialVC.continueButtonTapped = { [weak self] in
@@ -1359,6 +1363,7 @@ private extension AuthenticationManager {
 
     /// Presents login error alert before redirecting user to the site login using a web view.
     ///
+    @MainActor
     private func presentAppPasswordAlert(error: Error, for siteURL: String, in viewController: UIViewController) {
         let shouldEnableWebFlow: Bool = {
             /// Since our detection of invalid credentials error might be inaccurate,
@@ -1383,6 +1388,7 @@ private extension AuthenticationManager {
     /// Presents the site credential failure using the authenticator's centered, dimmed alert treatment.
     ///
     /// Without the custom presentation configuration, UIKit presents the alert as a page sheet on iOS 26.
+    @MainActor
     private func presentSiteCredentialLoginErrorAlert(message: String,
                                                       defaultAction: (() -> Void)?,
                                                       in viewController: UIViewController,
@@ -1400,6 +1406,7 @@ private extension AuthenticationManager {
 
     /// Presents app password site login using a web view.
     ///
+    @MainActor
     private func presentApplicationPasswordWebView(for siteURL: String, in viewController: UIViewController) {
         let webViewController = applicationPasswordWebView(for: siteURL, previousVC: viewController)
         viewController.navigationController?.pushViewController(webViewController, animated: true)

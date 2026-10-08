@@ -1,5 +1,4 @@
 import Testing
-import Observation
 import Foundation
 
 @testable import PointOfSale
@@ -68,7 +67,9 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         mockOrderService.orderToReturn = MockOrders().sampleOrder()
 
-        mockOrderService.onSyncOrderCalled = { [weak sut] in
+        mockOrderService.onSyncOrderCalled = { [weak sut, mockOrderService] in
+            // Re-enter once, so a broken "already syncing" guard fails on the call count instead of recursing forever.
+            mockOrderService.onSyncOrderCalled = nil
             #expect(sut?.orderState.isSyncing == true)
             await sut?.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 2),
                                                               makeItem(quantity: 5)]),
@@ -131,19 +132,17 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         let fakeOrder = Order.fake()
         mockOrderService.orderToReturn = fakeOrder
-        let recorder = OrderStateRecorder(sut)
+        #expect(sut.orderState == .idle)
+        mockOrderService.onSyncOrderCalled = { [weak sut] in
+            #expect(sut?.orderState == .syncing)
+        }
 
         // When
         await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
-        let orderStates = await recorder.states(count: 3)
 
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .loaded(.init(cartTotal: "$0.00", orderTotal: "", taxTotal: "", orderTotalDecimal: 0.0),
-                    fakeOrder)
-        ])
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        #expect(sut.orderState == .loaded(.init(cartTotal: "$0.00", orderTotal: "", taxTotal: "", orderTotalDecimal: 0.0), fakeOrder))
     }
 
     @Test func syncOrder_with_order_sync_failure_sets_orderState_syncing_then_error() async throws {
@@ -154,18 +153,17 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         mockOrderService.orderToReturn = nil
 
-        let recorder = OrderStateRecorder(sut)
+        #expect(sut.orderState == .idle)
+        mockOrderService.onSyncOrderCalled = { [weak sut] in
+            #expect(sut?.orderState == .syncing)
+        }
 
         // When
         await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
-        let orderStates = await recorder.states(count: 3)
 
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .error(.other(MockPOSOrderServiceError.noOrderToReturn.localizedDescription), {})
-        ])
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        #expect(sut.orderState == .error(.other(MockPOSOrderServiceError.noOrderToReturn.localizedDescription), {}))
     }
 
     @Test func syncOrder_when_order_does_not_match_cart_then_sets_orderDoesNotMatchCart_error() async throws {
@@ -176,18 +174,17 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         mockOrderService.errorToReturn = POSOrderService.POSOrderServiceError.orderDoesNotMatchCart
 
-        let recorder = OrderStateRecorder(sut)
+        #expect(sut.orderState == .idle)
+        mockOrderService.onSyncOrderCalled = { [weak sut] in
+            #expect(sut?.orderState == .syncing)
+        }
 
         // When
         await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
-        let orderStates = await recorder.states(count: 3)
 
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .error(.orderDoesNotMatchCart, {})
-        ])
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        #expect(sut.orderState == .error(.orderDoesNotMatchCart, {}))
     }
 
     @Test func sendReceipt_when_there_is_no_order_then_throws_noOrder_error() async throws {
@@ -833,7 +830,10 @@ struct PointOfSaleOrderControllerTests {
         let errorMessage = "Invalid coupon code"
         mockOrderService.errorToReturn = DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: errorMessage, data: nil)
 
-        let recorder = OrderStateRecorder(sut)
+        #expect(sut.orderState == .idle)
+        mockOrderService.onSyncOrderCalled = { [weak sut] in
+            #expect(sut?.orderState == .syncing)
+        }
 
         // When
         await sut.syncOrder(
@@ -843,14 +843,10 @@ struct PointOfSaleOrderControllerTests {
             ),
             retryHandler: {}
         )
-        let orderStates = await recorder.states(count: 3)
 
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .error(.invalidCoupon(errorMessage), {})
-        ])
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        #expect(sut.orderState == .error(.invalidCoupon(errorMessage), {}))
     }
 
     @Test func syncOrder_when_orderService_fails_with_networkError_containing_couponsError_then_sets_invalidCoupon_error() async throws {
@@ -869,7 +865,10 @@ struct PointOfSaleOrderControllerTests {
         let errorData = errorJSON.data(using: .utf8)!
         mockOrderService.errorToReturn = NetworkError.unacceptableStatusCode(statusCode: 400, response: errorData)
 
-        let recorder = OrderStateRecorder(sut)
+        #expect(sut.orderState == .idle)
+        mockOrderService.onSyncOrderCalled = { [weak sut] in
+            #expect(sut?.orderState == .syncing)
+        }
 
         // When
         await sut.syncOrder(
@@ -879,14 +878,10 @@ struct PointOfSaleOrderControllerTests {
             ),
             retryHandler: {}
         )
-        let orderStates = await recorder.states(count: 3)
 
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .error(.invalidCoupon(errorMessage), {})
-        ])
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        #expect(sut.orderState == .error(.invalidCoupon(errorMessage), {}))
     }
 
     @Test func syncOrder_when_fails_sets_order_to_nil() async throws {
@@ -1166,54 +1161,5 @@ final class MockCurrencySettingsProvider: POSCurrencySettingsProviding {
                                                                  decimalSeparator: ".",
                                                                  numberOfDecimals: 2)) {
         self.currencySettings = currencySettings
-    }
-}
-
-// MARK: - Order State Recorder
-
-/// Records each `orderState` value that the controller publishes.
-///
-/// Observation calls `onChange` before it stores the new value. The recorder reads the value on the next
-/// main-actor turn and then observes again. The controller awaits the order service off the main actor
-/// between its state changes, so the recorder observes again before the next change.
-@MainActor
-private final class OrderStateRecorder {
-    private let sut: PointOfSaleOrderController
-    private(set) var states: [PointOfSaleInternalOrderState]
-    private var waiter: (count: Int, continuation: CheckedContinuation<Void, Never>)?
-
-    init(_ sut: PointOfSaleOrderController) {
-        self.sut = sut
-        self.states = [sut.orderState]
-        observe()
-    }
-
-    /// Waits until the recorder holds `count` states, then returns them.
-    func states(count: Int) async -> [PointOfSaleInternalOrderState] {
-        if states.count < count {
-            await withCheckedContinuation { continuation in
-                waiter = (count, continuation)
-            }
-        }
-        return states
-    }
-
-    private func observe() {
-        withObservationTracking {
-            _ = sut.orderState
-        } onChange: { [weak self] in
-            Task { @MainActor in
-                self?.record()
-            }
-        }
-    }
-
-    private func record() {
-        states.append(sut.orderState)
-        observe()
-        if let waiter, states.count >= waiter.count {
-            self.waiter = nil
-            waiter.continuation.resume()
-        }
     }
 }

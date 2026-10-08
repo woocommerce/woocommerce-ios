@@ -32,6 +32,9 @@ final class ProductsViewController: UIViewController {
     private let refreshUpdates = ListRefreshUpdates()
     // Match UITableView's installed rows even while refresh updates change the backing store.
     private var presentedProducts: [ProductListItem] = []
+    // The store's name sort can differ from the local sort, so keep products from later pages below earlier pages.
+    private var productPageOrder = ProductListPageOrder()
+    private var syncingPageNumber: Int?
     private var isShowingLoadingRows = false
     private lazy var emptyStateView = ListEmptyView()
 
@@ -150,9 +153,7 @@ final class ProductsViewController: UIViewController {
                 resultsController.updateSortOrder(sortOrder)
 
                 /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
-                reloadProducts()
-
-                paginationTracker.resync()
+                resync()
             }
         }
     }
@@ -197,9 +198,7 @@ final class ProductsViewController: UIViewController {
                     await updatePredicate(filters: filters)
 
                     /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-                    reloadProducts()
-
-                    paginationTracker.resync()
+                    resync()
                 }
             }
         }
@@ -362,6 +361,7 @@ final class ProductsViewController: UIViewController {
     }
 
     func resync() {
+        productPageOrder.reset()
         reloadProducts()
         paginationTracker.resync()
     }
@@ -1093,7 +1093,7 @@ private extension ProductsViewController {
         }
 
         refreshUpdates.perform {
-            presentedProducts = resultsController.listItems
+            presentedProducts = presentableProducts(resultsController.listItems)
             tableView?.reloadData()
         }
     }
@@ -1101,19 +1101,36 @@ private extension ProductsViewController {
     /// Set closure  to methods `onDidChangeContent` and `onDidResetContent
     ///
     func setClosuresToResultController(_ resultsController: ResultsController<StorageProduct>, onReload: @escaping () -> Void) {
-        resultsController.onDidChangeContent = {
+        resultsController.onDidChangeContent = { [weak self] in
+            self?.recordProductPages()
             onReload()
         }
 
-        resultsController.onDidResetContent = {
+        resultsController.onDidResetContent = { [weak self] in
+            self?.recordProductPages()
             onReload()
         }
     }
 
     func reloadProducts() {
         refreshUpdates.perform {
-            presentedProducts = resultsController.listItems
+            presentedProducts = presentableProducts(resultsController.listItems)
             tableView.reloadData()
+        }
+    }
+
+    /// Records pages on every storage change, even while a refresh defers presentation.
+    func recordProductPages() {
+        productPageOrder.record(resultsController.productNames, syncingPageNumber: syncingPageNumber)
+    }
+
+    /// Only the name sort can differ between the store and the device.
+    func presentableProducts(_ products: [ProductListItem]) -> [ProductListItem] {
+        switch sortOrder {
+        case .nameAscending, .nameDescending:
+            return productPageOrder.ordered(products)
+        case .dateAscending, .dateDescending:
+            return products
         }
     }
 
@@ -1293,9 +1310,7 @@ private extension ProductsViewController {
             await updatePredicate(filters: filters)
 
             /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-            reloadProducts()
-
-            paginationTracker.resync()
+            resync()
         }
     }
 
@@ -1657,6 +1672,7 @@ extension ProductsViewController: PaginationTrackerDelegate {
     /// Synchronizes the Products for the Default Store (if any).
     ///
     func sync(pageNumber: Int, pageSize: Int, reason: String?, onCompletion: SyncCompletion?) {
+        syncingPageNumber = pageNumber
         refreshUpdates.perform { transitionToSyncingState(pageNumber: pageNumber) }
         dataLoadingError = nil
 
@@ -1688,6 +1704,19 @@ extension ProductsViewController: PaginationTrackerDelegate {
                                         )
                                     }
 
+                                    // Storage changes from this page are recorded before the completion runs.
+                                    if self.syncingPageNumber == pageNumber {
+                                        self.syncingPageNumber = nil
+                                    }
+                                    // A successful first page replaces the stored products (`shouldDeleteStoredProductsOnFirstPage`).
+                                    if pageNumber == SyncingCoordinator.Defaults.pageFirstIndex, case .success = result {
+                                        let presentedProductIDs = self.presentedProducts.map(\.productID)
+                                        self.productPageOrder.reset()
+                                        self.recordProductPages()
+                                        if self.presentableProducts(self.resultsController.listItems).map(\.productID) != presentedProductIDs {
+                                            self.reloadProducts()
+                                        }
+                                    }
                                     self.refreshUpdates.perform { self.transitionToResultsUpdatedState() }
                                     onCompletion?(result)
         }
@@ -1948,6 +1977,11 @@ extension ResultsController<StorageProduct> {
         controller.fetchedObjects?.compactMap { mutableObject in
             ProductListItem(storageProduct: mutableObject)
         } ?? []
+    }
+
+    /// Product IDs and names, without building full list items.
+    var productNames: [(productID: Int64, name: String)] {
+        controller.fetchedObjects?.map { ($0.productID, $0.name) } ?? []
     }
 
     func listItem(at indexPath: IndexPath) -> ProductListItem {

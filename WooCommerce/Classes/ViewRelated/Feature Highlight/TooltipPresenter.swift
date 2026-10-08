@@ -129,6 +129,15 @@ final class TooltipPresenter {
         NotificationCenter.default.removeObserver(self)
     }
 
+    /// Re-creates a visible tooltip when the container has been resized, e.g. an iPad window resize without rotation.
+    func containerSizeDidChange() {
+        let containerWidth = containerView.bounds.width
+        guard tooltip.superview != nil, containerWidth > 0, tooltip.containerWidth != containerWidth else {
+            return
+        }
+        resetTooltipAndShow()
+    }
+
     /// Re-creates the tooltip when the container width differs from the one it was sized for.
     private func matchTooltipToContainerWidth() {
         let containerWidth = containerView.bounds.width

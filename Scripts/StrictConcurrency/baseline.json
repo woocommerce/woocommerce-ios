@@ -196,8 +196,6 @@
     "Modules/Tests/NetworkingTests/WordPressAPIDiscoveryTests.swift": 6,
     "Modules/Tests/NetworkingTests/WordPressRESTAPIRootCacheTests.swift": 4,
     "Modules/Tests/PointOfSaleTests/Card Present Payments/Connection Alerts/PointOfSaleCardPresentPaymentConnectionSuccessAlertViewModelTests.swift": 2,
-    "Modules/Tests/PointOfSaleTests/Controllers/POSOrderListControllerTests.swift": 3,
-    "Modules/Tests/PointOfSaleTests/Controllers/PointOfSaleOrderControllerTests.swift": 27,
     "Modules/Tests/PointOfSaleTests/Mocks/MockCardPresentPaymentService.swift": 1,
     "Modules/Tests/PointOfSaleTests/Mocks/MockPOSCatalogSyncCoordinator.swift": 3,
     "Modules/Tests/PointOfSaleTests/Mocks/MockPOSOrderListController.swift": 1,

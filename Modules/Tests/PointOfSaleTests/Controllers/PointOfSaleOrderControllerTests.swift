@@ -6,6 +6,7 @@ import Foundation
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.OrderFeeLine
+import enum Yosemite.OrderFeeTaxStatus
 import struct Yosemite.OrderCouponLine
 import struct Yosemite.POSCustomAmount
 import struct Yosemite.SystemPlugin
@@ -130,32 +131,11 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         let fakeOrder = Order.fake()
         mockOrderService.orderToReturn = fakeOrder
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
-                    // Observation calls synchronously inside the main-actor controller's mutation.
-                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
-                    MainActor.assumeIsolated {
-                        _ = sut.orderState
-                    }
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
-            }
-            observeOrderState()
+        let recorder = OrderStateRecorder(sut)
 
-            // When
-            await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
-        }
-
-        await orderStateAppendTask?.value
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        let orderStates = await recorder.states(count: 3)
 
         // Then
         #expect(orderStates == [
@@ -174,32 +154,11 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         mockOrderService.orderToReturn = nil
 
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
-                    // Observation calls synchronously inside the main-actor controller's mutation.
-                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
-                    MainActor.assumeIsolated {
-                        _ = sut.orderState
-                    }
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
-            }
-            observeOrderState()
+        let recorder = OrderStateRecorder(sut)
 
-            // When
-            await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
-        }
-
-        await orderStateAppendTask?.value
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        let orderStates = await recorder.states(count: 3)
 
         // Then
         #expect(orderStates == [
@@ -217,32 +176,11 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         mockOrderService.errorToReturn = POSOrderService.POSOrderServiceError.orderDoesNotMatchCart
 
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
-                    // Observation calls synchronously inside the main-actor controller's mutation.
-                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
-                    MainActor.assumeIsolated {
-                        _ = sut.orderState
-                    }
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
-            }
-            observeOrderState()
+        let recorder = OrderStateRecorder(sut)
 
-            // When
-            await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
-        }
-
-        await orderStateAppendTask?.value
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        let orderStates = await recorder.states(count: 3)
 
         // Then
         #expect(orderStates == [
@@ -895,38 +833,17 @@ struct PointOfSaleOrderControllerTests {
         let errorMessage = "Invalid coupon code"
         mockOrderService.errorToReturn = DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: errorMessage, data: nil)
 
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
-                    // Observation calls synchronously inside the main-actor controller's mutation.
-                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
-                    MainActor.assumeIsolated {
-                        _ = sut.orderState
-                    }
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
-            }
-            observeOrderState()
+        let recorder = OrderStateRecorder(sut)
 
-            // When
-            await sut.syncOrder(
-                for: Cart(
-                    purchasableItems: [makeItem()],
-                    coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "INVALID", summary: "")]
-                ),
-                retryHandler: {}
-            )
-        }
-
-        await orderStateAppendTask?.value
+        // When
+        await sut.syncOrder(
+            for: Cart(
+                purchasableItems: [makeItem()],
+                coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "INVALID", summary: "")]
+            ),
+            retryHandler: {}
+        )
+        let orderStates = await recorder.states(count: 3)
 
         // Then
         #expect(orderStates == [
@@ -952,38 +869,17 @@ struct PointOfSaleOrderControllerTests {
         let errorData = errorJSON.data(using: .utf8)!
         mockOrderService.errorToReturn = NetworkError.unacceptableStatusCode(statusCode: 400, response: errorData)
 
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
-                    // Observation calls synchronously inside the main-actor controller's mutation.
-                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
-                    MainActor.assumeIsolated {
-                        _ = sut.orderState
-                    }
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
-            }
-            observeOrderState()
+        let recorder = OrderStateRecorder(sut)
 
-            // When
-            await sut.syncOrder(
-                for: Cart(
-                    purchasableItems: [makeItem()],
-                    coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "INVALID", summary: "")]
-                ),
-                retryHandler: {}
-            )
-        }
-
-        await orderStateAppendTask?.value
+        // When
+        await sut.syncOrder(
+            for: Cart(
+                purchasableItems: [makeItem()],
+                coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "INVALID", summary: "")]
+            ),
+            retryHandler: {}
+        )
+        let orderStates = await recorder.states(count: 3)
 
         // Then
         #expect(orderStates == [
@@ -1105,7 +1001,7 @@ struct PointOfSaleOrderControllerTests {
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics())
         let customAmountID = UUID()
-        let fee = OrderFeeLine.fake().copy(name: "Tip", taxStatus: .none, total: "5.00")
+        let fee = OrderFeeLine.fake().copy(name: "Tip", taxStatus: OrderFeeTaxStatus.none, total: "5.00")
         let fakeOrder = Order.fake().copy(fees: [fee])
         mockOrderService.orderToReturn = fakeOrder
 
@@ -1270,5 +1166,54 @@ final class MockCurrencySettingsProvider: POSCurrencySettingsProviding {
                                                                  decimalSeparator: ".",
                                                                  numberOfDecimals: 2)) {
         self.currencySettings = currencySettings
+    }
+}
+
+// MARK: - Order State Recorder
+
+/// Records each `orderState` value that the controller publishes.
+///
+/// Observation calls `onChange` before it stores the new value. The recorder reads the value on the next
+/// main-actor turn and then observes again. The controller awaits the order service off the main actor
+/// between its state changes, so the recorder observes again before the next change.
+@MainActor
+private final class OrderStateRecorder {
+    private let sut: PointOfSaleOrderController
+    private(set) var states: [PointOfSaleInternalOrderState]
+    private var waiter: (count: Int, continuation: CheckedContinuation<Void, Never>)?
+
+    init(_ sut: PointOfSaleOrderController) {
+        self.sut = sut
+        self.states = [sut.orderState]
+        observe()
+    }
+
+    /// Waits until the recorder holds `count` states, then returns them.
+    func states(count: Int) async -> [PointOfSaleInternalOrderState] {
+        if states.count < count {
+            await withCheckedContinuation { continuation in
+                waiter = (count, continuation)
+            }
+        }
+        return states
+    }
+
+    private func observe() {
+        withObservationTracking {
+            _ = sut.orderState
+        } onChange: { [weak self] in
+            Task { @MainActor in
+                self?.record()
+            }
+        }
+    }
+
+    private func record() {
+        states.append(sut.orderState)
+        observe()
+        if let waiter, states.count >= waiter.count {
+            self.waiter = nil
+            waiter.continuation.resume()
+        }
     }
 }

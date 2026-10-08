@@ -4,6 +4,7 @@ import protocol Yosemite.POSOrderableItem
 import struct WooFoundationCore.WooAnalyticsEvent
 
 struct ItemListView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -78,7 +79,10 @@ struct ItemListView: View {
             // field would otherwise feed each character to the HID barcode listener and add
             // bogus rows to the cart.
             get: {
-                !isSearching
+                // The iPad item list stays mounted off-screen during checkout, where cash
+                // and note fields must not feed the raw keyboard scanner.
+                posModel.orderStage == .building
+                && !isSearching
                 && !modalManager.isPresented
                 && !sheetManager.isPresented
                 && !coverManager.isPresented
@@ -116,23 +120,25 @@ struct ItemListView: View {
     /// so it lives on the aggregate model as `editingCustomAmount` for cross-pane reach.
     @State private var isAddingCustomAmount: Bool = false
 
-    @State private var navigationResetID: Int = 0
-
     var body: some View {
         navigationContainer
-            .id(navigationResetID)
             // The phone cart button and the iPad floating control are suppressed while the
             // add-custom-amount form is pushed. Emit that request from this always-present view,
             // keyed on the push flag, so it reverts the instant the form is popped: a preference
             // set inside the pushed navigationDestination can stay stuck at its hidden value after
             // dismissal, leaving the phone cart button hidden until an unrelated re-render.
             .posHidesFloatingControl(isAddingCustomAmount)
+            .preference(key: POSItemListBackgroundPreferenceKey.self,
+                        value: isAddingCustomAmount ? .posSurfaceBright : .posSurface)
     }
 
     @ViewBuilder
     private var navigationContainer: some View {
-        NavigationStack {
+        @Bindable var viewStateCoordinator = posModel.viewStateCoordinatorForView
+        NavigationStack(path: $viewStateCoordinator.itemNavigationPath) {
             content
+                // The regular pane is already inside the dashboard's horizontal safe bounds.
+                .ignoresSafeArea(.container, edges: horizontalSizeClass == .regular ? .horizontal : [])
         }
     }
 
@@ -148,10 +154,10 @@ struct ItemListView: View {
                     .opacity(selectedItemListType.isCoupons ? 1 : 0)
                     .accessibilityHidden(!selectedItemListType.isCoupons)
             }
-            .ignoresSafeArea(.container)
         }
         .navigationDestination(for: POSItem.self, destination: { item in
             childListView(parentItem: item)
+                .posIgnoresHiddenKeyboardSafeArea()
         })
         .modifier(CustomAmountFormPushModifier(
             isPresented: $isAddingCustomAmount,
@@ -179,13 +185,8 @@ struct ItemListView: View {
             guard stage != .building else { return }
             isAddingCustomAmount = false
         }
-        // The left pane also owns product drill-down navigation. Only reset that navigation after a
-        // completed checkout starts a fresh empty cart. Returning to edit the current cart should
-        // preserve the merchant's place in the selector.
-        .onChange(of: posModel.orderStage) { oldStage, newStage in
-            guard oldStage == .finalizing, newStage == .building, posModel.cart.isEmpty else { return }
-            navigationResetID += 1
-        }
+        // Product drill-down lives in the coordinator: a new cart clears it, while returning to
+        // edit the current cart preserves the merchant's place in the selector.
         .posEdgeSwipeBackAction(isEnabled: isSearching, onBack: dismissSearch)
     }
 

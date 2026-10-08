@@ -2,7 +2,7 @@ import Foundation
 import Codegen
 
 /// Represents an analytics report card in the Analytics Hub
-public struct AnalyticsCard: Codable, Hashable, Equatable, GeneratedCopiable {
+public struct AnalyticsCard: Codable, Hashable, Equatable, GeneratedCopiable, Sendable {
     /// The type of analytics report card.
     public let type: CardType
 
@@ -16,7 +16,7 @@ public struct AnalyticsCard: Codable, Hashable, Equatable, GeneratedCopiable {
 
     /// Types of report cards to display in the Analytics Hub.
     /// The order of the cases in this enum defines the default order of cards in the Analytics Hub.
-    public enum CardType: String, Codable, CaseIterable {
+    public enum CardType: String, Codable, CaseIterable, Sendable {
         case revenue
         case orders
         case products

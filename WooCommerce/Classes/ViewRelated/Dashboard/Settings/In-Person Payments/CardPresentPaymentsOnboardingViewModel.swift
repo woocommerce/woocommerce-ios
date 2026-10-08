@@ -4,7 +4,8 @@ import Yosemite
 import Experiments
 import WooFoundation
 
-final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSettingsFlowPresentedViewModel, Identifiable {
+@MainActor
+final class CardPresentPaymentsOnboardingViewModel: ObservableObject, @MainActor PaymentSettingsFlowPresentedViewModel, Identifiable {
     @Published var state: CardPresentPaymentOnboardingState
     var userIsAdministrator: Bool
     var learnMoreURL: URL? = nil
@@ -17,8 +18,9 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     /// Initializes the view model for a specific site
     ///
     init(stores: StoresManager = ServiceLocator.stores,
-         useCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
+         useCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil,
          didChangeShouldShow: ((CardReaderSettingsTriState) -> Void)? = nil) {
+        let useCase = useCase ?? CardPresentPaymentsOnboardingUseCase()
         self.stores = stores
         self.useCase = useCase
         self.didChangeShouldShow = didChangeShouldShow
@@ -46,11 +48,11 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     init(
         fixedState: CardPresentPaymentOnboardingState,
         fixedUserIsAdministrator: Bool = false,
-        useCase: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
+        useCase: CardPresentPaymentsOnboardingUseCaseProtocol? = nil,
         stores: StoresManager = ServiceLocator.stores) {
             self.stores = stores
             state = fixedState
-            self.useCase = useCase
+            self.useCase = useCase ?? CardPresentPaymentsOnboardingUseCase()
             userIsAdministrator = fixedUserIsAdministrator
             updateLearnMoreURL(state: fixedState)
         }
@@ -153,7 +155,7 @@ final class CardPresentPaymentsOnboardingViewModel: ObservableObject, PaymentSet
     var didUpdate: (() -> Void)? = nil
 }
 
-extension CardPresentPaymentsOnboardingViewModel: Equatable {
+extension CardPresentPaymentsOnboardingViewModel: @MainActor Equatable {
     static func == (lhs: CardPresentPaymentsOnboardingViewModel, rhs: CardPresentPaymentsOnboardingViewModel) -> Bool {
         lhs.state == rhs.state &&
         lhs.userIsAdministrator == rhs.userIsAdministrator &&

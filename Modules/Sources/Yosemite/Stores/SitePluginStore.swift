@@ -67,7 +67,7 @@ private extension SitePluginStore {
         }
     }
 
-    func installSitePlugin(siteID: Int64, slug: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func installSitePlugin(siteID: Int64, slug: String, onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void) {
         remote.installPlugin(for: siteID, slug: slug) { [weak self] result in
             guard let self else { return }
             switch result {
@@ -79,7 +79,7 @@ private extension SitePluginStore {
         }
     }
 
-    func activateSitePlugin(siteID: Int64, pluginName: String, onCompletion: @escaping (Result<Void, Error>) -> Void) {
+    func activateSitePlugin(siteID: Int64, pluginName: String, onCompletion: @escaping @Sendable (Result<Void, Error>) -> Void) {
         remote.activatePlugin(for: siteID, pluginName: pluginName) { [weak self] result in
             guard let self else { return }
             switch result {

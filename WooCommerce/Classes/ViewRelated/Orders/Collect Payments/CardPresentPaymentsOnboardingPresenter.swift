@@ -19,19 +19,17 @@ final class CardPresentPaymentsOnboardingPresenter: CardPresentPaymentsOnboardin
 
     private let stores: StoresManager
 
-    private let onboardingUseCase: CardPresentPaymentsOnboardingUseCase
+    // Created on first use so the initializer stays nonisolated for its nonisolated callers.
+    @MainActor private lazy var onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
 
-    private let readinessUseCase: CardPresentPaymentsReadinessUseCase
+    @MainActor private lazy var readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
 
-    private let onboardingViewModel: CardPresentPaymentsOnboardingViewModel
+    @MainActor private lazy var onboardingViewModel = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
 
     private var readinessSubscription: AnyCancellable?
 
     init(stores: StoresManager = ServiceLocator.stores) {
         self.stores = stores
-        onboardingUseCase = CardPresentPaymentsOnboardingUseCase(stores: stores)
-        readinessUseCase = CardPresentPaymentsReadinessUseCase(onboardingUseCase: onboardingUseCase, stores: stores)
-        onboardingViewModel = CardPresentPaymentsOnboardingViewModel(useCase: onboardingUseCase)
     }
 
     @MainActor

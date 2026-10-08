@@ -13,13 +13,14 @@ struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
 
     private let userDefaults: UserDefaults
 
+    @MainActor
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
-         cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
+         cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol? = nil,
          userDefaults: UserDefaults = .standard) {
         self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
-        self.cardPresentPaymentsOnboarding = cardPresentPaymentsOnboarding
+        self.cardPresentPaymentsOnboarding = cardPresentPaymentsOnboarding ?? CardPresentPaymentsOnboardingUseCase()
         self.userDefaults = userDefaults
     }
 
@@ -35,7 +36,7 @@ struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
             return false
         }
 
-        switch cardPresentPaymentsOnboarding.state {
+        switch await cardPresentPaymentsOnboarding.state {
         case .completed, .codPaymentGatewayNotSetUp:
             break
         default:

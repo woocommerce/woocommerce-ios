@@ -1310,11 +1310,13 @@ final class AuthenticationManagerTests: XCTestCase {
                                             siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
         let context = LoginUnexpectedResponseFailure(stage: .credentials)
         var receivedError: Error?
-        manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: nil, adminURL: nil,
-                                            endpointUnderVerification: nil, onLoading: { _ in }, onSuccess: { _ in XCTFail("Expected failure") },
+        var verifiedLoginURL: String?
+        manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: "https://example.com/custom-login", adminURL: nil,
+                                            endpointUnderVerification: .login, onLoading: { _ in }, onSuccess: { _ in XCTFail("Expected failure") },
                                             onRecovery: { _ in XCTFail("Expected failure"); return false },
-                                            onFailure: { error, incorrectCredentials, _, browserAlternative in
+                                            onFailure: { error, incorrectCredentials, verifiedURL, browserAlternative in
             receivedError = error
+            verifiedLoginURL = verifiedURL
             XCTAssertFalse(incorrectCredentials)
             XCTAssertFalse(browserAlternative)
         })
@@ -1327,6 +1329,7 @@ final class AuthenticationManagerTests: XCTestCase {
             return XCTFail("Expected preserved response context")
         }
         XCTAssertEqual(receivedContext, context)
+        XCTAssertEqual(verifiedLoginURL, "https://example.com/custom-login")
         XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginSiteCredentialsFailed.rawValue])
         XCTAssertEqual(provider.receivedProperties.first?["error_description"] as? String,
                        SiteCredentialLoginError.invalidLoginResponse.underlyingError.description)
@@ -1345,7 +1348,10 @@ final class AuthenticationManagerTests: XCTestCase {
         manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: nil, adminURL: nil,
                                             endpointUnderVerification: nil, onLoading: { _ in }, onSuccess: { _ in XCTFail("Expected failure") },
                                             onRecovery: { _ in XCTFail("Unexpected endpoint recovery"); return false },
-                                            onFailure: { _, _, _, _ in failureCount += 1 })
+                                            onFailure: { _, _, verifiedLoginURL, _ in
+            failureCount += 1
+            XCTAssertNil(verifiedLoginURL)
+        })
         useCase.fail(with: .unexpectedResponse(.init(stage: .preflight)), loginEntryVerified: false)
 
         // Then

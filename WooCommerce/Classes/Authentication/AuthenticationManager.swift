@@ -662,7 +662,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             let normalizedAdminURL = endpoints.adminBaseURL.absoluteString
             switch error {
             case .unexpectedResponse:
-                onFailure(error, false, nil, false)
+                onFailure(error, false, loginEntryVerified ? normalizedLoginURL : nil, false)
                 trackSiteCredentialLoginFailure(error)
             case .inaccessibleLoginPage where endpointUnderVerification != .admin:
                 let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil

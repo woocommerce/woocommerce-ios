@@ -1,9 +1,8 @@
 import UIKit
 
 extension UITableView {
-    /// On iPhone Duo (iOS 27.1) the table zeroes its default margin on the sides inset from the window edge (WOOMOB-4267, WOOMOB-4303).
-    /// Sets explicit symmetric horizontal margins when a side collapsed; leaves already symmetric margins untouched.
-    /// Call from `viewDidLayoutSubviews`, passing the view controller's `systemMinimumLayoutMargins` as the fallback.
+    /// Restores symmetric horizontal margins when iPhone Duo (iOS 27.1) zeroes a side inset from the window edge (WOOMOB-4267, WOOMOB-4303).
+    /// Call from `viewDidLayoutSubviews` with the view controller's `systemMinimumLayoutMargins` as the fallback; symmetric margins are left untouched.
     func restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: NSDirectionalEdgeInsets) {
         let margins = layoutMargins
         let safeAreaInsets = safeAreaInsets

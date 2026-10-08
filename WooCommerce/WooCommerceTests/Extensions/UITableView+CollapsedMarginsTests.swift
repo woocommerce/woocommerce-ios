@@ -21,7 +21,7 @@ struct UITableView_CollapsedMarginsTests {
     }
 
     @Test
-    func test_restoreCollapsedLayoutMarginsIfNeeded_when_one_side_collapsed_then_sets_both_sides_to_the_wider_one() {
+    func test_restoreCollapsedLayoutMarginsIfNeeded_when_trailing_collapsed_then_sets_both_sides_to_the_leading_one() {
         // Given
         let tableView = UITableView()
         tableView.layoutMargins = UIEdgeInsets(top: 8, left: 20, bottom: 8, right: 0)

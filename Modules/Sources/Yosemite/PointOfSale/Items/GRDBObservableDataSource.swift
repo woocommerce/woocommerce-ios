@@ -62,6 +62,13 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
         setupStatisticsObservation()
     }
 
+    isolated deinit {
+        productObservationCancellable?.cancel()
+        variationObservationCancellable?.cancel()
+        statisticsObservationCancellable?.cancel()
+        variationStatisticsObservationCancellable?.cancel()
+    }
+
     // MARK: - POSObservableDataSourceProtocol
 
     public func loadProducts() {

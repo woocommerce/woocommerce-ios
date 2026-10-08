@@ -314,6 +314,10 @@ private extension Remote {
         try validateResponse(data, for: request, recorder: recorder, outcome: outcome)
         do {
             return try mapper.map(response: data)
+        } catch let error as UnexpectedStoreResponseError where error.diagnostics == nil {
+            guard let policy = request as? UnexpectedResponseRequest else { throw error }
+            // Semantic validation failures need diagnostics, but are not JSON decoding failures.
+            throw policy.makeError(kind: error.kind, data: data, status: error.statusCode)
         } catch {
             guard error is DecodingError, let policy = request as? UnexpectedResponseRequest else { throw error }
             throw policy.makeError(kind: .unexpectedContent, data: data, isDecodingFailure: true)

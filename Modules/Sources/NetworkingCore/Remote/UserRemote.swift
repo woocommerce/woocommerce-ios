@@ -8,7 +8,7 @@ public final class UserRemote: Remote {
     /// - Parameters:
     ///    - siteID: The dotcom site ID.
     ///    - completion: The block to be executed once the request completes.
-    public func loadUserInfo(for siteID: Int64, completion: @escaping(Result<User, Error>) -> Void) {
+    public func loadUserInfo(for siteID: Int64, detectUnexpectedResponses: Bool = false, completion: @escaping(Result<User, Error>) -> Void) {
         let path = Constants.usersPath
         let parameters = [
             "context": "edit",
@@ -17,7 +17,7 @@ public final class UserRemote: Remote {
         let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: siteID, path: path, parameters: parameters, availableAsRESTRequest: true)
         let mapper = UserMapper(siteID: siteID)
 
-        enqueue(request, mapper: mapper, completion: completion)
+        enqueue(request, mapper: mapper, detectUnexpectedResponses: detectUnexpectedResponses, completion: completion)
     }
 }
 

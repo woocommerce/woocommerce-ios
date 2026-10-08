@@ -62,6 +62,8 @@ public extension ApplicationPasswordUseCase {
 }
 
 public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase {
+    private let detectUnexpectedResponses: Bool
+
     /// Authentication type
     ///
     private let authenticationType: AuthenticationType
@@ -89,7 +91,9 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 network: Network,
                 passwordName: String? = nil,
                 storage: ApplicationPasswordStorageType? = nil,
-                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared) {
+                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared,
+                detectUnexpectedResponses: Bool = false) {
+        self.detectUnexpectedResponses = detectUnexpectedResponses
         self.authenticationType = type
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.network = network
@@ -109,7 +113,8 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
                 authenticationEndpoints: CookieNonceAuthenticationEndpoints? = nil,
                 network: Network? = nil,
                 storage: ApplicationPasswordStorageType? = nil,
-                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared) throws {
+                rootCache: RESTAPIRootCaching = WordPressRESTAPIRootCache.shared,
+                detectUnexpectedResponses: Bool = false) throws {
         let defaultEndpoints: CookieNonceAuthenticationEndpoints
         do {
             guard let siteURL = URL(string: siteAddress) else {
@@ -127,6 +132,7 @@ public final class DefaultApplicationPasswordUseCase: ApplicationPasswordUseCase
             throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
         }
 
+        self.detectUnexpectedResponses = detectUnexpectedResponses
         self.authenticationType = .wporg(username: username, password: password, siteAddress: siteAddress)
         self.storage = storage ?? ApplicationPasswordStorage(keychain: Keychain(service: WooConstants.keychainServiceName))
         self.applicationPasswordName = Self.createPasswordName()
@@ -249,7 +255,7 @@ private extension DefaultApplicationPasswordUseCase {
     }
 
     private func constructRequest(method: HTTPMethod, path: String, requestParameters: RequestParameterDictionary?) -> Request {
-        switch authenticationType {
+        let request: Request = switch authenticationType {
         case .wpcom(let siteID):
             JetpackRequest(wooApiVersion: .none,
                            method: method,
@@ -262,6 +268,7 @@ private extension DefaultApplicationPasswordUseCase {
                         path: path,
                         parameters: requestParameters)
         }
+        return UnexpectedResponseRequest.wrap(request, enabled: detectUnexpectedResponses)
     }
 
     /// Creates application password using WordPress.com authentication token
@@ -294,7 +301,11 @@ private extension DefaultApplicationPasswordUseCase {
                         let password = try mapper.map(response: data)
                         continuation.resume(returning: password)
                     } catch {
-                        continuation.resume(throwing: error)
+                        if self.detectUnexpectedResponses, error is DecodingError, let policy = request as? UnexpectedResponseRequest {
+                            continuation.resume(throwing: policy.makeError(kind: .unexpectedContent))
+                        } else {
+                            continuation.resume(throwing: error)
+                        }
                     }
                 case .failure(let error):
                     guard let error = error as? AFError else {
@@ -338,7 +349,11 @@ private extension DefaultApplicationPasswordUseCase {
                             continuation.resume(throwing: ApplicationPasswordUseCaseError.unableToFindPasswordUUID)
                         }
                     } catch {
-                        continuation.resume(throwing: error)
+                        if self.detectUnexpectedResponses, error is DecodingError, let policy = request as? UnexpectedResponseRequest {
+                            continuation.resume(throwing: policy.makeError(kind: .unexpectedContent))
+                        } else {
+                            continuation.resume(throwing: error)
+                        }
                     }
                 case .failure(let error):
                     continuation.resume(throwing: error)

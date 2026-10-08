@@ -1,4 +1,5 @@
 import Foundation
+import enum Yosemite.POSItem
 
 protocol PointOfSaleViewStateResettable {
     /// Resets all view state to its default values.
@@ -19,10 +20,16 @@ protocol PointOfSaleViewStateResettable {
     /// When we reset, the search term is cleared for the new cart.
     var searchTerm: String = ""
 
+    /// Keep drill-down and cash drafts when the dashboard changes between compact and split layouts.
+    var itemNavigationPath: [POSItem] = []
+    var cashAmountInput = POSCashAmountInputState()
+
     /// Resets all view state to its default values.
     /// This should be called when starting a new cart to ensure the UI returns to its initial state.
     func reset() {
         selectedItemListType = .products(search: false)
         searchTerm = ""
+        itemNavigationPath = []
+        cashAmountInput = .init()
     }
 }

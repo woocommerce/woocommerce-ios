@@ -8,7 +8,7 @@ import Storage
 internal protocol SettingStoreMethodsProtocol {
     func synchronizeGeneralSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void)
     func synchronizeProductSiteSettings(siteID: Int64, onCompletion: @escaping (Error?) -> Void)
-    func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void)
+    func retrieveSiteAPI(siteID: Int64, detectUnexpectedResponses: Bool, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void)
     // periphery:ignore
     func retrievePointOfSaleSettings(siteID: Int64) async throws -> [SiteSetting]
     func retrieveCouponSetting(siteID: Int64, onCompletion: @escaping (Result<Bool, Error>) -> Void)
@@ -69,8 +69,8 @@ internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     /// Retrieves the site API information associated with the provided Site ID (if any!).
     /// This call does NOT persist returned data into the Storage layer.
     ///
-    func retrieveSiteAPI(siteID: Int64, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void) {
-        siteAPIRemote.loadAPIInformation(for: siteID, completion: onCompletion)
+    func retrieveSiteAPI(siteID: Int64, detectUnexpectedResponses: Bool = false, onCompletion: @escaping (Result<SiteAPI, Error>) -> Void) {
+        siteAPIRemote.loadAPIInformation(for: siteID, detectUnexpectedResponses: detectUnexpectedResponses, completion: onCompletion)
     }
 
     /// Retrieves Point of Sale settings

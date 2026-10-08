@@ -2,6 +2,7 @@ import Testing
 import Foundation
 @testable import WooCommerce
 
+@MainActor
 struct TapToPayAwarenessMomentDeterminerTests {
     private let cardReaderSupportDeterminer: MockCardReaderSupportDeterminer
     private let cardPresentPaymentsOnboardingUseCase: MockCardPresentPaymentsOnboardingUseCase

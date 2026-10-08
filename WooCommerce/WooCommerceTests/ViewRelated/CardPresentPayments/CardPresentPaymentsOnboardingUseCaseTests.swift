@@ -5,6 +5,7 @@ import enum Alamofire.AFError
 import YosemiteTestHelpers
 @testable import WooCommerce
 
+@MainActor
 class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
     /// Mock Storage: InMemory
     ///
@@ -31,8 +32,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
 
     private var skippedCodOnboardingStep = true
 
-    override func setUpWithError() throws {
-        try super.setUpWithError()
+    override func setUp() async throws {
+        try await super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         onboardingStateCache = CardPresentPaymentOnboardingStateCache()
@@ -59,7 +60,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         }
     }
 
-    override func tearDownWithError() throws {
+    override func tearDown() async throws {
         ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings())
         storageManager.reset()
         onboardingStateCache = nil
@@ -68,7 +69,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         analyticsProvider = nil
         analytics = nil
         preferredInPersonPaymentGatewayBySite.removeAll()
-        try super.tearDownWithError()
+        try await super.tearDown()
     }
 
     // MARK: - Country checks
@@ -1351,7 +1352,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(useCase.state, onboardingStateCache.value)
     }
 
-    func test_installCardPresentPlugin_when_failure_to_install_plugin_then_event_is_tracked_with_correct_properties() throws {
+    func test_installCardPresentPlugin_when_failure_to_install_plugin_then_event_is_tracked_with_correct_properties() async throws {
         // Given
         setupCountry(country: .us)
         let expectedEvent = "card_present_onboarding_cta_failed"
@@ -1373,6 +1374,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         useCase.installCardPresentPlugin()
 
         // Then
+        // The completion hops to the main actor, so the event is tracked asynchronously.
+        await until { self.analyticsProvider.receivedEvents.isNotEmpty }
         XCTAssertEqual(analyticsProvider.receivedEvents, [expectedEvent])
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == expectedEvent }))
@@ -1383,7 +1386,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(eventProperties["error_description"] as? String, expectedError.description)
     }
 
-    func test_activateCardPresentPlugin_when_failure_to_activate_plugin_then_event_is_tracked_with_correct_properties() throws {
+    func test_activateCardPresentPlugin_when_failure_to_activate_plugin_then_event_is_tracked_with_correct_properties() async throws {
         // Given
         setupCountry(country: .us)
         let expectedEvent = "card_present_onboarding_cta_failed"
@@ -1405,6 +1408,8 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         useCase.activateCardPresentPlugin()
 
         // Then
+        // The completion hops to the main actor, so the event is tracked asynchronously.
+        await until { self.analyticsProvider.receivedEvents.isNotEmpty }
         XCTAssertEqual(analyticsProvider.receivedEvents, [expectedEvent])
 
         let indexOfEvent = try XCTUnwrap(analyticsProvider.receivedEvents.firstIndex(where: { $0 == expectedEvent }))

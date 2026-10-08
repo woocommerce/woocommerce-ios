@@ -263,12 +263,14 @@ final class CouponListViewModelTests: XCTestCase {
         // Given
         var enableRequests = 0
         var pendingCompletion: ((Result<Void, Error>) -> Void)?
+        let firstRequestReceived = expectation(description: "First enable request received")
         let stores = MockStoresManager(sessionManager: .makeForTesting())
         stores.whenReceivingAction(ofType: SettingAction.self) { action in
             if case let .enableCouponSetting(_, onCompletion) = action {
                 enableRequests += 1
                 if enableRequests == 1 {
                     pendingCompletion = onCompletion
+                    firstRequestReceived.fulfill()
                 } else {
                     onCompletion(.failure(NSError(domain: "Test", code: 503, userInfo: nil)))
                 }
@@ -277,19 +279,16 @@ final class CouponListViewModelTests: XCTestCase {
         sut = CouponListViewModel(siteID: 123,
                                   storesManager: stores,
                                   storageManager: mockStorageManager)
-        Task { await sut.enableCoupons() }
-        await until {
-            pendingCompletion != nil
-        }
+        let firstEnable = Task { await sut.enableCoupons() }
+        await fulfillment(of: [firstRequestReceived], timeout: 5)
 
         // When
         await sut.enableCoupons()
         pendingCompletion?(.failure(NSError(domain: "Test", code: 503, userInfo: nil)))
+        await firstEnable.value
 
         // Then
-        await until {
-            self.sut.state == .couponsDisabled
-        }
+        XCTAssertEqual(sut.state, .couponsDisabled)
         XCTAssertEqual(enableRequests, 1)
     }
 

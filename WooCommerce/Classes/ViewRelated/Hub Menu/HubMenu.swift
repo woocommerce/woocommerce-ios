@@ -35,8 +35,7 @@ struct HubMenu: View {
                 menuList
                     .safeAreaInset(edge: .top, spacing: 0) {
                         VStack(spacing: 0) {
-                            // A zero top inset next to a one-sided horizontal inset means the system bars run down one side
-                            // (iPhone Duo closed, or open in landscape), so the status bar is not above the list to space it.
+                            // Top inset 0 with one-sided horizontal insets: the system bars run down one side (iPhone Duo), so no status bar spaces the list.
                             if safeAreaInsets.top == 0 && safeAreaInsets.leading != safeAreaInsets.trailing {
                                 Spacer(minLength: 0)
                                     .frame(height: Constants.topSpacingWithoutStatusBar)

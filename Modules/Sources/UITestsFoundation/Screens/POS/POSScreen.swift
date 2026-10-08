@@ -107,7 +107,10 @@ public final class POSScreen: ScreenObject {
 
         let nameField = app.textFields["pos-custom-amount-name-field"]
         XCTAssertTrue(nameField.waitForExistence(timeout: 10), "Custom amount name field should exist.")
-        nameField.scrollIntoView(app: app)
+        let form = app.scrollViews.containing(.textField, identifier: "pos-custom-amount-name-field").firstMatch
+        for _ in 0..<4 where !nameField.isHittable {
+            form.swipeUp()
+        }
         XCTAssertTrue(nameField.waitForIsHittable(timeout: 10), "Custom amount name field should be tappable.")
         nameField.tap()
         if let name {

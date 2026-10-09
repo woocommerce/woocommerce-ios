@@ -41,6 +41,7 @@ struct PointOfSaleCardPresentPaymentConnectingLocationPreAlertView: View {
             Button(viewModel.primaryButtonViewModel.title,
                    action: viewModel.primaryButtonViewModel.actionHandler)
             .buttonStyle(POSFilledButtonStyle(size: .normal))
+            .accessibilityIdentifier("pos-reader-location-continue-button")
             .matchedGeometryEffect(id: animation.buttonsTransitionId, in: animation.namespace, properties: .position)
         }
         .frame(maxHeight: .infinity)

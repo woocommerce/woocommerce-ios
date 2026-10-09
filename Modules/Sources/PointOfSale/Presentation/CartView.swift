@@ -153,6 +153,7 @@ private struct CartHeaderView: View {
             HStack(spacing: Constants.cartHeaderElementSpacing) {
                 if let itemsInCartLabel = viewHelper.itemsInCartLabel(for: itemCount) {
                     Text(itemsInCartLabel)
+                        .accessibilityIdentifier("pos-cart-item-count-\(itemCount)")
                         .font(Constants.itemsFont)
                         .lineLimit(1)
                         .minimumScaleFactor(0.5)

@@ -16,6 +16,7 @@ struct PointOfSaleCardPresentPaymentConnectingFailedNonRetryableView: View {
                     .fixedSize(horizontal: false, vertical: true)
                     .accessibilityAddTraits(.isHeader)
                     .accessibilityFocused($isTitleFocused)
+                    .accessibilityIdentifier("pos-reader-connection-failed-non-retryable-title")
                     .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
 
                 Text(viewModel.errorDetails)

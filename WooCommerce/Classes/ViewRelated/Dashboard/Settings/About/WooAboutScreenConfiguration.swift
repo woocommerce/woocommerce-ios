@@ -3,7 +3,8 @@ import AutomatticAbout
 import SafariServices
 import WordPressShared
 
-final class WooAboutScreenConfiguration: AboutScreenConfiguration {
+@MainActor
+final class WooAboutScreenConfiguration: @MainActor AboutScreenConfiguration {
     var sections: [AboutScreenSection] {
         [
             [
@@ -176,7 +177,8 @@ private extension WooAboutScreenConfiguration {
 
 // MARK: - Legal and More submenu
 
-final class WooLegalAndMoreSubmenuConfiguration: AboutScreenConfiguration {
+@MainActor
+final class WooLegalAndMoreSubmenuConfiguration: @MainActor AboutScreenConfiguration {
     lazy var sections: [[AboutItem]] = {
         [
             [

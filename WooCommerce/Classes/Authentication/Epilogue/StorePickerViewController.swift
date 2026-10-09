@@ -568,7 +568,7 @@ private extension StorePickerViewController {
                 self?.updateUIForExpiredWPComPlan(site: site)
             case .failure(let error):
                 onRetryResult?(false)
-                if self?.presentUnexpectedFailure(error: error, step: .wooPluginCheck, onRetry: { [weak self] result in
+                if self?.presentUnexpectedFailure(error: error, step: .wooPluginCheck, siteURL: site.url, onRetry: { [weak self] result in
                     self?.displaySiteWCRequirementWarningIfNeeded(site: site, onRetryResult: result)
                 }, canContinue: false) == true { return }
                 self?.updateUIForEmptyOrErroredSite(named: site.name, with: site.siteID)
@@ -653,13 +653,13 @@ private extension StorePickerViewController {
         errorPresenter(self, viewController) {}
     }
 
-    func presentUnexpectedFailure(error: Error, step: LoginUnexpectedResponseFailure.Step,
+    func presentUnexpectedFailure(error: Error, step: LoginUnexpectedResponseFailure.Step, siteURL: String,
                                   onRetry: @escaping LoginUnexpectedResponsePresenter.Retry, canContinue: Bool) -> Bool {
         guard configuration.detectsUnexpectedLoginResponses,
               let failure = LoginUnexpectedResponseFailure(error: error, step: step) else { return false }
         toggleDismissButton(enabled: true)
         updateActionButtonAndTableState(animating: false, enabled: canContinue)
-        unexpectedResponsePresenter.present(failure: failure, flow: .storePicker, from: self, onRetry: onRetry)
+        unexpectedResponsePresenter.present(failure: failure, flow: .storePicker, from: self, siteURL: siteURL, onRetry: onRetry)
         return true
     }
 
@@ -882,7 +882,7 @@ private extension StorePickerViewController {
                 }
             case .failure(let error):
                 onRetryResult?(false)
-                if presentUnexpectedFailure(error: error, step: .userRoleCheck, onRetry: { [weak self] result in
+                if presentUnexpectedFailure(error: error, step: .userRoleCheck, siteURL: site.url, onRetry: { [weak self] result in
                     self?.checkRoleEligibility(for: site, onRetryResult: result)
                 }, canContinue: true) { return }
                 if case let RoleEligibilityError.insufficientRole(errorInfo) = error {

@@ -95,8 +95,7 @@ struct SupportChatView: View {
             }
         }
         .onAppear {
-            viewModel.showGreeting()
-            viewModel.resumeIfNeeded()
+            viewModel.startIfNeeded()
         }
     }
 

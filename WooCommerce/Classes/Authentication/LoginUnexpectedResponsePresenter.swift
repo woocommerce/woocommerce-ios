@@ -8,25 +8,26 @@ final class LoginUnexpectedResponsePresenter {
     typealias Presentation = @MainActor (UIViewController, UIAlertController, @escaping () -> Void) -> Void
     private let analytics: Analytics
     private let presentation: Presentation
-    private let support: ((UIViewController) -> Void)?
+    private let support: ((UIViewController, LoginSupportContext) -> Void)?
     private var attemptID: UUID?
     private weak var alert: UIAlertController?
     private var actionHandler: ((LoginUnexpectedResponseFailure.Action) -> Void)?
 
     init(analytics: Analytics = ServiceLocator.analytics,
          presentation: @escaping Presentation = { $0.present($1, animated: true, completion: $2) },
-         support: ((UIViewController) -> Void)? = nil) {
+         support: ((UIViewController, LoginSupportContext) -> Void)? = nil) {
         self.analytics = analytics
         self.presentation = presentation
         self.support = support
     }
 
     func present(failure: LoginUnexpectedResponseFailure, flow: LoginUnexpectedResponseFailure.LoginFlow,
-                 from controller: UIViewController, onRetry: @escaping Retry, onDismiss: @escaping () -> Void = {},
+                 from controller: UIViewController, siteURL: String? = nil, onRetry: @escaping Retry, onDismiss: @escaping () -> Void = {},
                  onContactSupport: @escaping () -> Void = {}) {
         guard attemptID == nil, controller.presentedViewController == nil else {
             return
         }
+        let context = LoginSupportContext(failure: failure, flow: flow, siteURL: siteURL)
         let id = UUID()
         attemptID = id
         let alert = UIAlertController(title: Localization.title, message: Localization.message, preferredStyle: .alert)
@@ -54,7 +55,7 @@ final class LoginUnexpectedResponsePresenter {
                     attemptID = nil
                     if action == .contactSupport {
                         onContactSupport()
-                        showSupport(from: controller)
+                        showSupport(from: controller, context: context)
                     } else {
                         onDismiss()
                     }
@@ -94,19 +95,23 @@ final class LoginUnexpectedResponsePresenter {
         alert = nil
     }
 
-    private func showSupport(from controller: UIViewController) {
+    private func showSupport(from controller: UIViewController, context: LoginSupportContext) {
         if let support {
-            return support(controller)
+            return support(controller, context)
         }
         weak var model: SupportChatViewModel?
         var escalation: SupportEscalationCoordinator?
         weak var host: SupportChatHostingController?
-        let chat = SupportChatViewModel(entryPoint: .preLogin, onContactHumanSupport: { chatID, transcript, area, entryPoint, receivedResponse in
+        let chat = SupportChatViewModel(entryPoint: .preLogin,
+                                        initialContext: context.siteURL.map { ["site_url": .string($0)] },
+                                        initialMessage: context.initialMessage,
+                                        supportSiteAddress: context.siteURL,
+                                        onContactHumanSupport: { chatID, transcript, area, entryPoint, receivedResponse in
             escalation = SupportEscalationCoordinator(navigationController: host?.navigationController,
                                                       mobileStatusReportProvider: MobileStatusReportProvider(),
                                                       onTicketCreated: { [weak model] in model?.markChatTicketCreated() })
             escalation?.handleEscalation(chatID: chatID, transcript: transcript, supportAreaInfo: area,
-                                        entryPoint: entryPoint, hasReceivedBotResponse: receivedResponse)
+                                        entryPoint: entryPoint, siteAddress: context.siteURL, hasReceivedBotResponse: receivedResponse)
         })
         model = chat
         let chatController = SupportChatHostingController(viewModel: chat)

@@ -706,7 +706,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                                            in viewController: UIViewController,
                                            onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
         if case .unexpectedResponse(let failure) = error as? SiteCredentialLoginError {
-            unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, onRetry: onRetry)
+            unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, siteURL: siteURL, onRetry: onRetry)
             return
         }
         let browserAction: (() -> Void)? = offersBrowserAlternative ? { [weak self, weak viewController] in

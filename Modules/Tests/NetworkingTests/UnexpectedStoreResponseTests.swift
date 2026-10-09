@@ -45,6 +45,82 @@ struct UnexpectedStoreResponseTests {
         #expect(error?.diagnostics?.excerpt == "Blocked")
     }
 
+    @Test(arguments: [200, 400, 500, 503])
+    func test_policy_when_tunnel_raw_body_has_no_inner_status_then_does_not_classify(transportStatus: Int) throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: 123, path: "")
+        let policy = UnexpectedResponseRequest(original: request)
+        let payload = """
+        {"error":"no_response_body","message":"Server could not read response.",
+         "data":{"raw_body":"<html>Store temporarily blocked</html>"}}
+        """
+        let object = try JSONSerialization.jsonObject(with: Data(payload.utf8))
+        let envelopes: [Data] = [
+            Data(payload.utf8),
+            try JSONSerialization.data(withJSONObject: ["body": payload]),
+            try JSONSerialization.data(withJSONObject: ["body": object]),
+            try JSONSerialization.data(withJSONObject: ["status": 503, "body": payload]),
+            try JSONSerialization.data(withJSONObject: ["status": "503", "body": object])
+        ]
+
+        for envelope in envelopes {
+            // When
+            let error = policy.responseError(data: envelope, status: transportStatus, tunneled: true)
+
+            // Then
+            #expect(error == nil)
+        }
+    }
+
+    @Test(arguments: [200, 503])
+    func test_policy_when_tunnel_raw_body_has_inner_status_then_uses_store_status(storeStatus: Int) throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: 123, path: "")
+        let policy = UnexpectedResponseRequest(original: request)
+        let payload = """
+        {"error":"no_response_body","message":"Server could not read response.",
+         "data":{"status":\(storeStatus),
+                 "raw_body":"<html><div hidden>private-sentinel</div><p>Store temporarily blocked token=private-token</p></html>"}}
+        """
+        let envelopes: [Data] = [
+            Data(payload.utf8),
+            try JSONSerialization.data(withJSONObject: ["status": 500, "body": payload]),
+            try JSONSerialization.data(withJSONObject: ["status": 500, "body": JSONSerialization.jsonObject(with: Data(payload.utf8))])
+        ]
+
+        for envelope in envelopes {
+            // When
+            let error = try #require(policy.responseError(data: envelope, status: 500, tunneled: true) as? UnexpectedStoreResponseError)
+
+            // Then
+            #expect(error.kind == (storeStatus == 200 ? .unexpectedContent : .unacceptableStatusCode))
+            #expect(error.statusCode == storeStatus)
+            #expect(error.diagnostics?.request == "GET /")
+            #expect(error.diagnostics?.excerpt == "Store temporarily blocked token=[redacted]")
+            #expect(!error.logMessage.contains("private-sentinel"))
+            #expect(!error.logMessage.contains("private-token"))
+        }
+    }
+
+    @Test func test_policy_when_tunnel_transport_fails_without_store_body_then_does_not_classify() {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: 123, path: "")
+        let policy = UnexpectedResponseRequest(original: request)
+        let envelopes = [
+            "{\"error\":\"no_response_body\"}",
+            "{\"error\":\"no_response_body\",\"data\":{\"raw_body\":\"\"}}",
+            "{\"error\":\"no_response_body\",\"data\":{\"raw_body\":\"  \"}}"
+        ]
+
+        for envelope in envelopes {
+            // When
+            let error = policy.responseError(data: Data(envelope.utf8), status: 503, tunneled: true)
+
+            // Then
+            #expect(error == nil)
+        }
+    }
+
     @Test func test_policy_when_request_has_credentials_and_query_then_diagnostics_omit_them() {
         // Given
         let request = RESTRequest(siteURL: "https://user:secret@example.com", method: .get, path: "", parameters: ["token": "secret"])
@@ -152,6 +228,9 @@ struct UnexpectedStoreResponseTests {
 
     @Test(arguments: [
         "<div hidden><span>private-hidden</span></div>",
+        "<div hidden><div>private-a</div><div>private-b</div>private-c</div>",
+        "<p hidden><p>private-hidden</p>private-tail</p>",
+        "<li hidden><li>private-hidden</li>private-tail</li>",
         "<div HIDDEN=\"false\">private-hidden</div>",
         "<div aria-hidden=\"true\">private-hidden</div>",
         "<div style=\"color:red; DISPLAY : none !important;\">private-hidden</div>",
@@ -189,6 +268,72 @@ struct UnexpectedStoreResponseTests {
         #expect(excerpt.hasSuffix("Try again"))
         #expect(!excerpt.contains("private-"))
         #expect(!excerpt.contains("a > b"))
+    }
+
+    @Test(arguments: [
+        "<input value=\"private-nonce",
+        "<input title='a > b' value='private-nonce",
+        "<a title=\"private-attribute > private-tail",
+        "<div hidden><div>private-hidden</div><p>private-tail",
+        "<div style='display:none'><div>private-hidden</div><p>private-tail",
+        "<p hidden>private-hidden<p>private-tail",
+        "<li style='visibility:hidden'>private-hidden<li>private-tail"
+    ])
+    func test_excerpt_when_markup_is_unterminated_then_omits_private_tail(markup: String) {
+        // Given
+        let body = "<p>Blocked</p>\(markup)"
+
+        // When
+        let excerpt = UnexpectedResponseExcerpt.make(body)
+
+        // Then
+        #expect(excerpt == "Blocked")
+    }
+
+    @Test func test_excerpt_when_attributes_only_mention_hidden_then_preserves_visible_text() {
+        // Given
+        let body = """
+        <p data-state="hidden" title="hidden style='display:none'">Shown</p>
+        <p style="--hidden: true; display:block">Also shown</p>
+        <input type="hidden" name="_wpnonce" value="private-nonce"><p>End</p>
+        """
+
+        // When
+        let excerpt = UnexpectedResponseExcerpt.make(body)
+
+        // Then
+        #expect(excerpt == "Shown Also shown End")
+    }
+
+    @Test func test_excerpt_when_script_or_comment_contains_hidden_markup_then_preserves_following_text() {
+        // Given
+        let body = """
+        <script>const markup = "<p hidden>private-script";</script>
+        <!-- <div hidden>private-comment -->
+        <div hidden><script>const markup = "<div>private-script";</script>private-hidden</div>
+        <p>Shown</p><p>2 &lt; 3 and 4 &gt; 3</p>
+        """
+
+        // When
+        let excerpt = UnexpectedResponseExcerpt.make(body)
+
+        // Then
+        #expect(excerpt == "Shown 2 < 3 and 4 > 3")
+    }
+
+    @Test func test_excerpt_when_json_error_message_has_unclosed_hidden_element_then_omits_private_tail() throws {
+        // Given
+        let data = try JSONSerialization.data(withJSONObject: [
+            "code": "blocked",
+            "message": "<p>Contact support</p><p hidden>private-hidden<p>private-tail"
+        ])
+        let body = try #require(String(data: data, encoding: .utf8))
+
+        // When
+        let excerpt = UnexpectedResponseExcerpt.make(body)
+
+        // Then
+        #expect(excerpt == "blocked | Contact support")
     }
 
     @Test func test_excerpt_when_headers_and_secret_fields_are_present_then_masks_values() {
@@ -256,6 +401,6 @@ struct UnexpectedStoreResponseTests {
         #expect(response?.status == 403)
         #expect(response?.data == Data("<html>Blocked</html>".utf8))
         let nested = Data("{\"status\":\"503\",\"body\":{\"data\":{\"raw_body\":\"Unavailable\"}}}".utf8)
-        #expect(UnexpectedResponseClassifier.tunnelResponse(in: nested)?.status == 503)
+        #expect(UnexpectedResponseClassifier.tunnelResponse(in: nested) == nil)
     }
 }

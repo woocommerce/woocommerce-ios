@@ -260,6 +260,42 @@ extension AztecEditorViewController {
     }
 }
 
+// MARK: - Hardware keyboard shortcuts
+//
+extension AztecEditorViewController {
+    /// The rich text view declines the standard bold / italic / underline edit actions (`allowsEditingTextAttributes` is off),
+    /// so the editor provides the shortcuts itself and routes them to Aztec's formatters.
+    override var keyCommands: [UIKeyCommand]? {
+        let commands = [
+            UIKeyCommand(title: Localization.boldShortcut, action: #selector(toggleBoldFromShortcut), input: "b", modifierFlags: .command),
+            UIKeyCommand(title: Localization.italicShortcut, action: #selector(toggleItalicFromShortcut), input: "i", modifierFlags: .command),
+            UIKeyCommand(title: Localization.underlineShortcut, action: #selector(toggleUnderlineFromShortcut), input: "u", modifierFlags: .command)
+        ]
+        commands.forEach { $0.wantsPriorityOverSystemBehavior = true }
+        return commands
+    }
+
+    @objc private func toggleBoldFromShortcut() {
+        applyShortcutFormatting { $0.toggleBold(range: $0.selectedRange) }
+    }
+
+    @objc private func toggleItalicFromShortcut() {
+        applyShortcutFormatting { $0.toggleItalic(range: $0.selectedRange) }
+    }
+
+    @objc private func toggleUnderlineFromShortcut() {
+        applyShortcutFormatting { $0.toggleUnderline(range: $0.selectedRange) }
+    }
+
+    private func applyShortcutFormatting(_ formatting: (Aztec.TextView) -> Void) {
+        guard editorView.editingMode == .richText else {
+            return
+        }
+        formatting(richTextView)
+        formatBar.update(editorView: editorView)
+    }
+}
+
 // MARK: - UITextViewDelegate methods
 //
 extension AztecEditorViewController: UITextViewDelegate {
@@ -277,6 +313,20 @@ extension AztecEditorViewController: UITextViewDelegate {
         refreshPlaceholderVisibility()
         formatBar.update(editorView: editorView)
         onContentChanged?(getHTML())
+    }
+}
+
+private extension AztecEditorViewController {
+    enum Localization {
+        static let boldShortcut = NSLocalizedString("aztecEditor.shortcut.bold",
+                                                    value: "Bold",
+                                                    comment: "Title of the Cmd+B keyboard shortcut in the product description editor.")
+        static let italicShortcut = NSLocalizedString("aztecEditor.shortcut.italic",
+                                                      value: "Italic",
+                                                      comment: "Title of the Cmd+I keyboard shortcut in the product description editor.")
+        static let underlineShortcut = NSLocalizedString("aztecEditor.shortcut.underline",
+                                                         value: "Underline",
+                                                         comment: "Title of the Cmd+U keyboard shortcut in the product description editor.")
     }
 }
 

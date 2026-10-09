@@ -92,8 +92,10 @@ private extension AztecUIConfigurator {
         textView.smartDashesType = .no
         textView.smartQuotesType = .no
 
-        // Aztec enables this, which makes the system show its own B/I/U and text formatting controls next to the keyboard.
-        // Formatting is driven by the format bar only.
+        // Aztec enables attribute editing, which makes the system show its own B/I/U and text formatting controls next to the
+        // keyboard. Formatting is driven by the format bar only; the editor provides the Cmd+B/I/U shortcuts itself.
+        // Clearing the formatting configuration also stops UIKit from turning attribute editing back on for its "Aa" panel.
+        textView.textFormattingConfiguration = nil
         textView.allowsEditingTextAttributes = false
     }
 

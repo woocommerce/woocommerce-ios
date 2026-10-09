@@ -25,7 +25,7 @@ struct AztecUIConfigurator {
         NSLayoutConstraint.activate([
             richTextView.leadingAnchor.constraint(equalTo: editorContainerView.readableContentGuide.leadingAnchor),
             richTextView.trailingAnchor.constraint(equalTo: editorContainerView.readableContentGuide.trailingAnchor),
-            richTextView.topAnchor.constraint(equalTo: editorContainerView.topAnchor),
+            richTextView.topAnchor.constraint(equalTo: editorContainerView.safeAreaLayoutGuide.topAnchor),
             richTextView.bottomAnchor.constraint(equalTo: editorBottomAnchor)
         ])
 

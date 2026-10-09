@@ -166,7 +166,6 @@ private extension AztecEditorViewController {
     }
 
     func configureView() {
-        edgesForExtendedLayout = UIRectEdge()
         view.backgroundColor = .basicBackground
     }
 
@@ -178,12 +177,8 @@ private extension AztecEditorViewController {
     }
 
     /// Keeps the format bar inside the editor's own bounds: it follows the docked keyboard and otherwise
-    /// sits at the bottom edge, where the bar extends itself over the bottom safe area.
+    /// sits above the bottom safe area.
     func configureFormatBarConstraints() {
-        // `FormatBar` captures a height constraint added directly to it and grows it by the bottom safe area inset.
-        formatBar.addConstraint(formatBar.heightAnchor.constraint(equalToConstant: formatBar.intrinsicContentSize.height))
-
-        view.keyboardLayoutGuide.usesBottomSafeArea = false
         NSLayoutConstraint.activate([
             formatBarContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             formatBarContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),

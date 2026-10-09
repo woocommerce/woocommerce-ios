@@ -28,11 +28,10 @@ struct AztecAIViewFactory {
         NSLayoutConstraint.activate([
             button.widthAnchor.constraint(equalToConstant: Layout.AIButton.size.width),
             button.heightAnchor.constraint(equalToConstant: Layout.AIButton.size.height),
-            button.centerYAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.centerYAnchor),
+            button.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             button.leadingAnchor.constraint(equalTo: containerView.safeLeadingAnchor, constant: Layout.AIButton.horizontalMargin),
             button.trailingAnchor.constraint(equalTo: containerView.trailingAnchor, constant: -Layout.AIButton.horizontalMargin),
-            // The container grows with the format bar when the bar extends over the bottom safe area.
-            containerView.heightAnchor.constraint(greaterThanOrEqualToConstant: Layout.AIButton.containerHeight)
+            containerView.heightAnchor.constraint(equalToConstant: Layout.AIButton.containerHeight)
         ])
 
         let topBorder = UIView.createBorderView(height: Layout.borderWidth, color: .divider)
@@ -55,7 +54,7 @@ struct AztecAIViewFactory {
                                                         color: .divider)
         containerView.addSubview(verticalBorder)
         NSLayoutConstraint.activate([
-            verticalBorder.centerYAnchor.constraint(equalTo: containerView.safeAreaLayoutGuide.centerYAnchor),
+            verticalBorder.centerYAnchor.constraint(equalTo: containerView.centerYAnchor),
             verticalBorder.trailingAnchor.constraint(equalTo: containerView.trailingAnchor)
         ])
 

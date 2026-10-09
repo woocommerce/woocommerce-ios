@@ -25,11 +25,11 @@ enum SupportChatLayout {
     }
 }
 
-/// Shared constant for maximum bubble width.
+/// Maximum bubble width for a message list of the given width.
 ///
 extension SupportChatLayout {
-    static var maxBubbleWidth: CGFloat {
-        UIScreen.main.bounds.width * maxBubbleWidthRatio
+    static func maxBubbleWidth(in containerWidth: CGFloat) -> CGFloat {
+        containerWidth * maxBubbleWidthRatio
     }
 }
 
@@ -41,11 +41,13 @@ struct SupportChatMessageRow: View {
     /// When `true`, the bubble is rendered with reduced opacity and a red exclamation
     /// icon next to it, signalling the message failed to send.
     var failed: Bool = false
+    /// Width of the message list the row is laid out in.
+    let containerWidth: CGFloat
 
     var body: some View {
         HStack(spacing: SupportChatLayout.failedIconSpacing) {
             if role == .user {
-                Spacer(minLength: UIScreen.main.bounds.width * (1 - SupportChatLayout.maxBubbleWidthRatio))
+                Spacer(minLength: oppositeSideSpacing)
 
                 if failed {
                     failedIndicator
@@ -60,11 +62,15 @@ struct SupportChatMessageRow: View {
                 .opacity(failed ? SupportChatLayout.failedBubbleOpacity : 1.0)
 
             if role == .bot {
-                Spacer(minLength: UIScreen.main.bounds.width * (1 - SupportChatLayout.maxBubbleWidthRatio))
+                Spacer(minLength: oppositeSideSpacing)
             }
         }
         .accessibilityElement(children: .combine)
         .accessibilityLabel(accessibilityLabel)
+    }
+
+    private var oppositeSideSpacing: CGFloat {
+        containerWidth - SupportChatLayout.maxBubbleWidth(in: containerWidth)
     }
 
     @ViewBuilder
@@ -151,28 +157,37 @@ struct TypingIndicatorRow: View {
 }
 
 #Preview("User Message") {
-    SupportChatMessageRow(
-        role: .user,
-        text: "How do I fix my connection issue?"
-    )
-    .padding()
+    GeometryReader { geometry in
+        SupportChatMessageRow(
+            role: .user,
+            text: "How do I fix my connection issue?",
+            containerWidth: geometry.size.width
+        )
+        .padding()
+    }
 }
 
 #Preview("Failed User Message") {
-    SupportChatMessageRow(
-        role: .user,
-        text: "I cannot load products in the app",
-        failed: true
-    )
-    .padding()
+    GeometryReader { geometry in
+        SupportChatMessageRow(
+            role: .user,
+            text: "I cannot load products in the app",
+            failed: true,
+            containerWidth: geometry.size.width
+        )
+        .padding()
+    }
 }
 
 #Preview("Assistant Message") {
-    SupportChatMessageRow(
-        role: .bot,
-        text: "I can help you troubleshoot your connection. Let's start by checking a few things."
-    )
-    .padding()
+    GeometryReader { geometry in
+        SupportChatMessageRow(
+            role: .bot,
+            text: "I can help you troubleshoot your connection. Let's start by checking a few things.",
+            containerWidth: geometry.size.width
+        )
+        .padding()
+    }
 }
 
 #Preview("Typing Indicator") {

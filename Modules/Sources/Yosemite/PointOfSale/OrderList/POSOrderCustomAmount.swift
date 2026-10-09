@@ -1,6 +1,6 @@
 import Foundation
 
-public struct POSOrderCustomAmount: Equatable, Hashable, Identifiable {
+public struct POSOrderCustomAmount: Equatable, Hashable, Identifiable, Sendable {
     public let id: Int64
     public let name: String
     public let formattedTotal: String

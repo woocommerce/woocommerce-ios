@@ -9,9 +9,10 @@ final class IssueRefundTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        configureBackground()
-        configureIssueRefundButton()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureIssueRefundButton()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {

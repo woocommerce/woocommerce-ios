@@ -928,7 +928,8 @@ extension AuthenticationManager {
             username: credentials.username,
             password: credentials.password,
             siteAddress: credentials.siteURL,
-            authenticationEndpoints: credentials.authenticationEndpoints
+            authenticationEndpoints: credentials.authenticationEndpoints,
+            detectUnexpectedResponses: true
         )
     }
 
@@ -1177,7 +1178,7 @@ private extension AuthenticationManager {
         /// IMPORTANT: authenticate after creating the use case above to make sure that
         /// the application password is saved into keychain.
         stores.authenticate(credentials: credentials)
-        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
+        checkSiteCredentialLogin(to: siteURL, with: useCase, loginFlow: .appPassword, in: navigationController)
     }
 
     /// The error screen to be displayed when Jetpack setup for a site is required.
@@ -1248,6 +1249,7 @@ extension AuthenticationManager {
         checkSiteCredentialLogin(
             to: siteURL,
             with: useCase,
+            loginFlow: .siteCredentials,
             in: navigationController,
             authenticationEndpointPersistence: endpointPersistence,
             previousViewController: nil
@@ -1258,11 +1260,14 @@ extension AuthenticationManager {
 private extension AuthenticationManager {
     func checkSiteCredentialLogin(to siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
+                                  loginFlow: LoginUnexpectedResponseFailure.LoginFlow,
                                   in navigationController: UINavigationController,
                                   authenticationEndpointPersistence: SiteCredentialAuthenticationEndpointPersistence? = nil,
                                   previousViewController: UIViewController? = nil) {
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                     loginFlow: loginFlow,
                                                      stores: stores,
+                                                     analytics: analytics,
                                                      authenticationEndpointPersistence: authenticationEndpointPersistence,
                                                      previousViewController: previousViewController)
         checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in

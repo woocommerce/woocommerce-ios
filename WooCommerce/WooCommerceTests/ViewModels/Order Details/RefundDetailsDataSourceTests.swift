@@ -5,6 +5,7 @@ import Fakes
 import YosemiteTestHelpers
 @testable import WooCommerce
 
+@MainActor
 struct RefundDetailsDataSourceTests {
     private let storageManager: MockStorageManager
     private let order: Order

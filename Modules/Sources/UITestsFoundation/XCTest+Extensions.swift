@@ -201,6 +201,28 @@ extension XCUIElement {
 }
 
 extension XCUIApplication {
+    /// Dismisses the system prompt asking to allow notifications, which the app requests after login
+    /// while the permission is still undetermined.
+    @discardableResult
+    public func dismissNotificationsPermissionPromptIfNeeded(timeout: TimeInterval = 5) -> Bool {
+        let springboard = XCUIApplication(bundleIdentifier: "com.apple.springboard")
+        let prompt = springboard.alerts
+            .matching(NSPredicate(format: "label CONTAINS %@", "Would Like to Send You Notifications"))
+            .firstMatch
+        guard prompt.waitForExistence(timeout: timeout) else {
+            return false
+        }
+
+        let dontAllowButton = prompt.buttons["Don’t Allow"]
+        guard dontAllowButton.waitForExistence(timeout: 2) else {
+            XCTFail("Notifications prompt has no Don’t Allow button. Buttons: \(prompt.buttons.allElementsBoundByIndex.map(\.label))")
+            return false
+        }
+
+        dontAllowButton.tap()
+        return true
+    }
+
     @discardableResult
     public func dismissSavePasswordPromptIfNeeded(timeout: TimeInterval = 15,
                                                 until element: XCUIElement? = nil,

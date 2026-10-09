@@ -491,16 +491,23 @@ private extension SiteCredentialLoginUseCase {
 
     func responseError(_ failure: CookieNonceAuthenticationFailure, stage: CookieNonceAuthenticationResponseStage,
                        response: LoginResponse) -> SiteCredentialLoginError {
-        if failure == .invalidResponse { return unexpectedResponse(stage: stage, response: response) }
-        return SiteCredentialLoginError(failure, stage: stage)
+        switch failure {
+        case .basicAuthenticationRequired: .basicAuthenticationRequired
+        case .invalidCredentials: .invalidCredentials
+        case .loginFailed(let message): .loginFailed(message: message)
+        case .inaccessibleLoginPage: .inaccessibleLoginPage
+        case .inaccessibleAdminPage: .inaccessibleAdminPage
+        case .invalidResponse: unexpectedResponse(stage: stage, response: response)
+        case .unacceptableStatusCode(let code): .unacceptableStatusCode(code: code)
+        }
     }
 
     func unexpectedResponse(stage: CookieNonceAuthenticationResponseStage,
                             kind: LoginUnexpectedResponseFailure.Kind = .unexpectedContent,
                             response: LoginResponse? = nil, request: URLRequest? = nil) -> SiteCredentialLoginError {
-        // A rejected nonce can still contain a secret. Only structured error pages may contribute an excerpt.
+        // Successful nonce responses can contain a secret; non-2xx error bodies go through the shared sanitizer.
         let body = response.flatMap { result -> Data? in
-            if stage == .nonce {
+            if stage == .nonce, (200..<300).contains(result.http.statusCode) {
                 let text = String(data: result.data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
                 guard text.hasPrefix("<") || text.hasPrefix("{") else { return nil }
             }
@@ -554,26 +561,5 @@ private final class RedirectBlockingURLSessionDelegate: NSObject, URLSessionTask
                     willPerformHTTPRedirection response: HTTPURLResponse,
                     newRequest request: URLRequest) async -> URLRequest? {
         nil
-    }
-}
-
-private extension SiteCredentialLoginError {
-    init(_ failure: CookieNonceAuthenticationFailure, stage: CookieNonceAuthenticationResponseStage) {
-        switch failure {
-        case .basicAuthenticationRequired:
-            self = .basicAuthenticationRequired
-        case .invalidCredentials:
-            self = .invalidCredentials
-        case .loginFailed(let message):
-            self = .loginFailed(message: message)
-        case .inaccessibleLoginPage:
-            self = .inaccessibleLoginPage
-        case .inaccessibleAdminPage:
-            self = .inaccessibleAdminPage
-        case .invalidResponse:
-            self = .unexpectedResponse(.init(stage: stage))
-        case .unacceptableStatusCode(let code):
-            self = .unacceptableStatusCode(code: code)
-        }
     }
 }

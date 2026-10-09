@@ -86,7 +86,7 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
             let methodAndPath: String = switch stage {
             case .preflight: "GET /wp-login.php"
             case .credentials: "POST /wp-login.php"
-            case .dashboard: "GET /wp-admin/"
+            case .dashboard: "GET /wp-admin"
             case .nonce: "GET /wp-admin/admin-ajax.php"
             }
             XCTAssertEqual(failure.diagnostics?.request, methodAndPath)

@@ -13,13 +13,14 @@ struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
 
     private let userDefaults: UserDefaults
 
+    @MainActor
     init(siteID: Int64 = ServiceLocator.stores.sessionManager.defaultStoreID ?? 0,
          configuration: CardPresentPaymentsConfiguration = CardPresentConfigurationLoader().configuration,
          cardReaderSupportDeterminer: CardReaderSupportDetermining? = nil,
-         cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol = CardPresentPaymentsOnboardingUseCase(),
+         cardPresentPaymentsOnboarding: CardPresentPaymentsOnboardingUseCaseProtocol? = nil,
          userDefaults: UserDefaults = .standard) {
         self.cardReaderSupportDeterminer = cardReaderSupportDeterminer ?? CardReaderSupportDeterminer(siteID: siteID, configuration: configuration)
-        self.cardPresentPaymentsOnboarding = cardPresentPaymentsOnboarding
+        self.cardPresentPaymentsOnboarding = cardPresentPaymentsOnboarding ?? CardPresentPaymentsOnboardingUseCase()
         self.userDefaults = userDefaults
     }
 
@@ -35,21 +36,18 @@ struct TapToPayAwarenessMomentDeterminer: TapToPayAwarenessMomentDetermining {
             return false
         }
 
-        switch cardPresentPaymentsOnboarding.state {
+        switch await cardPresentPaymentsOnboarding.state {
         case .completed, .codPaymentGatewayNotSetUp:
             break
         default:
             return false
         }
 
-        async let deviceSupportsTapToPay = cardReaderSupportDeterminer.deviceSupportsTapToPayReader()
-        async let siteSupportsTapToPay = cardReaderSupportDeterminer.siteSupportsTapToPayReader()
-        async let hasPreviousTapToPayUsage = cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
-        let deviceSupportsTapToPayResult = await deviceSupportsTapToPay
-        let siteSupportsTapToPayResult = await siteSupportsTapToPay
-        let hasPreviousTapToPayUsageResult = await hasPreviousTapToPayUsage
+        let deviceSupportsTapToPay = await cardReaderSupportDeterminer.deviceSupportsTapToPayReader()
+        let siteSupportsTapToPay = cardReaderSupportDeterminer.siteSupportsTapToPayReader()
+        let hasPreviousTapToPayUsage = await cardReaderSupportDeterminer.hasPreviousTapToPayUsage()
 
-        return deviceSupportsTapToPayResult && siteSupportsTapToPayResult && !hasPreviousTapToPayUsageResult
+        return deviceSupportsTapToPay && siteSupportsTapToPay && !hasPreviousTapToPayUsage
     }
 
     // MARK: - Previous Presentation

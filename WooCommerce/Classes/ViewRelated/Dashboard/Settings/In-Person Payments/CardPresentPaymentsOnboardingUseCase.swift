@@ -13,6 +13,7 @@ private typealias PaymentGatewayAccount = Yosemite.PaymentGatewayAccount
 /// Protocol for `CardPresentPaymentsOnboardingUseCase`.
 /// Right now, only used for testing.
 ///
+@MainActor
 protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     /// Current store onboarding state.
     ///
@@ -63,6 +64,7 @@ protocol CardPresentPaymentsOnboardingUseCaseProtocol {
     func activateCardPresentPlugin()
 }
 
+@MainActor
 final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingUseCaseProtocol, ObservableObject {
     let storageManager: StorageManagerType
     let stores: StoresManager
@@ -147,15 +149,17 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         let pluginSlug = CardPresentPaymentsPlugin.wcPay.gatewayID
 
         let installPluginAction = SitePluginAction.installSitePlugin(siteID: siteID, slug: pluginSlug, onCompletion: { [weak self] result in
-            guard let self else { return }
-            self.state = .loading
-            switch result {
-            case .success:
-                DDLogInfo("Success installing \(pluginSlug)")
-                self.refresh()
-            case .failure(let error):
-                self.trackCardPresentPluginActionFailed(error, trigger: .notInstalled)
-                self.state = .genericError
+            Task { @MainActor in
+                guard let self else { return }
+                self.state = .loading
+                switch result {
+                case .success:
+                    DDLogInfo("Success installing \(pluginSlug)")
+                    self.refresh()
+                case .failure(let error):
+                    self.trackCardPresentPluginActionFailed(error, trigger: .notInstalled)
+                    self.state = .genericError
+                }
             }
         })
         stores.dispatch(installPluginAction)
@@ -169,15 +173,17 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
         let pluginName = CardPresentPaymentsPlugin.wcPay.fileNameWithPathExtension
 
         let activatePluginAction = SitePluginAction.activateSitePlugin(siteID: siteID, pluginName: pluginName, onCompletion: { [weak self] result in
-            guard let self else { return }
-            self.state = .loading
-            switch result {
-            case .success:
-                DDLogInfo("Success activating \(pluginName)")
-                self.refresh()
-            case .failure(let error):
-                self.trackCardPresentPluginActionFailed(error, trigger: .notActivated)
-                self.state = .genericError
+            Task { @MainActor in
+                guard let self else { return }
+                self.state = .loading
+                switch result {
+                case .success:
+                    DDLogInfo("Success activating \(pluginName)")
+                    self.refresh()
+                case .failure(let error):
+                    self.trackCardPresentPluginActionFailed(error, trigger: .notActivated)
+                    self.state = .genericError
+                }
             }
         })
         stores.dispatch(activatePluginAction)
@@ -278,8 +284,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
         }
 
         let group = DispatchGroup()
-        // The system status completion is `@Sendable`, so it cannot mutate a captured `var`; the errors live behind a lock
-        // until the use case is isolated to the main actor (WOOMOB-4096).
+        // The system status completion is `@Sendable`, so it cannot mutate a captured `var`; the errors live behind a lock.
         let errors = OSAllocatedUnfairLock(initialState: [Error]())
 
         // We need to sync settings to check the store's country

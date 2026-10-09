@@ -138,7 +138,7 @@ final class ServiceLocator {
     ///
     private static var _generalAppSettings = GeneralAppSettingsStorage()
 
-    private static var _cardPresentPaymentsOnboardingIPPUsersRefresher =
+    @MainActor private static var _cardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
 
     private static var _tapToPayReconnectionController = TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
@@ -376,7 +376,7 @@ final class ServiceLocator {
         _generalAppSettings
     }
 
-    static var cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher {
+    @MainActor static var cardPresentPaymentsOnboardingIPPUsersRefresher: CardPresentPaymentsOnboardingIPPUsersRefresher {
         _cardPresentPaymentsOnboardingIPPUsersRefresher
     }
 

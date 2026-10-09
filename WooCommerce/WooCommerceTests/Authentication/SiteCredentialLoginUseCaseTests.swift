@@ -170,7 +170,8 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
                     XCTFail("Expected unexpected status at nonce, got \(error)")
                     continue
                 }
-                XCTAssertEqual(failure, .init(stage: .nonce, statusCode: code))
+                XCTAssertEqual(failure.statusCode, code)
+                XCTAssertEqual(failure.diagnostics?.request, "GET /wp-admin/admin-ajax.php")
                 XCTAssertEqual(failure.kind, .unacceptableStatusCode)
                 XCTAssertEqual(failure.step, .nonceRetrieval)
                 XCTAssertFalse(error.offersBrowserAlternative(at: .nonce))

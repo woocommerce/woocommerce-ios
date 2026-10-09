@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [**] Payments: Stores without WooPayments or Stripe can install WooPayments again from In-Person Payments setup, instead of seeing "Unable to verify In-Person Payments for this store". [https://github.com/woocommerce/woocommerce-ios/pull/18047]
 - [*] Product details: Fixed row content touching the edge of the details pane on iPhone Duo. [https://github.com/woocommerce/woocommerce-ios/pull/18036]
 - [*] Menu tab: The first card keeps a gap above it on iPhone Duo when the status bar is on the side of the display. [https://github.com/woocommerce/woocommerce-ios/pull/18029]
 - [Internal] Layout: Support chat bubbles, expandable bottom sheets, the feature highlight tooltip and the subscription period toolbar size from their container instead of the main screen. [https://github.com/woocommerce/woocommerce-ios/pull/17999]

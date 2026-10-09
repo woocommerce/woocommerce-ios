@@ -74,6 +74,8 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     private var wasCashOnDeliveryStepSkipped: Bool = false
     private var pendingRequirementsStepSkipped: Bool = false
     private var overdueRequirementsStepSkipped: Bool = false
+    /// Whether the last gateway account sync failed. Account-based states can't be trusted until a sync succeeds.
+    private var accountsSyncFailed: Bool = false
 
     @Published private(set) var state: CardPresentPaymentOnboardingState = .loading
 
@@ -131,6 +133,8 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     func refreshIfNecessary() {
         if let cachedValue = cardPresentPaymentOnboardingStateCache.value,
            cachedValue.isCompleted {
+            // A completed state is only cached after a successful account sync.
+            accountsSyncFailed = false
             if cachedValue != state {
                 state = cachedValue
             }
@@ -185,14 +189,16 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
     private func refreshOnboardingState() {
         synchronizeStoreCountryAndPlugins { [weak self] in
-            self?.updateAccounts()
+            self?.updateAccounts(storeDataSynced: true)
         }
     }
 
     /// We need to sync payment gateway accounts to see if the payment gateway is set up correctly.
     /// But first we also need to prompt the CardPresentPaymentStore to use the right backend based on the active plugin.
     ///
-    func updateAccounts() {
+    /// - Parameter storeDataSynced: Whether the store settings and plugins synced without errors before this call.
+    ///
+    func updateAccounts(storeDataSynced: Bool) {
         guard let siteID else {
             return
         }
@@ -204,11 +210,17 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
             switch result {
             case .success:
+                accountsSyncFailed = false
                 updateState()
                 CardPresentPaymentOnboardingStateCache.shared.update(state)
             case .failure(let error):
+                accountsSyncFailed = true
                 if isNetworkError(error) {
                     state = .noConnectionError
+                } else if storeDataSynced {
+                    // Account requests also fail when the payment plugins are missing or inactive,
+                    // so plugin steps such as installation are still shown. Account checks return an error.
+                    updateState()
                 } else {
                     state = .genericError
                 }
@@ -311,7 +323,7 @@ private extension CardPresentPaymentsOnboardingUseCase {
                errors.contains(where: self.isNetworkError(_:)) {
                 self.state = .noConnectionError
             } else {
-                self.updateAccounts()
+                self.updateAccounts(storeDataSynced: errors.isEmpty)
             }
         })
     }
@@ -368,6 +380,11 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return wcPayOnlyOnboardingState(plugin: wcPay)
         }
 
+        // Choosing between two active gateways needs their accounts.
+        guard !accountsSyncFailed else {
+            return .genericError
+        }
+
         guard let preferredPlugin = preferredPluginLocal else {
             return .selectPlugin(pluginSelectionWasCleared: false)
         }
@@ -420,6 +437,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func accountChecks(plugin: CardPresentPaymentsPlugin) -> CardPresentPaymentOnboardingState {
+        guard !accountsSyncFailed else {
+            return .genericError
+        }
         guard let account = getPaymentGatewayAccount(plugin: plugin) else {
             /// Active plugin but unable to fetch an account? Prompt the merchant to finish setting it up.
             return .pluginSetupNotCompleted(plugin: plugin)

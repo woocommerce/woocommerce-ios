@@ -171,6 +171,122 @@ struct ProductsViewControllerTests {
     }
 
     @Test
+    func test_sync_when_next_page_sorts_before_loaded_products_locally_then_appends_it_after_them() async throws {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let storage = MockStorageManager()
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: storage, siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in })
+        controller.loadViewIfNeeded()
+        let table = try #require(controller.tableView)
+
+        // The store's collation can sort a name earlier than the local sort does.
+        try await loadPage(1, names: ["Awesome Wooden Shoes", "オビツキューピー招き猫セット"], firstID: 1,
+                           controller: controller, storage: storage, stores: stores)
+
+        // When: the next page has names that sort before the last loaded product locally
+        try await loadPage(2, names: ["Casual Blue Women's Shirt", "Durable Wooden Hat"], firstID: 3,
+                           controller: controller, storage: storage, stores: stores)
+
+        // Then
+        #expect(displayedNames(in: table, controller: controller) == [
+            "Awesome Wooden Shoes",
+            "オビツキューピー招き猫セット",
+            "Casual Blue Women's Shirt",
+            "Durable Wooden Hat"
+        ])
+    }
+
+    @Test
+    func test_refresh_when_sync_fails_then_keeps_products_in_page_order() async throws {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let storage = MockStorageManager()
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: storage, siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in })
+        controller.loadViewIfNeeded()
+        let table = try #require(controller.tableView)
+        try await loadPage(1, names: ["Awesome Wooden Shoes", "オビツキューピー招き猫セット"], firstID: 1,
+                           controller: controller, storage: storage, stores: stores)
+        try await loadPage(2, names: ["Casual Blue Women's Shirt"], firstID: 3,
+                           controller: controller, storage: storage, stores: stores)
+        let refreshControl = try attachedRefreshControl(in: table)
+
+        // When: another flow saves a product during the refresh, then the refresh fails
+        let completeSync = try await startRefresh(refreshControl, stores: stores)
+        try await withCheckedThrowingContinuation { (continuation: CheckedContinuation<Void, Error>) in
+            storage.performAndSave({ storage in
+                storage.loadProduct(siteID: 123, productID: 1)?.price = "10"
+            }, completion: { continuation.resume(with: $0) }, on: .main)
+        }
+        await finishRefresh(controller, completeSync: completeSync, result: .failure(NSError(domain: "test", code: 0)))
+
+        // Then
+        #expect(displayedNames(in: table, controller: controller) == [
+            "Awesome Wooden Shoes",
+            "オビツキューピー招き猫セット",
+            "Casual Blue Women's Shirt"
+        ])
+    }
+
+    @Test
+    func test_refresh_when_next_page_syncs_before_refresh_is_rendered_then_keeps_products_in_page_order() async throws {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let storage = MockStorageManager()
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: storage, siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in })
+        controller.loadViewIfNeeded()
+        let table = try #require(controller.tableView)
+        let refreshControl = try attachedRefreshControl(in: table)
+        let completeFirstPage = try await startRefresh(refreshControl, stores: stores)
+
+        try await insert(makeProducts(["Awesome Wooden Shoes", "オビツキューピー招き猫セット"], firstID: 1), into: storage)
+
+        // When: the next page loads after the first page completes, but before the refresh is rendered.
+        var subscription: AnyCancellable?
+        await withCheckedContinuation { continuation in
+            subscription = controller.onDataReloaded.first().sink { continuation.resume() }
+            completeFirstPage(.success(true))
+            var completeNextPage: ((Result<Bool, Error>) -> Void)?
+            stores.whenReceivingAction(ofType: ProductAction.self) { action in
+                guard case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion) = action else { return }
+                completeNextPage = onCompletion
+            }
+            controller.sync(pageNumber: 2, pageSize: 1, reason: nil, onCompletion: nil)
+            // `MockStorageManager` writes synchronously, so the page is stored before the refresh renders.
+            storage.performAndSave({ storage in
+                let stored = storage.insertNewObject(ofType: StorageProduct.self)
+                stored.update(with: Product.fake().copy(siteID: 123, productID: 3, name: "Casual Blue Women's Shirt"))
+            }, completion: nil, on: .main)
+            completeNextPage?(.success(false))
+        }
+        subscription?.cancel()
+
+        // Then
+        #expect(displayedNames(in: table, controller: controller) == [
+            "Awesome Wooden Shoes",
+            "オビツキューピー招き猫セット",
+            "Casual Blue Women's Shirt"
+        ])
+    }
+
+    @Test
     func test_refresh_when_an_offscreen_product_is_selected_then_scrolls_to_selection_after_refresh() async throws {
         // Given
         let originalStores = ServiceLocator.stores
@@ -236,11 +352,13 @@ private extension ProductsViewControllerTests {
         return try #require(completeSync)
     }
 
-    func finishRefresh(_ controller: ProductsViewController, completeSync: (Result<Bool, Error>) -> Void) async {
+    func finishRefresh(_ controller: ProductsViewController,
+                       completeSync: (Result<Bool, Error>) -> Void,
+                       result: Result<Bool, Error> = .success(false)) async {
         var subscription: AnyCancellable?
         await withCheckedContinuation { continuation in
             subscription = controller.onDataReloaded.first().sink { continuation.resume() }
-            completeSync(.success(false))
+            completeSync(result)
         }
         subscription?.cancel()
     }
@@ -258,9 +376,39 @@ private extension ProductsViewControllerTests {
         }
     }
 
+    /// Syncs a page and stores its products before the sync completes, like `ProductStore` does.
+    func loadPage(_ pageNumber: Int,
+                  names: [String],
+                  firstID: Int64,
+                  controller: ProductsViewController,
+                  storage: MockStorageManager,
+                  stores: MockStoresManager) async throws {
+        var completeSync: ((Result<Bool, Error>) -> Void)?
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion) = action else { return }
+            completeSync = onCompletion
+        }
+        controller.sync(pageNumber: pageNumber, pageSize: names.count, reason: nil, onCompletion: nil)
+        try await insert(makeProducts(names, firstID: firstID), into: storage)
+        let finishPage = try #require(completeSync)
+        finishPage(.success(true))
+    }
+
+    func makeProducts(_ names: [String], firstID: Int64) -> [Product] {
+        names.enumerated().map { index, name in
+            Product.fake().copy(siteID: 123, productID: firstID + Int64(index), name: name)
+        }
+    }
+
+    func displayedNames(in table: UITableView, controller: ProductsViewController) -> [String?] {
+        (0..<table.numberOfRows(inSection: 0)).map {
+            controller.tableView(table, cellForRowAt: IndexPath(row: $0, section: 0)).accessibilityIdentifier
+        }
+    }
+
     func makeResultsController(storage: MockStorageManager, siteID: Int64) -> ResultsController<StorageProduct> {
         ResultsController(storageManager: storage,
                           matching: NSPredicate(format: "siteID == %lld", siteID),
-                          sortedBy: [NSSortDescriptor(key: "name", ascending: true)])
+                          sortOrder: .nameAscending)
     }
 }

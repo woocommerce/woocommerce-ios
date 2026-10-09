@@ -118,6 +118,29 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
         XCTAssertFalse(logs.joined().contains("private-nonce-value"))
     }
 
+    func test_handle_login_when_nonce_status_has_plain_error_text_then_retains_and_logs_sanitized_excerpt() async throws {
+        for (status, body, excerpt) in [(429, "Too Many Requests", "Too Many Requests"),
+                                        (503, "Service Unavailable", "Service Unavailable"),
+                                        (503, "The host temporarily blocked this request", "The host temporarily blocked this request"),
+                                        (503, "Service Unavailable password=private-password", "Service Unavailable password=[redacted]")] {
+            // Given
+            var logs = [String]()
+
+            // When
+            let error = try await responseFailure(at: .nonce, data: Data(body.utf8), statusCode: status,
+                                                 headers: ["Content-Type": "text/plain"], logUnexpectedResponse: { logs.append($0) })
+
+            // Then
+            guard case .unexpectedResponse(let failure) = error else { return XCTFail("Expected unexpected response") }
+            XCTAssertEqual(failure.statusCode, status)
+            XCTAssertEqual(failure.kind, .unacceptableStatusCode)
+            XCTAssertEqual(failure.diagnostics?.excerpt, excerpt)
+            XCTAssertEqual(logs.count, 1)
+            XCTAssertTrue(logs.first?.contains("excerpt=\(excerpt)") == true)
+            XCTAssertFalse(logs.joined().contains("private-password"))
+        }
+    }
+
     func test_handle_login_when_status_rejects_unexpected_content_then_reports_status_and_exact_stage() async throws {
         for stage in credentialStages {
             for code in [429, 500] {

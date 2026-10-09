@@ -81,22 +81,22 @@ struct BackgroundCatalogDownloadCoordinatorTests {
         let mockDownloader = MockBackgroundDownloader()
         let coordinator = makeCoordinator(downloader: mockDownloader)
 
-        var completionCalled = false
         var parseCalled = false
 
         // When
-        await coordinator.handleBackgroundSessionEvent(
-            sessionIdentifier: sessionIdentifier,
-            completionHandler: {
-                completionCalled = true
-            },
-            parseHandler: { _, _, _ in
-                parseCalled = true
-            }
-        )
+        await confirmation("Completion handler called") { completionCalled in
+            await coordinator.handleBackgroundSessionEvent(
+                sessionIdentifier: sessionIdentifier,
+                completionHandler: {
+                    completionCalled()
+                },
+                parseHandler: { _, _, _ in
+                    parseCalled = true
+                }
+            )
+        }
 
         // Then
-        #expect(completionCalled == true)
         #expect(parseCalled == false) // Should not parse without state
     }
 

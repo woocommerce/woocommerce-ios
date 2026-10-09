@@ -1,19 +1,21 @@
 // periphery:ignore:all
 import CocoaLumberjackSwift
 import Foundation
+import os
 
 /// Service for handling background downloads using `URLSessionConfiguration.background`.
 /// Follows Apple's guidelines for background downloads with app suspension support.
-public class BackgroundDownloadService: NSObject {
-    private var backgroundCompletionHandler: (() -> Void)?
-    private var downloadTasks: [String: URLSessionDownloadTask] = [:]
-    private var downloadContinuations: [String: CheckedContinuation<BackgroundDownloadResult, Error>] = [:]
-    private let fileManager: FileManager
-
-    public init(fileManager: FileManager = .default) {
-        self.fileManager = fileManager
-        super.init()
+public final class BackgroundDownloadService: NSObject {
+    /// Mutable state, guarded by `state` because callers start and cancel downloads from their own
+    /// executors while the session's delegate queue completes them.
+    ///
+    private struct State {
+        var backgroundCompletionHandler: (@Sendable () -> Void)?
+        var downloadTasks: [String: URLSessionDownloadTask] = [:]
+        var downloadContinuations: [String: CheckedContinuation<BackgroundDownloadResult, Error>] = [:]
     }
+
+    private let state = OSAllocatedUnfairLock(initialState: State())
 }
 
 // MARK: - BackgroundDownloadProtocol
@@ -25,15 +27,17 @@ extension BackgroundDownloadService: BackgroundDownloadProtocol {
             let downloadTask = session.downloadTask(with: url)
 
             // Stores the continuation for later use in delegate methods.
-            downloadContinuations[sessionIdentifier] = continuation
-            downloadTasks[sessionIdentifier] = downloadTask
+            state.withLock {
+                $0.downloadContinuations[sessionIdentifier] = continuation
+                $0.downloadTasks[sessionIdentifier] = downloadTask
+            }
 
             downloadTask.resume()
         }
     }
 
-    public func setBackgroundCompletionHandler(_ completionHandler: @escaping () -> Void) {
-        backgroundCompletionHandler = completionHandler
+    public func setBackgroundCompletionHandler(_ completionHandler: @escaping @Sendable () -> Void) {
+        state.withLock { $0.backgroundCompletionHandler = completionHandler }
     }
 
     /// Reconnects to an existing background session after app wake.
@@ -44,7 +48,7 @@ extension BackgroundDownloadService: BackgroundDownloadProtocol {
     /// - Returns: Downloaded file URL if download completed, nil if still in progress
     public func reconnectToSession(identifier sessionIdentifier: String,
                                    allowCellular: Bool,
-                                   completionHandler: @escaping () -> Void) async -> URL? {
+                                   completionHandler: @escaping @Sendable () -> Void) async -> URL? {
         DDLogInfo("🟣 Reconnecting to background session: \(sessionIdentifier)")
 
         setBackgroundCompletionHandler(completionHandler)
@@ -54,20 +58,26 @@ extension BackgroundDownloadService: BackgroundDownloadProtocol {
 
         // Wait for delegate callbacks to complete
         return try? await withCheckedThrowingContinuation { continuation in
-            downloadContinuations[sessionIdentifier] = continuation
+            state.withLock { $0.downloadContinuations[sessionIdentifier] = continuation }
         }.fileURL
     }
 
     public func cancelDownloads(for sessionIdentifier: String) async {
-        if let task = downloadTasks[sessionIdentifier] {
-            task.cancel()
-            downloadTasks.removeValue(forKey: sessionIdentifier)
-
-            // Resumes continuation with cancellation error.
-            if let continuation = downloadContinuations.removeValue(forKey: sessionIdentifier) {
-                continuation.resume(throwing: BackgroundDownloadError.cancelled)
+        let cancelled = state.withLock { state -> (task: URLSessionDownloadTask,
+                                                   continuation: CheckedContinuation<BackgroundDownloadResult, Error>?)? in
+            guard let task = state.downloadTasks.removeValue(forKey: sessionIdentifier) else {
+                return nil
             }
+            return (task, state.downloadContinuations.removeValue(forKey: sessionIdentifier))
         }
+        guard let cancelled else {
+            return
+        }
+
+        cancelled.task.cancel()
+
+        // Resumes continuation with cancellation error.
+        cancelled.continuation?.resume(throwing: BackgroundDownloadError.cancelled)
     }
 
     // MARK: - Private Methods
@@ -86,11 +96,16 @@ extension BackgroundDownloadService: BackgroundDownloadProtocol {
     }
 
     private func handleDownloadCompletion(for sessionIdentifier: String, result: BackgroundDownloadResult?, error: Error?) {
-        guard let continuation = downloadContinuations.removeValue(forKey: sessionIdentifier) else {
+        let continuation = state.withLock { state -> CheckedContinuation<BackgroundDownloadResult, Error>? in
+            guard let continuation = state.downloadContinuations.removeValue(forKey: sessionIdentifier) else {
+                return nil
+            }
+            state.downloadTasks.removeValue(forKey: sessionIdentifier)
+            return continuation
+        }
+        guard let continuation else {
             return
         }
-
-        downloadTasks.removeValue(forKey: sessionIdentifier)
 
         if let error {
             continuation.resume(throwing: BackgroundDownloadError.downloadFailed(error))
@@ -122,6 +137,9 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
             // before parsing completes. The temp location returned by URLSession is cleaned
             // immediately after this delegate method returns, but we need the file to persist
             // until async parsing completes.
+            // The shared file manager is used because `FileManager` is not `Sendable`, and the shared
+            // instance is documented as safe to call from any thread.
+            let fileManager = FileManager.default
             let tempDirectory = fileManager.temporaryDirectory
             let fileName = downloadTask.originalRequest?.url?.lastPathComponent ?? "catalog_\(UUID().uuidString).json"
             let persistentTempURL = tempDirectory.appendingPathComponent(fileName)
@@ -195,8 +213,12 @@ extension BackgroundDownloadService: URLSessionDelegate {
         // according to doc:
         // https://developer.apple.com/documentation/foundation/downloading-files-in-the-background#Handle-app-suspension
         DispatchQueue.main.async { [weak self] in
-            self?.backgroundCompletionHandler?()
-            self?.backgroundCompletionHandler = nil
+            let completionHandler = self?.state.withLock { state in
+                let completionHandler = state.backgroundCompletionHandler
+                state.backgroundCompletionHandler = nil
+                return completionHandler
+            }
+            completionHandler?()
         }
     }
 }

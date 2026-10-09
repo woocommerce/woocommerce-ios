@@ -13,7 +13,7 @@ public protocol BackgroundDownloadProtocol {
 
     /// Sets up background app suspension handling.
     /// - Parameter completionHandler: Handler to call when background download completes.
-    func setBackgroundCompletionHandler(_ completionHandler: @escaping () -> Void)
+    func setBackgroundCompletionHandler(_ completionHandler: @escaping @Sendable () -> Void)
 
     /// Reconnects to an existing background session after app wake.
     /// Call this from AppDelegate when iOS wakes the app for background URLSession events.
@@ -24,7 +24,7 @@ public protocol BackgroundDownloadProtocol {
     /// - Returns: Downloaded file URL if download completed, nil if still in progress
     func reconnectToSession(identifier sessionIdentifier: String,
                            allowCellular: Bool,
-                           completionHandler: @escaping () -> Void) async -> URL?
+                           completionHandler: @escaping @Sendable () -> Void) async -> URL?
 
     /// Cancels all active downloads for the session.
     /// - Parameter sessionIdentifier: The session identifier to cancel.
@@ -45,7 +45,7 @@ public struct BackgroundDownloadProgress {
 }
 
 /// Result of a completed background download.
-public struct BackgroundDownloadResult {
+public struct BackgroundDownloadResult: Sendable {
     public let fileURL: URL
     public let statusCode: Int?
     public let contentType: String?

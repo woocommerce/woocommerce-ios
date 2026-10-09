@@ -150,7 +150,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     /// This is required for background catalog downloads in POS to complete successfully.
     func application(_ application: UIApplication,
                      handleEventsForBackgroundURLSession identifier: String,
-                     completionHandler: @escaping () -> Void) {
+                     completionHandler: @escaping @Sendable () -> Void) {
         DDLogInfo("🟣 Handling background URLSession events for identifier: \(identifier)")
 
         if identifier.hasPrefix("com.woocommerce.pos.catalog.download") {

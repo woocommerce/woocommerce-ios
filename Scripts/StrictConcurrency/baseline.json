@@ -8,7 +8,6 @@
     "Modules/Sources/Hardware/Internal/Logging.swift": 3,
     "Modules/Sources/Networking/Model/Product/ProductAddOnEnvelope.swift": 1,
     "Modules/Sources/Networking/Model/Product/ProductMetadataExtractor.swift": 1,
-    "Modules/Sources/Networking/Network/BackgroundDownloadService.swift": 3,
     "Modules/Sources/Networking/ProductImageInBackground/ProductImageStatusStorage.swift": 1,
     "Modules/Sources/Networking/Remote/JetpackConnectionRemote.swift": 8,
     "Modules/Sources/NetworkingCore/ApplicationPassword/ApplicationPasswordUseCase.swift": 5,

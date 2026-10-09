@@ -13,6 +13,10 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
 
     private let analytics: Analytics
     private let alertPresenter: AlertPresenter
+    private let onCancel: () -> Void
+    private(set) var authorizationTask: Task<Void, Never>?
+    private var authorizationRequestID = UUID()
+    private(set) lazy var unexpectedResponsePresenter = LoginUnexpectedResponsePresenter(analytics: analytics, presentation: alertPresenter)
 
     /// Callback when application password is authorized.
     private let onSuccess: (ApplicationPassword, UINavigationController?) -> Void
@@ -62,12 +66,14 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
          alertPresenter: @escaping AlertPresenter = { controller, alert, completion in
              controller.present(alert, animated: true, completion: completion)
          },
+         onCancel: @escaping () -> Void = {},
          onSuccess: @escaping (ApplicationPassword, UINavigationController?) -> Void) {
         self.viewModel = viewModel
         self.previousViewController = previousViewController
         self.onSuccess = onSuccess
         self.analytics = analytics
         self.alertPresenter = alertPresenter
+        self.onCancel = onCancel
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -83,6 +89,23 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
         configureActivityIndicator()
         fetchAuthorizationURL()
         handleSwipeBackGesture()
+    }
+
+    override func didMove(toParent parent: UIViewController?) {
+        super.didMove(toParent: parent)
+        if parent == nil { cancelAuthorization() }
+    }
+
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        if isBeingDismissed || navigationController?.isBeingDismissed == true { cancelAuthorization() }
+    }
+
+    private func cancelAuthorization() {
+        authorizationRequestID = UUID()
+        authorizationTask?.cancel()
+        unexpectedResponsePresenter.invalidate()
+        onCancel()
     }
 }
 
@@ -162,18 +185,29 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         ])
     }
 
-    func fetchAuthorizationURL() {
-        Task { @MainActor in
+    func fetchAuthorizationURL(onRetryResult: ((Bool) -> Void)? = nil) {
+        authorizationTask?.cancel()
+        let id = UUID()
+        authorizationRequestID = id
+        authorizationTask = Task { @MainActor in
+            guard authorizationRequestID == id, !Task.isCancelled else { return }
             activityIndicator.startAnimating()
+            defer { if authorizationRequestID == id { activityIndicator.stopAnimating() } }
             do {
-                guard let url = try await viewModel.fetchAuthURL() else {
+                let url = try await viewModel.fetchAuthURL()
+                guard authorizationRequestID == id, !Task.isCancelled else { return }
+                guard let url else {
+                    onRetryResult?(false)
                     DDLogError("⛔️ No authorization URL found for application passwords")
                     analytics.track(.applicationPasswordAuthorizationURLNotAvailable)
                     navigateToApplicationPasswordDisabledUI()
                     return
                 }
+                onRetryResult?(true)
                 loadAuthorizationPage(url: url)
             } catch {
+                guard authorizationRequestID == id, !Task.isCancelled else { return }
+                onRetryResult?(false)
                 DDLogError("⛔️ Error fetching authorization URL for application passwords \(error)")
                 analytics.track(.applicationPasswordAuthorizationURLFetchFailed, withError: error)
                 if (error as? Networking.RequestAuthenticatorError) == .applicationPasswordNotAvailable ||
@@ -184,16 +218,19 @@ private extension ApplicationPasswordAuthorizationWebViewController {
                                    failure: LoginUnexpectedResponseFailure(error: error, step: .appPasswordAuthorizationURL))
                 }
             }
-            activityIndicator.stopAnimating()
         }
     }
 
     /// Pops to the previous view controller (if provided) or pops one level otherwise.
     @objc private func navigateToPreviousViewController() {
+        restorePreviousViewController(animated: true)
+    }
+
+    private func restorePreviousViewController(animated: Bool) {
         if let previousViewController, let navigationController {
-            navigationController.popToViewController(previousViewController, animated: true)
+            navigationController.popToViewController(previousViewController, animated: animated)
         } else {
-            navigationController?.popViewController(animated: true)
+            navigationController?.popViewController(animated: animated)
         }
     }
 
@@ -246,6 +283,13 @@ private extension ApplicationPasswordAuthorizationWebViewController {
     }
 
     func showErrorAlert(message: String, failure: LoginUnexpectedResponseFailure? = nil, onRetry: (() -> Void)? = nil) {
+        if let failure {
+            unexpectedResponsePresenter.present(failure: failure, flow: .appPassword, from: navigationController ?? self,
+                                                onRetry: { [weak self] result in self?.fetchAuthorizationURL(onRetryResult: result) },
+                                                onDismiss: { [weak self] in self?.restorePreviousViewController(animated: false) },
+                                                onContactSupport: { [weak self] in self?.restorePreviousViewController(animated: false) })
+            return
+        }
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         let action = UIAlertAction(title: Localization.cancel, style: .cancel) { [weak self] _ in
             self?.navigationController?.popViewController(animated: true)
@@ -257,10 +301,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             }
             alertController.addAction(retryAction)
         }
-        alertPresenter(self, alertController) { [weak self] in
-            guard let self, let failure else { return }
-            analytics.track(event: .Login.unexpectedResponseShown(failure: failure, loginFlow: .appPassword))
-        }
+        alertPresenter(self, alertController) {}
     }
 
     /// The error screen to be displayed when the user tries to log in with site credentials

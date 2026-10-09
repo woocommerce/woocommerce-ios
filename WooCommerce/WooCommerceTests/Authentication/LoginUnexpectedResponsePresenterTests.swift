@@ -65,7 +65,7 @@ struct LoginUnexpectedResponsePresenterTests {
     }
 
     @Test(arguments: [LoginUnexpectedResponseFailure.Action.contactSupport, .dismiss])
-    func test_nonretry_action_when_selected_then_restores_screen_and_does_not_track_retry(action: LoginUnexpectedResponseFailure.Action) {
+    func test_nonretry_action_when_selected_then_prepares_selected_action_and_does_not_track_retry(action: LoginUnexpectedResponseFailure.Action) {
         // Given
         let fixture = Fixture()
         fixture.show()
@@ -75,7 +75,8 @@ struct LoginUnexpectedResponsePresenterTests {
         fixture.presenter.select(action)
 
         // Then
-        #expect(fixture.dismissCount == 1)
+        #expect(fixture.dismissCount == (action == .dismiss ? 1 : 0))
+        #expect(fixture.supportPreparationCount == (action == .contactSupport ? 1 : 0))
         #expect(fixture.supportCount == (action == .contactSupport ? 1 : 0))
         #expect(fixture.retryCount == 0)
         #expect(fixture.provider.receivedEvents == [WooAnalyticsStat.loginUnexpectedResponseActionTapped.rawValue])
@@ -139,6 +140,7 @@ private final class Fixture {
     var presentationCount = 0
     var retryCount = 0
     var dismissCount = 0
+    var supportPreparationCount = 0
     var supportCount = 0
     lazy var presenter = LoginUnexpectedResponsePresenter(
         analytics: WooAnalytics(analyticsProvider: provider),
@@ -155,6 +157,7 @@ private final class Fixture {
                           onRetry: { [weak self] result in
             self?.retryCount += 1
             self?.retryCompletion = result
-        }, onDismiss: { [weak self] in self?.dismissCount += 1 })
+        }, onDismiss: { [weak self] in self?.dismissCount += 1 },
+                          onContactSupport: { [weak self] in self?.supportPreparationCount += 1 })
     }
 }

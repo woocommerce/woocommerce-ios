@@ -1574,6 +1574,7 @@ final class AuthenticationManagerTests: XCTestCase {
         )
     }
 
+    @MainActor
     func test_present_site_credential_browser_alternative_presents_tutorial_without_tracking_detection() {
         // Given
         let presenter = UIViewController()
@@ -1589,6 +1590,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsInvalidLoginPageDetected.rawValue))
     }
 
+    @MainActor
     func test_handle_site_credential_login_failure_when_login_page_is_inaccessible_then_presents_tutorial_without_tracking_detection() {
         // Given
         let presenter = UIViewController()
@@ -1608,6 +1610,7 @@ final class AuthenticationManagerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.loginSiteCredentialsInvalidLoginPageDetected.rawValue))
     }
 
+    @MainActor
     func test_legacy_site_credential_login_failure_presents_centered_fancy_alert() throws {
         // Given
         let presenter = SiteCredentialAlertPresenter()

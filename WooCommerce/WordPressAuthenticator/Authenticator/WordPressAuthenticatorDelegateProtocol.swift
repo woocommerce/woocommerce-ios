@@ -194,6 +194,7 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///     - siteURL: The site URL being authenticated.
     ///     - viewController: the view controller containing the site credential input.
     ///
+    @MainActor
     func presentSiteCredentialBrowserAlternative(for siteURL: String, in viewController: UIViewController)
 
     /// Signals to the Host App to handle an error for site credential login, stating whether a browser
@@ -222,6 +223,7 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///     - siteURL: The site URL of the login failure.
     ///     - viewController: the view controller containing the site credential input.
     ///
+    @MainActor
     func handleSiteCredentialLoginFailure(error: Error,
                                           for siteURL: String,
                                           in viewController: UIViewController)
@@ -312,6 +314,7 @@ public extension WordPressAuthenticatorDelegate {
         )
     }
 
+    @MainActor
     func presentSiteCredentialBrowserAlternative(for siteURL: String, in viewController: UIViewController) {
         // No-op
     }
@@ -330,6 +333,7 @@ public extension WordPressAuthenticatorDelegate {
         // No-op for hosts without a cancellable credential transaction.
     }
 
+    @MainActor
     func handleSiteCredentialLoginFailure(error: Error,
                                           for siteURL: String,
                                           in viewController: UIViewController) {

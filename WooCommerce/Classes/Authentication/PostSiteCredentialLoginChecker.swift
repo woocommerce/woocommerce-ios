@@ -1,4 +1,5 @@
 import UIKit
+import WordPressAuthenticator
 import Yosemite
 import protocol Networking.ApplicationPasswordUseCase
 import protocol WooFoundation.Analytics
@@ -44,6 +45,9 @@ final class PostSiteCredentialLoginChecker {
     private let previousViewController: UIViewController?
     private let authenticationEndpointPersistence: SiteCredentialAuthenticationEndpointPersistence?
     private let authenticationEndpointPersistenceAction: AuthenticationEndpointPersistenceAction
+    private var checkID: UUID?
+    private var generationTask: Task<Void, Never>?
+    @MainActor private(set) lazy var unexpectedResponsePresenter = LoginUnexpectedResponsePresenter(analytics: analytics)
 
     init(applicationPasswordUseCase: ApplicationPasswordUseCase,
          loginFlow: LoginUnexpectedResponseFailure.LoginFlow = .siteCredentials,
@@ -73,6 +77,8 @@ final class PostSiteCredentialLoginChecker {
     /// Checks whether the user is eligible to use the app.
     ///
     func checkEligibility(for siteURL: String, from navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
+        cancel()
+        checkID = UUID()
         checkApplicationPassword(for: siteURL,
                                  with: applicationPasswordUseCase,
                                  in: navigationController) { [weak self] in
@@ -82,6 +88,12 @@ final class PostSiteCredentialLoginChecker {
                 self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
             }
         }
+    }
+
+    func cancel() {
+        checkID = nil
+        generationTask?.cancel()
+        MainActor.assumeIsolated { unexpectedResponsePresenter.invalidate() }
     }
 }
 
@@ -98,16 +110,24 @@ private extension PostSiteCredentialLoginChecker {
     ///
     func checkApplicationPassword(for siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
-                                  in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
+                                  in navigationController: UINavigationController,
+                                  onRetryResult: ((Bool) -> Void)? = nil, onSuccess: @escaping () -> Void) {
+        guard let id = checkID else { return }
         guard useCase.applicationPassword == nil else {
+            onRetryResult?(true)
             return onSuccess()
         }
-        Task { @MainActor in
+        generationTask = Task { @MainActor in
+            guard checkID == id else { return }
             do {
                 let _ = try await useCase.generateNewPassword()
+                guard checkID == id, !Task.isCancelled else { return }
+                onRetryResult?(true)
                 analytics.track(event: .ApplicationPassword.applicationPasswordGeneratedSuccessfully(scenario: .generation))
                 onSuccess()
             } catch {
+                guard checkID == id, !Task.isCancelled else { return }
+                onRetryResult?(false)
                 analytics.track(event: .ApplicationPassword.applicationPasswordGenerationFailed(scenario: .generation, error: error))
                 switch error {
                 case ApplicationPasswordUseCaseError.applicationPasswordsDisabled:
@@ -123,8 +143,9 @@ private extension PostSiteCredentialLoginChecker {
                         failure: LoginUnexpectedResponseFailure(error: error, step: .appPasswordGeneration),
                         siteURL: siteURL,
                         in: navigationController,
-                        onRetry: { [weak self] in
-                            self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController, onSuccess: onSuccess)
+                        onRetry: { [weak self] result in
+                            self?.checkApplicationPassword(for: siteURL, with: useCase, in: navigationController,
+                                                           onRetryResult: result, onSuccess: onSuccess)
                         }
                     )
                 }
@@ -135,29 +156,34 @@ private extension PostSiteCredentialLoginChecker {
     /// Checks role eligibility for the logged in user with the site address saved in the credentials.
     /// Placeholder store ID is used because we are checking for users logging in with site credentials.
     ///
-    func checkRoleEligibility(for siteURL: String, in navigationController: UINavigationController, onSuccess: @escaping () -> Void) {
+    func checkRoleEligibility(for siteURL: String, in navigationController: UINavigationController,
+                              onRetryResult: ((Bool) -> Void)? = nil, onSuccess: @escaping () -> Void) {
+        guard let id = checkID else { return }
         roleEligibilityUseCase.checkEligibility(for: WooConstants.placeholderStoreID) { [weak self] result in
+            guard let self, checkID == id else { return }
             switch result {
             case .success:
+                onRetryResult?(true)
                 onSuccess()
             case .failure(let error):
-                self?.analytics.track(event: .Login.siteCredentialFailed(step: .userRole, error: error))
+                onRetryResult?(false)
+                self.analytics.track(event: .Login.siteCredentialFailed(step: .userRole, error: error))
                 if case let RoleEligibilityError.insufficientRole(errorInfo) = error {
-                    self?.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
-                    self?.showRoleErrorScreen(for: WooConstants.placeholderStoreID,
+                    self.analytics.track(event: .Login.insufficientRole(currentRoles: errorInfo.roles))
+                    self.showRoleErrorScreen(for: WooConstants.placeholderStoreID,
                                              errorInfo: errorInfo,
                                              in: navigationController,
                                              onSuccess: onSuccess)
                 } else {
                     // show generic error
                     DDLogError("⛔️ Error checking role eligibility: \(error)")
-                    self?.showAlert(
+                    self.showAlert(
                         message: Localization.roleEligibilityCheckError,
                         failure: LoginUnexpectedResponseFailure(error: error, step: .userRoleCheck),
                         siteURL: siteURL,
                         in: navigationController,
-                        onRetry: { [weak self] in
-                            self?.checkRoleEligibility(for: siteURL, in: navigationController, onSuccess: onSuccess)
+                        onRetry: { [weak self] result in
+                            self?.checkRoleEligibility(for: siteURL, in: navigationController, onRetryResult: result, onSuccess: onSuccess)
                         }
                     )
                 }
@@ -185,24 +211,28 @@ private extension PostSiteCredentialLoginChecker {
     /// Checks if WooCommerce is active on the logged in site.
     ///
     func checkWooInstallation(for siteURL: String, in navigationController: UINavigationController,
-                              onSuccess: @escaping () -> Void) {
+                              onRetryResult: ((Bool) -> Void)? = nil, onSuccess: @escaping () -> Void) {
+        guard let id = checkID else { return }
         let action = WordPressSiteAction.fetchSiteInfo(siteURL: siteURL, detectUnexpectedResponses: true) { [weak self] result in
+            guard let self, checkID == id else { return }
             switch result {
             case .success(let site):
+                onRetryResult?(true)
                 if site.isWooCommerceActive {
                     onSuccess()
                 } else {
-                    self?.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: nil))
-                    self?.showAlert(message: Localization.noWooError, siteURL: siteURL, in: navigationController)
+                    self.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: nil))
+                    self.showAlert(message: Localization.noWooError, siteURL: siteURL, in: navigationController)
                 }
             case .failure(let error):
-                self?.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: error))
+                onRetryResult?(false)
+                self.analytics.track(event: .Login.siteCredentialFailed(step: .wooStatus, error: error))
                 DDLogError("⛔️ Error checking Woo: \(error)")
                 // show generic error
-                self?.showAlert(message: Localization.wooCheckError,
+                self.showAlert(message: Localization.wooCheckError,
                                 failure: LoginUnexpectedResponseFailure(error: error, step: .wooPluginCheck),
-                                siteURL: siteURL, in: navigationController, onRetry: {
-                    self?.checkWooInstallation(for: siteURL, in: navigationController, onSuccess: onSuccess)
+                                siteURL: siteURL, in: navigationController, onRetry: { [weak self] result in
+                    self?.checkWooInstallation(for: siteURL, in: navigationController, onRetryResult: result, onSuccess: onSuccess)
                 })
             }
         }
@@ -215,19 +245,32 @@ private extension PostSiteCredentialLoginChecker {
                    failure: LoginUnexpectedResponseFailure? = nil,
                    siteURL: String,
                    in navigationController: UINavigationController,
-                   onRetry: (() -> Void)? = nil) {
+                   onRetry: LoginUnexpectedResponsePresenter.Retry? = nil) {
         // Generation runs in Task { @MainActor }; Remote delivers role/site callbacks on DispatchQueue.main.
         // Retry actions run through UIKit on the main actor and re-enter these same paths.
         MainActor.assumeIsolated {
+            if let failure, let onRetry {
+                unexpectedResponsePresenter.present(failure: failure, flow: loginFlow, from: navigationController, onRetry: onRetry,
+                                                    onDismiss: { [weak self] in
+                    self?.cancel()
+                    self?.restorePreviousViewController(in: navigationController)
+                }, onContactSupport: { [weak self] in
+                    self?.cancel()
+                    // Logging out replaces the navigation stack, which would discard the support chat.
+                    self?.restorePreviousViewController(in: navigationController)
+                })
+                return
+            }
             let alert = UIAlertController(title: message,
                                           message: nil,
                                           preferredStyle: .alert)
             if let onRetry {
+                let retry = { onRetry { _ in } }
                 let retryAction = UIAlertAction(title: Localization.retryButton, style: .default) { [weak alert] _ in
                     guard let alert, alert.presentingViewController != nil else {
-                        return onRetry()
+                        return retry()
                     }
-                    alert.dismiss(animated: true, completion: onRetry)
+                    alert.dismiss(animated: true, completion: retry)
                 }
                 alert.addAction(retryAction)
             } else {
@@ -242,10 +285,15 @@ private extension PostSiteCredentialLoginChecker {
                 navigationController.popToRootViewController(animated: true)
             }
             alert.addAction(restartAction)
-            navigationController.present(alert, animated: true) { [weak self] in
-                guard let self, let failure else { return }
-                analytics.track(event: .Login.unexpectedResponseShown(failure: failure, loginFlow: loginFlow))
-            }
+            navigationController.present(alert, animated: true)
+        }
+    }
+
+    @MainActor
+    func restorePreviousViewController(in navigationController: UINavigationController) {
+        if let previousViewController, navigationController.viewControllers.contains(previousViewController) {
+            (previousViewController as? LoginViewController)?.configureViewLoading(false)
+            navigationController.popToViewController(previousViewController, animated: false)
         }
     }
 

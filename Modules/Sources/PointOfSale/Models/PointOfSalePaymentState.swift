@@ -179,6 +179,7 @@ enum PointOfSaleMarkAsPaidState: Equatable {
 }
 
 extension PointOfSaleCardPaymentState {
+    @MainActor
     init?(from cardPaymentEvent: CardPresentPaymentEvent,
           using paymentEventPresentationStyleDependencies: PointOfSaleCardPresentPaymentEventPresentationStyle.Dependencies) {
         switch cardPaymentEvent {

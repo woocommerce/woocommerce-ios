@@ -17,8 +17,8 @@ final class MockCardReaderSettingsAlerts {
     private var mode: MockCardReaderSettingsAlertsMode
     private var didPresentFoundReader: Bool
 
-    var onLocationRequestPreAlert: ((_ onLocationRequestPreAlert: @escaping () -> Void) -> Void)?
-    var onLocationRequired: ((_ dismiss: @escaping () -> Void) -> Void)?
+    var onLocationRequestPreAlert: (@MainActor (_ onLocationRequestPreAlert: @escaping @MainActor @Sendable () -> Void) -> Void)?
+    var onLocationRequired: (@MainActor (_ dismiss: @escaping @MainActor @Sendable () -> Void) -> Void)?
 
     init(mode: MockCardReaderSettingsAlertsMode) {
         self.mode = mode
@@ -33,7 +33,7 @@ final class MockCardReaderSettingsAlerts {
 extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProviding {
     typealias AlertDetails = CardPresentPaymentsModalViewModel
 
-    func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func scanningForReader(cancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         switch mode {
         case .cancelScanning:
             cancel()
@@ -49,7 +49,7 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    func scanningFailed(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func scanningFailed(error: Error, close: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         if mode == .closeScanFailure {
             close()
         }
@@ -57,9 +57,9 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
     }
 
     func foundReader(name: String,
-                     connect: @escaping () -> Void,
-                     continueSearch: @escaping () -> Void,
-                     cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                     connect: @escaping @MainActor @Sendable () -> Void,
+                     continueSearch: @escaping @MainActor @Sendable () -> Void,
+                     cancelSearch: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         didPresentFoundReader = true
 
         switch mode {
@@ -75,7 +75,7 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    func updateProgress(requiredUpdate: Bool, progress: Float, cancel: (() -> Void)?) -> CardPresentPaymentsModalViewModel {
+    func updateProgress(requiredUpdate: Bool, progress: Float, cancel: (@MainActor @Sendable () -> Void)?) -> CardPresentPaymentsModalViewModel {
         return MockCardPresentPaymentsModalViewModel()
     }
 
@@ -85,51 +85,51 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
 
     func foundSeveralReaders(readerIDs: [String],
                              connect: @escaping (String) -> Void,
-                             cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                             cancelSearch: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         return MockCardPresentPaymentsModalViewModel()
     }
 
     func connectingFailed(error: Error,
-                          retrySearch: @escaping () -> Void,
-                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                          retrySearch: @escaping @MainActor @Sendable () -> Void,
+                          cancelSearch: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         retryOrCancelIfNeeded(retry: retrySearch, cancel: cancelSearch)
         return MockCardPresentPaymentsModalViewModel()
     }
 
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
                                            showsInAuthenticatedWebView: Bool,
-                                           openWCSettings: (() -> Void)?,
-                                           retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                                           openWCSettings: (@MainActor @Sendable () -> Void)?,
+                                           retrySearch: @escaping @MainActor @Sendable () -> Void,
+                                           cancelSearch: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         retryOrCancelIfNeeded(retry: retrySearch, cancel: cancelSearch)
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func connectingFailedInvalidPostalCode(retrySearch: @escaping @MainActor @Sendable () -> Void,
+                                           cancelSearch: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         retryOrCancelIfNeeded(retry: retrySearch, cancel: cancelSearch)
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    func connectingFailedCriticallyLowBattery(retrySearch: @escaping () -> Void,
-                                              cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func connectingFailedCriticallyLowBattery(retrySearch: @escaping @MainActor @Sendable () -> Void,
+                                              cancelSearch: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         retryOrCancelIfNeeded(retry: retrySearch, cancel: cancelSearch)
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    func connectingFailedNonRetryable(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func connectingFailedNonRetryable(error: Error, close: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         close()
         return MockCardPresentPaymentsModalViewModel()
     }
 
     func updatingFailedLowBattery(batteryLevel: Double?,
-                                  retrySearch: @escaping () -> Void,
-                                  close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                                  retrySearch: @escaping @MainActor @Sendable () -> Void,
+                                  close: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         retryOrCancelIfNeeded(retry: retrySearch, cancel: close)
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    func updatingFailed(tryAgain: (() -> Void)?, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func updatingFailed(tryAgain: (@MainActor @Sendable () -> Void)?, close: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         close()
         return MockCardPresentPaymentsModalViewModel()
     }
@@ -142,25 +142,28 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
         // GNDN
     }
 
-    func selectSearchType(tapToPay: @escaping () -> Void, bluetooth: @escaping () -> Void, cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func selectSearchType(tapToPay: @escaping @MainActor @Sendable () -> Void,
+                          bluetooth: @escaping @MainActor @Sendable () -> Void,
+                          cancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    func locationRequestPreAlert(requestPermission: @escaping () -> Void) -> any AlertDetails {
+    func locationRequestPreAlert(requestPermission: @escaping @MainActor @Sendable () -> Void) -> any AlertDetails {
         if let onLocationRequestPreAlert {
             onLocationRequestPreAlert(requestPermission)
         }
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    func locationRequired(cancel: @escaping () -> Void) -> any AlertDetails {
+    func locationRequired(cancel: @escaping @MainActor @Sendable () -> Void) -> any AlertDetails {
         if let onLocationRequired {
             onLocationRequired(cancel)
         }
         return MockCardPresentPaymentsModalViewModel()
     }
 
-    private func retryOrCancelIfNeeded(retry: @escaping () -> Void, cancel: @escaping () -> Void) {
+    @MainActor
+    private func retryOrCancelIfNeeded(retry: @escaping @MainActor @Sendable () -> Void, cancel: @escaping @MainActor @Sendable () -> Void) {
         switch mode {
         case .cancelSearchingAfterConnectionFailure:
             cancel()

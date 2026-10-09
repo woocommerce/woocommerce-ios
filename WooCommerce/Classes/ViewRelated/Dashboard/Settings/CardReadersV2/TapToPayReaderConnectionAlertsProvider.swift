@@ -2,12 +2,12 @@ import Foundation
 import UIKit
 
 struct TapToPayReaderConnectionAlertsProvider: CardReaderConnectionAlertsProviding {
-    func scanningForReader(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func scanningForReader(cancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalTapToPayReaderCheckingDeviceSupport(cancel: cancel)
     }
 
     func scanningFailed(error: Error,
-                        close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                        close: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalScanningFailed(error: error, image: .tapToPayReaderError, primaryAction: close)
     }
 
@@ -16,14 +16,14 @@ struct TapToPayReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidi
     }
 
     func connectingFailed(error: Error,
-                          retrySearch: @escaping () -> Void,
-                          cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                          retrySearch: @escaping @MainActor @Sendable () -> Void,
+                          cancelSearch: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalTapToPayConnectingFailed(error: error,
                                                  continueSearch: retrySearch,
                                                  cancelSearch: cancelSearch)
     }
 
-    func connectingFailedNonRetryable(error: Error, close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func connectingFailedNonRetryable(error: Error, close: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalTapToPayConnectingFailedNonRetryable(error: error,
                                                              close: close)
     }
@@ -31,9 +31,9 @@ struct TapToPayReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidi
 
     func connectingFailedIncompleteAddress(wcSettingsAdminURL: URL?,
                                            showsInAuthenticatedWebView: Bool,
-                                           openWCSettings: (() -> Void)?,
-                                           retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                                           openWCSettings: (@MainActor @Sendable () -> Void)?,
+                                           retrySearch: @escaping @MainActor @Sendable () -> Void,
+                                           cancelSearch: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalConnectingFailedUpdateAddress(image: .tapToPayReaderError,
                                                       wcSettingsAdminURL: wcSettingsAdminURL,
                                                       openWCSettings: openWCSettings,
@@ -41,15 +41,15 @@ struct TapToPayReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidi
                                                       cancelSearch: cancelSearch)
     }
 
-    func connectingFailedInvalidPostalCode(retrySearch: @escaping () -> Void,
-                                           cancelSearch: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func connectingFailedInvalidPostalCode(retrySearch: @escaping @MainActor @Sendable () -> Void,
+                                           cancelSearch: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalConnectingFailedUpdatePostalCode(image: .tapToPayReaderError,
                                                          retrySearch: retrySearch,
                                                          cancelSearch: cancelSearch)
     }
 
-    func updatingFailed(tryAgain: (() -> Void)?,
-                        close: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func updatingFailed(tryAgain: (@MainActor @Sendable () -> Void)?,
+                        close: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         if let tryAgain {
             return CardPresentModalUpdateFailed(image: .tapToPayReaderError, tryAgain: tryAgain, close: close)
         } else {
@@ -59,21 +59,21 @@ struct TapToPayReaderConnectionAlertsProvider: CardReaderConnectionAlertsProvidi
 
     func updateProgress(requiredUpdate: Bool,
                         progress: Float,
-                        cancel: (() -> Void)?) -> CardPresentPaymentsModalViewModel {
+                        cancel: (@MainActor @Sendable () -> Void)?) -> CardPresentPaymentsModalViewModel {
         CardPresentModalTapToPayConfigurationProgress(progress: progress, cancel: cancel)
     }
 
-    func selectSearchType(tapToPay: @escaping () -> Void,
-                          bluetooth: @escaping () -> Void,
-                          cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func selectSearchType(tapToPay: @escaping @MainActor @Sendable () -> Void,
+                          bluetooth: @escaping @MainActor @Sendable () -> Void,
+                          cancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalSelectSearchType(tapOnIPhoneAction: tapToPay, bluetoothAction: bluetooth, cancelAction: cancel)
     }
 
-    func locationRequestPreAlert(requestPermission: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func locationRequestPreAlert(requestPermission: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalLocationPreAlert(requestPermission: requestPermission)
     }
 
-    func locationRequired(cancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func locationRequired(cancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalLocationRequired(cancel: cancel)
     }
 }

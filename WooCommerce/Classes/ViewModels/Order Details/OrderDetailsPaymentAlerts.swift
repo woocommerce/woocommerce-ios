@@ -47,14 +47,14 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         }
     }
 
-    func preparingReader(onCancel: @escaping () -> Void) {
+    func preparingReader(onCancel: @escaping @MainActor @Sendable () -> Void) {
         presentViewModel(viewModel: CardPresentModalPreparingForPayment(cancelAction: onCancel))
     }
 
     func tapOrInsertCard(title: String,
                          amount: String,
                          inputMethods: CardReaderInput,
-                         onCancel: @escaping () -> Void) {
+                         onCancel: @escaping @MainActor @Sendable () -> Void) {
         // Initial presentation of the modal view controller. We need to provide
         // a customer name and an amount.
         let viewModel = alertsProvider.tapOrInsertCard(title: title,
@@ -66,7 +66,7 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
 
     func cardInserted(title: String,
                       amount: String,
-                      onCancel: @escaping () -> Void) {
+                      onCancel: @escaping @MainActor @Sendable () -> Void) {
         let viewModel = alertsProvider.cardInserted(title: title,
                                                     amount: amount,
                                                     onCancel: onCancel)
@@ -83,7 +83,7 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         presentViewModel(viewModel: viewModel)
     }
 
-    func error(error: Error, tryAgain: @escaping () -> Void, dismissCompletion: @escaping () -> Void) {
+    func error(error: Error, tryAgain: @escaping @MainActor @Sendable () -> Void, dismissCompletion: @escaping @MainActor @Sendable () -> Void) {
         let viewModel = alertsProvider.error(error: error,
                                              receiptState: .noEmailReceipt,
                                              tryAgain: tryAgain,
@@ -91,7 +91,7 @@ final class OrderDetailsPaymentAlerts: OrderDetailsPaymentAlertsProtocol {
         presentViewModel(viewModel: viewModel)
     }
 
-    func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping () -> Void) {
+    func nonRetryableError(from: UIViewController?, error: Error, dismissCompletion: @escaping @MainActor @Sendable () -> Void) {
         let viewModel = alertsProvider.nonRetryableError(error: error,
                                                          receiptState: .noEmailReceipt,
                                                          dismissCompletion: dismissCompletion)

@@ -7,6 +7,7 @@ struct PointOfSaleCardPresentPaymentValidatingOrderErrorMessageViewModel: Equata
     let message: String
     let tryAgainButtonViewModel: CardPresentPaymentsModalButtonViewModel?
 
+    @MainActor
     init(error: Error,
          retryApproach: CardPresentPaymentRetryApproach) {
         self.title = Self.title(for: error)

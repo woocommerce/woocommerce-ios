@@ -1,8 +1,8 @@
 import Yosemite
 import enum NetworkingCore.CookieNonceAuthenticationResponseStage
 
-/// Analytics dimensions for an unexpected response during login.
-struct LoginUnexpectedResponseFailure: Equatable {
+/// Failure dimensions and sanitized support diagnostics for an unexpected login response.
+struct LoginUnexpectedResponseFailure: Equatable, CustomStringConvertible, CustomDebugStringConvertible {
     enum Action: String {
         case retry
         case contactSupport = "contact_support"
@@ -31,6 +31,11 @@ struct LoginUnexpectedResponseFailure: Equatable {
     let step: Step
     let statusCode: Int?
     let kind: Kind
+    let diagnostics: UnexpectedStoreResponseError.Diagnostics?
+
+    // Generic error logging must not expose support-only excerpts.
+    var description: String { "Unexpected login response (\(step.rawValue), \(kind.rawValue))." }
+    var debugDescription: String { description }
 
     init?(error: Error, step: Step) {
         let underlying = (error as? RoleEligibilityError)?.underlyingError ?? error
@@ -38,9 +43,11 @@ struct LoginUnexpectedResponseFailure: Equatable {
         self.step = step
         self.statusCode = response.statusCode
         self.kind = response.kind
+        self.diagnostics = response.diagnostics
     }
 
-    init(stage: CookieNonceAuthenticationResponseStage, statusCode: Int? = nil) {
+    init(stage: CookieNonceAuthenticationResponseStage, statusCode: Int? = nil, kind: Kind? = nil,
+         diagnostics: UnexpectedStoreResponseError.Diagnostics? = nil) {
         self.step = switch stage {
         case .preflight: .loginPage
         case .credentials: .credentialsSubmission
@@ -48,6 +55,7 @@ struct LoginUnexpectedResponseFailure: Equatable {
         case .nonce: .nonceRetrieval
         }
         self.statusCode = statusCode
-        self.kind = statusCode == nil ? .unexpectedContent : .unacceptableStatusCode
+        self.kind = kind ?? (statusCode == nil ? .unexpectedContent : .unacceptableStatusCode)
+        self.diagnostics = diagnostics
     }
 }

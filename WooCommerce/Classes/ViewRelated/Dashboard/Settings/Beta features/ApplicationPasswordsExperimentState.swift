@@ -69,6 +69,7 @@ final class ApplicationPasswordsExperimentState {
 
 protocol ApplicationPasswordsExperimentAvailabilityCheckerProtocol {
     var isAvailable: Bool { get }
+    @MainActor
     func fetchAvailability() async -> Bool
 }
 

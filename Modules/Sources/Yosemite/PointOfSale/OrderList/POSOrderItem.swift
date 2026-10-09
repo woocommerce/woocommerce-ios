@@ -1,6 +1,6 @@
 import Foundation
 
-public struct POSOrderItem: Equatable, Hashable {
+public struct POSOrderItem: Equatable, Hashable, Sendable {
     public let itemID: Int64
     public let name: String
     public let quantity: Decimal

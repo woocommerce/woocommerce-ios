@@ -12,6 +12,7 @@
 - [*] Layout: Fixed doubled side padding on the card reader manuals, plugins and booking details screens in landscape, and content insets of sheets on wide layouts. [https://github.com/woocommerce/woocommerce-ios/pull/17971]
 - [*] Order creation: Keep the form, product selector and bundle configuration content inside the safe area after rotating or resizing the app. [https://github.com/woocommerce/woocommerce-ios/pull/17951]
 - [*] Privacy: Respect your analytics preference throughout login, including after logging out. [https://github.com/woocommerce/woocommerce-ios/pull/17973]
+- [*] Login: Unexpected store responses now offer Try Again, Contact Support, and Dismiss actions. [https://github.com/woocommerce/woocommerce-ios/pull/18030]
 
 
 25.8

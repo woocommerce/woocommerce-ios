@@ -30,6 +30,7 @@ public enum WooAnalyticsStat: String {
     //
     case signedIn = "signed_in"
     case logout = "account_logout"
+    case involuntaryLogout = "account_involuntary_logout"
     case openedLogin = "login_accessed"
     case loginNewToWooButtonTapped = "login_new_to_woo_button_tapped"
     case loginFailed = "login_failed_to_login"
@@ -84,6 +85,7 @@ public enum WooAnalyticsStat: String {
     // MARK: REST API login
     //
     case loginSiteAddressSiteInfoFetched = "login_site_address_site_info_fetched"
+    case loginUnexpectedResponseErrorShown = "login_unexpected_response_error_shown"
     case loginSiteCredentialsFailed = "login_site_credentials_login_failed"
 
     // MARK: Site credentials
@@ -1465,7 +1467,7 @@ extension WooAnalyticsStat {
     public var shouldSendSiteProperties: Bool {
         switch self {
         // Authentication Events
-        case .signedIn, .logout, .openedLogin, .loginFailed,
+        case .signedIn, .logout, .involuntaryLogout, .openedLogin, .loginFailed,
              .loginAutoFillCredentialsFilled, .loginAutoFillCredentialsUpdated, .loginEmailFormViewed, .loginMagicLinkOpenEmailClientViewed,
              .loginMagicLinkRequestFormViewed, .loginMagicLinkExited, .loginMagicLinkFailed, .loginMagicLinkOpened,
              .loginMagicLinkRequested, .loginMagicLinkSucceeded, .loginPasswordFormViewed, .loginURLFormViewed,

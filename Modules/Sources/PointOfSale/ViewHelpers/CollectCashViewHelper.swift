@@ -99,9 +99,10 @@ final class CollectCashViewHelper {
 private extension CollectCashViewHelper {
     enum Localization {
         static let changeDueMessage = NSLocalizedString(
-            "collectcashviewhelper.changedue",
+            "collectcashviewhelper.changedue.1",
             value: "Change due: %1$@",
             comment: "Change due when the cash amount entered exceeds the order total." +
+            "'Due' means owed, not a deadline and not an expiry date. " +
             "Reads as 'Change due: $1.23'"
         )
     }

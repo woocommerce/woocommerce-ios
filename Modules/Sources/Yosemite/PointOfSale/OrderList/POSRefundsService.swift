@@ -121,7 +121,7 @@ public final class POSRefundsService: POSRefundsServiceProtocol {
             return gateway.features.contains(.refunds)
         }
         // Fallback: if gateway not found, use simple check
-        return paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
+        return !PaymentGateway.Constants.manualPaymentMethodIDs.contains(paymentMethodID)
     }
 
     /// Checks if all ordered products have been fully refunded.

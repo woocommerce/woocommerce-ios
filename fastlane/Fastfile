@@ -1422,11 +1422,6 @@ platform :ios do
   ########################################################################
   # Helper Lanes
   ########################################################################
-  desc 'Run release preflight checks'
-  lane :release_preflight do
-    configure_validate
-  end
-
   # Generates the `.strings` file to be imported by GlotPress, by parsing source code (using `genstrings` under the hood).
   #
   #

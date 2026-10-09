@@ -22,7 +22,7 @@ enum POSRefundReviewPreparationState: Equatable {
 }
 
 /// Outcome of `prepareRefundReview()`, returned directly to the caller.
-enum POSRefundReviewPreparationResult: Equatable {
+enum POSRefundReviewPreparationResult: Equatable, Sendable {
     case ready(POSRefundReviewData)
     case previewError
     case preparationError

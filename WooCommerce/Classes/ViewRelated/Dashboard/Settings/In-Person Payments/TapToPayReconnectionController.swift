@@ -1,6 +1,7 @@
 import Foundation
 import Yosemite
 
+@MainActor
 protocol TapToPayCardReaderConnectionControllerBuilding<AlertProvider, AlertPresenter> {
     associatedtype AlertProvider
     associatedtype AlertPresenter
@@ -11,9 +12,9 @@ protocol TapToPayCardReaderConnectionControllerBuilding<AlertProvider, AlertPres
                                     allowTermsOfServiceAcceptance: Bool) -> TapToPayCardReaderConnectionControlling
 }
 
-final class TapToPayCardReaderConnectionControllerFactory<AlertProvider: CardReaderConnectionAlertsProviding,
-                                                         AlertPresenter: CardPresentPaymentAlertsPresenting>:
-                                                            TapToPayCardReaderConnectionControllerBuilding
+nonisolated final class TapToPayCardReaderConnectionControllerFactory<AlertProvider: CardReaderConnectionAlertsProviding,
+                                                                     AlertPresenter: CardPresentPaymentAlertsPresenting>:
+                                                                        TapToPayCardReaderConnectionControllerBuilding
 where AlertPresenter.AlertDetails == AlertProvider.AlertDetails {
     private let alertProvider: AlertProvider
 
@@ -21,6 +22,7 @@ where AlertPresenter.AlertDetails == AlertProvider.AlertDetails {
         self.alertProvider = alertProvider
     }
 
+    @MainActor
     func createConnectionController(forSiteID siteID: Int64,
                                     alertPresenter: AlertPresenter,
                                     configuration: CardPresentPaymentsConfiguration,
@@ -121,6 +123,7 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 }
 
 private extension TapToPayReconnectionController {
+    @MainActor
     func reconnectToTapToPayReader() {
         let connectionController = tapToPayConnectionControllerForReconnection()
 
@@ -131,6 +134,7 @@ private extension TapToPayReconnectionController {
         })
     }
 
+    @MainActor
     func tapToPayConnectionControllerForReconnection() -> TapToPayCardReaderConnectionControlling {
         // If we already have a connection controller, there may be a reconnection in progress.
         // Starting again now would result in an SDK failure, and lose our original reference to the controller.

@@ -273,6 +273,12 @@ class DefaultStoresManager: StoresManager {
         invalidWPCOMTokenNotificationObserver = notificationCenter.addObserver(forName: .RemoteDidReceiveInvalidTokenError,
                                                                                object: nil,
                                                                                queue: .main) { [weak self] _ in
+            // Only track when a logout is actually about to happen. Multiple in-flight requests can each post
+            // this notification, and already-queued `.main` blocks still run after the first sign-out —
+            // checking `isAuthenticated` keeps the count to one per sign-out.
+            if self?.isAuthenticated == true {
+                ServiceLocator.analytics.track(event: .Authentication.involuntaryLogout(reason: .invalidToken))
+            }
             _ = self?.deauthenticate()
         }
     }
@@ -287,6 +293,7 @@ class DefaultStoresManager: StoresManager {
             guard self?.isAuthenticatedWithoutWPCom == true else {
                 return
             }
+            ServiceLocator.analytics.track(event: .Authentication.involuntaryLogout(reason: .applicationPasswordUnauthorized))
             _ = self?.deauthenticate()
         }
     }

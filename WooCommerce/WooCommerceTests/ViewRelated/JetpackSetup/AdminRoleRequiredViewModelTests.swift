@@ -39,7 +39,7 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         stores.whenReceivingAction(ofType: UserAction.self) { action in
             switch action {
-            case .retrieveUser(_, let onCompletion):
+            case .retrieveUser(_, _, let onCompletion):
                 let user = User.fake().copy(roles: [User.Role.administrator.rawValue])
                 onCompletion(.success(user))
             default:
@@ -60,7 +60,7 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         stores.whenReceivingAction(ofType: UserAction.self) { action in
             switch action {
-            case .retrieveUser(_, let onCompletion):
+            case .retrieveUser(_, _, let onCompletion):
                 let user = User.fake().copy(roles: [User.Role.shopManager.rawValue])
                 onCompletion(.success(user))
             default:
@@ -82,7 +82,7 @@ final class AdminRoleRequiredViewModelTests: XCTestCase {
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true, isWPCom: false))
         stores.whenReceivingAction(ofType: UserAction.self) { action in
             switch action {
-            case .retrieveUser(_, let onCompletion):
+            case .retrieveUser(_, _, let onCompletion):
                 onCompletion(.failure(expectedError))
             default:
                 break

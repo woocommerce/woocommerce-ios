@@ -26,7 +26,7 @@ open class Remote: NSObject {
     /// would clear a store that is still unreachable through the tunnel.
     ///
     private func connectionErrorRecorder(for request: Request) -> StoreConnectionErrorRecording? {
-        network.usesJetpackTunnel(for: request) ? storeConnectionErrorRecorder : nil
+        network.usesJetpackTunnel(for: request.originalResponseRequest) ? storeConnectionErrorRecorder : nil
     }
 
     /// Designated Initializer.
@@ -131,8 +131,9 @@ open class Remote: NSObject {
     ///     - request: Request that should be performed.
     ///     - mapper: Mapper entity that will be used to attempt to parse the Backend's Response.
     ///     - completion: Closure to be executed upon completion.
-    public func enqueue<M: Mapper>(_ request: Request, mapper: M,
+    public func enqueue<M: Mapper>(_ request: Request, mapper: M, detectUnexpectedResponses: Bool = false,
                             completion: @escaping (Result<M.Output, Error>) -> Void) {
+        let request = UnexpectedResponseRequest.wrap(request, enabled: detectUnexpectedResponses)
         network.responseData(for: request) { [weak self] result in
             guard let self else {
                 return
@@ -230,8 +231,10 @@ open class Remote: NSObject {
     /// - Returns: The result from the JSON parsed response for the expected type.
     public func enqueue<M: Mapper>(_ request: Request,
                                    mapper: M,
+                                   detectUnexpectedResponses: Bool = false,
                                    isolation: isolated (any Actor)? = #isolation) async throws -> M.Output {
-        try await enqueueWithResponseHeaders(request, mapper: mapper, isolation: isolation).data
+        try await enqueueWithResponseHeaders(UnexpectedResponseRequest.wrap(request, enabled: detectUnexpectedResponses),
+                                             mapper: mapper, isolation: isolation).data
     }
 
     public func enqueueWithResponseHeaders<M: Mapper>(_ request: Request,
@@ -303,8 +306,22 @@ private extension Remote {
                                           mapper: M,
                                           recorder: StoreConnectionErrorRecording?,
                                           outcome: ResponseOutcome) throws -> M.Output {
+        if let policy = request as? UnexpectedResponseRequest,
+           let error = policy.responseError(data: data, status: policy.responseMetadata?.status ?? 200,
+                                            contentType: policy.responseMetadata?.contentType, tunneled: recorder != nil) {
+            throw error
+        }
         try validateResponse(data, for: request, recorder: recorder, outcome: outcome)
-        return try mapper.map(response: data)
+        do {
+            return try mapper.map(response: data)
+        } catch let error as UnexpectedStoreResponseError where error.diagnostics == nil {
+            guard let policy = request as? UnexpectedResponseRequest else { throw error }
+            // Semantic validation failures need diagnostics, but are not JSON decoding failures.
+            throw policy.makeError(kind: error.kind, data: data, status: error.statusCode)
+        } catch {
+            guard error is DecodingError, let policy = request as? UnexpectedResponseRequest else { throw error }
+            throw policy.makeError(kind: .unexpectedContent, data: data, isDecodingFailure: true)
+        }
     }
 
     /// Validates and maps `data` on a background queue, then delivers the result — and any error
@@ -368,13 +385,18 @@ private extension Remote {
 private extension Remote {
 
     func logJetpackTunnelRawBodyErrorIfPresent(responseData: Data?, request: Request, transportStatus: Int?) {
-        guard request is JetpackRequest else {
+        guard request.originalResponseRequest is JetpackRequest else {
             return
         }
 
+        if request is UnexpectedResponseRequest, let responseData,
+           let response = UnexpectedResponseClassifier.tunnelResponse(in: responseData),
+           UnexpectedResponseClassifier.classify(data: response.data, status: response.status, contentType: nil) != nil {
+            return // The classified response already has a sanitized diagnostic log.
+        }
         jetpackTunnelRawBodyErrorLogger.logIfNeeded(
             responseData: responseData,
-            request: request,
+            request: (request as? UnexpectedResponseRequest)?.original ?? request,
             transportStatus: transportStatus
         )
     }
@@ -387,7 +409,7 @@ private extension Remote {
         }
 
         switch dotcomError {
-        case .requestFailed where request is JetpackRequest:
+        case .requestFailed where request.originalResponseRequest is JetpackRequest:
             publishJetpackTimeoutNotification(error: dotcomError)
         case .invalidToken:
             publishInvalidTokenNotification(error: dotcomError)
@@ -472,13 +494,16 @@ private extension Remote {
     /// limit on what this can see.
     ///
     static func affectedSiteID(for request: Request) -> Int64? {
-        (request as? JetpackRequest)?.siteID
+        (request.originalResponseRequest as? JetpackRequest)?.siteID
     }
 
     /// Handles decoding errors when parsing the response data fails.
     ///
     func handleDecodingError(error: Error, for request: Request, entityName: String) {
-        guard let decodingError = error as? DecodingError else {
+        // Preserve parsing analytics without retaining or reporting response-derived decoding details.
+        let replacedError: DecodingError? = (error as? UnexpectedStoreResponseError)?.isDecodingFailure == true
+            ? .dataCorrupted(.init(codingPath: [], debugDescription: "Unexpected API response.")) : nil
+        guard let decodingError = (error as? DecodingError) ?? replacedError else {
             return
         }
         publishJSONParsingErrorNotification(error: decodingError, path: request.pathForAnalytics, entityName: entityName)
@@ -489,6 +514,13 @@ private extension Remote {
     func mapNetworkError(error: Error, for request: Request) -> Error {
         guard let networkError = error as? NetworkError else {
             return error
+        }
+
+        if let policy = request as? UnexpectedResponseRequest,
+           let status = networkError.responseCode,
+           let failure = policy.responseError(data: networkError.response, status: status,
+                                              tunneled: network.usesJetpackTunnel(for: request.originalResponseRequest)) {
+            return failure
         }
 
         /// We will to attempt to validate the error using `ResponseDataValidator`
@@ -570,6 +602,8 @@ public struct PagedItems<T> {
         self.serverDate = serverDate
     }
 }
+
+extension PagedItems: Sendable where T: Sendable {}
 
 // MARK: - Pagination Helpers
 //

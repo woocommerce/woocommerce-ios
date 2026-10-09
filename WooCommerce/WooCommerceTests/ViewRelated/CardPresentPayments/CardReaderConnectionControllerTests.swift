@@ -41,6 +41,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         analyticsProvider = nil
     }
 
+    @MainActor
     func test_cancelling_search_calls_completion_with_success_false() throws {
         // Given
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -86,6 +87,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         assertEqual(.searchingForReader, source)
     }
 
+    @MainActor
     func test_finding_an_unknown_reader_prompts_user_before_completing_with_success_true() {
         // Given
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -131,6 +133,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderConnectionSuccess.rawValue))
     }
 
+    @MainActor
     func test_finding_an_known_reader_automatically_connects_and_completes_with_success_true() {
         // Given
         let knownReader = MockCardReader.bbposChipper2XBT()
@@ -176,6 +179,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         assertEqual(MockCardReader.bbposChipper2XBT(), reader)
     }
 
+    @MainActor
     func test_connecting_to_an_unknown_reader_tracks_connection_tapped_and_not_auto_connection_started() {
         // Given
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -215,6 +219,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderAutoConnectionStarted.rawValue))
     }
 
+    @MainActor
     func test_connecting_to_a_known_reader_tracks_auto_connection_started_and_not_connection_tapped() {
         // Given
         let knownReader = MockCardReader.bbposChipper2XBT()
@@ -256,6 +261,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         XCTAssertFalse(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderConnectionTapped.rawValue))
     }
 
+    @MainActor
     func test_readers_discovered_is_tracked_only_when_the_set_of_discovered_readers_changes() {
         // Given
         let readerA = MockCardReader.bbposChipper2XBT()
@@ -302,6 +308,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         XCTAssertEqual(discoveredEventCount, 2, "Expected one event for the first reader and one for the changed set")
     }
 
+    @MainActor
     func test_readers_discovered_is_not_tracked_for_callbacks_arriving_after_the_search_is_cancelled() {
         // Given
         let readerA = MockCardReader.bbposChipper2XBT()
@@ -348,6 +355,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         XCTAssertEqual(discoveredEventCount, 1)
     }
 
+    @MainActor
     func test_searching_error_presents_error_to_user_and_completes_with_failure() {
         // Given
         let expectation = self.expectation(description: #function)
@@ -389,6 +397,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderDiscoveryFailed.rawValue))
     }
 
+    @MainActor
     func test_finding_multiple_readers_presents_list_to_user_and_cancelling_list_calls_completion_with_success_false() {
         // Given
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -433,6 +442,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         assertEqual(.foundSeveralReaders, source)
     }
 
+    @MainActor
     func test_user_can_cancel_search_after_connection_error() {
         // Given
         let discoveredReaders = [MockCardReader.bbposChipper2XBT()]
@@ -482,6 +492,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         XCTAssert(analyticsProvider.receivedEvents.contains(WooAnalyticsStat.cardReaderConnectionFailed.rawValue))
     }
 
+    @MainActor
     func test_user_can_cancel_search_after_connection_error_due_to_low_battery() {
         // Given
         let discoveredReaders = [MockCardReader.bbposChipper2XBTWithCriticallyLowBattery()]
@@ -528,6 +539,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         assertEqual(.connectionError, source)
     }
 
+    @MainActor
     func test_finding_multiple_readers_presents_list_to_user_and_choosing_one_calls_completion_with_success_true() {
         // Given
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -573,6 +585,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         assertEqual(MockCardReader.bbposChipper2XBT(), reader)
     }
 
+    @MainActor
     func test_user_can_continue_search_after_connection_error() {
         // Given
         let discoveredReaders = [MockCardReader.bbposChipper2XBT()]
@@ -620,6 +633,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         assertEqual(.searchingForReader, source)
     }
 
+    @MainActor
     func test_user_can_continue_search_after_update_error() {
         // Given
         let discoveredReaders = [MockCardReader.bbposChipper2XBT()]
@@ -667,6 +681,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         assertEqual(.searchingForReader, source)
     }
 
+    @MainActor
     func test_cancelling_connection_calls_completion_with_success_and_canceled() throws {
         // Given
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -710,6 +725,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         assertEqual(.foundReader, source)
     }
 
+    @MainActor
     func test_seachAndConnect_when_locationNotDetermined_and_later_authorized() {
         // Given
         let mockStoresManager = MockCardPresentPaymentsStoresManager(
@@ -759,6 +775,7 @@ final class CardReaderConnectionControllerTests: XCTestCase {
         assertEqual(MockCardReader.bbposChipper2XBT(), reader)
     }
 
+    @MainActor
     func test_seachAndConnect_when_locationNotDetermined_and_later_denied() {
         // Given
         let mockStoresManager = MockCardPresentPaymentsStoresManager(

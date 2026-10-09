@@ -169,7 +169,7 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
     ///     - endpointUnderVerification: the endpoint this attempt is trying to confirm, or `nil` for an ordinary attempt.
     ///     - onLoading: the block to update the loading state on the site credentials form when necessary.
     ///     - onSuccess: the block to finish the login flow, carrying credentials that record the verified endpoints.
-    ///     - onRecovery: the block asking the merchant to supply an endpoint address.
+    ///     - onRecovery: asks for an endpoint address; returns whether the recovery UI was displayed.
     ///     - onFailure: the block to trigger error handling. The closure accepts an error, a boolean indicating if the
     ///       login failed with incorrect credentials, the verified login entry address when one is already known,
     ///       and whether browser authentication could plausibly solve this credential-response failure.
@@ -180,7 +180,7 @@ public protocol WordPressAuthenticatorDelegate: AnyObject {
                                      endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
                                      onLoading: @escaping (Bool) -> Void,
                                      onSuccess: @escaping (WordPressOrgCredentials) -> Void,
-                                     onRecovery: @escaping (SiteCredentialRecovery) -> Void,
+                                     onRecovery: @escaping (SiteCredentialRecovery) -> Bool,
                                      onFailure: @escaping (Error, Bool, String?, Bool) -> Void)
 
     /// Signals to the Host App that the merchant explicitly asked to authenticate with a browser instead.
@@ -287,7 +287,7 @@ public extension WordPressAuthenticatorDelegate {
                                      endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
                                      onLoading: @escaping (Bool) -> Void,
                                      onSuccess: @escaping (WordPressOrgCredentials) -> Void,
-                                     onRecovery: @escaping (SiteCredentialRecovery) -> Void,
+                                     onRecovery: @escaping (SiteCredentialRecovery) -> Bool,
                                      onFailure: @escaping (Error, Bool, String?, Bool) -> Void) {
         handleSiteCredentialLogin(
             credentials: credentials,

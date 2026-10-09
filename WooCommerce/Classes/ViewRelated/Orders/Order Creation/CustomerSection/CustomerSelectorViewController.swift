@@ -64,6 +64,7 @@ final class CustomerSelectorViewController: UIViewController, GhostableViewContr
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.accessibilityIdentifier = "customer-selector-screen"
 
         configureNavigation()
         displayGhostContent()

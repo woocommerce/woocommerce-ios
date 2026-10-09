@@ -10,10 +10,11 @@ class RefundConfirmationCardDetailsCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        configureDefaultBackgroundConfiguration()
-        titleLabel.applyHeadlineStyle()
-        cardDescriptionLabel.applyBodyStyle()
+        MainActor.assumeIsolated {
+            configureDefaultBackgroundConfiguration()
+            titleLabel.applyHeadlineStyle()
+            cardDescriptionLabel.applyBodyStyle()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {

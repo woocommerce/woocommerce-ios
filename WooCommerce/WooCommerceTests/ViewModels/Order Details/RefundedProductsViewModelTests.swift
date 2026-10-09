@@ -5,6 +5,7 @@ import Fakes
 import YosemiteTestHelpers
 @testable import WooCommerce
 
+@MainActor
 struct RefundedProductsViewModelTests {
     private let siteID: Int64 = 123
     private let productID: Int64 = 1

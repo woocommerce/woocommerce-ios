@@ -80,6 +80,7 @@ private extension BetaFeaturesConfigurationViewModel {
 }
 
 extension BetaFeaturesConfigurationViewModel {
+    @MainActor
     static func defaultPOSTabVisibility() async -> Bool {
         guard let site = ServiceLocator.stores.sessionManager.defaultSite else {
             return false

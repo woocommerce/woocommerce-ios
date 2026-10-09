@@ -85,6 +85,17 @@ final class AztecEditorViewController: UIViewController, Editor {
         return stackView
     }()
 
+    /// Pins the bar to the keyboard while it is shown and to the safe area otherwise. Leaving the keyboard layout guide
+    /// attached while the keyboard is hidden misplaces the bar after a rotation when the text view is still first responder.
+    private lazy var formatBarKeyboardConstraint = formatBarContainer.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor)
+    private lazy var formatBarSafeAreaConstraint = formatBarContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
+
+    private lazy var keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
+        MainActor.assumeIsolated {
+            self?.updateFormatBarBottomConstraint(isKeyboardVisible: keyboardFrame != .zero)
+        }
+    }
+
     /// Cmd+B / Cmd+I / Cmd+U, built once since UIKit queries `keyCommands` on every key event.
     ///
     private lazy var formattingKeyCommands: [UIKeyCommand] = {
@@ -166,6 +177,11 @@ final class AztecEditorViewController: UIViewController, Editor {
         handleSwipeBackGesture()
     }
 
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        keyboardFrameObserver.startObservingKeyboardFrame(sendInitialEvent: true)
+    }
+
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
         richTextView.becomeFirstResponder()
@@ -195,8 +211,17 @@ private extension AztecEditorViewController {
         NSLayoutConstraint.activate([
             formatBarContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             formatBarContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            formatBarContainer.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor)
+            formatBarSafeAreaConstraint
         ])
+    }
+
+    func updateFormatBarBottomConstraint(isKeyboardVisible: Bool) {
+        let (toDeactivate, toActivate) = isKeyboardVisible
+            ? (formatBarSafeAreaConstraint, formatBarKeyboardConstraint)
+            : (formatBarKeyboardConstraint, formatBarSafeAreaConstraint)
+        toDeactivate.isActive = false
+        toActivate.isActive = true
+        view.layoutIfNeeded()
     }
 
     func registerAttachmentImageProviders() {

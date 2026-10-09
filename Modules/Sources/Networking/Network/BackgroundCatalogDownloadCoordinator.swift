@@ -47,7 +47,7 @@ public class BackgroundCatalogDownloadCoordinator: BackgroundCatalogParseResumin
     ///   - parseHandler: Closure to parse and persist the downloaded file
     public func handleBackgroundSessionEvent(
         sessionIdentifier: String,
-        completionHandler: @escaping () -> Void,
+        completionHandler: @escaping @Sendable () -> Void,
         parseHandler: @escaping (URL, Int64, Date) async throws -> Void
     ) async {
         DDLogInfo("🟣 Handling background session event for: \(sessionIdentifier)")

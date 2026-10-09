@@ -98,6 +98,7 @@ final class TwoColumnHeadlineFootnoteTableViewCell: UITableViewCell {
         super.prepareForReuse()
 
         footnoteLabel.isHidden = false
+        accessibilityIdentifier = nil
         configureLabels()
     }
 

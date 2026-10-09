@@ -1,0 +1,8 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: "tab-bar-orders-item"
+- extendedWaitUntil:
+    visible:
+      id: "orders-table-view"
+    timeout: 30000

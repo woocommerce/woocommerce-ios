@@ -20,6 +20,141 @@ final class RemoteTests: XCTestCase {
 
     private var cancellables = Set<AnyCancellable>()
 
+    func test_enqueue_when_authorization_is_malformed_then_attaches_diagnostics_without_parsing_notification() throws {
+        // Given
+        let network = SuccessfulNetwork(data: try malformedAuthorizationResponse())
+        let remote = Remote(network: network)
+        let request = UnexpectedResponseRequest(original: RESTRequest(siteURL: "https://example.com", method: .get, path: ""))
+        request.recordResponse(status: 202, contentType: "application/json", tunneled: false)
+        let notifications = LockedCollector<ParsingErrorNotification>()
+        let observer = NotificationCenter.default.addObserver(forName: .RemoteDidReceiveJSONParsingError, object: nil, queue: nil) { note in
+            notifications.append(ParsingErrorNotification(note))
+        }
+        defer { NotificationCenter.default.removeObserver(observer) }
+
+        // When
+        let result: Result<WordPressSite, Error> = waitFor { promise in
+            remote.enqueue(request, mapper: WordPressSiteMapper(validateAuthorization: true), completion: promise)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? UnexpectedStoreResponseError)
+        XCTAssertEqual(error.kind, .unexpectedContent)
+        XCTAssertEqual(error.statusCode, 202)
+        XCTAssertEqual(error.diagnostics?.contentType, "application/json")
+        XCTAssertEqual(error.diagnostics?.request, "GET /wp-json")
+        XCTAssertNil(error.diagnostics?.excerpt)
+        XCTAssertTrue(notifications.values.isEmpty)
+    }
+
+    func test_fetchSiteInfo_when_authorization_is_malformed_then_returns_typed_failure_without_parsing_notification() async throws {
+        // Given
+        let network = SuccessfulNetwork(data: try malformedAuthorizationResponse())
+        let remote = WordPressSiteRemote(network: network,
+                                         apiRootCache: MockRESTAPIRootCache(stubbedRoot: "https://example.com/wp-json/"),
+                                         discoverRESTAPIRoot: { _ in nil })
+        let notifications = LockedCollector<ParsingErrorNotification>()
+        let observer = NotificationCenter.default.addObserver(forName: .RemoteDidReceiveJSONParsingError, object: nil, queue: nil) { note in
+            notifications.append(ParsingErrorNotification(note))
+        }
+        defer { NotificationCenter.default.removeObserver(observer) }
+
+        // When
+        do {
+            _ = try await remote.fetchSiteInfo(for: "https://example.com", detectUnexpectedResponses: true)
+            XCTFail("Expected invalid authorization metadata to be rejected")
+        } catch {
+            // Then
+            let failure = try XCTUnwrap(error as? UnexpectedStoreResponseError)
+            XCTAssertEqual(failure.kind, .unexpectedContent)
+            XCTAssertEqual(failure.diagnostics?.request, "GET /wp-json")
+            XCTAssertNil(failure.diagnostics?.excerpt)
+        }
+        XCTAssertTrue(notifications.values.isEmpty)
+    }
+
+    func test_enqueue_when_opted_in_mapper_fails_then_posts_sanitized_parsing_notification() throws {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "", filename: "order")
+        let remote = Remote(network: network)
+        let notifications = LockedCollector<ParsingErrorNotification>()
+        let notificationExpectation = expectation(forNotification: .RemoteDidReceiveJSONParsingError, object: nil) { note in
+            notifications.append(ParsingErrorNotification(note))
+            return true
+        }
+        // When
+        let result: Result<Any, Error> = waitFor { promise in
+            remote.enqueue(self.request, mapper: SensitiveFailingMapper(), detectUnexpectedResponses: true, completion: promise)
+        }
+        wait(for: [notificationExpectation], timeout: Constants.expectationTimeout)
+        // Then
+        XCTAssertTrue(result.failure is UnexpectedStoreResponseError)
+        let notification = try XCTUnwrap(notifications.values.first)
+        XCTAssertEqual(notifications.values.count, 1)
+        XCTAssertEqual(notification.path, "something")
+        XCTAssertEqual(notification.entity, "Any")
+        XCTAssertTrue(notification.isDecodingError)
+        XCTAssertFalse(notification.errorDescription?.contains("private-sentinel") == true)
+    }
+
+    func test_enqueue_async_when_opted_in_mapper_fails_then_posts_parsing_notification() async throws {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "", filename: "order")
+        let remote = Remote(network: network)
+        let notifications = LockedCollector<ParsingErrorNotification>()
+        let notificationExpectation = expectation(forNotification: .RemoteDidReceiveJSONParsingError, object: nil) { note in
+            notifications.append(ParsingErrorNotification(note))
+            return true
+        }
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: SensitiveFailingMapper(), detectUnexpectedResponses: true)
+            XCTFail("Expected a mapping failure")
+        } catch {
+            // Then
+            XCTAssertTrue(error is UnexpectedStoreResponseError)
+        }
+        await fulfillment(of: [notificationExpectation], timeout: Constants.expectationTimeout)
+        XCTAssertEqual(notifications.values.count, 1)
+        XCTAssertEqual(notifications.values.first?.path, "something")
+        XCTAssertEqual(notifications.values.first?.entity, "Any")
+        XCTAssertEqual(notifications.values.first?.isDecodingError, true)
+        XCTAssertFalse(notifications.values.first?.errorDescription?.contains("private-sentinel") == true)
+    }
+
+    func test_enqueue_when_opted_in_and_payload_shape_is_wrong_then_returns_typed_failure() async {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "", filename: "order")
+        let remote = Remote(network: network)
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: UserMapper(siteID: 123), detectUnexpectedResponses: true)
+            XCTFail("Expected a malformed user response")
+        } catch {
+            // Then
+            XCTAssertEqual((error as? UnexpectedStoreResponseError)?.kind, .unexpectedContent)
+            XCTAssertNil((error as? UnexpectedStoreResponseError)?.diagnostics?.excerpt)
+        }
+    }
+
+    func test_enqueue_when_not_opted_in_and_payload_shape_is_wrong_then_preserves_decoding_error() async {
+        // Given
+        let network = MockNetwork()
+        network.simulateResponse(requestUrlSuffix: "", filename: "order")
+        let remote = Remote(network: network)
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: UserMapper(siteID: 123))
+            XCTFail("Expected a malformed user response")
+        } catch {
+            // Then
+            XCTAssertTrue(error is DecodingError)
+        }
+    }
+
     func test_responseDataAndHeaders_when_called_from_mainActor_then_forwards_caller_isolation() async throws {
         // Given
         let network: any Network = IsolationCapturingNetwork()
@@ -1593,6 +1728,13 @@ final class RemoteTests: XCTestCase {
 }
 
 private extension RemoteTests {
+    func malformedAuthorizationResponse() throws -> Data {
+        let response = try XCTUnwrap(Loader.contentsOf("wordpress-site-info-with-auth-url"))
+        var json = try XCTUnwrap(JSONSerialization.jsonObject(with: response) as? [String: Any])
+        json["authentication"] = ["application-passwords": ["endpoints": ["authorization": "/relative"]]]
+        return try JSONSerialization.data(withJSONObject: json)
+    }
+
     func assertRawBodyDotcomError(_ error: Error?, file: StaticString = #filePath, line: UInt = #line) {
         guard let error,
               case let DotcomError.unknown(code, _, _) = error else {
@@ -1631,10 +1773,14 @@ private final class LockedCollector<Value: Sendable>: Sendable {
 private struct ParsingErrorNotification: Sendable {
     let path: String?
     let entity: String?
+    let isDecodingError: Bool
+    let errorDescription: String?
 
     init(_ notification: Notification) {
         path = notification.userInfo?["path"] as? String
         entity = notification.userInfo?["entity"] as? String
+        isDecodingError = notification.object is DecodingError
+        errorDescription = (notification.object as? DecodingError).map { String(describing: $0) }
     }
 }
 
@@ -1804,5 +1950,11 @@ private class FailingDummyMapper: Mapper {
     func map(response: Data) throws -> Any {
         let decoder = JSONDecoder()
         return try decoder.decode(String.self, from: Data())
+    }
+}
+
+private struct SensitiveFailingMapper: Mapper {
+    func map(response: Data) throws -> Any {
+        throw DecodingError.dataCorrupted(.init(codingPath: [], debugDescription: "private-sentinel"))
     }
 }

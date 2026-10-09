@@ -65,6 +65,6 @@ private extension POSRefundLoadingView {
 #if DEBUG
 #Preview("POSRefundLoadingView") {
     POSRefundLoadingView(onBack: {})
-        .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+        .posPreviewModalParentSize()
 }
 #endif

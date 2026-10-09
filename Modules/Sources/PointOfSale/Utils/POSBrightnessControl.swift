@@ -1,7 +1,10 @@
 import SwiftUI
 import UIKit
 
-@Observable
+/// Owns the screen brightness, which UIKit only allows to change on the main actor.
+///
+/// No view reads its state, so it is held in `@State` only to keep one instance per view lifetime.
+@MainActor
 final class POSBrightnessControl {
     private var originalBrightness: CGFloat = 0.0
     private var isBrightnessIncreased: Bool = false
@@ -26,7 +29,10 @@ final class POSBrightnessControl {
     }
 
     deinit {
-        if isBrightnessIncreased {
+        // `deinit` stays nonisolated until the deployment target allows `isolated deinit` (iOS 18.4),
+        // so only the captured value is passed to the main actor.
+        guard isBrightnessIncreased else { return }
+        Task { @MainActor [originalBrightness] in
             UIScreen.main.brightness = originalBrightness
         }
     }

@@ -80,6 +80,7 @@ extension ProductsTabProductTableViewCell {
     func update(viewModel: ProductsTabProductViewModel, imageService: ImageService) {
         nameLabel.text = viewModel.createNameLabel()
         detailsLabel.attributedText = viewModel.detailsAttributedString
+        detailsLabel.accessibilityIdentifier = "product-stock-status-\(viewModel.stockStatusKey)"
         accessibilityIdentifier = viewModel.createNameLabel()
 
         if viewModel.hasPendingUploads {

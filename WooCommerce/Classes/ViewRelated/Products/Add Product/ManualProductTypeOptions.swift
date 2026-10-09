@@ -43,6 +43,7 @@ struct ManualProductTypeOptions: View {
                             VStack(alignment: .leading, spacing: Constants.verticalSpacing) {
                                 Text(productType.actionSheetTitle)
                                     .bodyStyle()
+                                    .accessibilityIdentifier("product-type-option-\(productType.id)")
                                 Text(productType.actionSheetDescription)
                                     .subheadlineStyle()
                             }

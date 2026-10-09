@@ -311,13 +311,15 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details,
-                                                        isActionable: isEditable)
+                                                        isActionable: isEditable,
+                                                        detailsAccessibilityIdentifier: "product-stock-status-\(product.stockStatus.rawValue)")
     }
 
     func productTypeRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {
         let icon = UIImage.productImage
         let title = Localization.productTypeTitle
 
+        let typeID = BottomSheetProductType(productType: product.productType, isVirtual: product.virtual).id
         let details: String
         switch product.productType {
         case .simple:
@@ -339,7 +341,8 @@ private extension DefaultProductFormTableViewModel {
         return ProductFormSection.SettingsRow.ViewModel(icon: icon,
                                                         title: title,
                                                         details: details,
-                                                        isActionable: isEditable)
+                                                        isActionable: isEditable,
+                                                        detailsAccessibilityIdentifier: "product-type-\(typeID)")
     }
 
     func shippingSettingsRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {

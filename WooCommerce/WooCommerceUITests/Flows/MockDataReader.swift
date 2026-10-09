@@ -4,12 +4,6 @@ import XCTest
 
 class GetMocks {
 
-    let stockStatus = [
-        "instock": "in stock",
-        "onbackorder": "on back order",
-        "outofstock": "out of stock"
-    ]
-
     let productName = [
         2123: "malaya shades",
         2129: "akoya pearl shades",
@@ -35,15 +29,7 @@ class GetMocks {
     // parameters (almost every line is a different value) with different return types.
     static func readProductsData() throws -> [ProductData] {
         let originalData = try decode(ProductMock.self, from: "products")
-        var updatedData = originalData.response.jsonBody.data
-
-        for index in 0..<updatedData.count {
-            let rawStockStatus = updatedData[index].stock_status
-            let humanReadableStockStatus = GetMocks().stockStatus[rawStockStatus]!
-            updatedData[index].stock_status = humanReadableStockStatus
-        }
-
-        return updatedData
+        return originalData.response.jsonBody.data
     }
 
     static func readNewProductData(productType: String) throws -> ProductData {

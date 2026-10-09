@@ -441,7 +441,6 @@
     "WooCommerce/Classes/ViewRelated/Dashboard/WPComPushNotificationsBenefits/WPComPushNotificationsBenefitsViewModel.swift": 3,
     "WooCommerce/Classes/ViewRelated/Editor/AztecAIViewFactory.swift": 49,
     "WooCommerce/Classes/ViewRelated/Editor/AztecEditorViewController.swift": 1,
-    "WooCommerce/Classes/ViewRelated/Editor/AztecUIConfigurator.swift": 75,
     "WooCommerce/Classes/ViewRelated/Editor/EditorFactory.swift": 3,
     "WooCommerce/Classes/ViewRelated/Editor/FormatBar/AztecFormatBarFactory.swift": 19,
     "WooCommerce/Classes/ViewRelated/Editor/FormatBar/Command/AztecFormatBarCommandCoordinator.swift": 1,

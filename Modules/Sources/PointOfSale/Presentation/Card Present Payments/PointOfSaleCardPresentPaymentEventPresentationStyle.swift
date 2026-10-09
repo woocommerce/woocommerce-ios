@@ -26,6 +26,7 @@ enum PointOfSaleCardPresentPaymentEventPresentationStyle {
     ///   - dependencies: Additional information which is considered when deciding the presentation style –
     ///   e.g. information about the order, or actions which don't originate from the payments code.
     ///   See `TotalsViewModel.observeCardPresentPaymentEvents` for an example.
+    @MainActor
     init?(for cardPresentPaymentEventDetails: CardPresentPaymentEventDetails,
           dependencies: Dependencies) {
         switch cardPresentPaymentEventDetails {

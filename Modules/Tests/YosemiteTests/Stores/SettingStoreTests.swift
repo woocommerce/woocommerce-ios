@@ -1,9 +1,9 @@
 import XCTest
+import TestKit
 import YosemiteTestHelpers
 @testable import Yosemite
 @testable import Networking
 @testable import Storage
-import TestKit
 
 
 /// SettingStoreTests Unit Tests
@@ -485,9 +485,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<SiteAPI, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -507,9 +505,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<SiteAPI, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -529,9 +525,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<SiteAPI, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -548,9 +542,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<SiteAPI, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveSiteAPI(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -566,9 +558,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -621,9 +611,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<TaxBasedOnSetting, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveTaxBasedOnSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveTaxBasedOnSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -640,9 +628,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<TaxBasedOnSetting, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveTaxBasedOnSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveTaxBasedOnSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -665,9 +651,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -688,9 +672,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -708,9 +690,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.enableCouponSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.enableCouponSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -729,9 +709,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.enableCouponSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.enableCouponSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -747,9 +725,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -768,9 +744,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -791,9 +765,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -810,9 +782,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -831,9 +801,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveAnalyticsSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -852,9 +820,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.enableAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.enableAnalyticsSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -874,9 +840,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.enableAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.enableAnalyticsSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -895,9 +859,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.enableAnalyticsSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.enableAnalyticsSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -917,9 +879,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveCouponSetting(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -949,9 +909,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<[Networking.SiteSetting], Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID, onCompletion: completion)
             settingStore.onAction(action)
         }
 
@@ -994,9 +952,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<[Networking.SiteSetting], Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID, onCompletion: completion)
             settingStore.onAction(action)
         }
 
@@ -1011,9 +967,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<[Networking.SiteSetting], Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrievePointOfSaleSettings(siteID: self.sampleSiteID, onCompletion: completion)
             settingStore.onAction(action)
         }
 
@@ -1032,9 +986,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = try await waitForCompletion { completion in
-            settingStore.onAction(SettingAction.isFeatureEnabled(siteID: self.sampleSiteID, feature: .pointOfSale) { result in
-                completion(result)
-            })
+            settingStore.onAction(SettingAction.isFeatureEnabled(siteID: self.sampleSiteID, feature: .pointOfSale, onCompletion: completion))
         }
 
         // Then
@@ -1049,9 +1001,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Bool, Error> = try await waitForCompletion { completion in
-            settingStore.onAction(SettingAction.isFeatureEnabled(siteID: self.sampleSiteID, feature: .pointOfSale) { result in
-                completion(result)
-            })
+            settingStore.onAction(SettingAction.isFeatureEnabled(siteID: self.sampleSiteID, feature: .pointOfSale, onCompletion: completion))
         }
 
         // Then
@@ -1069,9 +1019,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<AnalyticsOrderDateType, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -1089,9 +1037,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<AnalyticsOrderDateType, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -1109,9 +1055,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<AnalyticsOrderDateType, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -1132,9 +1076,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<AnalyticsOrderDateType, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveAnalyticsOrderDateType(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -1153,9 +1095,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .completed) { result in
-                completion(result)
-            }
+            let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .completed, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -1172,9 +1112,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .completed) { result in
-                completion(result)
-            }
+            let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .completed, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -1195,9 +1133,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .allOrders) { result in
-                completion(result)
-            }
+            let action = SettingAction.updateAnalyticsOrderDateType(siteID: self.sampleSiteID, value: .allOrders, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -1216,9 +1152,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<AnalyticsImportUpdateMode, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -1236,9 +1170,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<AnalyticsImportUpdateMode, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -1257,9 +1189,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<AnalyticsImportUpdateMode, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: self.sampleSiteID) { result in
-                completion(result)
-            }
+            let action = SettingAction.retrieveAnalyticsImportUpdateMode(siteID: self.sampleSiteID, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -1282,9 +1212,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.updateAnalyticsImportUpdateMode(siteID: self.sampleSiteID, value: .immediate) { result in
-                completion(result)
-            }
+            let action = SettingAction.updateAnalyticsImportUpdateMode(siteID: self.sampleSiteID, value: .immediate, onCompletion: completion)
             store.onAction(action)
         }
 
@@ -1301,9 +1229,7 @@ final class SettingStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            let action = SettingAction.updateAnalyticsImportUpdateMode(siteID: self.sampleSiteID, value: .scheduled) { result in
-                completion(result)
-            }
+            let action = SettingAction.updateAnalyticsImportUpdateMode(siteID: self.sampleSiteID, value: .scheduled, onCompletion: completion)
             store.onAction(action)
         }
 

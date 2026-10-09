@@ -28,6 +28,10 @@ final class QRLoginHostingController<Content: View>: UIHostingController<Content
     /// When `true`, the status bar uses light content — for the dark prologue.
     var prefersLightStatusBar = false
 
+    /// Invoked on every `viewDidAppear`, including when the screen reappears
+    /// after a screen pushed on top of it is popped.
+    var onViewDidAppear: (() -> Void)?
+
     override var preferredStatusBarStyle: UIStatusBarStyle {
         prefersLightStatusBar ? .lightContent : .default
     }
@@ -41,5 +45,10 @@ final class QRLoginHostingController<Content: View>: UIHostingController<Content
             navigationController?.setNavigationBarHidden(false, animated: animated)
         }
         setNeedsStatusBarAppearanceUpdate()
+    }
+
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        onViewDidAppear?()
     }
 }

@@ -46,7 +46,7 @@ public protocol POSCatalogFullSyncServiceProtocol {
 }
 
 /// Metadata from file-based catalog sync, used for analytics tracking.
-public struct POSCatalogSyncMetadata {
+public struct POSCatalogSyncMetadata: Sendable {
     /// Number of polling attempts before completion
     public let pollAttempts: Int
     /// Server-side generation duration in milliseconds (completedAt - scheduledAt)
@@ -59,7 +59,7 @@ public struct POSCatalogSyncMetadata {
 }
 
 /// POS catalog from full sync.
-public struct POSCatalog {
+public struct POSCatalog: Sendable {
     public let products: [POSProduct]
     public let variations: [POSProductVariation]
     public let syncDate: Date

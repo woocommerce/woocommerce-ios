@@ -167,7 +167,7 @@ public final class POSCartProductObserver: POSCartProductObserving {
     }
 }
 
-private struct ObservationResult {
+private struct ObservationResult: Sendable {
     let products: [POSProduct]
     let variationResults: [(POSProductVariation, POSProduct)]
 }

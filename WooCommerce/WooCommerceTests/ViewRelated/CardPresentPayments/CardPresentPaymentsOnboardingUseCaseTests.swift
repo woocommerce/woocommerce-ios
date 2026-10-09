@@ -1206,6 +1206,140 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(state, .completed(plugin: .wcPayOnly))
     }
 
+    @MainActor
+    func test_menu_country_change_when_cached_stripe_becomes_unsupported_then_disables_card_readers() throws {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        onboardingStateCache.update(.completed(plugin: .stripeOnly))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                         stores: stores,
+                                                         cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let menu = makeMenu(useCase: useCase)
+
+        // When: the same retained menu receives synchronized settings for Canada.
+        try changeCountry(to: "CA")
+
+        // Then
+        XCTAssertEqual(menu.cardPresentPaymentsConfiguration.countryCode, .CA)
+        XCTAssertTrue(menu.shouldDisableManageCardReaders)
+        XCTAssertNotNil(menu.cardPresentPaymentsOnboardingNotice)
+        XCTAssertFalse(useCase.state.isCompleted)
+        XCTAssertNil(onboardingStateCache.value)
+
+        // A subsequent appearance must not restore the old completed state.
+        useCase.refreshIfNecessary()
+        XCTAssertFalse(useCase.state.isCompleted)
+    }
+
+    @MainActor
+    func test_menu_country_change_when_preferred_provider_becomes_unavailable_then_hides_provider_selection() throws {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupWCPayPlugin(status: .active, version: .minimumSupportedVersionUK)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        setupPreferredPaymentGateway(.stripe)
+        onboardingStateCache.update(.completed(plugin: .stripePreferred))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                         stores: stores,
+                                                         cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        let menu = makeMenu(useCase: useCase)
+        // Apply a completed state without relying on the debounced initial publication.
+        try changeCountry(to: "US")
+        XCTAssertTrue(menu.shouldShowManagePaymentGatewaysRow)
+        XCTAssertTrue(menu.shouldShowPaymentOptionsSection)
+
+        // When: Canada requires WooPayments, whose account is not set up.
+        try changeCountry(to: "CA")
+
+        // Then
+        XCTAssertFalse(menu.shouldShowManagePaymentGatewaysRow)
+        XCTAssertFalse(menu.shouldShowPaymentOptionsSection)
+        XCTAssertTrue(menu.shouldDisableManageCardReaders)
+        XCTAssertNotNil(menu.cardPresentPaymentsOnboardingNotice)
+        XCTAssertFalse(useCase.state.isCompleted)
+    }
+
+    func test_revalidateAfterCountryChange_when_country_support_returns_then_restores_valid_onboarding() throws {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        onboardingStateCache.update(.completed(plugin: .stripeOnly))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                         stores: stores,
+                                                         cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        try changeCountry(to: "LT")
+        useCase.revalidateAfterCountryChange()
+
+        // Then
+        XCTAssertEqual(useCase.state, .countryNotSupported(countryCode: .LT))
+        XCTAssertNil(onboardingStateCache.value)
+
+        // When
+        try changeCountry(to: "GB")
+        useCase.revalidateAfterCountryChange()
+
+        // Then
+        XCTAssertEqual(useCase.state, .completed(plugin: .stripeOnly))
+    }
+
+    func test_revalidateAfterCountryChange_when_no_completed_cache_then_still_synchronizes_settings() throws {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                         stores: stores,
+                                                         cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        var settingsRequested = false
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case .synchronizeGeneralSiteSettings = action {
+                settingsRequested = true
+            }
+        }
+
+        // When
+        try changeCountry(to: "US")
+        useCase.revalidateAfterCountryChange()
+        useCase.refreshIfNecessary()
+
+        // Then
+        XCTAssertTrue(settingsRequested)
+        XCTAssertNil(onboardingStateCache.value)
+    }
+
+    func test_revalidateAfterCountryChange_when_cached_provider_remains_supported_then_does_not_synchronize_settings() throws {
+        // Given
+        setupCountry(country: .gb)
+        setupStripePlugin(status: .active, version: .minimumSupportedVersion)
+        setupPaymentGatewayAccount(accountType: StripeAccount.self, status: .complete)
+        onboardingStateCache.update(.completed(plugin: .stripeOnly))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                         stores: stores,
+                                                         cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+        var settingsRequested = false
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case .synchronizeGeneralSiteSettings = action {
+                settingsRequested = true
+            }
+        }
+
+        // When
+        try changeCountry(to: "US")
+        useCase.revalidateAfterCountryChange()
+        useCase.refreshIfNecessary()
+
+        // Then
+        XCTAssertFalse(settingsRequested)
+        XCTAssertEqual(useCase.state, .completed(plugin: .stripeOnly))
+        XCTAssertEqual(onboardingStateCache.value, useCase.state)
+    }
+
     func test_refreshIfNecessary_when_there_is_a_completed_cached_value_then_returns_cached_value() {
         onboardingStateCache.update(.completed(plugin: .stripeOnly))
 
@@ -1358,6 +1492,27 @@ private extension CardPresentPaymentsOnboardingUseCaseTests {
 
 // MARK: - Country helpers
 private extension CardPresentPaymentsOnboardingUseCaseTests {
+    @MainActor
+    func makeMenu(useCase: CardPresentPaymentsOnboardingUseCase) -> InPersonPaymentsMenuViewModel {
+        InPersonPaymentsMenuViewModel(
+            siteID: sampleSiteID,
+            dependencies: .init(cardPresentPaymentsConfiguration: CardPresentConfigurationLoader().configuration,
+                                onboardingUseCase: useCase,
+                                cardReaderSupportDeterminer: MockCardReaderSupportDeterminer(),
+                                wooPaymentsPayoutService: nil,
+                                systemStatusService: MockSystemStatusService(),
+                                stores: stores,
+                                siteSettings: ServiceLocator.selectedSiteSettings),
+            payInPersonToggleViewModel: MockInPersonPaymentsCashOnDeliveryToggleRowViewModel())
+    }
+
+    func changeCountry(to country: String) throws {
+        let setting = try XCTUnwrap(storageManager.viewStorage.loadSiteSetting(siteID: sampleSiteID,
+                                                                               settingID: "woocommerce_default_country"))
+        setting.value = country
+        ServiceLocator.selectedSiteSettings.refresh()
+    }
+
     func setupCountry(country: Country) {
         let setting = SiteSetting.fake()
             .copy(

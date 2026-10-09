@@ -133,14 +133,13 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
     }
 
     func test_handle_login_when_status_rejects_recognized_content_then_preserves_plain_status_error() async throws {
-        for stage in credentialStages {
+        for stage in credentialStages where stage != .nonce {
             var documents = ["<div id=\"login_error\">Please solve the captcha</div>",
                              "document.querySelector('form').classList.add('shake')"]
             switch stage {
             case .preflight: documents.append(loginForm())
             case .dashboard: documents.append(authenticatedDashboard())
-            case .nonce: documents.append("validnonce")
-            case .credentials: break
+            case .credentials, .nonce: break
             }
             for document in documents {
                 // Given / When
@@ -151,6 +150,30 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
                     XCTFail("Recognized content must retain the original status error, got \(error)")
                     continue
                 }
+            }
+        }
+    }
+
+    func test_handle_login_when_nonce_status_rejects_plain_text_or_login_html_then_reports_unexpected_status() async throws {
+        // Given
+        let bodies = ["Forbidden", "unavailable", "error", "validnonce",
+                      "<div id=\"login_error\">Please solve the captcha</div>",
+                      "document.querySelector('form').classList.add('shake')"]
+
+        for code in [403, 429, 500, 503] {
+            for body in bodies {
+                // When
+                let error = try await responseFailure(at: .nonce, data: Data(body.utf8), statusCode: code)
+
+                // Then
+                guard case .unexpectedResponse(let failure) = error else {
+                    XCTFail("Expected unexpected status at nonce, got \(error)")
+                    continue
+                }
+                XCTAssertEqual(failure, .init(stage: .nonce, statusCode: code))
+                XCTAssertEqual(failure.kind, .unacceptableStatusCode)
+                XCTAssertEqual(failure.step, .nonceRetrieval)
+                XCTAssertFalse(error.offersBrowserAlternative(at: .nonce))
             }
         }
     }

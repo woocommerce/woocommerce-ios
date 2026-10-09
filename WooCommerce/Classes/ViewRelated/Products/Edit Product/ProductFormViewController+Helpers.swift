@@ -149,6 +149,26 @@ extension ProductFormViewController {
     func showVariationDeletionProgress() {
         displayInProgressView(title: Localization.ProgressView.variationDeletionTitle, message: Localization.ProgressView.variationDeletionMessage)
     }
+
+    /// Dismisses the in-progress UI only when it is the presented modal, otherwise calls `completion` directly (WOOMOB-3923).
+    /// When the dismissal is already in flight, `completion` runs once that dismissal finishes.
+    ///
+    func dismissInProgressViewIfNeeded(completion: (() -> Void)? = nil) {
+        guard let navigationController, let presented = navigationController.presentedViewController as? InProgressViewController else {
+            completion?()
+            return
+        }
+        guard !presented.isBeingDismissed else {
+            DDLogWarn("⚠️ In-progress view already being dismissed: deferring completion")
+            if let coordinator = presented.transitionCoordinator {
+                coordinator.animate(alongsideTransition: nil) { _ in completion?() }
+            } else {
+                completion?()
+            }
+            return
+        }
+        presented.dismiss(animated: true, completion: completion)
+    }
 }
 
 private extension ProductFormViewController {
@@ -157,7 +177,8 @@ private extension ProductFormViewController {
         let inProgressViewController = InProgressViewController(viewProperties: viewProperties)
         inProgressViewController.modalPresentationStyle = .overFullScreen
 
-        navigationController?.present(inProgressViewController, animated: true, completion: nil)
+        // Guarded: presenting into another modal transition corrupts sheet state on iOS 26 (WOOMOB-3923).
+        navigationController?.presentIfIdle(inProgressViewController)
     }
 }
 

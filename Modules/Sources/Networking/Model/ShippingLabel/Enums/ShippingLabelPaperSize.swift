@@ -2,7 +2,7 @@ import Foundation
 import Codegen
 
 /// Paper size options for printing a shipping label.
-public enum ShippingLabelPaperSize: GeneratedFakeable {
+public enum ShippingLabelPaperSize: GeneratedFakeable, Sendable {
     case a4
     case label
     case legal

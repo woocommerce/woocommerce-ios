@@ -22,6 +22,7 @@ struct POSOrderDetailsView: View {
     var onRefundFailure: ((Error) -> Void)? = nil
 
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posHeaderBackButtonPadding) private var backButtonPadding
     @Environment(\.siteTimezone) private var siteTimezone
     @Environment(POSOrderListModel.self) private var orderListModel
     @Environment(\.posAnalytics) private var analytics
@@ -76,7 +77,7 @@ struct POSOrderDetailsView: View {
                     headerBottomContent(for: order)
                 }
             )
-            .posHeaderBackButtonPadding(POSPadding.none)
+            .posHeaderBackButtonPadding(horizontalSizeClass == .compact ? backButtonPadding : POSPadding.none)
             .fixedSize(horizontal: false, vertical: true)
             .dynamicTypeSize(...DynamicTypeSize.xxxLarge)
 

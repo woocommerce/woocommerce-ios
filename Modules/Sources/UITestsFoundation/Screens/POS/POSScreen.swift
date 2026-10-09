@@ -22,8 +22,16 @@ public final class POSScreen: ScreenObject {
     public func tapAddProduct(productID: Int) -> Self {
         let productButton = app.buttons["pos-product-card-\(productID)"]
 
-        XCTAssertTrue(productButton.waitForIsHittable(timeout: 15), "Product \(productID) should be tappable in POS.")
-        productButton.tap()
+        XCTAssertTrue(waitForVisibleElement(productButton, timeout: 15), "Product \(productID) should be visible in POS.")
+
+        if productButton.isHittable {
+            productButton.tap()
+            return self
+        }
+
+        // On iOS 27 the card can be on screen and uncovered while never reporting `isHittable`.
+        // Callers verify the cart afterwards.
+        productButton.coordinate(withNormalizedOffset: CGVector(dx: 0.5, dy: 0.5)).tap()
 
         return self
     }
@@ -85,6 +93,7 @@ public final class POSScreen: ScreenObject {
         return self
     }
 
+    @MainActor
     @discardableResult
     public func tapAddCustomAmount(amount: String, name: String? = nil) -> Self {
         let customAmountEntryRow = app.buttons["pos-custom-amount-entry-row"]
@@ -105,12 +114,15 @@ public final class POSScreen: ScreenObject {
         }
         app.typeText(amount)
 
+        let nameField = app.textFields["pos-custom-amount-name-field"]
+        XCTAssertTrue(nameField.waitForExistence(timeout: 10), "Custom amount name field should exist.")
+        let form = app.scrollViews.containing(.textField, identifier: "pos-custom-amount-name-field").firstMatch
+        for _ in 0..<4 where !nameField.isHittable {
+            form.swipeUp()
+        }
+        XCTAssertTrue(nameField.waitForIsHittable(timeout: 10), "Custom amount name field should be tappable.")
+        nameField.tap()
         if let name {
-            let nameField = app.textFields["pos-custom-amount-name-field"]
-            XCTAssertTrue(nameField.waitForExistence(timeout: 10), "Custom amount name field should exist.")
-            nameField.scrollIntoView(app: app)
-            XCTAssertTrue(nameField.waitForIsHittable(timeout: 10), "Custom amount name field should be tappable.")
-            nameField.tap()
             nameField.typeText(name)
         }
 
@@ -245,18 +257,9 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func verifyReturnedFromCheckoutToProductSelector(variationID: Int) -> Self {
-        let compactCartButton = app.buttons["pos-compact-cart-button"]
-        if compactCartButton.exists {
-            // Compact layouts swap ItemListView out while checkout is shown, so returning to edit
-            // rebuilds the selector at the root. Regular layouts keep the item pane alive off-screen.
-            XCTAssertTrue(firstProductCardGetter(app).waitForExistence(timeout: 15),
-                          "POS product list should be visible when returning to edit the cart in compact layout.")
-            return self
-        }
-
         let variationButton = app.buttons["pos-variation-card-\(variationID)"]
         XCTAssertTrue(waitForVisibleElement(variationButton, timeout: 15),
-                      "POS variation selector should remain visible when returning to edit the cart on tablet.")
+                      "POS variation selector should remain visible when returning to edit the cart.")
 
         return self
     }

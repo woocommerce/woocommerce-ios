@@ -39,6 +39,8 @@ struct POSPageHeaderItem: Identifiable {
 }
 
 /// A header view for POS pages.
+/// Compact headers keep the back button, title, and actions in one navigation row.
+/// Use `subtitle` or `bottomContent` for information below that row; callers need no row-height adjustments.
 /// Design ref: 1qcjzXitBHU7xPnpCOWnNM-fi-450_24951
 struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomContent: View>: View {
     private let items: [POSPageHeaderItem]
@@ -47,17 +49,31 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private let trailingContent: TrailingContent
     private let bottomContent: BottomContent
     @Environment(\.posHeaderBackButtonConfiguration) private var environmentBackButtonConfiguration
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.posHeaderTopPadding) private var topPadding
 
     private var effectiveBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
         environmentBackButtonConfiguration ?? backButtonConfiguration
     }
 
     private var hStackAlignment: VerticalAlignment {
-        items.first?.subtitle == nil ? .center: .firstTextBaseline
+        if horizontalSizeClass == .compact {
+            return .top
+        }
+        return items.first?.subtitle == nil ? .center: .firstTextBaseline
     }
 
     private var showsBackButton: Bool {
         effectiveBackButtonConfiguration != nil
+    }
+
+    /// Whether the header has selectable titles, such as Products and Coupons.
+    private var hasSelectableTitles: Bool {
+        items.count > 1
+    }
+
+    private var navigationRowMinHeight: CGFloat? {
+        horizontalSizeClass == .compact ? POSHeaderLayoutConstants.minHeight : nil
     }
 
     init(
@@ -104,24 +120,33 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                 }
 
                 trailingContent
+                    .frame(minHeight: navigationRowMinHeight)
             }
 
             bottomContent
         }
         .frame(minHeight: POSHeaderLayoutConstants.minHeight)
-        .padding(.leading, shouldHaveLeadingPaddingForItems ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.none)
-        .padding(.trailing, POSHeaderLayoutConstants.sectionHorizontalPadding)
-        .padding(.vertical, POSHeaderLayoutConstants.sectionVerticalPadding)
+        .padding(.horizontal, POSHeaderLayoutConstants.sectionHorizontalPadding)
+        .padding(.top, topPadding ?? (horizontalSizeClass == .compact ? POSPadding.medium : POSHeaderLayoutConstants.sectionVerticalPadding))
+        .padding(.bottom, POSHeaderLayoutConstants.sectionVerticalPadding)
     }
 
+    /// Several selectable titles (Products / Coupons) keep the horizontal scroll fallback, so a
+    /// long translation can never hide the title the merchant needs to tap. A single title does
+    /// not scroll: scrolling a heading is undiscoverable, and the scroll view clips it with no
+    /// ellipsis. It wraps instead — see `titleText`.
     @ViewBuilder
     private var itemsContent: some View {
-        ViewThatFits(in: .horizontal) {
-            itemsRow
-
-            ScrollView(.horizontal, showsIndicators: false) {
+        if hasSelectableTitles {
+            ViewThatFits(in: .horizontal) {
                 itemsRow
+
+                ScrollView(.horizontal, showsIndicators: false) {
+                    itemsRow
+                }
             }
+        } else {
+            itemsRow
         }
     }
 
@@ -130,6 +155,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
                 if showsBackButton {
                     backButton
+                        .frame(minHeight: navigationRowMinHeight)
                 }
                 ForEach(0..<items.count, id: \.self) { index in
                     VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
@@ -153,6 +179,8 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                                     .transition(.opacity.combined(with: .scale))
                             }
                         }
+                        // Keep subtitles below the navigation row instead of moving its title and back button.
+                        .frame(minHeight: navigationRowMinHeight)
 
                         if let subtitle = items[index].subtitle {
                             subtitleText(subtitle)
@@ -166,8 +194,11 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private func titleText(_ title: String, isSelected: Bool) -> some View {
         Text(title)
             .font(.posHeadingBold)
-            .lineLimit(1)
-            .fixedSize(horizontal: true, vertical: false)
+            // A single title wraps onto a second line rather than being clipped, because
+            // translations run longer than the English the layout was sized for. Several
+            // titles keep their natural width so `ViewThatFits` can measure the row.
+            .lineLimit(hasSelectableTitles ? 1 : Constants.singleTitleLineLimit)
+            .fixedSize(horizontal: hasSelectableTitles, vertical: false)
             .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             .foregroundColor(isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
     }
@@ -175,14 +206,12 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private func subtitleText(_ subtitle: String) -> some View {
         Text(subtitle)
             .font(.posBodyLargeRegular())
-            .lineLimit(1)
-            .fixedSize(horizontal: true, vertical: false)
+            // Follows the title: without the scroll fallback a single-title header would
+            // otherwise clip a long subtitle, such as the date and email on order details.
+            .lineLimit(hasSelectableTitles ? 1 : Constants.singleTitleLineLimit)
+            .fixedSize(horizontal: hasSelectableTitles, vertical: false)
             .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             .foregroundColor(.posOnSurface)
-    }
-
-    private var shouldHaveLeadingPaddingForItems: Bool {
-        items.isNotEmpty || showsBackButton
     }
 
     private var shouldShowItemsContent: Bool {
@@ -200,10 +229,13 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
 private enum Constants {
     static let horizontalSpacing: CGFloat = POSSpacing.medium
     static let titleSubtitleSpacing: CGFloat = POSSpacing.xSmall
+    /// Two lines hold the longest translated POS headings on a phone without the header
+    /// taking over the screen.
+    static let singleTitleLineLimit: Int = 2
 }
 
 struct POSHeaderBackButtonConfigurationKey: EnvironmentKey {
-    static let defaultValue: POSPageHeaderBackButtonConfiguration? = nil
+    static var defaultValue: POSPageHeaderBackButtonConfiguration? { nil }
 }
 
 struct POSHeaderBackButtonIconKey: EnvironmentKey {
@@ -386,4 +418,15 @@ extension View {
         )
     }
     .background(Color.posSurface)
+}
+
+private struct POSHeaderTopPaddingKey: EnvironmentKey {
+    static let defaultValue: CGFloat? = nil
+}
+
+extension EnvironmentValues {
+    var posHeaderTopPadding: CGFloat? {
+        get { self[POSHeaderTopPaddingKey.self] }
+        set { self[POSHeaderTopPaddingKey.self] = newValue }
+    }
 }

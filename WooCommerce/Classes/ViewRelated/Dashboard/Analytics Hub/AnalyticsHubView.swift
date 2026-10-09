@@ -119,9 +119,6 @@ private extension AnalyticsHubHostingViewController {
 ///
 struct AnalyticsHubView: View {
 
-    /// Environment safe areas
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     /// Set this closure with UIKit code to pop the view controller and display the provided notice.
     /// Needed because we need access to the UIHostingController `popViewController` method.
     ///
@@ -133,6 +130,12 @@ struct AnalyticsHubView: View {
     @StateObject var viewModel: AnalyticsHubViewModel
 
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         RefreshablePlainList(action: {
             viewModel.trackAnalyticsInteraction()
             await viewModel.updateData()

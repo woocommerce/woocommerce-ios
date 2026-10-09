@@ -47,5 +47,6 @@ enum PushNotificationSharedConstants {
         static let wooPushNotificationToken = "wooPushNotificationToken"
         static let siteIDsRegisteredForWooPushNotifications = "siteIDsRegisteredForWooPushNotifications"
         static let connectedSiteIDs = "connectedSiteIDs"
+        static let wooPushNextCheckDates = "wooPushNextCheckDates"
     }
 }

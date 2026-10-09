@@ -30,6 +30,7 @@ public enum WooAnalyticsStat: String {
     //
     case signedIn = "signed_in"
     case logout = "account_logout"
+    case involuntaryLogout = "account_involuntary_logout"
     case openedLogin = "login_accessed"
     case loginNewToWooButtonTapped = "login_new_to_woo_button_tapped"
     case loginFailed = "login_failed_to_login"
@@ -1468,7 +1469,7 @@ extension WooAnalyticsStat {
     public var shouldSendSiteProperties: Bool {
         switch self {
         // Authentication Events
-        case .signedIn, .logout, .openedLogin, .loginFailed,
+        case .signedIn, .logout, .involuntaryLogout, .openedLogin, .loginFailed,
              .loginAutoFillCredentialsFilled, .loginAutoFillCredentialsUpdated, .loginEmailFormViewed, .loginMagicLinkOpenEmailClientViewed,
              .loginMagicLinkRequestFormViewed, .loginMagicLinkExited, .loginMagicLinkFailed, .loginMagicLinkOpened,
              .loginMagicLinkRequested, .loginMagicLinkSucceeded, .loginPasswordFormViewed, .loginURLFormViewed,

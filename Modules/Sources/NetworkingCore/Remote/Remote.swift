@@ -603,6 +603,8 @@ public struct PagedItems<T> {
     }
 }
 
+extension PagedItems: Sendable where T: Sendable {}
+
 // MARK: - Pagination Helpers
 //
 public extension Remote {

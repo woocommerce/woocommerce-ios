@@ -1,15 +1,35 @@
 *** PLEASE FOLLOW THIS FORMAT: [<priority indicator, more stars = higher priority>] <description> [<PR URL>]
 *** Use [*****] to indicate smoke tests of all critical flows should be run on the final IPA before release (e.g. major library or OS update).
 
+25.9
+-----
+- [Internal] Layout: Support chat bubbles, expandable bottom sheets, the feature highlight tooltip and the subscription period toolbar size from their container instead of the main screen. [https://github.com/woocommerce/woocommerce-ios/pull/17999]
+- [*] Order details: Fixed row content touching the edges of the details pane on iPhone Duo. [https://github.com/woocommerce/woocommerce-ios/pull/18001]
+- [*] Quick actions, links and Shortcuts open the new order form and product creation again on iOS 26 and later. [https://github.com/woocommerce/woocommerce-ios/pull/18021]
+- [*] Login: QR code sign-in with a WordPress.com account no longer gets stuck on "Signing you in…" after approving on the web. [https://github.com/woocommerce/woocommerce-ios/pull/18019]
+- [*] Shipping Labels: The recipient phone number is now optional for domestic shipments. It's still required for international shipments and FedEx services. [https://github.com/woocommerce/woocommerce-ios/pull/18022]
+- [*] Notices no longer block taps on the content beside them, and on iPhone Duo they appear at the bottom of the screen when the tab bar is on the side. [https://github.com/woocommerce/woocommerce-ios/pull/17998]
+- [*] Layout: Fixed doubled side padding on the card reader manuals, plugins and booking details screens in landscape, and content insets of sheets on wide layouts. [https://github.com/woocommerce/woocommerce-ios/pull/17971]
+- [*] Order creation: Keep the form, product selector and bundle configuration content inside the safe area after rotating or resizing the app. [https://github.com/woocommerce/woocommerce-ios/pull/17951]
+- [*] Privacy: Respect your analytics preference throughout login, including after logging out. [https://github.com/woocommerce/woocommerce-ios/pull/17973]
+- [*] Login: Unexpected store responses now offer Try Again, Contact Support, and Dismiss actions. [https://github.com/woocommerce/woocommerce-ios/pull/18030]
+
+
 25.8
 -----
-- [*] Login: Unexpected store responses now offer Try Again, Contact Support, and Dismiss actions. [https://github.com/woocommerce/woocommerce-ios/pull/18030]
+- [*] Login: QR code sign-in now shows "iPhone" or "iPad" on the web instead of the raw device identifier (e.g. "iPhone14,2"). [https://github.com/woocommerce/woocommerce-ios/pull/17983]
+- [*] Login: Allow entering and submitting nine-digit verification codes from WordPress.com. [https://github.com/woocommerce/woocommerce-ios/pull/17969]
+- [Internal] Login: the site-address screen reached from the QR prologue's "Log in with site address" fallback now tracks under the `login_site_address` flow instead of `login_qr`. [https://github.com/woocommerce/woocommerce-ios/pull/17915]
+- [*] Products: Fixed a remaining iOS 26 crash when tapping Save right as the "View product in store" sheet opens from the product form. [https://github.com/woocommerce/woocommerce-ios/pull/17963]
+- [*] The app now periodically refreshes push notification registrations for visible stores, and restores notifications for Jetpack stores when WooCommerce push becomes unavailable. [https://github.com/woocommerce/woocommerce-ios/pull/17967]
+- [*] Orders and Products: Improve Liquid Glass headers and fix title, refresh, loading, and error layouts on iPhone and iPad. [https://github.com/woocommerce/woocommerce-ios/pull/17977]
 - [Internal] Tracks events now carry cached_woo_core_version from the first event after launch and store switch. [https://github.com/woocommerce/woocommerce-ios/pull/17927]
 - [*] Products: Show a clear error when a category cannot be created because its name already exists. [https://github.com/woocommerce/woocommerce-ios/pull/17933]
 - [Internal] Shipping labels: eligibility, label sync, and `is_revamped_flow` analytics now follow the same WooCommerce Shipping support check (1.0.6+) as the creation form, and Palau stores are no longer excluded. [https://github.com/woocommerce/woocommerce-ios/pull/17945]
 - [*] Age verification: the "Access Restricted" alert and the parental consent screens now offer a Contact Support action that opens Help & Support while keeping the restriction in place. [https://github.com/woocommerce/woocommerce-ios/pull/17909]
 - [*] Login: Fix account matching for www and non-www store addresses [https://github.com/woocommerce/woocommerce-ios/pull/17906]
 - [*] Troubleshoot Connection and support chat diagnostics no longer report a false analytics failure on WordPress.com Commerce plan stores. [https://github.com/woocommerce/woocommerce-ios/pull/17895]
+- [Internal] Track when the app signs the merchant out on its own (invalid token, application password failures). [https://github.com/woocommerce/woocommerce-ios/pull/17918]
 - [*] Blaze: the campaign list now shows a notice with the outstanding balance and the unpaid orders to pay. [https://github.com/woocommerce/woocommerce-ios/pull/17941]
 - [*] Settings: Fixed the missing back button on the Push Notifications detail screens (New orders, New reviews, Stock) on iOS 18. [https://github.com/woocommerce/woocommerce-ios/pull/17868]
 - [*] Settings: The Save button on the Push Notifications detail screens no longer disappears right after the screen opens. [https://github.com/woocommerce/woocommerce-ios/pull/17868]
@@ -17,6 +37,7 @@
 
 25.7
 -----
+- [*] Payments: Recover missing store settings automatically and explain when an order’s currency prevents in-person card payment. [https://github.com/woocommerce/woocommerce-ios/pull/17896]
 - [*] POS: Cart items discounted by a coupon or another source are now marked "Discount applied" at checkout. [https://github.com/woocommerce/woocommerce-ios/pull/17887]
 - [**] When your store can't be reached because of a connection problem on your WordPress site, the app now explains what is going on and offers to contact support, instead of retrying silently. [https://github.com/woocommerce/woocommerce-ios/pull/17799]
 - [Internal] POS: Moved the refund flow state out of POSOrderListController into a new POSRefundController. No user-visible change. [https://github.com/woocommerce/woocommerce-ios/pull/17864]

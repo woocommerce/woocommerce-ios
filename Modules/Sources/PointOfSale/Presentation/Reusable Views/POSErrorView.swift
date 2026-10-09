@@ -1,4 +1,5 @@
 import SwiftUI
+import class WooFoundation.KeyboardObserver
 
 struct POSErrorView: View {
     @Environment(\.keyboardObserver) private var keyboard
@@ -106,6 +107,7 @@ struct POSErrorButtonViewModel {
     let buttonStyle: AnyButtonStyle
     let action: () -> Void
 
+    @MainActor
     init(title: String, buttonStyle: any ButtonStyle, action: @escaping () -> Void) {
         self.title = title
         self.buttonStyle = AnyButtonStyle(buttonStyle)

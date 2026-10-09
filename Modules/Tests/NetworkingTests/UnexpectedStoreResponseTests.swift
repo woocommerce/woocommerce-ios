@@ -45,31 +45,60 @@ struct UnexpectedStoreResponseTests {
         #expect(error?.diagnostics?.excerpt == "Blocked")
     }
 
-    @Test func test_policy_when_tunnel_raw_body_has_no_inner_status_then_uses_transport_status() throws {
+    @Test(arguments: [200, 400, 500, 503])
+    func test_policy_when_tunnel_raw_body_has_no_inner_status_then_does_not_classify(transportStatus: Int) throws {
         // Given
         let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: 123, path: "")
         let policy = UnexpectedResponseRequest(original: request)
         let payload = """
         {"error":"no_response_body","message":"Server could not read response.",
-         "data":{"raw_body":"<html><div hidden>private-sentinel</div><p>Store temporarily blocked token=private-token</p></html>"}}
+         "data":{"raw_body":"<html>Store temporarily blocked</html>"}}
         """
+        let object = try JSONSerialization.jsonObject(with: Data(payload.utf8))
         let envelopes: [Data] = [
             Data(payload.utf8),
             try JSONSerialization.data(withJSONObject: ["body": payload]),
-            try JSONSerialization.data(withJSONObject: ["body": JSONSerialization.jsonObject(with: Data(payload.utf8))])
+            try JSONSerialization.data(withJSONObject: ["body": object]),
+            try JSONSerialization.data(withJSONObject: ["status": 503, "body": payload]),
+            try JSONSerialization.data(withJSONObject: ["status": "503", "body": object])
         ]
 
         for envelope in envelopes {
             // When
-            let error = policy.responseError(data: envelope, status: 503, tunneled: true) as? UnexpectedStoreResponseError
+            let error = policy.responseError(data: envelope, status: transportStatus, tunneled: true)
 
             // Then
-            #expect(error?.kind == .unacceptableStatusCode)
-            #expect(error?.statusCode == 503)
-            #expect(error?.diagnostics?.request == "GET /")
-            #expect(error?.diagnostics?.excerpt == "Store temporarily blocked token=[redacted]")
-            #expect(error?.logMessage.contains("private-sentinel") == false)
-            #expect(error?.logMessage.contains("private-token") == false)
+            #expect(error == nil)
+        }
+    }
+
+    @Test(arguments: [200, 503])
+    func test_policy_when_tunnel_raw_body_has_inner_status_then_uses_store_status(storeStatus: Int) throws {
+        // Given
+        let request = JetpackRequest(wooApiVersion: .none, method: .get, siteID: 123, path: "")
+        let policy = UnexpectedResponseRequest(original: request)
+        let payload = """
+        {"error":"no_response_body","message":"Server could not read response.",
+         "data":{"status":\(storeStatus),
+                 "raw_body":"<html><div hidden>private-sentinel</div><p>Store temporarily blocked token=private-token</p></html>"}}
+        """
+        let envelopes: [Data] = [
+            Data(payload.utf8),
+            try JSONSerialization.data(withJSONObject: ["status": 500, "body": payload]),
+            try JSONSerialization.data(withJSONObject: ["status": 500, "body": JSONSerialization.jsonObject(with: Data(payload.utf8))])
+        ]
+
+        for envelope in envelopes {
+            // When
+            let error = try #require(policy.responseError(data: envelope, status: 500, tunneled: true) as? UnexpectedStoreResponseError)
+
+            // Then
+            #expect(error.kind == (storeStatus == 200 ? .unexpectedContent : .unacceptableStatusCode))
+            #expect(error.statusCode == storeStatus)
+            #expect(error.diagnostics?.request == "GET /")
+            #expect(error.diagnostics?.excerpt == "Store temporarily blocked token=[redacted]")
+            #expect(!error.logMessage.contains("private-sentinel"))
+            #expect(!error.logMessage.contains("private-token"))
         }
     }
 
@@ -372,6 +401,6 @@ struct UnexpectedStoreResponseTests {
         #expect(response?.status == 403)
         #expect(response?.data == Data("<html>Blocked</html>".utf8))
         let nested = Data("{\"status\":\"503\",\"body\":{\"data\":{\"raw_body\":\"Unavailable\"}}}".utf8)
-        #expect(UnexpectedResponseClassifier.tunnelResponse(in: nested)?.status == 503)
+        #expect(UnexpectedResponseClassifier.tunnelResponse(in: nested) == nil)
     }
 }

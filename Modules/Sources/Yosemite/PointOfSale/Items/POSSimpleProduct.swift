@@ -3,7 +3,7 @@ import WooFoundation
 import Codegen
 import Networking
 
-public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol {
+public struct POSSimpleProduct: POSOrderableItem, OrderSyncProductTypeProtocol, Sendable {
     // POSOrderableItem
     public let id: POSItemIdentifier
     public let name: String

@@ -3,6 +3,7 @@ import XCTest
 
 /// Mock for `WooShippingRemote`.
 ///
+@MainActor
 final class MockWooShippingRemote {
 
     private(set) var purchaseShippingLabelCalled = false
@@ -228,11 +229,11 @@ final class MockWooShippingRemote {
 }
 
 // MARK: - WooShippingRemoteProtocol
-extension MockWooShippingRemote: WooShippingRemoteProtocol {
+extension MockWooShippingRemote: @MainActor WooShippingRemoteProtocol {
     func checkCreationEligibility(siteID: Int64,
                                   orderID: Int64,
                                   completion: @escaping (Result<Networking.ShippingLabelCreationEligibilityResponse, any Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -248,7 +249,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                        customPackage: Networking.WooShippingCustomPackage?,
                        predefinedOption: Networking.WooShippingPredefinedSavedOption?,
                        completion: @escaping (Result<Networking.WooShippingCreatePackageResponse, any Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -264,7 +265,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                        packageID: String,
                        packageType: WooShippingPackageType,
                        completion: @escaping (Result<Networking.WooShippingCreatePackageResponse, any Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -282,7 +283,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                         destinationAddress: WooShippingAddress,
                         packages: [ShippingLabelPackageSelected],
                         completion: @escaping (Result<[ShippingLabelCarriersAndRates], Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -296,7 +297,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
     func loadPackages(siteID: Int64,
                       completion: @escaping (Result<Networking.WooShippingPackagesResponse, any Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -310,7 +311,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
     func loadAccountSettings(siteID: Int64,
                              completion: @escaping (Result<WooShippingAccountSettings, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -325,7 +326,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     func updateAccountSettings(siteID: Int64,
                                settings: ShippingLabelAccountSettings,
                                completion: @escaping (Result<Bool, any Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
             let key = ResultKey(siteID: siteID)
             if let result = self.updateAccountSettingsResults[key] {
@@ -343,7 +344,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                                package: Networking.WooShippingPackagePurchase,
                                markOrderComplete: Bool?,
                                completion: @escaping (Result<[ShippingLabelPurchase], Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -360,7 +361,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                           orderID: Int64,
                           labelID: Int64,
                           completion: @escaping (Result<ShippingLabelStatusPollingResponse, any Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -377,7 +378,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                     labelIDs: [Int64],
                     paperSize: Networking.ShippingLabelPaperSize,
                     completion: @escaping (Result<Networking.ShippingLabelPrintData, any Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -391,7 +392,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
     func loadOriginAddresses(siteID: Int64,
                              completion: @escaping (Result<[Networking.WooShippingOriginAddress], any Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -406,7 +407,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     func addressValidation(siteID: Int64,
                            address: WooShippingAddress,
                            completion: @escaping (Result<WooShippingAddressValidationSuccess, any Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -422,7 +423,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                              address: WooShippingOriginAddress,
                              isVerified: Bool,
                              completion: @escaping (Result<WooShippingOriginAddressUpdate, any Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -437,7 +438,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     func verifyDestinationAddress(siteID: Int64,
                                   orderID: Int64,
                                   completion: @escaping (Result<WooShippingVerifyDestinationAddressSuccess, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -454,7 +455,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                                   address: WooShippingDestinationAddress,
                                   isVerified: Bool,
                                   completion: @escaping (Result<WooShippingDestinationAddressUpdate, any Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -469,7 +470,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     func loadConfig(siteID: Int64,
                     orderID: Int64,
                     completion: @escaping (Result<WooShippingConfig, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -485,7 +486,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                         orderID: Int64,
                         shipmentToUpdate: WooShippingUpdateShipment,
                         completion: @escaping (Result<WooShippingShipments, any Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
 
             let key = ResultKey(siteID: siteID)
@@ -501,7 +502,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
                              orderID: Int64,
                              shippingLabelID: Int64,
                              completion: @escaping (Result<ShippingLabelRefund, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
             let key = RefundResultKey(siteID: siteID, orderID: orderID, shippingLabelID: shippingLabelID)
             if let result = self.refundShippingLabel[key] {
@@ -515,7 +516,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
     func acceptUPSTermsOfService(siteID: Int64,
                                  originAddress: WooShippingAddress,
                                  completion: @escaping (Result<Bool, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
             let key = AcceptUPSTOSKey(siteID: siteID, originAddress: originAddress)
             if let result = self.acceptUPSTermsOfService[key] {
@@ -528,7 +529,7 @@ extension MockWooShippingRemote: WooShippingRemoteProtocol {
 
     func acceptFedExTermsOfService(siteID: Int64,
                                    completion: @escaping (Result<Bool, Error>) -> Void) {
-        DispatchQueue.main.async { [weak self] in
+        Task { @MainActor [weak self] in
             guard let self else { return }
             let key = ResultKey(siteID: siteID)
             if let result = self.acceptFedExTermsOfService[key] {

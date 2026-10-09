@@ -79,7 +79,8 @@ private extension POSModalSizing {
     }
 
     var maxAvailableFrameHeight: CGFloat {
-        parentSize.height
+        // Keep the card's existing width and reserve its outer vertical padding only when needed.
+        max(0, parentSize.height - (horizontalSizeClass == .compact ? 0 : 2 * POSPadding.medium))
     }
 
     var windowBounds: CGRect {

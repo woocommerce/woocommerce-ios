@@ -24,23 +24,29 @@ struct SimplePaymentsSummary: View {
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         VStack(spacing: 0) {
             ScrollView {
                 VStack(spacing: Layout.noSpacing) {
 
-                    CustomAmountSection(viewModel: viewModel)
+                    CustomAmountSection(viewModel: viewModel, safeAreaInsets: safeAreaInsets)
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    EmailSection(viewModel: viewModel)
+                    EmailSection(viewModel: viewModel, safeAreaInsets: safeAreaInsets)
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    PaymentsSection(viewModel: viewModel)
+                    PaymentsSection(viewModel: viewModel, safeAreaInsets: safeAreaInsets)
 
                     Spacer(minLength: Layout.spacerHeight)
 
-                    NoteSection(viewModel: viewModel, showEditNote: $showEditNote)
+                    NoteSection(viewModel: viewModel, safeAreaInsets: safeAreaInsets, showEditNote: $showEditNote)
                 }
             }
             .ignoresSafeArea(edges: .horizontal)
@@ -82,9 +88,9 @@ private struct CustomAmountSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
-    ///   Environment safe areas
+    /// Safe-area insets of the screen's container.
     ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
 
     var body: some View {
@@ -125,9 +131,9 @@ private struct EmailSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
-    ///   Environment safe areas
+    /// Safe-area insets of the screen's container.
     ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
     var body: some View {
         Group {
@@ -155,9 +161,9 @@ private struct PaymentsSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
-    ///   Environment safe areas
+    /// Safe-area insets of the screen's container.
     ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
     var body: some View {
         Group {
@@ -207,9 +213,9 @@ private struct NoteSection: View {
     ///
     @ObservedObject private(set) var viewModel: SimplePaymentsSummaryViewModel
 
-    ///   Environment safe areas
+    /// Safe-area insets of the screen's container.
     ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
     /// Defines if the order note screen should be shown or not.
     ///

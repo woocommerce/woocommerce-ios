@@ -2,12 +2,12 @@ import Foundation
 
 /// Data model for displaying the refund review screen.
 /// Contains pre-calculated and formatted values ready for display.
-public struct POSRefundReviewData: Equatable {
+public struct POSRefundReviewData: Equatable, Sendable {
 
     /// Which side calculated the totals on this screen. Reported on the refund processing events
     /// so success and failure rates can be compared between the two flows during the
     /// server-refunds rollout. Keep the raw values in step with Android's `refund_flow` property.
-    public enum CalculationFlow: String {
+    public enum CalculationFlow: String, Sendable {
         case local
         case serverComputed = "server_computed"
     }

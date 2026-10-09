@@ -2,6 +2,7 @@ import PointOfSale
 import Testing
 @testable import WooCommerce
 
+@MainActor
 struct CardPresentPaymentsTransactionAlertsProviderTests {
     @Test func test_paymentCancellationConfirmation_confirmationDisabled_returnsNil() {
         // Given

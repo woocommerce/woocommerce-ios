@@ -5,6 +5,7 @@ import UIKit
 
 /// A helper class for presentation of the Tooltip in respect to a `targetView`.
 /// Must be retained to respond to device orientation and size category changes.
+@MainActor
 final class TooltipPresenter {
     private enum Constants {
         static let verticalTooltipDistanceToFocus: CGFloat = 0
@@ -21,7 +22,7 @@ final class TooltipPresenter {
 
     enum Target {
         case view(UIView)
-        case point((() -> CGPoint))
+        case point((@MainActor () -> CGPoint))
     }
 
     private let containerView: UIView
@@ -91,6 +92,7 @@ final class TooltipPresenter {
     }
 
     func showTooltip() {
+        matchTooltipToContainerWidth()
         tooltip.translatesAutoresizingMaskIntoConstraints = false
         containerView.addSubview(tooltip)
         self.tooltip.alpha = 0
@@ -125,6 +127,25 @@ final class TooltipPresenter {
     func removeTooltip() {
         tooltip.removeFromSuperview()
         NotificationCenter.default.removeObserver(self)
+    }
+
+    /// Re-creates a visible tooltip when the container has been resized, e.g. an iPad window resize without rotation.
+    func containerSizeDidChange() {
+        let containerWidth = containerView.bounds.width
+        guard tooltip.superview != nil, containerWidth > 0, tooltip.containerWidth != containerWidth else {
+            return
+        }
+        resetTooltipAndShow()
+    }
+
+    /// Re-creates the tooltip when the container width differs from the one it was sized for.
+    private func matchTooltipToContainerWidth() {
+        let containerWidth = containerView.bounds.width
+        guard containerWidth > 0, tooltip.containerWidth != containerWidth else {
+            return
+        }
+        tooltip.removeFromSuperview()
+        tooltip = tooltip.copy(containerWidth: containerWidth)
     }
 
     private func animateTooltipIn() {
@@ -280,6 +301,7 @@ final class TooltipPresenter {
 // MARK: - TooltipAnimation
 
 /// Enable dependency injection for animation
+@MainActor
 protocol TooltipAnimation: AnyObject {
     static func animate(withDuration duration: TimeInterval,
                         delay: TimeInterval,

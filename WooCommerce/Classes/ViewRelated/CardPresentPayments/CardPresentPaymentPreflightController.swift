@@ -14,9 +14,10 @@ enum CardReaderConnectionResult {
     case canceled(WooAnalyticsEvent.InPersonPayments.CancellationSource)
 }
 
+@MainActor
 protocol CardPresentPaymentPreflightControllerProtocol {
     func start(discoveryMethod: CardReaderDiscoveryMethod?) async
-    func cancelConnectionAttempt()
+    nonisolated func cancelConnectionAttempt()
 
     var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> { get }
 }

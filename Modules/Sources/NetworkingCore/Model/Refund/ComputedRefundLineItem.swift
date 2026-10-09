@@ -9,7 +9,7 @@ import Foundation
 /// amount). Exclusivity is enforced by construction: use the `quantityBased`/`amountBased`
 /// factory methods.
 ///
-public struct ComputedRefundLineItem: Encodable, Equatable {
+public struct ComputedRefundLineItem: Encodable, Equatable, Sendable {
     /// The ID of the order line item being refunded.
     public let lineItemID: Int64
 

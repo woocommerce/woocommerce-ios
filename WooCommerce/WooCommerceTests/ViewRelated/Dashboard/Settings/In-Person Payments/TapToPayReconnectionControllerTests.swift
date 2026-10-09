@@ -11,7 +11,6 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
     private var storageManager: MockStorageManager!
     private var connectionControllerFactory: MockTapToPayCardReaderConnectionControllerFactory!
     private var onboardingCache: CardPresentPaymentOnboardingStateCache!
-    private var sut: TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>!
     private let sampleSiteID: Int64 = 12891
     private let sampleConfiguration = CardPresentPaymentsConfiguration(country: .US)
 
@@ -22,9 +21,6 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
         connectionControllerFactory = MockTapToPayCardReaderConnectionControllerFactory()
         onboardingCache = CardPresentPaymentOnboardingStateCache()
         onboardingCache.update(.completed(plugin: .wcPayPreferred))
-        sut = TapToPayReconnectionController(stores: stores,
-                                             connectionControllerFactory: connectionControllerFactory,
-                                             onboardingCache: onboardingCache)
         storageManager = MockStorageManager()
         setSiteAddressCountry()
     }
@@ -42,12 +38,21 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
         ServiceLocator.selectedSiteSettings.refresh()
     }
 
+    @MainActor
+    private func makeSUT() -> TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter> {
+        TapToPayReconnectionController(stores: stores,
+                                       connectionControllerFactory: connectionControllerFactory,
+                                       onboardingCache: onboardingCache)
+    }
+
     override func tearDown() {
         ServiceLocator.setSelectedSiteSettings(SelectedSiteSettings())
     }
 
+    @MainActor
     func test_reconnectIfNeeded_calls_searchAndConnect_if_no_reader_connected_and_site_and_device_meet_requirements() throws {
         // Given
+        let sut = makeSUT()
         let supportDeterminer = MockCardReaderSupportDeterminer()
         supportDeterminer.shouldReturnLocationIsAuthorized = true
         supportDeterminer.shouldReturnConnectedReader = nil
@@ -60,7 +65,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
                 promise(())
             }
             // When
-            self.sut.reconnectIfNeeded(supportDeterminer: supportDeterminer)
+            sut.reconnectIfNeeded(supportDeterminer: supportDeterminer)
         }
 
         // Then
@@ -68,8 +73,10 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
         XCTAssert(mockConnectionController.didCallSearchAndConnect)
     }
 
+    @MainActor
     func test_reconnectIfNeeded_creates_a_new_connection_controller_with_expected_parameters() throws {
         // Given
+        let sut = makeSUT()
         let supportDeterminer = MockCardReaderSupportDeterminer()
         supportDeterminer.shouldReturnLocationIsAuthorized = true
         supportDeterminer.shouldReturnConnectedReader = nil
@@ -82,7 +89,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
                 promise(())
             }
             // When
-            self.sut.reconnectIfNeeded(supportDeterminer: supportDeterminer)
+            sut.reconnectIfNeeded(supportDeterminer: supportDeterminer)
         }
 
         // Then
@@ -93,8 +100,10 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
                     connectionControllerFactory.spyCreateConnectionControllerAnalyticsTracker?.connectionType)
     }
 
+    @MainActor
     func test_cancelReconnection_resets_isReconnecting() {
         // Given
+        let sut = makeSUT()
         let supportDeterminer = MockCardReaderSupportDeterminer()
         supportDeterminer.shouldReturnLocationIsAuthorized = true
         supportDeterminer.shouldReturnConnectedReader = nil
@@ -106,7 +115,7 @@ final class TapToPayReconnectionControllerTests: XCTestCase {
             self.connectionControllerFactory.onSearchAndConnectCalled = {
                 promise(())
             }
-            self.sut.reconnectIfNeeded(supportDeterminer: supportDeterminer)
+            sut.reconnectIfNeeded(supportDeterminer: supportDeterminer)
         }
         XCTAssertTrue(sut.isReconnecting)
 

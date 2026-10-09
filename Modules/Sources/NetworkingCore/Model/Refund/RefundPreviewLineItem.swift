@@ -7,7 +7,7 @@ import Foundation
 /// values) or `refund_total` (fee/shipping lines — a tax-inclusive amount). Exclusivity is
 /// enforced by construction: use the `quantityBased`/`amountBased` factory methods.
 ///
-public struct RefundPreviewLineItem: Encodable, Equatable {
+public struct RefundPreviewLineItem: Encodable, Equatable, Sendable {
     /// The ID of the order line item being refunded.
     public let lineItemID: Int64
 

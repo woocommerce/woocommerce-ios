@@ -11,6 +11,7 @@ import struct NetworkingCore.JetpackSite
 import struct NetworkingCore.OrderItem
 import PointOfSale
 
+@MainActor
 protocol POSTabVisibilityCheckerProtocol {
     /// Checks the initial visibility of the POS tab.
     func checkInitialVisibility() -> Bool

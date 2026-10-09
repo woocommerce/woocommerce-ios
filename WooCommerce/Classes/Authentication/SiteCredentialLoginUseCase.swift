@@ -1,4 +1,5 @@
 import Foundation
+import Yosemite
 import class Networking.UserAgent
 import enum NetworkingCore.CookieNonceAuthenticationFailure
 import struct NetworkingCore.CookieNonceAuthenticationEndpoints
@@ -34,7 +35,8 @@ enum SiteCredentialLoginError: LocalizedError {
     /// Preserve the established presentation and recovery policy independently of analytics context.
     var presentationError: SiteCredentialLoginError {
         guard case .unexpectedResponse(let failure) = self else { return self }
-        return failure.statusCode.map { .unacceptableStatusCode(code: $0) } ?? .invalidLoginResponse
+        guard failure.kind == .unacceptableStatusCode, let code = failure.statusCode else { return .invalidLoginResponse }
+        return .unacceptableStatusCode(code: code)
     }
 
     /// Used for tracking error code
@@ -259,6 +261,8 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
 }
 
 private extension SiteCredentialLoginUseCase {
+    typealias LoginResponse = (data: Data, http: HTTPURLResponse, request: URLRequest)
+
     func clearAllCookies() {
         if let cookies = cookieJar.cookies {
             for cookie in cookies {
@@ -298,15 +302,15 @@ private extension SiteCredentialLoginUseCase {
                     from: responseURL,
                     afterLoginAt: submissionURL
                   ) else {
-                throw SiteCredentialLoginError.unexpectedResponse(.init(stage: .credentials))
+                throw unexpectedResponse(stage: .credentials, response: loginResponse)
             }
         } else {
-            let html = try decodedHTML(from: loginResponse.data, stage: .credentials)
-            throw SiteCredentialLoginError(
+            let html = try decodedHTML(from: loginResponse, stage: .credentials)
+            throw responseError(
                 CookieNonceAuthenticationRules.credentialFailure(
                     in: html,
                     endpoints: endpoints
-                ), stage: .credentials
+                ), stage: .credentials, response: loginResponse
             )
         }
 
@@ -331,21 +335,21 @@ private extension SiteCredentialLoginUseCase {
         from startURL: URL,
         stage: CookieNonceAuthenticationResponseStage,
         endpoints: CookieNonceAuthenticationEndpoints
-    ) async throws -> (url: URL, html: String) {
+    ) async throws -> (url: URL, html: String, response: LoginResponse) {
         var requestURL = startURL
         var redirectCount = 0
         while true {
             let response = try await load(getRequest(url: requestURL), using: session, stage: stage)
             try validate(response, stage: stage, endpoints: endpoints)
             guard CookieNonceAuthenticationRules.isRedirect(statusCode: response.http.statusCode) else {
-                let html = try decodedHTML(from: response.data, stage: stage)
-                return (response.http.url ?? requestURL, html)
+                let html = try decodedHTML(from: response, stage: stage)
+                return (response.http.url ?? requestURL, html, response)
             }
             guard redirectCount < CookieNonceAuthenticationEndpoints.maximumRedirectCount,
                   let location = response.http.value(forHTTPHeaderField: "Location") else {
-                throw SiteCredentialLoginError.unexpectedResponse(.init(stage: stage))
+                throw unexpectedResponse(stage: stage, response: response)
             }
-            requestURL = try endpointValue(stage: stage) {
+            requestURL = try endpointValue(stage: stage, response: response) {
                 try endpoints.resolveRedirect(location: location, from: response.http.url ?? requestURL)
             }
             redirectCount += 1
@@ -355,10 +359,10 @@ private extension SiteCredentialLoginUseCase {
     @MainActor
     func preflight(endpoints: CookieNonceAuthenticationEndpoints) async throws -> URL {
         let document = try await loadDocument(from: endpoints.loginEntryURL, stage: .preflight, endpoints: endpoints)
-        guard let submissionURL = try endpointValue(stage: .preflight, {
+        guard let submissionURL = try endpointValue(stage: .preflight, response: document.response, {
             try endpoints.verifiedLoginFormSubmissionURL(in: document.html, documentURL: document.url)
         }) else {
-            throw SiteCredentialLoginError.unexpectedResponse(.init(stage: .preflight))
+            throw unexpectedResponse(stage: .preflight, response: document.response)
         }
         return submissionURL
     }
@@ -374,7 +378,7 @@ private extension SiteCredentialLoginUseCase {
         guard let responseURL = response.http.url,
               endpoints.isExpectedNonceURL(responseURL, afterLoginAt: loginURL),
               CookieNonceAuthenticationRules.validatedNonce(from: response.data) != nil else {
-            throw SiteCredentialLoginError.unexpectedResponse(.init(stage: .nonce))
+            throw unexpectedResponse(stage: .nonce, response: response)
         }
     }
 
@@ -384,27 +388,27 @@ private extension SiteCredentialLoginUseCase {
         let document = try await loadDocument(from: adminBaseURL, stage: .dashboard, endpoints: endpoints)
         guard endpoints.isExpectedAdminBaseURL(document.url, afterLoginAt: loginURL),
               endpoints.isAuthenticatedDashboardHTML(document.html) else {
-            throw SiteCredentialLoginError(
+            throw responseError(
                 CookieNonceAuthenticationRules.credentialFailure(
                     in: document.html,
                     endpoints: endpoints
-                ), stage: .dashboard
+                ), stage: .dashboard, response: document.response
             )
         }
     }
 
     @MainActor
     func load(_ request: URLRequest, using session: URLSessionProtocol,
-              stage: CookieNonceAuthenticationResponseStage) async throws -> (data: Data, http: HTTPURLResponse) {
+              stage: CookieNonceAuthenticationResponseStage) async throws -> LoginResponse {
         try Task.checkCancellation()
         let (data, response) = try await session.data(for: request)
         guard let response = response as? HTTPURLResponse else {
-            throw SiteCredentialLoginError.unexpectedResponse(.init(stage: stage))
+            throw unexpectedResponse(stage: stage, request: request)
         }
-        return (data, response)
+        return (data, response, request)
     }
 
-    func validate(_ result: (data: Data, http: HTTPURLResponse),
+    func validate(_ result: LoginResponse,
                   stage: CookieNonceAuthenticationResponseStage,
                   endpoints: CookieNonceAuthenticationEndpoints) throws {
         let response = result.http
@@ -414,11 +418,11 @@ private extension SiteCredentialLoginUseCase {
             locationHeader: response.value(forHTTPHeaderField: "Location"),
             stage: stage
         ) {
-            if case .unacceptableStatusCode(let code) = failure,
+            if case .unacceptableStatusCode = failure,
                !isRecognizedContent(result.data, responseURL: response.url, stage: stage, endpoints: endpoints) {
-                throw SiteCredentialLoginError.unexpectedResponse(.init(stage: stage, statusCode: code))
+                throw unexpectedResponse(stage: stage, kind: .unacceptableStatusCode, response: result)
             }
-            throw SiteCredentialLoginError(failure, stage: stage)
+            throw responseError(failure, stage: stage, response: result)
         }
     }
 
@@ -465,22 +469,45 @@ private extension SiteCredentialLoginUseCase {
         return request
     }
 
-    func decodedHTML(from data: Data, stage: CookieNonceAuthenticationResponseStage) throws -> String {
-        guard let html = String(data: data, encoding: .utf8) else {
-            throw SiteCredentialLoginError.unexpectedResponse(.init(stage: stage))
+    func decodedHTML(from response: LoginResponse, stage: CookieNonceAuthenticationResponseStage) throws -> String {
+        guard let html = String(data: response.data, encoding: .utf8) else {
+            throw unexpectedResponse(stage: stage, response: response)
         }
         return html
     }
 
-    func endpointValue<T>(stage: CookieNonceAuthenticationResponseStage? = nil, _ operation: () throws -> T) throws -> T {
+    func endpointValue<T>(stage: CookieNonceAuthenticationResponseStage? = nil, response: LoginResponse? = nil, _ operation: () throws -> T) throws -> T {
         do {
             return try operation()
         } catch {
             if let stage {
-                throw SiteCredentialLoginError.unexpectedResponse(.init(stage: stage))
+                throw unexpectedResponse(stage: stage, response: response)
             }
             throw SiteCredentialLoginError.invalidLoginResponse
         }
+    }
+
+    func responseError(_ failure: CookieNonceAuthenticationFailure, stage: CookieNonceAuthenticationResponseStage,
+                       response: LoginResponse) -> SiteCredentialLoginError {
+        if failure == .invalidResponse { return unexpectedResponse(stage: stage, response: response) }
+        return SiteCredentialLoginError(failure, stage: stage)
+    }
+
+    func unexpectedResponse(stage: CookieNonceAuthenticationResponseStage,
+                            kind: LoginUnexpectedResponseFailure.Kind = .unexpectedContent,
+                            response: LoginResponse? = nil, request: URLRequest? = nil) -> SiteCredentialLoginError {
+        // A rejected nonce can still contain a secret. Only structured error pages may contribute an excerpt.
+        let body = response.flatMap { result -> Data? in
+            if stage == .nonce {
+                let text = String(data: result.data, encoding: .utf8)?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
+                guard text.hasPrefix("<") || text.hasPrefix("{") else { return nil }
+            }
+            return result.data
+        }
+        let error = UnexpectedStoreResponseError(kind: kind, statusCode: response?.http.statusCode, data: body,
+                                                contentType: response?.http.value(forHTTPHeaderField: "Content-Type"),
+                                                request: response?.request ?? request)
+        return .unexpectedResponse(.init(stage: stage, statusCode: error.statusCode, kind: kind, diagnostics: error.diagnostics))
     }
 
     static func makeRedirectBlockingSession(cookieJar: HTTPCookieStorage) -> URLSession {

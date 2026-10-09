@@ -57,7 +57,8 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
                     XCTFail("Expected unexpected content at \(stage), got \(error)")
                     continue
                 }
-                XCTAssertEqual(failure, .init(stage: stage))
+                XCTAssertEqual(failure.step, LoginUnexpectedResponseFailure(stage: stage).step)
+                XCTAssertEqual(failure.statusCode, 200)
                 XCTAssertEqual(failure.kind, .unexpectedContent)
                 XCTAssertEqual(error.errorMessage, SiteCredentialLoginError.invalidLoginResponse.errorMessage)
                 XCTAssertEqual(error.offersBrowserAlternative(at: stage), stage == .credentials)
@@ -66,6 +67,46 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
                 XCTAssertFalse(String(describing: (error as NSError).userInfo).contains("private-response-sentinel"))
             }
         }
+    }
+
+    func test_handle_login_when_response_has_private_content_then_carries_only_sanitized_diagnostics() async throws {
+        for stage in credentialStages {
+            // Given
+            let html = """
+            <html><head><title>Blocked</title><script>private-script</script></head>
+            <body>qa@example.test 192.0.2.123 password=secret-marker token=private-token
+            <input value="private-input"><div hidden>private-hidden</div></body></html>
+            """
+
+            // When
+            let error = try await responseFailure(at: stage, data: Data(html.utf8), headers: ["Content-Type": "text/html; charset=UTF-8"])
+
+            // Then
+            guard case .unexpectedResponse(let failure) = error else { return XCTFail("Expected unexpected response") }
+            let methodAndPath: String = switch stage {
+            case .preflight: "GET /wp-login.php"
+            case .credentials: "POST /wp-login.php"
+            case .dashboard: "GET /wp-admin/"
+            case .nonce: "GET /wp-admin/admin-ajax.php"
+            }
+            XCTAssertEqual(failure.diagnostics?.request, methodAndPath)
+            XCTAssertEqual(failure.diagnostics?.contentType, "text/html")
+            XCTAssertEqual(failure.diagnostics?.excerpt, "Blocked | [email] [ip] password=[redacted] token=[redacted]")
+            XCTAssertEqual(error.errorCode, -1)
+            XCTAssertFalse(String(reflecting: error).contains("Blocked"))
+            XCTAssertFalse(String(describing: error.underlyingError.userInfo).contains("Blocked"))
+        }
+    }
+
+    func test_handle_login_when_nonce_body_is_rejected_then_does_not_retain_nonce_text() async throws {
+        // Given / When
+        let error = try await responseFailure(at: .nonce, data: Data("private-nonce-value".utf8))
+
+        // Then
+        guard case .unexpectedResponse(let failure) = error else { return XCTFail("Expected unexpected response") }
+        XCTAssertEqual(failure.statusCode, 200)
+        XCTAssertEqual(failure.diagnostics?.request, "GET /wp-admin/admin-ajax.php")
+        XCTAssertNil(failure.diagnostics?.excerpt)
     }
 
     func test_handle_login_when_status_rejects_unexpected_content_then_reports_status_and_exact_stage() async throws {
@@ -80,7 +121,8 @@ final class SiteCredentialLoginUseCaseTests: XCTestCase {
                         XCTFail("Expected unexpected status at \(stage), got \(error)")
                         continue
                     }
-                    XCTAssertEqual(failure, .init(stage: stage, statusCode: code))
+                    XCTAssertEqual(failure.step, LoginUnexpectedResponseFailure(stage: stage).step)
+                    XCTAssertEqual(failure.statusCode, code)
                     XCTAssertEqual(failure.kind, .unacceptableStatusCode)
                     XCTAssertEqual(error.errorCode, code)
                     XCTAssertEqual(error.errorMessage, SiteCredentialLoginError.unacceptableStatusCode(code: code).errorMessage)

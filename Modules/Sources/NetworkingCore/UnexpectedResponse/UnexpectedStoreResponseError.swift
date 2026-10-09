@@ -24,7 +24,8 @@ public struct UnexpectedStoreResponseError: Error, Equatable, Sendable, CustomNS
         self.diagnostics = nil
     }
 
-    init(kind: Kind, statusCode: Int?, data: Data? = nil, contentType: String?, request: URLRequest?) {
+    /// Builds support-only diagnostics, sanitizing metadata and limiting the response excerpt.
+    public init(kind: Kind, statusCode: Int?, data: Data? = nil, contentType: String?, request: URLRequest?) {
         self.kind = kind
         self.statusCode = statusCode
         self.diagnostics = Diagnostics(

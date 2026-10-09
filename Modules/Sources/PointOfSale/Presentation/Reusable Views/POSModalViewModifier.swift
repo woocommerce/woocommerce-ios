@@ -3,8 +3,7 @@ import SwiftUI
 struct POSRootModalViewModifier: ViewModifier {
     @EnvironmentObject var modalManager: POSModalManager
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    /// Measured from the root content, so it follows the window rather than the screen.
-    @State private var modalParentSize: CGSize = .zero
+    @Environment(\.posHeaderTopPadding) private var topPadding
 
     private let animationDuration = Constants.animationDuration
     private let scaleTransitionAmount = Constants.scaleTransitionAmount
@@ -20,54 +19,54 @@ struct POSRootModalViewModifier: ViewModifier {
             .blur(radius: modalManager.isPresented ? 8 : 0)
             .allowsHitTesting(!modalManager.isPresented)
             .accessibilityElement(children: modalManager.isPresented ? .ignore : .contain)
-            .measureFrame { frame in
-                updateModalParentSize(with: frame.size)
-            }
             .overlay {
-                if modalManager.isPresented {
-                    Color.posSurfaceDim.opacity(0.8)
-                        .edgesIgnoringSafeArea(.all)
-                        .onTapGesture {
-                            if modalManager.allowsInteractiveDismissal {
-                                modalManager.dismiss()
-                            }
-                        }
-                    // Don't scale/fade in the backdrop
-                        .animation(nil, value: modalManager.isPresented)
-                    // Phone full-screen: paint the bright surface as a sibling above the dim
-                    // backdrop so the screen reads as a single solid take-over, with no
-                    // backdrop showing through above the status bar.
-                    if isFullScreen {
-                        Color.posSurfaceBright
-                            .edgesIgnoringSafeArea(.all)
-                            .animation(nil, value: modalManager.isPresented)
-                    }
+                GeometryReader { geometry in
+                    let modalPadding = isFullScreen ? POSPadding.none : POSPadding.medium
                     ZStack {
-                        modalManager.getContent()
-                            .environment(\.posModalParentSize, modalParentSize)
-                            .environment(\.posModalDismissAction, { modalManager.dismiss() })
-                            .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
-                            .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
-                            .posShadow(isFullScreen ? .none : .large,
-                                       cornerRadius: isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
-                            .padding(isFullScreen ? POSPadding.none : POSPadding.medium)
+                        if modalManager.isPresented {
+                            Color.posSurfaceDim.opacity(0.8)
+                                .edgesIgnoringSafeArea(.all)
+                                .onTapGesture {
+                                    if modalManager.allowsInteractiveDismissal {
+                                        modalManager.dismiss()
+                                    }
+                                }
+                            // Don't scale/fade in the backdrop
+                                .animation(nil, value: modalManager.isPresented)
+                            // Phone full-screen: paint the bright surface as a sibling above the dim
+                            // backdrop so the screen reads as a single solid take-over, with no
+                            // backdrop showing through above the status bar.
+                            if isFullScreen {
+                                Color.posSurfaceBright
+                                    .edgesIgnoringSafeArea(.all)
+                                    .animation(nil, value: modalManager.isPresented)
+                            }
+                            ZStack {
+                                modalManager.getContent()
+                                    .environment(\.posModalParentSize, geometry.size)
+                                    .environment(\.posHeaderTopPadding, isFullScreen ? topPadding : nil)
+                                    .environment(\.posModalDismissAction, { modalManager.dismiss() })
+                                    .background(isFullScreen ? Color.clear : Color.posSurfaceBright)
+                                    .cornerRadius(isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
+                                    .posShadow(isFullScreen ? .none : .large,
+                                               cornerRadius: isFullScreen ? 0 : POSCornerRadiusStyle.extraLarge.value)
+                                    .padding(modalPadding)
+                            }
+                            .zIndex(1)
+                            // Scale the modal container in and out, fading appropriately.
+                            // Unfortunately combined doesn't work on removal.
+                            // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
+                            // consistent even when animating out, which it wouldn't be if unspecified.
+                            .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
+                        }
                     }
-                    .zIndex(1)
-                    // Scale the modal container in and out, fading appropriately.
-                    // Unfortunately combined doesn't work on removal.
-                    // The extra ZStack prevents changing modalContent from scaling and fading, but the ZIndex needs to be
-                    // consistent even when animating out, which it wouldn't be if unspecified.
-                    .transition(.scale(scale: scaleTransitionAmount).combined(with: .opacity))
+                    .frame(width: geometry.size.width, height: geometry.size.height)
                 }
+                // Center cards across the bottom system inset; full-screen content keeps its safe area.
+                .ignoresSafeArea(.container, edges: isFullScreen ? [] : .bottom)
             }
             .animation(.easeInOut(duration: animationDuration), value: modalManager.isPresented)
             .posIgnoresHiddenKeyboardSafeArea()
-    }
-
-    private func updateModalParentSize(with size: CGSize) {
-        if size != modalParentSize && size != .zero {
-            modalParentSize = size
-        }
     }
 }
 

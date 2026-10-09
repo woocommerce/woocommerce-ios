@@ -6,6 +6,7 @@ import protocol Storage.StorageManagerType
 
 /// All things view-related for Refunds.
 ///
+@MainActor
 final class RefundDetailsViewModel {
     /// Refund
     ///

@@ -1,11 +1,11 @@
 import Testing
-import Observation
 import Foundation
 
 @testable import PointOfSale
 import struct Yosemite.Order
 import struct Yosemite.OrderItem
 import struct Yosemite.OrderFeeLine
+import enum Yosemite.OrderFeeTaxStatus
 import struct Yosemite.OrderCouponLine
 import struct Yosemite.POSCustomAmount
 import struct Yosemite.SystemPlugin
@@ -67,7 +67,9 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         mockOrderService.orderToReturn = MockOrders().sampleOrder()
 
-        mockOrderService.onSyncOrderCalled = { [weak sut] in
+        mockOrderService.onSyncOrderCalled = { [weak sut, mockOrderService] in
+            // Re-enter once, so a broken "already syncing" guard fails on the call count instead of recursing forever.
+            mockOrderService.onSyncOrderCalled = nil
             #expect(sut?.orderState.isSyncing == true)
             await sut?.syncOrder(for: Cart(purchasableItems: [makeItem(quantity: 2),
                                                               makeItem(quantity: 5)]),
@@ -130,40 +132,17 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         let fakeOrder = Order.fake()
         mockOrderService.orderToReturn = fakeOrder
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
-                    // Observation calls synchronously inside the main-actor controller's mutation.
-                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
-                    MainActor.assumeIsolated {
-                        _ = sut.orderState
-                    }
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
-            }
-            observeOrderState()
-
-            // When
-            await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        #expect(sut.orderState == .idle)
+        mockOrderService.onSyncOrderCalled = { [weak sut] in
+            #expect(sut?.orderState == .syncing)
         }
 
-        await orderStateAppendTask?.value
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
 
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .loaded(.init(cartTotal: "$0.00", orderTotal: "", taxTotal: "", orderTotalDecimal: 0.0),
-                    fakeOrder)
-        ])
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        #expect(sut.orderState == .loaded(.init(cartTotal: "$0.00", orderTotal: "", taxTotal: "", orderTotalDecimal: 0.0), fakeOrder))
     }
 
     @Test func syncOrder_with_order_sync_failure_sets_orderState_syncing_then_error() async throws {
@@ -174,39 +153,17 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         mockOrderService.orderToReturn = nil
 
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
-                    // Observation calls synchronously inside the main-actor controller's mutation.
-                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
-                    MainActor.assumeIsolated {
-                        _ = sut.orderState
-                    }
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
-            }
-            observeOrderState()
-
-            // When
-            await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        #expect(sut.orderState == .idle)
+        mockOrderService.onSyncOrderCalled = { [weak sut] in
+            #expect(sut?.orderState == .syncing)
         }
 
-        await orderStateAppendTask?.value
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
 
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .error(.other(MockPOSOrderServiceError.noOrderToReturn.localizedDescription), {})
-        ])
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        #expect(sut.orderState == .error(.other(MockPOSOrderServiceError.noOrderToReturn.localizedDescription), {}))
     }
 
     @Test func syncOrder_when_order_does_not_match_cart_then_sets_orderDoesNotMatchCart_error() async throws {
@@ -217,39 +174,17 @@ struct PointOfSaleOrderControllerTests {
                                              analytics: MockPOSAnalytics())
         mockOrderService.errorToReturn = POSOrderService.POSOrderServiceError.orderDoesNotMatchCart
 
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
-                    // Observation calls synchronously inside the main-actor controller's mutation.
-                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
-                    MainActor.assumeIsolated {
-                        _ = sut.orderState
-                    }
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
-            }
-            observeOrderState()
-
-            // When
-            await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
+        #expect(sut.orderState == .idle)
+        mockOrderService.onSyncOrderCalled = { [weak sut] in
+            #expect(sut?.orderState == .syncing)
         }
 
-        await orderStateAppendTask?.value
+        // When
+        await sut.syncOrder(for: Cart(purchasableItems: [makeItem()]), retryHandler: {})
 
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .error(.orderDoesNotMatchCart, {})
-        ])
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        #expect(sut.orderState == .error(.orderDoesNotMatchCart, {}))
     }
 
     @Test func sendReceipt_when_there_is_no_order_then_throws_noOrder_error() async throws {
@@ -895,45 +830,23 @@ struct PointOfSaleOrderControllerTests {
         let errorMessage = "Invalid coupon code"
         mockOrderService.errorToReturn = DotcomError.unknown(code: "woocommerce_rest_invalid_coupon", message: errorMessage, data: nil)
 
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
-                    // Observation calls synchronously inside the main-actor controller's mutation.
-                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
-                    MainActor.assumeIsolated {
-                        _ = sut.orderState
-                    }
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
-            }
-            observeOrderState()
-
-            // When
-            await sut.syncOrder(
-                for: Cart(
-                    purchasableItems: [makeItem()],
-                    coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "INVALID", summary: "")]
-                ),
-                retryHandler: {}
-            )
+        #expect(sut.orderState == .idle)
+        mockOrderService.onSyncOrderCalled = { [weak sut] in
+            #expect(sut?.orderState == .syncing)
         }
 
-        await orderStateAppendTask?.value
+        // When
+        await sut.syncOrder(
+            for: Cart(
+                purchasableItems: [makeItem()],
+                coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "INVALID", summary: "")]
+            ),
+            retryHandler: {}
+        )
 
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .error(.invalidCoupon(errorMessage), {})
-        ])
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        #expect(sut.orderState == .error(.invalidCoupon(errorMessage), {}))
     }
 
     @Test func syncOrder_when_orderService_fails_with_networkError_containing_couponsError_then_sets_invalidCoupon_error() async throws {
@@ -952,45 +865,23 @@ struct PointOfSaleOrderControllerTests {
         let errorData = errorJSON.data(using: .utf8)!
         mockOrderService.errorToReturn = NetworkError.unacceptableStatusCode(statusCode: 400, response: errorData)
 
-        var orderStates: [PointOfSaleInternalOrderState] = [sut.orderState]
-        var orderStateAppendTask: Task<Void, Never>? = nil
-        await confirmation(expectedCount: 2) { confirmation in
-            @Sendable func observeOrderState() {
-                withObservationTracking {
-                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
-                    // Observation calls synchronously inside the main-actor controller's mutation.
-                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
-                    MainActor.assumeIsolated {
-                        _ = sut.orderState
-                    }
-                } onChange: {
-                    orderStateAppendTask = Task { @MainActor in
-                        orderStates.append(sut.orderState)
-                    }
-                    confirmation()
-                    observeOrderState()
-                }
-            }
-            observeOrderState()
-
-            // When
-            await sut.syncOrder(
-                for: Cart(
-                    purchasableItems: [makeItem()],
-                    coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "INVALID", summary: "")]
-                ),
-                retryHandler: {}
-            )
+        #expect(sut.orderState == .idle)
+        mockOrderService.onSyncOrderCalled = { [weak sut] in
+            #expect(sut?.orderState == .syncing)
         }
 
-        await orderStateAppendTask?.value
+        // When
+        await sut.syncOrder(
+            for: Cart(
+                purchasableItems: [makeItem()],
+                coupons: [.init(id: UUID(), posItemIdentifier: POSItemIdentifier(underlyingType: .coupon, itemID: 1), code: "INVALID", summary: "")]
+            ),
+            retryHandler: {}
+        )
 
         // Then
-        #expect(orderStates == [
-            .idle,
-            .syncing,
-            .error(.invalidCoupon(errorMessage), {})
-        ])
+        #expect(mockOrderService.syncOrderCallCount == 1)
+        #expect(sut.orderState == .error(.invalidCoupon(errorMessage), {}))
     }
 
     @Test func syncOrder_when_fails_sets_order_to_nil() async throws {
@@ -1105,7 +996,7 @@ struct PointOfSaleOrderControllerTests {
                                              currencySettingsProvider: MockCurrencySettingsProvider(),
                                              analytics: MockPOSAnalytics())
         let customAmountID = UUID()
-        let fee = OrderFeeLine.fake().copy(name: "Tip", taxStatus: .none, total: "5.00")
+        let fee = OrderFeeLine.fake().copy(name: "Tip", taxStatus: OrderFeeTaxStatus.none, total: "5.00")
         let fakeOrder = Order.fake().copy(fees: [fee])
         mockOrderService.orderToReturn = fakeOrder
 

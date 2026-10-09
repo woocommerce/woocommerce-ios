@@ -30,7 +30,9 @@ final class RefundProductsTotalTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        applyCellStyles()
+        MainActor.assumeIsolated {
+            applyCellStyles()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {

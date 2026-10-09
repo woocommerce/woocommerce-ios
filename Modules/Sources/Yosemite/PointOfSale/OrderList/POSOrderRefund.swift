@@ -2,7 +2,7 @@ import Foundation
 import struct NetworkingCore.OrderRefundCondensed
 import class WooFoundationCore.CurrencyFormatter
 
-public struct POSOrderRefund: Equatable, Hashable, Identifiable {
+public struct POSOrderRefund: Equatable, Hashable, Identifiable, Sendable {
     public var id: Int64 { refundID }
 
     public let refundID: Int64

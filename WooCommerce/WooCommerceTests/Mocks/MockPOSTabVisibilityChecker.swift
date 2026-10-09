@@ -1,6 +1,7 @@
 import Foundation
 @testable import WooCommerce
 
+@MainActor
 final class MockPOSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     var initialVisibility: Bool = false
     var visibility: Bool = false
@@ -17,7 +18,6 @@ final class MockPOSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
         initialVisibility
     }
 
-    @MainActor
     func checkVisibility() async -> Bool {
         visibilityCheckStarted = true
         if resolvesVisibilityOnlyOnCancellation {

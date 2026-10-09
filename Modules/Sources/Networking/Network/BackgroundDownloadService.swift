@@ -16,12 +16,6 @@ public final class BackgroundDownloadService: NSObject {
     }
 
     private let state = OSAllocatedUnfairLock(initialState: State())
-    private let fileManager: FileManager
-
-    public init(fileManager: FileManager = .default) {
-        self.fileManager = fileManager
-        super.init()
-    }
 }
 
 // MARK: - BackgroundDownloadProtocol
@@ -143,6 +137,9 @@ extension BackgroundDownloadService: URLSessionDownloadDelegate {
             // before parsing completes. The temp location returned by URLSession is cleaned
             // immediately after this delegate method returns, but we need the file to persist
             // until async parsing completes.
+            // The shared file manager is used because `FileManager` is not `Sendable`, and the shared
+            // instance is documented as safe to call from any thread.
+            let fileManager = FileManager.default
             let tempDirectory = fileManager.temporaryDirectory
             let fileName = downloadTask.originalRequest?.url?.lastPathComponent ?? "catalog_\(UUID().uuidString).json"
             let persistentTempURL = tempDirectory.appendingPathComponent(fileName)

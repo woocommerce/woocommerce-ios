@@ -18,6 +18,7 @@ import enum Networking.DotcomError
 import enum Networking.NetworkError
 import struct Yosemite.POSItemIdentifier
 
+@MainActor
 @Suite(.timeLimit(.minutes(5)))
 struct PointOfSaleOrderControllerTests {
     let mockOrderService = MockPOSOrderService()
@@ -134,7 +135,12 @@ struct PointOfSaleOrderControllerTests {
         await confirmation(expectedCount: 2) { confirmation in
             @Sendable func observeOrderState() {
                 withObservationTracking {
-                    _ = sut.orderState
+                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
+                    // Observation calls synchronously inside the main-actor controller's mutation.
+                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
+                    MainActor.assumeIsolated {
+                        _ = sut.orderState
+                    }
                 } onChange: {
                     orderStateAppendTask = Task { @MainActor in
                         orderStates.append(sut.orderState)
@@ -173,7 +179,12 @@ struct PointOfSaleOrderControllerTests {
         await confirmation(expectedCount: 2) { confirmation in
             @Sendable func observeOrderState() {
                 withObservationTracking {
-                    _ = sut.orderState
+                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
+                    // Observation calls synchronously inside the main-actor controller's mutation.
+                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
+                    MainActor.assumeIsolated {
+                        _ = sut.orderState
+                    }
                 } onChange: {
                     orderStateAppendTask = Task { @MainActor in
                         orderStates.append(sut.orderState)
@@ -211,7 +222,12 @@ struct PointOfSaleOrderControllerTests {
         await confirmation(expectedCount: 2) { confirmation in
             @Sendable func observeOrderState() {
                 withObservationTracking {
-                    _ = sut.orderState
+                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
+                    // Observation calls synchronously inside the main-actor controller's mutation.
+                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
+                    MainActor.assumeIsolated {
+                        _ = sut.orderState
+                    }
                 } onChange: {
                     orderStateAppendTask = Task { @MainActor in
                         orderStates.append(sut.orderState)
@@ -884,7 +900,12 @@ struct PointOfSaleOrderControllerTests {
         await confirmation(expectedCount: 2) { confirmation in
             @Sendable func observeOrderState() {
                 withObservationTracking {
-                    _ = sut.orderState
+                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
+                    // Observation calls synchronously inside the main-actor controller's mutation.
+                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
+                    MainActor.assumeIsolated {
+                        _ = sut.orderState
+                    }
                 } onChange: {
                     orderStateAppendTask = Task { @MainActor in
                         orderStates.append(sut.orderState)
@@ -936,7 +957,12 @@ struct PointOfSaleOrderControllerTests {
         await confirmation(expectedCount: 2) { confirmation in
             @Sendable func observeOrderState() {
                 withObservationTracking {
-                    _ = sut.orderState
+                    // Runs on the main actor: first from this main-actor test, then from `onChange`, which
+                    // Observation calls synchronously inside the main-actor controller's mutation.
+                    // Remove when WOOMOB-4193 moves these tests to a main-actor state recorder.
+                    MainActor.assumeIsolated {
+                        _ = sut.orderState
+                    }
                 } onChange: {
                     orderStateAppendTask = Task { @MainActor in
                         orderStates.append(sut.orderState)

@@ -713,8 +713,8 @@ private extension WooShippingCreateLabelsViewModel {
                     }
                     // A missing phone number or email is the only origin input that reliably fails rate loading,
                     // so surface the specific missing field before falling back to the generic unverified notice.
-                    // Use the digit-based check (matching the destination phone notice) so whitespace/punctuation-only
-                    // phones, which the backend also rejects as empty, are treated as missing.
+                    // Use the digit-based check so whitespace/punctuation-only phones, which the backend also rejects as empty,
+                    // are treated as missing.
                     if selectedOriginAddress.toWooShippingAddress().phoneDigits.isEmpty {
                         return Localization.OriginAddress.missingPhone
                     }
@@ -748,8 +748,9 @@ private extension WooShippingCreateLabelsViewModel {
             .assign(to: &$destinationAddressStatusNoticeLabel)
 
         $destinationAddress
-            .map { [weak self] address -> String? in
-                return self?.destinationPhoneNoticeLabel(for: address)
+            .combineLatest($selectedOriginAddress, $selectedRate)
+            .map { [weak self] address, originAddress, selectedRate -> String? in
+                self?.destinationPhoneNoticeLabel(for: address, originCountry: originAddress?.country, selectedRate: selectedRate)
             }
             .assign(to: &$destinationPhoneNumberNoticeLabel)
 
@@ -764,17 +765,27 @@ private extension WooShippingCreateLabelsViewModel {
             .assign(to: &$destinationAddressStatusNoticeLabel)
     }
 
-    func destinationPhoneNoticeLabel(for address: WooShippingAddress?) -> String? {
+    func destinationPhoneNoticeLabel(for address: WooShippingAddress?,
+                                     originCountry: String?,
+                                     selectedRate: WooShippingSelectedRate?) -> String? {
         guard let address else {
             return nil
         }
-        if address.phoneDigits.isEmpty {
+        let isRequired = WooShippingPhoneValidator.isDestinationPhoneRequired(originCountry: originCountry,
+                                                                              destinationCountry: address.country,
+                                                                              carrierID: selectedRate?.rate.carrierID)
+        switch WooShippingPhoneValidator.issue(phone: address.phone, country: address.country, isRequired: isRequired) {
+        case .missing:
+            if let selectedRate, !WooShippingPhoneValidator.isInternational(originCountry: originCountry, destinationCountry: address.country) {
+                // On a domestic shipment, only the selected service can require the phone.
+                return String.localizedStringWithFormat(Localization.DestinationPhoneNumber.requiredByService, selectedRate.rate.title)
+            }
             return Localization.DestinationPhoneNumber.missing
-        }
-        if !address.hasValidPhoneNumberForShipping {
+        case .invalid:
             return Localization.DestinationPhoneNumber.invalid
+        case .none:
+            return nil
         }
-        return nil
     }
 
     /// Ensures that initial notices are only displayed after the view is ready
@@ -981,6 +992,12 @@ private extension WooShippingCreateLabelsViewModel {
                 "wooShipping.createLabels.destinationPhoneNumber.invalid",
                 value: "Please enter a valid phone number for the destination address.",
                 comment: "Notice when the destination phone number is invalid"
+            )
+            static let requiredByService = NSLocalizedString(
+                "wooShipping.createLabels.destinationPhoneNumber.requiredByService",
+                value: "%1$@ requires a recipient phone number.",
+                comment: "Notice when the selected shipping service requires a destination phone number on the shipping label creation screen. " +
+                "%1$@ is the service name, e.g. FedEx Ground Economy."
             )
         }
 

@@ -22,6 +22,7 @@ protocol POSRefundControllerProtocol {
     func processRefund(reason: String?) async throws -> POSRefundSubmissionResult
 }
 
+@MainActor
 @Observable final class POSRefundController: POSRefundControllerProtocol {
     private(set) var selectableItems: [POSRefundSelectableItem] = []
     private(set) var hasModifiedSelection = false
@@ -38,14 +39,12 @@ protocol POSRefundControllerProtocol {
         self.refundSubmissionProcessor = refundSubmissionProcessor
     }
 
-    @MainActor
     var requiresCardPresentRefund: Bool {
         preparation?.requiresCardPresentRefund ?? false
     }
 
     // MARK: - Refund Item Selection
 
-    @MainActor
     func preloadRefund(for order: POSOrder) async {
         guard order.refundActionAvailability == .available else {
             return
@@ -53,7 +52,6 @@ protocol POSRefundControllerProtocol {
         await refundSubmissionProcessor.preloadRefund(for: order)
     }
 
-    @MainActor
     func startRefundFlow(for order: POSOrder) async -> StartRefundFlowResult {
         self.order = order
 
@@ -76,12 +74,10 @@ protocol POSRefundControllerProtocol {
         return selectableItems.isEmpty ? .nothingToRefund : .hasItemsToRefund
     }
 
-    @MainActor
     var hasLoadedSelectableItems: Bool {
         !selectableItems.isEmpty
     }
 
-    @MainActor
     func refreshRefundableItems() async -> StartRefundFlowResult {
         guard let order else { return .failed }
 
@@ -96,7 +92,6 @@ protocol POSRefundControllerProtocol {
         return result
     }
 
-    @MainActor
     func toggleItemSelection(at index: Int) {
         guard selectableItems.indices.contains(index) else { return }
         selectableItems[index].isSelected.toggle()
@@ -104,7 +99,6 @@ protocol POSRefundControllerProtocol {
         resetReviewPreparation()
     }
 
-    @MainActor
     func toggleAllItemsSelection() {
         guard !selectableItems.isEmpty else { return }
         let allSelected = selectableItems.allSatisfy { $0.isSelected }
@@ -116,14 +110,12 @@ protocol POSRefundControllerProtocol {
         resetReviewPreparation()
     }
 
-    @MainActor
     func clearSelection() {
         selectableItems = []
         hasModifiedSelection = false
         resetReviewPreparation()
     }
 
-    @MainActor
     func reset() {
         order = nil
         preparation = nil
@@ -132,7 +124,6 @@ protocol POSRefundControllerProtocol {
 
     // MARK: - Refund Review Data Preparation
 
-    @MainActor
     func prepareReview() async -> POSRefundReviewPreparationResult {
         reviewPreparationTask?.cancel()
 
@@ -187,7 +178,6 @@ protocol POSRefundControllerProtocol {
         return await preparationTask.value
     }
 
-    @MainActor
     private func resetReviewPreparation() {
         reviewPreparationTask?.cancel()
         reviewPreparationTask = nil
@@ -196,7 +186,6 @@ protocol POSRefundControllerProtocol {
 
     // MARK: - Refund Processing
 
-    @MainActor
     func processRefund(reason: String?) async throws -> POSRefundSubmissionResult {
         guard !isProcessingRefund else {
             throw POSRefundProcessingError.refundAlreadyInProgress

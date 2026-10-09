@@ -425,7 +425,8 @@ private extension SiteCredentialLoginUseCase {
     /// Status rejection must not turn a recognized credential error or an expected document into an unexpected response.
     func isRecognizedContent(_ data: Data, responseURL: URL?, stage: CookieNonceAuthenticationResponseStage,
                              endpoints: CookieNonceAuthenticationEndpoints) -> Bool {
-        guard let html = String(data: data, encoding: .utf8) else { return false }
+        // Rejected nonce responses are unexpected regardless of nonce-shaped text or login-page markers.
+        guard stage != .nonce, let html = String(data: data, encoding: .utf8) else { return false }
         if CookieNonceAuthenticationRules.credentialFailure(in: html, endpoints: endpoints) != .invalidResponse {
             return true
         }
@@ -435,9 +436,7 @@ private extension SiteCredentialLoginUseCase {
             return (try? endpoints.verifiedLoginFormSubmissionURL(in: html, documentURL: responseURL)) != nil
         case .dashboard:
             return endpoints.isAuthenticatedDashboardHTML(html)
-        case .nonce:
-            return CookieNonceAuthenticationRules.validatedNonce(from: data) != nil
-        case .credentials:
+        case .credentials, .nonce:
             return false
         }
     }

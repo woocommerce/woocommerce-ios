@@ -8,6 +8,10 @@ struct NavigationRow<Content: View>: View {
     ///
     let selectable: Bool
 
+    /// Insets to re-apply when the host lays the row out under the horizontal safe area.
+    ///
+    let safeAreaInsets: EdgeInsets
+
     /// Content to render inside
     ///
     let content: Content
@@ -16,14 +20,12 @@ struct NavigationRow<Content: View>: View {
     ///
     let action: () -> Void
 
-    /// Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     init(selectable: Bool = true,
+         safeAreaInsets: EdgeInsets = .zero,
          @ViewBuilder content: () -> Content,
          action: @escaping () -> Void) {
         self.selectable = selectable
+        self.safeAreaInsets = safeAreaInsets
         self.content = content()
         self.action = action
     }

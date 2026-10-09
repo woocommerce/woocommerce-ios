@@ -171,6 +171,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let loginSession: URLSessionProtocol
     private let ownedTransactionSession: URLSession?
     private let verifyAdminDashboard: Bool
+    private let logUnexpectedResponse: (String) -> Void
     private var successHandler: (() -> Void)?
     private var errorHandler: ((SiteCredentialLoginError, Bool, Bool) -> Void)?
     var onStageSuccess: ((CookieNonceAuthenticationResponseStage) -> Void)?
@@ -181,7 +182,8 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
          verifyAdminDashboard: Bool = false,
          cookieJar: HTTPCookieStorage = SiteCredentialLoginUseCase.makePrivateCookieJar(),
          session: URLSessionProtocol? = nil,
-         loginSession: URLSessionProtocol? = nil) {
+         loginSession: URLSessionProtocol? = nil,
+         logUnexpectedResponse: @escaping (String) -> Void = { DDLogWarn($0) }) {
         do {
             guard let siteURL = URL(string: siteURL) else {
                 throw SiteCredentialLoginError.invalidLoginResponse
@@ -204,6 +206,7 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
         self.loginSession = loginSession ?? transactionSession
         self.ownedTransactionSession = session == nil ? transactionSession as? URLSession : nil
         self.verifyAdminDashboard = verifyAdminDashboard
+        self.logUnexpectedResponse = logUnexpectedResponse
         super.init()
     }
 
@@ -506,7 +509,9 @@ private extension SiteCredentialLoginUseCase {
         let error = UnexpectedStoreResponseError(kind: kind, statusCode: response?.http.statusCode, data: body,
                                                 contentType: response?.http.value(forHTTPHeaderField: "Content-Type"),
                                                 request: response?.request ?? request)
-        return .unexpectedResponse(.init(stage: stage, statusCode: error.statusCode, kind: kind, diagnostics: error.diagnostics))
+        let failure = LoginUnexpectedResponseFailure(stage: stage, statusCode: error.statusCode, kind: kind, diagnostics: error.diagnostics)
+        logUnexpectedResponse("[Site credential login: \(failure.step.rawValue)] \(error.logMessage)")
+        return .unexpectedResponse(failure)
     }
 
     static func makeRedirectBlockingSession(cookieJar: HTTPCookieStorage) -> URLSession {

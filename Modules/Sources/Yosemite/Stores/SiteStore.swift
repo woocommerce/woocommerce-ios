@@ -64,6 +64,7 @@ private extension SiteStore {
     func createSite(name: String,
                     flow: SiteCreationFlow,
                     completion: @escaping @Sendable (Result<SiteCreationResult, SiteCreationError>) -> Void) {
+        // The remote is an immutable dependency whose requests are thread-safe; only the task reads it. Remove once stores are isolated (WOOMOB-4186).
         nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
@@ -86,6 +87,7 @@ private extension SiteStore {
     }
 
     func launchSite(siteID: Int64, completion: @escaping @Sendable (Result<Void, SiteLaunchError>) -> Void) {
+        // The remote is an immutable dependency whose requests are thread-safe; only the task reads it. Remove once stores are isolated (WOOMOB-4186).
         nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
@@ -98,6 +100,7 @@ private extension SiteStore {
     }
 
     func enableFreeTrial(siteID: Int64, completion: @escaping @Sendable (Result<Void, Error>) -> Void) {
+        // The remote is an immutable dependency whose requests are thread-safe; only the task reads it. Remove once stores are isolated (WOOMOB-4186).
         nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
@@ -110,6 +113,7 @@ private extension SiteStore {
     }
 
     func syncSite(siteID: Int64, completion: @escaping @Sendable (Result<Site, Error>) -> Void) {
+        // The remote is an immutable dependency whose requests are thread-safe; only the task reads it. Remove once stores are isolated (WOOMOB-4186).
         nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
@@ -128,6 +132,7 @@ private extension SiteStore {
     }
 
     func syncSite(domain: String, completion: @escaping @Sendable (Result<Site, Error>) -> Void) {
+        // The remote is an immutable dependency whose requests are thread-safe; only the task reads it. Remove once stores are isolated (WOOMOB-4186).
         nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
@@ -146,6 +151,7 @@ private extension SiteStore {
     }
 
     func updateSiteTitle(siteID: Int64, title: String, completion: @escaping @Sendable (Result<Void, Error>) -> Void) {
+        // The remote is an immutable dependency whose requests are thread-safe; only the task reads it. Remove once stores are isolated (WOOMOB-4186).
         nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {
@@ -160,6 +166,7 @@ private extension SiteStore {
     }
 
     func uploadStoreProfilerAnswers(siteID: Int64, answers: StoreProfilerAnswers, completion: @escaping @Sendable (Result<Void, Error>) -> Void) {
+        // The remote is an immutable dependency whose requests are thread-safe; only the task reads it. Remove once stores are isolated (WOOMOB-4186).
         nonisolated(unsafe) let remote = remote
         Task { @MainActor in
             do {

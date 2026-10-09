@@ -195,10 +195,12 @@ final class CouponListViewModelTests: XCTestCase {
         sut.handleCouponSyncResult(result: .failure(error), pageNumber: 1)
 
         // Then
-        assertEqual(.couponsDisabled, sut.state)
+        waitUntil {
+            self.sut.state == .couponsDisabled
+        }
     }
 
-    func test_state_is_coupons_if_enableCoupons_and_synchronizeFirstPage_succeed() {
+    func test_state_is_coupons_if_enableCoupons_and_synchronizeFirstPage_succeed() async {
         // Given
         let sampleSiteID: Int64 = 123
         mockStorageManager.insertSampleCoupon(readOnlyCoupon: Coupon.fake().copy(siteID: sampleSiteID, couponID: 1, code: "senth"))
@@ -227,13 +229,13 @@ final class CouponListViewModelTests: XCTestCase {
 
         // When
         sut.buildCouponViewModels()
-        sut.enableCoupons()
+        await sut.enableCoupons()
 
         // Then
         assertEqual(.coupons, sut.state)
     }
 
-    func test_state_is_couponDisabled_if_enableCoupons_fails() {
+    func test_state_is_couponDisabled_if_enableCoupons_fails() async {
         // Given
         let sampleSiteID: Int64 = 123
         let stores = MockStoresManager(sessionManager: .makeForTesting())
@@ -251,10 +253,87 @@ final class CouponListViewModelTests: XCTestCase {
                                   storageManager: mockStorageManager)
 
         // When
-        sut.enableCoupons()
+        await sut.enableCoupons()
 
         // Then
         assertEqual(.couponsDisabled, sut.state)
+    }
+
+    func test_enableCoupons_when_already_enabling_then_does_not_send_a_second_request() async {
+        // Given
+        var enableRequests = 0
+        var pendingCompletion: ((Result<Void, Error>) -> Void)?
+        let firstRequestReceived = expectation(description: "First enable request received")
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .enableCouponSetting(_, onCompletion) = action {
+                enableRequests += 1
+                if enableRequests == 1 {
+                    pendingCompletion = onCompletion
+                    firstRequestReceived.fulfill()
+                } else {
+                    onCompletion(.failure(NSError(domain: "Test", code: 503, userInfo: nil)))
+                }
+            }
+        }
+        sut = CouponListViewModel(siteID: 123,
+                                  storesManager: stores,
+                                  storageManager: mockStorageManager)
+        let firstEnable = Task { await sut.enableCoupons() }
+        await fulfillment(of: [firstRequestReceived], timeout: 5)
+
+        // When
+        await sut.enableCoupons()
+        pendingCompletion?(.failure(NSError(domain: "Test", code: 503, userInfo: nil)))
+        await firstEnable.value
+
+        // Then
+        XCTAssertEqual(sut.state, .couponsDisabled)
+        XCTAssertEqual(enableRequests, 1)
+    }
+
+    func test_state_is_coupons_if_coupon_sync_fails_and_coupon_setting_returns_true() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .retrieveCouponSetting(_, onCompletion) = action {
+                onCompletion(.success(true))
+            }
+        }
+        setUpWithCouponFetched(injectedStores: stores)
+        sut.viewDidLoad()
+        XCTAssertNotEqual(sut.state, .coupons)
+
+        // When
+        sut.handleCouponSyncResult(result: .failure(NSError(domain: "Test", code: 503, userInfo: nil)), pageNumber: 1)
+
+        // Then
+        waitUntil {
+            self.sut.state == .coupons
+        }
+    }
+
+    func test_state_is_empty_if_coupon_sync_fails_and_coupon_setting_request_fails() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting())
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .retrieveCouponSetting(_, onCompletion) = action {
+                onCompletion(.failure(NSError(domain: "Test", code: 500, userInfo: nil)))
+            }
+        }
+        sut = CouponListViewModel(siteID: 123,
+                                  storesManager: stores,
+                                  storageManager: mockStorageManager)
+        sut.viewDidLoad()
+        XCTAssertNotEqual(sut.state, .empty)
+
+        // When
+        sut.handleCouponSyncResult(result: .failure(NSError(domain: "Test", code: 503, userInfo: nil)), pageNumber: 1)
+
+        // Then
+        waitUntil {
+            self.sut.state == .empty
+        }
     }
 
     func test_state_is_empty_when_all_coupons_gets_deleted() {

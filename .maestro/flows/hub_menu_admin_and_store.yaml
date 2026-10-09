@@ -4,7 +4,6 @@ appId: ${APP_ID}
 name: "Hub Menu - WooCommerce Admin, View Store, and change store"
 tags:
   - smoke_extended
-  - flaky_quarantine
   - hub_menu
   - store_shared
 ---

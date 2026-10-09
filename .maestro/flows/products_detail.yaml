@@ -5,7 +5,6 @@ appId: ${APP_ID}
 name: "Products - Product detail view"
 tags:
   - smoke_extended
-  - flaky_quarantine
   - products
 ---
 - runFlow:

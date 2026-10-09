@@ -4,7 +4,6 @@ appId: ${APP_ID}
 name: "Google for WooCommerce - Campaign webview"
 tags:
   - smoke_extended
-  - flaky_quarantine
   - hub_menu
   - store_shared
 ---

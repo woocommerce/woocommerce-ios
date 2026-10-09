@@ -6,7 +6,6 @@
 appId: ${APP_ID}
 name: "iOS system - Notification long press"
 tags:
-  - flaky_quarantine
   - ios_system
 ---
 - runFlow: ../subflows/ensure_logged_in.yaml

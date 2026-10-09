@@ -3,7 +3,6 @@ appId: ${APP_ID}
 name: Refund a run-owned paid order
 tags:
   - smoke_extended
-  - flaky_quarantine
   - destructive
   - orders
 ---

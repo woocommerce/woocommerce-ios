@@ -4,7 +4,6 @@ appId: ${APP_ID}
 name: "Hub Menu - Customers and Inbox"
 tags:
   - smoke_extended
-  - flaky_quarantine
   - hub_menu
 ---
 - runFlow:

@@ -4,7 +4,6 @@ appId: ${APP_ID}
 name: "Blaze - Campaign creation"
 tags:
   - smoke_extended
-  - flaky_quarantine
   - hub_menu
 ---
 - runFlow:

@@ -4,7 +4,6 @@
 appId: ${APP_ID}
 name: "iOS system - Order barcode scanner surface"
 tags:
-  - flaky_quarantine
   - orders
   - ios_system
 ---

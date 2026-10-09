@@ -7,7 +7,6 @@ appId: ${APP_ID}
 name: "Dashboard - Exercise every card, persist selection and reorder, then restore"
 tags:
   - smoke_extended
-  - flaky_quarantine
   - dashboard
 # The dashboard layout is saved on the device. When the flow stops half way,
 # clear it so the retry and later flows start from the default layout.

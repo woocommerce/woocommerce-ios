@@ -4,7 +4,6 @@ appId: ${APP_ID}
 name: "Products - Variations"
 tags:
   - smoke_extended
-  - flaky_quarantine
   - products
 ---
 - runFlow:

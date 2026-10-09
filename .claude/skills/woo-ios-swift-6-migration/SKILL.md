@@ -31,9 +31,7 @@ Use the repository build, test, and simulator workflows. To measure workspace wa
 Scripts/StrictConcurrency/count-warnings.sh /tmp/<task>-before.json
 ```
 
-Read the script before you change its build settings. For a smaller scope, select the affected scheme and an available simulator. Use `build-for-testing` with `SWIFT_STRICT_CONCURRENCY=complete`. Use a separate DerivedData directory for each build configuration. Check disk space before large builds. A clean workspace build uses about 17 GB of DerivedData, so run clean measurements one at a time and delete each DerivedData directory after you save its log.
-
-Do not measure from a checkout under `/tmp`. The compiler reports `/private/tmp/...` paths, but `git rev-parse` returns `/tmp/...`, so the script drops most warnings and reports a low total. Put extra worktrees under your home directory, or parse the log with both prefixes.
+Read the script before you change its build settings. For a smaller scope, select the affected scheme and an available simulator. Use `build-for-testing` with `SWIFT_STRICT_CONCURRENCY=complete`. Use a separate DerivedData directory for each build configuration. Check disk space before large builds.
 
 Save the build log. Record warnings by target, file path relative to the repository, and diagnostic text. Use the same build scope and settings before and after the change. Remove repeated compiler output with the same method in both logs. Compare warnings without line and column numbers. Keep the file path and number of occurrences.
 

@@ -8,20 +8,22 @@ import enum Networking.NetworkError
 struct SupportChatViewModelTests {
     private static let noopContactHumanSupport: SupportChatViewModel.ContactHumanSupportCallback = { _, _, _, _, _ in }
 
-    @Test func test_start_when_initial_message_exists_then_sends_once_without_greeting() {
+    @Test func test_start_when_initial_message_exists_then_sends_once_without_greeting() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         var requests = [SupportChatAction]()
         stores.whenReceivingAction(ofType: SupportChatAction.self) { requests.append($0) }
         let message = "I couldn't log in. HTTP status: 500"
-        let sut = SupportChatViewModel(entryPoint: .preLogin, stores: stores,
-                                      initialContext: ["site_url": .string("https://failed.example.com")],
-                                      initialMessage: message, supportSiteAddress: "https://failed.example.com",
-                                      onContactHumanSupport: Self.noopContactHumanSupport)
+        let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
+            entryPoint: .preLogin, stores: stores,
+            initialContext: ["site_url": .string("https://failed.example.com")],
+            initialMessage: message, supportSiteAddress: "https://failed.example.com",
+            onContactHumanSupport: Self.noopContactHumanSupport)
 
         // When
-        sut.startIfNeeded()
-        sut.startIfNeeded()
+        await sut.startIfNeeded()
+        await sut.startIfNeeded()
 
         // Then
         #expect(sut.messages.count == 1)
@@ -40,7 +42,7 @@ struct SupportChatViewModelTests {
 
         // When: a successful response or another appearance must not resubmit the opening message.
         completeSendMessageSuccessfully(requests[0])
-        sut.startIfNeeded()
+        await sut.startIfNeeded()
 
         // Then
         #expect(requests.count == 1)
@@ -48,7 +50,7 @@ struct SupportChatViewModelTests {
         #expect(sut.state == .idle)
     }
 
-    @Test func test_start_when_initial_send_fails_then_marks_message_failed_without_resending_on_appearance() {
+    @Test func test_start_when_initial_send_fails_then_marks_message_failed_without_resending_on_appearance() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
         var count = 0
@@ -57,12 +59,14 @@ struct SupportChatViewModelTests {
             count += 1
             completion(.failure(NSError(domain: "Test", code: 500)))
         }
-        let sut = SupportChatViewModel(entryPoint: .preLogin, stores: stores, initialMessage: "Login failed",
-                                      onContactHumanSupport: Self.noopContactHumanSupport)
+        let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
+            entryPoint: .preLogin, stores: stores, initialMessage: "Login failed",
+            onContactHumanSupport: Self.noopContactHumanSupport)
 
         // When
-        sut.startIfNeeded()
-        sut.startIfNeeded()
+        await sut.startIfNeeded()
+        await sut.startIfNeeded()
 
         // Then
         #expect(count == 1)
@@ -75,17 +79,19 @@ struct SupportChatViewModelTests {
         }
     }
 
-    @Test func test_start_when_resuming_then_fetches_once_and_ignores_initial_message() {
+    @Test func test_start_when_resuming_then_fetches_once_and_ignores_initial_message() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         var requests = [SupportChatAction]()
         stores.whenReceivingAction(ofType: SupportChatAction.self) { requests.append($0) }
-        let sut = SupportChatViewModel(entryPoint: .chatHistory, stores: stores, initialMessage: "Do not resend",
-                                      chatID: 123, sessionID: "session", onContactHumanSupport: Self.noopContactHumanSupport)
+        let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
+            entryPoint: .chatHistory, stores: stores, initialMessage: "Do not resend",
+            chatID: 123, sessionID: "session", onContactHumanSupport: Self.noopContactHumanSupport)
 
         // When
-        sut.startIfNeeded()
-        sut.startIfNeeded()
+        await sut.startIfNeeded()
+        await sut.startIfNeeded()
 
         // Then
         #expect(requests.count == 1)
@@ -394,7 +400,7 @@ struct SupportChatViewModelTests {
         sut.inputText = "hello"
 
         // When
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         guard case let .error(message) = sut.state else {
@@ -416,7 +422,7 @@ struct SupportChatViewModelTests {
         sut.inputText = "hello"
 
         // When
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         guard case let .error(message) = sut.state else {
@@ -438,7 +444,7 @@ struct SupportChatViewModelTests {
         sut.inputText = "hello"
 
         // When
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         let lastUserMessage = sut.messages.last { $0.role == .user }
@@ -457,7 +463,7 @@ struct SupportChatViewModelTests {
         sut.inputText = "hello"
 
         // When
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         guard case let .error(message) = sut.state else {
@@ -467,7 +473,7 @@ struct SupportChatViewModelTests {
         #expect(message.contains("We couldn't connect to AI chat right now."), "Expected generic copy, got: \(message)")
     }
 
-    @Test func sendMessage_tracks_messageSent_with_isFirstMessage_toggling_across_multiple_sends() {
+    @Test func sendMessage_tracks_messageSent_with_isFirstMessage_toggling_across_multiple_sends() async {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -479,9 +485,9 @@ struct SupportChatViewModelTests {
 
         // When
         sut.inputText = "First"
-        sut.sendMessage()
+        await sut.sendMessage()
         sut.inputText = "Second"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         let messageSentProperties = propertiesList(analyticsProvider, for: "support_chat_message_sent")
@@ -491,7 +497,7 @@ struct SupportChatViewModelTests {
         #expect(messageSentProperties.last?["is_first_message"] as? Bool == false)
     }
 
-    @Test func sendMessage_when_response_contains_forwardToHumanSupport_then_tracks_responseReceived_with_flag() {
+    @Test func sendMessage_when_response_contains_forwardToHumanSupport_then_tracks_responseReceived_with_flag() async {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -524,7 +530,7 @@ struct SupportChatViewModelTests {
 
         // When
         sut.inputText = "Help"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         assertProperties(
@@ -540,7 +546,7 @@ struct SupportChatViewModelTests {
         )
     }
 
-    @Test func sendMessage_when_failure_tracks_errorEscalationButtonShown_only_once() {
+    @Test func sendMessage_when_failure_tracks_errorEscalationButtonShown_only_once() async {
         // Given
         let analyticsProvider = MockAnalyticsProvider()
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -554,10 +560,10 @@ struct SupportChatViewModelTests {
 
         // When
         sut.inputText = "First"
-        sut.sendMessage()
+        await sut.sendMessage()
         sut.dismissError()
         sut.inputText = "Second"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         let events = propertiesList(analyticsProvider, for: "support_chat_escalation_button_shown")
@@ -782,6 +788,7 @@ struct SupportChatViewModelTests {
                 }
             }
             let sut = SupportChatViewModel(
+                mobileStatusReportProvider: MockMobileStatusReportProvider(),
                 entryPoint: .chatHistory,
                 stores: stores,
                 chatID: chatID,
@@ -799,6 +806,7 @@ struct SupportChatViewModelTests {
         let chatID: Int64 = 123
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
@@ -855,6 +863,7 @@ struct SupportChatViewModelTests {
         let chatID: Int64 = 123
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
@@ -898,6 +907,7 @@ struct SupportChatViewModelTests {
         let chatID: Int64 = 123
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
@@ -972,6 +982,7 @@ struct SupportChatViewModelTests {
         }
 
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .preLogin,
             stores: stores,
             onContactHumanSupport: { chatID, _, _, _, _ in
@@ -980,7 +991,7 @@ struct SupportChatViewModelTests {
         )
 
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // When
         sut.contactHumanSupport()
@@ -993,6 +1004,7 @@ struct SupportChatViewModelTests {
         // Given
         var receivedHasBotResponse: Bool?
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .preLogin,
             onContactHumanSupport: { _, _, _, _, hasReceivedBotResponse in
                 receivedHasBotResponse = hasReceivedBotResponse
@@ -1006,7 +1018,7 @@ struct SupportChatViewModelTests {
         #expect(receivedHasBotResponse == false)
     }
 
-    @Test func contactHumanSupport_when_first_message_is_sending_then_does_not_contact_support_or_track_tap() {
+    @Test func contactHumanSupport_when_first_message_is_sending_then_does_not_contact_support_or_track_tap() async {
         // Given
         var didContactHumanSupport = false
         let analyticsProvider = MockAnalyticsProvider()
@@ -1020,7 +1032,7 @@ struct SupportChatViewModelTests {
             }
         )
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
         analyticsProvider.clearEvents()
 
         // When
@@ -1033,7 +1045,7 @@ struct SupportChatViewModelTests {
         #expect(analyticsProvider.receivedEvents.contains("support_chat_escalation_tapped") == false)
     }
 
-    @Test func contactHumanSupport_after_bot_response_passes_hasReceivedBotResponse_true() {
+    @Test func contactHumanSupport_after_bot_response_passes_hasReceivedBotResponse_true() async {
         // Given
         var receivedHasBotResponse: Bool?
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
@@ -1041,6 +1053,7 @@ struct SupportChatViewModelTests {
             completeSendMessageSuccessfully(action)
         }
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .preLogin,
             stores: stores,
             onContactHumanSupport: { _, _, _, _, hasReceivedBotResponse in
@@ -1048,7 +1061,7 @@ struct SupportChatViewModelTests {
             }
         )
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // When
         sut.contactHumanSupport()
@@ -1097,6 +1110,7 @@ struct SupportChatViewModelTests {
         }
 
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .connectivityTool,
             stores: stores,
             systemStatusReport: prefetchedReport,
@@ -1106,7 +1120,7 @@ struct SupportChatViewModelTests {
         )
 
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // When
         sut.contactHumanSupport()
@@ -1171,7 +1185,7 @@ struct SupportChatViewModelTests {
 
         // When
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         #expect(sut.canEscalateToHumanSupport == true)
@@ -1189,7 +1203,7 @@ struct SupportChatViewModelTests {
 
         // When
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         #expect(sut.canEscalateToHumanSupport == true)
@@ -1241,7 +1255,7 @@ struct SupportChatViewModelTests {
         #expect(sut.canEscalateToHumanSupport == true)
     }
 
-    @Test func markChatTicketCreated_flips_hasCreatedTicket_and_hides_toolbar() {
+    @Test func markChatTicketCreated_flips_hasCreatedTicket_and_hides_toolbar() async {
         // Given — a live chat with at least one user message so the toolbar would otherwise be visible
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -1249,7 +1263,7 @@ struct SupportChatViewModelTests {
         }
         let sut = makeSUT(entryPoint: .preLogin, stores: stores)
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
         #expect(sut.canEscalateToHumanSupport == true)
 
         // When
@@ -1276,13 +1290,14 @@ struct SupportChatViewModelTests {
         #expect(events.first?["entry_point"] as? String == "connectivity_tool")
     }
 
-    @Test func canEscalateToHumanSupport_is_false_when_hasCreatedTicket_is_true() {
+    @Test func canEscalateToHumanSupport_is_false_when_hasCreatedTicket_is_true() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
             completeSendMessageSuccessfully(action)
         }
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .preLogin,
             stores: stores,
             hasCreatedTicket: true,
@@ -1291,13 +1306,13 @@ struct SupportChatViewModelTests {
 
         // When — append a user message so the only failing condition is hasCreatedTicket
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         #expect(sut.canEscalateToHumanSupport == false)
     }
 
-    @Test func canEscalateToHumanSupport_is_false_when_chat_is_resolved() {
+    @Test func canEscalateToHumanSupport_is_false_when_chat_is_resolved() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
@@ -1305,7 +1320,7 @@ struct SupportChatViewModelTests {
         }
         let sut = makeSUT(entryPoint: .preLogin, stores: stores)
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
         #expect(sut.canEscalateToHumanSupport == true)
 
         // When
@@ -1317,24 +1332,25 @@ struct SupportChatViewModelTests {
 
     // MARK: - Contact Human Support Button Enabled Tests
 
-    @Test func isContactHumanSupportButtonEnabled_is_false_when_first_message_is_sending_before_chat_is_created() {
+    @Test func isContactHumanSupportButtonEnabled_is_false_when_first_message_is_sending_before_chat_is_created() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let sut = makeSUT(entryPoint: .preLogin, stores: stores)
 
         // When
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         #expect(sut.state == .sending)
         #expect(sut.isContactHumanSupportButtonEnabled == false)
     }
 
-    @Test func isContactHumanSupportButtonEnabled_is_true_when_existing_chat_is_sending_message() {
+    @Test func isContactHumanSupportButtonEnabled_is_true_when_existing_chat_is_sending_message() async {
         // Given
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .chatHistory,
             stores: stores,
             chatID: 123,
@@ -1344,7 +1360,7 @@ struct SupportChatViewModelTests {
 
         // When
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         #expect(sut.state == .sending)
@@ -1406,7 +1422,7 @@ struct SupportChatViewModelTests {
 
         // When
         sut.inputText = "That fixed it"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         #expect(sut.shouldShowResolvedButton == true)
@@ -1438,7 +1454,7 @@ struct SupportChatViewModelTests {
         }
         let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
         sut.inputText = "Help"
-        sut.sendMessage()
+        await sut.sendMessage()
         #expect(sut.shouldShowResolvedButton == false)
 
         // When
@@ -1477,7 +1493,7 @@ struct SupportChatViewModelTests {
 
         // When
         sut.inputText = "That fixed it"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         let prompt = try #require(sut.messages.last)
@@ -1512,7 +1528,7 @@ struct SupportChatViewModelTests {
         }
         let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
         sut.inputText = "Help"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // When
         sut.submitFeedback(messageID: messageID, upvoted: true)
@@ -1555,7 +1571,7 @@ struct SupportChatViewModelTests {
         }
         let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
         sut.inputText = "That fixed it"
-        sut.sendMessage()
+        await sut.sendMessage()
         let promptCount = sut.messages.filter { $0.content == .resolvedPrompt }.count
 
         // When
@@ -1592,7 +1608,7 @@ struct SupportChatViewModelTests {
         }
         let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
         sut.inputText = "Help"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // When
         sut.submitFeedback(messageID: messageID, upvoted: false)
@@ -1629,11 +1645,11 @@ struct SupportChatViewModelTests {
 
         // When
         sut.inputText = "First question"
-        sut.sendMessage()
+        await sut.sendMessage()
         #expect(sut.shouldShowResolvedButton == false)
 
         sut.inputText = "Follow up"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         #expect(sut.shouldShowResolvedButton == true)
@@ -1685,14 +1701,14 @@ struct SupportChatViewModelTests {
         }
         let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
         sut.inputText = "First question"
-        sut.sendMessage()
+        await sut.sendMessage()
         sut.inputText = "Follow up"
-        sut.sendMessage()
+        await sut.sendMessage()
         #expect(sut.shouldShowResolvedButton == true)
 
         // When
         sut.inputText = "Still need help"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         #expect(sut.shouldPromptHumanSupport == true)
@@ -1726,7 +1742,7 @@ struct SupportChatViewModelTests {
         }
         let sut = makeSUT(entryPoint: .connectivityTool, stores: stores)
         sut.inputText = "That fixed it"
-        sut.sendMessage()
+        await sut.sendMessage()
         #expect(sut.shouldShowResolvedButton == true)
 
         // When
@@ -1797,6 +1813,7 @@ struct SupportChatViewModelTests {
         }
 
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             botSlug: botSlug,
             entryPoint: .connectivityTool,
             stores: stores,
@@ -1804,7 +1821,7 @@ struct SupportChatViewModelTests {
             onContactHumanSupport: Self.noopContactHumanSupport
         )
         sut.inputText = "Help"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // When
         sut.submitFeedback(messageID: messageID, upvoted: true)
@@ -1846,13 +1863,14 @@ struct SupportChatViewModelTests {
         }
 
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
             onContactHumanSupport: Self.noopContactHumanSupport
         )
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // When - rate twice
         sut.submitFeedback(messageID: messageID, upvoted: true)
@@ -1889,13 +1907,14 @@ struct SupportChatViewModelTests {
         }
 
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
             onContactHumanSupport: Self.noopContactHumanSupport
         )
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // When
         sut.submitFeedback(messageID: messageID, upvoted: true)
@@ -1931,13 +1950,14 @@ struct SupportChatViewModelTests {
         }
 
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: MockAnalyticsProvider()),
             onContactHumanSupport: Self.noopContactHumanSupport
         )
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // When
         sut.submitFeedback(messageID: messageID, upvoted: false)
@@ -1974,13 +1994,14 @@ struct SupportChatViewModelTests {
         }
 
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .connectivityTool,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
             onContactHumanSupport: Self.noopContactHumanSupport
         )
         sut.inputText = "Hello"
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // When
         sut.submitFeedback(messageID: messageID, upvoted: false)
@@ -1990,7 +2011,7 @@ struct SupportChatViewModelTests {
         #expect(analyticsProvider.received(event: "support_chat_feedback_submitted", with: ["rating": "down"]))
     }
 
-    @Test func submitFeedback_tracks_rating_entryPoint_supportArea_and_userMessageCount() {
+    @Test func submitFeedback_tracks_rating_entryPoint_supportArea_and_userMessageCount() async {
         // Given
         let chatID: Int64 = 123
         let messageID: Int64 = 456
@@ -2028,7 +2049,7 @@ struct SupportChatViewModelTests {
 
         let sut = makeSUT(entryPoint: .connectivityTool, stores: stores, analyticsProvider: analyticsProvider)
         sut.inputText = "Help"
-        sut.sendMessage()
+        await sut.sendMessage()
         analyticsProvider.clearEvents()
 
         // When
@@ -2070,6 +2091,7 @@ struct SupportChatViewModelTests {
         }
 
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .connectivityTool,
             stores: stores,
             onContactHumanSupport: Self.noopContactHumanSupport
@@ -2077,7 +2099,7 @@ struct SupportChatViewModelTests {
         sut.inputText = "Hello"
 
         // When
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         let botMessage = sut.messages.first { $0.role == .bot }
@@ -2105,6 +2127,7 @@ struct SupportChatViewModelTests {
         }
 
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .connectivityTool,
             stores: stores,
             onContactHumanSupport: Self.noopContactHumanSupport
@@ -2112,7 +2135,7 @@ struct SupportChatViewModelTests {
         sut.inputText = "Hello"
 
         // When
-        sut.sendMessage()
+        await sut.sendMessage()
 
         // Then
         let botMessage = sut.messages.first { $0.role == .bot }
@@ -2125,6 +2148,7 @@ struct SupportChatViewModelTests {
         let chatID: Int64 = 123
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
@@ -2167,6 +2191,7 @@ struct SupportChatViewModelTests {
         let sessionID = "session-abc"
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
@@ -2206,6 +2231,7 @@ struct SupportChatViewModelTests {
         let chatID: Int64 = 123
         let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let sut = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: .chatHistory,
             stores: stores,
             chatID: chatID,
@@ -2242,6 +2268,7 @@ struct SupportChatViewModelTests {
     ) -> SupportChatViewModel {
         let stores = stores ?? MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
         let viewModel = SupportChatViewModel(
+            mobileStatusReportProvider: MockMobileStatusReportProvider(),
             entryPoint: entryPoint,
             stores: stores,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),

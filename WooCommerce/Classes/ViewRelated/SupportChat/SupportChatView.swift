@@ -94,8 +94,8 @@ struct SupportChatView: View {
                 inputArea
             }
         }
-        .onAppear {
-            viewModel.startIfNeeded()
+        .task {
+            await viewModel.startIfNeeded()
         }
     }
 
@@ -391,7 +391,9 @@ struct SupportChatView: View {
     private func sendMessageIfPossible() {
         guard canSendMessage else { return }
         isInputFocused = false
-        viewModel.sendMessage()
+        Task {
+            await viewModel.sendMessage()
+        }
     }
 }
 

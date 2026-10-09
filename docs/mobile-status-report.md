@@ -9,6 +9,16 @@ The same report is shown to merchants under **Settings → Help & Support → Mo
 share actions. That row is always visible, including when no store is selected: the report needs no store and no
 network, and on the login screen it is the only device information a ticket would carry.
 
+## AI support chat
+
+Every new AI support chat includes the Mobile Status Report in its first outgoing request, as a labeled section
+of `context.troubleshootingResults`. Existing connectivity diagnostics and other context are preserved. The report
+is background context and is not displayed as a chat bubble. It is generated locally, including before login;
+login-failure chats supply the failed site's address independently of the selected store.
+
+The report is generated once per chat and reused if chat creation fails. Follow-up requests and chats resumed
+from history do not resend it. This is separate from the server-side System Status Report used in human escalation.
+
 ## Reading the report
 
 The report is split in two by a single band line. Everything **above** `# Selected store: <url>` covers the whole

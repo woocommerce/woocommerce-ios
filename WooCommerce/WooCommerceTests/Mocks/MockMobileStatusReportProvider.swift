@@ -10,8 +10,11 @@ final class MockMobileStatusReportProvider: MobileStatusReportProviding {
     /// The `siteAddress` of every `generateReport` call, in order.
     private(set) var generateReportSiteAddresses: [String?] = []
 
+    var onGenerateReport: (() async -> Void)?
+
     func generateReport(siteAddress: String?) async -> String {
         generateReportSiteAddresses.append(siteAddress)
+        await onGenerateReport?()
         return report
     }
 }

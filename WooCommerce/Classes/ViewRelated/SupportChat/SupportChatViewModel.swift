@@ -275,6 +275,8 @@ final class SupportChatViewModel {
     private let initialMessage: String?
     let supportSiteAddress: String?
     private var didStart = false
+    private let mobileStatusReportProvider: MobileStatusReportProviding
+    private var preparedInitialContext: RequestParameterDictionary?
     private let onContactHumanSupport: ContactHumanSupportCallback
     private var latestSupportArea: SupportChatSupportArea?
     private var userMessageCount = 0
@@ -293,7 +295,8 @@ final class SupportChatViewModel {
 
     // MARK: - Initialization
 
-    init(botSlug: String = "woo-workflow-support_mobile_inapp_all_users",
+    init(mobileStatusReportProvider: MobileStatusReportProviding? = nil,
+         botSlug: String = "woo-workflow-support_mobile_inapp_all_users",
          entryPoint: EntryPoint,
          stores: StoresManager = ServiceLocator.stores,
          analytics: Analytics = ServiceLocator.analytics,
@@ -310,6 +313,7 @@ final class SupportChatViewModel {
          onStartJetpackSetup: @escaping () -> Void = {},
          onUpdateWooCommercePlugin: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() },
          onOpenPushNotificationPreferences: @escaping (@escaping () -> Void) -> Void = { onDismissed in onDismissed() }) {
+        self.mobileStatusReportProvider = mobileStatusReportProvider ?? MobileStatusReportProvider()
         self.botSlug = botSlug
         self.entryPoint = entryPoint
         self.stores = stores
@@ -654,13 +658,13 @@ final class SupportChatViewModel {
     // MARK: - Chat Actions
 
     /// Starts a fresh or resumed conversation once, including any supplied login-failure message.
-    func startIfNeeded() {
+    func startIfNeeded() async {
         guard !didStart else { return }
         didStart = true
         if isResumedChat {
             resumeIfNeeded()
         } else if let initialMessage, !initialMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
-            sendMessage(initialMessage)
+            await sendMessage(initialMessage)
         } else {
             showGreeting()
         }
@@ -704,11 +708,11 @@ final class SupportChatViewModel {
         stores.dispatch(action)
     }
 
-    func sendMessage() {
-        sendMessage(inputText)
+    func sendMessage() async {
+        await sendMessage(inputText)
     }
 
-    private func sendMessage(_ text: String) {
+    private func sendMessage(_ text: String) async {
         let trimmedText = text.trimmingCharacters(in: .whitespacesAndNewlines)
         guard !trimmedText.isEmpty else { return }
         guard state != .sending else { return }
@@ -718,13 +722,13 @@ final class SupportChatViewModel {
         inputText = ""
         state = .sending
 
-        // Use diagnostics context on first message, then nil for subsequent messages
-        let context: RequestParameterDictionary? = {
-            if chatID == nil {
-                return diagnosticsContext ?? initialContext
-            }
-            return nil
-        }()
+        // Preparing context is local; the sending state prevents a second submission while it awaits system lookups.
+        let context = chatID == nil ? await prepareInitialContext() : nil
+        guard !Task.isCancelled else {
+            markLastUserMessageAsFailed()
+            state = .idle
+            return
+        }
 
         let wasNewChat = chatID == nil
         let firstUserMessage = trimmedText
@@ -750,6 +754,21 @@ final class SupportChatViewModel {
         }
 
         stores.dispatch(action)
+    }
+
+    /// Reuses the first report if chat creation fails, without overwriting existing troubleshooting results.
+    private func prepareInitialContext() async -> RequestParameterDictionary {
+        if let preparedInitialContext { return preparedInitialContext }
+        var context = diagnosticsContext ?? initialContext ?? [:]
+        let contextSiteAddress: String? = if case .string(let address) = context["site_url"] { address } else { nil }
+        let report = await mobileStatusReportProvider.generateReport(siteAddress: supportSiteAddress ?? contextSiteAddress)
+        if !report.isEmpty {
+            let existing: String? = if case .string(let text) = context["troubleshootingResults"] { text } else { nil }
+            let section = "## Mobile Status Report\n" + report
+            context["troubleshootingResults"] = .string([existing, section].compactMap { $0 }.joined(separator: "\n\n"))
+        }
+        preparedInitialContext = context
+        return context
     }
 
     func contactHumanSupport(source: WooAnalyticsEvent.SupportChat.EscalationSource = .toolbar) {

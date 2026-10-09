@@ -15,7 +15,10 @@ struct AztecUIConfigurator {
                               textViewAttachmentDelegate: textViewAttachmentDelegate)
     }
 
-    func configureConstraints(editorView: EditorView, editorContainerView: UIView, placeholderView: UIView) {
+    func configureConstraints(editorView: EditorView,
+                              editorContainerView: UIView,
+                              editorBottomAnchor: NSLayoutYAxisAnchor,
+                              placeholderView: UIView) {
         let richTextView = editorView.richTextView
         let htmlTextView = editorView.htmlTextView
 
@@ -23,7 +26,7 @@ struct AztecUIConfigurator {
             richTextView.leadingAnchor.constraint(equalTo: editorContainerView.readableContentGuide.leadingAnchor),
             richTextView.trailingAnchor.constraint(equalTo: editorContainerView.readableContentGuide.trailingAnchor),
             richTextView.topAnchor.constraint(equalTo: editorContainerView.topAnchor),
-            richTextView.bottomAnchor.constraint(equalTo: editorContainerView.bottomAnchor)
+            richTextView.bottomAnchor.constraint(equalTo: editorBottomAnchor)
         ])
 
         NSLayoutConstraint.activate([
@@ -88,6 +91,10 @@ private extension AztecUIConfigurator {
 
         textView.smartDashesType = .no
         textView.smartQuotesType = .no
+
+        // Aztec enables this, which makes the system show its own B/I/U and text formatting controls next to the keyboard.
+        // Formatting is driven by the format bar only.
+        textView.allowsEditingTextAttributes = false
     }
 
     func configureDefaultProperties(for textView: UITextView, accessibilityLabel: String) {

@@ -58,7 +58,7 @@ final class AztecEditorViewController: UIViewController, Editor {
         self?.showDescriptionGenerationBottomSheet()
     }
 
-    /// Aztec's Format Bar (toolbar above the keyboard)
+    /// Aztec's Format Bar, pinned to the bottom of the editor and following the keyboard.
     ///
     private lazy var formatBar: Aztec.FormatBar = {
         let toolbar = formatBarFactory.formatBar() { [weak self] formatBarItem, formatBar in
@@ -71,6 +71,17 @@ final class AztecEditorViewController: UIViewController, Editor {
             formatBar.update(editorView: self.editorView)
         }
         return toolbar
+    }()
+
+    /// Hosts the format bar and, when enabled, the AI action next to it.
+    ///
+    private lazy var formatBarContainer: UIStackView = {
+        let arrangedSubviews = isAIGenerationEnabled ? [aiActionView, formatBar] : [formatBar]
+        let stackView = UIStackView(arrangedSubviews: arrangedSubviews)
+        stackView.axis = .horizontal
+        stackView.spacing = 0
+        stackView.translatesAutoresizingMaskIntoConstraints = false
+        return stackView
     }()
 
     /// Aztec's Format Bar Action Handling Coordinator
@@ -94,13 +105,6 @@ final class AztecEditorViewController: UIViewController, Editor {
         label.translatesAutoresizingMaskIntoConstraints = false
         label.numberOfLines = 0
         return label
-    }()
-
-    private lazy var keyboardFrameObserver: KeyboardFrameObserver = {
-        let keyboardFrameObserver = KeyboardFrameObserver { [weak self] keyboardFrame in
-            self?.handleKeyboardFrameUpdate(keyboardFrame: keyboardFrame)
-        }
-        return keyboardFrameObserver
     }()
 
     // FIXME: This has a long call chain and cannot be quickly addressed as part of the current SwiftLint violations smashing round
@@ -136,8 +140,10 @@ final class AztecEditorViewController: UIViewController, Editor {
         configureView()
         configureSubviews()
 
+        configureFormatBarConstraints()
         aztecUIConfigurator.configureConstraints(editorView: editorView,
                                                  editorContainerView: view,
+                                                 editorBottomAnchor: formatBarContainer.topAnchor,
                                                  placeholderView: placeholderLabel)
         disableLinkTapRecognizer(from: editorView.richTextView)
 
@@ -145,11 +151,6 @@ final class AztecEditorViewController: UIViewController, Editor {
 
         refreshPlaceholderVisibility()
         handleSwipeBackGesture()
-    }
-
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        startListeningToNotifications()
     }
 
     override func viewDidAppear(_ animated: Bool) {
@@ -173,6 +174,21 @@ private extension AztecEditorViewController {
         view.addSubview(richTextView)
         view.addSubview(htmlTextView)
         view.addSubview(placeholderLabel)
+        view.addSubview(formatBarContainer)
+    }
+
+    /// Keeps the format bar inside the editor's own bounds: it follows the docked keyboard and otherwise
+    /// sits at the bottom edge, where the bar extends itself over the bottom safe area.
+    func configureFormatBarConstraints() {
+        // `FormatBar` captures a height constraint added directly to it and grows it by the bottom safe area inset.
+        formatBar.addConstraint(formatBar.heightAnchor.constraint(equalToConstant: formatBar.intrinsicContentSize.height))
+
+        view.keyboardLayoutGuide.usesBottomSafeArea = false
+        NSLayoutConstraint.activate([
+            formatBarContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            formatBarContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            formatBarContainer.bottomAnchor.constraint(equalTo: view.keyboardLayoutGuide.topAnchor)
+        ])
     }
 
     func registerAttachmentImageProviders() {
@@ -200,26 +216,6 @@ private extension AztecEditorViewController {
         }
         recognizer.isEnabled = false
     }
-
-    func createInputAccessoryView() -> UIView {
-        guard isAIGenerationEnabled else {
-            return formatBar
-        }
-
-        let stackView = UIStackView(arrangedSubviews: [aiActionView, formatBar])
-        stackView.spacing = 0
-        stackView.axis = .horizontal
-        stackView.translatesAutoresizingMaskIntoConstraints = false
-
-        let accessoryView = InputAccessoryView()
-        accessoryView.addSubview(stackView)
-        accessoryView.pinSubviewToAllEdges(stackView)
-        accessoryView.translatesAutoresizingMaskIntoConstraints = false
-
-        accessoryView.sizeToFit()
-
-        return accessoryView
-    }
 }
 
 private extension AztecEditorViewController {
@@ -233,22 +229,6 @@ private extension AztecEditorViewController {
 
     func refreshPlaceholderVisibility() {
         placeholderLabel.isHidden = richTextView.isHidden || !richTextView.text.isEmpty
-    }
-}
-
-// MARK: Keyboard frame update handling
-//
-extension AztecEditorViewController: KeyboardScrollable {
-    var scrollable: UIScrollView {
-        editorView.activeView
-    }
-}
-
-// MARK: - Notifications
-//
-private extension AztecEditorViewController {
-    func startListeningToNotifications() {
-        keyboardFrameObserver.startObservingKeyboardFrame()
     }
 }
 
@@ -302,11 +282,6 @@ extension AztecEditorViewController: UITextViewDelegate {
         refreshPlaceholderVisibility()
         formatBar.update(editorView: editorView)
         onContentChanged?(getHTML())
-    }
-
-    func textViewShouldBeginEditing(_ textView: UITextView) -> Bool {
-        textView.inputAccessoryView = createInputAccessoryView()
-        return true
     }
 }
 

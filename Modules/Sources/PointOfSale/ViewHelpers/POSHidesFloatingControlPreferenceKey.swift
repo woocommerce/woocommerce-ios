@@ -7,7 +7,7 @@ import SwiftUI
 /// requests hiding wins; siblings that don't set the preference don't override
 /// a sibling's request.
 struct POSHidesFloatingControlPreferenceKey: PreferenceKey {
-    static var defaultValue: Bool = false
+    static let defaultValue: Bool = false
 
     static func reduce(value: inout Bool, nextValue: () -> Bool) {
         value = value || nextValue()

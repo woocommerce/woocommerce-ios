@@ -8,9 +8,11 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     var supportEnabled: Bool = true
     var allowWPComLogin: Bool = true
     var shouldHandleError: Bool = false
+    var completesSync = false
 
     private(set) var presentSignupEpilogueCalled = false
     private(set) var presentLoginEpilogueCalled = false
+    private(set) var loginEpilogueNavigationController: UINavigationController?
     private(set) var trackedEvents: [WPAnalyticsStat] = []
     private(set) var lastTrackedProperties: [AnyHashable: Any]?
     private(set) var socialUser: SocialUser?
@@ -48,6 +50,7 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
 
     func presentLoginEpilogue(in navigationController: UINavigationController, for credentials: AuthenticatorCredentials, source: SignInSource?, onDismiss: @escaping () -> Void) {
         presentLoginEpilogueCalled = true
+        loginEpilogueNavigationController = navigationController
     }
 
     func presentSignupEpilogue(
@@ -86,7 +89,9 @@ class WordPressAuthenticatorDelegateSpy: WordPressAuthenticatorDelegate {
     }
 
     func sync(credentials: AuthenticatorCredentials, onCompletion: @escaping () -> Void) {
-        // no-op
+        if completesSync {
+            onCompletion()
+        }
     }
 
     func handleSiteInfoFailure(siteURL: String, error: Error, completion: @escaping (Bool) -> Void) {

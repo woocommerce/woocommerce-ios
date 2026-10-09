@@ -53,6 +53,12 @@ struct WooShippingCreateLabelsView: View {
         viewModel.isPurchaseButtonEnabled
     }
 
+    /// Safe-area insets of the screen's container, for the bottom sheet.
+    @State private var safeAreaInsets: EdgeInsets = .zero
+
+    /// Height of that container inside its safe area, for the bottom sheet.
+    @State private var containerHeight: CGFloat = 0
+
     var body: some View {
         NavigationStack {
             Group {
@@ -77,6 +83,8 @@ struct WooShippingCreateLabelsView: View {
                     expandableBottomSheet
                 }
             }
+            .onGeometryChange(for: EdgeInsets.self, of: { $0.safeAreaInsets }, action: { safeAreaInsets = $0 })
+            .onGeometryChange(for: CGFloat.self, of: { $0.size.height }, action: { containerHeight = $0 })
             .shippingWeightUnit(viewModel.weightUnit)
             .shippingDimensionsUnit(viewModel.dimensionsUnit)
             .navigationTitle(viewModel.canViewLabel ? Localization.viewLabelTitle : Localization.title)
@@ -221,7 +229,7 @@ private extension WooShippingCreateLabelsView {
     }
 
     var expandableBottomSheet: some View {
-        ExpandableBottomSheet(onChangeOfExpansion: { isExpanded in
+        ExpandableBottomSheet(safeAreaInsets: safeAreaInsets, containerHeight: containerHeight, onChangeOfExpansion: { isExpanded in
             isShipmentDetailsExpanded = isExpanded
         }) {
             VStack {

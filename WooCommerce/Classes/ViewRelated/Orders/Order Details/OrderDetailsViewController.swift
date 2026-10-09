@@ -111,6 +111,11 @@ final class OrderDetailsViewController: UIViewController {
         }
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        restoreCollapsedTableViewMarginsIfNeeded()
+    }
+
     override var shouldShowOfflineBanner: Bool {
         true
     }
@@ -141,13 +146,7 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        if #available(iOS 26.0, *) {
-            // Work around WOOMOB-3694 by avoiding the navigation controller's refresh-control host, which can enter a recursive layout cycle.
-            // Order Details does not use large titles, so direct subview attachment preserves pull-to-refresh without that integration.
-            tableView.addSubview(refreshControl)
-        } else {
-            tableView.refreshControl = refreshControl
-        }
+        tableView.refreshControl = refreshControl
 
         tableView.dataSource = viewModel.dataSource
         tableView.accessibilityIdentifier = "order-details-table-view"
@@ -162,6 +161,29 @@ private extension OrderDetailsViewController {
         // the native tab bar underlap this screen without changing unrelated tab roots.
         setContentScrollView(tableView, for: .bottom)
         view.pinSubviewBottomToBottomAnchorReplacingSafeArea(stackView)
+    }
+
+    /// On iPhone Duo (iOS 27.1) the table zeroes its default margin on the sides inset from the window edge (WOOMOB-4267).
+    /// The explicit margins set here persist across pose and orientation changes; the widest observed side matches the iPhone default.
+    func restoreCollapsedTableViewMarginsIfNeeded() {
+        let margins = tableView.layoutMargins
+        let safeAreaInsets = tableView.safeAreaInsets
+        let left = margins.left - safeAreaInsets.left
+        let right = margins.right - safeAreaInsets.right
+        guard abs(left - right) > Constants.marginTolerance || left <= 0 else {
+            return
+        }
+
+        let systemMinimum = systemMinimumLayoutMargins
+        let widestMargin = max(left, right)
+        let horizontalMargin = widestMargin > 0 ? widestMargin : max(systemMinimum.leading, systemMinimum.trailing)
+        guard horizontalMargin > 0 else {
+            return
+        }
+        tableView.layoutMargins = UIEdgeInsets(top: margins.top - safeAreaInsets.top,
+                                               left: horizontalMargin,
+                                               bottom: margins.bottom - safeAreaInsets.bottom,
+                                               right: horizontalMargin)
     }
 
     func configureStackView() {
@@ -1094,6 +1116,7 @@ private extension OrderDetailsViewController {
         static let sectionHeight = CGFloat(44)
         static let maxWidth = CGFloat(525)
         static let borderWidth = CGFloat(0.5)
+        static let marginTolerance = CGFloat(0.5)
     }
 
     /// Mailing a receipt failed but the SDK didn't return a more specific error

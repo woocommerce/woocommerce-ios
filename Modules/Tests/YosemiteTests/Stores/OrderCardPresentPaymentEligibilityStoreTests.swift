@@ -69,7 +69,7 @@ final class OrderCardPresentPaymentEligibilityStoreTests: XCTestCase {
         // When
         let result = waitFor { promise in
             let action = OrderCardPresentPaymentEligibilityAction
-                .orderIsEligibleForCardPresentPayment(orderID: 111,
+                .checkEligibility(orderID: 111,
                                                       siteID: self.sampleSiteID,
                                                       cardPresentPaymentsConfiguration: configuration) { result in
                 promise(result)
@@ -79,6 +79,6 @@ final class OrderCardPresentPaymentEligibilityStoreTests: XCTestCase {
 
         // Then
         let eligibility = try XCTUnwrap(result.get())
-        XCTAssertTrue(eligibility)
+        XCTAssertEqual(eligibility, .eligible)
     }
 }

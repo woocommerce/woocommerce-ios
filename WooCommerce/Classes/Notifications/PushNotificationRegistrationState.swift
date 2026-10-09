@@ -85,6 +85,7 @@ final class PushNotificationRegistrationState {
     }
 
     func unmarkSiteAsRegisteredForWooPNs(_ siteID: Int64) {
+        setWooPushNextCheck(nil, for: siteID)
         let updatedIDs = siteIDsRegisteredForWooPNs.filter { $0 != siteID }
         guard updatedIDs.count != siteIDsRegisteredForWooPNs.count else {
             instantiateRegisteredSiteIDsCollectionIfAbsent()
@@ -126,6 +127,25 @@ final class PushNotificationRegistrationState {
     }
 
     func clearConnectedSiteIDs() { defaults.removeObject(forKey: PushNotificationSharedConstants.UserDefaultsKeys.connectedSiteIDs) }
+
+    /// When each site should next be checked for Woo push registration.
+    func wooPushNextCheck(for siteID: Int64) -> Date? {
+        wooPushNextCheckDates[String(siteID)]
+    }
+
+    func setWooPushNextCheck(_ date: Date?, for siteID: Int64) {
+        var dates = wooPushNextCheckDates
+        if let date {
+            dates[String(siteID)] = date
+        } else {
+            dates.removeValue(forKey: String(siteID))
+        }
+        defaults.set(dates, forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNextCheckDates)
+    }
+
+    func clearWooPushNextChecks() {
+        defaults.removeObject(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNextCheckDates)
+    }
 }
 
 /// Push notification suppression
@@ -176,6 +196,10 @@ extension PushNotificationRegistrationState {
 }
 
 private extension PushNotificationRegistrationState {
+    var wooPushNextCheckDates: [String: Date] {
+        defaults.dictionary(forKey: PushNotificationSharedConstants.UserDefaultsKeys.wooPushNextCheckDates) as? [String: Date] ?? [:]
+    }
+
     func instantiateRegisteredSiteIDsCollectionIfAbsent() {
         if siteIDsRegisteredForWooPNsSubject.value != nil {
             return

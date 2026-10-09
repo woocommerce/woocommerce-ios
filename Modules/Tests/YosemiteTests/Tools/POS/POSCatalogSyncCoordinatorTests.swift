@@ -1,10 +1,12 @@
 import Foundation
 import Testing
+import Synchronization
 @testable import Yosemite
 @testable import Storage
 @testable import Networking
 
-struct POSCatalogSyncCoordinatorTests {
+@Suite(.timeLimit(.minutes(5)))
+struct POSCatalogSyncCoordinatorTests: Sendable {
     private let mockSyncService: MockPOSCatalogFullSyncService
     private let mockIncrementalSyncService: MockPOSCatalogIncrementalSyncService
     private let grdbManager: GRDBManager
@@ -185,34 +187,23 @@ struct POSCatalogSyncCoordinatorTests {
     // MARK: - Sync Tracking Tests
 
     @Test func performFullSync_throws_error_when_sync_already_in_progress() async throws {
-        // Given - block the sync service so first sync will wait
-        let expectedCatalog = POSCatalog(products: [], variations: [], syncDate: .now)
-        mockSyncService.startFullSyncResult = .success(expectedCatalog)
-        mockSyncService.blockNextSync()
-
-        // Start first sync in a task (it will block waiting for continuation)
-        let firstSyncTask = Task {
-            try await sut.performFullSync(for: sampleSiteID)
+        // Given - inspect the coordinator while its first sync is awaiting the service.
+        defer { mockSyncService.onSync = nil }
+        mockSyncService.onSync = { [sut, sampleSiteID] _ in
+            // When / Then - a second sync for the same site must be rejected.
+            await #expect(throws: POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID)) {
+                try await sut.performFullSync(for: sampleSiteID)
+            }
+            let currentState = await sut.loadLastFullSyncState(for: sampleSiteID)
+            let isSyncStarted: Bool = switch currentState {
+            case .syncStarted, .initialSyncStarted, .syncProgress, .initialSyncProgress: true
+            default: false
+            }
+            #expect(isSyncStarted)
         }
 
-        // Wait until sync is actually blocked
-        await mockSyncService.waitUntilSyncBlocked()
-
-        // When - try to start second sync while first is blocked
-        await #expect(throws: POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID)) {
-            _ = try await sut.performFullSync(for: sampleSiteID)
-        }
-
-        let currentState = await sut.loadLastFullSyncState(for: sampleSiteID)
-        let isSyncStarted: Bool = switch currentState {
-        case .syncStarted, .initialSyncStarted, .syncProgress, .initialSyncProgress: true
-        default: false
-        }
-        #expect(isSyncStarted)
-
-        // Cleanup - resume the first sync and wait for it to complete
-        mockSyncService.resumeBlockedSync()
-        _ = try await firstSyncTask.value
+        try await sut.performFullSync(for: sampleSiteID)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 
     @Test func performFullSync_allows_concurrent_syncs_for_different_sites() async throws {
@@ -362,24 +353,16 @@ struct POSCatalogSyncCoordinatorTests {
         // Given
         let fullSyncDate = Date().addingTimeInterval(-3600)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate)
-        mockIncrementalSyncService.blockNextSync()
-
-        // Start first incremental sync (it will block)
-        let firstSyncTask = Task {
-            try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+        defer { mockIncrementalSyncService.onSync = nil }
+        mockIncrementalSyncService.onSync = { [sut, sampleSiteID, sampleMaxAge] _ in
+            // When / Then - the first sync is still in flight when the second starts.
+            await #expect(throws: POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID)) {
+                try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+            }
         }
 
-        // Wait until sync is actually blocked
-        await mockIncrementalSyncService.waitUntilSyncBlocked()
-
-        // When - try to start second incremental sync while first is blocked
-        await #expect(throws: POSCatalogSyncError.syncAlreadyInProgress(siteID: sampleSiteID)) {
-            try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
-        }
-
-        // Cleanup
-        mockIncrementalSyncService.resumeBlockedSync()
-        _ = try await firstSyncTask.value
+        try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 1)
     }
 
     @Test func performIncrementalSyncIfApplicable_allows_concurrent_syncs_for_different_sites() async throws {
@@ -599,40 +582,32 @@ struct POSCatalogSyncCoordinatorTests {
         // Given
         let expectedProgress = POSCatalogSyncProgress.itemCount(processed: 131, total: 4512)
         mockSyncService.progressToEmit = expectedProgress
-        mockSyncService.blockAfterEmittingProgress()
-
-        let syncTask = Task {
-            try await sut.performFullSync(for: sampleSiteID)
+        defer { mockSyncService.onSync = nil }
+        mockSyncService.onSync = { [sut, sampleSiteID] _ in
+            // Then - progress has been emitted, but the service has not completed.
+            let progressState = await sut.fullSyncStateModel.state[sampleSiteID]
+            #expect(progressState == .initialSyncProgress(siteID: sampleSiteID, progress: expectedProgress))
         }
 
-        await mockSyncService.waitUntilSyncBlocked()
-
-        // Then
-        let progressState = await sut.fullSyncStateModel.state[sampleSiteID]
-        #expect(progressState == .initialSyncProgress(siteID: sampleSiteID, progress: expectedProgress))
-
-        mockSyncService.resumeBlockedSync()
-        _ = try await syncTask.value
+        // When
+        try await sut.performFullSync(for: sampleSiteID)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 
     @Test func fullSyncStateModel_does_not_regress_item_count_progress_to_preparing_during_sync() async throws {
         // Given
         let expectedProgress = POSCatalogSyncProgress.itemCount(processed: 131, total: 4512)
         mockSyncService.progressUpdatesToEmit = [expectedProgress, .preparing]
-        mockSyncService.blockAfterEmittingProgress()
-
-        let syncTask = Task {
-            try await sut.performFullSync(for: sampleSiteID)
+        defer { mockSyncService.onSync = nil }
+        mockSyncService.onSync = { [sut, sampleSiteID] _ in
+            // Then - progress has been emitted, but the service has not completed.
+            let progressState = await sut.fullSyncStateModel.state[sampleSiteID]
+            #expect(progressState == .initialSyncProgress(siteID: sampleSiteID, progress: expectedProgress))
         }
 
-        await mockSyncService.waitUntilSyncBlocked()
-
-        // Then
-        let progressState = await sut.fullSyncStateModel.state[sampleSiteID]
-        #expect(progressState == .initialSyncProgress(siteID: sampleSiteID, progress: expectedProgress))
-
-        mockSyncService.resumeBlockedSync()
-        _ = try await syncTask.value
+        // When
+        try await sut.performFullSync(for: sampleSiteID)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 
     // MARK: - Helper Methods
@@ -647,29 +622,79 @@ struct POSCatalogSyncCoordinatorTests {
 
 // MARK: - Mock Services
 
-final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
-    var startFullSyncResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: [], syncDate: .now))
-    var syncDelay: UInt64 = 0 // nanoseconds to delay before returning
-    var progressToEmit: POSCatalogSyncProgress?
-    var progressUpdatesToEmit: [POSCatalogSyncProgress] = []
+final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol, Sendable {
+    private struct State {
+        var startFullSyncResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+        var progressToEmit: POSCatalogSyncProgress?
+        var progressUpdatesToEmit: [POSCatalogSyncProgress] = []
+        var onSync: (@Sendable (Int64) async throws -> Void)?
+        var startFullSyncCallCount: Int = 0
+        var lastSyncSiteID: Int64?
+        var lastAllowCellular: Bool?
+        var lastRegenerateCatalog: Bool?
+        var lastIsBackgroundSync: Bool?
+        var startPaginatedFullSyncResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+        var startPaginatedFullSyncCallCount: Int = 0
+        var parseAndPersistBackgroundDownloadResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+        var parseAndPersistBackgroundDownloadCallCount: Int = 0
+        var lastBackgroundDownloadFileURL: URL?
+        var lastBackgroundDownloadSiteID: Int64?
+        var lastBackgroundDownloadSnapshotDate: Date?
+    }
 
-    // Controlled sync mechanism
-    private var syncContinuations: [CheckedContinuation<Void, Never>] = []
-    private var shouldBlockSync = false
-    private var syncBlockedContinuations: [CheckedContinuation<Void, Never>] = []
+    private let state = Mutex(State())
 
-    private(set) var startFullSyncCallCount = 0
-    private(set) var lastSyncSiteID: Int64?
-    private(set) var lastAllowCellular: Bool?
-    private(set) var lastRegenerateCatalog: Bool?
-    private(set) var lastIsBackgroundSync: Bool?
+    var startFullSyncResult: Result<POSCatalog, Error> {
+        get { state.withLock { $0.startFullSyncResult } }
+        set { state.withLock { $0.startFullSyncResult = newValue } }
+    }
+
+    var progressToEmit: POSCatalogSyncProgress? {
+        get { state.withLock { $0.progressToEmit } }
+        set { state.withLock { $0.progressToEmit = newValue } }
+    }
+
+    var progressUpdatesToEmit: [POSCatalogSyncProgress] {
+        get { state.withLock { $0.progressUpdatesToEmit } }
+        set { state.withLock { $0.progressUpdatesToEmit = newValue } }
+    }
+
+    var onSync: (@Sendable (Int64) async throws -> Void)? {
+        get { state.withLock { $0.onSync } }
+        set { state.withLock { $0.onSync = newValue } }
+    }
+
+    private(set) var startFullSyncCallCount: Int {
+        get { state.withLock { $0.startFullSyncCallCount } }
+        set { state.withLock { $0.startFullSyncCallCount = newValue } }
+    }
+
+    private(set) var lastSyncSiteID: Int64? {
+        get { state.withLock { $0.lastSyncSiteID } }
+        set { state.withLock { $0.lastSyncSiteID = newValue } }
+    }
+
+    private(set) var lastAllowCellular: Bool? {
+        get { state.withLock { $0.lastAllowCellular } }
+        set { state.withLock { $0.lastAllowCellular = newValue } }
+    }
+
+    private(set) var lastRegenerateCatalog: Bool? {
+        get { state.withLock { $0.lastRegenerateCatalog } }
+        set { state.withLock { $0.lastRegenerateCatalog = newValue } }
+    }
+
+    private(set) var lastIsBackgroundSync: Bool? {
+        get { state.withLock { $0.lastIsBackgroundSync } }
+        set { state.withLock { $0.lastIsBackgroundSync = newValue } }
+    }
 
     func startFullSync(for siteID: Int64,
                         regenerateCatalog: Bool,
                         allowCellular: Bool,
                         isBackgroundSync: Bool,
                         onProgress: POSCatalogSyncProgressHandler?) async throws -> POSCatalog {
-        startFullSyncCallCount += 1
+        state.withLock { $0.startFullSyncCallCount += 1 }
         lastSyncSiteID = siteID
         lastAllowCellular = allowCellular
         lastRegenerateCatalog = regenerateCatalog
@@ -682,21 +707,7 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
             await onProgress?(progress)
         }
 
-        // If we should block, wait for continuation to be resumed
-        if shouldBlockSync {
-            await withCheckedContinuation { continuation in
-                syncContinuations.append(continuation)
-                // Signal that a sync is now blocked and ready
-                if !syncBlockedContinuations.isEmpty {
-                    syncBlockedContinuations.removeFirst().resume()
-                }
-            }
-        }
-
-        // Add delay if specified
-        if syncDelay > 0 {
-            try await Task.sleep(nanoseconds: syncDelay)
-        }
+        try await onSync?(siteID)
 
         switch startFullSyncResult {
         case .success(let catalog):
@@ -706,11 +717,18 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
         }
     }
 
-    var startPaginatedFullSyncResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: [], syncDate: .now))
-    private(set) var startPaginatedFullSyncCallCount = 0
+    var startPaginatedFullSyncResult: Result<POSCatalog, Error> {
+        get { state.withLock { $0.startPaginatedFullSyncResult } }
+        set { state.withLock { $0.startPaginatedFullSyncResult = newValue } }
+    }
+
+    private(set) var startPaginatedFullSyncCallCount: Int {
+        get { state.withLock { $0.startPaginatedFullSyncCallCount } }
+        set { state.withLock { $0.startPaginatedFullSyncCallCount = newValue } }
+    }
 
     func startPaginatedFullSync(for siteID: Int64, allowCellular: Bool) async throws -> POSCatalog {
-        startPaginatedFullSyncCallCount += 1
+        state.withLock { $0.startPaginatedFullSyncCallCount += 1 }
         lastSyncSiteID = siteID
         lastAllowCellular = allowCellular
 
@@ -722,14 +740,33 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
         }
     }
 
-    var parseAndPersistBackgroundDownloadResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: [], syncDate: .now))
-    private(set) var parseAndPersistBackgroundDownloadCallCount = 0
-    private(set) var lastBackgroundDownloadFileURL: URL?
-    private(set) var lastBackgroundDownloadSiteID: Int64?
-    private(set) var lastBackgroundDownloadSnapshotDate: Date?
+    var parseAndPersistBackgroundDownloadResult: Result<POSCatalog, Error> {
+        get { state.withLock { $0.parseAndPersistBackgroundDownloadResult } }
+        set { state.withLock { $0.parseAndPersistBackgroundDownloadResult = newValue } }
+    }
+
+    private(set) var parseAndPersistBackgroundDownloadCallCount: Int {
+        get { state.withLock { $0.parseAndPersistBackgroundDownloadCallCount } }
+        set { state.withLock { $0.parseAndPersistBackgroundDownloadCallCount = newValue } }
+    }
+
+    private(set) var lastBackgroundDownloadFileURL: URL? {
+        get { state.withLock { $0.lastBackgroundDownloadFileURL } }
+        set { state.withLock { $0.lastBackgroundDownloadFileURL = newValue } }
+    }
+
+    private(set) var lastBackgroundDownloadSiteID: Int64? {
+        get { state.withLock { $0.lastBackgroundDownloadSiteID } }
+        set { state.withLock { $0.lastBackgroundDownloadSiteID = newValue } }
+    }
+
+    private(set) var lastBackgroundDownloadSnapshotDate: Date? {
+        get { state.withLock { $0.lastBackgroundDownloadSnapshotDate } }
+        set { state.withLock { $0.lastBackgroundDownloadSnapshotDate = newValue } }
+    }
 
     func parseAndPersistBackgroundDownload(fileURL: URL, siteID: Int64, snapshotDate: Date) async throws -> POSCatalog {
-        parseAndPersistBackgroundDownloadCallCount += 1
+        state.withLock { $0.parseAndPersistBackgroundDownloadCallCount += 1 }
         lastBackgroundDownloadFileURL = fileURL
         lastBackgroundDownloadSiteID = siteID
         lastBackgroundDownloadSnapshotDate = snapshotDate
@@ -740,26 +777,6 @@ final class MockPOSCatalogFullSyncService: POSCatalogFullSyncServiceProtocol {
         case .failure(let error):
             throw error
         }
-    }
-
-    func blockNextSync() {
-        shouldBlockSync = true
-    }
-
-    func blockAfterEmittingProgress() {
-        blockNextSync()
-    }
-
-    func waitUntilSyncBlocked() async {
-        await withCheckedContinuation { continuation in
-            syncBlockedContinuations.append(continuation)
-        }
-    }
-
-    func resumeBlockedSync() {
-        syncContinuations.forEach { $0.resume() }
-        syncContinuations.removeAll()
-        shouldBlockSync = false
     }
 }
 
@@ -1061,73 +1078,55 @@ extension POSCatalogSyncCoordinatorTests {
     // MARK: - Stop Ongoing Syncs Tests
 
     @Test func stopOngoingSyncs_clears_incremental_sync_tracking() async throws {
-        // Given - start an incremental sync
+        // Given
         let fullSyncDate = Date().addingTimeInterval(-3600)
         try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate)
-        mockIncrementalSyncService.blockNextSync()
-
-        let syncTask = Task {
-            try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+        defer { mockIncrementalSyncService.onSync = nil }
+        mockIncrementalSyncService.onSync = { [sut, sampleSiteID] _ in
+            // When - stop while the service is in flight.
+            await sut.stopOngoingSyncs(for: sampleSiteID)
         }
+        _ = try? await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
+        mockIncrementalSyncService.onSync = nil
 
-        // Wait until sync is actually blocked
-        await mockIncrementalSyncService.waitUntilSyncBlocked()
-
-        // When - stop ongoing syncs
-        await sut.stopOngoingSyncs(for: sampleSiteID)
-
-        // Then - incremental sync tracking should be cleared
-        // Attempting to start another sync should succeed (not throw syncAlreadyInProgress)
-        mockIncrementalSyncService.resumeBlockedSync()
-        _ = try? await syncTask.value
-
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+        // Then - the next sync must not be rejected as already in progress.
         try await sut.performIncrementalSyncIfApplicable(for: sampleSiteID, maxAge: sampleMaxAge)
         #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 2)
     }
 
     @Test func stopOngoingSyncs_updates_full_sync_state_when_sync_in_progress() async throws {
-        // Given - start a full sync
-        mockSyncService.blockNextSync()
-        mockSyncService.startFullSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+        // Given
+        defer { mockSyncService.onSync = nil }
+        mockSyncService.onSync = { [sut, sampleSiteID] _ in
+            let stateBeforeStop = await sut.loadLastFullSyncState(for: sampleSiteID)
+            let isSyncInProgress: Bool = switch stateBeforeStop {
+            case .initialSyncStarted, .syncStarted, .initialSyncProgress, .syncProgress: true
+            default: false
+            }
+            #expect(isSyncInProgress)
 
-        let syncTask = Task {
-            try await sut.performFullSync(for: sampleSiteID)
+            // When
+            await sut.stopOngoingSyncs(for: sampleSiteID)
+
+            // Then - inspect cancellation before the service returns.
+            let stateAfterStop = await sut.loadLastFullSyncState(for: sampleSiteID)
+            let isFailed: Bool = switch stateAfterStop {
+            case .syncFailed(let siteID, let error):
+                siteID == sampleSiteID && (error as? POSCatalogSyncError) == .requestCancelled
+            case .initialSyncFailed(let siteID, let error):
+                siteID == sampleSiteID && (error as? POSCatalogSyncError) == .requestCancelled
+            default: false
+            }
+            #expect(isFailed)
         }
-
-        // Wait until sync is actually blocked
-        await mockSyncService.waitUntilSyncBlocked()
-
-        // Verify sync is in progress
-        let stateBeforeStop = await sut.loadLastFullSyncState(for: sampleSiteID)
-        let isSyncInProgress: Bool = switch stateBeforeStop {
-        case .initialSyncStarted, .syncStarted, .initialSyncProgress, .syncProgress: true
-        default: false
-        }
-        #expect(isSyncInProgress)
-
-        // When - stop ongoing syncs
-        await sut.stopOngoingSyncs(for: sampleSiteID)
-
-        // Then - sync state should be updated to failed with requestCancelled
-        let stateAfterStop = await sut.loadLastFullSyncState(for: sampleSiteID)
-        let isFailed: Bool = switch stateAfterStop {
-        case .syncFailed(let siteID, let error):
-            siteID == sampleSiteID && (error as? POSCatalogSyncError) == .requestCancelled
-        case .initialSyncFailed(let siteID, let error):
-            siteID == sampleSiteID && (error as? POSCatalogSyncError) == .requestCancelled
-        default: false
-        }
-        #expect(isFailed)
-
-        // Cleanup
-        mockSyncService.resumeBlockedSync()
-        _ = try? await syncTask.value
+        _ = try? await sut.performFullSync(for: sampleSiteID)
+        #expect(mockSyncService.startFullSyncCallCount == 1)
     }
 
     @Test func stopOngoingSyncs_does_nothing_when_no_sync_in_progress() async throws {
         // Given - no sync in progress
-        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: Date().addingTimeInterval(-3600))
+        let fullSyncDate = Date().addingTimeInterval(-3600)
+        try createSiteInDatabase(siteID: sampleSiteID, lastFullSyncDate: fullSyncDate)
 
         let stateBeforeStop = await sut.loadLastFullSyncState(for: sampleSiteID)
 
@@ -1140,47 +1139,34 @@ extension POSCatalogSyncCoordinatorTests {
     }
 
     @Test func stopOngoingSyncs_handles_different_sites_independently() async throws {
-        // Given - syncs for two different sites
+        // Given
         let siteA: Int64 = 123
         let siteB: Int64 = 456
         let fullSyncDate = Date().addingTimeInterval(-3600)
-
         try createSiteInDatabase(siteID: siteA, lastFullSyncDate: fullSyncDate)
         try createSiteInDatabase(siteID: siteB, lastFullSyncDate: fullSyncDate)
 
-        mockIncrementalSyncService.blockNextSync()
+        defer { mockIncrementalSyncService.onSync = nil }
+        mockIncrementalSyncService.onSync = { [sut, sampleMaxAge] siteID in
+            if siteID == siteA {
+                // Start B while A is still awaiting its service callback.
+                try await sut.performIncrementalSyncIfApplicable(for: siteB, maxAge: sampleMaxAge)
+            } else {
+                // When - both services are in flight, stop only A.
+                await sut.stopOngoingSyncs(for: siteA)
 
-        // Start syncs for both sites
-        let syncTaskA = Task {
-            try await sut.performIncrementalSyncIfApplicable(for: siteA, maxAge: sampleMaxAge)
+                // Then - B remains in flight and rejects a duplicate request.
+                await #expect(throws: POSCatalogSyncError.syncAlreadyInProgress(siteID: siteB)) {
+                    try await sut.performIncrementalSyncIfApplicable(for: siteB, maxAge: sampleMaxAge)
+                }
+            }
         }
+        _ = try? await sut.performIncrementalSyncIfApplicable(for: siteA, maxAge: sampleMaxAge)
+        mockIncrementalSyncService.onSync = nil
 
-        // Wait for first sync to block
-        await mockIncrementalSyncService.waitUntilSyncBlocked()
-
-        // Now start second sync (will also block since shouldBlockSync is still true)
-        let syncTaskB = Task {
-            try await sut.performIncrementalSyncIfApplicable(for: siteB, maxAge: sampleMaxAge)
-        }
-
-        // Wait for second sync to block
-        await mockIncrementalSyncService.waitUntilSyncBlocked()
-
-        // When - stop syncs only for siteA
-        await sut.stopOngoingSyncs(for: siteA)
-
-        // Then - siteB sync should still throw syncAlreadyInProgress
-        await #expect(throws: POSCatalogSyncError.syncAlreadyInProgress(siteID: siteB)) {
-            try await sut.performIncrementalSyncIfApplicable(for: siteB, maxAge: sampleMaxAge)
-        }
-
-        // But siteA should allow new sync
-        mockIncrementalSyncService.resumeBlockedSync()
-        _ = try? await syncTaskA.value
-        _ = try? await syncTaskB.value
-
-        mockIncrementalSyncService.startIncrementalSyncResult = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+        // A accepts a new sync after cancellation and both original services return.
         try await sut.performIncrementalSyncIfApplicable(for: siteA, maxAge: sampleMaxAge)
+        #expect(mockIncrementalSyncService.startIncrementalSyncCallCount == 3)
     }
 
     // MARK: - Cellular Data Tests
@@ -1238,7 +1224,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func performFullSyncIfApplicable_tracks_analytics_events() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1262,7 +1248,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func performFullSyncIfApplicable_tracks_synced_product_and_variation_counts() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1285,13 +1271,13 @@ extension POSCatalogSyncCoordinatorTests {
         // Then
         let syncCompleted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
         #expect(syncCompleted != nil)
-        #expect(syncCompleted?.properties?["products_synced"] as? String == "3")
-        #expect(syncCompleted?.properties?["variations_synced"] as? String == "1")
+        #expect(syncCompleted?.properties?["products_synced"] == "3")
+        #expect(syncCompleted?.properties?["variations_synced"] == "1")
     }
 
     @Test func performFullSyncIfApplicable_tracks_sync_failed_with_error_type() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1308,12 +1294,12 @@ extension POSCatalogSyncCoordinatorTests {
         // Then
         let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
         #expect(syncFailed != nil)
-        #expect(syncFailed?.properties?["error_type"] as? String == "network_error")
+        #expect(syncFailed?.properties?["error_type"] == "network_error")
     }
 
     @Test func performFullSyncIfApplicable_when_catalog_file_download_fails_tracks_file_failure_details() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1333,16 +1319,16 @@ extension POSCatalogSyncCoordinatorTests {
         // Then
         let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
         #expect(syncFailed != nil)
-        #expect(syncFailed?.properties?["sync_strategy"] as? String == "local_catalog_file")
-        #expect(syncFailed?.properties?["error_type"] as? String == "catalog_file_download_failed")
-        #expect(syncFailed?.properties?["failure_stage"] as? String == "catalog_file_download")
-        #expect(syncFailed?.properties?["http_status_code"] as? String == "404")
-        #expect(syncFailed?.properties?["response_content_type"] as? String == "application_json")
+        #expect(syncFailed?.properties?["sync_strategy"] == "local_catalog_file")
+        #expect(syncFailed?.properties?["error_type"] == "catalog_file_download_failed")
+        #expect(syncFailed?.properties?["failure_stage"] == "catalog_file_download")
+        #expect(syncFailed?.properties?["http_status_code"] == "404")
+        #expect(syncFailed?.properties?["response_content_type"] == "application_json")
     }
 
     @Test func performFullSyncIfApplicable_when_catalog_file_blocked_tracks_blocked_error_type() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1362,10 +1348,10 @@ extension POSCatalogSyncCoordinatorTests {
         // Then
         let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
         #expect(syncFailed != nil)
-        #expect(syncFailed?.properties?["error_type"] as? String == "catalog_file_blocked")
-        #expect(syncFailed?.properties?["failure_stage"] as? String == "catalog_file_download")
-        #expect(syncFailed?.properties?["http_status_code"] as? String == "403")
-        #expect(syncFailed?.properties?["response_content_type"] as? String == "text_html")
+        #expect(syncFailed?.properties?["error_type"] == "catalog_file_blocked")
+        #expect(syncFailed?.properties?["failure_stage"] == "catalog_file_download")
+        #expect(syncFailed?.properties?["http_status_code"] == "403")
+        #expect(syncFailed?.properties?["response_content_type"] == "text_html")
         #expect(mockSiteSettings.mockPOSCatalogFileBlockedByHostAt != nil)
     }
 
@@ -1391,7 +1377,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func performFullSyncIfApplicable_when_blocked_below_WC_11_falls_back_to_paginated_sync() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1413,10 +1399,10 @@ extension POSCatalogSyncCoordinatorTests {
         // Then: the sync completes via the paginated fallback
         #expect(mockSyncService.startPaginatedFullSyncCallCount == 1)
         let blockedFailure = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
-        #expect(blockedFailure?.properties?["error_type"] as? String == "catalog_file_blocked")
+        #expect(blockedFailure?.properties?["error_type"] == "catalog_file_blocked")
         let fellBack = mockAnalytics.trackedEvents.filter { $0.eventName == "local_catalog_blocked_fell_back_to_remote" }
         #expect(fellBack.count == 1)
-        #expect(fellBack.first?.properties?["woocommerce_version"] as? String == "10.8.1")
+        #expect(fellBack.first?.properties?["woocommerce_version"] == "10.8.1")
         let completed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
         #expect(completed != nil)
         #expect(mockSiteSettings.mockPOSCatalogFileBlockedByHostAt != nil)
@@ -1447,7 +1433,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func performFullSyncIfApplicable_when_blocked_on_WC_11_falls_back_on_retry() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1626,7 +1612,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func performFullSyncIfApplicable_tracks_database_error_type() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1644,12 +1630,12 @@ extension POSCatalogSyncCoordinatorTests {
         // Then
         let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
         #expect(syncFailed != nil)
-        #expect(syncFailed?.properties?["error_type"] as? String == "database_error")
+        #expect(syncFailed?.properties?["error_type"] == "database_error")
     }
 
     @Test func performFullSyncIfApplicable_tracks_insufficient_space_for_sqlite_full_error() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1667,12 +1653,12 @@ extension POSCatalogSyncCoordinatorTests {
         // Then
         let syncFailed = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_failed" }
         #expect(syncFailed != nil)
-        #expect(syncFailed?.properties?["error_type"] as? String == "insufficient_free_space")
+        #expect(syncFailed?.properties?["error_type"] == "insufficient_free_space")
     }
 
     @Test func performIncrementalSyncIfApplicable_tracks_analytics_events() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1695,7 +1681,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func performIncrementalSyncIfApplicable_tracks_synced_product_and_variation_counts() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1719,13 +1705,13 @@ extension POSCatalogSyncCoordinatorTests {
         // Then
         let syncCompleted = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_completed" }
         #expect(syncCompleted != nil)
-        #expect(syncCompleted?.properties?["products_synced"] as? String == "2")
-        #expect(syncCompleted?.properties?["variations_synced"] as? String == "3")
+        #expect(syncCompleted?.properties?["products_synced"] == "2")
+        #expect(syncCompleted?.properties?["variations_synced"] == "3")
     }
 
     @Test func performIncrementalSyncIfApplicable_tracks_sync_skipped_when_no_full_sync() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1742,13 +1728,13 @@ extension POSCatalogSyncCoordinatorTests {
         // Then
         let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
         #expect(syncSkipped != nil)
-        #expect(syncSkipped?.properties?["reason"] as? String == "no_full_sync")
-        #expect(syncSkipped?.properties?["sync_type"] as? String == "incremental")
+        #expect(syncSkipped?.properties?["reason"] == "no_full_sync")
+        #expect(syncSkipped?.properties?["sync_type"] == "incremental")
     }
 
     @Test func performFullSyncIfApplicable_tracks_sync_skipped_when_not_stale() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1766,15 +1752,15 @@ extension POSCatalogSyncCoordinatorTests {
         // Then
         let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
         #expect(syncSkipped != nil)
-        #expect(syncSkipped?.properties?["reason"] as? String == "catalog_not_stale")
-        #expect(syncSkipped?.properties?["sync_type"] as? String == "full")
+        #expect(syncSkipped?.properties?["reason"] == "catalog_not_stale")
+        #expect(syncSkipped?.properties?["sync_type"] == "full")
     }
 
     // MARK: - Cached WooCommerce Core Version
 
     @Test func performFullSyncIfApplicable_does_not_set_cached_woo_core_version_on_sync_events() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1799,7 +1785,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func performFullSyncIfApplicable_does_not_set_cached_woo_core_version_on_sync_failed_event() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1822,7 +1808,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func performIncrementalSyncIfApplicable_does_not_set_cached_woo_core_version_on_sync_skipped_event() async throws {
         // Given
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let sut = POSCatalogSyncCoordinator(
             fullSyncService: mockSyncService,
             incrementalSyncService: mockIncrementalSyncService,
@@ -1854,7 +1840,7 @@ extension POSCatalogSyncCoordinatorTests {
 
     @Test func performFullSyncIfApplicable_tracks_pos_not_opened_30_days_when_not_opened_recently() async throws {
         // Given - Store with first sync > 30 days ago and last opened > 30 days ago
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let mockSiteSettings = MockSiteSpecificAppSettingsStoreMethods()
 
         // Set first sync date to 40 days ago
@@ -1885,13 +1871,13 @@ extension POSCatalogSyncCoordinatorTests {
         // Then - Should track pos_not_opened_30_days
         let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
         #expect(syncSkipped != nil)
-        #expect(syncSkipped?.properties?["reason"] as? String == "pos_not_opened_30_days")
-        #expect(syncSkipped?.properties?["sync_type"] as? String == "full")
+        #expect(syncSkipped?.properties?["reason"] == "pos_not_opened_30_days")
+        #expect(syncSkipped?.properties?["sync_type"] == "full")
     }
 
     @Test func performIncrementalSyncIfApplicable_tracks_pos_not_opened_30_days_when_never_opened_and_past_grace_period() async throws {
         // Given - Store with first sync > 30 days ago and never opened POS
-        let mockAnalytics = MockAnalytics()
+        let mockAnalytics = MockPOSCatalogAnalytics()
         let mockSiteSettings = MockSiteSpecificAppSettingsStoreMethods()
 
         // Set first sync date to 40 days ago
@@ -1920,8 +1906,8 @@ extension POSCatalogSyncCoordinatorTests {
         // Then - Should track pos_not_opened_30_days
         let syncSkipped = mockAnalytics.trackedEvents.first { $0.eventName == "local_catalog_sync_skipped" }
         #expect(syncSkipped != nil)
-        #expect(syncSkipped?.properties?["reason"] as? String == "pos_not_opened_30_days")
-        #expect(syncSkipped?.properties?["sync_type"] as? String == "incremental")
+        #expect(syncSkipped?.properties?["reason"] == "pos_not_opened_30_days")
+        #expect(syncSkipped?.properties?["sync_type"] == "incremental")
     }
 }
 

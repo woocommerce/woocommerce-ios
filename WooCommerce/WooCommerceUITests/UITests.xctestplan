@@ -26,9 +26,6 @@
   "testTargets" : [
     {
       "parallelizable" : true,
-      "skippedTests" : [
-        "SupportTests"
-      ],
       "target" : {
         "containerPath" : "container:WooCommerce.xcodeproj",
         "identifier" : "CCDC49C923FFFFF4003166BA",

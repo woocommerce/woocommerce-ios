@@ -39,6 +39,6 @@ public final class ProductSearchScreen: ScreenObject {
 
         let productsTableView = app.tables.matching(identifier: updatedSearchResultsID)
         productsTableView.element.assertTextVisibilityCount(textToFind: String(expectedProduct.name), expectedCount: 1)
-        productsTableView.element.assertTextVisibilityCount(textToFind: String(expectedProduct.stock_status), expectedCount: 1)
+        XCTAssertTrue(productsTableView.cells[expectedProduct.name].staticTexts["product-stock-status-\(expectedProduct.stock_status)"].exists)
     }
 }

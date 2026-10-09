@@ -23,7 +23,8 @@ struct PointOfSaleCardPresentPaymentConnectionSuccessAlertView: View {
                 .accessibilityFocused($isTitleFocused)
                 .matchedGeometryEffect(id: animation.titleTransitionId, in: animation.namespace, properties: .position)
         }
-        .posModalCloseButton(action: viewModel.buttonViewModel.actionHandler)
+        .posModalCloseButton(action: viewModel.buttonViewModel.actionHandler,
+                             accessibilityIdentifier: "pos-reader-connection-success-close-button")
         .multilineTextAlignment(.center)
         .accessibilityElement(children: .contain)
         .onAppear {

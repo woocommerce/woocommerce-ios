@@ -62,6 +62,7 @@ enum ProductFormSection: Equatable {
             let numberOfLinesForDetails: Int
             let isActionable: Bool
             let hideSeparator: Bool
+            let detailsAccessibilityIdentifier: String?
 
             init(icon: UIImage,
                  title: String?,
@@ -69,7 +70,8 @@ enum ProductFormSection: Equatable {
                  tintColor: UIColor? = nil,
                  numberOfLinesForDetails: Int = 0,
                  isActionable: Bool = true,
-                 hideSeparator: Bool = false) {
+                 hideSeparator: Bool = false,
+                 detailsAccessibilityIdentifier: String? = nil) {
                 self.icon = icon
                 self.title = title
                 self.details = details
@@ -77,6 +79,7 @@ enum ProductFormSection: Equatable {
                 self.numberOfLinesForDetails = numberOfLinesForDetails
                 self.isActionable = isActionable
                 self.hideSeparator = hideSeparator
+                self.detailsAccessibilityIdentifier = detailsAccessibilityIdentifier
             }
         }
 

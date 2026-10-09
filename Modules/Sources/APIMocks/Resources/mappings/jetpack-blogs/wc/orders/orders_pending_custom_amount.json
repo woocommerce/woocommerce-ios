@@ -4,7 +4,7 @@
         "urlPath": "/rest/v1.1/jetpack-blogs/161477129/rest-api/",
         "bodyPatterns": [
             { "matches": ".*path=/wc/v3/orders.*" },
-            { "contains": "Custom%20amount%22" },
+            { "contains": "%22fee_lines%22%3A%5B%7B" },
             { "contains": "status%22%3A%22pending" }
         ]
     },

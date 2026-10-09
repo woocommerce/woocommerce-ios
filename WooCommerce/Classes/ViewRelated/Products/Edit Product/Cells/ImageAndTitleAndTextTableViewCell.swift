@@ -4,6 +4,11 @@ import UIKit
 /// Displays an optional image, title and text.
 ///
 final class ImageAndTitleAndTextTableViewCell: UITableViewCell {
+    var detailsAccessibilityIdentifier: String? {
+        get { descriptionLabel.accessibilityIdentifier }
+        set { descriptionLabel.accessibilityIdentifier = newValue }
+    }
+
     /// Supported font styles.
     enum FontStyle {
         case body
@@ -177,6 +182,7 @@ extension ImageAndTitleAndTextTableViewCell {
         }
         titleLabel.textColor = viewModel.text?.isEmpty == false ? .text: .textSubtle
         titleLabel.numberOfLines = viewModel.numberOfLinesForTitle
+        descriptionLabel.accessibilityIdentifier = nil
         descriptionLabel.text = viewModel.text
         descriptionLabel.textColor = .textSubtle
         descriptionLabel.isHidden = viewModel.text == nil || viewModel.text?.isEmpty == true

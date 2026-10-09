@@ -15,7 +15,7 @@ public final class SingleProductScreen: ScreenObject {
 
     init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
-            expectedElementGetters: [ {$0.buttons["edit-product-more-options-button"]} ],
+            expectedElementGetters: [ {$0.tables["product-form"]} ],
             app: app
         )
     }
@@ -25,9 +25,9 @@ public final class SingleProductScreen: ScreenObject {
         let navigationBar = app.navigationBars.element(boundBy: 0)
         // iOS 27 labels the system back button "Back" instead of the previous screen's title.
         let systemBackButton = navigationBar.buttons["BackButton"]
-        let navBackButton = systemBackButton.exists ? systemBackButton : navigationBar.buttons["Products"]
+        let navBackButton = systemBackButton.exists ? systemBackButton : navigationBar.buttons.element(boundBy: 0)
         // If split view is enabled, back button is not shown in the product form navigation bar.
-        if navBackButton.exists {
+        if navBackButton.exists && !app.buttons["product-add-button"].isHittable {
             navBackButton.tap()
         }
         return try ProductsScreen()
@@ -35,7 +35,7 @@ public final class SingleProductScreen: ScreenObject {
 
     @discardableResult
     public func verifyProduct(product: ProductData) throws -> Self {
-        productFormTable.assertTextVisibilityCount(textToFind: product.stock_status, expectedCount: 1)
+        XCTAssertTrue(productFormTable.staticTexts["product-stock-status-\(product.stock_status)"].exists)
         productFormTable.assertTextVisibilityCount(textToFind: product.regular_price, expectedCount: 1)
         XCTAssertTrue(app.textViews[product.name].isFullyVisibleOnScreen(), "Product name is not visible on screen!")
 
@@ -48,56 +48,55 @@ public final class SingleProductScreen: ScreenObject {
     }
 
     public func publishProduct() throws -> Self {
-        app.buttons["publish-product-button"].tap()
+        app.tapNavigationBarButton("publish-product-button")
         return self
     }
 
     public func verifyPublishedProductScreenLoaded(productType: String, productName: String) {
         // common fields on a published product screen
-        XCTAssertTrue(app.buttons["save-product-button"].waitForExistence(timeout: 10), "Save button is not displayed!")
-        XCTAssertTrue(app.staticTexts["TIP"].exists)
+        XCTAssertTrue(app.navigationBarButtonExists("save-product-button", timeout: 10), "Save button is not displayed!")
+        XCTAssertTrue(app.cells["product-linked-products-promo-cell"].exists)
         XCTAssertTrue(app.textViews[productName].exists)
 
         // different product types display different fields on the published product screen
         // this is to validate that the correct screens are displayed
         switch productType {
         case "physical", "virtual":
-            XCTAssertTrue(app.staticTexts["Price"].exists)
+            XCTAssertTrue(app.cells["product-price-cell"].exists)
         case "variable":
-            XCTAssertTrue(app.staticTexts["Add variations"].exists)
+            XCTAssertTrue(app.cells["product-variations-cell"].exists)
         case "grouped":
-            XCTAssertTrue(app.staticTexts["Grouped products"].exists)
+            XCTAssertTrue(app.cells["product-grouped-products-cell"].exists)
         case "external":
-            XCTAssertTrue(app.staticTexts["Add product link"].exists)
+            XCTAssertTrue(app.cells["product-external-url-cell"].exists)
         default:
             XCTFail("Product Type \(productType) doesn't exist!")
         }
     }
 
     public func verifyProductTypeScreenLoaded(productType: String) throws -> Self {
-        let productTypeLabel = productType + (productType == "external" ? "/Affiliate" : "")
-        let productTypeLabelPredicate = NSPredicate(format: "label ==[c] '\(productTypeLabel)'")
+        let typeID = ["physical": "simple", "virtual": "simpleVirtual", "external": "affiliate"][productType] ?? productType
 
         // the common fields on add product screen
         XCTAssertTrue(app.cells["product-review-cell"].exists)
-        XCTAssertTrue(app.staticTexts.containing(productTypeLabelPredicate).firstMatch.exists)
+        XCTAssertTrue(productFormTable.staticTexts["product-type-\(typeID)"].exists)
 
         // different product types display different fields on add product screen
         // this is to validate that the correct screens are displayed
         switch productType {
         case "physical", "virtual":
-            XCTAssertTrue(app.staticTexts["Add Price"].exists)
-            XCTAssertTrue(app.staticTexts["Inventory"].exists)
+            XCTAssertTrue(app.cells["product-price-cell"].exists)
+            XCTAssertTrue(app.cells["product-inventory-cell"].exists)
         case "variable":
-            XCTAssertTrue(app.staticTexts["Add variations"].exists)
-            XCTAssertTrue(app.staticTexts["Inventory"].exists)
+            XCTAssertTrue(app.cells["product-variations-cell"].exists)
+            XCTAssertTrue(app.cells["product-inventory-cell"].exists)
         case "grouped":
-            XCTAssertTrue(app.staticTexts["Add products to the group"].exists)
-            XCTAssertFalse(app.staticTexts["Inventory"].exists)
+            XCTAssertTrue(app.cells["product-grouped-products-cell"].exists)
+            XCTAssertFalse(app.cells["product-inventory-cell"].exists)
         case "external":
-            XCTAssertTrue(app.staticTexts["Add product link"].exists)
-            XCTAssertTrue(app.staticTexts["Add Price"].exists)
-            XCTAssertFalse(app.staticTexts["Inventory"].exists)
+            XCTAssertTrue(app.cells["product-external-url-cell"].exists)
+            XCTAssertTrue(app.cells["product-price-cell"].exists)
+            XCTAssertFalse(app.cells["product-inventory-cell"].exists)
         default:
             XCTFail("Product Type \(productType) doesn't exist!")
         }

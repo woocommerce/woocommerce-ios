@@ -264,7 +264,8 @@ extension FilterProductListViewModel.ProductListFilter {
             let options: [ProductStockStatus?] = [nil, .inStock, .outOfStock, .onBackOrder]
             return FilterTypeViewModel(title: title,
                                        listSelectorConfig: .staticOptions(options: options),
-                                       selectedValue: filters.stockStatus)
+                                       selectedValue: filters.stockStatus,
+                                       accessibilityIdentifier: "product-filter-stock-status-cell")
         case .productStatus:
             let options: [ProductStatus?] = [nil, .published, .draft, .pending, .privateStatus]
             return FilterTypeViewModel(title: title,

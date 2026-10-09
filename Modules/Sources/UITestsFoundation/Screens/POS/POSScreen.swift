@@ -159,8 +159,8 @@ public final class POSScreen: ScreenObject {
     @discardableResult
     public func verifyCartItemCount(_ count: Int) -> Self {
         showCompactCartIfNeeded()
-        let itemCountLabel = count == 1 ? "1 item" : "\(count) items"
-        XCTAssertTrue(app.staticTexts[itemCountLabel].waitForExistence(timeout: 10), "POS cart should show \(itemCountLabel).")
+        let itemCountLabel = app.staticTexts["pos-cart-item-count-\(count)"]
+        XCTAssertTrue(itemCountLabel.waitForExistence(timeout: 10), "POS cart should contain \(count) items.")
         return self
     }
 
@@ -416,12 +416,12 @@ public final class POSScreen: ScreenObject {
 
     @discardableResult
     public func tapExitMenuItem() -> Self {
-        return tapMenuItem(identifier: "pos-exit-menu-item", label: "Exit POS")
+        return tapMenuItem(identifier: "pos-exit-menu-item")
     }
 
     @discardableResult
     public func tapSettingsMenuItem() -> Self {
-        return tapMenuItem(identifier: "pos-settings-menu-item", label: "Settings")
+        return tapMenuItem(identifier: "pos-settings-menu-item")
     }
 
     @discardableResult
@@ -453,12 +453,12 @@ public final class POSScreen: ScreenObject {
     private func waitForCardPaymentPromptOrSuccess(timeout: TimeInterval) -> Bool {
         let cardPaymentMessage = app.descendants(matching: .any)["pos-card-payment-message"]
         let successView = app.descendants(matching: .any)["pos-payment-success-view"]
-        let connectToReaderButton = app.buttons["Connect to Reader"]
-        let locationContinueButton = app.buttons["Continue"]
-        let locationRequiredSettingsButton = app.buttons["Open Device Settings"]
-        let connectionSuccessDoneButton = app.buttons["Done"]
-        let connectionFailedTitle = app.staticTexts["We couldn't connect your reader"]
-        let connectionFailedNonRetryableTitle = app.staticTexts["Connection failed"]
+        let connectToReaderButton = app.buttons["pos-reader-connect-button"]
+        let locationContinueButton = app.buttons["pos-reader-location-continue-button"]
+        let locationRequiredSettingsButton = app.buttons["pos-reader-location-settings-button"]
+        let connectionSuccessDoneButton = app.buttons["pos-reader-connection-success-close-button"]
+        let connectionFailedTitle = app.staticTexts["pos-reader-connection-failed-title"]
+        let connectionFailedNonRetryableTitle = app.staticTexts["pos-reader-connection-failed-non-retryable-title"]
 
         let deadline = Date().addingTimeInterval(timeout)
 
@@ -487,16 +487,10 @@ public final class POSScreen: ScreenObject {
     }
 
     @discardableResult
-    private func tapMenuItem(identifier: String, label: String) -> Self {
-        let menuItemByIdentifier = app.buttons[identifier]
-        if menuItemByIdentifier.waitForIsHittable(timeout: 5) {
-            menuItemByIdentifier.tap()
-            return self
-        }
-
-        let menuItemByLabel = app.buttons[label]
-        XCTAssertTrue(menuItemByLabel.waitForIsHittable(timeout: 10), "\(label) menu item should be tappable.")
-        menuItemByLabel.tap()
+    private func tapMenuItem(identifier: String) -> Self {
+        let menuItem = app.buttons[identifier]
+        XCTAssertTrue(menuItem.waitForIsHittable(timeout: 15), "\(identifier) menu item should be tappable.")
+        menuItem.tap()
         return self
     }
 

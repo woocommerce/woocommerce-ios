@@ -34,7 +34,7 @@ public final class UnifiedOrderScreen: ScreenObject {
     }
 
     private let addCustomerDetailsButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["Add Customer Details"]
+        $0.buttons["add-customer-details-button"]
     }
 
     private let addShippingButtonGetter: (XCUIApplication) -> XCUIElement = {
@@ -293,8 +293,9 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// - Returns: Unified Order screen object.
     @discardableResult
     public func checkForExistingOrderTitle(byOrderNumber orderNumber: String) throws -> UnifiedOrderScreen {
-        let orderNumberPredicate = NSPredicate(format: "label MATCHES %@", "Order #\(orderNumber)")
-        XCTAssertTrue(app.staticTexts.containing(orderNumberPredicate).element.exists)
+        XCTAssertTrue(app.otherElements["order-form-screen"].exists)
+        let orderNumberPredicate = NSPredicate(format: "identifier CONTAINS %@ OR label CONTAINS %@", orderNumber, orderNumber)
+        XCTAssertTrue(app.navigationBars.matching(orderNumberPredicate).firstMatch.exists)
 
         return self
     }

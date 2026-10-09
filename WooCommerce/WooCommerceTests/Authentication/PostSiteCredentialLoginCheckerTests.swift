@@ -146,7 +146,11 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
                 XCTAssertFalse(fixture.form.navigationItem.hidesBackButton)
                 XCTAssertTrue(fixture.navigation.viewControllers.first === fixture.form)
                 XCTAssertEqual(fixture.navigation.viewControllers.count, action == .dismiss ? 1 : 2)
-                if action == .contactSupport { XCTAssertTrue(fixture.navigation.topViewController is SupportChatHostingController) }
+                if action == .contactSupport {
+                    let host = fixture.navigation.topViewController as? SupportChatHostingController
+                    XCTAssertNotNil(host)
+                    XCTAssertEqual(host?.rootView.viewModel.supportSiteAddress, testURL)
+                }
                 XCTAssertFalse(fixture.provider.receivedEvents.contains(WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue))
                 XCTAssertEqual(fixture.password.generationCallCount, 1)
             }

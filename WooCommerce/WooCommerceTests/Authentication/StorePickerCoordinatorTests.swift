@@ -314,6 +314,9 @@ final class StorePickerCoordinatorTests: XCTestCase {
                 XCTAssertTrue(fixture.stores.isAuthenticated)
                 XCTAssertTrue(navigation.viewControllers.contains(fixture.picker))
                 XCTAssertEqual(navigation.topViewController is SupportChatHostingController, action == .contactSupport)
+                if let host = navigation.topViewController as? SupportChatHostingController {
+                    XCTAssertEqual(host.rootView.viewModel.supportSiteAddress, fixture.site.url)
+                }
                 XCTAssertFalse(fixture.continueButton?.isEnabled ?? true)
                 XCTAssertFalse(fixture.provider.receivedEvents.contains(WooAnalyticsStat.loginUnexpectedResponseRetryResult.rawValue))
 

@@ -8,6 +8,96 @@ import enum Networking.NetworkError
 struct SupportChatViewModelTests {
     private static let noopContactHumanSupport: SupportChatViewModel.ContactHumanSupportCallback = { _, _, _, _, _ in }
 
+    @Test func test_start_when_initial_message_exists_then_sends_once_without_greeting() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        var requests = [SupportChatAction]()
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { requests.append($0) }
+        let message = "I couldn't log in. HTTP status: 500"
+        let sut = SupportChatViewModel(entryPoint: .preLogin, stores: stores,
+                                      initialContext: ["site_url": .string("https://failed.example.com")],
+                                      initialMessage: message, supportSiteAddress: "https://failed.example.com",
+                                      onContactHumanSupport: Self.noopContactHumanSupport)
+
+        // When
+        sut.startIfNeeded()
+        sut.startIfNeeded()
+
+        // Then
+        #expect(sut.messages.count == 1)
+        #expect(sut.messages.first?.role == .user)
+        #expect(sut.messages.first?.content.text == message)
+        #expect(sut.state == .sending)
+        #expect(requests.count == 1)
+        guard case let .sendMessage(_, text, chatID, sessionID, context, _) = requests.first else {
+            Issue.record("Expected automatic send")
+            return
+        }
+        #expect(text == message)
+        #expect(chatID == nil)
+        #expect(sessionID == nil)
+        #expect(context?["site_url"] == .string("https://failed.example.com"))
+
+        // When: a successful response or another appearance must not resubmit the opening message.
+        completeSendMessageSuccessfully(requests[0])
+        sut.startIfNeeded()
+
+        // Then
+        #expect(requests.count == 1)
+        #expect(sut.messages.map(\.role) == [.user, .bot])
+        #expect(sut.state == .idle)
+    }
+
+    @Test func test_start_when_initial_send_fails_then_marks_message_failed_without_resending_on_appearance() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: false))
+        var count = 0
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { action in
+            guard case let .sendMessage(_, _, _, _, _, completion) = action else { return }
+            count += 1
+            completion(.failure(NSError(domain: "Test", code: 500)))
+        }
+        let sut = SupportChatViewModel(entryPoint: .preLogin, stores: stores, initialMessage: "Login failed",
+                                      onContactHumanSupport: Self.noopContactHumanSupport)
+
+        // When
+        sut.startIfNeeded()
+        sut.startIfNeeded()
+
+        // Then
+        #expect(count == 1)
+        #expect(sut.messages.count == 1)
+        #expect(sut.messages.first?.failed == true)
+        #expect(sut.isContactHumanSupportButtonEnabled)
+        guard case .error = sut.state else {
+            Issue.record("Expected send error")
+            return
+        }
+    }
+
+    @Test func test_start_when_resuming_then_fetches_once_and_ignores_initial_message() {
+        // Given
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        var requests = [SupportChatAction]()
+        stores.whenReceivingAction(ofType: SupportChatAction.self) { requests.append($0) }
+        let sut = SupportChatViewModel(entryPoint: .chatHistory, stores: stores, initialMessage: "Do not resend",
+                                      chatID: 123, sessionID: "session", onContactHumanSupport: Self.noopContactHumanSupport)
+
+        // When
+        sut.startIfNeeded()
+        sut.startIfNeeded()
+
+        // Then
+        #expect(requests.count == 1)
+        #expect(sut.messages.isEmpty)
+        guard case let .fetchChat(_, chatID, sessionID, _) = requests.first else {
+            Issue.record("Expected fetch")
+            return
+        }
+        #expect(chatID == 123)
+        #expect(sessionID == "session")
+    }
+
     // MARK: - Greeting Tests
 
     @Test func showGreeting_when_entryPoint_is_helpAndSupport_then_shows_issue_picker() {

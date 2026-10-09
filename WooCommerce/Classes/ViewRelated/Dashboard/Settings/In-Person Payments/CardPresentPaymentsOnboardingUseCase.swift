@@ -189,7 +189,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
 
     private func refreshOnboardingState() {
         synchronizeStoreCountryAndPlugins { [weak self] in
-            self?.updateAccounts()
+            self?.updateAccounts(storeDataSynced: true)
         }
     }
 
@@ -198,7 +198,7 @@ final class CardPresentPaymentsOnboardingUseCase: CardPresentPaymentsOnboardingU
     ///
     /// - Parameter storeDataSynced: Whether the store settings and plugins synced without errors before this call.
     ///
-    func updateAccounts(storeDataSynced: Bool = true) {
+    func updateAccounts(storeDataSynced: Bool) {
         guard let siteID else {
             return
         }
@@ -372,17 +372,17 @@ private extension CardPresentPaymentsOnboardingUseCase {
     }
 
     func bothPluginsInstalledAndActiveOnboardingState(wcPay: SystemPlugin, stripe: SystemPlugin) -> CardPresentPaymentOnboardingState {
-        // Choosing between two active gateways needs their accounts.
-        guard !accountsSyncFailed else {
-            return .genericError
-        }
-
         if preferredPluginLocal == nil {
             preferredPluginLocal = storedPreferredPlugin
         }
 
         if !isStripeSupportedInCountry {
             return wcPayOnlyOnboardingState(plugin: wcPay)
+        }
+
+        // Choosing between two active gateways needs their accounts.
+        guard !accountsSyncFailed else {
+            return .genericError
         }
 
         guard let preferredPlugin = preferredPluginLocal else {

@@ -1449,7 +1449,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
                                                            stores: stores,
                                                            cardPresentPaymentOnboardingStateCache: onboardingStateCache)
-        useCase.updateAccounts()
+        useCase.updateAccounts(storeDataSynced: true)
 
         // Then - Should show no connection error
         XCTAssertEqual(useCase.state, .noConnectionError)
@@ -1476,7 +1476,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
                                                            stores: stores,
                                                            cardPresentPaymentOnboardingStateCache: onboardingStateCache)
-        useCase.updateAccounts()
+        useCase.updateAccounts(storeDataSynced: true)
 
         // Then - Should show generic error
         XCTAssertEqual(useCase.state, .genericError)
@@ -1491,7 +1491,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
                                                            cardPresentPaymentOnboardingStateCache: onboardingStateCache)
 
         // When
-        useCase.updateAccounts()
+        useCase.updateAccounts(storeDataSynced: true)
 
         // Then
         XCTAssertEqual(useCase.state, .pluginNotInstalled)
@@ -1507,10 +1507,27 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
                                                            cardPresentPaymentOnboardingStateCache: onboardingStateCache)
 
         // When
-        useCase.updateAccounts()
+        useCase.updateAccounts(storeDataSynced: true)
 
         // Then
         XCTAssertEqual(useCase.state, .pluginNotActivated(plugin: .wcPay))
+    }
+
+    func test_updateAccounts_when_both_plugins_active_in_wcpay_only_country_with_unsupported_wcpay_and_accounts_fail_then_returns_unsupported_version() {
+        // Given
+        setupCountry(country: .ca)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.unsupportedVersionCanada)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .pluginUnsupportedVersion(plugin: .wcPay))
     }
 
     func test_updateAccounts_when_wcpay_active_with_stored_account_and_accounts_fail_to_load_then_returns_generic_error() {
@@ -1524,7 +1541,7 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
                                                            cardPresentPaymentOnboardingStateCache: onboardingStateCache)
 
         // When
-        useCase.updateAccounts()
+        useCase.updateAccounts(storeDataSynced: true)
 
         // Then
         XCTAssertEqual(useCase.state, .genericError)
@@ -1539,12 +1556,12 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
                                                            stores: stores,
                                                            cardPresentPaymentOnboardingStateCache: onboardingStateCache)
-        useCase.updateAccounts()
+        useCase.updateAccounts(storeDataSynced: true)
         XCTAssertEqual(useCase.state, .genericError)
 
         // When
         whenLoadingAccounts(thenReturn: .success(()))
-        useCase.updateAccounts()
+        useCase.updateAccounts(storeDataSynced: true)
 
         // Then
         XCTAssertEqual(useCase.state, .completed(plugin: .wcPayOnly))

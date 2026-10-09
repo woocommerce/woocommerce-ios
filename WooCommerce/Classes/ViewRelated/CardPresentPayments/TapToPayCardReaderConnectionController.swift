@@ -322,7 +322,7 @@ private extension TapToPayCardReaderConnectionController {
     /// A mandatory update is being installed
     ///
     func onUpdateProgress(progress: Float) {
-        let cancel = softwareUpdateCancelable.map { cancelable in
+        let cancel = softwareUpdateCancelable.map { cancelable -> @MainActor @Sendable () -> Void in
             return { [weak self] in
                 guard let self else { return }
                 self.state = .cancel(.searchingForReader)
@@ -562,11 +562,11 @@ private extension TapToPayCardReaderConnectionController {
             self.state = .idle
         }
 
-        let retrySearch = {
+        let retrySearch: @MainActor @Sendable () -> Void = {
             self.state = .retry
         }
 
-        let cancelSearch = {
+        let cancelSearch: @MainActor @Sendable () -> Void = {
             self.state = .cancel(.connectionError)
         }
 
@@ -608,7 +608,7 @@ private extension TapToPayCardReaderConnectionController {
     }
 
     private func openWCSettingsAction(adminUrl: URL?,
-                                      retrySearch: @escaping () -> Void) -> (() -> Void)? {
+                                      retrySearch: @escaping @MainActor @Sendable () -> Void) -> (@MainActor @Sendable () -> Void)? {
         if let adminUrl {
             if isWPCOMStore() {
                 return { [weak self] in

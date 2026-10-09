@@ -533,7 +533,7 @@ private extension CardReaderConnectionController {
     /// A mandatory update is being installed
     ///
     func onUpdateProgress(progress: Float) {
-        let cancel = softwareUpdateCancelable.map { cancelable in
+        let cancel = softwareUpdateCancelable.map { cancelable -> @MainActor @Sendable () -> Void in
             return { [weak self] in
                 guard let self else { return }
                 self.state = .cancel(.readerSoftwareUpdate)
@@ -719,15 +719,15 @@ private extension CardReaderConnectionController {
     }
 
     private func showConnectionFailed(error: Error) {
-        let retrySearch = {
+        let retrySearch: @MainActor @Sendable () -> Void = {
             self.state = .retry
         }
 
-        let continueSearch = {
+        let continueSearch: @MainActor @Sendable () -> Void = {
             self.state = .searching
         }
 
-        let cancelSearch = {
+        let cancelSearch: @MainActor @Sendable () -> Void = {
             self.state = .cancel(.connectionError)
         }
 
@@ -770,7 +770,7 @@ private extension CardReaderConnectionController {
     }
 
     private func openWCSettingsAction(adminUrl: URL?,
-                                      retrySearch: @escaping () -> Void) -> (() -> Void)? {
+                                      retrySearch: @escaping @MainActor @Sendable () -> Void) -> (@MainActor @Sendable () -> Void)? {
         if let adminUrl {
             if isWPCOMStore() {
                 return { [weak self] in

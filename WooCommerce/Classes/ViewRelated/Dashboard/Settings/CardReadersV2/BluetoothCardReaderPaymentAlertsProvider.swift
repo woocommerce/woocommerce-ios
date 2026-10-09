@@ -13,19 +13,19 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
         self.transactionType = transactionType
     }
 
-    func validatingOrder(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func validatingOrder(onCancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalPreparingForPayment(bottomTitle: Localization.validatingOrderBottomTitle,
                                         cancelAction: onCancel)
     }
 
-    func preparingReader(onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+    func preparingReader(onCancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         CardPresentModalPreparingForPayment(cancelAction: onCancel)
     }
 
     func tapOrInsertCard(title: String,
                          amount: String,
                          inputMethods: Yosemite.CardReaderInput,
-                         onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                         onCancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         name = title
         self.amount = amount
         return CardPresentModalTapCard(name: title,
@@ -37,7 +37,7 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
 
     func cardInserted(title: String,
                       amount: String,
-                      onCancel: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                      onCancel: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         name = title
         self.amount = amount
         return CardPresentModalCardInserted(name: name,
@@ -73,8 +73,8 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
 
     func error(error: Error,
                receiptState: CardReaderTransactionFailureAlertReceiptState,
-               tryAgain: @escaping () -> Void,
-               dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+               tryAgain: @escaping @MainActor @Sendable () -> Void,
+               dismissCompletion: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         let errorDescription: String?
         if let error = error as? CardReaderServiceError {
             switch error {
@@ -120,7 +120,7 @@ final class BluetoothCardReaderPaymentAlertsProvider: CardReaderTransactionAlert
 
     func nonRetryableError(error: Error,
                            receiptState: CardReaderTransactionFailureAlertReceiptState,
-                           dismissCompletion: @escaping () -> Void) -> CardPresentPaymentsModalViewModel {
+                           dismissCompletion: @escaping @MainActor @Sendable () -> Void) -> CardPresentPaymentsModalViewModel {
         switch receiptState {
         case let .paymentSuccessEmailSent(email):
             CardPresentModalNonRetryableErrorEmailSent(amount: amount, error: error, email: email, onDismiss: dismissCompletion)

@@ -162,6 +162,7 @@ extension MockCardReaderSettingsAlerts: BluetoothReaderConnnectionAlertsProvidin
         return MockCardPresentPaymentsModalViewModel()
     }
 
+    @MainActor
     private func retryOrCancelIfNeeded(retry: @escaping @MainActor @Sendable () -> Void, cancel: @escaping @MainActor @Sendable () -> Void) {
         switch mode {
         case .cancelSearchingAfterConnectionFailure:

@@ -5,11 +5,11 @@ public final class HelpScreen: ScreenObject {
 
     // "Help" screen elements
     private let helpNavigationBarGetter: (XCUIApplication) -> XCUIElement = {
-        $0.navigationBars["Help"]
+        $0.tables["help-screen"]
     }
 
     private let contactSupportButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.staticTexts["Contact Support"]
+        $0.staticTexts["help-contact-support"]
     }
 
     private let emailTextFieldGetter: (XCUIApplication) -> XCUIElement = {

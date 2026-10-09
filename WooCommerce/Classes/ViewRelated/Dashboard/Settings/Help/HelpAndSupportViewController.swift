@@ -157,6 +157,7 @@ private extension HelpAndSupportViewController {
     /// Configure common table properties.
     ///
     func configureTableView() {
+        tableView.accessibilityIdentifier = "help-screen"
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground
@@ -257,6 +258,7 @@ private extension HelpAndSupportViewController {
     /// Contact Support cell.
     ///
     func configureContactSupport(cell: ValueOneTableViewCell) {
+        cell.textLabel?.accessibilityIdentifier = "help-contact-support"
         cell.accessoryType = .disclosureIndicator
         cell.selectionStyle = .default
         cell.textLabel?.text = NSLocalizedString("Contact Support", comment: "Contact Support title")

@@ -96,6 +96,7 @@ private extension SettingsViewController {
     }
 
     func configureTableView() {
+        tableView.accessibilityIdentifier = "settings-screen"
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
         tableView.backgroundColor = .listBackground

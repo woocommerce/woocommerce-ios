@@ -235,8 +235,8 @@ struct OrderForm: View {
     }
 
     var body: some View {
-        SafeAreaInsetsReader { safeAreaInsets in
-            orderFormSummary(presentProductSelector, safeAreaInsets: safeAreaInsets)
+        SafeAreaInsetsReader { safeAreaInsets, containerSize in
+            orderFormSummary(presentProductSelector, safeAreaInsets: safeAreaInsets, containerHeight: containerSize.height)
         }
         .onAppear {
             updateSelectionSyncApproach(for: presentationStyle)
@@ -262,7 +262,9 @@ struct OrderForm: View {
         }
     }
 
-    @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?, safeAreaInsets: EdgeInsets) -> some View {
+    @ViewBuilder private func orderFormSummary(_ presentProductSelector: (() -> Void)?,
+                                               safeAreaInsets: EdgeInsets,
+                                               containerHeight: CGFloat) -> some View {
         ScrollViewReader { scroll in
             ScrollView {
                 Group {
@@ -408,7 +410,9 @@ struct OrderForm: View {
                 FeedbackBannerPopover(isPresented: $viewModel.shippingLineViewModel.isSurveyPromptPresented,
                                       config: viewModel.shippingLineViewModel.feedbackBannerConfig)
 
-                ExpandableBottomSheet(safeAreaInsets: safeAreaInsets, onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
+                ExpandableBottomSheet(safeAreaInsets: safeAreaInsets,
+                                      containerHeight: containerHeight,
+                                      onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
                     VStack(spacing: .zero) {
                         HStack {
                             Text(Localization.orderTotal)

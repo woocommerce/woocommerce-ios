@@ -686,7 +686,7 @@
     "WooCommerce/WooCommerceTests/Authentication/Jetpack Setup/JetpackConnectionServiceTests.swift": 12,
     "WooCommerce/WooCommerceTests/Authentication/Jetpack Setup/JetpackSetupHostingControllerTests.swift": 7,
     "WooCommerce/WooCommerceTests/Authentication/Jetpack Setup/SiteCredentialLoginHostingViewControllerTests.swift": 10,
-    "WooCommerce/WooCommerceTests/Authentication/JetpackConnectionWebViewModelTests.swift": 19,
+    "WooCommerce/WooCommerceTests/Authentication/JetpackConnectionWebViewModelTests.swift": 20,
     "WooCommerce/WooCommerceTests/Authentication/JetpackErrorViewModelTests.swift": 2,
     "WooCommerce/WooCommerceTests/Authentication/JetpackSetupRequiredViewModelTests.swift": 1,
     "WooCommerce/WooCommerceTests/Authentication/NoWooErrorViewModelTests.swift": 4,

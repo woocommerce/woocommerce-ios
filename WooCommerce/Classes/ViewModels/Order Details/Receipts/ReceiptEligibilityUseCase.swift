@@ -3,6 +3,7 @@ import Yosemite
 import Experiments
 import class WooFoundation.VersionHelpers
 
+@MainActor
 protocol ReceiptEligibilityUseCaseProtocol {
     func isEligibleForBackendReceipts(onCompletion: @escaping (Bool) -> Void)
     func isEligibleForSuccessfulPaymentEmailReceipts(onCompletion: @escaping (Bool) -> Void)
@@ -10,6 +11,7 @@ protocol ReceiptEligibilityUseCaseProtocol {
     func isEligibleForReceipt(_ orderStatus: OrderStatusEnum, datePaid: Date?, onCompletion: @escaping (Bool) -> Void)
 }
 
+@MainActor
 final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     private let stores: StoresManager
     private let pluginsService: PluginsServiceProtocol
@@ -104,7 +106,6 @@ final class ReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
 }
 
 private extension ReceiptEligibilityUseCase {
-    @MainActor
     func isPluginSupported(_ plugin: Plugin, minimumVersion: String) async -> Bool {
         // Plugin must be installed and active
         guard let systemPlugin = pluginsService.loadPluginInStorage(siteID: siteID, plugin: plugin, isActive: true),

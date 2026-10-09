@@ -74,6 +74,7 @@ final class AztecEditorViewController: UIViewController, Editor {
     }()
 
     /// Hosts the format bar and, when enabled, the AI action next to it.
+    /// Its height comes from the arranged subviews' intrinsic 44 pt; Aztec's flexible-height resizing is inert inside a stack view.
     ///
     private lazy var formatBarContainer: UIStackView = {
         let arrangedSubviews = isAIGenerationEnabled ? [aiActionView, formatBar] : [formatBar]
@@ -82,6 +83,18 @@ final class AztecEditorViewController: UIViewController, Editor {
         stackView.spacing = 0
         stackView.translatesAutoresizingMaskIntoConstraints = false
         return stackView
+    }()
+
+    /// Cmd+B / Cmd+I / Cmd+U, built once since UIKit queries `keyCommands` on every key event.
+    ///
+    private lazy var formattingKeyCommands: [UIKeyCommand] = {
+        let commands = [
+            UIKeyCommand(title: Localization.boldShortcut, action: #selector(toggleBoldFromShortcut), input: "b", modifierFlags: .command),
+            UIKeyCommand(title: Localization.italicShortcut, action: #selector(toggleItalicFromShortcut), input: "i", modifierFlags: .command),
+            UIKeyCommand(title: Localization.underlineShortcut, action: #selector(toggleUnderlineFromShortcut), input: "u", modifierFlags: .command)
+        ]
+        commands.forEach { $0.wantsPriorityOverSystemBehavior = true }
+        return commands
     }()
 
     /// Aztec's Format Bar Action Handling Coordinator
@@ -264,34 +277,28 @@ extension AztecEditorViewController {
 //
 extension AztecEditorViewController {
     /// The rich text view declines the standard bold / italic / underline edit actions (`allowsEditingTextAttributes` is off),
-    /// so the editor provides the shortcuts itself and routes them to Aztec's formatters.
+    /// so the editor registers the shortcuts itself and forwards them to Aztec's edit action overrides.
     override var keyCommands: [UIKeyCommand]? {
-        let commands = [
-            UIKeyCommand(title: Localization.boldShortcut, action: #selector(toggleBoldFromShortcut), input: "b", modifierFlags: .command),
-            UIKeyCommand(title: Localization.italicShortcut, action: #selector(toggleItalicFromShortcut), input: "i", modifierFlags: .command),
-            UIKeyCommand(title: Localization.underlineShortcut, action: #selector(toggleUnderlineFromShortcut), input: "u", modifierFlags: .command)
-        ]
-        commands.forEach { $0.wantsPriorityOverSystemBehavior = true }
-        return commands
+        formattingKeyCommands
     }
 
     @objc private func toggleBoldFromShortcut() {
-        applyShortcutFormatting { $0.toggleBold(range: $0.selectedRange) }
+        forwardShortcut { $0.toggleBoldface(nil) }
     }
 
     @objc private func toggleItalicFromShortcut() {
-        applyShortcutFormatting { $0.toggleItalic(range: $0.selectedRange) }
+        forwardShortcut { $0.toggleItalics(nil) }
     }
 
     @objc private func toggleUnderlineFromShortcut() {
-        applyShortcutFormatting { $0.toggleUnderline(range: $0.selectedRange) }
+        forwardShortcut { $0.toggleUnderline(nil) }
     }
 
-    private func applyShortcutFormatting(_ formatting: (Aztec.TextView) -> Void) {
+    private func forwardShortcut(_ action: (Aztec.TextView) -> Void) {
         guard editorView.editingMode == .richText else {
             return
         }
-        formatting(richTextView)
+        action(richTextView)
         formatBar.update(editorView: editorView)
     }
 }

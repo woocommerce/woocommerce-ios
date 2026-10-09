@@ -35,9 +35,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
         // When
         let result: Result<Site, Error> = try await waitForCompletion { completion in
-            let action = WordPressSiteAction.fetchSiteInfo(siteURL: self.sampleSiteURL) { result in
-                completion(result)
-            }
+            let action = WordPressSiteAction.fetchSiteInfo(siteURL: self.sampleSiteURL, completion: completion)
             store.onAction(action)
         }
 
@@ -65,9 +63,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
         // When
         let result: Result<Site, Error> = try await waitForCompletion { completion in
-            let action = WordPressSiteAction.fetchSiteInfo(siteURL: self.sampleSiteURL) { result in
-                completion(result)
-            }
+            let action = WordPressSiteAction.fetchSiteInfo(siteURL: self.sampleSiteURL, completion: completion)
             store.onAction(action)
         }
 
@@ -84,9 +80,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
         // When
         let result: Result<URL?, Error> = try await waitForCompletion { completion in
-            let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL) { result in
-                completion(result)
-            }
+            let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL, completion: completion)
             store.onAction(action)
         }
 
@@ -104,9 +98,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
         // When
         let result: Result<URL?, Error> = try await waitForCompletion { completion in
-            let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL) { result in
-                completion(result)
-            }
+            let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL, completion: completion)
             store.onAction(action)
         }
 
@@ -124,9 +116,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
         // When
         let result: Result<URL?, Error> = try await waitForCompletion { completion in
-            let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL) { result in
-                completion(result)
-            }
+            let action = WordPressSiteAction.fetchApplicationPasswordAuthorizationURL(siteURL: self.sampleSiteURL, completion: completion)
             store.onAction(action)
         }
 
@@ -143,9 +133,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
         // When
         let result: Result<[WordPressPage], Error> = try await waitForCompletion { completion in
-            let action = WordPressSiteAction.fetchPageList(siteURL: self.sampleSiteURL) { result in
-                completion(result)
-            }
+            let action = WordPressSiteAction.fetchPageList(siteURL: self.sampleSiteURL, completion: completion)
             store.onAction(action)
         }
 
@@ -167,9 +155,7 @@ final class WordPressSiteStoreTests: XCTestCase {
 
         // When
         let result: Result<[WordPressPage], Error> = try await waitForCompletion { completion in
-            let action = WordPressSiteAction.fetchPageList(siteURL: self.sampleSiteURL) { result in
-                completion(result)
-            }
+            let action = WordPressSiteAction.fetchPageList(siteURL: self.sampleSiteURL, completion: completion)
             store.onAction(action)
         }
 

@@ -48,13 +48,13 @@ public final class SingleProductScreen: ScreenObject {
     }
 
     public func publishProduct() throws -> Self {
-        app.buttons["publish-product-button"].tap()
+        app.tapNavigationBarButton("publish-product-button")
         return self
     }
 
     public func verifyPublishedProductScreenLoaded(productType: String, productName: String) {
         // common fields on a published product screen
-        XCTAssertTrue(app.buttons["save-product-button"].waitForExistence(timeout: 10), "Save button is not displayed!")
+        XCTAssertTrue(app.navigationBarButtonExists("save-product-button", timeout: 10), "Save button is not displayed!")
         XCTAssertTrue(app.cells["product-linked-products-promo-cell"].exists)
         XCTAssertTrue(app.textViews[productName].exists)
 

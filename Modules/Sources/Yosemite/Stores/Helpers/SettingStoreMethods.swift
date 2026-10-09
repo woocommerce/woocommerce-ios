@@ -23,6 +23,8 @@ internal protocol SettingStoreMethodsProtocol {
     func updateAnalyticsImportUpdateMode(siteID: Int64, value: AnalyticsImportUpdateMode) async throws
 }
 
+/// The remote completions capture `self` strongly on purpose. Callers wait for these completions in continuations,
+/// so each completion must be called even if the store is released during a request.
 internal class SettingStoreMethods: SettingStoreMethodsProtocol {
     private let siteSettingsRemote: SiteSettingsRemote
     private let siteAPIRemote: SiteAPIRemote

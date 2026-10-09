@@ -31,6 +31,7 @@ public class SettingStore: Store {
             return
         }
 
+        // SettingStoreMethods only holds immutable dependencies set in init; only the handlers read it. Remove once stores are isolated (WOOMOB-4186).
         nonisolated(unsafe) let methods = methods
         switch action {
         case .synchronizeGeneralSiteSettings(let siteID, let onCompletion):

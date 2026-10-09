@@ -4,7 +4,6 @@ import SwiftUI
 enum POSRefundModalLayout {
     static let horizontalPadding: CGFloat = 148
     static let cornerRadius: CGFloat = POSCornerRadiusStyle.extraLarge.value
-    static let progressViewStyle = POSProgressViewStyle(size: 64, lineWidth: 20)
     static let fullScreenContentMaxWidth: CGFloat = 520
     static let fullScreenSummaryContentMaxWidth: CGFloat = 640
     static let fullScreenActionMaxWidth: CGFloat = 520
@@ -25,6 +24,7 @@ enum POSRefundModalLayout {
 }
 
 struct POSRefundNavigationHeader: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     let title: String?
     let backAction: (() -> Void)?
     let backAccessibilityLabel: String
@@ -38,7 +38,7 @@ struct POSRefundNavigationHeader: View {
     }
 
     var body: some View {
-        HStack(alignment: .top, spacing: POSSpacing.medium) {
+        HStack(alignment: horizontalSizeClass == .compact ? .center : .top, spacing: POSSpacing.medium) {
             if let backAction {
                 POSPageHeaderBackButton(configuration: .init(state: .enabled, action: backAction))
                     .accessibilityLabel(backAccessibilityLabel)
@@ -59,7 +59,10 @@ struct POSRefundNavigationHeader: View {
             Spacer(minLength: POSSpacing.none)
         }
         .foregroundColor(Color.posOnSurface)
-        .padding(POSPadding.xLarge)
+        .frame(minHeight: horizontalSizeClass == .compact ? POSHeaderLayoutConstants.minHeight : nil)
+        .padding(.horizontal, horizontalSizeClass == .compact ? POSHeaderLayoutConstants.sectionHorizontalPadding : POSPadding.xLarge)
+        .padding(.top, horizontalSizeClass == .compact ? POSPadding.medium : POSPadding.xLarge)
+        .padding(.bottom, horizontalSizeClass == .compact ? POSHeaderLayoutConstants.sectionVerticalPadding : POSPadding.xLarge)
         .frame(maxWidth: .infinity, alignment: .leading)
     }
 }
@@ -117,9 +120,9 @@ extension View {
     }
 }
 
-/// Standardizes the bottom-anchored action buttons across the phone POS so refund / totals /
-/// cart all share the same horizontal insets and home-indicator clearance as the phone cart
-/// button. iPad keeps the existing in-card padding so the centered modal still breathes.
+/// Refund actions share the horizontal and top padding of other compact POS actions.
+/// They retain bottom padding inside the safe area; the cart measures its bottom inset separately.
+/// Regular-width sheets keep their existing in-card padding.
 struct POSPhoneFullScreenButtonPaddingModifier: ViewModifier {
     let horizontalSizeClass: UserInterfaceSizeClass?
     let maxWidth: CGFloat

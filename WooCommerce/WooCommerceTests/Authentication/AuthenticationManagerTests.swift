@@ -80,7 +80,7 @@ final class AuthenticationManagerTests: XCTestCase {
         var capturedSiteAddress: String?
         var capturedEndpoints: CookieNonceAuthenticationEndpoints?
         let manager = AuthenticationManager(
-            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { username, password, siteAddress, endpoints in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { username, password, siteAddress, endpoints, _ in
                 capturedUsername = username
                 capturedPassword = password
                 capturedSiteAddress = siteAddress
@@ -153,7 +153,7 @@ final class AuthenticationManagerTests: XCTestCase {
         )
         var capturedEndpoints: CookieNonceAuthenticationEndpoints?
         let manager = AuthenticationManager(
-            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, endpoints in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, endpoints, _ in
                 capturedEndpoints = endpoints
                 return MockAuthenticationManagerApplicationPasswordUseCase()
             })
@@ -262,7 +262,7 @@ final class AuthenticationManagerTests: XCTestCase {
             )
             let manager = AuthenticationManager(
                 stores: stores,
-                applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, _ in
+                applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, _, _ in
                     MockAuthenticationManagerApplicationPasswordUseCase(applicationPassword: applicationPassword)
                 })
             )
@@ -332,7 +332,7 @@ final class AuthenticationManagerTests: XCTestCase {
         var cookieNamesDuringConstruction = Set<String>()
         let manager = AuthenticationManager(
             runtimeCookieJar: runtimeCookieJar,
-            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, _ in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, _, _ in
                 cookieNamesDuringConstruction = Set(runtimeCookieJar.cookies?.map(\.name) ?? [])
                 return MockAuthenticationManagerApplicationPasswordUseCase()
             })
@@ -1087,7 +1087,7 @@ final class AuthenticationManagerTests: XCTestCase {
         navigationController.setViewControllers([root, UIViewController()], animated: false)
         let manager = AuthenticationManager(
             stores: stores,
-            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, _ in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, _, _ in
                 throw ApplicationPasswordUseCaseError.failedToConstructLoginOrAdminURLUsingSiteAddress
             })
         )

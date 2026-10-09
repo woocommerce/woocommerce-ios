@@ -40,6 +40,7 @@ final class MockSettingStoreMethods: SettingStoreMethodsProtocol {
     }
 
     func retrieveSiteAPI(siteID: Int64,
+                        detectUnexpectedResponses: Bool,
                         onCompletion: @escaping (Result<Yosemite.SiteAPI, Error>) -> Void) {
         retrieveSiteAPICalled = true
     }

@@ -119,6 +119,8 @@ struct TotalsView: View {
                     }
                 }
                 .scrollVerticallyIfNeeded()
+                // A completed payment replaces the checkout content. Start the new screen at its top.
+                .id(displayPaymentState.isSuccess)
                 .animation(.default, value: isShowingPaymentView)
                 .animation(.default, value: useTapToPayHeroLayout)
                 .animation(.default, value: bottomControlState)
@@ -144,6 +146,7 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
+        .posIgnoresHiddenKeyboardSafeArea()
         .animation(.default, value: posModel.orderState.isError)
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields
@@ -755,7 +758,7 @@ private extension TotalsView {
             .if(horizontalSizeClass != .compact) {
                 $0
                     .padding(.horizontal, POSPadding.medium)
-                    .padding(.bottom, POSPadding.xxLarge)
+                    .padding(.bottom, POSPadding.small)
             }
     }
 
@@ -772,7 +775,7 @@ private extension TotalsView {
         .if(horizontalSizeClass != .compact) {
             $0
                 .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.xxLarge)
+                .padding(.bottom, POSPadding.small)
         }
     }
 

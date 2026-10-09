@@ -670,7 +670,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
 
     // MARK: - Analytics Helpers
 
-    nonisolated private func trackAnalytics(_ event: WooAnalyticsEvent) {
+    private func trackAnalytics(_ event: WooAnalyticsEvent) {
         analytics?.track(event.statName.rawValue, properties: event.properties, error: event.error)
     }
 
@@ -728,7 +728,7 @@ public actor POSCatalogSyncCoordinator: POSCatalogSyncCoordinatorProtocol {
             .replacingOccurrences(of: ".", with: "_")
     }
 
-    nonisolated private func getConnectionType() -> String {
+    private func getConnectionType() -> String {
         guard let observer = connectivityObserver else { return "unknown" }
         switch observer.currentStatus {
         case .reachable(let connectionType):

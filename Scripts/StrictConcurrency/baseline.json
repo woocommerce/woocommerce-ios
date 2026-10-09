@@ -1,6 +1,5 @@
 {
   "perFile": {
-    "Modules/Sources/Hardware/CardReader/CardReaderInputOptions.swift": 4,
     "Modules/Sources/Hardware/CardReader/CardReaderServiceError.swift": 1,
     "Modules/Sources/Hardware/CardReader/StripeCardReader/Cancelable+Stripe.swift": 1,
     "Modules/Sources/Hardware/CardReader/StripeCardReader/StripeCardReaderService.swift": 43,

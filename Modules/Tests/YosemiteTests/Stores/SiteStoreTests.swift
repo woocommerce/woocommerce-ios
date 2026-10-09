@@ -71,9 +71,7 @@ final class SiteStoreTests: XCTestCase {
         let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
-                                                      completion: { result in
-                completion(result)
-            }))
+                                                      completion: completion))
         }
 
         // Then
@@ -97,9 +95,7 @@ final class SiteStoreTests: XCTestCase {
         let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
-                                                      completion: { result in
-                completion(result)
-            }))
+                                                      completion: completion))
         }
 
         // Then
@@ -118,9 +114,7 @@ final class SiteStoreTests: XCTestCase {
         let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
-                                                      completion: { result in
-                completion(result)
-            }))
+                                                      completion: completion))
         }
 
         // Then
@@ -139,9 +133,7 @@ final class SiteStoreTests: XCTestCase {
         let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
-                                                      completion: { result in
-                completion(result)
-            }))
+                                                      completion: completion))
         }
 
         // Then
@@ -162,9 +154,7 @@ final class SiteStoreTests: XCTestCase {
         let result: Result<SiteCreationResult, Yosemite.SiteCreationError> = try await waitForCompletion { completion in
             store.onAction(SiteAction.createSite(name: "Salsa",
                                                       flow: .onboarding(domain: "salsa.roja"),
-                                                      completion: { result in
-                completion(result)
-            }))
+                                                      completion: completion))
         }
 
         // Then
@@ -181,9 +171,7 @@ final class SiteStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, SiteLaunchError> = try await waitForCompletion { completion in
-            store.onAction(SiteAction.launchSite(siteID: 134) { result in
-                completion(result)
-            })
+            store.onAction(SiteAction.launchSite(siteID: 134, completion: completion))
         }
 
         // Then
@@ -197,9 +185,7 @@ final class SiteStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, SiteLaunchError> = try await waitForCompletion { completion in
-            store.onAction(SiteAction.launchSite(siteID: 134) { result in
-                completion(result)
-            })
+            store.onAction(SiteAction.launchSite(siteID: 134, completion: completion))
         }
 
         // Then
@@ -214,9 +200,7 @@ final class SiteStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, SiteLaunchError> = try await waitForCompletion { completion in
-            store.onAction(SiteAction.launchSite(siteID: 134) { result in
-                completion(result)
-            })
+            store.onAction(SiteAction.launchSite(siteID: 134, completion: completion))
         }
 
         // Then
@@ -233,9 +217,7 @@ final class SiteStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            store.onAction(SiteAction.enableFreeTrial(siteID: 134) { result in
-                completion(result)
-            })
+            store.onAction(SiteAction.enableFreeTrial(siteID: 134, completion: completion))
         }
 
         // Then
@@ -249,9 +231,7 @@ final class SiteStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            store.onAction(SiteAction.enableFreeTrial(siteID: 134) { result in
-                completion(result)
-            })
+            store.onAction(SiteAction.enableFreeTrial(siteID: 134, completion: completion))
         }
 
         // Then
@@ -270,9 +250,7 @@ final class SiteStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: { result in
-                completion(result)
-            }))
+            store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: completion))
         }
 
         // Then
@@ -289,9 +267,7 @@ final class SiteStoreTests: XCTestCase {
 
         // When
         let result: Result<Void, Error> = try await waitForCompletion { completion in
-            store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: { result in
-                completion(result)
-            }))
+            store.onAction(SiteAction.updateSiteTitle(siteID: siteID, title: "Test", completion: completion))
         }
 
         // Then
@@ -312,9 +288,8 @@ final class SiteStoreTests: XCTestCase {
             store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
                                                                                                   sellingPlatforms: "wordpress",
                                                                                                   category: "clothing_and_accessories",
-                                                                                                  countryCode: "US")) { result in
-                completion(result)
-            })
+                                                                                                  countryCode: "US"),
+                                                                 completion: completion))
         }
 
         // Then
@@ -331,9 +306,8 @@ final class SiteStoreTests: XCTestCase {
             store.onAction(SiteAction.uploadStoreProfilerAnswers(siteID: 134, answers: .init(sellingStatus: nil,
                                                                                                   sellingPlatforms: "wordpress",
                                                                                                   category: "clothing_and_accessories",
-                                                                                                  countryCode: "US")) { result in
-                completion(result)
-            })
+                                                                                                  countryCode: "US"),
+                                                                 completion: completion))
         }
 
         // Then
@@ -354,9 +328,7 @@ final class SiteStoreTests: XCTestCase {
 
        // When
        let result: Result<Site, Error> = try await waitForCompletion { completion in
-           store.onAction(SiteAction.syncSite(siteID: siteID, completion: { result in
-               completion(result)
-           }))
+           store.onAction(SiteAction.syncSite(siteID: siteID, completion: completion))
        }
 
        // Then
@@ -382,9 +354,7 @@ final class SiteStoreTests: XCTestCase {
 
        // When
        let result: Result<Site, Error> = try await waitForCompletion { completion in
-           store.onAction(SiteAction.syncSiteByDomain(domain: domain, completion: { result in
-               completion(result)
-           }))
+           store.onAction(SiteAction.syncSiteByDomain(domain: domain, completion: completion))
        }
 
        // Then
@@ -402,9 +372,7 @@ final class SiteStoreTests: XCTestCase {
 
        // When
        let result: Result<Site, Error> = try await waitForCompletion { completion in
-           store.onAction(SiteAction.syncSiteByDomain(domain: domain, completion: { result in
-               completion(result)
-           }))
+           store.onAction(SiteAction.syncSiteByDomain(domain: domain, completion: completion))
        }
 
        // Then

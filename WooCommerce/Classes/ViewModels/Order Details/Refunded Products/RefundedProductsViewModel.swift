@@ -6,6 +6,7 @@ import protocol Storage.StorageManagerType
 
 // MARK: - View Model for the Refunded Products view controller
 //
+@MainActor
 final class RefundedProductsViewModel {
     /// Order we're observing.
     ///

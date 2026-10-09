@@ -3,11 +3,12 @@ import Foundation
 import Yosemite
 import Combine
 
-final class MockCardPresentPaymentPreflightController: CardPresentPaymentPreflightControllerProtocol {
+nonisolated final class MockCardPresentPaymentPreflightController: CardPresentPaymentPreflightControllerProtocol {
     private(set) var startCallCount = 0
     private(set) var cancelConnectionAttemptCallCount = 0
     var onStart: (() -> Void)?
 
+    @MainActor
     func start(discoveryMethod: CardReaderDiscoveryMethod?) async {
         startCallCount += 1
         onStart?()
@@ -19,6 +20,7 @@ final class MockCardPresentPaymentPreflightController: CardPresentPaymentPreflig
 
     private let readerConnectionSubject = CurrentValueSubject<CardReaderPreflightResult?, Never>(nil)
 
+    @MainActor
     var readerConnection: AnyPublisher<CardReaderPreflightResult?, Never> {
         readerConnectionSubject.eraseToAnyPublisher()
     }

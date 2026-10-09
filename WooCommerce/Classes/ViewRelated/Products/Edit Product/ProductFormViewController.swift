@@ -205,11 +205,23 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         prepareForBackgroundUploadsUponDismissal()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     override var shouldShowOfflineBanner: Bool {
         return true
     }
 
     // MARK: - Navigation actions handling
+
+    override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
+        super.viewWillTransition(to: size, with: coordinator)
+        coordinator.animate(alongsideTransition: nil) { [weak self] _ in
+            self?.tooltipPresenter?.containerSizeDidChange()
+        }
+    }
 
     override func shouldPopOnBackButton() -> Bool {
         guard viewModel.hasUnsavedChanges() == false else {

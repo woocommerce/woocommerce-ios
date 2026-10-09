@@ -83,6 +83,8 @@ struct WooShippingCreateLabelsView: View {
                     expandableBottomSheet
                 }
             }
+            // The bottom sheet covers the bottom safe area itself.
+            .ignoresSafeArea(.container, edges: .bottom)
             .onGeometryChange(for: EdgeInsets.self, of: { $0.safeAreaInsets }, action: { safeAreaInsets = $0 })
             .onGeometryChange(for: CGFloat.self, of: { $0.size.height }, action: { containerHeight = $0 })
             .shippingWeightUnit(viewModel.weightUnit)

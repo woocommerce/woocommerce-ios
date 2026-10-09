@@ -15,6 +15,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
     @ViewBuilder private var expandableContent: () -> ExpandableContent
 
     /// Safe-area insets of the container the sheet is pinned to.
+    /// The sheet pads its content by these insets, so the caller must let it reach the container's bottom edge
+    /// (`.ignoresSafeArea(.container, edges: .bottom)` on the view that hosts it via `safeAreaInset`).
     private let safeAreaInsets: EdgeInsets
 
     /// Height of that container inside its safe area; caps the expanded sheet.
@@ -142,7 +144,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
             }
         }
         .frame(maxWidth: .infinity, maxHeight: panelHeight, alignment: .bottom)
-        .background(Color(.listForeground(modal: false)), ignoresSafeAreaEdges: .vertical)
+        .padding(.bottom, safeAreaInsets.bottom)
+        .background(Color(.listForeground(modal: false)))
         .clipShape(ExpandableBottomSheetShape(radius: Layout.sheetCornerRadius, corners: [.topLeft, .topRight]))
         .shadow(radius: Layout.shadowRadius)
         .mask(Rectangle().padding(.top, Layout.shadowRadius * -2)) // hide bottom shadow
@@ -175,9 +178,6 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     }
                 }
         )
-        .background(alignment: .bottom) {
-            bottomSafeAreaBackground
-        }
         .onReceive(NotificationCenter.default.publisher(for: UIApplication.didBecomeActiveNotification)) { _ in
             /// When user swipes to move the app to the background, the drag gesture is started but never finishes.
             /// This workaround cancels the dragging when the app re-enters the foreground
@@ -214,16 +214,6 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
     private var hasMeasuredCollapsedContent: Bool {
         fixedContentSize.height > 0 && chevronSize.height > 0
-    }
-
-    @ViewBuilder private var bottomSafeAreaBackground: some View {
-        if safeAreaInsets.bottom > 0 {
-            Color(.listForeground(modal: false))
-                .frame(height: safeAreaInsets.bottom)
-                .offset(y: safeAreaInsets.bottom)
-                .ignoresSafeArea(edges: .bottom)
-                .allowsHitTesting(false)
-        }
     }
 }
 
@@ -270,6 +260,7 @@ struct ExpandableBottomSheet_Previews: PreviewProvider {
                         Text("Can be hidden")
                     }
                 }
+                .ignoresSafeArea(.container, edges: .bottom)
         }
     }
 }

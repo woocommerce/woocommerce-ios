@@ -440,6 +440,8 @@ struct OrderForm: View {
                 .ignoresSafeArea(edges: .horizontal)
             }
         }
+        // The totals sheet covers the bottom safe area itself.
+        .ignoresSafeArea(.container, edges: .bottom)
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

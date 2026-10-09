@@ -40,6 +40,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
+    @MainActor
     func test_tab_view_controllers_include_pos_tab_when_pos_tab_is_visible() throws {
         // Given
         let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
@@ -82,6 +83,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
+    @MainActor
     func test_tab_view_controllers_exclude_pos_tab_when_pos_tab_is_not_visible() throws {
         // Given
         let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
@@ -122,6 +124,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
                    isAnInstanceOf: HubMenuViewController.self)
     }
 
+    @MainActor
     func test_tab_view_controllers_do_not_change_when_pos_visibility_changes() throws {
         // Given
         let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
@@ -367,6 +370,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
         XCTAssertEqual(viewControllersBeforeSiteChange, viewControllersAfterSiteChange)
     }
 
+    @MainActor
     func test_pos_tab_is_not_inserted_when_superseded_visibility_check_resolves_after_cancellation() throws {
         // Given a check that resolves `true` only once its task is cancelled, mimicking the
         // indeterminate verdict a superseded checker produces when cancellation cuts its
@@ -416,6 +420,7 @@ final class MainTabBarController_TabsTests: XCTestCase {
         withExtendedLifetime(tabBarController) {}
     }
 
+    @MainActor
     func test_pos_visibility_and_eligibility_are_rechecked_when_app_enters_foreground() throws {
         // Given
         let mockPOSVisibilityChecker = MockPOSTabVisibilityChecker()

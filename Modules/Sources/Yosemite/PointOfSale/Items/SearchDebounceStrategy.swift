@@ -1,7 +1,7 @@
 import Foundation
 
 /// Defines the debouncing behavior for search input
-public enum SearchDebounceStrategy: Equatable {
+public enum SearchDebounceStrategy: Equatable, Sendable {
     /// Smart debouncing: Skip debounce on first keystroke after a search completes, then debounce subsequent keystrokes.
     /// Optionally delays showing loading indicators until a threshold is exceeded.
     /// Optimized for slow network searches where the first keystroke should show loading immediately.

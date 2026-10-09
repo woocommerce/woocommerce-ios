@@ -479,7 +479,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func loadProductsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) func loadProductsForPointOfSale(for siteID: Int64,
                                     productTypes: [ProductType],
                                     pageNumber: Int) async throws -> PagedItems<POSProduct> {
         guard let result = posProductsResultsBySiteID[siteID] else {
@@ -493,7 +493,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func searchProductsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) func searchProductsForPointOfSale(for siteID: Int64,
                                       query: String,
                                       productTypes: [ProductType],
                                       pageNumber: Int) async throws -> PagedItems<POSProduct> {
@@ -508,12 +508,12 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String) async throws -> POSProduct {
+    nonisolated(nonsending) func loadPOSProductByGlobalUniqueIdentifier(for siteID: Int64, globalUniqueID: String) async throws -> POSProduct {
             return POSProduct.fake().copy(siteID: siteID,
                                           globalUniqueID: globalUniqueID)
     }
 
-    func loadPopularProductsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) func loadPopularProductsForPointOfSale(for siteID: Int64,
                                            productTypes: [ProductType],
                                            pageNumber: Int,
                                            perPage: Int) async throws -> PagedItems<POSProduct> {
@@ -529,7 +529,7 @@ extension MockProductsRemote: ProductsRemoteProtocol {
         }
     }
 
-    func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
+    nonisolated(nonsending) func loadPOSProduct(for siteID: Int64, productID: Int64) async throws -> POSProduct {
         invocationCountOfLoadPOSProduct += 1
         requestedProductIDsForFetchingPOSProduct.append(productID)
 

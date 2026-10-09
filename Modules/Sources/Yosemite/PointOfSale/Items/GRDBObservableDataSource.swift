@@ -9,6 +9,7 @@ import WooFoundation
 /// Observable data source for GRDB-based POS items using ValueObservation
 /// Provides automatic SwiftUI updates when database changes occur
 @Observable
+@MainActor
 public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
     // MARK: - Observable Properties
 
@@ -61,7 +62,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
         setupStatisticsObservation()
     }
 
-    deinit {
+    isolated deinit {
         productObservationCancellable?.cancel()
         variationObservationCancellable?.cancel()
         statisticsObservationCancellable?.cancel()
@@ -112,10 +113,10 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
 
     private func setupProductObservation() {
         let currentPage = currentProductPage
+        let siteID = siteID
+        let pageSize = pageSize
         let observation = ValueObservation
-            .tracking { [weak self] database -> [POSProduct] in
-                guard let self else { return [] }
-
+            .tracking { database -> [POSProduct] in
                 struct ProductWithRelations: Decodable, FetchableRecord {
                     let product: PersistedProduct
                     let images: [PersistedImage]?
@@ -160,6 +161,8 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
 
     private func setupVariationObservation(parentProduct: POSVariableParentProduct) {
         let currentPage = currentVariationPage
+        let siteID = siteID
+        let pageSize = pageSize
         let parentProductID = parentProduct.productID
 
         struct ObservationResult: Sendable {
@@ -168,9 +171,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
         }
 
         let observation = ValueObservation
-            .tracking { [weak self] database -> ObservationResult in
-                guard let self else { return ObservationResult(variations: [], parentProduct: parentProduct) }
-
+            .tracking { database -> ObservationResult in
                 // Fetch parent product with updated attributes
                 struct ParentProductWithAttributes: Decodable, FetchableRecord {
                     let product: PersistedProduct
@@ -178,7 +179,7 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                 }
 
                 let parentWithAttributes = try PersistedProduct
-                    .filter(PersistedProduct.Columns.siteID == self.siteID)
+                    .filter(PersistedProduct.Columns.siteID == siteID)
                     .filter(PersistedProduct.Columns.id == parentProductID)
                     .including(all: PersistedProduct.attributes)
                     .asRequest(of: ParentProductWithAttributes.self)
@@ -209,8 +210,8 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
                 }
 
                 let variationsWithRelations = try PersistedProductVariation
-                    .posVariationsRequest(siteID: self.siteID, parentProductID: parentProductID)
-                    .limit(self.pageSize * currentPage)
+                    .posVariationsRequest(siteID: siteID, parentProductID: parentProductID)
+                    .limit(pageSize * currentPage)
                     .including(all: PersistedProductVariation.attributes)
                     .including(optional: PersistedProductVariation.image)
                     .asRequest(of: VariationWithRelations.self)
@@ -254,10 +255,9 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
     }
 
     private func setupStatisticsObservation() {
+        let siteID = siteID
         let observation = ValueObservation
-            .tracking { [weak self] database in
-                guard let self else { return 0 }
-
+            .tracking { database in
                 let productCount = try PersistedProduct
                     .posProductsRequest(siteID: siteID)
                     .fetchCount(database)
@@ -281,10 +281,9 @@ public final class GRDBObservableDataSource: POSObservableDataSourceProtocol {
     }
 
     private func setupVariationStatisticsObservation(parentProduct: POSVariableParentProduct) {
+        let siteID = siteID
         let observation = ValueObservation
-            .tracking { [weak self] database in
-                guard let self else { return 0 }
-
+            .tracking { database in
                 return try PersistedProductVariation
                     .posVariationsRequest(siteID: siteID, parentProductID: parentProduct.productID)
                     .fetchCount(database)

@@ -109,7 +109,7 @@ extension MockProductVariationsRemote: ProductVariationsRemoteProtocol {
         // no-op
     }
 
-    func loadVariationsForPointOfSale(for siteID: Int64,
+    nonisolated(nonsending) func loadVariationsForPointOfSale(for siteID: Int64,
                                       parentProductID: Int64,
                                       pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         let key = ResultKey(siteID: siteID, productID: parentProductID, productVariationIDs: [])

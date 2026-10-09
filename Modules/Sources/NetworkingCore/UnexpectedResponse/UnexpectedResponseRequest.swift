@@ -34,6 +34,7 @@ final class UnexpectedResponseRequest: Request {
         var responseStatus = status
         var mediaType = contentType
         if tunneled {
+            // Tunnel transport/envelope statuses do not establish the store's status.
             guard let data, let storeResponse = UnexpectedResponseClassifier.tunnelResponse(in: data) else { return nil }
             body = storeResponse.data
             responseStatus = storeResponse.status

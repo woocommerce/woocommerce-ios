@@ -431,7 +431,7 @@
     "WooCommerce/Classes/ViewRelated/Dashboard/Settings/In-Person Payments/Payments Menu/InPersonPaymentsMenuViewModel.swift": 6,
     "WooCommerce/Classes/ViewRelated/Dashboard/Settings/In-Person Payments/SilenceablePassthroughCardPresentPaymentAlertsPresenter.swift": 5,
     "WooCommerce/Classes/ViewRelated/Dashboard/Settings/In-Person Payments/TapToPayBadgePromotionChecker.swift": 4,
-    "WooCommerce/Classes/ViewRelated/Dashboard/Settings/In-Person Payments/TapToPayReconnectionController.swift": 7,
+    "WooCommerce/Classes/ViewRelated/Dashboard/Settings/In-Person Payments/TapToPayReconnectionController.swift": 3,
     "WooCommerce/Classes/ViewRelated/Dashboard/Settings/NotificationSettings/NotificationSettingsViewModel.swift": 3,
     "WooCommerce/Classes/ViewRelated/Dashboard/Settings/Privacy/PrivacyBannerPresentationUseCase.swift": 1,
     "WooCommerce/Classes/ViewRelated/Dashboard/Settings/Privacy/PrivacyBannerPresenter.swift": 2,

@@ -22,11 +22,13 @@ final class RoleEligibilityUseCase {
     // MARK: Properties
 
     private let stores: StoresManager
+    private let detectUnexpectedResponses: Bool
 
     // MARK: Initialization
 
-    init(stores: StoresManager = ServiceLocator.stores) {
+    init(stores: StoresManager = ServiceLocator.stores, detectUnexpectedResponses: Bool = false) {
         self.stores = stores
+        self.detectUnexpectedResponses = detectUnexpectedResponses
     }
 
     // MARK: Private Methods
@@ -55,7 +57,7 @@ extension RoleEligibilityUseCase: RoleEligibilityUseCaseProtocol {
             return
         }
 
-        let action = UserAction.retrieveUser(siteID: storeID) { [weak self] result in
+        let action = UserAction.retrieveUser(siteID: storeID, detectUnexpectedResponses: detectUnexpectedResponses) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let user):

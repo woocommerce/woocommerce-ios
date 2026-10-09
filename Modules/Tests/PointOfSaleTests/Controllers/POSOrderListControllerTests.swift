@@ -281,7 +281,7 @@ final class POSOrderListControllerTests {
         #expect(searchResults != initialOrders, "Search should show different orders than initial cached orders")
 
         // When
-        await sut.clearSearchOrders()
+        sut.clearSearchOrders()
 
         // Then
         guard case .loaded(let restoredOrders, _) = sut.ordersViewState else {
@@ -298,7 +298,7 @@ final class POSOrderListControllerTests {
         await sut.searchOrders(searchTerm: "test")
 
         // When
-        await sut.clearSearchOrders()
+        sut.clearSearchOrders()
 
         // Then
         guard case .loading(let orders) = sut.ordersViewState else {
@@ -359,7 +359,7 @@ final class POSOrderListControllerTests {
         await sut.loadOrders()
 
         let orderToUpdate = initialOrders[0]
-        await sut.selectOrder(orderToUpdate)
+        sut.selectOrder(orderToUpdate)
         #expect(sut.selectedOrder?.id == orderToUpdate.id)
 
         // Setup updated order

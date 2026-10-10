@@ -27,7 +27,7 @@ struct POSSettingsLocalCatalogDetailView: View {
                     }
                     manualCatalogUpdate
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, POSPadding.medium)
             }
         }
         .background(Style.backgroundColor)

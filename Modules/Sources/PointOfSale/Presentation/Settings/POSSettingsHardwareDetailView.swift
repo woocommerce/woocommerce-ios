@@ -88,7 +88,7 @@ struct POSSettingsHardwareDetailView: View {
                     .accessibilityLabel("\(destination.title), \(destination.subtitle)")
                 }
             }
-            .padding(.horizontal, POSPadding.medium)
+            .posContentPadding(.horizontal, POSPadding.medium)
 
             Spacer()
         }

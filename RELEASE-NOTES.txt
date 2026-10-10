@@ -11,6 +11,7 @@
 - [*] Login: QR code sign-in with a WordPress.com account no longer gets stuck on "Signing you in…" after approving on the web. [https://github.com/woocommerce/woocommerce-ios/pull/18019]
 - [*] Shipping Labels: The recipient phone number is now optional for domestic shipments. It's still required for international shipments and FedEx services. [https://github.com/woocommerce/woocommerce-ios/pull/18022]
 - [*] Notices no longer block taps on the content beside them, and on iPhone Duo they appear at the bottom of the screen when the tab bar is on the side. [https://github.com/woocommerce/woocommerce-ios/pull/17998]
+- [Internal] Adapt POS layouts for iPhone Duo. [https://github.com/woocommerce/woocommerce-ios/pull/18013]
 - [*] Layout: Fixed doubled side padding on the card reader manuals, plugins and booking details screens in landscape, and content insets of sheets on wide layouts. [https://github.com/woocommerce/woocommerce-ios/pull/17971]
 - [*] Order creation: Keep the form, product selector and bundle configuration content inside the safe area after rotating or resizing the app. [https://github.com/woocommerce/woocommerce-ios/pull/17951]
 - [*] Privacy: Respect your analytics preference throughout login, including after logging out. [https://github.com/woocommerce/woocommerce-ios/pull/17973]

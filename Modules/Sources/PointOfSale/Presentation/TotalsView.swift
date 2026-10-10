@@ -518,14 +518,17 @@ private struct TotalsFieldsContent: View {
                 shimmeringActive: totalsLoading
             )
         }
-        .padding(TotalsView.Constants.totalsLineViewPadding)
+        .posContentPadding(TotalsView.Constants.totalsLineViewPadding)
         .if(horizontalSizeClass == .compact) {
             $0.frame(maxWidth: .infinity)
         }
-        .if(horizontalSizeClass != .compact) {
-            $0
-                .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
-                .fixedSize(horizontal: true, vertical: false)
+        .if(horizontalSizeClass != .compact) { content in
+            ViewThatFits(in: .horizontal) {
+                content
+                    .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
+                    .fixedSize(horizontal: true, vertical: false)
+                content.frame(maxWidth: .infinity)
+            }
         }
         .matchedGeometryEffect(id: Self.matchedGeometryId, in: totalsFieldAnimation)
     }
@@ -757,7 +760,7 @@ private extension TotalsView {
             }
             .if(horizontalSizeClass != .compact) {
                 $0
-                    .padding(.horizontal, POSPadding.medium)
+                    .posContentPadding(.horizontal, POSPadding.medium)
                     .padding(.bottom, POSPadding.small)
             }
     }
@@ -774,7 +777,7 @@ private extension TotalsView {
         }
         .if(horizontalSizeClass != .compact) {
             $0
-                .padding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, POSPadding.medium)
                 .padding(.bottom, POSPadding.small)
         }
     }

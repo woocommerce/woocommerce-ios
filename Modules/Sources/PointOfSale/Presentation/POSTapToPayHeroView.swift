@@ -36,14 +36,14 @@ struct POSTapToPayHeroView: View {
                     .foregroundStyle(Color.posOnSurfaceVariantHighest)
                     .multilineTextAlignment(.center)
             }
-            .padding(.horizontal, POSPadding.medium)
+            .posContentPadding(.horizontal, POSPadding.medium)
 
             Button(action: onPayTapped) {
                 Text(Localization.payButton)
                     .font(POSFontStyle.posBodyLargeBold)
             }
             .buttonStyle(POSFilledButtonStyle(size: .normal, isLoading: isPayDisabled))
-            .padding(.horizontal, POSPadding.medium)
+            .posContentPadding(.horizontal, POSPadding.medium)
             .disabled(isPayDisabled)
             .accessibilityIdentifier("pos-tap-to-pay-hero-pay-button")
         }

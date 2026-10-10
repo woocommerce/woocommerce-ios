@@ -113,7 +113,7 @@ struct POSOrderDetailsView: View {
                     )
                 }
                 .padding(.top, POSPadding.xSmall)
-                .padding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, POSPadding.medium)
                 .padding(.bottom, POSPadding.medium)
             }
         }

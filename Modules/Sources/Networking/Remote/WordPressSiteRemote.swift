@@ -6,7 +6,7 @@ import NetworkingCore
 public final class WordPressSiteRemote: Remote {
 
     private let apiRootCache: RESTAPIRootCaching
-    private let discoverRESTAPIRoot: (String) async -> String?
+    private let discoverRESTAPIRoot: @Sendable (String) async -> String?
 
     override public init(network: Network) {
         self.apiRootCache = WordPressRESTAPIRootCache.shared
@@ -19,7 +19,7 @@ public final class WordPressSiteRemote: Remote {
 
     init(network: Network,
          apiRootCache: RESTAPIRootCaching,
-         discoverRESTAPIRoot: @escaping (String) async -> String?) {
+         discoverRESTAPIRoot: @escaping @Sendable (String) async -> String?) {
         self.apiRootCache = apiRootCache
         self.discoverRESTAPIRoot = discoverRESTAPIRoot
         super.init(network: network)

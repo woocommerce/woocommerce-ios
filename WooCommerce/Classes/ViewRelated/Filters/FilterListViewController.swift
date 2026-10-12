@@ -608,7 +608,7 @@ private extension FilterListViewController {
         func configureCell(cell: BasicTableViewCell, model: FilterType) {
             cell.textLabel?.text = model.description
             let accessibilityIdentifier: String
-            if let stockStatus = model as? ProductStockStatus? {
+            if type(of: model) == ProductStockStatus?.self, let stockStatus = model as? ProductStockStatus? {
                 accessibilityIdentifier = "product-stock-status-\(stockStatus?.rawValue ?? "all")"
             } else {
                 accessibilityIdentifier = model.description

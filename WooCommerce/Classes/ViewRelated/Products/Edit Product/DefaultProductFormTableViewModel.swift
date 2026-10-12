@@ -289,6 +289,7 @@ private extension DefaultProductFormTableViewModel {
         let title = Localization.inventorySettingsTitle
 
         var inventoryDetails = [String]()
+        var stockStatusAccessibilityIdentifier: String?
 
         if let sku = product.sku, !sku.isEmpty {
             inventoryDetails.append(String.localizedStringWithFormat(Localization.skuFormat, sku))
@@ -304,6 +305,7 @@ private extension DefaultProductFormTableViewModel {
         } else if product.manageStock == false && product.isStockStatusEnabled() {
             let stockStatus = product.stockStatus
             inventoryDetails.append(stockStatus.description)
+            stockStatusAccessibilityIdentifier = "product-stock-status-\(stockStatus.rawValue)"
         }
 
         let details = inventoryDetails.isEmpty ? nil: inventoryDetails.joined(separator: "\n")
@@ -312,7 +314,7 @@ private extension DefaultProductFormTableViewModel {
                                                         title: title,
                                                         details: details,
                                                         isActionable: isEditable,
-                                                        detailsAccessibilityIdentifier: "product-stock-status-\(product.stockStatus.rawValue)")
+                                                        detailsAccessibilityIdentifier: stockStatusAccessibilityIdentifier)
     }
 
     func productTypeRow(product: ProductFormDataModel, isEditable: Bool) -> ProductFormSection.SettingsRow.ViewModel {

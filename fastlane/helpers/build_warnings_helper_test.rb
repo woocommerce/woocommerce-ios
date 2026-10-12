@@ -92,6 +92,28 @@ class BuildWarningsHelperTest < Minitest::Test # rubocop:disable Metrics/ClassLe
     assert_equal paths.sort, report[:warnings].map { |warning| warning[:path] }.sort
   end
 
+  def test_count_warnings_when_repo_root_is_a_symlink_then_counts_paths_under_both_roots
+    Dir.mktmpdir do |dir|
+      # Given: the baseline worktree lives under a symlinked dir (macOS `/var` -> `/private/var`),
+      # and SwiftPM logs package sources by the resolved path.
+      real_root = File.join(dir, 'real')
+      FileUtils.mkdir_p(real_root)
+      linked_root = File.join(dir, 'linked')
+      File.symlink(real_root, linked_root)
+      lines = ["#{linked_root}/WooCommerce/Classes/A.swift:7:3: warning: app warning",
+               "#{File.realpath(real_root)}/Modules/Sources/Yosemite/B.swift:7:3: warning: package warning"]
+      log = File.join(dir, 'build.log')
+      File.write(log, lines.join("\n"))
+
+      # When
+      report = Helper.count_warnings(log_files: [log], repo_root: linked_root, source: 'fixture')
+
+      # Then
+      assert_equal 0, report[:excluded_warning_lines]
+      assert_equal ['Modules/Sources/Yosemite/B.swift', 'WooCommerce/Classes/A.swift'], report[:warnings].map { |warning| warning[:path] }.sort
+    end
+  end
+
   def test_collect_log_files_supports_file_directory_and_missing_paths
     Dir.mktmpdir do |dir|
       log = File.join(dir, 'a.log')

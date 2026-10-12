@@ -36,14 +36,26 @@ module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
     end
   end
 
-  # Strips a leading `./` or the repo root prefix; returns nil for absolute
+  # Strips a leading `./` or a repo root prefix; returns nil for absolute
   # paths outside the repo (dependencies, DerivedData, toolchain files).
-  def normalize_repo_path(path, repo_root)
+  #
+  # @param repo_roots [String, Array<String>] equivalent spellings of the checkout root
+  def normalize_repo_path(path, repo_roots)
     path = path.sub(%r{\A\./}, '')
-    return path.delete_prefix("#{repo_root}/") if path.start_with?("#{repo_root}/")
+    repo_root = Array(repo_roots).find { |root| path.start_with?("#{root}/") }
+    return path.delete_prefix("#{repo_root}/") if repo_root
     return nil if path.start_with?('/')
 
     path
+  end
+
+  # Xcode logs app sources under the checkout path as given, but SwiftPM logs
+  # package sources by the resolved path. They differ when the checkout is under
+  # a symlink, e.g. the baseline worktree in `$TMPDIR` (`/var` -> `/private/var`).
+  def repo_root_spellings(repo_root)
+    repo_root = File.expand_path(repo_root)
+    resolved = File.exist?(repo_root) ? File.realpath(repo_root) : repo_root
+    [repo_root, resolved].uniq
   end
 
   APP_AREA_PREFIXES = [
@@ -91,12 +103,12 @@ module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
   end
 
   # @return [Hash, nil] a warning entry for an owned repo path, or nil
-  def parse_warning_line(line, repo_root)
+  def parse_warning_line(line, repo_roots)
     match = line.match(WARNING_PATTERN)
     return nil unless match
 
     path, line_number, column = parse_warning_location(match[:location])
-    repo_path = normalize_repo_path(path, repo_root)
+    repo_path = normalize_repo_path(path, repo_roots)
     return nil unless repo_path
 
     area = owned_warning_area(repo_path)
@@ -111,7 +123,7 @@ module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
   # @param repo_root [String] checkout root the log's absolute paths are rooted in
   # @param source [String] recorded in the report as the log origin
   def count_warnings(log_files:, repo_root:, source:, scope: OWNED_SCOPE)
-    repo_root = File.expand_path(repo_root)
+    repo_roots = repo_root_spellings(repo_root)
     total_warning_lines = 0
     warnings = []
 
@@ -121,7 +133,7 @@ module BuildWarningsHelper # rubocop:disable Metrics/ModuleLength
         next unless line.match?(WARNING_LINE_MARKER)
 
         total_warning_lines += 1
-        warning = parse_warning_line(line, repo_root)
+        warning = parse_warning_line(line, repo_roots)
         warnings << warning if warning
       end
     end

@@ -109,6 +109,7 @@ private struct OrderCustomerSectionContent: View {
             showAddressForm.toggle()
         }
         .buttonStyle(PlusButtonStyle())
+        .accessibilityIdentifier("add-customer-details-button")
         .padding([.leading, .trailing])
     }
 

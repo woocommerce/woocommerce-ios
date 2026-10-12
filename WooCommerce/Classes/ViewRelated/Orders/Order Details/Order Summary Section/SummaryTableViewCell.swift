@@ -34,6 +34,7 @@ final class SummaryTableViewCell: UITableViewCell {
         salesChannelLabel.text = viewModel.salesChannel
         salesChannelLabel.isHidden = (salesChannelLabel.text == nil)
         updateStatusButton.isHidden = !viewModel.isEditButtonVisible
+        updateStatusButton.accessibilityIdentifier = "order-status-\(viewModel.presentation.style.rawValue)"
         display(presentation: viewModel.presentation)
     }
 

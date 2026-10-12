@@ -14,10 +14,6 @@ public final class MenuScreen: ScreenObject {
         $0.buttons["menu-payments"]
     }
 
-    private let viewStoreButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["menu-view-store"]
-    }
-
     private let selectedStoreTitleGetter: (XCUIApplication) -> XCUIElement = {
         $0.staticTexts["store-title"]
     }
@@ -34,8 +30,7 @@ public final class MenuScreen: ScreenObject {
     public init(app: XCUIApplication = XCUIApplication()) throws {
         try super.init(
             expectedElementGetters: [
-                reviewsButtonGetter,
-                viewStoreButtonGetter
+                selectedStoreTitleGetter
             ],
             app: app
         )
@@ -43,14 +38,26 @@ public final class MenuScreen: ScreenObject {
 
     @discardableResult
     public func goToReviewsScreen() throws -> ReviewsScreen {
+        scrollToRow(reviewsButton)
         reviewsButton.tap()
         return try ReviewsScreen()
     }
 
     @discardableResult
     public func goToPaymentsScreen() throws -> PaymentsScreen {
+        scrollToRow(paymentsButton)
         paymentsButton.tap()
         return try PaymentsScreen()
+    }
+
+    private func scrollToRow(_ row: XCUIElement) {
+        for _ in 0..<10 {
+            if row.isHittable && app.windows.firstMatch.frame.contains(row.frame) && !row.frame.intersects(app.tabBars.firstMatch.frame) {
+                return
+            }
+            app.swipeUp()
+        }
+        XCTFail("Menu row is not visible: \(row.identifier)")
     }
 
     @discardableResult

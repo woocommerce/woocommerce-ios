@@ -464,7 +464,7 @@ private extension ProductVariationsViewController {
     }
 
     func navigateToAddAttributeViewController() {
-        let viewModel = AddAttributeViewModel(product: product)
+        let viewModel = AddAttributeViewModel(product: product, isVariationsFlow: true)
         let addAttributeViewController = AddAttributeViewController(viewModel: viewModel) { [weak self] updatedProduct in
             guard let self else { return }
             self.product = updatedProduct

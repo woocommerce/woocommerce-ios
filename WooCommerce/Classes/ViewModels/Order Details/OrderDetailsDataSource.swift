@@ -238,7 +238,7 @@ final class OrderDetailsDataSource: NSObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
          refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
-         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
          userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)) {
@@ -247,7 +247,7 @@ final class OrderDetailsDataSource: NSObject {
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.couponLines = order.coupons
         self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
-        self.receiptEligibilityUseCase = receiptEligibilityUseCase
+        self.receiptEligibilityUseCase = receiptEligibilityUseCase ?? ReceiptEligibilityUseCase()
         self.currencySettings = currencySettings
         self.siteSettings = siteSettings
         self.userIsAdmin = userIsAdmin

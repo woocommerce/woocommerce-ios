@@ -139,7 +139,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             ViewThatFits(in: .horizontal) {
                 itemsRow
 
-                ScrollView(.horizontal, showsIndicators: false) {
+                POSHeaderScrollableTitles {
                     itemsRow
                 }
             }
@@ -221,6 +221,40 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     private var backButton: some View {
         if let configuration = effectiveBackButtonConfiguration {
             POSPageHeaderBackButton(configuration: configuration)
+        }
+    }
+}
+
+private struct POSHeaderScrollableTitles<Content: View>: View {
+    @State private var clippedEdges: Edge.Set = []
+    @ViewBuilder let content: Content
+
+    var body: some View {
+        ScrollView(.horizontal, showsIndicators: false) {
+            content
+        }
+        .onScrollGeometryChange(for: Edge.Set.self) { geometry in
+            var edges: Edge.Set = []
+            if geometry.visibleRect.minX > 1 {
+                edges.insert(.leading)
+            }
+            if geometry.visibleRect.maxX < geometry.contentSize.width - 1 {
+                edges.insert(.trailing)
+            }
+            return edges
+        } action: { _, edges in
+            clippedEdges = edges
+        }
+        .mask {
+            GeometryReader { geometry in
+                let fade = min(POSSpacing.medium / max(geometry.size.width, 1), 0.5)
+                LinearGradient(stops: [
+                    .init(color: clippedEdges.contains(.leading) ? .clear : .black, location: 0),
+                    .init(color: .black, location: fade),
+                    .init(color: .black, location: 1 - fade),
+                    .init(color: clippedEdges.contains(.trailing) ? .clear : .black, location: 1)
+                ], startPoint: UnitPoint(x: 0, y: 0.5), endPoint: UnitPoint(x: 1, y: 0.5))
+            }
         }
     }
 }

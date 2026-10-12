@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a WordPress.com Site.
 ///
-public struct Site: Decodable, Equatable, Hashable, GeneratedFakeable, GeneratedCopiable {
+public struct Site: Decodable, Equatable, Hashable, Sendable, GeneratedFakeable, GeneratedCopiable {
 
     /// WordPress.com Site Identifier.
     ///
@@ -304,7 +304,7 @@ private extension Site {
 
 /// Enum representing the visibility status of a site.
 ///
-public enum SiteVisibility: Int, Codable, GeneratedFakeable {
+public enum SiteVisibility: Int, Codable, Sendable, GeneratedFakeable {
     case privateSite = -1
     case comingSoon = 0
     case publicSite = 1

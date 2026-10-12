@@ -59,6 +59,12 @@ Check each UIKit lifecycle or Objective-C callback separately. Use `MainActor.as
 
 Put `@MainActor` on XCTest methods, not on the `XCTestCase` subclass. The class-level annotation conflicts with the nonisolated `setUp()` and `tearDown()` overrides. Use `override func setUp() async throws` if setup must run on the main actor. The same conflict occurs with other nonisolated superclasses, such as `ScreenObject`. When the type under test is an actor, do not make the suite `@MainActor`. Make its mocks actors instead. See [catalog test isolation](https://github.com/woocommerce/woocommerce-ios/pull/18006).
 
+When a protocol becomes `@MainActor`, its mocks infer main-actor isolation from the conformance. Synchronous XCTest methods that set mock properties then fail with errors, so add `@MainActor` to those methods in the same commit. Also write `@MainActor` on the mock class so the isolation is visible. Remove `@preconcurrency` from mock conformances that the isolated protocol makes unnecessary. See [the POS tab visibility checker](https://github.com/woocommerce/woocommerce-ios/pull/18034).
+
+If a test waits for main-queue work with `DispatchQueue.main.async` and an expectation, the `@Sendable` closure warns for each captured value. If the code under test updates state synchronously when it is called on the main thread, such as through a `Thread.isMainThread` fast path, make the test `@MainActor` and read the state directly. Keep the wait if the update is always queued.
+
+The guard also counts "cannot use struct 'Site' in a property declaration ... 'NetworkingCore' was not imported by this file". Fix it with a targeted import, such as `import struct NetworkingCore.Site`.
+
 Keep tests that run work in parallel on purpose nonisolated. Examples are tests that use `concurrentPerform`, `async let`, or `TaskGroup`. Main-actor isolation stops the parallel execution that they test. Protect their shared state with a lock or `Mutex`. If a test depends on main-actor ordering, make that dependency explicit.
 
 Construct UI fixtures inside a main-actor test or factory. Nonisolated XCTest setup is not suitable for their construction. Use computed fixtures to create separate mutable values for each test. Keep immutable `Sendable` fixtures shared when their identity or generated timestamp must remain constant. A computed property can return different test data on each read. See [the fixture review](https://github.com/woocommerce/woocommerce-ios/pull/17867#discussion_r4025136932).

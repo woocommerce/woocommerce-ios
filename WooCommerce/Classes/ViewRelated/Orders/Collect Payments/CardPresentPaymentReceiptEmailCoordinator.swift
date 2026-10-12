@@ -5,6 +5,7 @@ import enum Hardware.PaymentMethod
 import WooFoundation
 
 /// Coordinates the navigation from a given view controller to present a mail composer for a card-present payment receipt.
+@MainActor
 final class CardPresentPaymentReceiptEmailCoordinator {
     private let analytics: Analytics
     private let countryCode: CountryCode

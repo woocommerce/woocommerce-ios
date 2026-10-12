@@ -114,10 +114,23 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
         shippingLabel == nil
         // or if any required fields are missing
         && originAddress != nil && destinationAddress != nil
-        && destinationAddress?.hasValidPhoneNumberForShipping == true
+        && destinationPhoneIssue == nil
         && selectedPackage != nil
         && selectedRate != nil
         && (!customsFormRequired || customsInformationIsCompleted)
+    }
+
+    /// Why the destination phone can't be used with the selected rate, or `nil` if it can.
+    private var destinationPhoneIssue: WooShippingPhoneValidator.Issue? {
+        guard let destinationAddress else {
+            return nil
+        }
+        let isRequired = WooShippingPhoneValidator.isDestinationPhoneRequired(originCountry: originAddress?.country,
+                                                                                destinationCountry: destinationAddress.country,
+                                                                                carrierID: selectedRate?.rate.carrierID)
+        return WooShippingPhoneValidator.issue(phone: destinationAddress.phone,
+                                               country: destinationAddress.country,
+                                               isRequired: isRequired)
     }
 
     /// Shipping rates for the purchased label, with formatted amount.
@@ -267,7 +280,8 @@ final class WooShippingShipmentDetailsViewModel: ObservableObject, ParcelFitting
     func purchaseLabel(markOrderComplete: Bool? = nil) async throws {
         guard let originAddress, let destinationAddress,
               let package = currentPackage,
-              let selectedRate else {
+              let selectedRate,
+              destinationPhoneIssue == nil else {
             return
         }
 

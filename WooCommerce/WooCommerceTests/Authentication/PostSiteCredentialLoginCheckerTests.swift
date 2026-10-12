@@ -29,6 +29,46 @@ final class PostSiteCredentialLoginCheckerTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
+    func test_unexpected_failures_when_alert_is_presented_then_track_origin_and_step() {
+        for flow in [LoginUnexpectedResponseFailure.LoginFlow.siteCredentials, .appPassword] {
+            for step in [LoginUnexpectedResponseFailure.Step.appPasswordGeneration, .userRoleCheck, .wooPluginCheck] {
+                // Given
+                let failure = UnexpectedStoreResponseError(kind: .unacceptableStatusCode, statusCode: 500)
+                let useCase = MockApplicationPasswordUseCase(mockGeneratedPassword: step == .appPasswordGeneration ? nil : applicationPassword,
+                                                           mockGenerationError: step == .appPasswordGeneration ? failure : nil)
+                let role = MockRoleEligibilityUseCase()
+                role.errorToReturn = step == .userRoleCheck ? .unknown(error: failure) : nil
+                stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
+                    if case let .fetchSiteInfo(_, enabled, completion) = action {
+                        XCTAssertTrue(enabled)
+                        completion(.failure(failure))
+                    }
+                }
+                let provider = MockAnalyticsProvider()
+                let presenter = DeferredPostLoginPresenter()
+                let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                             loginFlow: flow,
+                                                             roleEligibilityUseCase: role,
+                                                             stores: stores,
+                                                             analytics: WooAnalytics(analyticsProvider: provider),
+                                                             previousViewController: nil)
+                // When
+                checker.checkEligibility(for: testURL, from: presenter) {}
+                waitUntil { presenter.presentationCompletion != nil }
+                // Then
+                let event = WooAnalyticsStat.loginUnexpectedResponseErrorShown.rawValue
+                XCTAssertFalse(provider.receivedEvents.contains(event))
+                presenter.presentationCompletion?()
+                XCTAssertEqual(provider.receivedEvents.filter { $0 == event }.count, 1)
+                XCTAssertEqual(provider.receivedProperties.last?["step"] as? String, step.rawValue)
+                XCTAssertEqual(provider.receivedProperties.last?["login_flow"] as? String, flow.rawValue)
+                XCTAssertEqual(provider.receivedProperties.last?["failure_kind"] as? String, "unacceptable_status_code")
+                XCTAssertEqual(provider.receivedProperties.last?.count, 3)
+            }
+        }
+    }
+
     func test_application_password_disabled_error_is_displayed_when_application_password_is_disabled() {
         // Given
         let useCase = MockApplicationPasswordUseCase(mockGenerationError: ApplicationPasswordUseCaseError.applicationPasswordsDisabled)
@@ -404,5 +444,13 @@ private final class MockApplicationPasswordUseCase: ApplicationPasswordUseCase {
 
     func deletePassword(locally: Bool) async throws {
         throw mockDeletionError ?? NetworkError.notFound()
+    }
+}
+
+private final class DeferredPostLoginPresenter: UINavigationController {
+    var presentationCompletion: (() -> Void)?
+
+    override func present(_ viewControllerToPresent: UIViewController, animated flag: Bool, completion: (() -> Void)? = nil) {
+        presentationCompletion = completion
     }
 }

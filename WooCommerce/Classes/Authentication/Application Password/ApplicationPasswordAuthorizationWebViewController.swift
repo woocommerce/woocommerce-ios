@@ -3,13 +3,16 @@ import UIKit
 import WebKit
 import protocol WooFoundation.Analytics
 import struct Networking.ApplicationPassword
+import enum Networking.ApplicationPasswordUseCaseError
 import enum Networking.RequestAuthenticatorError
 
 /// View with embedded web view to authorize application password for a site.
 ///
 final class ApplicationPasswordAuthorizationWebViewController: UIViewController {
+    typealias AlertPresenter = (UIViewController, UIAlertController, @escaping () -> Void) -> Void
 
     private let analytics: Analytics
+    private let alertPresenter: AlertPresenter
 
     /// Callback when application password is authorized.
     private let onSuccess: (ApplicationPassword, UINavigationController?) -> Void
@@ -56,11 +59,15 @@ final class ApplicationPasswordAuthorizationWebViewController: UIViewController 
     init(viewModel: ApplicationPasswordAuthorizationViewModel,
          previousViewController: UIViewController?,
          analytics: Analytics = ServiceLocator.analytics,
+         alertPresenter: @escaping AlertPresenter = { controller, alert, completion in
+             controller.present(alert, animated: true, completion: completion)
+         },
          onSuccess: @escaping (ApplicationPassword, UINavigationController?) -> Void) {
         self.viewModel = viewModel
         self.previousViewController = previousViewController
         self.onSuccess = onSuccess
         self.analytics = analytics
+        self.alertPresenter = alertPresenter
         super.init(nibName: nil, bundle: nil)
     }
 
@@ -169,11 +176,12 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             } catch {
                 DDLogError("⛔️ Error fetching authorization URL for application passwords \(error)")
                 analytics.track(.applicationPasswordAuthorizationURLFetchFailed, withError: error)
-                if let authError = error as? Networking.RequestAuthenticatorError,
-                   authError == .applicationPasswordNotAvailable {
+                if (error as? Networking.RequestAuthenticatorError) == .applicationPasswordNotAvailable ||
+                    (error as? ApplicationPasswordUseCaseError) == .applicationPasswordsDisabled {
                     navigateToApplicationPasswordDisabledUI()
                 } else {
-                    showErrorAlert(message: Localization.errorFetchingAuthURL)
+                    showErrorAlert(message: Localization.errorFetchingAuthURL,
+                                   failure: LoginUnexpectedResponseFailure(error: error, step: .appPasswordAuthorizationURL))
                 }
             }
             activityIndicator.stopAnimating()
@@ -237,7 +245,7 @@ private extension ApplicationPasswordAuthorizationWebViewController {
         }
     }
 
-    func showErrorAlert(message: String, onRetry: (() -> Void)? = nil) {
+    func showErrorAlert(message: String, failure: LoginUnexpectedResponseFailure? = nil, onRetry: (() -> Void)? = nil) {
         let alertController = UIAlertController(title: nil, message: message, preferredStyle: .alert)
         let action = UIAlertAction(title: Localization.cancel, style: .cancel) { [weak self] _ in
             self?.navigationController?.popViewController(animated: true)
@@ -249,7 +257,10 @@ private extension ApplicationPasswordAuthorizationWebViewController {
             }
             alertController.addAction(retryAction)
         }
-        present(alertController, animated: true)
+        alertPresenter(self, alertController) { [weak self] in
+            guard let self, let failure else { return }
+            analytics.track(event: .Login.unexpectedResponseShown(failure: failure, loginFlow: .appPassword))
+        }
     }
 
     /// The error screen to be displayed when the user tries to log in with site credentials

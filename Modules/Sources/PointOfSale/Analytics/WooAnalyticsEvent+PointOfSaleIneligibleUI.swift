@@ -38,8 +38,6 @@ private extension POSIneligibleReason {
             return "store_country"
         case .siteSettingsNotAvailable:
             return "site_settings_unavailable"
-        case .selfDeallocated:
-            return "self_deallocated"
         }
     }
 }

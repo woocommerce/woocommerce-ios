@@ -25,6 +25,28 @@ final class RequirementsCheckerTests: XCTestCase {
         super.tearDown()
     }
 
+    func test_site_check_when_opted_in_then_preserves_unexpected_response() {
+        // Given
+        let site = Site.fake().copy(siteID: 123, isJetpackConnected: true, isWooCommerceActive: true)
+        let stores = MockStoresManager(sessionManager: .makeForTesting(defaultSite: site))
+        let failure = UnexpectedStoreResponseError(kind: .unacceptableStatusCode, statusCode: 503)
+        stores.whenReceivingAction(ofType: SettingAction.self) { action in
+            if case let .retrieveSiteAPI(_, enabled, completion) = action {
+                XCTAssertTrue(enabled)
+                completion(.failure(failure))
+            }
+        }
+        let checker = RequirementsChecker(stores: stores)
+        // When
+        let error = waitFor { promise in
+            checker.checkSiteEligibility(for: site, detectUnexpectedResponses: true) { result in
+                if case .failure(let error) = result { promise(error) }
+            }
+        }
+        // Then
+        XCTAssertEqual(error as? UnexpectedStoreResponseError, failure)
+    }
+
     // MARK: - checkSiteEligibility
 
     func test_checkSiteEligibility_returns_expiredWPComPlan_if_plan_expired() {

@@ -696,24 +696,60 @@ final class WooShippingCreateLabelsViewModelTests: XCTestCase {
         XCTAssertEqual(viewModel.currentShipment?.index, 1)
     }
 
-    func test_destinationPhoneNumberNoticeLabel_is_missing_when_phone_is_empty() {
+    func test_destinationPhoneNumberNoticeLabel_when_international_and_phone_empty_then_is_missing() {
         // Given
-        let labelDestinationAddress = ShippingLabelAddress.fake().copy(phone: "", country: "US")
-        let shippingLabel = ShippingLabel.fake().copy(destinationAddress: labelDestinationAddress)
-        let order = Order.fake().copy(shippingLabels: [shippingLabel])
+        let viewModel = makeViewModelShippingWithoutPhone(to: "CA")
 
         // When
-        let viewModel = WooShippingCreateLabelsViewModel(
-            order: order,
-            preselection: .shippingLabel(
-                label: shippingLabel
-            )
-        )
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
 
         // Then
         let expected = NSLocalizedString("wooShipping.createLabels.destinationPhoneNumber.missing",
                                          value: "Phone number is required for the destination address.",
                                          comment: "")
+        waitUntil {
+            viewModel.destinationPhoneNumberNoticeLabel != nil
+        }
+        XCTAssertEqual(viewModel.destinationPhoneNumberNoticeLabel, expected)
+    }
+
+    func test_destinationPhoneNumberNoticeLabel_when_domestic_and_phone_empty_then_is_nil() {
+        // Given
+        let viewModel = makeViewModelShippingWithoutPhone(to: "US")
+
+        // When
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+
+        // Then
+        XCTAssertNil(viewModel.destinationPhoneNumberNoticeLabel)
+    }
+
+    func test_destinationPhoneNumberNoticeLabel_when_FedEx_rate_and_phone_empty_then_names_the_service() {
+        // Given
+        let viewModel = makeViewModelShippingWithoutPhone(to: "US")
+        let fedExRate = WooShippingSelectedRate(rate: ShippingLabelCarrierRate.fake().copy(title: "FedEx Ground Economy",
+                                                                                            carrierID: "fedex"))
+
+        // When
+        waitUntil {
+            viewModel.originAddress.isNotEmpty
+        }
+        waitUntil {
+            viewModel.currentShipmentDetailsViewModel?.shippingService != nil
+        }
+        viewModel.currentShipmentDetailsViewModel?.shippingService?.onSelectRate?(fedExRate)
+
+        // Then
+        let expected = String.localizedStringWithFormat(
+            NSLocalizedString("wooShipping.createLabels.destinationPhoneNumber.requiredByService",
+                              value: "%1$@ requires a recipient phone number.",
+                              comment: ""),
+            "FedEx Ground Economy"
+        )
         waitUntil {
             viewModel.destinationPhoneNumberNoticeLabel != nil
         }
@@ -1838,6 +1874,26 @@ private extension WooShippingCreateLabelsViewModelTests {
     func insert(accountSettings: ShippingLabelAccountSettings) {
         let storageSettings = storage.insertNewObject(ofType: StorageShippingLabelAccountSettings.self)
         storageSettings.update(with: accountSettings)
+    }
+
+    /// Builds a view model whose store loads a US origin address, for an order shipping to `destinationCountry` without a phone.
+    func makeViewModelShippingWithoutPhone(to destinationCountry: String) -> WooShippingCreateLabelsViewModel {
+        let originAddress = WooShippingOriginAddress.fake().copy(id: "default", address1: "15 ALGONKIN ST", city: "TICONDEROGA", state: "NY",
+                                                                 postcode: "12883-1487", country: "US", phone: "223-456-7890", defaultAddress: true)
+        let shippingAddress = Address.fake().copy(address1: "1 Main Street", city: "City", postcode: "12345", country: destinationCountry, phone: "")
+        let order = Order.fake().copy(siteID: siteID, orderID: orderID, shippingAddress: shippingAddress)
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            switch action {
+            case .loadOriginAddresses(_, let completion):
+                completion(.success([originAddress]))
+            case .loadAccountSettings(_, let completion):
+                completion(.success(self.settings))
+            default:
+                break // verifyDestinationAddress stays pending, so the order's shipping address remains the destination.
+            }
+        }
+        return WooShippingCreateLabelsViewModel(order: order, stores: stores, storageManager: storageManager)
     }
 
     /// Creates a `WooShippingCreateLabelsViewModel` configured with a mock store that returns

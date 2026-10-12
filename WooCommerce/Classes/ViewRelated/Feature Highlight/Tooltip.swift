@@ -10,6 +10,8 @@ final class Tooltip: UIView {
         static let cornerRadius: CGFloat = 4
         static let arrowTipYLength: CGFloat = 8
         static let arrowTipYControlLength: CGFloat = 9
+        /// Used until `TooltipPresenter` sizes the tooltip to its container.
+        static let fallbackContainerWidth: CGFloat = 320
 
         enum Spacing {
             static let contentStackViewInterItemSpacing: CGFloat = 4
@@ -103,7 +105,12 @@ final class Tooltip: UIView {
     var dismissalAction: (() -> Void)?
     var secondaryButtonAction: (() -> Void)?
 
-    private let availableWidth: CGFloat
+    /// Width of the view the tooltip is presented in.
+    let containerWidth: CGFloat
+
+    private var availableWidth: CGFloat {
+        containerWidth - Constants.Spacing.superHorizontalMargin
+    }
 
     private lazy var titleLabel: UILabel = {
         $0.font = UIFont.body
@@ -168,14 +175,14 @@ final class Tooltip: UIView {
     private var containerBottomConstraint: NSLayoutConstraint?
     private var arrowShapeLayer: CAShapeLayer?
 
-    init(containerWidth: CGFloat = UIScreen.main.bounds.width) {
-        self.availableWidth = containerWidth - Constants.Spacing.superHorizontalMargin
+    init(containerWidth: CGFloat) {
+        self.containerWidth = containerWidth
         super.init(frame: .zero)
         commonInit()
     }
 
     required init?(coder: NSCoder) {
-        self.availableWidth = UIScreen.main.bounds.width - Constants.Spacing.superHorizontalMargin
+        self.containerWidth = Constants.fallbackContainerWidth
         super.init(coder: coder)
         commonInit()
     }

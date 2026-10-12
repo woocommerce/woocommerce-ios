@@ -4,8 +4,10 @@ import Foundation
 ///
 public enum WordPressSiteAction: Action {
     /// Fetches information for a given WordPress site URL.
-    case fetchSiteInfo(siteURL: String, detectUnexpectedResponses: Bool = false, completion: (Result<Site, Error>) -> Void)
+    case fetchSiteInfo(siteURL: String, detectUnexpectedResponses: Bool = false, completion: @Sendable (Result<Site, Error>) -> Void)
     /// Fetches application password authorization URL for a given WordPress site if it's enabled.
-    case fetchApplicationPasswordAuthorizationURL(siteURL: String, detectUnexpectedResponses: Bool = false, completion: (Result<URL?, Error>) -> Void)
-    case fetchPageList(siteURL: String, completion: (Result<[WordPressPage], Error>) -> Void)
+    case fetchApplicationPasswordAuthorizationURL(siteURL: String,
+                                                  detectUnexpectedResponses: Bool = false,
+                                                  completion: @Sendable (Result<URL?, Error>) -> Void)
+    case fetchPageList(siteURL: String, completion: @Sendable (Result<[WordPressPage], Error>) -> Void)
 }

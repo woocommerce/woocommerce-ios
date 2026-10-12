@@ -3,7 +3,7 @@ import Codegen
 
 /// Encapsulates API Information for a given site
 ///
-public struct SiteAPI: Decodable, Equatable, GeneratedFakeable {
+public struct SiteAPI: Decodable, Equatable, Sendable, GeneratedFakeable {
 
     /// Site Identifier.
     ///

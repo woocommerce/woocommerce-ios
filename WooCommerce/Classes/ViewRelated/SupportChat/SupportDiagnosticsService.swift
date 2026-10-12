@@ -545,34 +545,25 @@ final class SupportDiagnosticsService {
     /// Enables WooCommerce Analytics on the site.
     ///
     func enableAnalytics() async throws {
-        try await withCheckedThrowingContinuation { continuation in
-            enableAnalyticsWithRetry(retries: 0) { result in
-                switch result {
-                case .success:
-                    continuation.resume()
-                case .failure(let error):
-                    continuation.resume(throwing: error)
-                }
+        do {
+            try await enableAnalyticsSetting()
+        } catch {
+            do {
+                try await enableAnalyticsSetting()
+            } catch {
+                DDLogError("SupportDiagnostics: ❌ Failed to enable analytics\n\(error)")
+                throw error
             }
         }
+        DDLogInfo("SupportDiagnostics: ✅ Analytics enabled successfully")
     }
 
-    private func enableAnalyticsWithRetry(retries: Int, completion: @escaping (Swift.Result<Void, Error>) -> Void) {
-        let action = SettingAction.enableAnalyticsSetting(siteID: siteID) { [weak self] result in
-            switch result {
-            case .success:
-                DDLogInfo("SupportDiagnostics: ✅ Analytics enabled successfully")
-                completion(.success(()))
-            case .failure(let error):
-                if retries < 1 {
-                    self?.enableAnalyticsWithRetry(retries: retries + 1, completion: completion)
-                } else {
-                    DDLogError("SupportDiagnostics: ❌ Failed to enable analytics\n\(error)")
-                    completion(.failure(error))
-                }
-            }
+    private func enableAnalyticsSetting() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(SettingAction.enableAnalyticsSetting(siteID: siteID) { result in
+                continuation.resume(with: result)
+            })
         }
-        stores.dispatch(action)
     }
 
     /// Registers the device for push notifications.

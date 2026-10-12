@@ -3,7 +3,7 @@ import Codegen
 
 /// Represents a WordPress.com default Site's plan.
 ///
-public struct SitePlan: Decodable, Equatable, GeneratedFakeable {
+public struct SitePlan: Decodable, Equatable, Sendable, GeneratedFakeable {
 
     /// WordPress.com Site Identifier.
     ///

@@ -17,13 +17,18 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
     /// Safe-area insets of the container the sheet is pinned to.
     private let safeAreaInsets: EdgeInsets
 
+    /// Height of that container inside its safe area; caps the expanded sheet.
+    private let containerHeight: CGFloat
+
     private var onChangeOfExpansion: ((Bool) -> Void)?
 
     public init(safeAreaInsets: EdgeInsets,
+                containerHeight: CGFloat,
                 onChangeOfExpansion: ((Bool) -> Void)? = nil,
                 @ViewBuilder alwaysVisibleContent: @escaping () -> AlwaysVisibleContent,
                 @ViewBuilder expandableContent: @escaping () -> ExpandableContent) {
         self.safeAreaInsets = safeAreaInsets
+        self.containerHeight = containerHeight
         self.onChangeOfExpansion = onChangeOfExpansion
         self.alwaysVisibleContent = alwaysVisibleContent
         self.expandableContent = expandableContent
@@ -120,6 +125,14 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
                     }
                 }
         })
+        .onChange(of: containerHeight) {
+            guard !isDragging, hasMeasuredCollapsedContent else {
+                return
+            }
+            withAnimation {
+                panelHeight = calculateHeight()
+            }
+        }
         .onChange(of: isExpanded) { _, newValue in
             onChangeOfExpansion?(newValue)
             DispatchQueue.main.async {
@@ -174,8 +187,8 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
     }
 
     private func calculateHeight(offsetBy dragAmount: CGFloat = 0) -> CGFloat {
-        let screenHeight = UIScreen.main.bounds.height - safeAreaInsets.bottom - safeAreaInsets.top
-        let maxExpandedHeight = screenHeight * 0.8
+        // A container that has not been measured yet must not pin the sheet to its collapsed height.
+        let maxExpandedHeight = containerHeight > 0 ? containerHeight * Layout.maxExpandedHeightRatio : .greatestFiniteMagnitude
         let fullHeight = min(collapsedHeight + expandingContentSize.height + Layout.dividerPadding, maxExpandedHeight)
         let currentHeight = isExpanded ? fullHeight : collapsedHeight
         let dragAdjustedHeight = currentHeight - dragAmount
@@ -231,6 +244,7 @@ fileprivate enum Layout {
     static let sheetCornerRadius: CGFloat = 10
     static let shadowRadius: CGFloat = 5
     static let dividerPadding: CGFloat = 16
+    static let maxExpandedHeightRatio: CGFloat = 0.8
 }
 
 fileprivate enum Localization {
@@ -247,10 +261,15 @@ fileprivate enum Localization {
 
 struct ExpandableBottomSheet_Previews: PreviewProvider {
     static var previews: some View {
-        ExpandableBottomSheet(safeAreaInsets: .zero) {
-            Text("Always visible")
-        } expandableContent: {
-            Text("Can be hidden")
+        GeometryReader { geometry in
+            Color.clear
+                .safeAreaInset(edge: .bottom) {
+                    ExpandableBottomSheet(safeAreaInsets: geometry.safeAreaInsets, containerHeight: geometry.size.height) {
+                        Text("Always visible")
+                    } expandableContent: {
+                        Text("Can be hidden")
+                    }
+                }
         }
     }
 }

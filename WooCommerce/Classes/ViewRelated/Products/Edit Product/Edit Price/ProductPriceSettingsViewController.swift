@@ -49,10 +49,11 @@ final class ProductPriceSettingsViewController: UIViewController {
     }()
 
     private lazy var subscriptionPeriodToolbar: UIToolbar = {
-        // Setting explicit frame size to avoid constraint conflicts.
+        // Setting explicit frame size to avoid constraint conflicts. The system resizes the width to match the keyboard.
         let toolBar = UIToolbar(frame: .init(origin: .zero,
-                                             size: .init(width: UIScreen.main.bounds.width,
+                                             size: .init(width: Constants.subscriptionPeriodToolbarNominalWidth,
                                                          height: Constants.subscriptionPeriodToolbarHeight)))
+        toolBar.autoresizingMask = .flexibleWidth
         let doneButton = UIBarButtonItem(title: Localization.subscriptionPeriodToolBarButton,
                                          style: .done,
                                          target: self,
@@ -576,6 +577,7 @@ extension ProductPriceSettingsViewController {
 private struct Constants {
     static let sectionHeight = CGFloat(44)
     static let subscriptionPeriodToolbarHeight: CGFloat = 35
+    static let subscriptionPeriodToolbarNominalWidth: CGFloat = 320
 }
 
 private extension ProductPriceSettingsViewController {

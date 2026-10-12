@@ -1,0 +1,23 @@
+# From iOS 26 the app asks the system for the user's age range at every launch
+# while signed in. On the simulator the request covers the app for about a
+# second, hiding the tab bar and dropping taps. Wait for it to pass.
+appId: ${APP_ID}
+---
+- runFlow:
+    when:
+      true: ${AGE_RANGE_CHECK == 'true'}
+    commands:
+      - extendedWaitUntil:
+          visible:
+            id: "tab-bar-my-store-item"
+          timeout: 60000
+      # Maestro counts this timeout from the last launch or tap, not from here.
+      - extendedWaitUntil:
+          notVisible:
+            id: "tab-bar-my-store-item"
+          timeout: 30000
+          optional: true
+      - extendedWaitUntil:
+          visible:
+            id: "tab-bar-my-store-item"
+          timeout: 15000

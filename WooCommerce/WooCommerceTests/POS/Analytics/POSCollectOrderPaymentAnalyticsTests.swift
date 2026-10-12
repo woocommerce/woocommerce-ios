@@ -72,7 +72,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         }
     }
 
-    @Test(arguments: [false, true], ["stripe", "woocommerce_payments"])
+    @Test(arguments: [false, true], ["stripe", "woocommerce_payments"]) @MainActor
     func test_card_success_when_reader_and_gateway_vary_then_tracks_checkout_value_and_reader_transport(tapToPay: Bool, gateway: String) {
         // Given
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -95,7 +95,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(event?.properties["card_reader_model"] as? String == (tapToPay ? "TAP_TO_PAY_DEVICE" : "WISEPAD_3"))
     }
 
-    @Test func test_scan_success_then_tracks_order_gateway_and_currency() {
+    @Test @MainActor func test_scan_success_then_tracks_order_gateway_and_currency() {
         // Given
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
                                                          configuration: CardPresentPaymentsConfiguration(country: .US))
@@ -114,7 +114,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(event?.properties["payment_method_type"] as? String == "scan_to_pay")
     }
 
-    @Test func analytics_when_successful_payment_then_tracks_event_and_properties() {
+    @Test @MainActor func analytics_when_successful_payment_then_tracks_event_and_properties() {
         // Given
         let configuration = CardPresentPaymentsConfiguration(country: .US)
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration)
@@ -143,7 +143,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         })
     }
 
-    @Test func test_track_successful_card_payment_when_timing_markers_are_unset_then_reports_zero_elapsed_milliseconds() {
+    @Test @MainActor func test_track_successful_card_payment_when_timing_markers_are_unset_then_reports_zero_elapsed_milliseconds() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -163,7 +163,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == "0.0")
     }
 
-    @Test func test_track_successful_card_payment_when_timing_markers_are_set_then_reports_correct_elapsed_milliseconds() {
+    @Test @MainActor func test_track_successful_card_payment_when_timing_markers_are_set_then_reports_correct_elapsed_milliseconds() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -191,7 +191,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == "2000.0")
     }
 
-    @Test func test_track_card_reader_tapped_when_processing_event_repeats_then_preserves_first_card_tapped_timestamp() {
+    @Test @MainActor func test_track_card_reader_tapped_when_processing_event_repeats_then_preserves_first_card_tapped_timestamp() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -214,7 +214,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == "5000.0")
     }
 
-    @Test func test_track_card_reader_tapped_when_success_and_new_customer_interaction_occur_then_records_new_card_tapped_timestamp() {
+    @Test @MainActor func test_track_card_reader_tapped_when_success_and_new_customer_interaction_occur_then_records_new_card_tapped_timestamp() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -243,7 +243,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(properties("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == ["1000.0", "3000.0"])
     }
 
-    @Test func test_track_payment_failure_when_card_reader_was_tapped_then_next_attempt_records_new_card_tapped_timestamp() {
+    @Test @MainActor func test_track_payment_failure_when_card_reader_was_tapped_then_next_attempt_records_new_card_tapped_timestamp() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -269,7 +269,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == "3000.0")
     }
 
-    @Test func test_track_payment_cancelation_when_card_reader_was_tapped_then_next_attempt_records_new_card_tapped_timestamp() {
+    @Test @MainActor func test_track_payment_cancelation_when_card_reader_was_tapped_then_next_attempt_records_new_card_tapped_timestamp() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -295,7 +295,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_success") == "3000.0")
     }
 
-    @Test func test_track_card_reader_ready_when_order_sync_succeeded_then_tracks_waiting_time_in_seconds() {
+    @Test @MainActor func test_track_card_reader_ready_when_order_sync_succeeded_then_tracks_waiting_time_in_seconds() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -314,7 +314,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("waiting_time", in: "reader_ready_for_card_payment") == "3.0")
     }
 
-    @Test func test_track_card_reader_ready_when_order_sync_never_succeeded_then_reports_zero_waiting_time() {
+    @Test @MainActor func test_track_card_reader_ready_when_order_sync_never_succeeded_then_reports_zero_waiting_time() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -331,7 +331,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("waiting_time", in: "reader_ready_for_card_payment") == "0.0")
     }
 
-    @Test func test_track_successful_cash_payment_when_customer_interaction_started_then_reports_correct_elapsed_milliseconds() {
+    @Test @MainActor func test_track_successful_cash_payment_when_customer_interaction_started_then_reports_correct_elapsed_milliseconds() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -348,7 +348,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_since_customer_interaction_started", in: "cash_collect_payment_success") == "1000.0")
     }
 
-    @Test func test_track_payment_failure_then_tracks_event_with_error_and_properties() {
+    @Test @MainActor func test_track_payment_failure_then_tracks_event_with_error_and_properties() {
         // Given
         let configuration = CardPresentPaymentsConfiguration(country: .US)
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration)
@@ -374,7 +374,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(expectedProperties.allSatisfy { trackedEvent?.properties.keys.contains($0) == true })
     }
 
-    @Test func test_track_payment_failure_when_error_carries_interac_payment_method_then_reports_payment_method_type() {
+    @Test @MainActor func test_track_payment_failure_when_error_carries_interac_payment_method_then_reports_payment_method_type() {
         // Given
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
                                                          configuration: CardPresentPaymentsConfiguration(country: .CA))
@@ -388,7 +388,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("payment_method_type", in: "card_present_collect_payment_failed") == "card_interac")
     }
 
-    @Test func test_track_payment_failure_when_error_carries_no_payment_method_then_omits_payment_method_type() {
+    @Test @MainActor func test_track_payment_failure_when_error_carries_no_payment_method_then_omits_payment_method_type() {
         // Given
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
                                                          configuration: CardPresentPaymentsConfiguration(country: .US))
@@ -400,7 +400,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("payment_method_type", in: "card_present_collect_payment_failed") == nil)
     }
 
-    @Test func test_track_payment_cancelation_then_tracks_event_with_cancellation_source() {
+    @Test @MainActor func test_track_payment_cancelation_then_tracks_event_with_cancellation_source() {
         // Given
         let configuration = CardPresentPaymentsConfiguration(country: .US)
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics, configuration: configuration)
@@ -413,7 +413,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("country", in: "card_present_collect_payment_canceled") == "US")
     }
 
-    @Test func test_track_payment_failure_when_timing_markers_are_set_then_reports_correct_elapsed_milliseconds() {
+    @Test @MainActor func test_track_payment_failure_when_timing_markers_are_set_then_reports_correct_elapsed_milliseconds() {
         // Given
         let clock = TestClock()
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
@@ -436,7 +436,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("milliseconds_since_card_tapped", in: "card_present_collect_payment_failed") == "2000.0")
     }
 
-    @Test func test_track_processing_completion_when_payment_method_is_interac_then_tracks_interac_success() {
+    @Test @MainActor func test_track_processing_completion_when_payment_method_is_interac_then_tracks_interac_success() {
         // Given
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
                                                          configuration: CardPresentPaymentsConfiguration(country: .CA))
@@ -449,7 +449,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(property("country", in: "card_interac_collect_payment_success") == "CA")
     }
 
-    @Test func test_track_processing_completion_when_payment_method_is_not_interac_then_tracks_nothing() {
+    @Test @MainActor func test_track_processing_completion_when_payment_method_is_not_interac_then_tracks_nothing() {
         // Given
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
                                                          configuration: CardPresentPaymentsConfiguration(country: .US))
@@ -462,7 +462,7 @@ struct POSCollectOrderPaymentAnalyticsTests {
         #expect(analytics.events.isEmpty)
     }
 
-    @Test func test_track_payment_failure_when_checkout_retried_then_preserves_checkout_tap_count() {
+    @Test @MainActor func test_track_payment_failure_when_checkout_retried_then_preserves_checkout_tap_count() {
         // Given
         let sut = POSCollectOrderPaymentAnalyticsAdaptor(analytics: analytics,
                                                          configuration: CardPresentPaymentsConfiguration(country: .US))

@@ -1360,6 +1360,128 @@ final class AuthenticationManagerTests: XCTestCase {
     }
 
     @MainActor
+    func test_unexpected_login_page_when_verifying_login_url_then_recovers_inline_and_tracks_invalid_page() {
+        // Given
+        let provider = MockAnalyticsProvider()
+        let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+        let manager = AuthenticationManager(analytics: WooAnalytics(analyticsProvider: provider),
+                                            siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+        var recovery: SiteCredentialRecovery?
+        var loading = [Bool]()
+
+        // When
+        manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: "https://example.com/custom-login", adminURL: nil,
+                                            endpointUnderVerification: .login, onLoading: { loading.append($0) },
+                                            onSuccess: { _ in XCTFail("Expected recovery") },
+                                            onRecovery: { recovery = $0; return true },
+                                            onFailure: { _, _, _, _ in XCTFail("Unexpected alert") })
+        useCase.fail(with: .unexpectedResponse(.init(stage: .preflight)), loginEntryVerified: false)
+
+        // Then
+        XCTAssertEqual(recovery, .login(draftURL: "https://example.com/custom-login", error: .notFound))
+        XCTAssertEqual(loading, [true, false])
+        XCTAssertEqual(provider.receivedEvents, [WooAnalyticsStat.loginSiteCredentialsInvalidLoginPageDetected.rawValue])
+    }
+
+    @MainActor
+    func test_unexpected_status_when_verifying_endpoint_then_forwards_to_alert() {
+        for stage in [CookieNonceAuthenticationResponseStage.preflight, .dashboard, .nonce] {
+            for statusCode in [500, 429] {
+                // Given
+                let useCase = MockAuthenticationManagerSiteCredentialLoginUseCase()
+                let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { _, _, _ in useCase })
+                let context = LoginUnexpectedResponseFailure(stage: stage, statusCode: statusCode)
+                var receivedError: SiteCredentialLoginError?
+
+                // When
+                manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: "https://example.com/custom-login",
+                                                    adminURL: stage == .preflight ? nil : "https://example.com/private-admin/",
+                                                    endpointUnderVerification: stage == .preflight ? .login : .admin, onLoading: { _ in },
+                                                    onSuccess: { _ in XCTFail("Expected failure") },
+                                                    onRecovery: { _ in XCTFail("Unexpected endpoint recovery"); return false },
+                                                    onFailure: { error, _, _, _ in receivedError = error as? SiteCredentialLoginError })
+                useCase.fail(with: .unexpectedResponse(context), loginEntryVerified: stage != .preflight)
+
+                // Then
+                guard case .unexpectedResponse(let receivedContext) = receivedError else {
+                    XCTFail("Expected preserved response context")
+                    continue
+                }
+                XCTAssertEqual(receivedContext, context)
+            }
+        }
+    }
+
+    @MainActor
+    func test_nonce_not_found_when_recovered_admin_returns_unexpected_content_then_routes_by_failed_stage() async {
+        for stage in [CookieNonceAuthenticationResponseStage.dashboard, .nonce] {
+            // Given
+            let session = MockURLSession()
+            let loginSession = MockURLSession()
+            let loginURL = "https://example.com/wp-login.php"
+            let nonceURL = "https://example.com/wp-admin/admin-ajax.php?action=rest-nonce"
+            let adminURL = "https://example.com/private-admin/"
+            let recoveredNonceURL = adminURL + "admin-ajax.php?action=rest-nonce"
+            let loginForm = "<form id=\"loginform\" name=\"loginform\" method=\"post\">" +
+                "<input name=\"log\" id=\"user_login\" type=\"text\">" +
+                "<input name=\"pwd\" id=\"user_pass\" type=\"password\"></form>"
+            session.simulateResponse(for: loginURL, data: Data(loginForm.utf8))
+            loginSession.simulateResponse(for: loginURL, statusCode: 302, headerFields: ["Location": nonceURL])
+            session.simulateResponse(for: nonceURL, statusCode: 404)
+            let manager = AuthenticationManager(siteCredentialLoginUseCaseFactory: { siteURL, endpoints, verifyAdmin in
+                SiteCredentialLoginUseCase(siteURL: siteURL, endpoints: endpoints, verifyAdminDashboard: verifyAdmin,
+                                           session: session, loginSession: loginSession)
+            })
+            var recoveries = [SiteCredentialRecovery]()
+            var loading = [Bool]()
+            var receivedError: SiteCredentialLoginError?
+            let initialRecovery = expectation(description: "Nonce 404 opens admin recovery")
+            let verificationFailure = expectation(description: "Admin verification reports the failed stage")
+
+            // When
+            manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: nil, adminURL: nil,
+                                                endpointUnderVerification: nil, onLoading: { loading.append($0) },
+                                                onSuccess: { _ in XCTFail("Expected recovery") },
+                                                onRecovery: { recoveries.append($0); initialRecovery.fulfill(); return true },
+                                                onFailure: { _, _, _, _ in XCTFail("Unexpected alert") })
+            await fulfillment(of: [initialRecovery], timeout: 2)
+            loginSession.simulateResponse(for: loginURL, statusCode: 302, headerFields: ["Location": recoveredNonceURL])
+            let dashboard = stage == .dashboard ? "<html>Wrong address</html>" :
+                "<body class=\"wp-admin index-php\"><div id=\"dashboard-widgets-wrap\"></div></body>"
+            session.simulateResponse(for: adminURL, data: Data(dashboard.utf8))
+            session.simulateResponse(for: recoveredNonceURL, data: Data("<html>Wrong address</html>".utf8))
+            manager.authenticateSiteCredentials(credentials: siteCredentials(), loginURL: loginURL, adminURL: adminURL,
+                                                endpointUnderVerification: .admin, onLoading: { loading.append($0) },
+                                                onSuccess: { _ in XCTFail("Expected recovery") },
+                                                onRecovery: { recoveries.append($0); verificationFailure.fulfill(); return true },
+                                                onFailure: { error, incorrectCredentials, verifiedLoginURL, browserAlternative in
+                receivedError = error as? SiteCredentialLoginError
+                XCTAssertFalse(incorrectCredentials)
+                XCTAssertEqual(verifiedLoginURL, loginURL)
+                XCTAssertFalse(browserAlternative)
+                verificationFailure.fulfill()
+            })
+            await fulfillment(of: [verificationFailure], timeout: 2)
+
+            // Then
+            let initial: SiteCredentialRecovery = .admin(verifiedLoginURL: loginURL, draftURL: "https://example.com/wp-admin/", error: nil)
+            if stage == .dashboard {
+                XCTAssertEqual(recoveries, [initial, .admin(verifiedLoginURL: loginURL, draftURL: adminURL, error: .notFound)])
+                XCTAssertNil(receivedError)
+            } else {
+                XCTAssertEqual(recoveries, [initial])
+                guard case .unexpectedResponse(let failure) = receivedError else {
+                    XCTFail("Expected nonce failure forwarded to alert")
+                    continue
+                }
+                XCTAssertEqual(failure, .init(stage: .nonce))
+            }
+            XCTAssertEqual(loading, [true, false, true, false])
+            XCTAssertEqual(session.receivedRequests.last?.url?.absoluteString, stage == .dashboard ? adminURL : recoveredNonceURL)
+        }
+    }
+
+    @MainActor
     func test_retry_when_original_step_passes_and_later_step_fails_then_reports_success_once() {
         for stage in [CookieNonceAuthenticationResponseStage.preflight, .credentials, .dashboard, .nonce] {
             // Given

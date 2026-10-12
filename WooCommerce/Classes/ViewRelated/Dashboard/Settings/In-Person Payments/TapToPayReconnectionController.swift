@@ -38,6 +38,7 @@ where AlertPresenter.AlertDetails == AlertProvider.AlertDetails {
     }
 }
 
+@MainActor
 final class TapToPayReconnectionController<AlertProvider: CardReaderConnectionAlertsProviding,
                                             AlertPresenter: CardPresentPaymentAlertsPresenting>
 where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
@@ -101,6 +102,10 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         }
     }
 
+    func cancelReconnection() {
+        reset()
+    }
+
     /// Allows another connection process to adopt an in-progress background automatic Tap to Pay reconnection.
     /// This is because connections are generally not cancellable, so we need to show their progress.
     /// If a different reader type was selected, disconnecting and reconnecting in the completion handler is appropriate.
@@ -108,10 +113,6 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
     ///   - alertsPresenter: The alerts presenter which can show the connection alerts.
     ///   It will be immediately called with the most recent alert
     ///   - onCompletion: A completion handler for the automatic reconnection, with success or an error.
-    func cancelReconnection() {
-        reset()
-    }
-
     func showAlertsForReconnection(from alertsPresenter: AlertPresenter,
                                    onCompletion: @escaping (Result<CardReaderConnectionResult, Error>) -> Void) {
         guard isReconnecting else {
@@ -123,7 +124,6 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
 }
 
 private extension TapToPayReconnectionController {
-    @MainActor
     func reconnectToTapToPayReader() {
         let connectionController = tapToPayConnectionControllerForReconnection()
 
@@ -134,7 +134,6 @@ private extension TapToPayReconnectionController {
         })
     }
 
-    @MainActor
     func tapToPayConnectionControllerForReconnection() -> TapToPayCardReaderConnectionControlling {
         // If we already have a connection controller, there may be a reconnection in progress.
         // Starting again now would result in an SDK failure, and lose our original reference to the controller.

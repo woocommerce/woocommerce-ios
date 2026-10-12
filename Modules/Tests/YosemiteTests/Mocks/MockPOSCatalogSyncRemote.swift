@@ -1,7 +1,8 @@
 import Foundation
+import Synchronization
 @testable import Networking
 
-final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
+final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol, @unchecked Sendable {
     // Dictionary mapping pageNumber to Result for products and variations.
     private(set) var productResults: [Int: Result<PagedItems<POSProduct>, Error>] = [:]
     private(set) var variationResults: [Int: Result<PagedItems<POSProductVariation>, Error>] = [:]
@@ -25,9 +26,15 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
     let loadIncrementalProductVariationsCallCount = Counter()
     let loadTrashedProductsCallCount = Counter()
 
-    private(set) var lastIncrementalProductsModifiedAfter: Date?
-    private(set) var lastIncrementalVariationsModifiedAfter: Date?
-    private(set) var lastTrashedProductsModifiedAfter: Date?
+    private struct ModifiedAfterDates {
+        var incrementalProducts: Date?
+        var incrementalVariations: Date?
+        var trashedProducts: Date?
+    }
+    private let modifiedAfterDates = Mutex(ModifiedAfterDates())
+    var lastIncrementalProductsModifiedAfter: Date? { modifiedAfterDates.withLock { $0.incrementalProducts } }
+    var lastIncrementalVariationsModifiedAfter: Date? { modifiedAfterDates.withLock { $0.incrementalVariations } }
+    var lastTrashedProductsModifiedAfter: Date? { modifiedAfterDates.withLock { $0.trashedProducts } }
     let includeStatusTracker = IncludeStatusTracker()
     private(set) var lastCatalogRequestForceGeneration: Bool?
     private(set) var lastCatalogDownloadAllowCellular: Bool?
@@ -108,7 +115,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
         // Route to appropriate results based on includeStatus and posProductsOnly
         if includeStatus == "trash" {
             await loadTrashedProductsCallCount.increment()
-            lastTrashedProductsModifiedAfter = modifiedAfter
+            modifiedAfterDates.withLock { $0.trashedProducts = modifiedAfter }
 
             if let result = trashedProductResults[pageNumber] {
                 switch result {
@@ -132,7 +139,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
             return fallbackResult
         } else {
             await loadIncrementalProductsCallCount.increment()
-            lastIncrementalProductsModifiedAfter = modifiedAfter
+            modifiedAfterDates.withLock { $0.incrementalProducts = modifiedAfter }
 
             if let result = incrementalProductResults[pageNumber] {
                 switch result {
@@ -150,7 +157,7 @@ final class MockPOSCatalogSyncRemote: POSCatalogSyncRemoteProtocol {
                                 siteID: Int64,
                                 pageNumber: Int) async throws -> PagedItems<POSProductVariation> {
         await loadIncrementalProductVariationsCallCount.increment()
-        lastIncrementalVariationsModifiedAfter = modifiedAfter
+        modifiedAfterDates.withLock { $0.incrementalVariations = modifiedAfter }
 
         if let result = incrementalVariationResults[pageNumber] {
             switch result {

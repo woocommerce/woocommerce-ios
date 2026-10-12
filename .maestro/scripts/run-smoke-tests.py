@@ -66,9 +66,9 @@ CLEANUP_ONLY_ENVIRONMENT = {
 }
 
 PROFILES = {
-    "core": (["smoke_core"], ["flaky_quarantine", "pos_ipad", "ios_system"], "iphone"),
-    "full": (["smoke_core", "smoke_extended", "destructive", "ios_system", "pos_ipad"], ["flaky_quarantine"], "iphone"),
-    "pos": (["pos_ipad"], ["flaky_quarantine"], "ipad"),
+    "core": (["smoke_core"], ["quarantine", "pos_ipad", "ios_system"], "iphone"),
+    "full": (["smoke_core", "smoke_extended", "destructive", "ios_system", "pos_ipad"], ["quarantine"], "iphone"),
+    "pos": (["pos_ipad"], ["quarantine"], "ipad"),
 }
 # Profiles that seed fixtures without --seed, because they include destructive flows.
 SEEDING_PROFILES = frozenset({"full", "pos"})

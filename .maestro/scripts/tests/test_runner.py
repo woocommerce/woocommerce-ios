@@ -559,8 +559,8 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual("iphone", RUNNER.PROFILES["core"][2])
         self.assertEqual("iphone", RUNNER.PROFILES["full"][2])
         self.assertEqual("ipad", RUNNER.PROFILES["pos"][2])
-        self.assertIn("flaky_quarantine", RUNNER.PROFILES["full"][1])
-        self.assertIn("flaky_quarantine", RUNNER.PROFILES["pos"][1])
+        self.assertIn("quarantine", RUNNER.PROFILES["full"][1])
+        self.assertIn("quarantine", RUNNER.PROFILES["pos"][1])
         self.assertEqual({"full", "pos"}, RUNNER.SEEDING_PROFILES)
 
     def test_pos_flows_run_last_on_the_pos_simulator_when_the_profile_is_for_a_phone(self) -> None:

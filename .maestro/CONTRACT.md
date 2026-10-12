@@ -78,9 +78,9 @@ Profiles:
 
 | Profile | Included tags | Excluded tags | Device |
 | --- | --- | --- | --- |
-| `core` | `smoke_core` | `flaky_quarantine,pos_ipad,ios_system` | iPhone |
-| `full` | `smoke_core,smoke_extended,destructive,ios_system,pos_ipad` | `flaky_quarantine` | iPhone, then iPad for POS |
-| `pos` | `pos_ipad` | `flaky_quarantine` | iPad |
+| `core` | `smoke_core` | `quarantine,pos_ipad,ios_system` | iPhone |
+| `full` | `smoke_core,smoke_extended,destructive,ios_system,pos_ipad` | `quarantine` | iPhone, then iPad for POS |
+| `pos` | `pos_ipad` | `quarantine` | iPad |
 
 Explicit `--include-tags` and `--exclude-tags` override profile tag defaults.
 Each failed non-destructive flow is retried once; both attempts remain in the
@@ -108,7 +108,7 @@ iOS-only system files are `ios_quick_actions.yaml`,
 `ios_notification_long_press.yaml`, `orders_qr_payment.yaml`,
 `orders_share_payment_link.yaml`, and `orders_barcode_scanner.yaml`.
 
-Tags are limited to `smoke_core`, `smoke_extended`, `flaky_quarantine`,
+Tags are limited to `smoke_core`, `smoke_extended`, `quarantine`,
 `destructive`, `login`, `dashboard`, `orders`, `products`, `hub_menu`,
 `pos_ipad`, `ios_system`, and `store_shared`. A `store_shared` flow runs against
 the shared store and is never `destructive`.

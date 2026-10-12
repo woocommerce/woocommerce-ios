@@ -67,7 +67,7 @@ public protocol GenerativeContentRemoteProtocol {
 
 /// Product: Remote Endpoints
 ///
-public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProtocol {
+public final class GenerativeContentRemote: Remote, GenerativeContentRemoteProtocol, @unchecked Sendable {
     private enum GenerativeContentRemoteError: Error {
         case tokenNotFound
     }

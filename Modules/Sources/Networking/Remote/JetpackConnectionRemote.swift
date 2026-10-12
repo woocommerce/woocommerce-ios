@@ -4,7 +4,7 @@ import struct NetworkingCore.JetpackConnectionProvisionMapper
 
 /// Handle API requests to the Jetpack REST API.
 ///
-public final class JetpackConnectionRemote: Remote {
+public final class JetpackConnectionRemote: Remote, @unchecked Sendable {
     private let siteURL: String
     private let network: Network
     /// Written by the redirect delegate and read by the data task completion, on the session's delegate queue.

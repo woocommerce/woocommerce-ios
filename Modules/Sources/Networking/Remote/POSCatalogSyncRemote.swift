@@ -81,7 +81,7 @@ public protocol POSCatalogSyncRemoteProtocol: Sendable {
 
 /// POS Catalog Sync: Remote Endpoints
 ///
-public final class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
+public final class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol, @unchecked Sendable {
     private let dateFormatter = ISO8601DateFormatter()
     private let backgroundDownloader: BackgroundDownloadProtocol
     private let fileManager: FileManager

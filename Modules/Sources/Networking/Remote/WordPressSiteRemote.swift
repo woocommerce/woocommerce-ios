@@ -3,7 +3,7 @@ import NetworkingCore
 
 /// Endpoints for WordPress site information.
 ///
-public final class WordPressSiteRemote: Remote {
+public final class WordPressSiteRemote: Remote, @unchecked Sendable {
 
     private let apiRootCache: RESTAPIRootCaching
     private let discoverRESTAPIRoot: @Sendable (String) async -> String?

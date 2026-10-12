@@ -2,7 +2,7 @@ import Foundation
 
 /// Products Reports: Remote Endpoints for WC Analytics
 ///
-public class ProductsReportsRemote: Remote {
+public class ProductsReportsRemote: Remote, @unchecked Sendable {
 
     /// Fetch the products reports for a given site within the dates provided.
     ///

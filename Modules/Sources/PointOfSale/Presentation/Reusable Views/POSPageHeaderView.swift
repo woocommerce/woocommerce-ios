@@ -51,6 +51,8 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
     @Environment(\.posHeaderBackButtonConfiguration) private var environmentBackButtonConfiguration
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posHeaderTopPadding) private var topPadding
+    @Environment(\.posLayoutScale) private var layoutScale
+    @Environment(\.dynamicTypeSize) private var dynamicTypeSize
 
     private var effectiveBackButtonConfiguration: POSPageHeaderBackButtonConfiguration? {
         environmentBackButtonConfiguration ?? backButtonConfiguration
@@ -132,23 +134,36 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         .padding(.bottom, POSHeaderLayoutConstants.sectionVerticalPadding)
     }
 
-    /// Selectable titles keep the horizontal scroll fallback. Single titles can shrink and wrap.
+    /// Try full-size tabs, then smaller tabs, before allowing horizontal scrolling.
     @ViewBuilder
     private var itemsContent: some View {
         if hasSelectableTitles {
             ViewThatFits(in: .horizontal) {
-                itemsRow
+                itemsRow()
+
+                itemsRow(titleFont: titleFont(size: titleSize * 0.9))
+
+                itemsRow(titleFont: titleFont(size: titleSize * 0.85))
 
                 POSHeaderScrollableTitles {
-                    itemsRow
+                    itemsRow(titleFont: titleFont(size: titleSize * 0.85))
                 }
             }
         } else {
-            itemsRow
+            itemsRow()
         }
     }
 
-    private var itemsRow: some View {
+    private var titleSize: CGFloat {
+        POSFontStyle.posHeadingBold.baseSize(for: layoutScale)
+    }
+
+    private func titleFont(size: CGFloat) -> Font {
+        let category = UIContentSizeCategory(min(dynamicTypeSize, POSHeaderLayoutConstants.maximumDynamicTypeSize))
+        return POSFontStyle.posHeadingBold.font(baseSize: size, maximumContentSizeCategory: category)
+    }
+
+    private func itemsRow(titleFont: Font? = nil) -> some View {
         VStack(alignment: .leading, spacing: Constants.titleSubtitleSpacing) {
             HStack(alignment: hStackAlignment, spacing: Constants.horizontalSpacing) {
                 if showsBackButton {
@@ -162,7 +177,7 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
                                 Button(action: {
                                     items[index].action?()
                                 }) {
-                                    titleText(items[index].title, isSelected: items[index].isSelected)
+                                    titleText(items[index].title, isSelected: items[index].isSelected, font: titleFont)
                                 }
                                 .disabled(items[index].isSelected)
                                 .accessibilityElement()
@@ -189,9 +204,8 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
         }
     }
 
-    private func titleText(_ title: String, isSelected: Bool) -> some View {
-        Text(title)
-            .font(.posHeadingBold)
+    private func titleText(_ title: String, isSelected: Bool, font: Font?) -> some View {
+        titleLabel(title, font: font)
             // Single titles can shrink by up to 20% and wrap to two lines;
             // selectable titles keep their natural width for the horizontal scroll fallback.
             .lineLimit(hasSelectableTitles ? 1 : 2)
@@ -200,6 +214,15 @@ struct POSPageHeaderView<LeadingContent: View, TrailingContent: View, BottomCont
             .fixedSize(horizontal: hasSelectableTitles, vertical: false)
             .dynamicTypeSize(...POSHeaderLayoutConstants.maximumDynamicTypeSize)
             .foregroundColor(isSelected ? .posOnSurface : .posOnSurfaceVariantLowest)
+    }
+
+    @ViewBuilder
+    private func titleLabel(_ title: String, font: Font?) -> some View {
+        if let font {
+            Text(title).font(font)
+        } else {
+            Text(title).font(.posHeadingBold)
+        }
     }
 
     private func subtitleText(_ subtitle: String) -> some View {

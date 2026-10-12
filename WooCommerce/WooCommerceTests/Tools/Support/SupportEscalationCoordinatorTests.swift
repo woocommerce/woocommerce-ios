@@ -709,7 +709,7 @@ private extension SupportEscalationCoordinatorTests {
     func makeCoordinator(navigationController: UINavigationController? = nil,
                          additionalAttachmentsProvider: @escaping () -> [ZendeskAttachment] = { [] },
                          attachmentProvider: SupportRequestAttachmentProviding = DefaultSupportRequestAttachmentProvider(),
-                         mobileStatusReportProvider: MobileStatusReportProviding = MockMobileStatusReportProvider(),
+                         mobileStatusReportProvider: MobileStatusReportProviding? = nil,
                          zendesk: MockZendeskManager,
                          analyticsProvider: MockAnalyticsProvider = MockAnalyticsProvider(),
                          stores: StoresManager = MockStoresManager(
@@ -722,7 +722,7 @@ private extension SupportEscalationCoordinatorTests {
             navigationController: navigationController,
             additionalAttachmentsProvider: additionalAttachmentsProvider,
             attachmentProvider: attachmentProvider,
-            mobileStatusReportProvider: mobileStatusReportProvider,
+            mobileStatusReportProvider: mobileStatusReportProvider ?? MockMobileStatusReportProvider(),
             zendeskProvider: zendesk,
             analytics: WooAnalytics(analyticsProvider: analyticsProvider),
             stores: stores,

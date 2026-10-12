@@ -10,6 +10,7 @@ enum ReceiptEmailResult {
     case canceled
 }
 
+@MainActor
 final class ReceiptEmailViewModel: ObservableObject {
     @Published var email: String = ""
     @Published private(set) var state: PrimaryLoadingButtonStyle.State = .idle

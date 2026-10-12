@@ -134,7 +134,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
          preflightController: CardPresentPaymentPreflightControllerProtocol,
          analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil,
-         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol? = nil,
          notificationCenter: NotificationCenter = .default,
          applicationStateProvider: @escaping @MainActor () -> UIApplication.State = { UIApplication.shared.applicationState }) {
         self.siteID = siteID
@@ -152,7 +152,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                                                                  analytics: ServiceLocator.analytics,
                                                                                  configuration: configuration,
                                                                                  orderDurationRecorder: orderDurationRecorder)
-        self.receiptEligibilityUseCase = receiptEligibilityUseCase
+        self.receiptEligibilityUseCase = receiptEligibilityUseCase ?? ReceiptEligibilityUseCase()
         self.notificationCenter = notificationCenter
         self.applicationStateProvider = applicationStateProvider
     }

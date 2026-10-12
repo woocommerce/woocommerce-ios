@@ -44,7 +44,7 @@ struct POSSettingsHelpDetailView: View {
                         }
                     )
                 }
-                .padding(.horizontal, POSPadding.medium)
+                .posContentPadding(.horizontal, POSPadding.medium)
             }
         }
         .background(backgroundColor)

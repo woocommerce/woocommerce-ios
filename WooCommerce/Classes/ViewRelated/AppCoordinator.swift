@@ -25,10 +25,13 @@ final class AppCoordinator {
     private var storePickerCoordinator: StorePickerCoordinator?
     private var significantChangeBlocker: SignificantChangeConsentBlockingHostingController?
     private var foregroundConsentRecheckObserver: NSObjectProtocol?
+    private var deferredAgeVerificationObserver: NSObjectProtocol?
     private var authStatesSubscription: AnyCancellable?
     private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
     private let themeInstaller: ThemeInstaller
+    private let notificationCenter: NotificationCenter
+    private let applicationStateProvider: () -> UIApplication.State
 
     /// Checks on whether the Apple ID credential is valid when the app is logged in and becomes active.
     ///
@@ -48,7 +51,9 @@ final class AppCoordinator {
          featureFlagService: FeatureFlagService = ServiceLocator.featureFlagService,
          switchStoreUseCase: SwitchStoreUseCaseProtocol? = nil,
          themeInstaller: ThemeInstaller = DefaultThemeInstaller(),
-         ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = AgeRangeVerificationCoordinator()) {
+         ageRangeVerificationCoordinator: AgeRangeVerificationCoordinatorProtocol = AgeRangeVerificationCoordinator(),
+         notificationCenter: NotificationCenter = .default,
+         applicationStateProvider: @escaping () -> UIApplication.State = { UIApplication.shared.applicationState }) {
         self.window = window
         self.tabBarController = {
             let storyboard = UIStoryboard(name: "Main", bundle: nil) // Main is the name of storyboard
@@ -69,6 +74,8 @@ final class AppCoordinator {
         authenticationManager.setLoggedOutAppSettings(loggedOutAppSettings)
         self.themeInstaller = themeInstaller
         self.ageRangeVerificationCoordinator = ageRangeVerificationCoordinator
+        self.notificationCenter = notificationCenter
+        self.applicationStateProvider = applicationStateProvider
 
         // Configures authenticator first in case `WordPressAuthenticator` is used in other `AppDelegate` launch events.
         configureAuthenticator()
@@ -96,6 +103,7 @@ final class AppCoordinator {
                 case (false, true):
                     // The session can end underneath the consent blocker (e.g. token invalidation);
                     // the login UI replaces the whole hierarchy, so drop the blocker with it.
+                    self.cancelDeferredAgeVerification()
                     self.dismissSignificantChangeBlockerIfNeeded(animated: false)
                     self.displayAuthenticatorWithOnboardingIfNeeded()
                 case (false, false):
@@ -104,6 +112,7 @@ final class AppCoordinator {
                     // To get into the expected logged-out state, we can fully deauthenticate before starting the auth flow.
                     DDLogWarn("⚠️ Unexpected authentication state: Unauthenticated user has a default store set.")
                     stores.deauthenticate()
+                    self.cancelDeferredAgeVerification()
                     self.dismissSignificantChangeBlockerIfNeeded(animated: false)
                     self.displayAuthenticatorWithOnboardingIfNeeded()
                 case (true, true):
@@ -463,6 +472,14 @@ private extension AppCoordinator {
 
 private extension AppCoordinator {
     func triggerAgeVerification(trigger: AgeVerificationTrigger, onAllowed: @escaping () -> Void = { }) {
+        // The Declared Age Range calls open an XPC connection to a system extension. On a launch the
+        // user never sees (prewarm, background refresh, push wake) the process gets suspended with that
+        // connection pending and traps on the next wake (WOOMOB-3608). Only verify while active.
+        guard applicationStateProvider() == .active else {
+            deferAgeVerificationUntilActive(trigger: trigger, onAllowed: onAllowed)
+            return
+        }
+
         ageRangeVerificationCoordinator.triggerAgeVerificationIfNeeded(
             hostingWindow: window,
             trigger: trigger
@@ -587,11 +604,34 @@ private extension AppCoordinator {
         (blocker.presentingViewController ?? blocker).dismiss(animated: animated)
     }
 
+    /// Runs the verification on the next `didBecomeActive`. Only the latest trigger is kept:
+    /// one pass after activation covers every trigger that arrived while not active.
+    func deferAgeVerificationUntilActive(trigger: AgeVerificationTrigger, onAllowed: @escaping () -> Void) {
+        cancelDeferredAgeVerification()
+        deferredAgeVerificationObserver = notificationCenter.addObserver(
+            forName: UIApplication.didBecomeActiveNotification,
+            object: nil,
+            queue: .main
+        ) { [weak self] _ in
+            guard let self else { return }
+            self.cancelDeferredAgeVerification()
+            guard self.isLoggedIn else { return }
+            self.triggerAgeVerification(trigger: trigger, onAllowed: onAllowed)
+        }
+    }
+
+    func cancelDeferredAgeVerification() {
+        if let observer = deferredAgeVerificationObserver {
+            notificationCenter.removeObserver(observer)
+            deferredAgeVerificationObserver = nil
+        }
+    }
+
     /// While the blocker is up, re-check on every foreground: the parent may have
     /// answered the request (e.g. via Messages) while the app was in the background.
     func startForegroundConsentRecheck() {
         guard foregroundConsentRecheckObserver == nil else { return }
-        foregroundConsentRecheckObserver = NotificationCenter.default.addObserver(
+        foregroundConsentRecheckObserver = notificationCenter.addObserver(
             forName: UIApplication.willEnterForegroundNotification,
             object: nil,
             queue: .main
@@ -602,7 +642,7 @@ private extension AppCoordinator {
 
     func stopForegroundConsentRecheck() {
         if let observer = foregroundConsentRecheckObserver {
-            NotificationCenter.default.removeObserver(observer)
+            notificationCenter.removeObserver(observer)
             foregroundConsentRecheckObserver = nil
         }
     }

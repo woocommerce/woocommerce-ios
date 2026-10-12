@@ -380,13 +380,9 @@ private extension CardPresentPaymentsOnboardingUseCase {
             return wcPayOnlyOnboardingState(plugin: wcPay)
         }
 
-        // Choosing between two active gateways needs their accounts.
-        guard !accountsSyncFailed else {
-            return .genericError
-        }
-
         guard let preferredPlugin = preferredPluginLocal else {
-            return .selectPlugin(pluginSelectionWasCleared: false)
+            // Choosing between two active gateways needs their accounts.
+            return accountsSyncFailed ? .genericError : .selectPlugin(pluginSelectionWasCleared: false)
         }
 
         let state = onboardingStateForPlugin(preferredPlugin, wcPay: wcPay, stripe: stripe)

@@ -1530,6 +1530,24 @@ class CardPresentPaymentsOnboardingUseCaseTests: XCTestCase {
         XCTAssertEqual(useCase.state, .pluginUnsupportedVersion(plugin: .wcPay))
     }
 
+    func test_updateAccounts_when_both_plugins_active_with_wcpay_preferred_and_unsupported_and_accounts_fail_then_returns_unsupported_version() {
+        // Given
+        setupCountry(country: .us)
+        setupWCPayPlugin(status: .active, version: WCPayPluginVersion.unsupportedVersionWithPatch)
+        setupStripePlugin(status: .active, version: StripePluginVersion.minimumSupportedVersion)
+        setupPreferredPaymentGateway(.wcPay)
+        whenLoadingAccounts(thenReturn: .failure(NSError(domain: "test.error", code: 500, userInfo: nil)))
+        let useCase = CardPresentPaymentsOnboardingUseCase(storageManager: storageManager,
+                                                           stores: stores,
+                                                           cardPresentPaymentOnboardingStateCache: onboardingStateCache)
+
+        // When
+        useCase.updateAccounts(storeDataSynced: true)
+
+        // Then
+        XCTAssertEqual(useCase.state, .pluginUnsupportedVersion(plugin: .wcPay))
+    }
+
     func test_updateAccounts_when_wcpay_active_with_stored_account_and_accounts_fail_to_load_then_returns_generic_error() {
         // Given
         setupCountry(country: .us)

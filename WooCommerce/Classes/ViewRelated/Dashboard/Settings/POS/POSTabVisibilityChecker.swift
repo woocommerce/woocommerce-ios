@@ -15,6 +15,7 @@ import struct Yosemite.RemoteFeatureFlagService
 import class Yosemite.SiteAddress
 import enum Yosemite.POSCountryCurrencyValidator
 
+@MainActor
 final class POSTabVisibilityChecker: POSTabVisibilityCheckerProtocol {
     private let site: Site
     private let userInterfaceIdiom: UIUserInterfaceIdiom

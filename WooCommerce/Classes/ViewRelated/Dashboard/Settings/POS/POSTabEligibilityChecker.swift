@@ -125,8 +125,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             do {
                 try await syncSiteSettingsRemotely()
                 return await checkEligibility(forceRemoteCheck: false)
-            } catch POSTabEligibilityCheckerError.selfDeallocated {
-                return .ineligible(reason: .selfDeallocated)
             } catch {
                 if error.isConnectivityError {
                     return .ineligible(reason: .noInternetConnection)
@@ -137,8 +135,6 @@ final class POSTabEligibilityChecker: POSEntryPointEligibilityCheckerProtocol {
             return await checkEligibility(forceRemoteCheck: false)
         case .featureSwitchDisabled:
             _ = try await siteSettingService.setFeature(siteID: siteID, feature: .pointOfSale, enabled: true)
-            return await checkEligibility(forceRemoteCheck: false)
-        case .selfDeallocated:
             return await checkEligibility(forceRemoteCheck: false)
         }
     }
@@ -217,7 +213,7 @@ private extension POSIneligibleReason {
         switch self {
         case .unsupportedWooCommerceVersion, .wooCommercePluginNotFound, .featureSwitchDisabled, .unsupportedCurrency:
             return true
-        case .noInternetConnection, .siteSettingsNotAvailable, .unsupportedCountry, .selfDeallocated:
+        case .noInternetConnection, .siteSettingsNotAvailable, .unsupportedCountry:
             return false
         }
     }
@@ -360,26 +356,16 @@ private extension POSTabEligibilityChecker {
 
     @MainActor
     func syncSiteSettingsRemotely() async throws {
-        try await withCheckedThrowingContinuation { [weak self] (continuation: CheckedContinuation<Void, Error>) in
-            guard let self else {
-                return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
-            }
-            stores.dispatch(SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { [weak self] error in
-                guard let self else {
-                    return continuation.resume(throwing: POSTabEligibilityCheckerError.selfDeallocated)
-                }
-                if let error {
-                    return continuation.resume(throwing: error)
-                }
-                siteSettings.refresh()
-                continuation.resume(returning: ())
+        let error: Error? = await withCheckedContinuation { continuation in
+            stores.dispatch(SettingAction.synchronizeGeneralSiteSettings(siteID: siteID) { error in
+                continuation.resume(returning: error)
             })
         }
+        if let error {
+            throw error
+        }
+        siteSettings.refresh()
     }
-}
-
-private enum POSTabEligibilityCheckerError: Error {
-    case selfDeallocated
 }
 
 private extension POSTabEligibilityChecker {

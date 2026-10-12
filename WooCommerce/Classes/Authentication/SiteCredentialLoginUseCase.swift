@@ -6,7 +6,10 @@ import enum NetworkingCore.CookieNonceAuthenticationResponseStage
 import enum NetworkingCore.CookieNonceAuthenticationRules
 import protocol NetworkingCore.URLSessionProtocol
 
-protocol SiteCredentialLoginProtocol {
+protocol SiteCredentialLoginProtocol: AnyObject {
+    var onStageSuccess: ((CookieNonceAuthenticationResponseStage) -> Void)? { get set }
+    func cancel()
+
     /// - Parameter onLoginFailure: called with the failure and whether the configured login entry was proven
     ///   to render one eligible WordPress login form before the failure occurred, plus whether the failure
     ///   came from the credential response and can plausibly be solved by browser authentication.
@@ -168,6 +171,8 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     private let verifyAdminDashboard: Bool
     private var successHandler: (() -> Void)?
     private var errorHandler: ((SiteCredentialLoginError, Bool, Bool) -> Void)?
+    var onStageSuccess: ((CookieNonceAuthenticationResponseStage) -> Void)?
+    private var loginTask: Task<Void, Never>?
 
     init(siteURL: String,
          endpoints configuredEndpoints: CookieNonceAuthenticationEndpoints? = nil,
@@ -201,7 +206,8 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     }
 
     deinit {
-        ownedTransactionSession?.finishTasksAndInvalidate()
+        loginTask?.cancel()
+        ownedTransactionSession?.invalidateAndCancel()
     }
 
     func setupHandlers(onLoginSuccess: @escaping () -> Void,
@@ -211,10 +217,11 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
     }
 
     func handleLogin(username: String, password: String) {
+        cancel()
         // Old cookies can make the login succeeds even with incorrect credentials
         // So we need to clear all cookies before login.
         clearAllCookies()
-        Task { @MainActor in
+        loginTask = Task { @MainActor in
             var loginEntryVerified = false
             var responseStage = CookieNonceAuthenticationResponseStage.preflight
             do {
@@ -233,13 +240,21 @@ final class SiteCredentialLoginUseCase: NSObject, SiteCredentialLoginProtocol {
                     onLoginEntryVerified: { loginEntryVerified = true },
                     onResponseStageChanged: { responseStage = $0 }
                 )
+                guard !Task.isCancelled else { return }
                 successHandler?()
             } catch let error as SiteCredentialLoginError {
+                guard !Task.isCancelled else { return }
                 errorHandler?(error, loginEntryVerified, error.offersBrowserAlternative(at: responseStage))
             } catch {
+                guard !Task.isCancelled else { return }
                 errorHandler?(.genericFailure(underlyingError: error as NSError), loginEntryVerified, false)
             }
         }
+    }
+
+    func cancel() {
+        loginTask?.cancel()
+        loginTask = nil
     }
 }
 
@@ -252,6 +267,7 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
+    @MainActor
     func startLogin(
         username: String,
         password: String,
@@ -260,6 +276,8 @@ private extension SiteCredentialLoginUseCase {
         onResponseStageChanged: (CookieNonceAuthenticationResponseStage) -> Void
     ) async throws {
         let submissionURL = try await preflight(endpoints: endpoints)
+        try Task.checkCancellation()
+        onStageSuccess?(.preflight)
         onLoginEntryVerified()
         let nonceURL = try endpointValue { try endpoints.nonceURL(afterLoginAt: submissionURL) }
         let loginRequest = try credentialRequest(
@@ -292,16 +310,23 @@ private extension SiteCredentialLoginUseCase {
             )
         }
 
+        try Task.checkCancellation()
+        onStageSuccess?(.credentials)
         if verifyAdminDashboard {
             onResponseStageChanged(.dashboard)
             try await verifyDashboard(afterLoginAt: submissionURL, endpoints: endpoints)
+            try Task.checkCancellation()
+            onStageSuccess?(.dashboard)
         }
         onResponseStageChanged(.nonce)
         try await retrieveNonce(at: nonceURL, afterLoginAt: submissionURL, endpoints: endpoints)
+        try Task.checkCancellation()
+        onStageSuccess?(.nonce)
     }
 
     /// Fetches a document, following only same-site redirects and never more than the shared bound.
     /// Returns the first non-redirect response, so callers only express their own terminal check.
+    @MainActor
     func loadDocument(
         from startURL: URL,
         stage: CookieNonceAuthenticationResponseStage,
@@ -327,6 +352,7 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
+    @MainActor
     func preflight(endpoints: CookieNonceAuthenticationEndpoints) async throws -> URL {
         let document = try await loadDocument(from: endpoints.loginEntryURL, stage: .preflight, endpoints: endpoints)
         guard let submissionURL = try endpointValue(stage: .preflight, {
@@ -337,6 +363,7 @@ private extension SiteCredentialLoginUseCase {
         return submissionURL
     }
 
+    @MainActor
     func retrieveNonce(
         at nonceURL: URL,
         afterLoginAt loginURL: URL,
@@ -351,6 +378,7 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
+    @MainActor
     func verifyDashboard(afterLoginAt loginURL: URL, endpoints: CookieNonceAuthenticationEndpoints) async throws {
         let adminBaseURL = try endpointValue { try endpoints.derivedAdminBaseURL(afterLoginAt: loginURL) }
         let document = try await loadDocument(from: adminBaseURL, stage: .dashboard, endpoints: endpoints)
@@ -365,8 +393,10 @@ private extension SiteCredentialLoginUseCase {
         }
     }
 
+    @MainActor
     func load(_ request: URLRequest, using session: URLSessionProtocol,
               stage: CookieNonceAuthenticationResponseStage) async throws -> (data: Data, http: HTTPURLResponse) {
+        try Task.checkCancellation()
         let (data, response) = try await session.data(for: request)
         guard let response = response as? HTTPURLResponse else {
             throw SiteCredentialLoginError.unexpectedResponse(.init(stage: stage))

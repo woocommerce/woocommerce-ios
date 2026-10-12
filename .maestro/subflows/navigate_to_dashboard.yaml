@@ -1,0 +1,8 @@
+appId: ${APP_ID}
+---
+- tapOn:
+    id: "tab-bar-my-store-item"
+- extendedWaitUntil:
+    visible:
+      text: "Edit"
+    timeout: 30000

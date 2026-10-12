@@ -89,7 +89,7 @@ final class OrderDetailsViewModel {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          currencyFormatter: CurrencyFormatter = CurrencyFormatter(currencySettings: ServiceLocator.currencySettings),
          syncStateController: OrderDetailsSyncStateControlling = OrderDetailsSyncStateController(syncState: .notSynced),
-         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol? = nil,
          siteCurrencyProvider: ((Int64) -> String?)? = nil,
          orderCurrencyEditingEligibility: OrderCurrencyEditingEligibility = .init(),
          pluginsService: PluginsServiceProtocol? = nil) {
@@ -107,7 +107,7 @@ final class OrderDetailsViewModel {
         self.configurationLoader = CardPresentConfigurationLoader()
         self.dataSource = OrderDetailsDataSource(order: order,
                                                  cardPresentPaymentsConfiguration: configurationLoader.configuration)
-        self.receiptEligibilityUseCase = receiptEligibilityUseCase
+        self.receiptEligibilityUseCase = receiptEligibilityUseCase ?? ReceiptEligibilityUseCase()
         self.pluginsService = pluginsService ?? PluginsService(storageManager: storageManager)
     }
 

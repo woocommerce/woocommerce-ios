@@ -18,7 +18,7 @@ public final class SingleOrderScreen: ScreenObject {
     }
 
     private let collectPaymentButtonGetter: (XCUIApplication) -> XCUIElement = {
-        $0.buttons["order-details-collect-payment-button"]
+        $0.cells["order-details-collect-payment-button"]
     }
 
     private var editOrderButton: XCUIElement { editOrderButtonGetter(app) }

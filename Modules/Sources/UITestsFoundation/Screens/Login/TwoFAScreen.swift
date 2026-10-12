@@ -40,6 +40,11 @@ public final class TwoFAScreen {
     public func enterValidTwoFACode() throws -> MyStoreScreen {
         try proceedWith(twoFACode: "123456")
 
+        // The app asks for notifications permission once the store loads, and the prompt blocks the tab bar until answered.
+        if myStoreTab.waitForExistence(timeout: 30) {
+            app.dismissNotificationsPermissionPromptIfNeeded()
+        }
+
         return try MyStoreScreen()
     }
 

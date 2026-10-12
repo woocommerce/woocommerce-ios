@@ -238,7 +238,7 @@ final class OrderDetailsDataSource: NSObject {
          storageManager: StorageManagerType = ServiceLocator.storageManager,
          cardPresentPaymentsConfiguration: CardPresentPaymentsConfiguration,
          refundableOrderItemsDeterminer: OrderRefundsOptionsDeterminerProtocol = OrderRefundsOptionsDeterminer(),
-         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol? = nil,
          currencySettings: CurrencySettings = ServiceLocator.currencySettings,
          siteSettings: [SiteSetting] = ServiceLocator.selectedSiteSettings.siteSettings,
          userIsAdmin: Bool = ServiceLocator.stores.sessionManager.defaultRoles.contains(.administrator)) {
@@ -247,7 +247,7 @@ final class OrderDetailsDataSource: NSObject {
         self.cardPresentPaymentsConfiguration = cardPresentPaymentsConfiguration
         self.couponLines = order.coupons
         self.refundableOrderItemsDeterminer = refundableOrderItemsDeterminer
-        self.receiptEligibilityUseCase = receiptEligibilityUseCase
+        self.receiptEligibilityUseCase = receiptEligibilityUseCase ?? ReceiptEligibilityUseCase()
         self.currencySettings = currencySettings
         self.siteSettings = siteSettings
         self.userIsAdmin = userIsAdmin
@@ -558,6 +558,7 @@ private extension OrderDetailsDataSource {
             "Composes a new order note.",
             comment: "VoiceOver accessibility hint, informing the user that the button can be used to create a new order note."
         )
+        cell.accessibilityIdentifier = "order-details-add-note-button"
     }
 
     private func configureOrderNoteHeader(cell: OrderNoteHeaderTableViewCell, at indexPath: IndexPath) {
@@ -597,6 +598,7 @@ private extension OrderDetailsDataSource {
         cell.leftText = Titles.seeReceipt
         cell.rightText = nil
         cell.hideFootnote()
+        cell.accessibilityIdentifier = "order-details-see-receipt-button"
     }
 
     private func configureRefund(cell: TwoColumnHeadlineFootnoteTableViewCell, at indexPath: IndexPath) {

@@ -22,7 +22,10 @@ public final class SingleProductScreen: ScreenObject {
 
     @discardableResult
     public func goBackToProductList() throws -> ProductsScreen {
-        let navBackButton = app.navigationBars.element(boundBy: 0).buttons["Products"]
+        let navigationBar = app.navigationBars.element(boundBy: 0)
+        // iOS 27 labels the system back button "Back" instead of the previous screen's title.
+        let systemBackButton = navigationBar.buttons["BackButton"]
+        let navBackButton = systemBackButton.exists ? systemBackButton : navigationBar.buttons["Products"]
         // If split view is enabled, back button is not shown in the product form navigation bar.
         if navBackButton.exists {
             navBackButton.tap()

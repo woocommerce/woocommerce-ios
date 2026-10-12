@@ -361,73 +361,78 @@ final class ConnectivityToolViewModel {
     ///
     @MainActor
     func testAnalyticsSetting() async -> ConnectivityToolCard.ConnectivityState {
-        await withCheckedContinuation { continuation in
-            let action = SettingAction.retrieveAnalyticsSetting(siteID: siteID) { [weak self] result in
-                guard let self else { return }
-                switch result {
-                case .success(let isEnabled):
-                    if isEnabled {
-                        DDLogInfo("Connectivity Tool: ✅ Analytics setting enabled")
-                        continuation.resume(returning: .success)
-                    } else {
-                        DDLogInfo("Connectivity Tool: ⚠️ Analytics setting disabled")
-                        let enableAction = ConnectivityToolCard.ConnectivityState.Action(
-                            title: Localization.Action.enableAnalytics,
-                            systemImage: SystemImages.enableAction.rawValue,
-                            action: { [weak self] in
-                                self?.enableAnalytics()
-                            }
-                        )
-                        continuation.resume(returning: .error(Localization.ErrorMessage.analyticsDisabled,
-                                                              [enableAction, self.retryAction(for: .analyticsSetting)]))
+        let result: Result<Bool, Error> = await withCheckedContinuation { continuation in
+            stores.dispatch(SettingAction.retrieveAnalyticsSetting(siteID: siteID) { result in
+                continuation.resume(returning: result)
+            })
+        }
+        switch result {
+        case .success(let isEnabled):
+            if isEnabled {
+                DDLogInfo("Connectivity Tool: ✅ Analytics setting enabled")
+                return .success
+            } else {
+                DDLogInfo("Connectivity Tool: ⚠️ Analytics setting disabled")
+                let enableAction = ConnectivityToolCard.ConnectivityState.Action(
+                    title: Localization.Action.enableAnalytics,
+                    systemImage: SystemImages.enableAction.rawValue,
+                    action: { [weak self] in
+                        self?.enableAnalytics()
                     }
-                case .failure(let error):
-                    if let settingError = error as? SettingError, case .settingNotExposed = settingError {
-                        DDLogInfo("Connectivity Tool: ⏭️ Analytics setting is not exposed by the site")
-                        continuation.resume(returning: .skipped(Constants.analyticsSettingNotExposedReason))
-                        return
-                    }
-                    DDLogError("Connectivity Tool: ❌ Analytics setting check failed\n\(error)")
-                    let technicalDetails = error.formattedTechnicalDetails
-                    let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
-                        title: Localization.Action.viewDetails,
-                        systemImage: SystemImages.viewDetails.rawValue,
-                        technicalDetails: technicalDetails
-                    )
-                    continuation.resume(returning: .error(Localization.ErrorMessage.analyticsCheckFailed,
-                                                          [viewDetailsAction, self.retryAction(for: .analyticsSetting)]))
-                }
+                )
+                return .error(Localization.ErrorMessage.analyticsDisabled, [enableAction, retryAction(for: .analyticsSetting)])
             }
-            stores.dispatch(action)
+        case .failure(let error):
+            if let settingError = error as? SettingError, case .settingNotExposed = settingError {
+                DDLogInfo("Connectivity Tool: ⏭️ Analytics setting is not exposed by the site")
+                return .skipped(Constants.analyticsSettingNotExposedReason)
+            }
+            DDLogError("Connectivity Tool: ❌ Analytics setting check failed\n\(error)")
+            let technicalDetails = error.formattedTechnicalDetails
+            let viewDetailsAction = ConnectivityToolCard.ConnectivityState.Action(
+                title: Localization.Action.viewDetails,
+                systemImage: SystemImages.viewDetails.rawValue,
+                technicalDetails: technicalDetails
+            )
+            return .error(Localization.ErrorMessage.analyticsCheckFailed, [viewDetailsAction, retryAction(for: .analyticsSetting)])
         }
     }
 
     /// Enables WooCommerce Analytics on the site with one automatic retry (known API quirk).
     ///
     @MainActor
-    private func enableAnalytics(retries: Int = 0) {
+    private func enableAnalytics() {
         // Hide card content and show loading indicator while enabling.
         updateCardState(for: .analyticsSetting, state: .inProgress)
 
-        let action = SettingAction.enableAnalyticsSetting(siteID: siteID) { [weak self] result in
+        Task { [weak self] in
             guard let self else { return }
-            switch result {
-            case .success:
-                DDLogInfo("Connectivity Tool: ✅ Analytics enabled successfully")
-                // Update the analytics setting card to show relaunch message.
-                self.updateCardState(for: .analyticsSetting, state: .empty(Localization.analyticsEnabledRelaunch))
-            case .failure(let error):
-                if retries < 1 {
+            do {
+                try await enableAnalyticsSetting()
+            } catch {
+                do {
                     // Retry once due to known API quirk where first request fails.
-                    self.enableAnalytics(retries: retries + 1)
-                } else {
+                    try await enableAnalyticsSetting()
+                } catch {
                     DDLogError("Connectivity Tool: ❌ Failed to enable analytics\n\(error)")
                     // Restore the error state with interactive buttons.
-                    self.restoreAnalyticsCardActions()
+                    restoreAnalyticsCardActions()
+                    return
                 }
             }
+            DDLogInfo("Connectivity Tool: ✅ Analytics enabled successfully")
+            // Update the analytics setting card to show relaunch message.
+            updateCardState(for: .analyticsSetting, state: .empty(Localization.analyticsEnabledRelaunch))
         }
-        stores.dispatch(action)
+    }
+
+    @MainActor
+    private func enableAnalyticsSetting() async throws {
+        try await withCheckedThrowingContinuation { continuation in
+            stores.dispatch(SettingAction.enableAnalyticsSetting(siteID: siteID) { result in
+                continuation.resume(with: result)
+            })
+        }
     }
 
     /// Restores the analytics setting card to its interactive error state after a failed enable attempt.

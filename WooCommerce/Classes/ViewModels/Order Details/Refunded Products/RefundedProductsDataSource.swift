@@ -7,6 +7,7 @@ import protocol Storage.StorageManagerType
 /// The main file for Refunded Products data.
 /// Must conform to NSObject so it can be the UITableViewDataSource.
 ///
+@MainActor
 final class RefundedProductsDataSource: NSObject {
     /// Aggregate data for refunded products
     ///

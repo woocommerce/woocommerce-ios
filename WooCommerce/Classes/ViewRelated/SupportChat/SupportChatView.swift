@@ -103,6 +103,12 @@ struct SupportChatView: View {
     // MARK: - Message List
 
     private var messageList: some View {
+        GeometryReader { geometry in
+            messageList(containerWidth: geometry.size.width)
+        }
+    }
+
+    private func messageList(containerWidth: CGFloat) -> some View {
         ScrollViewReader { proxy in
             ScrollView {
                 LazyVStack(alignment: .leading, spacing: SupportChatLayout.messageSpacing) {
@@ -110,7 +116,7 @@ struct SupportChatView: View {
                         resumedChatHeader
                     }
                     ForEach(viewModel.messages) { message in
-                        messageRow(for: message)
+                        messageRow(for: message, containerWidth: containerWidth)
                             .id(message.id)
                     }
 
@@ -136,12 +142,14 @@ struct SupportChatView: View {
         }
     }
 
+    /// - Parameter containerWidth: Width of the message list, which bubble widths are relative to.
     @ViewBuilder
-    private func messageRow(for message: SupportChatViewModel.ChatMessage) -> some View {
+    private func messageRow(for message: SupportChatViewModel.ChatMessage, containerWidth: CGFloat) -> some View {
+        let maxBubbleWidth = SupportChatLayout.maxBubbleWidth(in: containerWidth)
         switch message.content {
         case .text(let text):
             VStack(alignment: .leading, spacing: 4) {
-                SupportChatMessageRow(role: message.role, text: text, failed: message.failed)
+                SupportChatMessageRow(role: message.role, text: text, failed: message.failed, containerWidth: containerWidth)
 
                 if message.shouldShowFeedbackButtons, let messageID = message.messageID {
                     SupportChatFeedbackRow(
@@ -155,19 +163,23 @@ struct SupportChatView: View {
             }
 
         case .resolvedPrompt:
-            SupportChatMessageRow(role: message.role, text: message.content.text ?? "", failed: false)
+            SupportChatMessageRow(role: message.role, text: message.content.text ?? "", failed: false, containerWidth: containerWidth)
 
         case .issuePicker(let issues):
             issuePickerBubble(issues: issues)
+                .frame(maxWidth: maxBubbleWidth)
 
         case .diagnosticsProgress(let steps):
             diagnosticsProgressBubble(steps: steps)
+                .frame(maxWidth: maxBubbleWidth)
 
         case .diagnosticsSuccess:
             diagnosticsSuccessBubble()
+                .frame(maxWidth: maxBubbleWidth)
 
         case .diagnosticsFailure(let result):
             diagnosticsFailureBubble(result: result)
+                .frame(maxWidth: maxBubbleWidth)
         }
     }
 
@@ -192,7 +204,6 @@ struct SupportChatView: View {
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
-        .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
     }
 
     // MARK: - Diagnostics Progress Bubble
@@ -214,7 +225,6 @@ struct SupportChatView: View {
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
-        .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
     }
 
     // MARK: - Diagnostics Success Bubble
@@ -237,7 +247,6 @@ struct SupportChatView: View {
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
-        .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
     }
 
     // MARK: - Diagnostics Failure Bubble
@@ -277,7 +286,6 @@ struct SupportChatView: View {
         .padding(SupportChatLayout.bubblePadding)
         .background(Colors.botBubbleBackground)
         .clipShape(RoundedRectangle(cornerRadius: SupportChatLayout.bubbleCornerRadius))
-        .frame(maxWidth: SupportChatLayout.maxBubbleWidth)
     }
 
     private func scrollToBottom(proxy: ScrollViewProxy) {

@@ -573,6 +573,8 @@ class RunnerTests(unittest.TestCase):
         self.assertTrue(RUNNER.needs_pos_device([pos, cash], "iphone"))
         self.assertFalse(RUNNER.needs_pos_device([pos, cash], "ipad"))
         self.assertFalse(RUNNER.needs_pos_device([stats], "iphone"))
+        self.assertTrue(RUNNER.runs_only_on_pos_device([pos, cash], "iphone"))
+        self.assertFalse(RUNNER.runs_only_on_pos_device([pos, stats], "iphone"))
         self.assertEqual([stats, google, pos], RUNNER.in_store_order([pos, google, stats]))
         self.assertEqual([pos, cash], RUNNER.in_store_order([pos, cash]))
 

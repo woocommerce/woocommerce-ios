@@ -372,6 +372,11 @@ def needs_pos_device(flows: list[Path], family: str) -> bool:
     return family != "ipad" and any(POS_TAG in flow_tags(flow) for flow in flows)
 
 
+def runs_only_on_pos_device(flows: list[Path], family: str) -> bool:
+    """A selection of only POS flows under a phone profile needs no phone."""
+    return needs_pos_device(flows, family) and all(POS_TAG in flow_tags(flow) for flow in flows)
+
+
 def in_store_order(flows: list[Path], store_override: str | None = None) -> list[Path]:
     """Lab flows run first, then the flows that need the shared store, then the POS flows."""
     pos_flows = [flow for flow in flows if POS_TAG in flow_tags(flow)]
@@ -824,7 +829,7 @@ def selection_arguments(args: argparse.Namespace) -> list[str]:
     return arguments
 
 
-def write_html(destination: Path, *, run_id: str, app: Path, app_id: str, simulator: dict[str, str], profile: str, attempts: list[Attempt], status: str, tests: int, failures: int, skipped: int, candidate_kind: str = "developer", app_sha256: str = "", seed: bool = False, flow_timeout_seconds: float = 900, selection: list[str] | None = None, pos_simulator: dict[str, str] | None = None) -> None:
+def write_html(destination: Path, *, run_id: str, app: Path, app_id: str, simulator: dict[str, str], profile: str, attempts: list[Attempt], status: str, tests: int, failures: int, skipped: int, candidate_kind: str = "developer", app_sha256: str = "", seed: bool = False, flow_timeout_seconds: float = 900, selection: list[str] | None = None, pos_simulator: dict[str, str] | None = None, device_option: str = "--device") -> None:
     rows = []
     for attempt in attempts:
         state = "pass" if attempt.returncode == 0 else "timed_out" if attempt.returncode == 124 else "fail"
@@ -855,7 +860,7 @@ def write_html(destination: Path, *, run_id: str, app: Path, app_id: str, simula
             shlex.quote(profile),
             "--candidate-kind",
             shlex.quote(candidate_kind),
-            "--device",
+            device_option,
             shlex.quote(simulator["udid"]),
             *(["--pos-device", shlex.quote(pos_simulator["udid"])] if pos_simulator else []),
             "--flow-timeout-seconds",
@@ -965,8 +970,13 @@ def main() -> int:
     if args.seed:
         validate_environment([], seed_values, seed=True, store=seed_store)
     manifest = output / "run-manifest.json"
-    simulator = resolve_simulator(args.device, family)
-    pos_simulator = resolve_simulator(args.pos_device, "ipad") if needs_pos_device(flows, family) else None
+    pos_only = runs_only_on_pos_device(flows, family)
+    if pos_only:
+        simulator = resolve_simulator(args.pos_device, "ipad")
+        pos_simulator = None
+    else:
+        simulator = resolve_simulator(args.device, family)
+        pos_simulator = resolve_simulator(args.pos_device, "ipad") if needs_pos_device(flows, family) else None
     if pos_simulator and pos_simulator["udid"] == simulator["udid"]:
         raise SystemExit("--pos-device must be a different simulator than --device")
     run_simulators = [simulator] + ([pos_simulator] if pos_simulator else [])
@@ -1161,6 +1171,7 @@ def main() -> int:
         app_id=app_id,
         simulator=simulator,
         pos_simulator=pos_simulator,
+        device_option="--pos-device" if pos_only else "--device",
         profile=args.profile,
         attempts=attempts,
         status=result.status,

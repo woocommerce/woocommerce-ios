@@ -131,13 +131,6 @@ def main() -> int:
         checks.append((False, f"app bundle: {error}"))
 
     family = RUNNER.PROFILES[args.profile][2]
-    try:
-        simulator = RUNNER.resolve_simulator(args.device, family, boot=False)
-        checks.append((True, f"simulator: {simulator['name']} ({simulator['udid']})"))
-        checks.append(check_simulator_locale(simulator["udid"]))
-    except (SystemExit, subprocess.SubprocessError) as error:
-        checks.append((False, f"simulator: {error}"))
-
     include = RUNNER.csv(args.include_tags)
     if include is None:
         include = RUNNER.PROFILES[args.profile][0]
@@ -150,6 +143,14 @@ def main() -> int:
         checks.append((True, f"selected flows: {len(flows)}"))
     except SystemExit as error:
         checks.append((False, f"flow selection: {error}"))
+
+    if 'flows' not in locals() or not RUNNER.runs_only_on_pos_device(flows, family):
+        try:
+            simulator = RUNNER.resolve_simulator(args.device, family, boot=False)
+            checks.append((True, f"simulator: {simulator['name']} ({simulator['udid']})"))
+            checks.append(check_simulator_locale(simulator["udid"]))
+        except (SystemExit, subprocess.SubprocessError) as error:
+            checks.append((False, f"simulator: {error}"))
 
     if 'flows' in locals() and RUNNER.needs_pos_device(flows, family):
         try:

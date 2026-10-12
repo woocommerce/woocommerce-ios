@@ -10,7 +10,7 @@ public final class POSIneligibleScreen: ScreenObject {
         $0.staticTexts["pos-ineligible-title"]
     }
     private let suggestionGetter: (XCUIApplication) -> XCUIElement = {
-        $0.staticTexts["pos-ineligible-suggestion"]
+        $0.staticTexts["pos-ineligible-unsupported-woocommerce-version-suggestion"]
     }
     private let retryButtonGetter: (XCUIApplication) -> XCUIElement = {
         $0.buttons["pos-ineligible-refresh-button"]
@@ -36,7 +36,6 @@ public final class POSIneligibleScreen: ScreenObject {
     public func verifyUnsupportedWooCommerceVersion() -> Self {
         XCTAssertTrue(title.waitForExistence(timeout: 5), "POS ineligible title should be visible.")
         XCTAssertTrue(suggestion.waitForExistence(timeout: 5), "POS ineligible suggestion should be visible.")
-        XCTAssertTrue(suggestion.label.contains("WooCommerce version"), "Expected unsupported WooCommerce version message.")
         XCTAssertTrue(retryButton.waitForExistence(timeout: 5), "Retry button should be visible.")
         XCTAssertTrue(dismissButton.waitForExistence(timeout: 5), "Exit POS button should be visible.")
         return self

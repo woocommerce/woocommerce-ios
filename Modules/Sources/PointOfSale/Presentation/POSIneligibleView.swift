@@ -46,7 +46,7 @@ struct POSIneligibleView: View {
                             .accessibilityIdentifier("pos-ineligible-title")
 
                         suggestionBodyText(suggestionText)
-                            .accessibilityIdentifier("pos-ineligible-suggestion")
+                            .accessibilityIdentifier(suggestionAccessibilityIdentifier)
                     }
                     .containerRelativeFrame(.horizontal) { length, _ in
                         max(length * frameWidthMultiplier, 300)
@@ -116,6 +116,13 @@ struct POSIneligibleView: View {
             .font(POSFontStyle.posBodyLargeRegular().font())
             .multilineTextAlignment(.center)
             .foregroundColor(Color.posOnSurface)
+    }
+
+    private var suggestionAccessibilityIdentifier: String {
+        if case .unsupportedWooCommerceVersion = reason {
+            return "pos-ineligible-unsupported-woocommerce-version-suggestion"
+        }
+        return "pos-ineligible-suggestion"
     }
 
     private var suggestionText: String {

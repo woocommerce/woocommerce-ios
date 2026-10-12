@@ -24,7 +24,6 @@ release archive into the workspace, verifies the SHA-256 in
 2. Build or locate a Debug or Alpha/prototype `.app`.
 3. Copy `env.example` to `.env.local` and fill it locally.
    WordPress.com-hosted not-Woo fixtures require the dedicated WP.com pair.
-   Jurassic Ninja `/wp-admin` or `/wp-admin/` URLs are normalized to the site root.
 
    The lab store can be provisioned instead of filled in by hand. See
    [Provisioning a lab store](#provisioning-a-lab-store) below.

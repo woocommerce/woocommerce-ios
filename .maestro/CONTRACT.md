@@ -38,9 +38,6 @@ MAESTRO_WOO_LAB_WPCOM_PASSWORD
 MAESTRO_WOO_SHARED_JETPACK_STORE_URL
 MAESTRO_WOO_SHARED_WPCOM_EMAIL
 MAESTRO_WOO_SHARED_WPCOM_PASSWORD
-MAESTRO_WOO_NO_JETPACK_SITE_URL
-MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_USERNAME
-MAESTRO_WOO_NO_JETPACK_SITE_ADMIN_PASSWORD
 MAESTRO_WOO_NOT_A_WOO_STORE_URL
 MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_USERNAME
 MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD
@@ -48,8 +45,7 @@ MAESTRO_WOO_WRONG_ACCOUNT_STORE_URL
 ```
 
 `login_not_woo_store.yaml` runs against the shared store and logs in to a
-wordpress.com-hosted site with that store's WP.com account. The runner removes a trailing `/wp-admin` or `/wp-admin/` from the no-Jetpack
-site URL before passing it to the app.
+wordpress.com-hosted site with that store's WP.com account.
 
 Variables written by store-setup tooling (`MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_USERNAME`
 and `MAESTRO_WOO_LAB_JETPACK_SITE_ADMIN_PASSWORD`) are never required by a flow and are

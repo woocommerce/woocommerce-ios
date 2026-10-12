@@ -87,19 +87,6 @@ class RunnerTests(unittest.TestCase):
         RUNNER.validate_destructive_repeat([flow], repeat=1)
         RUNNER.validate_destructive_repeat([RUNNER.FLOWS_DIR / "dashboard_stats.yaml"], repeat=3)
 
-    def test_jetpack_store_cannot_share_the_no_jetpack_host(self) -> None:
-        flow = RUNNER.FLOWS_DIR / "dashboard_stats.yaml"
-        values = {
-            "MAESTRO_WOO_JETPACK_STORE_URL": "https://site.example.com/",
-            "MAESTRO_WOO_NO_JETPACK_SITE_URL": "https://site.example.com/wp-admin",
-        }
-
-        with self.assertRaisesRegex(SystemExit, "same host as the no-Jetpack site"):
-            RUNNER.validate_login_store_hosts([flow], values, store="lab")
-
-        values["MAESTRO_WOO_NO_JETPACK_SITE_URL"] = "https://other.example.com/"
-        RUNNER.validate_login_store_hosts([flow], values, store="lab")
-
     def test_shared_destructive_runs_are_refused(self) -> None:
         flow = RUNNER.FLOWS_DIR / "orders_create.yaml"
 
@@ -656,19 +643,6 @@ class RunnerTests(unittest.TestCase):
         self.assertIn("MAESTRO_WOO_NOT_A_WOO_STORE_SITE_ADMIN_PASSWORD", required)
         self.assertIn("MAESTRO_WOO_WPCOM_EMAIL", required)
         self.assertIn("MAESTRO_WOO_WPCOM_PASSWORD", required)
-
-    def test_no_jetpack_wp_admin_url_is_normalized_for_the_flow(self) -> None:
-        flow = RUNNER.FLOWS_DIR / "login_no_jetpack.yaml"
-        values = {
-            "MAESTRO_WOO_NO_JETPACK_SITE_URL": "https://shop.example.com/subdir/wp-admin/?source=jn",
-        }
-
-        resolved = RUNNER.normalized_flow_environment([flow], values)
-
-        self.assertEqual(
-            "https://shop.example.com/subdir/",
-            resolved["MAESTRO_WOO_NO_JETPACK_SITE_URL"],
-        )
 
     def test_derived_store_host_is_not_required_from_the_environment(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

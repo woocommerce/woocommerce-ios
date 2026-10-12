@@ -20,7 +20,7 @@ import time
 import xml.etree.ElementTree as ET
 from dataclasses import dataclass
 from pathlib import Path
-from urllib.parse import urlsplit, urlunsplit
+from urllib.parse import urlsplit
 
 
 SCRIPT_DIR = Path(__file__).resolve().parent
@@ -33,7 +33,6 @@ LINT_ENV = SCRIPT_DIR / "lint-env.py"
 CHECK_TOOLCHAIN = SCRIPT_DIR / "check-toolchain.py"
 DEVICE_LOCALE = SCRIPT_DIR / "device_locale.py"
 OUTPUT_DEFAULT = Path.home() / "woocommerce-maestro-output"
-NO_JETPACK_FLOW = "login_no_jetpack.yaml"
 STORES = ("lab", "shared")
 # Flows with this tag run against the shared store, every other flow against
 # the lab store. --store runs every selected flow against one store instead.
@@ -490,40 +489,6 @@ def validate_environment(flows: list[Path], values: dict[str, str], *, seed: boo
         raise SystemExit("Missing environment required by selected flows: " + ", ".join(missing))
 
 
-def validate_login_store_hosts(flows: list[Path], values: dict[str, str], *, store: str) -> None:
-    if not any("MAESTRO_WOO_JETPACK_STORE_URL" in required_environment([flow], seed=False) for flow in flows):
-        return
-    store_host = normalized_store_host(values.get("MAESTRO_WOO_JETPACK_STORE_URL", ""))
-    no_jetpack_host = normalized_store_host(values.get("MAESTRO_WOO_NO_JETPACK_SITE_URL", ""))
-    if store_host and store_host == no_jetpack_host:
-        upper = store.upper()
-        raise SystemExit(
-            f"Setup error: selected --store {store} points the Jetpack store at the same host as the no-Jetpack site.\n\n"
-            "The selected flow set includes WP.com/Jetpack login flows. Set the "
-            f"{store} store block to a Jetpack-connected WooCommerce store with MAESTRO_WOO_{upper}_JETPACK_STORE_URL,\n"
-            f"MAESTRO_WOO_{upper}_WPCOM_EMAIL, and MAESTRO_WOO_{upper}_WPCOM_PASSWORD.\n"
-            "Keep MAESTRO_WOO_NO_JETPACK_* only for login_no_jetpack.yaml."
-        )
-
-
-def site_url_without_wp_admin(value: str) -> str:
-    parsed = urlsplit(value)
-    path = parsed.path.rstrip("/")
-    if not path.endswith("/wp-admin"):
-        return value
-    site_path = path.removesuffix("wp-admin")
-    return urlunsplit(parsed._replace(path=site_path, query="", fragment=""))
-
-
-def normalized_flow_environment(flows: list[Path], values: dict[str, str]) -> dict[str, str]:
-    normalized = dict(values)
-    if any(flow.name == NO_JETPACK_FLOW for flow in flows):
-        name = "MAESTRO_WOO_NO_JETPACK_SITE_URL"
-        if value := normalized.get(name):
-            normalized[name] = site_url_without_wp_admin(value)
-    return normalized
-
-
 def normalized_store_host(value: str) -> str:
     candidate = value.strip()
     parsed = urlsplit(candidate if "://" in candidate else f"//{candidate}")
@@ -962,13 +927,11 @@ def main() -> int:
     (output / "diagnostics").mkdir()
     (output / "logs").mkdir()
 
-    values = normalized_flow_environment(flows, values)
     run_stores = [store for store in STORES if any(flow_store(flow, args.store) == store for flow in flows)]
     store_flows = {store: [flow for flow in flows if flow_store(flow, args.store) == store] for store in run_stores}
     store_values = {store: select_store_environment(values, store) for store in run_stores}
     for store in run_stores:
         validate_environment(store_flows[store], store_values[store], seed=False, store=store)
-        validate_login_store_hosts(store_flows[store], store_values[store], store=store)
     # Seeding and cleanup reach the store the destructive flows run against.
     seed_store = args.store or "lab"
     seed_values = select_store_environment(values, seed_store)

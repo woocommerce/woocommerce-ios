@@ -75,18 +75,12 @@ def missing_environment(flows: list[Path], environment: dict[str, str], args: ar
     return sorted(missing)
 
 
-def selection_problems(flows: list[Path], environment: dict[str, str], args: argparse.Namespace) -> list[str]:
+def selection_problems(flows: list[Path], args: argparse.Namespace) -> list[str]:
     """Return the reasons the runner would refuse this selection before running any flow."""
     checks = [
         lambda: RUNNER.validate_destructive_cleanup(flows, seed=args.seed),
         lambda: RUNNER.validate_shared_destructive(flows, store=args.store),
     ]
-    for store in RUNNER.STORES:
-        store_flows = [flow for flow in flows if RUNNER.flow_store(flow, args.store) == store]
-        values = RUNNER.select_store_environment(environment, store)
-        checks.append(
-            lambda flows=store_flows, values=values, store=store: RUNNER.validate_login_store_hosts(flows, values, store=store)
-        )
     problems = []
     for check in checks:
         try:
@@ -164,7 +158,7 @@ def main() -> int:
 
     missing = missing_environment(flows if 'flows' in locals() else [], environment, args)
     checks.append((not missing, "required credentials are present" if not missing else "missing variables: " + ", ".join(missing)))
-    checks.extend((False, problem) for problem in selection_problems(flows if 'flows' in locals() else [], environment, args))
+    checks.extend((False, problem) for problem in selection_problems(flows if 'flows' in locals() else [], args))
 
     print("WooCommerce iOS Maestro doctor")
     print(f"profile: {args.profile}")

@@ -138,6 +138,7 @@ struct POSOrderListView: View {
                     await orderListModel.ordersController.loadNextOrders()
                 },
                 content: {
+                    let dateFormatter = DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
                     LazyVStack(spacing: POSSpacing.medium) {
                         headerRows
                             .id(Constants.scrollTopID)
@@ -154,7 +155,11 @@ struct POSOrderListView: View {
                             ))
                             onOrderSelected(order)
                         }) {
-                            POSOrderRowView(order: order, isSelected: orderListModel.ordersController.selectedOrder?.id == order.id)
+                            POSOrderRowView(
+                                order: order,
+                                formattedDateCreated: dateFormatter.string(from: order.dateCreated),
+                                isSelected: orderListModel.ordersController.selectedOrder?.id == order.id
+                            )
                         }
                         .buttonStyle(PlainButtonStyle())
                     }
@@ -201,16 +206,12 @@ struct POSOrderListView: View {
 
 private struct POSOrderRowView: View {
     let order: POSOrder
+    let formattedDateCreated: String
     let isSelected: Bool
 
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
-    @Environment(\.siteTimezone) private var siteTimezone
-
-    private var dateFormatter: DateFormatter {
-        DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
-    }
 
     private var minHeight: CGFloat {
         min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
@@ -249,7 +250,7 @@ private struct POSOrderRowView: View {
         POSOrderListView.Localization.orderRowAccessibilityLabel(
             orderNumber: order.number,
             total: order.formattedTotal,
-            date: dateFormatter.string(from: order.dateCreated),
+            date: formattedDateCreated,
             email: order.customerEmail,
             status: order.status.localizedName
         )
@@ -275,7 +276,7 @@ private struct POSOrderRowView: View {
     @ViewBuilder
     private var orderDetailsColumn: some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            Text(dateFormatter.string(from: order.dateCreated))
+            Text(formattedDateCreated)
                 .font(.posBodySmallRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .fixedSize(horizontal: false, vertical: true)

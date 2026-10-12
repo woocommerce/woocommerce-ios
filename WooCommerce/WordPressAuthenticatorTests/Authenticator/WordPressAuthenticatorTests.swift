@@ -121,6 +121,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertTrue(authenticator.handleWordPressAuthUrl(url!, rootViewController: UIViewController(), restoresSiteAddress: false, automatedTesting: true))
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_delegate_only_implements_legacy_api_then_bridges_once() throws {
         // Given
         let adopter = LegacyOnlyWordPressAuthenticatorDelegate()
@@ -151,6 +152,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(receivedCredentials.first).options["unrelated"] as? String, "preserved")
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_legacy_only_delegate_fails_then_bridges_failure_once() {
         // Given
         let expectedError = NSError(domain: "LegacyAuthentication", code: 401)

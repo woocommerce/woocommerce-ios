@@ -187,11 +187,11 @@ private extension CustomerSelectorViewController {
                                                             })
                                                         },
                                                         viewModel: addressFormViewModel)
-        let rootViewController = UIHostingController(rootView: editOrderAddressForm)
-        let navigationController = WooNavigationController(rootViewController: rootViewController)
-        navigationController.modalPresentationStyle = .fullScreen
+        // The form needs a `NavigationStack` to push the country and state selectors.
+        let hostingController = UIHostingController(rootView: NavigationStack { editOrderAddressForm })
+        hostingController.modalPresentationStyle = .fullScreen
 
-        present(navigationController, animated: true, completion: nil)
+        present(hostingController, animated: true, completion: nil)
     }
 
     func addSearchViewController(loadResultsWhenSearchTermIsEmpty: Bool,

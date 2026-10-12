@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import os
 
 /// Read-only access to the store currently affected by a connection error.
 ///
@@ -11,7 +12,7 @@ public protocol StoreConnectionErrorMonitoring {
     /// Emits the affected store identifier on the main queue on every change, starting with the
     /// current value.
     ///
-    var affectedSiteIDPublisher: AnyPublisher<Int64?, Never> { get }
+    @MainActor var affectedSiteIDPublisher: AnyPublisher<Int64?, Never> { get }
 }
 
 /// Write-only counterpart used by the networking layer to report the outcome of a request.
@@ -37,26 +38,27 @@ protocol StoreConnectionErrorRecording {
 /// once the merchant fixes their site. Not persisted: a relaunch starts clean and re-detects if the store
 /// is still unreachable.
 ///
-public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, StoreConnectionErrorRecording, @unchecked Sendable {
+public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, StoreConnectionErrorRecording, Sendable {
     public static let shared = StoreConnectionErrorMonitor()
 
-    /// The value itself, guarded by `lock` because the networking layer writes it from whatever queue a
-    /// response arrives on while the app reads it from the main thread. `subject` is the notification
-    /// channel; it is written under the same lock so that what it announces and what `affectedSiteID`
-    /// reports can never disagree.
+    /// The value itself, guarded by a lock because the networking layer writes it from whatever queue a
+    /// response arrives on while the app reads it from the main thread.
     ///
-    private var storedSiteID: Int64?
-    private let lock = NSLock()
-    private let subject = CurrentValueSubject<Int64?, Never>(nil)
+    private let storedSiteID = OSAllocatedUnfairLock<Int64?>(initialState: nil)
+
+    /// The notification channel. It belongs to the main actor because a Combine subject is not
+    /// `Sendable`; every announcement is queued from inside the lock, so the main queue receives the
+    /// changes in the order they were applied and what it last announces always matches `affectedSiteID`.
+    ///
+    @MainActor private let subject = CurrentValueSubject<Int64?, Never>(nil)
 
     init() {}
 
     public var affectedSiteID: Int64? {
-        lock.lock()
-        defer { lock.unlock() }
-        return storedSiteID
+        storedSiteID.withLock { $0 }
     }
 
+    @MainActor
     public var affectedSiteIDPublisher: AnyPublisher<Int64?, Never> {
         subject.receive(on: DispatchQueue.main).eraseToAnyPublisher()
     }
@@ -71,23 +73,23 @@ public final class StoreConnectionErrorMonitor: StoreConnectionErrorMonitoring, 
 }
 
 private extension StoreConnectionErrorMonitor {
-    /// Applies a change only when `shouldUpdate` accepts the current value, and announces it in the same
-    /// breath.
+    /// Applies a change only when `shouldUpdate` accepts the current value, and queues its announcement in
+    /// the same breath.
     ///
-    /// The announcement stays inside the critical section on purpose. Two requests to the same store can
-    /// finish at once, and announcing after unlocking lets their sends overtake each other, leaving the
-    /// publisher's last value disagreeing with `affectedSiteID`. Subscribers never run here: the only way
-    /// to observe this subject is `affectedSiteIDPublisher`, which hands delivery to the main queue, so
-    /// holding the lock across the send cannot reach anyone else's code.
+    /// The announcement is queued inside the critical section on purpose. Two requests to the same store
+    /// can finish at once, and queueing after unlocking lets their sends overtake each other, leaving the
+    /// publisher's last value disagreeing with `affectedSiteID`. Subscribers never run here: the send runs
+    /// later on the main queue, so holding the lock cannot reach anyone else's code.
     ///
-    func updateAffectedSiteID(to newValue: Int64?, if shouldUpdate: (Int64?) -> Bool) {
-        lock.lock()
-        defer { lock.unlock() }
-
-        guard shouldUpdate(storedSiteID) else {
-            return
+    func updateAffectedSiteID(to newValue: Int64?, if shouldUpdate: @Sendable (Int64?) -> Bool) {
+        storedSiteID.withLock { storedSiteID in
+            guard shouldUpdate(storedSiteID) else {
+                return
+            }
+            storedSiteID = newValue
+            DispatchQueue.main.async {
+                self.subject.send(newValue)
+            }
         }
-        storedSiteID = newValue
-        subject.send(newValue)
     }
 }

@@ -30,37 +30,27 @@ final class LoginUnexpectedResponsePresenter {
         attemptID = id
         let alert = UIAlertController(title: Localization.title, message: Localization.message, preferredStyle: .alert)
         self.alert = alert
-        actionHandler = { [weak self, weak controller, weak alert] action in
+        actionHandler = { [weak self, weak controller] action in
             guard let self, let controller, attemptID == id else {
                 return
             }
             actionHandler = nil
             analytics.track(event: .Login.unexpectedResponseActionTapped(failure: failure, loginFlow: flow, action: action))
-            let continuation = { [weak self, weak controller] in
-                guard let self, let controller, attemptID == id else {
-                    return
-                }
-                self.alert = nil
-                if action == .retry {
-                    onRetry { [weak self] success in
-                        guard let self, attemptID == id else {
-                            return
-                        }
-                        attemptID = nil
-                        analytics.track(event: .Login.unexpectedResponseRetryResult(failure: failure, loginFlow: flow, success: success))
+            self.alert = nil
+            if action == .retry {
+                onRetry { [weak self] success in
+                    guard let self, attemptID == id else {
+                        return
                     }
-                } else {
                     attemptID = nil
-                    onDismiss()
-                    if action == .contactSupport {
-                        showSupport(from: controller)
-                    }
+                    analytics.track(event: .Login.unexpectedResponseRetryResult(failure: failure, loginFlow: flow, success: success))
                 }
-            }
-            if alert?.presentingViewController != nil {
-                alert?.dismiss(animated: true, completion: continuation)
             } else {
-                continuation()
+                attemptID = nil
+                onDismiss()
+                if action == .contactSupport {
+                    showSupport(from: controller)
+                }
             }
         }
         for (action, title) in [(LoginUnexpectedResponseFailure.Action.retry, Localization.retry),

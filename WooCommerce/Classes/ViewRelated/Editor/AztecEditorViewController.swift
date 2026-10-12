@@ -65,6 +65,11 @@ final class AztecEditorViewController: UIViewController, Editor {
             guard let self else {
                 return
             }
+            // The bar is tappable with the keyboard down, and the heading and list pickers present as input views, which need focus.
+            let activeView = self.editorView.activeView
+            if !activeView.isFirstResponder {
+                activeView.becomeFirstResponder()
+            }
             self.formatBarCommandCoordinator.handleAction(formatBarItem: formatBarItem,
                                                           editorView: self.editorView,
                                                           formatBar: formatBar)

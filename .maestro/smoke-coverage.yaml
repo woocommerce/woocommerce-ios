@@ -30,9 +30,7 @@ items:
     flow: .maestro/flows/login_not_woo_store.yaml
   - id: login.no-jetpack
     title: Login to WooCommerce site without Jetpack
-    flow: .maestro/flows/login_no_jetpack.yaml
-    fidelity: partial
-    gap: "Proves site-credential login and core store navigation, not onboarding tasks, Jetpack installation, or post-install state."
+    manual: "Installing Jetpack from the app permanently changes the site, and the manual test needs the site-credential login first, so the whole scenario is one manual test."
   - id: login.jetpack-not-connected
     title: Login with Jetpack installed but not connected
     manual: "Requires manually disconnecting Jetpack on a disposable Jurassic Ninja site."

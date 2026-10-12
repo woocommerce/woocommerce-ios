@@ -322,6 +322,7 @@ def resolve_simulator(
     family: str,
     *,
     boot: bool = True,
+    option: str = "--device",
 ) -> dict[str, str]:
     records = simulator_records()
     family_token = "ipad" if family == "ipad" else "iphone"
@@ -329,7 +330,7 @@ def resolve_simulator(
     if selector:
         exact = [item for item in records if item["udid"] == selector or item["name"] == selector]
         if len(exact) != 1:
-            raise SystemExit(f"--device must match exactly one available simulator name or UDID: {selector}")
+            raise SystemExit(f"{option} must match exactly one available simulator name or UDID: {selector}")
         selected = exact[0]
         if family_token not in selected["name"].lower():
             raise SystemExit(f"Profile requires an {family}; selected simulator is {selected['name']}")
@@ -972,11 +973,11 @@ def main() -> int:
     manifest = output / "run-manifest.json"
     pos_only = runs_only_on_pos_device(flows, family)
     if pos_only:
-        simulator = resolve_simulator(args.pos_device, "ipad")
+        simulator = resolve_simulator(args.pos_device, "ipad", option="--pos-device")
         pos_simulator = None
     else:
         simulator = resolve_simulator(args.device, family)
-        pos_simulator = resolve_simulator(args.pos_device, "ipad") if needs_pos_device(flows, family) else None
+        pos_simulator = resolve_simulator(args.pos_device, "ipad", option="--pos-device") if needs_pos_device(flows, family) else None
     if pos_simulator and pos_simulator["udid"] == simulator["udid"]:
         raise SystemExit("--pos-device must be a different simulator than --device")
     run_simulators = [simulator] + ([pos_simulator] if pos_simulator else [])

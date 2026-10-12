@@ -154,7 +154,7 @@ def main() -> int:
 
     if 'flows' in locals() and RUNNER.needs_pos_device(flows, family):
         try:
-            pos_simulator = RUNNER.resolve_simulator(args.pos_device, "ipad", boot=False)
+            pos_simulator = RUNNER.resolve_simulator(args.pos_device, "ipad", boot=False, option="--pos-device")
             checks.append((True, f"POS simulator: {pos_simulator['name']} ({pos_simulator['udid']})"))
             checks.append(check_simulator_locale(pos_simulator["udid"]))
         except (SystemExit, subprocess.SubprocessError) as error:

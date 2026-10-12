@@ -5,6 +5,7 @@ import struct Yosemite.Order
 ///
 /// Mirrors the shape of `POSCashPaymentHandling`. The implementation lives in the cart flow's
 /// order controller; tests substitute a mock conforming to this protocol.
+@MainActor
 protocol POSMarkAsPaidHandling {
     /// Marks the order as paid manually.
     ///

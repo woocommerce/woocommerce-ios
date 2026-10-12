@@ -21,6 +21,84 @@ final class AlamofireNetworkTests: XCTestCase {
         super.tearDown()
     }
 
+    @MainActor
+    func test_remote_when_opted_in_mapper_fails_then_preserves_successful_response_metadata() throws {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "wp/v2/users/me")
+        MockURLProtocol.Mocks.mockResponse(["code": "blocked", "message": "Contact admin@example.com", "data": "private-sentinel"],
+                                          statusCode: 202, for: try request.asURLRequest(),
+                                          headers: ["Content-Type": "application/json; charset=utf-8"])
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let remote = Remote(network: network)
+
+        // When
+        let result: Result<User, Error> = waitFor { promise in
+            remote.enqueue(request, mapper: UserMapper(siteID: 123), detectUnexpectedResponses: true, completion: promise)
+        }
+
+        // Then
+        let error = try XCTUnwrap(result.failure as? UnexpectedStoreResponseError)
+        XCTAssertEqual(error.kind, .unexpectedContent)
+        XCTAssertEqual(error.statusCode, 202)
+        XCTAssertEqual(error.diagnostics?.contentType, "application/json")
+        XCTAssertEqual(error.diagnostics?.excerpt, "blocked | Contact [email]")
+    }
+
+    @MainActor
+    func test_remote_async_when_opted_in_mapper_fails_then_preserves_successful_response_metadata() async throws {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "wp/v2/users/me")
+        MockURLProtocol.Mocks.mockResponse(["code": "blocked", "message": "Contact admin@example.com", "data": "private-sentinel"],
+                                          statusCode: 202, for: try request.asURLRequest(),
+                                          headers: ["Content-Type": "application/json; charset=utf-8"])
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        let remote = Remote(network: network)
+
+        // When
+        do {
+            _ = try await remote.enqueue(request, mapper: UserMapper(siteID: 123), detectUnexpectedResponses: true)
+            XCTFail("Expected a malformed user response")
+        } catch {
+            // Then
+            let error = try XCTUnwrap(error as? UnexpectedStoreResponseError)
+            XCTAssertEqual(error.kind, .unexpectedContent)
+            XCTAssertEqual(error.statusCode, 202)
+            XCTAssertEqual(error.diagnostics?.contentType, "application/json")
+            XCTAssertEqual(error.diagnostics?.excerpt, "blocked | Contact [email]")
+        }
+    }
+
+    func test_responseData_when_direct_500_is_opted_in_then_preserves_status_in_typed_error() throws {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .get, path: "wp-json")
+        MockURLProtocol.Mocks.mockResponse(["code": "critical_error"], statusCode: 500, for: try request.asURLRequest())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        // When
+        let error = waitFor { promise in
+            network.responseData(for: UnexpectedResponseRequest(original: request)) { _, error in promise(error) }
+        }
+        // Then
+        XCTAssertEqual((error as? UnexpectedStoreResponseError)?.kind, .unacceptableStatusCode)
+        XCTAssertEqual((error as? UnexpectedStoreResponseError)?.statusCode, 500)
+    }
+
+    func test_responseData_when_known_501_is_opted_in_then_preserves_disabled_password_error() throws {
+        // Given
+        let request = RESTRequest(siteURL: "https://example.com", method: .post, path: "wp-json")
+        MockURLProtocol.Mocks.mockResponse(["code": "application_passwords_disabled"], statusCode: 501, for: try request.asURLRequest())
+        let network = AlamofireNetwork(credentials: nil, selectedSite: nil, appPasswordSupportState: nil,
+                                       sessionManager: createSessionWithMockURLProtocol())
+        // When
+        let error = waitFor { promise in
+            network.responseData(for: UnexpectedResponseRequest(original: request)) { _, error in promise(error) }
+        }
+        // Then
+        XCTAssertEqual(error as? ApplicationPasswordUseCaseError, .applicationPasswordsDisabled)
+    }
+
     // MARK: - `responseData` with data and error in the callback
 
     func test_responseData_completion_block_returns_NetworkError_unacceptableStatusCode_when_status_code_is_invalid() throws {
@@ -309,6 +387,82 @@ final class AlamofireNetworkTests: XCTestCase {
 
         // Then
         XCTAssertTrue(usesTunnel)
+    }
+
+    func test_responseData_with_completion_when_opted_in_direct_request_fails_then_returns_tunnel_success() throws {
+        // Given
+        let siteID: Int64 = 123
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "products")
+        let restRequest = createRESTRequest(path: "products")
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try setupMockForDirectRequestFailure(jetpackRequest: jetpackRequest,
+                                             restRequest: restRequest,
+                                             failureStatusCode: 500,
+                                             failureResponse: ["error": "unauthorized"])
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: UnexpectedResponseRequest(original: jetpackRequest)) { data, error in
+                promise((data, error))
+            }
+        }
+
+        // Then
+        XCTAssertNil(result.1)
+        XCTAssertNotNil(result.0)
+        let responseDict = try JSONSerialization.jsonObject(with: try XCTUnwrap(result.0), options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["success"], "data")
+    }
+
+    func test_responseData_with_result_when_opted_in_direct_request_fails_then_returns_tunnel_success() throws {
+        // Given
+        let siteID: Int64 = 456
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "orders")
+        let restRequest = createRESTRequest(path: "orders")
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                             restRequest: restRequest,
+                                                             failureStatusCode: 500,
+                                                             failureResponse: ["error": "forbidden"],
+                                                             successResponse: ["success": "orders"])
+
+        // When
+        let result = waitFor { promise in
+            network.responseData(for: UnexpectedResponseRequest(original: jetpackRequest)) { result in
+                promise(result)
+            }
+        }
+
+        // Then
+        XCTAssertTrue(result.isSuccess)
+        let data = try XCTUnwrap(result.get())
+        let responseDict = try JSONSerialization.jsonObject(with: data, options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["success"], "orders")
+    }
+
+    @MainActor
+    func test_responseDataAndHeaders_when_opted_in_direct_request_fails_then_returns_tunnel_success() async throws {
+        // Given
+        let siteID: Int64 = 101
+        let testParameters: RequestParameterDictionary = ["name": "Test Product"]
+        let jetpackRequest = createJetpackRequest(siteID: siteID, path: "products", method: .post, parameters: testParameters)
+        let restRequest = createRESTRequest(path: "products", method: .post, parameters: testParameters)
+        let network = createNetworkWithSelectedSite(siteID: siteID)
+
+        try setupMockForDirectRequestFailureWithRetrySuccess(jetpackRequest: jetpackRequest,
+                                                             restRequest: restRequest,
+                                                             failureStatusCode: 500,
+                                                             failureResponse: ["error": "rate_limited"],
+                                                             successResponse: ["product": "created"])
+
+        // When
+        let result = try await network.responseDataAndHeaders(for: UnexpectedResponseRequest(original: jetpackRequest))
+
+        // Then
+        let responseDict = try JSONSerialization.jsonObject(with: result.0, options: []) as? [String: String]
+        XCTAssertEqual(responseDict?["product"], "created")
     }
 
     // MARK: - Retry Logic Tests

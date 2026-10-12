@@ -68,6 +68,8 @@ class AuthenticationManager: Authentication {
 
     /// Keeps a reference to the use case
     private var siteCredentialLoginUseCase: SiteCredentialLoginProtocol?
+    private var credentialAttemptID = UUID()
+    @MainActor private lazy var unexpectedResponsePresenter = LoginUnexpectedResponsePresenter(analytics: analytics)
 
     /// Keeps a reference to the QR-login coordinator while the flow is active.
     private var qrLoginCoordinator: QRLoginCoordinator?
@@ -585,14 +587,35 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Authenticates site credentials against explicitly configured endpoints, asking the merchant where
     /// the sign-in page or the dashboard lives when the standard addresses do not work.
     ///
+    @MainActor
     func authenticateSiteCredentials(credentials: WordPressOrgCredentials,
                                      loginURL: String?,
                                      adminURL: String?,
                                      endpointUnderVerification: SiteCredentialRecoveryEndpoint?,
+                                     retryingFailure: Error? = nil,
+                                     onRetryResult: ((Bool) -> Void)? = nil,
                                      onLoading: @escaping (Bool) -> Void,
                                      onSuccess: @escaping (WordPressOrgCredentials) -> Void,
-                                     onRecovery: @escaping (SiteCredentialRecovery) -> Void,
+                                     onRecovery: @escaping (SiteCredentialRecovery) -> Bool,
                                      onFailure: @escaping (Error, Bool, String?, Bool) -> Void) {
+        if onRetryResult == nil {
+            unexpectedResponsePresenter.invalidate()
+        }
+        cancelSiteCredentialLoginAttempt()
+        let attemptID = credentialAttemptID
+        var retryFinished = false
+        let finishRetry: (Bool) -> Void = { [weak self] success in
+            guard self?.credentialAttemptID == attemptID, !retryFinished else {
+                return
+            }
+            retryFinished = true
+            onRetryResult?(success)
+        }
+        let retryStep: LoginUnexpectedResponseFailure.Step? = if case .unexpectedResponse(let failure) = retryingFailure as? SiteCredentialLoginError {
+            failure.step
+        } else {
+            nil
+        }
         let endpoints: CookieNonceAuthenticationEndpoints
         do {
             endpoints = try siteCredentialRecoveryEndpoints(
@@ -601,9 +624,11 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                 adminURL: adminURL
             )
         } catch let error as SiteCredentialRecoveryValidationError {
-            onRecovery(error.recovery)
+            finishRetry(false)
+            _ = onRecovery(error.recovery)
             return
         } catch {
+            finishRetry(false)
             onFailure(SiteCredentialLoginError.invalidLoginResponse, false, nil, false)
             return
         }
@@ -613,28 +638,50 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             endpoints,
             endpointUnderVerification == .admin
         )
-        useCase.setupHandlers(onLoginSuccess: {
+        useCase.onStageSuccess = { stage in
+            if LoginUnexpectedResponseFailure(stage: stage).step == retryStep {
+                finishRetry(true)
+            }
+        }
+        useCase.setupHandlers(onLoginSuccess: { [weak self] in
+            guard self?.credentialAttemptID == attemptID else {
+                return
+            }
             // Deliberately no `onLoading(false)` here, unlike the failure branch below. The credential
             // transaction succeeding only starts the sign-in: `onSuccess` goes on to run the application
             // password, role eligibility and WooCommerce installation checks, and the form has to stay
             // disabled until one of those navigates away.
             onSuccess(credentials.replacingAuthenticationEndpoints(with: endpoints))
         }, onLoginFailure: { [weak self] error, loginEntryVerified, offersBrowserAlternative in
+            guard let self, credentialAttemptID == attemptID else {
+                return
+            }
+            finishRetry(false)
             onLoading(false)
             let normalizedLoginURL = endpoints.loginEntryURL.absoluteString
             let normalizedAdminURL = endpoints.adminBaseURL.absoluteString
             switch error {
+            case .unexpectedResponse(let failure) where failure.step == .loginPage &&
+                failure.kind == .unexpectedContent && endpointUnderVerification == .login:
+                _ = onRecovery(.login(draftURL: normalizedLoginURL, error: .notFound))
+                analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
+            case .unexpectedResponse(let failure) where failure.kind == .unexpectedContent && endpointUnderVerification == .admin &&
+                loginEntryVerified && failure.step == .dashboardVerification:
+                _ = onRecovery(.admin(verifiedLoginURL: normalizedLoginURL, draftURL: normalizedAdminURL, error: .notFound))
+            case .unexpectedResponse:
+                onFailure(error, false, loginEntryVerified ? normalizedLoginURL : nil, false)
+                trackSiteCredentialLoginFailure(error)
             case .inaccessibleLoginPage where endpointUnderVerification != .admin:
                 let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil
-                onRecovery(.login(draftURL: normalizedLoginURL, error: inlineError))
-                self?.analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
+                _ = onRecovery(.login(draftURL: normalizedLoginURL, error: inlineError))
+                analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
             case .invalidLoginResponse where endpointUnderVerification != .admin && loginEntryVerified == false:
                 let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .login ? .notFound : nil
-                onRecovery(.login(draftURL: normalizedLoginURL, error: inlineError))
-                self?.analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
+                _ = onRecovery(.login(draftURL: normalizedLoginURL, error: inlineError))
+                analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
             case .inaccessibleAdminPage where loginEntryVerified:
                 let inlineError: SiteCredentialRecoveryError? = endpointUnderVerification == .admin ? .notFound : nil
-                onRecovery(.admin(verifiedLoginURL: normalizedLoginURL,
+                _ = onRecovery(.admin(verifiedLoginURL: normalizedLoginURL,
                                   draftURL: normalizedAdminURL,
                                   error: inlineError))
             default:
@@ -643,7 +690,7 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
                           incorrectCredentials,
                           loginEntryVerified ? normalizedLoginURL : nil,
                           offersBrowserAlternative)
-                self?.trackSiteCredentialLoginFailure(error)
+                trackSiteCredentialLoginFailure(error)
             }
         })
         siteCredentialLoginUseCase = useCase
@@ -658,10 +705,16 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
     /// Presents the failure without ever navigating to the browser flow on its own. The browser alternative
     /// is only ever offered as a button the merchant has to tap.
     ///
+    @MainActor
     func presentSiteCredentialLoginFailure(error: Error,
                                            offersBrowserAlternative: Bool,
                                            for siteURL: String,
-                                           in viewController: UIViewController) {
+                                           in viewController: UIViewController,
+                                           onRetry: @escaping (@escaping (Bool) -> Void) -> Void = { _ in }) {
+        if case .unexpectedResponse(let failure) = error as? SiteCredentialLoginError {
+            unexpectedResponsePresenter.present(failure: failure, flow: .siteCredentials, from: viewController, onRetry: onRetry)
+            return
+        }
         let browserAction: (() -> Void)? = offersBrowserAlternative ? { [weak self, weak viewController] in
             guard let self, let viewController else { return }
             presentAppPasswordTutorial(error: error, for: siteURL, in: viewController)
@@ -671,6 +724,18 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             defaultAction: browserAction,
             in: viewController
         )
+    }
+
+    @MainActor
+    func cancelSiteCredentialLogin() {
+        cancelSiteCredentialLoginAttempt()
+        unexpectedResponsePresenter.invalidate()
+    }
+
+    private func cancelSiteCredentialLoginAttempt() {
+        credentialAttemptID = UUID()
+        siteCredentialLoginUseCase?.cancel()
+        siteCredentialLoginUseCase = nil
     }
 
     func handleSiteCredentialLoginFailure(error: Error,
@@ -925,7 +990,8 @@ extension AuthenticationManager {
             username: credentials.username,
             password: credentials.password,
             siteAddress: credentials.siteURL,
-            authenticationEndpoints: credentials.authenticationEndpoints
+            authenticationEndpoints: credentials.authenticationEndpoints,
+            detectUnexpectedResponses: true
         )
     }
 
@@ -1168,7 +1234,7 @@ private extension AuthenticationManager {
         /// IMPORTANT: authenticate after creating the use case above to make sure that
         /// the application password is saved into keychain.
         stores.authenticate(credentials: credentials)
-        checkSiteCredentialLogin(to: siteURL, with: useCase, in: navigationController)
+        checkSiteCredentialLogin(to: siteURL, with: useCase, loginFlow: .appPassword, in: navigationController)
     }
 
     /// The error screen to be displayed when Jetpack setup for a site is required.
@@ -1239,6 +1305,7 @@ extension AuthenticationManager {
         checkSiteCredentialLogin(
             to: siteURL,
             with: useCase,
+            loginFlow: .siteCredentials,
             in: navigationController,
             authenticationEndpointPersistence: endpointPersistence,
             previousViewController: nil
@@ -1249,11 +1316,14 @@ extension AuthenticationManager {
 private extension AuthenticationManager {
     func checkSiteCredentialLogin(to siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
+                                  loginFlow: LoginUnexpectedResponseFailure.LoginFlow,
                                   in navigationController: UINavigationController,
                                   authenticationEndpointPersistence: SiteCredentialAuthenticationEndpointPersistence? = nil,
                                   previousViewController: UIViewController? = nil) {
         let checker = PostSiteCredentialLoginChecker(applicationPasswordUseCase: useCase,
+                                                     loginFlow: loginFlow,
                                                      stores: stores,
+                                                     analytics: analytics,
                                                      authenticationEndpointPersistence: authenticationEndpointPersistence,
                                                      previousViewController: previousViewController)
         checker.checkEligibility(for: siteURL, from: navigationController) { [weak self] in
@@ -1317,7 +1387,8 @@ private extension AuthenticationManager {
     /// Without the custom presentation configuration, UIKit presents the alert as a page sheet on iOS 26.
     private func presentSiteCredentialLoginErrorAlert(message: String,
                                                       defaultAction: (() -> Void)?,
-                                                      in viewController: UIViewController) {
+                                                      in viewController: UIViewController,
+                                                      completion: (() -> Void)? = nil) {
         let alert = FancyAlertViewController.makeSiteCredentialLoginErrorAlert(
             message: message,
             defaultAction: defaultAction
@@ -1326,7 +1397,7 @@ private extension AuthenticationManager {
             alert.modalPresentationStyle = .custom
             alert.transitioningDelegate = transitioningDelegate
         }
-        viewController.present(alert, animated: true)
+        viewController.present(alert, animated: true, completion: completion)
     }
 
     /// Presents app password site login using a web view.

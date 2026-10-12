@@ -86,6 +86,6 @@ private extension POSRefundNothingToRefundView {
     POSRefundNothingToRefundView(
         onClose: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 #endif

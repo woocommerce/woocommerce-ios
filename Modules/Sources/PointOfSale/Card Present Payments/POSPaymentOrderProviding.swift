@@ -20,6 +20,7 @@ struct POSPaymentOrder {
 }
 
 /// Provides an Order for the payment model to collect payment against.
+@MainActor
 protocol POSPaymentOrderProviding {
     func provideOrder() async throws -> POSPaymentOrder
 

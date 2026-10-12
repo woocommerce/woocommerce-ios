@@ -1,4 +1,5 @@
 import SwiftUI
+import class WooFoundation.KeyboardObserver
 
 struct PointOfSaleMarkAsPaidConfirmationView: View {
     @Environment(\.keyboardObserver) private var keyboardObserver

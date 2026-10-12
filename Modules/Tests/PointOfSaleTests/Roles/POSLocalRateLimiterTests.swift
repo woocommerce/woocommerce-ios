@@ -14,7 +14,7 @@ struct POSLocalRateLimiterTests {
 
     @Test func test_checkAllowed_after_5_failures_then_throws_rateLimited_30_seconds_out() throws {
         // Given
-        var nowValue = Date(timeIntervalSinceReferenceDate: 1000)
+        let nowValue = Date(timeIntervalSinceReferenceDate: 1000)
         let sut = makeSUT(now: { nowValue })
 
         // When

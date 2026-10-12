@@ -119,6 +119,8 @@ struct TotalsView: View {
                     }
                 }
                 .scrollVerticallyIfNeeded()
+                // A completed payment replaces the checkout content. Start the new screen at its top.
+                .id(displayPaymentState.isSuccess)
                 .animation(.default, value: isShowingPaymentView)
                 .animation(.default, value: useTapToPayHeroLayout)
                 .animation(.default, value: bottomControlState)
@@ -144,6 +146,7 @@ struct TotalsView: View {
             }
         }
         .background(backgroundColor)
+        .posIgnoresHiddenKeyboardSafeArea()
         .animation(.default, value: posModel.orderState.isError)
         .onAppear {
             isShowingTotalsFields = shouldShowTotalsFields
@@ -515,14 +518,17 @@ private struct TotalsFieldsContent: View {
                 shimmeringActive: totalsLoading
             )
         }
-        .padding(TotalsView.Constants.totalsLineViewPadding)
+        .posContentPadding(TotalsView.Constants.totalsLineViewPadding)
         .if(horizontalSizeClass == .compact) {
             $0.frame(maxWidth: .infinity)
         }
-        .if(horizontalSizeClass != .compact) {
-            $0
-                .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
-                .fixedSize(horizontal: true, vertical: false)
+        .if(horizontalSizeClass != .compact) { content in
+            ViewThatFits(in: .horizontal) {
+                content
+                    .frame(minWidth: TotalsView.Constants.pricesIdealWidth)
+                    .fixedSize(horizontal: true, vertical: false)
+                content.frame(maxWidth: .infinity)
+            }
         }
         .matchedGeometryEffect(id: Self.matchedGeometryId, in: totalsFieldAnimation)
     }
@@ -754,8 +760,8 @@ private extension TotalsView {
             }
             .if(horizontalSizeClass != .compact) {
                 $0
-                    .padding(.horizontal, POSPadding.medium)
-                    .padding(.bottom, POSPadding.xxLarge)
+                    .posContentPadding(.horizontal, POSPadding.medium)
+                    .padding(.bottom, POSPadding.small)
             }
     }
 
@@ -771,8 +777,8 @@ private extension TotalsView {
         }
         .if(horizontalSizeClass != .compact) {
             $0
-                .padding(.horizontal, POSPadding.medium)
-                .padding(.bottom, POSPadding.xxLarge)
+                .posContentPadding(.horizontal, POSPadding.medium)
+                .padding(.bottom, POSPadding.small)
         }
     }
 

@@ -7,6 +7,7 @@ import Yosemite
 
 /// Facilitates connecting to a card reader
 ///
+@MainActor
 final class CardReaderConnectionController<AlertProvider: BluetoothReaderConnnectionAlertsProviding,
                                           AlertPresenter: CardPresentPaymentAlertsPresenting>
 where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
@@ -183,7 +184,6 @@ where AlertProvider.AlertDetails == AlertPresenter.AlertDetails {
         }
     }
 
-    @MainActor
     private func cancelReconnection() async {
         await withCheckedContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, Never>? = continuation

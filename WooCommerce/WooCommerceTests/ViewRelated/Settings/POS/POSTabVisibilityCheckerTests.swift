@@ -1,5 +1,6 @@
 import Combine
 import Foundation
+import struct NetworkingCore.Site
 import Testing
 import WooFoundation
 import Yosemite

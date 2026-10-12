@@ -71,6 +71,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(selectedTabIndexAfterSiteChange, WooTab.myStore.visibleIndex(isPOSTabVisible: false))
     }
 
+    @MainActor
     func test_when_receiving_a_review_notification_from_a_different_site_navigates_to_hubMenu_tab() throws {
         // Arrange
         let pushNotificationsManager = MockPushNotificationsManager()
@@ -434,8 +435,34 @@ final class MainTabBarControllerTests: XCTestCase {
         let splitViewController = try XCTUnwrap(ordersSplitViewWrapper.children.first as? UISplitViewController)
 
         waitUntil {
-            let secondaryViewController = (splitViewController.viewController(for: .secondary) as? UINavigationController)?.topViewController
-            return secondaryViewController is OrderLoaderViewController
+            // On a phone the tab switch collapses the split view, which shows the details in the primary column.
+            [UISplitViewController.Column.primary, .secondary].contains { column in
+                (splitViewController.viewController(for: column) as? UINavigationController)?.topViewController is OrderLoaderViewController
+            }
+        }
+
+        // Resets the tab bar controller mock at the end of the test.
+        TestingAppDelegate.mockTabBarController = nil
+    }
+
+    @MainActor
+    func test_navigating_to_order_creation_presents_order_form_on_first_visit_to_orders_tab() throws {
+        // Given
+        let siteID: Int64 = 256
+        stores.updateDefaultStore(storeID: siteID)
+        stores.updateDefaultStore(.fake().copy(siteID: siteID))
+        ServiceLocator.setFeatureFlagService(MockFeatureFlagService())
+
+        let tabBarController = try XCTUnwrap(UIStoryboard(name: "Main", bundle: nil).instantiateInitialViewController() as? MainTabBarController)
+        TestingAppDelegate.mockTabBarController = tabBarController
+        window.rootViewController = tabBarController
+
+        // When
+        tabBarController.navigate(to: OrdersDestination.createOrder)
+
+        // Then
+        waitUntil {
+            tabBarController.presentedViewController is OrderFormHostingController
         }
 
         // Resets the tab bar controller mock at the end of the test.
@@ -554,6 +581,7 @@ final class MainTabBarControllerTests: XCTestCase {
         XCTAssertEqual(mockPOSEligibilityService.loadCachedPOSTabVisibility(siteID: siteID), true)
     }
 
+    @MainActor
     func test_event_is_tracked_after_eligibility_check() throws {
         // Given
         let mockPOSEligibilityChecker = MockPOSTabVisibilityChecker()
@@ -854,7 +882,7 @@ extension MainTabBarController {
 }
 
 @MainActor
-private final class MockAsyncPOSEligibilityChecker: @preconcurrency POSTabVisibilityCheckerProtocol {
+private final class MockAsyncPOSEligibilityChecker: POSTabVisibilityCheckerProtocol {
     var initialVisibility: Bool = false
     private var visibilityResult: Bool?
     private var visibilityContinuation: CheckedContinuation<Bool, Never>?

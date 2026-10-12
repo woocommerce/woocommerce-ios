@@ -940,7 +940,7 @@ public class POSCatalogSyncStateModel {
 }
 
 
-public enum POSCatalogSyncState: Equatable {
+public enum POSCatalogSyncState: Equatable, Sendable {
     case initialSyncStarted(siteID: Int64)
     case syncStarted(siteID: Int64)
     case initialSyncProgress(siteID: Int64, progress: POSCatalogSyncProgress)

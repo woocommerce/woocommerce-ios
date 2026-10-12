@@ -4,6 +4,10 @@ struct OrderCouponSectionView: View {
     @ObservedObject var viewModel: EditableOrderViewModel
     @ObservedObject var couponViewModel: EditableOrderCouponLineViewModel
 
+    /// Safe-area insets of the form's container.
+    ///
+    let safeAreaInsets: EdgeInsets
+
     @State private var shouldShowCouponList: Bool = false
 
     var body: some View {
@@ -47,6 +51,7 @@ struct OrderCouponSectionView: View {
                 }
             }
         }
+        .padding(.horizontal, insets: safeAreaInsets)
         .padding()
         .renderedIf(couponViewModel.couponLineRows.isNotEmpty)
         .background(Color(.listForeground(modal: true)))

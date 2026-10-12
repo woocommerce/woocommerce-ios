@@ -1,36 +1,59 @@
 import Foundation
+import Synchronization
 @testable import Yosemite
 
-final class MockPOSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServiceProtocol {
-    var startIncrementalSyncResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+final class MockPOSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServiceProtocol, Sendable {
+    private struct State {
+        var startIncrementalSyncResult: Result<POSCatalog, Error> = .success(POSCatalog(products: [], variations: [], syncDate: .now))
+        var startIncrementalSyncCallCount: Int = 0
+        var lastSyncSiteID: Int64?
+        var lastFullSyncDate: Date?
+        var lastIncrementalSyncDate: Date?
+        var onSync: (@Sendable (Int64) async throws -> Void)?
+    }
 
-    private(set) var startIncrementalSyncCallCount = 0
-    private(set) var lastSyncSiteID: Int64?
-    private(set) var lastFullSyncDate: Date?
-    private(set) var lastIncrementalSyncDate: Date?
+    private let state = Mutex(State())
 
-    private var syncContinuations: [CheckedContinuation<Void, Never>] = []
-    private var shouldBlockSync = false
-    private var syncBlockedContinuations: [CheckedContinuation<Void, Never>] = []
+    var startIncrementalSyncResult: Result<POSCatalog, Error> {
+        get { state.withLock { $0.startIncrementalSyncResult } }
+        set { state.withLock { $0.startIncrementalSyncResult = newValue } }
+    }
+
+    private(set) var startIncrementalSyncCallCount: Int {
+        get { state.withLock { $0.startIncrementalSyncCallCount } }
+        set { state.withLock { $0.startIncrementalSyncCallCount = newValue } }
+    }
+
+    private(set) var lastSyncSiteID: Int64? {
+        get { state.withLock { $0.lastSyncSiteID } }
+        set { state.withLock { $0.lastSyncSiteID = newValue } }
+    }
+
+    private(set) var lastFullSyncDate: Date? {
+        get { state.withLock { $0.lastFullSyncDate } }
+        set { state.withLock { $0.lastFullSyncDate = newValue } }
+    }
+
+    private(set) var lastIncrementalSyncDate: Date? {
+        get { state.withLock { $0.lastIncrementalSyncDate } }
+        set { state.withLock { $0.lastIncrementalSyncDate = newValue } }
+    }
+
+    var onSync: (@Sendable (Int64) async throws -> Void)? {
+        get { state.withLock { $0.onSync } }
+        set { state.withLock { $0.onSync = newValue } }
+    }
 
     @discardableResult
     func startIncrementalSync(for siteID: Int64,
                               lastFullSyncDate: Date,
                               lastIncrementalSyncDate: Date?) async throws -> POSCatalog {
-        startIncrementalSyncCallCount += 1
+        state.withLock { $0.startIncrementalSyncCallCount += 1 }
         lastSyncSiteID = siteID
         self.lastFullSyncDate = lastFullSyncDate
         self.lastIncrementalSyncDate = lastIncrementalSyncDate
 
-        if shouldBlockSync {
-            await withCheckedContinuation { continuation in
-                syncContinuations.append(continuation)
-                // Signal that a sync is now blocked and ready
-                if !syncBlockedContinuations.isEmpty {
-                    syncBlockedContinuations.removeFirst().resume()
-                }
-            }
-        }
+        try await onSync?(siteID)
 
         switch startIncrementalSyncResult {
         case .success(let catalog):
@@ -38,23 +61,5 @@ final class MockPOSCatalogIncrementalSyncService: POSCatalogIncrementalSyncServi
         case .failure(let error):
             throw error
         }
-    }
-}
-
-extension MockPOSCatalogIncrementalSyncService {
-    func blockNextSync() {
-        shouldBlockSync = true
-    }
-
-    func waitUntilSyncBlocked() async {
-        await withCheckedContinuation { continuation in
-            syncBlockedContinuations.append(continuation)
-        }
-    }
-
-    func resumeBlockedSync() {
-        syncContinuations.forEach { $0.resume() }
-        syncContinuations.removeAll()
-        shouldBlockSync = false
     }
 }

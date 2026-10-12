@@ -3,6 +3,7 @@ import Observation
 import CocoaLumberjackSwift
 import struct Yosemite.POSOrder
 
+@MainActor
 @Observable final class POSOrderListModel {
     let ordersController: POSSearchingOrderListControllerProtocol
     let receiptSender: POSReceiptSending
@@ -26,7 +27,6 @@ import struct Yosemite.POSOrder
         try await ordersController.updateOrder(orderID: order.id)
     }
 
-    @MainActor
     func selectOrder(_ order: POSOrder?) {
         orderSelectionHandler.selectOrder(order)
         refundController.reset()
@@ -34,37 +34,30 @@ import struct Yosemite.POSOrder
 
     // MARK: - Refund Flow
 
-    @MainActor
     var refundActionAvailability: RefundActionAvailability {
         ordersController.selectedOrder?.refundActionAvailability ?? .unavailable
     }
 
-    @MainActor
     var refundSelectableItems: [POSRefundSelectableItem] {
         refundController.selectableItems
     }
 
-    @MainActor
     var hasLoadedRefundableItems: Bool {
         refundController.hasLoadedSelectableItems
     }
 
-    @MainActor
     var hasModifiedRefundSelection: Bool {
         refundController.hasModifiedSelection
     }
 
-    @MainActor
     var refundReviewPreparationState: POSRefundReviewPreparationState {
         refundController.reviewPreparationState
     }
 
-    @MainActor
     var requiresCardPresentRefund: Bool {
         refundController.requiresCardPresentRefund
     }
 
-    @MainActor
     func preloadRefund() async {
         guard let order = ordersController.selectedOrder else {
             return
@@ -72,7 +65,6 @@ import struct Yosemite.POSOrder
         await refundController.preloadRefund(for: order)
     }
 
-    @MainActor
     func startRefundFlow() async -> StartRefundFlowResult {
         guard let order = ordersController.selectedOrder else {
             return .failed
@@ -80,32 +72,26 @@ import struct Yosemite.POSOrder
         return await refundController.startRefundFlow(for: order)
     }
 
-    @MainActor
     func refreshRefundableItems() async -> StartRefundFlowResult {
         await refundController.refreshRefundableItems()
     }
 
-    @MainActor
     func toggleRefundItemSelection(at index: Int) {
         refundController.toggleItemSelection(at: index)
     }
 
-    @MainActor
     func toggleAllRefundItemsSelection() {
         refundController.toggleAllItemsSelection()
     }
 
-    @MainActor
     func clearRefundSelection() {
         refundController.clearSelection()
     }
 
-    @MainActor
     func prepareRefundReview() async -> POSRefundReviewPreparationResult {
         await refundController.prepareReview()
     }
 
-    @MainActor
     func processRefund(reason: String?) async throws {
         let result = try await refundController.processRefund(reason: reason)
         do {

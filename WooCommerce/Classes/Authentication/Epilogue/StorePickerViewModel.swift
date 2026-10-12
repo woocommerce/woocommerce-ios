@@ -47,7 +47,7 @@ final class StorePickerViewModel {
         self.storageManager = storageManager
         self.userDefaults = userDefaults
         self.analytics = analytics
-        self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores)
+        self.roleEligibilityUseCase = RoleEligibilityUseCase(stores: stores, detectUnexpectedResponses: configuration.detectsUnexpectedLoginResponses)
     }
 
     func trackScreenView() {

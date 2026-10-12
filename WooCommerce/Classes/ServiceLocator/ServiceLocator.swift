@@ -16,7 +16,10 @@ final class ServiceLocator {
 
     /// WooAnalytics Wrapper
     ///
-    private static var _analytics: Analytics = WooAnalytics(analyticsProvider: TracksProvider())
+    private static var _analytics: Analytics = {
+        let provider = TracksProvider(consent: UserDefaultsAnalyticsConsent())
+        return WooAnalytics(analyticsProvider: provider, consent: provider.consent)
+    }()
 
     /// StoresManager
     ///
@@ -138,7 +141,8 @@ final class ServiceLocator {
     private static var _cardPresentPaymentsOnboardingIPPUsersRefresher =
     CardPresentPaymentsOnboardingIPPUsersRefresher()
 
-    private static var _tapToPayReconnectionController = TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
+    @MainActor
+    private static let _tapToPayReconnectionController = TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider, CardPresentPaymentAlertsPresenter>(
             connectionControllerFactory: TapToPayCardReaderConnectionControllerFactory(
                 alertProvider: TapToPayReaderConnectionAlertsProvider()))
 
@@ -377,6 +381,7 @@ final class ServiceLocator {
         _cardPresentPaymentsOnboardingIPPUsersRefresher
     }
 
+    @MainActor
     static var tapToPayReconnectionController: TapToPayReconnectionController<TapToPayReaderConnectionAlertsProvider,
                                                                                 CardPresentPaymentAlertsPresenter> {
         _tapToPayReconnectionController

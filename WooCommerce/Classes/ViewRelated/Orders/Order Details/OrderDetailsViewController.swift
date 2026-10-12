@@ -111,6 +111,11 @@ final class OrderDetailsViewController: UIViewController {
         }
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     override var shouldShowOfflineBanner: Bool {
         true
     }
@@ -141,13 +146,7 @@ private extension OrderDetailsViewController {
         tableView.estimatedSectionHeaderHeight = Constants.sectionHeight
         tableView.estimatedRowHeight = Constants.rowHeight
         tableView.rowHeight = UITableView.automaticDimension
-        if #available(iOS 26.0, *) {
-            // Work around WOOMOB-3694 by avoiding the navigation controller's refresh-control host, which can enter a recursive layout cycle.
-            // Order Details does not use large titles, so direct subview attachment preserves pull-to-refresh without that integration.
-            tableView.addSubview(refreshControl)
-        } else {
-            tableView.refreshControl = refreshControl
-        }
+        tableView.refreshControl = refreshControl
 
         tableView.dataSource = viewModel.dataSource
         tableView.accessibilityIdentifier = "order-details-table-view"
@@ -706,8 +705,7 @@ private extension OrderDetailsViewController {
     func editShippingAddressTapped() {
         let viewModel = EditOrderAddressFormViewModel(order: viewModel.order, type: .shipping)
         let editAddressViewController = EditOrderAddressHostingController(viewModel: viewModel)
-        let navigationController = WooNavigationController(rootViewController: editAddressViewController)
-        present(navigationController, animated: true, completion: nil)
+        present(editAddressViewController, animated: true, completion: nil)
     }
 
     func trashOrderTapped() {

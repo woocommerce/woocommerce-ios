@@ -214,7 +214,7 @@ public class SiteRemote: Remote, SiteRemoteProtocol {
 
 /// Possible Site Creation Flows
 ///
-public enum SiteCreationFlow {
+public enum SiteCreationFlow: Sendable {
     case onboarding(domain: String)
     case wooexpress
 
@@ -301,7 +301,7 @@ public extension SiteCreationResponse {
 }
 
 /// Answers from the site creation profiler questions.
-public struct StoreProfilerAnswers: Codable, Equatable {
+public struct StoreProfilerAnswers: Codable, Equatable, Sendable {
     public let sellingStatus: SellingStatus?
     public let sellingPlatforms: String?
     public let category: String?
@@ -310,7 +310,7 @@ public struct StoreProfilerAnswers: Codable, Equatable {
     /// Selling status options.
     /// Its raw value is the value to be sent to the backend.
     /// https://github.com/woocommerce/woocommerce/blob/trunk/plugins/woocommerce-admin/client/core-profiler/pages/UserProfile.tsx#L20
-    public enum SellingStatus: Codable {
+    public enum SellingStatus: Codable, Sendable {
         /// Just starting my business.
         case justStarting
         /// Already selling but not online

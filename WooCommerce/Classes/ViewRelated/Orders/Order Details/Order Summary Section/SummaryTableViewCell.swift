@@ -46,10 +46,11 @@ final class SummaryTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        configureBackground()
-        configureLabels()
-        configureIcon()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureLabels()
+            configureIcon()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {
@@ -108,6 +109,7 @@ private extension SummaryTableViewCell {
 
     func configureIcon() {
         updateStatusButton.applyIconButtonStyle(icon: .pencilImage)
+        updateStatusButton.accessibilityIdentifier = "summary-table-view-cell-update-status-button"
 
         updateStatusButton.addTarget(self, action: #selector(editWasTapped), for: .touchUpInside)
 

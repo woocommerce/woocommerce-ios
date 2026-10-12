@@ -1,9 +1,11 @@
 import SwiftUI
+import class WooFoundation.KeyboardObserver
 import enum Yosemite.POSItemType
 import enum Yosemite.POSItem
 import enum Yosemite.SearchDebounceStrategy
 
 /// Protocol defining search capabilities for POS items
+@MainActor
 protocol POSSearchable {
     var searchFieldPlaceholder: String { get }
     /// Recent search history for the current item type

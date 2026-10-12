@@ -3015,8 +3015,36 @@ extension WooAnalyticsEvent {
 //
 extension WooAnalyticsEvent {
     enum Login {
+        static func unexpectedResponseActionTapped(failure: LoginUnexpectedResponseFailure,
+                                                  loginFlow: LoginUnexpectedResponseFailure.LoginFlow,
+                                                  action: LoginUnexpectedResponseFailure.Action) -> WooAnalyticsEvent {
+            var properties = unexpectedResponseShown(failure: failure, loginFlow: loginFlow).properties
+            properties[Key.action.rawValue] = action.rawValue
+            return WooAnalyticsEvent(statName: .loginUnexpectedResponseActionTapped, properties: properties)
+        }
+
+        static func unexpectedResponseRetryResult(failure: LoginUnexpectedResponseFailure,
+                                                 loginFlow: LoginUnexpectedResponseFailure.LoginFlow,
+                                                 success: Bool) -> WooAnalyticsEvent {
+            var properties = unexpectedResponseShown(failure: failure, loginFlow: loginFlow).properties
+            properties[Key.result.rawValue] = success ? "success" : "failure"
+            return WooAnalyticsEvent(statName: .loginUnexpectedResponseRetryResult, properties: properties)
+        }
+
+        static func unexpectedResponseShown(failure: LoginUnexpectedResponseFailure,
+                                            loginFlow: LoginUnexpectedResponseFailure.LoginFlow) -> WooAnalyticsEvent {
+            WooAnalyticsEvent(statName: .loginUnexpectedResponseErrorShown, properties: [
+                Key.loginFlow.rawValue: loginFlow.rawValue,
+                Key.failureKind.rawValue: failure.kind.rawValue,
+                Key.step.rawValue: failure.step.rawValue
+            ])
+        }
+
         enum Key: String {
+            case action
             case step
+            case loginFlow = "login_flow"
+            case failureKind = "failure_kind"
             case currentRoles = "current_roles"
             case exists
             case hasWordPress = "is_wordpress"
@@ -3027,6 +3055,7 @@ extension WooAnalyticsEvent {
             case isJetpackConnected = "is_jetpack_connected"
             case urlAfterRedirects = "url_after_redirects"
             case requiredAuthChallenge = "required_auth_challenge"
+            case result
         }
 
         enum LoginSiteCredentialStep: String {

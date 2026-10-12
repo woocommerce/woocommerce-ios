@@ -164,6 +164,20 @@ struct POSRefundsServiceTests {
         #expect(result.supportsAutomaticRefund == false)
     }
 
+    @Test func providePointOfSaleRefunds_when_gateway_not_found_and_order_was_marked_as_paid_then_supportsAutomaticRefund_is_false() async throws {
+        // Given
+        let remote = MockPOSRefundsRemote()
+        let sut = makeSUT(remote: remote)
+
+        let order = makeOrder(paymentMethodID: PaymentGateway.Constants.manualPaymentMethodID)
+
+        // When
+        let result = try await sut.providePointOfSaleRefunds(for: order)
+
+        // Then
+        #expect(result.supportsAutomaticRefund == false)
+    }
+
     @Test func providePointOfSaleRefunds_when_gateway_not_found_and_payment_method_is_not_cod_then_supportsAutomaticRefund_is_true() async throws {
         // Given
         let remote = MockPOSRefundsRemote()

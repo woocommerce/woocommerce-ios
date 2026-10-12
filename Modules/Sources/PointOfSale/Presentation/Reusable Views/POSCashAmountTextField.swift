@@ -2,24 +2,19 @@ import SwiftUI
 import WooFoundation
 
 struct POSCashAmountTextField: View {
-    @Binding var amount: String
+    @Binding var input: POSCashAmountInputState
     @FocusState.Binding var isFocused: Bool
     let onSubmit: () -> Void
-
-    @State private var displayText: String = ""
-    @State private var inputDigits: String = ""
-    @State private var hasAppliedPreset: Bool = false
-    @State private var isDisplayingPreset: Bool = false
 
     private let formatter: POSCashAmountInputFormatter
     private let preset: Decimal?
 
-    init(amount: Binding<String>,
+    init(input: Binding<POSCashAmountInputState>,
          isFocused: FocusState<Bool>.Binding,
          currencySettings: CurrencySettings,
          preset: Decimal? = nil,
          onSubmit: @escaping () -> Void) {
-        self._amount = amount
+        self._input = input
         self._isFocused = isFocused
         self.formatter = POSCashAmountInputFormatter(currencySettings: currencySettings)
         self.preset = preset
@@ -32,7 +27,7 @@ struct POSCashAmountTextField: View {
                 .foregroundStyle(Color.posOnSurface)
                 .font(.posHeadingRegular)
                 .dynamicTypeSize(...DynamicTypeSize.accessibility1)
-            TextField("", text: $displayText)
+            TextField("", text: $input.displayText)
                 .keyboardType(formatter.hasFractionDigits ? .decimalPad : .numberPad)
                 .multilineTextAlignment(.center)
                 .foregroundStyle(Color.posOnSurface)
@@ -46,45 +41,45 @@ struct POSCashAmountTextField: View {
                     onSubmit()
                 }
                 .onAppear {
-                    if !hasAppliedPreset, let preset {
-                        inputDigits = formatter.digits(from: preset)
-                        let formatted = formatter.formattedAmount(from: inputDigits)
-                        displayText = formatted
-                        amount = formatted
-                        hasAppliedPreset = true
-                        isDisplayingPreset = true
+                    if !input.hasAppliedPreset, let preset {
+                        input.inputDigits = formatter.digits(from: preset)
+                        let formatted = formatter.formattedAmount(from: input.inputDigits)
+                        input.displayText = formatted
+                        input.amount = formatted
+                        input.hasAppliedPreset = true
+                        input.isDisplayingPreset = true
                     }
                 }
                 .onDisappear {
                     isFocused = false
                 }
-                .onChange(of: displayText) { oldValue, newValue in
+                .onChange(of: input.displayText) { oldValue, newValue in
                     handleTextChange(oldValue: oldValue, newValue: newValue)
                 }
         }
     }
 
     private func handleTextChange(oldValue: String, newValue: String) {
-        let currentFormattedAmount = formatter.formattedAmount(from: inputDigits)
+        let currentFormattedAmount = formatter.formattedAmount(from: input.inputDigits)
         guard newValue != currentFormattedAmount else {
-            amount = currentFormattedAmount
+            input.amount = currentFormattedAmount
             return
         }
 
         if let updatedDigits = formatter.applyingEdit(
             from: oldValue,
             to: newValue,
-            currentDigits: inputDigits,
-            isReplacingPreset: isDisplayingPreset
+            currentDigits: input.inputDigits,
+            isReplacingPreset: input.isDisplayingPreset
         ) {
-            inputDigits = updatedDigits
-            isDisplayingPreset = false
+            input.inputDigits = updatedDigits
+            input.isDisplayingPreset = false
         }
 
-        let formattedAmount = formatter.formattedAmount(from: inputDigits)
-        amount = formattedAmount
-        if displayText != formattedAmount {
-            displayText = formattedAmount
+        let formattedAmount = formatter.formattedAmount(from: input.inputDigits)
+        input.amount = formattedAmount
+        if input.displayText != formattedAmount {
+            input.displayText = formattedAmount
         }
     }
 }

@@ -265,7 +265,7 @@ private extension QRLoginPostExchangeServiceTests {
 
     func stubFetchSiteInfo(stores: MockStoresManager, result: Result<Site, Error>) {
         stores.whenReceivingAction(ofType: WordPressSiteAction.self) { action in
-            if case let .fetchSiteInfo(_, completion) = action {
+            if case let .fetchSiteInfo(_, _, completion) = action {
                 completion(result)
             }
         }

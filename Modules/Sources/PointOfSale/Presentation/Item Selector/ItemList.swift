@@ -1,4 +1,5 @@
 import SwiftUI
+import class WooFoundation.KeyboardObserver
 import enum Yosemite.POSItem
 import struct Yosemite.POSCoupon
 
@@ -79,7 +80,7 @@ struct ItemList<HeaderView: View>: View {
             }
         case .inlineError(_, let errorState, .pagination):
             POSListInlineErrorView(errorState: errorState,
-                                  buttonAction: {
+                                  buttonAction: { [itemsController, node] in
                 await itemsController.loadNextItems(base: node)
             })
         case .initial, .loaded, .error, .empty, .none, .inlineError(_, _, .refresh):
@@ -91,7 +92,7 @@ struct ItemList<HeaderView: View>: View {
         switch state {
         case .inlineError(_, let errorState, .refresh):
             POSListInlineErrorView(errorState: errorState,
-                                  buttonAction: {
+                                  buttonAction: { [itemsController] in
                 await itemsController.loadItems(base: .root)
             })
         case .initial, .loaded, .error, .empty, .none, .loading, .inlineError(_, _, .pagination):
@@ -154,6 +155,7 @@ struct ItemListRow: View {
             }, label: {
                 CouponCardView(coupon: coupon, isApplied: isApplied(coupon))
             })
+            .accessibilityIdentifier("pos-coupon-card-\(coupon.id.itemID)")
         }
     }
 }

@@ -227,6 +227,42 @@ struct QRLoginCoordinatorTests {
         #expect(spy.analytics.flows == [.loginQR, .loginQR])
         #expect(spy.analytics.setSteps == [.qrError])
     }
+
+    @Test func magicLinkCallback_when_camera_mode_and_url_unhandled_then_returns_to_prologue_and_stays_alive() {
+        // Given — the prologue with the live flow's screen on top.
+        let nav = UINavigationController()
+        let spy = Spies()
+        let coordinator = makeCoordinator(mode: .camera, navigationController: nav, spies: spy)
+        coordinator.start()
+        let prologue = nav.viewControllers.first
+        nav.pushViewController(UIViewController(), animated: false)
+
+        // When — a callback without a token can't be handed off.
+        coordinator.handleMagicLinkCallback(URL(string: "woocommerce://magic-login?flow=login")!)
+
+        // Then — the merchant can retry from the prologue instead of being stranded.
+        #expect(nav.viewControllers.count == 1)
+        #expect(nav.viewControllers.first === prologue)
+        #expect(spy.finishedCount == 0)
+    }
+
+    @Test func magicLinkCallback_when_deepLink_mode_and_url_unhandled_then_exits_qr_surface_and_finishes() {
+        // Given — a deep-link host pushed on the existing login stack.
+        let loginRoot = UIViewController()
+        let nav = UINavigationController(rootViewController: loginRoot)
+        let spy = Spies()
+        let payload = QRLoginPayload.wpCom(token: "abc:def", encrypted: "blob")
+        let coordinator = makeCoordinator(mode: .deepLink(payload: payload), navigationController: nav, spies: spy)
+        coordinator.start()
+        #expect(nav.viewControllers.count == 2)
+
+        // When
+        coordinator.handleMagicLinkCallback(URL(string: "woocommerce://magic-login?flow=login")!)
+
+        // Then
+        #expect(nav.viewControllers == [loginRoot])
+        #expect(spy.finishedCount == 1)
+    }
 }
 
 // MARK: - Helpers

@@ -88,7 +88,7 @@ struct POSSettingsHardwareDetailView: View {
                     .accessibilityLabel("\(destination.title), \(destination.subtitle)")
                 }
             }
-            .padding(.horizontal, POSPadding.medium)
+            .posContentPadding(.horizontal, POSPadding.medium)
 
             Spacer()
         }
@@ -373,6 +373,7 @@ private struct POSSettingsDetailPage<Content: View>: View {
             content()
         }
         .background(backgroundColor)
+        .posIgnoresHiddenKeyboardSafeArea()
         .navigationBarBackButtonHidden(true)
         .posEdgeSwipeBackAction(onBack: onBack)
     }

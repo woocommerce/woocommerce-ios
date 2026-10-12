@@ -173,20 +173,21 @@ public class AlamofireNetwork: Network {
     ///     - Yes. We do the above because the Jetpack Tunnel endpoint doesn't properly relay the correct statusCode.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        let convertedRequest = convertRequestIfNeeded(request)
+        let convertedRequest = convertRequestIfNeeded(request.originalResponseRequest)
         performAfterDiscovery(for: convertedRequest) { [weak self] in
             self?.alamofireSession.request(convertedRequest)
                 .validateIfRestRequest(for: convertedRequest)
                 .responseData { [weak self] response in
                     self?.errorHandler.handleFailureForDirectRequestIfNeeded(
-                        originalRequest: request,
+                        originalRequest: request.originalResponseRequest,
                         convertedRequest: convertedRequest,
                         failure: response.networkingError,
                         onRetry: {
                             self?.responseData(for: request, completion: completion)
                         },
                         onCompletion: {
-                            completion(response.value, response.networkingError)
+                            let unexpectedError = response.unexpectedResponseError(for: request, tunneled: convertedRequest is JetpackRequest)
+                            completion(unexpectedError == nil ? response.value : nil, unexpectedError ?? response.networkingError)
                         }
                     )
                 }
@@ -203,20 +204,21 @@ public class AlamofireNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        let convertedRequest = convertRequestIfNeeded(request)
+        let convertedRequest = convertRequestIfNeeded(request.originalResponseRequest)
         performAfterDiscovery(for: convertedRequest) { [weak self] in
             self?.alamofireSession.request(convertedRequest)
                 .validateIfRestRequest(for: convertedRequest)
                 .responseData { [weak self] response in
                     self?.errorHandler.handleFailureForDirectRequestIfNeeded(
-                        originalRequest: request,
+                        originalRequest: request.originalResponseRequest,
                         convertedRequest: convertedRequest,
                         failure: response.networkingError,
                         onRetry: {
                             self?.responseData(for: request, completion: completion)
                         },
                         onCompletion: {
-                            if let error = response.networkingError {
+                            let unexpectedError = response.unexpectedResponseError(for: request, tunneled: convertedRequest is JetpackRequest)
+                            if let error = unexpectedError ?? response.networkingError {
                                 completion(.failure(error))
                             } else {
                                 completion(response.result.mapError { $0 })
@@ -229,7 +231,7 @@ public class AlamofireNetwork: Network {
 
     public func responseDataAndHeaders(for request: URLRequestConvertible,
                                        isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
-        let convertedRequest = convertRequestIfNeeded(request)
+        let convertedRequest = convertRequestIfNeeded(request.originalResponseRequest)
         await withDiscoveryIfNeeded(for: convertedRequest, isolation: isolation)
         let sessionRequest = alamofireSession.request(convertedRequest)
             .validateIfRestRequest(for: convertedRequest)
@@ -237,16 +239,17 @@ public class AlamofireNetwork: Network {
         let failure = response.networkingError
 
         if errorHandler.shouldRetryJetpackRequest(
-            originalRequest: request,
+            originalRequest: request.originalResponseRequest,
             convertedRequest: convertedRequest,
             failure: failure
         ) {
             return try await responseDataAndHeaders(for: request, isolation: isolation)
         }
 
-        errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: request, failure: failure)
+        errorHandler.flagSiteAsUnsupportedForAppPasswordIfNeeded(originalRequest: request.originalResponseRequest, failure: failure)
+        let unexpectedError = response.unexpectedResponseError(for: request, tunneled: convertedRequest is JetpackRequest)
 
-        if let error = response.networkingError {
+        if let error = unexpectedError ?? response.networkingError {
             throw error
         }
         switch response.result {
@@ -270,10 +273,10 @@ public class AlamofireNetwork: Network {
     /// fallbacks otherwise.
     ///
     public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
-        guard request is JetpackRequest else {
+        guard request.originalResponseRequest is JetpackRequest else {
             return false
         }
-        return !requestConverter.convertsToDirectRequest(request)
+        return !requestConverter.convertsToDirectRequest(request.originalResponseRequest)
     }
 
     /// Executes the specified Network Request. Upon completion, the payload or error will be emitted to the publisher.

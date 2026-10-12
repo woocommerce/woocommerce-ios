@@ -1,9 +1,43 @@
 import Testing
 import UIKit
+import GameController
 @testable import PointOfSale
 
 @MainActor
 struct BarcodeScannerContainerTests {
+    @Test
+    func test_container_when_acceptance_changes_then_existing_observer_uses_current_value() throws {
+        // Given
+        let analytics = MockPOSAnalytics()
+        var results: [Result<String, HIDBarcodeParserError>] = []
+        let container = GameControllerBarcodeScannerHostingController(
+            configuration: .default,
+            analytics: analytics,
+            onScan: { results.append($0) },
+            voiceOverStateProvider: MockVoiceOverStateProvider(isRunning: true))
+        show(container)
+        let observer = try #require(container.uiKitObserver)
+        observer.processUIPress([])
+        let parser = try #require(observer.barcodeParser)
+
+        // When: SwiftUI updates the acceptance check while the observer is still installed.
+        container.isScanningEnabled = { false }
+        for key: GCKeyCode in [.one, .two, .three, .four, .five, .six, .returnOrEnter] {
+            parser.processKeyPress(key)
+        }
+
+        // Then
+        #expect(results.isEmpty)
+        #expect(analytics.events.isEmpty)
+
+        container.isScanningEnabled = { true }
+        for key: GCKeyCode in [.one, .two, .three, .four, .five, .six, .returnOrEnter] {
+            parser.processKeyPress(key)
+        }
+        #expect(results.count == 1)
+        #expect(analytics.events.count == 1)
+    }
+
     @Test("Container uses GameController observer when VoiceOver is disabled")
     func container_when_voiceover_disabled_uses_gamecontroller_observer() {
         // Given

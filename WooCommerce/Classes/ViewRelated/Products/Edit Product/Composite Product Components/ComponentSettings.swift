@@ -17,11 +17,13 @@ struct ComponentSettings: View {
     ///
     @ScaledMetric private var optionImageWidth = Layout.optionImageWidth
 
-    /// Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
-
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         ScrollView {
             VStack(alignment: .leading, spacing: Layout.sectionSpacing) {
                 // Component image
@@ -66,7 +68,7 @@ struct ComponentSettings: View {
                     .headlineStyle()
                     .padding()
 
-                optionsList
+                optionsList(safeAreaInsets: safeAreaInsets)
                     .redacted(reason: viewModel.showOptionsLoadingIndicator ? .placeholder : [])
                     .shimmering(active: viewModel.showOptionsLoadingIndicator)
             }
@@ -95,7 +97,7 @@ struct ComponentSettings: View {
 
     /// Displays a list of component options or a placeholder if the list is empty.
     ///
-    @ViewBuilder private var optionsList: some View {
+    @ViewBuilder private func optionsList(safeAreaInsets: EdgeInsets) -> some View {
         if viewModel.options.isNotEmpty {
             ForEach(viewModel.options) { option in
                 HStack {

@@ -401,6 +401,7 @@ private extension POSPrinterSetupModal {
 #Preview {
     POSPrinterSetupModal(isPresented: .constant(true),
                          controller: POSPrinterConnectionController(service: POSReceiptPrinterPreviewService()))
+        .posPreviewModalParentSize()
 }
 
 #Preview("Bluetooth disabled") {
@@ -410,6 +411,7 @@ private extension POSPrinterSetupModal {
             service: POSReceiptPrinterPreviewService(),
             bluetoothAuthorizationProvider: PreviewBluetoothAuthorizationProvider(current: .denied))
     )
+    .posPreviewModalParentSize()
 }
 
 #Preview("Printer found") {
@@ -419,6 +421,7 @@ private extension POSPrinterSetupModal {
             keepDiscovering: true))
     controller.startDiscovery()
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+        .posPreviewModalParentSize()
 }
 
 #Preview("Discovery error") {
@@ -426,6 +429,7 @@ private extension POSPrinterSetupModal {
         service: POSReceiptPrinterPreviewService(failsDiscovery: true))
     controller.startDiscovery()
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+        .posPreviewModalParentSize()
 }
 
 #Preview("Failed to connect") {
@@ -434,6 +438,7 @@ private extension POSPrinterSetupModal {
         service: POSReceiptPrinterPreviewService(devices: [device], failsToConnect: true))
     controller.connect(to: device)
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+        .posPreviewModalParentSize()
 }
 
 #Preview("Several printers found") {
@@ -444,6 +449,7 @@ private extension POSPrinterSetupModal {
             keepDiscovering: true))
     controller.startDiscovery()
     return POSPrinterSetupModal(isPresented: .constant(true), controller: controller)
+        .posPreviewModalParentSize()
 }
 
 private struct PreviewBluetoothAuthorizationProvider: BluetoothAuthorizationProviding {

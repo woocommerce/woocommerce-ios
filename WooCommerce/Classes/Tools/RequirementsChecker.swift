@@ -39,7 +39,7 @@ final class RequirementsChecker {
     /// If the site is WPCom, the site plan is fetched when minimum Woo version check fails
     /// in order to determine if the site is running on an expired plan.
     ///
-    func checkSiteEligibility(for site: Site, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
+    func checkSiteEligibility(for site: Site, detectUnexpectedResponses: Bool = false, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) {
         /// When a site plan expires, after 8 days the site is reverted to a simple site.
         guard !site.isSimpleSite else {
             onCompletion?(.success(.expiredWPComPlan))
@@ -47,7 +47,7 @@ final class RequirementsChecker {
         }
         Task { @MainActor in
             do {
-                let result = try await checkMinimumWooVersion(for: site)
+                let result = try await checkMinimumWooVersion(for: site, detectUnexpectedResponses: detectUnexpectedResponses)
                 onCompletion?(.success(result))
             } catch {
                 onCompletion?(.failure(error))
@@ -109,9 +109,9 @@ private extension RequirementsChecker {
     /// - parameter onCompletion: Closure to be executed upon completion with the result of the requirement check
     ///
     @MainActor
-    func checkMinimumWooVersion(for site: Site) async throws -> RequirementCheckResult {
+    func checkMinimumWooVersion(for site: Site, detectUnexpectedResponses: Bool) async throws -> RequirementCheckResult {
         try await withCheckedThrowingContinuation { continuation in
-            stores.dispatch(retrieveSiteAPIAction(siteID: site.siteID) { result in
+            stores.dispatch(retrieveSiteAPIAction(siteID: site.siteID, detectUnexpectedResponses: detectUnexpectedResponses) { result in
                 switch result {
                 case .success(let checkResult):
                     continuation.resume(returning: checkResult)
@@ -124,8 +124,9 @@ private extension RequirementsChecker {
 
     /// Returns a `SettingAction.retrieveSiteAPI` action
     ///
-    func retrieveSiteAPIAction(siteID: Int64, onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) -> SettingAction {
-        return SettingAction.retrieveSiteAPI(siteID: siteID) { [weak self] result in
+    func retrieveSiteAPIAction(siteID: Int64, detectUnexpectedResponses: Bool = false,
+                               onCompletion: ((Result<RequirementCheckResult, Error>) -> Void)? = nil) -> SettingAction {
+        return SettingAction.retrieveSiteAPI(siteID: siteID, detectUnexpectedResponses: detectUnexpectedResponses) { [weak self] result in
             guard let self else { return }
             switch result {
             case .success(let siteAPI):

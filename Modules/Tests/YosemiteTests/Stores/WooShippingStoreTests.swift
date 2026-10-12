@@ -5,6 +5,7 @@ import YosemiteTestHelpers
 import protocol Storage.StorageType
 import class Storage.ShippingLabelPaymentMethod
 
+@MainActor
 final class WooShippingStoreTests: XCTestCase {
 
     /// Mock Dispatcher!
@@ -32,8 +33,8 @@ final class WooShippingStoreTests: XCTestCase {
     ///
     private let sampleOrderID: Int64 = 12
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()

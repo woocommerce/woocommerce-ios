@@ -133,6 +133,19 @@ extension PaymentGateway: Codable {
 extension PaymentGateway {
     public enum Constants {
         public static let cashOnDeliveryGatewayID = "cod"
+
+        /// Payment method slug used when the merchant marks an order as paid manually,
+        /// e.g. for an external reader, account credit, gift card, or any out-of-band collection.
+        /// Matches the "Other" payment method in the WooCommerce admin order screen.
+        /// Distinct from `cashOnDeliveryGatewayID` so reporting can separate the two flows.
+        public static let manualPaymentMethodID = "other"
+
+        /// Payment methods collected outside a refund-capable gateway. When their gateway can't be found,
+        /// refunds are recorded only (`api_refund=false`): requesting a gateway refund fails server-side.
+        public static let manualPaymentMethodIDs: Set<String> = [
+            cashOnDeliveryGatewayID,
+            manualPaymentMethodID
+        ]
     }
 }
 

@@ -3,7 +3,8 @@ import MessageUI
 
 /// Encapsulates logic to share an Order via email
 ///
-final class OrderEmailComposer: NSObject, MFMailComposeViewControllerDelegate {
+@MainActor
+final class OrderEmailComposer: NSObject, @MainActor MFMailComposeViewControllerDelegate {
     func displayEmailComposerIfPossible(for order: Order, from: UIViewController) -> Bool {
         guard let email = order.billingAddress?.email, MFMailComposeViewController.canSendMail() else {
             return false

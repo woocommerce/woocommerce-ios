@@ -12,6 +12,7 @@
         <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="OrderListViewController" customModule="WooCommerce" customModuleProvider="target">
             <connections>
                 <outlet property="tableView" destination="1mE-SE-uK9" id="ogX-nu-l5x"/>
+                <outlet property="tableViewTopConstraint" destination="ZjI-Dc-KKp" id="QEi-Sb-DtH"/>
                 <outlet property="view" destination="iN0-l3-epB" id="Jh9-wF-LZg"/>
             </connections>
         </placeholder>

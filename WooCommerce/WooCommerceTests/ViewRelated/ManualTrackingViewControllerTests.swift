@@ -1,6 +1,7 @@
 import XCTest
 @testable import WooCommerce
 
+@MainActor
 final class ManualTrackingViewControllerTests: XCTestCase {
     private var subject: ManualTrackingViewController?
     private var viewModel: ManualTrackingViewModel?
@@ -9,18 +10,18 @@ final class ManualTrackingViewControllerTests: XCTestCase {
         static let order = MockOrders().sampleOrder()
     }
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         viewModel = AddTrackingViewModel(order: MockData.order)
         subject = ManualTrackingViewController(viewModel: viewModel!)
         // Force the VC to load the xib
         let _ = subject?.view
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         subject = nil
         viewModel = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     func testTitleMatchesViewModel() {

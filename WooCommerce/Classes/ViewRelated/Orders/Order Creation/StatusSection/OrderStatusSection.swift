@@ -7,7 +7,7 @@ struct OrderStatusSection: View {
 
     @ObservedObject var viewModel: EditableOrderViewModel
 
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
     /// Set false to not render the top divider.
     /// Useful when there is a content on top that has its own divider.
@@ -84,7 +84,7 @@ struct OrderStatusSection_Previews: PreviewProvider {
         let viewModel = EditableOrderViewModel(siteID: 123)
 
         ScrollView {
-            OrderStatusSection(viewModel: viewModel)
+            OrderStatusSection(viewModel: viewModel, safeAreaInsets: .zero)
         }
     }
 }

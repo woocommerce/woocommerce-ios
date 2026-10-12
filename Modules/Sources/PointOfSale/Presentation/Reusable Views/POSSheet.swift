@@ -31,6 +31,7 @@ final class POSSheetManager: ObservableObject {
 // MARK: - Individual Sheet Modifiers
 
 struct POSSheetViewModifier<SheetContent: View>: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @EnvironmentObject var sheetManager: POSSheetManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var isPresented: Bool
@@ -50,7 +51,13 @@ struct POSSheetViewModifier<SheetContent: View>: ViewModifier {
 
     func body(content: Content) -> some View {
         content
-            .sheet(isPresented: sheetIsPresented, onDismiss: onDismiss, content: sheetContent)
+            .sheet(isPresented: sheetIsPresented, onDismiss: onDismiss) {
+                sheetContent()
+                    .environment(\.horizontalSizeClass, horizontalSizeClass)
+                    .environment(\.posHeaderTopPadding, nil)
+                    .onAppear { sheetManager.registerSheetPresented(id: sheetId) }
+                    .onDisappear { sheetManager.registerSheetDismissed(id: sheetId) }
+            }
             .onChange(of: isPresented) { _, newValue in
                 if newValue {
                     sheetManager.registerSheetPresented(id: sheetId)
@@ -62,6 +69,7 @@ struct POSSheetViewModifier<SheetContent: View>: ViewModifier {
 }
 
 struct POSSheetViewModifierForItem<Item: Identifiable & Equatable, SheetContent: View>: ViewModifier {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @EnvironmentObject var sheetManager: POSSheetManager
     @EnvironmentObject var coverManager: POSFullScreenCoverManager
     @Binding var item: Item?
@@ -82,7 +90,13 @@ struct POSSheetViewModifierForItem<Item: Identifiable & Equatable, SheetContent:
 
     func body(content: Content) -> some View {
         content
-            .sheet(item: sheetItem, onDismiss: onDismiss, content: sheetContent)
+            .sheet(item: sheetItem, onDismiss: onDismiss) { item in
+                sheetContent(item)
+                    .environment(\.horizontalSizeClass, horizontalSizeClass)
+                    .environment(\.posHeaderTopPadding, nil)
+                    .onAppear { sheetManager.registerSheetPresented(id: sheetId) }
+                    .onDisappear { sheetManager.registerSheetDismissed(id: sheetId) }
+            }
             .onChange(of: sheetItem.wrappedValue) { _, newItem in
                 let newValue = newItem != nil
                 if newValue {

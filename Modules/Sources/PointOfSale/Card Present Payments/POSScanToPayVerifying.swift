@@ -10,6 +10,7 @@ enum POSScanToPayVerificationResult: Equatable {
 
 /// Abstracts the act of asking the backend whether a scan-to-pay payment has cleared.
 /// Implementations typically reload the order and inspect `datePaid` / `status`.
+@MainActor
 protocol POSScanToPayVerifying {
     /// Returns the latest verification result, refreshing remote state.
     func checkPaymentStatus() async throws -> POSScanToPayVerificationResult

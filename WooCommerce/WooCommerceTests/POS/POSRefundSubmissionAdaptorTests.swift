@@ -89,6 +89,47 @@ struct POSRefundSubmissionAdaptorTests {
         #expect(sut.service.createRefundLineItems == nil)
     }
 
+    @Test func submitRefund_when_order_was_marked_as_paid_then_submits_computed_create_without_automatic_refund() async throws {
+        // Given an order marked as paid manually, whose payment method matches no gateway
+        let markedAsPaidOrder = order().copy(paymentMethodID: PaymentGateway.Constants.manualPaymentMethodID)
+        let sut = makeSUT(previewResult: .success(preview()), order: markedAsPaidOrder)
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        _ = try await sut.adaptor.prepareReviewData(for: posOrder(),
+                                                    preparation: preparation,
+                                                    selectedItems: preparation.selectableItems,
+                                                    reason: nil)
+
+        // When
+        try await sut.adaptor.submitRefund(for: posOrder(),
+                                           preparation: preparation,
+                                           selectedItems: preparation.selectableItems,
+                                           reason: nil)
+
+        // Then the refund is recorded without asking a gateway to refund the payment
+        #expect(sut.service.createRefundAutomaticRefund == false)
+    }
+
+    @Test func submitRefund_when_order_was_marked_as_paid_then_submits_classic_create_without_automatic_refund() async throws {
+        // Given an order marked as paid manually on a store without server-calculated refunds
+        let markedAsPaidOrder = order().copy(paymentMethodID: PaymentGateway.Constants.manualPaymentMethodID)
+        let sut = makeSUT(previewResult: nil, serverFlowEligible: false, order: markedAsPaidOrder)
+        let preparation = try await sut.adaptor.prepareRefund(for: posOrder())
+        _ = try await sut.adaptor.prepareReviewData(for: posOrder(),
+                                                    preparation: preparation,
+                                                    selectedItems: preparation.selectableItems,
+                                                    reason: nil)
+
+        // When
+        try await sut.adaptor.submitRefund(for: posOrder(),
+                                           preparation: preparation,
+                                           selectedItems: preparation.selectableItems,
+                                           reason: nil)
+
+        // Then the refund is recorded without asking a gateway to refund the payment
+        #expect(sut.spy.dispatchedClassicCreate == true)
+        #expect(sut.spy.classicCreateAutomated == false)
+    }
+
     @Test func submitRefund_after_overlapping_previews_uses_latest_server_total() async throws {
         // Given an order with two refundable units and manually-resolved previews, so responses
         // can complete out of order (the regression this pins: a superseded preview must never
@@ -329,6 +370,7 @@ private extension POSRefundSubmissionAdaptorTests {
     final class RefundActionSpy {
         var dispatchedClassicCreate = false
         var classicCreateAmount: String?
+        var classicCreateAutomated: Bool?
     }
 
     /// `RefundServiceProtocol` mock pinned to the main actor so the manual-resolution list and the
@@ -346,6 +388,7 @@ private extension POSRefundSubmissionAdaptorTests {
         private(set) var pendingPreviewCompletions: [(Result<RefundPreview, Error>) -> Void] = []
         private(set) var createRefundLineItems: [ComputedRefundLineItem]?
         private(set) var createRefundReason: String?
+        private(set) var createRefundAutomaticRefund: Bool?
 
         func previewRefund(siteID: Int64,
                            orderID: Int64,
@@ -372,6 +415,7 @@ private extension POSRefundSubmissionAdaptorTests {
                           lineItems: [ComputedRefundLineItem]) async throws -> Refund {
             createRefundLineItems = lineItems
             createRefundReason = reason
+            createRefundAutomaticRefund = automaticRefund
             if let createRefundError {
                 throw createRefundError
             }
@@ -412,6 +456,7 @@ private extension POSRefundSubmissionAdaptorTests {
             case .createRefund(_, _, let refund, let onCompletion):
                 spy.dispatchedClassicCreate = true
                 spy.classicCreateAmount = refund.amount
+                spy.classicCreateAutomated = refund.createAutomated
                 onCompletion(refund, nil)
             case .retrieveRefund(_, _, _, let onCompletion):
                 onCompletion(.fake(), nil)

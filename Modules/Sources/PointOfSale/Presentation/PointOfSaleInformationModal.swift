@@ -79,7 +79,7 @@ struct PointOfSaleInformationModal<Content: View>: View {
         }
         .padding(contentPadding)
         .background(Color.posSurfaceBright)
-        .frame(width: modalFrameWidth, height: parentSize.height, alignment: .top)
+        .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
     }
 
     private var header: some View {
@@ -166,10 +166,7 @@ private extension PointOfSaleInformationModal {
     }
 
     var modalFrameWidth: CGFloat {
-        if isCompactWidth {
-            return parentSize.width
-        }
-        return min(Constants.modalFrameWidth, maxAvailableRegularWidth)
+        min(Constants.modalFrameWidth, maxAvailableRegularWidth)
     }
 
     var maxAvailableRegularWidth: CGFloat {

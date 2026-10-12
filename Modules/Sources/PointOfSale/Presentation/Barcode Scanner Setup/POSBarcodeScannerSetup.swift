@@ -207,6 +207,7 @@ private extension POSBarcodeScannerSetup {
 #if DEBUG
 #Preview {
     POSBarcodeScannerSetup(isPresented: .constant(true), analytics: EmptyPOSAnalytics())
+        .posPreviewModalParentSize()
 }
 #endif
 

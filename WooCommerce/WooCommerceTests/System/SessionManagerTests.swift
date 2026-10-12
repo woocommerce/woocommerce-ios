@@ -601,7 +601,7 @@ final class SessionManagerTests: XCTestCase {
         let sut = SessionManager(
             defaults: defaults,
             keychainServiceName: UUID().uuidString,
-            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { username, password, siteAddress, endpoints in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { username, password, siteAddress, endpoints, _ in
                 capturedUsername = username
                 capturedPassword = password
                 capturedSiteAddress = siteAddress
@@ -643,7 +643,7 @@ final class SessionManagerTests: XCTestCase {
         let sut = SessionManager(
             defaults: defaults,
             keychainServiceName: keychainServiceName,
-            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { username, password, siteAddress, endpoints in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { username, password, siteAddress, endpoints, _ in
                 capturedUsername = username
                 capturedPassword = password
                 capturedSiteAddress = siteAddress
@@ -685,7 +685,7 @@ final class SessionManagerTests: XCTestCase {
         let sut = SessionManager(
             defaults: defaults,
             keychainServiceName: UUID().uuidString,
-            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, endpoints in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, endpoints, _ in
                 capturedEndpoints = endpoints
                 return MockDeletionApplicationPasswordUseCase()
             })

@@ -1,31 +1,59 @@
 import Foundation
+import Synchronization
 @testable import Networking
 
-final class MockBackgroundCatalogParseResuming: BackgroundCatalogParseResuming, @unchecked Sendable {
-    /// If set, the resumer invokes `parseHandler` with this `(fileURL, siteID, snapshotDate)` —
-    /// simulating a staged catalog file waiting to be persisted. If `nil`, the resumer no-ops.
-    var pendingResume: (fileURL: URL, siteID: Int64, snapshotDate: Date)?
+final class MockBackgroundCatalogParseResuming: BackgroundCatalogParseResuming, Sendable {
+    private struct State {
+        var pendingResume: (fileURL: URL, siteID: Int64, snapshotDate: Date)?
+        var resumePendingParseIfNeededCallCount = 0
+        var lastParseHandlerError: Error?
+        var discardPendingParseCallCount = 0
+        var discardPendingParseSiteIDs: [Int64] = []
+    }
 
-    private(set) var resumePendingParseIfNeededCallCount = 0
-    private(set) var lastParseHandlerError: Error?
+    private let state = Mutex(State())
 
-    private(set) var discardPendingParseCallCount = 0
-    private(set) var discardPendingParseSiteIDs: [Int64] = []
+    /// A staged catalog file to pass to the coordinator's parse handler, or nil to no-op.
+    var pendingResume: (fileURL: URL, siteID: Int64, snapshotDate: Date)? {
+        get { state.withLock { $0.pendingResume } }
+        set { state.withLock { $0.pendingResume = newValue } }
+    }
+
+    var resumePendingParseIfNeededCallCount: Int {
+        state.withLock { $0.resumePendingParseIfNeededCallCount }
+    }
+
+    var lastParseHandlerError: Error? {
+        state.withLock { $0.lastParseHandlerError }
+    }
+
+    var discardPendingParseCallCount: Int {
+        state.withLock { $0.discardPendingParseCallCount }
+    }
+
+    var discardPendingParseSiteIDs: [Int64] {
+        state.withLock { $0.discardPendingParseSiteIDs }
+    }
 
     func discardPendingParse(for siteID: Int64) {
-        discardPendingParseCallCount += 1
-        discardPendingParseSiteIDs.append(siteID)
+        state.withLock {
+            $0.discardPendingParseCallCount += 1
+            $0.discardPendingParseSiteIDs.append(siteID)
+        }
     }
 
     func resumePendingParseIfNeeded(parseHandler: @escaping (URL, Int64, Date) async throws -> Void) async {
-        resumePendingParseIfNeededCallCount += 1
-        guard let pending = pendingResume else { return }
+        let pending = state.withLock {
+            $0.resumePendingParseIfNeededCallCount += 1
+            return $0.pendingResume
+        }
+        guard let pending else { return }
         do {
             try await parseHandler(pending.fileURL, pending.siteID, pending.snapshotDate)
         } catch {
             // Mirror the production contract: errors from the parse handler are surfaced via
             // this spy so tests can assert they were swallowed by the coordinator.
-            lastParseHandlerError = error
+            state.withLock { $0.lastParseHandlerError = error }
         }
     }
 }

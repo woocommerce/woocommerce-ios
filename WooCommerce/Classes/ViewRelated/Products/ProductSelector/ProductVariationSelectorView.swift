@@ -23,10 +23,6 @@ struct ProductVariationSelectorView: View {
         viewModel.selectionDisabled
     }
 
-    ///   Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
-
     init(isPresented: Binding<Bool>,
          viewModel: ProductVariationSelectorViewModel,
          onMultipleSelections: (([Int64]) -> Void)? = nil) {
@@ -36,6 +32,12 @@ struct ProductVariationSelectorView: View {
     }
 
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         Group {
             switch viewModel.syncStatus {
             case .results:
@@ -52,6 +54,7 @@ struct ProductVariationSelectorView: View {
                         ForEach(viewModel.productVariationRows) { rowViewModel in
                             ProductRow(multipleSelectionsEnabled: true,
                                        viewModel: rowViewModel)
+                                .accessibilityIdentifier("product-variation-item")
                                 .accessibilityHint(Localization.productRowAccessibilityHint)
                                 .padding(Constants.defaultPadding)
                                 .redacted(reason: viewModel.selectionDisabled ? .placeholder : [])

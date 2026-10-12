@@ -31,11 +31,13 @@ struct BundledProductsList: View {
     ///
     @ScaledMetric private var imageWidth = Layout.standardImageWidth
 
-    ///   Environment safe areas
-    ///
-    @Environment(\.safeAreaInsets) private var safeAreaInsets: EdgeInsets
-
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         ScrollView {
             LazyVStack(spacing: 0) {
                 ForEach(viewModel.bundledProducts) { bundledProduct in

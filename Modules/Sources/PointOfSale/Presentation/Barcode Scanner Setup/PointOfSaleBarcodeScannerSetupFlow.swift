@@ -1,6 +1,7 @@
 import SwiftUI
 
 // MARK: - Point of Sale Barcode Scanner Setup Flow
+@MainActor
 @Observable
 class PointOfSaleBarcodeScannerSetupFlow {
     private let scannerType: PointOfSaleBarcodeScannerType

@@ -10,10 +10,16 @@ struct CustomerNoteSection: View {
         viewModel.customerNoteDataViewModel
     }
 
+    /// Safe-area insets of the form's container.
+    ///
+    let safeAreaInsets: EdgeInsets
+
     @State private var showEditNotesView: Bool = false
 
     var body: some View {
-        CustomerNoteSectionContent(viewModel: notesDataViewModel, showEditNotesView: $showEditNotesView)
+        CustomerNoteSectionContent(viewModel: notesDataViewModel,
+                                   showEditNotesView: $showEditNotesView,
+                                   safeAreaInsets: safeAreaInsets)
             .sheet(
                 isPresented: $showEditNotesView,
                 onDismiss: {
@@ -41,7 +47,7 @@ private struct CustomerNoteSectionContent: View {
 
     @Binding var showEditNotesView: Bool
 
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
+    let safeAreaInsets: EdgeInsets
 
     var body: some View {
         VStack(alignment: .leading, spacing: .zero) {
@@ -115,8 +121,8 @@ struct CustomerNoteSection_Previews: PreviewProvider {
         let notesViewModel = EditableOrderViewModel.CustomerNoteDataViewModel(customerNote: "some notes")
 
         ScrollView {
-            CustomerNoteSectionContent(viewModel: emptyViewModel, showEditNotesView: .constant(false))
-            CustomerNoteSectionContent(viewModel: notesViewModel, showEditNotesView: .constant(false))
+            CustomerNoteSectionContent(viewModel: emptyViewModel, showEditNotesView: .constant(false), safeAreaInsets: .zero)
+            CustomerNoteSectionContent(viewModel: notesViewModel, showEditNotesView: .constant(false), safeAreaInsets: .zero)
         }
     }
 }

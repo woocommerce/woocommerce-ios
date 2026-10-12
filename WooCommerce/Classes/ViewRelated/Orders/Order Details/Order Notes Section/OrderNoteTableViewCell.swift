@@ -23,11 +23,12 @@ class OrderNoteTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        configureBackground()
-        configureStatusLabel()
-        configureNoteTextView()
-        configureIconButton()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureStatusLabel()
+            configureNoteTextView()
+            configureIconButton()
+        }
     }
 
     /// Indicates if the note is visible to the Customer (or it's set to private!)

@@ -83,15 +83,16 @@ final class PickListTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-
-        selectionStyle = .none
-        configureBackground()
-        setupImageView()
-        setupNameLabel()
-        setupQuantityLabel()
-        setupSkuLabel()
-        setupAddOnViews()
-        observeInterfaceTraitChanges()
+        MainActor.assumeIsolated {
+            selectionStyle = .none
+            configureBackground()
+            setupImageView()
+            setupNameLabel()
+            setupQuantityLabel()
+            setupSkuLabel()
+            setupAddOnViews()
+            observeInterfaceTraitChanges()
+        }
     }
 
     override func prepareForReuse() {

@@ -5,6 +5,7 @@ import protocol WooFoundation.Analytics
 import struct WooFoundation.WooAnalyticsEvent
 
 /// Protocol for handling actions on POS items
+@MainActor
 protocol POSItemActionHandler {
     /// Handles a tap on an item
     /// - Parameters:
@@ -150,6 +151,7 @@ final class SearchResultItemActionHandler: POSItemActionHandler {
     }
 }
 
+@MainActor
 struct POSItemActionHandlerFactory {
     static func itemActionHandler(
         itemListType: ItemListType,

@@ -12,6 +12,7 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     @Environment(\.layoutDirection) private var layoutDirection
     @Binding private var selection: SelectionValue?
     @State private var detailNavigationPath = NavigationPath()
+    @State private var hasHorizontalSafeAreaInset = false
     /// Distance the in-progress back drag has travelled towards the sidebar, always positive
     /// however the layout runs. Zero whenever no drag is in flight.
     @State private var dragTranslation: CGFloat = 0
@@ -24,9 +25,11 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     private let detail: (SelectionValue, Binding<NavigationPath>) -> Detail
     private let detailPlaceholderView: () -> DetailPlaceholder
     private let setDefaultValue: (() -> Void)?
+    private let pushedDetailBackgroundColor: Color
 
     init(
         selection: Binding<SelectionValue?> = .constant(nil),
+        pushedDetailBackgroundColor: Color = .posSurface,
         @ViewBuilder sidebar: @escaping (Binding<SelectionValue?>) -> Sidebar,
         @ViewBuilder detail: @escaping (SelectionValue, Binding<NavigationPath>) -> Detail,
         @ViewBuilder detailPlaceholderView: @escaping () -> DetailPlaceholder,
@@ -37,10 +40,24 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
         self.detail = detail
         self.detailPlaceholderView = detailPlaceholderView
         self.setDefaultValue = setDefaultValue
+        self.pushedDetailBackgroundColor = pushedDetailBackgroundColor
     }
 
     private var isRegular: Bool {
         horizontalSizeClass == .regular
+    }
+
+    private var ignoresBottomContainerInset: Bool {
+        // Match the dashboard's iOS 26+ workaround when the system bar occupies a side.
+        // Ordinary bottom system bars keep their safe area.
+        if #available(iOS 26, *) {
+            return isRegular && hasHorizontalSafeAreaInset
+        }
+        return false
+    }
+
+    private var visibleDetailBackgroundColor: Color {
+        detailNavigationPath.isEmpty ? .posSurface : pushedDetailBackgroundColor
     }
 
     private var sidebarSelection: Binding<SelectionValue?> {
@@ -59,10 +76,11 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
         GeometryReader { geometry in
             let totalWidth = geometry.size.width
             let progress = detailProgress(for: totalWidth)
+            let layout = POSBookPoseLayout(geometry: geometry, defaultLeadingFraction: Constants.sidebarWidthFraction)
 
-            HStack(spacing: 0) {
+            HStack(spacing: isRegular ? layout.spacing : 0) {
                 sidebar(sidebarSelection)
-                    .frame(width: sidebarWidth(for: totalWidth))
+                    .frame(width: isRegular ? layout.leadingWidth : totalWidth)
                     .offset(x: edgeSwipePolicy.outgoingParallaxOffset(progress: progress, totalWidth: totalWidth))
                     // The panes lay out inside the safe area, so anything drawn over them stops at
                     // the status bar and the home indicator. A dim that stops short of those leaves
@@ -93,8 +111,10 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                     // arriving screen translucent for the length of the slide.
                     .animation(isRegular ? .default : nil, value: selection != nil)
                     .navigationBarHidden(true)
+                    .posIgnoresHiddenKeyboardSafeArea()
+                    .ignoresSafeArea(.container, edges: ignoresBottomContainerInset ? .bottom : [])
                 }
-                .frame(width: detailWidth(for: totalWidth))
+                .frame(width: isRegular ? layout.trailingWidth : totalWidth)
                 // The stack has no backdrop of its own, so without this any moment where the
                 // detail is not yet drawn shows the host's background instead. It has to reach into
                 // the safe areas too, because the sidebar now passes behind this pane rather than
@@ -105,11 +125,36 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
                 }
             }
             .offset(x: edgeSwipePolicy.incomingOffset(progress: progress, totalWidth: totalWidth))
+            .frame(width: totalWidth, height: geometry.size.height, alignment: .leading)
+            // Clip offscreen panes before adding the background that extends into system regions.
+            .clipped()
+            .background {
+                if isRegular {
+                    HStack(spacing: 0) {
+                        Color.clear
+                            .frame(width: layout.backgroundLeadingWidth)
+                            .background(Color.posSurfaceBright.ignoresSafeArea(.all, edges: [.top, .bottom, .leading]))
+                        Color.clear
+                            .background(visibleDetailBackgroundColor.ignoresSafeArea(.all, edges: [.top, .bottom, .trailing]))
+                    }
+                    .background(Color.posSurface)
+                } else {
+                    (selection == nil ? Color.posSurfaceBright : visibleDetailBackgroundColor)
+                        .ignoresSafeArea()
+                }
+            }
+            .posBookPoseAnimation(layout)
+            .environment(\.posContentPaddingContext, layout.contentPadding)
             .simultaneousGesture(
                 compactBackGesture(totalWidth: totalWidth),
                 isEnabled: isCompactBackGestureActive
             )
         }
+        .onGeometryChange(for: Bool.self) { geometry in
+            // A landscape phone notch reserves both sides equally; keep its bottom home-indicator inset.
+            geometry.safeAreaInsets.leading != geometry.safeAreaInsets.trailing
+        } action: { hasHorizontalSafeAreaInset = $0 }
+        .ignoresSafeArea(.container, edges: ignoresBottomContainerInset ? .bottom : [])
         // Anchors the gesture's coordinates to this view rather than to the window. `.global` is
         // only the same thing as "this split view" when the window fills the screen, which is why
         // measuring the edge against it worked on a phone and failed in a collapsed iPad window.
@@ -142,14 +187,6 @@ struct POSNavigationSplitView<Sidebar: View, Detail: View, DetailPlaceholder: Vi
     }
 
     // MARK: - Layout
-
-    private func sidebarWidth(for totalWidth: CGFloat) -> CGFloat {
-        isRegular ? totalWidth * Constants.sidebarWidthFraction : totalWidth
-    }
-
-    private func detailWidth(for totalWidth: CGFloat) -> CGFloat {
-        isRegular ? totalWidth * (1 - Constants.sidebarWidthFraction) : totalWidth
-    }
 
     /// How far the detail pane has travelled over the sidebar: `1` when it covers it, `0` when the
     /// sidebar is fully back. Zero in regular width, where both panes are on screen at once and

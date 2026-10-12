@@ -6,6 +6,7 @@ enum CardReaderTransactionAlertReceiptState {
     case promptToSendEmailReceipt(printReceiptAction: () -> Void, emailReceiptAction: () -> Void, noReceiptAction: () -> Void)
     case emailSendingNotSupported(printReceiptAction: () -> Void, noReceiptAction: () -> Void)
 
+    @MainActor
     init(printReceipt: @escaping () -> Void,
          emailReceipt: @escaping () -> Void,
          noReceiptAction: @escaping () -> Void

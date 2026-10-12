@@ -58,6 +58,7 @@ final class OrderStatusListViewModel {
         configureInitialStatus()
     }
 
+    @MainActor
     func configureResultsController(tableView: UITableView) {
         dataSource.startForwardingEvents(to: tableView)
         tableView.reloadData()

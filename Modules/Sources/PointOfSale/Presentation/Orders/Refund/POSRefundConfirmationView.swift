@@ -423,7 +423,7 @@ private extension POSRefundConfirmationView {
         onConfirm: {},
         onBack: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 
 #Preview("POSRefundConfirmationView - Processing") {
@@ -435,6 +435,6 @@ private extension POSRefundConfirmationView {
         onConfirm: {},
         onBack: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 #endif

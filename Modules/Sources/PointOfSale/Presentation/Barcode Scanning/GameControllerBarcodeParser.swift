@@ -158,6 +158,9 @@ final class GameControllerBarcodeParser {
 
     /// Key codes that should be excluded from barcode processing
     private let excludedKeyCodes: Set<GCKeyCode> = [
+        // Terminators are handled before this list, so a configured Tab terminator still works.
+        // Otherwise match Android's control-character filter without extending the scan timeout.
+        .tab,
         .capsLock,
         .leftShift,
         .rightShift,
@@ -224,6 +227,12 @@ final class GameControllerBarcodeParser {
     private func processScan() {
         cancelTimeoutTimer()
         checkForTimeoutBetweenKeystrokes()
+        // A late terminator may have just timed out and cleared the scan above.
+        // Do not report a second failure for the empty buffer.
+        guard !buffer.isEmpty else {
+            resetScan()
+            return
+        }
         let scanDurationMs = calculateScanDurationMs()
 
         if buffer.count >= configuration.minimumBarcodeLength {

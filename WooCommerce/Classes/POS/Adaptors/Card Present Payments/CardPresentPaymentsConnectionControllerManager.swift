@@ -1,6 +1,7 @@
 import Foundation
 import struct Yosemite.CardPresentPaymentsConfiguration
 
+@MainActor
 final class CardPresentPaymentsConnectionControllerManager {
     let externalReaderConnectionController: CardReaderConnectionController<CardPresentPaymentBluetoothReaderConnectionAlertsProvider,
                                                                             CardPresentPaymentsAlertPresenterAdaptor>

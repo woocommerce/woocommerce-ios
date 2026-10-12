@@ -169,7 +169,7 @@ struct POSRefundSubmissionMapping {
         if let paymentGateway = context.paymentGateway {
             return paymentGateway.features.contains(.refunds)
         }
-        return context.order.paymentMethodID != PaymentGateway.Constants.cashOnDeliveryGatewayID
+        return !PaymentGateway.Constants.manualPaymentMethodIDs.contains(context.order.paymentMethodID)
     }
 
     func requiresCardPresentRefund(context: PreparedRefundContext) -> Bool {

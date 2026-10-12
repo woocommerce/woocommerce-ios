@@ -374,6 +374,7 @@ extension OrderListViewModel {
     }
 
     /// Creates an `OrderDetailsViewModel` for the `Order` pointed to by `objectID`.
+    @MainActor
     func detailsViewModel(withID objectID: FetchResultSnapshotObjectID) -> OrderDetailsViewModel? {
         guard let order = snapshotsProvider.object(withID: objectID) else {
             return nil

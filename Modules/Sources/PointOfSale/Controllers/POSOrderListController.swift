@@ -16,7 +16,7 @@ import protocol Experiments.FeatureFlagService
 import CocoaLumberjackSwift
 
 @MainActor
-protocol POSOrderListControllerProtocol {
+protocol POSOrderListControllerProtocol: Sendable {
     var ordersViewState: POSOrderListState { get }
     var selectedOrder: POSOrder? { get }
     var isLoadingOrderRefunds: Bool { get }
@@ -35,6 +35,7 @@ protocol POSOrderSelectionHandling {
     func selectOrder(_ order: POSOrder?)
 }
 
+@MainActor
 protocol POSSearchingOrderListControllerProtocol: POSOrderListControllerProtocol {
     func searchOrders(searchTerm: String) async
     func clearSearchOrders()
@@ -62,6 +63,7 @@ private enum POSOrderRefundDetailsState {
     }
 }
 
+@MainActor
 @Observable final class POSOrderListController: POSSearchingOrderListControllerProtocol, POSOrderSelectionHandling {
     var ordersViewState: POSOrderListState
     private var strategyPaginationTracker: [String: AsyncPaginationTracker] = [:]
@@ -91,7 +93,6 @@ private enum POSOrderRefundDetailsState {
         self.refundsService = refundsService
     }
 
-    @MainActor
     var isLoadingOrderRefunds: Bool {
         guard let selectedOrder else {
             return false
@@ -99,7 +100,6 @@ private enum POSOrderRefundDetailsState {
         return refundDetailsState(for: selectedOrder).isLoading
     }
 
-    @MainActor
     var orderDetailsItemsState: POSOrderDetailsItemsState {
         guard let order = selectedOrder else {
             return .loaded(lineItems: [], customAmounts: [], refundedItems: [])
@@ -116,7 +116,6 @@ private enum POSOrderRefundDetailsState {
         )
     }
 
-    @MainActor
     var displayedLineItems: [POSOrderItem] {
         guard let order = selectedOrder else { return [] }
         guard !isLoadingOrderRefunds else {
@@ -137,7 +136,6 @@ private enum POSOrderRefundDetailsState {
     /// omit `fee_lines` (or the meta) will fall through and the refunded fee will keep showing
     /// in this list — there is no other server-provided link from a refund back to the fee it
     /// refunded.
-    @MainActor
     var displayedCustomAmounts: [POSOrderCustomAmount] {
         guard let order = selectedOrder else { return [] }
         guard !isLoadingOrderRefunds else {
@@ -147,19 +145,16 @@ private enum POSOrderRefundDetailsState {
         return order.customAmounts.filter { !refundedItemIDs.contains($0.id) }
     }
 
-    @MainActor
     func loadOrders() async {
         setCachedData()
         setLoadingState()
         await loadFirstPage()
     }
 
-    @MainActor
     func refreshOrders() async {
         await loadFirstPage()
     }
 
-    @MainActor
     func loadNextOrders() async {
         guard paginationTracker.hasNextPage else {
             return
@@ -178,7 +173,6 @@ private enum POSOrderRefundDetailsState {
         }
     }
 
-    @MainActor
     private func loadFirstPage() async {
         do {
             try await paginationTracker.resync { [weak self] pageNumber in
@@ -210,7 +204,6 @@ private enum POSOrderRefundDetailsState {
         }
     }
 
-    @MainActor
     private func fetchOrders(pageNumber: Int, appendToExistingOrders: Bool = true) async throws -> Bool {
         let startTime = Date()
         do {
@@ -247,7 +240,6 @@ private enum POSOrderRefundDetailsState {
         }
     }
 
-    @MainActor
     private func setCachedData() {
         guard fetchStrategy.supportsCaching else {
             return
@@ -260,7 +252,6 @@ private enum POSOrderRefundDetailsState {
         ordersViewState = .loading(cachedOrders)
     }
 
-    @MainActor
     func selectOrder(_ order: POSOrder?) {
         selectedOrder = order.map(orderApplyingCachedRefunds)
         if let order, case .failed? = refundDetailsByOrderID[order.id] {
@@ -274,14 +265,12 @@ private enum POSOrderRefundDetailsState {
         }
     }
 
-    @MainActor
     func searchOrders(searchTerm: String) async {
         fetchStrategy = orderListFetchStrategyFactory.searchStrategy(searchTerm: searchTerm)
         ordersViewState = .loading([])
         await loadFirstPage()
     }
 
-    @MainActor
     func clearSearchOrders() {
         fetchStrategy = orderListFetchStrategyFactory.defaultStrategy()
         if cachedOrders.isNotEmpty {
@@ -294,7 +283,6 @@ private enum POSOrderRefundDetailsState {
         }
     }
 
-    @MainActor
     func updateOrder(orderID: Int64) async throws {
         let updatedOrder = try await fetchStrategy.loadOrder(orderID: orderID)
         // Drop cached refund details — the refreshed order may have new refunds.
@@ -313,7 +301,6 @@ private enum POSOrderRefundDetailsState {
         }
     }
 
-    @MainActor
     func loadOrderRefunds() async {
         guard let order = selectedOrder, order.refunds.isNotEmpty else {
             return
@@ -339,7 +326,6 @@ private enum POSOrderRefundDetailsState {
         }
     }
 
-    @MainActor
     private func refundDetailsState(for order: POSOrder) -> POSOrderRefundDetailsState {
         guard order.refunds.isNotEmpty else {
             return .loaded([])
@@ -358,7 +344,6 @@ private enum POSOrderRefundDetailsState {
         return .needsLoading
     }
 
-    @MainActor
     private func orderApplyingCachedRefunds(_ order: POSOrder) -> POSOrder {
         guard case .loaded(let refunds)? = refundDetailsByOrderID[order.id] else {
             return order

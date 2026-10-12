@@ -15,7 +15,7 @@ public struct GeneralStoreSettingsBySite: Codable, Equatable {
 /// An encodable/decodable data structure that can be used to save files. This contains
 /// miscellaneous store settings (unique for each store).
 ///
-public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable {
+public struct GeneralStoreSettings: Codable, Equatable, GeneratedCopiable, Sendable {
 
     /// The store unique identifier.
     ///

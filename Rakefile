@@ -46,9 +46,10 @@ namespace :dependencies do
 
   namespace :credentials do
     task :apply do
-      next unless Dir.exist?(File.join(Dir.home, '.mobile-secrets/.git')) || ENV.key?('CONFIGURE_ENCRYPTION_KEY')
+      # External contributors build against the templated credentials.
+      next unless system('command -v a8c-secrets > /dev/null 2>&1')
 
-      sh('FASTLANE_SKIP_UPDATE_CHECK=1 FASTLANE_ENV_PRINTER=1 bundle exec fastlane run configure_apply force:true')
+      sh('a8c-secrets decrypt')
     end
   end
 end

@@ -358,6 +358,9 @@ final class MainTabBarController: UITabBarController {
             guard let self else { return }
             httpsConfigurationWarningPresenter.update(for: tab)
             selectedIndex = tab.visibleIndex(isPOSTabVisible: isPOSTabVisible, isBookingsTabVisible: isBookingsTabVisible)
+            // Lays out the new tab before the completion runs. Since iOS 26 a tab's split view
+            // adds its columns only during layout, and presenting from them before that fails.
+            view.layoutIfNeeded()
             guard let selectedViewController else {
                 return
             }

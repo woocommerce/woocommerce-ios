@@ -9,6 +9,24 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
     ///
     private let applicationPassword = ApplicationPassword(wpOrgUsername: "username", password: .init("password"), uuid: "8ef68e6b-4670-4cfd-8ca0-456e616bcd5e")
 
+    func test_factory_when_detection_is_configured_then_passes_flag_to_injected_use_case() throws {
+        for enabled in [false, true] {
+            // Given
+            var capturedDetection: Bool?
+            let factory = ApplicationPasswordUseCaseFactory(makeWordPressOrgUseCase: { _, _, _, _, detectUnexpectedResponses in
+                capturedDetection = detectUnexpectedResponses
+                return MockApplicationPasswordUseCase()
+            })
+
+            // When
+            _ = try factory.makeForWordPressOrg(username: "demo", password: "secret", siteAddress: "https://test.com",
+                                               authenticationEndpoints: nil, detectUnexpectedResponses: enabled)
+
+            // Then
+            XCTAssertEqual(capturedDetection, enabled)
+        }
+    }
+
     func test_wporg_credentials_and_custom_endpoints_reach_final_application_password_use_case_factory() throws {
         // Given
         let credentials: Credentials = .wporg(username: "merchant", password: "secret", siteAddress: "https://example.com")
@@ -26,7 +44,7 @@ final class DefaultRequestAuthenticatorTests: XCTestCase {
         _ = DefaultRequestAuthenticator(
             credentials: credentials,
             cookieNonceAuthenticationEndpoints: endpoints,
-            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { username, password, siteAddress, endpoints in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { username, password, siteAddress, endpoints, _ in
                 capturedUsername = username
                 capturedPassword = password
                 capturedSiteAddress = siteAddress

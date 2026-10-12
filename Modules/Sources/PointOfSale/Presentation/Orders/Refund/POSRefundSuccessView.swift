@@ -116,6 +116,6 @@ private extension POSRefundSuccessView {
         onDone: {},
         onEmailReceipt: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 #endif

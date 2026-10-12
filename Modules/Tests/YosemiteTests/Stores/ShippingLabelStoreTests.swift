@@ -6,6 +6,7 @@ import YosemiteTestHelpers
 @testable import Storage
 
 /// ShippingLabelStore Unit Tests
+@MainActor
 final class ShippingLabelStoreTests: XCTestCase {
     /// Mock Dispatcher!
     private var dispatcher: Dispatcher!
@@ -27,18 +28,18 @@ final class ShippingLabelStoreTests: XCTestCase {
 
     // MARK: - Overridden Methods
 
-    override func setUp() {
-        super.setUp()
+    override func setUp() async throws {
+        try await super.setUp()
         dispatcher = Dispatcher()
         storageManager = MockStorageManager()
         network = MockNetwork()
     }
 
-    override func tearDown() {
+    override func tearDown() async throws {
         network = nil
         storageManager = nil
         dispatcher = nil
-        super.tearDown()
+        try await super.tearDown()
     }
 
     // MARK: - `loadShippingLabels`

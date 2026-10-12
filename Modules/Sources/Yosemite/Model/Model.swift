@@ -6,6 +6,7 @@ import Hardware
 
 // MARK: - Exported ReadOnly Symbols
 
+public typealias UnexpectedStoreResponseError = Networking.UnexpectedStoreResponseError
 public typealias Account = Networking.Account
 public typealias AccountSettings = Networking.AccountSettings
 public typealias AddOnGroup = Networking.AddOnGroup

@@ -59,6 +59,17 @@ final class POSRefundSubmissionMappingTests: XCTestCase {
         XCTAssertFalse(sut.gatewaySupportsAutomaticRefunds(context: makeContext(order: codOrder, paymentGateway: nil)))
     }
 
+    func test_gatewaySupportsAutomaticRefunds_when_order_marked_as_paid_without_gateway_then_returns_false() {
+        // Given
+        let markedAsPaidOrder = Order.fake().copy(paymentMethodID: PaymentGateway.Constants.manualPaymentMethodID)
+
+        // When
+        let supportsAutomaticRefunds = sut.gatewaySupportsAutomaticRefunds(context: makeContext(order: markedAsPaidOrder, paymentGateway: nil))
+
+        // Then
+        XCTAssertFalse(supportsAutomaticRefunds)
+    }
+
     func test_requiresCardPresentRefund_only_requires_reader_for_interac_present_charges() {
         let interacDetails = WCPayCardPresentPaymentDetails.fake().copy(brand: .interac, last4: "4242")
         let visaDetails = WCPayCardPresentPaymentDetails.fake().copy(brand: .visa, last4: "1111")

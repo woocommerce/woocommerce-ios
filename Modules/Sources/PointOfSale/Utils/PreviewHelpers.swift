@@ -1,6 +1,7 @@
 #if DEBUG
 
 import Foundation
+import SwiftUI
 import WooFoundation
 import protocol Yosemite.PointOfSaleItemServiceProtocol
 import enum Yosemite.POSItem
@@ -222,16 +223,16 @@ private var mockVariationItems: [POSItem] {
 struct POSPreviewHelpers {
     @MainActor
     static func makePreviewAggregateModel(
-        itemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
-        purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol = PointOfSalePreviewItemsController(),
-        couponsController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
-        couponsSearchController: PointOfSaleCouponsControllerProtocol = PointOfSalePreviewCouponsController(),
+        itemsController: PointOfSaleItemsControllerProtocol? = nil,
+        purchasableItemsSearchController: PointOfSaleSearchingItemsControllerProtocol? = nil,
+        couponsController: PointOfSaleCouponsControllerProtocol? = nil,
+        couponsSearchController: PointOfSaleCouponsControllerProtocol? = nil,
         cardPresentPaymentService: CardPresentPaymentFacade? = nil,
-        orderController: PointOfSaleOrderControllerProtocol = PointOfSalePreviewOrderController(),
-        settingsController: POSSettingsControllerProtocol = POSSettingsPreviewController(),
+        orderController: PointOfSaleOrderControllerProtocol? = nil,
+        settingsController: POSSettingsControllerProtocol? = nil,
         collectOrderPaymentAnalyticsTracker: POSCollectOrderPaymentAnalyticsTracking = POSCollectOrderPaymentPreviewAnalytics(),
         searchHistoryService: POSSearchHistoryProviding = PointOfSalePreviewHistoryService(),
-        popularItemsController: PointOfSaleItemsControllerProtocol = PointOfSalePreviewItemsController(),
+        popularItemsController: PointOfSaleItemsControllerProtocol? = nil,
         barcodeScanService: PointOfSaleBarcodeScanServiceProtocol = PointOfSalePreviewBarcodeScanService(),
         receiptSender: POSReceiptSending = POSReceiptSenderPreview(),
         analytics: POSAnalyticsProviding = EmptyPOSAnalytics(),
@@ -244,17 +245,17 @@ struct POSPreviewHelpers {
 
         return PointOfSaleAggregateModel(
             entryPointController: POSEntryPointController(eligibilityChecker: PointOfSalePreviewTabEligibilityChecker()),
-            itemsController: itemsController,
-            purchasableItemsSearchController: purchasableItemsSearchController,
-            couponsController: couponsController,
-            couponsSearchController: couponsSearchController,
+            itemsController: itemsController ?? PointOfSalePreviewItemsController(),
+            purchasableItemsSearchController: purchasableItemsSearchController ?? PointOfSalePreviewItemsController(),
+            couponsController: couponsController ?? PointOfSalePreviewCouponsController(),
+            couponsSearchController: couponsSearchController ?? PointOfSalePreviewCouponsController(),
             cardPresentPaymentService: cardPresentPaymentService,
-            orderController: orderController,
-            settingsController: settingsController,
+            orderController: orderController ?? PointOfSalePreviewOrderController(),
+            settingsController: settingsController ?? POSSettingsPreviewController(),
             analytics: analytics,
             collectOrderPaymentAnalyticsTracker: collectOrderPaymentAnalyticsTracker,
             searchHistoryService: searchHistoryService,
-            popularPurchasableItemsController: popularItemsController,
+            popularPurchasableItemsController: popularItemsController ?? PointOfSalePreviewItemsController(),
             barcodeScanService: barcodeScanService,
             receiptSender: receiptSender,
             siteID: siteID,
@@ -721,6 +722,9 @@ final class POSPreviewServices: POSDependencyProviding {
     var connectivity: POSConnectivityProviding = EmptyPOSConnectivityProvider()
     var externalNavigation: POSExternalNavigationProviding = EmptyPOSExternalNavigation()
     var externalViews: POSExternalViewProviding = EmptyPOSExternalView()
+
+    /// Main actor isolated because `externalNavigation` and `externalViews` are main actor requirements.
+    @MainActor init() {}
 }
 
 // MARK: - Preview Catalog Services
@@ -835,6 +839,18 @@ final class POSReceiptPrinterPreviewService: ReceiptPrinterServiceProtocol {
 
     func printReceipt(order: Order,
                       storeInformation: ReceiptStoreInformation) async throws {}
+}
+
+extension POSPreviewHelpers {
+    /// iPad landscape space for POS modal content in previews, where no `POSRootModalViewModifier` measures it.
+    static let modalParentSize = CGSize(width: 1192, height: 822)
+}
+
+extension View {
+    /// Gives modal content in a preview the space `POSRootModalViewModifier` measures at runtime.
+    func posPreviewModalParentSize() -> some View {
+        environment(\.posModalParentSize, POSPreviewHelpers.modalParentSize)
+    }
 }
 
 #endif

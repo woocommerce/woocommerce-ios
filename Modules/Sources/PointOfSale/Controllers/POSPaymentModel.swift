@@ -20,7 +20,7 @@ final class POSPaymentModel {
     private(set) var cardReaderConnectionStatus: CardPresentPaymentReaderConnectionStatus = .disconnected
     private(set) var cardReaderUpdateState: CardReaderSoftwareUpdateState = .none
     var cardPresentPaymentOnboardingViewContainer: CardPresentPaymentOnboardingViewContainer?
-    let cardPaymentSelectionMode: POSCardPaymentSelectionMode
+    private(set) var cardPaymentSelectionMode: POSCardPaymentSelectionMode
     private(set) var selectedCardPaymentRail: POSCardPaymentRail
     var isCompactCardPaymentSelectionEnabled: Bool {
         cardPaymentSelectionMode == .compact
@@ -196,6 +196,15 @@ final class POSPaymentModel {
 
 // MARK: - Card Payment Methods
 extension POSPaymentModel {
+    /// Update presentation behavior without restarting or switching an active payment.
+    func updateCardPaymentSelectionMode(_ mode: POSCardPaymentSelectionMode) {
+        guard cardPaymentSelectionMode != mode else { return }
+        if mode == .compact, let method = currentPaymentMethod ?? lastConnectedMethod {
+            selectedCardPaymentRail = POSCardPaymentRail(connectionMethod: method)
+        }
+        cardPaymentSelectionMode = mode
+    }
+
     /// Called by the aggregate model when checkout opens.
     ///
     /// Bluetooth path: runs the auto-collect-on-connect flow that's been there forever

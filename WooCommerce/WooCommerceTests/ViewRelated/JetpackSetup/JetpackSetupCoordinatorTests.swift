@@ -376,7 +376,7 @@ final class JetpackSetupCoordinatorTests: XCTestCase {
         let sessionManager = SessionManager(
             defaults: try XCTUnwrap(UserDefaults(suiteName: UUID().uuidString)),
             keychainServiceName: UUID().uuidString,
-            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, endpoints in
+            applicationPasswordUseCaseFactory: .init(makeWordPressOrgUseCase: { _, _, _, endpoints, _ in
                 capturedEndpoints = endpoints
                 return MockJetpackSetupApplicationPasswordUseCase()
             })

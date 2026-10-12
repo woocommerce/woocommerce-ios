@@ -22,4 +22,4 @@ Dangerfile*           @woocommerce/apps-infra-tooling
 .nvmrc                @woocommerce/apps-infra-tooling
 
 # Secrets
-.configure-files/     @woocommerce/apps-infra-tooling
+.a8c-secrets/         @woocommerce/apps-infra-tooling

@@ -122,7 +122,7 @@ private extension POSRefundErrorView {
         onCancel: {},
         onClose: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 
 #Preview("POSRefundErrorView - Load Error") {
@@ -133,6 +133,6 @@ private extension POSRefundErrorView {
         onCancel: {},
         onClose: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 #endif

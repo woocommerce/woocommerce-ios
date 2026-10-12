@@ -4,7 +4,7 @@ import UIKit
 
 struct TracksProviderPointOfSalePropertiesTests {
 
-    private let sut = TracksProvider()
+    private let sut = TracksProvider(consent: MockAnalyticsConsent())
     private let deviceTypeKey = "device_type"
     private let entryPointKey = "entry_point"
 

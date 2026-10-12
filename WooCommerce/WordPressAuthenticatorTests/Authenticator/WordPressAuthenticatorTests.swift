@@ -121,6 +121,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertTrue(authenticator.handleWordPressAuthUrl(url!, rootViewController: UIViewController(), restoresSiteAddress: false, automatedTesting: true))
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_delegate_only_implements_legacy_api_then_bridges_once() throws {
         // Given
         let adopter = LegacyOnlyWordPressAuthenticatorDelegate()
@@ -141,7 +142,7 @@ class WordPressAuthenticatorTests: XCTestCase {
             endpointUnderVerification: nil,
             onLoading: { _ in },
             onSuccess: { receivedCredentials.append($0) },
-            onRecovery: { _ in XCTFail("Expected legacy success") },
+            onRecovery: { _ in XCTFail("Expected legacy success"); return true },
             onFailure: { _, _, _, _ in XCTFail("Expected legacy success") }
         )
 
@@ -151,6 +152,7 @@ class WordPressAuthenticatorTests: XCTestCase {
         XCTAssertEqual(try XCTUnwrap(receivedCredentials.first).options["unrelated"] as? String, "preserved")
     }
 
+    @MainActor
     func test_authenticate_site_credentials_when_legacy_only_delegate_fails_then_bridges_failure_once() {
         // Given
         let expectedError = NSError(domain: "LegacyAuthentication", code: 401)
@@ -177,7 +179,7 @@ class WordPressAuthenticatorTests: XCTestCase {
             endpointUnderVerification: nil,
             onLoading: { _ in },
             onSuccess: { _ in XCTFail("Expected legacy failure") },
-            onRecovery: { _ in XCTFail("Expected legacy failure") },
+            onRecovery: { _ in XCTFail("Expected legacy failure"); return true },
             onFailure: {
                 receivedError = $0 as NSError
                 incorrectCredentials = $1

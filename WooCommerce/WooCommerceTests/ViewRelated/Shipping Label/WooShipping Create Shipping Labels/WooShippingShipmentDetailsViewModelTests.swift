@@ -86,6 +86,105 @@ final class WooShippingShipmentDetailsViewModelTests: XCTestCase {
         XCTAssertFalse(viewModel.isPurchaseButtonEnabled)
     }
 
+    func test_isPurchaseButtonEnabled_when_domestic_USPS_rate_and_destination_phone_empty_then_returns_true() {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
+            sampleDestinationAddress(country: "US", state: "CA", phone: "")
+        )
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        // When
+        viewModel.selectPackage(samplePackageData())
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+
+        // Then
+        XCTAssertTrue(viewModel.isPurchaseButtonEnabled)
+    }
+
+    func test_isPurchaseButtonEnabled_when_FedEx_rate_and_destination_phone_empty_then_returns_false() {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
+            sampleDestinationAddress(country: "US", state: "CA", phone: "")
+        )
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+        let fedExRate = WooShippingSelectedRate(rate: ShippingLabelCarrierRate.fake().copy(title: "FedEx Ground Economy",
+                                                                                            carrierID: "fedex"))
+
+        // When
+        viewModel.selectPackage(samplePackageData())
+        viewModel.shippingService?.onSelectRate?(fedExRate)
+
+        // Then
+        XCTAssertFalse(viewModel.isPurchaseButtonEnabled)
+    }
+
+    func test_isPurchaseButtonEnabled_when_international_and_destination_phone_empty_then_returns_false() {
+        // Given
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
+            sampleDestinationAddress(country: "GB", state: "LD", phone: "")
+        )
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher())
+
+        // When
+        viewModel.customsFormViewModel.itemsViewModels.first?.requiredInformationIsEntered = true
+        viewModel.customsFormViewModel.contentType = .documents
+        viewModel.customsFormViewModel.restrictionType = .quarantine
+        XCTAssertTrue(viewModel.customsInformationIsCompleted)
+        viewModel.selectPackage(samplePackageData())
+        viewModel.shippingService?.onSelectRate?(sampleSelectedRate())
+
+        // Then
+        XCTAssertFalse(viewModel.isPurchaseButtonEnabled)
+    }
+
+    @MainActor
+    func test_purchaseLabel_when_FedEx_rate_and_destination_phone_empty_then_does_not_purchase() async throws {
+        // Given
+        var purchaseRequested = false
+        let stores = MockStoresManager(sessionManager: .testingInstance)
+        let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))
+        let destinationAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(
+            sampleDestinationAddress(country: "US", state: "CA", phone: "")
+        )
+        stores.whenReceivingAction(ofType: WooShippingAction.self) { action in
+            if case let .purchaseShippingLabel(_, _, _, _, _, _, _, _, _, completion) = action {
+                purchaseRequested = true
+                completion(.success(ShippingLabel.fake()))
+            }
+        }
+        let viewModel = WooShippingShipmentDetailsViewModel(order: Order.fake(),
+                                                            shipment: sampleShipment,
+                                                            shippingLabel: nil,
+                                                            originAddress: originAddressSubject.eraseToAnyPublisher(),
+                                                            destinationAddress: destinationAddressSubject.eraseToAnyPublisher(),
+                                                            stores: stores)
+        let fedExRate = WooShippingSelectedRate(rate: ShippingLabelCarrierRate.fake().copy(title: "FedEx Ground Economy",
+                                                                                            carrierID: "fedex"))
+
+        // When
+        viewModel.selectPackage(samplePackageData())
+        viewModel.shippingService?.onSelectRate?(fedExRate)
+        try await viewModel.purchaseLabel()
+
+        // Then
+        XCTAssertFalse(purchaseRequested)
+    }
+
     func test_selecting_standard_shipping_rate_sets_expected_shippingRates() throws {
         // Given
         let originAddressSubject = CurrentValueSubject<WooShippingAddress?, Never>(sampleOriginAddress(country: "US", state: "NY"))

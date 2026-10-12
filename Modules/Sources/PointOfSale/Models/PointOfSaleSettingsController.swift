@@ -11,6 +11,7 @@ import protocol Storage.GRDBManagerProtocol
 import protocol Yosemite.POSCatalogSyncCoordinatorProtocol
 import class Yosemite.POSCatalogSettingsService
 
+@MainActor
 protocol POSSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? { get }
     var storeViewModel: POSSettingsStoreViewModel { get }
@@ -24,6 +25,7 @@ protocol POSSettingsControllerProtocol {
     var staffSettingsService: POSStaffSettingsService? { get }
 }
 
+@MainActor
 @Observable final class PointOfSaleSettingsController: POSSettingsControllerProtocol {
     private(set) var connectedCardReader: CardPresentPaymentCardReader?
     private var cancellables: AnyCancellable?
@@ -34,7 +36,6 @@ protocol POSSettingsControllerProtocol {
     let printerConnectionController: POSPrinterConnectionController?
     let staffSettingsService: POSStaffSettingsService?
 
-    @MainActor
     init(siteID: Int64,
          settingsService: PointOfSaleSettingsServiceProtocol,
          cardPresentPaymentService: CardPresentPaymentFacade,
@@ -71,7 +72,6 @@ protocol POSSettingsControllerProtocol {
         observeCardReader(from: cardPresentPaymentService)
     }
 
-    @MainActor
     private func observeCardReader(from service: CardPresentPaymentFacade) {
         cancellables = service.readerConnectionStatusPublisher
             .sink(receiveValue: { [weak self] connectionStatus in
@@ -89,6 +89,7 @@ protocol POSSettingsControllerProtocol {
 }
 
 #if DEBUG
+@MainActor
 final class POSSettingsPreviewController: POSSettingsControllerProtocol {
     var connectedCardReader: CardPresentPaymentCardReader? = CardPresentPaymentCardReader(
         name: "WisePad 3",
@@ -113,7 +114,6 @@ final class POSSettingsPreviewController: POSSettingsControllerProtocol {
 
     var staffSettingsService: POSStaffSettingsService?
 
-    @MainActor
     static func withPrinter() -> POSSettingsPreviewController {
         let controller = POSSettingsPreviewController()
         controller.printerConnectionController = POSPrinterConnectionController(service: POSReceiptPrinterPreviewService())

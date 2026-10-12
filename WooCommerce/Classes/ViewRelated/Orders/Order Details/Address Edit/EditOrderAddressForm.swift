@@ -3,9 +3,12 @@ import SwiftUI
 import UIKit
 import Yosemite
 
-/// Hosting controller that wraps an `EditOrderAddressForm`.
+/// Hosting controller that wraps an `EditOrderAddressForm` in a `NavigationStack`, needed to push the country and state selectors.
+/// Present it directly, not inside a navigation controller.
 ///
-final class EditOrderAddressHostingController: UIHostingController<EditOrderAddressForm<EditOrderAddressFormViewModel>> {
+final class EditOrderAddressHostingController: UIHostingController<NavigationStack<NavigationPath, EditOrderAddressForm<EditOrderAddressFormViewModel>>> {
+
+    private let viewModel: EditOrderAddressFormViewModel
 
     /// References to keep the Combine subscriptions alive within the lifecycle of the object.
     ///
@@ -24,12 +27,15 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
     private let systemNoticePresenter: NoticePresenter
 
     init(viewModel: EditOrderAddressFormViewModel, systemNoticePresenter: NoticePresenter = ServiceLocator.noticePresenter) {
+        self.viewModel = viewModel
         self.systemNoticePresenter = systemNoticePresenter
-        super.init(rootView: EditOrderAddressForm(viewModel: viewModel))
+        super.init(rootView: NavigationStack { EditOrderAddressForm(viewModel: viewModel) })
 
         // Needed because a `SwiftUI` cannot be dismissed when being presented by a UIHostingController
-        rootView.dismiss = { [weak self] _ in
-            self?.dismiss(animated: true, completion: nil)
+        rootView = NavigationStack {
+            EditOrderAddressForm(dismiss: { [weak self] _ in
+                self?.dismiss(animated: true, completion: nil)
+            }, viewModel: viewModel)
         }
     }
 
@@ -37,11 +43,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
         super.viewDidLoad()
 
         // Set presentation delegate to track the user dismiss flow event
-        if let navigationController {
-            navigationController.presentationController?.delegate = self
-        } else {
-            presentationController?.delegate = self
-        }
+        presentationController?.delegate = self
     }
 
     dynamic required init?(coder aDecoder: NSCoder) {
@@ -52,7 +54,7 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
         super.viewWillDisappear(animated)
 
         // Show any notice that should have been presented before the underlying disappears.
-        enqueuePendingNotice(rootView.viewModel.notice, using: systemNoticePresenter)
+        enqueuePendingNotice(viewModel.notice, using: systemNoticePresenter)
     }
 }
 
@@ -60,18 +62,18 @@ final class EditOrderAddressHostingController: UIHostingController<EditOrderAddr
 ///
 extension EditOrderAddressHostingController: UIAdaptivePresentationControllerDelegate {
     func presentationControllerShouldDismiss(_ presentationController: UIPresentationController) -> Bool {
-        !rootView.viewModel.hasPendingChanges
+        !viewModel.hasPendingChanges
     }
 
     func presentationControllerDidAttemptToDismiss(_ presentationController: UIPresentationController) {
         UIAlertController.presentDiscardChangesActionSheet(viewController: self) { [weak self] in
             self?.dismiss(animated: true)
-            self?.rootView.viewModel.userDidCancelFlow()
+            self?.viewModel.userDidCancelFlow()
         }
     }
 
     func presentationControllerDidDismiss(_ presentationController: UIPresentationController) {
-        rootView.viewModel.userDidCancelFlow()
+        viewModel.userDidCancelFlow()
     }
 }
 
@@ -92,9 +94,13 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
     ///
     @Bindable private(set) var viewModel: ViewModel
 
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     var body: some View {
+        SafeAreaInsetsReader { safeAreaInsets in
+            content(safeAreaInsets: safeAreaInsets)
+        }
+    }
+
+    private func content(safeAreaInsets: EdgeInsets) -> some View {
         Group {
             ScrollView {
                 SingleAddressForm(fields: $viewModel.fields,
@@ -104,7 +110,8 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                   sectionTitle: viewModel.sectionTitle,
                                   showEmailField: viewModel.showEmailField,
                                   showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
-                                  showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
+                                  showStateFieldAsSelector: viewModel.showStateFieldAsSelector,
+                                  safeAreaInsets: safeAreaInsets)
                          .accessibilityElement(children: .contain)
                          .accessibilityIdentifier("order-address-form")
 
@@ -135,7 +142,8 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
                                       sectionTitle: viewModel.secondarySectionTitle,
                                       showEmailField: false,
                                       showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
-                                      showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector)
+                                      showStateFieldAsSelector: viewModel.showSecondaryStateFieldAsSelector,
+                                      safeAreaInsets: safeAreaInsets)
                         .accessibilityElement(children: .contain)
                         .accessibilityIdentifier("secondary-order-address-form")
                 }
@@ -191,8 +199,6 @@ struct EditOrderAddressForm<ViewModel: AddressFormViewModelProtocol>: View {
 
 struct SingleAddressForm: View {
 
-    @Environment(\.safeAreaInsets) var safeAreaInsets: EdgeInsets
-
     @Binding var fields: AddressFormFields
 
     let countryViewModelClosure: () -> CountrySelectorViewModel
@@ -203,6 +209,7 @@ struct SingleAddressForm: View {
     let showEmailField: Bool
     let showPhoneCountryCodeField: Bool
     let showStateFieldAsSelector: Bool
+    let safeAreaInsets: EdgeInsets
 
     /// Set it to `true` to present the country selector.
     ///
@@ -550,7 +557,8 @@ struct EditAddressForm_Previews: PreviewProvider {
                           sectionTitle: viewModel.sectionTitle,
                           showEmailField: viewModel.showEmailField,
                           showPhoneCountryCodeField: viewModel.showPhoneCountryCodeField,
-                          showStateFieldAsSelector: viewModel.showStateFieldAsSelector)
+                          showStateFieldAsSelector: viewModel.showStateFieldAsSelector,
+                          safeAreaInsets: .zero)
     }
 }
 

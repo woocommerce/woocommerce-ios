@@ -1,4 +1,4 @@
-/* Translation-Revision-Date: 2026-09-08 09:55:26+0000 */
+/* Translation-Revision-Date: 2026-09-21 14:55:41+0000 */
 /* Plural-Forms: nplurals=2; plural=n != 1; */
 /* Generator: GlotPress/2.4.0-alpha */
 /* Language: de */
@@ -59,9 +59,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Summary line for a coupon, with the discounted amount and number of products and categories that the coupon is limited to. Reads like: '10% off · all products' or '$15 off · 2 Product 1 Category' */
 "%1$@ off · %2$@" = "%1$@ Rabatt · %2$@";
-
-/* Notice format when a shipping label refund request is successful. The first variable shows the shipping label service name (e.g. USPS Priority Mail). The second variable shows the formatted amount that is eligible for refund  (e.g. $7.50). */
-"%1$@ refund requested (%2$@)" = "%1$@ Rückerstattung angefordert (%2$@)";
 
 /* Title that appears on top of the Product List screen during bulk editing. Reads like: 2 selected */
 "%1$@ selected" = "%1$@ ausgewählt";
@@ -617,9 +614,6 @@ which should be translated separately and considered part of this sentence. */
 
 /* Title of the Amount field on the Coupon Edit or Creation screen for a fixed amount discount coupon.Reads like: Amount ($) */
 "Amount (%@)" = "Betrag (%@)";
-
-/* Title of shipping label eligible refund amount in Refund Shipping Label screen */
-"Amount Eligible For Refund" = "Rückerstattbarer Betrag";
 
 /* Line description for 'Amount Paid' cart total on the receipt
    Title of 'Amount Paid' section in the receipt */
@@ -5278,9 +5272,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Country option for a site address. */
 "Puerto Rico" = "Puerto Rico";
 
-/* Title of shipping label purchase date in Refund Shipping Label screen */
-"Purchase Date" = "Kaufdatum";
-
 /* Create Shipping Label form -> Purchase Label button */
 "Purchase Label" = "Etikett kaufen";
 
@@ -5380,9 +5371,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Refund Details section title */
 "Refund Details" = "Rückerstattungsdetails";
-
-/* Button title for requesting a refund for a shipping label. The variable is a formatted amount that is eligible for refund (e.g. $7.50). */
-"Refund Label (%1$@)" = "Etikett erstatten (%1$@)";
 
 /* Title of the switch in the IssueRefund screen to refund shipping */
 "Refund Shipping" = "Rückerstattung für Versand";
@@ -5505,8 +5493,7 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the report section on the privacy screen */
 "Reports" = "Berichte";
 
-/* Navigation bar title to request a refund for a shipping label
-   Request a refund on a shipping label from the shipping label more menu action sheet */
+/* Request a refund on a shipping label from the shipping label more menu action sheet */
 "Request a Refund" = "Rückerstattung anfordern";
 
 /* Name text field placeholder in Shipping Label Address Validation when it's required
@@ -6173,9 +6160,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 
 /* Error message in the Add Edit Coupon screen when the update of the coupon goes in error. */
 "Something went wrong while updating the coupon." = "Beim Aktualisieren des Gutscheins ist ein Fehler aufgetreten.";
-
-/* Notice format when a shipping label refund request fails. */
-"Something went wrong with the refund. Please try again." = "Bei der Rückerstattung ist ein Fehler aufgetreten. Bitte versuch es noch einmal.";
 
 /* Error message for when we can't create variations remotely
    Error message for when we can't fetch existing variations. */
@@ -8180,9 +8164,6 @@ If your translation of that term also happens to contains a hyphen, please be su
 /* Title of the no variations warning row in the product form when a variable subscription product has no variations. */
 "You can only add variable subscriptions in the web dashboard" = "Du kannst nur variable Abonnements im Web-Dashboard hinzufügen";
 
-/* Header text in Refund Shipping Label screen */
-"You can request a refund for a shipping label that has not been used to ship a package.\nIt will take at least 14 days to process." = "Du kannst für ein Versandetikett, das noch nicht zum Versenden eines Pakets verwendet wurde, eine Rückerstattung anfordern.\nDie Bearbeitung dauert mindestens 14 Tage.";
-
 /* Subtitle of the alert presented when the user tries to connect to a specific card reader and it fails due to postal code problems */
 "You can set your store's postcode\/ZIP in wp-admin > WooCommerce > Settings (General)" = "Du kannst die Postleitzahl\/PLZ deines Shops in wp-admin > WooCommerce > Einstellungen (Allgemein) festlegen";
 
@@ -9884,6 +9865,42 @@ which should be translated separately and considered part of this sentence. */
 
 /* Change due when the cash amount entered exceeds the order total.Reads as 'Change due: $1.23' */
 "collectcashviewhelper.changedue" = "Fälliges Wechselgeld: %1$@";
+
+/* Description shown when asking for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.description" = "Ein Sicherheits-Plugin kann das WordPress-Dashboard verschieben. Gib die Adresse ein, mit der du es öffnest.";
+
+/* Placeholder for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.placeholder" = "WordPress-Dashboard-Adresse";
+
+/* Title shown when asking for a custom WordPress dashboard address. */
+"com.woocommerce.siteCredentials.recovery.admin.title" = "Wo ist das Dashboard deines Shops?";
+
+/* Browser authentication button shown during custom address recovery. */
+"com.woocommerce.siteCredentials.recovery.browserAlternative" = "Versuche stattdessen, dich mit deinem Browser anzumelden";
+
+/* Button returning to the username and password form. */
+"com.woocommerce.siteCredentials.recovery.cancel" = "Abbrechen";
+
+/* Error shown when no WordPress dashboard exists at the custom address. */
+"com.woocommerce.siteCredentials.recovery.error.adminNotFound" = "Wir konnten das WordPress-Dashboard unter dieser Adresse nicht erreichen. Überprüfe sie und versuche es erneut.";
+
+/* Error shown when a custom WordPress address does not belong to the current site. */
+"com.woocommerce.siteCredentials.recovery.error.differentSite" = "Gib eine Adresse auf derselben Website ein, ohne die sichere Verbindung oder den sicheren Port zu ändern.";
+
+/* Error shown when a custom WordPress address is not a full web address. */
+"com.woocommerce.siteCredentials.recovery.error.invalidURL" = "Gib eine vollständige Webadresse ein, einschließlich http:\/\/ oder https:\/\/.";
+
+/* Error shown when no WordPress sign-in page exists at the custom address. */
+"com.woocommerce.siteCredentials.recovery.error.loginNotFound" = "Wir konnten unter dieser Adresse keine WordPress-Anmeldeseite finden. Überprüfe sie und versuche es erneut.";
+
+/* Description shown when asking for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.description" = "Ein Sicherheits-Plugin kann eine individuelle WordPress-Anmeldeadresse verwenden. Gib die Adresse ein, mit der du dich anmeldest.";
+
+/* Placeholder for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.placeholder" = "WordPress-Anmeldeadresse";
+
+/* Title shown when asking for a custom WordPress sign-in address. */
+"com.woocommerce.siteCredentials.recovery.login.title" = "Wo meldest du dich in deinem Shop an?";
 
 /* Accessibility hint for selecting a product in the Add Product screen */
 "configurationForBlaze.productRowAccessibilityHint" = "Wählt ein Produkt für die Blaze-Kampagne aus.";
@@ -15064,11 +15081,44 @@ which should be translated separately and considered part of this sentence. */
 /* Format for plural item quantity. The %1$@ is a plural quantity. The %2$@ is the item name. */
 "shipping_item_row.quantity.format" = "%1$d Artikel von %2$@";
 
-/* PermissionKit description shown when the app age rating changes.ratingCode: %1$d is the new rating code. */
-"significantChangeConsent.ageRatingChange.description" = "Altersfreigabe der App geändert in %1$d.";
+/* Description a parent or guardian sees in the system consent request when the app's App Store age rating changes. */
+"significantChangeConsent.ageRatingChange.request.description" = "Die Altersfreigabe für den App Store wurde erhöht.";
 
-/* PermissionKit description shown for a manual significant change.manualChangeID: %1$@ is a short description. */
-"significantChangeConsent.manual.description" = "Bedeutendes App-Update: %1$@.";
+/* Button on the significant-change blocking screen that sends the approval request again. */
+"significantChangeConsent.blocking.askAgain.button" = "Erneut fragen";
+
+/* Button on the significant-change blocking screen that re-checks the approval status. */
+"significantChangeConsent.blocking.checkAgain.button" = "Erneut prüfen";
+
+/* Button on the significant-change blocking screen that dismisses it after the approval was granted. */
+"significantChangeConsent.blocking.continue.button" = "Weiter";
+
+/* Message of the blocking screen shown when a parent/guardian declined the approval for a significant app change. */
+"significantChangeConsent.blocking.denied.message" = "Deine Eltern oder Erziehungsberechtigten haben die Genehmigung abgelehnt, die zur weiteren Verwendung dieser App erforderlich ist. Du kannst die Genehmigungsanfrage erneut senden.";
+
+/* Title of the blocking screen shown when a parent/guardian declined the approval for a significant app change. */
+"significantChangeConsent.blocking.denied.title" = "Genehmigung abgelehnt";
+
+/* Message of the blocking screen shown once a parent/guardian approved the significant app change, before the user continues into the app. */
+"significantChangeConsent.blocking.granted.message" = "Deine Eltern oder Erziehungsberechtigten haben die jüngsten Änderungen an dieser App genehmigt. Du bist startklar.";
+
+/* Title of the blocking screen shown once a parent/guardian approved the significant app change, before the user continues into the app. */
+"significantChangeConsent.blocking.granted.title" = "Genehmigung erteilt";
+
+/* Message of the blocking screen shown when a significant app change requires a parent/guardian approval that hasn't been requested yet. */
+"significantChangeConsent.blocking.needed.message" = "Die jüngsten Änderungen an dieser App müssen von deinen Eltern oder Erziehungsberechtigten genehmigt werden, bevor du fortfahren kannst. Sende eine Genehmigungsanfrage, um fortzufahren.";
+
+/* Title of the blocking screen shown when a significant app change requires a parent/guardian approval that hasn't been requested yet. */
+"significantChangeConsent.blocking.needed.title" = "Genehmigung erforderlich";
+
+/* Message of the blocking screen shown after an approval request for a significant app change was sent to a parent/guardian and is awaiting their response. */
+"significantChangeConsent.blocking.pendingRequested.message" = "Wir haben eine Genehmigungsanfrage für die letzten Änderungen an dieser App an deine Eltern oder Erziehungsberechtigten gesendet. Tippe auf „Erneut prüfen“, um fortzufahren.";
+
+/* Title of the blocking screen shown after an approval request for a significant app change was sent to a parent/guardian and is awaiting their response. */
+"significantChangeConsent.blocking.pendingRequested.title" = "Genehmigung angefordert";
+
+/* Button on the significant-change blocking screen that sends the approval request to a parent/guardian. */
+"significantChangeConsent.blocking.requestApproval.button" = "Genehmigung anfordern";
 
 /* Error message shown when the site info check and API discovery both fail. */
 "siteAddress.siteConnectionError" = "Die Verbindung zu dieser Website kann nicht hergestellt werden. Bitte überprüfe die Website-Adresse und versuche es erneut.";
@@ -15135,6 +15185,18 @@ which should be translated separately and considered part of this sentence. */
 
 /* VoiceOver value announced for an unselected checkbox. */
 "storeCheckbox.accessibilityValue.unchecked" = "Nicht aktiviert";
+
+/* Explanation shown when the app cannot reach the merchant's store because of a problem on their site. */
+"storeConnectionError.body.v2" = "Die Verbindung zu deinem Shop kann nicht hergestellt werden. Üblicherweise handelt es sich dabei um ein Verbindungsproblem auf deiner WordPress-Website, das häufig durch ein Sicherheits-Plugin, ein kürzlich erfolgtes Plugin-Update oder eine Jetpack-Verbindung verursacht wird, die aktualisiert werden muss. Die Behebung über die WooCommerce-App auf deinem Mobiltelefon ist nicht möglich.";
+
+/* Title of the button that opens the support form from the store connection warning. */
+"storeConnectionError.contactSupport" = "Support kontaktieren";
+
+/* Title of the button that hides the store connection warning for the current session. */
+"storeConnectionError.dismiss" = "Schließen";
+
+/* Title of the warning shown when the app cannot reach the merchant's store. */
+"storeConnectionError.title" = "Dein Shop ist nicht erreichbar";
 
 /* Default accessibility label for dismissing a store notice banner. */
 "storeNoticeBanner.dismiss.accessibilityLabel" = "Schließen";
@@ -15225,6 +15287,12 @@ which should be translated separately and considered part of this sentence. */
 
 /* Fallback label for a store stats widget site entity when its name is unknown. */
 "storeStatsWidget.storeEntity.fallbackName" = "Shop";
+
+/* VoiceOver label of the back control in a top app bar. */
+"storeTopAppBar.navigation.back" = "Zurück";
+
+/* VoiceOver label of the close control in a top app bar. */
+"storeTopAppBar.navigation.close" = "Schließen";
 
 /* Range label for the Last Month option in the Store Stats widget */
 "storeWidgets.dateRange.lastMonth" = "Letzter Monat";
@@ -15445,6 +15513,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Generic error message shown when an AI support chat request fails */
 "supportChatViewModel.aiChatConnectionErrorMessage" = "Wir konnten derzeit keine Verbindung zum KI-Chat herstellen.";
+
+/* Error message shown when device registration for push notifications fails from support chat */
+"supportChatViewModel.deviceRegistrationErrorMessage" = "Wir konnten dein Gerät nicht für Push-Benachrichtigungen registrieren. Bitte versuche es erneut.";
 
 /* Initial greeting message from the AI support bot */
 "supportChatViewModel.greetingMessage" = "Hallo! Ich bin dein mobiler Woo-Support-Bot. Gibt es etwas, womit ich dir heute helfen kann?";
@@ -17119,6 +17190,9 @@ which should be translated separately and considered part of this sentence. */
 
 /* Error message in the Push Notifications Benefits View for users without admin role */
 "wpcomPushNotificationsBenefitsViewModel.variantCheckError.noPermission" = "Dein Konto ist nicht berechtigt, die Einrichtung von Push-Benachrichtigungen abzuschließen. Bitte deinen Shop-Administrator, sich darum zu kümmern.";
+
+/* Error message in the Push Notifications Benefits View when the store's Jetpack is in Offline Mode */
+"wpcomPushNotificationsBenefitsViewModel.variantCheckError.storeInOfflineMode" = "Push-Benachrichtigungen können nicht eingerichtet werden, da sich dein Shop im Offlinemodus befindet. Wenn du weiterhin Hilfe benötigst, wende dich bitte an den Support.";
 
 /* A clickable text link that willredirect the user to a website */
 "www.usps.com\/hazmat" = "www.usps.com\/hazmat";

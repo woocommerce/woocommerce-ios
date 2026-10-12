@@ -2,7 +2,7 @@ import Foundation
 
 /// Card reader type. Indicates if a reader is meant to be used
 /// handheld or as a countertop device
-public enum CardReaderType: String, Codable {
+public enum CardReaderType: String, Codable, Sendable {
     /// Chipper
     case chipper
     /// Stripe M2

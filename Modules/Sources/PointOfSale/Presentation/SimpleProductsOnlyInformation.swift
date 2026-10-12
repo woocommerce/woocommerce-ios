@@ -76,6 +76,9 @@ private extension SimpleProductsOnlyInformation {
     }
 }
 
+#if DEBUG
 #Preview {
     SimpleProductsOnlyInformation(isPresented: .constant(true))
+        .posPreviewModalParentSize()
 }
+#endif

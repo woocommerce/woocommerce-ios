@@ -181,7 +181,7 @@ public final class POSOrderService: POSOrderServiceProtocol {
             .paymentMethodTitle
         ]
         let updatedOrder = order.copy(status: .completed,
-                                      paymentMethodID: Constants.manualPaymentMethodID,
+                                      paymentMethodID: PaymentGateway.Constants.manualPaymentMethodID,
                                       paymentMethodTitle: Localization.manualPaymentMethodTitle)
         do {
             _ = try await ordersRemote.updatePOSOrder(
@@ -408,12 +408,5 @@ private extension POSOrderService {
             value: "One or more products",
             comment: "Fallback name for a product that couldn't be identified in error handling."
         )
-    }
-
-    enum Constants {
-        /// Payment method slug used when the merchant marks an order as paid manually,
-        /// e.g. for an external reader, account credit, gift card, or any out-of-band collection.
-        /// Distinct from `cashOnDeliveryGatewayID` so reporting can separate the two flows.
-        static let manualPaymentMethodID = "other"
     }
 }

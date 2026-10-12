@@ -42,7 +42,7 @@ public final class WordPressOrgNetwork: Network {
     /// only a request the converter leaves alone counts as tunnelled.
     ///
     public func usesJetpackTunnel(for request: URLRequestConvertible) -> Bool {
-        request is JetpackRequest && !requestConverter.convertsToDirectRequest(request)
+        request.originalResponseRequest is JetpackRequest && !requestConverter.convertsToDirectRequest(request.originalResponseRequest)
     }
 
     /// Executes the specified Network Request. Upon completion, the payload will be sent back to the caller as a Data instance.
@@ -55,12 +55,16 @@ public final class WordPressOrgNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Data?, Error?) -> Void) {
-        let request = requestConverter.convert(request)
+        let responsePolicy = request as? UnexpectedResponseRequest
+        let request = requestConverter.convert(request.originalResponseRequest)
         alamofireSession.request(request)
             .validate()
             .responseData { response in
                 do {
                     try Self.validateResponse(response.data)
+                    if let responsePolicy, let error = response.unexpectedResponseError(for: responsePolicy, tunneled: request is JetpackRequest) {
+                        throw error
+                    }
                     completion(response.value, response.networkingError)
                 } catch {
                     completion(nil, error)
@@ -78,12 +82,16 @@ public final class WordPressOrgNetwork: Network {
     ///     - completion: Closure to be executed upon completion.
     ///
     public func responseData(for request: URLRequestConvertible, completion: @escaping (Swift.Result<Data, Error>) -> Void) {
-        let request = requestConverter.convert(request)
+        let responsePolicy = request as? UnexpectedResponseRequest
+        let request = requestConverter.convert(request.originalResponseRequest)
         alamofireSession.request(request)
             .validate()
             .responseData { response in
                 do {
                     try Self.validateResponse(response.data)
+                    if let responsePolicy, let error = response.unexpectedResponseError(for: responsePolicy, tunneled: request is JetpackRequest) {
+                        throw error
+                    }
                     completion(response.result.mapError { $0 })
                 } catch {
                     completion(.failure(error))
@@ -93,11 +101,15 @@ public final class WordPressOrgNetwork: Network {
 
     public func responseDataAndHeaders(for request: URLRequestConvertible,
                                        isolation: isolated (any Actor)?) async throws -> (Data, ResponseHeaders?) {
-        let request = requestConverter.convert(request)
+        let responsePolicy = request as? UnexpectedResponseRequest
+        let request = requestConverter.convert(request.originalResponseRequest)
         let sessionRequest = alamofireSession.request(request).validate()
         let response = await sessionRequest.serializingData().response
         do {
             try Self.validateResponse(response.data)
+            if let responsePolicy, let error = response.unexpectedResponseError(for: responsePolicy, tunneled: request is JetpackRequest) {
+                throw error
+            }
             switch response.result {
                 case .success(let data):
                     return (data, response.response?.headers.dictionary)

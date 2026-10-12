@@ -62,16 +62,18 @@ final class ProductDetailsTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        configureBackground()
-        configureProductImageView()
-        configureNameLabel()
-        configurePriceLabel()
-        configureSKULabel()
-        configureSubtitleLabel()
-        configureSelectionStyle()
-        configureAttributesStackView()
-        configureAddOnViews()
-        observeInterfaceTraitChanges()
+        MainActor.assumeIsolated {
+            configureBackground()
+            configureProductImageView()
+            configureNameLabel()
+            configurePriceLabel()
+            configureSKULabel()
+            configureSubtitleLabel()
+            configureSelectionStyle()
+            configureAttributesStackView()
+            configureAddOnViews()
+            observeInterfaceTraitChanges()
+        }
     }
 
     override func updateConfiguration(using state: UICellConfigurationState) {

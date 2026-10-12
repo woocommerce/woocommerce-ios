@@ -9,12 +9,14 @@ import protocol Yosemite.PointOfSaleCouponFetchStrategy
 import class Yosemite.AsyncPaginationTracker
 import enum Yosemite.SearchDebounceStrategy
 
+@MainActor
 protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControllerProtocol {
     /// Enables coupons in store settings
     /// Returns true if coupons enabled
     func enableCoupons() async
 }
 
+@MainActor
 @Observable final class PointOfSaleCouponsController: PointOfSaleCouponsControllerProtocol {
     var itemsViewState = ItemsViewState(containerState: .content,
                                                         itemsStack: ItemsStackState(root: .loading([]),
@@ -36,17 +38,14 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
         self.analyticsProvider = analyticsProvider
     }
 
-    @MainActor
     func loadItems(base: ItemListBaseItem) async {
         await loadFirstPage()
     }
 
-    @MainActor
     func refreshItems(base: ItemListBaseItem) async {
         await loadFirstPageRemotely()
     }
 
-    @MainActor
     func searchItems(searchTerm: String, baseItem: ItemListBaseItem) async {
         fetchStrategy = fetchStrategyFactory.searchStrategy(searchTerm: searchTerm,
                                                             analytics: POSItemFetchAnalytics(itemType: .coupon, analytics: analyticsProvider))
@@ -70,7 +69,6 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
         return searchStrategy.debounceStrategy
     }
 
-    @MainActor
     func loadNextItems(base: ItemListBaseItem) async {
         guard paginationTracker.hasNextPage else {
             return
@@ -97,7 +95,6 @@ protocol PointOfSaleCouponsControllerProtocol: PointOfSaleSearchingItemsControll
         }
     }
 
-    @MainActor
     func enableCoupons() async {
         itemsViewState.itemsStack.root = .loading([])
         do {
@@ -141,7 +138,6 @@ private extension PointOfSaleCouponsController {
         }
     }
 
-    @MainActor
     func fetchCoupons(pageNumber: Int) async throws -> Bool {
         let pagedCoupons = try await couponProvider.providePointOfSaleCoupons(pageNumber: pageNumber, fetchStrategy: fetchStrategy)
 

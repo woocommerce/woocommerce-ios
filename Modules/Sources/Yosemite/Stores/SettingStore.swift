@@ -31,13 +31,15 @@ public class SettingStore: Store {
             return
         }
 
+        // SettingStoreMethods only holds immutable dependencies set in init; only the handlers read it. Remove once stores are isolated (WOOMOB-4186).
+        nonisolated(unsafe) let methods = methods
         switch action {
         case .synchronizeGeneralSiteSettings(let siteID, let onCompletion):
             methods.synchronizeGeneralSiteSettings(siteID: siteID, onCompletion: onCompletion)
         case .synchronizeProductSiteSettings(let siteID, let onCompletion):
             methods.synchronizeProductSiteSettings(siteID: siteID, onCompletion: onCompletion)
-        case .retrieveSiteAPI(let siteID, let onCompletion):
-            methods.retrieveSiteAPI(siteID: siteID, onCompletion: onCompletion)
+        case .retrieveSiteAPI(let siteID, let detectUnexpectedResponses, let onCompletion):
+            methods.retrieveSiteAPI(siteID: siteID, detectUnexpectedResponses: detectUnexpectedResponses, onCompletion: onCompletion)
         case let .retrievePointOfSaleSettings(siteID, onCompletion):
             Task { @MainActor in
                 do {

@@ -38,7 +38,17 @@ struct POSRefundReaderDisconnectedView: View {
 }
 
 private extension POSRefundReaderDisconnectedView {
+    @ViewBuilder
     var headerView: some View {
+        if horizontalSizeClass == .compact {
+            POSRefundNavigationHeader(backAction: onBack,
+                                      backAccessibilityLabel: Localization.backButtonAccessibilityLabel)
+        } else {
+            regularHeaderView
+        }
+    }
+
+    var regularHeaderView: some View {
         HStack {
             Button(action: onBack) {
                 Text(Image(systemName: "chevron.backward"))
@@ -104,6 +114,6 @@ private extension POSRefundReaderDisconnectedView {
     POSRefundReaderDisconnectedView(onConnect: {},
                                     onCancel: {},
                                     onBack: {})
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 #endif

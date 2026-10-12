@@ -1,7 +1,7 @@
 import SwiftUI
 
 private struct POSHeaderLeadingContentKey: EnvironmentKey {
-    static let defaultValue: AnyView? = nil
+    static var defaultValue: AnyView? { nil }
 }
 
 extension EnvironmentValues {

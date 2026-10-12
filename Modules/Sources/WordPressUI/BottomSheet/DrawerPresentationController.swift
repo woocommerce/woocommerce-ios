@@ -17,7 +17,7 @@ public enum DrawerHeight {
     // Height will be equal to the the content height value. A height of 0 will use the calculated height.
     case contentHeight(CGFloat)
 
-    // Height in the hidden state will be equal the screens height
+    // Height in the hidden state will be equal the container's height
     case hidden
 
     // Calculate the intrisinc content based on the View Controller
@@ -144,37 +144,77 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         } else {
             y = collapsedYPosition
         }
-        var width: CGFloat = containerView.bounds.width - (containerView.safeAreaInsets.left + containerView.safeAreaInsets.right)
-
         frame.origin.y = y
 
-        /// If we're in a compact vertical size class, constrain the width a bit more so it doesn't get overly wide.
-        if let widthForCompactSizeClass = presentableViewController?.compactWidth,
-            traitCollection.verticalSizeClass == .compact {
-
-            switch widthForCompactSizeClass {
-            case .percentage(let percentage):
-                width = width * percentage
-            case .contentWidth(let givenWidth):
-                width = givenWidth
-            case .maxWidth:
-                break
-            }
-        }
-        frame.size.width = width
-
-        /// If we constrain the width, this centers the view by applying the appropriate insets based on width
-        frame.origin.x = ((containerView.bounds.width - width) / 2)
+        let horizontal = horizontalFrame(in: containerView)
+        frame.origin.x = horizontal.x
+        frame.size.width = horizontal.width
 
         return frame
     }
 
+    /// Returns the horizontal origin and width of the drawer for the given container width and safe area
+    /// - Parameter compactWidth: The width to constrain to in a compact vertical size class, `nil` otherwise
+    static func horizontalFrame(containerWidth: CGFloat, safeAreaInsets: UIEdgeInsets, compactWidth: DrawerWidth?) -> (x: CGFloat, width: CGFloat) {
+        let safeAreaWidth = containerWidth - (safeAreaInsets.left + safeAreaInsets.right)
+        var width = safeAreaWidth
+
+        switch compactWidth {
+        case .percentage(let percentage):
+            width = width * percentage
+        case .contentWidth(let givenWidth):
+            width = givenWidth
+        case .maxWidth, .none:
+            break
+        }
+
+        /// Centers the view within the horizontal safe area, whose left and right insets can differ
+        return (x: safeAreaInsets.left + ((safeAreaWidth - width) / 2), width: width)
+    }
+
+    private func horizontalFrame(in containerView: UIView) -> (x: CGFloat, width: CGFloat) {
+        /// If we're in a compact vertical size class, constrain the width a bit more so it doesn't get overly wide.
+        let compactWidth = traitCollection.verticalSizeClass == .compact ? presentableViewController?.compactWidth : nil
+
+        return Self.horizontalFrame(containerWidth: containerView.bounds.width,
+                                    safeAreaInsets: containerView.safeAreaInsets,
+                                    compactWidth: compactWidth)
+    }
+
     override public func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
-        coordinator.animate(alongsideTransition: { _ in
+        let transitionID = UUID()
+        activeSizeTransitions.insert(transitionID)
+
+        let isAnimating = coordinator.animate(alongsideTransition: { _ in
             self.presentedView?.frame = self.frameOfPresentedViewInContainerView
             self.transition(to: self.currentPosition)
-        }, completion: nil)
+        }, completion: { _ in
+            self.activeSizeTransitions.remove(transitionID)
+            self.updateHorizontalFrame()
+        })
+        if !isAnimating {
+            activeSizeTransitions.remove(transitionID)
+            updateHorizontalFrame()
+        }
         super.viewWillTransition(to: size, with: coordinator)
+    }
+
+    /// Size transitions in flight; their animation blocks own the frame until they complete
+    private var activeSizeTransitions: Set<UUID> = []
+
+    /// Applies the horizontal frame of the drawer, leaving the vertical position untouched
+    private func updateHorizontalFrame() {
+        guard let presentedView, let containerView, activeSizeTransitions.isEmpty else {
+            return
+        }
+
+        let frame = horizontalFrame(in: containerView)
+        guard abs(presentedView.frame.minX - frame.x) > 0.5 || abs(presentedView.frame.width - frame.width) > 0.5 else {
+            return
+        }
+
+        presentedView.frame.origin.x = frame.x
+        presentedView.frame.size.width = frame.width
     }
 
     /// Returns the current position of the drawer
@@ -283,7 +323,7 @@ public class DrawerPresentationController: FancyAlertPresentationController {
             topMargin = calculatedTopMargin(for: height)
 
         case .hidden:
-            topMargin = UIScreen.main.bounds.height
+            topMargin = containerView?.bounds.height ?? UIScreen.main.bounds.height
         }
 
         return topMargin
@@ -308,6 +348,11 @@ public class DrawerPresentationController: FancyAlertPresentationController {
         addGestures()
         observe(scrollView: presentableViewController?.scrollableView)
         registerTraitChanges()
+
+        /// The safe area can change without a size transition, or settle after one has completed
+        if hasCompletedPresentation {
+            updateHorizontalFrame()
+        }
     }
 
     private var hasCompletedPresentation = false

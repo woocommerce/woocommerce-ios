@@ -1,6 +1,7 @@
 import UIKit
 
 /// Adjusts its scrollable view to accommodate the keyboard height.
+@MainActor
 protocol KeyboardScrollable {
     var scrollable: UIScrollView { get }
 

@@ -227,7 +227,7 @@ private extension POSRefundReviewView {
         onAddReason: {},
         onContinue: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 
 #Preview("POSRefundReviewView with reason") {
@@ -242,6 +242,6 @@ private extension POSRefundReviewView {
         onAddReason: {},
         onContinue: {}
     )
-    .environment(\.posModalParentSize, CGSize(width: 1192, height: 822))
+    .posPreviewModalParentSize()
 }
 #endif

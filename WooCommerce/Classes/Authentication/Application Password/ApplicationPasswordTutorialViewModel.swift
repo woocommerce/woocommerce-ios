@@ -14,6 +14,8 @@ struct ApplicationPasswordTutorialViewModel {
         }
 
         switch loginError {
+        case .unexpectedResponse:
+            return friendlyErrorMessage(for: loginError.presentationError)
         case .loginFailed(message: let message):
             return message
         case .invalidLoginResponse, .genericFailure:

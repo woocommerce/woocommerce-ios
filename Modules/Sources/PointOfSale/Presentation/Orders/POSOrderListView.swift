@@ -206,6 +206,11 @@ private struct POSOrderRowView: View {
     @ScaledMetric private var scale: CGFloat = 1.0
     @Environment(\.dynamicTypeSize) var dynamicTypeSize
     @Environment(\.horizontalSizeClass) private var horizontalSizeClass
+    @Environment(\.siteTimezone) private var siteTimezone
+
+    private var dateFormatter: DateFormatter {
+        DateFormatter.posDateAndTimeFormatter(timeZone: siteTimezone)
+    }
 
     private var minHeight: CGFloat {
         min(Constants.orderCardMinHeight * scale, Constants.maximumOrderCardHeight)
@@ -244,7 +249,7 @@ private struct POSOrderRowView: View {
         POSOrderListView.Localization.orderRowAccessibilityLabel(
             orderNumber: order.number,
             total: order.formattedTotal,
-            date: DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated),
+            date: dateFormatter.string(from: order.dateCreated),
             email: order.customerEmail,
             status: order.status.localizedName
         )
@@ -270,7 +275,7 @@ private struct POSOrderRowView: View {
     @ViewBuilder
     private var orderDetailsColumn: some View {
         VStack(alignment: .leading, spacing: POSSpacing.xSmall) {
-            Text(DateFormatter.dateAndTimeFormatter.string(from: order.dateCreated))
+            Text(dateFormatter.string(from: order.dateCreated))
                 .font(.posBodySmallRegular())
                 .foregroundStyle(Color.posOnSurfaceVariantHighest)
                 .fixedSize(horizontal: false, vertical: true)

@@ -1474,7 +1474,12 @@ final class AuthenticationManagerTests: XCTestCase {
                     XCTFail("Expected nonce failure forwarded to alert")
                     continue
                 }
-                XCTAssertEqual(failure, .init(stage: .nonce))
+                XCTAssertEqual(failure.step, .nonceRetrieval)
+                XCTAssertEqual(failure.kind, .unexpectedContent)
+                XCTAssertEqual(failure.statusCode, 200)
+                XCTAssertEqual(failure.diagnostics?.request, "GET /private-admin/admin-ajax.php")
+                XCTAssertEqual(failure.diagnostics?.excerpt, "Wrong address")
+                XCTAssertNil(failure.diagnostics?.contentType)
             }
             XCTAssertEqual(loading, [true, false, true, false])
             XCTAssertEqual(session.receivedRequests.last?.url?.absoluteString, stage == .dashboard ? adminURL : recoveredNonceURL)

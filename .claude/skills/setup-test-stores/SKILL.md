@@ -103,7 +103,7 @@ hand against a site created in a browser.
 ```
 
 The doctor should report all credentials present. Scoping by tag is deliberate: with
-`--profile phone-full` it also demands the negative-login fixtures, which this skill does
+`--profile full` it also demands the negative-login fixtures, which this skill does
 not provision, and reports them missing.
 
 ## What the provisioned store supports

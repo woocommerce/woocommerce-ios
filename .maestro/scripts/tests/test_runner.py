@@ -555,8 +555,24 @@ class RunnerTests(unittest.TestCase):
         self.assertEqual((1, 2), RUNNER.attempt_numbers(safe))
 
     def test_profile_contract(self) -> None:
+        self.assertEqual({"core", "full", "pos"}, set(RUNNER.PROFILES))
         self.assertEqual("iphone", RUNNER.PROFILES["core"][2])
-        self.assertEqual("ipad", RUNNER.PROFILES["pos-ipad"][2])
+        self.assertEqual("iphone", RUNNER.PROFILES["full"][2])
+        self.assertEqual("ipad", RUNNER.PROFILES["pos"][2])
+        self.assertIn("flaky_quarantine", RUNNER.PROFILES["full"][1])
+        self.assertIn("flaky_quarantine", RUNNER.PROFILES["pos"][1])
+        self.assertEqual({"full", "pos"}, RUNNER.SEEDING_PROFILES)
+
+    def test_pos_flows_run_last_on_the_pos_simulator_only_in_a_mixed_selection(self) -> None:
+        stats = RUNNER.FLOWS_DIR / "dashboard_stats.yaml"
+        google = RUNNER.FLOWS_DIR / "google_for_woo.yaml"
+        pos = RUNNER.FLOWS_DIR / "pos_search_and_coupons.yaml"
+        cash = RUNNER.FLOWS_DIR / "pos_cash_payment.yaml"
+
+        self.assertTrue(RUNNER.needs_pos_device([pos, stats]))
+        self.assertFalse(RUNNER.needs_pos_device([pos, cash]))
+        self.assertEqual([stats, google, pos], RUNNER.in_store_order([pos, google, stats]))
+        self.assertEqual([pos, cash], RUNNER.in_store_order([pos, cash]))
 
     def test_sanitize_artifacts_redacts_text_and_keeps_images(self) -> None:
         with tempfile.TemporaryDirectory() as directory:

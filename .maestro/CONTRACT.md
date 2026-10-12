@@ -12,8 +12,9 @@ stack. Flow owners may reference these interfaces but must not redefine them.
   `APP_ID`. Debug is the default build input; Alpha/prototype bundles work
   without a hard-coded identifier.
 - `--device` accepts a simulator name or UDID. With no device argument, the
-  runner prefers an already booted compatible simulator. `pos-ipad` requires an
-  iPad and never degrades to a phone no-op.
+  runner prefers an already booted compatible simulator. `pos` and the POS flows
+  of `full` require an iPad and never degrade to a phone no-op. `--pos-device`
+  picks the iPad for `full`.
 - Flows launch the app with `-ui_testing`, which turns off analytics and skips the
   privacy banner and login onboarding. No Maestro invocation passes XCUITest mock
   arguments.
@@ -77,9 +78,8 @@ Profiles:
 | Profile | Included tags | Excluded tags | Device |
 | --- | --- | --- | --- |
 | `core` | `smoke_core` | `flaky_quarantine,pos_ipad,ios_system` | iPhone |
-| `phone-full` | `smoke_core,smoke_extended,destructive` | `pos_ipad,ios_system` | iPhone |
-| `pos-ipad` | `pos_ipad` | none | iPad |
-| `ios-system` | `ios_system` | none | iPhone |
+| `full` | `smoke_core,smoke_extended,destructive,ios_system,pos_ipad` | `flaky_quarantine` | iPhone, then iPad for POS |
+| `pos` | `pos_ipad` | `flaky_quarantine` | iPad |
 
 Explicit `--include-tags` and `--exclude-tags` override profile tag defaults.
 Each failed non-destructive flow is retried once; both attempts remain in the
@@ -129,7 +129,7 @@ entries.
 - A feature-gated item maps to P2 coverage only when the selected profile's
   fixture guarantees eligibility. `hub.inbox`, `hub.blaze.create`,
   `hub.google-for-woo` and the `hub.payments` card-reader rows are mandatory
-  for `phone-full`; an ineligible store fails the flow instead of emitting a
+  for `full`; an ineligible store fails the flow instead of emitting a
   passing skip.
 - Login-reset flows clear application state and Keychain. Non-login flows call
   `ensure_logged_in` and preserve authenticated state.

@@ -67,10 +67,12 @@ CLEANUP_ONLY_ENVIRONMENT = {
 
 PROFILES = {
     "core": (["smoke_core"], ["flaky_quarantine", "pos_ipad", "ios_system"], "iphone"),
-    "phone-full": (["smoke_core", "smoke_extended", "destructive"], ["pos_ipad", "ios_system"], "iphone"),
-    "pos-ipad": (["pos_ipad"], [], "ipad"),
-    "ios-system": (["ios_system"], [], "iphone"),
+    "full": (["smoke_core", "smoke_extended", "destructive", "ios_system", "pos_ipad"], ["flaky_quarantine"], "iphone"),
+    "pos": (["pos_ipad"], ["flaky_quarantine"], "ipad"),
 }
+# Profiles that seed fixtures without --seed, because they include destructive flows.
+SEEDING_PROFILES = frozenset({"full", "pos"})
+POS_TAG = "pos_ipad"
 
 ORDERED_FLOWS = [
     "diagnostic.yaml",
@@ -140,6 +142,11 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--profile", choices=sorted(PROFILES), default="core")
     parser.add_argument("--device", help="Simulator name or UDID")
     parser.add_argument(
+        "--pos-device",
+        help="iPad simulator name or UDID for the POS flows when the selection also has phone flows; "
+        "an available iPad is picked when omitted",
+    )
+    parser.add_argument(
         "--store",
         choices=STORES,
         help="Run every selected flow against this store instead of the store each flow needs",
@@ -150,7 +157,8 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--flow-timeout-seconds", type=float, default=1800)
     parser.add_argument("--rerun-failed", type=Path)
     parser.add_argument("--output-dir", type=Path)
-    parser.add_argument("--seed", action="store_true")
+    parser.add_argument("--seed", action="store_true", default=None)
+    parser.add_argument("--no-seed", dest="seed", action="store_false")
     parser.add_argument("--no-cleanup", action="store_true")
     parser.add_argument("--no-open", action="store_true")
     parser.add_argument("--plan", "--list", dest="plan", action="store_true", help="Print the resolved flows and requirements without running them")
@@ -359,11 +367,21 @@ def flow_store(path: Path, store_override: str | None = None) -> str:
     return "shared" if SHARED_STORE_TAG in flow_tags(path) else "lab"
 
 
+def needs_pos_device(flows: list[Path]) -> bool:
+    """POS flows need an iPad, so a selection that also has phone flows runs them on a second simulator."""
+    pos = [POS_TAG in flow_tags(flow) for flow in flows]
+    return any(pos) and not all(pos)
+
+
 def in_store_order(flows: list[Path], store_override: str | None = None) -> list[Path]:
-    """Lab flows run first, then the flows that need the shared store."""
-    return [flow for flow in flows if flow_store(flow, store_override) == "lab"] + [
-        flow for flow in flows if flow_store(flow, store_override) == "shared"
-    ]
+    """Lab flows run first, then the flows that need the shared store, then the POS flows on the iPad."""
+    pos_flows = [flow for flow in flows if POS_TAG in flow_tags(flow)] if needs_pos_device(flows) else []
+    phone_flows = [flow for flow in flows if flow not in pos_flows]
+    return (
+        [flow for flow in phone_flows if flow_store(flow, store_override) == "lab"]
+        + [flow for flow in phone_flows if flow_store(flow, store_override) == "shared"]
+        + pos_flows
+    )
 
 
 def failed_flow_stems(report: Path) -> set[str]:
@@ -807,7 +825,7 @@ def selection_arguments(args: argparse.Namespace) -> list[str]:
     return arguments
 
 
-def write_html(destination: Path, *, run_id: str, app: Path, app_id: str, simulator: dict[str, str], profile: str, attempts: list[Attempt], status: str, tests: int, failures: int, skipped: int, candidate_kind: str = "developer", app_sha256: str = "", seed: bool = False, flow_timeout_seconds: float = 900, selection: list[str] | None = None) -> None:
+def write_html(destination: Path, *, run_id: str, app: Path, app_id: str, simulator: dict[str, str], profile: str, attempts: list[Attempt], status: str, tests: int, failures: int, skipped: int, candidate_kind: str = "developer", app_sha256: str = "", seed: bool = False, flow_timeout_seconds: float = 900, selection: list[str] | None = None, pos_simulator: dict[str, str] | None = None) -> None:
     rows = []
     for attempt in attempts:
         state = "pass" if attempt.returncode == 0 else "timed_out" if attempt.returncode == 124 else "fail"
@@ -840,9 +858,10 @@ def write_html(destination: Path, *, run_id: str, app: Path, app_id: str, simula
             shlex.quote(candidate_kind),
             "--device",
             shlex.quote(simulator["udid"]),
+            *(["--pos-device", shlex.quote(pos_simulator["udid"])] if pos_simulator else []),
             "--flow-timeout-seconds",
             shlex.quote(f"{flow_timeout_seconds:g}"),
-            *(["--seed"] if seed else []),
+            "--seed" if seed else "--no-seed",
             *(shlex.quote(argument) for argument in selection or []),
             "--rerun-failed",
             "report.xml",
@@ -851,7 +870,7 @@ def write_html(destination: Path, *, run_id: str, app: Path, app_id: str, simula
     destination.write_text(f"""<!doctype html><meta charset='utf-8'><title>WooCommerce iOS Maestro {html.escape(run_id)}</title>
 <style>body{{font:14px system-ui;margin:2rem;max-width:1100px}}table{{border-collapse:collapse;width:100%}}th,td{{border:1px solid #ccc;padding:.45rem;text-align:left}}.pass{{color:#067a35}}.flaky{{color:#9a6700}}.fail,.setup_error,.timed_out{{color:#b42318}}code{{word-break:break-all}}</style>
 <h1>WooCommerce iOS Maestro run</h1><p><strong>{html.escape(run_id)}</strong></p>
-<ul><li>Overall status: <strong class='{html.escape(status.lower())}'>{html.escape(status)}</strong></li><li>Profile: {html.escape(profile)}</li><li>Candidate: {html.escape(candidate_kind)}{' (developer build; not release evidence)' if candidate_kind == 'developer' else ''}</li><li>App: <code>{html.escape(str(app))}</code></li><li>Bundle: <code>{html.escape(app_id)}</code></li><li>App SHA-256: <code>{html.escape(app_sha256 or '<not captured>')}</code></li><li>Simulator: {html.escape(simulator['name'])} (<code>{simulator['udid']}</code>)</li><li>Tests: {tests}; failures: {failures}; skipped: {skipped}</li></ul>
+<ul><li>Overall status: <strong class='{html.escape(status.lower())}'>{html.escape(status)}</strong></li><li>Profile: {html.escape(profile)}</li><li>Candidate: {html.escape(candidate_kind)}{' (developer build; not release evidence)' if candidate_kind == 'developer' else ''}</li><li>App: <code>{html.escape(str(app))}</code></li><li>Bundle: <code>{html.escape(app_id)}</code></li><li>App SHA-256: <code>{html.escape(app_sha256 or '<not captured>')}</code></li><li>Simulator: {html.escape(simulator['name'])} (<code>{simulator['udid']}</code>)</li>{f"<li>POS simulator: {html.escape(pos_simulator['name'])} (<code>{pos_simulator['udid']}</code>)</li>" if pos_simulator else ''}<li>Tests: {tests}; failures: {failures}; skipped: {skipped}</li></ul>
 <p><a href='report.xml'>Combined JUnit</a> · <a href='run-summary.json'>JSON summary</a></p>
 <h2>Rerun failures</h2><pre><code>{html.escape(rerun_command)}</code></pre>
 <table><thead><tr><th>Flow</th><th>Repeat</th><th>Attempt</th><th>Result</th><th>Artifacts</th></tr></thead><tbody>{''.join(rows)}</tbody></table>""", encoding="utf-8")
@@ -865,6 +884,8 @@ def main() -> int:
         raise SystemExit("--flow-timeout-seconds must be positive")
 
     include_default, exclude_default, family = PROFILES[args.profile]
+    if args.seed is None:
+        args.seed = args.profile in SEEDING_PROFILES
     include = csv(args.include_tags)
     exclude = csv(args.exclude_tags)
     include = include_default if include is None else include
@@ -893,8 +914,14 @@ def main() -> int:
             else "Cleanup:      not required"
         )
         print("Selected flows:")
+        pos_device = needs_pos_device(flows)
         for flow in flows:
-            suffix = " (shared store)" if not args.store and flow_store(flow) == "shared" else ""
+            if pos_device and POS_TAG in flow_tags(flow):
+                suffix = " (POS simulator)"
+            elif not args.store and flow_store(flow) == "shared":
+                suffix = " (shared store)"
+            else:
+                suffix = ""
             print(f"  - {flow.relative_to(REPO_ROOT)}{suffix}")
         print("Required environment:")
         if required:
@@ -940,23 +967,29 @@ def main() -> int:
         validate_environment([], seed_values, seed=True, store=seed_store)
     manifest = output / "run-manifest.json"
     simulator = resolve_simulator(args.device, family)
-    locale = run(
-        [sys.executable, str(DEVICE_LOCALE), "--device", simulator["udid"]],
-        capture=False,
-        check=False,
-    )
-    if locale.returncode:
-        return locale.returncode
-    turn_off_password_autofill(simulator["udid"])
-    installed = run(["xcrun", "simctl", "install", simulator["udid"], str(app)], check=False)
-    if installed.returncode:
-        raise SystemExit(redact(f"Installing the app failed: {(installed.stderr or installed.stdout).strip()}", values))
+    pos_simulator = resolve_simulator(args.pos_device, "ipad") if needs_pos_device(flows) else None
+    if pos_simulator and pos_simulator["udid"] == simulator["udid"]:
+        raise SystemExit("--pos-device must be a different simulator than --device")
+    run_simulators = [simulator] + ([pos_simulator] if pos_simulator else [])
+    for device in run_simulators:
+        locale = run(
+            [sys.executable, str(DEVICE_LOCALE), "--device", device["udid"]],
+            capture=False,
+            check=False,
+        )
+        if locale.returncode:
+            return locale.returncode
+        turn_off_password_autofill(device["udid"])
+        installed = run(["xcrun", "simctl", "install", device["udid"], str(app)], check=False)
+        if installed.returncode:
+            raise SystemExit(redact(f"Installing the app failed: {(installed.stderr or installed.stdout).strip()}", values))
     summary = {
         "run_id": run_id, "profile": args.profile, "store": args.store or "per flow", "app": str(app), "app_id": app_id,
         "candidate_kind": args.candidate_kind,
         "candidate_evidence": "developer build; not release evidence" if args.candidate_kind == "developer" else "release candidate",
         "app_sha256": app_sha256,
         "simulator_name": simulator["name"], "simulator_udid": simulator["udid"],
+        **({"pos_simulator_name": pos_simulator["name"], "pos_simulator_udid": pos_simulator["udid"]} if pos_simulator else {}),
         "include_tags": include, "exclude_tags": exclude, "repeat": repeat,
         "flows": [str(path.relative_to(REPO_ROOT)) for path in flows],
     }
@@ -975,7 +1008,7 @@ def main() -> int:
 
 
     attempts: list[Attempt] = []
-    env_args = maestro_env_args(app_id, run_id, simulator["runtime"], app_display_name(app))
+    phone_simulator = simulator
     maestro_environments = {
         store: maestro_process_environment(
             store_values[store],
@@ -997,6 +1030,8 @@ def main() -> int:
     print(f"Profile:      {args.profile}", flush=True)
     print(f"Store:        {args.store or 'per flow'}", flush=True)
     print(f"Simulator:    {simulator['name']} ({simulator['udid']})", flush=True)
+    if pos_simulator:
+        print(f"POS simulator: {pos_simulator['name']} ({pos_simulator['udid']})", flush=True)
     print(f"Output:       {output}", flush=True)
     print(f"Repeat:       {repeat}", flush=True)
     print(f"Include tags: {','.join(include) or '<none>'}", flush=True)
@@ -1004,6 +1039,13 @@ def main() -> int:
     try:
         for repetition in range(1, repeat + 1):
             for flow in flows:
+                flow_simulator = pos_simulator if pos_simulator and POS_TAG in flow_tags(flow) else phone_simulator
+                if flow_simulator is not simulator:
+                    print(f"--- Switching to {flow_simulator['name']} for the POS flows", flush=True)
+                    simulator = flow_simulator
+                    # The app on this simulator may be signed in to any store, so check it again.
+                    active_store = None
+                env_args = maestro_env_args(app_id, run_id, simulator["runtime"], app_display_name(app))
                 store = flow_store(flow, args.store)
                 store_url = store_values[store].get("MAESTRO_WOO_JETPACK_STORE_URL", "")
                 # Login flows reset the session themselves and can end signed in to
@@ -1110,12 +1152,14 @@ def main() -> int:
         result = add_setup_error(result, output / "report.xml", simulator_error, case_name="simulator command")
     if cleanup_error:
         result = add_setup_error(result, output / "report.xml", cleanup_error)
+    simulator = phone_simulator
     write_html(
         output / "report.html",
         run_id=run_id,
         app=app,
         app_id=app_id,
         simulator=simulator,
+        pos_simulator=pos_simulator,
         profile=args.profile,
         attempts=attempts,
         status=result.status,

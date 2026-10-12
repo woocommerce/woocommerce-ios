@@ -1,5 +1,5 @@
 # p2: hub.blaze.create
-# The phone-full store must be eligible for Blaze, so a missing Blaze row fails the flow.
+# The full profile store must be eligible for Blaze, so a missing Blaze row fails the flow.
 appId: ${APP_ID}
 name: "Blaze - Campaign creation"
 tags:

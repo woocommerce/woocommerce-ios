@@ -1,5 +1,5 @@
 # p2: hub.payments
-# The phone-full store supports card readers, so missing card-reader rows fail the flow.
+# The full profile store supports card readers, so missing card-reader rows fail the flow.
 appId: ${APP_ID}
 name: "Hub Menu - Payments"
 tags:

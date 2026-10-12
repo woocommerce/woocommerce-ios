@@ -101,11 +101,15 @@ def main() -> int:
     parser.add_argument("--app", required=True, type=Path)
     parser.add_argument("--profile", choices=sorted(RUNNER.PROFILES), default="core")
     parser.add_argument("--device")
+    parser.add_argument("--pos-device")
     parser.add_argument("--store", choices=RUNNER.STORES)
     parser.add_argument("--include-tags")
     parser.add_argument("--exclude-tags")
-    parser.add_argument("--seed", action="store_true")
+    parser.add_argument("--seed", action="store_true", default=None)
+    parser.add_argument("--no-seed", dest="seed", action="store_false")
     args = parser.parse_args()
+    if args.seed is None:
+        args.seed = args.profile in RUNNER.SEEDING_PROFILES
 
     checks: list[tuple[bool, str]] = []
     for command in ("bash", "python3", "maestro", "xcrun", "plutil"):
@@ -146,6 +150,14 @@ def main() -> int:
         checks.append((True, f"selected flows: {len(flows)}"))
     except SystemExit as error:
         checks.append((False, f"flow selection: {error}"))
+
+    if 'flows' in locals() and RUNNER.needs_pos_device(flows):
+        try:
+            pos_simulator = RUNNER.resolve_simulator(args.pos_device, "ipad", boot=False)
+            checks.append((True, f"POS simulator: {pos_simulator['name']} ({pos_simulator['udid']})"))
+            checks.append(check_simulator_locale(pos_simulator["udid"]))
+        except (SystemExit, subprocess.SubprocessError) as error:
+            checks.append((False, f"POS simulator: {error}"))
 
     missing = missing_environment(flows if 'flows' in locals() else [], environment, args)
     checks.append((not missing, "required credentials are present" if not missing else "missing variables: " + ", ".join(missing)))

@@ -91,6 +91,17 @@ tags:
     timeout: 20000
 - assertVisible:
     id: "store-stats-chart"
+# Tapping the chart selects a month, and its name and year replace the range's
+# dates next to the range title.
+- tapOn:
+    id: "store-stats-chart"
+    point: "70%,50%"
+- scrollUntilVisible:
+    element:
+      text: "[A-Za-z]+ [0-9]{4}"
+      rightOf: "This Year"
+    direction: UP
+    timeout: 10000
 - takeScreenshot: dashboard_stats
 
 - runFlow:

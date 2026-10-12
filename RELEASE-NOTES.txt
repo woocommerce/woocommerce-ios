@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [*] Age verification: Fixed a crash after the app was launched in the background, such as by prewarming or a background refresh. [https://github.com/woocommerce/woocommerce-ios/pull/18061]
 - [*] Products: When sorting by title, loading more products no longer inserts them in the middle of the list. [https://github.com/woocommerce/woocommerce-ios/pull/18035]
 - [*] POS: Fixed order creation times differing between the order list and details. [https://github.com/woocommerce/woocommerce-ios/pull/18051]
 - [*] Product details: Fixed row content touching the edge of the details pane on iPhone Duo. [https://github.com/woocommerce/woocommerce-ios/pull/18036]

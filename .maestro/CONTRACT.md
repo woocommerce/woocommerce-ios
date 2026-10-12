@@ -68,8 +68,9 @@ passes it to every flow. Created entities use this value wherever the UI permits
 
 ```text
 .maestro/scripts/run-smoke-tests.sh --app APP [--profile PROFILE]
-  [--device NAME_OR_UDID] [--store lab|shared] [--include-tags CSV]
-  [--exclude-tags CSV] [--repeat N] [--rerun-failed JUNIT_XML] [--seed] [FLOW ...]
+  [--device NAME_OR_UDID] [--pos-device NAME_OR_UDID] [--store lab|shared]
+  [--include-tags CSV] [--exclude-tags CSV] [--repeat N]
+  [--rerun-failed JUNIT_XML] [--seed | --no-seed] [FLOW ...]
 .maestro/scripts/doctor.sh --app APP [the same profile/device selection]
 ```
 

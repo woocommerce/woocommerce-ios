@@ -132,8 +132,8 @@ is reused.
   Without `--pos-device`, the runner picks an available iPad simulator.
 - `pos`: the POS flows only, quarantine excluded, on an iPad.
 
-`full` and `pos` seed their fixtures without `--seed`, because they include destructive flows. Pass `--no-seed` to
-turn that off.
+`full` and `pos` seed their fixtures without `--seed`, because they include destructive flows. A selection without
+destructive flows skips seeding. A selection of only POS flows under a phone profile runs on the iPad alone.
 
 Run one flow or rerun failures:
 

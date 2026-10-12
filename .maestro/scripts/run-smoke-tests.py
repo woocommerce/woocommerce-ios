@@ -1035,6 +1035,8 @@ def main() -> int:
     print(f"Repeat:       {repeat}", flush=True)
     print(f"Include tags: {','.join(include) or '<none>'}", flush=True)
     print(f"Exclude tags: {','.join(exclude) or '<none>'}", flush=True)
+    display_name = app_display_name(app)
+    env_args = maestro_env_args(app_id, run_id, simulator["runtime"], display_name)
     try:
         for repetition in range(1, repeat + 1):
             for flow in flows:
@@ -1042,9 +1044,9 @@ def main() -> int:
                 if flow_simulator is not simulator:
                     print(f"--- Switching to {flow_simulator['name']}", flush=True)
                     simulator = flow_simulator
+                    env_args = maestro_env_args(app_id, run_id, simulator["runtime"], display_name)
                     # The app on this simulator may be signed in to any store, so check it again.
                     active_store = None
-                env_args = maestro_env_args(app_id, run_id, simulator["runtime"], app_display_name(app))
                 store = flow_store(flow, args.store)
                 store_url = store_values[store].get("MAESTRO_WOO_JETPACK_STORE_URL", "")
                 # Login flows reset the session themselves and can end signed in to
@@ -1073,7 +1075,7 @@ def main() -> int:
                     if flow.name == NOTIFICATION_FLOW:
                         signed_in = sign_in_allowing_notifications(
                             simulator["udid"],
-                            maestro_env_args(app_id, run_id, simulator["runtime"], app_display_name(app), notifications="allow"),
+                            maestro_env_args(app_id, run_id, simulator["runtime"], display_name, notifications="allow"),
                             maestro_environments[store],
                         )
                         sign_in_log = output / "logs" / f"{prefix}-sign-in.log"

@@ -205,6 +205,11 @@ final class ProductFormViewController<ViewModel: ProductFormViewModelProtocol>: 
         prepareForBackgroundUploadsUponDismissal()
     }
 
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        tableView.restoreCollapsedLayoutMarginsIfNeeded(systemMinimumLayoutMargins: systemMinimumLayoutMargins)
+    }
+
     override var shouldShowOfflineBanner: Bool {
         return true
     }

@@ -2,9 +2,9 @@ import Foundation
 @testable import WooCommerce
 
 final class MockCardPresentPaymentAlertsPresenter: CardPresentPaymentAlertsPresenting {
-    var mode: MockCardPresentPaymentAlertsPresenterMode = .doNothing
+    var mode: MockCardPresentPaymentAlertsPresenterMode
 
-    init(mode: MockCardPresentPaymentAlertsPresenterMode = .doNothing) {
+    nonisolated init(mode: MockCardPresentPaymentAlertsPresenterMode = .doNothing) {
         self.mode = mode
     }
 

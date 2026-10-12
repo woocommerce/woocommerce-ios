@@ -11,7 +11,7 @@ public protocol SiteSettingsRemoteProtocol {
 }
 
 /// Features that can be enabled/disabled in core, under WC Settings > Advanced > Features.
-public enum SiteSettingsFeature {
+public enum SiteSettingsFeature: Sendable {
     case pointOfSale
 }
 

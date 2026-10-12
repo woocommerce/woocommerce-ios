@@ -1,0 +1,128 @@
+# p2: dashboard.stats
+# Verifies the live dashboard renders stats and changes time range.
+appId: ${APP_ID}
+name: "Dashboard - Stats and chart"
+tags:
+  - smoke_core
+  - dashboard
+---
+- runFlow:
+    file: ../subflows/ensure_logged_in.yaml
+- runFlow:
+    file: ../subflows/navigate_to_dashboard.yaml
+- assertVisible:
+    id: "performance-time-range-menu"
+- assertVisible:
+    id: "performance-revenue-type-picker"
+# The range menu stays disabled while stats load. Wait for it rather than for a
+# revenue figure, which the saved range may not have.
+- extendedWaitUntil:
+    visible:
+      id: "performance-time-range-menu"
+      enabled: true
+    timeout: 30000
+
+# The app saves the selected range, so record it here and switch back at the end.
+# Maestro compares only the x position for leftOf, so "above" keeps the Top
+# performers card's range label out of the match.
+# A custom range is left as This Year, the flow cannot pick its dates again.
+- evalScript: ${output.statsOriginalRangeId = ''}
+- runFlow:
+    when:
+      visible:
+        text: "Today"
+        leftOf:
+          id: "performance-time-range-menu"
+        above:
+          id: "performance-revenue-type-picker"
+    commands:
+      - evalScript: ${output.statsOriginalRangeId = 'time-range-today'}
+      - evalScript: ${output.statsOriginalRangeTitle = 'Today'}
+- runFlow:
+    when:
+      visible:
+        text: "This Week"
+        leftOf:
+          id: "performance-time-range-menu"
+        above:
+          id: "performance-revenue-type-picker"
+    commands:
+      - evalScript: ${output.statsOriginalRangeId = 'time-range-this-week'}
+      - evalScript: ${output.statsOriginalRangeTitle = 'This Week'}
+- runFlow:
+    when:
+      visible:
+        text: "This Month"
+        leftOf:
+          id: "performance-time-range-menu"
+        above:
+          id: "performance-revenue-type-picker"
+    commands:
+      - evalScript: ${output.statsOriginalRangeId = 'time-range-this-month'}
+      - evalScript: ${output.statsOriginalRangeTitle = 'This Month'}
+- runFlow:
+    when:
+      visible:
+        text: "This Year"
+        leftOf:
+          id: "performance-time-range-menu"
+        above:
+          id: "performance-revenue-type-picker"
+    commands:
+      - evalScript: ${output.statsOriginalRangeId = 'time-range-this-year'}
+      - evalScript: ${output.statsOriginalRangeTitle = 'This Year'}
+
+- tapOn:
+    id: "performance-time-range-menu"
+- extendedWaitUntil:
+    visible:
+      id: "time-range-this-year"
+    timeout: 10000
+- tapOn:
+    id: "time-range-this-year"
+- extendedWaitUntil:
+    visible:
+      id: "revenue-value"
+    timeout: 30000
+- scrollUntilVisible:
+    element:
+      id: "store-stats-chart"
+    direction: DOWN
+    timeout: 20000
+- assertVisible:
+    id: "store-stats-chart"
+- takeScreenshot: dashboard_stats
+
+- runFlow:
+    when:
+      true: ${output.statsOriginalRangeId !== ''}
+    commands:
+      # Centre the menu: right under the navigation bar a tap reaches the bar's
+      # Customize button instead.
+      - scrollUntilVisible:
+          element:
+            id: "performance-time-range-menu"
+          direction: UP
+          timeout: 20000
+          centerElement: true
+      - repeat:
+          while:
+            notVisible:
+              id: "${output.statsOriginalRangeId}"
+          times: 5
+          commands:
+            - tapOn:
+                id: "performance-time-range-menu"
+                enabled: true
+            - waitForAnimationToEnd:
+                timeout: 5000
+      - tapOn:
+          id: "${output.statsOriginalRangeId}"
+      - extendedWaitUntil:
+          visible:
+            text: "${output.statsOriginalRangeTitle}"
+            leftOf:
+              id: "performance-time-range-menu"
+            above:
+              id: "performance-revenue-type-picker"
+          timeout: 15000

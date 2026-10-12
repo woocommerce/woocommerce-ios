@@ -110,7 +110,17 @@ final class SwitchStoreUseCase: SwitchStoreUseCaseProtocol {
         }
         stores.dispatch(reviewAction)
 
-        ServiceLocator.tapToPayReconnectionController.cancelReconnection()
+        // The reconnection controller is main actor, but this method is not.
+        // TODO: WOOMOB-4176 - call cancelReconnection() directly once this use case is isolated.
+        if Thread.isMainThread {
+            MainActor.assumeIsolated {
+                ServiceLocator.tapToPayReconnectionController.cancelReconnection()
+            }
+        } else {
+            Task { @MainActor in
+                ServiceLocator.tapToPayReconnectionController.cancelReconnection()
+            }
+        }
 
         group.enter()
         let resetAction = CardPresentPaymentAction.reset {

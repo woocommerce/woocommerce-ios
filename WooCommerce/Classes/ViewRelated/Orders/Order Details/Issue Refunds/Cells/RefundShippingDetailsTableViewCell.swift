@@ -50,17 +50,19 @@ final class RefundShippingDetailsTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        applyCellStyles()
-        applyAccessibilityChanges()
+        MainActor.assumeIsolated {
+            applyCellStyles()
+            applyAccessibilityChanges()
 
-        let traits: [UITrait] = [
-            UITraitPreferredContentSizeCategory.self,
-            UITraitUserInterfaceIdiom.self,
-            UITraitVerticalSizeClass.self
-        ]
+            let traits: [UITrait] = [
+                UITraitPreferredContentSizeCategory.self,
+                UITraitUserInterfaceIdiom.self,
+                UITraitVerticalSizeClass.self
+            ]
 
-        registerForTraitChanges(traits) { (self: Self, _: UITraitCollection) in
-            self.applyAccessibilityChanges()
+            registerForTraitChanges(traits) { (self: Self, _: UITraitCollection) in
+                self.applyAccessibilityChanges()
+            }
         }
     }
 

@@ -11,7 +11,6 @@ public enum POSIneligibleReason: Equatable, Sendable {
     case wooCommercePluginNotFound
     case featureSwitchDisabled
     case unsupportedCurrency(countryCode: CountryCode, supportedCurrencies: [CurrencyCode])
-    case selfDeallocated
 }
 
 /// Represents the eligibility state for POS.

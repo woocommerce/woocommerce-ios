@@ -4,7 +4,9 @@ import protocol WooFoundation.Analytics
 /// Owns one alert or explicit retry at a time. Owners invalidate it when their login screen is abandoned.
 @MainActor
 final class LoginUnexpectedResponsePresenter {
-    typealias Retry = (@escaping (Bool) -> Void) -> Void
+    /// Retry callers deliver results on the main actor, including through Sendable action completions.
+    typealias RetryResult = @Sendable (Bool) -> Void
+    typealias Retry = (@escaping RetryResult) -> Void
     typealias Presentation = @MainActor (UIViewController, UIAlertController, @escaping () -> Void) -> Void
     private let analytics: Analytics
     private let presentation: Presentation
@@ -40,11 +42,14 @@ final class LoginUnexpectedResponsePresenter {
             self.alert = nil
             if action == .retry {
                 onRetry { [weak self] success in
-                    guard let self, attemptID == id else {
-                        return
+                    // Login tasks run on the main actor; role and site remotes deliver completions on the main queue.
+                    MainActor.assumeIsolated {
+                        guard let self, self.attemptID == id else {
+                            return
+                        }
+                        self.attemptID = nil
+                        self.analytics.track(event: .Login.unexpectedResponseRetryResult(failure: failure, loginFlow: flow, success: success))
                     }
-                    attemptID = nil
-                    analytics.track(event: .Login.unexpectedResponseRetryResult(failure: failure, loginFlow: flow, success: success))
                 }
             } else {
                 attemptID = nil

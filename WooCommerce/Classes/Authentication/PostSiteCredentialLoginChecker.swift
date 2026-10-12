@@ -111,7 +111,7 @@ private extension PostSiteCredentialLoginChecker {
     func checkApplicationPassword(for siteURL: String,
                                   with useCase: ApplicationPasswordUseCase,
                                   in navigationController: UINavigationController,
-                                  onRetryResult: ((Bool) -> Void)? = nil, onSuccess: @escaping () -> Void) {
+                                  onRetryResult: LoginUnexpectedResponsePresenter.RetryResult? = nil, onSuccess: @escaping () -> Void) {
         guard let id = checkID else { return }
         guard useCase.applicationPassword == nil else {
             onRetryResult?(true)
@@ -157,7 +157,7 @@ private extension PostSiteCredentialLoginChecker {
     /// Placeholder store ID is used because we are checking for users logging in with site credentials.
     ///
     func checkRoleEligibility(for siteURL: String, in navigationController: UINavigationController,
-                              onRetryResult: ((Bool) -> Void)? = nil, onSuccess: @escaping () -> Void) {
+                              onRetryResult: LoginUnexpectedResponsePresenter.RetryResult? = nil, onSuccess: @escaping () -> Void) {
         guard let id = checkID else { return }
         roleEligibilityUseCase.checkEligibility(for: WooConstants.placeholderStoreID) { [weak self] result in
             guard let self, checkID == id else { return }
@@ -211,7 +211,7 @@ private extension PostSiteCredentialLoginChecker {
     /// Checks if WooCommerce is active on the logged in site.
     ///
     func checkWooInstallation(for siteURL: String, in navigationController: UINavigationController,
-                              onRetryResult: ((Bool) -> Void)? = nil, onSuccess: @escaping () -> Void) {
+                              onRetryResult: LoginUnexpectedResponsePresenter.RetryResult? = nil, onSuccess: @escaping () -> Void) {
         guard let id = checkID else { return }
         let action = WordPressSiteAction.fetchSiteInfo(siteURL: siteURL, detectUnexpectedResponses: true) { [weak self] result in
             guard let self, checkID == id else { return }

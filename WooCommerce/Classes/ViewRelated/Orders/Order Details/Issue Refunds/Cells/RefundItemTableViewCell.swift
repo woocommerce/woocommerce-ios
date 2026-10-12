@@ -39,8 +39,10 @@ final class RefundItemTableViewCell: UITableViewCell {
 
     override func awakeFromNib() {
         super.awakeFromNib()
-        applyCellStyles()
-        applyAccessibilityChanges()
+        MainActor.assumeIsolated {
+            applyCellStyles()
+            applyAccessibilityChanges()
+        }
     }
 
     override func willMove(toSuperview newSuperview: UIView?) {

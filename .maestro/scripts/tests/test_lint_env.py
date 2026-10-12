@@ -21,7 +21,7 @@ class LintEnvTests(unittest.TestCase):
             example = root / "env.example"
             env.write_text("MAESTRO_WOO_LAB_WPCOM_PASSWORD=secret)\n")
             example.write_text("MAESTRO_WOO_LAB_WPCOM_PASSWORD=\n")
-            errors, _, _ = LINT.lint(env, example, False)
+            errors, _, _ = LINT.lint(env, example)
             self.assertTrue(errors)
             self.assertNotIn("secret", " ".join(errors))
 
@@ -32,7 +32,7 @@ class LintEnvTests(unittest.TestCase):
             example = root / "env.example"
             env.write_text("MAESTRO_WOO_LAB_WPCOM_PASSWORD='safe ) value'\n")
             example.write_text("MAESTRO_WOO_LAB_WPCOM_PASSWORD=\n")
-            errors, _, _ = LINT.lint(env, example, False)
+            errors, _, _ = LINT.lint(env, example)
             self.assertEqual([], errors)
 
 

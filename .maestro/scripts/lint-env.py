@@ -36,7 +36,7 @@ def is_quoted(value: str) -> bool:
     return len(value) >= 2 and value[0] == value[-1] and value[0] in {"'", '"'}
 
 
-def lint(path: Path, example_path: Path, seed: bool) -> tuple[list[str], list[str], int]:
+def lint(path: Path, example_path: Path) -> tuple[list[str], list[str], int]:
     errors: list[str] = []
     warnings: list[str] = []
     count = 0
@@ -70,9 +70,6 @@ def lint(path: Path, example_path: Path, seed: bool) -> tuple[list[str], list[st
         if name.startswith("MAESTRO_WOO_") and expected and name not in expected:
             warnings.append(f"{path}:{line_number}: {name} is not declared in .maestro/env.example.")
 
-        if not seed and re.search(r"MAESTRO_WOO_.*CONSUMER_(KEY|SECRET)$", name):
-            warnings.append(f"{path}:{line_number}: {name} is only needed when running with --seed.")
-
         if value and not is_quoted(value) and SHELL_META_RE.search(value):
             errors.append(
                 f"{path}:{line_number}: {name} has an unquoted value containing shell metacharacters; wrap it in single quotes."
@@ -91,10 +88,9 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Lint .maestro/.env.local without printing secret values.")
     parser.add_argument("--file", default=".maestro/.env.local", type=Path)
     parser.add_argument("--example", default=".maestro/env.example", type=Path)
-    parser.add_argument("--seed", action="store_true", help="Allow Woo REST consumer key/secret variables.")
     args = parser.parse_args()
 
-    errors, warnings, count = lint(args.file, args.example, args.seed)
+    errors, warnings, count = lint(args.file, args.example)
     for warning in warnings:
         print(f"warning: {warning}", file=sys.stderr)
     if errors:

@@ -85,7 +85,12 @@ struct WooShippingCreateLabelsView: View {
             }
             // The bottom sheet covers the bottom safe area itself.
             .ignoresSafeArea(.container, edges: .bottom)
-            .onGeometryChange(for: EdgeInsets.self, of: { $0.safeAreaInsets }, action: { safeAreaInsets = $0 })
+            .background {
+                // Read the insets without the keyboard, so the sheet does not pad by the keyboard height.
+                Color.clear
+                    .onGeometryChange(for: EdgeInsets.self, of: { $0.safeAreaInsets }, action: { safeAreaInsets = $0 })
+                    .ignoresSafeArea(.keyboard)
+            }
             .onGeometryChange(for: CGFloat.self, of: { $0.size.height }, action: { containerHeight = $0 })
             .shippingWeightUnit(viewModel.weightUnit)
             .shippingDimensionsUnit(viewModel.dimensionsUnit)

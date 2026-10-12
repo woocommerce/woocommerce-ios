@@ -14,7 +14,7 @@ struct ExpandableBottomSheet<AlwaysVisibleContent, ExpandableContent>: View wher
 
     @ViewBuilder private var expandableContent: () -> ExpandableContent
 
-    /// Safe-area insets of the container the sheet is pinned to.
+    /// Safe-area insets of the container the sheet is pinned to, read without the keyboard region.
     /// The sheet pads its content by these insets, so the caller must let it reach the container's bottom edge
     /// (`.ignoresSafeArea(.container, edges: .bottom)` on the view that hosts it via `safeAreaInset`).
     private let safeAreaInsets: EdgeInsets

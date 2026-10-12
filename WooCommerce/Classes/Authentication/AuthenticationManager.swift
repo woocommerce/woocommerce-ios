@@ -661,6 +661,13 @@ extension AuthenticationManager: WordPressAuthenticatorDelegate {
             let normalizedLoginURL = endpoints.loginEntryURL.absoluteString
             let normalizedAdminURL = endpoints.adminBaseURL.absoluteString
             switch error {
+            case .unexpectedResponse(let failure) where failure.step == .loginPage &&
+                failure.kind == .unexpectedContent && endpointUnderVerification == .login:
+                _ = onRecovery(.login(draftURL: normalizedLoginURL, error: .notFound))
+                analytics.track(event: .ApplicationPasswordAuthorization.invalidLoginPageDetected())
+            case .unexpectedResponse(let failure) where failure.kind == .unexpectedContent && endpointUnderVerification == .admin &&
+                loginEntryVerified && failure.step == .dashboardVerification:
+                _ = onRecovery(.admin(verifiedLoginURL: normalizedLoginURL, draftURL: normalizedAdminURL, error: .notFound))
             case .unexpectedResponse:
                 onFailure(error, false, loginEntryVerified ? normalizedLoginURL : nil, false)
                 trackSiteCredentialLoginFailure(error)

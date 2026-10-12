@@ -8,8 +8,9 @@ final class CardPresentPaymentReceiptEmailCoordinatorTests: XCTestCase {
     private var analyticsProvider: MockAnalyticsProvider!
     private var analytics: WooAnalytics!
 
-    override func setUp() {
-        super.setUp()
+    @MainActor
+    override func setUp() async throws {
+        try await super.setUp()
         analyticsProvider = MockAnalyticsProvider()
         analytics = WooAnalytics(analyticsProvider: analyticsProvider)
         coordinator = CardPresentPaymentReceiptEmailCoordinator(analytics: analytics,
@@ -19,13 +20,15 @@ final class CardPresentPaymentReceiptEmailCoordinatorTests: XCTestCase {
                                                                 paymentMethod: Mocks.paymentMethod)
     }
 
-    override func tearDown() {
-        super.tearDown()
+    @MainActor
+    override func tearDown() async throws {
         coordinator = nil
         analytics = nil
         analyticsProvider = nil
+        try await super.tearDown()
     }
 
+    @MainActor
     func test_presentSendReceiptAfterPayment_tracks_receiptEmailTapped_event_with_api_source() throws {
         // When
         coordinator.presentSendReceiptAfterPayment(from: MockViewControllerPresenting(), order: .fake()) { _ in }
@@ -46,6 +49,6 @@ private extension CardPresentPaymentReceiptEmailCoordinatorTests {
         static let countryCode = CountryCode.CA
         static let cardReaderModel = "CHIPPER_2X"
         static let currency = "CAD"
-        static let paymentMethod = PaymentMethod.card
+        static var paymentMethod: PaymentMethod { .card }
     }
 }

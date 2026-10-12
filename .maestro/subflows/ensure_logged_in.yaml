@@ -1,0 +1,45 @@
+# Preserve the current authenticated session. Recover through the shared login
+# only when the app is genuinely at a fresh-login surface.
+appId: ${APP_ID}
+---
+- launchApp:
+    clearState: false
+    arguments:
+      "-ui_testing": true
+
+- extendedWaitUntil:
+    visible: "Manage Privacy|My store|Log In|Skip"
+    timeout: 45000
+- runFlow:
+    when:
+      visible: "Manage Privacy"
+    commands:
+      - tapOn: "Save"
+
+- extendedWaitUntil:
+    visible:
+      id: "tab-bar-my-store-item|Login Onboarding Skip Button|prologue-title-label"
+    timeout: 45000
+
+- runFlow:
+    when:
+      notVisible:
+        id: "tab-bar-my-store-item"
+    commands:
+      - runFlow:
+          file: login.yaml
+      # After signing in, the age range request runs at no fixed point of the
+      # login steps. Relaunch so wait_for_age_range_check.yaml can wait for it.
+      - runFlow:
+          when:
+            true: ${AGE_RANGE_CHECK == 'true'}
+          commands:
+            - launchApp:
+                arguments:
+                  "-ui_testing": true
+
+- extendedWaitUntil:
+    visible:
+      id: "tab-bar-my-store-item"
+    timeout: 60000
+- runFlow: wait_for_age_range_check.yaml

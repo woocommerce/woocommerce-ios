@@ -273,7 +273,6 @@ final class SupportChatViewModel {
     private var diagnosticsContext: RequestParameterDictionary?
     private let initialContext: RequestParameterDictionary?
     private let initialMessage: String?
-    private var didStart = false
     private let onContactHumanSupport: ContactHumanSupportCallback
     private var latestSupportArea: SupportChatSupportArea?
     private var userMessageCount = 0
@@ -650,10 +649,10 @@ final class SupportChatViewModel {
 
     // MARK: - Chat Actions
 
-    /// Starts a fresh or resumed conversation once, including any supplied login-failure message.
+    /// Starts an empty conversation, allowing failed transcript fetches to retry on subsequent appearances.
     func startIfNeeded() {
-        guard !didStart else { return }
-        didStart = true
+        guard messages.isEmpty, state != .sending else { return }
+
         if isResumedChat {
             resumeIfNeeded()
         } else if let initialMessage, !initialMessage.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {

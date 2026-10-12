@@ -41,12 +41,20 @@ public final class SingleOrderScreen: ScreenObject {
         let orderTotalPredicate = NSPredicate(format: "label CONTAINS %@", order.total)
 
         // Check that navigation bar contains order number
-        let orderNumberPredicate = NSPredicate(format: "identifier CONTAINS %@ OR label CONTAINS %@", order.number, order.number)
-        XCTAssertTrue(app.navigationBars.matching(orderNumberPredicate).firstMatch.exists, "No navigation bar found for order \(order.number)")
+        let orderNumber = order.number
+        let hasOrderNavigationBar = MainActor.assumeIsolated { [app] in
+            let predicate = NSPredicate(format: "identifier CONTAINS %@ OR label CONTAINS %@", orderNumber, orderNumber)
+            return app.navigationBars.matching(predicate).firstMatch.exists
+        }
+        XCTAssertTrue(hasOrderNavigationBar, "No navigation bar found for order \(order.number)")
 
         // Check order status and total
         let orderDetailTableView = app.tables["order-details-table-view"]
-        XCTAssertTrue(orderDetailTableView.buttons["order-status-\(order.status)"].exists)
+        let orderStatus = order.status
+        let hasOrderStatus = MainActor.assumeIsolated {
+            orderDetailTableView.buttons["order-status-\(orderStatus)"].exists
+        }
+        XCTAssertTrue(hasOrderStatus)
         XCTAssertTrue(app.otherElements.containing(orderTotalPredicate).element.exists)
 
         // Check name on order summary

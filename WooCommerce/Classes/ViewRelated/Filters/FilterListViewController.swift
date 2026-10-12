@@ -554,7 +554,10 @@ private extension FilterListViewController {
         func configureCell(cell: TitleAndValueTableViewCell, model: FilterTypeViewModel) {
             cell.selectionStyle = .default
             cell.updateUI(title: model.cellViewModel.title, value: model.cellViewModel.value)
-            cell.accessibilityIdentifier = model.accessibilityIdentifier
+            let accessibilityIdentifier = model.accessibilityIdentifier
+            MainActor.assumeIsolated {
+                cell.accessibilityIdentifier = accessibilityIdentifier
+            }
             cell.accessoryType = .disclosureIndicator
         }
     }
@@ -604,11 +607,13 @@ private extension FilterListViewController {
 
         func configureCell(cell: BasicTableViewCell, model: FilterType) {
             cell.textLabel?.text = model.description
+            let accessibilityIdentifier: String
             if let stockStatus = model as? ProductStockStatus? {
-                cell.accessibilityIdentifier = "product-stock-status-\(stockStatus?.rawValue ?? "all")"
+                accessibilityIdentifier = "product-stock-status-\(stockStatus?.rawValue ?? "all")"
             } else {
-                cell.accessibilityIdentifier = model.description
+                accessibilityIdentifier = model.description
             }
+            cell.accessibilityIdentifier = accessibilityIdentifier
             cell.accessoryView = nil
 
             if let promotable = model as? PromotableProductType, !promotable.isAvailable {

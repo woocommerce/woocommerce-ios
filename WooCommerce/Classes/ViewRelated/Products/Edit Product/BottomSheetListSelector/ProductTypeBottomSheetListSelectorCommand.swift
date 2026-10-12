@@ -61,7 +61,10 @@ final class ProductTypeBottomSheetListSelectorCommand: BottomSheetListSelectorCo
                                                                     imageTintColor: .systemColor(.secondaryLabel),
                                                                     numberOfLinesForTitle: 0,
                                                                     numberOfLinesForText: 0)
-        cell.accessibilityIdentifier = "product-type-option-\(model.id)"
+        let accessibilityIdentifier = "product-type-option-\(model.id)"
+        MainActor.assumeIsolated {
+            cell.accessibilityIdentifier = accessibilityIdentifier
+        }
         cell.updateUI(viewModel: viewModel)
         cell.updateBackgroundColor(backgroundColor)
     }

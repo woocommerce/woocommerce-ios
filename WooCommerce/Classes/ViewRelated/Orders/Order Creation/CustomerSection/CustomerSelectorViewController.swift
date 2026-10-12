@@ -210,7 +210,7 @@ private extension CustomerSelectorViewController {
                                               selectedCustomerID: selectedCustomerID,
                                               onAddCustomerDetailsManually: onAddCustomerDetailsManually,
                                               onDidSelectSearchResult: onCustomerTapped,
-                                              onDidStartSyncingAllCustomersFirstPage: {
+                                              onDidStartSyncingAllCustomersFirstPage: { [self] in
                                                   Task { @MainActor [weak self] in
                                                       guard let searchTableView = self?.searchViewController?.tableView else {
                                                           return
@@ -218,7 +218,7 @@ private extension CustomerSelectorViewController {
                                                       self?.displayGhostContent(over: searchTableView)
                                                   }
                                               },
-                                              onDidFinishSyncingAllCustomersFirstPage: {
+                                              onDidFinishSyncingAllCustomersFirstPage: { [self] in
                                                   Task { @MainActor [weak self] in
                                                       self?.removeGhostContent()
                                                   }

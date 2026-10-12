@@ -2421,7 +2421,7 @@ extension EditableOrderViewModel {
                     onCompletion(.success(()))
                 }
             case let .failure(error):
-                Task { @MainActor in
+                Task { @MainActor [self] in
                     onCompletion(.failure(ScannerError.productNotFound))
                     self.autodismissableNotice = NoticeFactory.createProductNotFoundAfterSKUScanningErrorNotice(for: error,
                                                                                                                 code: barcode,

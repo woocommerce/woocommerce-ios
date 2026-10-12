@@ -33,7 +33,7 @@ final class BlazeConfirmPaymentViewModel: ObservableObject {
     var paymentMethodsViewModel: BlazePaymentMethodsViewModel? {
         BlazePaymentMethodsViewModel(siteID: siteID,
                                      selectedPaymentMethodID: selectedPaymentMethod?.id,
-                                     completion: { paymentID in
+                                     completion: { [self] paymentID in
             Task { @MainActor [weak self] in
                 guard let self else { return }
                 showAddPaymentSheet = false

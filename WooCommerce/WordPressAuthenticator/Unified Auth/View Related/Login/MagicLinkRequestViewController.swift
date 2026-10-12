@@ -45,7 +45,7 @@ class MagicLinkRequestViewController: LoginViewController {
 // MARK: Actions
 private extension MagicLinkRequestViewController {
     func sendMagicLink() {
-        Task { @MainActor in
+        Task { @MainActor [self] in
             tracker.track(click: .requestMagicLink)
             configureSubmitButton(animating: true)
 

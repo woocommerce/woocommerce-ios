@@ -104,7 +104,7 @@ final class CardReaderSettingsSearchingViewModel: PaymentSettingsFlowPresentedVi
     /// Set up to observe reader reconnection state
     ///
     private func beginReconnectionObservation() {
-        let reconnectionAction = CardPresentPaymentAction.observeCardReaderReconnectionState { reconnectionEvents in
+        let reconnectionAction = CardPresentPaymentAction.observeCardReaderReconnectionState { [self] reconnectionEvents in
             reconnectionEvents
                 .sink { [weak self] state in
                     guard let self else { return }

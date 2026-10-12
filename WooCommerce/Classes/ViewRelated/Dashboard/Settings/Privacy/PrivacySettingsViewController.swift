@@ -300,7 +300,7 @@ private extension PrivacySettingsViewController {
             do {
                 try await useCase.update(optOut: userOptedOut)
             } catch {
-                Task { @MainActor in
+                Task { @MainActor [self] in
                     collectInfo = !newValue // Revert to the previous value to keep the UI consistent.
                     presentErrorUpdatingSettingNotice { [weak self] in
                         self?.collectInfo = newValue
@@ -315,7 +315,7 @@ private extension PrivacySettingsViewController {
         reportCrashes = newValue
 
         let useCase = UpdateCrashReportingSettingUseCase()
-        Task { @MainActor in
+        Task { @MainActor [self] in
             do {
                 try await useCase.update(optOut: !newValue)
             } catch {

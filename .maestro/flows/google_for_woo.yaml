@@ -22,8 +22,13 @@ tags:
 - extendedWaitUntil:
     visible: "Google for WooCommerce"
     timeout: 30000
-- assertVisible: "Google for WooCommerce"
 - assertVisible: "Cancel"
+# The title above is the app's own, so wait for the campaign creation page
+# itself. The shared store has no campaign, so the menu opens this page.
+- extendedWaitUntil:
+    visible: "Create your campaign"
+    timeout: 60000
+- assertVisible: "Set your budget"
 - assertNotVisible:
     id: "menu-google-ads"
 - takeScreenshot: google_for_woo_webview

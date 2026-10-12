@@ -1040,7 +1040,7 @@ def main() -> int:
             for flow in flows:
                 flow_simulator = pos_simulator if pos_simulator and POS_TAG in flow_tags(flow) else phone_simulator
                 if flow_simulator is not simulator:
-                    print(f"--- Switching to {flow_simulator['name']} for the POS flows", flush=True)
+                    print(f"--- Switching to {flow_simulator['name']}", flush=True)
                     simulator = flow_simulator
                     # The app on this simulator may be signed in to any store, so check it again.
                     active_store = None

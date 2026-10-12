@@ -16,7 +16,7 @@ struct SupportChatViewModelTests {
         let message = "I couldn't log in. HTTP status: 500"
         let sut = SupportChatViewModel(entryPoint: .preLogin, stores: stores,
                                       initialContext: ["site_url": .string("https://failed.example.com")],
-                                      initialMessage: message, supportSiteAddress: "https://failed.example.com",
+                                      initialMessage: message,
                                       onContactHumanSupport: Self.noopContactHumanSupport)
 
         // When

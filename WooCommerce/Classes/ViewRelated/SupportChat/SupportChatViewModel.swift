@@ -273,7 +273,6 @@ final class SupportChatViewModel {
     private var diagnosticsContext: RequestParameterDictionary?
     private let initialContext: RequestParameterDictionary?
     private let initialMessage: String?
-    let supportSiteAddress: String?
     private var didStart = false
     private let onContactHumanSupport: ContactHumanSupportCallback
     private var latestSupportArea: SupportChatSupportArea?
@@ -299,7 +298,6 @@ final class SupportChatViewModel {
          analytics: Analytics = ServiceLocator.analytics,
          initialContext: RequestParameterDictionary? = nil,
          initialMessage: String? = nil,
-         supportSiteAddress: String? = nil,
          diagnosticsService: SupportDiagnosticsServicing? = nil,
          chatID: Int64? = nil,
          sessionID: String? = nil,
@@ -316,7 +314,6 @@ final class SupportChatViewModel {
         self.analytics = analytics
         self.initialContext = initialContext
         self.initialMessage = initialMessage
-        self.supportSiteAddress = supportSiteAddress
         self.diagnosticsService = diagnosticsService ?? SupportDiagnosticsService()
         self.chatID = chatID
         self.sessionID = sessionID

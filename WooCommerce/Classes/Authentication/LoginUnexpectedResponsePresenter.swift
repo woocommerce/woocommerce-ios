@@ -95,7 +95,6 @@ final class LoginUnexpectedResponsePresenter {
         let chat = SupportChatViewModel(entryPoint: .preLogin,
                                         initialContext: context.siteURL.map { ["site_url": .string($0)] },
                                         initialMessage: context.initialMessage,
-                                        supportSiteAddress: context.siteURL,
                                         onContactHumanSupport: { chatID, transcript, area, entryPoint, receivedResponse in
             escalation = SupportEscalationCoordinator(navigationController: host?.navigationController,
                                                       mobileStatusReportProvider: MobileStatusReportProvider(),

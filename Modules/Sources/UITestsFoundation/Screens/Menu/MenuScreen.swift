@@ -51,13 +51,16 @@ public final class MenuScreen: ScreenObject {
     }
 
     private func scrollToRow(_ row: XCUIElement) {
-        for _ in 0..<10 {
-            if row.isHittable && app.windows.firstMatch.frame.contains(row.frame) && !row.frame.intersects(app.tabBars.firstMatch.frame) {
-                return
+        // Synchronous UI tests drive XCUIElement from the main thread.
+        MainActor.assumeIsolated { [app] in
+            for _ in 0..<10 {
+                if row.isHittable && app.windows.firstMatch.frame.contains(row.frame) && !row.frame.intersects(app.tabBars.firstMatch.frame) {
+                    return
+                }
+                app.swipeUp()
             }
-            app.swipeUp()
+            XCTFail("Menu row is not visible: \(row.identifier)")
         }
-        XCTFail("Menu row is not visible: \(row.identifier)")
     }
 
     @discardableResult

@@ -27,7 +27,6 @@ executionOrder:
     - flows/hub_menu_coupons.yaml
     - flows/hub_menu_customers_inbox.yaml
     - flows/hub_menu_admin_and_store.yaml
-    - flows/blaze_campaign.yaml
     - flows/google_for_woo.yaml
     - flows/orders_create.yaml
     - flows/orders_details_and_actions.yaml

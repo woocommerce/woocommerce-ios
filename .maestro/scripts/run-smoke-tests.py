@@ -83,7 +83,7 @@ ORDERED_FLOWS = [
     "orders_list_and_search.yaml", "products_list_and_sort.yaml", "products_detail.yaml",
     "products_variations_and_tags.yaml", "hub_menu_settings.yaml", "hub_menu_payments.yaml",
     "hub_menu_coupons.yaml", "hub_menu_customers_inbox.yaml", "hub_menu_admin_and_store.yaml",
-    "blaze_campaign.yaml", "google_for_woo.yaml", "orders_create.yaml",
+    "google_for_woo.yaml", "orders_create.yaml",
     "orders_details_and_actions.yaml", "orders_mark_complete.yaml", "orders_cash_payment.yaml",
     "orders_refund.yaml", "products_create.yaml", "products_media_upload.yaml",
     "pos_search_and_coupons.yaml", "pos_cash_payment.yaml", "ios_quick_actions.yaml",

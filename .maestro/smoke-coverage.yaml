@@ -279,9 +279,7 @@ items:
     flow: .maestro/flows/hub_menu_admin_and_store.yaml
   - id: hub.blaze.create
     title: Blaze campaign creation entry point
-    flow: .maestro/flows/blaze_campaign.yaml
-    fidelity: partial
-    gap: "Eligible stores reach a creation-capable destination, but the flow does not configure or submit a campaign."
+    manual: "Submitting a campaign needs payment, and the manual test fills the whole form first, so the whole item is one manual test."
   - id: hub.google-for-woo
     title: Google for Woo campaign webview
     flow: .maestro/flows/google_for_woo.yaml

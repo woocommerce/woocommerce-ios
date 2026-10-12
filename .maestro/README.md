@@ -177,11 +177,11 @@ find its order.
 POS runs require a real-eligible store/account and an iPad simulator. No profile
 turns an ineligible device or store into a passing no-op.
 
-The lab store used by `full` must be eligible for Inbox, Blaze and card
-readers, and the shared store for Google for WooCommerce. The P2 lists all of
-them as required hub coverage, so an absent `menu-inbox`, `menu-blaze`,
-`menu-google-ads` or `card-reader-manuals` fails the extended flow instead of
-being reported as a feature-gated skip.
+The lab store used by `full` must be eligible for Inbox and card readers, and
+the shared store for Google for WooCommerce. The P2 lists all of them as
+required hub coverage, so an absent `menu-inbox`, `menu-google-ads` or
+`card-reader-manuals` fails the extended flow instead of being reported as a
+feature-gated skip.
 
 Validate traceability and static files with:
 

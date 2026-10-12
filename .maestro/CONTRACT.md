@@ -109,12 +109,12 @@ Tags are limited to `smoke_core`, `smoke_extended`, `quarantine`,
 `pos_ipad`, `ios_system`, and `store_shared`. A `store_shared` flow runs against
 the shared store and is never `destructive`.
 
-Coverage IDs come from the committed 98-item P2 snapshot. Flow-backed items
-default to `fidelity: full`. A partial or entry-point-only implementation uses
-`fidelity: partial` plus a concrete `gap:` and is counted separately from full
-automation. Unsupported hardware, watchOS, migration, real push delivery,
-external account completion, and camera decoding remain explicit `manual:`
-entries.
+Coverage IDs come from the committed P2 snapshot. An item is either covered by
+a flow or `manual:`. When a flow can't cover a whole item, the item is split into
+the parts a flow covers and the parts that stay manual; if the manual part needs
+the other steps anyway, the whole item stays manual. Unsupported hardware,
+watchOS, migration, real push delivery, external account completion, and camera
+decoding remain explicit `manual:` entries.
 
 ## Assertion and state rules
 

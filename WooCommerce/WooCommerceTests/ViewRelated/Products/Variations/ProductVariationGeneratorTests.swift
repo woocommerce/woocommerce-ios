@@ -7,9 +7,9 @@ final class ProductVariationGeneratorTests: XCTestCase {
     func test_all_variations_are_generated_correctly_for_regular_variable_product() {
         // Given
         let product = Product.fake().copy(attributes: [
-            ProductAttribute.fake().copy(attributeID: 1, name: "Size", options: ["S", "M"]),
-            ProductAttribute.fake().copy(attributeID: 2, name: "Color", options: ["Red", "Green"]),
-            ProductAttribute.fake().copy(attributeID: 3, name: "Fabric", options: ["Cotton", "Nylon"]),
+            ProductAttribute.fake().copy(attributeID: 1, name: "Size", variation: true, options: ["S", "M"]),
+            ProductAttribute.fake().copy(attributeID: 2, name: "Color", variation: true, options: ["Red", "Green"]),
+            ProductAttribute.fake().copy(attributeID: 3, name: "Fabric", variation: true, options: ["Cotton", "Nylon"]),
         ])
 
         // When
@@ -104,9 +104,9 @@ final class ProductVariationGeneratorTests: XCTestCase {
         // Given
         let product = Product.fake().copy(productTypeKey: ProductType.variableSubscription.rawValue,
                                           attributes: [
-            ProductAttribute.fake().copy(attributeID: 1, name: "Size", options: ["S", "M"]),
-            ProductAttribute.fake().copy(attributeID: 2, name: "Color", options: ["Red", "Green"]),
-            ProductAttribute.fake().copy(attributeID: 3, name: "Fabric", options: ["Cotton", "Nylon"]),
+            ProductAttribute.fake().copy(attributeID: 1, name: "Size", variation: true, options: ["S", "M"]),
+            ProductAttribute.fake().copy(attributeID: 2, name: "Color", variation: true, options: ["Red", "Green"]),
+            ProductAttribute.fake().copy(attributeID: 3, name: "Fabric", variation: true, options: ["Cotton", "Nylon"]),
                                           ])
 
         // When
@@ -197,12 +197,29 @@ final class ProductVariationGeneratorTests: XCTestCase {
         ])
     }
 
+    func test_attributes_not_used_for_variations_are_not_used_to_generate_variations() {
+        // Given
+        let product = Product.fake().copy(attributes: [
+            ProductAttribute.fake().copy(attributeID: 1, name: "Size", variation: true, options: ["S", "M"]),
+            ProductAttribute.fake().copy(attributeID: 0, name: "Material", variation: false, options: ["Cotton", "Wool"]),
+        ])
+
+        // When
+        let variations = ProductVariationGenerator.generateVariations(for: product, excluding: [])
+
+        // Then
+        XCTAssertEqual(variations.map { $0.attributes }, [
+            [.init(id: 1, name: "Size", option: "S")],
+            [.init(id: 1, name: "Size", option: "M")]
+        ])
+    }
+
     func test_existing_variations_are_excluded_correctly() {
         // Given
         let product = Product.fake().copy(attributes: [
-            ProductAttribute.fake().copy(attributeID: 1, name: "Size", options: ["S", "M"]),
-            ProductAttribute.fake().copy(attributeID: 2, name: "Color", options: ["Red", "Green"]),
-            ProductAttribute.fake().copy(attributeID: 3, name: "Fabric", options: ["Cotton", "Nylon"]),
+            ProductAttribute.fake().copy(attributeID: 1, name: "Size", variation: true, options: ["S", "M"]),
+            ProductAttribute.fake().copy(attributeID: 2, name: "Color", variation: true, options: ["Red", "Green"]),
+            ProductAttribute.fake().copy(attributeID: 3, name: "Fabric", variation: true, options: ["Cotton", "Nylon"]),
         ])
 
         let existingVariations = [

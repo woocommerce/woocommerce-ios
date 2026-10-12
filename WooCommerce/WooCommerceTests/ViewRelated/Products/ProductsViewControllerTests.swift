@@ -240,6 +240,43 @@ struct ProductsViewControllerTests {
     }
 
     @Test
+    func test_resync_when_sync_fails_then_keeps_products_in_page_order() async throws {
+        // Given
+        let originalStores = ServiceLocator.stores
+        let stores = MockStoresManager(sessionManager: .makeForTesting(authenticated: true))
+        ServiceLocator.setStores(stores)
+        defer { ServiceLocator.setStores(originalStores) }
+        let storage = MockStorageManager()
+        let controller = ProductsViewController(siteID: 123,
+                                                 resultsController: makeResultsController(storage: storage, siteID: 123),
+                                                 selectedProduct: Just<Product?>(nil).eraseToAnyPublisher(),
+                                                 navigateToContent: { _ in })
+        controller.loadViewIfNeeded()
+        let table = try #require(controller.tableView)
+        try await loadPage(1, names: ["Awesome Wooden Shoes", "オビツキューピー招き猫セット"], firstID: 1,
+                           controller: controller, storage: storage, stores: stores)
+        try await loadPage(2, names: ["Casual Blue Women's Shirt"], firstID: 3,
+                           controller: controller, storage: storage, stores: stores)
+        var completeSync: ((Result<Bool, Error>) -> Void)?
+        stores.whenReceivingAction(ofType: ProductAction.self) { action in
+            guard case let .synchronizeProducts(_, _, _, _, _, _, _, _, _, _, _, onCompletion) = action else { return }
+            completeSync = onCompletion
+        }
+
+        // When: the list resyncs without a new sort or filters, e.g. after the web editor closes, and the sync fails
+        controller.resync()
+        let failSync = try #require(completeSync)
+        failSync(.failure(NSError(domain: "test", code: 0)))
+
+        // Then
+        #expect(displayedNames(in: table, controller: controller) == [
+            "Awesome Wooden Shoes",
+            "オビツキューピー招き猫セット",
+            "Casual Blue Women's Shirt"
+        ])
+    }
+
+    @Test
     func test_refresh_when_next_page_syncs_before_refresh_is_rendered_then_keeps_products_in_page_order() async throws {
         // Given
         let originalStores = ServiceLocator.stores

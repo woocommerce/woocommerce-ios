@@ -153,7 +153,7 @@ final class ProductsViewController: UIViewController {
                 resultsController.updateSortOrder(sortOrder)
 
                 /// Reload data because `updateSortOrder` generates a new `predicate` which calls `performFetch`
-                resync()
+                resyncWithNewSortOrFilters()
             }
         }
     }
@@ -198,7 +198,7 @@ final class ProductsViewController: UIViewController {
                     await updatePredicate(filters: filters)
 
                     /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-                    resync()
+                    resyncWithNewSortOrFilters()
                 }
             }
         }
@@ -360,8 +360,8 @@ final class ProductsViewController: UIViewController {
         addProduct(sourceBarButtonItem: addProductButton, isFirstProduct: false)
     }
 
+    /// Keeps the page order until the first page succeeds, so a failed sync does not reorder the list.
     func resync() {
-        productPageOrder.reset()
         reloadProducts()
         paginationTracker.resync()
     }
@@ -1119,6 +1119,12 @@ private extension ProductsViewController {
         }
     }
 
+    /// Recorded pages belong to the previous sort or filters.
+    func resyncWithNewSortOrFilters() {
+        productPageOrder.reset()
+        resync()
+    }
+
     /// Records pages on every storage change, even while a refresh defers presentation.
     func recordProductPages() {
         productPageOrder.record(resultsController.productNames, syncingPageNumber: syncingPageNumber)
@@ -1310,7 +1316,7 @@ private extension ProductsViewController {
             await updatePredicate(filters: filters)
 
             /// Reload because `updatePredicate` calls `performFetch` when creating a new predicate
-            resync()
+            resyncWithNewSortOrFilters()
         }
     }
 

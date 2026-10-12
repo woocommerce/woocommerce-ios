@@ -21,8 +21,6 @@ public final class AddProductScreen: ScreenObject {
     }
 
     /// Taps a product from the list.
-    /// - Returns: Unified Order screen object.
-    @discardableResult
     public func tapProduct(byName name: String) {
         app.buttons.staticTexts[name].firstMatch.tap()
         tapDoneButton()

@@ -47,10 +47,10 @@ open class MockStorageManager: StorageManagerType {
     ///
     public func saveDerivedType(derivedStorage: StorageType, _ closure: @escaping () -> Void) {
         derivedStorage.perform {
-            derivedStorage.saveIfNeeded()
+            derivedStorage.saveChangesIfNeeded()
 
             self.viewStorage.perform {
-                self.viewStorage.saveIfNeeded()
+                self.viewStorage.saveChangesIfNeeded()
                 closure()
             }
         }
@@ -96,7 +96,7 @@ open class MockStorageManager: StorageManagerType {
         let context = persistentContainer.viewContext
         context.performAndWait {
             operation(context)
-            context.saveIfNeeded()
+            context.saveChangesIfNeeded()
             queue.async {
                 completion?()
             }
@@ -113,7 +113,7 @@ open class MockStorageManager: StorageManagerType {
         context.performAndWait {
             let result = Result(catching: { try operation(context) })
             if case .success = result {
-                context.saveIfNeeded()
+                context.saveChangesIfNeeded()
             }
             queue.async {
                 completion(result)
@@ -167,6 +167,13 @@ extension MockStorageManager {
 public extension StorageType {
     @available(*, deprecated, message: "Use `MockStorageManager`'s `performAndSave` to handle write operations instead of writing directly.")
     func saveIfNeeded() {
+        saveChangesIfNeeded()
+    }
+}
+
+private extension StorageType {
+    /// Backs `saveIfNeeded()` and `MockStorageManager`'s own write paths, which must not call the deprecated API.
+    func saveChangesIfNeeded() {
         let context = self as! NSManagedObjectContext
         if context.hasChanges {
             try? context.save()

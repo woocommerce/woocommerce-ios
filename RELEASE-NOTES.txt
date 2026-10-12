@@ -3,6 +3,7 @@
 
 25.9
 -----
+- [*] Products: Editing an attribute keeps its "Visible on product page" and "Used for variations" settings. Attributes not used for variations are no longer used to generate or name variations. [https://github.com/woocommerce/woocommerce-ios/pull/18064]
 - [*] Payments: In-person card payments are now hidden for orders sold as a subscription, including variable and plan-based subscriptions the previous check missed. [https://github.com/woocommerce/woocommerce-ios/pull/17986]
 - [*] Products: When sorting by title, loading more products no longer inserts them in the middle of the list. [https://github.com/woocommerce/woocommerce-ios/pull/18035]
 - [*] POS: Fixed order creation times differing between the order list and details. [https://github.com/woocommerce/woocommerce-ios/pull/18051]

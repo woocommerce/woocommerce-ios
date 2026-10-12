@@ -1,6 +1,6 @@
 import Foundation
 
-public struct POSRefundItem: Identifiable, Equatable, Hashable {
+public struct POSRefundItem: Identifiable, Equatable, Hashable, Sendable {
     public let id: UUID
 
     /// The original order line item ID that was refunded.

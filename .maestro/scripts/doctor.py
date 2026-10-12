@@ -141,6 +141,8 @@ def main() -> int:
     try:
         flows = RUNNER.select_flows(namespace, include, exclude)
         checks.append((True, f"selected flows: {len(flows)}"))
+        if not any("destructive" in RUNNER.flow_tags(flow) for flow in flows):
+            args.seed = False
     except SystemExit as error:
         checks.append((False, f"flow selection: {error}"))
 

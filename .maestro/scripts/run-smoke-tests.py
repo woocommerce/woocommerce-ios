@@ -897,6 +897,10 @@ def main() -> int:
     exclude = exclude_default if exclude is None else exclude
     repeat = args.repeat
     flows = in_store_order(select_flows(args, include, exclude), args.store)
+    if args.seed and not any("destructive" in flow_tags(flow) for flow in flows):
+        if not args.plan:
+            print("No destructive flows selected; skipping fixture seeding.", flush=True)
+        args.seed = False
     if args.plan:
         destructive_cleanup_required = any("destructive" in flow_tags(flow) for flow in flows)
         required = sorted(

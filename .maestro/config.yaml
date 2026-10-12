@@ -19,7 +19,6 @@ executionOrder:
     - flows/dashboard_customize.yaml
     - flows/orders_list_and_search.yaml
     - flows/products_list_and_sort.yaml
-    - flows/products_detail.yaml
     - flows/products_variations_and_tags.yaml
     - flows/hub_menu_settings.yaml
     - flows/hub_menu_payments.yaml

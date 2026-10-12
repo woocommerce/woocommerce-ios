@@ -1,4 +1,4 @@
-# p2: hub.payments
+# p2: hub.payments.pay-in-person, hub.payments.order-card-reader, hub.payments.manuals
 # The full profile store supports card readers, so missing card-reader rows fail the flow.
 appId: ${APP_ID}
 name: "Hub Menu - Payments"

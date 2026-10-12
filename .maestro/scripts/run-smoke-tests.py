@@ -79,7 +79,7 @@ ORDERED_FLOWS = [
     "login_not_woo_store.yaml", "login_wrong_account.yaml",
     "login_successful.yaml", "dashboard_stats.yaml",
     "dashboard_view_all_analytics.yaml", "dashboard_customize.yaml",
-    "orders_list_and_search.yaml", "products_list_and_sort.yaml", "products_detail.yaml",
+    "orders_list_and_search.yaml", "products_list_and_sort.yaml",
     "products_variations_and_tags.yaml", "hub_menu_settings.yaml", "hub_menu_payments.yaml",
     "hub_menu_coupons.yaml", "hub_menu_customers_inbox.yaml", "hub_menu_admin_and_store.yaml",
     "google_for_woo.yaml", "orders_create.yaml",

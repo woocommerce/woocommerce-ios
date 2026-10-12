@@ -80,6 +80,7 @@ extension ProductFormTableViewDataSource: UITableViewDataSource {
 
 private extension ProductFormTableViewDataSource {
     func configure(_ cell: UITableViewCell, section: ProductFormSection, indexPath: IndexPath) {
+        cell.accessibilityIdentifier = nil
         switch section {
         case .primaryFields(let rows):
             configureCellInPrimaryFieldsSection(cell, row: rows[indexPath.row])
@@ -102,6 +103,7 @@ private extension ProductFormTableViewDataSource {
                             isVariation: isVariation)
         case .linkedProductsPromo(let viewModel):
             configureLinkedProductsPromo(cell: cell, viewModel: viewModel)
+            cell.accessibilityIdentifier = "product-linked-products-promo-cell"
         case .name(let name, let editable, let productStatus):
             configureName(cell: cell, name: name, isEditable: editable, productStatus: productStatus)
         case .variationName(let name):
@@ -383,6 +385,21 @@ private extension ProductFormTableViewDataSource {
 private extension ProductFormTableViewDataSource {
     func configureCellInSettingsFieldsSection(_ cell: UITableViewCell, row: ProductFormSection.SettingsRow) {
         switch row {
+        case .price:
+            cell.accessibilityIdentifier = "product-price-cell"
+        case .inventory, .simplifiedInventory:
+            cell.accessibilityIdentifier = "product-inventory-cell"
+        case .variations:
+            cell.accessibilityIdentifier = "product-variations-cell"
+        case .groupedProducts:
+            cell.accessibilityIdentifier = "product-grouped-products-cell"
+        case .externalURL:
+            cell.accessibilityIdentifier = "product-external-url-cell"
+        default:
+            break
+        }
+
+        switch row {
         case .price(let viewModel, _),
              .customFields(let viewModel),
              .inventory(let viewModel, _),
@@ -420,6 +437,7 @@ private extension ProductFormTableViewDataSource {
             fatalError()
         }
         cell.updateUI(viewModel: viewModel.toCellViewModel())
+        cell.detailsAccessibilityIdentifier = viewModel.detailsAccessibilityIdentifier
     }
 
     func configureReviews(cell: UITableViewCell,

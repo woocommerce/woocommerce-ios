@@ -447,7 +447,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
             let model = EditableProductModel(product: product)
 
             // When
-            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: true)
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: true, featureFlagService: MockFeatureFlagService())
 
             // Then
             let containsAddOnAction = factory.settingsSectionActions().contains(ProductFormEditAction.addOns(editable: true))
@@ -471,7 +471,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
             let model = EditableProductModel(product: product)
 
             // When
-            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: false)
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: false, featureFlagService: MockFeatureFlagService())
 
             // Then
             let containsAddOnAction = factory.settingsSectionActions().contains(ProductFormEditAction.addOns(editable: true))
@@ -495,7 +495,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
             let model = EditableProductModel(product: product)
 
             // When
-            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: false)
+            let factory = ProductFormActionsFactory(product: model, formType: .edit, addOnsFeatureEnabled: false, featureFlagService: MockFeatureFlagService())
 
             // Then
             let containsAddOnAction = factory.settingsSectionActions().contains(ProductFormEditAction.addOns(editable: true))
@@ -509,7 +509,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .notSet)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .notSet, featureFlagService: MockFeatureFlagService())
 
         // Then
         let containsWarningAction = factory.settingsSectionActions().contains(ProductFormEditAction.noPriceWarning)
@@ -522,7 +522,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set, featureFlagService: MockFeatureFlagService())
 
         // Then
         let containsWarningAction = factory.settingsSectionActions().contains(ProductFormEditAction.noPriceWarning)
@@ -535,7 +535,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown, featureFlagService: MockFeatureFlagService())
 
         // Then
         let containsWarningAction = factory.settingsSectionActions().contains(ProductFormEditAction.noPriceWarning)
@@ -548,7 +548,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown, featureFlagService: MockFeatureFlagService())
 
         // Then
         let containsWarningAction = factory.settingsSectionActions().contains(ProductFormEditAction.noPriceWarning)
@@ -563,11 +563,59 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown, featureFlagService: MockFeatureFlagService())
 
         // Then
         let containsAttributeAction = factory.settingsSectionActions().contains(ProductFormEditAction.attributes(editable: true))
         XCTAssertTrue(containsAttributeAction)
+    }
+
+    func test_when_non_variation_attributes_are_on_then_product_with_attributes_shows_attributes_row_for_each_type() {
+        // Given
+        let productTypes: [ProductType] = [.simple, .affiliate, .grouped, .variable, .subscription, .variableSubscription, .bundle, .composite]
+        let attribute = ProductAttribute.fake().copy(name: "Material", variation: false, options: ["Cotton"])
+
+        for productType in productTypes {
+            let model = EditableProductModel(product: Product.fake().copy(productTypeKey: productType.rawValue, attributes: [attribute]))
+
+            // When
+            let factory = ProductFormActionsFactory(product: model,
+                                                    formType: .edit,
+                                                    featureFlagService: Fixtures.featureFlagService(isNonVariationAttributesEnabled: true))
+
+            // Then
+            XCTAssertTrue(factory.settingsSectionActions().contains(.attributes(editable: true)), "\(productType)")
+            XCTAssertFalse(factory.bottomSheetActions().contains(.editAttributes), "\(productType)")
+        }
+    }
+
+    func test_when_non_variation_attributes_are_on_then_product_without_attributes_shows_attributes_in_bottom_sheet() {
+        // Given
+        let model = EditableProductModel(product: Product.fake().copy(productTypeKey: ProductType.simple.rawValue, attributes: []))
+
+        // When
+        let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
+                                                featureFlagService: Fixtures.featureFlagService(isNonVariationAttributesEnabled: true))
+
+        // Then
+        XCTAssertFalse(factory.settingsSectionActions().contains(.attributes(editable: true)))
+        XCTAssertTrue(factory.bottomSheetActions().contains(.editAttributes))
+    }
+
+    func test_when_non_variation_attributes_are_off_then_simple_product_has_no_attributes_action() {
+        // Given
+        let attribute = ProductAttribute.fake().copy(name: "Material", variation: false, options: ["Cotton"])
+        let model = EditableProductModel(product: Product.fake().copy(productTypeKey: ProductType.simple.rawValue, attributes: [attribute]))
+
+        // When
+        let factory = ProductFormActionsFactory(product: model,
+                                                formType: .edit,
+                                                featureFlagService: Fixtures.featureFlagService(isNonVariationAttributesEnabled: false))
+
+        // Then
+        XCTAssertFalse(factory.settingsSectionActions().contains(.attributes(editable: true)))
+        XCTAssertFalse(factory.bottomSheetActions().contains(.editAttributes))
     }
 
     func test_view_model_for_bundle_product_without_price_or_bundled_items() {
@@ -873,7 +921,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set, featureFlagService: MockFeatureFlagService())
 
         // Then
         let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
@@ -886,7 +934,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown, featureFlagService: MockFeatureFlagService())
 
         // Then
         let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
@@ -899,7 +947,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .set, featureFlagService: MockFeatureFlagService())
 
         // Then
         let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
@@ -912,7 +960,7 @@ final class ProductFormActionsFactoryTests: XCTestCase {
         let model = EditableProductModel(product: product)
 
         // When
-        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown)
+        let factory = ProductFormActionsFactory(product: model, formType: .edit, variationsPrice: .unknown, featureFlagService: MockFeatureFlagService())
 
         // Then
         let containsShippingSettingsAction = factory.settingsSectionActions().contains(ProductFormEditAction.shippingSettings(editable: true))
@@ -1025,6 +1073,12 @@ private extension ProductFormActionsFactoryTests {
         static let nonCoreProductWithPrice = nonCoreProductWithoutPrice.copy(regularPrice: "2")
 
         // Factory with default feature settings
+        static func featureFlagService(isNonVariationAttributesEnabled: Bool) -> MockFeatureFlagService {
+            let service = MockFeatureFlagService()
+            service.isFeatureFlagEnabledReturnValue[.nonVariationProductAttributes] = isNonVariationAttributesEnabled
+            return service
+        }
+
         static func actionsFactory(product: EditableProductModel,
                                    formType: ProductFormType,
                                    addOnsFeatureEnabled: Bool = false,
@@ -1035,7 +1089,8 @@ private extension ProductFormActionsFactoryTests {
                                       formType: formType,
                                       addOnsFeatureEnabled: addOnsFeatureEnabled,
                                       isLinkedProductsPromoEnabled: isLinkedProductsPromoEnabled,
-                                      variationsPrice: variationsPrice)
+                                      variationsPrice: variationsPrice,
+                                      featureFlagService: MockFeatureFlagService())
         }
     }
 }

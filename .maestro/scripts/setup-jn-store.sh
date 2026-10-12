@@ -151,8 +151,7 @@ chmod +x "$WORK/ssh.exp"
 
 # The password goes through the environment rather than argv so it never
 # appears in `ps` output.
-remote() { remote_on "$SITE" "$SITE_PASS" "$1"; }
-remote_on() { JN_SSH_PASS="$2" "$WORK/ssh.exp" "$1" "$3" 2>/dev/null | tr -d '\r'; }
+remote() { JN_SSH_PASS="$SITE_PASS" "$WORK/ssh.exp" "$SITE" "$1" 2>/dev/null | tr -d '\r'; }
 
 # Run PHP on the site. The source is base64-encoded so quoting survives the
 # shell/ssh/wp-cli layers, and staged as a file because `wp eval-file -` does

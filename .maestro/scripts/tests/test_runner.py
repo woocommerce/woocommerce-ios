@@ -563,14 +563,16 @@ class RunnerTests(unittest.TestCase):
         self.assertIn("flaky_quarantine", RUNNER.PROFILES["pos"][1])
         self.assertEqual({"full", "pos"}, RUNNER.SEEDING_PROFILES)
 
-    def test_pos_flows_run_last_on_the_pos_simulator_only_in_a_mixed_selection(self) -> None:
+    def test_pos_flows_run_last_on_the_pos_simulator_when_the_profile_is_for_a_phone(self) -> None:
         stats = RUNNER.FLOWS_DIR / "dashboard_stats.yaml"
         google = RUNNER.FLOWS_DIR / "google_for_woo.yaml"
         pos = RUNNER.FLOWS_DIR / "pos_search_and_coupons.yaml"
         cash = RUNNER.FLOWS_DIR / "pos_cash_payment.yaml"
 
-        self.assertTrue(RUNNER.needs_pos_device([pos, stats]))
-        self.assertFalse(RUNNER.needs_pos_device([pos, cash]))
+        self.assertTrue(RUNNER.needs_pos_device([pos, stats], "iphone"))
+        self.assertTrue(RUNNER.needs_pos_device([pos, cash], "iphone"))
+        self.assertFalse(RUNNER.needs_pos_device([pos, cash], "ipad"))
+        self.assertFalse(RUNNER.needs_pos_device([stats], "iphone"))
         self.assertEqual([stats, google, pos], RUNNER.in_store_order([pos, google, stats]))
         self.assertEqual([pos, cash], RUNNER.in_store_order([pos, cash]))
 

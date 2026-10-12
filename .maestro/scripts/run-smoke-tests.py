@@ -143,7 +143,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--device", help="Simulator name or UDID")
     parser.add_argument(
         "--pos-device",
-        help="iPad simulator name or UDID for the POS flows when the selection also has phone flows; "
+        help="iPad simulator name or UDID for the POS flows of a phone profile; "
         "an available iPad is picked when omitted",
     )
     parser.add_argument(
@@ -367,15 +367,14 @@ def flow_store(path: Path, store_override: str | None = None) -> str:
     return "shared" if SHARED_STORE_TAG in flow_tags(path) else "lab"
 
 
-def needs_pos_device(flows: list[Path]) -> bool:
-    """POS flows need an iPad, so a selection that also has phone flows runs them on a second simulator."""
-    pos = [POS_TAG in flow_tags(flow) for flow in flows]
-    return any(pos) and not all(pos)
+def needs_pos_device(flows: list[Path], family: str) -> bool:
+    """POS flows need an iPad, so a profile for a phone runs them on a second simulator."""
+    return family != "ipad" and any(POS_TAG in flow_tags(flow) for flow in flows)
 
 
 def in_store_order(flows: list[Path], store_override: str | None = None) -> list[Path]:
-    """Lab flows run first, then the flows that need the shared store, then the POS flows on the iPad."""
-    pos_flows = [flow for flow in flows if POS_TAG in flow_tags(flow)] if needs_pos_device(flows) else []
+    """Lab flows run first, then the flows that need the shared store, then the POS flows."""
+    pos_flows = [flow for flow in flows if POS_TAG in flow_tags(flow)]
     phone_flows = [flow for flow in flows if flow not in pos_flows]
     return (
         [flow for flow in phone_flows if flow_store(flow, store_override) == "lab"]
@@ -914,7 +913,7 @@ def main() -> int:
             else "Cleanup:      not required"
         )
         print("Selected flows:")
-        pos_device = needs_pos_device(flows)
+        pos_device = needs_pos_device(flows, family)
         for flow in flows:
             if pos_device and POS_TAG in flow_tags(flow):
                 suffix = " (POS simulator)"
@@ -967,7 +966,7 @@ def main() -> int:
         validate_environment([], seed_values, seed=True, store=seed_store)
     manifest = output / "run-manifest.json"
     simulator = resolve_simulator(args.device, family)
-    pos_simulator = resolve_simulator(args.pos_device, "ipad") if needs_pos_device(flows) else None
+    pos_simulator = resolve_simulator(args.pos_device, "ipad") if needs_pos_device(flows, family) else None
     if pos_simulator and pos_simulator["udid"] == simulator["udid"]:
         raise SystemExit("--pos-device must be a different simulator than --device")
     run_simulators = [simulator] + ([pos_simulator] if pos_simulator else [])

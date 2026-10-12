@@ -151,7 +151,7 @@ def main() -> int:
     except SystemExit as error:
         checks.append((False, f"flow selection: {error}"))
 
-    if 'flows' in locals() and RUNNER.needs_pos_device(flows):
+    if 'flows' in locals() and RUNNER.needs_pos_device(flows, family):
         try:
             pos_simulator = RUNNER.resolve_simulator(args.pos_device, "ipad", boot=False)
             checks.append((True, f"POS simulator: {pos_simulator['name']} ({pos_simulator['udid']})"))

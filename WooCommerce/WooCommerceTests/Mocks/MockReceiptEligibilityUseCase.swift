@@ -2,6 +2,7 @@ import Foundation
 import enum Yosemite.OrderStatusEnum
 @testable import WooCommerce
 
+@MainActor
 final class MockReceiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol {
     var isEligibleForBackendReceipts: Bool = true
     var isEligibleForSuccessfulPaymentEmailReceipts: Bool = false

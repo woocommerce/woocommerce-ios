@@ -1139,7 +1139,11 @@ struct PointOfSaleAggregateModelTests {
             await fireOnce { fire in
                 coordinator.onPerformIncrementalSyncCalled = { fire() }
                 Task { @MainActor in
-                    try await sut.collectCashPayment(changeDueAmount: "0.00")
+                    do {
+                        try await sut.collectCashPayment(changeDueAmount: "0.00")
+                    } catch {
+                        Issue.record(error)
+                    }
                 }
             }
 

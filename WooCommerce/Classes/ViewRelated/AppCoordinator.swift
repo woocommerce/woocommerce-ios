@@ -26,6 +26,7 @@ final class AppCoordinator {
     private var significantChangeBlocker: SignificantChangeConsentBlockingHostingController?
     private var foregroundConsentRecheckObserver: NSObjectProtocol?
     private var deferredAgeVerificationObserver: NSObjectProtocol?
+    private var deferredConsentResponsesObserver: NSObjectProtocol?
     private var authStatesSubscription: AnyCancellable?
     private var localNotificationResponsesSubscription: AnyCancellable?
     private var isLoggedIn: Bool = false
@@ -88,11 +89,7 @@ final class AppCoordinator {
         // including long after it was sent — re-evaluate the age gate when an answer arrives.
         // The listener is armed asynchronously; that's fine, the first verification pass is
         // read-only and never depends on it.
-        ageRangeVerificationCoordinator.startObservingConsentResponses { [weak self] in
-            // When logged out the outcome is already persisted; the next login's check picks it up.
-            guard let self, self.isLoggedIn else { return }
-            self.triggerAgeVerification(trigger: .consentResolution)
-        }
+        startObservingConsentResponsesWhenActive()
 
         authStatesSubscription = Publishers.CombineLatest(stores.isLoggedInPublisher, stores.needsDefaultStorePublisher)
             .sink {  [weak self] isLoggedIn, needsDefaultStore in
@@ -472,9 +469,9 @@ private extension AppCoordinator {
 
 private extension AppCoordinator {
     func triggerAgeVerification(trigger: AgeVerificationTrigger, onAllowed: @escaping () -> Void = { }) {
-        // The Declared Age Range calls open an XPC connection to a system extension. On a launch the
-        // user never sees (prewarm, background refresh, push wake) the process gets suspended with that
-        // connection pending and traps on the next wake (WOOMOB-3608). Only verify while active.
+        // The Declared Age Range calls go through a system XPC connection, and the FamilyCircleUI
+        // crash (WOOMOB-3608) is observed on launches the user never sees (prewarm, background
+        // refresh, push wake). Only verify while active.
         guard applicationStateProvider() == .active else {
             deferAgeVerificationUntilActive(trigger: trigger, onAllowed: onAllowed)
             return
@@ -624,6 +621,35 @@ private extension AppCoordinator {
         if let observer = deferredAgeVerificationObserver {
             notificationCenter.removeObserver(observer)
             deferredAgeVerificationObserver = nil
+        }
+    }
+
+    /// The response listener also talks to the system over XPC, so it is armed on the same
+    /// terms as the verification: now if the app is active, otherwise on the next `didBecomeActive`.
+    func startObservingConsentResponsesWhenActive() {
+        guard applicationStateProvider() == .active else {
+            deferredConsentResponsesObserver = notificationCenter.addObserver(
+                forName: UIApplication.didBecomeActiveNotification,
+                object: nil,
+                queue: .main
+            ) { [weak self] _ in
+                guard let self else { return }
+                if let observer = self.deferredConsentResponsesObserver {
+                    self.notificationCenter.removeObserver(observer)
+                    self.deferredConsentResponsesObserver = nil
+                }
+                self.startObservingConsentResponses()
+            }
+            return
+        }
+        startObservingConsentResponses()
+    }
+
+    func startObservingConsentResponses() {
+        ageRangeVerificationCoordinator.startObservingConsentResponses { [weak self] in
+            // When logged out the outcome is already persisted; the next login's check picks it up.
+            guard let self, self.isLoggedIn else { return }
+            self.triggerAgeVerification(trigger: .consentResolution)
         }
     }
 

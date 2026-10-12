@@ -143,7 +143,10 @@ if restore_toolkit_cache; then
   exit 0
 fi
 
-BASE_WORKTREE="$(mktemp -d "${TMPDIR:-/tmp}/woo-warning-base.XXXXXX")"
+# Resolve symlinks in TMPDIR (/var -> /private/var on macOS). Since Xcode 27, Swift
+# package warnings are logged with the resolved path, so an unresolved worktree path
+# makes the counter drop every Modules/Sources warning from the baseline.
+BASE_WORKTREE="$(mktemp -d "$(cd "${TMPDIR:-/tmp}" && pwd -P)/woo-warning-base.XXXXXX")"
 rm -rf "$BASE_WORKTREE"
 
 cleanup() {

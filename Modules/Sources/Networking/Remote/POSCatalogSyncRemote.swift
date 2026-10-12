@@ -4,7 +4,7 @@ import CocoaLumberjackSwift
 import enum NetworkingCore.POSCatalogFileError
 
 /// Protocol for POS Catalog Sync Remote operations.
-public protocol POSCatalogSyncRemoteProtocol {
+public protocol POSCatalogSyncRemoteProtocol: Sendable {
     /// Loads POS products modified after the specified date for incremental sync.
     ///
     /// - Parameters:
@@ -81,7 +81,7 @@ public protocol POSCatalogSyncRemoteProtocol {
 
 /// POS Catalog Sync: Remote Endpoints
 ///
-public class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol {
+public final class POSCatalogSyncRemote: Remote, POSCatalogSyncRemoteProtocol, @unchecked Sendable {
     private let dateFormatter = ISO8601DateFormatter()
     private let backgroundDownloader: BackgroundDownloadProtocol
     private let fileManager: FileManager

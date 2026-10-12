@@ -293,9 +293,12 @@ public final class UnifiedOrderScreen: ScreenObject {
     /// - Returns: Unified Order screen object.
     @discardableResult
     public func checkForExistingOrderTitle(byOrderNumber orderNumber: String) throws -> UnifiedOrderScreen {
-        XCTAssertTrue(app.otherElements["order-form-screen"].exists)
-        let orderNumberPredicate = NSPredicate(format: "identifier CONTAINS %@ OR label CONTAINS %@", orderNumber, orderNumber)
-        XCTAssertTrue(app.navigationBars.matching(orderNumberPredicate).firstMatch.exists)
+        let (hasOrderForm, hasOrderNavigationBar) = MainActor.assumeIsolated { [app] in
+            let predicate = NSPredicate(format: "identifier CONTAINS %@ OR label CONTAINS %@", orderNumber, orderNumber)
+            return (app.otherElements["order-form-screen"].exists, app.navigationBars.matching(predicate).firstMatch.exists)
+        }
+        XCTAssertTrue(hasOrderForm)
+        XCTAssertTrue(hasOrderNavigationBar)
 
         return self
     }

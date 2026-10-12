@@ -12,6 +12,7 @@ import enum Hardware.UnderlyingError
 /// Protocol to abstract the `CollectOrderPaymentUseCase`.
 /// Currently only used to facilitate unit tests.
 ///
+@MainActor
 protocol CollectOrderPaymentProtocol {
     /// Starts the collect payment flow.
     ///
@@ -31,6 +32,7 @@ protocol CollectOrderPaymentProtocol {
 /// Use case to collect payments from an order.
 /// Orchestrates reader connection, payment, UI alerts, receipt handling and analytics.
 ///
+@MainActor
 final class CollectOrderPaymentUseCase<TapToPayAlertProvider: CardReaderTransactionAlertsProviding,
                                         BluetoothAlertProvider: CardReaderTransactionAlertsProviding,
                                         AlertPresenter: CardPresentPaymentAlertsPresenting>:
@@ -95,7 +97,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
     private var cancellables: Set<AnyCancellable> = []
 
     private let notificationCenter: NotificationCenter
-    private let applicationStateProvider: () -> UIApplication.State
+    private let applicationStateProvider: @MainActor () -> UIApplication.State
     private var applicationInactivationCancellable: AnyCancellable?
     private var applicationReactivationCancellable: AnyCancellable?
     private var didObserveApplicationInactiveDuringCancellation = false
@@ -132,9 +134,9 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
          bluetoothAlertsProvider: any CardReaderTransactionAlertsProviding<AlertPresenter.AlertDetails>,
          preflightController: CardPresentPaymentPreflightControllerProtocol,
          analyticsTracker: CollectOrderPaymentAnalyticsTracking? = nil,
-         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol = ReceiptEligibilityUseCase(),
+         receiptEligibilityUseCase: ReceiptEligibilityUseCaseProtocol? = nil,
          notificationCenter: NotificationCenter = .default,
-         applicationStateProvider: @escaping () -> UIApplication.State = { UIApplication.shared.applicationState }) {
+         applicationStateProvider: @escaping @MainActor () -> UIApplication.State = { UIApplication.shared.applicationState }) {
         self.siteID = siteID
         self.order = order
         self.formattedAmount = formattedAmount
@@ -150,7 +152,7 @@ where TapToPayAlertProvider.AlertDetails == AlertPresenter.AlertDetails,
                                                                                  analytics: ServiceLocator.analytics,
                                                                                  configuration: configuration,
                                                                                  orderDurationRecorder: orderDurationRecorder)
-        self.receiptEligibilityUseCase = receiptEligibilityUseCase
+        self.receiptEligibilityUseCase = receiptEligibilityUseCase ?? ReceiptEligibilityUseCase()
         self.notificationCenter = notificationCenter
         self.applicationStateProvider = applicationStateProvider
     }
@@ -240,7 +242,6 @@ private extension CollectOrderPaymentUseCase {
 
     /// Cancels an automatic card reader reconnection since a new payment cannot begin while a reconnection is ongoing
     ///
-    @MainActor
     func cancelReconnectionIfNeeded() async {
         await withCheckedContinuation { continuation in
             var nillableContinuation: CheckedContinuation<Void, Never>? = continuation

@@ -6,6 +6,7 @@ import Yosemite
 /// alerts such a provider is expected to provide over the course of searching for
 /// and connecting to a reader
 ///
+@MainActor
 protocol CardReaderSettingsAlertsProvider {
     /// Defines a cancellable alert indicating we are searching for a reader
     ///

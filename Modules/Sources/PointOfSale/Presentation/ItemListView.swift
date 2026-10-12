@@ -4,6 +4,7 @@ import protocol Yosemite.POSOrderableItem
 import struct WooFoundationCore.WooAnalyticsEvent
 
 struct ItemListView: View {
+    @Environment(\.horizontalSizeClass) private var horizontalSizeClass
     @Environment(\.posAnalytics) private var analytics
     @Environment(\.posFeatureFlags) private var featureFlags
     @Environment(PointOfSaleAggregateModel.self) private var posModel
@@ -119,11 +120,8 @@ struct ItemListView: View {
     /// so it lives on the aggregate model as `editingCustomAmount` for cross-pane reach.
     @State private var isAddingCustomAmount: Bool = false
 
-    @State private var navigationResetID: Int = 0
-
     var body: some View {
         navigationContainer
-            .id(navigationResetID)
             // The phone cart button and the iPad floating control are suppressed while the
             // add-custom-amount form is pushed. Emit that request from this always-present view,
             // keyed on the push flag, so it reverts the instant the form is popped: a preference
@@ -136,8 +134,11 @@ struct ItemListView: View {
 
     @ViewBuilder
     private var navigationContainer: some View {
-        NavigationStack {
+        @Bindable var viewStateCoordinator = posModel.viewStateCoordinatorForView
+        NavigationStack(path: $viewStateCoordinator.itemNavigationPath) {
             content
+                // The regular pane is already inside the dashboard's horizontal safe bounds.
+                .ignoresSafeArea(.container, edges: horizontalSizeClass == .regular ? .horizontal : [])
         }
     }
 
@@ -184,13 +185,8 @@ struct ItemListView: View {
             guard stage != .building else { return }
             isAddingCustomAmount = false
         }
-        // The left pane also owns product drill-down navigation. Only reset that navigation after a
-        // completed checkout starts a fresh empty cart. Returning to edit the current cart should
-        // preserve the merchant's place in the selector.
-        .onChange(of: posModel.orderStage) { oldStage, newStage in
-            guard oldStage == .finalizing, newStage == .building, posModel.cart.isEmpty else { return }
-            navigationResetID += 1
-        }
+        // Product drill-down lives in the coordinator: a new cart clears it, while returning to
+        // edit the current cart preserves the merchant's place in the selector.
         .posEdgeSwipeBackAction(isEnabled: isSearching, onBack: dismissSearch)
     }
 

@@ -24,6 +24,7 @@ final class CardPresentPaymentCollectOrderPaymentUseCaseAdaptor {
         paymentEventPublisher.assign(to: &$latestPaymentEvent)
     }
 
+    @MainActor
     func collectPaymentTask(for order: Order,
                             using connectionMethod: CardReaderConnectionMethod,
                             siteID: Int64,

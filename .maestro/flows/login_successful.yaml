@@ -1,0 +1,18 @@
+# p2: install.fresh, login.jetpack
+# The runner signs the app in again after every login flow, so later flows do not
+# reuse this session.
+appId: ${APP_ID}
+name: "Login - Successful Jetpack store login"
+tags:
+  - smoke_core
+  - login
+---
+- runFlow:
+    file: ../subflows/login.yaml
+- assertVisible:
+    id: "tab-bar-my-store-item"
+- assertVisible:
+    id: "tab-bar-orders-item"
+- assertVisible:
+    id: "tab-bar-products-item"
+- takeScreenshot: login_successful

@@ -193,6 +193,16 @@ public struct PointOfSaleEntryPointView: View {
     }
 
     public var body: some View {
+        GeometryReader { geometry in
+            // Keep native compact windows compact; collapse regular windows that cannot fit two panes.
+            let isCompactLayout = horizontalSizeClass == .compact || geometry.size.width < Constants.minimumSplitWidth
+            content(isCompactLayout: isCompactLayout)
+                .environment(\.posHeaderTopPadding, geometry.safeAreaInsets.top > Constants.maximumTopClearance ? POSPadding.none : nil)
+                .environment(\.horizontalSizeClass, isCompactLayout ? .compact : .regular)
+        }
+    }
+
+    private func content(isCompactLayout: Bool) -> some View {
         Group {
             if let posModel {
                 PointOfSaleDashboardView(httpsConfigurationNotice: httpsConfigurationNotice)
@@ -271,6 +281,9 @@ public struct PointOfSaleEntryPointView: View {
         .injectKeyboardObserver()
         .posLockScreenOverlay()
         .environment(\.posAccessSession, accessSession)
+        .onChange(of: isCompactLayout) { _, isCompactLayout in
+            posModel?.paymentModel.updateCardPaymentSelectionMode(isCompactLayout ? .compact : .large)
+        }
         .task {
             await accessSession.refreshPINStatus()
         }
@@ -281,8 +294,10 @@ public struct PointOfSaleEntryPointView: View {
         }
     }
 
-    private var isCompactLayout: Bool {
-        horizontalSizeClass == .compact
+    private enum Constants {
+        static let minimumSplitWidth: CGFloat = 700
+        // Preserve usual phone and tablet padding; a taller system bar supplies the top clearance.
+        static let maximumTopClearance: CGFloat = 64
     }
 }
 

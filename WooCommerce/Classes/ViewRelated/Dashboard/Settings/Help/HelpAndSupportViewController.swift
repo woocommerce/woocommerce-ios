@@ -354,9 +354,9 @@ private extension HelpAndSupportViewController {
             comment: "Title for the support chat history row on the Help screen"
         )
         cell.detailTextLabel?.text = NSLocalizedString(
-            "helpAndSupport.chatHistory.subtitle",
-            value: "Revisit past support conversations",
-            comment: "Subtitle for the support chat history row on the Help screen"
+            "helpAndSupport.chatHistory.aiChatsSubtitle",
+            value: "Revisit past AI support chats",
+            comment: "Subtitle for the AI support chat history row on the Help screen"
         )
     }
 

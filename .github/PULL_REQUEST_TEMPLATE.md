@@ -14,7 +14,7 @@ If applicable, mention key devices, scenarios, or edge cases to verify. -->
 ## Screenshots
 <!-- Include before and after images or gifs when appropriate. -->
 
-<!-- Adds, changes, or removes an AI tool or testing helper? Update docs/ai-tools.md. -->
+<!-- When you add, change, or remove an AI tool or testing helper, update docs/ai-tools.md. -->
 
 ---
 - [ ] I have considered if this change warrants user-facing release notes and have added them to `RELEASE-NOTES.txt` if necessary.

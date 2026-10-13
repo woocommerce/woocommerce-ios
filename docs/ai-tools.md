@@ -2,27 +2,27 @@
 
 AI tools and testing helpers for WooCommerce iOS development. When adding, changing, or removing a tool, update its entry or discovery guidance in the same PR. Skill descriptions belong in `SKILL.md`.
 
-**Availability:** `Repo` means the files ship with the checkout; build and runtime prerequisites still apply. `MCP` needs a configured, connected server. `CI` runs in GitHub or Buildkite with team credentials. Before using an MCP tool, check that it is available and authorized. Report missing access and use the listed fallback.
+`Repo` means the files ship with the checkout; build and runtime prerequisites still apply. `MCP` needs a configured, connected server. `CI` runs in GitHub or Buildkite with team credentials. Before using an MCP tool, check that it is available and authorized. Report missing access and use the listed fallback.
 
 ## Skills
 
-Repository skills live in [`.claude/skills/`](../.claude/skills/); `.agents/skills/` is a symlink to the same files for Codex. Claude Code and Codex discover skill names and descriptions and load the full instructions when needed. Each `SKILL.md` defines its purpose and trigger, so this index does not repeat the skill list. Other clients can read the same files directly.
+Repository skills live in [`.agents/skills/`](../.agents/skills/). Agents discover their names and descriptions and load the instructions when a task matches. Each `SKILL.md` defines its purpose and trigger.
 
 ## Agents
 
-Claude Code discovers these project subagents. Other clients can read their definitions as task guidance.
+Shared task definitions live in `.agents/agents/`. Read the relevant definition before delegating a review, debugging, or test-writing task. Native subagent registration depends on the client.
 
 | Name | What it does | When to use | Example | Owner | Availability |
 |---|---|---|---|---|---|
-| [`code-reviewer`](../.claude/agents/code-reviewer/code-reviewer.md) | Reviews changes against iOS conventions | Reviewing a diff or PR | "Use the code-reviewer agent on this diff" | Woo Mobile | Repo |
-| [`debugger`](../.claude/agents/debugger/debugger.md) | Diagnoses build and test failures | A failure has an unclear cause | "Use the debugger agent on this test failure" | Woo Mobile | Repo |
-| [`test-writer`](../.claude/agents/test-writer/test-writer.md) | Writes tests using the repository conventions | Adding unit test coverage | "Use the test-writer agent for this ViewModel" | Woo Mobile | Repo |
+| [`code-reviewer`](../.agents/agents/code-reviewer/code-reviewer.md) | Reviews changes against iOS conventions | Reviewing a diff or PR | "Use the code-reviewer agent on this diff" | Woo Mobile | Repo |
+| [`debugger`](../.agents/agents/debugger/debugger.md) | Diagnoses build and test failures | A failure has an unclear cause | "Use the debugger agent on this test failure" | Woo Mobile | Repo |
+| [`test-writer`](../.agents/agents/test-writer/test-writer.md) | Writes tests using the repository conventions | Adding unit test coverage | "Use the test-writer agent for this ViewModel" | Woo Mobile | Repo |
 
 ## Testing helpers
 
 | Name | What it does | When to use | Example | Owner | Availability |
 |---|---|---|---|---|---|
-| [Auto-login](../.claude/skills/auto-login/SKILL.md) | Logs a DEBUG app into a live store or explicit WireMock fixtures | Simulator checks that need a logged-in store | "Log in to a test store on the simulator" or "auto-login with mocks" | Woo Mobile | Repo. Signed DEBUG build with its runtime frameworks; authorized store access or mock server. Read the skill before using its launch script |
+| [Auto-login](../.agents/skills/auto-login/SKILL.md) | Logs a DEBUG app into a live store or explicit WireMock fixtures | Simulator checks that need a logged-in store | "Log in to a test store on the simulator" or "auto-login with mocks" | Woo Mobile | Repo. Signed DEBUG build with its runtime frameworks; authorized store access or mock server. Read the skill before using its launch script |
 | [Simulator finder](../Scripts/find-simulator.sh) | Finds a booted simulator or boots an available one | Selecting a device for testing | `bash Scripts/find-simulator.sh ipad` | Woo Mobile | Repo. Xcode and an installed simulator runtime |
 | [WireMock scripts](../API-Mocks/README.md) | Starts and stops the local API fixture server | UI tests or checks using mocked responses | `./API-Mocks/scripts/start.sh` | Woo Mobile | Repo. Java; follow the mocks skill for setup |
 | [Maestro smoke suite](../.maestro/README.md) | Runs repeatable simulator flows against live test stores and writes reports | Checking core app flows or rerunning failures | `.maestro/scripts/run-smoke-tests.sh --plan --profile core` | Woo Mobile | Repo. Pinned toolchain, built app, English simulator, and authorized test-store configuration; see linked setup |
@@ -34,7 +34,7 @@ Claude Code discovers these project subagents. Other clients can read their defi
 
 | Name | What it does | When to use | Example | Owner | Availability |
 |---|---|---|---|---|---|
-| [`mobile-mcp`](../.mcp.json) | Reads UI elements, takes screenshots, and interacts with the simulator | Driving the app during agent verification | Used by the verify and auto-login skills | mobile-next (third party) | MCP. Project config for compatible clients; Node.js and simulator device helper. See [setup](../.claude/rules/verification.md). Fallback: `xcrun simctl` for lifecycle/screenshots and manual UI checks |
+| [`mobile-mcp`](../.mcp.json) | Reads UI elements, takes screenshots, and interacts with the simulator | Driving the app during agent verification | Used by the verify and auto-login skills | mobile-next, third party | MCP. Project config for compatible clients; Node.js and simulator device helper. See [setup](../.claude/rules/verification.md). Fallback: `xcrun simctl` for lifecycle/screenshots and manual UI checks |
 | [ContextA8C](../.claude/rules/context-a8c.md) | Reads Linear, Slack, P2, and GitHub context; loads optional providers | Investigating an issue or discovering a test-site provider | "Read WOOMOB-4290" | Automattic | MCP. Optional per-user setup and connected accounts; not in project `.mcp.json`. Fallback: available GitHub tools/CLI for public resources; ask for internal content |
 
 ## CI automation
@@ -50,5 +50,5 @@ Claude Code discovers these project subagents. Other clients can read their defi
 | Name | What it does | When to use | Example | Owner | Availability |
 |---|---|---|---|---|---|
 | [`AGENTS.md`](../AGENTS.md) | Shared repository instructions; [root `CLAUDE.md`](../CLAUDE.md) imports it | Changing repository agent guidance | Edit the shared instructions | Woo Mobile | Repo |
-| [`.claude/settings.json`](../.claude/settings.json) | Team Claude Code command permissions | Changing permitted local commands | Update `permissions.allow` or `permissions.deny` | Woo Mobile | Repo (Claude Code) |
+| [`.claude/settings.json`](../.claude/settings.json) | Team Claude Code command permissions | Changing permitted local commands | Update `permissions.allow` or `permissions.deny` | Woo Mobile | Repo. Claude Code |
 | [`.claude/rules/`](../.claude/rules/) | Shared architecture, testing, and setup guidance; also exposed through the `.agents/rules/` symlink | Looking up detailed repository conventions | Read the rule relevant to the task | Woo Mobile | Repo. Claude Code loads its rules; other clients follow links or read files |

@@ -4,7 +4,7 @@ WooCommerce iOS is the official mobile client for WooCommerce stores, developed 
 
 ## AI dev and testing tools
 
-For simulator testing or AI tool setup, check [docs/ai-tools.md](docs/ai-tools.md) for helpers, MCP servers, and availability. Use relevant repository skills from `.agents/skills/`.
+For simulator testing, task delegation, or AI tool setup, check [docs/ai-tools.md](docs/ai-tools.md) for helpers, MCP servers, and availability. Use relevant repository skills from `.agents/skills/`.
 
 After adding a testing helper, read `docs/ai-tools.md` and add a linked row to its table before reporting completion. Check that the link points to the new file.
 Update or remove rows in the same change when changing helpers, agents, MCP servers, AI CI workflows, or agent configuration.

@@ -224,6 +224,9 @@ struct OrderForm: View {
 
     @State private var shouldShowGiftCardForm = false
 
+    /// Safe-area insets for the totals sheet, read without the keyboard region.
+    @State private var sheetSafeAreaInsets: EdgeInsets = .zero
+
     @State private var bannerWidth: CGFloat = 0
 
     @Environment(\.adaptiveModalContainerPresentationStyle) var presentationStyle
@@ -410,7 +413,7 @@ struct OrderForm: View {
                 FeedbackBannerPopover(isPresented: $viewModel.shippingLineViewModel.isSurveyPromptPresented,
                                       config: viewModel.shippingLineViewModel.feedbackBannerConfig)
 
-                ExpandableBottomSheet(safeAreaInsets: safeAreaInsets,
+                ExpandableBottomSheet(safeAreaInsets: sheetSafeAreaInsets,
                                       containerHeight: containerHeight,
                                       onChangeOfExpansion: viewModel.orderTotalsExpansionChanged) {
                     VStack(spacing: .zero) {
@@ -442,6 +445,12 @@ struct OrderForm: View {
         }
         // The totals sheet covers the bottom safe area itself.
         .ignoresSafeArea(.container, edges: .bottom)
+        .background {
+            // Read the sheet insets without the keyboard, so it does not pad by the keyboard height.
+            Color.clear
+                .onGeometryChange(for: EdgeInsets.self, of: { $0.safeAreaInsets }, action: { sheetSafeAreaInsets = $0 })
+                .ignoresSafeArea(.keyboard)
+        }
         .navigationTitle(viewModel.title)
         .navigationBarTitleDisplayMode(.inline)
         .toolbar {

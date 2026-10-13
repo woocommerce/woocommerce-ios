@@ -102,7 +102,8 @@ private extension PostSiteCredentialLoginChecker {
         guard useCase.applicationPassword == nil else {
             return onSuccess()
         }
-        Task { @MainActor [self] in
+        Task { @MainActor [weak self] in
+            guard let self else { return }
             do {
                 let _ = try await useCase.generateNewPassword()
                 analytics.track(event: .ApplicationPassword.applicationPasswordGeneratedSuccessfully(scenario: .generation))

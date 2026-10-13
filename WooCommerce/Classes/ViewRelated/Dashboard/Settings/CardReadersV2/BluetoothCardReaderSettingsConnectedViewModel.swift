@@ -115,7 +115,8 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
         }
         ServiceLocator.stores.dispatch(action)
 
-        let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [self] softwareUpdateEvents in
+        let softwareUpdateAction = CardPresentPaymentAction.observeCardReaderUpdateState { [weak self] softwareUpdateEvents in
+            guard let self else { return }
             softwareUpdateEvents
                 .sink { [weak self] state in
                     guard let self else { return }
@@ -154,7 +155,8 @@ final class BluetoothCardReaderSettingsConnectedViewModel: PaymentSettingsFlowPr
         }
         ServiceLocator.stores.dispatch(softwareUpdateAction)
 
-        let reconnectionAction = CardPresentPaymentAction.observeCardReaderReconnectionState { [self] reconnectionEvents in
+        let reconnectionAction = CardPresentPaymentAction.observeCardReaderReconnectionState { [weak self] reconnectionEvents in
+            guard let self else { return }
             reconnectionEvents
                 .sink { [weak self] state in
                     guard let self else { return }

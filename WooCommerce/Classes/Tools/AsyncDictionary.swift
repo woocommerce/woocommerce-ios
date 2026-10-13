@@ -25,7 +25,7 @@ final class AsyncDictionary<Key, Value> where Key: Hashable {
                    onCompletion: @escaping (Value?) -> ()) {
         let uuid = UUID()
         operationUUIDsByKey[key] = uuid
-        DispatchQueue.global().async { [self] in
+        DispatchQueue.global().async { [weak self] in
             let value = operation()
             DispatchQueue.main.async { [weak self] in
                 guard let self else {

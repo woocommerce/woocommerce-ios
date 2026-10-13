@@ -236,7 +236,7 @@ private extension WooShippingStore {
                                      originAddress: originAddress,
                                      destinationAddress: destinationAddress,
                                      package: package,
-                                     markOrderComplete: markOrderComplete) { [self] result in
+                                     markOrderComplete: markOrderComplete) { [weak self] result in
             switch result {
             case .success(let labelPurchases):
                 // Purchase endpoint returns an array of labels, but the polling endpoint only takes a single label at a time.

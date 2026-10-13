@@ -718,7 +718,8 @@ private extension CollectOrderPaymentUseCase {
                 receiptState: receiptState,
                 tryAgain: { [weak self] in
                     guard let self else { return }
-                    self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { [self] result in
+                    self.checkOrderIsStillEligibleForPayment(alertProvider: paymentAlerts, onPaymentCompletion: onCompletion) { [weak self] result in
+                        guard let self else { return }
                         switch result {
                         case .failure(let error):
                             return self.checkThenHandlePaymentFailureAndRetryPayment(error,
@@ -1047,6 +1048,8 @@ private extension CollectOrderPaymentUseCase {
         noReceiptAction: @escaping () -> Void,
         paymentMethod: PaymentMethod?,
         completion: @escaping (CardReaderTransactionAlertReceiptState) -> Void) {
+        // Capture `self` strongly on purpose: `onPaymentCompletion` is called before this callback runs, and POS releases the
+        // use case once the payment completes, so a weak capture would skip the success alert that ends the POS payment flow.
         receiptEligibilityUseCase.isEligibleForSuccessfulPaymentEmailReceipts { [self] isEligibleSendingReceiptAfterPayment in
             let receiptState: CardReaderTransactionAlertReceiptState
 

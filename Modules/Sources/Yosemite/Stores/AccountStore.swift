@@ -187,7 +187,7 @@ private extension AccountStore {
         }
         let onCompletion = siteSynchronizationCompletion(onCompletion)
         remote.loadSites()
-            .flatMap { [self] result -> AnyPublisher<Result<[Site], Error>, Never> in
+            .flatMap { [weak self] result -> AnyPublisher<Result<[Site], Error>, Never> in
                 switch result {
                 case .success(let sites):
                     return sites.publisher.flatMap { [weak self] site -> AnyPublisher<Site, Never> in

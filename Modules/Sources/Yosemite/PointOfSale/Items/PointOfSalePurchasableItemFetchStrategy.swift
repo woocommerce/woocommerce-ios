@@ -2,7 +2,8 @@ import Foundation
 import protocol Networking.ProductsRemoteProtocol
 import protocol Networking.ProductVariationsRemoteProtocol
 
-public protocol PointOfSalePurchasableItemFetchStrategy {
+@MainActor
+public protocol PointOfSalePurchasableItemFetchStrategy: Sendable {
     func fetchProducts(pageNumber: Int) async throws -> PagedItems<POSProduct>
     func fetchVariations(parentProductID: Int64, pageNumber: Int) async throws -> PagedItems<POSProductVariation>
 
@@ -28,6 +29,7 @@ public extension PointOfSalePurchasableItemFetchStrategy {
     }
 }
 
+@MainActor
 public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     private let siteID: Int64
 
@@ -69,6 +71,7 @@ public struct PointOfSaleDefaultPurchasableItemFetchStrategy: PointOfSalePurchas
     }
 }
 
+@MainActor
 public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     private let siteID: Int64
 
@@ -122,6 +125,7 @@ public struct PointOfSaleSearchPurchasableItemFetchStrategy: PointOfSalePurchasa
     }
 }
 
+@MainActor
 public struct PointOfSalePopularPurchasableItemFetchStrategy: PointOfSalePurchasableItemFetchStrategy {
     private let siteID: Int64
     private let productsRemote: ProductsRemoteProtocol

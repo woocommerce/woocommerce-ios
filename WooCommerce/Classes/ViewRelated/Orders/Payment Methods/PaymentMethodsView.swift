@@ -50,7 +50,8 @@ struct PaymentMethodsView: View {
                             MethodRow(icon: Image(systemName: "wave.3.right.circle"),
                                       title: Localization.tapToPay,
                                       accessibilityID: Accessibility.tapToPayMethod,
-                                      safeAreaInsets: safeAreaInsets) {
+                                      safeAreaInsets: safeAreaInsets,
+                                      isLoading: viewModel.isCheckingCardPaymentEligibility) {
                                 viewModel.collectPayment(using: .tapToPay, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
 
@@ -72,7 +73,8 @@ struct PaymentMethodsView: View {
                                 icon: Image.gridicon(.creditCard),
                                 title: Localization.card,
                                 accessibilityID: Accessibility.cardMethod,
-                                safeAreaInsets: safeAreaInsets
+                                safeAreaInsets: safeAreaInsets,
+                                isLoading: viewModel.isCheckingCardPaymentEligibility
                             ) {
                                 viewModel.collectPayment(using: .bluetoothScan, on: rootViewController, onSuccess: dismiss, onFailure: dismiss)
                             }
@@ -196,6 +198,10 @@ private struct MethodRow: View {
     ///
     private let accessibilityID: String
 
+    /// Shows a progress indicator and disables the row while its availability is being confirmed
+    ///
+    private let isLoading: Bool
+
     /// Action when the row is selected
     ///
     private let action: () -> ()
@@ -208,19 +214,16 @@ private struct MethodRow: View {
     ///
     private let safeAreaInsets: EdgeInsets
 
-    init(icon: UIImage, title: String, accessibilityID: String = "", safeAreaInsets: EdgeInsets, action: @escaping () -> ()) {
-        self.icon = Image(uiImage: icon)
-        self.title = title
-        self.accessibilityID = accessibilityID
-        self.safeAreaInsets = safeAreaInsets
-        self.action = action
+    init(icon: UIImage, title: String, accessibilityID: String = "", safeAreaInsets: EdgeInsets, isLoading: Bool = false, action: @escaping () -> ()) {
+        self.init(icon: Image(uiImage: icon), title: title, accessibilityID: accessibilityID, safeAreaInsets: safeAreaInsets, isLoading: isLoading, action: action)
     }
 
-    init(icon: Image, title: String, accessibilityID: String = "", safeAreaInsets: EdgeInsets, action: @escaping () -> ()) {
+    init(icon: Image, title: String, accessibilityID: String = "", safeAreaInsets: EdgeInsets, isLoading: Bool = false, action: @escaping () -> ()) {
         self.icon = icon
         self.title = title
         self.accessibilityID = accessibilityID
         self.safeAreaInsets = safeAreaInsets
+        self.isLoading = isLoading
         self.action = action
     }
 
@@ -240,11 +243,16 @@ private struct MethodRow: View {
                     .frame(maxWidth: .infinity, alignment: .leading)
                     .multilineTextAlignment(.leading)
 
-                DisclosureIndicator()
+                if isLoading {
+                    ProgressView()
+                } else {
+                    DisclosureIndicator()
+                }
             }
             .padding(.vertical, PaymentMethodsView.Layout.verticalPadding)
             .padding(.horizontal, insets: safeAreaInsets)
         }
+        .disabled(isLoading)
         .accessibilityIdentifier(accessibilityID)
     }
 }
